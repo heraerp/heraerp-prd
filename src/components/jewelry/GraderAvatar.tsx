@@ -43,36 +43,37 @@ export default function GraderAvatar({
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <Avatar className={sizeClasses[size]}>
-        {image && !isUnassigned ? (
-          <AvatarImage src={image} alt={name} />
-        ) : null}
-        <AvatarFallback className={`
-          ${isUnassigned 
-            ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500' 
-            : 'bg-jewelry-blue-100 dark:bg-jewelry-blue-900 text-jewelry-blue-800 dark:text-jewelry-blue-200'
+        {image && !isUnassigned ? <AvatarImage src={image} alt={name} /> : null}
+        <AvatarFallback
+          className={`
+          ${
+            isUnassigned
+              ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
+              : 'bg-jewelry-blue-100 dark:bg-jewelry-blue-900 text-jewelry-blue-800 dark:text-jewelry-blue-200'
           }
-        `}>
+        `}
+        >
           {isUnassigned ? <User className="h-3 w-3" /> : getInitials(name)}
         </AvatarFallback>
       </Avatar>
-      
+
       {size !== 'sm' && (
         <div className="flex flex-col">
-          <span className={`
+          <span
+            className={`
             font-medium 
-            ${isUnassigned 
-              ? 'text-gray-400 dark:text-gray-500 text-xs' 
-              : 'jewelry-text-high-contrast text-sm'
+            ${
+              isUnassigned
+                ? 'text-gray-400 dark:text-gray-500 text-xs'
+                : 'jewelry-text-high-contrast text-sm'
             }
-          `}>
+          `}
+          >
             {isUnassigned ? 'Unassigned' : name}
           </span>
-          
+
           {showCertification && certification && !isUnassigned && (
-            <Badge 
-              variant="outline" 
-              className="text-xs jewelry-status-luxury w-fit"
-            >
+            <Badge variant="outline" className="text-xs jewelry-status-luxury w-fit">
               {certification}
             </Badge>
           )}

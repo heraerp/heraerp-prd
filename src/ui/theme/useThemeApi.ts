@@ -1,5 +1,5 @@
 // src/ui/theme/useThemeApi.ts
-'use client';
+'use client'
 
 export function useThemeApi() {
   return {
@@ -12,9 +12,9 @@ export function useThemeApi() {
       fetch('/api/ucr/theme', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-hera-org': orgId },
-        body: JSON.stringify({ theme }),
+        body: JSON.stringify({ theme })
       })
         .then(r => r.json())
-        .then(j => j.success === true),
-  };
+        .then(j => j.success === true)
+  }
 }

@@ -90,7 +90,7 @@ export class GSTCompliance {
     '71139900', // Other precious metal jewelry
     '71171900', // Imitation jewelry
     '71023100', // Diamonds (industrial)
-    '71023900', // Diamonds (non-industrial)
+    '71023900' // Diamonds (non-industrial)
   ]
 
   /**
@@ -225,10 +225,7 @@ export class KYCCompliance {
       ]
     } else if (transaction_amount >= this.KYC_THRESHOLDS.BASIC) {
       compliance_level = 'BASIC'
-      required_documents = [
-        'Valid Photo ID',
-        'Contact Information'
-      ]
+      required_documents = ['Valid Photo ID', 'Contact Information']
     }
 
     return {
@@ -251,7 +248,9 @@ export class KYCCompliance {
 
     if (required_level === 'BASIC') {
       // Basic KYC - any photo ID is sufficient
-      const hasPhotoID = documents.some(doc => ['PAN', 'AADHAAR', 'PASSPORT', 'DRIVING_LICENSE', 'VOTER_ID'].includes(doc.type))
+      const hasPhotoID = documents.some(doc =>
+        ['PAN', 'AADHAAR', 'PASSPORT', 'DRIVING_LICENSE', 'VOTER_ID'].includes(doc.type)
+      )
       if (!hasPhotoID) {
         missing.push('Valid Photo ID')
       }
@@ -318,13 +317,19 @@ export class AMLCompliance {
     let risk_level: 'LOW' | 'MEDIUM' | 'HIGH' = 'LOW'
 
     // Check cash transaction limits
-    if (payment_method === 'cash' && transaction_amount >= this.AML_THRESHOLDS.CASH_TRANSACTION_REPORTING) {
+    if (
+      payment_method === 'cash' &&
+      transaction_amount >= this.AML_THRESHOLDS.CASH_TRANSACTION_REPORTING
+    ) {
       suspicious_indicators.push('Large cash transaction above reporting threshold')
       risk_level = 'HIGH'
     }
 
     // Check daily limits
-    if (payment_method === 'cash' && cumulative_amount_today >= this.AML_THRESHOLDS.DAILY_CASH_LIMIT) {
+    if (
+      payment_method === 'cash' &&
+      cumulative_amount_today >= this.AML_THRESHOLDS.DAILY_CASH_LIMIT
+    ) {
       suspicious_indicators.push('Daily cash limit exceeded')
       risk_level = 'HIGH'
     }
@@ -341,8 +346,9 @@ export class AMLCompliance {
       if (risk_level === 'LOW') risk_level = 'MEDIUM'
     }
 
-    const requires_reporting = 
-      payment_method === 'cash' && transaction_amount >= this.AML_THRESHOLDS.CASH_TRANSACTION_REPORTING
+    const requires_reporting =
+      payment_method === 'cash' &&
+      transaction_amount >= this.AML_THRESHOLDS.CASH_TRANSACTION_REPORTING
 
     return {
       transaction_amount,
@@ -385,7 +391,10 @@ export class HallmarkCompliance {
     let exemptions: string[] = []
 
     // Gold jewelry 18K and above requires hallmarking
-    if (metal_type.toLowerCase() === 'gold' && purity_karat >= this.HALLMARK_REQUIREMENTS.MANDATORY_PURITY_THRESHOLD) {
+    if (
+      metal_type.toLowerCase() === 'gold' &&
+      purity_karat >= this.HALLMARK_REQUIREMENTS.MANDATORY_PURITY_THRESHOLD
+    ) {
       requires_hallmark = true
 
       // Check exemptions
@@ -471,22 +480,22 @@ export class JewelryCompliance {
     transaction_amount: number
     payment_method: string
     customer_id: string
-    
+
     // Item details
     item_type: string
     metal_type: string
     purity_karat: number
     weight_grams: number
     hsn_code: string
-    
+
     // Location details
     place_of_supply: string
     business_location: string
-    
+
     // Customer details
     customer_documents: KYCDocument[]
     cumulative_amount_today: number
-    
+
     // Hallmark details (if applicable)
     hallmark_number?: string
     certification_date?: string
@@ -501,16 +510,16 @@ export class JewelryCompliance {
         business_location: params.business_location,
         purity_karat: params.purity_karat
       }),
-      
+
       kyc: KYCCompliance.getKYCRequirements(params.transaction_amount),
-      
+
       aml: AMLCompliance.performAMLCheck({
         transaction_amount: params.transaction_amount,
         payment_method: params.payment_method,
         customer_id: params.customer_id,
         cumulative_amount_today: params.cumulative_amount_today
       }),
-      
+
       hallmark: HallmarkCompliance.checkHallmarkRequirement({
         metal_type: params.metal_type,
         purity_karat: params.purity_karat,
@@ -544,10 +553,4 @@ export class JewelryCompliance {
 }
 
 // Export all compliance classes
-export {
-  GSTCompliance,
-  KYCCompliance,
-  AMLCompliance,
-  HallmarkCompliance,
-  JewelryCompliance
-}
+export { GSTCompliance, KYCCompliance, AMLCompliance, HallmarkCompliance, JewelryCompliance }

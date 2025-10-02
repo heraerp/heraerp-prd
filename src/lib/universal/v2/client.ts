@@ -4,12 +4,7 @@
  */
 
 // Re-export the main v2 API client
-export { 
-  apiV2, 
-  fetchV2, 
-  fetchV2Json, 
-  useApiV2 
-} from '@/lib/client/fetchV2'
+export { apiV2, fetchV2, fetchV2Json, useApiV2 } from '@/lib/client/fetchV2'
 
 // Re-export typed v2 clients
 export * from '@/lib/v2/client'
@@ -39,7 +34,7 @@ export function assertV2Path(path: string): void {
   if (path.startsWith('/api/v1/')) {
     throw new Error(`V1 API path blocked in v2 client: ${path}. Use /api/v2/ instead.`)
   }
-  
+
   if (path.includes('universal/v1')) {
     throw new Error(`V1 universal client blocked: ${path}. Use v2 clients instead.`)
   }

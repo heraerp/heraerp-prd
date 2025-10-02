@@ -2,15 +2,15 @@
 // Static fallback signatures — same structure you used earlier.
 
 export type FnSignature = {
-  params: string[];
-  mode?: 'header-lines';
-  aliases?: Record<string, string>;
-};
+  params: string[]
+  mode?: 'header-lines'
+  aliases?: Record<string, string>
+}
 
 export const STATIC_FN_SIGNATURES: Record<string, FnSignature[] | FnSignature> = {
   hera_txn_create_v1: {
     mode: 'header-lines',
-    params: ['p_header', 'p_lines', 'p_actor_user_id'],
+    params: ['p_header', 'p_lines', 'p_actor_user_id']
   },
 
   hera_txn_emit_v1: {
@@ -41,43 +41,49 @@ export const STATIC_FN_SIGNATURES: Record<string, FnSignature[] | FnSignature> =
       'p_fiscal_period',
       'p_posting_period_code',
       'p_lines',
-      'p_actor_user_id',
-    ],
+      'p_actor_user_id'
+    ]
   },
 
   hera_txn_delete_v1: { params: ['p_organization_id', 'p_transaction_id'] },
 
   hera_txn_query_v1: {
     params: ['p_org_id', 'p_filters'],
-    aliases: { p_organization_id: 'p_org_id' },
+    aliases: { p_organization_id: 'p_org_id' }
   },
 
   hera_txn_read_v1: {
     params: ['p_org_id', 'p_transaction_id', 'p_include_lines'],
-    aliases: { p_organization_id: 'p_org_id' },
+    aliases: { p_organization_id: 'p_org_id' }
   },
 
   hera_txn_reverse_v1: [
     {
       params: ['p_org_id', 'p_original_txn_id', 'p_reason', 'p_reversal_smart_code'],
-      aliases: { p_organization_id: 'p_org_id' },
+      aliases: { p_organization_id: 'p_org_id' }
     },
     {
-      params: ['p_organization_id', 'p_transaction_id', 'p_reversal_date', 'p_reason', 'p_actor_user_id'],
-    },
+      params: [
+        'p_organization_id',
+        'p_transaction_id',
+        'p_reversal_date',
+        'p_reason',
+        'p_actor_user_id'
+      ]
+    }
   ],
 
   hera_txn_update_v1: {
-    params: ['p_organization_id', 'p_transaction_id', 'p_patch', 'p_actor_user_id'],
+    params: ['p_organization_id', 'p_transaction_id', 'p_patch', 'p_actor_user_id']
   },
 
   hera_txn_validate_v1: {
     params: ['p_org_id', 'p_transaction_id'],
-    aliases: { p_organization_id: 'p_org_id' },
+    aliases: { p_organization_id: 'p_org_id' }
   },
 
   hera_txn_void_v1: {
-    params: ['p_organization_id', 'p_transaction_id', 'p_reason', 'p_actor_user_id'],
+    params: ['p_organization_id', 'p_transaction_id', 'p_reason', 'p_actor_user_id']
   },
 
   // Entity signatures
@@ -103,13 +109,7 @@ export const STATIC_FN_SIGNATURES: Record<string, FnSignature[] | FnSignature> =
   },
 
   hera_entities_query_v1: {
-    params: [
-      'p_organization_id',
-      'p_entity_type',
-      'p_smart_code',
-      'p_parent_entity_id',
-      'p_status'
-    ]
+    params: ['p_organization_id', 'p_entity_type', 'p_smart_code', 'p_parent_entity_id', 'p_status']
   },
 
   // Dynamic data signatures
@@ -131,20 +131,11 @@ export const STATIC_FN_SIGNATURES: Record<string, FnSignature[] | FnSignature> =
   },
 
   hera_dynamic_data_get_v1: {
-    params: [
-      'p_entity_id',
-      'p_organization_id',
-      'p_field_name'
-    ]
+    params: ['p_entity_id', 'p_organization_id', 'p_field_name']
   },
 
   hera_dynamic_data_batch_v1: {
-    params: [
-      'p_organization_id',
-      'p_entity_id',
-      'p_items',
-      'p_smart_code'
-    ]
+    params: ['p_organization_id', 'p_entity_id', 'p_items', 'p_smart_code']
   },
 
   // Relationship signatures
@@ -183,4 +174,4 @@ export const STATIC_FN_SIGNATURES: Record<string, FnSignature[] | FnSignature> =
       'p_metadata'
     ]
   }
-};
+}

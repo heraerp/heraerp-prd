@@ -3,14 +3,18 @@
  * Jewelry-specific rate functions using Universal Integration Hub
  */
 
-import { getEffectiveRate, calculateMetalValue as calcMetalValue, getCurrentRates } from '@/lib/integration/rates'
+import {
+  getEffectiveRate,
+  calculateMetalValue as calcMetalValue,
+  getCurrentRates
+} from '@/lib/integration/rates'
 
 /**
  * Get effective gold rate with purity adjustment
  */
 export async function getEffectiveGoldRate(
-  orgId: string, 
-  atISO: string = new Date().toISOString(), 
+  orgId: string,
+  atISO: string = new Date().toISOString(),
   purityK: number = 22
 ): Promise<{
   rate_per_gram: number
@@ -20,7 +24,7 @@ export async function getEffectiveGoldRate(
   source?: string
 } | null> {
   const result = await getEffectiveRate(orgId, 'gold', atISO, purityK)
-  
+
   if (!result) {
     return null
   }
@@ -70,7 +74,7 @@ export async function calculateJewelryMetalValue(
   }
 } | null> {
   const result = await calcMetalValue(orgId, metalType, weightGrams, purityKarat)
-  
+
   if (!result) {
     return null
   }

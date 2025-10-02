@@ -59,14 +59,14 @@ export function processTransactionFinance(
   if (smartCodeParts.length < 3) {
     return { glEntries: [], errors: ['Invalid smart code format'] }
   }
-  
+
   const domain = smartCodeParts[1] // HERA.JEWELRY.SALE.POS.V1 -> JEWELRY
   const processor = FINANCE_RULES_REGISTRY.get(domain)
-  
+
   if (!processor) {
     return { glEntries: [], errors: [`No finance rules registered for domain: ${domain}`] }
   }
-  
+
   try {
     return processor(header, lines, orgCtx)
   } catch (error) {

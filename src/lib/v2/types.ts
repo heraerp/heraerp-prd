@@ -8,11 +8,14 @@ export type EntityCreateRequest = {
   entity_name: string
   entity_code?: string
   smart_code: string
-  dynamic_fields?: Record<string, {
-    value: any
-    type: 'text' | 'number' | 'boolean' | 'date'
-    smart_code: string
-  }>
+  dynamic_fields?: Record<
+    string,
+    {
+      value: any
+      type: 'text' | 'number' | 'boolean' | 'date'
+      smart_code: string
+    }
+  >
   metadata?: Record<string, any>
 }
 

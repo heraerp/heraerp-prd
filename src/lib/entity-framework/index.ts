@@ -1,6 +1,6 @@
 /**
  * HERA Entity Framework
- * 
+ *
  * A comprehensive framework for managing universal entities with:
  * - Dynamic field definitions with UI metadata
  * - Relationship management
@@ -33,10 +33,7 @@ export {
 } from './entityPresets'
 
 // Entity options hooks
-export type {
-  SelectOption,
-  EntitySelectOptions
-} from './useEntityOptions'
+export type { SelectOption, EntitySelectOptions } from './useEntityOptions'
 
 export {
   useEntityOptions,
@@ -57,28 +54,14 @@ export {
 } from './useEntityOptions'
 
 // Form components
-export type {
-  EntityFormData,
-  EntityFormProps
-} from './EntityForm'
+export type { EntityFormData, EntityFormProps } from './EntityForm'
 
-export {
-  EntityForm,
-  DynamicField,
-  RelationshipField
-} from './EntityForm'
+export { EntityForm, DynamicField, RelationshipField } from './EntityForm'
 
 // Example modal implementation
-export type {
-  ProductModalProps,
-  ProductData
-} from './ProductModal'
+export type { ProductModalProps, ProductData } from './ProductModal'
 
-export {
-  ProductModal,
-  useProductModal,
-  ProductModalExample
-} from './ProductModal'
+export { ProductModal, useProductModal, ProductModalExample } from './ProductModal'
 
 // Re-export universal form components for convenience
 export {

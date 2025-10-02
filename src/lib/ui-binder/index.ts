@@ -3,7 +3,13 @@
  * Simple hooks powered by generic v2 hooks
  */
 
-import { useEntity, useEntities, useRelationships, useEmitTransaction, useUpsertEntity } from '@/lib/universal/v2/hooks'
+import {
+  useEntity,
+  useEntities,
+  useRelationships,
+  useEmitTransaction,
+  useUpsertEntity
+} from '@/lib/universal/v2/hooks'
 import { parseQuery } from './query-dsl'
 import type { ListParams, RecordParams, RelListParams, ActionParams, UpsertParams } from './types'
 
@@ -11,13 +17,13 @@ import type { ListParams, RecordParams, RelListParams, ActionParams, UpsertParam
  * List entities with filtering, search, and pagination
  */
 export function useList(orgId: string, params: ListParams = {}) {
-  const { 
-    entityType, 
-    smartCodePrefix, 
-    search, 
-    limit = 50, 
-    offset = 0, 
-    orderBy = 'created_at desc' 
+  const {
+    entityType,
+    smartCodePrefix,
+    search,
+    limit = 50,
+    offset = 0,
+    orderBy = 'created_at desc'
   } = params
 
   // Build query parameters
@@ -59,13 +65,7 @@ export function useRecord(orgId: string, entity_id: string) {
  * List relationships for entity
  */
 export function useRelList(orgId: string, params: RelListParams = {}) {
-  const {
-    from_entity_id,
-    to_entity_id,
-    smartCodePrefix,
-    limit = 50,
-    offset = 0
-  } = params
+  const { from_entity_id, to_entity_id, smartCodePrefix, limit = 50, offset = 0 } = params
 
   const queryParams: any = {
     organization_id: orgId,
@@ -96,7 +96,7 @@ export function useAction() {
 
   const executeAction = async (params: ActionParams) => {
     const { smart_code, payload } = params
-    
+
     return emitTransaction({
       ...payload,
       smart_code
@@ -135,10 +135,4 @@ export function useQueryParser() {
 }
 
 // Re-export types for convenience
-export type {
-  ListParams,
-  RecordParams,
-  RelListParams,
-  ActionParams,
-  UpsertParams
-} from './types'
+export type { ListParams, RecordParams, RelListParams, ActionParams, UpsertParams } from './types'

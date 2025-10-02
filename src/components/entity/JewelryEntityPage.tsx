@@ -30,7 +30,13 @@ export interface JewelryEntityPageProps {
   className?: string
 }
 
-export function JewelryEntityPage({ preset, userRole, title, subtitle, className }: JewelryEntityPageProps) {
+export function JewelryEntityPage({
+  preset,
+  userRole,
+  title,
+  subtitle,
+  className
+}: JewelryEntityPageProps) {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
   const [editRow, setEditRow] = useState<any>(null)
@@ -65,10 +71,10 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
         dynamic_fields: Object.fromEntries(
           (preset.dynamicFields || []).map(df => [
             df.name,
-            { 
-              value: payload.dynamic_fields?.[df.name] ?? payload[df.name], 
-              type: df.type, 
-              smart_code: df.smart_code 
+            {
+              value: payload.dynamic_fields?.[df.name] ?? payload[df.name],
+              type: df.type,
+              smart_code: df.smart_code
             }
           ])
         ),
@@ -76,17 +82,17 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
           relationships: payload.relationships || {}
         }
       })
-      toast({ 
+      toast({
         title: `${preset.labels.singular} created`,
         description: `Successfully created ${payload.entity_name || 'new item'}`
       })
       setOpen(false)
       refetch()
     } catch (e: any) {
-      toast({ 
-        title: 'Create failed', 
-        description: e?.message ?? 'Unknown error', 
-        variant: 'destructive' 
+      toast({
+        title: 'Create failed',
+        description: e?.message ?? 'Unknown error',
+        variant: 'destructive'
       })
     }
   }
@@ -95,22 +101,22 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
   const onUpdate = async (payload: any) => {
     try {
       const { entity_id, ...updates } = payload
-      
+
       const dynamic_patch: Record<string, any> = {}
       const relationships_patch: Record<string, string[]> = {}
-      
+
       if (updates.dynamic_fields) {
         Object.entries(updates.dynamic_fields).forEach(([key, value]) => {
           dynamic_patch[key] = value
         })
       }
-      
-      (preset.dynamicFields || []).forEach(df => {
+
+      ;(preset.dynamicFields || []).forEach(df => {
         if (df.name in updates) {
           dynamic_patch[df.name] = updates[df.name]
         }
       })
-      
+
       if (updates.relationships) {
         Object.entries(updates.relationships).forEach(([type, ids]) => {
           relationships_patch[type] = Array.isArray(ids) ? ids : [ids].filter(Boolean)
@@ -123,18 +129,18 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
         dynamic_patch,
         relationships_patch
       })
-      
-      toast({ 
+
+      toast({
         title: `${preset.labels.singular} updated`,
         description: 'Changes saved successfully'
       })
       setEditRow(null)
       refetch()
     } catch (e: any) {
-      toast({ 
-        title: 'Update failed', 
-        description: e?.message ?? 'Unknown error', 
-        variant: 'destructive' 
+      toast({
+        title: 'Update failed',
+        description: e?.message ?? 'Unknown error',
+        variant: 'destructive'
       })
     }
   }
@@ -144,19 +150,19 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
     if (!confirm(`Are you sure you want to delete this ${preset.labels.singular.toLowerCase()}?`)) {
       return
     }
-    
+
     try {
       await remove({ entity_id: id, hard_delete: false })
-      toast({ 
+      toast({
         title: `${preset.labels.singular} deleted`,
         description: 'Item moved to archive'
       })
       refetch()
     } catch (e: any) {
-      toast({ 
-        title: 'Delete failed', 
-        description: e?.message ?? 'Unknown error', 
-        variant: 'destructive' 
+      toast({
+        title: 'Delete failed',
+        description: e?.message ?? 'Unknown error',
+        variant: 'destructive'
       })
     }
   }
@@ -167,18 +173,22 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
   const canDelete = preset.permissions?.delete?.(userRole) !== false
 
   // Calculate summary metrics for jewelry items
-  const totalItems = entities?.reduce((sum, item) => sum + (Number(item.dynamic_fields?.quantity?.value) || 0), 0) || 0
-  const totalValue = entities?.reduce((sum, item) => {
-    const quantity = Number(item.dynamic_fields?.quantity?.value) || 0
-    const unitPrice = Number(item.dynamic_fields?.unit_price?.value) || 0
-    return sum + (quantity * unitPrice)
-  }, 0) || 0
+  const totalItems =
+    entities?.reduce((sum, item) => sum + (Number(item.dynamic_fields?.quantity?.value) || 0), 0) ||
+    0
+  const totalValue =
+    entities?.reduce((sum, item) => {
+      const quantity = Number(item.dynamic_fields?.quantity?.value) || 0
+      const unitPrice = Number(item.dynamic_fields?.unit_price?.value) || 0
+      return sum + quantity * unitPrice
+    }, 0) || 0
   const uniqueItems = entities?.length || 0
-  const lowStockItems = entities?.filter(item => {
-    const quantity = Number(item.dynamic_fields?.quantity?.value) || 0
-    const status = item.dynamic_fields?.status?.value
-    return quantity < 5 || status === 'low_stock' || status === 'out_of_stock'
-  }).length || 0
+  const lowStockItems =
+    entities?.filter(item => {
+      const quantity = Number(item.dynamic_fields?.quantity?.value) || 0
+      const status = item.dynamic_fields?.status?.value
+      return quantity < 5 || status === 'low_stock' || status === 'out_of_stock'
+    }).length || 0
 
   // Toggle item selection
   const toggleItemSelection = (itemId: string) => {
@@ -237,7 +247,10 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
           <p className="jewelry-text-muted text-sm font-medium">Total Items</p>
         </div>
 
-        <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+        <div
+          className="jewelry-glass-card jewelry-float p-6 text-center"
+          style={{ animationDelay: '0.1s' }}
+        >
           <Diamond className="mx-auto mb-3 jewelry-icon-gold" size={32} />
           <h3 className="jewelry-text-high-contrast text-2xl font-bold">
             ${totalValue.toLocaleString()}
@@ -245,13 +258,19 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
           <p className="jewelry-text-muted text-sm font-medium">Total Value</p>
         </div>
 
-        <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+        <div
+          className="jewelry-glass-card jewelry-float p-6 text-center"
+          style={{ animationDelay: '0.2s' }}
+        >
           <RefreshCw className="mx-auto mb-3 jewelry-icon-gold" size={32} />
           <h3 className="jewelry-text-high-contrast text-2xl font-bold">{lowStockItems}</h3>
           <p className="jewelry-text-muted text-sm font-medium">Low Stock Items</p>
         </div>
 
-        <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+        <div
+          className="jewelry-glass-card jewelry-float p-6 text-center"
+          style={{ animationDelay: '0.3s' }}
+        >
           <Package className="mx-auto mb-3 jewelry-icon-gold" size={32} />
           <h3 className="jewelry-text-high-contrast text-2xl font-bold">{uniqueItems}</h3>
           <p className="jewelry-text-muted text-sm font-medium">Unique Items</p>
@@ -272,9 +291,7 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
             </h2>
             {selectedItems.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="jewelry-text-luxury text-sm">
-                  {selectedItems.length} selected
-                </span>
+                <span className="jewelry-text-luxury text-sm">{selectedItems.length} selected</span>
                 <button
                   onClick={clearSelection}
                   className="jewelry-btn-secondary text-sm px-3 py-1"
@@ -286,18 +303,18 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
           </div>
 
           <div className="flex items-center gap-2">
-            <Button 
+            <Button
               variant="outline"
-              onClick={() => refetch()} 
+              onClick={() => refetch()}
               disabled={isLoading}
               className="jewelry-btn-secondary"
             >
-              <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} /> 
+              <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
             {canCreate && (
               <Button onClick={() => setOpen(true)} className="jewelry-btn-primary">
-                <Plus className="mr-2 h-4 w-4" /> 
+                <Plus className="mr-2 h-4 w-4" />
                 New {preset.labels.singular}
               </Button>
             )}
@@ -364,50 +381,53 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
                         item.dynamic_fields?.status?.value || 'unknown'
                       )}`}
                     >
-                      {(item.dynamic_fields?.status?.value || 'UNKNOWN').replace('_', ' ').toUpperCase()}
+                      {(item.dynamic_fields?.status?.value || 'UNKNOWN')
+                        .replace('_', ' ')
+                        .toUpperCase()}
                     </span>
                   </div>
                 </div>
 
                 {/* Item Details */}
                 <div className="space-y-3">
-                  {preset.dynamicFields?.map(field => {
-                    const value = item.dynamic_fields?.[field.name]?.value
-                    if (!value && value !== 0) return null
-                    
-                    return (
-                      <div key={field.name} className="flex items-center justify-between">
-                        <span className="jewelry-text-muted text-sm">
-                          {field.ui?.label || field.name}:
-                        </span>
-                        <span className="jewelry-text-high-contrast text-sm font-medium">
-                          {field.type === 'number' && field.ui?.label?.includes('Price') ? 
-                            `$${Number(value).toLocaleString()}` :
-                            field.type === 'number' && field.ui?.label?.includes('Weight') ?
-                            `${value}g` :
-                            field.type === 'boolean' ? 
-                            (value ? 'Yes' : 'No') :
-                            String(value)
-                          }
-                        </span>
-                      </div>
-                    )
-                  }).slice(0, 6)}
+                  {preset.dynamicFields
+                    ?.map(field => {
+                      const value = item.dynamic_fields?.[field.name]?.value
+                      if (!value && value !== 0) return null
+
+                      return (
+                        <div key={field.name} className="flex items-center justify-between">
+                          <span className="jewelry-text-muted text-sm">
+                            {field.ui?.label || field.name}:
+                          </span>
+                          <span className="jewelry-text-high-contrast text-sm font-medium">
+                            {field.type === 'number' && field.ui?.label?.includes('Price')
+                              ? `$${Number(value).toLocaleString()}`
+                              : field.type === 'number' && field.ui?.label?.includes('Weight')
+                                ? `${value}g`
+                                : field.type === 'boolean'
+                                  ? value
+                                    ? 'Yes'
+                                    : 'No'
+                                  : String(value)}
+                          </span>
+                        </div>
+                      )
+                    })
+                    .slice(0, 6)}
                 </div>
 
                 {/* Item Actions */}
                 <div className="flex items-center justify-between mt-6 pt-4 border-t border-jewelry-blue-200">
                   <div className="flex items-center space-x-1">
-                    <span className="jewelry-text-muted text-xs">
-                      ID: {item.id.slice(0, 8)}...
-                    </span>
+                    <span className="jewelry-text-muted text-xs">ID: {item.id.slice(0, 8)}...</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <button className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform">
                       <Eye className="jewelry-icon-gold" size={16} />
                     </button>
                     {canEdit && (
-                      <button 
+                      <button
                         onClick={() => setEditRow(item)}
                         className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform"
                       >
@@ -415,7 +435,7 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
                       </button>
                     )}
                     {canDelete && (
-                      <button 
+                      <button
                         onClick={() => onDelete(item.id)}
                         className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform text-red-400 hover:text-red-300"
                       >
@@ -430,7 +450,9 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
         ) : (
           <div className="text-center py-12">
             <Package className="mx-auto mb-4 jewelry-icon-gold opacity-50" size={64} />
-            <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">No {preset.labels.plural} Found</h3>
+            <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
+              No {preset.labels.plural} Found
+            </h3>
             <p className="jewelry-text-muted mb-4">
               Get started by creating your first {preset.labels.singular.toLowerCase()}.
             </p>
@@ -464,7 +486,7 @@ export function JewelryEntityPage({ preset, userRole, title, subtitle, className
       </Dialog>
 
       {/* Edit Dialog */}
-      <Dialog open={!!editRow} onOpenChange={(v) => !v && setEditRow(null)}>
+      <Dialog open={!!editRow} onOpenChange={v => !v && setEditRow(null)}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto jewelry-glass-panel">
           <DialogHeader>
             <DialogTitle className="jewelry-text-high-contrast">

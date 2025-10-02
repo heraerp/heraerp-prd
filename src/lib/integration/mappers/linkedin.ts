@@ -1,17 +1,12 @@
 /**
  * LinkedIn Data Mapper
- * 
+ *
  * Transforms LinkedIn API responses to HERA universal entities
  * using field mapping configuration
  */
 
-import { 
-  CoreEntity, 
-  CoreRelationship, 
-  DynamicFieldData,
-  SmartCode 
-} from '@/types/core'
-import { 
+import { CoreEntity, CoreRelationship, DynamicFieldData, SmartCode } from '@/types/core'
+import {
   LinkedInOrganization,
   LinkedInEvent,
   LinkedInAttendee,
@@ -44,7 +39,7 @@ export class LinkedInMapper {
    */
   mapOrganization(org: LinkedInOrganization, urn: string): MappedEntity {
     const mapping = this.mapping.entity_mappings.organization
-    
+
     // Core entity
     const entity: Partial<CoreEntity> = {
       organization_id: this.organizationId,
@@ -65,17 +60,19 @@ export class LinkedInMapper {
 
     // Dynamic fields
     const dynamicFields: DynamicFieldData[] = []
-    
+
     for (const fieldMap of mapping.dynamic_fields) {
       const value = this.getNestedValue(org, fieldMap.source)
       if (value !== undefined && value !== null) {
-        dynamicFields.push(this.createDynamicField(
-          '', // entity_id will be set during sync
-          fieldMap.target,
-          fieldMap.field_type,
-          value,
-          fieldMap.smart_code as SmartCode
-        ))
+        dynamicFields.push(
+          this.createDynamicField(
+            '', // entity_id will be set during sync
+            fieldMap.target,
+            fieldMap.field_type,
+            value,
+            fieldMap.smart_code as SmartCode
+          )
+        )
       }
     }
 
@@ -91,7 +88,7 @@ export class LinkedInMapper {
    */
   mapEvent(event: LinkedInEvent): MappedEntity {
     const mapping = this.mapping.entity_mappings.event
-    
+
     // Core entity
     const entity: Partial<CoreEntity> = {
       organization_id: this.organizationId,
@@ -114,29 +111,33 @@ export class LinkedInMapper {
 
     // Dynamic fields
     const dynamicFields: DynamicFieldData[] = []
-    
+
     for (const fieldMap of mapping.dynamic_fields) {
       const value = this.getNestedValue(event, fieldMap.source)
       if (value !== undefined && value !== null) {
         const transformedValue = this.applyTransform(value, fieldMap.transform)
-        dynamicFields.push(this.createDynamicField(
-          '',
-          fieldMap.target,
-          fieldMap.field_type,
-          transformedValue,
-          fieldMap.smart_code as SmartCode
-        ))
+        dynamicFields.push(
+          this.createDynamicField(
+            '',
+            fieldMap.target,
+            fieldMap.field_type,
+            transformedValue,
+            fieldMap.smart_code as SmartCode
+          )
+        )
       }
     }
 
     // Relationships
-    const relationships = [{
-      type: 'ORGANIZATION_HAS_EVENT',
-      direction: 'to' as const,
-      resolveBy: 'organizerUrn',
-      resolveValue: event.organizerUrn,
-      smartCode: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.ORG_EVENT.v1' as SmartCode
-    }]
+    const relationships = [
+      {
+        type: 'ORGANIZATION_HAS_EVENT',
+        direction: 'to' as const,
+        resolveBy: 'organizerUrn',
+        resolveValue: event.organizerUrn,
+        smartCode: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.ORG_EVENT.v1' as SmartCode
+      }
+    ]
 
     return {
       entity,
@@ -150,10 +151,10 @@ export class LinkedInMapper {
    */
   mapAttendee(attendee: LinkedInAttendee): MappedEntity {
     const mapping = this.mapping.entity_mappings.attendee
-    
+
     // Compute name
     const name = this.computeTemplateName(mapping.name_template, attendee)
-    
+
     // Core entity
     const entity: Partial<CoreEntity> = {
       organization_id: this.organizationId,
@@ -174,29 +175,33 @@ export class LinkedInMapper {
 
     // Dynamic fields
     const dynamicFields: DynamicFieldData[] = []
-    
+
     for (const fieldMap of mapping.dynamic_fields) {
       const value = this.getNestedValue(attendee, fieldMap.source)
       if (value !== undefined && value !== null) {
         const transformedValue = this.applyTransform(value, fieldMap.transform)
-        dynamicFields.push(this.createDynamicField(
-          '',
-          fieldMap.target,
-          fieldMap.field_type,
-          transformedValue,
-          fieldMap.smart_code as SmartCode
-        ))
+        dynamicFields.push(
+          this.createDynamicField(
+            '',
+            fieldMap.target,
+            fieldMap.field_type,
+            transformedValue,
+            fieldMap.smart_code as SmartCode
+          )
+        )
       }
     }
 
     // Relationships
-    const relationships = [{
-      type: 'EVENT_HAS_ATTENDEE',
-      direction: 'from' as const,
-      resolveBy: 'eventUrn',
-      resolveValue: attendee.eventUrn,
-      smartCode: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.EVENT_ATTENDEE.v1' as SmartCode
-    }]
+    const relationships = [
+      {
+        type: 'EVENT_HAS_ATTENDEE',
+        direction: 'from' as const,
+        resolveBy: 'eventUrn',
+        resolveValue: attendee.eventUrn,
+        smartCode: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.EVENT_ATTENDEE.v1' as SmartCode
+      }
+    ]
 
     return {
       entity,
@@ -210,10 +215,10 @@ export class LinkedInMapper {
    */
   mapPost(post: LinkedInPost): MappedEntity {
     const mapping = this.mapping.entity_mappings.post
-    
+
     // Compute name
     const name = post.text.text.substring(0, 100) + '...'
-    
+
     // Core entity
     const entity: Partial<CoreEntity> = {
       organization_id: this.organizationId,
@@ -236,28 +241,32 @@ export class LinkedInMapper {
 
     // Dynamic fields
     const dynamicFields: DynamicFieldData[] = []
-    
+
     for (const fieldMap of mapping.dynamic_fields) {
       const value = this.getNestedValue(post, fieldMap.source)
       if (value !== undefined && value !== null) {
-        dynamicFields.push(this.createDynamicField(
-          '',
-          fieldMap.target,
-          fieldMap.field_type,
-          value,
-          fieldMap.smart_code as SmartCode
-        ))
+        dynamicFields.push(
+          this.createDynamicField(
+            '',
+            fieldMap.target,
+            fieldMap.field_type,
+            value,
+            fieldMap.smart_code as SmartCode
+          )
+        )
       }
     }
 
     // Relationships
-    const relationships = [{
-      type: 'POST_BELONGS_TO_ORG',
-      direction: 'to' as const,
-      resolveBy: 'authorUrn',
-      resolveValue: post.authorUrn,
-      smartCode: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.POST_ORG.v1' as SmartCode
-    }]
+    const relationships = [
+      {
+        type: 'POST_BELONGS_TO_ORG',
+        direction: 'to' as const,
+        resolveBy: 'authorUrn',
+        resolveValue: post.authorUrn,
+        smartCode: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.POST_ORG.v1' as SmartCode
+      }
+    ]
 
     return {
       entity,
@@ -353,7 +362,7 @@ export class LinkedInMapper {
 
   private applyTransform(value: any, transform?: string): any {
     if (!transform) return value
-    
+
     switch (transform) {
       case 'unix_to_iso':
         return new Date(value).toISOString()

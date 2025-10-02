@@ -228,6 +228,11 @@ export const OAUTH_CONFIGS: Record<VendorType, Partial<OAuthConfig>> = {
   facebook: {
     authorization_url: 'https://www.facebook.com/v18.0/dialog/oauth',
     token_url: 'https://graph.facebook.com/v18.0/oauth/access_token',
-    scopes: ['pages_show_list', 'pages_read_engagement', 'pages_manage_posts', 'pages_manage_metadata']
+    scopes: [
+      'pages_show_list',
+      'pages_read_engagement',
+      'pages_manage_posts',
+      'pages_manage_metadata'
+    ]
   }
 }

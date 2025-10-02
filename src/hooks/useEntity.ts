@@ -142,24 +142,24 @@ export function useEntity<TPreset extends keyof typeof ENTITY_PRESETS>(
     isLoading: result.isLoading,
     error: result.error,
     refetch: result.refetch,
-    
+
     // Preset configuration
     config,
-    
+
     // Enhanced create with preset configuration
     createEntity,
-    
+
     // Dynamic field helpers
     updateDynamicField,
     getFieldDef,
     validateRequiredFields,
-    
+
     // Mutation functions
     create: result.create,
     update: result.update,
     delete: result.delete,
     archive: result.archive,
-    
+
     // Loading states
     isCreating: result.isCreating,
     isUpdating: result.isUpdating,

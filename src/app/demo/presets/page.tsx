@@ -6,17 +6,23 @@ import { entityPresets, type EntityPreset } from '@/hooks/entityPresets'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { RefreshCw, Database, Users, Settings, Zap } from 'lucide-react'
 
 /**
  * Live Preset Explorer - Demonstrates the Universal Framework
- * 
+ *
  * Pick any preset → instant CRUD page with:
  * - Auto-generated forms
- * - Auto-generated tables  
+ * - Auto-generated tables
  * - Role-based permissions
  * - Dynamic fields and relationships
  * - Complete CRUD operations
@@ -24,7 +30,10 @@ import { RefreshCw, Database, Users, Settings, Zap } from 'lucide-react'
 export default function PresetExplorerPage() {
   const { userRole = 'staff' } = useHERAAuth() ?? {}
 
-  const presetKeys = useMemo(() => Object.keys(entityPresets) as Array<keyof typeof entityPresets>, [])
+  const presetKeys = useMemo(
+    () => Object.keys(entityPresets) as Array<keyof typeof entityPresets>,
+    []
+  )
   const [key, setKey] = useState<keyof typeof entityPresets>(presetKeys[0]!)
 
   const preset: EntityPreset = useMemo(() => entityPresets[key], [key])
@@ -34,7 +43,7 @@ export default function PresetExplorerPage() {
     const dynamicFieldCount = preset.dynamicFields?.length || 0
     const relationshipCount = preset.relationships?.length || 0
     const hasPermissions = !!preset.permissions
-    
+
     return {
       fields: dynamicFieldCount,
       relationships: relationshipCount,
@@ -45,11 +54,16 @@ export default function PresetExplorerPage() {
   // Role badge color
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'owner': return 'bg-purple-500/10 text-purple-500 border-purple-500/20'
-      case 'manager': return 'bg-blue-500/10 text-blue-500 border-blue-500/20'
-      case 'receptionist': return 'bg-green-500/10 text-green-500 border-green-500/20'
-      case 'staff': return 'bg-gray-500/10 text-gray-500 border-gray-500/20'
-      default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20'
+      case 'owner':
+        return 'bg-purple-500/10 text-purple-500 border-purple-500/20'
+      case 'manager':
+        return 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+      case 'receptionist':
+        return 'bg-green-500/10 text-green-500 border-green-500/20'
+      case 'staff':
+        return 'bg-gray-500/10 text-gray-500 border-gray-500/20'
+      default:
+        return 'bg-gray-500/10 text-gray-500 border-gray-500/20'
     }
   }
 
@@ -79,7 +93,7 @@ export default function PresetExplorerPage() {
             </p>
           </div>
           <Button variant="ghost" onClick={() => location.reload()}>
-            <RefreshCw className="mr-2 h-4 w-4" /> 
+            <RefreshCw className="mr-2 h-4 w-4" />
             Reload
           </Button>
         </CardHeader>
@@ -90,12 +104,15 @@ export default function PresetExplorerPage() {
               <Database className="h-4 w-4" />
               Entity Preset
             </Label>
-            <Select value={String(key)} onValueChange={(v) => setKey(v as keyof typeof entityPresets)}>
+            <Select
+              value={String(key)}
+              onValueChange={v => setKey(v as keyof typeof entityPresets)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select preset" />
               </SelectTrigger>
               <SelectContent>
-                {presetKeys.map((k) => (
+                {presetKeys.map(k => (
                   <SelectItem key={String(k)} value={String(k)}>
                     {entityPresets[k].labels?.plural ?? String(k)}
                   </SelectItem>
@@ -119,12 +136,8 @@ export default function PresetExplorerPage() {
               Your Role
             </Label>
             <div className="flex items-center gap-2">
-              <Badge className={getRoleColor(userRole)}>
-                {userRole}
-              </Badge>
-              <span className="text-xs text-muted-foreground">
-                (affects visibility)
-              </span>
+              <Badge className={getRoleColor(userRole)}>{userRole}</Badge>
+              <span className="text-xs text-muted-foreground">(affects visibility)</span>
             </div>
           </div>
 
@@ -149,11 +162,11 @@ export default function PresetExplorerPage() {
               </div>
               <div className="flex items-center justify-between text-xs">
                 <span>Permissions:</span>
-                <Badge 
-                  variant={stats.permissions ? "default" : "secondary"} 
+                <Badge
+                  variant={stats.permissions ? 'default' : 'secondary'}
                   className="h-5 text-xs"
                 >
-                  {stats.permissions ? "✓" : "—"}
+                  {stats.permissions ? '✓' : '—'}
                 </Badge>
               </div>
             </div>
@@ -169,7 +182,7 @@ export default function PresetExplorerPage() {
               ⚡ Live Preview: {preset.labels?.plural || preset.entity_type}
             </h3>
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              This complete CRUD interface is generated automatically from the preset configuration. 
+              This complete CRUD interface is generated automatically from the preset configuration.
               Try creating, editing, and viewing entities to see the universal framework in action.
             </p>
             <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground mt-4">
@@ -183,9 +196,9 @@ export default function PresetExplorerPage() {
       </Card>
 
       {/* Live Entity Page */}
-      <EntityPage 
-        key={String(key)} 
-        preset={preset} 
+      <EntityPage
+        key={String(key)}
+        preset={preset}
         userRole={userRole}
         title={`${preset.labels?.plural || preset.entity_type} (Live Demo)`}
         subtitle={`Generated from ${String(key)}_PRESET configuration • Role: ${userRole}`}
@@ -219,11 +232,12 @@ export default function PresetExplorerPage() {
               </ul>
             </div>
           </div>
-          
+
           <div className="pt-4 border-t">
             <p className="text-sm text-muted-foreground">
-              <strong>Implementation:</strong> This entire CRUD interface is generated from a single preset configuration. 
-              New entity types require only adding a preset - no custom forms, tables, or CRUD logic needed.
+              <strong>Implementation:</strong> This entire CRUD interface is generated from a single
+              preset configuration. New entity types require only adding a preset - no custom forms,
+              tables, or CRUD logic needed.
             </p>
           </div>
         </CardContent>

@@ -18,10 +18,7 @@ const DEFAULT_OPTIONS: Required<RetryOptions> = {
   onRetry: () => {}
 }
 
-export async function retry<T>(
-  fn: () => Promise<T>,
-  options?: RetryOptions
-): Promise<T> {
+export async function retry<T>(fn: () => Promise<T>, options?: RetryOptions): Promise<T> {
   const opts = { ...DEFAULT_OPTIONS, ...options }
   let lastError: Error | null = null
 
@@ -30,7 +27,7 @@ export async function retry<T>(
       return await fn()
     } catch (error) {
       lastError = error as Error
-      
+
       if (attempt === opts.maxAttempts) {
         logger.error(`All retry attempts failed after ${attempt} attempts`, {
           error: lastError.message
@@ -39,9 +36,10 @@ export async function retry<T>(
       }
 
       // Calculate delay based on backoff strategy
-      const delayMs = opts.backoff === 'exponential' 
-        ? opts.delay * Math.pow(2, attempt - 1)
-        : opts.delay * attempt
+      const delayMs =
+        opts.backoff === 'exponential'
+          ? opts.delay * Math.pow(2, attempt - 1)
+          : opts.delay * attempt
 
       logger.warn(`Retry attempt ${attempt}/${opts.maxAttempts} failed, retrying in ${delayMs}ms`, {
         error: lastError.message

@@ -3,7 +3,24 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { Gem, Diamond, Scale, Search, Plus, Eye, Edit, CheckCircle, XCircle, Clock, AlertTriangle, Award, Calendar, User, Download, Trash2 } from 'lucide-react'
+import {
+  Gem,
+  Diamond,
+  Scale,
+  Search,
+  Plus,
+  Eye,
+  Edit,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertTriangle,
+  Award,
+  Calendar,
+  User,
+  Download,
+  Trash2
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -78,10 +95,10 @@ export default function JewelryGradingPage() {
     entity_type: GRADING_JOB_PRESET.entity_type,
     dynamicFields: GRADING_JOB_PRESET.dynamicFields,
     relationships: GRADING_JOB_PRESET.relationships,
-    filters: { 
-      include_dynamic: true, 
+    filters: {
+      include_dynamic: true,
       include_relationships: true, // Re-enabled after fixing stable references
-      limit: 100 
+      limit: 100
     }
   })
 
@@ -93,7 +110,7 @@ export default function JewelryGradingPage() {
   const [editEntity, setEditEntity] = useState<any | null>(null)
   const [openCertModal, setOpenCertModal] = useState(false)
   const [certJobId, setCertJobId] = useState<string | null>(null)
-  
+
   // Normalize dynamic fields (supports plain or { value })
   const dyn = (obj: any, key: string) => {
     const v = obj?.[key]
@@ -105,7 +122,7 @@ export default function JewelryGradingPage() {
   const items = useMemo<GradingItem[]>(() => {
     // Ensure we only process when we have valid data
     if (!jobs || !Array.isArray(jobs)) return []
-    
+
     return jobs.map((j: any) => {
       const d = j.dynamic_fields || j.dynamic || {}
       const status = (dyn(d, 'status') as GradingStatus) || 'pipeline'
@@ -120,7 +137,8 @@ export default function JewelryGradingPage() {
 
       // Attempt to read grader from relationships
       const rels: any = j.relationships || j.relationships_by_type || {}
-      const graderName = rels?.ASSIGNED_TO?.[0]?.entity_name || rels?.ASSIGNED_TO?.[0]?.to_entity_name || '-'
+      const graderName =
+        rels?.ASSIGNED_TO?.[0]?.entity_name || rels?.ASSIGNED_TO?.[0]?.to_entity_name || '-'
 
       return {
         id: j.id || j.entity_id,
@@ -133,9 +151,9 @@ export default function JewelryGradingPage() {
         grader: { id: '', name: graderName, certification: '' },
         fourCs: { carat, cut, color, clarity },
         measurements,
-        certificate: certNo ? { lab: 'In-house', number: certNo } as any : undefined,
+        certificate: certNo ? ({ lab: 'In-house', number: certNo } as any) : undefined,
         dateReceived: j.created_at || new Date().toISOString(),
-        dateCompleted: status === 'graded' ? (j.updated_at || undefined) : undefined
+        dateCompleted: status === 'graded' ? j.updated_at || undefined : undefined
       }
     })
   }, [jobs])
@@ -169,7 +187,9 @@ export default function JewelryGradingPage() {
     const total = items.length
     const graded = items.filter(i => i.status === 'graded').length
     const inProgress = items.filter(i => i.status === 'in_progress').length
-    const pending = items.filter(i => i.status === 'pipeline' || i.status === 'pending_review').length
+    const pending = items.filter(
+      i => i.status === 'pipeline' || i.status === 'pending_review'
+    ).length
     const passedCount = items.filter(i => i.status === 'graded').length // refined later if pass flag is present
     const passRate = total ? (passedCount / total) * 100 : 0
     return { total, graded, pending, inProgress, passRate }
@@ -214,10 +234,18 @@ export default function JewelryGradingPage() {
                   </motion.div>
                   Grading Lab
                 </h1>
-                <p className="jewelry-text-luxury mt-2 text-lg">Professional diamond and gemstone grading</p>
+                <p className="jewelry-text-luxury mt-2 text-lg">
+                  Professional diamond and gemstone grading
+                </p>
               </div>
               <div className="flex items-center gap-4">
-                <Button className="jewelry-btn-primary" onClick={() => { setEditEntity(null); setOpenJobModal(true) }}>
+                <Button
+                  className="jewelry-btn-primary"
+                  onClick={() => {
+                    setEditEntity(null)
+                    setOpenJobModal(true)
+                  }}
+                >
                   <Plus className="h-4 w-4 mr-2" /> New Grading
                 </Button>
                 <Button variant="outline" className="jewelry-btn-secondary">
@@ -263,7 +291,9 @@ export default function JewelryGradingPage() {
             </div>
             <div className="jewelry-glass-card p-6 text-center">
               <Award className="mx-auto mb-3 jewelry-icon-gold" size={28} />
-              <h3 className="jewelry-text-high-contrast text-3xl font-bold">{stats.passRate.toFixed(1)}%</h3>
+              <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                {stats.passRate.toFixed(1)}%
+              </h3>
               <p className="jewelry-text-muted text-sm">Pass Rate</p>
             </div>
           </motion.div>
@@ -371,7 +401,8 @@ export default function JewelryGradingPage() {
                         <span className="ml-1 capitalize">{it.status.replace('_', ' ')}</span>
                       </Badge>
                       <Badge className="text-xs bg-amber-100 text-amber-800 border-amber-200">
-                        {it.fourCs.carat.toFixed(2)}ct {it.fourCs.color}/{it.fourCs.clarity}/{it.fourCs.cut}
+                        {it.fourCs.carat.toFixed(2)}ct {it.fourCs.color}/{it.fourCs.clarity}/
+                        {it.fourCs.cut}
                       </Badge>
                     </div>
                   </div>
@@ -380,7 +411,9 @@ export default function JewelryGradingPage() {
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 jewelry-text-muted" />
                     <div>
-                      <p className="jewelry-text-high-contrast text-sm font-medium">{it.grader.name}</p>
+                      <p className="jewelry-text-high-contrast text-sm font-medium">
+                        {it.grader.name}
+                      </p>
                       <p className="jewelry-text-muted text-xs">{it.grader.certification}</p>
                     </div>
                   </div>
@@ -389,7 +422,9 @@ export default function JewelryGradingPage() {
                   <div className="grid grid-cols-4 gap-2 text-xs">
                     <div className="jewelry-glass-card-subtle p-2 rounded-md text-center">
                       <p className="jewelry-text-muted">Carat</p>
-                      <p className="jewelry-text-high-contrast font-semibold">{it.fourCs.carat.toFixed(2)}</p>
+                      <p className="jewelry-text-high-contrast font-semibold">
+                        {it.fourCs.carat.toFixed(2)}
+                      </p>
                     </div>
                     <div className="jewelry-glass-card-subtle p-2 rounded-md text-center">
                       <p className="jewelry-text-muted">Cut</p>
@@ -401,7 +436,9 @@ export default function JewelryGradingPage() {
                     </div>
                     <div className="jewelry-glass-card-subtle p-2 rounded-md text-center">
                       <p className="jewelry-text-muted">Clarity</p>
-                      <p className="jewelry-text-high-contrast font-semibold">{it.fourCs.clarity}</p>
+                      <p className="jewelry-text-high-contrast font-semibold">
+                        {it.fourCs.clarity}
+                      </p>
                     </div>
                   </div>
 
@@ -414,7 +451,9 @@ export default function JewelryGradingPage() {
                     <div className="flex items-center gap-1">
                       <Award className="h-3 w-3 jewelry-icon-gold" />
                       <span className="jewelry-text-muted truncate">
-                        {it.certificate ? `${it.certificate.lab} • ${it.certificate.number}` : 'No certificate'}
+                        {it.certificate
+                          ? `${it.certificate.lab} • ${it.certificate.number}`
+                          : 'No certificate'}
                       </span>
                     </div>
                   </div>
@@ -423,12 +462,16 @@ export default function JewelryGradingPage() {
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3 jewelry-text-muted" />
-                      <span className="jewelry-text-muted">Rec: {new Date(it.dateReceived).toLocaleDateString()}</span>
+                      <span className="jewelry-text-muted">
+                        Rec: {new Date(it.dateReceived).toLocaleDateString()}
+                      </span>
                     </div>
                     {it.dateCompleted && (
                       <div className="flex items-center gap-1">
                         <CheckCircle className="h-3 w-3 text-green-600" />
-                        <span className="jewelry-text-muted">{new Date(it.dateCompleted).toLocaleDateString()}</span>
+                        <span className="jewelry-text-muted">
+                          {new Date(it.dateCompleted).toLocaleDateString()}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -439,18 +482,33 @@ export default function JewelryGradingPage() {
                       <Eye className="h-4 w-4 mr-1" /> Details
                     </Button>
                     {canEditGradingJob(role) && (
-                      <Button size="sm" className="flex-1 jewelry-btn-primary" onClick={() => {
-                        const raw = (jobs || []).find((j: any) => (j.id || j.entity_id) === it.entityId)
-                        setEditEntity(raw || null)
-                        setOpenJobModal(true)
-                      }}>
+                      <Button
+                        size="sm"
+                        className="flex-1 jewelry-btn-primary"
+                        onClick={() => {
+                          const raw = (jobs || []).find(
+                            (j: any) => (j.id || j.entity_id) === it.entityId
+                          )
+                          setEditEntity(raw || null)
+                          setOpenJobModal(true)
+                        }}
+                      >
                         <Edit className="h-4 w-4 mr-1" /> Grade
                       </Button>
                     )}
                   </div>
                   <div className="pt-2">
                     {canIssueCertificate(role) && (
-                      <Button size="sm" variant="outline" className="w-full jewelry-btn-secondary disabled:opacity-40" disabled={it.status !== 'graded'} onClick={() => { setCertJobId(it.entityId); setOpenCertModal(true) }}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full jewelry-btn-secondary disabled:opacity-40"
+                        disabled={it.status !== 'graded'}
+                        onClick={() => {
+                          setCertJobId(it.entityId)
+                          setOpenCertModal(true)
+                        }}
+                      >
                         <Award className="h-4 w-4 mr-1" /> Issue Certificate
                       </Button>
                     )}
@@ -464,11 +522,21 @@ export default function JewelryGradingPage() {
                         disabled={it.status === 'in_progress'}
                         onClick={async () => {
                           try {
-                            await update({ entity_id: it.entityId, dynamic_patch: { status: 'in_progress' } })
-                            toast({ title: 'Regrade started', description: `${it.itemName} moved to In Progress` })
+                            await update({
+                              entity_id: it.entityId,
+                              dynamic_patch: { status: 'in_progress' }
+                            })
+                            toast({
+                              title: 'Regrade started',
+                              description: `${it.itemName} moved to In Progress`
+                            })
                             refetch()
                           } catch (e: any) {
-                            toast({ title: 'Regrade failed', description: e?.message || 'Update error', variant: 'destructive' })
+                            toast({
+                              title: 'Regrade failed',
+                              description: e?.message || 'Update error',
+                              variant: 'destructive'
+                            })
                           }
                         }}
                       >
@@ -488,7 +556,11 @@ export default function JewelryGradingPage() {
                             toast({ title: 'Deleted', description: `${it.itemName} removed` })
                             refetch()
                           } catch (e: any) {
-                            toast({ title: 'Delete failed', description: e?.message || 'Error', variant: 'destructive' })
+                            toast({
+                              title: 'Delete failed',
+                              description: e?.message || 'Error',
+                              variant: 'destructive'
+                            })
                           }
                         }}
                       >
@@ -505,9 +577,17 @@ export default function JewelryGradingPage() {
           {filtered.length === 0 && !loading && (
             <div className="jewelry-glass-panel text-center py-12 mt-6">
               <Diamond className="h-16 w-16 jewelry-text-muted mx-auto mb-4" />
-              <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">No grading items found</h3>
+              <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
+                No grading items found
+              </h3>
               <p className="jewelry-text-muted mb-6">Adjust search or filters to find items.</p>
-              <Button className="jewelry-btn-primary" onClick={() => { setEditEntity(null); setOpenJobModal(true) }}>
+              <Button
+                className="jewelry-btn-primary"
+                onClick={() => {
+                  setEditEntity(null)
+                  setOpenJobModal(true)
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" /> Create Grading Job
               </Button>
             </div>
@@ -517,13 +597,21 @@ export default function JewelryGradingPage() {
             open={openJobModal}
             mode={editEntity ? 'edit' : 'create'}
             entity={editEntity}
-            onClose={() => { setOpenJobModal(false); setEditEntity(null); refetch() }}
+            onClose={() => {
+              setOpenJobModal(false)
+              setEditEntity(null)
+              refetch()
+            }}
           />
 
           <IssueCertificateModal
             open={openCertModal}
             jobId={certJobId || ''}
-            onClose={() => { setOpenCertModal(false); setCertJobId(null); refetch() }}
+            onClose={() => {
+              setOpenCertModal(false)
+              setCertJobId(null)
+              refetch()
+            }}
           />
         </div>
       </div>

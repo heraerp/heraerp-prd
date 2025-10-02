@@ -53,7 +53,7 @@ interface DynamicFieldProps {
 function DynamicField({ field, value, onChange, error, userRole }: DynamicFieldProps) {
   const isVisible = isFieldVisible(field, userRole)
   const isReadonly = isFieldReadonly(field, userRole)
-  
+
   if (!isVisible) return null
 
   const commonProps = {
@@ -68,7 +68,7 @@ function DynamicField({ field, value, onChange, error, userRole }: DynamicFieldP
   // Format display value based on field type
   const formatValue = (val: any) => {
     if (val === null || val === undefined) return ''
-    
+
     switch (field.type) {
       case 'number':
         return val === '' ? '' : Number(val)
@@ -108,7 +108,7 @@ function DynamicField({ field, value, onChange, error, userRole }: DynamicFieldP
             <input
               type="checkbox"
               checked={Boolean(value)}
-              onChange={(e) => handleChange(e.target.checked)}
+              onChange={e => handleChange(e.target.checked)}
               disabled={isReadonly}
               className="rounded border-border focus:ring-2 focus:ring-blue-500"
             />
@@ -185,9 +185,15 @@ interface RelationshipFieldProps {
   userRole: string
 }
 
-function RelationshipField({ relationship, value, onChange, error, userRole }: RelationshipFieldProps) {
+function RelationshipField({
+  relationship,
+  value,
+  onChange,
+  error,
+  userRole
+}: RelationshipFieldProps) {
   const isVisible = isRelationshipVisible(relationship, userRole)
-  
+
   if (!isVisible) return null
 
   const { options, isLoading } = useEntityOptions({
@@ -204,12 +210,12 @@ function RelationshipField({ relationship, value, onChange, error, userRole }: R
           {relationship.ui.label}
         </label>
         <div className="space-y-2">
-          {options.map((option) => (
+          {options.map(option => (
             <label key={option.value} className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 checked={value.includes(option.value)}
-                onChange={(e) => {
+                onChange={e => {
                   if (e.target.checked) {
                     onChange([...value, option.value])
                   } else {
@@ -238,7 +244,7 @@ function RelationshipField({ relationship, value, onChange, error, userRole }: R
         value={value[0] || ''}
         options={options}
         placeholder={isLoading ? 'Loading...' : `Select ${relationship.ui.label}`}
-        onChange={(selectedValue) => {
+        onChange={selectedValue => {
           onChange(selectedValue ? [selectedValue] : [])
         }}
         error={error}
@@ -297,7 +303,7 @@ export function EntityForm({
       }
     }))
     setTouchedFields(prev => new Set([...prev, fieldName]))
-    
+
     // Clear error when user starts typing
     if (errors[fieldName]) {
       setErrors(prev => ({ ...prev, [fieldName]: '' }))
@@ -314,7 +320,7 @@ export function EntityForm({
       }
     }))
     setTouchedFields(prev => new Set([...prev, relationshipType]))
-    
+
     // Clear error when user makes selection
     if (errors[relationshipType]) {
       setErrors(prev => ({ ...prev, [relationshipType]: '' }))
@@ -325,7 +331,7 @@ export function EntityForm({
   const handleEntityNameChange = (value: string) => {
     setFormData(prev => ({ ...prev, entity_name: value }))
     setTouchedFields(prev => new Set([...prev, 'entity_name']))
-    
+
     if (errors.entity_name) {
       setErrors(prev => ({ ...prev, entity_name: '' }))
     }
@@ -334,27 +340,27 @@ export function EntityForm({
   // Validate form
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {}
-    
+
     // Validate entity name
     if (!formData.entity_name.trim()) {
       newErrors.entity_name = `${preset.ui.displayName} name is required`
     }
-    
+
     // Validate dynamic fields
     const fieldValidation = validateDynamicFieldsWithUI(preset, formData.dynamic_fields, userRole)
     Object.assign(newErrors, fieldValidation.errors)
-    
+
     // Validate required relationships
     for (const relationship of preset.relationships) {
       if (!isRelationshipVisible(relationship, userRole)) continue
-      
+
       const values = formData.relationships[relationship.type] || []
       if (relationship.cardinality === 'one' && values.length === 0) {
         // Only mark as error if it's a required relationship (you might want to add this to the preset)
         // newErrors[relationship.type] = `${relationship.ui.label} is required`
       }
     }
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -362,11 +368,11 @@ export function EntityForm({
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
-    
+
     try {
       await onSubmit(formData)
     } catch (error) {
@@ -376,18 +382,22 @@ export function EntityForm({
   }
 
   // Group fields by form groups
-  const groupedFields = preset.ui.formGroups?.reduce((acc, group) => {
-    acc[group.name] = {
-      ...group,
-      fields: group.fields
-        .map(fieldName => {
-          if (fieldName === 'entity_name') return null // Handle separately
-          return preset.dynamicFields.find(f => f.name === fieldName)
-        })
-        .filter((field): field is EnhancedDynamicFieldDef => field !== null)
-    }
-    return acc
-  }, {} as Record<string, any>) || {}
+  const groupedFields =
+    preset.ui.formGroups?.reduce(
+      (acc, group) => {
+        acc[group.name] = {
+          ...group,
+          fields: group.fields
+            .map(fieldName => {
+              if (fieldName === 'entity_name') return null // Handle separately
+              return preset.dynamicFields.find(f => f.name === fieldName)
+            })
+            .filter((field): field is EnhancedDynamicFieldDef => field !== null)
+        }
+        return acc
+      },
+      {} as Record<string, any>
+    ) || {}
 
   // Get ungrouped fields
   const groupedFieldNames = preset.ui.formGroups?.flatMap(g => g.fields) || []
@@ -416,12 +426,12 @@ export function EntityForm({
         {Object.entries(groupedFields)
           .sort(([, a], [, b]) => (a.order || 0) - (b.order || 0))
           .map(([groupName, group]) => {
-            const visibleFields = group.fields.filter((field: EnhancedDynamicFieldDef) => 
+            const visibleFields = group.fields.filter((field: EnhancedDynamicFieldDef) =>
               isFieldVisible(field, userRole)
             )
-            
+
             if (visibleFields.length === 0) return null
-            
+
             return (
               <UniversalFieldGroup
                 key={groupName}
@@ -429,15 +439,16 @@ export function EntityForm({
                 description={group.description}
               >
                 {visibleFields
-                  .sort((a: EnhancedDynamicFieldDef, b: EnhancedDynamicFieldDef) => 
-                    (a.ui.order || 0) - (b.ui.order || 0)
+                  .sort(
+                    (a: EnhancedDynamicFieldDef, b: EnhancedDynamicFieldDef) =>
+                      (a.ui.order || 0) - (b.ui.order || 0)
                   )
                   .map((field: EnhancedDynamicFieldDef) => (
                     <DynamicField
                       key={field.name}
                       field={field}
                       value={formData.dynamic_fields[field.name]}
-                      onChange={(value) => handleFieldChange(field.name, value)}
+                      onChange={value => handleFieldChange(field.name, value)}
                       error={errors[field.name]}
                       userRole={userRole}
                     />
@@ -451,12 +462,12 @@ export function EntityForm({
           <UniversalFieldGroup title="Additional Information">
             {ungroupedFields
               .sort((a, b) => (a.ui.order || 0) - (b.ui.order || 0))
-              .map((field) => (
+              .map(field => (
                 <DynamicField
                   key={field.name}
                   field={field}
                   value={formData.dynamic_fields[field.name]}
-                  onChange={(value) => handleFieldChange(field.name, value)}
+                  onChange={value => handleFieldChange(field.name, value)}
                   error={errors[field.name]}
                   userRole={userRole}
                 />
@@ -469,12 +480,12 @@ export function EntityForm({
           <UniversalFieldGroup title="Relationships">
             {preset.relationships
               .filter(rel => isRelationshipVisible(rel, userRole))
-              .map((relationship) => (
+              .map(relationship => (
                 <RelationshipField
                   key={relationship.type}
                   relationship={relationship}
                   value={formData.relationships[relationship.type] || []}
-                  onChange={(value) => handleRelationshipChange(relationship.type, value)}
+                  onChange={value => handleRelationshipChange(relationship.type, value)}
                   error={errors[relationship.type]}
                   userRole={userRole}
                 />
@@ -500,7 +511,9 @@ export function EntityForm({
             loading={isSubmitting}
             disabled={isSubmitting}
           >
-            {mode === 'create' ? `Create ${preset.ui.displayName}` : `Update ${preset.ui.displayName}`}
+            {mode === 'create'
+              ? `Create ${preset.ui.displayName}`
+              : `Update ${preset.ui.displayName}`}
           </UniversalButton>
         </div>
       </UniversalForm>

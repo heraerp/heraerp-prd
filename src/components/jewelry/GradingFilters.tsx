@@ -12,11 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { canExportData, canEditGradingJob } from '@/lib/acl'
@@ -60,7 +56,7 @@ export default function GradingFilters({
   totalCount = 0,
   filteredCount = 0
 }: GradingFiltersProps) {
-  const hasActiveFilters = 
+  const hasActiveFilters =
     search.length > 0 ||
     statusFilter !== 'all' ||
     priorityFilter !== 'all' ||
@@ -81,11 +77,14 @@ export default function GradingFilters({
       <div className="flex flex-wrap gap-4 items-center justify-between mb-4">
         {/* Search */}
         <div className="flex-1 min-w-[200px] max-w-md relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-muted" size={16} />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-muted"
+            size={16}
+          />
           <Input
             placeholder="Search by item name, SKU, or certificate..."
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={e => onSearchChange(e.target.value)}
             className="jewelry-input pl-10"
           />
         </div>
@@ -93,15 +92,12 @@ export default function GradingFilters({
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
           {canEditGradingJob(userRole) && (
-            <Button
-              onClick={onNewJob}
-              className="jewelry-btn-primary flex items-center gap-2"
-            >
+            <Button onClick={onNewJob} className="jewelry-btn-primary flex items-center gap-2">
               <Plus size={16} />
               New Job
             </Button>
           )}
-          
+
           {canExportData(userRole) && (
             <Button
               variant="outline"
@@ -195,7 +191,7 @@ export default function GradingFilters({
                   mode="range"
                   defaultMonth={dateRange?.from}
                   selected={{ from: dateRange?.from, to: dateRange?.to }}
-                  onSelect={(range) => onDateRangeChange(range || {})}
+                  onSelect={range => onDateRangeChange(range || {})}
                   numberOfMonths={2}
                 />
               </PopoverContent>
@@ -211,25 +207,25 @@ export default function GradingFilters({
             <>
               <Filter className="jewelry-icon-gold" size={16} />
               <span className="jewelry-text-muted text-sm">Active filters:</span>
-              
+
               {search && (
                 <Badge variant="secondary" className="jewelry-status-pending">
                   Search: "{search.length > 20 ? search.slice(0, 20) + '...' : search}"
                 </Badge>
               )}
-              
+
               {statusFilter !== 'all' && (
                 <Badge variant="secondary" className="jewelry-status-pending">
                   Status: {statusFilter.replace('_', ' ')}
                 </Badge>
               )}
-              
+
               {priorityFilter !== 'all' && (
                 <Badge variant="secondary" className="jewelry-status-pending">
                   Priority: {priorityFilter}
                 </Badge>
               )}
-              
+
               {gradeBand !== 'all' && (
                 <Badge variant="secondary" className="jewelry-status-pending">
                   Color: {gradeBand}
@@ -251,7 +247,9 @@ export default function GradingFilters({
         {/* Results Count */}
         <div className="jewelry-text-muted text-sm">
           {hasActiveFilters ? (
-            <>Showing {filteredCount} of {totalCount} jobs</>
+            <>
+              Showing {filteredCount} of {totalCount} jobs
+            </>
           ) : (
             <>{totalCount} total jobs</>
           )}

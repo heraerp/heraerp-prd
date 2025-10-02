@@ -6,7 +6,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import type { EntityPreset, Role } from '@/hooks/entityPresets'
 
 export interface EntityFormProps {
@@ -29,13 +35,13 @@ export interface EntityFormProps {
   onCancel: () => void
 }
 
-export function EntityForm({ 
-  preset, 
-  mode, 
-  entityId, 
-  allowedRoles, 
-  onSuccess, 
-  onCancel 
+export function EntityForm({
+  preset,
+  mode,
+  entityId,
+  allowedRoles,
+  onSuccess,
+  onCancel
 }: EntityFormProps) {
   const [formData, setFormData] = useState({
     entity_name: '',
@@ -54,7 +60,7 @@ export function EntityForm({
         [fieldName]: value
       }
     }))
-    
+
     // Clear error when user starts typing
     if (errors[fieldName]) {
       setErrors(prev => ({ ...prev, [fieldName]: '' }))
@@ -72,19 +78,19 @@ export function EntityForm({
   // Validate form
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {}
-    
+
     // Validate entity name
     if (!formData.entity_name.trim()) {
       newErrors.entity_name = `${preset.labels.singular} name is required`
     }
-    
+
     // Validate required dynamic fields
     for (const field of preset.dynamicFields || []) {
       if (field.required && !formData.dynamic_fields[field.name]) {
         newErrors[field.name] = `${field.ui?.label || field.name} is required`
       }
     }
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -92,13 +98,13 @@ export function EntityForm({
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
-    
+
     setIsSubmitting(true)
-    
+
     try {
       const payload = {
         entity_id: entityId,
@@ -106,7 +112,7 @@ export function EntityForm({
         dynamic_fields: formData.dynamic_fields,
         relationships: formData.relationships
       }
-      
+
       await onSuccess(payload)
     } catch (error) {
       console.error('Form submission error:', error)
@@ -131,7 +137,7 @@ export function EntityForm({
               <Checkbox
                 id={field.name}
                 checked={Boolean(value)}
-                onCheckedChange={(checked) => handleFieldChange(field.name, checked)}
+                onCheckedChange={checked => handleFieldChange(field.name, checked)}
               />
               <Label htmlFor={field.name} className="text-sm font-medium">
                 {label}
@@ -154,7 +160,9 @@ export function EntityForm({
               id={field.name}
               type="date"
               value={value ? new Date(value).toISOString().split('T')[0] : ''}
-              onChange={(e) => handleFieldChange(field.name, e.target.value ? new Date(e.target.value) : '')}
+              onChange={e =>
+                handleFieldChange(field.name, e.target.value ? new Date(e.target.value) : '')
+              }
               className={error ? 'border-red-500' : ''}
             />
             {helpText && <p className="text-xs text-muted-foreground">{helpText}</p>}
@@ -177,7 +185,9 @@ export function EntityForm({
               step={field.ui?.decimals ? Math.pow(10, -field.ui.decimals) : undefined}
               min={field.ui?.min}
               max={field.ui?.max}
-              onChange={(e) => handleFieldChange(field.name, e.target.value ? Number(e.target.value) : '')}
+              onChange={e =>
+                handleFieldChange(field.name, e.target.value ? Number(e.target.value) : '')
+              }
               className={error ? 'border-red-500' : ''}
             />
             {helpText && <p className="text-xs text-muted-foreground">{helpText}</p>}
@@ -188,7 +198,11 @@ export function EntityForm({
       case 'text':
       default:
         // Use textarea for description fields
-        if (field.ui?.widget === 'textarea' || field.name === 'description' || field.name === 'notes') {
+        if (
+          field.ui?.widget === 'textarea' ||
+          field.name === 'description' ||
+          field.name === 'notes'
+        ) {
           return (
             <div key={field.name} className="space-y-2">
               <Label htmlFor={field.name} className="text-sm font-medium">
@@ -200,7 +214,7 @@ export function EntityForm({
                 value={value}
                 placeholder={placeholder}
                 rows={3}
-                onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                onChange={e => handleFieldChange(field.name, e.target.value)}
                 className={error ? 'border-red-500' : ''}
               />
               {helpText && <p className="text-xs text-muted-foreground">{helpText}</p>}
@@ -211,9 +225,8 @@ export function EntityForm({
 
         // Use select for status fields
         if (field.ui?.widget === 'select' || field.name === 'status') {
-          const options = field.name === 'status' ? 
-            ['in_stock', 'low_stock', 'out_of_stock', 'reserved'] : 
-            []
+          const options =
+            field.name === 'status' ? ['in_stock', 'low_stock', 'out_of_stock', 'reserved'] : []
 
           return (
             <div key={field.name} className="space-y-2">
@@ -221,7 +234,7 @@ export function EntityForm({
                 {label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
               </Label>
-              <Select value={value} onValueChange={(val) => handleFieldChange(field.name, val)}>
+              <Select value={value} onValueChange={val => handleFieldChange(field.name, val)}>
                 <SelectTrigger className={error ? 'border-red-500' : ''}>
                   <SelectValue placeholder={placeholder || `Select ${label}`} />
                 </SelectTrigger>
@@ -251,7 +264,7 @@ export function EntityForm({
               type={field.name === 'email' ? 'email' : field.name === 'phone' ? 'tel' : 'text'}
               value={value}
               placeholder={placeholder}
-              onChange={(e) => handleFieldChange(field.name, e.target.value)}
+              onChange={e => handleFieldChange(field.name, e.target.value)}
               className={error ? 'border-red-500' : ''}
             />
             {helpText && <p className="text-xs text-muted-foreground">{helpText}</p>}
@@ -273,7 +286,7 @@ export function EntityForm({
           id="entity_name"
           value={formData.entity_name}
           placeholder={`Enter ${preset.labels.singular.toLowerCase()} name`}
-          onChange={(e) => handleEntityNameChange(e.target.value)}
+          onChange={e => handleEntityNameChange(e.target.value)}
           className={errors.entity_name ? 'border-red-500' : ''}
         />
         {errors.entity_name && <p className="text-red-600 text-sm">{errors.entity_name}</p>}
@@ -284,21 +297,15 @@ export function EntityForm({
 
       {/* Form Actions */}
       <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={isSubmitting}
-        >
+        <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
           Cancel
         </Button>
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="jewelry-btn-primary"
-        >
-          {isSubmitting ? 'Saving...' : 
-           mode === 'create' ? `Create ${preset.labels.singular}` : `Update ${preset.labels.singular}`}
+        <Button type="submit" disabled={isSubmitting} className="jewelry-btn-primary">
+          {isSubmitting
+            ? 'Saving...'
+            : mode === 'create'
+              ? `Create ${preset.labels.singular}`
+              : `Update ${preset.labels.singular}`}
         </Button>
       </div>
     </form>

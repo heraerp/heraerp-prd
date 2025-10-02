@@ -53,7 +53,7 @@
         },
         {
           "source": "websiteUrl",
-          "target": "website_url", 
+          "target": "website_url",
           "field_type": "text",
           "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.WEBSITE.V1"
         },
@@ -333,7 +333,7 @@
     },
     {
       "name": "Event has Attendee",
-      "type": "EVENT_HAS_ATTENDEE", 
+      "type": "EVENT_HAS_ATTENDEE",
       "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.EVENT_ATTENDEE.v1",
       "from": {
         "entity_type": "event",

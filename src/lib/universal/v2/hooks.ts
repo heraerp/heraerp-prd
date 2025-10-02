@@ -77,7 +77,7 @@ export function useEntities(filters: EntityFilters, organizationId: string) {
  */
 export function useUpsertEntity(organizationId: string) {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: async (entityData: any) => {
       const { data, error } = await guardedApiV2.post('/entities', {
@@ -118,7 +118,7 @@ export function useRelationships(filters: RelationshipFilters, organizationId: s
  */
 export function useUpsertRelationship(organizationId: string) {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: async (relationshipData: any) => {
       const { data, error } = await guardedApiV2.post('/relationships', {
@@ -176,7 +176,7 @@ export function useTransaction(transactionId: string, organizationId: string) {
  */
 export function useEmitTransaction(organizationId: string) {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: async (transactionData: any) => {
       const { data, error } = await guardedApiV2.post('/transactions', {
@@ -199,7 +199,7 @@ export function useEmitTransaction(organizationId: string) {
  */
 export function useReverseTransaction(organizationId: string) {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: async (reverseData: any) => {
       const { data, error } = await guardedApiV2.post('/transactions?action=reverse', {
@@ -224,22 +224,25 @@ export function useUniversalV2Api() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const callApi = useCallback(async (method: 'get' | 'post' | 'put' | 'delete' | 'patch', path: string, params?: any) => {
-    setLoading(true)
-    setError(null)
-    
-    try {
-      const { data, error: apiError } = await guardedApiV2[method](path, params)
-      if (apiError) throw new Error(apiError.message || 'API call failed')
-      return data
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-      setError(errorMessage)
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const callApi = useCallback(
+    async (method: 'get' | 'post' | 'put' | 'delete' | 'patch', path: string, params?: any) => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const { data, error: apiError } = await guardedApiV2[method](path, params)
+        if (apiError) throw new Error(apiError.message || 'API call failed')
+        return data
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+        setError(errorMessage)
+        throw err
+      } finally {
+        setLoading(false)
+      }
+    },
+    []
+  )
 
   return {
     loading,

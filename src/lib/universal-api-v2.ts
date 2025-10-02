@@ -253,11 +253,9 @@ class UniversalAPIv2 {
     // Apply pagination
     const from = (page - 1) * pageSize
     const to = from + pageSize - 1
-    
+
     // Execute query with count
-    const { data, error, count } = await query
-      .range(from, to)
-      .select('*', { count: 'exact' })
+    const { data, error, count } = await query.range(from, to).select('*', { count: 'exact' })
 
     if (error) throw error
 
@@ -432,9 +430,7 @@ class UniversalAPIv2 {
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
         // Use direct supabase import for now
-        let query = supabase
-          .from('core_entities')
-          .select('*', { count: 'exact' })
+        let query = supabase.from('core_entities').select('*', { count: 'exact' })
 
         // Apply organization filter
         query = query.eq('organization_id', orgId)

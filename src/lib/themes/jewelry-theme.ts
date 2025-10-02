@@ -7,32 +7,32 @@
 export const jewelryTheme = {
   // Primary Colors - Luxury Gold & Rose Gold
   primary: {
-    50: '#fffbf0',   // Ivory shimmer
-    100: '#fff4d6',  // Champagne
-    200: '#ffe4a3',  // Light gold
-    300: '#ffd470',  // Gold
-    400: '#ffba08',  // Rich gold
-    500: '#f59e0b',  // Primary gold
-    600: '#d97706',  // Deep gold
-    700: '#b45309',  // Antique gold
-    800: '#92400e',  // Bronze gold
-    900: '#78350f',  // Dark bronze
-    950: '#451a03',  // Deepest bronze
+    50: '#fffbf0', // Ivory shimmer
+    100: '#fff4d6', // Champagne
+    200: '#ffe4a3', // Light gold
+    300: '#ffd470', // Gold
+    400: '#ffba08', // Rich gold
+    500: '#f59e0b', // Primary gold
+    600: '#d97706', // Deep gold
+    700: '#b45309', // Antique gold
+    800: '#92400e', // Bronze gold
+    900: '#78350f', // Dark bronze
+    950: '#451a03' // Deepest bronze
   },
 
   // Secondary Colors - Platinum & Silver
   secondary: {
-    50: '#f8fafc',   // Platinum white
-    100: '#f1f5f9',  // Light platinum
-    200: '#e2e8f0',  // Silver mist
-    300: '#cbd5e1',  // Silver
-    400: '#94a3b8',  // Medium silver
-    500: '#64748b',  // Steel silver
-    600: '#475569',  // Dark silver
-    700: '#334155',  // Charcoal silver
-    800: '#1e293b',  // Dark steel
-    900: '#0f172a',  // Midnight steel
-    950: '#020617',  // Black steel
+    50: '#f8fafc', // Platinum white
+    100: '#f1f5f9', // Light platinum
+    200: '#e2e8f0', // Silver mist
+    300: '#cbd5e1', // Silver
+    400: '#94a3b8', // Medium silver
+    500: '#64748b', // Steel silver
+    600: '#475569', // Dark silver
+    700: '#334155', // Charcoal silver
+    800: '#1e293b', // Dark steel
+    900: '#0f172a', // Midnight steel
+    950: '#020617' // Black steel
   },
 
   // Accent Colors - Precious Gems
@@ -48,7 +48,7 @@ export const jewelryTheme = {
       600: '#2563eb',
       700: '#1d4ed8',
       800: '#1e40af',
-      900: '#1e3a8a',
+      900: '#1e3a8a'
     },
     // Emerald Green
     emerald: {
@@ -61,7 +61,7 @@ export const jewelryTheme = {
       600: '#059669',
       700: '#047857',
       800: '#065f46',
-      900: '#064e3b',
+      900: '#064e3b'
     },
     // Ruby Red
     ruby: {
@@ -74,7 +74,7 @@ export const jewelryTheme = {
       600: '#dc2626',
       700: '#b91c1c',
       800: '#991b1b',
-      900: '#7f1d1d',
+      900: '#7f1d1d'
     },
     // Amethyst Purple
     amethyst: {
@@ -87,7 +87,7 @@ export const jewelryTheme = {
       600: '#9333ea',
       700: '#7c2d12',
       800: '#6b21a8',
-      900: '#581c87',
+      900: '#581c87'
     }
   },
 
@@ -96,19 +96,19 @@ export const jewelryTheme = {
     // Background overlays with transparency
     backdrop: 'rgba(255, 255, 255, 0.25)',
     backdropDark: 'rgba(0, 0, 0, 0.25)',
-    
+
     // Card backgrounds
     surface: 'rgba(255, 255, 255, 0.15)',
     surfaceDark: 'rgba(255, 255, 255, 0.05)',
-    
+
     // Borders
     border: 'rgba(255, 255, 255, 0.2)',
     borderDark: 'rgba(255, 255, 255, 0.1)',
-    
+
     // Shadows for depth
     shadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
     shadowLarge: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    
+
     // Blur values
     blur: {
       sm: '4px',
@@ -128,7 +128,7 @@ export const jewelryTheme = {
       // Mono: For codes and technical content
       mono: ['JetBrains Mono', 'Consolas', 'monospace']
     },
-    
+
     fontSize: {
       xs: ['0.75rem', { lineHeight: '1rem' }],
       sm: ['0.875rem', { lineHeight: '1.25rem' }],
@@ -139,7 +139,7 @@ export const jewelryTheme = {
       '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
       '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
       '5xl': ['3rem', { lineHeight: '1' }],
-      '6xl': ['3.75rem', { lineHeight: '1' }],
+      '6xl': ['3.75rem', { lineHeight: '1' }]
     }
   },
 
@@ -151,25 +151,25 @@ export const jewelryTheme = {
       animate: { opacity: 1 },
       transition: { duration: 0.3, ease: 'easeOut' }
     },
-    
+
     slideUp: {
       initial: { opacity: 0, y: 20 },
       animate: { opacity: 1, y: 0 },
       transition: { duration: 0.4, ease: 'easeOut' }
     },
-    
+
     scaleIn: {
       initial: { opacity: 0, scale: 0.95 },
       animate: { opacity: 1, scale: 1 },
       transition: { duration: 0.3, ease: 'easeOut' }
     },
-    
+
     // Hover animations
     hover: {
       scale: 1.02,
       transition: { duration: 0.2, ease: 'easeInOut' }
     },
-    
+
     // Shimmer effect for luxury feel
     shimmer: {
       backgroundImage: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
@@ -272,17 +272,18 @@ export const jewelryThemeUtils = {
     boxShadow: jewelryTheme.glass.shadow,
     borderRadius: jewelryTheme.borderRadius.lg
   }),
-  
+
   // Get gradient background
   getGradientBackground: () => ({
     background: `linear-gradient(135deg, ${jewelryTheme.primary[400]} 0%, ${jewelryTheme.accent.amethyst[500]} 50%, ${jewelryTheme.accent.diamond[500]} 100%)`
   }),
-  
+
   // Get luxury button styles
   getLuxuryButton: (variant: 'primary' | 'secondary' = 'primary') => ({
-    background: variant === 'primary' 
-      ? `linear-gradient(135deg, ${jewelryTheme.primary[500]}, ${jewelryTheme.primary[600]})`
-      : `linear-gradient(135deg, ${jewelryTheme.secondary[400]}, ${jewelryTheme.secondary[500]})`,
+    background:
+      variant === 'primary'
+        ? `linear-gradient(135deg, ${jewelryTheme.primary[500]}, ${jewelryTheme.primary[600]})`
+        : `linear-gradient(135deg, ${jewelryTheme.secondary[400]}, ${jewelryTheme.secondary[500]})`,
     color: variant === 'primary' ? '#ffffff' : jewelryTheme.secondary[900],
     border: 'none',
     borderRadius: jewelryTheme.borderRadius.md,

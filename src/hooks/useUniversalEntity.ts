@@ -26,7 +26,7 @@ export interface UniversalEntity {
 export type DynType = 'text' | 'number' | 'boolean' | 'date' | 'json'
 
 export type DynamicFieldDef = {
-  name: string                 // core_dynamic_data.field_name
+  name: string // core_dynamic_data.field_name
   type: DynType
   smart_code: string
   required?: boolean
@@ -34,8 +34,8 @@ export type DynamicFieldDef = {
 }
 
 export type RelationshipDef = {
-  type: string                 // e.g. HAS_CATEGORY
-  smart_code: string           // e.g. HERA.SALON.PRODUCT.REL.HAS_CATEGORY.v1
+  type: string // e.g. HAS_CATEGORY
+  smart_code: string // e.g. HERA.SALON.PRODUCT.REL.HAS_CATEGORY.v1
   cardinality?: 'one' | 'many'
 }
 
@@ -49,7 +49,8 @@ const byId = (arr: any[] = []) => {
 function shallowEqual(a: any, b: any) {
   if (a === b) return true
   if (!a || !b) return false
-  const ak = Object.keys(a); const bk = Object.keys(b)
+  const ak = Object.keys(a)
+  const bk = Object.keys(b)
   if (ak.length !== bk.length) return false
   for (const k of ak) if (a[k] !== b[k]) return false
   return true
@@ -96,7 +97,7 @@ function normalizeEntity(e: any) {
 function shareWithPrevious(prevArr: any[] | undefined, nextArr: any[]) {
   if (!prevArr || prevArr.length === 0) return nextArr
   const prevMap = byId(prevArr)
-  const out = nextArr.map((n) => {
+  const out = nextArr.map(n => {
     const id = n.entity_id || n.id
     const p = prevMap.get(id)
     if (!p) return n
@@ -146,8 +147,11 @@ function mergeDynamic(rows: any[]) {
   for (const r of rows ?? []) {
     const name = r.field_name
     out[name] =
-      r.field_value_number ?? r.field_value_boolean ??
-      r.field_value_text ?? r.field_value_json ?? null
+      r.field_value_number ??
+      r.field_value_boolean ??
+      r.field_value_text ??
+      r.field_value_json ??
+      null
   }
   return out
 }
@@ -159,7 +163,7 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
   console.log('🚀 Using demo token for entity config demo')
   return {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer demo-token-salon-receptionist'
+    Authorization: 'Bearer demo-token-salon-receptionist'
   }
 }
 
@@ -180,8 +184,8 @@ export interface UseUniversalEntityConfig {
     include_dynamic?: boolean
     include_relationships?: boolean
   }
-  dynamicFields?: DynamicFieldDef[]        // Define dynamic fields for this entity type
-  relationships?: RelationshipDef[]        // Define relationship types
+  dynamicFields?: DynamicFieldDef[] // Define dynamic fields for this entity type
+  relationships?: RelationshipDef[] // Define relationship types
 }
 
 export function useUniversalEntity(config: UseUniversalEntityConfig) {
@@ -192,17 +196,32 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
   // Build query key - only include primitives
   const queryKey = useMemo(
-    () => ['entities', entity_type, organizationId, {
-      // only include primitives in the key
-      limit: filters.limit ?? 100,
-      offset: filters.offset ?? 0,
-      include_dynamic: filters.include_dynamic !== false,
-      include_relationships: !!filters.include_relationships,
-      status: filters.status ?? null,
-      priority: filters.priority ?? null,
-      q: filters.q ?? null,
-    }],
-    [entity_type, organizationId, filters.limit, filters.offset, filters.include_dynamic, filters.include_relationships, filters.status, filters.priority, filters.q]
+    () => [
+      'entities',
+      entity_type,
+      organizationId,
+      {
+        // only include primitives in the key
+        limit: filters.limit ?? 100,
+        offset: filters.offset ?? 0,
+        include_dynamic: filters.include_dynamic !== false,
+        include_relationships: !!filters.include_relationships,
+        status: filters.status ?? null,
+        priority: filters.priority ?? null,
+        q: filters.q ?? null
+      }
+    ],
+    [
+      entity_type,
+      organizationId,
+      filters.limit,
+      filters.offset,
+      filters.include_dynamic,
+      filters.include_relationships,
+      filters.status,
+      filters.priority,
+      filters.q
+    ]
   )
 
   // A ref to keep the last stable array
@@ -222,7 +241,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         limit: String(filters.limit ?? 100),
         offset: String(filters.offset ?? 0),
         include_dynamic: String(filters.include_dynamic !== false),
-        include_relationships: String(!!filters.include_relationships),
+        include_relationships: String(!!filters.include_relationships)
       })
       if (filters.status) params.set('status', filters.status)
       if (filters.priority) params.set('priority', filters.priority)
@@ -250,9 +269,9 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       lastStableRef.current = shared
       return {
         data: process.env.NODE_ENV === 'development' ? Object.freeze(shared) : shared,
-        pagination: payload?.pagination ?? null,
+        pagination: payload?.pagination ?? null
       }
-    },
+    }
   })
 
   // Create entity mutation with dynamic fields and relationships
@@ -262,7 +281,9 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
       // 1) Create entity
       const r = await fetch('/api/v2/entities', {
-        method: 'POST', headers, body: JSON.stringify(entity)
+        method: 'POST',
+        headers,
+        body: JSON.stringify(entity)
       })
       if (!r.ok) throw new Error((await r.json())?.error || 'Create entity failed')
       const created = await r.json() // {data:{id:...}} or {id:...}
@@ -270,9 +291,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
       // 2) Dynamic fields batch (if provided)
       const inline = entity.dynamic_fields ?? {}
-      const batchItems = toBatchItems(config.dynamicFields, Object.fromEntries(
-        Object.entries(inline).map(([k, v]: any) => [k, v.value])
-      ))
+      const batchItems = toBatchItems(
+        config.dynamicFields,
+        Object.fromEntries(Object.entries(inline).map(([k, v]: any) => [k, v.value]))
+      )
       if (batchItems.length) {
         await fetch('/api/v2/dynamic/batch', {
           method: 'POST',
@@ -305,7 +327,8 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         }
         if (rows.length) {
           await fetch('/api/v2/relationships/upsert-batch', {
-            method: 'POST', headers,
+            method: 'POST',
+            headers,
             body: JSON.stringify({ p_organization_id: organizationId, p_rows: rows })
           })
         }
@@ -337,7 +360,9 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
       // 1) Patch entity
       const r = await fetch('/api/v2/entities', {
-        method: 'PUT', headers, body: JSON.stringify({ entity_id, ...updates })
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ entity_id, ...updates })
       })
       if (!r.ok) throw new Error((await r.json())?.error || 'Update entity failed')
 
@@ -376,7 +401,8 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         }
         if (rows.length) {
           await fetch('/api/v2/relationships/upsert-batch', {
-            method: 'POST', headers,
+            method: 'POST',
+            headers,
             body: JSON.stringify({ p_organization_id: organizationId, p_rows: rows })
           })
         }
@@ -423,7 +449,9 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         p_offset: 0
       }
       const rq = await fetch('/api/v2/relationships/query', {
-        method: 'POST', headers, body: JSON.stringify(body)
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
       })
       const rj = await rq.json()
       rels = Array.isArray(rj?.data) ? rj.data : []
@@ -510,7 +538,8 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         is_active: true
       }))
       await fetch('/api/v2/relationships/upsert-batch', {
-        method: 'POST', headers,
+        method: 'POST',
+        headers,
         body: JSON.stringify({ p_organization_id: organizationId, p_rows: rows })
       })
       queryClient.invalidateQueries({ queryKey })
@@ -525,7 +554,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
 /**
  * Example Usage:
- * 
+ *
  * // Define your entity configuration
  * const products = useUniversalEntity({
  *   entity_type: 'PRODUCT',
@@ -540,7 +569,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
  *   ],
  *   filters: { include_dynamic: true }
  * })
- * 
+ *
  * // Create a product with dynamic fields and relationships
  * await products.create({
  *   entity_type: 'PRODUCT',
@@ -552,28 +581,28 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
  *     stock_quantity: { value: 50, type: 'number', smart_code: 'HERA.SALON.PRODUCT.DYN.STOCK.QTY.v1' }
  *   },
  *   metadata: {
- *     relationships: { 
+ *     relationships: {
  *       HAS_CATEGORY: ['<HAIR_CARE_CATEGORY_ID>'],
  *       HAS_BRAND: ['<LOREAL_BRAND_ID>']
  *     }
  *   }
  * })
- * 
+ *
  * // Update only changed fields
  * await products.update({
  *   entity_id: '<PRODUCT_ID>',
  *   dynamic_patch: { price_cost: 13.5, stock_quantity: 45 },
  *   relationships_patch: { HAS_CATEGORY: ['<NEW_CATEGORY_ID>'] }
  * })
- * 
+ *
  * // Get full entity with merged dynamic fields and relationships
  * const fullProduct = await products.getById('<PRODUCT_ID>')
- * // Returns: { 
- * //   entity: {...}, 
- * //   dynamic: { price_market: 25, price_cost: 13.5, stock_quantity: 45 }, 
- * //   relationships: [{ type: 'HAS_CATEGORY', to_entity: {...} }, ...] 
+ * // Returns: {
+ * //   entity: {...},
+ * //   dynamic: { price_market: 25, price_cost: 13.5, stock_quantity: 45 },
+ * //   relationships: [{ type: 'HAS_CATEGORY', to_entity: {...} }, ...]
  * // }
- * 
+ *
  * // Use helper functions
  * await products.setDynamicFields('<PRODUCT_ID>', { stock_quantity: 100 })
  * await products.link('<PRODUCT_ID>', 'HAS_CATEGORY', ['<CATEGORY_ID_1>', '<CATEGORY_ID_2>'])
@@ -598,15 +627,21 @@ export function useUniversalEntityDetail(
     error,
     refetch
   } = useQuery({
-    queryKey: ['entity-detail', entity_type, entityId, organizationId, {
-      include_dynamic: filters.include_dynamic !== false,
-      include_relationships: !!filters.include_relationships
-    }],
+    queryKey: [
+      'entity-detail',
+      entity_type,
+      entityId,
+      organizationId,
+      {
+        include_dynamic: filters.include_dynamic !== false,
+        include_relationships: !!filters.include_relationships
+      }
+    ],
     queryFn: async () => {
       if (!entityId) return null
-      
+
       const headers = await getAuthHeaders()
-      
+
       // 1) Get the base entity
       const res = await fetch(`/api/v2/entities/${entityId}`, { headers })
       if (!res.ok) {
@@ -647,7 +682,7 @@ export function useUniversalEntityDetail(
         })
         const relData = await relRes.json()
         const rels = Array.isArray(relData?.data) ? relData.data : []
-        
+
         // Group relationships by type
         for (const rel of rels) {
           const type = rel.relationship_type

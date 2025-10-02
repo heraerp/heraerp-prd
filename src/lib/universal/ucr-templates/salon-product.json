@@ -44,7 +44,16 @@
       "category": {
         "type": "text",
         "required": true,
-        "enum": ["shampoo", "conditioner", "treatment", "styling", "color", "tools", "accessories", "other"]
+        "enum": [
+          "shampoo",
+          "conditioner",
+          "treatment",
+          "styling",
+          "color",
+          "tools",
+          "accessories",
+          "other"
+        ]
       },
       "unit_price": {
         "type": "number",

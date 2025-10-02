@@ -39,7 +39,7 @@ export interface ProductData {
 
 /**
  * ProductModal - Example implementation of EntityForm for products
- * 
+ *
  * This modal demonstrates how to use the EntityForm component with:
  * - Universal entity operations (create/update)
  * - Dynamic field handling
@@ -70,7 +70,7 @@ export function ProductModal({
 
   // Load existing product data for edit mode
   const [existingProduct, setExistingProduct] = React.useState<any>(null)
-  
+
   React.useEffect(() => {
     if (mode === 'edit' && productId && isOpen) {
       const loadProduct = async () => {
@@ -119,7 +119,7 @@ export function ProductModal({
   // Convert relationship data from API format to form format
   const convertRelationshipsToForm = (relationships: any[]): Record<string, string[]> => {
     const result: Record<string, string[]> = {}
-    
+
     for (const rel of relationships || []) {
       const type = rel.relationship_type
       if (!result[type]) {
@@ -127,7 +127,7 @@ export function ProductModal({
       }
       result[type].push(rel.to_entity_id)
     }
-    
+
     return result
   }
 
@@ -170,10 +170,9 @@ export function ProductModal({
 
       // Close modal
       onClose()
-      
+
       // Show success message (you might want to use a toast here)
       console.log(`Product ${mode === 'create' ? 'created' : 'updated'} successfully`)
-
     } catch (err: any) {
       console.error(`Failed to ${mode} product:`, err)
       setError(err.message || `Failed to ${mode} product`)
@@ -185,7 +184,7 @@ export function ProductModal({
   // Convert dynamic fields from form format to API format
   const convertDynamicFieldsToAPI = (fields: Record<string, any>) => {
     const result: Record<string, any> = {}
-    
+
     for (const [key, value] of Object.entries(fields)) {
       if (value !== null && value !== undefined && value !== '') {
         const fieldDef = PRODUCT_PRESET.dynamicFields.find(f => f.name === key)
@@ -198,7 +197,7 @@ export function ProductModal({
         }
       }
     }
-    
+
     return result
   }
 
@@ -227,14 +226,16 @@ export function ProductModal({
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-red-800">Error</h3>
-                <div className="mt-2 text-sm text-red-700">
-                  {error}
-                </div>
+                <div className="mt-2 text-sm text-red-700">{error}</div>
               </div>
             </div>
           </div>
@@ -311,7 +312,7 @@ export function ProductModalExample() {
         >
           Create Product
         </button>
-        
+
         <button
           onClick={() => productModal.openEditModal('some-product-id')}
           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"

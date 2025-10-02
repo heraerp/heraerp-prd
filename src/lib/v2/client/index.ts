@@ -21,31 +21,28 @@ export const heraV2Client = {
     const { entityClientV2 } = await import('./entity-client')
     return entityClientV2
   },
-  
+
   async relationship() {
     const { relationshipClientV2 } = await import('./relationship-client')
     return relationshipClientV2
   },
-  
+
   async transaction() {
     const { txnClientV2 } = await import('./txn-client')
     return txnClientV2
   },
-  
+
   async dynamic() {
     const { dynamicClientV2 } = await import('./dynamic-client')
     return dynamicClientV2
   },
-  
+
   async helpers() {
-    const [
-      { relationshipHelpers },
-      { txnHelpers }
-    ] = await Promise.all([
+    const [{ relationshipHelpers }, { txnHelpers }] = await Promise.all([
       import('./relationship-client'),
       import('./txn-client')
     ])
-    
+
     return {
       relationship: relationshipHelpers,
       transaction: txnHelpers

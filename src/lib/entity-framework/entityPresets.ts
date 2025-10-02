@@ -1,6 +1,6 @@
 /**
  * HERA Universal Entity Presets with UI Metadata
- * 
+ *
  * Centralized configuration for all entity types.
  * Each preset defines:
  * - Dynamic fields (stored in core_dynamic_data)
@@ -111,7 +111,7 @@ export const PRODUCT_PRESET: EntityPresetWithUI = {
         helpText: 'What you pay to acquire this product',
         group: 'pricing',
         order: 2,
-        visible: (role) => ['owner', 'admin', 'manager'].includes(role),
+        visible: role => ['owner', 'admin', 'manager'].includes(role),
         validation: {
           required: true,
           min: 0
@@ -328,7 +328,7 @@ export const SERVICE_PRESET: EntityPresetWithUI = {
         helpText: 'Percentage of service price paid as commission',
         group: 'pricing',
         order: 2,
-        visible: (role) => ['owner', 'admin', 'manager'].includes(role),
+        visible: role => ['owner', 'admin', 'manager'].includes(role),
         validation: {
           min: 0,
           max: 1
@@ -543,7 +543,7 @@ export const CUSTOMER_PRESET: EntityPresetWithUI = {
         group: 'loyalty',
         order: 2,
         readonly: true,
-        visible: (role) => ['owner', 'admin', 'manager'].includes(role),
+        visible: role => ['owner', 'admin', 'manager'].includes(role),
         displayOptions: {
           format: 'currency',
           prefix: '$'
@@ -570,7 +570,7 @@ export const CUSTOMER_PRESET: EntityPresetWithUI = {
       cardinality: 'one' as const,
       ui: {
         label: 'Preferred Stylist',
-        description: 'Customer\'s preferred stylist',
+        description: "Customer's preferred stylist",
         entityType: 'EMPLOYEE',
         displayField: 'entity_name',
         searchFields: ['entity_name']
@@ -633,7 +633,8 @@ export const ENTITY_PRESETS_WITH_UI = {
 } as const
 
 // Type helper to get preset by entity type
-export type EntityPresetWithUIType = typeof ENTITY_PRESETS_WITH_UI[keyof typeof ENTITY_PRESETS_WITH_UI]
+export type EntityPresetWithUIType =
+  (typeof ENTITY_PRESETS_WITH_UI)[keyof typeof ENTITY_PRESETS_WITH_UI]
 
 // Helper function to get preset by entity type string
 export function getEntityPresetWithUI(entityType: string): EntityPresetWithUIType | undefined {
@@ -671,22 +672,22 @@ export function validateDynamicFieldsWithUI(
   userRole: string = 'user'
 ): { valid: boolean; errors: Record<string, string> } {
   const errors: Record<string, string> = {}
-  
+
   // Check required fields that are visible to the user
   for (const field of preset.dynamicFields || []) {
     if (!isFieldVisible(field, userRole)) continue
-    
+
     const value = values[field.name]
-    
+
     // Required field validation
     if (field.ui.validation?.required && (value === undefined || value === null || value === '')) {
       errors[field.name] = `${field.ui.label} is required`
       continue
     }
-    
+
     // Skip other validations if field is empty and not required
     if (value === undefined || value === null || value === '') continue
-    
+
     // Type validation
     switch (field.type) {
       case 'number':
@@ -702,19 +703,19 @@ export function validateDynamicFieldsWithUI(
           errors[field.name] = `${field.ui.label} must be no more than ${field.ui.validation.max}`
         }
         break
-        
+
       case 'boolean':
         if (typeof value !== 'boolean') {
           errors[field.name] = `${field.ui.label} must be true or false`
         }
         break
-        
+
       case 'date':
         if (!(value instanceof Date) && isNaN(Date.parse(value))) {
           errors[field.name] = `${field.ui.label} must be a valid date`
         }
         break
-        
+
       case 'text':
         if (typeof value !== 'string') {
           errors[field.name] = `${field.ui.label} must be text`
@@ -728,7 +729,7 @@ export function validateDynamicFieldsWithUI(
         }
         break
     }
-    
+
     // Custom validation
     if (field.ui.validation?.custom) {
       const customError = field.ui.validation.custom(value)
@@ -737,7 +738,7 @@ export function validateDynamicFieldsWithUI(
       }
     }
   }
-  
+
   return { valid: Object.keys(errors).length === 0, errors }
 }
 
@@ -748,14 +749,14 @@ export function applyDefaultsWithUI(
   userRole: string = 'user'
 ): Record<string, any> {
   const result = { ...values }
-  
+
   for (const field of preset.dynamicFields || []) {
     if (!isFieldVisible(field, userRole)) continue
-    
+
     if (field.defaultValue !== undefined && values[field.name] === undefined) {
       result[field.name] = field.defaultValue
     }
   }
-  
+
   return result
 }

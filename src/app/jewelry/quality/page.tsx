@@ -97,7 +97,7 @@ interface QualityStats {
 
 export default function JewelryQualityPage() {
   const orgId = useOrgId()
-  
+
   // State management
   const [qualityItems, setQualityItems] = useState<QualityItem[]>([])
   const [loading, setLoading] = useState(false)
@@ -123,7 +123,8 @@ export default function JewelryQualityPage() {
       productName: 'Diamond Solitaire Ring',
       sku: 'DSR-001',
       category: 'Rings',
-      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center',
       status: 'passed',
       priority: 'high',
       inspector: {
@@ -140,9 +141,13 @@ export default function JewelryQualityPage() {
       },
       qualityTests: {
         visual: { status: 'passed', score: 95, notes: 'Excellent finish, no visible flaws' },
-        weight: { status: 'passed', actual: 3.21, expected: 3.20 },
+        weight: { status: 'passed', actual: 3.21, expected: 3.2 },
         purity: { status: 'passed', tested: '750', expected: '750' },
-        stones: { status: 'passed', verified: true, notes: 'GIA certified diamond, excellent clarity' },
+        stones: {
+          status: 'passed',
+          verified: true,
+          notes: 'GIA certified diamond, excellent clarity'
+        },
         craftsmanship: { status: 'passed', score: 92, notes: 'Superior setting technique' }
       },
       certification: {
@@ -161,7 +166,8 @@ export default function JewelryQualityPage() {
       productName: 'Pearl Drop Earrings',
       sku: 'PDE-078',
       category: 'Earrings',
-      image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center',
       status: 'in_progress',
       priority: 'medium',
       inspector: {
@@ -177,7 +183,7 @@ export default function JewelryQualityPage() {
       },
       qualityTests: {
         visual: { status: 'passed', score: 88 },
-        weight: { status: 'passed', actual: 4.08, expected: 4.10 },
+        weight: { status: 'passed', actual: 4.08, expected: 4.1 },
         purity: { status: 'pending' },
         stones: { status: 'in_progress', notes: 'Verifying pearl authenticity' },
         craftsmanship: { status: 'passed', score: 85 }
@@ -191,7 +197,8 @@ export default function JewelryQualityPage() {
       productName: 'Tennis Bracelet',
       sku: 'TB-199',
       category: 'Bracelets',
-      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center',
       status: 'requires_attention',
       priority: 'urgent',
       inspector: {
@@ -207,10 +214,14 @@ export default function JewelryQualityPage() {
       },
       qualityTests: {
         visual: { status: 'failed', score: 65, notes: 'Minor surface scratches detected' },
-        weight: { status: 'passed', actual: 15.28, expected: 15.30 },
+        weight: { status: 'passed', actual: 15.28, expected: 15.3 },
         purity: { status: 'passed', tested: '950', expected: '950' },
         stones: { status: 'requires_attention', notes: 'One stone slightly loose' },
-        craftsmanship: { status: 'requires_attention', score: 70, notes: 'Setting requires minor adjustment' }
+        craftsmanship: {
+          status: 'requires_attention',
+          score: 70,
+          notes: 'Setting requires minor adjustment'
+        }
       },
       dateReceived: '2024-01-08T14:20:00Z',
       notes: 'Requires minor repairs before approval'
@@ -221,7 +232,8 @@ export default function JewelryQualityPage() {
       productName: 'Emerald Pendant',
       sku: 'EP-067',
       category: 'Pendants',
-      image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center',
       status: 'pending',
       priority: 'medium',
       inspector: {
@@ -253,21 +265,21 @@ export default function JewelryQualityPage() {
       try {
         setLoading(true)
         // In production, this would fetch from universal API
-        // const response = await apiV2.get('entities', { 
+        // const response = await apiV2.get('entities', {
         //   entity_type: 'quality_inspection',
-        //   organization_id: orgId 
+        //   organization_id: orgId
         // })
-        
+
         // For now, use sample data
         setQualityItems(sampleQualityItems)
-        
+
         // Calculate stats
         const total = sampleQualityItems.length
         const passed = sampleQualityItems.filter(item => item.status === 'passed').length
         const failed = sampleQualityItems.filter(item => item.status === 'failed').length
         const pending = sampleQualityItems.filter(item => item.status === 'pending').length
         const passRate = total > 0 ? (passed / total) * 100 : 0
-        
+
         setStats({
           total,
           passed,
@@ -276,7 +288,6 @@ export default function JewelryQualityPage() {
           avgProcessingTime: 3.2,
           passRate
         })
-        
       } catch (error) {
         console.error('Failed to load quality items:', error)
       } finally {
@@ -292,13 +303,14 @@ export default function JewelryQualityPage() {
   // Filter quality items
   const filteredItems = useMemo(() => {
     return qualityItems.filter(item => {
-      const matchesSearch = item.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           item.inspector.name.toLowerCase().includes(searchQuery.toLowerCase())
-      
+      const matchesSearch =
+        item.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.inspector.name.toLowerCase().includes(searchQuery.toLowerCase())
+
       const matchesStatus = statusFilter === 'all' || item.status === statusFilter
       const matchesPriority = priorityFilter === 'all' || item.priority === priorityFilter
-      
+
       return matchesSearch && matchesStatus && matchesPriority
     })
   }, [qualityItems, searchQuery, statusFilter, priorityFilter])
@@ -370,7 +382,6 @@ export default function JewelryQualityPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6">
-          
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -393,7 +404,7 @@ export default function JewelryQualityPage() {
                   Professional jewelry inspection and certification management
                 </p>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 <Button className="jewelry-btn-primary">
                   <Plus className="h-4 w-4 mr-2" />
@@ -419,28 +430,30 @@ export default function JewelryQualityPage() {
               <h3 className="jewelry-text-high-contrast text-3xl font-bold">{stats.total}</h3>
               <p className="jewelry-text-muted text-sm">Total Items</p>
             </div>
-            
+
             <div className="jewelry-glass-card p-6 text-center">
               <CheckCircle className="mx-auto mb-3 text-green-600" size={28} />
               <h3 className="jewelry-text-high-contrast text-3xl font-bold">{stats.passed}</h3>
               <p className="jewelry-text-muted text-sm">Passed</p>
             </div>
-            
+
             <div className="jewelry-glass-card p-6 text-center">
               <XCircle className="mx-auto mb-3 text-red-600" size={28} />
               <h3 className="jewelry-text-high-contrast text-3xl font-bold">{stats.failed}</h3>
               <p className="jewelry-text-muted text-sm">Failed</p>
             </div>
-            
+
             <div className="jewelry-glass-card p-6 text-center">
               <Clock className="mx-auto mb-3 text-blue-600" size={28} />
               <h3 className="jewelry-text-high-contrast text-3xl font-bold">{stats.pending}</h3>
               <p className="jewelry-text-muted text-sm">Pending</p>
             </div>
-            
+
             <div className="jewelry-glass-card p-6 text-center">
               <Star className="mx-auto mb-3 jewelry-icon-gold" size={28} />
-              <h3 className="jewelry-text-high-contrast text-3xl font-bold">{stats.passRate.toFixed(1)}%</h3>
+              <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                {stats.passRate.toFixed(1)}%
+              </h3>
               <p className="jewelry-text-muted text-sm">Pass Rate</p>
             </div>
           </motion.div>
@@ -459,11 +472,11 @@ export default function JewelryQualityPage() {
                   type="text"
                   placeholder="Search by product name, SKU, or inspector..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="pl-12 jewelry-glass-input"
                 />
               </div>
-              
+
               <div className="flex gap-4">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-40 jewelry-glass-input">
@@ -478,7 +491,7 @@ export default function JewelryQualityPage() {
                     <SelectItem value="requires_attention">Needs Attention</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Select value={priorityFilter} onValueChange={setPriorityFilter}>
                   <SelectTrigger className="w-40 jewelry-glass-input">
                     <SelectValue placeholder="Priority" />
@@ -529,7 +542,7 @@ export default function JewelryQualityPage() {
                           <Gem className="h-8 w-8 jewelry-icon-gold m-4" />
                         )}
                       </div>
-                      
+
                       <div>
                         <h3 className="jewelry-text-high-contrast font-bold text-sm group-hover:jewelry-text-gold transition-colors">
                           {item.productName}
@@ -538,7 +551,7 @@ export default function JewelryQualityPage() {
                         <p className="jewelry-text-muted text-xs">{item.category}</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-col gap-2">
                       <Badge className={`text-xs ${getStatusBadge(item.status)}`}>
                         {getStatusIcon(item.status)}
@@ -554,7 +567,9 @@ export default function JewelryQualityPage() {
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 jewelry-text-muted" />
                     <div>
-                      <p className="jewelry-text-high-contrast text-sm font-medium">{item.inspector.name}</p>
+                      <p className="jewelry-text-high-contrast text-sm font-medium">
+                        {item.inspector.name}
+                      </p>
                       <p className="jewelry-text-muted text-xs">{item.inspector.certification}</p>
                     </div>
                   </div>
@@ -565,11 +580,21 @@ export default function JewelryQualityPage() {
                     <div className="grid grid-cols-3 gap-2">
                       {Object.entries(item.qualityTests).map(([test, result]) => (
                         <div key={test} className="flex items-center gap-1">
-                          {result.status === 'passed' && <CheckCircle className="h-3 w-3 text-green-600" />}
-                          {result.status === 'failed' && <XCircle className="h-3 w-3 text-red-600" />}
-                          {result.status === 'in_progress' && <Clock className="h-3 w-3 text-blue-600" />}
-                          {result.status === 'requires_attention' && <AlertTriangle className="h-3 w-3 text-yellow-600" />}
-                          {result.status === 'pending' && <Clock className="h-3 w-3 text-gray-600" />}
+                          {result.status === 'passed' && (
+                            <CheckCircle className="h-3 w-3 text-green-600" />
+                          )}
+                          {result.status === 'failed' && (
+                            <XCircle className="h-3 w-3 text-red-600" />
+                          )}
+                          {result.status === 'in_progress' && (
+                            <Clock className="h-3 w-3 text-blue-600" />
+                          )}
+                          {result.status === 'requires_attention' && (
+                            <AlertTriangle className="h-3 w-3 text-yellow-600" />
+                          )}
+                          {result.status === 'pending' && (
+                            <Clock className="h-3 w-3 text-gray-600" />
+                          )}
                           <span className="jewelry-text-muted text-xs capitalize">{test}</span>
                         </div>
                       ))}
@@ -596,7 +621,9 @@ export default function JewelryQualityPage() {
                     <div className="flex items-center gap-2 jewelry-glass-card-subtle p-2 rounded-lg">
                       <Award className="h-4 w-4 jewelry-icon-gold" />
                       <div>
-                        <p className="jewelry-text-high-contrast text-xs font-medium">{item.certification.lab}</p>
+                        <p className="jewelry-text-high-contrast text-xs font-medium">
+                          {item.certification.lab}
+                        </p>
                         <p className="jewelry-text-muted text-xs">{item.certification.number}</p>
                       </div>
                     </div>
@@ -622,8 +649,8 @@ export default function JewelryQualityPage() {
 
                   {/* Actions */}
                   <div className="flex gap-2 pt-2 border-t border-white/20">
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="outline"
                       className="flex-1 jewelry-btn-secondary"
                       onClick={() => setSelectedItem(item)}
@@ -631,8 +658,8 @@ export default function JewelryQualityPage() {
                       <Eye className="h-4 w-4 mr-1" />
                       View Details
                     </Button>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       className="flex-1 jewelry-btn-primary"
                       onClick={() => {
                         setSelectedItem(item)

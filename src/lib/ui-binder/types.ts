@@ -51,11 +51,14 @@ export interface UpsertParams {
   entity_code?: string
   smart_code: string
   entity_id?: string
-  dynamic_fields?: Record<string, {
-    value: any
-    type: 'text' | 'number' | 'boolean' | 'json'
-    smart_code: string
-  }>
+  dynamic_fields?: Record<
+    string,
+    {
+      value: any
+      type: 'text' | 'number' | 'boolean' | 'json'
+      smart_code: string
+    }
+  >
   metadata?: Record<string, any>
 }
 

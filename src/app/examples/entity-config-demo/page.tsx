@@ -21,7 +21,9 @@ function DemoAuthButton() {
   }, [])
 
   const checkAuthStatus = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
     setIsAuthenticated(!!session)
   }
 
@@ -30,7 +32,7 @@ function DemoAuthButton() {
     try {
       // Sign out first
       await supabase.auth.signOut()
-      
+
       // Sign in with demo credentials
       const { data, error } = await supabase.auth.signInWithPassword({
         email: DEMO_CREDENTIALS.email,
@@ -60,10 +62,7 @@ function DemoAuthButton() {
       <div className="flex items-center gap-2 mb-4 p-3 bg-green-100 text-green-800 rounded">
         <Shield className="w-4 h-4" />
         <span className="text-sm">Authenticated as Hair Talkz Demo User</span>
-        <button
-          onClick={handleLogout}
-          className="ml-auto text-xs underline hover:no-underline"
-        >
+        <button onClick={handleLogout} className="ml-auto text-xs underline hover:no-underline">
           Logout
         </button>
       </div>
@@ -77,7 +76,8 @@ function DemoAuthButton() {
         <h3 className="font-medium text-yellow-800">Demo Authentication Required</h3>
       </div>
       <p className="text-sm text-yellow-700 mb-3">
-        To test entity creation, you need to be authenticated. Click below to login as the Hair Talkz demo user.
+        To test entity creation, you need to be authenticated. Click below to login as the Hair
+        Talkz demo user.
       </p>
       <button
         onClick={handleDemoLogin}

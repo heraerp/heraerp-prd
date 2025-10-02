@@ -10,7 +10,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
 import type { EntityPreset, Role } from '@/hooks/entityPresets'
@@ -46,7 +46,6 @@ export function EntityTable({
   onDelete,
   onView
 }: EntityTableProps) {
-  
   // Helper to check if user can see a field
   const canSeeField = (field: any) => {
     if (!field.ui?.roles) return true
@@ -56,7 +55,7 @@ export function EntityTable({
   // Format field value for display
   const formatValue = (field: any, value: any) => {
     if (value === null || value === undefined) return '-'
-    
+
     switch (field.type) {
       case 'number':
         if (field.name.includes('price') || field.name.includes('cost')) {
@@ -66,20 +65,16 @@ export function EntityTable({
           return `${(Number(value) * 100).toFixed(1)}%`
         }
         return Number(value).toLocaleString()
-      
+
       case 'boolean':
-        return (
-          <Badge variant={value ? 'default' : 'secondary'}>
-            {value ? 'Yes' : 'No'}
-          </Badge>
-        )
-      
+        return <Badge variant={value ? 'default' : 'secondary'}>{value ? 'Yes' : 'No'}</Badge>
+
       case 'date':
         return new Date(value).toLocaleDateString()
-      
+
       case 'json':
         return <code className="text-xs">{JSON.stringify(value)}</code>
-      
+
       default:
         return String(value).substring(0, 50) + (String(value).length > 50 ? '...' : '')
     }
@@ -105,7 +100,9 @@ export function EntityTable({
       <Card>
         <CardContent className="p-6">
           <div className="text-center text-red-500">
-            <p>Error loading {preset.labels.plural.toLowerCase()}: {error}</p>
+            <p>
+              Error loading {preset.labels.plural.toLowerCase()}: {error}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -118,7 +115,9 @@ export function EntityTable({
         <CardContent className="p-6">
           <div className="text-center text-muted-foreground">
             <p>No {preset.labels.plural.toLowerCase()} found.</p>
-            <p className="text-sm">Create your first {preset.labels.singular.toLowerCase()} to get started.</p>
+            <p className="text-sm">
+              Create your first {preset.labels.singular.toLowerCase()} to get started.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -139,17 +138,12 @@ export function EntityTable({
                   {field.ui?.label || field.name}
                 </TableHead>
               ))}
-              {hasActions && (
-                <TableHead className="text-right font-semibold">Actions</TableHead>
-              )}
+              {hasActions && <TableHead className="text-right font-semibold">Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.map((row, index) => (
-              <TableRow 
-                key={row.id || index}
-                className="hover:bg-muted/50"
-              >
+              <TableRow key={row.id || index} className="hover:bg-muted/50">
                 {/* Entity Name */}
                 <TableCell className="font-medium">
                   {row.entity_name || row.name || 'Untitled'}
@@ -158,11 +152,7 @@ export function EntityTable({
                 {/* Dynamic Fields */}
                 {visibleFields.map(field => {
                   const value = row.dynamic?.[field.name] ?? row[field.name]
-                  return (
-                    <TableCell key={field.name}>
-                      {formatValue(field, value)}
-                    </TableCell>
-                  )
+                  return <TableCell key={field.name}>{formatValue(field, value)}</TableCell>
                 })}
 
                 {/* Actions */}
@@ -170,20 +160,12 @@ export function EntityTable({
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       {onView && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onView(row)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => onView(row)}>
                           <Eye className="h-4 w-4" />
                         </Button>
                       )}
                       {onEdit && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(row)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => onEdit(row)}>
                           <Edit className="h-4 w-4" />
                         </Button>
                       )}

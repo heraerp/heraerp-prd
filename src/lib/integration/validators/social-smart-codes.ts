@@ -1,6 +1,6 @@
 /**
  * Social Media Smart Code Validator
- * 
+ *
  * Validates smart codes for social media vendor integrations
  * following the pattern: HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.{OBJECT}.{ACTION}.v1
  */
@@ -9,68 +9,124 @@ import { SmartCode } from '@/types/core'
 import { VendorType } from '@/types/integrations'
 
 // Valid social media vendors
-const SOCIAL_VENDORS = ['LINKEDIN', 'FACEBOOK', 'MEETUP', 'BLUESKY', 'TWITTER', 'INSTAGRAM'] as const
-type SocialVendor = typeof SOCIAL_VENDORS[number]
+const SOCIAL_VENDORS = [
+  'LINKEDIN',
+  'FACEBOOK',
+  'MEETUP',
+  'BLUESKY',
+  'TWITTER',
+  'INSTAGRAM'
+] as const
+type SocialVendor = (typeof SOCIAL_VENDORS)[number]
 
 // Valid object types for social integrations
 const SOCIAL_OBJECTS = [
-  'ORG', 'ORGANIZATION', 'PAGE', 'PROFILE', // Organization/Page entities
-  'EVENT', 'MEETING', 'WEBINAR', // Event entities
-  'POST', 'ARTICLE', 'UPDATE', // Content entities
-  'RSVP', 'ATTENDEE', 'INVITE', 'REGISTRATION', // Attendance entities
-  'COMMENT', 'REACTION', 'SHARE', // Engagement entities
-  'FOLLOWER', 'MEMBER', 'SUBSCRIBER', // Audience entities
-  'MESSAGE', 'THREAD', 'CONVERSATION', // Communication entities
-  'METRIC', 'INSIGHT', 'ANALYTICS', // Analytics entities
-  'CAMPAIGN', 'AD', 'PROMOTION', // Marketing entities
-  'REL', 'RELATIONSHIP', // Relationships
-  'FIELD', 'ATTRIBUTE', // Dynamic fields
-  'SYNC', 'INTEGRATION' // Integration operations
+  'ORG',
+  'ORGANIZATION',
+  'PAGE',
+  'PROFILE', // Organization/Page entities
+  'EVENT',
+  'MEETING',
+  'WEBINAR', // Event entities
+  'POST',
+  'ARTICLE',
+  'UPDATE', // Content entities
+  'RSVP',
+  'ATTENDEE',
+  'INVITE',
+  'REGISTRATION', // Attendance entities
+  'COMMENT',
+  'REACTION',
+  'SHARE', // Engagement entities
+  'FOLLOWER',
+  'MEMBER',
+  'SUBSCRIBER', // Audience entities
+  'MESSAGE',
+  'THREAD',
+  'CONVERSATION', // Communication entities
+  'METRIC',
+  'INSIGHT',
+  'ANALYTICS', // Analytics entities
+  'CAMPAIGN',
+  'AD',
+  'PROMOTION', // Marketing entities
+  'REL',
+  'RELATIONSHIP', // Relationships
+  'FIELD',
+  'ATTRIBUTE', // Dynamic fields
+  'SYNC',
+  'INTEGRATION' // Integration operations
 ] as const
-type SocialObject = typeof SOCIAL_OBJECTS[number]
+type SocialObject = (typeof SOCIAL_OBJECTS)[number]
 
 // Valid actions for social integrations
 const SOCIAL_ACTIONS = [
   // CRUD operations
-  'CREATE', 'READ', 'UPDATE', 'DELETE', 'UPSERT',
+  'CREATE',
+  'READ',
+  'UPDATE',
+  'DELETE',
+  'UPSERT',
   // Sync operations
-  'SYNC', 'IMPORT', 'EXPORT', 'REFRESH',
+  'SYNC',
+  'IMPORT',
+  'EXPORT',
+  'REFRESH',
   // Event operations
-  'PUBLISH', 'SCHEDULE', 'CANCEL', 'POSTPONE',
+  'PUBLISH',
+  'SCHEDULE',
+  'CANCEL',
+  'POSTPONE',
   // Engagement operations
-  'LIKE', 'UNLIKE', 'COMMENT', 'SHARE', 'REACT',
+  'LIKE',
+  'UNLIKE',
+  'COMMENT',
+  'SHARE',
+  'REACT',
   // Attendance operations
-  'REGISTER', 'CHECKIN', 'CHECKOUT', 'CONFIRM',
+  'REGISTER',
+  'CHECKIN',
+  'CHECKOUT',
+  'CONFIRM',
   // Relationship operations
-  'FOLLOW', 'UNFOLLOW', 'CONNECT', 'DISCONNECT',
+  'FOLLOW',
+  'UNFOLLOW',
+  'CONNECT',
+  'DISCONNECT',
   // Analytics operations
-  'TRACK', 'MEASURE', 'ANALYZE', 'REPORT',
+  'TRACK',
+  'MEASURE',
+  'ANALYZE',
+  'REPORT',
   // System operations
-  'START', 'COMPLETE', 'ERROR', 'RETRY'
+  'START',
+  'COMPLETE',
+  'ERROR',
+  'RETRY'
 ] as const
-type SocialAction = typeof SOCIAL_ACTIONS[number]
+type SocialAction = (typeof SOCIAL_ACTIONS)[number]
 
 // Relationship type patterns
 const RELATIONSHIP_PATTERNS = {
-  'ORG_EVENT': 'Organization has Event',
-  'EVENT_ATTENDEE': 'Event has Attendee',
-  'POST_ORG': 'Post belongs to Organization',
-  'COMMENT_POST': 'Comment on Post',
-  'MEMBER_ORG': 'Member of Organization',
-  'FOLLOWER_ORG': 'Follower of Organization'
+  ORG_EVENT: 'Organization has Event',
+  EVENT_ATTENDEE: 'Event has Attendee',
+  POST_ORG: 'Post belongs to Organization',
+  COMMENT_POST: 'Comment on Post',
+  MEMBER_ORG: 'Member of Organization',
+  FOLLOWER_ORG: 'Follower of Organization'
 } as const
 
 // Field type patterns
 const FIELD_PATTERNS = {
-  'DESC': 'Description',
-  'FOLLOWERS': 'Followers Count',
-  'MEMBERS': 'Members Count',
-  'WEBSITE': 'Website URL',
-  'LOGO': 'Logo Image',
-  'BANNER': 'Banner Image',
-  'ENGAGEMENT': 'Engagement Metrics',
-  'REACH': 'Reach Metrics',
-  'DEMOGRAPHICS': 'Demographics Data'
+  DESC: 'Description',
+  FOLLOWERS: 'Followers Count',
+  MEMBERS: 'Members Count',
+  WEBSITE: 'Website URL',
+  LOGO: 'Logo Image',
+  BANNER: 'Banner Image',
+  ENGAGEMENT: 'Engagement Metrics',
+  REACH: 'Reach Metrics',
+  DEMOGRAPHICS: 'Demographics Data'
 } as const
 
 export interface SocialSmartCodeValidation {
@@ -91,40 +147,40 @@ export function validateSocialSmartCode(smartCode: string): SocialSmartCodeValid
   const errors: string[] = []
   const warnings: string[] = []
   const suggestions: string[] = []
-  
+
   // Split smart code into parts
   const parts = smartCode.split('.')
-  
+
   // Check basic structure
   if (parts.length < 7 || parts.length > 8) {
     errors.push(`Invalid structure: Expected 7-8 parts, got ${parts.length}`)
     return { isValid: false, errors, warnings, suggestions }
   }
-  
+
   // Validate prefix
   if (parts[0] !== 'HERA') {
     errors.push('Smart code must start with "HERA"')
   }
-  
+
   if (parts[1] !== 'PUBLICSECTOR') {
     warnings.push('CivicFlow integrations should use "PUBLICSECTOR" domain')
     suggestions.push(`Consider: HERA.PUBLICSECTOR.${parts.slice(2).join('.')}`)
   }
-  
+
   if (parts[2] !== 'CRM') {
     warnings.push('Social integrations typically use "CRM" module')
     suggestions.push(`Consider: ${parts.slice(0, 2).join('.')}.CRM.${parts.slice(3).join('.')}`)
   }
-  
+
   if (parts[3] !== 'SOCIAL') {
     errors.push('Social vendor smart codes must have "SOCIAL" in position 4')
   }
-  
+
   // Validate vendor
   const vendor = parts[4] as SocialVendor
   if (!SOCIAL_VENDORS.includes(vendor)) {
     errors.push(`Invalid vendor: "${vendor}". Valid vendors: ${SOCIAL_VENDORS.join(', ')}`)
-    
+
     // Suggest correction for common mistakes
     const vendorLower = vendor?.toLowerCase()
     const match = SOCIAL_VENDORS.find(v => v.toLowerCase() === vendorLower)
@@ -132,12 +188,12 @@ export function validateSocialSmartCode(smartCode: string): SocialSmartCodeValid
       suggestions.push(`Use uppercase: ${match}`)
     }
   }
-  
+
   // Validate object
   const object = parts[5] as SocialObject
   if (!SOCIAL_OBJECTS.includes(object)) {
     errors.push(`Invalid object: "${object}". Valid objects: ${SOCIAL_OBJECTS.join(', ')}`)
-    
+
     // Suggest corrections
     if (object === 'ORGANIZATION' && vendor !== 'LINKEDIN') {
       suggestions.push('Consider using "PAGE" for Facebook or "PROFILE" for other vendors')
@@ -146,7 +202,7 @@ export function validateSocialSmartCode(smartCode: string): SocialSmartCodeValid
       suggestions.push('LinkedIn uses "ORG" or "ORGANIZATION" instead of "PAGE"')
     }
   }
-  
+
   // Validate action or relationship type
   let action: string | undefined
   if (object === 'REL' || object === 'RELATIONSHIP') {
@@ -172,7 +228,7 @@ export function validateSocialSmartCode(smartCode: string): SocialSmartCodeValid
       errors.push(`Invalid action: "${action}". Valid actions: ${SOCIAL_ACTIONS.join(', ')}`)
     }
   }
-  
+
   // Validate version
   const version = parts[parts.length - 1]
   const versionRegex = /^v\d+$/
@@ -180,7 +236,7 @@ export function validateSocialSmartCode(smartCode: string): SocialSmartCodeValid
     errors.push(`Invalid version format: "${version}". Expected: v1, v2, etc.`)
     suggestions.push('Use "v1" for new integrations')
   }
-  
+
   // Additional validations
   if (vendor === 'LINKEDIN') {
     if (object === 'ATTENDEE' && action === 'CREATE') {
@@ -191,21 +247,21 @@ export function validateSocialSmartCode(smartCode: string): SocialSmartCodeValid
       warnings.push('LinkedIn API restrictions on post modifications')
     }
   }
-  
+
   if (vendor === 'FACEBOOK') {
     if (object === 'EVENT' && action === 'DELETE') {
       warnings.push('Facebook typically uses CANCEL instead of DELETE for events')
       suggestions.push('Consider using "CANCEL" action')
     }
   }
-  
+
   const isValid = errors.length === 0
-  
+
   return {
     isValid,
     vendor: isValid ? vendor : undefined,
-    object: isValid ? object as SocialObject : undefined,
-    action: isValid ? action as SocialAction : undefined,
+    object: isValid ? (object as SocialObject) : undefined,
+    action: isValid ? (action as SocialAction) : undefined,
     version: isValid ? version : undefined,
     errors,
     warnings,
@@ -233,11 +289,11 @@ export function validateSocialSmartCodes(
   smartCodes: string[]
 ): Map<string, SocialSmartCodeValidation> {
   const results = new Map<string, SocialSmartCodeValidation>()
-  
+
   for (const smartCode of smartCodes) {
     results.set(smartCode, validateSocialSmartCode(smartCode))
   }
-  
+
   return results
 }
 
@@ -254,8 +310,12 @@ export function extractVendorFromSmartCode(smartCode: string): SocialVendor | nu
  */
 export function isSyncOperation(smartCode: string): boolean {
   const validation = validateSocialSmartCode(smartCode)
-  return validation.isValid && 
-    (validation.action === 'SYNC' || validation.object === 'SYNC' || validation.object === 'INTEGRATION')
+  return (
+    validation.isValid &&
+    (validation.action === 'SYNC' ||
+      validation.object === 'SYNC' ||
+      validation.object === 'INTEGRATION')
+  )
 }
 
 /**

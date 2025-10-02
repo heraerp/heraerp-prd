@@ -1,11 +1,11 @@
 /**
  * LinkedIn Integration Adapter for CivicFlow
- * 
+ *
  * Implements OAuth2 authentication and API client for syncing:
  * - Organization profiles
  * - Events and attendees/registrations
  * - Posts and engagement metrics (v1.1)
- * 
+ *
  * All data maps to HERA's Sacred Six tables without schema changes
  */
 
@@ -119,18 +119,23 @@ export class LinkedInAdapter implements IntegrationAdapter {
   constructor(connector: VendorConnector, supabase: any) {
     this.supabase = supabase
     this.demoMode = connector.config.demo_mode || false
-    
+
     this.config = {
       clientId: connector.config.client_id || '',
       clientSecret: connector.config.client_secret || '',
       redirectUri: connector.config.redirect_uri || '',
-      scopes: connector.config.scopes || ['r_organization_admin', 'r_organization_social', 'r_events', 'w_organization_social'],
+      scopes: connector.config.scopes || [
+        'r_organization_admin',
+        'r_organization_social',
+        'r_events',
+        'w_organization_social'
+      ],
       organizationUrn: connector.config.organization_urn,
       syncOrganization: connector.config.sync_organization ?? true,
       syncEvents: connector.config.sync_events ?? true,
       syncAttendees: connector.config.sync_attendees ?? true,
       syncPosts: connector.config.sync_posts ?? false,
-      postsLookbackDays: connector.config.posts_lookback_days || 30,
+      postsLookbackDays: connector.config.posts_lookback_days || 30
     }
 
     this.accessToken = connector.config.access_token
@@ -144,10 +149,10 @@ export class LinkedInAdapter implements IntegrationAdapter {
       }
 
       await this.ensureAuthenticated()
-      
+
       // Test with a simple API call
       const response = await this.makeApiRequest('/v2/me')
-      
+
       if (response.ok) {
         return { success: true }
       } else {
@@ -156,8 +161,8 @@ export class LinkedInAdapter implements IntegrationAdapter {
       }
     } catch (error) {
       logger.error('LinkedIn connection test failed:', error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Connection test failed'
       }
     }
@@ -169,7 +174,7 @@ export class LinkedInAdapter implements IntegrationAdapter {
     const relationships: any[] = []
     const dynamicData: DynamicFieldData[] = []
     const errors: Array<{ entity: string; error: string }> = []
-    
+
     try {
       if (this.demoMode) {
         return this.generateDemoData()
@@ -184,8 +189,8 @@ export class LinkedInAdapter implements IntegrationAdapter {
           entities.push(...orgResult.entities)
           dynamicData.push(...orgResult.dynamicData)
         } catch (error) {
-          errors.push({ 
-            entity: 'organization', 
+          errors.push({
+            entity: 'organization',
             error: error instanceof Error ? error.message : 'Failed to sync organization'
           })
         }
@@ -199,8 +204,8 @@ export class LinkedInAdapter implements IntegrationAdapter {
           relationships.push(...eventsResult.relationships)
           dynamicData.push(...eventsResult.dynamicData)
         } catch (error) {
-          errors.push({ 
-            entity: 'events', 
+          errors.push({
+            entity: 'events',
             error: error instanceof Error ? error.message : 'Failed to sync events'
           })
         }
@@ -221,8 +226,8 @@ export class LinkedInAdapter implements IntegrationAdapter {
           relationships.push(...postsResult.relationships)
           dynamicData.push(...postsResult.dynamicData)
         } catch (error) {
-          errors.push({ 
-            entity: 'posts', 
+          errors.push({
+            entity: 'posts',
             error: error instanceof Error ? error.message : 'Failed to sync posts'
           })
         }
@@ -258,10 +263,12 @@ export class LinkedInAdapter implements IntegrationAdapter {
           errors: 1,
           duration: Date.now() - startTime
         },
-        errors: [{ 
-          entity: 'sync', 
-          error: error instanceof Error ? error.message : 'Sync failed'
-        }]
+        errors: [
+          {
+            entity: 'sync',
+            error: error instanceof Error ? error.message : 'Sync failed'
+          }
+        ]
       }
     }
   }
@@ -271,7 +278,7 @@ export class LinkedInAdapter implements IntegrationAdapter {
     dynamicData: DynamicFieldData[]
   }> {
     const org = await this.fetchOrganization(this.config.organizationUrn!)
-    
+
     const entity = {
       entity_type: 'organization_profile',
       entity_name: org.localizedName,
@@ -465,7 +472,7 @@ export class LinkedInAdapter implements IntegrationAdapter {
       // Create relationship to organization
       relationships.push({
         from_entity_id: '', // Post entity ID
-        to_entity_id: '', // Org entity ID  
+        to_entity_id: '', // Org entity ID
         relationship_type: 'POST_BELONGS_TO_ORG',
         smart_code: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.POST_ORG.v1',
         metadata: {
@@ -532,44 +539,44 @@ export class LinkedInAdapter implements IntegrationAdapter {
     }
   }
 
-  private async makeApiRequest(
-    endpoint: string, 
-    options: RequestInit = {}
-  ): Promise<Response> {
+  private async makeApiRequest(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const baseUrl = 'https://api.linkedin.com'
-    
-    return withRetry(async () => {
-      const response = await fetch(`${baseUrl}${endpoint}`, {
-        ...options,
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-          'X-Restli-Protocol-Version': '2.0.0',
-          'Content-Type': 'application/json',
-          ...options.headers
+
+    return withRetry(
+      async () => {
+        const response = await fetch(`${baseUrl}${endpoint}`, {
+          ...options,
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+            'X-Restli-Protocol-Version': '2.0.0',
+            'Content-Type': 'application/json',
+            ...options.headers
+          }
+        })
+
+        // Handle rate limiting
+        if (response.status === 429) {
+          const retryAfter = response.headers.get('Retry-After')
+          const delay = retryAfter ? parseInt(retryAfter) * 1000 : 60000
+          await new Promise(resolve => setTimeout(resolve, delay))
+          throw new Error('Rate limited')
         }
-      })
 
-      // Handle rate limiting
-      if (response.status === 429) {
-        const retryAfter = response.headers.get('Retry-After')
-        const delay = retryAfter ? parseInt(retryAfter) * 1000 : 60000
-        await new Promise(resolve => setTimeout(resolve, delay))
-        throw new Error('Rate limited')
+        return response
+      },
+      {
+        maxAttempts: 3,
+        delayMs: 1000,
+        backoff: 'exponential'
       }
-
-      return response
-    }, {
-      maxAttempts: 3,
-      delayMs: 1000,
-      backoff: 'exponential'
-    })
+    )
   }
 
   private async fetchOrganization(urn: string): Promise<LinkedInOrganization> {
     const response = await this.makeApiRequest(
       `/v2/organizations/${encodeURIComponent(urn)}?projection=(id,vanityName,localizedName,localizedDescription,logoV2,followersCount,websiteUrl,industries,staffCountRange)`
     )
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch organization: ${response.statusText}`)
     }
@@ -606,8 +613,8 @@ export class LinkedInAdapter implements IntegrationAdapter {
 
   private async fetchRecentPosts(organizationUrn: string): Promise<LinkedInPost[]> {
     const posts: LinkedInPost[] = []
-    const sinceTimestamp = Date.now() - (this.config.postsLookbackDays * 24 * 60 * 60 * 1000)
-    
+    const sinceTimestamp = Date.now() - this.config.postsLookbackDays * 24 * 60 * 60 * 1000
+
     // LinkedIn's UGC Posts API
     const response = await this.makeApiRequest(
       `/v2/ugcPosts?q=authors&authors=List(${encodeURIComponent(organizationUrn)})&sortBy=CREATED&count=50`
@@ -618,8 +625,8 @@ export class LinkedInAdapter implements IntegrationAdapter {
     }
 
     const data = await response.json()
-    const recentPosts = (data.elements || []).filter((post: any) => 
-      post.created.time >= sinceTimestamp
+    const recentPosts = (data.elements || []).filter(
+      (post: any) => post.created.time >= sinceTimestamp
     )
 
     // Transform to our format

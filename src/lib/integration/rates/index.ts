@@ -72,9 +72,9 @@ export async function getEffectiveRate(
   targetPurity?: number
 ): Promise<RateResult | null> {
   const smartCodePrefix = `HERA.JEWELRY.ENTITY.PRICE_LIST.${metalType.toUpperCase()}_RATE`
-  
+
   const rateEntity = await getLatestRateEntity(orgId, smartCodePrefix)
-  
+
   if (!rateEntity) {
     return null
   }
@@ -90,7 +90,7 @@ export async function getEffectiveRate(
   // Check if rate is still effective
   const effectiveDate = new Date(effectiveAt)
   const requestDate = new Date(atISO)
-  
+
   if (requestDate < effectiveDate) {
     console.warn('Requested date is before rate effective date')
   }
@@ -129,7 +129,7 @@ export async function upsertRateEntity(
 ): Promise<RateEntity | null> {
   try {
     const smartCode = `HERA.JEWELRY.ENTITY.PRICE_LIST.${metalType.toUpperCase()}_RATE.V1`
-    
+
     const { data, error } = await apiV2.post('/entities', {
       organization_id: orgId,
       entity_type: 'price_list',
@@ -223,7 +223,7 @@ export async function calculateMetalValue(
   }
 } | null> {
   const rate = await getEffectiveRate(orgId, metalType, undefined, 24) // Get 24K base rate
-  
+
   if (!rate) {
     return null
   }

@@ -61,7 +61,15 @@
       "status": {
         "type": "text",
         "required": true,
-        "enum": ["booked", "confirmed", "arrived", "in_progress", "completed", "cancelled", "no_show"],
+        "enum": [
+          "booked",
+          "confirmed",
+          "arrived",
+          "in_progress",
+          "completed",
+          "cancelled",
+          "no_show"
+        ],
         "default": "booked"
       },
       "total_duration_minutes": {
@@ -146,10 +154,7 @@
             "line_amount": "quantity * unit_amount",
             "polarity": "debit"
           },
-          "validate": [
-            "stylist_id != null",
-            "duration_minutes > 0"
-          ]
+          "validate": ["stylist_id != null", "duration_minutes > 0"]
         },
         {
           "match": { "line_type": "PRODUCT" },
@@ -163,9 +168,7 @@
           "derive": {
             "polarity": "debit"
           },
-          "validate": [
-            "line_amount >= 0"
-          ]
+          "validate": ["line_amount >= 0"]
         },
         {
           "match": { "line_type": "DISCOUNT" },
@@ -179,16 +182,12 @@
           "derive": {
             "polarity": "debit"
           },
-          "validate": [
-            "line_amount >= 0"
-          ]
+          "validate": ["line_amount >= 0"]
         }
       ],
       "require_balanced": false
     },
-    "transforms": [
-      { "op": "trim", "fields": ["notes"] }
-    ],
+    "transforms": [{ "op": "trim", "fields": ["notes"] }],
     "requires": [
       {
         "when": "status=='completed'",

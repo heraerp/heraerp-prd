@@ -1,16 +1,16 @@
 // src/ui/components/CardKpi.tsx
-import React from 'react';
+import React from 'react'
 
 export function CardKpi({
   label,
   value,
   hint,
-  onClick,
+  onClick
 }: {
-  label: string;
-  value: React.ReactNode;
-  hint?: string;
-  onClick?: () => void;
+  label: string
+  value: React.ReactNode
+  hint?: string
+  onClick?: () => void
 }) {
   return (
     <div
@@ -21,5 +21,5 @@ export function CardKpi({
       <div className="mt-1 text-2xl font-semibold">{value}</div>
       {hint && <div className="mt-1 text-xs text-gray-500">{hint}</div>}
     </div>
-  );
+  )
 }

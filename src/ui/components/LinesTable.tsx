@@ -1,6 +1,6 @@
 // src/ui/components/LinesTable.tsx
-import React from 'react';
-import { DataTable } from './DataTable';
+import React from 'react'
+import { DataTable } from './DataTable'
 
 export function LinesTable({ rows }: { rows: any[] }) {
   return (
@@ -12,8 +12,8 @@ export function LinesTable({ rows }: { rows: any[] }) {
         { header: 'Description', key: 'description' },
         { header: 'Qty', key: 'quantity', width: '100px' },
         { header: 'Unit', key: 'unit_amount', width: '120px' },
-        { header: 'Amount', key: 'line_amount', width: '140px' },
+        { header: 'Amount', key: 'line_amount', width: '140px' }
       ]}
     />
-  );
+  )
 }

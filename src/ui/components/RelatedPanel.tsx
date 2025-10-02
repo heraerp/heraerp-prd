@@ -1,15 +1,15 @@
 // src/ui/components/RelatedPanel.tsx
-import React from 'react';
-import { useRelationships } from '../hooks/useHera';
+import React from 'react'
+import { useRelationships } from '../hooks/useHera'
 
 export function RelatedPanel({ fromId, toId }: { fromId?: string; toId?: string }) {
   const { data, isLoading } = useRelationships({
     p_from_entity_id: fromId,
-    p_to_entity_id: toId,
-  });
+    p_to_entity_id: toId
+  })
 
-  if (isLoading) return <div className="text-sm text-gray-500">Loading related…</div>;
-  if (!data?.length) return null;
+  if (isLoading) return <div className="text-sm text-gray-500">Loading related…</div>
+  if (!data?.length) return null
 
   return (
     <div className="rounded-2xl border p-4">
@@ -25,5 +25,5 @@ export function RelatedPanel({ fromId, toId }: { fromId?: string; toId?: string 
         ))}
       </ul>
     </div>
-  );
+  )
 }

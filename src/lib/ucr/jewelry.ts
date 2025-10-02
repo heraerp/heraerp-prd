@@ -19,11 +19,11 @@ interface SmartCodeMap {
  */
 export function getJewelrySmartCode(kind: SmartCodeKind, key: string): string {
   const codes = jewelrySmartCodes as SmartCodeMap
-  
+
   if (!codes[kind] || !codes[kind][key]) {
     throw new Error(`Smart code not found: ${kind}.${key}`)
   }
-  
+
   return codes[kind][key]
 }
 
@@ -42,7 +42,7 @@ export const JewelrySmartCodes = {
   CUSTOMER_RETAIL: () => getJewelrySmartCode('entities', 'CUSTOMER_RETAIL'),
   BRANCH_SHOWROOM: () => getJewelrySmartCode('entities', 'BRANCH_SHOWROOM'),
   TAX_PROFILE_GST: () => getJewelrySmartCode('entities', 'TAX_PROFILE_GST'),
-  
+
   // Transactions
   SALE_POS: () => getJewelrySmartCode('transactions', 'SALE_POS'),
   RETURN_POS: () => getJewelrySmartCode('transactions', 'RETURN_POS'),
@@ -56,7 +56,7 @@ export const JewelrySmartCodes = {
   INVENTORY_COUNT: () => getJewelrySmartCode('transactions', 'INVENTORY_COUNT'),
   REPAIR_INTAKE: () => getJewelrySmartCode('transactions', 'REPAIR_INTAKE'),
   REPAIR_DELIVERY: () => getJewelrySmartCode('transactions', 'REPAIR_DELIVERY'),
-  
+
   // Lines
   ITEM_RETAIL_LINE: () => getJewelrySmartCode('lines', 'ITEM_RETAIL'),
   MAKING_CHARGE: () => getJewelrySmartCode('lines', 'MAKING_CHARGE'),
@@ -64,7 +64,7 @@ export const JewelrySmartCodes = {
   TAX_GST: () => getJewelrySmartCode('lines', 'TAX_GST'),
   EXCHANGE_OLDGOLD_LINE: () => getJewelrySmartCode('lines', 'EXCHANGE_OLDGOLD'),
   ADJUSTMENT_ROUNDING: () => getJewelrySmartCode('lines', 'ADJUSTMENT_ROUNDING'),
-  
+
   // Relationships
   BOM_COMPONENT: () => getJewelrySmartCode('relationships', 'BOM_COMPONENT'),
   PRICE_LIST_ASSIGNMENT: () => getJewelrySmartCode('relationships', 'PRICE_LIST_ASSIGNMENT'),
@@ -89,11 +89,11 @@ export function parseJewelrySmartCode(smartCode: string): {
   version: string
 } | null {
   const parts = smartCode.split('.')
-  
+
   if (parts.length < 4 || parts[0] !== 'HERA' || parts[1] !== 'JEWELRY') {
     return null
   }
-  
+
   return {
     domain: parts[1], // JEWELRY
     category: parts[2], // ITEM, SALE, etc.

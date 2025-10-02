@@ -24,7 +24,7 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
   console.log('🚀 Using demo token for entity options')
   return {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer demo-token-salon-receptionist'
+    Authorization: 'Bearer demo-token-salon-receptionist'
   }
 }
 
@@ -76,12 +76,12 @@ export function useEntityOptions(config: {
       const response = await fetch(`/api/v2/entities?${params}`, {
         headers
       })
-      
+
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to fetch entity options')
       }
-      
+
       const result = await response.json()
       const entities = result?.data || []
 
@@ -239,20 +239,22 @@ export function useServiceOptions(filters?: Record<string, any>): EntitySelectOp
 /**
  * Multi-select hook for handling multiple entity relationships
  */
-export function useMultiEntityOptions(configs: Array<{
-  key: string
-  entityType: string
-  displayField?: string
-  valueField?: string
-  filters?: Record<string, any>
-}>): Record<string, EntitySelectOptions> {
+export function useMultiEntityOptions(
+  configs: Array<{
+    key: string
+    entityType: string
+    displayField?: string
+    valueField?: string
+    filters?: Record<string, any>
+  }>
+): Record<string, EntitySelectOptions> {
   const results: Record<string, EntitySelectOptions> = {}
-  
+
   for (const config of configs) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     results[config.key] = useEntityOptions(config)
   }
-  
+
   return results
 }
 
@@ -267,10 +269,10 @@ export function useEntitySearch(config: {
   debounceMs?: number
 }): EntitySelectOptions {
   const { searchTerm, debounceMs = 300, ...restConfig } = config
-  
+
   // Simple debouncing using query key changes
   const debouncedSearchTerm = searchTerm // In a real implementation, you'd use a debounce hook
-  
+
   return useEntityOptions({
     ...restConfig,
     filters: {
@@ -300,7 +302,11 @@ export function getOptionsByValues(options: SelectOption[], values: string[]): S
 /**
  * Helper to convert option to relationship format
  */
-export function optionToRelationship(option: SelectOption, relationshipType: string, smartCode: string) {
+export function optionToRelationship(
+  option: SelectOption,
+  relationshipType: string,
+  smartCode: string
+) {
   return {
     to_entity_id: option.value,
     relationship_type: relationshipType,

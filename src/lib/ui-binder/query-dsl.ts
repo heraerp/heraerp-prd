@@ -9,13 +9,7 @@ import type { QueryDSLParams, ParsedQuery } from './types'
  * Parse query parameters into normalized format
  */
 export function parseQuery(params: QueryDSLParams): ParsedQuery {
-  const {
-    filter,
-    order = 'created_at desc',
-    pageSize = 50,
-    page = 1,
-    search
-  } = params
+  const { filter, order = 'created_at desc', pageSize = 50, page = 1, search } = params
 
   // Calculate pagination
   const limit = Math.max(1, Math.min(1000, pageSize)) // Clamp between 1-1000
@@ -28,7 +22,7 @@ export function parseQuery(params: QueryDSLParams): ParsedQuery {
     if (orderParts.length >= 1) {
       const column = orderParts[0]
       const direction = orderParts[1]?.toLowerCase() === 'asc' ? 'asc' : 'desc'
-      
+
       // Validate column name (simple alphanumeric + underscore)
       if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(column)) {
         orderBy = `${column} ${direction}`
@@ -60,14 +54,14 @@ export function parseQuery(params: QueryDSLParams): ParsedQuery {
  */
 function parseSimpleFilter(filterStr: string): Record<string, any> {
   const filters: Record<string, any> = {}
-  
+
   if (!filterStr?.trim()) {
     return filters
   }
 
   // Split by comma for multiple filters
   const filterPairs = filterStr.split(',')
-  
+
   for (const pair of filterPairs) {
     const trimmedPair = pair.trim()
     if (!trimmedPair) continue
@@ -96,8 +90,10 @@ function parseSimpleFilter(filterStr: string): Record<string, any> {
  */
 function parseFilterValue(value: string): any {
   // Remove quotes if present
-  if ((value.startsWith('"') && value.endsWith('"')) || 
-      (value.startsWith("'") && value.endsWith("'"))) {
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
     return value.slice(1, -1)
   }
 
@@ -128,10 +124,8 @@ function parseFilterValue(value: string): any {
     try {
       const innerValue = value.slice(1, -1)
       if (!innerValue.trim()) return []
-      
-      return innerValue.split(',').map(item => 
-        parseFilterValue(item.trim())
-      )
+
+      return innerValue.split(',').map(item => parseFilterValue(item.trim()))
     } catch {
       return value // Return as string if parsing fails
     }
@@ -144,9 +138,9 @@ function parseFilterValue(value: string): any {
 /**
  * Build SQL WHERE clause from parsed filters (for server-side filtering)
  */
-export function buildWhereClause(filters: Record<string, any>): { 
+export function buildWhereClause(filters: Record<string, any>): {
   clause: string
-  params: any[] 
+  params: any[]
 } {
   if (!filters || Object.keys(filters).length === 0) {
     return { clause: '', params: [] }
@@ -184,7 +178,7 @@ export function buildWhereClause(filters: Record<string, any>): {
  * Apply client-side filtering to data array
  */
 export function applyClientFilters<T extends Record<string, any>>(
-  data: T[], 
+  data: T[],
   filters: Record<string, any>
 ): T[] {
   if (!filters || Object.keys(filters).length === 0) {
@@ -227,10 +221,7 @@ function getNestedValue(obj: any, path: string): any {
 /**
  * Apply client-side sorting to data array
  */
-export function applyClientSort<T extends Record<string, any>>(
-  data: T[],
-  orderBy: string
-): T[] {
+export function applyClientSort<T extends Record<string, any>>(data: T[], orderBy: string): T[] {
   if (!orderBy) return data
 
   const [column, direction = 'asc'] = orderBy.split(/\s+/)
@@ -265,7 +256,7 @@ export function applyClientSearch<T extends Record<string, any>>(
   if (!search?.trim()) return data
 
   const searchTerm = search.toLowerCase().trim()
-  
+
   return data.filter(item => {
     return searchFields.some(field => {
       const value = getNestedValue(item, field)

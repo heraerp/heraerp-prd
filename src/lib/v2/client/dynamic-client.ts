@@ -22,12 +22,12 @@ export const dynamicClientV2 = {
         method: 'POST',
         body: JSON.stringify(data)
       })
-      
+
       if (!response.ok) {
         const errorData = await response.json()
         return { data: null, error: errorData.error || 'Failed to set dynamic field' }
       }
-      
+
       const result = await response.json()
       return { data: result, error: null }
     } catch (error) {
@@ -38,15 +38,21 @@ export const dynamicClientV2 = {
   /**
    * Get dynamic field value
    */
-  async getField(entityId: string, fieldName: string, organizationId: string): Promise<{ data: any | null; error: string | null }> {
+  async getField(
+    entityId: string,
+    fieldName: string,
+    organizationId: string
+  ): Promise<{ data: any | null; error: string | null }> {
     try {
-      const response = await fetchV2(`/entities/dynamic-data?organization_id=${organizationId}&entity_id=${entityId}&field_name=${fieldName}`)
-      
+      const response = await fetchV2(
+        `/entities/dynamic-data?organization_id=${organizationId}&entity_id=${entityId}&field_name=${fieldName}`
+      )
+
       if (!response.ok) {
         const errorData = await response.json()
         return { data: null, error: errorData.error || 'Failed to get dynamic field' }
       }
-      
+
       const result = await response.json()
       return { data: result, error: null }
     } catch (error) {

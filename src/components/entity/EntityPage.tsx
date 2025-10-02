@@ -62,10 +62,10 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
         dynamic_fields: Object.fromEntries(
           (preset.dynamicFields || []).map(df => [
             df.name,
-            { 
-              value: payload.dynamic_fields?.[df.name] ?? payload[df.name], 
-              type: df.type, 
-              smart_code: df.smart_code 
+            {
+              value: payload.dynamic_fields?.[df.name] ?? payload[df.name],
+              type: df.type,
+              smart_code: df.smart_code
             }
           ])
         ),
@@ -73,16 +73,16 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
           relationships: payload.relationships || {}
         }
       })
-      toast({ 
+      toast({
         title: `${preset.labels.singular} created`,
         description: `Successfully created ${payload.entity_name || 'new item'}`
       })
       setOpen(false)
     } catch (e: any) {
-      toast({ 
-        title: 'Create failed', 
-        description: e?.message ?? 'Unknown error', 
-        variant: 'destructive' 
+      toast({
+        title: 'Create failed',
+        description: e?.message ?? 'Unknown error',
+        variant: 'destructive'
       })
     }
   }
@@ -91,25 +91,25 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
   const onUpdate = async (payload: any) => {
     try {
       const { entity_id, ...updates } = payload
-      
+
       // Separate dynamic fields from entity updates
       const dynamic_patch: Record<string, any> = {}
       const relationships_patch: Record<string, string[]> = {}
-      
+
       // Extract dynamic fields
       if (updates.dynamic_fields) {
         Object.entries(updates.dynamic_fields).forEach(([key, value]) => {
           dynamic_patch[key] = value
         })
       }
-      
+
       // Extract direct field updates
-      (preset.dynamicFields || []).forEach(df => {
+      ;(preset.dynamicFields || []).forEach(df => {
         if (df.name in updates) {
           dynamic_patch[df.name] = updates[df.name]
         }
       })
-      
+
       // Extract relationships
       if (updates.relationships) {
         Object.entries(updates.relationships).forEach(([type, ids]) => {
@@ -123,17 +123,17 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
         dynamic_patch,
         relationships_patch
       })
-      
-      toast({ 
+
+      toast({
         title: `${preset.labels.singular} updated`,
         description: 'Changes saved successfully'
       })
       setEditRow(null)
     } catch (e: any) {
-      toast({ 
-        title: 'Update failed', 
-        description: e?.message ?? 'Unknown error', 
-        variant: 'destructive' 
+      toast({
+        title: 'Update failed',
+        description: e?.message ?? 'Unknown error',
+        variant: 'destructive'
       })
     }
   }
@@ -143,18 +143,18 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
     if (!confirm(`Are you sure you want to delete this ${preset.labels.singular.toLowerCase()}?`)) {
       return
     }
-    
+
     try {
       await remove({ entity_id: id, hard_delete: false })
-      toast({ 
+      toast({
         title: `${preset.labels.singular} deleted`,
         description: 'Item moved to archive'
       })
     } catch (e: any) {
-      toast({ 
-        title: 'Delete failed', 
-        description: e?.message ?? 'Unknown error', 
-        variant: 'destructive' 
+      toast({
+        title: 'Delete failed',
+        description: e?.message ?? 'Unknown error',
+        variant: 'destructive'
       })
     }
   }
@@ -169,25 +169,19 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {title ?? preset.labels.plural}
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{title ?? preset.labels.plural}</h1>
           <p className="text-sm text-muted-foreground">
             {subtitle ?? `Manage ${preset.labels.plural.toLowerCase()} via universal CRUD.`}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            onClick={() => refetch()} 
-            disabled={isLoading}
-          >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} /> 
+          <Button variant="ghost" onClick={() => refetch()} disabled={isLoading}>
+            <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
           {canCreate && (
             <Button onClick={() => setOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" /> 
+              <Plus className="mr-2 h-4 w-4" />
               New {preset.labels.singular}
             </Button>
           )}
@@ -226,7 +220,7 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
       </Dialog>
 
       {/* Edit Dialog */}
-      <Dialog open={!!editRow} onOpenChange={(v) => !v && setEditRow(null)}>
+      <Dialog open={!!editRow} onOpenChange={v => !v && setEditRow(null)}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit {preset.labels.singular}</DialogTitle>
