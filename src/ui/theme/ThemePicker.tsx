@@ -1,8 +1,8 @@
 // src/ui/theme/ThemePicker.tsx
 'use client'
 import { useState, useEffect } from 'react'
-import { useHeraTheme } from './ThemeProvider'
-import { ThemeTokens } from './types'
+import { useHeraTheme } from '@/lib/hera-ui-preset/theme/ThemeProvider'
+import { ThemeTokens } from '@/lib/hera-ui-preset/theme/types'
 
 export default function ThemePicker() {
   const { theme, isLoading, saveTheme, isSaving } = useHeraTheme()
