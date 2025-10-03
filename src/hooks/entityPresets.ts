@@ -815,6 +815,102 @@ export const STAFF_PRESET = {
   ]
 }
 
+// Branch/Location preset for multi-location support
+export const BRANCH_PRESET = {
+  entity_type: 'BRANCH' as const,
+  labels: {
+    singular: 'Branch',
+    plural: 'Branches'
+  },
+  permissions: {
+    create: ['owner', 'manager'] as Role[],
+    update: ['owner', 'manager'] as Role[],
+    delete: ['owner'] as Role[],
+    view: ['owner', 'manager', 'receptionist', 'staff'] as Role[]
+  },
+  smart_code: 'HERA.SALON.LOCATION.ENTITY.BRANCH.V1',
+  dynamicFields: [
+    {
+      name: 'code',
+      type: 'text' as const,
+      required: true,
+      smart_code: 'HERA.SALON.LOCATION.DYN.CODE.V1',
+      ui: {
+        label: 'Branch Code',
+        placeholder: 'BR-001',
+        helpText: 'Unique identifier for this branch'
+      }
+    },
+    {
+      name: 'address',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.LOCATION.DYN.ADDRESS.V1',
+      ui: {
+        label: 'Address',
+        placeholder: '123 Main St, City, State ZIP',
+        widget: 'textarea' as const
+      }
+    },
+    {
+      name: 'phone',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.LOCATION.DYN.PHONE.V1',
+      ui: {
+        label: 'Phone',
+        placeholder: '+1 (555) 123-4567'
+      }
+    },
+    {
+      name: 'timezone',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.LOCATION.DYN.TIMEZONE.V1',
+      defaultValue: 'America/New_York',
+      ui: {
+        label: 'Timezone',
+        placeholder: 'America/New_York',
+        helpText: 'Timezone for scheduling and reporting'
+      }
+    },
+    {
+      name: 'status',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.LOCATION.DYN.STATUS.V1',
+      defaultValue: 'active',
+      ui: {
+        label: 'Status',
+        widget: 'select' as const,
+        helpText: 'Active branches can receive bookings'
+      }
+    }
+  ] as DynamicFieldDefUI[],
+  relationships: [
+    {
+      type: 'STAFF_MEMBER_OF',
+      smart_code: 'HERA.SALON.STAFF.REL.MEMBER_OF.V1',
+      from: 'STAFF',
+      to: 'BRANCH',
+      cardinality: '1:1',
+      ui: {
+        label: 'Staff Members',
+        widget: 'multiselect' as const,
+        optionsQueryKey: 'staff'
+      }
+    },
+    {
+      type: 'SERVICE_AVAILABLE_AT',
+      smart_code: 'HERA.SALON.SERVICE.REL.AVAILABLE_AT.V1',
+      from: 'SERVICE',
+      to: 'BRANCH',
+      cardinality: 'M:N',
+      ui: {
+        label: 'Available Services',
+        widget: 'multiselect' as const,
+        optionsQueryKey: 'services'
+      }
+    }
+  ] as RelationshipDefUI[]
+}
+
 // Preset registry for easy access
 export const ENTITY_PRESETS = {
   PRODUCT: PRODUCT_PRESET,
@@ -826,7 +922,8 @@ export const ENTITY_PRESETS = {
   VENDOR: VENDOR_PRESET,
   CATEGORY: CATEGORY_PRESET,
   BRAND: BRAND_PRESET,
-  ROLE: ROLE_PRESET
+  ROLE: ROLE_PRESET,
+  BRANCH: BRANCH_PRESET
 } as const
 
 // Jewelry-specific entity presets

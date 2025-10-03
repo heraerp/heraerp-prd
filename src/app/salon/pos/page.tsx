@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
 import { flags } from '@/config/flags'
 import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { BranchSelector } from '@/components/salon/BranchSelector'
 import { CatalogPane } from '@/components/salon/pos/CatalogPane'
 import { CartSidebar } from '@/components/salon/pos/CartSidebar'
 import { PaymentDialog } from '@/components/salon/pos/PaymentDialog'
@@ -60,9 +60,17 @@ const COLORS = {
 }
 
 function POSContent() {
-  const { user, organizationId } = useSalonContext()
+  const { 
+    user, 
+    organization,
+    selectedBranchId,
+    availableBranches,
+    setSelectedBranchId,
+    isLoadingBranches 
+  } = useSecuredSalonContext()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
   const [commissionsEnabled, setCommissionsEnabled] = useState(true)
+  const organizationId = organization?.id
 
   // Get organization ID from localStorage for demo mode
   useEffect(() => {
@@ -73,15 +81,6 @@ function POSContent() {
   }, [])
 
   const effectiveOrgId = organizationId || localOrgId
-
-  // Branch filter hook
-  const {
-    branchId,
-    branches,
-    loading: branchesLoading,
-    setBranchId,
-    hasMultipleBranches
-  } = useBranchFilter(effectiveOrgId, 'salon-pos')
 
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [isReceiptOpen, setIsReceiptOpen] = useState(false)
@@ -306,67 +305,7 @@ function POSContent() {
             {/* Right Section - Controls */}
             <div className="flex items-center space-x-4">
               {/* Branch Selector */}
-              <div className="flex items-center space-x-2.5">
-                <div
-                  className="p-2 rounded-lg"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}08 100%)`,
-                    border: `1px solid ${COLORS.gold}30`
-                  }}
-                >
-                  <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
-                </div>
-                <Select
-                  value={branchId || '__ALL__'}
-                  onValueChange={value => setBranchId(value === '__ALL__' ? '' : value)}
-                >
-                  <SelectTrigger
-                    className="w-52 border-0 font-medium"
-                    style={{
-                      backgroundColor: `${COLORS.charcoalDark}CC`,
-                      border: `1px solid ${COLORS.gold}30`,
-                      color: COLORS.champagne,
-                      boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
-                    }}
-                  >
-                    <SelectValue
-                      placeholder="Select location"
-                      style={{ color: COLORS.champagne }}
-                    />
-                  </SelectTrigger>
-                  <SelectContent
-                    className="hera-select-content"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      border: `1px solid ${COLORS.gold}30`,
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <SelectItem value="__ALL__" style={{ color: COLORS.champagne }}>
-                      All locations
-                    </SelectItem>
-                    {branchesLoading ? (
-                      <SelectItem value="__LOADING__" disabled style={{ color: COLORS.bronze }}>
-                        Loading branches...
-                      </SelectItem>
-                    ) : branches.length === 0 ? (
-                      <SelectItem value="__NONE__" disabled style={{ color: COLORS.bronze }}>
-                        No branches configured
-                      </SelectItem>
-                    ) : (
-                      branches.map(branch => (
-                        <SelectItem
-                          key={branch.id}
-                          value={branch.id}
-                          style={{ color: COLORS.champagne }}
-                        >
-                          {branch.entity_name || 'Unnamed Branch'}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
+              <BranchSelector variant="default" />
 
               {/* Cashier Info */}
               <div className="flex items-center space-x-2.5">

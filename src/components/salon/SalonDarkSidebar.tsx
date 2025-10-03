@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { BranchIndicator } from '@/components/salon/BranchSelector'
 import {
   Calendar,
   Users,
@@ -370,6 +371,46 @@ export default function SalonDarkSidebar({
           SALON
         </span>
       </div>
+
+      {/* Branch Indicator - Simplified for narrow sidebar */}
+      <Link
+        href="/salon/branches"
+        className="flex flex-col items-center justify-center py-2 transition-all duration-200 group relative border-b hover:scale-[1.02]"
+        style={{
+          borderColor: `${COLORS.gold}15`,
+          backgroundColor: `${COLORS.charcoalLight}50`
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.backgroundColor = `${COLORS.gold}08`
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.backgroundColor = `${COLORS.charcoalLight}50`
+        }}
+      >
+        <Building2
+          className="h-5 w-5"
+          style={{ color: COLORS.gold }}
+        />
+        <span
+          className="text-[9px] mt-0.5 font-medium text-center leading-tight"
+          style={{ color: COLORS.gold }}
+        >
+          Branch
+        </span>
+
+        {/* Tooltip */}
+        <div
+          className="absolute left-full ml-2 px-3 py-2 text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50"
+          style={{
+            backgroundColor: COLORS.charcoalLight,
+            border: `1px solid ${COLORS.gold}20`,
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.4)',
+            color: COLORS.champagne
+          }}
+        >
+          <p className="font-medium">Manage Branches</p>
+        </div>
+      </Link>
 
       {/* Navigation Items */}
       <nav

@@ -617,6 +617,100 @@ localhost:3000/~organization       # Local development
 
 **📖 COMPLETE GUIDE**: See `MULTI-TENANT-AUTH-GUIDE.md` for detailed implementation instructions.
 
+## ⚛️ CLIENT-SIDE BRANCH SELECTION PATTERN (PRODUCTION PATTERN)
+
+**HERA implements client-side branch/location filtering through React Context, allowing users to select a branch and have all data automatically filtered to that location.**
+
+### **🎯 How It Works**
+1. **User Selection**: User picks a branch from header dropdown (e.g., "Downtown Salon", "Airport Location")
+2. **Context Storage**: Selected branch ID stored in `SecuredSalonProvider` (or `BranchProvider`) React Context
+3. **Automatic Filtering**: All queries automatically include branch filter via relationships or metadata
+4. **Relationship Creation**: New entities automatically linked to selected branch via `MEMBER_OF`, `AVAILABLE_AT`, etc.
+5. **Header Propagation**: `x-hera-location-id` sent with every API call for server-side context
+
+### **🔧 Implementation Pattern**
+```typescript
+// 1. Create the Provider
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+interface BranchContextType {
+  selectedBranchId: string | null;
+  selectedBranch: Branch | null;
+  availableBranches: Branch[];
+  setSelectedBranchId: (branchId: string) => void;
+  isLoading: boolean;
+}
+
+const BranchContext = createContext<BranchContextType | undefined>(undefined);
+
+export function SecuredSalonProvider({ children }: { children: ReactNode }) {
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
+  // Implementation details...
+}
+
+// 2. Use in Pages
+import { useBranchContext } from '@/lib/contexts/BranchContext';
+
+export default function StaffPage() {
+  const { selectedBranchId } = useBranchContext();
+  
+  const { data: staff } = useQuery({
+    queryKey: ['staff', selectedBranchId],
+    queryFn: async () => {
+      return fetch(`/api/v2/entities?entity_type=STAFF&relationship_filter=MEMBER_OF:${selectedBranchId}`, {
+        headers: {
+          'x-hera-location-id': selectedBranchId || ''
+        }
+      });
+    },
+    enabled: !!selectedBranchId
+  });
+}
+
+// 3. Create with Automatic Branch Relationship
+const createStaff = useMutation({
+  mutationFn: async (staffData) => {
+    return fetch('/api/v2/entities', {
+      body: JSON.stringify({
+        p_entity_type: 'STAFF',
+        p_entity_name: staffData.name,
+        p_relationships: {
+          MEMBER_OF: [selectedBranchId] // Auto-link to branch
+        }
+      })
+    });
+  }
+});
+```
+
+### **🔗 Branch Relationship Patterns**
+- **MEMBER_OF**: Staff, equipment belonging to branch
+- **AVAILABLE_AT**: Services offered at specific branches
+- **STOCK_AT**: Inventory quantities per branch
+- **BOOKED_AT**: Appointments at specific branches
+- **Transaction Target**: Set branch as `p_target_entity_id` for sales
+
+### **📊 Query Patterns**
+```bash
+# Relationship Filter
+?relationship_filter=MEMBER_OF:{branchId}
+
+# Metadata Filter
+?metadata_filter=location_id:{branchId}
+
+# Header Context (always include)
+x-hera-location-id: {branchId}
+```
+
+### **✅ Benefits**
+- **No prop drilling**: Branch context available anywhere
+- **Automatic filtering**: Pages don't manually filter
+- **Consistent UX**: Branch selection persists
+- **Type-safe**: TypeScript ensures correct usage
+
+### **⚠️ Security Note**
+Client-side branch selection is a **UI convenience**. The server MUST validate user permissions for the selected branch. Never trust client-provided location_id without server-side authorization checks.
+
 ## 🔌 MCP-FIRST DEVELOPMENT (REVOLUTIONARY)
 
 **HERA now includes a Model Context Protocol (MCP) server that gives direct access to your entire Supabase database through CLI tools, preventing memory issues and ensuring consistent universal architecture usage.**

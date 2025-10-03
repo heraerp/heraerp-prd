@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heraerp.com/schemas/preset.schema.json",
+  "title": "HERA Entity Preset",
+  "description": "Schema for HERA entity presets that define entity types, fields, and relationships",
+  "type": "object",
+  "required": ["entity_type", "smart_code", "dynamicFields"],
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_]+$",
+      "description": "Entity type in UPPER_SNAKE_CASE format",
+      "examples": ["CUSTOMER", "PRODUCT", "SALE_ORDER", "GL_ACCOUNT"]
+    },
+    "smart_code": {
+      "type": "string",
+      "pattern": "^HERA\\.[A-Z0-9]{2,15}(?:\\.[A-Z0-9_]{1,30}){2,8}\\.V[0-9]+$",
+      "description": "Smart code following HERA format: HERA.{DOMAIN}.{MODULE}.{KIND}...Vn",
+      "examples": [
+        "HERA.SALON.CUSTOMER.ENTITY.ITEM.V1",
+        "HERA.FIN.GL.ACCOUNT.ASSET.CASH.V1"
+      ]
+    },
+    "dynamicFields": {
+      "type": "array",
+      "description": "Array of dynamic fields for this entity type",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "smart_code"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]{2,40}$",
+            "description": "Field name in snake_case format"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["text", "number", "boolean", "date", "json"],
+            "description": "Data type of the field"
+          },
+          "smart_code": {
+            "type": "string",
+            "pattern": "^HERA\\.[A-Z0-9]{2,15}(?:\\.[A-Z0-9_]{1,30}){2,8}\\.V[0-9]+$",
+            "description": "Smart code for this field"
+          },
+          "required": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this field is required"
+          },
+          "default": {
+            "description": "Default value for this field"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "Array of relationship definitions",
+      "items": {
+        "type": "object",
+        "required": ["type", "smart_code", "cardinality"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]{2,50}$",
+            "description": "Relationship type in UPPER_SNAKE_CASE"
+          },
+          "smart_code": {
+            "type": "string",
+            "pattern": "^HERA\\.[A-Z0-9]{2,15}(?:\\.[A-Z0-9_]{1,30}){2,8}\\.V[0-9]+$",
+            "description": "Smart code for this relationship"
+          },
+          "cardinality": {
+            "type": "string",
+            "enum": ["ONE_TO_ONE", "ONE_TO_MANY", "MANY_TO_MANY"],
+            "description": "Cardinality of the relationship"
+          },
+          "target_entity_type": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]+$",
+            "description": "Target entity type for this relationship"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

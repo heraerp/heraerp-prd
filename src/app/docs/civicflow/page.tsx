@@ -30,19 +30,19 @@ export default function CivicflowDocsHome() {
                 </Link>
                 <Link
                   href="/docs/civicflow/getting-started"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                  className="text-sm text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                 >
                   Getting Started
                 </Link>
                 <Link
                   href="/docs/civicflow/crm-constituents"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                  className="text-sm text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                 >
                   User Guides
                 </Link>
                 <Link
                   href="/docs/civicflow/api"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                  className="text-sm text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                 >
                   API Reference
                 </Link>
@@ -59,7 +59,7 @@ export default function CivicflowDocsHome() {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl">
             Civicflow Documentation
           </h1>
-          <p className="mt-4 text-xl text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-xl text-gray-500 dark:text-gray-300">
             Everything you need to master Civicflow and transform your public sector operations
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">

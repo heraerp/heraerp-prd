@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heraerp.com/schemas/transaction_map.schema.json",
+  "title": "Entity → Transaction Type Map",
+  "description": "Maps application-level entity types to kernel-level transaction types",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["entity_type", "transaction_type"],
+    "properties": {
+      "entity_type": {
+        "type": "string",
+        "pattern": "^[A-Z0-9_]+$",
+        "description": "Application-level entity type (rich, flexible)",
+        "examples": ["SERVICE_SALE", "APPOINTMENT_CHARGE", "INVENTORY_ADJUSTMENT"]
+      },
+      "transaction_type": {
+        "type": "string",
+        "enum": ["JOURNAL", "SALES_INVOICE", "SALES_RECEIPT", "PURCHASE_BILL", "PAYMENT", "ADJUSTMENT"],
+        "description": "Kernel-level transaction type (small, stable)"
+      },
+      "version": {
+        "type": "integer",
+        "minimum": 1,
+        "default": 1,
+        "description": "Version number for this mapping"
+      },
+      "description": {
+        "type": "string",
+        "description": "Human-readable description of this mapping"
+      }
+    },
+    "additionalProperties": false
+  },
+  "examples": [
+    [
+      {
+        "entity_type": "SALE",
+        "transaction_type": "SALES_INVOICE",
+        "version": 1,
+        "description": "Standard sales mapped to invoice"
+      },
+      {
+        "entity_type": "SERVICE_SALE",
+        "transaction_type": "SALES_INVOICE", 
+        "version": 1,
+        "description": "Service sales also use invoice type"
+      },
+      {
+        "entity_type": "CUSTOMER_PAYMENT",
+        "transaction_type": "SALES_RECEIPT",
+        "version": 1,
+        "description": "Customer payments are receipts"
+      }
+    ]
+  ]
+}

@@ -106,20 +106,20 @@ Please check back shortly or contact support if this issue persists.
               </h3>
             ),
             p: ({ children }) => (
-              <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">{children}</p>
+              <p className="mb-4 text-gray-500 dark:text-gray-300 leading-relaxed">{children}</p>
             ),
             ul: ({ children }) => (
-              <ul className="mb-4 space-y-2 text-gray-700 dark:text-gray-300">{children}</ul>
+              <ul className="mb-4 space-y-2 text-gray-500 dark:text-gray-300">{children}</ul>
             ),
             ol: ({ children }) => (
-              <ol className="mb-4 space-y-2 text-gray-700 dark:text-gray-300">{children}</ol>
+              <ol className="mb-4 space-y-2 text-gray-500 dark:text-gray-300">{children}</ol>
             ),
             li: ({ children }) => <li className="ml-4">{children}</li>,
             strong: ({ children }) => (
               <strong className="font-semibold text-gray-900 dark:text-gray-100">{children}</strong>
             ),
             em: ({ children }) => (
-              <em className="italic text-gray-700 dark:text-gray-300">{children}</em>
+              <em className="italic text-gray-500 dark:text-gray-300">{children}</em>
             ),
             code: ({ className, children }) => {
               if (className?.includes('language-')) {

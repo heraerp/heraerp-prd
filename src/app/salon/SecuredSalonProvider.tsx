@@ -29,6 +29,14 @@ import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { useSalonSecurityStore } from '@/lib/salon/security-store'
 
+interface Branch {
+  id: string
+  entity_name: string
+  entity_code?: string
+  dynamic_fields?: any
+  metadata?: any
+}
+
 interface SalonSecurityContext extends SecurityContext {
   salonRole: 'owner' | 'manager' | 'receptionist' | 'stylist' | 'accountant' | 'admin'
   permissions: string[]
@@ -40,6 +48,11 @@ interface SalonSecurityContext extends SecurityContext {
   user: any
   isLoading: boolean
   isAuthenticated: boolean
+  // Branch context
+  selectedBranchId: string | null
+  selectedBranch: Branch | null
+  availableBranches: Branch[]
+  setSelectedBranchId: (branchId: string) => void
 }
 
 interface SalonAuthError {
@@ -105,6 +118,16 @@ const SALON_ROLE_PERMISSIONS = {
 export function SecuredSalonProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const securityStore = useSalonSecurityStore()
+  
+  // Branch state
+  const [selectedBranchId, setSelectedBranchIdState] = useState<string | null>(() => {
+    // Try to restore from localStorage
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('selectedBranchId')
+    }
+    return null
+  })
+  const [availableBranches, setAvailableBranches] = useState<Branch[]>([])
 
   // Initialize context from store if available
   const [context, setContext] = useState<SalonSecurityContext>(() => {
@@ -123,7 +146,11 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         },
         user: securityStore.user,
         isLoading: false, // Already initialized
-        isAuthenticated: true
+        isAuthenticated: true,
+        selectedBranchId: null,
+        selectedBranch: null,
+        availableBranches: [],
+        setSelectedBranchId: () => {}
       }
     }
 
@@ -137,7 +164,11 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       organization: { id: HAIRTALKZ_ORG_ID, name: 'HairTalkz' },
       user: null,
       isLoading: true,
-      isAuthenticated: false
+      isAuthenticated: false,
+      selectedBranchId: null,
+      selectedBranch: null,
+      availableBranches: [],
+      setSelectedBranchId: () => {}
     }
   })
 
@@ -279,6 +310,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       // Load organization details
       const organization = await loadOrganizationDetails(securityContext.orgId)
+      
+      // Load branches for the organization
+      const branches = await loadBranches(securityContext.orgId)
 
       // Update context with secure data
       setContext({
@@ -288,7 +322,11 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         organization,
         user: session.user,
         isLoading: false,
-        isAuthenticated: true
+        isAuthenticated: true,
+        selectedBranchId,
+        selectedBranch: branches.find(b => b.id === selectedBranchId) || null,
+        availableBranches: branches,
+        setSelectedBranchId: handleSetBranch
       })
 
       // Store in persistent store with all data
@@ -467,6 +505,55 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   }
 
   /**
+   * Load branches for organization
+   */
+  const loadBranches = async (orgId: string): Promise<Branch[]> => {
+    try {
+      const { data: branches, error } = await supabase
+        .from('core_entities')
+        .select('*')
+        .eq('organization_id', orgId)
+        .eq('entity_type', 'BRANCH')
+        .eq('status', 'active')
+        .order('entity_name')
+
+      if (error) {
+        console.error('Failed to load branches:', error)
+        return []
+      }
+
+      setAvailableBranches(branches || [])
+      
+      // Set default branch if not already selected
+      if (!selectedBranchId && branches && branches.length > 0) {
+        const defaultBranch = branches.find(b => b.entity_code === 'BR-001') || branches[0]
+        setSelectedBranchIdState(defaultBranch.id)
+        localStorage.setItem('selectedBranchId', defaultBranch.id)
+      }
+
+      return branches || []
+    } catch (error) {
+      console.error('Failed to load branches:', error)
+      return []
+    }
+  }
+
+  /**
+   * Handle branch selection
+   */
+  const handleSetBranch = (branchId: string) => {
+    setSelectedBranchIdState(branchId)
+    localStorage.setItem('selectedBranchId', branchId)
+    
+    // Update context with new branch
+    setContext(prev => ({
+      ...prev,
+      selectedBranchId: branchId,
+      selectedBranch: availableBranches.find(b => b.id === branchId) || null
+    }))
+  }
+
+  /**
    * Clear security context
    */
   const clearContext = () => {
@@ -478,13 +565,17 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       permissions: [],
       user: null,
       isLoading: false,
-      isAuthenticated: false
+      isAuthenticated: false,
+      selectedBranchId: null,
+      selectedBranch: null,
+      availableBranches: []
     }))
 
     // Clear localStorage
     localStorage.removeItem('salonRole')
     localStorage.removeItem('organizationId')
     localStorage.removeItem('userPermissions')
+    localStorage.removeItem('selectedBranchId')
 
     setAuthError(null)
     setRetryCount(0)

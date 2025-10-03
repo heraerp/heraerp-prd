@@ -245,6 +245,29 @@ ANY Business = Entities + Relationships + Transactions + Dynamic Properties
 
 ---
 
+## 🎯 **Key Production Patterns**
+
+### **⚛️ Client-Side Branch Selection**
+Multi-location businesses use React Context for branch filtering:
+- **User selects branch** → All data automatically filtered
+- **No prop drilling** → Branch context available everywhere
+- **Automatic relationships** → New entities linked to selected branch
+- **Query patterns** → `MEMBER_OF`, `AVAILABLE_AT`, `BOOKED_AT`
+- **Full guide**: [Client-Side Branch Selection Pattern](docs/patterns/CLIENT-SIDE-BRANCH-SELECTION.md)
+
+### **🔐 Multi-Tenant Architecture**
+- Organization-based isolation with subdomain routing
+- Perfect data separation between businesses
+- See: [Multi-Tenant Auth Guide](MULTI-TENANT-AUTH-GUIDE.md)
+
+### **🧬 Universal Patterns**
+- Entity normalization with duplicate detection
+- Smart code classification system
+- Auto-journal posting engine
+- See: [CLAUDE.md](CLAUDE.md) for all patterns
+
+---
+
 ## 🚀 **Get Started**
 
 ### **Try the Universal System**

@@ -6,8 +6,8 @@ import React, { useState } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { ServiceList } from '@/components/salon/services/ServiceList'
+import { BranchSelector } from '@/components/salon/BranchSelector'
 import { ServiceModal } from '@/components/salon/services/ServiceModal'
 import { ServiceCategoryModal } from '@/components/salon/services/ServiceCategoryModal'
 import { useToast } from '@/components/ui/use-toast'
@@ -67,17 +67,16 @@ const COLORS = {
 }
 
 function SalonServicesPageContent() {
-  const { organizationId, currency } = useSecuredSalonContext()
+  const { 
+    organization, 
+    currency,
+    selectedBranchId,
+    availableBranches,
+    setSelectedBranchId,
+    isLoadingBranches 
+  } = useSecuredSalonContext()
   const { toast } = useToast()
-
-  // Branch filter hook
-  const {
-    branchId,
-    branches,
-    loading: branchesLoading,
-    setBranchId,
-    hasMultipleBranches
-  } = useBranchFilter(undefined, 'salon-services')
+  const organizationId = organization?.id
 
   // State
   const [searchQuery, setSearchQuery] = useState('')
@@ -148,10 +147,8 @@ function SalonServicesPageContent() {
       }
     }
 
-    // Branch filter
-    if (branchId && service.metadata?.branch_id !== branchId) {
-      return false
-    }
+    // Branch filter - TODO: Update this to use relationships once services are linked to branches
+    // For now, services are shown regardless of selected branch
 
     // Category filter
     if (categoryFilter && service.category !== categoryFilter) {
@@ -547,7 +544,7 @@ function SalonServicesPageContent() {
               </Button>
 
               <div className="flex items-center gap-2">
-                {branchId && (
+                {selectedBranchId && (
                   <div
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium"
                     style={{
@@ -557,10 +554,10 @@ function SalonServicesPageContent() {
                     }}
                   >
                     <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                    <span>{branches.find(b => b.id === branchId)?.name || 'Branch'}</span>
+                    <span>{availableBranches.find(b => b.id === selectedBranchId)?.entity_name || 'Branch'}</span>
                     <X
                       className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
-                      onClick={() => setBranchId(undefined)}
+                      onClick={() => setSelectedBranchId(null)}
                       style={{ color: COLORS.gold }}
                     />
                   </div>
@@ -622,43 +619,7 @@ function SalonServicesPageContent() {
           {showFilters && (
             <div className="mx-6 mt-4 pt-4 border-t border-border flex items-center gap-4">
               {/* Branch Filter */}
-              <Select
-                value={branchId || '__ALL__'}
-                onValueChange={value => setBranchId(value === '__ALL__' ? undefined : value)}
-              >
-                <SelectTrigger className="w-52 bg-background/30 border-border">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
-                    <SelectValue placeholder="All Locations" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__ALL__">All Locations</SelectItem>
-                  {branchesLoading ? (
-                    <div className="px-2 py-3 text-center text-sm" style={{ color: COLORS.bronze }}>
-                      Loading...
-                    </div>
-                  ) : branches.length === 0 ? (
-                    <div className="px-2 py-3 text-center text-sm" style={{ color: COLORS.bronze }}>
-                      No branches
-                    </div>
-                  ) : (
-                    branches.map(branch => (
-                      <SelectItem key={branch.id} value={branch.id}>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
-                          <div className="flex flex-col">
-                            <span className="font-medium">{branch.name}</span>
-                            {branch.code && (
-                              <span className="text-xs opacity-60">{branch.code}</span>
-                            )}
-                          </div>
-                        </div>
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
+              <BranchSelector variant="default" />
 
               {/* Category Filter */}
               <Select

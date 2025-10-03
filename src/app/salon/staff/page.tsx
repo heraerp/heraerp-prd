@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { useHeraStaff, type StaffFormValues } from '@/hooks/useHeraStaff'
 import { useHeraRoles, type RoleFormValues, type Role } from '@/hooks/useHeraRoles'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { RoleModal } from './RoleModal'
+import { BranchSelector } from '@/components/salon/BranchSelector'
 import {
   Plus,
   Clock,
@@ -66,8 +66,16 @@ interface StaffStats {
 }
 
 function StaffContent() {
-  const { user, organizationId } = useSalonContext()
+  const { 
+    user, 
+    organization,
+    selectedBranchId,
+    availableBranches,
+    setSelectedBranchId,
+    isLoadingBranches 
+  } = useSecuredSalonContext()
   const { toast } = useToast()
+  const organizationId = organization?.id
 
   // Use the new useHeraStaff hook
   const { staff, isLoading, error, createStaff, isCreating, refetch } = useHeraStaff({
@@ -98,15 +106,6 @@ function StaffContent() {
   const [activeTab, setActiveTab] = useState<'staff' | 'roles'>('staff')
   const [roleSearchTerm, setRoleSearchTerm] = useState('')
   const [staffModalOpen, setStaffModalOpen] = useState(false)
-
-  // Branch filter hook
-  const {
-    branchId,
-    branches,
-    loading: branchesLoading,
-    setBranchId,
-    hasMultipleBranches
-  } = useBranchFilter(organizationId, 'salon-staff-list')
 
   const [newStaff, setNewStaff] = useState<StaffFormValues>({
     first_name: '',
@@ -247,10 +246,9 @@ function StaffContent() {
         s.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.role_title?.toLowerCase().includes(searchTerm.toLowerCase())
 
-      // Branch filter
-      const matchesBranch = !branchId || s.metadata?.branch_id === branchId
-
-      return matchesSearch && matchesBranch
+      // Branch filter - TODO: Update this to use relationships once staff are linked to branches
+      // For now, all staff are shown regardless of selected branch
+      return matchesSearch
     }) || []
 
   const filteredRoles =
@@ -821,44 +819,11 @@ function StaffContent() {
                   />
                 </div>
 
-                <div className="w-64">
-                  <Select
-                    value={branchId || '__ALL__'}
-                    onValueChange={value => setBranchId(value === '__ALL__' ? '' : value)}
-                  >
-                    <SelectTrigger
-                      className="border-0 outline-none"
-                      style={{
-                        backgroundColor: COLORS.charcoalLight,
-                        border: `1px solid ${COLORS.gold}30`,
-                        color: COLORS.champagne
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4" style={{ color: COLORS.bronze }} />
-                        <SelectValue placeholder="All locations" />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__ALL__">All locations</SelectItem>
-                      {branchesLoading ? (
-                        <SelectItem value="__LOADING__" disabled>
-                          Loading...
-                        </SelectItem>
-                      ) : (
-                        branches.map(branch => (
-                          <SelectItem key={branch.id} value={branch.id}>
-                            {branch.entity_name || 'Unnamed Branch'}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <BranchSelector variant="default" />
               </div>
 
               {/* Active Filters */}
-              {branchId && (
+              {selectedBranchId && (
                 <div className="flex items-center gap-2">
                   <span className="text-sm" style={{ color: COLORS.bronze }}>
                     Active filters:
@@ -870,16 +835,16 @@ function StaffContent() {
                       color: COLORS.gold,
                       borderColor: 'rgba(212, 175, 55, 0.3)'
                     }}
-                    onClick={() => setBranchId('')}
+                    onClick={() => setSelectedBranchId(null)}
                   >
                     <Building2 className="w-3 h-3" />
                     <MapPin className="w-3 h-3" />
-                    {branches.find(b => b.id === branchId)?.entity_name || 'Branch'}
+                    {availableBranches.find(b => b.id === selectedBranchId)?.entity_name || 'Branch'}
                     <button
                       className="ml-1 hover:text-white"
                       onClick={e => {
                         e.stopPropagation()
-                        setBranchId('')
+                        setSelectedBranchId(null)
                       }}
                     >
                       ×

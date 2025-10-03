@@ -1,0 +1,74 @@
+[
+  {
+    "entity_type": "SALE",
+    "transaction_type": "SALES_INVOICE",
+    "version": 1,
+    "description": "Standard sales transactions"
+  },
+  {
+    "entity_type": "SERVICE_SALE",
+    "transaction_type": "SALES_INVOICE",
+    "version": 1,
+    "description": "Service-based sales"
+  },
+  {
+    "entity_type": "APPOINTMENT_CHARGE",
+    "transaction_type": "SALES_INVOICE",
+    "version": 1,
+    "description": "Charges from appointments"
+  },
+  {
+    "entity_type": "PURCHASE",
+    "transaction_type": "PURCHASE_BILL",
+    "version": 1,
+    "description": "Standard purchase transactions"
+  },
+  {
+    "entity_type": "INVENTORY_PURCHASE",
+    "transaction_type": "PURCHASE_BILL",
+    "version": 1,
+    "description": "Inventory purchases"
+  },
+  {
+    "entity_type": "CUSTOMER_PAYMENT",
+    "transaction_type": "SALES_RECEIPT",
+    "version": 1,
+    "description": "Payments received from customers"
+  },
+  {
+    "entity_type": "PAYMENT",
+    "transaction_type": "PAYMENT",
+    "version": 1,
+    "description": "General payments"
+  },
+  {
+    "entity_type": "VENDOR_PAYMENT",
+    "transaction_type": "PAYMENT",
+    "version": 1,
+    "description": "Payments to vendors"
+  },
+  {
+    "entity_type": "RECEIPT",
+    "transaction_type": "SALES_RECEIPT",
+    "version": 1,
+    "description": "General receipts"
+  },
+  {
+    "entity_type": "JOURNAL_ENTRY",
+    "transaction_type": "JOURNAL",
+    "version": 1,
+    "description": "Manual journal entries"
+  },
+  {
+    "entity_type": "ADJUSTMENT",
+    "transaction_type": "ADJUSTMENT",
+    "version": 1,
+    "description": "General adjustments"
+  },
+  {
+    "entity_type": "INVENTORY_ADJUSTMENT",
+    "transaction_type": "ADJUSTMENT",
+    "version": 1,
+    "description": "Inventory adjustments"
+  }
+]
