@@ -3,7 +3,7 @@
 import React from 'react'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 import { BRANCH_PRESET } from '@/hooks/entityPresets'
-import { EntityPage, EntityForm } from '@/components/entity-forms'
+import { EntityForm } from '@/lib/entity-framework/EntityForm'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
