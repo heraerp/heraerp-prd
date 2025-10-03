@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Save, Package } from 'lucide-react'
-import { useSalonContext } from '@/features/salon/context/SalonContext'
+import { useSecuredSalonContext } from '../../SecuredSalonProvider'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { useHeraProductCategories } from '@/hooks/useHeraProductCategories'
 import { Product } from '@/types/salon-product'
-import { StatusToastProvider, useStatusToast } from '@/components/salon/StatusToast'
+import { useToast } from '@/components/ui/use-toast'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -24,8 +24,8 @@ const COLORS = {
 function ProductDetailContent() {
   const router = useRouter()
   const params = useParams()
-  const { organizationId } = useSalonContext()
-  const { showSuccess, showError, showLoading, removeToast } = useStatusToast()
+  const { organizationId } = useSecuredSalonContext()
+  const { toast } = useToast()
 
   const productId = params.id as string
   const isNewProduct = productId === 'new'
@@ -76,7 +76,12 @@ function ProductDetailContent() {
             // Map dynamic fields
             const fieldMap: Record<string, any> = {}
             dynamicFields.forEach((field: any) => {
-              const value = field.field_value_number ?? field.field_value_text ?? field.field_value_boolean ?? field.field_value_json ?? null
+              const value =
+                field.field_value_number ??
+                field.field_value_text ??
+                field.field_value_boolean ??
+                field.field_value_json ??
+                null
               fieldMap[field.field_name] = value
             })
 
@@ -129,7 +134,11 @@ function ProductDetailContent() {
     e.preventDefault()
 
     if (!formData.entity_name.trim()) {
-      showError('Validation Error', 'Product name is required')
+      toast({
+        title: 'Validation Error',
+        description: 'Product name is required',
+        variant: 'destructive'
+      })
       return
     }
 
@@ -138,21 +147,24 @@ function ProductDetailContent() {
     const sellingPrice = parseFloat(formData.price) || 0
 
     if (costPrice < 0 || sellingPrice < 0) {
-      showError('Validation Error', 'Prices must be non-negative')
+      toast({
+        title: 'Validation Error',
+        description: 'Prices must be non-negative',
+        variant: 'destructive'
+      })
       return
     }
 
     // Warning if selling price is below cost (but don't block submission)
     if (sellingPrice > 0 && sellingPrice < costPrice) {
-      const warningId = showLoading('Warning: Selling price is below cost', 'Saving anyway...')
-      setTimeout(() => removeToast(warningId), 2000)
+      toast({
+        title: 'Warning: Selling price is below cost',
+        description: 'Saving anyway...',
+        duration: 2000
+      })
     }
 
     setIsSaving(true)
-    const loadingId = showLoading(
-      isNewProduct ? 'Creating product...' : 'Updating product...',
-      'Please wait'
-    )
 
     try {
       const productData = {
@@ -176,21 +188,25 @@ function ProductDetailContent() {
 
       if (isNewProduct) {
         await createProduct(productData)
-        removeToast(loadingId)
-        showSuccess('Product created', `${formData.entity_name} has been created successfully`)
+        toast({
+          title: 'Product created',
+          description: `${formData.entity_name} has been created successfully`
+        })
       } else {
         await updateProduct(productId, productData)
-        removeToast(loadingId)
-        showSuccess('Product updated', `${formData.entity_name} has been updated successfully`)
+        toast({
+          title: 'Product updated',
+          description: `${formData.entity_name} has been updated successfully`
+        })
       }
 
       router.push('/salon/products')
     } catch (error: any) {
-      removeToast(loadingId)
-      showError(
-        isNewProduct ? 'Failed to create product' : 'Failed to update product',
-        error.message || 'Please try again'
-      )
+      toast({
+        title: isNewProduct ? 'Failed to create product' : 'Failed to update product',
+        description: error.message || 'Please try again',
+        variant: 'destructive'
+      })
     } finally {
       setIsSaving(false)
     }
@@ -202,7 +218,10 @@ function ProductDetailContent() {
 
   if (!organizationId) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: COLORS.black }}>
+      <div
+        className="flex items-center justify-center min-h-screen"
+        style={{ backgroundColor: COLORS.black }}
+      >
         <div style={{ color: COLORS.lightText }}>Loading...</div>
       </div>
     )
@@ -211,7 +230,10 @@ function ProductDetailContent() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.black }}>
       {/* Header */}
-      <div className="border-b" style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}>
+      <div
+        className="border-b"
+        style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}
+      >
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -279,13 +301,16 @@ function ProductDetailContent() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Product Name *
                 </label>
                 <input
                   type="text"
                   value={formData.entity_name}
-                  onChange={(e) => handleChange('entity_name', e.target.value)}
+                  onChange={e => handleChange('entity_name', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -298,13 +323,16 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Product Code
                 </label>
                 <input
                   type="text"
                   value={formData.entity_code}
-                  onChange={(e) => handleChange('entity_code', e.target.value)}
+                  onChange={e => handleChange('entity_code', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -316,12 +344,15 @@ function ProductDetailContent() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Description
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => handleChange('description', e.target.value)}
+                  onChange={e => handleChange('description', e.target.value)}
                   rows={3}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
@@ -334,12 +365,15 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Category
                 </label>
                 <select
                   value={formData.category}
-                  onChange={(e) => handleChange('category', e.target.value)}
+                  onChange={e => handleChange('category', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -348,7 +382,7 @@ function ProductDetailContent() {
                   }}
                 >
                   <option value="">Select a category</option>
-                  {categories.map((cat) => (
+                  {categories.map(cat => (
                     <option key={cat.id} value={cat.entity_name}>
                       {cat.entity_name}
                     </option>
@@ -357,13 +391,16 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Brand
                 </label>
                 <input
                   type="text"
                   value={formData.brand}
-                  onChange={(e) => handleChange('brand', e.target.value)}
+                  onChange={e => handleChange('brand', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -390,7 +427,10 @@ function ProductDetailContent() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Cost Price
                 </label>
                 <div className="relative">
@@ -398,7 +438,7 @@ function ProductDetailContent() {
                     type="number"
                     step="0.01"
                     value={formData.cost}
-                    onChange={(e) => handleChange('cost', e.target.value)}
+                    onChange={e => handleChange('cost', e.target.value)}
                     className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                     style={{
                       backgroundColor: COLORS.charcoalLight,
@@ -417,7 +457,10 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Selling Price
                 </label>
                 <div className="relative">
@@ -425,7 +468,7 @@ function ProductDetailContent() {
                     type="number"
                     step="0.01"
                     value={formData.price}
-                    onChange={(e) => handleChange('price', e.target.value)}
+                    onChange={e => handleChange('price', e.target.value)}
                     className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                     style={{
                       backgroundColor: COLORS.charcoalLight,
@@ -444,7 +487,10 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Profit Margin
                 </label>
                 <div
@@ -460,7 +506,7 @@ function ProductDetailContent() {
                       const cost = parseFloat(formData.cost) || 0
                       const price = parseFloat(formData.price) || 0
                       if (price === 0) return '0%'
-                      const margin = ((price - cost) / price * 100).toFixed(1)
+                      const margin = (((price - cost) / price) * 100).toFixed(1)
                       return `${margin}%`
                     })()}
                   </span>
@@ -476,13 +522,16 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Quantity on Hand
                 </label>
                 <input
                   type="number"
                   value={formData.qty_on_hand}
-                  onChange={(e) => handleChange('qty_on_hand', e.target.value)}
+                  onChange={e => handleChange('qty_on_hand', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -494,13 +543,16 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   SKU
                 </label>
                 <input
                   type="text"
                   value={formData.sku}
-                  onChange={(e) => handleChange('sku', e.target.value)}
+                  onChange={e => handleChange('sku', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -512,13 +564,16 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Barcode
                 </label>
                 <input
                   type="text"
                   value={formData.barcode}
-                  onChange={(e) => handleChange('barcode', e.target.value)}
+                  onChange={e => handleChange('barcode', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -530,13 +585,16 @@ function ProductDetailContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Size
                 </label>
                 <input
                   type="text"
                   value={formData.size}
-                  onChange={(e) => handleChange('size', e.target.value)}
+                  onChange={e => handleChange('size', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -553,7 +611,7 @@ function ProductDetailContent() {
                 <input
                   type="checkbox"
                   checked={formData.requires_inventory}
-                  onChange={(e) => handleChange('requires_inventory', e.target.checked)}
+                  onChange={e => handleChange('requires_inventory', e.target.checked)}
                   className="w-4 h-4 rounded"
                   style={{
                     accentColor: COLORS.gold
@@ -580,13 +638,16 @@ function ProductDetailContent() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: COLORS.lightText }}>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: COLORS.lightText }}
+                >
                   Supplier Name
                 </label>
                 <input
                   type="text"
                   value={formData.supplier_name}
-                  onChange={(e) => handleChange('supplier_name', e.target.value)}
+                  onChange={e => handleChange('supplier_name', e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
@@ -605,9 +666,5 @@ function ProductDetailContent() {
 }
 
 export default function ProductDetailPage() {
-  return (
-    <StatusToastProvider>
-      <ProductDetailContent />
-    </StatusToastProvider>
-  )
+  return <ProductDetailContent />
 }

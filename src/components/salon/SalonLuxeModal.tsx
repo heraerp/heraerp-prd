@@ -87,7 +87,7 @@ export function SalonLuxeModal({
           `,
           animation: 'scaleIn 0.2s ease-out'
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         {/* Gold accent line */}
         <div

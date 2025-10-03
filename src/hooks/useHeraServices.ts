@@ -26,7 +26,12 @@ export function useHeraServices({
   const queryClient = useQueryClient()
 
   // Fetch services with dynamic data
-  const { data: entities, isLoading, error, refetch } = useQuery({
+  const {
+    data: entities,
+    isLoading,
+    error,
+    refetch
+  } = useQuery({
     queryKey: ['services', organizationId, { includeArchived }],
     queryFn: async () => {
       if (!organizationId) throw new Error('Organization ID required')
@@ -145,9 +150,7 @@ export function useHeraServices({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'services' &&
-          query.queryKey[1] === organizationId
+        predicate: query => query.queryKey[0] === 'services' && query.queryKey[1] === organizationId
       })
     }
   })
@@ -163,9 +166,7 @@ export function useHeraServices({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'services' &&
-          query.queryKey[1] === organizationId
+        predicate: query => query.queryKey[0] === 'services' && query.queryKey[1] === organizationId
       })
     }
   })
@@ -174,26 +175,25 @@ export function useHeraServices({
   const services = useMemo(() => {
     if (!entities) return []
 
-    return entities
-      .filter(entity => {
-        // Status filter
-        if (!includeArchived && entity.status === 'archived') return false
+    return entities.filter(entity => {
+      // Status filter
+      if (!includeArchived && entity.status === 'archived') return false
 
-        // Search filter
-        if (searchQuery) {
-          const query = searchQuery.toLowerCase()
-          return (
-            entity.entity_name?.toLowerCase().includes(query) ||
-            entity.entity_code?.toLowerCase().includes(query) ||
-            entity.category?.toLowerCase().includes(query)
-          )
-        }
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        return (
+          entity.entity_name?.toLowerCase().includes(query) ||
+          entity.entity_code?.toLowerCase().includes(query) ||
+          entity.category?.toLowerCase().includes(query)
+        )
+      }
 
-        // Category filter
-        if (categoryFilter && entity.category !== categoryFilter) return false
+      // Category filter
+      if (categoryFilter && entity.category !== categoryFilter) return false
 
-        return true
-      })
+      return true
+    })
   }, [entities, includeArchived, searchQuery, categoryFilter])
 
   // Create service
@@ -245,7 +245,11 @@ export function useHeraServices({
         if (f.type === 'number') {
           return { field_name: f.name, field_type: 'number', field_value_number: Number(f.value) }
         } else if (f.type === 'boolean') {
-          return { field_name: f.name, field_type: 'boolean', field_value_boolean: Boolean(f.value) }
+          return {
+            field_name: f.name,
+            field_type: 'boolean',
+            field_value_boolean: Boolean(f.value)
+          }
         } else {
           return { field_name: f.name, field_type: 'text', field_value: String(f.value) }
         }
@@ -262,9 +266,7 @@ export function useHeraServices({
 
     // 4. Invalidate cache
     queryClient.invalidateQueries({
-      predicate: (query) =>
-        query.queryKey[0] === 'services' &&
-        query.queryKey[1] === organizationId
+      predicate: query => query.queryKey[0] === 'services' && query.queryKey[1] === organizationId
     })
 
     console.log('[useHeraServices] Service created successfully')
@@ -310,7 +312,11 @@ export function useHeraServices({
         if (f.type === 'number') {
           return { field_name: f.name, field_type: 'number', field_value_number: Number(f.value) }
         } else if (f.type === 'boolean') {
-          return { field_name: f.name, field_type: 'boolean', field_value_boolean: Boolean(f.value) }
+          return {
+            field_name: f.name,
+            field_type: 'boolean',
+            field_value_boolean: Boolean(f.value)
+          }
         } else {
           return { field_name: f.name, field_type: 'text', field_value: String(f.value) }
         }
@@ -326,9 +332,7 @@ export function useHeraServices({
 
       // CRITICAL: Invalidate cache after dynamic data update
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'services' &&
-          query.queryKey[1] === organizationId
+        predicate: query => query.queryKey[0] === 'services' && query.queryKey[1] === organizationId
       })
     }
 

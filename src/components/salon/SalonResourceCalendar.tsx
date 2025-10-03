@@ -401,31 +401,37 @@ export function SalonResourceCalendar({
   }, [])
 
   // Handle drag over
-  const handleDragOver = useCallback((e: React.DragEvent, date: Date, time: string, stylistId: string) => {
-    e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
-    setDropTarget({ date, time, stylistId })
-  }, [])
+  const handleDragOver = useCallback(
+    (e: React.DragEvent, date: Date, time: string, stylistId: string) => {
+      e.preventDefault()
+      e.dataTransfer.dropEffect = 'move'
+      setDropTarget({ date, time, stylistId })
+    },
+    []
+  )
 
   // Handle drop
-  const handleDrop = useCallback((e: React.DragEvent, date: Date, time: string, stylistId: string) => {
-    e.preventDefault()
-    if (!draggedAppointment) return
+  const handleDrop = useCallback(
+    (e: React.DragEvent, date: Date, time: string, stylistId: string) => {
+      e.preventDefault()
+      if (!draggedAppointment) return
 
-    setDraggedAppointment(null)
-    setDropTarget(null)
+      setDraggedAppointment(null)
+      setDropTarget(null)
 
-    // TODO: Call Playbook API to update the appointment
-    console.log('Moved appointment:', {
-      appointmentId: draggedAppointment.id,
-      newDate: date,
-      newTime: time,
-      newStylist: stylistId
-    })
+      // TODO: Call Playbook API to update the appointment
+      console.log('Moved appointment:', {
+        appointmentId: draggedAppointment.id,
+        newDate: date,
+        newTime: time,
+        newStylist: stylistId
+      })
 
-    // After API call succeeds, the useCalendarPlaybook hook will automatically
-    // refresh the data and update the UI
-  }, [draggedAppointment])
+      // After API call succeeds, the useCalendarPlaybook hook will automatically
+      // refresh the data and update the UI
+    },
+    [draggedAppointment]
+  )
 
   // Handle keyboard navigation
   const handleKeyNavigation = useCallback(

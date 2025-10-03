@@ -6,7 +6,8 @@ export const revalidate = 300
 
 export const metadata = {
   title: 'HERA Partners | Implementation & Integration Partners',
-  description: 'Implementation and integration partners for HERA ERP across regions and industries. Find certified consultants and system integrators.',
+  description:
+    'Implementation and integration partners for HERA ERP across regions and industries. Find certified consultants and system integrators.',
   alternates: { canonical: canonical('/partners') }
 }
 

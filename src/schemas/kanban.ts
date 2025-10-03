@@ -21,7 +21,12 @@ export const KANBAN_COLUMNS: { key: KanbanStatus; label: string }[] = [
   { key: 'CANCELLED', label: 'Cancelled' }
 ]
 
-export type CancellationReason = 'no_show' | 'customer_request' | 'staff_unavailable' | 'emergency' | 'other'
+export type CancellationReason =
+  | 'no_show'
+  | 'customer_request'
+  | 'staff_unavailable'
+  | 'emergency'
+  | 'other'
 
 export type KanbanCard = {
   id: string

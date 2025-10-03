@@ -49,7 +49,13 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import {
   Loader2,
@@ -163,7 +169,9 @@ function ProductCategoryDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>{initialCategory ? 'Edit Product Category' : 'Create Product Category'}</DialogTitle>
+          <DialogTitle>
+            {initialCategory ? 'Edit Product Category' : 'Create Product Category'}
+          </DialogTitle>
           <DialogDescription>
             Configure how retail categories appear across the production salon experience.
           </DialogDescription>
@@ -493,10 +501,10 @@ function CategoriesPageContent() {
                               backgroundColor: (category.color || DEFAULT_COLOR) + '14'
                             }}
                           >
-                          <IconComponent
-                            className="h-4 w-4"
-                            style={{ color: category.color || DEFAULT_COLOR }}
-                          />
+                            <IconComponent
+                              className="h-4 w-4"
+                              style={{ color: category.color || DEFAULT_COLOR }}
+                            />
                           </span>
                           <div>
                             <p className="font-medium text-slate-100">{category.entity_name}</p>
@@ -506,59 +514,65 @@ function CategoriesPageContent() {
                           </div>
                         </div>
                       </TableCell>
-                    <TableCell className="text-slate-300">{category.entity_code || '—'}</TableCell>
-                    <TableCell className="text-slate-300">{category.sort_order}</TableCell>
-                    <TableCell className="text-slate-300">{category.product_count ?? 0}</TableCell>
-                    <TableCell>
-                      {category.status === 'archived' ? (
-                        <Badge variant="outline" className="border-slate-700 text-slate-400">
-                          Archived
-                        </Badge>
-                      ) : (
-                        <Badge style={{ backgroundColor: (category.color || DEFAULT_COLOR) + '20' }}>
-                          Active
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-sm text-slate-400">
-                      {category.updated_at
-                        ? formatDistanceToNow(new Date(category.updated_at), { addSuffix: true })
-                        : '—'}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleEdit(category)}
-                          className="text-slate-300 hover:text-slate-100"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleArchiveToggle(category)}
-                          className="text-slate-300 hover:text-slate-100"
-                          disabled={isArchiving}
-                        >
-                          {category.status === 'archived' ? (
-                            <ArchiveRestore className="h-4 w-4" />
-                          ) : (
-                            <Archive className="h-4 w-4" />
-                          )}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteRequest(category)}
-                          className="text-red-300 hover:text-red-200"
-                          disabled={isDeleting}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+                      <TableCell className="text-slate-300">
+                        {category.entity_code || '—'}
+                      </TableCell>
+                      <TableCell className="text-slate-300">{category.sort_order}</TableCell>
+                      <TableCell className="text-slate-300">
+                        {category.product_count ?? 0}
+                      </TableCell>
+                      <TableCell>
+                        {category.status === 'archived' ? (
+                          <Badge variant="outline" className="border-slate-700 text-slate-400">
+                            Archived
+                          </Badge>
+                        ) : (
+                          <Badge
+                            style={{ backgroundColor: (category.color || DEFAULT_COLOR) + '20' }}
+                          >
+                            Active
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-sm text-slate-400">
+                        {category.updated_at
+                          ? formatDistanceToNow(new Date(category.updated_at), { addSuffix: true })
+                          : '—'}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEdit(category)}
+                            className="text-slate-300 hover:text-slate-100"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleArchiveToggle(category)}
+                            className="text-slate-300 hover:text-slate-100"
+                            disabled={isArchiving}
+                          >
+                            {category.status === 'archived' ? (
+                              <ArchiveRestore className="h-4 w-4" />
+                            ) : (
+                              <Archive className="h-4 w-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteRequest(category)}
+                            className="text-red-300 hover:text-red-200"
+                            disabled={isDeleting}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   )
                 })}
@@ -592,8 +606,8 @@ function CategoriesPageContent() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete category</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove {categoryToDelete?.entity_name}. Products using this category
-              retain historical references but new POS & inventory flows need reassignment.
+              This will permanently remove {categoryToDelete?.entity_name}. Products using this
+              category retain historical references but new POS & inventory flows need reassignment.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

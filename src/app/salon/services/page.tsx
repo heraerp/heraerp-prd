@@ -14,7 +14,22 @@ import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/Status
 import { Service, ServiceFormValues } from '@/types/salon-service'
 import { ServiceCategory, ServiceCategoryFormValues } from '@/types/salon-service'
 import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
-import { Plus, Grid3X3, List, Sparkles, Search, Download, Filter, X, Tag, FolderPlus, AlertTriangle, Clock, Building2, MapPin } from 'lucide-react'
+import {
+  Plus,
+  Grid3X3,
+  List,
+  Sparkles,
+  Search,
+  Download,
+  Filter,
+  X,
+  Tag,
+  FolderPlus,
+  AlertTriangle,
+  Clock,
+  Building2,
+  MapPin
+} from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -33,7 +48,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 
 const COLORS = {
@@ -290,9 +305,11 @@ function SalonServicesPageContent() {
   const totalRevenue = services
     .filter(s => s.status === 'active')
     .reduce((sum, service) => sum + (service.price || 0), 0)
-  const avgDuration = services.length > 0
-    ? services.reduce((sum, service) => sum + (service.duration_minutes || 0), 0) / services.length
-    : 0
+  const avgDuration =
+    services.length > 0
+      ? services.reduce((sum, service) => sum + (service.duration_minutes || 0), 0) /
+        services.length
+      : 0
 
   const formatDuration = (minutes: number) => {
     const hours = Math.floor(minutes / 60)
@@ -419,7 +436,7 @@ function SalonServicesPageContent() {
                         )}
                       </button>
                       <button
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation()
                           setCategoryToDelete(category)
                           setCategoryDeleteDialogOpen(true)
@@ -602,7 +619,10 @@ function SalonServicesPageContent() {
           {showFilters && (
             <div className="mx-6 mt-4 pt-4 border-t border-border flex items-center gap-4">
               {/* Branch Filter */}
-              <Select value={branchId || '__ALL__'} onValueChange={(value) => setBranchId(value === '__ALL__' ? undefined : value)}>
+              <Select
+                value={branchId || '__ALL__'}
+                onValueChange={value => setBranchId(value === '__ALL__' ? undefined : value)}
+              >
                 <SelectTrigger className="w-52 bg-background/30 border-border">
                   <div className="flex items-center gap-2">
                     <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
@@ -626,7 +646,9 @@ function SalonServicesPageContent() {
                           <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
                           <div className="flex flex-col">
                             <span className="font-medium">{branch.name}</span>
-                            {branch.code && <span className="text-xs opacity-60">{branch.code}</span>}
+                            {branch.code && (
+                              <span className="text-xs opacity-60">{branch.code}</span>
+                            )}
                           </div>
                         </div>
                       </SelectItem>
@@ -636,7 +658,10 @@ function SalonServicesPageContent() {
               </Select>
 
               {/* Category Filter */}
-              <Select value={categoryFilter || '__ALL__'} onValueChange={(value) => setCategoryFilter(value === '__ALL__' ? '' : value)}>
+              <Select
+                value={categoryFilter || '__ALL__'}
+                onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
+              >
                 <SelectTrigger className="w-48 bg-background/30 border-border">
                   <SelectValue placeholder="All categories" />
                 </SelectTrigger>
@@ -760,10 +785,15 @@ function SalonServicesPageContent() {
 
               <div className="space-y-3" style={{ color: COLORS.lightText }}>
                 <p className="text-sm">
-                  Are you sure you want to delete <span className="font-semibold" style={{ color: COLORS.champagne }}>"{serviceToDelete?.entity_name}"</span>?
+                  Are you sure you want to delete{' '}
+                  <span className="font-semibold" style={{ color: COLORS.champagne }}>
+                    "{serviceToDelete?.entity_name}"
+                  </span>
+                  ?
                 </p>
                 <p className="text-sm opacity-70">
-                  This action cannot be undone. The service will be permanently removed from your catalog.
+                  This action cannot be undone. The service will be permanently removed from your
+                  catalog.
                 </p>
               </div>
 
@@ -821,7 +851,11 @@ function SalonServicesPageContent() {
 
               <div className="space-y-3" style={{ color: COLORS.lightText }}>
                 <p className="text-sm">
-                  Are you sure you want to delete <span className="font-semibold" style={{ color: COLORS.champagne }}>"{categoryToDelete?.entity_name}"</span>?
+                  Are you sure you want to delete{' '}
+                  <span className="font-semibold" style={{ color: COLORS.champagne }}>
+                    "{categoryToDelete?.entity_name}"
+                  </span>
+                  ?
                 </p>
                 {categoryToDelete && categoryToDelete.service_count > 0 ? (
                   <div
@@ -831,15 +865,20 @@ function SalonServicesPageContent() {
                       borderColor: '#FFA50040'
                     }}
                   >
-                    <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#FFA500' }} />
+                    <AlertTriangle
+                      className="w-4 h-4 mt-0.5 flex-shrink-0"
+                      style={{ color: '#FFA500' }}
+                    />
                     <p className="text-sm">
-                      This category has <span className="font-semibold">{categoryToDelete.service_count} service(s)</span>. Please reassign or delete those services first.
+                      This category has{' '}
+                      <span className="font-semibold">
+                        {categoryToDelete.service_count} service(s)
+                      </span>
+                      . Please reassign or delete those services first.
                     </p>
                   </div>
                 ) : (
-                  <p className="text-sm opacity-70">
-                    This action cannot be undone.
-                  </p>
+                  <p className="text-sm opacity-70">This action cannot be undone.</p>
                 )}
               </div>
 
@@ -856,7 +895,9 @@ function SalonServicesPageContent() {
                 </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDeleteCategory}
-                  disabled={isDeletingCategory || (categoryToDelete && categoryToDelete.service_count > 0)}
+                  disabled={
+                    isDeletingCategory || (categoryToDelete && categoryToDelete.service_count > 0)
+                  }
                   className="bg-red-500 hover:bg-red-600 text-white disabled:opacity-50"
                 >
                   {isDeletingCategory ? 'Deleting...' : 'Delete Category'}

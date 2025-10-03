@@ -167,17 +167,24 @@ export function ProductList({
                 <TableCell>
                   {(() => {
                     // Try multiple possible locations for cost data
-                    const cost = (product as any).metadata?.cost ||
-                                (product as any).cost ||
-                                ((product as any).metadata && Object.keys((product as any).metadata).length > 0 ?
-                                  Object.entries((product as any).metadata).find(([key]) => key === 'cost')?.[1] : null)
+                    const cost =
+                      (product as any).metadata?.cost ||
+                      (product as any).cost ||
+                      ((product as any).metadata &&
+                      Object.keys((product as any).metadata).length > 0
+                        ? Object.entries((product as any).metadata).find(
+                            ([key]) => key === 'cost'
+                          )?.[1]
+                        : null)
 
                     console.log('[ProductList] Cost display:', {
                       productId: product.id,
                       productName: product.entity_name,
                       cost,
                       metadata: (product as any).metadata,
-                      metadataKeys: (product as any).metadata ? Object.keys((product as any).metadata) : []
+                      metadataKeys: (product as any).metadata
+                        ? Object.keys((product as any).metadata)
+                        : []
                     })
 
                     if (cost !== null && cost !== undefined && cost !== '') {
@@ -471,7 +478,9 @@ function ProductCard({
             Cost Price
           </p>
           <p className="font-semibold text-sm" style={{ color: COLORS.lightText }}>
-            {(product as any).metadata?.cost ? `${currency} ${parseFloat((product as any).metadata.cost).toFixed(2)}` : '-'}
+            {(product as any).metadata?.cost
+              ? `${currency} ${parseFloat((product as any).metadata.cost).toFixed(2)}`
+              : '-'}
           </p>
         </div>
         <div>
@@ -504,7 +513,7 @@ function ProductCard({
               const cost = parseFloat((product as any).metadata?.cost || '0')
               const price = product.price || 0
               if (price === 0) return '0%'
-              const margin = ((price - cost) / price * 100).toFixed(1)
+              const margin = (((price - cost) / price) * 100).toFixed(1)
               return `${margin}%`
             })()}
           </p>

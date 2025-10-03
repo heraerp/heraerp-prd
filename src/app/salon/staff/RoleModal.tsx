@@ -43,14 +43,8 @@ const roleSchema = z.object({
     .min(1, 'Title is required')
     .min(2, 'Title must be at least 2 characters')
     .max(50, 'Title must not exceed 50 characters'),
-  description: z
-    .string()
-    .max(500, 'Description must not exceed 500 characters')
-    .optional(),
-  permissions: z
-    .array(z.string())
-    .optional()
-    .default([]),
+  description: z.string().max(500, 'Description must not exceed 500 characters').optional(),
+  permissions: z.array(z.string()).optional().default([]),
   status: z.enum(['active', 'inactive']).default('active'),
   rank: z
     .number()
@@ -163,10 +157,7 @@ export function RoleModal({
           }}
         >
           <DialogHeader>
-            <DialogTitle
-              style={{ color: COLORS.champagne }}
-              className="text-2xl font-bold"
-            >
+            <DialogTitle style={{ color: COLORS.champagne }} className="text-2xl font-bold">
               {isEditMode ? 'Edit Role' : 'Create New Role'}
             </DialogTitle>
           </DialogHeader>
@@ -214,9 +205,7 @@ export function RoleModal({
               />
               {errors.description && (
                 <Alert variant="destructive" className="mt-2">
-                  <AlertDescription>
-                    {errors.description.message}
-                  </AlertDescription>
+                  <AlertDescription>{errors.description.message}</AlertDescription>
                 </Alert>
               )}
             </div>
@@ -228,9 +217,7 @@ export function RoleModal({
               </Label>
               <Select
                 value={statusValue}
-                onValueChange={(value: 'active' | 'inactive') =>
-                  setValue('status', value)
-                }
+                onValueChange={(value: 'active' | 'inactive') => setValue('status', value)}
               >
                 <SelectTrigger
                   className="border-[#D4AF37] focus:border-[#D4AF37] focus:ring-[#D4AF37]"
@@ -346,9 +333,7 @@ export function RoleModal({
           }}
         >
           <DialogHeader>
-            <DialogTitle style={{ color: COLORS.champagne }}>
-              Delete Role?
-            </DialogTitle>
+            <DialogTitle style={{ color: COLORS.champagne }}>Delete Role?</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p style={{ color: COLORS.lightText }}>

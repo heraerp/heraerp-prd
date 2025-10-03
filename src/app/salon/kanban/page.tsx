@@ -12,7 +12,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
@@ -60,7 +66,9 @@ export default function KanbanPage() {
   const [rescheduleOpen, setRescheduleOpen] = useState(false)
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
-  const [cancellationType, setCancellationType] = useState<'no_show' | 'customer_request' | 'staff_unavailable' | 'emergency' | 'other'>('customer_request')
+  const [cancellationType, setCancellationType] = useState<
+    'no_show' | 'customer_request' | 'staff_unavailable' | 'emergency' | 'other'
+  >('customer_request')
   const [cardToCancel, setCardToCancel] = useState<KanbanCard | null>(null)
   const [userId, setUserId] = useState<string>('')
 
@@ -176,9 +184,15 @@ export default function KanbanPage() {
 
   return (
     <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
-      <div className="h-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 100%)' }}>
+      <div
+        className="h-screen flex flex-col"
+        style={{ background: 'linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 100%)' }}
+      >
         {/* Luxe header */}
-        <header className="px-6 py-4 shadow-xl" style={{ backgroundColor: '#1A1A1A', borderBottom: '1px solid #D4AF3740' }}>
+        <header
+          className="px-6 py-4 shadow-xl"
+          style={{ backgroundColor: '#1A1A1A', borderBottom: '1px solid #D4AF3740' }}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <h1
@@ -234,7 +248,10 @@ export default function KanbanPage() {
 
               <Button
                 onClick={() => router.push('/salon/appointments/new')}
-                style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)', color: '#0B0B0B' }}
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                  color: '#0B0B0B'
+                }}
                 className="hover:opacity-90 transition-opacity font-semibold"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -364,7 +381,10 @@ export default function KanbanPage() {
             <div className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label>Cancellation Type *</Label>
-                <Select value={cancellationType} onValueChange={(value: any) => setCancellationType(value)}>
+                <Select
+                  value={cancellationType}
+                  onValueChange={(value: any) => setCancellationType(value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

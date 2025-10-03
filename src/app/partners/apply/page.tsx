@@ -3,7 +3,8 @@ import PartnerApplyForm from '@/components/partners/PartnerApplyForm'
 
 export const metadata = {
   title: 'Apply to become a HERA Partner | Partner Application',
-  description: 'Join the HERA partner ecosystem. Apply in minutes and our team will review your application for regional and industry fit.',
+  description:
+    'Join the HERA partner ecosystem. Apply in minutes and our team will review your application for regional and industry fit.',
   alternates: { canonical: canonical('/partners/apply') }
 }
 

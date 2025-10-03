@@ -27,9 +27,7 @@ export const ProductCategoryFormSchema = z.object({
     .max(300, 'Description too long')
     .optional()
     .transform(value => (value && value.trim().length > 0 ? value.trim() : undefined)),
-  color: z
-    .string()
-    .regex(/^#[0-9A-F]{6}$/i, 'Color must be a hex code'),
+  color: z.string().regex(/^#[0-9A-F]{6}$/i, 'Color must be a hex code'),
   icon: z.string().min(1, 'Icon selection is required'),
   sort_order: z
     .number({ invalid_type_error: 'Sort order must be a number' })

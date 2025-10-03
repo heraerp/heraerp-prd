@@ -448,7 +448,7 @@ export default function SalonCustomersPage() {
                   type="select"
                   label="Branch Location"
                   value={branchId || '__ALL__'}
-                  onChange={(value) => setBranchId(value === '__ALL__' ? '' : value)}
+                  onChange={value => setBranchId(value === '__ALL__' ? '' : value)}
                   icon={Building2}
                   options={[
                     { value: '__ALL__', label: 'All Locations' },

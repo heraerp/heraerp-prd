@@ -31,9 +31,7 @@ export function Column({ id, title, cards, onCardAction, isDraft = false }: Colu
             : 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)',
           color: isDraft ? '#0B0B0B' : '#F5E6C8',
           borderBottom: `2px solid ${isDraft ? '#D4AF37' : '#8C7853'}`,
-          boxShadow: isDraft
-            ? '0 4px 12px rgba(212, 175, 55, 0.3)'
-            : '0 2px 8px rgba(0, 0, 0, 0.4)'
+          boxShadow: isDraft ? '0 4px 12px rgba(212, 175, 55, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.4)'
         }}
       >
         <span className="tracking-wide">{title}</span>

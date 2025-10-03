@@ -78,38 +78,39 @@ const LUXE_COLORS = {
   rose: '#E8B4B8'
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: any }> = {
-  booked: {
-    label: 'Booked',
-    color: LUXE_COLORS.gold,
-    bgColor: `${LUXE_COLORS.gold}20`,
-    icon: CheckCircle
-  },
-  checked_in: {
-    label: 'Checked In',
-    color: LUXE_COLORS.emerald,
-    bgColor: `${LUXE_COLORS.emerald}20`,
-    icon: Clock
-  },
-  completed: {
-    label: 'Completed',
-    color: LUXE_COLORS.emerald,
-    bgColor: `${LUXE_COLORS.emerald}20`,
-    icon: CheckCircle
-  },
-  cancelled: {
-    label: 'Cancelled',
-    color: LUXE_COLORS.rose,
-    bgColor: `${LUXE_COLORS.rose}20`,
-    icon: XCircle
-  },
-  no_show: {
-    label: 'No Show',
-    color: LUXE_COLORS.bronze,
-    bgColor: `${LUXE_COLORS.bronze}20`,
-    icon: XCircle
+const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: any }> =
+  {
+    booked: {
+      label: 'Booked',
+      color: LUXE_COLORS.gold,
+      bgColor: `${LUXE_COLORS.gold}20`,
+      icon: CheckCircle
+    },
+    checked_in: {
+      label: 'Checked In',
+      color: LUXE_COLORS.emerald,
+      bgColor: `${LUXE_COLORS.emerald}20`,
+      icon: Clock
+    },
+    completed: {
+      label: 'Completed',
+      color: LUXE_COLORS.emerald,
+      bgColor: `${LUXE_COLORS.emerald}20`,
+      icon: CheckCircle
+    },
+    cancelled: {
+      label: 'Cancelled',
+      color: LUXE_COLORS.rose,
+      bgColor: `${LUXE_COLORS.rose}20`,
+      icon: XCircle
+    },
+    no_show: {
+      label: 'No Show',
+      color: LUXE_COLORS.bronze,
+      bgColor: `${LUXE_COLORS.bronze}20`,
+      icon: XCircle
+    }
   }
-}
 
 function SalonAppointmentsContent() {
   const router = useRouter()
@@ -391,7 +392,10 @@ function SalonAppointmentsContent() {
             </div>
 
             {/* Branch Filter - Enterprise Grade */}
-            <Select value={branchId || 'all'} onValueChange={(value) => setBranchId(value === 'all' ? undefined : value)}>
+            <Select
+              value={branchId || 'all'}
+              onValueChange={value => setBranchId(value === 'all' ? undefined : value)}
+            >
               <SelectTrigger
                 className="w-[200px]"
                 style={{
@@ -411,10 +415,16 @@ function SalonAppointmentsContent() {
                 </SelectItem>
                 {branchesLoading ? (
                   <div className="px-2 py-3 text-center">
-                    <Loader2 className="h-4 w-4 animate-spin mx-auto" style={{ color: LUXE_COLORS.gold }} />
+                    <Loader2
+                      className="h-4 w-4 animate-spin mx-auto"
+                      style={{ color: LUXE_COLORS.gold }}
+                    />
                   </div>
                 ) : branches.length === 0 ? (
-                  <div className="px-2 py-3 text-center text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                  <div
+                    className="px-2 py-3 text-center text-sm"
+                    style={{ color: LUXE_COLORS.bronze }}
+                  >
                     No branches configured
                   </div>
                 ) : (
@@ -424,9 +434,7 @@ function SalonAppointmentsContent() {
                         <MapPin className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
                         <div className="flex flex-col">
                           <span className="font-medium">{branch.name}</span>
-                          {branch.code && (
-                            <span className="text-xs opacity-60">{branch.code}</span>
-                          )}
+                          {branch.code && <span className="text-xs opacity-60">{branch.code}</span>}
                         </div>
                       </div>
                     </SelectItem>
@@ -621,7 +629,10 @@ function SalonAppointmentsContent() {
                     <div className="flex-1">
                       {/* Header Row */}
                       <div className="flex items-center gap-4 mb-3">
-                        <h3 className="text-lg font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                        <h3
+                          className="text-lg font-semibold"
+                          style={{ color: LUXE_COLORS.champagne }}
+                        >
                           {appointment.entity_name}
                         </h3>
                         {getStatusBadge(appointment.status)}
@@ -660,13 +671,17 @@ function SalonAppointmentsContent() {
                             }}
                           >
                             <Building2 className="w-3 h-3" />
-                            {branches.find(b => b.id === appointment.metadata?.branch_id)?.name || 'Branch'}
+                            {branches.find(b => b.id === appointment.metadata?.branch_id)?.name ||
+                              'Branch'}
                           </Badge>
                         )}
                       </div>
 
                       {/* Details Row */}
-                      <div className="flex flex-wrap gap-4 text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                      <div
+                        className="flex flex-wrap gap-4 text-sm"
+                        style={{ color: LUXE_COLORS.bronze }}
+                      >
                         {appointment.service_ids && appointment.service_ids.length > 0 && (
                           <div className="flex items-center gap-1">
                             <span className="font-medium">Services:</span>
@@ -684,7 +699,9 @@ function SalonAppointmentsContent() {
                         )}
 
                         <div className="flex items-center gap-1">
-                          <span style={{ color: LUXE_COLORS.gold }}>#{appointment.entity_code}</span>
+                          <span style={{ color: LUXE_COLORS.gold }}>
+                            #{appointment.entity_code}
+                          </span>
                         </div>
                       </div>
 

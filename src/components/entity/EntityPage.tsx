@@ -27,7 +27,14 @@ export interface EntityPageProps {
   filtersDefault?: any
 }
 
-export function EntityPage({ preset, userRole, title, subtitle, icon: Icon, filtersDefault }: EntityPageProps) {
+export function EntityPage({
+  preset,
+  userRole,
+  title,
+  subtitle,
+  icon: Icon,
+  filtersDefault
+}: EntityPageProps) {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
   const [editRow, setEditRow] = useState<any>(null)
@@ -139,7 +146,11 @@ export function EntityPage({ preset, userRole, title, subtitle, icon: Icon, filt
 
   // Delete handler
   const onDelete = async (id: string) => {
-    if (!confirm(`Are you sure you want to delete this ${(preset.labels?.singular || preset.label || 'entity').toLowerCase()}?`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete this ${(preset.labels?.singular || preset.label || 'entity').toLowerCase()}?`
+      )
+    ) {
       return
     }
 
@@ -173,7 +184,8 @@ export function EntityPage({ preset, userRole, title, subtitle, icon: Icon, filt
             {title ?? preset.labels?.plural ?? preset.label}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {subtitle ?? `Manage ${(preset.labels?.plural ?? preset.label ?? 'entities').toLowerCase()} via universal CRUD.`}
+            {subtitle ??
+              `Manage ${(preset.labels?.plural ?? preset.label ?? 'entities').toLowerCase()} via universal CRUD.`}
           </p>
         </div>
         <div className="flex items-center gap-2">

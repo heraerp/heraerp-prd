@@ -12,7 +12,18 @@ import { DeleteProductDialog } from '@/components/salon/products/DeleteProductDi
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { Product } from '@/types/salon-product'
 import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
-import { Plus, Grid3X3, List, Package, Search, Download, Building2, Filter, X, MapPin } from 'lucide-react'
+import {
+  Plus,
+  Grid3X3,
+  List,
+  Package,
+  Search,
+  Download,
+  Building2,
+  Filter,
+  X,
+  MapPin
+} from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -382,10 +393,13 @@ function SalonProductsPageContent() {
                   <Building2 className="h-3 w-3" />
                   <MapPin className="h-3 w-3" />
                   {branches.find(b => b.id === branchId)?.entity_name || 'Branch'}
-                  <X className="h-3 w-3" onClick={e => {
-                    e.stopPropagation()
-                    setBranchId('')
-                  }} />
+                  <X
+                    className="h-3 w-3"
+                    onClick={e => {
+                      e.stopPropagation()
+                      setBranchId('')
+                    }}
+                  />
                 </Badge>
               )}
             </div>
@@ -437,7 +451,10 @@ function SalonProductsPageContent() {
                 </SelectContent>
               </Select>
 
-              <Select value={branchId || '__ALL__'} onValueChange={(value) => setBranchId(value === '__ALL__' ? '' : value)}>
+              <Select
+                value={branchId || '__ALL__'}
+                onValueChange={value => setBranchId(value === '__ALL__' ? '' : value)}
+              >
                 <SelectTrigger className="w-48 bg-background/30 border-border">
                   <SelectValue placeholder="All locations" />
                 </SelectTrigger>

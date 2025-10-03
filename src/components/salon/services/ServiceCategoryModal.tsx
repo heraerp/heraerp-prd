@@ -21,7 +21,13 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tag, X } from 'lucide-react'
 
 const COLORS = {
@@ -117,9 +123,7 @@ export function ServiceCategoryModal({
                   {category ? 'Edit Category' : 'Create Category'}
                 </DialogTitle>
                 <p className="text-sm mt-1" style={{ color: COLORS.lightText }}>
-                  {category
-                    ? 'Update service category information'
-                    : 'Add a new service category'}
+                  {category ? 'Update service category information' : 'Add a new service category'}
                 </p>
               </div>
             </div>
@@ -213,10 +217,7 @@ export function ServiceCategoryModal({
                     color: COLORS.champagne
                   }}
                 >
-                  <Tag
-                    className="w-3 h-3 inline mr-1.5"
-                    style={{ color: form.watch('color') }}
-                  />
+                  <Tag className="w-3 h-3 inline mr-1.5" style={{ color: form.watch('color') }} />
                   <span className="text-sm">{form.watch('name') || 'Category Name'}</span>
                 </div>
               </div>

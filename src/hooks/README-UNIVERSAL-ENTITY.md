@@ -39,8 +39,8 @@ await createEntity({
   description: 'Professional hair gel',
   status: 'active',
   dynamicFields: [
-    { name: 'price', value: 25.00, type: 'number' },
-    { name: 'cost', value: 10.00, type: 'number' },
+    { name: 'price', value: 25.0, type: 'number' },
+    { name: 'cost', value: 10.0, type: 'number' },
     { name: 'category', value: 'Hair Care', type: 'text' },
     { name: 'qty_on_hand', value: 50, type: 'number' }
   ]
@@ -69,10 +69,10 @@ await createEntity({
   code: 'SVC-001',
   description: 'Professional haircut with styling',
   dynamicFields: [
-    { name: 'price', value: 45.00, type: 'number' },
+    { name: 'price', value: 45.0, type: 'number' },
     { name: 'duration_minutes', value: 60, type: 'number' },
     { name: 'category', value: 'Hair Services', type: 'text' },
-    { name: 'commission_rate', value: 0.30, type: 'number' }
+    { name: 'commission_rate', value: 0.3, type: 'number' }
   ]
 })
 ```
@@ -80,10 +80,7 @@ await createEntity({
 ### 3. Customers
 
 ```typescript
-const {
-  entities: customers,
-  createEntity
-} = useUniversalEntity({
+const { entities: customers, createEntity } = useUniversalEntity({
   entityType: 'customer',
   organizationId,
   smartCode: 'HERA.SALON.CUST.ENT.STANDARD.V1',
@@ -126,8 +123,8 @@ await createEntity({
   dynamicFields: [
     { name: 'position', value: 'Senior Stylist', type: 'text' },
     { name: 'hire_date', value: '2023-01-15', type: 'date' },
-    { name: 'hourly_rate', value: 25.00, type: 'number' },
-    { name: 'commission_rate', value: 0.30, type: 'number' },
+    { name: 'hourly_rate', value: 25.0, type: 'number' },
+    { name: 'commission_rate', value: 0.3, type: 'number' },
     { name: 'specialties', value: ['coloring', 'cutting', 'styling'], type: 'json' }
   ]
 })
@@ -136,10 +133,7 @@ await createEntity({
 ### 5. Appointments
 
 ```typescript
-const {
-  entities: appointments,
-  createEntity
-} = useUniversalEntity({
+const { entities: appointments, createEntity } = useUniversalEntity({
   entityType: 'appointment',
   organizationId,
   smartCode: 'HERA.SALON.APPT.ENT.STANDARD.V1',
@@ -173,7 +167,7 @@ await updateEntity({
     description: 'Updated description',
     status: 'active',
     dynamicFields: [
-      { name: 'price', value: 30.00, type: 'number' },
+      { name: 'price', value: 30.0, type: 'number' },
       { name: 'category', value: 'New Category', type: 'text' }
     ]
   }
@@ -246,9 +240,11 @@ export default function ServicesPage() {
 ## Smart Code Conventions
 
 ### Format
+
 `HERA.{MODULE}.{ENTITY}.{TYPE}.{VARIANT}.V1`
 
 ### Examples
+
 - **Products**: `HERA.SALON.PROD.ENT.RETAIL.V1`
 - **Services**: `HERA.SALON.SVC.ENT.STANDARD.V1`
 - **Customers**: `HERA.SALON.CUST.ENT.STANDARD.V1`
@@ -256,6 +252,7 @@ export default function ServicesPage() {
 - **Appointments**: `HERA.SALON.APPT.ENT.STANDARD.V1`
 
 ### Dynamic Field Smart Codes
+
 - **Products**: `HERA.SALON.PROD.FIELD.DATA.V1`
 - **Services**: `HERA.SALON.SVC.FIELD.DATA.V1`
 - **Customers**: `HERA.SALON.CUST.FIELD.DATA.V1`
@@ -265,6 +262,7 @@ export default function ServicesPage() {
 ## Common Dynamic Fields by Entity Type
 
 ### Products
+
 - `price` (number) - Selling price
 - `cost` (number) - Cost price
 - `category` (text) - Product category
@@ -273,6 +271,7 @@ export default function ServicesPage() {
 - `supplier_name` (text) - Supplier
 
 ### Services
+
 - `price` (number) - Service price
 - `duration_minutes` (number) - Service duration
 - `category` (text) - Service category
@@ -280,6 +279,7 @@ export default function ServicesPage() {
 - `requires_booking` (boolean) - Booking required
 
 ### Customers
+
 - `email` (text) - Email address
 - `phone` (text) - Phone number
 - `loyalty_points` (number) - Loyalty points
@@ -287,6 +287,7 @@ export default function ServicesPage() {
 - `preferred_stylist` (text) - Preferred staff
 
 ### Employees
+
 - `position` (text) - Job position
 - `hire_date` (date) - Hire date
 - `hourly_rate` (number) - Hourly rate
@@ -294,6 +295,7 @@ export default function ServicesPage() {
 - `specialties` (json) - Array of specialties
 
 ### Appointments
+
 - `customer_id` (text) - Customer reference
 - `stylist_id` (text) - Staff reference
 - `service_id` (text) - Service reference
@@ -307,6 +309,7 @@ export default function ServicesPage() {
 ### From Old Hook to Universal Hook
 
 **Before (useHeraProducts):**
+
 ```typescript
 const { products, createProduct, updateProduct } = useHeraProducts({
   organizationId,
@@ -315,14 +318,19 @@ const { products, createProduct, updateProduct } = useHeraProducts({
 
 await createProduct({
   name: 'Product Name',
-  price: 25.00,
+  price: 25.0,
   category: 'Category'
 })
 ```
 
 **After (useUniversalEntity):**
+
 ```typescript
-const { entities: products, createEntity, updateEntity } = useUniversalEntity({
+const {
+  entities: products,
+  createEntity,
+  updateEntity
+} = useUniversalEntity({
   entityType: 'product',
   organizationId,
   smartCode: 'HERA.SALON.PROD.ENT.RETAIL.V1',
@@ -332,7 +340,7 @@ const { entities: products, createEntity, updateEntity } = useUniversalEntity({
 await createEntity({
   name: 'Product Name',
   dynamicFields: [
-    { name: 'price', value: 25.00, type: 'number' },
+    { name: 'price', value: 25.0, type: 'number' },
     { name: 'category', value: 'Category', type: 'text' }
   ]
 })
@@ -352,6 +360,7 @@ await createEntity({
 ## Advanced Features
 
 ### Custom Filtering
+
 ```typescript
 const { entities } = useUniversalEntity({
   entityType: 'product',
@@ -365,6 +374,7 @@ const { entities } = useUniversalEntity({
 ```
 
 ### Loading States
+
 ```typescript
 const {
   isLoading,    // Initial load
@@ -375,6 +385,7 @@ const {
 ```
 
 ### Manual Refetch
+
 ```typescript
 const { refetch } = useUniversalEntity({ ... })
 

@@ -74,9 +74,10 @@ export function Card({
         boxShadow: isHovered
           ? '0 8px 24px rgba(212, 175, 55, 0.2), 0 0 0 1px rgba(212, 175, 55, 0.1)'
           : '0 2px 8px rgba(0, 0, 0, 0.3)',
-        transform: isHovered && !isDragging
-          ? `${CSS.Transform.toString(transform)} translateY(-2px)`
-          : CSS.Transform.toString(transform)
+        transform:
+          isHovered && !isDragging
+            ? `${CSS.Transform.toString(transform)} translateY(-2px)`
+            : CSS.Transform.toString(transform)
       }}
       className={cn(
         'relative rounded-lg border cursor-move select-none transition-all duration-300',
@@ -110,14 +111,16 @@ export function Card({
             variant="outline"
             className="text-xs font-semibold shadow-lg"
             style={{
-              background: card.cancellation_reason === 'no_show'
-                ? 'linear-gradient(135deg, #DC2626 0%, #991B1B 100%)'
-                : 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)',
+              background:
+                card.cancellation_reason === 'no_show'
+                  ? 'linear-gradient(135deg, #DC2626 0%, #991B1B 100%)'
+                  : 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)',
               color: '#FFFFFF',
               borderColor: card.cancellation_reason === 'no_show' ? '#DC2626' : '#EA580C',
-              boxShadow: card.cancellation_reason === 'no_show'
-                ? '0 4px 12px rgba(220, 38, 38, 0.4)'
-                : '0 4px 12px rgba(234, 88, 12, 0.4)'
+              boxShadow:
+                card.cancellation_reason === 'no_show'
+                  ? '0 4px 12px rgba(220, 38, 38, 0.4)'
+                  : '0 4px 12px rgba(234, 88, 12, 0.4)'
             }}
           >
             {card.cancellation_reason === 'no_show' ? 'No Show' : 'Cancelled'}
@@ -223,7 +226,9 @@ export function Card({
           <div className="text-xs mt-2" style={{ color: '#8C7853' }}>
             Status: {card.status.replace('_', ' ').toLowerCase()}
             {card.status === 'TO_PAY' && (
-              <span className="ml-2" style={{ color: '#D4AF37' }}>💳 POS Ready</span>
+              <span className="ml-2" style={{ color: '#D4AF37' }}>
+                💳 POS Ready
+              </span>
             )}
           </div>
         )}

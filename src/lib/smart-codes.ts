@@ -51,7 +51,8 @@ export function parseHeraCode(code: string): {
   version: number
 } | null {
   // Accept both V and v, minimum 6 segments total (3 middle segments minimum)
-  const pattern = /^(HERA)\.([A-Z0-9]{3,15})\.([A-Z0-9_]{2,30})((?:\.[A-Z0-9_]{2,30}){1,5})\.[Vv](\d+)$/
+  const pattern =
+    /^(HERA)\.([A-Z0-9]{3,15})\.([A-Z0-9_]{2,30})((?:\.[A-Z0-9_]{2,30}){1,5})\.[Vv](\d+)$/
   const match = code.match(pattern)
 
   if (!match) return null

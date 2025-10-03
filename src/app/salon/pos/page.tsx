@@ -292,7 +292,10 @@ function POSContent() {
                   boxShadow: `0 0 16px ${COLORS.emerald}25`
                 }}
               >
-                <div className="w-2 h-2 rounded-full mr-2.5 animate-pulse" style={{ backgroundColor: COLORS.emerald }} />
+                <div
+                  className="w-2 h-2 rounded-full mr-2.5 animate-pulse"
+                  style={{ backgroundColor: COLORS.emerald }}
+                />
                 Live
               </Badge>
 
@@ -313,7 +316,10 @@ function POSContent() {
                 >
                   <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
                 </div>
-                <Select value={branchId || '__ALL__'} onValueChange={(value) => setBranchId(value === '__ALL__' ? '' : value)}>
+                <Select
+                  value={branchId || '__ALL__'}
+                  onValueChange={value => setBranchId(value === '__ALL__' ? '' : value)}
+                >
                   <SelectTrigger
                     className="w-52 border-0 font-medium"
                     style={{
@@ -323,7 +329,10 @@ function POSContent() {
                       boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
                     }}
                   >
-                    <SelectValue placeholder="Select location" style={{ color: COLORS.champagne }} />
+                    <SelectValue
+                      placeholder="Select location"
+                      style={{ color: COLORS.champagne }}
+                    />
                   </SelectTrigger>
                   <SelectContent
                     className="hera-select-content"
@@ -333,7 +342,9 @@ function POSContent() {
                       color: COLORS.champagne
                     }}
                   >
-                    <SelectItem value="__ALL__" style={{ color: COLORS.champagne }}>All locations</SelectItem>
+                    <SelectItem value="__ALL__" style={{ color: COLORS.champagne }}>
+                      All locations
+                    </SelectItem>
                     {branchesLoading ? (
                       <SelectItem value="__LOADING__" disabled style={{ color: COLORS.bronze }}>
                         Loading branches...
@@ -344,7 +355,11 @@ function POSContent() {
                       </SelectItem>
                     ) : (
                       branches.map(branch => (
-                        <SelectItem key={branch.id} value={branch.id} style={{ color: COLORS.champagne }}>
+                        <SelectItem
+                          key={branch.id}
+                          value={branch.id}
+                          style={{ color: COLORS.champagne }}
+                        >
                           {branch.entity_name || 'Unnamed Branch'}
                         </SelectItem>
                       ))
@@ -484,10 +499,16 @@ function POSContent() {
                       <User className="w-5 h-5" style={{ color: COLORS.black }} />
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-sm mb-0.5" style={{ color: COLORS.champagne }}>
+                      <div
+                        className="font-semibold text-sm mb-0.5"
+                        style={{ color: COLORS.champagne }}
+                      >
                         {ticket.customer_name}
                       </div>
-                      <div className="text-xs flex items-center gap-1.5" style={{ color: COLORS.bronze }}>
+                      <div
+                        className="text-xs flex items-center gap-1.5"
+                        style={{ color: COLORS.bronze }}
+                      >
                         <Clock className="w-3 h-3" />
                         {ticket.customer_phone || 'No phone'}
                       </div>

@@ -246,6 +246,121 @@ export function UnifiedDashboard() {
       />
 
       <div className="relative container mx-auto px-8 py-8">
+        {/* Enhanced Header */}
+        <div
+          className="mb-8 p-6 rounded-2xl backdrop-blur-sm"
+          style={{
+            background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+            border: `1px solid ${LUXE_COLORS.gold}20`,
+            boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px ${LUXE_COLORS.gold}10`
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              {/* Organization Icon */}
+              <div
+                className="p-4 rounded-xl"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold}25 0%, ${LUXE_COLORS.gold}15 100%)`,
+                  border: `1px solid ${LUXE_COLORS.gold}40`,
+                  boxShadow: `0 0 20px ${LUXE_COLORS.gold}20`
+                }}
+              >
+                <Scissors className="w-8 h-8" style={{ color: LUXE_COLORS.gold }} />
+              </div>
+
+              {/* Title and subtitle */}
+              <div>
+                <h1
+                  className="text-4xl font-bold tracking-tight mb-1"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    letterSpacing: '-0.02em'
+                  }}
+                >
+                  Hair Talkz Salon
+                </h1>
+                <p className="text-sm flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                  <span className="font-medium">{role.charAt(0).toUpperCase() + role.slice(1)} Dashboard</span>
+                  <span>•</span>
+                  <span>
+                    {new Date().toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* User Info and Logout */}
+            <div className="flex items-center gap-4">
+              {/* User Info Card */}
+              <div
+                className="flex items-center gap-3 px-5 py-3 rounded-xl"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}CC 0%, ${LUXE_COLORS.charcoal}CC 100%)`,
+                  border: `1px solid ${LUXE_COLORS.bronze}30`,
+                  boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
+                }}
+              >
+                <div
+                  className="p-2 rounded-lg"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}10 100%)`,
+                    border: `1px solid ${LUXE_COLORS.gold}30`
+                  }}
+                >
+                  <Users className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
+                </div>
+                <div>
+                  <div className="font-semibold text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                    {user?.user_metadata?.full_name ||
+                      user?.email?.split('@')[0] ||
+                      localStorage.getItem('salonUserName') ||
+                      'Demo User'}
+                  </div>
+                  <div className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                    {user?.email || localStorage.getItem('salonUserEmail') || 'demo@hairtalkz.com'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Logout Button */}
+              <Button
+                onClick={async () => {
+                  try {
+                    const { supabase } = await import('@/lib/supabase/client')
+                    await supabase.auth.signOut()
+                    localStorage.removeItem('salonUserName')
+                    localStorage.removeItem('salonUserEmail')
+                    localStorage.removeItem('salonRole')
+                    router.push('/salon/auth')
+                  } catch (error) {
+                    console.error('Logout error:', error)
+                    router.push('/salon/auth')
+                  }
+                }}
+                variant="outline"
+                className="px-5 py-3 font-medium transition-all hover:scale-105"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.ruby}20 0%, ${LUXE_COLORS.ruby}10 100%)`,
+                  border: `1px solid ${LUXE_COLORS.ruby}40`,
+                  color: LUXE_COLORS.ruby,
+                  boxShadow: `0 0 0 1px ${LUXE_COLORS.ruby}20`
+                }}
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+
         {/* Enhanced Widgets Grid - Luxury Salon Theme */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {widgets.map(widgetKey => {
@@ -269,7 +384,10 @@ export function UnifiedDashboard() {
                       <p className="text-sm font-medium mb-2" style={{ color: LUXE_COLORS.bronze }}>
                         {widget.title}
                       </p>
-                      <p className="text-3xl font-bold tracking-tight" style={{ color: widget.color }}>
+                      <p
+                        className="text-3xl font-bold tracking-tight"
+                        style={{ color: widget.color }}
+                      >
                         {/* Hide financial values if user doesn't have permission */}
                         {widget.title.toLowerCase().includes('revenue') ||
                         widget.title.toLowerCase().includes('expense') ||

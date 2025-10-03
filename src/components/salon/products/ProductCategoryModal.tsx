@@ -5,7 +5,13 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ProductCategory, ProductCategoryFormValues } from '@/types/salon-product-category'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -91,7 +97,12 @@ const CategoryFormSchema = z.object({
   sort_order: z.number().int().min(0).optional()
 })
 
-export function ProductCategoryModal({ open, onClose, category, onSave }: ProductCategoryModalProps) {
+export function ProductCategoryModal({
+  open,
+  onClose,
+  category,
+  onSave
+}: ProductCategoryModalProps) {
   const { toast } = useToast()
   const form = useForm<ProductCategoryFormValues>({
     resolver: zodResolver(CategoryFormSchema),
@@ -149,9 +160,8 @@ export function ProductCategoryModal({ open, onClose, category, onSave }: Produc
       // Error toast
       toast({
         title: 'Error',
-        description: error instanceof Error
-          ? error.message
-          : 'Failed to save category. Please try again.',
+        description:
+          error instanceof Error ? error.message : 'Failed to save category. Please try again.',
         variant: 'destructive'
       })
     }
@@ -338,7 +348,13 @@ export function ProductCategoryModal({ open, onClose, category, onSave }: Produc
                             </div>
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="hera-select-content" style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '40' }}>
+                        <SelectContent
+                          className="hera-select-content"
+                          style={{
+                            backgroundColor: COLORS.charcoal,
+                            borderColor: COLORS.bronze + '40'
+                          }}
+                        >
                           {COLOR_OPTIONS.map(option => (
                             <SelectItem
                               key={option.value}
@@ -384,7 +400,13 @@ export function ProductCategoryModal({ open, onClose, category, onSave }: Produc
                             <SelectValue placeholder="Select icon" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="hera-select-content" style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '40' }}>
+                        <SelectContent
+                          className="hera-select-content"
+                          style={{
+                            backgroundColor: COLORS.charcoal,
+                            borderColor: COLORS.bronze + '40'
+                          }}
+                        >
                           {ICON_OPTIONS.map(option => (
                             <SelectItem
                               key={option.value}

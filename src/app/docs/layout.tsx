@@ -9,9 +9,5 @@ export const metadata = {
 }
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className={`docs-container ${inter.className}`}>
-      {children}
-    </div>
-  )
+  return <div className={`docs-container ${inter.className}`}>{children}</div>
 }

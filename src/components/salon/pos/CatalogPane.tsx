@@ -393,14 +393,16 @@ export function CatalogPane({
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="pl-11 pr-4 py-3 rounded-xl border text-sm w-full focus:outline-none focus:ring-2 transition-all placeholder:text-opacity-60"
-            style={{
-              borderColor: `${COLORS.gold}40`,
-              backgroundColor: COLORS.charcoalDark,
-              color: COLORS.champagne,
-              boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 1px ${COLORS.gold}20`,
-              '--tw-ring-color': `${COLORS.gold}60`,
-              '--tw-ring-offset-color': 'transparent'
-            } as React.CSSProperties}
+            style={
+              {
+                borderColor: `${COLORS.gold}40`,
+                backgroundColor: COLORS.charcoalDark,
+                color: COLORS.champagne,
+                boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 1px ${COLORS.gold}20`,
+                '--tw-ring-color': `${COLORS.gold}60`,
+                '--tw-ring-offset-color': 'transparent'
+              } as React.CSSProperties
+            }
           />
           <style jsx>{`
             #catalog-search::placeholder {
@@ -408,7 +410,10 @@ export function CatalogPane({
               opacity: 0.5;
             }
             #catalog-search:focus {
-              box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 2px ${COLORS.gold}40, 0 0 16px ${COLORS.gold}20;
+              box-shadow:
+                inset 0 2px 4px rgba(0, 0, 0, 0.4),
+                0 0 0 2px ${COLORS.gold}40,
+                0 0 16px ${COLORS.gold}20;
             }
           `}</style>
         </div>
@@ -556,7 +561,10 @@ export function CatalogPane({
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-base truncate" style={{ color: COLORS.champagne }}>
+                        <h3
+                          className="font-semibold text-base truncate"
+                          style={{ color: COLORS.champagne }}
+                        >
                           {item.name}
                         </h3>
                         {item.category && (

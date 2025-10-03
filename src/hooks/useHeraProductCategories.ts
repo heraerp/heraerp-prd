@@ -83,8 +83,11 @@ export function useHeraProductCategories({
               p_entity_id: entity.id
             })
             // getDynamicData returns { data: [...] }, so extract the array
-            dynamicFields = Array.isArray(response?.data) ? response.data :
-                           Array.isArray(response) ? response : []
+            dynamicFields = Array.isArray(response?.data)
+              ? response.data
+              : Array.isArray(response)
+                ? response
+                : []
           } catch (fetchError) {
             console.warn('[useHeraProductCategories] Failed to load dynamic data', {
               entityId: entity.id,
@@ -127,7 +130,9 @@ export function useHeraProductCategories({
             color: (dynamicMap.color as string | null) || DEFAULT_COLOR,
             icon: (dynamicMap.icon as string | null) || DEFAULT_ICON,
             sort_order:
-              typeof dynamicMap.sort_order === 'number' ? dynamicMap.sort_order : Number(dynamicMap.sort_order) || 0,
+              typeof dynamicMap.sort_order === 'number'
+                ? dynamicMap.sort_order
+                : Number(dynamicMap.sort_order) || 0,
             product_count:
               typeof dynamicMap.product_count === 'number'
                 ? dynamicMap.product_count
@@ -199,9 +204,8 @@ export function useHeraProductCategories({
     onSuccess: () => {
       // Invalidate ALL category queries for this organization (both active and all)
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'product-categories' &&
-          query.queryKey[1] === organizationId
+        predicate: query =>
+          query.queryKey[0] === 'product-categories' && query.queryKey[1] === organizationId
       })
     }
   })
@@ -228,8 +232,16 @@ export function useHeraProductCategories({
 
       const dynamicFields: DynamicFieldInput[] = [
         { field_name: 'description', field_type: 'text', field_value: payload.description || null },
-        { field_name: 'color', field_type: 'text', field_value: payload.color || category.color || DEFAULT_COLOR },
-        { field_name: 'icon', field_type: 'text', field_value: payload.icon || category.icon || DEFAULT_ICON },
+        {
+          field_name: 'color',
+          field_type: 'text',
+          field_value: payload.color || category.color || DEFAULT_COLOR
+        },
+        {
+          field_name: 'icon',
+          field_type: 'text',
+          field_value: payload.icon || category.icon || DEFAULT_ICON
+        },
         {
           field_name: 'sort_order',
           field_type: 'number',
@@ -247,9 +259,8 @@ export function useHeraProductCategories({
     onSuccess: () => {
       // Invalidate ALL category queries for this organization
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'product-categories' &&
-          query.queryKey[1] === organizationId
+        predicate: query =>
+          query.queryKey[0] === 'product-categories' && query.queryKey[1] === organizationId
       })
     }
   })
@@ -266,9 +277,8 @@ export function useHeraProductCategories({
     onSuccess: () => {
       // Invalidate ALL category queries for this organization
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'product-categories' &&
-          query.queryKey[1] === organizationId
+        predicate: query =>
+          query.queryKey[0] === 'product-categories' && query.queryKey[1] === organizationId
       })
     }
   })

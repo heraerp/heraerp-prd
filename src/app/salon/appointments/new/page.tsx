@@ -508,99 +508,125 @@ function NewAppointmentContent() {
                 <div className="space-y-3">
                   <div>
                     <Label className="text-[#F5E6C8]/70 text-sm mb-2 block">
-                      Select Branch {hasMultipleBranches && <span className="text-[#D4AF37]">*</span>}
+                      Select Branch{' '}
+                      {hasMultipleBranches && <span className="text-[#D4AF37]">*</span>}
                     </Label>
-                      <Select value={branchId || ''} onValueChange={value => setBranchId(value)}>
-                        <SelectTrigger
-                          style={{
-                            background: 'rgba(0,0,0,0.3)',
-                            border: '1px solid rgba(245,230,200,0.15)',
-                            color: '#F5E6C8'
-                          }}
-                          className="w-full"
-                        >
-                          <div className="flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-[#D4AF37]" />
-                            <SelectValue placeholder="Choose location..." />
+                    <Select value={branchId || ''} onValueChange={value => setBranchId(value)}>
+                      <SelectTrigger
+                        style={{
+                          background: 'rgba(0,0,0,0.3)',
+                          border: '1px solid rgba(245,230,200,0.15)',
+                          color: '#F5E6C8'
+                        }}
+                        className="w-full"
+                      >
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-[#D4AF37]" />
+                          <SelectValue placeholder="Choose location..." />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent
+                        className="hera-select-content"
+                        style={{
+                          background: 'rgba(26,26,26,0.98)',
+                          border: '1px solid rgba(245,230,200,0.15)'
+                        }}
+                      >
+                        {branchesLoading ? (
+                          <div className="px-2 py-4 text-center">
+                            <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#D4AF37] border-t-transparent mx-auto mb-2"></div>
+                            <p className="text-sm text-[#F5E6C8]/60">Loading branches...</p>
                           </div>
-                        </SelectTrigger>
-                        <SelectContent
-                          className="hera-select-content"
-                          style={{
-                            background: 'rgba(26,26,26,0.98)',
-                            border: '1px solid rgba(245,230,200,0.15)'
-                          }}
-                        >
-                          {branchesLoading ? (
-                            <div className="px-2 py-4 text-center">
-                              <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#D4AF37] border-t-transparent mx-auto mb-2"></div>
-                              <p className="text-sm text-[#F5E6C8]/60">Loading branches...</p>
+                        ) : branches.length === 0 ? (
+                          <div className="px-2 py-4 text-center">
+                            <p className="text-sm text-[#F5E6C8]/60 mb-2">No branches available</p>
+                            <p className="text-xs text-[#F5E6C8]/40">
+                              Add branches in Settings to enable multi-location
+                            </p>
+                          </div>
+                        ) : branches.length === 1 ? (
+                          <SelectItem
+                            value={branches[0].id}
+                            className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
+                          >
+                            <div className="flex flex-col">
+                              <span className="font-medium">{branches[0].name}</span>
+                              {branches[0].code && (
+                                <span className="text-xs text-[#F5E6C8]/50">
+                                  {branches[0].code}
+                                </span>
+                              )}
+                              <span className="text-xs text-emerald-400 mt-1">
+                                ✓ Default location
+                              </span>
                             </div>
-                          ) : branches.length === 0 ? (
-                            <div className="px-2 py-4 text-center">
-                              <p className="text-sm text-[#F5E6C8]/60 mb-2">No branches available</p>
-                              <p className="text-xs text-[#F5E6C8]/40">Add branches in Settings to enable multi-location</p>
-                            </div>
-                          ) : branches.length === 1 ? (
+                          </SelectItem>
+                        ) : (
+                          branches.map(branch => (
                             <SelectItem
-                              value={branches[0].id}
+                              key={branch.id}
+                              value={branch.id}
                               className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
                             >
                               <div className="flex flex-col">
-                                <span className="font-medium">{branches[0].name}</span>
-                                {branches[0].code && (
-                                  <span className="text-xs text-[#F5E6C8]/50">{branches[0].code}</span>
+                                <span className="font-medium">{branch.name}</span>
+                                {branch.code && (
+                                  <span className="text-xs text-[#F5E6C8]/50">{branch.code}</span>
                                 )}
-                                <span className="text-xs text-emerald-400 mt-1">✓ Default location</span>
                               </div>
                             </SelectItem>
-                          ) : (
-                            branches.map(branch => (
-                              <SelectItem
-                                key={branch.id}
-                                value={branch.id}
-                                className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
-                              >
-                                <div className="flex flex-col">
-                                  <span className="font-medium">{branch.name}</span>
-                                  {branch.code && (
-                                    <span className="text-xs text-[#F5E6C8]/50">{branch.code}</span>
-                                  )}
-                                </div>
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                      {branchesError && (
-                        <p className="text-xs text-red-400 mt-2">Failed to load branches</p>
-                      )}
-                      {!branchesLoading && branches.length === 0 && (
-                        <div className="mt-3 p-3 rounded-lg" style={{ background: 'rgba(212,175,55,0.05)', border: '1px solid rgba(212,175,55,0.15)' }}>
-                          <p className="text-xs text-[#F5E6C8]/60">
-                            💡 Set up branch locations in Settings to enable multi-location tracking and reporting
-                          </p>
-                        </div>
-                      )}
-                      {!branchesLoading && branches.length === 1 && branchId && (
-                        <div className="mt-3 p-3 rounded-lg" style={{ background: 'rgba(15,111,92,0.1)', border: '1px solid rgba(15,111,92,0.2)' }}>
-                          <p className="text-xs text-emerald-400 flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            Single location: {branches[0].name}
-                          </p>
-                        </div>
-                      )}
-                      {branchId && hasMultipleBranches && (
-                        <div className="mt-3 flex items-center gap-2 p-2 rounded-lg" style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)' }}>
-                          <MapPin className="w-4 h-4 text-[#D4AF37]" />
-                          <span className="text-sm text-[#F5E6C8]">
-                            {branches.find(b => b.id === branchId)?.name}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                    {branchesError && (
+                      <p className="text-xs text-red-400 mt-2">Failed to load branches</p>
+                    )}
+                    {!branchesLoading && branches.length === 0 && (
+                      <div
+                        className="mt-3 p-3 rounded-lg"
+                        style={{
+                          background: 'rgba(212,175,55,0.05)',
+                          border: '1px solid rgba(212,175,55,0.15)'
+                        }}
+                      >
+                        <p className="text-xs text-[#F5E6C8]/60">
+                          💡 Set up branch locations in Settings to enable multi-location tracking
+                          and reporting
+                        </p>
+                      </div>
+                    )}
+                    {!branchesLoading && branches.length === 1 && branchId && (
+                      <div
+                        className="mt-3 p-3 rounded-lg"
+                        style={{
+                          background: 'rgba(15,111,92,0.1)',
+                          border: '1px solid rgba(15,111,92,0.2)'
+                        }}
+                      >
+                        <p className="text-xs text-emerald-400 flex items-center gap-1">
+                          <MapPin className="w-3 h-3" />
+                          Single location: {branches[0].name}
+                        </p>
+                      </div>
+                    )}
+                    {branchId && hasMultipleBranches && (
+                      <div
+                        className="mt-3 flex items-center gap-2 p-2 rounded-lg"
+                        style={{
+                          background: 'rgba(212,175,55,0.1)',
+                          border: '1px solid rgba(212,175,55,0.2)'
+                        }}
+                      >
+                        <MapPin className="w-4 h-4 text-[#D4AF37]" />
+                        <span className="text-sm text-[#F5E6C8]">
+                          {branches.find(b => b.id === branchId)?.name}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                </Card>
+                </div>
+              </Card>
 
               <Card
                 className="p-5 transition-all duration-300 hover:translate-y-[-2px]"

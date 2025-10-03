@@ -21,7 +21,12 @@ export function useHeraServiceCategories({
   const queryClient = useQueryClient()
 
   // Fetch service categories
-  const { data: entities, isLoading, error, refetch } = useQuery({
+  const {
+    data: entities,
+    isLoading,
+    error,
+    refetch
+  } = useQuery({
     queryKey: ['serviceCategories', organizationId, { includeArchived }],
     queryFn: async () => {
       if (!organizationId) throw new Error('Organization ID required')
@@ -114,9 +119,8 @@ export function useHeraServiceCategories({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'serviceCategories' &&
-          query.queryKey[1] === organizationId
+        predicate: query =>
+          query.queryKey[0] === 'serviceCategories' && query.queryKey[1] === organizationId
       })
     }
   })
@@ -132,9 +136,8 @@ export function useHeraServiceCategories({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'serviceCategories' &&
-          query.queryKey[1] === organizationId
+        predicate: query =>
+          query.queryKey[0] === 'serviceCategories' && query.queryKey[1] === organizationId
       })
     }
   })
@@ -180,7 +183,11 @@ export function useHeraServiceCategories({
     // 3. Save dynamic fields
     const dynamicFields = [
       { field_name: 'color', field_type: 'text', field_value: categoryData.color },
-      { field_name: 'description', field_type: 'text', field_value: categoryData.description || '' },
+      {
+        field_name: 'description',
+        field_type: 'text',
+        field_value: categoryData.description || ''
+      },
       { field_name: 'service_count', field_type: 'number', field_value_number: 0 }
     ]
 
@@ -193,9 +200,8 @@ export function useHeraServiceCategories({
 
     // 4. Invalidate cache
     queryClient.invalidateQueries({
-      predicate: (query) =>
-        query.queryKey[0] === 'serviceCategories' &&
-        query.queryKey[1] === organizationId
+      predicate: query =>
+        query.queryKey[0] === 'serviceCategories' && query.queryKey[1] === organizationId
     })
 
     console.log('[useHeraServiceCategories] Category created successfully')
@@ -238,9 +244,8 @@ export function useHeraServiceCategories({
 
     // 3. Invalidate cache
     queryClient.invalidateQueries({
-      predicate: (query) =>
-        query.queryKey[0] === 'serviceCategories' &&
-        query.queryKey[1] === organizationId
+      predicate: query =>
+        query.queryKey[0] === 'serviceCategories' && query.queryKey[1] === organizationId
     })
 
     console.log('[useHeraServiceCategories] Category updated successfully')
@@ -255,7 +260,9 @@ export function useHeraServiceCategories({
 
     // Check if category has services
     if (category.service_count > 0) {
-      throw new Error(`Cannot delete category "${category.entity_name}" because it has ${category.service_count} service(s). Please reassign or delete those services first.`)
+      throw new Error(
+        `Cannot delete category "${category.entity_name}" because it has ${category.service_count} service(s). Please reassign or delete those services first.`
+      )
     }
 
     console.log('[useHeraServiceCategories] Deleting category:', categoryId)

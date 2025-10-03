@@ -3,7 +3,6 @@
 import React from 'react'
 import { usePathname } from 'next/navigation'
 import SalonRoleBasedDarkSidebar from '@/components/salon/SalonRoleBasedDarkSidebar'
-import { SalonNavbar } from '@/components/salon/SalonNavbar'
 import { SecuredSalonProvider } from './SecuredSalonProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
@@ -29,12 +28,10 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
         <NavigationProgress />
         {/* Use role-based narrow Teams-style sidebar */}
         <SalonRoleBasedDarkSidebar />
-        {/* Sticky glassmorphism navbar */}
-        <SalonNavbar />
-        {/* reserve exactly the sidebar width and navbar height */}
+        {/* reserve exactly the sidebar width */}
         <main
           id="salon-main"
-          className="ml-20 pt-16 min-h-[100dvh]"
+          className="ml-20 min-h-[100dvh]"
           style={{
             backgroundColor: '#1A1A1A',
             minHeight: '100vh',

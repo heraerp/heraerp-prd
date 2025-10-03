@@ -206,7 +206,6 @@ ${data.partnershipReason}
       branch: branchName,
       fileName
     }
-
   } catch (error) {
     console.error('Failed to create GitHub PR:', error)
     throw error
@@ -242,31 +241,21 @@ export async function POST(request: NextRequest) {
       message: 'Partner application submitted successfully!',
       ...result
     })
-
   } catch (error) {
     console.error('Partner application error:', error)
 
     // Handle different error types
     if (error instanceof Error) {
       if (error.message.includes('GitHub token')) {
-        return NextResponse.json(
-          { error: 'GitHub integration not configured' },
-          { status: 503 }
-        )
+        return NextResponse.json({ error: 'GitHub integration not configured' }, { status: 503 })
       }
 
       if (error.message.includes('Repository not found')) {
-        return NextResponse.json(
-          { error: 'Repository configuration error' },
-          { status: 503 }
-        )
+        return NextResponse.json({ error: 'Repository configuration error' }, { status: 503 })
       }
     }
 
-    return NextResponse.json(
-      { error: 'Failed to submit partner application' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to submit partner application' }, { status: 500 })
   }
 }
 

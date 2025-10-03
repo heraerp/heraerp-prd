@@ -25,7 +25,9 @@ async function getAuthHeaders(): Promise<HeadersInit> {
   try {
     // Dynamically import supabase to avoid SSR issues
     const { supabase } = await import('@/lib/supabase/client')
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
 
     console.log('[getAuthHeaders] Session check:', {
       hasSession: !!session,
@@ -35,7 +37,7 @@ async function getAuthHeaders(): Promise<HeadersInit> {
 
     if (session?.access_token) {
       return {
-        'Authorization': `Bearer ${session.access_token}`
+        Authorization: `Bearer ${session.access_token}`
       }
     } else {
       console.warn('[getAuthHeaders] No access token found in session')
@@ -47,14 +49,14 @@ async function getAuthHeaders(): Promise<HeadersInit> {
   return {}
 }
 
-export type Json = Record<string, any>;
+export type Json = Record<string, any>
 
 // Dynamic field input types for batch operations (flexible version)
 export type DynamicFieldInput =
   | { field_name: string; field_type: 'number'; field_value_number: number | null }
   | { field_name: string; field_type: 'text'; field_value: string | null }
   | { field_name: string; field_type: 'boolean'; field_value_boolean: boolean | null }
-  | { field_name: string; field_type: 'json'; field_value_json: Json | null };
+  | { field_name: string; field_type: 'json'; field_value_json: Json | null }
 
 function ok(res: Response) {
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
@@ -63,13 +65,16 @@ function ok(res: Response) {
 
 const h = (orgId: string): HeadersInit => ({ 'x-hera-org': orgId })
 
-export async function getEntities(baseUrl: string = '', params: {
-  p_organization_id: string;
-  p_entity_type?: string;
-  p_smart_code?: string;
-  p_parent_entity_id?: string;
-  p_status?: string;
-}) {
+export async function getEntities(
+  baseUrl: string = '',
+  params: {
+    p_organization_id: string
+    p_entity_type?: string
+    p_smart_code?: string
+    p_parent_entity_id?: string
+    p_status?: string
+  }
+) {
   const url = baseUrl || getBaseUrl()
   const qs = new URLSearchParams({
     p_organization_id: params.p_organization_id
@@ -98,21 +103,24 @@ export async function readEntity(orgId: string, entityId: string) {
   return await res.json()
 }
 
-export async function deleteEntity(baseUrl: string = '', params: {
-  p_organization_id: string;
-  p_entity_id: string;
-}) {
+export async function deleteEntity(
+  baseUrl: string = '',
+  params: {
+    p_organization_id: string
+    p_entity_id: string
+  }
+) {
   const url = baseUrl || getBaseUrl()
   const qs = new URLSearchParams({
     organization_id: params.p_organization_id
-  }).toString();
+  }).toString()
 
   console.log('[deleteEntity] Request:', {
     url: `${url}/api/v2/entities/${params.p_entity_id}?${qs}`,
     organizationId: params.p_organization_id,
     entityId: params.p_entity_id,
     fullUrl: `${url}/api/v2/entities/${params.p_entity_id}?${qs}`
-  });
+  })
 
   const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}?${qs}`, {
     method: 'DELETE',
@@ -120,29 +128,32 @@ export async function deleteEntity(baseUrl: string = '', params: {
     credentials: 'include'
   })
   if (!res.ok) {
-    const err = await res.json().catch(() => null);
+    const err = await res.json().catch(() => null)
     console.error('[deleteEntity] Error Response:', {
       status: res.status,
       statusText: res.statusText,
       error: err,
       fullError: JSON.stringify(err, null, 2)
-    });
-    throw new Error(`entity delete failed: ${res.status} ${JSON.stringify(err)}`);
+    })
+    throw new Error(`entity delete failed: ${res.status} ${JSON.stringify(err)}`)
   }
   return res.json()
 }
 
-export async function upsertEntity(baseUrl: string = '', body: {
-  p_organization_id: string;
-  p_entity_type: string;
-  p_entity_name: string;
-  p_smart_code: string;
-  p_entity_code?: string | null;
-  p_entity_description?: string | null;
-  p_parent_entity_id?: string | null;
-  p_entity_id?: string | null; // when updating
-  p_status?: string | null;
-}) {
+export async function upsertEntity(
+  baseUrl: string = '',
+  body: {
+    p_organization_id: string
+    p_entity_type: string
+    p_entity_name: string
+    p_smart_code: string
+    p_entity_code?: string | null
+    p_entity_description?: string | null
+    p_parent_entity_id?: string | null
+    p_entity_id?: string | null // when updating
+    p_status?: string | null
+  }
+) {
   const url = baseUrl || getBaseUrl()
   const authHeaders = await getAuthHeaders()
 
@@ -150,7 +161,7 @@ export async function upsertEntity(baseUrl: string = '', body: {
   const apiBody: any = {
     entity_type: body.p_entity_type,
     entity_name: body.p_entity_name,
-    smart_code: body.p_smart_code,
+    smart_code: body.p_smart_code
   }
 
   if (body.p_entity_code) apiBody.entity_code = body.p_entity_code
@@ -175,11 +186,14 @@ export async function upsertEntity(baseUrl: string = '', body: {
 }
 
 // Dynamic data operations
-export async function getDynamicData(baseUrl: string = '', params: {
-  p_organization_id: string;
-  p_entity_id: string;
-  p_field_name?: string; // optional filter
-}) {
+export async function getDynamicData(
+  baseUrl: string = '',
+  params: {
+    p_organization_id: string
+    p_entity_id: string
+    p_field_name?: string // optional filter
+  }
+) {
   const url = baseUrl || getBaseUrl()
   const qs = new URLSearchParams(
     Object.fromEntries(
@@ -220,12 +234,15 @@ export async function setDynamicData(
   return await res.json()
 }
 
-export async function setDynamicDataBatch(baseUrl: string = '', params: {
-  p_organization_id: string;
-  p_entity_id: string;
-  p_smart_code: string; // e.g., 'HERA.SALON.PROD.DYN.v1'
-  p_fields: DynamicFieldInput[];
-}) {
+export async function setDynamicDataBatch(
+  baseUrl: string = '',
+  params: {
+    p_organization_id: string
+    p_entity_id: string
+    p_smart_code: string // e.g., 'HERA.SALON.PROD.DYN.v1'
+    p_fields: DynamicFieldInput[]
+  }
+) {
   const url = baseUrl || getBaseUrl()
   const res = await fetch(`${url}/api/v2/dynamic-data/batch`, {
     method: 'POST',
@@ -328,7 +345,7 @@ export async function createRelationship(
     method: 'POST',
     headers: { ...h(orgId), 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({ p_organization_id: orgId, ...body }),
-  }).then(ok);
-  return await res.json();
+    body: JSON.stringify({ p_organization_id: orgId, ...body })
+  }).then(ok)
+  return await res.json()
 }

@@ -58,10 +58,13 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
   // Deduplicate categories by ID and sort by name
   const categories = categoryList
     .filter(cat => cat?.id && cat?.entity_name)
-    .reduce((acc, cat) => {
-      acc[cat.id] = cat
-      return acc
-    }, {} as Record<string, typeof categoryList[0]>)
+    .reduce(
+      (acc, cat) => {
+        acc[cat.id] = cat
+        return acc
+      },
+      {} as Record<string, (typeof categoryList)[0]>
+    )
 
   const categoryOptions = Object.values(categories).sort((a, b) =>
     (a.entity_name || '').localeCompare(b.entity_name || '', undefined, { sensitivity: 'base' })
@@ -197,7 +200,9 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                     {service ? 'Edit Service' : 'Create New Service'}
                   </DialogTitle>
                   <p className="text-sm" style={{ color: COLORS.lightText, opacity: 0.8 }}>
-                    {service ? 'Update service details and pricing' : 'Add a premium service to elevate your offerings'}
+                    {service
+                      ? 'Update service details and pricing'
+                      : 'Add a premium service to elevate your offerings'}
                   </p>
                 </div>
               </div>
@@ -230,10 +235,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
               >
                 {/* Section Header with Icon */}
                 <div className="flex items-center gap-2 mb-5">
-                  <div
-                    className="w-1 h-6 rounded-full"
-                    style={{ backgroundColor: COLORS.gold }}
-                  />
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
                   <h3
                     className="text-lg font-semibold tracking-wide"
                     style={{ color: COLORS.champagne }}
@@ -242,461 +244,482 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                   </h3>
                 </div>
 
-              <div className="grid grid-cols-2 gap-5">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel
-                        className="text-sm font-medium tracking-wide"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        Service Name <span style={{ color: COLORS.gold }}>*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="e.g., Premium Cut & Style"
-                          className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight + '80',
-                            borderColor: COLORS.bronze + '40',
-                            color: COLORS.champagne,
-                            '--tw-ring-color': COLORS.gold + '60'
-                          } as React.CSSProperties}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-2 gap-5">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel
+                          className="text-sm font-medium tracking-wide"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Service Name <span style={{ color: COLORS.gold }}>*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="e.g., Premium Cut & Style"
+                            className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                            style={
+                              {
+                                backgroundColor: COLORS.charcoalLight + '80',
+                                borderColor: COLORS.bronze + '40',
+                                color: COLORS.champagne,
+                                '--tw-ring-color': COLORS.gold + '60'
+                              } as React.CSSProperties
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="code"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel
-                        className="text-sm font-medium tracking-wide"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        Service Code
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Auto-generated"
-                          className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight + '80',
-                            borderColor: COLORS.bronze + '40',
-                            color: COLORS.champagne,
-                            '--tw-ring-color': COLORS.gold + '60'
-                          } as React.CSSProperties}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="code"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel
+                          className="text-sm font-medium tracking-wide"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Service Code
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Auto-generated"
+                            className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                            style={
+                              {
+                                backgroundColor: COLORS.charcoalLight + '80',
+                                borderColor: COLORS.bronze + '40',
+                                color: COLORS.champagne,
+                                '--tw-ring-color': COLORS.gold + '60'
+                              } as React.CSSProperties
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-5 mt-5">
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel
+                          className="text-sm font-medium tracking-wide"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Category
+                        </FormLabel>
+                        <Select
+                          value={field.value || ''}
+                          onValueChange={field.onChange}
+                          disabled={categoriesLoading}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                              aria-describedby={undefined}
+                              style={
+                                {
+                                  backgroundColor: COLORS.charcoalLight + '80',
+                                  borderColor: COLORS.bronze + '40',
+                                  color: COLORS.champagne,
+                                  '--tw-ring-color': COLORS.gold + '60'
+                                } as React.CSSProperties
+                              }
+                            >
+                              <SelectValue
+                                placeholder={categoriesLoading ? 'Loading...' : 'Select category'}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {categoryOptions.length === 0 ? (
+                              <div className="px-3 py-2 text-sm text-muted-foreground">
+                                No categories found
+                              </div>
+                            ) : (
+                              categoryOptions.map(cat => (
+                                <SelectItem key={cat.id} value={cat.entity_name}>
+                                  {cat.entity_name}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="duration_minutes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel
+                          className="text-sm font-medium tracking-wide flex items-center gap-2"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          <Clock className="w-4 h-4" style={{ color: COLORS.gold }} />
+                          Duration
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type="number"
+                              placeholder="0"
+                              className="h-11 rounded-lg pr-20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                              style={
+                                {
+                                  backgroundColor: COLORS.charcoalLight + '80',
+                                  borderColor: COLORS.bronze + '40',
+                                  color: COLORS.champagne,
+                                  '--tw-ring-color': COLORS.gold + '60'
+                                } as React.CSSProperties
+                              }
+                              onChange={e => {
+                                const value = e.target.value
+                                field.onChange(value === '' ? undefined : parseInt(value))
+                              }}
+                              value={field.value || ''}
+                            />
+                            <span
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium"
+                              style={{ color: COLORS.bronze }}
+                            >
+                              minutes
+                            </span>
+                          </div>
+                        </FormControl>
+                        {field.value && (
+                          <p className="text-xs mt-1.5 font-medium" style={{ color: COLORS.gold }}>
+                            ≈ {formatDuration(field.value)}
+                          </p>
+                        )}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-5 mt-5">
+              {/* Pricing Section */}
+              <div
+                className="relative p-6 rounded-xl border backdrop-blur-sm"
+                style={{
+                  backgroundColor: COLORS.charcoalDark + 'E6',
+                  borderColor: COLORS.bronze + '30',
+                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                }}
+              >
+                {/* Section Header with Icon */}
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                  <h3
+                    className="text-lg font-semibold tracking-wide"
+                    style={{ color: COLORS.champagne }}
+                  >
+                    Pricing
+                  </h3>
+                </div>
+
                 <FormField
                   control={form.control}
-                  name="category"
+                  name="price"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel
                         className="text-sm font-medium tracking-wide"
                         style={{ color: COLORS.champagne }}
                       >
-                        Category
-                      </FormLabel>
-                      <Select
-                        value={field.value || ''}
-                        onValueChange={field.onChange}
-                        disabled={categoriesLoading}
-                      >
-                        <FormControl>
-                          <SelectTrigger
-                            className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                            aria-describedby={undefined}
-                            style={{
-                              backgroundColor: COLORS.charcoalLight + '80',
-                              borderColor: COLORS.bronze + '40',
-                              color: COLORS.champagne,
-                              '--tw-ring-color': COLORS.gold + '60'
-                            } as React.CSSProperties}
-                          >
-                            <SelectValue placeholder={categoriesLoading ? 'Loading...' : 'Select category'} />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {categoryOptions.length === 0 ? (
-                            <div className="px-3 py-2 text-sm text-muted-foreground">
-                              No categories found
-                            </div>
-                          ) : (
-                            categoryOptions.map(cat => (
-                              <SelectItem key={cat.id} value={cat.entity_name}>
-                                {cat.entity_name}
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="duration_minutes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel
-                        className="text-sm font-medium tracking-wide flex items-center gap-2"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        <Clock className="w-4 h-4" style={{ color: COLORS.gold }} />
-                        Duration
+                        Service Price
                       </FormLabel>
                       <FormControl>
                         <div className="relative">
+                          <span
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold"
+                            style={{ color: COLORS.gold }}
+                          >
+                            {currency || 'AED'}
+                          </span>
                           <Input
                             {...field}
                             type="number"
-                            placeholder="0"
-                            className="h-11 rounded-lg pr-20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                            style={{
-                              backgroundColor: COLORS.charcoalLight + '80',
-                              borderColor: COLORS.bronze + '40',
-                              color: COLORS.champagne,
-                              '--tw-ring-color': COLORS.gold + '60'
-                            } as React.CSSProperties}
+                            step="0.01"
+                            placeholder="0.00"
+                            className="h-12 rounded-lg pl-20 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                            style={
+                              {
+                                backgroundColor: COLORS.charcoalLight + '80',
+                                borderColor: COLORS.gold + '40',
+                                color: COLORS.champagne,
+                                '--tw-ring-color': COLORS.gold + '60'
+                              } as React.CSSProperties
+                            }
                             onChange={e => {
                               const value = e.target.value
-                              field.onChange(value === '' ? undefined : parseInt(value))
+                              field.onChange(value === '' ? undefined : parseFloat(value))
                             }}
                             value={field.value || ''}
                           />
-                          <span
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium"
-                            style={{ color: COLORS.bronze }}
-                          >
-                            minutes
-                          </span>
-                        </div>
-                      </FormControl>
-                      {field.value && (
-                        <p className="text-xs mt-1.5 font-medium" style={{ color: COLORS.gold }}>
-                          ≈ {formatDuration(field.value)}
-                        </p>
-                      )}
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            {/* Pricing Section */}
-            <div
-              className="relative p-6 rounded-xl border backdrop-blur-sm"
-              style={{
-                backgroundColor: COLORS.charcoalDark + 'E6',
-                borderColor: COLORS.bronze + '30',
-                boxShadow: `0 4px 12px ${COLORS.black}40`
-              }}
-            >
-              {/* Section Header with Icon */}
-              <div className="flex items-center gap-2 mb-5">
-                <div
-                  className="w-1 h-6 rounded-full"
-                  style={{ backgroundColor: COLORS.gold }}
-                />
-                <h3
-                  className="text-lg font-semibold tracking-wide"
-                  style={{ color: COLORS.champagne }}
-                >
-                  Pricing
-                </h3>
-              </div>
-
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel
-                      className="text-sm font-medium tracking-wide"
-                      style={{ color: COLORS.champagne }}
-                    >
-                      Service Price
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <span
-                          className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold"
-                          style={{ color: COLORS.gold }}
-                        >
-                          {currency || 'AED'}
-                        </span>
-                        <Input
-                          {...field}
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          className="h-12 rounded-lg pl-20 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight + '80',
-                            borderColor: COLORS.gold + '40',
-                            color: COLORS.champagne,
-                            '--tw-ring-color': COLORS.gold + '60'
-                          } as React.CSSProperties}
-                          onChange={e => {
-                            const value = e.target.value
-                            field.onChange(value === '' ? undefined : parseFloat(value))
-                          }}
-                          value={field.value || ''}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Description & Settings Section */}
-            <div
-              className="relative p-6 rounded-xl border backdrop-blur-sm"
-              style={{
-                backgroundColor: COLORS.charcoalDark + 'E6',
-                borderColor: COLORS.bronze + '30',
-                boxShadow: `0 4px 12px ${COLORS.black}40`
-              }}
-            >
-              {/* Section Header with Icon */}
-              <div className="flex items-center gap-2 mb-5">
-                <div
-                  className="w-1 h-6 rounded-full"
-                  style={{ backgroundColor: COLORS.gold }}
-                />
-                <h3
-                  className="text-lg font-semibold tracking-wide"
-                  style={{ color: COLORS.champagne }}
-                >
-                  Additional Details
-                </h3>
-              </div>
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel
-                      className="text-sm font-medium tracking-wide"
-                      style={{ color: COLORS.champagne }}
-                    >
-                      Description
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Describe what makes this service special..."
-                        className="min-h-[100px] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none"
-                        style={{
-                          backgroundColor: COLORS.charcoalLight + '80',
-                          borderColor: COLORS.bronze + '40',
-                          color: COLORS.champagne,
-                          '--tw-ring-color': COLORS.gold + '60'
-                        } as React.CSSProperties}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="mt-6 space-y-4">
-                {/* Enterprise-grade Booking Requirement Selector */}
-                <FormField
-                  control={form.control}
-                  name="requires_booking"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel
-                        className="text-sm font-medium tracking-wide"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        Booking Requirement
-                      </FormLabel>
-                      <FormControl>
-                        <div className="grid grid-cols-2 gap-3">
-                          {/* Walk-in Option */}
-                          <button
-                            type="button"
-                            onClick={() => field.onChange(false)}
-                            className="relative group transition-all duration-200"
-                            style={{
-                              backgroundColor: !field.value ? COLORS.charcoalDark : COLORS.charcoalLight + '50',
-                              border: `2px solid ${!field.value ? COLORS.gold : COLORS.bronze + '40'}`,
-                              borderRadius: '12px',
-                              padding: '16px',
-                              cursor: 'pointer',
-                              boxShadow: !field.value ? `0 0 20px ${COLORS.gold}40` : 'none'
-                            }}
-                          >
-                            {/* Selection Indicator */}
-                            {!field.value && (
-                              <div
-                                className="absolute top-3 right-3"
-                                style={{ color: COLORS.gold }}
-                              >
-                                <CheckCircle2 className="w-5 h-5" />
-                              </div>
-                            )}
-
-                            {/* Icon */}
-                            <div
-                              className="mb-3 flex items-center justify-center w-12 h-12 rounded-lg mx-auto"
-                              style={{
-                                backgroundColor: !field.value ? COLORS.gold + '20' : COLORS.bronze + '20',
-                                border: `1px solid ${!field.value ? COLORS.gold : COLORS.bronze}40`
-                              }}
-                            >
-                              <CalendarX
-                                className="w-6 h-6"
-                                style={{ color: !field.value ? COLORS.gold : COLORS.bronze }}
-                              />
-                            </div>
-
-                            {/* Label */}
-                            <div className="text-center">
-                              <p
-                                className="font-semibold text-base mb-1"
-                                style={{ color: !field.value ? COLORS.champagne : COLORS.lightText }}
-                              >
-                                Walk-in Service
-                              </p>
-                              <p
-                                className="text-xs"
-                                style={{
-                                  color: COLORS.lightText,
-                                  opacity: !field.value ? 0.9 : 0.6
-                                }}
-                              >
-                                No advance booking required
-                              </p>
-                            </div>
-                          </button>
-
-                          {/* Booking Required Option */}
-                          <button
-                            type="button"
-                            onClick={() => field.onChange(true)}
-                            className="relative group transition-all duration-200"
-                            style={{
-                              backgroundColor: field.value ? COLORS.charcoalDark : COLORS.charcoalLight + '50',
-                              border: `2px solid ${field.value ? COLORS.gold : COLORS.bronze + '40'}`,
-                              borderRadius: '12px',
-                              padding: '16px',
-                              cursor: 'pointer',
-                              boxShadow: field.value ? `0 0 20px ${COLORS.gold}40` : 'none'
-                            }}
-                          >
-                            {/* Selection Indicator */}
-                            {field.value && (
-                              <div
-                                className="absolute top-3 right-3"
-                                style={{ color: COLORS.gold }}
-                              >
-                                <CheckCircle2 className="w-5 h-5" />
-                              </div>
-                            )}
-
-                            {/* Icon */}
-                            <div
-                              className="mb-3 flex items-center justify-center w-12 h-12 rounded-lg mx-auto"
-                              style={{
-                                backgroundColor: field.value ? COLORS.gold + '20' : COLORS.bronze + '20',
-                                border: `1px solid ${field.value ? COLORS.gold : COLORS.bronze}40`
-                              }}
-                            >
-                              <CalendarCheck
-                                className="w-6 h-6"
-                                style={{ color: field.value ? COLORS.gold : COLORS.bronze }}
-                              />
-                            </div>
-
-                            {/* Label */}
-                            <div className="text-center">
-                              <p
-                                className="font-semibold text-base mb-1"
-                                style={{ color: field.value ? COLORS.champagne : COLORS.lightText }}
-                              >
-                                Booking Required
-                              </p>
-                              <p
-                                className="text-xs"
-                                style={{
-                                  color: COLORS.lightText,
-                                  opacity: field.value ? 0.9 : 0.6
-                                }}
-                              >
-                                Requires advance appointment
-                              </p>
-                            </div>
-                          </button>
                         </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+              </div>
+
+              {/* Description & Settings Section */}
+              <div
+                className="relative p-6 rounded-xl border backdrop-blur-sm"
+                style={{
+                  backgroundColor: COLORS.charcoalDark + 'E6',
+                  borderColor: COLORS.bronze + '30',
+                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                }}
+              >
+                {/* Section Header with Icon */}
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                  <h3
+                    className="text-lg font-semibold tracking-wide"
+                    style={{ color: COLORS.champagne }}
+                  >
+                    Additional Details
+                  </h3>
+                </div>
 
                 <FormField
                   control={form.control}
-                  name="status"
+                  name="description"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel
                         className="text-sm font-medium tracking-wide"
                         style={{ color: COLORS.champagne }}
                       >
-                        Status
+                        Description
                       </FormLabel>
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <FormControl>
-                          <SelectTrigger
-                            className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                            style={{
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          placeholder="Describe what makes this service special..."
+                          className="min-h-[100px] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none"
+                          style={
+                            {
                               backgroundColor: COLORS.charcoalLight + '80',
                               borderColor: COLORS.bronze + '40',
                               color: COLORS.champagne,
                               '--tw-ring-color': COLORS.gold + '60'
-                            } as React.CSSProperties}
-                          >
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="archived">Archived</SelectItem>
-                        </SelectContent>
-                      </Select>
+                            } as React.CSSProperties
+                          }
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
-            </div>
 
+                <div className="mt-6 space-y-4">
+                  {/* Enterprise-grade Booking Requirement Selector */}
+                  <FormField
+                    control={form.control}
+                    name="requires_booking"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel
+                          className="text-sm font-medium tracking-wide"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Booking Requirement
+                        </FormLabel>
+                        <FormControl>
+                          <div className="grid grid-cols-2 gap-3">
+                            {/* Walk-in Option */}
+                            <button
+                              type="button"
+                              onClick={() => field.onChange(false)}
+                              className="relative group transition-all duration-200"
+                              style={{
+                                backgroundColor: !field.value
+                                  ? COLORS.charcoalDark
+                                  : COLORS.charcoalLight + '50',
+                                border: `2px solid ${!field.value ? COLORS.gold : COLORS.bronze + '40'}`,
+                                borderRadius: '12px',
+                                padding: '16px',
+                                cursor: 'pointer',
+                                boxShadow: !field.value ? `0 0 20px ${COLORS.gold}40` : 'none'
+                              }}
+                            >
+                              {/* Selection Indicator */}
+                              {!field.value && (
+                                <div
+                                  className="absolute top-3 right-3"
+                                  style={{ color: COLORS.gold }}
+                                >
+                                  <CheckCircle2 className="w-5 h-5" />
+                                </div>
+                              )}
+
+                              {/* Icon */}
+                              <div
+                                className="mb-3 flex items-center justify-center w-12 h-12 rounded-lg mx-auto"
+                                style={{
+                                  backgroundColor: !field.value
+                                    ? COLORS.gold + '20'
+                                    : COLORS.bronze + '20',
+                                  border: `1px solid ${!field.value ? COLORS.gold : COLORS.bronze}40`
+                                }}
+                              >
+                                <CalendarX
+                                  className="w-6 h-6"
+                                  style={{ color: !field.value ? COLORS.gold : COLORS.bronze }}
+                                />
+                              </div>
+
+                              {/* Label */}
+                              <div className="text-center">
+                                <p
+                                  className="font-semibold text-base mb-1"
+                                  style={{
+                                    color: !field.value ? COLORS.champagne : COLORS.lightText
+                                  }}
+                                >
+                                  Walk-in Service
+                                </p>
+                                <p
+                                  className="text-xs"
+                                  style={{
+                                    color: COLORS.lightText,
+                                    opacity: !field.value ? 0.9 : 0.6
+                                  }}
+                                >
+                                  No advance booking required
+                                </p>
+                              </div>
+                            </button>
+
+                            {/* Booking Required Option */}
+                            <button
+                              type="button"
+                              onClick={() => field.onChange(true)}
+                              className="relative group transition-all duration-200"
+                              style={{
+                                backgroundColor: field.value
+                                  ? COLORS.charcoalDark
+                                  : COLORS.charcoalLight + '50',
+                                border: `2px solid ${field.value ? COLORS.gold : COLORS.bronze + '40'}`,
+                                borderRadius: '12px',
+                                padding: '16px',
+                                cursor: 'pointer',
+                                boxShadow: field.value ? `0 0 20px ${COLORS.gold}40` : 'none'
+                              }}
+                            >
+                              {/* Selection Indicator */}
+                              {field.value && (
+                                <div
+                                  className="absolute top-3 right-3"
+                                  style={{ color: COLORS.gold }}
+                                >
+                                  <CheckCircle2 className="w-5 h-5" />
+                                </div>
+                              )}
+
+                              {/* Icon */}
+                              <div
+                                className="mb-3 flex items-center justify-center w-12 h-12 rounded-lg mx-auto"
+                                style={{
+                                  backgroundColor: field.value
+                                    ? COLORS.gold + '20'
+                                    : COLORS.bronze + '20',
+                                  border: `1px solid ${field.value ? COLORS.gold : COLORS.bronze}40`
+                                }}
+                              >
+                                <CalendarCheck
+                                  className="w-6 h-6"
+                                  style={{ color: field.value ? COLORS.gold : COLORS.bronze }}
+                                />
+                              </div>
+
+                              {/* Label */}
+                              <div className="text-center">
+                                <p
+                                  className="font-semibold text-base mb-1"
+                                  style={{
+                                    color: field.value ? COLORS.champagne : COLORS.lightText
+                                  }}
+                                >
+                                  Booking Required
+                                </p>
+                                <p
+                                  className="text-xs"
+                                  style={{
+                                    color: COLORS.lightText,
+                                    opacity: field.value ? 0.9 : 0.6
+                                  }}
+                                >
+                                  Requires advance appointment
+                                </p>
+                              </div>
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel
+                          className="text-sm font-medium tracking-wide"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Status
+                        </FormLabel>
+                        <Select value={field.value} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger
+                              className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                              style={
+                                {
+                                  backgroundColor: COLORS.charcoalLight + '80',
+                                  borderColor: COLORS.bronze + '40',
+                                  color: COLORS.champagne,
+                                  '--tw-ring-color': COLORS.gold + '60'
+                                } as React.CSSProperties
+                              }
+                            >
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="archived">Archived</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </form>
           </Form>
         </div>
