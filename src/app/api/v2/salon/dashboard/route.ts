@@ -1,6 +1,6 @@
 /**
  * HERA Salon: Secured Dashboard API
- * 
+ *
  * Provides role-based dashboard data with comprehensive security enforcement
  * using the HERA security framework.
  */
@@ -17,7 +17,7 @@ async function handleGetSalonDashboard(req: NextRequest, context: SecurityContex
   try {
     const { searchParams } = new URL(req.url)
     const timeRange = searchParams.get('timeRange') || 'today'
-    
+
     console.log('🎯 Salon Dashboard API called with context:', {
       userId: context.userId,
       orgId: context.orgId,
@@ -66,27 +66,31 @@ async function handleGetSalonDashboard(req: NextRequest, context: SecurityContex
       ],
 
       // Customer data (role-based access)
-      customers: canViewCustomerDetails ? [
-        {
-          id: 'cust-1',
-          name: 'Sarah Johnson',
-          lastVisit: '2025-10-01',
-          totalSpent: canViewFinancials ? 1200 : null,
-          visits: 8,
-          favorite: 'Hair Cut & Style'
-        }
-      ] : [],
+      customers: canViewCustomerDetails
+        ? [
+            {
+              id: 'cust-1',
+              name: 'Sarah Johnson',
+              lastVisit: '2025-10-01',
+              totalSpent: canViewFinancials ? 1200 : null,
+              visits: 8,
+              favorite: 'Hair Cut & Style'
+            }
+          ]
+        : [],
 
       // Staff data (role-based access)
-      staff: canViewAllStaff ? [
-        {
-          id: 'staff-1',
-          name: 'Michele',
-          role: 'Owner/Stylist',
-          status: 'active',
-          todayAppointments: 6
-        }
-      ] : [],
+      staff: canViewAllStaff
+        ? [
+            {
+              id: 'staff-1',
+              name: 'Michele',
+              role: 'Owner/Stylist',
+              status: 'active',
+              todayAppointments: 6
+            }
+          ]
+        : [],
 
       // Services data (available to all)
       services: [
@@ -95,11 +99,13 @@ async function handleGetSalonDashboard(req: NextRequest, context: SecurityContex
       ],
 
       // Financial data (restricted access)
-      financials: canViewFinancials ? {
-        todayRevenue: 850,
-        avgTicket: 170,
-        totalRevenue: 25000
-      } : null,
+      financials: canViewFinancials
+        ? {
+            todayRevenue: 850,
+            avgTicket: 170,
+            totalRevenue: 25000
+          }
+        : null,
 
       // Context information
       userContext: {
@@ -127,12 +133,11 @@ async function handleGetSalonDashboard(req: NextRequest, context: SecurityContex
       success: true,
       data: dashboardData
     })
-
   } catch (error) {
     console.error('Salon dashboard API error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to fetch salon dashboard data',
         code: 'DASHBOARD_FETCH_FAILED',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -152,27 +157,24 @@ async function handlePostSalonDashboard(req: NextRequest, context: SecurityConte
     const { action, data } = body
 
     if (!action) {
-      return NextResponse.json(
-        { error: 'Action is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Action is required' }, { status: 400 })
     }
 
     // Role-based action permissions
     const actionPermissions = {
-      'quick_checkin': ['owner', 'manager', 'receptionist'],
-      'mark_completed': ['owner', 'manager', 'receptionist', 'stylist'],
-      'add_note': ['owner', 'manager', 'receptionist', 'stylist'],
-      'cancel_appointment': ['owner', 'manager', 'receptionist'],
-      'reschedule': ['owner', 'manager', 'receptionist'],
-      'update_status': ['owner', 'manager'],
-      'export_data': ['owner', 'manager', 'accountant']
+      quick_checkin: ['owner', 'manager', 'receptionist'],
+      mark_completed: ['owner', 'manager', 'receptionist', 'stylist'],
+      add_note: ['owner', 'manager', 'receptionist', 'stylist'],
+      cancel_appointment: ['owner', 'manager', 'receptionist'],
+      reschedule: ['owner', 'manager', 'receptionist'],
+      update_status: ['owner', 'manager'],
+      export_data: ['owner', 'manager', 'accountant']
     }
 
     const allowedRoles = actionPermissions[action]
     if (!allowedRoles || !allowedRoles.includes(context.role)) {
       return NextResponse.json(
-        { 
+        {
           error: 'Insufficient permissions for this action',
           code: 'ACTION_FORBIDDEN',
           required_roles: allowedRoles
@@ -195,7 +197,7 @@ async function handlePostSalonDashboard(req: NextRequest, context: SecurityConte
         if (!data.appointmentId) {
           throw new Error('Appointment ID is required for check-in')
         }
-        
+
         // Update appointment status
         const { data: updatedAppointment, error: updateError } = await supabase
           .from('universal_transactions')
@@ -241,10 +243,7 @@ async function handlePostSalonDashboard(req: NextRequest, context: SecurityConte
         break
 
       default:
-        return NextResponse.json(
-          { error: `Unknown action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
     }
 
     return NextResponse.json({
@@ -253,12 +252,11 @@ async function handlePostSalonDashboard(req: NextRequest, context: SecurityConte
       result,
       timestamp: new Date().toISOString()
     })
-
   } catch (error) {
     console.error('Salon dashboard action error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to execute dashboard action',
         code: 'ACTION_FAILED',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined

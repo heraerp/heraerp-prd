@@ -4,6 +4,10 @@ export const AMPLIFY_CAMPAIGN_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_CAMPAIGN',
   smartCode: 'HERA.AMPLIFY.CAMPAIGN.ENTITY.V1',
   label: 'Campaigns',
+  labels: {
+    singular: 'Campaign',
+    plural: 'Campaigns'
+  },
   dynamicFields: [
     {
       name: 'status',

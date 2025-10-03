@@ -7,7 +7,7 @@ import { BarChart3 } from 'lucide-react'
 
 export default function AmplifyAnalyticsPage() {
   const { user } = useMultiOrgAuth()
-  
+
   return (
     <EntityPage
       preset={AMPLIFY_ANALYTIC_EVENT_PRESET}
@@ -15,10 +15,10 @@ export default function AmplifyAnalyticsPage() {
       title="Analytics"
       subtitle="Performance metrics from all channels"
       icon={BarChart3}
-      filtersDefault={{ 
-        include_dynamic: true, 
-        include_relationships: true, 
-        limit: 100 
+      filtersDefault={{
+        include_dynamic: true,
+        include_relationships: true,
+        limit: 100
       }}
     />
   )

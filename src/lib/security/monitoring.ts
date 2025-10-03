@@ -1,6 +1,6 @@
 /**
  * HERA Security Monitoring & Observability
- * 
+ *
  * Provides comprehensive monitoring, alerting, and observability
  * for the security framework.
  */
@@ -36,7 +36,7 @@ interface MonitoringConfig {
   }
   metricsRetention: {
     hourly: number // days
-    daily: number // days  
+    daily: number // days
     monthly: number // days
   }
 }
@@ -110,22 +110,22 @@ class SecurityMonitoringService {
 
     // Auth failures per issuer
     const authFailures = await this.getAuthFailuresByIssuer(since)
-    
+
     // Org switches per minute
     const orgSwitches = await this.getOrgSwitchesRate(since)
-    
+
     // RLS policy denials
     const rlsDenials = await this.getRLSPolicyDenials(since)
-    
+
     // Service role diversity
     const serviceRoleDiversity = await this.getServiceRoleDiversity(since)
-    
+
     // Rate limit violations
     const rateLimitViolations = await this.getRateLimitViolations(since)
-    
+
     // Active alerts
     const activeAlerts = await this.getActiveAlerts()
-    
+
     // Top security events
     const topEvents = await this.getTopSecurityEvents(since)
 
@@ -153,11 +153,14 @@ class SecurityMonitoringService {
       .gte('created_at', since.toISOString())
 
     const failures = data || []
-    const byIssuer = failures.reduce((acc, failure) => {
-      const key = failure.issuer || failure.auth_mode || 'unknown'
-      acc[key] = (acc[key] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const byIssuer = failures.reduce(
+      (acc, failure) => {
+        const key = failure.issuer || failure.auth_mode || 'unknown'
+        acc[key] = (acc[key] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
     return {
       total: failures.length,
@@ -189,7 +192,7 @@ class SecurityMonitoringService {
     })
 
     const switchesPerMinute = Array.from(minuteBuckets.values()).map(set => set.size)
-    
+
     return {
       total: switches.length,
       avgPerMinute: switchesPerMinute.reduce((a, b) => a + b, 0) / switchesPerMinute.length || 0,
@@ -212,13 +215,16 @@ class SecurityMonitoringService {
       .gte('timestamp', since.toISOString())
 
     const denials = data || []
-    
+
     return {
       total: denials.length,
-      byOrganization: denials.reduce((acc, denial) => {
-        acc[denial.organization_id] = (acc[denial.organization_id] || 0) + 1
-        return acc
-      }, {} as Record<string, number>),
+      byOrganization: denials.reduce(
+        (acc, denial) => {
+          acc[denial.organization_id] = (acc[denial.organization_id] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      ),
       recentDenials: denials.slice(-10).map(d => ({
         timestamp: d.timestamp,
         organization_id: d.organization_id,
@@ -240,19 +246,24 @@ class SecurityMonitoringService {
 
     const events = data || []
     const uniqueOrgs = new Set(events.map(e => e.organization_id))
-    
+
     // Group by hour to see diversity over time
-    const hourlyDiversity = events.reduce((acc, event) => {
-      const hour = new Date(event.timestamp).toISOString().slice(0, 13) // YYYY-MM-DDTHH
-      if (!acc[hour]) acc[hour] = new Set()
-      acc[hour].add(event.organization_id)
-      return acc
-    }, {} as Record<string, Set<string>>)
+    const hourlyDiversity = events.reduce(
+      (acc, event) => {
+        const hour = new Date(event.timestamp).toISOString().slice(0, 13) // YYYY-MM-DDTHH
+        if (!acc[hour]) acc[hour] = new Set()
+        acc[hour].add(event.organization_id)
+        return acc
+      },
+      {} as Record<string, Set<string>>
+    )
 
     return {
       totalOrgsAccessed: uniqueOrgs.size,
       totalEvents: events.length,
-      avgOrgsPerHour: Object.values(hourlyDiversity).reduce((sum, set) => sum + set.size, 0) / Object.keys(hourlyDiversity).length || 0,
+      avgOrgsPerHour:
+        Object.values(hourlyDiversity).reduce((sum, set) => sum + set.size, 0) /
+          Object.keys(hourlyDiversity).length || 0,
       hourlyBreakdown: Object.entries(hourlyDiversity).map(([hour, orgs]) => ({
         hour,
         uniqueOrgs: orgs.size,
@@ -275,14 +286,20 @@ class SecurityMonitoringService {
 
     return {
       totalViolations: violations.length,
-      byOrganization: violations.reduce((acc, v) => {
-        acc[v.organization_id] = (acc[v.organization_id] || 0) + 1
-        return acc
-      }, {} as Record<string, number>),
-      byAction: violations.reduce((acc, v) => {
-        acc[v.action] = (acc[v.action] || 0) + 1
-        return acc
-      }, {} as Record<string, number>),
+      byOrganization: violations.reduce(
+        (acc, v) => {
+          acc[v.organization_id] = (acc[v.organization_id] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      ),
+      byAction: violations.reduce(
+        (acc, v) => {
+          acc[v.action] = (acc[v.action] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      ),
       topViolators: violations
         .sort((a, b) => b.count - a.count)
         .slice(0, 10)
@@ -319,11 +336,14 @@ class SecurityMonitoringService {
       .gte('timestamp', since.toISOString())
 
     const events = data || []
-    const eventCounts = events.reduce((acc, event) => {
-      const key = `${event.event_type}:${event.auth_mode}`
-      acc[key] = (acc[key] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const eventCounts = events.reduce(
+      (acc, event) => {
+        const key = `${event.event_type}:${event.auth_mode}`
+        acc[key] = (acc[key] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
     return Object.entries(eventCounts)
       .sort(([, a], [, b]) => b - a)
@@ -383,7 +403,9 @@ class SecurityMonitoringService {
 
       // Check service role org diversity
       const serviceDiversity = await this.getServiceRoleDiversity(lastHour)
-      if (serviceDiversity.totalOrgsAccessed > this.config.alertThresholds.serviceRoleOrgDiversity) {
+      if (
+        serviceDiversity.totalOrgsAccessed > this.config.alertThresholds.serviceRoleOrgDiversity
+      ) {
         await this.createAlert({
           severity: 'medium',
           title: 'High Service Role Organization Diversity',
@@ -391,7 +413,6 @@ class SecurityMonitoringService {
           metadata: serviceDiversity
         })
       }
-
     } catch (error) {
       console.error('Error running security checks:', error)
     }
@@ -400,7 +421,9 @@ class SecurityMonitoringService {
   /**
    * Send alert notification
    */
-  private async sendAlertNotification(alert: Omit<SecurityAlert, 'id' | 'triggered_at'>): Promise<void> {
+  private async sendAlertNotification(
+    alert: Omit<SecurityAlert, 'id' | 'triggered_at'>
+  ): Promise<void> {
     try {
       // Send to various notification channels
       const notifications = []
@@ -429,18 +452,22 @@ class SecurityMonitoringService {
   /**
    * Send webhook notification
    */
-  private async sendWebhookNotification(alert: Omit<SecurityAlert, 'id' | 'triggered_at'>): Promise<void> {
+  private async sendWebhookNotification(
+    alert: Omit<SecurityAlert, 'id' | 'triggered_at'>
+  ): Promise<void> {
     const payload = {
       text: `🚨 HERA Security Alert: ${alert.title}`,
-      attachments: [{
-        color: this.getSeverityColor(alert.severity),
-        fields: [
-          { title: 'Severity', value: alert.severity.toUpperCase(), short: true },
-          { title: 'Description', value: alert.description, short: false },
-          { title: 'Organization', value: alert.organization_id || 'System-wide', short: true },
-          { title: 'Time', value: new Date().toISOString(), short: true }
-        ]
-      }]
+      attachments: [
+        {
+          color: this.getSeverityColor(alert.severity),
+          fields: [
+            { title: 'Severity', value: alert.severity.toUpperCase(), short: true },
+            { title: 'Description', value: alert.description, short: false },
+            { title: 'Organization', value: alert.organization_id || 'System-wide', short: true },
+            { title: 'Time', value: new Date().toISOString(), short: true }
+          ]
+        }
+      ]
     }
 
     await fetch(process.env.SECURITY_WEBHOOK_URL!, {
@@ -453,7 +480,9 @@ class SecurityMonitoringService {
   /**
    * Send email notification
    */
-  private async sendEmailNotification(alert: Omit<SecurityAlert, 'id' | 'triggered_at'>): Promise<void> {
+  private async sendEmailNotification(
+    alert: Omit<SecurityAlert, 'id' | 'triggered_at'>
+  ): Promise<void> {
     // Implement email sending (SendGrid, SES, etc.)
     console.log('Would send email for critical alert:', alert.title)
   }
@@ -461,7 +490,9 @@ class SecurityMonitoringService {
   /**
    * Send PagerDuty alert
    */
-  private async sendPagerDutyAlert(alert: Omit<SecurityAlert, 'id' | 'triggered_at'>): Promise<void> {
+  private async sendPagerDutyAlert(
+    alert: Omit<SecurityAlert, 'id' | 'triggered_at'>
+  ): Promise<void> {
     // Implement PagerDuty integration
     console.log('Would send PagerDuty alert for:', alert.title)
   }
@@ -471,9 +502,9 @@ class SecurityMonitoringService {
    */
   private getSeverityColor(severity: string): string {
     const colors = {
-      low: '#36a64f',     // Green
-      medium: '#ff9500',  // Orange  
-      high: '#ff0000',    // Red
+      low: '#36a64f', // Green
+      medium: '#ff9500', // Orange
+      high: '#ff0000', // Red
       critical: '#8b0000' // Dark red
     }
     return colors[severity] || '#808080'
@@ -485,11 +516,16 @@ class SecurityMonitoringService {
   private getTimeRangeDate(range: string): Date {
     const now = new Date()
     switch (range) {
-      case '1h': return new Date(now.getTime() - 60 * 60 * 1000)
-      case '24h': return new Date(now.getTime() - 24 * 60 * 60 * 1000)
-      case '7d': return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-      case '30d': return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-      default: return new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      case '1h':
+        return new Date(now.getTime() - 60 * 60 * 1000)
+      case '24h':
+        return new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      case '7d':
+        return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      case '30d':
+        return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      default:
+        return new Date(now.getTime() - 24 * 60 * 60 * 1000)
     }
   }
 

@@ -1,6 +1,6 @@
 /**
  * Service Categories Page Tests
- * 
+ *
  * Tests the core functionality of the service categories CRUD page
  */
 
@@ -86,12 +86,8 @@ function TestWrapper({ children }: { children: React.ReactNode }) {
       mutations: { retry: false }
     }
   })
-  
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
+
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
 
 describe('ServiceCategoriesPage', () => {
@@ -107,7 +103,9 @@ describe('ServiceCategoriesPage', () => {
     )
 
     expect(screen.getByText('Service Categories')).toBeInTheDocument()
-    expect(screen.getByText('Organize your salon services for better discovery and reporting')).toBeInTheDocument()
+    expect(
+      screen.getByText('Organize your salon services for better discovery and reporting')
+    ).toBeInTheDocument()
   })
 
   it('displays service categories in a grid', async () => {
@@ -146,7 +144,9 @@ describe('ServiceCategoriesPage', () => {
       hasPermission: vi.fn(() => false)
     }
 
-    vi.mocked(require('../SecuredSalonProvider').useSecuredSalonContext).mockReturnValue(unauthorizedContext)
+    vi.mocked(require('../SecuredSalonProvider').useSecuredSalonContext).mockReturnValue(
+      unauthorizedContext
+    )
 
     render(
       <TestWrapper>
@@ -165,7 +165,7 @@ describe('ServiceCategoriesPage', () => {
     )
 
     const searchInput = screen.getByPlaceholderText('Search categories...')
-    
+
     fireEvent.change(searchInput, { target: { value: 'hair' } })
 
     await waitFor(() => {
@@ -194,7 +194,9 @@ describe('ServiceCategoriesPage', () => {
       ]
     }
 
-    vi.mocked(require('@/hooks/useUniversalEntity').useUniversalEntity).mockReturnValue(mockWithInactive)
+    vi.mocked(require('@/hooks/useUniversalEntity').useUniversalEntity).mockReturnValue(
+      mockWithInactive
+    )
 
     render(
       <TestWrapper>
@@ -211,7 +213,7 @@ describe('ServiceCategoriesPage', () => {
     // Filter to only active categories
     const statusSelect = screen.getByDisplayValue('All Status')
     fireEvent.click(statusSelect)
-    
+
     const activeOption = screen.getByText('Active')
     fireEvent.click(activeOption)
 
@@ -228,7 +230,9 @@ describe('ServiceCategoriesPage', () => {
       entities: []
     }
 
-    vi.mocked(require('@/hooks/useUniversalEntity').useUniversalEntity).mockReturnValue(loadingContext)
+    vi.mocked(require('@/hooks/useUniversalEntity').useUniversalEntity).mockReturnValue(
+      loadingContext
+    )
 
     render(
       <TestWrapper>
@@ -247,7 +251,9 @@ describe('ServiceCategoriesPage', () => {
       entities: []
     }
 
-    vi.mocked(require('@/hooks/useUniversalEntity').useUniversalEntity).mockReturnValue(emptyContext)
+    vi.mocked(require('@/hooks/useUniversalEntity').useUniversalEntity).mockReturnValue(
+      emptyContext
+    )
 
     render(
       <TestWrapper>
@@ -299,7 +305,9 @@ describe('ServiceCategoriesPage Permission Tests', () => {
       salonRole: 'owner'
     }
 
-    vi.mocked(require('../SecuredSalonProvider').useSecuredSalonContext).mockReturnValue(ownerContext)
+    vi.mocked(require('../SecuredSalonProvider').useSecuredSalonContext).mockReturnValue(
+      ownerContext
+    )
 
     render(
       <TestWrapper>
@@ -316,7 +324,9 @@ describe('ServiceCategoriesPage Permission Tests', () => {
       salonRole: 'manager'
     }
 
-    vi.mocked(require('../SecuredSalonProvider').useSecuredSalonContext).mockReturnValue(managerContext)
+    vi.mocked(require('../SecuredSalonProvider').useSecuredSalonContext).mockReturnValue(
+      managerContext
+    )
 
     render(
       <TestWrapper>
@@ -334,7 +344,9 @@ describe('ServiceCategoriesPage Permission Tests', () => {
       hasPermission: vi.fn(() => false)
     }
 
-    vi.mocked(require('../SecuredSalonProvider').useSecuredSalonContext).mockReturnValue(stylistContext)
+    vi.mocked(require('../SecuredSalonProvider').useSecuredSalonContext).mockReturnValue(
+      stylistContext
+    )
 
     render(
       <TestWrapper>

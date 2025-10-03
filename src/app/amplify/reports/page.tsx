@@ -7,7 +7,7 @@ import { FileBarChart } from 'lucide-react'
 
 export default function AmplifyReportsPage() {
   const { user } = useMultiOrgAuth()
-  
+
   return (
     <EntityPage
       preset={AMPLIFY_REPORT_PRESET}
@@ -15,10 +15,10 @@ export default function AmplifyReportsPage() {
       title="Reports"
       subtitle="White-label campaign performance reports"
       icon={FileBarChart}
-      filtersDefault={{ 
-        include_dynamic: true, 
-        include_relationships: true, 
-        limit: 50 
+      filtersDefault={{
+        include_dynamic: true,
+        include_relationships: true,
+        limit: 50
       }}
     />
   )

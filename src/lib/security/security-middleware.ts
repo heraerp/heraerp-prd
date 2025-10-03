@@ -1,11 +1,11 @@
 /**
  * HERA DNA SECURITY: Universal Security Middleware
  * Core DNA Component: HERA.DNA.SECURITY.MIDDLEWARE.v1
- * 
+ *
  * Revolutionary security DNA that provides unified security enforcement across all APIs.
- * Integrates database context, auth resolver, rate limiting, and audit logging into a 
+ * Integrates database context, auth resolver, rate limiting, and audit logging into a
  * single, powerful middleware stack.
- * 
+ *
  * Key DNA Features:
  * - Universal API security enforcement
  * - Role-based access control with dynamic permissions
@@ -69,7 +69,7 @@ export function withSecurity(
         // Validate role permissions
         if (config.allowedRoles && !config.allowedRoles.includes(securityContext.role)) {
           return NextResponse.json(
-            { 
+            {
               error: 'Insufficient permissions',
               code: 'FORBIDDEN',
               required_roles: config.allowedRoles,
@@ -83,10 +83,10 @@ export function withSecurity(
         if (config.enableRateLimit) {
           const action = req.method.toLowerCase()
           const allowed = await authResolver.checkRateLimit(securityContext, action)
-          
+
           if (!allowed) {
             return NextResponse.json(
-              { 
+              {
                 error: 'Rate limit exceeded',
                 code: 'RATE_LIMIT_EXCEEDED',
                 retry_after: 60
@@ -119,14 +119,13 @@ export function withSecurity(
           }
         }
       )
-
     } catch (error) {
       console.error('Security middleware error:', error)
-      
+
       // Determine appropriate error response
       if (error.message.includes('authentication') || error.message.includes('authorization')) {
         return NextResponse.json(
-          { 
+          {
             error: 'Authentication failed',
             code: 'UNAUTHORIZED',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -137,7 +136,7 @@ export function withSecurity(
 
       if (error.message.includes('permission') || error.message.includes('forbidden')) {
         return NextResponse.json(
-          { 
+          {
             error: 'Access denied',
             code: 'FORBIDDEN',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -148,7 +147,7 @@ export function withSecurity(
 
       // Generic server error
       return NextResponse.json(
-        { 
+        {
           error: 'Internal server error',
           code: 'INTERNAL_ERROR',
           details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -196,7 +195,7 @@ export function createSecurityMiddleware(options: SecurityMiddlewareOptions = {}
         if (config.enableRateLimit) {
           const action = req.method.toLowerCase()
           const allowed = await authResolver.checkRateLimit(securityContext, action)
-          
+
           if (!allowed) {
             return res.status(429).json({
               error: 'Rate limit exceeded',
@@ -215,28 +214,23 @@ export function createSecurityMiddleware(options: SecurityMiddlewareOptions = {}
 
       // Set up executeInContext function
       req.executeInContext = async (operation: any, options: any = {}) => {
-        return dbContext.executeWithContext(
-          securityContext,
-          operation,
-          {
-            bypassRLS: config.bypassRLS,
-            auditDetails: {
-              endpoint: req.originalUrl || req.url,
-              method: req.method,
-              user_agent: req.headers['user-agent'],
-              ip_address: getClientIP(req)
-            },
-            ...options
-          }
-        )
+        return dbContext.executeWithContext(securityContext, operation, {
+          bypassRLS: config.bypassRLS,
+          auditDetails: {
+            endpoint: req.originalUrl || req.url,
+            method: req.method,
+            user_agent: req.headers['user-agent'],
+            ip_address: getClientIP(req)
+          },
+          ...options
+        })
       }
 
       req.securityContext = securityContext
       next()
-
     } catch (error) {
       console.error('Security middleware error:', error)
-      
+
       if (error.message.includes('authentication') || error.message.includes('authorization')) {
         return res.status(401).json({
           error: 'Authentication failed',
@@ -256,17 +250,24 @@ export function createSecurityMiddleware(options: SecurityMiddlewareOptions = {}
  * Role-specific middleware factories
  */
 export const requireOwner = withSecurity.bind(null, undefined, { allowedRoles: ['owner'] })
-export const requireManager = withSecurity.bind(null, undefined, { allowedRoles: ['owner', 'admin', 'manager'] })
-export const requireUser = withSecurity.bind(null, undefined, { allowedRoles: ['owner', 'admin', 'manager', 'user'] })
-export const requireService = withSecurity.bind(null, undefined, { allowedRoles: ['service'], bypassRLS: true })
+export const requireManager = withSecurity.bind(null, undefined, {
+  allowedRoles: ['owner', 'admin', 'manager']
+})
+export const requireUser = withSecurity.bind(null, undefined, {
+  allowedRoles: ['owner', 'admin', 'manager', 'user']
+})
+export const requireService = withSecurity.bind(null, undefined, {
+  allowedRoles: ['service'],
+  bypassRLS: true
+})
 
 /**
  * Public endpoint middleware (no auth required)
  */
-export const publicEndpoint = withSecurity.bind(null, undefined, { 
-  requireAuth: false, 
-  enableRateLimit: false, 
-  enableAuditLogging: false 
+export const publicEndpoint = withSecurity.bind(null, undefined, {
+  requireAuth: false,
+  enableRateLimit: false,
+  enableAuditLogging: false
 })
 
 /**
@@ -348,7 +349,6 @@ export function withServiceAuth(
       }
 
       return handler(req, context)
-
     } catch (error) {
       console.error('Service auth error:', error)
       return NextResponse.json(

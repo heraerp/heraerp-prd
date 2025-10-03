@@ -3,10 +3,18 @@
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { 
-  Megaphone, FileText, Calendar, Newspaper, 
-  BarChart3, Share2, FileBarChart, Sparkles,
-  ArrowRight, Activity, TrendingUp
+import {
+  Megaphone,
+  FileText,
+  Calendar,
+  Newspaper,
+  BarChart3,
+  Share2,
+  FileBarChart,
+  Sparkles,
+  ArrowRight,
+  Activity,
+  TrendingUp
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -91,24 +99,24 @@ export default function AmplifyDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="justify-start"
               onClick={() => router.push('/amplify/content?action=new')}
             >
               <FileText className="mr-2 h-4 w-4" />
               Create Content
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="justify-start"
               onClick={() => router.push('/amplify/campaigns?action=new')}
             >
               <Megaphone className="mr-2 h-4 w-4" />
               New Campaign
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="justify-start"
               onClick={() => router.push('/amplify/schedule')}
             >
@@ -121,7 +129,7 @@ export default function AmplifyDashboard() {
 
       {/* Module Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {modules.map((module) => {
+        {modules.map(module => {
           const Icon = module.icon
           return (
             <Link key={module.href} href={module.href}>
@@ -159,9 +167,7 @@ export default function AmplifyDashboard() {
             <TrendingUp className="h-5 w-5" />
             Performance Overview
           </CardTitle>
-          <CardDescription>
-            Last 30 days across all channels
-          </CardDescription>
+          <CardDescription>Last 30 days across all channels</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

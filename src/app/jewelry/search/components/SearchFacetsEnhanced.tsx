@@ -10,69 +10,167 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
-  ChevronDown, 
-  ChevronRight, 
-  Calendar, 
-  DollarSign, 
-  Hash, 
+import {
+  ChevronDown,
+  ChevronRight,
+  Calendar,
+  DollarSign,
+  Hash,
   Type,
   X,
   Sparkles,
   RefreshCw,
   SlidersHorizontal
 } from 'lucide-react'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import '@/styles/jewelry-glassmorphism.css'
 
 // Mock presets - in production these would come from the preset registry
 const ENTITY_PRESETS = {
   JEWELRY_ITEM: {
     dynamicFields: [
-      { name: 'item_type', type: 'text', label: 'Item Type', facet: true, enum: ['ring', 'necklace', 'earrings', 'bracelet', 'pendant', 'watch'] },
-      { name: 'metal_type', type: 'text', label: 'Metal', facet: true, enum: ['gold', 'silver', 'platinum', 'white_gold', 'rose_gold', 'titanium'] },
-      { name: 'stone_type', type: 'text', label: 'Stone Type', facet: true, enum: ['diamond', 'emerald', 'ruby', 'sapphire', 'pearl', 'none'] },
+      {
+        name: 'item_type',
+        type: 'text',
+        label: 'Item Type',
+        facet: true,
+        enum: ['ring', 'necklace', 'earrings', 'bracelet', 'pendant', 'watch']
+      },
+      {
+        name: 'metal_type',
+        type: 'text',
+        label: 'Metal',
+        facet: true,
+        enum: ['gold', 'silver', 'platinum', 'white_gold', 'rose_gold', 'titanium']
+      },
+      {
+        name: 'stone_type',
+        type: 'text',
+        label: 'Stone Type',
+        facet: true,
+        enum: ['diamond', 'emerald', 'ruby', 'sapphire', 'pearl', 'none']
+      },
       { name: 'carat_weight', type: 'number', label: 'Carat Weight', facet: true, min: 0, max: 10 },
-      { name: 'price', type: 'number', label: 'Price', facet: true, min: 0, max: 100000, roleGate: ['owner', 'manager'] },
-      { name: 'status', type: 'text', label: 'Status', facet: true, enum: ['available', 'sold', 'reserved', 'repair', 'display'] },
-      { name: 'created_at', type: 'date', label: 'Date Added', facet: true },
+      {
+        name: 'price',
+        type: 'number',
+        label: 'Price',
+        facet: true,
+        min: 0,
+        max: 100000,
+        roleGate: ['owner', 'manager']
+      },
+      {
+        name: 'status',
+        type: 'text',
+        label: 'Status',
+        facet: true,
+        enum: ['available', 'sold', 'reserved', 'repair', 'display']
+      },
+      { name: 'created_at', type: 'date', label: 'Date Added', facet: true }
     ]
   },
   GRADING_JOB: {
     dynamicFields: [
-      { name: 'status', type: 'text', label: 'Status', facet: true, enum: ['pending', 'in_progress', 'graded', 'certified'] },
-      { name: 'priority', type: 'text', label: 'Priority', facet: true, enum: ['low', 'normal', 'high', 'urgent'] },
+      {
+        name: 'status',
+        type: 'text',
+        label: 'Status',
+        facet: true,
+        enum: ['pending', 'in_progress', 'graded', 'certified']
+      },
+      {
+        name: 'priority',
+        type: 'text',
+        label: 'Priority',
+        facet: true,
+        enum: ['low', 'normal', 'high', 'urgent']
+      },
       { name: 'assigned_to', type: 'text', label: 'Assigned To', facet: true },
       { name: 'due_date', type: 'date', label: 'Due Date', facet: true },
-      { name: 'created_at', type: 'date', label: 'Created', facet: true },
+      { name: 'created_at', type: 'date', label: 'Created', facet: true }
     ]
   },
   CERTIFICATE: {
     dynamicFields: [
-      { name: 'cert_type', type: 'text', label: 'Certificate Type', facet: true, enum: ['gia', 'ags', 'ssef', 'grs', 'internal'] },
-      { name: 'grade', type: 'text', label: 'Grade', facet: true, enum: ['excellent', 'very_good', 'good', 'fair', 'poor'] },
+      {
+        name: 'cert_type',
+        type: 'text',
+        label: 'Certificate Type',
+        facet: true,
+        enum: ['gia', 'ags', 'ssef', 'grs', 'internal']
+      },
+      {
+        name: 'grade',
+        type: 'text',
+        label: 'Grade',
+        facet: true,
+        enum: ['excellent', 'very_good', 'good', 'fair', 'poor']
+      },
       { name: 'issued_date', type: 'date', label: 'Issue Date', facet: true },
-      { name: 'validity', type: 'text', label: 'Validity', facet: true, enum: ['valid', 'expired', 'revoked'] },
+      {
+        name: 'validity',
+        type: 'text',
+        label: 'Validity',
+        facet: true,
+        enum: ['valid', 'expired', 'revoked']
+      }
     ]
   },
   CUSTOMER: {
     dynamicFields: [
-      { name: 'customer_type', type: 'text', label: 'Customer Type', facet: true, enum: ['vip', 'regular', 'new', 'wholesale'] },
-      { name: 'loyalty_tier', type: 'text', label: 'Loyalty Tier', facet: true, enum: ['bronze', 'silver', 'gold', 'platinum', 'diamond'] },
-      { name: 'total_purchases', type: 'number', label: 'Purchase Value', facet: true, min: 0, max: 1000000, roleGate: ['owner', 'manager'] },
-      { name: 'created_at', type: 'date', label: 'Member Since', facet: true },
+      {
+        name: 'customer_type',
+        type: 'text',
+        label: 'Customer Type',
+        facet: true,
+        enum: ['vip', 'regular', 'new', 'wholesale']
+      },
+      {
+        name: 'loyalty_tier',
+        type: 'text',
+        label: 'Loyalty Tier',
+        facet: true,
+        enum: ['bronze', 'silver', 'gold', 'platinum', 'diamond']
+      },
+      {
+        name: 'total_purchases',
+        type: 'number',
+        label: 'Purchase Value',
+        facet: true,
+        min: 0,
+        max: 1000000,
+        roleGate: ['owner', 'manager']
+      },
+      { name: 'created_at', type: 'date', label: 'Member Since', facet: true }
     ]
   },
   ORDER: {
     dynamicFields: [
-      { name: 'order_status', type: 'text', label: 'Order Status', facet: true, enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'] },
-      { name: 'payment_status', type: 'text', label: 'Payment', facet: true, enum: ['unpaid', 'partial', 'paid', 'refunded'] },
-      { name: 'order_value', type: 'number', label: 'Order Value', facet: true, min: 0, max: 500000, roleGate: ['owner', 'manager', 'sales'] },
-      { name: 'created_at', type: 'date', label: 'Order Date', facet: true },
+      {
+        name: 'order_status',
+        type: 'text',
+        label: 'Order Status',
+        facet: true,
+        enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
+      },
+      {
+        name: 'payment_status',
+        type: 'text',
+        label: 'Payment',
+        facet: true,
+        enum: ['unpaid', 'partial', 'paid', 'refunded']
+      },
+      {
+        name: 'order_value',
+        type: 'number',
+        label: 'Order Value',
+        facet: true,
+        min: 0,
+        max: 500000,
+        roleGate: ['owner', 'manager', 'sales']
+      },
+      { name: 'created_at', type: 'date', label: 'Order Date', facet: true }
     ]
   }
 }
@@ -86,25 +184,27 @@ interface SearchFacetsProps {
 }
 
 // Custom styled components for jewelry theme
-const FacetCard = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-  <Card className={`jewelry-glass-card border-gold-500/20 ${className}`}>
-    {children}
-  </Card>
-)
+const FacetCard = ({
+  children,
+  className = ''
+}: {
+  children: React.ReactNode
+  className?: string
+}) => <Card className={`jewelry-glass-card border-gold-500/20 ${className}`}>{children}</Card>
 
-const FacetSection = ({ 
-  title, 
-  icon: Icon, 
-  children, 
+const FacetSection = ({
+  title,
+  icon: Icon,
+  children,
   isExpanded,
   onToggle,
   badge
-}: { 
-  title: string, 
-  icon?: any, 
-  children: React.ReactNode,
-  isExpanded: boolean,
-  onToggle: () => void,
+}: {
+  title: string
+  icon?: any
+  children: React.ReactNode
+  isExpanded: boolean
+  onToggle: () => void
   badge?: number
 }) => (
   <Collapsible open={isExpanded} onOpenChange={onToggle}>
@@ -120,19 +220,14 @@ const FacetSection = ({
               </Badge>
             )}
           </div>
-          <motion.div
-            animate={{ rotate: isExpanded ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
             <ChevronDown className="h-4 w-4 jewelry-text-muted group-hover:jewelry-text-gold transition-colors" />
           </motion.div>
         </div>
       </button>
     </CollapsibleTrigger>
     <CollapsibleContent>
-      <div className="px-4 pb-4">
-        {children}
-      </div>
+      <div className="px-4 pb-4">{children}</div>
     </CollapsibleContent>
   </Collapsible>
 )
@@ -142,14 +237,16 @@ export function SearchFacetsEnhanced({
   filters,
   onFiltersChange,
   organizationId,
-  userRole,
+  userRole
 }: SearchFacetsProps) {
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['item_type', 'metal_type', 'status']))
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set(['item_type', 'metal_type', 'status'])
+  )
 
   // Get available facets based on selected entities
   const availableFacets = useMemo(() => {
     const facets: any[] = []
-    
+
     selectedEntities.forEach(entityType => {
       const preset = ENTITY_PRESETS[entityType as keyof typeof ENTITY_PRESETS]
       if (preset?.dynamicFields) {
@@ -158,7 +255,7 @@ export function SearchFacetsEnhanced({
           if (field.roleGate && !field.roleGate.includes(userRole)) {
             return
           }
-          
+
           if (field.facet) {
             facets.push({
               key: field.name,
@@ -174,7 +271,7 @@ export function SearchFacetsEnhanced({
         })
       }
     })
-    
+
     // Remove duplicates
     const uniqueFacets = facets.reduce((acc, facet) => {
       const existing = acc.find(f => f.key === facet.key)
@@ -183,7 +280,7 @@ export function SearchFacetsEnhanced({
       }
       return acc
     }, [])
-    
+
     return uniqueFacets
   }, [selectedEntities, userRole])
 
@@ -194,13 +291,13 @@ export function SearchFacetsEnhanced({
       number: [],
       date: []
     }
-    
+
     availableFacets.forEach(facet => {
       if (groups[facet.type]) {
         groups[facet.type].push(facet)
       }
     })
-    
+
     return groups
   }, [availableFacets])
 
@@ -209,24 +306,31 @@ export function SearchFacetsEnhanced({
     return Object.keys(filters).reduce((count, key) => {
       const value = filters[key]
       if (Array.isArray(value) && value.length > 0) return count + 1
-      if (typeof value === 'object' && (value.min || value.max || value.start || value.end)) return count + 1
+      if (typeof value === 'object' && (value.min || value.max || value.start || value.end))
+        return count + 1
       return count
     }, 0)
   }, [filters])
 
   // Handle filter changes
-  const handleFilterChange = useCallback((key: string, value: any) => {
-    const newFilters = { ...filters }
-    
-    if (!value || (Array.isArray(value) && value.length === 0) || 
-        (typeof value === 'object' && !value.min && !value.max && !value.start && !value.end)) {
-      delete newFilters[key]
-    } else {
-      newFilters[key] = value
-    }
-    
-    onFiltersChange(newFilters)
-  }, [filters, onFiltersChange])
+  const handleFilterChange = useCallback(
+    (key: string, value: any) => {
+      const newFilters = { ...filters }
+
+      if (
+        !value ||
+        (Array.isArray(value) && value.length === 0) ||
+        (typeof value === 'object' && !value.min && !value.max && !value.start && !value.end)
+      ) {
+        delete newFilters[key]
+      } else {
+        newFilters[key] = value
+      }
+
+      onFiltersChange(newFilters)
+    },
+    [filters, onFiltersChange]
+  )
 
   // Toggle section expansion
   const toggleSection = useCallback((section: string) => {
@@ -248,26 +352,24 @@ export function SearchFacetsEnhanced({
   }, [onFiltersChange])
 
   // Render enum facet with enhanced styling
-  const renderEnumFacet = (facet: typeof availableFacets[0]) => {
+  const renderEnumFacet = (facet: (typeof availableFacets)[0]) => {
     const currentValues = filters[facet.key] || []
     const hasValues = currentValues.length > 0
-    
+
     return (
       <div className="space-y-3">
         {facet.options?.map((option: string) => (
-          <motion.div 
+          <motion.div
             key={option}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             className="group"
           >
-            <label 
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gold-500/10 transition-all cursor-pointer"
-            >
+            <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-gold-500/10 transition-all cursor-pointer">
               <Checkbox
                 id={`${facet.key}-${option}`}
                 checked={currentValues.includes(option)}
-                onCheckedChange={(checked) => {
+                onCheckedChange={checked => {
                   const newValues = checked
                     ? [...currentValues, option]
                     : currentValues.filter((v: string) => v !== option)
@@ -278,8 +380,8 @@ export function SearchFacetsEnhanced({
               <span className="!text-gray-100 dark:!text-gray-100 text-sm capitalize flex-1">
                 {option.replace(/_/g, ' ')}
               </span>
-              <Badge 
-                variant="outline" 
+              <Badge
+                variant="outline"
                 className="opacity-0 group-hover:opacity-100 transition-opacity jewelry-text-muted text-xs"
               >
                 12
@@ -292,9 +394,9 @@ export function SearchFacetsEnhanced({
   }
 
   // Render number range facet with enhanced styling
-  const renderNumberFacet = (facet: typeof availableFacets[0]) => {
+  const renderNumberFacet = (facet: (typeof availableFacets)[0]) => {
     const currentValue = filters[facet.key] || {}
-    
+
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
@@ -306,7 +408,7 @@ export function SearchFacetsEnhanced({
                 type="number"
                 placeholder={facet.min?.toString() || '0'}
                 value={currentValue.min || ''}
-                onChange={(e) => {
+                onChange={e => {
                   const min = e.target.value ? parseFloat(e.target.value) : undefined
                   handleFilterChange(facet.key, { ...currentValue, min })
                 }}
@@ -322,7 +424,7 @@ export function SearchFacetsEnhanced({
                 type="number"
                 placeholder={facet.max?.toString() || 'Max'}
                 value={currentValue.max || ''}
-                onChange={(e) => {
+                onChange={e => {
                   const max = e.target.value ? parseFloat(e.target.value) : undefined
                   handleFilterChange(facet.key, { ...currentValue, max })
                 }}
@@ -331,7 +433,7 @@ export function SearchFacetsEnhanced({
             </div>
           </div>
         </div>
-        
+
         {/* Quick range buttons */}
         <div className="flex flex-wrap gap-2">
           {[
@@ -360,9 +462,9 @@ export function SearchFacetsEnhanced({
   }
 
   // Render date range facet with enhanced styling
-  const renderDateFacet = (facet: typeof availableFacets[0]) => {
+  const renderDateFacet = (facet: (typeof availableFacets)[0]) => {
     const currentValue = filters[facet.key] || {}
-    
+
     return (
       <div className="space-y-4">
         {/* Quick date options */}
@@ -407,32 +509,40 @@ export function SearchFacetsEnhanced({
             )
           })}
         </div>
-        
+
         {/* Custom date range */}
         <div className="space-y-3">
           <div>
-            <Label className="text-xs !text-gray-300 dark:!text-gray-300 mb-2 block">Start Date</Label>
+            <Label className="text-xs !text-gray-300 dark:!text-gray-300 mb-2 block">
+              Start Date
+            </Label>
             <Input
               type="date"
               value={currentValue.start || ''}
-              onChange={(e) => handleFilterChange(facet.key, { 
-                ...currentValue, 
-                start: e.target.value,
-                preset: undefined 
-              })}
+              onChange={e =>
+                handleFilterChange(facet.key, {
+                  ...currentValue,
+                  start: e.target.value,
+                  preset: undefined
+                })
+              }
               className="jewelry-glass-input h-10"
             />
           </div>
           <div>
-            <Label className="text-xs !text-gray-300 dark:!text-gray-300 mb-2 block">End Date</Label>
+            <Label className="text-xs !text-gray-300 dark:!text-gray-300 mb-2 block">
+              End Date
+            </Label>
             <Input
               type="date"
               value={currentValue.end || ''}
-              onChange={(e) => handleFilterChange(facet.key, { 
-                ...currentValue, 
-                end: e.target.value,
-                preset: undefined 
-              })}
+              onChange={e =>
+                handleFilterChange(facet.key, {
+                  ...currentValue,
+                  end: e.target.value,
+                  preset: undefined
+                })
+              }
               className="jewelry-glass-input h-10"
             />
           </div>
@@ -485,7 +595,7 @@ export function SearchFacetsEnhanced({
             <Label className="text-xs !text-gray-400 dark:!text-gray-400">Searching in:</Label>
             <div className="flex flex-wrap gap-2">
               {selectedEntities.map(entity => (
-                <Badge 
+                <Badge
                   key={entity}
                   className="bg-gold-500/10 border-gold-500/30"
                   style={{ color: '#E6C200 !important' }}
@@ -575,7 +685,8 @@ export function SearchFacetsEnhanced({
               <div>
                 <p className="!text-gray-100 dark:!text-gray-100 text-sm font-medium">Pro Tip</p>
                 <p className="!text-gray-400 dark:!text-gray-400 text-xs mt-1">
-                  Use multiple filters to narrow down your search. Filters work together to find exactly what you need.
+                  Use multiple filters to narrow down your search. Filters work together to find
+                  exactly what you need.
                 </p>
               </div>
             </div>

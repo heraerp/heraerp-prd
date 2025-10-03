@@ -1,12 +1,12 @@
 /**
  * Example of using modular entity presets in the app
- * 
+ *
  * This shows how to migrate from the existing entityPresets.ts
  * to the new modular approach
  */
 
-import { salon } from '@hera/entities-modules';
-import { withOverlay } from '@hera/entities-core';
+import { salon } from '@hera/entities-modules'
+import { withOverlay } from '@hera/entities-core'
 
 // Organization-specific overlay (no forking!)
 export const PRODUCT_PRESET_FOR_ORG = withOverlay(salon.SALON_PRODUCT, {
@@ -15,21 +15,21 @@ export const PRODUCT_PRESET_FOR_ORG = withOverlay(salon.SALON_PRODUCT, {
       name: 'price_cost',
       type: 'number',
       smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.COST.v1',
-      ui: { 
-        visible: (role) => role === 'owner' || role === 'manager',
+      ui: {
+        visible: role => role === 'owner' || role === 'manager',
         helpText: 'Visible only to owners and managers'
       }
     }
   ],
-  policy: { 
-    canDelete: (role) => role === 'owner' 
+  policy: {
+    canDelete: role => role === 'owner'
   }
-});
+})
 
 // Environment-specific overlay
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === 'development'
 
-export const PRODUCT_PRESET = isDev 
+export const PRODUCT_PRESET = isDev
   ? withOverlay(PRODUCT_PRESET_FOR_ORG, {
       dynamicFields: [
         {
@@ -40,7 +40,7 @@ export const PRODUCT_PRESET = isDev
         }
       ]
     })
-  : PRODUCT_PRESET_FOR_ORG;
+  : PRODUCT_PRESET_FOR_ORG
 
 // Example usage in a component
 /*

@@ -42,13 +42,19 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 import { useRouter } from 'next/navigation'
 
 export default function SalonFinancePage() {
-  const { organizationId, role, user, isLoading: authLoading, isAuthenticated } = useSecuredSalonContext()
-  const { 
-    canViewFinancials, 
-    canExportFinancial, 
-    canManagePricing, 
+  const {
+    organizationId,
+    role,
+    user,
+    isLoading: authLoading,
+    isAuthenticated
+  } = useSecuredSalonContext()
+  const {
+    canViewFinancials,
+    canExportFinancial,
+    canManagePricing,
     logFinancialAction,
-    executeSecurely 
+    executeSecurely
   } = useSalonFinancialSecurity()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('overview')
@@ -82,7 +88,8 @@ export default function SalonFinancePage() {
               Financial Access Restricted
             </h3>
             <p style={{ color: LUXE_COLORS.bronze }}>
-              Financial data access is restricted to owners, managers, and accountants. Please contact your manager for access.
+              Financial data access is restricted to owners, managers, and accountants. Please
+              contact your manager for access.
             </p>
             <Button
               onClick={() => router.push('/salon/dashboard')}
@@ -138,9 +145,9 @@ export default function SalonFinancePage() {
                 Refresh
               </Button>
               {canExportFinancial && (
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   style={{ borderColor: LUXE_COLORS.bronze }}
                   onClick={() => logFinancialAction('financial_data_exported')}
                 >

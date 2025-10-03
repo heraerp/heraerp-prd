@@ -4,6 +4,10 @@ export const AMPLIFY_ANALYTIC_EVENT_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_ANALYTIC_EVENT',
   smartCode: 'HERA.AMPLIFY.ANALYTIC.EVENT.ENTITY.V1',
   label: 'Analytics',
+  labels: {
+    singular: 'Analytic Event',
+    plural: 'Analytic Events'
+  },
   dynamicFields: [
     {
       name: 'source',

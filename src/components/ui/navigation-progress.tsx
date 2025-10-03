@@ -15,7 +15,7 @@ export function NavigationProgress() {
 
     // Simulate progress
     const interval = setInterval(() => {
-      setProgress((prev) => {
+      setProgress(prev => {
         if (prev >= 90) {
           clearInterval(interval)
           return 90

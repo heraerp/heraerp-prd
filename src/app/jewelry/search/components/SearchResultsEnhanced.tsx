@@ -6,10 +6,10 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { 
-  MoreHorizontal, 
-  ArrowUpDown, 
-  ArrowUp, 
+import {
+  MoreHorizontal,
+  ArrowUpDown,
+  ArrowUp,
   ArrowDown,
   Eye,
   Edit,
@@ -36,7 +36,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuLabel,
+  DropdownMenuLabel
 } from '@/components/ui/dropdown-menu'
 import {
   Table,
@@ -44,7 +44,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 import '@/styles/jewelry-glassmorphism.css'
@@ -229,7 +229,7 @@ export function SearchResultsEnhanced({
   organizationId,
   userRole,
   onOpenDetails,
-  onSortChange,
+  onSortChange
 }: SearchResultsProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
@@ -237,29 +237,28 @@ export function SearchResultsEnhanced({
   // Get mock data for selected entities
   const allResults = useMemo(() => {
     let results: any[] = []
-    
+
     selectedEntities.forEach(entityType => {
       const entityData = MOCK_DATA[entityType as keyof typeof MOCK_DATA] || []
       results = [...results, ...entityData.map(item => ({ ...item, entity_type: entityType }))]
     })
-    
+
     // Apply search filter
     if (searchQuery) {
-      results = results.filter(item => 
-        item.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.entity_code?.toLowerCase().includes(searchQuery.toLowerCase())
+      results = results.filter(
+        item =>
+          item.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.entity_code?.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
-    
+
     // Apply other filters (simplified for demo)
     Object.entries(filters).forEach(([key, value]) => {
       if (Array.isArray(value) && value.length > 0) {
-        results = results.filter(item => 
-          value.includes(item.dynamic_data?.[key])
-        )
+        results = results.filter(item => value.includes(item.dynamic_data?.[key]))
       }
     })
-    
+
     // Sort results
     results.sort((a, b) => {
       const aVal = a.dynamic_data?.[sortBy] || a[sortBy] || ''
@@ -267,7 +266,7 @@ export function SearchResultsEnhanced({
       const comparison = aVal > bVal ? 1 : -1
       return sortOrder === 'asc' ? comparison : -comparison
     })
-    
+
     return results
   }, [selectedEntities, searchQuery, filters, sortBy, sortOrder])
 
@@ -284,7 +283,7 @@ export function SearchResultsEnhanced({
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(value)
   }, [])
 
@@ -293,55 +292,58 @@ export function SearchResultsEnhanced({
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
+      day: 'numeric'
     })
   }, [])
 
   // Get actions based on entity type and role
-  const getEntityActions = useCallback((entity: any) => {
-    const actions: any[] = [
-      { label: 'View Details', icon: Eye, onClick: () => onOpenDetails(entity.entity_id) }
-    ]
+  const getEntityActions = useCallback(
+    (entity: any) => {
+      const actions: any[] = [
+        { label: 'View Details', icon: Eye, onClick: () => onOpenDetails(entity.entity_id) }
+      ]
 
-    switch (entity.entity_type) {
-      case 'JEWELRY_ITEM':
-        if (['owner', 'manager', 'sales'].includes(userRole)) {
-          actions.push({ label: 'Edit Item', icon: Edit })
-        }
-        if (['owner', 'manager'].includes(userRole)) {
-          actions.push({ label: 'Create Certificate', icon: Award })
-        }
-        break
-      case 'GRADING_JOB':
-        if (userRole === 'appraiser' || userRole === 'manager' || userRole === 'owner') {
-          actions.push({ label: 'Update Status', icon: RefreshCw })
-        }
-        if (['owner', 'manager'].includes(userRole)) {
-          actions.push({ label: 'Issue Certificate', icon: FileText })
-        }
-        break
-      case 'CERTIFICATE':
-        actions.push({ label: 'Download PDF', icon: FileText })
-        if (['owner', 'manager'].includes(userRole)) {
-          actions.push({ label: 'Revoke Certificate', icon: Trash2 })
-        }
-        break
-      case 'CUSTOMER':
-        if (['owner', 'manager', 'sales'].includes(userRole)) {
-          actions.push({ label: 'Edit Customer', icon: Edit })
-          actions.push({ label: 'View Orders', icon: ShoppingCart })
-        }
-        break
-      case 'ORDER':
-        if (['owner', 'manager', 'sales'].includes(userRole)) {
-          actions.push({ label: 'Edit Order', icon: Edit })
-        }
-        actions.push({ label: 'View Invoice', icon: FileText })
-        break
-    }
+      switch (entity.entity_type) {
+        case 'JEWELRY_ITEM':
+          if (['owner', 'manager', 'sales'].includes(userRole)) {
+            actions.push({ label: 'Edit Item', icon: Edit })
+          }
+          if (['owner', 'manager'].includes(userRole)) {
+            actions.push({ label: 'Create Certificate', icon: Award })
+          }
+          break
+        case 'GRADING_JOB':
+          if (userRole === 'appraiser' || userRole === 'manager' || userRole === 'owner') {
+            actions.push({ label: 'Update Status', icon: RefreshCw })
+          }
+          if (['owner', 'manager'].includes(userRole)) {
+            actions.push({ label: 'Issue Certificate', icon: FileText })
+          }
+          break
+        case 'CERTIFICATE':
+          actions.push({ label: 'Download PDF', icon: FileText })
+          if (['owner', 'manager'].includes(userRole)) {
+            actions.push({ label: 'Revoke Certificate', icon: Trash2 })
+          }
+          break
+        case 'CUSTOMER':
+          if (['owner', 'manager', 'sales'].includes(userRole)) {
+            actions.push({ label: 'Edit Customer', icon: Edit })
+            actions.push({ label: 'View Orders', icon: ShoppingCart })
+          }
+          break
+        case 'ORDER':
+          if (['owner', 'manager', 'sales'].includes(userRole)) {
+            actions.push({ label: 'Edit Order', icon: Edit })
+          }
+          actions.push({ label: 'View Invoice', icon: FileText })
+          break
+      }
 
-    return actions
-  }, [userRole, onOpenDetails])
+      return actions
+    },
+    [userRole, onOpenDetails]
+  )
 
   // Render table header
   const renderTableHeader = () => {
@@ -351,14 +353,14 @@ export function SearchResultsEnhanced({
       { key: 'entity_type', label: 'Type', sortable: true },
       { key: 'status', label: 'Status', sortable: true },
       { key: 'created_at', label: 'Created', sortable: true },
-      { key: 'actions', label: 'Actions', sortable: false },
+      { key: 'actions', label: 'Actions', sortable: false }
     ]
 
     return (
       <TableHeader>
         <TableRow className="border-b border-gold-500/20 bg-gray-900/50">
           {columns.map(col => (
-            <TableHead 
+            <TableHead
               key={col.key}
               className={`text-gold-400 font-semibold ${
                 col.sortable ? 'cursor-pointer hover:text-gold-300' : ''
@@ -372,11 +374,13 @@ export function SearchResultsEnhanced({
             >
               <div className="flex items-center gap-2">
                 {col.label}
-                {col.sortable && sortBy === col.key && (
-                  sortOrder === 'asc' ? 
-                    <ArrowUp className="h-4 w-4" /> : 
+                {col.sortable &&
+                  sortBy === col.key &&
+                  (sortOrder === 'asc' ? (
+                    <ArrowUp className="h-4 w-4" />
+                  ) : (
                     <ArrowDown className="h-4 w-4" />
-                )}
+                  ))}
                 {col.sortable && sortBy !== col.key && (
                   <ArrowUpDown className="h-4 w-4 opacity-30" />
                 )}
@@ -392,9 +396,12 @@ export function SearchResultsEnhanced({
   const renderGridItem = (item: any) => {
     const Icon = ENTITY_ICONS[item.entity_type as keyof typeof ENTITY_ICONS] || Package
     const actions = getEntityActions(item)
-    const status = item.dynamic_data?.status || item.dynamic_data?.validity || 
-                   item.dynamic_data?.customer_type || item.dynamic_data?.order_status
-    
+    const status =
+      item.dynamic_data?.status ||
+      item.dynamic_data?.validity ||
+      item.dynamic_data?.customer_type ||
+      item.dynamic_data?.order_status
+
     return (
       <motion.div
         key={item.id}
@@ -403,8 +410,10 @@ export function SearchResultsEnhanced({
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
       >
-        <Card className="jewelry-glass-card border-gold-500/20 overflow-hidden group cursor-pointer"
-              onClick={() => onOpenDetails(item.entity_id)}>
+        <Card
+          className="jewelry-glass-card border-gold-500/20 overflow-hidden group cursor-pointer"
+          onClick={() => onOpenDetails(item.entity_id)}
+        >
           {/* Card Header */}
           <div className="p-5 border-b border-gold-500/10">
             <div className="flex items-start justify-between mb-3">
@@ -419,14 +428,14 @@ export function SearchResultsEnhanced({
                   <p className="jewelry-text-muted text-sm">{item.entity_code}</p>
                 </div>
               </div>
-              
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="icon"
                     className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={e => e.stopPropagation()}
                   >
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
@@ -435,10 +444,10 @@ export function SearchResultsEnhanced({
                   <DropdownMenuLabel className="jewelry-text-luxury">Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator className="border-gold-500/20" />
                   {actions.map((action, idx) => (
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       key={idx}
                       className="jewelry-text-luxury hover:bg-gold-500/10"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation()
                         action.onClick?.()
                       }}
@@ -450,16 +459,16 @@ export function SearchResultsEnhanced({
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            
+
             {status && (
-              <Badge className={`${STATUS_COLORS[status as keyof typeof STATUS_COLORS] || ''} border`}>
-                <span style={{ color: 'inherit' }}>
-                  {status.replace(/_/g, ' ')}
-                </span>
+              <Badge
+                className={`${STATUS_COLORS[status as keyof typeof STATUS_COLORS] || ''} border`}
+              >
+                <span style={{ color: 'inherit' }}>{status.replace(/_/g, ' ')}</span>
               </Badge>
             )}
           </div>
-          
+
           {/* Card Body */}
           <div className="p-5 space-y-3">
             {/* Dynamic data display */}
@@ -471,7 +480,7 @@ export function SearchResultsEnhanced({
                 </span>
               </div>
             )}
-            
+
             {item.dynamic_data?.carat_weight && (
               <div className="flex justify-between items-center">
                 <span className="jewelry-text-muted text-sm">Carat Weight</span>
@@ -480,7 +489,7 @@ export function SearchResultsEnhanced({
                 </span>
               </div>
             )}
-            
+
             {item.dynamic_data?.certification && (
               <div className="flex justify-between items-center">
                 <span className="jewelry-text-muted text-sm">Certification</span>
@@ -489,7 +498,7 @@ export function SearchResultsEnhanced({
                 </span>
               </div>
             )}
-            
+
             {item.dynamic_data?.total_purchases && ['owner', 'manager'].includes(userRole) && (
               <div className="flex justify-between items-center">
                 <span className="jewelry-text-muted text-sm">Total Purchases</span>
@@ -499,7 +508,7 @@ export function SearchResultsEnhanced({
               </div>
             )}
           </div>
-          
+
           {/* Card Footer */}
           <div className="px-5 py-3 bg-gray-900/30 border-t border-gold-500/10">
             <div className="flex items-center justify-between text-xs jewelry-text-muted">
@@ -524,37 +533,34 @@ export function SearchResultsEnhanced({
               {allResults.length} Results
             </h3>
             {searchQuery && (
-              <Badge 
-                className="bg-gold-500/10 border-gold-500/30"
-                style={{ color: '#E6C200' }}
-              >
-                <span style={{ color: '#E6C200' }}>
-                  Searching: "{searchQuery}"
-                </span>
+              <Badge className="bg-gold-500/10 border-gold-500/30" style={{ color: '#E6C200' }}>
+                <span style={{ color: '#E6C200' }}>Searching: "{searchQuery}"</span>
               </Badge>
             )}
           </div>
-          
+
           <div className="flex items-center gap-3">
             {/* Pagination Info */}
             <span className="jewelry-text-muted text-sm">
-              Showing {((currentPage - 1) * itemsPerPage) + 1}-
+              Showing {(currentPage - 1) * itemsPerPage + 1}-
               {Math.min(currentPage * itemsPerPage, allResults.length)} of {allResults.length}
             </span>
-            
+
             <Separator orientation="vertical" className="h-5 border-gold-500/20" />
-            
+
             {/* View Mode Toggle */}
             <div className="flex items-center gap-1 bg-gray-800/50 rounded-lg p-1">
               <Button
                 variant={viewMode === 'table' ? 'default' : 'ghost'}
                 size="icon"
                 className={`h-8 w-8 ${
-                  viewMode === 'table' 
-                    ? 'bg-gold-500/20 text-gold-400' 
+                  viewMode === 'table'
+                    ? 'bg-gold-500/20 text-gold-400'
                     : 'text-gray-400 hover:text-gold-400'
                 }`}
-                onClick={() => {/* Handle view mode change */}}
+                onClick={() => {
+                  /* Handle view mode change */
+                }}
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -562,11 +568,13 @@ export function SearchResultsEnhanced({
                 variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="icon"
                 className={`h-8 w-8 ${
-                  viewMode === 'grid' 
-                    ? 'bg-gold-500/20 text-gold-400' 
+                  viewMode === 'grid'
+                    ? 'bg-gold-500/20 text-gold-400'
                     : 'text-gray-400 hover:text-gold-400'
                 }`}
-                onClick={() => {/* Handle view mode change */}}
+                onClick={() => {
+                  /* Handle view mode change */
+                }}
               >
                 <Grid3x3 className="h-4 w-4" />
               </Button>
@@ -574,16 +582,14 @@ export function SearchResultsEnhanced({
           </div>
         </div>
       </div>
-      
+
       {/* Results Content */}
       <div className="flex-1 overflow-auto p-6">
         {allResults.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full">
             <div className="jewelry-glass-card p-12 text-center">
               <Sparkles className="h-12 w-12 jewelry-text-gold mx-auto mb-4" />
-              <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
-                No results found
-              </h3>
+              <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">No results found</h3>
               <p className="jewelry-text-muted max-w-sm">
                 Try adjusting your search criteria or clearing some filters to see more results.
               </p>
@@ -596,11 +602,15 @@ export function SearchResultsEnhanced({
               <TableBody>
                 <AnimatePresence>
                   {paginatedResults.map((item, index) => {
-                    const Icon = ENTITY_ICONS[item.entity_type as keyof typeof ENTITY_ICONS] || Package
+                    const Icon =
+                      ENTITY_ICONS[item.entity_type as keyof typeof ENTITY_ICONS] || Package
                     const actions = getEntityActions(item)
-                    const status = item.dynamic_data?.status || item.dynamic_data?.validity || 
-                                 item.dynamic_data?.customer_type || item.dynamic_data?.order_status
-                    
+                    const status =
+                      item.dynamic_data?.status ||
+                      item.dynamic_data?.validity ||
+                      item.dynamic_data?.customer_type ||
+                      item.dynamic_data?.order_status
+
                     return (
                       <motion.tr
                         key={item.id}
@@ -627,12 +637,10 @@ export function SearchResultsEnhanced({
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="jewelry-text-luxury">
-                          {item.entity_code}
-                        </TableCell>
+                        <TableCell className="jewelry-text-luxury">{item.entity_code}</TableCell>
                         <TableCell>
-                          <Badge 
-                            variant="outline" 
+                          <Badge
+                            variant="outline"
                             className="border-gold-500/30"
                             style={{ color: '#E6C200' }}
                           >
@@ -643,7 +651,9 @@ export function SearchResultsEnhanced({
                         </TableCell>
                         <TableCell>
                           {status && (
-                            <Badge className={`${STATUS_COLORS[status as keyof typeof STATUS_COLORS] || ''} border`}>
+                            <Badge
+                              className={`${STATUS_COLORS[status as keyof typeof STATUS_COLORS] || ''} border`}
+                            >
                               {status.replace(/_/g, ' ')}
                             </Badge>
                           )}
@@ -659,13 +669,15 @@ export function SearchResultsEnhanced({
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="jewelry-glass-card">
-                              <DropdownMenuLabel className="jewelry-text-luxury">Actions</DropdownMenuLabel>
+                              <DropdownMenuLabel className="jewelry-text-luxury">
+                                Actions
+                              </DropdownMenuLabel>
                               <DropdownMenuSeparator className="border-gold-500/20" />
                               {actions.map((action, idx) => (
-                                <DropdownMenuItem 
+                                <DropdownMenuItem
                                   key={idx}
                                   className="jewelry-text-luxury hover:bg-gold-500/10"
-                                  onClick={(e) => {
+                                  onClick={e => {
                                     e.stopPropagation()
                                     action.onClick?.()
                                   }}
@@ -690,7 +702,7 @@ export function SearchResultsEnhanced({
           </div>
         )}
       </div>
-      
+
       {/* Pagination Footer */}
       {totalPages > 1 && (
         <div className="jewelry-glass-card border-t border-gold-500/20 px-6 py-4">
@@ -705,7 +717,7 @@ export function SearchResultsEnhanced({
               <ChevronLeft className="h-4 w-4 mr-1" />
               Previous
             </Button>
-            
+
             <div className="flex items-center gap-2">
               {[...Array(Math.min(5, totalPages))].map((_, i) => {
                 const pageNum = i + 1
@@ -715,9 +727,10 @@ export function SearchResultsEnhanced({
                     variant={pageNum === currentPage ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setCurrentPage(pageNum)}
-                    className={pageNum === currentPage 
-                      ? 'bg-gold-500/20 text-gold-400 border-gold-500' 
-                      : 'jewelry-btn-secondary'
+                    className={
+                      pageNum === currentPage
+                        ? 'bg-gold-500/20 text-gold-400 border-gold-500'
+                        : 'jewelry-btn-secondary'
                     }
                   >
                     {pageNum}
@@ -738,7 +751,7 @@ export function SearchResultsEnhanced({
                 </>
               )}
             </div>
-            
+
             <Button
               variant="outline"
               size="sm"

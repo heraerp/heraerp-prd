@@ -1,6 +1,6 @@
 /**
  * Fixed Customer Preset with Proper Smart Codes
- * 
+ *
  * This follows HERA DNA standards:
  * - All smart codes are UPPERCASE with .V1 suffix
  * - Minimum 6 segments

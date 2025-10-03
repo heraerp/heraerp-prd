@@ -642,7 +642,7 @@ export const CATEGORY_PRESET = {
 
 // Service Category configuration (salon-specific)
 export const SERVICE_CATEGORY_PRESET = {
-  entityType: 'CATEGORY',                   // canonical type
+  entityType: 'CATEGORY', // canonical type
   label: 'Service Category',
   smartCode: 'HERA.SALON.CATEGORY.ENTITY.ITEM.V1',
   description: 'Categorizes salon services for discovery, pricing and reporting.',
@@ -657,81 +657,81 @@ export const SERVICE_CATEGORY_PRESET = {
     view: () => true
   },
   dynamicFields: [
-    { 
-      name: 'kind',          
-      type: 'text' as const,   
+    {
+      name: 'kind',
+      type: 'text' as const,
       required: true,
       smart_code: 'HERA.SALON.CATEGORY.DYN.KIND.V1',
-      ui: { 
-        label: 'Category Kind', 
-        widget: 'select' as const, 
-        options: ['SERVICE','PRODUCT','BUNDLE'], 
-        defaultValue: 'SERVICE' 
-      } 
+      ui: {
+        label: 'Category Kind',
+        widget: 'select' as const,
+        options: ['SERVICE', 'PRODUCT', 'BUNDLE'],
+        defaultValue: 'SERVICE'
+      }
     },
-    { 
-      name: 'name',          
-      type: 'text' as const,   
+    {
+      name: 'name',
+      type: 'text' as const,
       required: true,
       smart_code: 'HERA.SALON.CATEGORY.DYN.NAME.V1',
-      ui: { 
-        label: 'Category Name', 
-        placeholder: 'Hair, Nails, Spa…', 
-        width: '2/3' 
-      } 
+      ui: {
+        label: 'Category Name',
+        placeholder: 'Hair, Nails, Spa…',
+        width: '2/3'
+      }
     },
-    { 
-      name: 'code',          
-      type: 'text' as const,   
+    {
+      name: 'code',
+      type: 'text' as const,
       required: false,
       smart_code: 'HERA.SALON.CATEGORY.DYN.CODE.V1',
-      ui: { 
-        label: 'Code', 
-        placeholder: 'SRV-HAIR', 
-        width: '1/3' 
-      } 
+      ui: {
+        label: 'Code',
+        placeholder: 'SRV-HAIR',
+        width: '1/3'
+      }
     },
-    { 
-      name: 'description',   
-      type: 'text' as const,   
+    {
+      name: 'description',
+      type: 'text' as const,
       required: false,
       smart_code: 'HERA.SALON.CATEGORY.DYN.DESCRIPTION.V1',
-      ui: { 
-        label: 'Description', 
-        widget: 'textarea' as const 
-      } 
+      ui: {
+        label: 'Description',
+        widget: 'textarea' as const
+      }
     },
-    { 
-      name: 'display_order', 
-      type: 'number' as const, 
+    {
+      name: 'display_order',
+      type: 'number' as const,
       required: false,
       smart_code: 'HERA.SALON.CATEGORY.DYN.DISPLAY_ORDER.V1',
-      ui: { 
-        label: 'Display Order', 
-        widget: 'number' as const 
-      } 
+      ui: {
+        label: 'Display Order',
+        widget: 'number' as const
+      }
     },
-    { 
-      name: 'status',        
-      type: 'text' as const,   
+    {
+      name: 'status',
+      type: 'text' as const,
       required: true,
       smart_code: 'HERA.SALON.CATEGORY.DYN.STATUS.V1',
-      ui: { 
-        label: 'Status', 
-        widget: 'select' as const, 
-        options: ['active','inactive','archived'], 
-        defaultValue: 'active' 
-      } 
+      ui: {
+        label: 'Status',
+        widget: 'select' as const,
+        options: ['active', 'inactive', 'archived'],
+        defaultValue: 'active'
+      }
     },
-    { 
-      name: 'color_tag',     
-      type: 'text' as const,   
+    {
+      name: 'color_tag',
+      type: 'text' as const,
       required: false,
       smart_code: 'HERA.SALON.CATEGORY.DYN.COLOR_TAG.V1',
-      ui: { 
-        label: 'Color Tag', 
-        widget: 'color' as const 
-      } 
+      ui: {
+        label: 'Color Tag',
+        widget: 'color' as const
+      }
     }
   ],
   relationships: [
@@ -746,10 +746,15 @@ export const SERVICE_CATEGORY_PRESET = {
       { key: 'status', format: 'badge' }
     ],
     defaultSort: { key: 'display_order', dir: 'asc' },
-    searchKeys: ['name','code','description'],
+    searchKeys: ['name', 'code', 'description'],
     filters: [
-      { key: 'kind', type: 'select', options: ['SERVICE','PRODUCT','BUNDLE'], defaultValue: 'SERVICE' },
-      { key: 'status', type: 'select', options: ['active','inactive','archived'] }
+      {
+        key: 'kind',
+        type: 'select',
+        options: ['SERVICE', 'PRODUCT', 'BUNDLE'],
+        defaultValue: 'SERVICE'
+      },
+      { key: 'status', type: 'select', options: ['active', 'inactive', 'archived'] }
     ]
   }
 }

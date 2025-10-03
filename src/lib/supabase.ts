@@ -32,7 +32,6 @@ export const getSupabase = () => {
   const url = getSupabaseUrl()
   const key = getSupabaseAnonKey()
 
-
   // Only create client if we have valid configuration
   if (url && key && !url.includes('placeholder')) {
     globalForSupabase.supabaseInstance = createClient(url, key, {
@@ -72,7 +71,7 @@ export const getSupabase = () => {
   } else {
     // Enhanced error message for missing configuration
     const errorMessage = `Supabase not configured properly. Missing: ${!url ? 'NEXT_PUBLIC_SUPABASE_URL' : ''} ${!key ? 'NEXT_PUBLIC_SUPABASE_ANON_KEY' : ''}`
-    
+
     if (typeof window !== 'undefined') {
       console.error('🚨 Supabase configuration error:', {
         hasUrl: !!url,
@@ -83,7 +82,7 @@ export const getSupabase = () => {
         timestamp: new Date().toISOString()
       })
     }
-    
+
     // For build time, create a no-op client
     const noop = () => Promise.reject(new Error(errorMessage))
     globalForSupabase.supabaseInstance = {

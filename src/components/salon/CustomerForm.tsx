@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select'
 import { Save, Loader2, User } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
@@ -47,12 +47,12 @@ interface CustomerFormProps {
   isLoading: boolean
 }
 
-export function CustomerForm({ 
-  customer, 
+export function CustomerForm({
+  customer,
   initialData,
-  onSubmit, 
-  onCancel, 
-  isLoading 
+  onSubmit,
+  onCancel,
+  isLoading
 }: CustomerFormProps) {
   // Use customer prop or initialData
   const entityData = customer || initialData
@@ -82,16 +82,24 @@ export function CustomerForm({
   useEffect(() => {
     if (entityData) {
       console.log('[CustomerForm] Populating form with entity data:', entityData)
-      
+
       // Try to extract name from entity_name if first/last names are not available
       const entityName = entityData.entity_name || ''
       const nameParts = entityName.split(' ')
       const defaultFirstName = nameParts.length > 0 ? nameParts[0] : ''
       const defaultLastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : ''
-      
+
       setFormData({
-        first_name: entityData.dynamic_fields?.first_name?.value || entityData.dynamic_fields?.name?.value?.split(' ')[0] || defaultFirstName || '',
-        last_name: entityData.dynamic_fields?.last_name?.value || entityData.dynamic_fields?.name?.value?.split(' ').slice(1).join(' ') || defaultLastName || '',
+        first_name:
+          entityData.dynamic_fields?.first_name?.value ||
+          entityData.dynamic_fields?.name?.value?.split(' ')[0] ||
+          defaultFirstName ||
+          '',
+        last_name:
+          entityData.dynamic_fields?.last_name?.value ||
+          entityData.dynamic_fields?.name?.value?.split(' ').slice(1).join(' ') ||
+          defaultLastName ||
+          '',
         email: entityData.dynamic_fields?.email?.value || '',
         phone: entityData.dynamic_fields?.phone?.value || '',
         mobile: entityData.dynamic_fields?.mobile?.value || '',
@@ -134,19 +142,19 @@ export function CustomerForm({
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
-    
+
     if (!formData.first_name.trim()) {
       newErrors.first_name = 'First name is required'
     }
-    
+
     if (!formData.last_name.trim()) {
       newErrors.last_name = 'Last name is required'
     }
-    
+
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address'
     }
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -156,7 +164,7 @@ export function CustomerForm({
     if (validate()) {
       // Combine first and last name for entity_name and name field
       const fullName = `${formData.first_name} ${formData.last_name}`.trim()
-      
+
       // Prepare the data in the format expected by the CRUD page
       const submitData = {
         entity_name: fullName,
@@ -179,7 +187,7 @@ export function CustomerForm({
         status: formData.status,
         tags: formData.tags
       }
-      
+
       console.log('[CustomerForm] Submitting data:', submitData)
       onSubmit(submitData)
     }
@@ -190,19 +198,25 @@ export function CustomerForm({
       <div className="space-y-6 pt-6 pb-4 flex-1 overflow-y-auto px-6">
         {/* Personal Information Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+          <h3
+            className="text-lg font-semibold flex items-center gap-2"
+            style={{ color: LUXE_COLORS.champagne }}
+          >
             <User className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
             Personal Information
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 First Name *
               </label>
               <Input
                 value={formData.first_name}
-                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                onChange={e => setFormData({ ...formData, first_name: e.target.value })}
                 placeholder="John"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -211,16 +225,21 @@ export function CustomerForm({
                   color: LUXE_COLORS.lightText
                 }}
               />
-              {errors.first_name && <p className="text-sm text-red-500 dark:text-red-400 mt-1">{errors.first_name}</p>}
+              {errors.first_name && (
+                <p className="text-sm text-red-500 dark:text-red-400 mt-1">{errors.first_name}</p>
+              )}
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Last Name *
               </label>
               <Input
                 value={formData.last_name}
-                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                onChange={e => setFormData({ ...formData, last_name: e.target.value })}
                 placeholder="Doe"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -229,17 +248,22 @@ export function CustomerForm({
                   color: LUXE_COLORS.lightText
                 }}
               />
-              {errors.last_name && <p className="text-sm text-red-500 dark:text-red-400 mt-1">{errors.last_name}</p>}
+              {errors.last_name && (
+                <p className="text-sm text-red-500 dark:text-red-400 mt-1">{errors.last_name}</p>
+              )}
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Email
               </label>
               <Input
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={e => setFormData({ ...formData, email: e.target.value })}
                 placeholder="john.doe@example.com"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -248,16 +272,21 @@ export function CustomerForm({
                   color: LUXE_COLORS.lightText
                 }}
               />
-              {errors.email && <p className="text-sm text-red-500 dark:text-red-400 mt-1">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-500 dark:text-red-400 mt-1">{errors.email}</p>
+              )}
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Mobile
               </label>
               <Input
                 value={formData.mobile}
-                onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                onChange={e => setFormData({ ...formData, mobile: e.target.value })}
                 placeholder="+1 (555) 123-4567"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -267,15 +296,18 @@ export function CustomerForm({
                 }}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Date of Birth
               </label>
               <Input
                 type="date"
                 value={formData.date_of_birth}
-                onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+                onChange={e => setFormData({ ...formData, date_of_birth: e.target.value })}
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
                   backgroundColor: `${LUXE_COLORS.charcoal}80`,
@@ -284,13 +316,19 @@ export function CustomerForm({
                 }}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Gender
               </label>
-              <Select value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
-                <SelectTrigger 
+              <Select
+                value={formData.gender}
+                onValueChange={value => setFormData({ ...formData, gender: value })}
+              >
+                <SelectTrigger
                   className="h-11"
                   style={{
                     backgroundColor: `${LUXE_COLORS.charcoal}80`,
@@ -300,16 +338,24 @@ export function CustomerForm({
                 >
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
-                <SelectContent 
+                <SelectContent
                   style={{
                     backgroundColor: LUXE_COLORS.charcoalLight,
                     border: `1px solid ${LUXE_COLORS.gold}30`
                   }}
                 >
-                  <SelectItem value="female" style={{ color: LUXE_COLORS.lightText }}>Female</SelectItem>
-                  <SelectItem value="male" style={{ color: LUXE_COLORS.lightText }}>Male</SelectItem>
-                  <SelectItem value="other" style={{ color: LUXE_COLORS.lightText }}>Other</SelectItem>
-                  <SelectItem value="prefer_not_to_say" style={{ color: LUXE_COLORS.lightText }}>Prefer not to say</SelectItem>
+                  <SelectItem value="female" style={{ color: LUXE_COLORS.lightText }}>
+                    Female
+                  </SelectItem>
+                  <SelectItem value="male" style={{ color: LUXE_COLORS.lightText }}>
+                    Male
+                  </SelectItem>
+                  <SelectItem value="other" style={{ color: LUXE_COLORS.lightText }}>
+                    Other
+                  </SelectItem>
+                  <SelectItem value="prefer_not_to_say" style={{ color: LUXE_COLORS.lightText }}>
+                    Prefer not to say
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -321,15 +367,18 @@ export function CustomerForm({
           <h3 className="text-lg font-semibold" style={{ color: LUXE_COLORS.champagne }}>
             Address Information
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Street Address
               </label>
               <Input
                 value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                onChange={e => setFormData({ ...formData, address: e.target.value })}
                 placeholder="123 Main Street"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -339,14 +388,17 @@ export function CustomerForm({
                 }}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 City
               </label>
               <Input
                 value={formData.city}
-                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                onChange={e => setFormData({ ...formData, city: e.target.value })}
                 placeholder="New York"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -356,14 +408,17 @@ export function CustomerForm({
                 }}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 State/Province
               </label>
               <Input
                 value={formData.state}
-                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                onChange={e => setFormData({ ...formData, state: e.target.value })}
                 placeholder="NY"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -373,14 +428,17 @@ export function CustomerForm({
                 }}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Postal Code
               </label>
               <Input
                 value={formData.postal_code}
-                onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
+                onChange={e => setFormData({ ...formData, postal_code: e.target.value })}
                 placeholder="10001"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -390,14 +448,17 @@ export function CustomerForm({
                 }}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Country
               </label>
               <Input
                 value={formData.country}
-                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                onChange={e => setFormData({ ...formData, country: e.target.value })}
                 placeholder="United States"
                 className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
@@ -415,14 +476,20 @@ export function CustomerForm({
           <h3 className="text-lg font-semibold" style={{ color: LUXE_COLORS.champagne }}>
             Salon Preferences
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Customer Source
               </label>
-              <Select value={formData.source} onValueChange={(value) => setFormData({ ...formData, source: value })}>
-                <SelectTrigger 
+              <Select
+                value={formData.source}
+                onValueChange={value => setFormData({ ...formData, source: value })}
+              >
+                <SelectTrigger
                   className="h-11"
                   style={{
                     backgroundColor: `${LUXE_COLORS.charcoal}80`,
@@ -432,27 +499,43 @@ export function CustomerForm({
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent 
+                <SelectContent
                   style={{
                     backgroundColor: LUXE_COLORS.charcoalLight,
                     border: `1px solid ${LUXE_COLORS.gold}30`
                   }}
                 >
-                  <SelectItem value="Walk-in" style={{ color: LUXE_COLORS.lightText }}>Walk-in</SelectItem>
-                  <SelectItem value="Referral" style={{ color: LUXE_COLORS.lightText }}>Referral</SelectItem>
-                  <SelectItem value="Online" style={{ color: LUXE_COLORS.lightText }}>Online</SelectItem>
-                  <SelectItem value="Social Media" style={{ color: LUXE_COLORS.lightText }}>Social Media</SelectItem>
-                  <SelectItem value="Advertisement" style={{ color: LUXE_COLORS.lightText }}>Advertisement</SelectItem>
+                  <SelectItem value="Walk-in" style={{ color: LUXE_COLORS.lightText }}>
+                    Walk-in
+                  </SelectItem>
+                  <SelectItem value="Referral" style={{ color: LUXE_COLORS.lightText }}>
+                    Referral
+                  </SelectItem>
+                  <SelectItem value="Online" style={{ color: LUXE_COLORS.lightText }}>
+                    Online
+                  </SelectItem>
+                  <SelectItem value="Social Media" style={{ color: LUXE_COLORS.lightText }}>
+                    Social Media
+                  </SelectItem>
+                  <SelectItem value="Advertisement" style={{ color: LUXE_COLORS.lightText }}>
+                    Advertisement
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Status
               </label>
-              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                <SelectTrigger 
+              <Select
+                value={formData.status}
+                onValueChange={value => setFormData({ ...formData, status: value })}
+              >
+                <SelectTrigger
                   className="h-11"
                   style={{
                     backgroundColor: `${LUXE_COLORS.charcoal}80`,
@@ -462,27 +545,38 @@ export function CustomerForm({
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent 
+                <SelectContent
                   style={{
                     backgroundColor: LUXE_COLORS.charcoalLight,
                     border: `1px solid ${LUXE_COLORS.gold}30`
                   }}
                 >
-                  <SelectItem value="active" style={{ color: LUXE_COLORS.emerald }}>Active</SelectItem>
-                  <SelectItem value="inactive" style={{ color: LUXE_COLORS.gold }}>Inactive</SelectItem>
-                  <SelectItem value="vip" style={{ color: LUXE_COLORS.purple }}>VIP</SelectItem>
-                  <SelectItem value="blocked" style={{ color: LUXE_COLORS.ruby }}>Blocked</SelectItem>
+                  <SelectItem value="active" style={{ color: LUXE_COLORS.emerald }}>
+                    Active
+                  </SelectItem>
+                  <SelectItem value="inactive" style={{ color: LUXE_COLORS.gold }}>
+                    Inactive
+                  </SelectItem>
+                  <SelectItem value="vip" style={{ color: LUXE_COLORS.purple }}>
+                    VIP
+                  </SelectItem>
+                  <SelectItem value="blocked" style={{ color: LUXE_COLORS.ruby }}>
+                    Blocked
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Notes
               </label>
               <Textarea
                 value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                onChange={e => setFormData({ ...formData, notes: e.target.value })}
                 rows={3}
                 placeholder="Special preferences, allergies, or other notes..."
                 className="resize-none focus:ring-2 focus:ring-gold/50 transition-all"
@@ -496,8 +590,8 @@ export function CustomerForm({
           </div>
         </div>
       </div>
-      
-      <div 
+
+      <div
         className="flex justify-end space-x-4 pt-6 pb-6 px-6 border-t flex-shrink-0 -mx-6 -mb-6 mt-6"
         style={{
           backgroundColor: `${LUXE_COLORS.charcoal}50`,

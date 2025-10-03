@@ -8,8 +8,20 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Alert } from '@/components/ui/alert'
 import { Textarea } from '@/components/ui/textarea'
 import { formatCurrency } from '@/lib/utils'
@@ -57,7 +69,7 @@ export default function GiftCardsPage() {
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [showTransactionDialog, setShowTransactionDialog] = useState(false)
-  
+
   // Form state for new gift card
   const [formData, setFormData] = useState({
     amount: '',
@@ -82,14 +94,14 @@ export default function GiftCardsPage() {
   // Load gift cards
   const loadGiftCards = async () => {
     if (!organizationId) return
-    
+
     setLoading(true)
     try {
       const { data } = await apiV2.get('entities', {
         entity_type: 'gift_card',
         organization_id: organizationId
       })
-      
+
       setGiftCards(data.entities || [])
     } catch (error) {
       console.error('Error loading gift cards:', error)
@@ -106,7 +118,7 @@ export default function GiftCardsPage() {
         from_entity_id: giftCardId,
         organization_id: organizationId
       })
-      
+
       setTransactions(data.transactions || [])
     } catch (error) {
       console.error('Error loading transactions:', error)
@@ -125,11 +137,11 @@ export default function GiftCardsPage() {
     try {
       // Generate gift card code
       const code = `GC-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
-      
+
       // Calculate expiry date
       const expiryDate = new Date()
       expiryDate.setMonth(expiryDate.getMonth() + parseInt(formData.expiryMonths))
-      
+
       // Create gift card entity
       const { data: giftCard } = await apiV2.post('entities', {
         entity_type: 'gift_card',
@@ -192,7 +204,7 @@ export default function GiftCardsPage() {
     try {
       const amount = parseFloat(transactionData.amount)
       const isRedemption = transactionData.type === 'redemption'
-      
+
       // Check if there's sufficient balance for redemption
       if (isRedemption && amount > selectedCard.metadata.current_balance) {
         toast.error('Insufficient gift card balance')
@@ -200,7 +212,7 @@ export default function GiftCardsPage() {
       }
 
       // Calculate new balance
-      const newBalance = isRedemption 
+      const newBalance = isRedemption
         ? selectedCard.metadata.current_balance - amount
         : selectedCard.metadata.current_balance + amount
 
@@ -211,7 +223,9 @@ export default function GiftCardsPage() {
         from_entity_id: selectedCard.id,
         total_amount: amount,
         transaction_date: new Date().toISOString(),
-        smart_code: isRedemption ? 'HERA.SALON.GIFT.CARD.REDEMPTION.V1' : 'HERA.SALON.GIFT.CARD.RELOAD.V1',
+        smart_code: isRedemption
+          ? 'HERA.SALON.GIFT.CARD.REDEMPTION.V1'
+          : 'HERA.SALON.GIFT.CARD.RELOAD.V1',
         metadata: {
           description: transactionData.description || `Gift card ${transactionData.type}`,
           remaining_balance: newBalance
@@ -241,14 +255,14 @@ export default function GiftCardsPage() {
 
   // Filter gift cards
   const filteredGiftCards = giftCards.filter(card => {
-    const matchesSearch = 
+    const matchesSearch =
       card.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       card.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       card.metadata.recipient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       card.metadata.recipient_email?.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     const matchesStatus = filterStatus === 'all' || card.metadata.status === filterStatus
-    
+
     return matchesSearch && matchesStatus
   })
 
@@ -271,9 +285,11 @@ export default function GiftCardsPage() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold !text-gray-900 dark:!text-gray-100">Gift Cards</h1>
-          <p className="!text-gray-600 dark:!text-gray-400 mt-2">Manage salon gift cards and track balances</p>
+          <p className="!text-gray-600 dark:!text-gray-400 mt-2">
+            Manage salon gift cards and track balances
+          </p>
         </div>
-        
+
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
             <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
@@ -294,12 +310,15 @@ export default function GiftCardsPage() {
                     type="number"
                     placeholder="0.00"
                     value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    onChange={e => setFormData({ ...formData, amount: e.target.value })}
                   />
                 </div>
                 <div>
                   <Label htmlFor="expiry">Validity Period</Label>
-                  <Select value={formData.expiryMonths} onValueChange={(v) => setFormData({ ...formData, expiryMonths: v })}>
+                  <Select
+                    value={formData.expiryMonths}
+                    onValueChange={v => setFormData({ ...formData, expiryMonths: v })}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -319,18 +338,18 @@ export default function GiftCardsPage() {
                   <Input
                     placeholder="Recipient Name"
                     value={formData.recipientName}
-                    onChange={(e) => setFormData({ ...formData, recipientName: e.target.value })}
+                    onChange={e => setFormData({ ...formData, recipientName: e.target.value })}
                   />
                   <Input
                     placeholder="Recipient Email"
                     type="email"
                     value={formData.recipientEmail}
-                    onChange={(e) => setFormData({ ...formData, recipientEmail: e.target.value })}
+                    onChange={e => setFormData({ ...formData, recipientEmail: e.target.value })}
                   />
                   <Input
                     placeholder="Recipient Phone"
                     value={formData.recipientPhone}
-                    onChange={(e) => setFormData({ ...formData, recipientPhone: e.target.value })}
+                    onChange={e => setFormData({ ...formData, recipientPhone: e.target.value })}
                   />
                 </div>
               </div>
@@ -341,13 +360,13 @@ export default function GiftCardsPage() {
                   <Input
                     placeholder="Purchaser Name"
                     value={formData.purchaserName}
-                    onChange={(e) => setFormData({ ...formData, purchaserName: e.target.value })}
+                    onChange={e => setFormData({ ...formData, purchaserName: e.target.value })}
                   />
                   <Input
                     placeholder="Purchaser Email"
                     type="email"
                     value={formData.purchaserEmail}
-                    onChange={(e) => setFormData({ ...formData, purchaserEmail: e.target.value })}
+                    onChange={e => setFormData({ ...formData, purchaserEmail: e.target.value })}
                   />
                 </div>
               </div>
@@ -358,7 +377,7 @@ export default function GiftCardsPage() {
                   id="message"
                   placeholder="Add a personal message to the gift card..."
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={e => setFormData({ ...formData, message: e.target.value })}
                   rows={3}
                 />
               </div>
@@ -367,7 +386,7 @@ export default function GiftCardsPage() {
               <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleCreateGiftCard}
                 disabled={!formData.amount || parseFloat(formData.amount) <= 0}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
@@ -386,7 +405,7 @@ export default function GiftCardsPage() {
           <Input
             placeholder="Search by code, name, or email..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -451,11 +470,16 @@ export default function GiftCardsPage() {
             <div>
               <p className="text-sm text-amber-600 dark:text-amber-300">Expiring Soon</p>
               <p className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">
-                {giftCards.filter(c => {
-                  if (!c.metadata.expiry_date) return false
-                  const daysUntilExpiry = Math.floor((new Date(c.metadata.expiry_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-                  return daysUntilExpiry <= 30 && daysUntilExpiry > 0
-                }).length}
+                {
+                  giftCards.filter(c => {
+                    if (!c.metadata.expiry_date) return false
+                    const daysUntilExpiry = Math.floor(
+                      (new Date(c.metadata.expiry_date).getTime() - Date.now()) /
+                        (1000 * 60 * 60 * 24)
+                    )
+                    return daysUntilExpiry <= 30 && daysUntilExpiry > 0
+                  }).length
+                }
               </p>
             </div>
             <Calendar className="h-8 w-8 text-amber-500" />
@@ -503,7 +527,7 @@ export default function GiftCardsPage() {
                   </td>
                 </tr>
               ) : (
-                filteredGiftCards.map((card) => (
+                filteredGiftCards.map(card => (
                   <tr key={card.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -532,17 +556,21 @@ export default function GiftCardsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                         ${card.metadata.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : ''}
                         ${card.metadata.status === 'redeemed' ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400' : ''}
                         ${card.metadata.status === 'expired' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' : ''}
                         ${card.metadata.status === 'cancelled' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' : ''}
-                      `}>
+                      `}
+                      >
                         {card.metadata.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {card.metadata.expiry_date ? new Date(card.metadata.expiry_date).toLocaleDateString() : 'No expiry'}
+                      {card.metadata.expiry_date
+                        ? new Date(card.metadata.expiry_date).toLocaleDateString()
+                        : 'No expiry'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex gap-2">
@@ -604,9 +632,9 @@ export default function GiftCardsPage() {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="transaction-type">Transaction Type</Label>
-                  <Select 
-                    value={transactionData.type} 
-                    onValueChange={(v) => setTransactionData({ ...transactionData, type: v })}
+                  <Select
+                    value={transactionData.type}
+                    onValueChange={v => setTransactionData({ ...transactionData, type: v })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -625,11 +653,14 @@ export default function GiftCardsPage() {
                     type="number"
                     placeholder="0.00"
                     value={transactionData.amount}
-                    onChange={(e) => setTransactionData({ ...transactionData, amount: e.target.value })}
+                    onChange={e =>
+                      setTransactionData({ ...transactionData, amount: e.target.value })
+                    }
                   />
-                  {transactionData.type === 'redemption' && parseFloat(transactionData.amount) > selectedCard.metadata.current_balance && (
-                    <p className="text-sm text-red-500 mt-1">Amount exceeds available balance</p>
-                  )}
+                  {transactionData.type === 'redemption' &&
+                    parseFloat(transactionData.amount) > selectedCard.metadata.current_balance && (
+                      <p className="text-sm text-red-500 mt-1">Amount exceeds available balance</p>
+                    )}
                 </div>
 
                 <div>
@@ -638,19 +669,23 @@ export default function GiftCardsPage() {
                     id="description"
                     placeholder="Enter transaction description..."
                     value={transactionData.description}
-                    onChange={(e) => setTransactionData({ ...transactionData, description: e.target.value })}
+                    onChange={e =>
+                      setTransactionData({ ...transactionData, description: e.target.value })
+                    }
                   />
                 </div>
 
                 {transactionData.amount && (
                   <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                     <p className="text-sm text-blue-600 dark:text-blue-400">
-                      New balance after {transactionData.type}: {' '}
+                      New balance after {transactionData.type}:{' '}
                       <span className="font-bold">
                         {formatCurrency(
-                          transactionData.type === 'redemption' 
-                            ? selectedCard.metadata.current_balance - parseFloat(transactionData.amount)
-                            : selectedCard.metadata.current_balance + parseFloat(transactionData.amount)
+                          transactionData.type === 'redemption'
+                            ? selectedCard.metadata.current_balance -
+                                parseFloat(transactionData.amount)
+                            : selectedCard.metadata.current_balance +
+                                parseFloat(transactionData.amount)
                         )}
                       </span>
                     </p>
@@ -663,14 +698,26 @@ export default function GiftCardsPage() {
                 <div>
                   <h4 className="font-medium mb-2">Recent Transactions</h4>
                   <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {transactions.map((txn) => (
-                      <div key={txn.id} className="flex justify-between text-sm p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    {transactions.map(txn => (
+                      <div
+                        key={txn.id}
+                        className="flex justify-between text-sm p-2 bg-gray-50 dark:bg-gray-800 rounded"
+                      >
                         <div>
                           <p>{txn.metadata.description || txn.transaction_type}</p>
-                          <p className="text-xs text-gray-500">{new Date(txn.transaction_date).toLocaleString()}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(txn.transaction_date).toLocaleString()}
+                          </p>
                         </div>
-                        <p className={txn.transaction_type === 'redemption' ? 'text-red-600' : 'text-green-600'}>
-                          {txn.transaction_type === 'redemption' ? '-' : '+'}{formatCurrency(txn.total_amount)}
+                        <p
+                          className={
+                            txn.transaction_type === 'redemption'
+                              ? 'text-red-600'
+                              : 'text-green-600'
+                          }
+                        >
+                          {txn.transaction_type === 'redemption' ? '-' : '+'}
+                          {formatCurrency(txn.total_amount)}
                         </p>
                       </div>
                     ))}
@@ -679,19 +726,23 @@ export default function GiftCardsPage() {
               )}
 
               <div className="flex justify-end gap-4">
-                <Button variant="outline" onClick={() => {
-                  setShowTransactionDialog(false)
-                  setTransactionData({ type: 'redemption', amount: '', description: '' })
-                  setTransactions([])
-                }}>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowTransactionDialog(false)
+                    setTransactionData({ type: 'redemption', amount: '', description: '' })
+                    setTransactions([])
+                  }}
+                >
                   Cancel
                 </Button>
-                <Button 
+                <Button
                   onClick={handleTransaction}
                   disabled={
-                    !transactionData.amount || 
+                    !transactionData.amount ||
                     parseFloat(transactionData.amount) <= 0 ||
-                    (transactionData.type === 'redemption' && parseFloat(transactionData.amount) > selectedCard.metadata.current_balance)
+                    (transactionData.type === 'redemption' &&
+                      parseFloat(transactionData.amount) > selectedCard.metadata.current_balance)
                   }
                   className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
                 >

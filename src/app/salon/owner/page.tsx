@@ -79,7 +79,9 @@ export default function OwnerDashboard() {
   // Helper to get auth token
   const getAuthToken = async (): Promise<string> => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
       return session?.access_token || ''
     } catch (error) {
       console.error('Failed to get auth token:', error)
@@ -97,12 +99,12 @@ export default function OwnerDashboard() {
       const dashboardResponse = await fetch('/api/v2/salon/dashboard?timeRange=month', {
         headers: {
           'x-hera-api-version': 'v2',
-          'Authorization': `Bearer ${await getAuthToken()}`
+          Authorization: `Bearer ${await getAuthToken()}`
         }
       })
       if (!dashboardResponse.ok) throw new Error('Failed to fetch dashboard data')
       const dashboardData = await dashboardResponse.json()
-      
+
       // Map dashboard data to KPIs
       if (dashboardData.success && dashboardData.data) {
         const { financials, todayStats } = dashboardData.data
@@ -118,16 +120,18 @@ export default function OwnerDashboard() {
 
       // Use dashboard data for financial info
       if (dashboardData.success && dashboardData.data?.financials) {
-        setFinancialData([{
-          month_name: new Date().toLocaleString('default', { month: 'long' }),
-          month_start: new Date().toISOString().slice(0, 10),
-          total_revenue_aed: dashboardData.data.financials.totalRevenue || 0,
-          total_expenses_aed: 75000, // This would come from actual expense data
-          net_profit_aed: (dashboardData.data.financials.totalRevenue || 0) - 75000,
-          profit_margin_percentage: 15.5,
-          top_services_revenue_aed: (dashboardData.data.financials.totalRevenue || 0) * 0.7,
-          top_products_revenue_aed: (dashboardData.data.financials.totalRevenue || 0) * 0.3
-        }])
+        setFinancialData([
+          {
+            month_name: new Date().toLocaleString('default', { month: 'long' }),
+            month_start: new Date().toISOString().slice(0, 10),
+            total_revenue_aed: dashboardData.data.financials.totalRevenue || 0,
+            total_expenses_aed: 75000, // This would come from actual expense data
+            net_profit_aed: (dashboardData.data.financials.totalRevenue || 0) - 75000,
+            profit_margin_percentage: 15.5,
+            top_services_revenue_aed: (dashboardData.data.financials.totalRevenue || 0) * 0.7,
+            top_products_revenue_aed: (dashboardData.data.financials.totalRevenue || 0) * 0.3
+          }
+        ])
       }
 
       // Skip inventory for now - would need v2 endpoint

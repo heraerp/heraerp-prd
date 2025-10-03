@@ -35,7 +35,7 @@ export default function AmplifyDemoPage() {
 
       toast({
         title: 'Content Ingested',
-        description: 'Topic has been converted to content',
+        description: 'Topic has been converted to content'
       })
 
       // Step 2: Optimize content
@@ -54,17 +54,16 @@ export default function AmplifyDemoPage() {
 
       toast({
         title: 'Content Optimized',
-        description: 'SEO optimization complete',
+        description: 'SEO optimization complete'
       })
 
       // Success!
       setTimeout(() => {
         toast({
           title: '🎉 Demo Complete',
-          description: 'Content has been ingested and optimized. Check the Content page.',
+          description: 'Content has been ingested and optimized. Check the Content page.'
         })
       }, 500)
-
     } catch (error) {
       toast({
         title: 'Demo Failed',
@@ -102,9 +101,7 @@ export default function AmplifyDemoPage() {
                 <FileText className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="font-semibold">1. Ingest</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Convert topic to content
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">Convert topic to content</p>
             </div>
 
             <div className="text-center p-4">
@@ -112,9 +109,7 @@ export default function AmplifyDemoPage() {
                 <Zap className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="font-semibold">2. Optimize</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                AI-powered SEO enhancement
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">AI-powered SEO enhancement</p>
             </div>
 
             <div className="text-center p-4">
@@ -122,9 +117,7 @@ export default function AmplifyDemoPage() {
                 <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="font-semibold">3. Amplify</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Multi-channel distribution
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">Multi-channel distribution</p>
             </div>
           </div>
 

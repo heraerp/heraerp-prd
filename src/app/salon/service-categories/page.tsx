@@ -5,18 +5,24 @@ import { Plus, FolderOpen, Search, Filter, Save, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 import { SERVICE_CATEGORY_PRESET } from '@/hooks/entityPresets'
 import { EntityForm } from '@/components/entity/EntityForm'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import '@/styles/salon-luxe.css'
@@ -39,13 +45,18 @@ interface ServiceCategory {
 }
 
 export default function ServiceCategoriesPage() {
-  const { salonRole, hasPermission, isAuthenticated, organization: currentOrganization } = useSecuredSalonContext()
+  const {
+    salonRole,
+    hasPermission,
+    isAuthenticated,
+    organization: currentOrganization
+  } = useSecuredSalonContext()
   const { toast } = useToast()
-  
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<ServiceCategory | null>(null)
-  
+
   // Filter state
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -66,10 +77,10 @@ export default function ServiceCategoriesPage() {
     isDeleting
   } = useUniversalEntity({
     entity_type: 'CATEGORY',
-    filters: { 
-      include_dynamic: true, 
-      include_relationships: false, 
-      limit: 200 
+    filters: {
+      include_dynamic: true,
+      include_relationships: false,
+      limit: 200
     },
     dynamicFields: SERVICE_CATEGORY_PRESET.dynamicFields
   })
@@ -119,7 +130,7 @@ export default function ServiceCategoriesPage() {
       statusFilter,
       sampleCategory: categories?.[0]
     })
-    
+
     return (categories || []).filter((category: ServiceCategory) => {
       // Filter by kind (locked to SERVICE)
       const categoryKind = category.dynamic_fields?.kind?.value || 'SERVICE'
@@ -129,16 +140,16 @@ export default function ServiceCategoriesPage() {
         kindFilter,
         passesKindFilter: categoryKind === kindFilter
       })
-      
+
       if (categoryKind !== kindFilter) return false
-      
+
       // Search filter
       if (searchQuery) {
         const name = category.dynamic_fields?.name?.value || category.entity_name || ''
         const code = category.dynamic_fields?.code?.value || ''
         const description = category.dynamic_fields?.description?.value || ''
         const query = searchQuery.toLowerCase()
-        
+
         if (
           !name.toLowerCase().includes(query) &&
           !code.toLowerCase().includes(query) &&
@@ -147,18 +158,18 @@ export default function ServiceCategoriesPage() {
           return false
         }
       }
-      
+
       // Status filter
       if (statusFilter !== 'all') {
         const status = category.dynamic_fields?.status?.value || 'active'
         if (status !== statusFilter) return false
       }
-      
+
       // Apply shouldShowCategory filter
       if (!shouldShowCategory(category)) {
         return false
       }
-      
+
       return true
     })
   }, [categories, searchQuery, statusFilter, kindFilter])
@@ -180,31 +191,55 @@ export default function ServiceCategoriesPage() {
   const handleCreate = async (formData: any) => {
     try {
       console.log('[ServiceCategoriesPage] Creating category:', formData)
-      
+
       await create({
         entity_type: 'CATEGORY',
         entity_name: formData.name || formData.entity_name || 'Untitled Category',
         smart_code: 'HERA.SALON.CATEGORY.ENTITY.ITEM.V1',
         dynamic_fields: {
           kind: { value: 'SERVICE', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.KIND.V1' },
-          name: { value: formData.name, type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.NAME.V1' },
-          code: { value: formData.code || '', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.CODE.V1' },
-          description: { value: formData.description || '', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.DESCRIPTION.V1' },
-          display_order: { value: formData.display_order || 0, type: 'number', smart_code: 'HERA.SALON.CATEGORY.DYN.DISPLAY_ORDER.V1' },
-          status: { value: formData.status || 'active', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.STATUS.V1' },
-          color_tag: { value: formData.color_tag || '', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.COLOR_TAG.V1' }
+          name: {
+            value: formData.name,
+            type: 'text',
+            smart_code: 'HERA.SALON.CATEGORY.DYN.NAME.V1'
+          },
+          code: {
+            value: formData.code || '',
+            type: 'text',
+            smart_code: 'HERA.SALON.CATEGORY.DYN.CODE.V1'
+          },
+          description: {
+            value: formData.description || '',
+            type: 'text',
+            smart_code: 'HERA.SALON.CATEGORY.DYN.DESCRIPTION.V1'
+          },
+          display_order: {
+            value: formData.display_order || 0,
+            type: 'number',
+            smart_code: 'HERA.SALON.CATEGORY.DYN.DISPLAY_ORDER.V1'
+          },
+          status: {
+            value: formData.status || 'active',
+            type: 'text',
+            smart_code: 'HERA.SALON.CATEGORY.DYN.STATUS.V1'
+          },
+          color_tag: {
+            value: formData.color_tag || '',
+            type: 'text',
+            smart_code: 'HERA.SALON.CATEGORY.DYN.COLOR_TAG.V1'
+          }
         }
       })
-      
+
       console.log('[ServiceCategoriesPage] Showing success toast for:', formData.name)
       toast({
         title: 'Category created',
         description: `Successfully created ${formData.name}`,
         variant: 'default'
       })
-      
+
       setIsModalOpen(false)
-      
+
       // Refresh the list
       await refetch()
     } catch (error: any) {
@@ -227,10 +262,10 @@ export default function ServiceCategoriesPage() {
       })
       return
     }
-    
+
     try {
       console.log('[ServiceCategoriesPage] Updating category:', editingCategory.id, formData)
-      
+
       // Use dynamic_patch approach (consistent with archive function)
       await update({
         entity_id: editingCategory.id,
@@ -246,18 +281,18 @@ export default function ServiceCategoriesPage() {
           kind: 'SERVICE' // Always ensure SERVICE kind
         }
       })
-      
+
       console.log('[ServiceCategoriesPage] Edit completed successfully')
-      
+
       toast({
         title: 'Category updated',
         description: `Successfully updated ${formData.name}`,
         variant: 'default'
       })
-      
+
       setIsModalOpen(false)
       setEditingCategory(null)
-      
+
       // Refresh the list
       await refetch()
     } catch (error: any) {
@@ -272,29 +307,32 @@ export default function ServiceCategoriesPage() {
 
   const handleArchive = async (category: ServiceCategory) => {
     const categoryName = category.dynamic_fields?.name?.value || category.entity_name
-    
+
     try {
-      console.log('[ServiceCategoriesPage] Starting archive process for:', category.id, categoryName)
-      
+      console.log(
+        '[ServiceCategoriesPage] Starting archive process for:',
+        category.id,
+        categoryName
+      )
+
       // Use the archive method from the hook which does a soft delete
       await archive(category.id)
-      
+
       console.log('[ServiceCategoriesPage] Archive completed successfully')
-      
+
       // Show success toast immediately
       toast({
         title: 'Category archived',
         description: `Successfully archived ${categoryName}`,
         variant: 'default'
       })
-      
+
       // Force a small delay to ensure the archive completes
       setTimeout(async () => {
         // Refresh the list
         await refetch()
         console.log('[ServiceCategoriesPage] Data refetched after archive')
       }, 500)
-      
     } catch (error: any) {
       console.error('[ServiceCategoriesPage] Archive error:', error)
       toast({
@@ -315,23 +353,23 @@ export default function ServiceCategoriesPage() {
       })
       return
     }
-    
+
     const categoryName = category.dynamic_fields?.name?.value || category.entity_name
-    
+
     try {
       console.log('[ServiceCategoriesPage] Starting delete process for:', category.id, categoryName)
-      
+
       // For production safety, use soft delete (archive)
       await archive(category.id)
-      
+
       console.log('[ServiceCategoriesPage] Soft delete (archive) completed successfully')
-      
+
       toast({
         title: 'Category archived',
         description: `Successfully archived ${categoryName}`,
         variant: 'default'
       })
-      
+
       // Refresh the list
       await refetch()
     } catch (error: any) {
@@ -356,10 +394,14 @@ export default function ServiceCategoriesPage() {
 
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
-      case 'active': return `bg-emerald-500/20 text-emerald-400 border border-emerald-500/30`
-      case 'inactive': return `bg-yellow-500/20 text-yellow-400 border border-yellow-500/30`
-      case 'archived': return `bg-gray-500/20 text-gray-400 border border-gray-500/30`
-      default: return `bg-gray-500/20 text-gray-400 border border-gray-500/30`
+      case 'active':
+        return `bg-emerald-500/20 text-emerald-400 border border-emerald-500/30`
+      case 'inactive':
+        return `bg-yellow-500/20 text-yellow-400 border border-yellow-500/30`
+      case 'archived':
+        return `bg-gray-500/20 text-gray-400 border border-gray-500/30`
+      default:
+        return `bg-gray-500/20 text-gray-400 border border-gray-500/30`
     }
   }
 
@@ -378,7 +420,7 @@ export default function ServiceCategoriesPage() {
     <div className="min-h-screen p-6" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Enterprise Header Section */}
-        <div 
+        <div
           className="rounded-xl shadow-lg backdrop-blur-xl p-6"
           style={{
             backgroundColor: `${LUXE_COLORS.charcoalLight}F2`,
@@ -389,7 +431,7 @@ export default function ServiceCategoriesPage() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div 
+                <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center shadow-lg"
                   style={{
                     background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
@@ -399,7 +441,7 @@ export default function ServiceCategoriesPage() {
                   <FolderOpen className="h-5 w-5" style={{ color: LUXE_COLORS.black }} />
                 </div>
                 <div>
-                  <h1 
+                  <h1
                     className="text-2xl font-bold"
                     style={{
                       background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
@@ -411,12 +453,13 @@ export default function ServiceCategoriesPage() {
                     Service Categories
                   </h1>
                   <p className="text-sm font-medium" style={{ color: LUXE_COLORS.bronze }}>
-                    {sortedCategories.length} categories • Organize services for better discovery and reporting
+                    {sortedCategories.length} categories • Organize services for better discovery
+                    and reporting
                   </p>
                 </div>
               </div>
             </div>
-            
+
             {canCreate && (
               <Button
                 onClick={openCreateModal}
@@ -441,7 +484,7 @@ export default function ServiceCategoriesPage() {
         </div>
 
         {/* Enterprise Filters Section */}
-        <div 
+        <div
           className="rounded-xl shadow-lg backdrop-blur-xl p-6"
           style={{
             backgroundColor: `${LUXE_COLORS.charcoalLight}F2`,
@@ -450,11 +493,14 @@ export default function ServiceCategoriesPage() {
         >
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{ color: LUXE_COLORS.bronze }} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
+                style={{ color: LUXE_COLORS.bronze }}
+              />
               <Input
                 placeholder="Search categories by name, code, or description..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10 h-11 focus:ring-2 focus:ring-gold/50 transition-all"
                 style={{
                   backgroundColor: `${LUXE_COLORS.charcoal}80`,
@@ -464,11 +510,11 @@ export default function ServiceCategoriesPage() {
                 }}
               />
             </div>
-            
+
             <div className="flex items-center gap-3">
               <Filter className="h-4 w-4" style={{ color: LUXE_COLORS.bronze }} />
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger 
+                <SelectTrigger
                   className="w-48 h-11 transition-all"
                   style={{
                     backgroundColor: `${LUXE_COLORS.charcoal}80`,
@@ -478,17 +524,25 @@ export default function ServiceCategoriesPage() {
                 >
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
-                <SelectContent 
+                <SelectContent
                   className="border-0"
                   style={{
                     backgroundColor: LUXE_COLORS.charcoalLight,
                     border: `1px solid ${LUXE_COLORS.gold}30`
                   }}
                 >
-                  <SelectItem value="all" style={{ color: LUXE_COLORS.lightText }}>All Status</SelectItem>
-                  <SelectItem value="active" style={{ color: LUXE_COLORS.emerald }}>Active</SelectItem>
-                  <SelectItem value="inactive" style={{ color: LUXE_COLORS.gold }}>Inactive</SelectItem>
-                  <SelectItem value="archived" style={{ color: LUXE_COLORS.bronze }}>Archived</SelectItem>
+                  <SelectItem value="all" style={{ color: LUXE_COLORS.lightText }}>
+                    All Status
+                  </SelectItem>
+                  <SelectItem value="active" style={{ color: LUXE_COLORS.emerald }}>
+                    Active
+                  </SelectItem>
+                  <SelectItem value="inactive" style={{ color: LUXE_COLORS.gold }}>
+                    Inactive
+                  </SelectItem>
+                  <SelectItem value="archived" style={{ color: LUXE_COLORS.bronze }}>
+                    Archived
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -499,8 +553,8 @@ export default function ServiceCategoriesPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {isLoading ? (
             Array.from({ length: 8 }).map((_, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="rounded-xl shadow-lg p-6 animate-pulse"
                 style={{
                   backgroundColor: `${LUXE_COLORS.charcoalLight}80`,
@@ -508,27 +562,39 @@ export default function ServiceCategoriesPage() {
                 }}
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg" style={{ backgroundColor: `${LUXE_COLORS.gold}30` }}></div>
-                  <div className="h-5 rounded flex-1" style={{ backgroundColor: `${LUXE_COLORS.bronze}30` }}></div>
+                  <div
+                    className="w-10 h-10 rounded-lg"
+                    style={{ backgroundColor: `${LUXE_COLORS.gold}30` }}
+                  ></div>
+                  <div
+                    className="h-5 rounded flex-1"
+                    style={{ backgroundColor: `${LUXE_COLORS.bronze}30` }}
+                  ></div>
                 </div>
                 <div className="space-y-2">
-                  <div className="h-4 rounded w-3/4" style={{ backgroundColor: `${LUXE_COLORS.bronze}20` }}></div>
-                  <div className="h-3 rounded w-1/2" style={{ backgroundColor: `${LUXE_COLORS.bronze}10` }}></div>
+                  <div
+                    className="h-4 rounded w-3/4"
+                    style={{ backgroundColor: `${LUXE_COLORS.bronze}20` }}
+                  ></div>
+                  <div
+                    className="h-3 rounded w-1/2"
+                    style={{ backgroundColor: `${LUXE_COLORS.bronze}10` }}
+                  ></div>
                 </div>
               </div>
             ))
           ) : sortedCategories.length === 0 ? (
-            <div 
+            <div
               className="col-span-full rounded-xl shadow-lg backdrop-blur-xl p-12 text-center"
               style={{
                 backgroundColor: `${LUXE_COLORS.charcoalLight}F2`,
                 border: `1px solid ${LUXE_COLORS.gold}20`
               }}
             >
-              <div 
+              <div
                 className="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-6"
                 style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.bronze}40 0%, ${LUXE_COLORS.gold}20 100%)`,
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.bronze}40 0%, ${LUXE_COLORS.gold}20 100%)`
                 }}
               >
                 <FolderOpen className="h-8 w-8" style={{ color: LUXE_COLORS.gold }} />
@@ -537,10 +603,9 @@ export default function ServiceCategoriesPage() {
                 No service categories found
               </h3>
               <p className="mb-6 max-w-md mx-auto" style={{ color: LUXE_COLORS.bronze }}>
-                {searchQuery || statusFilter !== 'all' 
-                  ? 'No categories match your current filters. Try adjusting your search criteria.' 
-                  : 'Get started by creating your first service category to organize your salon services.'
-                }
+                {searchQuery || statusFilter !== 'all'
+                  ? 'No categories match your current filters. Try adjusting your search criteria.'
+                  : 'Get started by creating your first service category to organize your salon services.'}
               </p>
               {canCreate && !searchQuery && statusFilter === 'all' && (
                 <Button
@@ -558,14 +623,14 @@ export default function ServiceCategoriesPage() {
               )}
             </div>
           ) : (
-            sortedCategories.map((category) => {
+            sortedCategories.map(category => {
               const name = category.dynamic_fields?.name?.value || category.entity_name
               const code = category.dynamic_fields?.code?.value
               const description = category.dynamic_fields?.description?.value
               const status = category.dynamic_fields?.status?.value || 'active'
               const displayOrder = category.dynamic_fields?.display_order?.value || 0
               const colorTag = category.dynamic_fields?.color_tag?.value
-              
+
               return (
                 <div
                   key={category.id}
@@ -583,17 +648,17 @@ export default function ServiceCategoriesPage() {
                   }}
                 >
                   {/* Color accent bar */}
-                  <div 
+                  <div
                     className="h-1 w-full"
                     style={{ backgroundColor: colorTag || LUXE_COLORS.gold }}
                   />
-                  
+
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div
                           className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg"
-                          style={{ 
+                          style={{
                             backgroundColor: colorTag || LUXE_COLORS.gold,
                             boxShadow: `0 4px 6px ${colorTag || LUXE_COLORS.gold}30`
                           }}
@@ -603,7 +668,10 @@ export default function ServiceCategoriesPage() {
                           </span>
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="font-semibold text-lg truncate transition-colors" style={{ color: LUXE_COLORS.champagne }}>
+                          <h3
+                            className="font-semibold text-lg truncate transition-colors"
+                            style={{ color: LUXE_COLORS.champagne }}
+                          >
                             {name}
                           </h3>
                           {code && (
@@ -613,28 +681,35 @@ export default function ServiceCategoriesPage() {
                           )}
                         </div>
                       </div>
-                      <Badge className={`${getStatusBadgeColor(status)} px-3 py-1 text-xs font-medium rounded-full flex-shrink-0`}>
+                      <Badge
+                        className={`${getStatusBadgeColor(status)} px-3 py-1 text-xs font-medium rounded-full flex-shrink-0`}
+                      >
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                       </Badge>
                     </div>
-                    
+
                     {description && (
-                      <p className="text-sm mb-4 line-clamp-2 leading-relaxed" style={{ color: LUXE_COLORS.lightText }}>
+                      <p
+                        className="text-sm mb-4 line-clamp-2 leading-relaxed"
+                        style={{ color: LUXE_COLORS.lightText }}
+                      >
                         {description}
                       </p>
                     )}
-                    
-                    <div 
+
+                    <div
                       className="flex items-center justify-between pt-4 border-t"
                       style={{ borderColor: `${LUXE_COLORS.gold}15` }}
                     >
                       <div className="flex items-center gap-1 text-xs">
-                        <span className="font-medium" style={{ color: LUXE_COLORS.bronze }}>Display Order:</span>
-                        <span 
+                        <span className="font-medium" style={{ color: LUXE_COLORS.bronze }}>
+                          Display Order:
+                        </span>
+                        <span
                           className="px-2 py-1 rounded font-mono"
-                          style={{ 
+                          style={{
                             backgroundColor: `${LUXE_COLORS.gold}10`,
-                            color: LUXE_COLORS.gold 
+                            color: LUXE_COLORS.gold
                           }}
                         >
                           {displayOrder}
@@ -643,28 +718,30 @@ export default function ServiceCategoriesPage() {
                       <div className="flex items-center gap-3">
                         {canEdit && (
                           <button
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation()
                               openEditModal(category)
                             }}
                             className="text-xs font-medium transition-colors hover:scale-105"
                             style={{ color: LUXE_COLORS.gold }}
-                            onMouseEnter={e => e.currentTarget.style.color = LUXE_COLORS.champagne}
-                            onMouseLeave={e => e.currentTarget.style.color = LUXE_COLORS.gold}
+                            onMouseEnter={e =>
+                              (e.currentTarget.style.color = LUXE_COLORS.champagne)
+                            }
+                            onMouseLeave={e => (e.currentTarget.style.color = LUXE_COLORS.gold)}
                           >
                             Edit
                           </button>
                         )}
                         {canDelete && status !== 'archived' && (
                           <button
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation()
                               handleArchive(category)
                             }}
                             className="text-xs font-medium transition-colors hover:scale-105"
                             style={{ color: LUXE_COLORS.ruby }}
-                            onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
-                            onMouseLeave={e => e.currentTarget.style.color = LUXE_COLORS.ruby}
+                            onMouseEnter={e => (e.currentTarget.style.color = '#EF4444')}
+                            onMouseLeave={e => (e.currentTarget.style.color = LUXE_COLORS.ruby)}
                           >
                             Archive
                           </button>
@@ -681,7 +758,7 @@ export default function ServiceCategoriesPage() {
 
       {/* Enterprise Category Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent 
+        <DialogContent
           className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col backdrop-blur-xl"
           style={{
             backgroundColor: `${LUXE_COLORS.charcoalLight}F2`,
@@ -689,12 +766,12 @@ export default function ServiceCategoriesPage() {
             color: LUXE_COLORS.lightText
           }}
         >
-          <DialogHeader 
+          <DialogHeader
             className="pb-6 border-b flex-shrink-0"
             style={{ borderColor: `${LUXE_COLORS.gold}20` }}
           >
             <div className="flex items-center gap-3">
-              <div 
+              <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center shadow-lg"
                 style={{
                   background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
@@ -704,7 +781,7 @@ export default function ServiceCategoriesPage() {
                 <FolderOpen className="h-5 w-5" style={{ color: LUXE_COLORS.black }} />
               </div>
               <div>
-                <DialogTitle 
+                <DialogTitle
                   className="text-xl font-semibold"
                   style={{
                     background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
@@ -716,15 +793,14 @@ export default function ServiceCategoriesPage() {
                   {editingCategory ? 'Edit Service Category' : 'Create Service Category'}
                 </DialogTitle>
                 <DialogDescription className="mt-1" style={{ color: LUXE_COLORS.bronze }}>
-                  {editingCategory 
-                    ? 'Update the service category details below to modify how services are organized.' 
-                    : 'Create a new service category to better organize and discover your salon services.'
-                  }
+                  {editingCategory
+                    ? 'Update the service category details below to modify how services are organized.'
+                    : 'Create a new service category to better organize and discover your salon services.'}
                 </DialogDescription>
               </div>
             </div>
           </DialogHeader>
-          
+
           <div className="overflow-y-auto flex-1">
             <ServiceCategoryForm
               category={editingCategory}
@@ -740,11 +816,11 @@ export default function ServiceCategoriesPage() {
 }
 
 // Form component for creating/editing categories
-function ServiceCategoryForm({ 
-  category, 
-  onSubmit, 
-  onCancel, 
-  isLoading 
+function ServiceCategoryForm({
+  category,
+  onSubmit,
+  onCancel,
+  isLoading
 }: {
   category: ServiceCategory | null
   onSubmit: (data: any) => void
@@ -789,17 +865,17 @@ function ServiceCategoryForm({
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Category name is required'
     } else if (formData.name.length < 2 || formData.name.length > 60) {
       newErrors.name = 'Category name must be 2-60 characters'
     }
-    
+
     if (formData.display_order < 0) {
       newErrors.display_order = 'Display order must be >= 0'
     }
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -815,112 +891,140 @@ function ServiceCategoryForm({
     <form onSubmit={handleSubmit} className="flex flex-col h-full">
       <div className="space-y-6 pt-6 pb-4 flex-1 overflow-y-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="lg:col-span-2">
-          <label className="block text-sm font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
-            Category Name *
-          </label>
-          <Input
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Hair, Nails, Spa, Massage..."
-            className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
-            style={{
-              backgroundColor: `${LUXE_COLORS.charcoal}80`,
-              border: `1px solid ${LUXE_COLORS.bronze}30`,
-              color: LUXE_COLORS.lightText
-            }}
-          />
-          {errors.name && <p className="text-sm text-red-500 dark:text-red-400 mt-2 flex items-center gap-1">
-            <span className="w-4 h-4 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center text-xs">!</span>
-            {errors.name}
-          </p>}
-        </div>
-        
-        <div>
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-            Category Code
-          </label>
-          <Input
-            value={formData.code}
-            onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-            placeholder="SRV-HAIR"
-            className="h-11 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono"
-          />
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Optional unique identifier for the category</p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-            Display Order
-          </label>
-          <Input
-            type="number"
-            value={formData.display_order}
-            onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
-            className="h-11 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-            min="0"
-            placeholder="0"
-          />
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Lower numbers appear first in lists</p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-            Status
-          </label>
-          <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-            <SelectTrigger className="h-11 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-              <SelectItem value="active" className="text-green-700 dark:text-green-400">Active</SelectItem>
-              <SelectItem value="inactive" className="text-yellow-700 dark:text-yellow-400">Inactive</SelectItem>
-              <SelectItem value="archived" className="text-gray-700 dark:text-gray-400">Archived</SelectItem>
-            </SelectContent>
-          </Select>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Controls category visibility and availability</p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-            Color Theme
-          </label>
-          <div className="flex items-center gap-3">
+          <div className="lg:col-span-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: LUXE_COLORS.champagne }}
+            >
+              Category Name *
+            </label>
             <Input
-              type="color"
-              value={formData.color_tag || '#f59e0b'}
-              onChange={(e) => setFormData({ ...formData, color_tag: e.target.value })}
-              className="h-11 w-16 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer"
+              value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              placeholder="Hair, Nails, Spa, Massage..."
+              className="h-11 focus:ring-2 focus:ring-gold/50 transition-all"
+              style={{
+                backgroundColor: `${LUXE_COLORS.charcoal}80`,
+                border: `1px solid ${LUXE_COLORS.bronze}30`,
+                color: LUXE_COLORS.lightText
+              }}
             />
-            <div className="flex-1">
-              <Input
-                value={formData.color_tag || '#f59e0b'}
-                onChange={(e) => setFormData({ ...formData, color_tag: e.target.value })}
-                className="h-11 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white font-mono text-sm"
-                placeholder="#f59e0b"
-              />
-            </div>
+            {errors.name && (
+              <p className="text-sm text-red-500 dark:text-red-400 mt-2 flex items-center gap-1">
+                <span className="w-4 h-4 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center text-xs">
+                  !
+                </span>
+                {errors.name}
+              </p>
+            )}
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Visual identifier for the category</p>
-        </div>
-        
-        <div className="lg:col-span-2">
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-            Description
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            rows={3}
-            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-            placeholder="Describe what types of services belong in this category..."
-          />
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Help staff and customers understand what this category includes</p>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Category Code
+            </label>
+            <Input
+              value={formData.code}
+              onChange={e => setFormData({ ...formData, code: e.target.value })}
+              placeholder="SRV-HAIR"
+              className="h-11 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Optional unique identifier for the category
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Display Order
+            </label>
+            <Input
+              type="number"
+              value={formData.display_order}
+              onChange={e =>
+                setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })
+              }
+              className="h-11 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              min="0"
+              placeholder="0"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Lower numbers appear first in lists
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Status
+            </label>
+            <Select
+              value={formData.status}
+              onValueChange={value => setFormData({ ...formData, status: value })}
+            >
+              <SelectTrigger className="h-11 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                <SelectItem value="active" className="text-green-700 dark:text-green-400">
+                  Active
+                </SelectItem>
+                <SelectItem value="inactive" className="text-yellow-700 dark:text-yellow-400">
+                  Inactive
+                </SelectItem>
+                <SelectItem value="archived" className="text-gray-700 dark:text-gray-400">
+                  Archived
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Controls category visibility and availability
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Color Theme
+            </label>
+            <div className="flex items-center gap-3">
+              <Input
+                type="color"
+                value={formData.color_tag || '#f59e0b'}
+                onChange={e => setFormData({ ...formData, color_tag: e.target.value })}
+                className="h-11 w-16 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer"
+              />
+              <div className="flex-1">
+                <Input
+                  value={formData.color_tag || '#f59e0b'}
+                  onChange={e => setFormData({ ...formData, color_tag: e.target.value })}
+                  className="h-11 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white font-mono text-sm"
+                  placeholder="#f59e0b"
+                />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Visual identifier for the category
+            </p>
+          </div>
+
+          <div className="lg:col-span-2">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
+              rows={3}
+              className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              placeholder="Describe what types of services belong in this category..."
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Help staff and customers understand what this category includes
+            </p>
+          </div>
         </div>
       </div>
-      </div>
-      
-      <div 
+
+      <div
         className="flex justify-end space-x-4 pt-6 pb-6 px-6 border-t flex-shrink-0 -mx-6 -mb-6 mt-6"
         style={{
           backgroundColor: `${LUXE_COLORS.charcoal}50`,

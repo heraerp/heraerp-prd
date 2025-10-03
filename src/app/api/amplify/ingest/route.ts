@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     // 1) Create task audit
     const taskResult = await apiV2.post('entities', {
       entity_type: 'AMPLIFY_TASK',
-      entity_name: `Ingest: ${topicOrDraft?.title ?? topicOrDraft?.slice(0,40) ?? 'Topic'}`,
+      entity_name: `Ingest: ${topicOrDraft?.title ?? topicOrDraft?.slice(0, 40) ?? 'Topic'}`,
       smart_code: 'HERA.AMPLIFY.TASK.ENTITY.V1',
       organization_id: organizationId,
       metadata: {}
@@ -124,18 +124,17 @@ export async function POST(req: NextRequest) {
       ]
     })
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       content,
       task
     })
-
   } catch (error) {
     console.error('Error in amplify/ingest:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     )

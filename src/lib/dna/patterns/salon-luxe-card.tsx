@@ -1,6 +1,6 @@
 /**
  * HERA DNA Pattern: Salon Luxe Card
- * 
+ *
  * Reusable card component for salon CRUD pages
  */
 
@@ -8,11 +8,11 @@ import React from 'react'
 import { MoreVertical, Edit2, Archive, Trash2, LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 
@@ -22,23 +22,23 @@ interface SalonLuxeCardProps {
   subtitle?: string
   description?: string
   code?: string
-  
+
   // Visual
   icon?: LucideIcon
   colorTag?: string
   status?: string
-  
+
   // Actions
   onEdit?: () => void
   onArchive?: () => void
   onDelete?: () => void
   canEdit?: boolean
   canDelete?: boolean
-  
+
   // Additional content
   badges?: Array<{ label: string; value: string | number; color?: string }>
   footer?: React.ReactNode
-  
+
   // Metadata
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -62,16 +62,19 @@ export function SalonLuxeCard({
   createdAt,
   updatedAt
 }: SalonLuxeCardProps) {
-  
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
-      case 'active': return `bg-emerald-500/20 text-emerald-400 border border-emerald-500/30`
-      case 'inactive': return `bg-yellow-500/20 text-yellow-400 border border-yellow-500/30`
-      case 'archived': return `bg-gray-500/20 text-gray-400 border border-gray-500/30`
-      default: return `bg-gray-500/20 text-gray-400 border border-gray-500/30`
+      case 'active':
+        return `bg-emerald-500/20 text-emerald-400 border border-emerald-500/30`
+      case 'inactive':
+        return `bg-yellow-500/20 text-yellow-400 border border-yellow-500/30`
+      case 'archived':
+        return `bg-gray-500/20 text-gray-400 border border-gray-500/30`
+      default:
+        return `bg-gray-500/20 text-gray-400 border border-gray-500/30`
     }
   }
-  
+
   const getColorTagStyle = (color?: string) => {
     if (!color) return {}
     return {
@@ -79,9 +82,9 @@ export function SalonLuxeCard({
       borderColor: color + '50'
     }
   }
-  
+
   return (
-    <div 
+    <div
       className="group rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 hover:scale-[1.01] cursor-pointer"
       style={{
         backgroundColor: `${LUXE_COLORS.charcoalLight}F2`,
@@ -97,7 +100,7 @@ export function SalonLuxeCard({
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-3 flex-1">
           {Icon && (
-            <div 
+            <div
               className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
               style={{
                 backgroundColor: colorTag ? colorTag + '20' : `${LUXE_COLORS.gold}20`,
@@ -118,7 +121,7 @@ export function SalonLuxeCard({
             )}
           </div>
         </div>
-        
+
         {(canEdit || canDelete) && (onEdit || onArchive || onDelete) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -142,7 +145,7 @@ export function SalonLuxeCard({
             >
               {canEdit && onEdit && (
                 <DropdownMenuItem
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation()
                     onEdit()
                   }}
@@ -163,7 +166,7 @@ export function SalonLuxeCard({
               )}
               {canDelete && onArchive && (
                 <DropdownMenuItem
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation()
                     onArchive()
                   }}
@@ -184,7 +187,7 @@ export function SalonLuxeCard({
               )}
               {canDelete && onDelete && (
                 <DropdownMenuItem
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation()
                     onDelete()
                   }}
@@ -207,13 +210,13 @@ export function SalonLuxeCard({
           </DropdownMenu>
         )}
       </div>
-      
+
       {description && (
         <p className="text-sm mb-4 line-clamp-2" style={{ color: LUXE_COLORS.lightText }}>
           {description}
         </p>
       )}
-      
+
       <div className="flex items-center gap-2 flex-wrap">
         {code && (
           <Badge
@@ -228,13 +231,9 @@ export function SalonLuxeCard({
             {code}
           </Badge>
         )}
-        
-        {status && (
-          <Badge className={`text-xs ${getStatusBadgeColor(status)}`}>
-            {status}
-          </Badge>
-        )}
-        
+
+        {status && <Badge className={`text-xs ${getStatusBadgeColor(status)}`}>{status}</Badge>}
+
         {badges.map((badge, index) => (
           <Badge
             key={index}
@@ -250,21 +249,20 @@ export function SalonLuxeCard({
           </Badge>
         ))}
       </div>
-      
+
       {footer && (
         <div className="mt-4 pt-4 border-t" style={{ borderColor: `${LUXE_COLORS.bronze}20` }}>
           {footer}
         </div>
       )}
-      
+
       {(createdAt || updatedAt) && (
-        <div className="mt-4 flex items-center justify-between text-xs" style={{ color: LUXE_COLORS.bronze }}>
-          {createdAt && (
-            <span>Created {new Date(createdAt).toLocaleDateString()}</span>
-          )}
-          {updatedAt && (
-            <span>Updated {new Date(updatedAt).toLocaleDateString()}</span>
-          )}
+        <div
+          className="mt-4 flex items-center justify-between text-xs"
+          style={{ color: LUXE_COLORS.bronze }}
+        >
+          {createdAt && <span>Created {new Date(createdAt).toLocaleDateString()}</span>}
+          {updatedAt && <span>Updated {new Date(updatedAt).toLocaleDateString()}</span>}
         </div>
       )}
     </div>

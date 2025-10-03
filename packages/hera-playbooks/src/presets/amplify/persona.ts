@@ -4,6 +4,10 @@ export const AMPLIFY_PERSONA_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_PERSONA',
   smartCode: 'HERA.AMPLIFY.PERSONA.ENTITY.V1',
   label: 'Personas',
+  labels: {
+    singular: 'Persona',
+    plural: 'Personas'
+  },
   dynamicFields: [
     {
       name: 'tone',

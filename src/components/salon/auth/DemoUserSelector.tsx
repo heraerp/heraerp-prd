@@ -9,16 +9,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Crown, 
-  User, 
-  Calculator, 
-  Shield, 
-  Users,
-  Scissors,
-  Lock,
-  TestTube
-} from 'lucide-react'
+import { Crown, User, Calculator, Shield, Users, Scissors, Lock, TestTube } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 
 interface DemoUser {
@@ -42,7 +33,7 @@ const DEMO_USERS: DemoUser[] = [
     icon: Crown,
     permissions: [
       'All financial data',
-      'Staff management', 
+      'Staff management',
       'POS operations',
       'Export functionality',
       'System settings'
@@ -56,7 +47,7 @@ const DEMO_USERS: DemoUser[] = [
   },
   {
     email: 'manager@hairtalkz.com',
-    password: 'Manager2024!', 
+    password: 'Manager2024!',
     role: 'manager',
     fullName: 'Sarah Manager',
     description: 'Operational management with limited financial access',
@@ -64,7 +55,7 @@ const DEMO_USERS: DemoUser[] = [
     permissions: [
       'Operations dashboard',
       'Staff scheduling',
-      'Inventory management', 
+      'Inventory management',
       'Customer management',
       'Basic financial reports'
     ],
@@ -78,7 +69,7 @@ const DEMO_USERS: DemoUser[] = [
   {
     email: 'receptionist@hairtalkz.com',
     password: 'Reception2024!',
-    role: 'receptionist', 
+    role: 'receptionist',
     fullName: 'Emma Receptionist',
     description: 'Front desk operations with customer management',
     icon: User,
@@ -100,7 +91,7 @@ const DEMO_USERS: DemoUser[] = [
     email: 'stylist@hairtalkz.com',
     password: 'Stylist2024!',
     role: 'stylist',
-    fullName: 'Jessica Stylist', 
+    fullName: 'Jessica Stylist',
     description: 'Individual stylist with personal appointments only',
     icon: Scissors,
     permissions: [
@@ -118,7 +109,7 @@ const DEMO_USERS: DemoUser[] = [
     ]
   },
   {
-    email: 'accountant@hairtalkz.com', 
+    email: 'accountant@hairtalkz.com',
     password: 'Accounts2024!',
     role: 'accountant',
     fullName: 'David Accountant',
@@ -140,7 +131,7 @@ const DEMO_USERS: DemoUser[] = [
   },
   {
     email: 'admin@hairtalkz.com',
-    password: 'Admin2024!', 
+    password: 'Admin2024!',
     role: 'admin',
     fullName: 'Alex Admin',
     description: 'System administrator with user management',
@@ -170,16 +161,11 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card 
-        className="border-0"
-        style={{ backgroundColor: LUXE_COLORS.charcoalLight }}
-      >
+      <Card className="border-0" style={{ backgroundColor: LUXE_COLORS.charcoalLight }}>
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <TestTube className="h-6 w-6" style={{ color: LUXE_COLORS.gold }} />
-            <CardTitle style={{ color: LUXE_COLORS.gold }}>
-              HERA DNA SECURITY Demo
-            </CardTitle>
+            <CardTitle style={{ color: LUXE_COLORS.gold }}>HERA DNA SECURITY Demo</CardTitle>
           </div>
           <CardDescription style={{ color: LUXE_COLORS.bronze }}>
             Test the security framework with different user roles and permissions
@@ -189,7 +175,7 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
 
       {/* Demo Users Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {DEMO_USERS.map((user) => {
+        {DEMO_USERS.map(user => {
           const Icon = user.icon
           return (
             <Card
@@ -212,29 +198,26 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
                     <CardTitle className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
                       {user.fullName}
                     </CardTitle>
-                    <Badge 
-                      variant="outline" 
+                    <Badge
+                      variant="outline"
                       className="text-xs"
-                      style={{ 
+                      style={{
                         borderColor: LUXE_COLORS.bronze,
-                        color: LUXE_COLORS.bronze 
+                        color: LUXE_COLORS.bronze
                       }}
                     >
                       {user.role.toUpperCase()}
                     </Badge>
                   </div>
                 </div>
-                <CardDescription 
-                  className="text-xs"
-                  style={{ color: LUXE_COLORS.bronze }}
-                >
+                <CardDescription className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
                   {user.description}
                 </CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-4">
                 {/* Login Credentials */}
-                <div 
+                <div
                   className="p-3 rounded-lg text-xs"
                   style={{ backgroundColor: LUXE_COLORS.charcoal }}
                 >
@@ -250,20 +233,17 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
 
                 {/* Key Permissions */}
                 <div>
-                  <div 
-                    className="text-xs font-medium mb-2"
-                    style={{ color: LUXE_COLORS.bronze }}
-                  >
+                  <div className="text-xs font-medium mb-2" style={{ color: LUXE_COLORS.bronze }}>
                     Key Permissions:
                   </div>
                   <div className="space-y-1">
                     {user.permissions.slice(0, 3).map((permission, idx) => (
-                      <div 
+                      <div
                         key={idx}
                         className="text-xs flex items-center gap-2"
                         style={{ color: LUXE_COLORS.champagne }}
                       >
-                        <div 
+                        <div
                           className="w-1 h-1 rounded-full"
                           style={{ backgroundColor: LUXE_COLORS.gold }}
                         />
@@ -271,10 +251,7 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
                       </div>
                     ))}
                     {user.permissions.length > 3 && (
-                      <div 
-                        className="text-xs"
-                        style={{ color: LUXE_COLORS.bronze }}
-                      >
+                      <div className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
                         +{user.permissions.length - 3} more...
                       </div>
                     )}
@@ -283,20 +260,17 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
 
                 {/* Test Scenarios */}
                 <div>
-                  <div 
-                    className="text-xs font-medium mb-2"
-                    style={{ color: LUXE_COLORS.bronze }}
-                  >
+                  <div className="text-xs font-medium mb-2" style={{ color: LUXE_COLORS.bronze }}>
                     Test Scenarios:
                   </div>
                   <div className="space-y-1">
                     {user.testScenarios.slice(0, 2).map((scenario, idx) => (
-                      <div 
+                      <div
                         key={idx}
                         className="text-xs flex items-center gap-2"
                         style={{ color: LUXE_COLORS.champagne }}
                       >
-                        <div 
+                        <div
                           className="w-1 h-1 rounded-full"
                           style={{ backgroundColor: LUXE_COLORS.emerald }}
                         />
@@ -325,14 +299,9 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
       </div>
 
       {/* Testing Instructions */}
-      <Card 
-        className="border-0"
-        style={{ backgroundColor: LUXE_COLORS.charcoalLight }}
-      >
+      <Card className="border-0" style={{ backgroundColor: LUXE_COLORS.charcoalLight }}>
         <CardHeader>
-          <CardTitle style={{ color: LUXE_COLORS.gold }}>
-            Testing Instructions
-          </CardTitle>
+          <CardTitle style={{ color: LUXE_COLORS.gold }}>Testing Instructions</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div style={{ color: LUXE_COLORS.bronze }}>
@@ -346,8 +315,8 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
               <li>Verify audit logging in browser dev tools</li>
             </ol>
           </div>
-          
-          <div 
+
+          <div
             className="mt-4 p-3 rounded-lg text-sm"
             style={{ backgroundColor: LUXE_COLORS.charcoal }}
           >
@@ -356,10 +325,12 @@ export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSe
               <span style={{ color: LUXE_COLORS.emerald }}>Security Features Active</span>
             </div>
             <div style={{ color: LUXE_COLORS.champagne }}>
-              • Multi-tenant isolation enforced<br/>
-              • Role-based access control active<br/>
-              • Audit logging enabled<br/>
-              • Real-time permission checking
+              • Multi-tenant isolation enforced
+              <br />
+              • Role-based access control active
+              <br />
+              • Audit logging enabled
+              <br />• Real-time permission checking
             </div>
           </div>
         </CardContent>

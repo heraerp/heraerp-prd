@@ -10,7 +10,7 @@ export default function JewelryPage() {
     // Check if user has organization context
     const orgId = localStorage.getItem('organizationId')
     const jewelryRole = localStorage.getItem('jewelryRole')
-    
+
     if (orgId && jewelryRole) {
       // Has context, go to dashboard
       router.push('/jewelry/dashboard')

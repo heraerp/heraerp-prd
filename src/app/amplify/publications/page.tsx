@@ -7,7 +7,7 @@ import { Newspaper } from 'lucide-react'
 
 export default function AmplifyPublicationsPage() {
   const { user } = useMultiOrgAuth()
-  
+
   return (
     <EntityPage
       preset={AMPLIFY_PUBLICATION_PRESET}
@@ -15,10 +15,10 @@ export default function AmplifyPublicationsPage() {
       title="Publications"
       subtitle="Published content across Medium, WordPress, and Substack"
       icon={Newspaper}
-      filtersDefault={{ 
-        include_dynamic: true, 
-        include_relationships: true, 
-        limit: 50 
+      filtersDefault={{
+        include_dynamic: true,
+        include_relationships: true,
+        limit: 50
       }}
     />
   )

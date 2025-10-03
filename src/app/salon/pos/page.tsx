@@ -29,13 +29,8 @@ const SALON_CONFIG = {
 
 export default function POSPage() {
   const { organizationId, isAuthenticated, isLoading } = useSecuredSalonContext()
-  const { 
-    canUsePOS, 
-    canProcessSales, 
-    canManageCarts, 
-    canApplyDiscounts,
-    logPOSAction 
-  } = useSalonPOSSecurity()
+  const { canUsePOS, canProcessSales, canManageCarts, canApplyDiscounts, logPOSAction } =
+    useSalonPOSSecurity()
 
   // Show loading state
   if (isLoading) {
@@ -61,17 +56,21 @@ export default function POSPage() {
           breadcrumbs={[{ label: 'HERA' }, { label: 'SALON OS' }, { label: 'POS', isActive: true }]}
         />
         <div className="flex items-center justify-center h-64">
-          <Card 
+          <Card
             className="max-w-md w-full border-0"
             style={{ backgroundColor: LUXE_COLORS.charcoalLight }}
           >
             <CardContent className="p-8 text-center">
-              <AlertTriangle className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.ruby }} />
+              <AlertTriangle
+                className="h-12 w-12 mx-auto mb-4"
+                style={{ color: LUXE_COLORS.ruby }}
+              />
               <h3 className="text-xl mb-2" style={{ color: LUXE_COLORS.gold }}>
                 Access Restricted
               </h3>
               <p style={{ color: LUXE_COLORS.bronze }}>
-                POS access is limited to front-desk staff and management. Please contact your manager for access.
+                POS access is limited to front-desk staff and management. Please contact your
+                manager for access.
               </p>
             </CardContent>
           </Card>

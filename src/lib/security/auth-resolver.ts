@@ -1,10 +1,10 @@
 /**
  * HERA DNA SECURITY: Dual-Path Authentication Resolver
  * Core DNA Component: HERA.DNA.SECURITY.AUTH.RESOLVER.v1
- * 
- * Revolutionary authentication DNA that handles both Supabase JWT and external JWT 
+ *
+ * Revolutionary authentication DNA that handles both Supabase JWT and external JWT
  * authentication with organization membership validation and intelligent caching.
- * 
+ *
  * Key DNA Features:
  * - Dual-path authentication (Supabase + External JWT)
  * - LRU cache for organization membership (99% hit rate)
@@ -51,19 +51,19 @@ class AuthResolver {
     if (typeof window !== 'undefined') {
       return defaultSupabase
     }
-    
+
     // For server-side, create a service role client if we have the service key
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-    
+
     if (url && serviceKey) {
       return createClient(url, serviceKey)
     }
-    
+
     // Fallback to default client
     return defaultSupabase
   })()
-  
+
   private orgMembershipCache = new LRUCache<string, OrgMembership>({
     max: 10000,
     ttl: 1000 * 60 * 2 // 2 minutes
@@ -87,7 +87,7 @@ class AuthResolver {
     }
 
     const token = authHeader.replace('Bearer ', '')
-    
+
     // Use HERA DNA AUTH pattern with Sacred 6 tables only
     return this.resolveSupabaseJWTWithHERADNA(token)
   }
@@ -99,8 +99,11 @@ class AuthResolver {
   private async resolveSupabaseJWTWithHERADNA(token: string): Promise<SecurityContext> {
     try {
       // Validate token with Supabase
-      const { data: { user }, error } = await this.supabase.auth.getUser(token)
-      
+      const {
+        data: { user },
+        error
+      } = await this.supabase.auth.getUser(token)
+
       if (error || !user) {
         throw new Error(`Token validation failed: ${error?.message || 'Invalid user'}`)
       }
@@ -108,21 +111,17 @@ class AuthResolver {
       // Use HERA DNA AUTH pattern to resolve user entity
       const { createSecurityContextFromAuth } = await import('./user-entity-resolver')
       const contextResolution = await createSecurityContextFromAuth(user.id)
-      
+
       if (!contextResolution.success || !contextResolution.securityContext) {
         throw new Error(`Failed to resolve HERA user entity: ${contextResolution.error?.message}`)
       }
 
       return contextResolution.securityContext
-      
     } catch (error) {
       console.error('HERA DNA Auth resolution failed:', error)
       throw new Error(`Authentication failed: ${error.message}`)
     }
   }
-
-
-
 
   /**
    * Create service role context for internal operations
@@ -144,16 +143,16 @@ class AuthResolver {
     try {
       const now = new Date()
       const windowStart = new Date(now.getTime() - 60000) // 1 minute window
-      
+
       // Query rate limit transactions from the past minute
       const { data: rateLimitTxns, error } = await this.supabase
         .from('universal_transactions')
         .select('id, created_at, metadata')
         .eq('organization_id', context.orgId)
         .eq('transaction_type', 'rate_limit_event')
-        .contains('metadata', { 
-          user_id: context.userId, 
-          action: action 
+        .contains('metadata', {
+          user_id: context.userId,
+          action: action
         })
         .gte('created_at', windowStart.toISOString())
 
@@ -166,25 +165,25 @@ class AuthResolver {
       const limit = this.getRateLimitForAction(context.role, action)
 
       if (currentCount >= limit) {
-        console.warn(`Rate limit exceeded for ${context.userId}:${action} (${currentCount}/${limit})`)
+        console.warn(
+          `Rate limit exceeded for ${context.userId}:${action} (${currentCount}/${limit})`
+        )
         return false
       }
 
       // Record this rate limit event
-      await this.supabase
-        .from('universal_transactions')
-        .insert({
-          organization_id: context.orgId,
-          transaction_type: 'rate_limit_event',
-          smart_code: 'HERA.SECURITY.RATE.LIMIT.EVENT.v1',
-          metadata: {
-            user_id: context.userId,
-            action: action,
-            count: currentCount + 1,
-            limit: limit,
-            window_start: windowStart.toISOString()
-          }
-        })
+      await this.supabase.from('universal_transactions').insert({
+        organization_id: context.orgId,
+        transaction_type: 'rate_limit_event',
+        smart_code: 'HERA.SECURITY.RATE.LIMIT.EVENT.v1',
+        metadata: {
+          user_id: context.userId,
+          action: action,
+          count: currentCount + 1,
+          limit: limit,
+          window_start: windowStart.toISOString()
+        }
+      })
 
       return true
     } catch (error) {
@@ -245,13 +244,13 @@ export const authResolver = new AuthResolver()
 export async function withAuthResolver(req: any, res: any, next: any) {
   try {
     const context = await authResolver.getOrgContext(req)
-    
+
     // Check rate limits
     const action = req.method.toLowerCase()
     const allowed = await authResolver.checkRateLimit(context, action)
-    
+
     if (!allowed) {
-      return res.status(429).json({ 
+      return res.status(429).json({
         error: 'Rate limit exceeded',
         code: 'RATE_LIMIT_EXCEEDED'
       })
@@ -261,7 +260,7 @@ export async function withAuthResolver(req: any, res: any, next: any) {
     next()
   } catch (error) {
     console.error('Auth resolution failed:', error)
-    res.status(401).json({ 
+    res.status(401).json({
       error: 'Authentication failed',
       code: 'AUTH_FAILED',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined

@@ -207,7 +207,8 @@ export function JewelryDemoAuth() {
             animate={{ opacity: 1, scale: 1 }}
             className="mb-8 p-4 jewelry-glass-card"
             style={{
-              background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(185, 28, 28, 0.05) 100%)',
+              background:
+                'linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(185, 28, 28, 0.05) 100%)',
               border: '1px solid rgba(220, 38, 38, 0.3)'
             }}
           >
@@ -235,16 +236,21 @@ export function JewelryDemoAuth() {
                       <user.icon className="h-8 w-8 jewelry-text-gold" />
                     </div>
                     <div>
-                      <h3 className="jewelry-text-high-contrast text-xl font-bold">{user.fullName}</h3>
+                      <h3 className="jewelry-text-high-contrast text-xl font-bold">
+                        {user.fullName}
+                      </h3>
                       <p className="jewelry-text-muted text-sm">
                         {user.role} • {user.department}
                       </p>
                       <div className="mt-1">
-                        <span className="text-xs px-2 py-1 rounded-full jewelry-text-gold font-semibold"
-                              style={{
-                                background: 'linear-gradient(135deg, rgba(212, 175, 0, 0.2) 0%, rgba(184, 150, 11, 0.1) 100%)',
-                                border: '1px solid rgba(212, 175, 0, 0.3)'
-                              }}>
+                        <span
+                          className="text-xs px-2 py-1 rounded-full jewelry-text-gold font-semibold"
+                          style={{
+                            background:
+                              'linear-gradient(135deg, rgba(212, 175, 0, 0.2) 0%, rgba(184, 150, 11, 0.1) 100%)',
+                            border: '1px solid rgba(212, 175, 0, 0.3)'
+                          }}
+                        >
                           {user.accessLevel}
                         </span>
                       </div>
@@ -259,21 +265,24 @@ export function JewelryDemoAuth() {
                     </motion.div>
                   )}
                 </div>
-                
+
                 <div className="space-y-3">
                   <p className="jewelry-text-luxury text-sm leading-relaxed">{user.description}</p>
-                  
+
                   <div className="pt-3 border-t border-gold-500/20">
                     <div className="flex items-center justify-between">
                       <span className="text-xs jewelry-text-muted">Role Access</span>
                       <div className="flex gap-1">
                         {['POS', 'Inventory', 'Reports'].map((feature, idx) => (
-                          <div key={feature} 
-                               className="w-2 h-2 rounded-full"
-                               style={{
-                                 backgroundColor: idx < (user.role === 'Owner' ? 3 : user.role === 'Manager' ? 2 : 1) 
-                                   ? '#D4AF00' : 'rgba(212, 175, 0, 0.3)'
-                               }}
+                          <div
+                            key={feature}
+                            className="w-2 h-2 rounded-full"
+                            style={{
+                              backgroundColor:
+                                idx < (user.role === 'Owner' ? 3 : user.role === 'Manager' ? 2 : 1)
+                                  ? '#D4AF00'
+                                  : 'rgba(212, 175, 0, 0.3)'
+                            }}
                           />
                         ))}
                       </div>

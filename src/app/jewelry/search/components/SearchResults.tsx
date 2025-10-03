@@ -4,10 +4,10 @@ import React, { useState, useMemo, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  MoreHorizontal, 
-  ArrowUpDown, 
-  ArrowUp, 
+import {
+  MoreHorizontal,
+  ArrowUpDown,
+  ArrowUp,
   ArrowDown,
   Eye,
   Edit,
@@ -22,7 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import {
   Table,
@@ -30,7 +30,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 
@@ -143,26 +143,27 @@ export function SearchResults({
 
     // Apply search filter
     if (searchQuery) {
-      allData = allData.filter(item => 
-        item.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        Object.values(item.dynamic_data || {}).some(value => 
-          String(value).toLowerCase().includes(searchQuery.toLowerCase())
-        )
+      allData = allData.filter(
+        item =>
+          item.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          Object.values(item.dynamic_data || {}).some(value =>
+            String(value).toLowerCase().includes(searchQuery.toLowerCase())
+          )
       )
     }
 
     // Apply facet filters
     Object.entries(filters).forEach(([key, value]) => {
       if (Array.isArray(value) && value.length > 0) {
-        allData = allData.filter(item => 
-          value.includes(item.dynamic_data?.[key])
-        )
+        allData = allData.filter(item => value.includes(item.dynamic_data?.[key]))
       } else if (typeof value === 'object' && value !== null) {
         if (value.min !== undefined || value.max !== undefined) {
           allData = allData.filter(item => {
             const itemValue = parseFloat(item.dynamic_data?.[key] || 0)
-            return (value.min === undefined || itemValue >= value.min) &&
-                   (value.max === undefined || itemValue <= value.max)
+            return (
+              (value.min === undefined || itemValue >= value.min) &&
+              (value.max === undefined || itemValue <= value.max)
+            )
           })
         }
         if (value.from || value.to) {
@@ -170,9 +171,8 @@ export function SearchResults({
             const itemDate = new Date(item.dynamic_data?.[key] || item.created_at)
             const fromDate = value.from ? new Date(value.from) : null
             const toDate = value.to ? new Date(value.to) : null
-            
-            return (!fromDate || itemDate >= fromDate) &&
-                   (!toDate || itemDate <= toDate)
+
+            return (!fromDate || itemDate >= fromDate) && (!toDate || itemDate <= toDate)
           })
         }
       }
@@ -201,17 +201,20 @@ export function SearchResults({
   }, [combinedData, page, pageSize])
 
   // Handle sort
-  const handleSort = useCallback((field: string) => {
-    const newOrder = sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc'
-    onSortChange(field, newOrder)
-  }, [sortBy, sortOrder, onSortChange])
+  const handleSort = useCallback(
+    (field: string) => {
+      const newOrder = sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc'
+      onSortChange(field, newOrder)
+    },
+    [sortBy, sortOrder, onSortChange]
+  )
 
   // Get column headers
   const columns = useMemo(() => {
     const baseColumns = [
       { key: 'entity_name', label: 'Name', sortable: true },
       { key: 'entity_type', label: 'Type', sortable: true },
-      { key: 'created_at', label: 'Created', sortable: true },
+      { key: 'created_at', label: 'Created', sortable: true }
     ]
 
     // Add dynamic columns based on selected entities
@@ -239,70 +242,73 @@ export function SearchResults({
   }, [selectedEntities])
 
   // Render actions for a row
-  const renderActions = useCallback((item: any) => {
-    const actions = []
+  const renderActions = useCallback(
+    (item: any) => {
+      const actions = []
 
-    // View details (always available)
-    actions.push(
-      <DropdownMenuItem key="view" onClick={() => onOpenDetails(item.entity_id)}>
-        <Eye className="h-4 w-4 mr-2" />
-        View Details
-      </DropdownMenuItem>
-    )
+      // View details (always available)
+      actions.push(
+        <DropdownMenuItem key="view" onClick={() => onOpenDetails(item.entity_id)}>
+          <Eye className="h-4 w-4 mr-2" />
+          View Details
+        </DropdownMenuItem>
+      )
 
-    // Entity-specific actions based on type and role
-    if (item.entity_type === 'GRADING_JOB') {
-      if (['owner', 'manager', 'grader'].includes(userRole)) {
+      // Entity-specific actions based on type and role
+      if (item.entity_type === 'GRADING_JOB') {
+        if (['owner', 'manager', 'grader'].includes(userRole)) {
+          actions.push(
+            <DropdownMenuItem key="regrade">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Regrade
+            </DropdownMenuItem>
+          )
+        }
+        if (['owner', 'manager'].includes(userRole)) {
+          actions.push(
+            <DropdownMenuItem key="certificate">
+              <Award className="h-4 w-4 mr-2" />
+              Issue Certificate
+            </DropdownMenuItem>
+          )
+        }
+      }
+
+      if (item.entity_type === 'JEWELRY_ITEM') {
+        if (['owner', 'manager', 'sales'].includes(userRole)) {
+          actions.push(
+            <DropdownMenuItem key="edit">
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Item
+            </DropdownMenuItem>
+          )
+        }
+      }
+
+      if (item.entity_type === 'CERTIFICATE') {
         actions.push(
-          <DropdownMenuItem key="regrade">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Regrade
+          <DropdownMenuItem key="download">
+            <FileText className="h-4 w-4 mr-2" />
+            Download PDF
           </DropdownMenuItem>
         )
       }
+
+      // Delete action (restricted)
       if (['owner', 'manager'].includes(userRole)) {
         actions.push(
-          <DropdownMenuItem key="certificate">
-            <Award className="h-4 w-4 mr-2" />
-            Issue Certificate
+          <DropdownMenuSeparator key="sep" />,
+          <DropdownMenuItem key="delete" className="text-red-400">
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete
           </DropdownMenuItem>
         )
       }
-    }
 
-    if (item.entity_type === 'JEWELRY_ITEM') {
-      if (['owner', 'manager', 'sales'].includes(userRole)) {
-        actions.push(
-          <DropdownMenuItem key="edit">
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Item
-          </DropdownMenuItem>
-        )
-      }
-    }
-
-    if (item.entity_type === 'CERTIFICATE') {
-      actions.push(
-        <DropdownMenuItem key="download">
-          <FileText className="h-4 w-4 mr-2" />
-          Download PDF
-        </DropdownMenuItem>
-      )
-    }
-
-    // Delete action (restricted)
-    if (['owner', 'manager'].includes(userRole)) {
-      actions.push(
-        <DropdownMenuSeparator key="sep" />,
-        <DropdownMenuItem key="delete" className="text-red-400">
-          <Trash2 className="h-4 w-4 mr-2" />
-          Delete
-        </DropdownMenuItem>
-      )
-    }
-
-    return actions
-  }, [userRole, onOpenDetails])
+      return actions
+    },
+    [userRole, onOpenDetails]
+  )
 
   // Format cell value
   const formatCellValue = useCallback((value: any, key: string) => {
@@ -327,16 +333,13 @@ export function SearchResults({
         graded: 'bg-green-500/20 text-green-400',
         certified: 'bg-purple-500/20 text-purple-400',
         valid: 'bg-green-500/20 text-green-400',
-        expired: 'bg-red-500/20 text-red-400',
+        expired: 'bg-red-500/20 text-red-400'
       }
-      
-      const colorClass = statusColors[value as keyof typeof statusColors] || 'bg-gray-500/20 text-gray-400'
-      
-      return (
-        <Badge className={colorClass}>
-          {String(value).replace('_', ' ')}
-        </Badge>
-      )
+
+      const colorClass =
+        statusColors[value as keyof typeof statusColors] || 'bg-gray-500/20 text-gray-400'
+
+      return <Badge className={colorClass}>{String(value).replace('_', ' ')}</Badge>
     }
 
     if (key === 'entity_type') {
@@ -356,7 +359,7 @@ export function SearchResults({
       <Table>
         <TableHeader>
           <TableRow className="border-yellow-500/30">
-            {columns.map((column) => (
+            {columns.map(column => (
               <TableHead key={column.key} className="text-yellow-400">
                 {column.sortable ? (
                   <Button
@@ -365,11 +368,12 @@ export function SearchResults({
                     className="h-auto p-0 hover:bg-transparent text-yellow-400 hover:text-yellow-300"
                   >
                     {column.label}
-                    {sortBy === column.key && (
-                      sortOrder === 'asc' ? 
-                        <ArrowUp className="ml-2 h-4 w-4" /> : 
+                    {sortBy === column.key &&
+                      (sortOrder === 'asc' ? (
+                        <ArrowUp className="ml-2 h-4 w-4" />
+                      ) : (
                         <ArrowDown className="ml-2 h-4 w-4" />
-                    )}
+                      ))}
                     {sortBy !== column.key && <ArrowUpDown className="ml-2 h-4 w-4 opacity-50" />}
                   </Button>
                 ) : (
@@ -381,27 +385,24 @@ export function SearchResults({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedData.map((item) => (
-            <TableRow 
-              key={item.entity_id} 
+          {paginatedData.map(item => (
+            <TableRow
+              key={item.entity_id}
               className="border-yellow-500/20 hover:bg-yellow-500/5 cursor-pointer"
               onClick={() => onOpenDetails(item.entity_id)}
             >
-              {columns.map((column) => (
+              {columns.map(column => (
                 <TableCell key={column.key} className="text-gray-300">
-                  {formatCellValue(
-                    item.dynamic_data?.[column.key] || item[column.key],
-                    column.key
-                  )}
+                  {formatCellValue(item.dynamic_data?.[column.key] || item[column.key], column.key)}
                 </TableCell>
               ))}
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="sm"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={e => e.stopPropagation()}
                       className="h-8 w-8 p-0 hover:bg-yellow-500/20"
                     >
                       <MoreHorizontal className="h-4 w-4" />
@@ -429,23 +430,21 @@ export function SearchResults({
   // Render grid view
   const renderGridView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {paginatedData.map((item) => (
-        <Card 
+      {paginatedData.map(item => (
+        <Card
           key={item.entity_id}
           className="glass-card border-yellow-500/30 hover:border-yellow-400 transition-colors cursor-pointer"
           onClick={() => onOpenDetails(item.entity_id)}
         >
           <div className="p-4">
             <div className="flex items-start justify-between mb-3">
-              <h4 className="font-semibold text-gray-100 truncate">
-                {item.entity_name}
-              </h4>
+              <h4 className="font-semibold text-gray-100 truncate">{item.entity_name}</h4>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={e => e.stopPropagation()}
                     className="h-6 w-6 p-0 hover:bg-yellow-500/20"
                   >
                     <MoreHorizontal className="h-3 w-3" />
@@ -462,16 +461,14 @@ export function SearchResults({
                 {item.entity_type.replace('_', ' ')}
               </Badge>
 
-              {Object.entries(item.dynamic_data || {}).slice(0, 3).map(([key, value]) => (
-                <div key={key} className="flex justify-between text-sm">
-                  <span className="text-gray-400 capitalize">
-                    {key.replace('_', ' ')}:
-                  </span>
-                  <span className="text-gray-300">
-                    {formatCellValue(value, key)}
-                  </span>
-                </div>
-              ))}
+              {Object.entries(item.dynamic_data || {})
+                .slice(0, 3)
+                .map(([key, value]) => (
+                  <div key={key} className="flex justify-between text-sm">
+                    <span className="text-gray-400 capitalize">{key.replace('_', ' ')}:</span>
+                    <span className="text-gray-300">{formatCellValue(value, key)}</span>
+                  </div>
+                ))}
 
               <div className="text-xs text-gray-500 mt-2">
                 Created: {new Date(item.created_at).toLocaleDateString()}
@@ -497,13 +494,9 @@ export function SearchResults({
       {/* Results Header */}
       <div className="flex items-center justify-between p-4 border-b border-yellow-500/30">
         <div className="flex items-center gap-4">
-          <span className="text-gray-300">
-            {combinedData.length} results
-          </span>
+          <span className="text-gray-300">{combinedData.length} results</span>
           {searchQuery && (
-            <Badge className="bg-blue-500/20 text-blue-400">
-              Search: "{searchQuery}"
-            </Badge>
+            <Badge className="bg-blue-500/20 text-blue-400">Search: "{searchQuery}"</Badge>
           )}
         </div>
 

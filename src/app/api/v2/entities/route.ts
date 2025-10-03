@@ -182,7 +182,7 @@ export async function GET(request: NextRequest) {
       limit,
       offset
     })
-    
+
     console.log('🔍 Auth result details:', {
       authUser: authResult,
       requestOrigin: request.headers.get('origin'),
@@ -203,37 +203,34 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('RPC function failed, falling back to direct query:', error)
-      
+
       // Fallback to direct table query
       console.log('🔄 Using fallback direct query with organizationId:', organizationId)
-      
-      let query = supabase
-        .from('core_entities')
-        .select('*')
-        .eq('organization_id', organizationId)
-      
+
+      let query = supabase.from('core_entities').select('*').eq('organization_id', organizationId)
+
       if (entity_type) {
         console.log('🎯 Filtering by entity_type:', entity_type)
         query = query.eq('entity_type', entity_type)
       }
-      
+
       if (entity_id) {
         console.log('🎯 Filtering by entity_id:', entity_id)
         query = query.eq('id', entity_id)
       }
-      
+
       query = query.limit(limit).range(offset, offset + limit - 1)
-      
+
       console.log('📋 Final query being executed')
       const { data: entities, error: directError } = await query
-      
+
       console.log('📊 Direct query results:', {
         success: !directError,
         entityCount: entities?.length || 0,
         error: directError?.message,
         sampleEntity: entities?.[0]
       })
-      
+
       if (directError) {
         console.error('Direct query also failed:', directError)
         return NextResponse.json(
@@ -241,52 +238,53 @@ export async function GET(request: NextRequest) {
           { status: 500 }
         )
       }
-      
+
       console.log('✅ Direct query succeeded, found entities:', entities?.length)
-      
+
       // If include_dynamic is true, fetch dynamic fields for each entity
       if (include_dynamic && entities && entities.length > 0) {
         console.log('🔄 Fetching dynamic fields for entities')
-        
+
         const entityIds = entities.map(e => e.id)
         const { data: dynamicData, error: dynamicError } = await supabase
           .from('core_dynamic_data')
           .select('*')
           .eq('organization_id', organizationId)
           .in('entity_id', entityIds)
-        
+
         if (!dynamicError && dynamicData) {
           console.log('📋 Found dynamic fields:', dynamicData.length)
-          
+
           // Group dynamic fields by entity_id
           const dynamicByEntity = new Map()
           for (const field of dynamicData) {
             if (!dynamicByEntity.has(field.entity_id)) {
               dynamicByEntity.set(field.entity_id, {})
             }
-            
-            const value = field.field_value_text || 
-                         field.field_value_number || 
-                         field.field_value_boolean || 
-                         field.field_value_date || 
-                         field.field_value_json
-            
+
+            const value =
+              field.field_value_text ||
+              field.field_value_number ||
+              field.field_value_boolean ||
+              field.field_value_date ||
+              field.field_value_json
+
             dynamicByEntity.get(field.entity_id)[field.field_name] = {
               value: value,
               type: field.field_type,
               smart_code: field.smart_code
             }
           }
-          
+
           // Merge dynamic fields into entities
           for (const entity of entities) {
             entity.dynamic_fields = dynamicByEntity.get(entity.id) || {}
           }
-          
+
           console.log('🔗 Merged dynamic fields into entities')
         }
       }
-      
+
       return NextResponse.json({
         success: true,
         data: entities || [],
@@ -340,9 +338,9 @@ export async function PUT(request: NextRequest) {
     const body = await request.json()
     const data = updateSchema.parse(body)
 
-    console.log('🔄 Updating entity:', { 
-      entityId: data.entity_id, 
-      organizationId, 
+    console.log('🔄 Updating entity:', {
+      entityId: data.entity_id,
+      organizationId,
       updates: Object.keys(data),
       dynamicFields: data.dynamic_fields ? Object.keys(data.dynamic_fields) : []
     })
@@ -381,7 +379,7 @@ export async function PUT(request: NextRequest) {
     // Update dynamic fields using direct database operations
     if (data.dynamic_fields) {
       console.log('🔧 Updating dynamic fields:', Object.keys(data.dynamic_fields))
-      
+
       for (const [fieldName, fieldConfig] of Object.entries(data.dynamic_fields)) {
         const dynamicData: any = {
           organization_id: organizationId,

@@ -250,7 +250,7 @@ function AppsModal({
                   <Link
                     key={app.href}
                     href={app.href}
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation()
                       onClose()
                     }}
@@ -332,23 +332,26 @@ export default function SalonDarkSidebar({
     return false
   }
 
-  const handleNavigation = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Don't prevent default for external links or special key combinations
-    if (
-      href.startsWith('http') || 
-      href.startsWith('//') || 
-      e.ctrlKey || 
-      e.metaKey || 
-      e.shiftKey
-    ) {
-      return
-    }
+  const handleNavigation = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      // Don't prevent default for external links or special key combinations
+      if (
+        href.startsWith('http') ||
+        href.startsWith('//') ||
+        e.ctrlKey ||
+        e.metaKey ||
+        e.shiftKey
+      ) {
+        return
+      }
 
-    e.preventDefault()
-    startTransition(() => {
-      router.push(href)
-    })
-  }, [router])
+      e.preventDefault()
+      startTransition(() => {
+        router.push(href)
+      })
+    },
+    [router]
+  )
 
   // Use provided items or default sidebar items
   const navigationItems = items || sidebarItems

@@ -1,7 +1,7 @@
 /**
  * HERA DNA SECURITY: User Entity Resolution Helper
  * Core DNA Component: HERA.DNA.SECURITY.USER.RESOLVER.v1
- * 
+ *
  * Resolves user organization and role information from HERA entities
  * following proper field placement policy (dynamic data for business logic).
  */
@@ -55,11 +55,14 @@ export async function resolveUserEntity(authUserId: string): Promise<{
 
     if (!userEntities || userEntities.length === 0) {
       // For salon demo - create a virtual user entity for immediate working
-      console.warn(`No HERA user entity found for auth user ID: ${authUserId}, creating virtual entity`)
-      
+      console.warn(
+        `No HERA user entity found for auth user ID: ${authUserId}, creating virtual entity`
+      )
+
       // Get default organization ID for salon demo
-      const defaultOrgId = process.env.DEFAULT_ORGANIZATION_ID || 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
-      
+      const defaultOrgId =
+        process.env.DEFAULT_ORGANIZATION_ID || 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
+
       return {
         success: true,
         data: {
@@ -77,7 +80,11 @@ export async function resolveUserEntity(authUserId: string): Promise<{
           },
           dynamicData: {
             salon_role: { value: 'owner', type: 'text', smart_code: 'HERA.SALON.USER.ROLE.v1' },
-            permissions: { value: ['salon:read:all', 'salon:write:all', 'salon:admin:full'], type: 'json', smart_code: 'HERA.SALON.USER.PERMISSIONS.v1' }
+            permissions: {
+              value: ['salon:read:all', 'salon:write:all', 'salon:admin:full'],
+              type: 'json',
+              smart_code: 'HERA.SALON.USER.PERMISSIONS.v1'
+            }
           }
         }
       }
@@ -112,9 +119,7 @@ export async function resolveUserEntity(authUserId: string): Promise<{
     // 3. Build dynamic data map
     const dynamicDataMap: Record<string, any> = {}
     dynamicData?.forEach(field => {
-      const value = field.field_type === 'json' 
-        ? field.field_value_json 
-        : field.field_value_text
+      const value = field.field_type === 'json' ? field.field_value_json : field.field_value_text
       dynamicDataMap[field.field_name] = {
         value,
         type: field.field_type,
@@ -125,7 +130,7 @@ export async function resolveUserEntity(authUserId: string): Promise<{
     // 4. Extract business information from dynamic data
     const salonRole = dynamicDataMap.salon_role?.value || 'user'
     const permissions = dynamicDataMap.permissions?.value || []
-    
+
     return {
       success: true,
       data: {
@@ -138,7 +143,6 @@ export async function resolveUserEntity(authUserId: string): Promise<{
         dynamicData: dynamicDataMap
       }
     }
-
   } catch (error: any) {
     return {
       success: false,
@@ -161,7 +165,7 @@ export async function createSecurityContextFromAuth(authUserId: string): Promise
   error?: UserResolutionError
 }> {
   const resolution = await resolveUserEntity(authUserId)
-  
+
   if (!resolution.success || !resolution.data) {
     return {
       success: false,
@@ -193,7 +197,7 @@ export async function getUserSalonRole(authUserId: string): Promise<{
   permissions: string[]
 }> {
   const resolution = await resolveUserEntity(authUserId)
-  
+
   if (resolution.success && resolution.data) {
     return {
       role: resolution.data.salonRole,
@@ -203,7 +207,7 @@ export async function getUserSalonRole(authUserId: string): Promise<{
 
   // Fallback for demo - extract from email pattern
   console.warn(`Could not resolve user entity for ${authUserId}, using email fallback`)
-  
+
   // This is a fallback for demo purposes only
   return {
     role: 'user',

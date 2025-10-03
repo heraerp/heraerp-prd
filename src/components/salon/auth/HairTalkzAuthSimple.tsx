@@ -157,22 +157,34 @@ export function HairTalkzAuthSimple() {
   const handleDemoUserSelect = async (demoEmail: string, demoPassword: string) => {
     setEmail(demoEmail)
     setPassword(demoPassword)
-    
+
     // Determine role from email
-    const roleFromEmail = demoEmail.includes('michele') ? 'owner' :
-                         demoEmail.includes('manager') ? 'manager' :
-                         demoEmail.includes('receptionist') ? 'receptionist' :
-                         demoEmail.includes('stylist') ? 'stylist' :
-                         demoEmail.includes('accountant') ? 'accountant' :
-                         demoEmail.includes('admin') ? 'admin' : 'owner'
-    
+    const roleFromEmail = demoEmail.includes('michele')
+      ? 'owner'
+      : demoEmail.includes('manager')
+        ? 'manager'
+        : demoEmail.includes('receptionist')
+          ? 'receptionist'
+          : demoEmail.includes('stylist')
+            ? 'stylist'
+            : demoEmail.includes('accountant')
+              ? 'accountant'
+              : demoEmail.includes('admin')
+                ? 'admin'
+                : 'owner'
+
     setSelectedRole(roleFromEmail)
-    
+
     // Auto-login
     await handleLogin(null, demoEmail, demoPassword, roleFromEmail)
   }
 
-  const handleLogin = async (e: React.FormEvent | null, loginEmail?: string, loginPassword?: string, loginRole?: string) => {
+  const handleLogin = async (
+    e: React.FormEvent | null,
+    loginEmail?: string,
+    loginPassword?: string,
+    loginRole?: string
+  ) => {
     if (e) e.preventDefault()
 
     const currentEmail = loginEmail || email
@@ -491,10 +503,7 @@ export function HairTalkzAuthSimple() {
         {/* Demo User Selector */}
         {showDemoUsers && (
           <div className="mt-6">
-            <DemoUserSelector 
-              onUserSelect={handleDemoUserSelect} 
-              isLoading={loading}
-            />
+            <DemoUserSelector onUserSelect={handleDemoUserSelect} isLoading={loading} />
           </div>
         )}
 

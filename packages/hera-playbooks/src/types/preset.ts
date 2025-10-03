@@ -26,6 +26,10 @@ export interface EntityPreset {
   entityType: string
   smartCode: string
   label: string
+  labels?: {
+    singular: string
+    plural: string
+  }
   dynamicFields: DynamicFieldDefinition[]
   relationships?: RelationshipDefinition[]
 }

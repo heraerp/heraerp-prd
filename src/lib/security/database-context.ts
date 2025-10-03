@@ -1,10 +1,10 @@
 /**
  * HERA DNA SECURITY: Database Context Manager
  * Core DNA Component: HERA.DNA.SECURITY.DATABASE.CONTEXT.v1
- * 
- * Revolutionary security DNA that ensures all database operations are executed within 
+ *
+ * Revolutionary security DNA that ensures all database operations are executed within
  * proper organizational context with automatic GUC management and transaction safety.
- * 
+ *
  * Key DNA Features:
  * - Organization-scoped security contexts with zero data leakage
  * - Automatic Row Level Security (RLS) enforcement
@@ -51,7 +51,7 @@ class DatabaseContextManager {
       // For server-side, create a service role client if we have the service key
       const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-      
+
       if (url && serviceKey) {
         this.supabase = createClient(url, serviceKey)
       } else {
@@ -59,8 +59,9 @@ class DatabaseContextManager {
         this.supabase = defaultSupabase as SupabaseClient
       }
     }
-    
-    this.redTeamMode = process.env.NODE_ENV !== 'production' && process.env.HERA_RED_TEAM_MODE === 'true'
+
+    this.redTeamMode =
+      process.env.NODE_ENV !== 'production' && process.env.HERA_RED_TEAM_MODE === 'true'
   }
 
   /**
@@ -77,10 +78,10 @@ class DatabaseContextManager {
     } = {}
   ): Promise<T> {
     const { bypassRLS = false, timeoutMs = 30000, auditDetails = {} } = options
-    
+
     // Validate context
     this.validateContext(context)
-    
+
     // Audit context setting
     if (this.auditEnabled) {
       await this.logAuditEvent({
@@ -103,13 +104,13 @@ class DatabaseContextManager {
     try {
       // Begin transaction and set context
       await this.setDatabaseContext(context, bypassRLS)
-      
+
       // Execute operation with timeout
       const result = await Promise.race([
         operation(this.supabase),
         this.createTimeoutPromise(timeoutMs)
       ])
-      
+
       return result as T
     } catch (error) {
       // Log security-relevant errors
@@ -134,7 +135,10 @@ class DatabaseContextManager {
   /**
    * Set database context using PostgreSQL GUCs
    */
-  private async setDatabaseContext(context: SecurityContext, bypassRLS: boolean = false): Promise<void> {
+  private async setDatabaseContext(
+    context: SecurityContext,
+    bypassRLS: boolean = false
+  ): Promise<void> {
     try {
       const queries = [
         `SELECT set_config('app.org_id', '${context.orgId}', true)`,
@@ -150,7 +154,7 @@ class DatabaseContextManager {
       if (bypassRLS) {
         // Time-boxed RLS bypass with automatic reset
         queries.push(`SELECT set_config('app.bypass_rls', 'true', true)`)
-        
+
         // Auto-reset after 30 seconds
         setTimeout(async () => {
           try {
@@ -166,7 +170,10 @@ class DatabaseContextManager {
         try {
           await this.supabase.rpc('execute_sql', { sql: query })
         } catch (error) {
-          console.warn('Database context setting query failed (this is often expected in development):', query)
+          console.warn(
+            'Database context setting query failed (this is often expected in development):',
+            query
+          )
           // Don't throw - continue with other operations
         }
       }
@@ -208,21 +215,32 @@ class DatabaseContextManager {
     }
 
     // UUID validation - more flexible to handle different UUID formats
-    const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
-    
+    const uuidRegex =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
+
     // Only validate if the values look like they should be UUIDs (contain dashes)
     if (context.orgId.includes('-') && !uuidRegex.test(context.orgId)) {
       console.warn('Organization ID format warning:', context.orgId)
       // Don't throw error - just warn
     }
-    
+
     if (context.userId.includes('-') && !uuidRegex.test(context.userId)) {
       console.warn('User ID format warning:', context.userId)
       // Don't throw error - just warn
     }
 
     // Role validation
-    const validRoles = ['owner', 'admin', 'manager', 'user', 'service', 'readonly', 'stylist', 'receptionist', 'accountant']
+    const validRoles = [
+      'owner',
+      'admin',
+      'manager',
+      'user',
+      'service',
+      'readonly',
+      'stylist',
+      'receptionist',
+      'accountant'
+    ]
     if (!validRoles.includes(context.role.toLowerCase())) {
       throw new Error(`Invalid role: ${context.role}`)
     }
@@ -240,7 +258,7 @@ class DatabaseContextManager {
       'row level security',
       'insufficient privilege'
     ]
-    
+
     const errorMessage = String(error).toLowerCase()
     return securityKeywords.some(keyword => errorMessage.includes(keyword))
   }
@@ -262,29 +280,25 @@ class DatabaseContextManager {
   private async logAuditEvent(event: AuditEvent): Promise<void> {
     try {
       // First try the hera_audit_log table
-      await this.supabase
-        .from('hera_audit_log')
-        .insert([event])
+      await this.supabase.from('hera_audit_log').insert([event])
     } catch (error) {
       try {
         // Fallback to universal_transactions table for audit logging
-        await this.supabase
-          .from('universal_transactions')
-          .insert({
-            transaction_type: 'audit_event',
-            organization_id: event.organization_id,
-            smart_code: 'HERA.SECURITY.AUDIT.EVENT.v1',
-            metadata: {
-              event_type: event.event_type,
-              user_id: event.user_id,
-              role: event.role,
-              auth_mode: event.auth_mode,
-              details: event.details,
-              timestamp: event.timestamp,
-              ip_address: event.ip_address,
-              user_agent: event.user_agent
-            }
-          })
+        await this.supabase.from('universal_transactions').insert({
+          transaction_type: 'audit_event',
+          organization_id: event.organization_id,
+          smart_code: 'HERA.SECURITY.AUDIT.EVENT.v1',
+          metadata: {
+            event_type: event.event_type,
+            user_id: event.user_id,
+            role: event.role,
+            auth_mode: event.auth_mode,
+            details: event.details,
+            timestamp: event.timestamp,
+            ip_address: event.ip_address,
+            user_agent: event.user_agent
+          }
+        })
       } catch (fallbackError) {
         console.warn('Audit logging failed (this is expected in development):', error)
         // Don't throw - audit failure shouldn't break application
@@ -314,7 +328,7 @@ class DatabaseContextManager {
         user_id: context.userId,
         role: context.role,
         auth_mode: context.authMode,
-        details: { 
+        details: {
           attempted_org: fakeOrgId,
           result: 'SUCCESS - SECURITY VIOLATION',
           test_mode: true
@@ -333,7 +347,14 @@ class DatabaseContextManager {
    * Get current database context for debugging
    */
   async getCurrentContext(): Promise<Record<string, string | null>> {
-    const contextKeys = ['app.org_id', 'app.user_id', 'app.role', 'app.auth_mode', 'app.issuer', 'app.bypass_rls']
+    const contextKeys = [
+      'app.org_id',
+      'app.user_id',
+      'app.role',
+      'app.auth_mode',
+      'app.issuer',
+      'app.bypass_rls'
+    ]
     const context: Record<string, string | null> = {}
 
     for (const key of contextKeys) {

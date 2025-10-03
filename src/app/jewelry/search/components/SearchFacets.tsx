@@ -7,65 +7,147 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
-import { 
-  ChevronDown, 
-  ChevronRight, 
-  Calendar, 
-  DollarSign, 
-  Hash, 
-  Type,
-  X
-} from 'lucide-react'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { ChevronDown, ChevronRight, Calendar, DollarSign, Hash, Type, X } from 'lucide-react'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
 // Mock presets - in production these would come from the preset registry
 const ENTITY_PRESETS = {
   JEWELRY_ITEM: {
     dynamicFields: [
-      { name: 'item_type', type: 'text', label: 'Item Type', facet: true, enum: ['ring', 'necklace', 'earrings', 'bracelet', 'pendant'] },
-      { name: 'metal_type', type: 'text', label: 'Metal', facet: true, enum: ['gold', 'silver', 'platinum', 'white_gold', 'rose_gold'] },
-      { name: 'stone_type', type: 'text', label: 'Stone Type', facet: true, enum: ['diamond', 'emerald', 'ruby', 'sapphire', 'none'] },
+      {
+        name: 'item_type',
+        type: 'text',
+        label: 'Item Type',
+        facet: true,
+        enum: ['ring', 'necklace', 'earrings', 'bracelet', 'pendant']
+      },
+      {
+        name: 'metal_type',
+        type: 'text',
+        label: 'Metal',
+        facet: true,
+        enum: ['gold', 'silver', 'platinum', 'white_gold', 'rose_gold']
+      },
+      {
+        name: 'stone_type',
+        type: 'text',
+        label: 'Stone Type',
+        facet: true,
+        enum: ['diamond', 'emerald', 'ruby', 'sapphire', 'none']
+      },
       { name: 'carat_weight', type: 'number', label: 'Carat Weight', facet: true, min: 0, max: 10 },
-      { name: 'price', type: 'number', label: 'Price', facet: true, min: 0, max: 100000, roleGate: ['owner', 'manager'] },
-      { name: 'status', type: 'text', label: 'Status', facet: true, enum: ['available', 'sold', 'reserved', 'repair'] },
-      { name: 'created_at', type: 'date', label: 'Date Added', facet: true },
+      {
+        name: 'price',
+        type: 'number',
+        label: 'Price',
+        facet: true,
+        min: 0,
+        max: 100000,
+        roleGate: ['owner', 'manager']
+      },
+      {
+        name: 'status',
+        type: 'text',
+        label: 'Status',
+        facet: true,
+        enum: ['available', 'sold', 'reserved', 'repair']
+      },
+      { name: 'created_at', type: 'date', label: 'Date Added', facet: true }
     ]
   },
   GRADING_JOB: {
     dynamicFields: [
-      { name: 'status', type: 'text', label: 'Status', facet: true, enum: ['pending', 'in_progress', 'graded', 'certified'] },
-      { name: 'priority', type: 'text', label: 'Priority', facet: true, enum: ['low', 'normal', 'high', 'urgent'] },
+      {
+        name: 'status',
+        type: 'text',
+        label: 'Status',
+        facet: true,
+        enum: ['pending', 'in_progress', 'graded', 'certified']
+      },
+      {
+        name: 'priority',
+        type: 'text',
+        label: 'Priority',
+        facet: true,
+        enum: ['low', 'normal', 'high', 'urgent']
+      },
       { name: 'assigned_to', type: 'text', label: 'Assigned To', facet: true },
       { name: 'due_date', type: 'date', label: 'Due Date', facet: true },
-      { name: 'created_at', type: 'date', label: 'Created', facet: true },
+      { name: 'created_at', type: 'date', label: 'Created', facet: true }
     ]
   },
   CERTIFICATE: {
     dynamicFields: [
-      { name: 'cert_type', type: 'text', label: 'Certificate Type', facet: true, enum: ['gia', 'ags', 'ssef', 'grs', 'internal'] },
-      { name: 'grade', type: 'text', label: 'Grade', facet: true, enum: ['excellent', 'very_good', 'good', 'fair', 'poor'] },
+      {
+        name: 'cert_type',
+        type: 'text',
+        label: 'Certificate Type',
+        facet: true,
+        enum: ['gia', 'ags', 'ssef', 'grs', 'internal']
+      },
+      {
+        name: 'grade',
+        type: 'text',
+        label: 'Grade',
+        facet: true,
+        enum: ['excellent', 'very_good', 'good', 'fair', 'poor']
+      },
       { name: 'issue_date', type: 'date', label: 'Issue Date', facet: true },
       { name: 'expiry_date', type: 'date', label: 'Expiry Date', facet: true },
-      { name: 'status', type: 'text', label: 'Status', facet: true, enum: ['valid', 'expired', 'revoked'] },
+      {
+        name: 'status',
+        type: 'text',
+        label: 'Status',
+        facet: true,
+        enum: ['valid', 'expired', 'revoked']
+      }
     ]
   },
   CUSTOMER: {
     dynamicFields: [
-      { name: 'customer_type', type: 'text', label: 'Type', facet: true, enum: ['retail', 'wholesale', 'vip'] },
-      { name: 'region', type: 'text', label: 'Region', facet: true, enum: ['uae', 'saudi', 'qatar', 'kuwait', 'other'] },
-      { name: 'signup_date', type: 'date', label: 'Signup Date', facet: true },
+      {
+        name: 'customer_type',
+        type: 'text',
+        label: 'Type',
+        facet: true,
+        enum: ['retail', 'wholesale', 'vip']
+      },
+      {
+        name: 'region',
+        type: 'text',
+        label: 'Region',
+        facet: true,
+        enum: ['uae', 'saudi', 'qatar', 'kuwait', 'other']
+      },
+      { name: 'signup_date', type: 'date', label: 'Signup Date', facet: true }
     ]
   },
   ORDER: {
     dynamicFields: [
-      { name: 'order_status', type: 'text', label: 'Status', facet: true, enum: ['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'] },
-      { name: 'order_type', type: 'text', label: 'Type', facet: true, enum: ['sale', 'custom', 'repair', 'appraisal'] },
-      { name: 'total_amount', type: 'number', label: 'Total Amount', facet: true, min: 0, max: 100000, roleGate: ['owner', 'manager'] },
-      { name: 'order_date', type: 'date', label: 'Order Date', facet: true },
+      {
+        name: 'order_status',
+        type: 'text',
+        label: 'Status',
+        facet: true,
+        enum: ['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
+      },
+      {
+        name: 'order_type',
+        type: 'text',
+        label: 'Type',
+        facet: true,
+        enum: ['sale', 'custom', 'repair', 'appraisal']
+      },
+      {
+        name: 'total_amount',
+        type: 'number',
+        label: 'Total Amount',
+        facet: true,
+        min: 0,
+        max: 100000,
+        roleGate: ['owner', 'manager']
+      },
+      { name: 'order_date', type: 'date', label: 'Order Date', facet: true }
     ]
   }
 }
@@ -140,18 +222,25 @@ export function SearchFacets({
   }, [selectedEntities, userRole])
 
   // Handle filter change
-  const handleFilterChange = useCallback((key: string, value: any) => {
-    const newFilters = { ...filters }
-    
-    if (value === null || value === undefined || value === '' || 
-        (Array.isArray(value) && value.length === 0)) {
-      delete newFilters[key]
-    } else {
-      newFilters[key] = value
-    }
-    
-    onFiltersChange(newFilters)
-  }, [filters, onFiltersChange])
+  const handleFilterChange = useCallback(
+    (key: string, value: any) => {
+      const newFilters = { ...filters }
+
+      if (
+        value === null ||
+        value === undefined ||
+        value === '' ||
+        (Array.isArray(value) && value.length === 0)
+      ) {
+        delete newFilters[key]
+      } else {
+        newFilters[key] = value
+      }
+
+      onFiltersChange(newFilters)
+    },
+    [filters, onFiltersChange]
+  )
 
   // Toggle section expansion
   const toggleSection = useCallback((section: string) => {
@@ -167,9 +256,9 @@ export function SearchFacets({
   }, [])
 
   // Render enum facet
-  const renderEnumFacet = (facet: typeof availableFacets[0]) => {
+  const renderEnumFacet = (facet: (typeof availableFacets)[0]) => {
     const currentValues = filters[facet.key] || []
-    
+
     return (
       <div className="space-y-2">
         {facet.options?.map(option => (
@@ -177,17 +266,14 @@ export function SearchFacets({
             <Checkbox
               id={`${facet.key}-${option}`}
               checked={currentValues.includes(option)}
-              onCheckedChange={(checked) => {
+              onCheckedChange={checked => {
                 const newValues = checked
                   ? [...currentValues, option]
                   : currentValues.filter((v: string) => v !== option)
                 handleFilterChange(facet.key, newValues)
               }}
             />
-            <Label 
-              htmlFor={`${facet.key}-${option}`}
-              className="text-sm text-gray-300 capitalize"
-            >
+            <Label htmlFor={`${facet.key}-${option}`} className="text-sm text-gray-300 capitalize">
               {option.replace('_', ' ')}
             </Label>
           </div>
@@ -197,9 +283,9 @@ export function SearchFacets({
   }
 
   // Render number range facet
-  const renderNumberFacet = (facet: typeof availableFacets[0]) => {
+  const renderNumberFacet = (facet: (typeof availableFacets)[0]) => {
     const currentValue = filters[facet.key] || {}
-    
+
     return (
       <div className="space-y-2">
         <div className="grid grid-cols-2 gap-2">
@@ -209,7 +295,7 @@ export function SearchFacets({
               type="number"
               placeholder={facet.min?.toString()}
               value={currentValue.min || ''}
-              onChange={(e) => {
+              onChange={e => {
                 const min = e.target.value ? parseFloat(e.target.value) : undefined
                 handleFilterChange(facet.key, { ...currentValue, min })
               }}
@@ -222,7 +308,7 @@ export function SearchFacets({
               type="number"
               placeholder={facet.max?.toString()}
               value={currentValue.max || ''}
-              onChange={(e) => {
+              onChange={e => {
                 const max = e.target.value ? parseFloat(e.target.value) : undefined
                 handleFilterChange(facet.key, { ...currentValue, max })
               }}
@@ -235,9 +321,9 @@ export function SearchFacets({
   }
 
   // Render date range facet
-  const renderDateFacet = (facet: typeof availableFacets[0]) => {
+  const renderDateFacet = (facet: (typeof availableFacets)[0]) => {
     const currentValue = filters[facet.key] || {}
-    
+
     return (
       <div className="space-y-2">
         {/* Quick date options */}
@@ -256,13 +342,13 @@ export function SearchFacets({
               onClick={() => {
                 const today = new Date()
                 let fromDate: Date
-                
+
                 if (option.days === 'ytd') {
                   fromDate = new Date(today.getFullYear(), 0, 1)
                 } else {
                   fromDate = new Date(today.getTime() - option.days * 24 * 60 * 60 * 1000)
                 }
-                
+
                 handleFilterChange(facet.key, {
                   from: fromDate.toISOString().split('T')[0],
                   to: today.toISOString().split('T')[0]
@@ -273,7 +359,7 @@ export function SearchFacets({
             </Button>
           ))}
         </div>
-        
+
         {/* Custom date range */}
         <div className="grid grid-cols-1 gap-2">
           <div>
@@ -281,7 +367,7 @@ export function SearchFacets({
             <Input
               type="date"
               value={currentValue.from || ''}
-              onChange={(e) => {
+              onChange={e => {
                 handleFilterChange(facet.key, { ...currentValue, from: e.target.value })
               }}
               className="h-8 bg-gray-800/50 border-gray-600 text-gray-100"
@@ -292,7 +378,7 @@ export function SearchFacets({
             <Input
               type="date"
               value={currentValue.to || ''}
-              onChange={(e) => {
+              onChange={e => {
                 handleFilterChange(facet.key, { ...currentValue, to: e.target.value })
               }}
               className="h-8 bg-gray-800/50 border-gray-600 text-gray-100"
@@ -312,9 +398,7 @@ export function SearchFacets({
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-yellow-400">Search Filters</h3>
           {activeFilterCount > 0 && (
-            <Badge className="bg-yellow-500/20 text-yellow-400">
-              {activeFilterCount}
-            </Badge>
+            <Badge className="bg-yellow-500/20 text-yellow-400">{activeFilterCount}</Badge>
           )}
         </div>
       </div>
@@ -336,7 +420,7 @@ export function SearchFacets({
           <CollapsibleContent className="px-2 pt-2">
             <div className="space-y-2">
               {selectedEntities.map(entityType => (
-                <Badge 
+                <Badge
                   key={entityType}
                   className="bg-yellow-500/20 text-yellow-400 border-yellow-500/50"
                 >
@@ -348,7 +432,7 @@ export function SearchFacets({
         </Collapsible>
 
         {/* Dynamic Facets */}
-        {availableFacets.map((facet) => (
+        {availableFacets.map(facet => (
           <Collapsible
             key={facet.key}
             open={expandedSections.has(facet.key)}
@@ -361,9 +445,7 @@ export function SearchFacets({
                 {facet.type === 'date' && <Calendar className="h-4 w-4 text-gray-400" />}
                 <span className="font-medium text-gray-300">{facet.label}</span>
                 {filters[facet.key] && (
-                  <Badge className="bg-blue-500/20 text-blue-400 text-xs">
-                    Active
-                  </Badge>
+                  <Badge className="bg-blue-500/20 text-blue-400 text-xs">Active</Badge>
                 )}
               </div>
               {expandedSections.has(facet.key) ? (
@@ -376,7 +458,7 @@ export function SearchFacets({
               {facet.type === 'text' && facet.options && renderEnumFacet(facet)}
               {facet.type === 'number' && renderNumberFacet(facet)}
               {facet.type === 'date' && renderDateFacet(facet)}
-              
+
               {/* Clear this filter */}
               {filters[facet.key] && (
                 <Button

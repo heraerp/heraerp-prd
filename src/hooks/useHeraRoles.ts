@@ -1,6 +1,6 @@
 /**
  * HERA Roles Hook
- * 
+ *
  * Thin wrapper over useUniversalEntity for role management
  * Provides role-specific helpers and RPC integration
  */
@@ -97,23 +97,19 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
 
   // Helper to get active roles
   const getActiveRoles = () => {
-    return (roles as Role[])?.filter(r => 
-      r.dynamic_fields?.active?.value !== false
-    ) || []
+    return (roles as Role[])?.filter(r => r.dynamic_fields?.active?.value !== false) || []
   }
 
   // Helper to get role by title
   const getRoleByTitle = (title: string) => {
-    return (roles as Role[])?.find(r => 
-      r.dynamic_fields?.title?.value === title
-    )
+    return (roles as Role[])?.find(r => r.dynamic_fields?.title?.value === title)
   }
 
   // Helper to check if a permission is in a role
   const hasPermission = (roleId: string, permission: string) => {
     const role = (roles as Role[])?.find(r => r.id === roleId)
     if (!role || !role.dynamic_fields?.permissions?.value) return false
-    
+
     const permissions = role.dynamic_fields.permissions.value
     return Array.isArray(permissions) && permissions.includes(permission)
   }

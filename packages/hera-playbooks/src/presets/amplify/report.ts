@@ -4,6 +4,10 @@ export const AMPLIFY_REPORT_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_REPORT',
   smartCode: 'HERA.AMPLIFY.REPORT.ENTITY.V1',
   label: 'Reports',
+  labels: {
+    singular: 'Report',
+    plural: 'Reports'
+  },
   dynamicFields: [
     {
       name: 'period',

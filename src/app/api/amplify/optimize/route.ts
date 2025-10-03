@@ -46,13 +46,17 @@ export async function POST(req: NextRequest) {
     // For now, generate mock SEO data
     const optimizations = {
       seo_title: content.dynamic_data?.title?.slice(0, 70) ?? 'Optimized Title',
-      meta_description: `${content.dynamic_data?.title} - Learn more about this topic in our comprehensive guide.`.slice(0, 155),
+      meta_description:
+        `${content.dynamic_data?.title} - Learn more about this topic in our comprehensive guide.`.slice(
+          0,
+          155
+        ),
       keywords: ['amplify', 'marketing', 'content', 'seo'],
       schema_jsonld: {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": content.dynamic_data?.title,
-        "description": content.dynamic_data?.body?.slice(0, 160)
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: content.dynamic_data?.title,
+        description: content.dynamic_data?.body?.slice(0, 160)
       },
       internal_links: [],
       external_links: []
@@ -109,7 +113,7 @@ export async function POST(req: NextRequest) {
         },
         {
           field_name: 'trace',
-          field_value: JSON.stringify({ 
+          field_value: JSON.stringify({
             contentId,
             optimizations: Object.keys(optimizations)
           }),
@@ -119,18 +123,17 @@ export async function POST(req: NextRequest) {
       ]
     })
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       optimizations,
       task
     })
-
   } catch (error) {
     console.error('Error in amplify/optimize:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     )

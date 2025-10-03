@@ -2,17 +2,17 @@
 
 /**
  * Salon Staff Page
- * 
+ *
  * Enterprise-grade staff management using Universal Entity v2
  * Follows HERA DNA standards with RPC-first architecture
  */
 
 import React, { useState, useMemo, useCallback } from 'react'
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Plus, 
+import {
+  Users,
+  Search,
+  Filter,
+  Plus,
   Check,
   X,
   AlertCircle,
@@ -31,22 +31,22 @@ import { format, parseISO } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogDescription,
   DialogFooter
 } from '@/components/ui/dialog'
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -74,13 +74,13 @@ const STAFF_STATUS = {
 export default function SalonStaffPage() {
   const { salonRole, hasPermission, isAuthenticated, organization } = useSecuredSalonContext()
   const { toast } = useToast()
-  
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingStaff, setEditingStaff] = useState<any>(null)
   const [deletingStaff, setDeletingStaff] = useState<any>(null)
   const [hardDeleteConfirm, setHardDeleteConfirm] = useState(false)
-  
+
   // Filter state
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -109,29 +109,20 @@ export default function SalonStaffPage() {
   })
 
   // Load roles for dropdown
-  const {
-    roles,
-    getActiveRoles,
-    isLoading: rolesLoading
-  } = useHeraRoles()
+  const { roles, getActiveRoles, isLoading: rolesLoading } = useHeraRoles()
 
   // Load services for assignment
-  const {
-    entities: services,
-    isLoading: servicesLoading
-  } = useUniversalEntity({
+  const { entities: services, isLoading: servicesLoading } = useUniversalEntity({
     entity_type: 'SERVICE',
-    filters: { 
+    filters: {
       include_dynamic: true,
-      limit: 100 
+      limit: 100
     },
     dynamicFields: SERVICE_PRESET.dynamicFields
   })
 
   // Load locations
-  const {
-    entities: locations
-  } = useUniversalEntity({
+  const { entities: locations } = useUniversalEntity({
     entity_type: 'LOCATION',
     filters: { limit: 20 }
   })
@@ -139,25 +130,24 @@ export default function SalonStaffPage() {
   // Filter and process staff list
   const filteredStaff = useMemo(() => {
     let filtered = filterSensitiveFields(staff || [], salonRole)
-    
+
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(s => 
-        s.entity_name?.toLowerCase().includes(query) ||
-        s.dynamic_fields?.email?.value?.toLowerCase().includes(query) ||
-        s.dynamic_fields?.phone?.value?.toLowerCase().includes(query) ||
-        s.dynamic_fields?.role_title?.value?.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        s =>
+          s.entity_name?.toLowerCase().includes(query) ||
+          s.dynamic_fields?.email?.value?.toLowerCase().includes(query) ||
+          s.dynamic_fields?.phone?.value?.toLowerCase().includes(query) ||
+          s.dynamic_fields?.role_title?.value?.toLowerCase().includes(query)
       )
     }
-    
+
     // Status filter
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(s => 
-        s.dynamic_fields?.status?.value === statusFilter
-      )
+      filtered = filtered.filter(s => s.dynamic_fields?.status?.value === statusFilter)
     }
-    
+
     // Role filter
     if (roleFilter !== 'all') {
       filtered = filtered.filter(s => {
@@ -165,7 +155,7 @@ export default function SalonStaffPage() {
         return roleId === roleFilter
       })
     }
-    
+
     return filtered
   }, [staff, searchQuery, statusFilter, roleFilter, salonRole, filterSensitiveFields])
 
@@ -185,7 +175,7 @@ export default function SalonStaffPage() {
           description: 'New staff member has been added successfully.'
         })
       }
-      
+
       setIsModalOpen(false)
       setEditingStaff(null)
       refetchStaff()
@@ -202,7 +192,7 @@ export default function SalonStaffPage() {
   // Handle delete
   const handleDelete = async () => {
     if (!deletingStaff) return
-    
+
     try {
       if (hardDeleteConfirm) {
         await deleteStaff(deletingStaff.id, true)
@@ -217,7 +207,7 @@ export default function SalonStaffPage() {
           description: 'Staff member has been archived.'
         })
       }
-      
+
       setDeletingStaff(null)
       setHardDeleteConfirm(false)
       refetchStaff()
@@ -232,8 +222,10 @@ export default function SalonStaffPage() {
   }
 
   // Can manage staff
-  const canManageStaff = hasPermission('salon:staff:write') || ['owner', 'manager'].includes(salonRole || '')
-  const canViewCosts = hasPermission('salon:finance:read') || ['owner', 'manager'].includes(salonRole || '')
+  const canManageStaff =
+    hasPermission('salon:staff:write') || ['owner', 'manager'].includes(salonRole || '')
+  const canViewCosts =
+    hasPermission('salon:finance:read') || ['owner', 'manager'].includes(salonRole || '')
 
   // Loading state
   if (staffLoading || rolesLoading || servicesLoading) {
@@ -241,7 +233,10 @@ export default function SalonStaffPage() {
       <div className="p-8" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
         <div className="max-w-7xl mx-auto space-y-6 animate-pulse">
           <div className="h-8 w-48 rounded" style={{ backgroundColor: `${LUXE_COLORS.gold}20` }} />
-          <div className="h-64 rounded-lg" style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }} />
+          <div
+            className="h-64 rounded-lg"
+            style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }}
+          />
         </div>
       </div>
     )
@@ -253,37 +248,29 @@ export default function SalonStaffPage() {
       <div className="p-8" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
         <Alert className="max-w-2xl mx-auto">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Failed to load staff data. Please try again.
-          </AlertDescription>
+          <AlertDescription>Failed to load staff data. Please try again.</AlertDescription>
         </Alert>
       </div>
     )
   }
 
   return (
-    <div 
-      className="min-h-screen p-8"
-      style={{ backgroundColor: LUXE_COLORS.charcoal }}
-    >
+    <div className="min-h-screen p-8" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 
+            <h1
               className="text-3xl font-bold tracking-tight"
               style={{ color: LUXE_COLORS.champagne }}
             >
               Staff Management
             </h1>
-            <p 
-              className="mt-1"
-              style={{ color: LUXE_COLORS.bronze }}
-            >
+            <p className="mt-1" style={{ color: LUXE_COLORS.bronze }}>
               Manage your salon team members
             </p>
           </div>
-          
+
           {canManageStaff && (
             <Button
               onClick={() => {
@@ -303,7 +290,7 @@ export default function SalonStaffPage() {
         </div>
 
         {/* Filters */}
-        <div 
+        <div
           className="rounded-xl p-6 shadow-lg backdrop-blur-sm border"
           style={{
             backgroundColor: `${LUXE_COLORS.charcoalLight}95`,
@@ -312,14 +299,14 @@ export default function SalonStaffPage() {
         >
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
-              <Search 
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" 
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
                 style={{ color: LUXE_COLORS.bronze }}
               />
               <Input
                 placeholder="Search staff..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
                 style={{
                   backgroundColor: `${LUXE_COLORS.charcoal}80`,
@@ -328,9 +315,9 @@ export default function SalonStaffPage() {
                 }}
               />
             </div>
-            
+
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger 
+              <SelectTrigger
                 style={{
                   backgroundColor: `${LUXE_COLORS.charcoal}80`,
                   border: `1px solid ${LUXE_COLORS.bronze}30`,
@@ -346,9 +333,9 @@ export default function SalonStaffPage() {
                 <SelectItem value="on_leave">On Leave</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger 
+              <SelectTrigger
                 style={{
                   backgroundColor: `${LUXE_COLORS.charcoal}80`,
                   border: `1px solid ${LUXE_COLORS.bronze}30`,
@@ -366,7 +353,7 @@ export default function SalonStaffPage() {
                 ))}
               </SelectContent>
             </Select>
-            
+
             <div className="flex items-center gap-2">
               <span style={{ color: LUXE_COLORS.bronze }}>
                 {filteredStaff.length} staff members
@@ -377,21 +364,15 @@ export default function SalonStaffPage() {
 
         {/* Staff Grid */}
         {filteredStaff.length === 0 ? (
-          <div 
+          <div
             className="rounded-xl p-12 text-center shadow-lg"
             style={{
               backgroundColor: `${LUXE_COLORS.charcoalLight}95`,
               borderColor: `${LUXE_COLORS.gold}20`
             }}
           >
-            <Users 
-              className="w-16 h-16 mx-auto mb-4" 
-              style={{ color: `${LUXE_COLORS.gold}40` }}
-            />
-            <h3 
-              className="text-lg font-medium mb-1"
-              style={{ color: LUXE_COLORS.champagne }}
-            >
+            <Users className="w-16 h-16 mx-auto mb-4" style={{ color: `${LUXE_COLORS.gold}40` }} />
+            <h3 className="text-lg font-medium mb-1" style={{ color: LUXE_COLORS.champagne }}>
               No staff members found
             </h3>
             <p style={{ color: LUXE_COLORS.bronze }}>
@@ -404,10 +385,11 @@ export default function SalonStaffPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredStaff.map(member => {
               const status = member.dynamic_fields?.status?.value || 'active'
-              const statusConfig = STAFF_STATUS[status as keyof typeof STAFF_STATUS] || STAFF_STATUS.active
+              const statusConfig =
+                STAFF_STATUS[status as keyof typeof STAFF_STATUS] || STAFF_STATUS.active
               const StatusIcon = statusConfig.icon
               const role = member.relationships?.role?.to_entity
-              
+
               return (
                 <div
                   key={member.id}
@@ -420,43 +402,44 @@ export default function SalonStaffPage() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div 
+                      <div
                         className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shadow-md"
                         style={{
                           background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
                           color: LUXE_COLORS.black
                         }}
                       >
-                        {member.entity_name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?'}
+                        {member.entity_name
+                          ?.split(' ')
+                          .map(n => n[0])
+                          .join('')
+                          .toUpperCase() || '?'}
                       </div>
                       <div>
-                        <h3 
-                          className="font-semibold"
-                          style={{ color: LUXE_COLORS.champagne }}
-                        >
+                        <h3 className="font-semibold" style={{ color: LUXE_COLORS.champagne }}>
                           {member.entity_name}
                         </h3>
-                        <p 
-                          className="text-sm"
-                          style={{ color: LUXE_COLORS.bronze }}
-                        >
+                        <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
                           {member.dynamic_fields?.role_title?.value || 'Staff Member'}
                         </p>
                       </div>
                     </div>
-                    
+
                     {canManageStaff && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="icon"
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
                           >
-                            <MoreVertical className="h-4 w-4" style={{ color: LUXE_COLORS.bronze }} />
+                            <MoreVertical
+                              className="h-4 w-4"
+                              style={{ color: LUXE_COLORS.bronze }}
+                            />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent 
+                        <DropdownMenuContent
                           align="end"
                           style={{
                             backgroundColor: LUXE_COLORS.charcoalLight,
@@ -474,7 +457,9 @@ export default function SalonStaffPage() {
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator style={{ backgroundColor: `${LUXE_COLORS.bronze}30` }} />
+                          <DropdownMenuSeparator
+                            style={{ backgroundColor: `${LUXE_COLORS.bronze}30` }}
+                          />
                           <DropdownMenuItem
                             onClick={() => {
                               setDeletingStaff(member)
@@ -505,7 +490,7 @@ export default function SalonStaffPage() {
                   </div>
 
                   {/* Status */}
-                  <Badge 
+                  <Badge
                     className="mb-4"
                     style={{
                       backgroundColor: `${statusConfig.color}20`,
@@ -522,7 +507,7 @@ export default function SalonStaffPage() {
                     {member.dynamic_fields?.email?.value && (
                       <div className="flex items-center gap-2">
                         <Mail className="w-4 h-4" style={{ color: LUXE_COLORS.bronze }} />
-                        <a 
+                        <a
                           href={`mailto:${member.dynamic_fields.email.value}`}
                           className="text-sm hover:underline"
                           style={{ color: LUXE_COLORS.lightText }}
@@ -531,11 +516,11 @@ export default function SalonStaffPage() {
                         </a>
                       </div>
                     )}
-                    
+
                     {member.dynamic_fields?.phone?.value && (
                       <div className="flex items-center gap-2">
                         <Phone className="w-4 h-4" style={{ color: LUXE_COLORS.bronze }} />
-                        <a 
+                        <a
                           href={`tel:${member.dynamic_fields.phone.value}`}
                           className="text-sm hover:underline"
                           style={{ color: LUXE_COLORS.lightText }}
@@ -544,16 +529,17 @@ export default function SalonStaffPage() {
                         </a>
                       </div>
                     )}
-                    
+
                     {member.dynamic_fields?.hire_date?.value && (
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" style={{ color: LUXE_COLORS.bronze }} />
                         <span className="text-sm" style={{ color: LUXE_COLORS.lightText }}>
-                          Since {format(parseISO(member.dynamic_fields.hire_date.value), 'MMM yyyy')}
+                          Since{' '}
+                          {format(parseISO(member.dynamic_fields.hire_date.value), 'MMM yyyy')}
                         </span>
                       </div>
                     )}
-                    
+
                     {canViewCosts && member.dynamic_fields?.display_rate?.value && (
                       <div className="flex items-center gap-2">
                         <DollarSign className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
@@ -565,30 +551,37 @@ export default function SalonStaffPage() {
                   </div>
 
                   {/* Skills */}
-                  {member.dynamic_fields?.skills?.value && Array.isArray(member.dynamic_fields.skills.value) && member.dynamic_fields.skills.value.length > 0 && (
-                    <div className="mt-4 pt-4 border-t" style={{ borderColor: `${LUXE_COLORS.gold}20` }}>
-                      <div className="flex flex-wrap gap-2">
-                        {member.dynamic_fields.skills.value.slice(0, 3).map((skill: string, idx: number) => (
-                          <Badge 
-                            key={idx}
-                            variant="secondary"
-                            style={{
-                              backgroundColor: `${LUXE_COLORS.bronze}20`,
-                              color: LUXE_COLORS.bronze,
-                              border: `1px solid ${LUXE_COLORS.bronze}40`
-                            }}
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
-                        {member.dynamic_fields.skills.value.length > 3 && (
-                          <span className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-                            +{member.dynamic_fields.skills.value.length - 3} more
-                          </span>
-                        )}
+                  {member.dynamic_fields?.skills?.value &&
+                    Array.isArray(member.dynamic_fields.skills.value) &&
+                    member.dynamic_fields.skills.value.length > 0 && (
+                      <div
+                        className="mt-4 pt-4 border-t"
+                        style={{ borderColor: `${LUXE_COLORS.gold}20` }}
+                      >
+                        <div className="flex flex-wrap gap-2">
+                          {member.dynamic_fields.skills.value
+                            .slice(0, 3)
+                            .map((skill: string, idx: number) => (
+                              <Badge
+                                key={idx}
+                                variant="secondary"
+                                style={{
+                                  backgroundColor: `${LUXE_COLORS.bronze}20`,
+                                  color: LUXE_COLORS.bronze,
+                                  border: `1px solid ${LUXE_COLORS.bronze}40`
+                                }}
+                              >
+                                {skill}
+                              </Badge>
+                            ))}
+                          {member.dynamic_fields.skills.value.length > 3 && (
+                            <span className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                              +{member.dynamic_fields.skills.value.length - 3} more
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               )
             })}
@@ -597,7 +590,7 @@ export default function SalonStaffPage() {
 
         {/* Create/Edit Modal */}
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent 
+          <DialogContent
             className="max-w-2xl max-h-[90vh] flex flex-col luxe-modal"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -605,12 +598,12 @@ export default function SalonStaffPage() {
               padding: 0
             }}
           >
-            <DialogHeader 
+            <DialogHeader
               className="px-6 pt-6 pb-4 border-b flex-shrink-0"
               style={{ borderColor: `${LUXE_COLORS.gold}20` }}
             >
               <div className="flex items-center gap-3">
-                <div 
+                <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center shadow-lg"
                   style={{
                     background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
@@ -620,19 +613,21 @@ export default function SalonStaffPage() {
                   <Users className="h-5 w-5" style={{ color: LUXE_COLORS.black }} />
                 </div>
                 <div>
-                  <DialogTitle 
+                  <DialogTitle
                     className="text-xl font-semibold"
                     style={{ color: LUXE_COLORS.champagne }}
                   >
                     {editingStaff ? 'Edit Staff Member' : 'Add Staff Member'}
                   </DialogTitle>
                   <DialogDescription style={{ color: LUXE_COLORS.bronze }}>
-                    {editingStaff ? 'Update staff member information' : 'Add a new team member to your salon'}
+                    {editingStaff
+                      ? 'Update staff member information'
+                      : 'Add a new team member to your salon'}
                   </DialogDescription>
                 </div>
               </div>
             </DialogHeader>
-            
+
             <div className="flex-1 overflow-y-auto">
               <StaffForm
                 staff={editingStaff}
@@ -665,18 +660,18 @@ export default function SalonStaffPage() {
                 {hardDeleteConfirm ? 'Permanently Delete' : 'Archive'} Staff Member
               </DialogTitle>
               <DialogDescription style={{ color: LUXE_COLORS.bronze }}>
-                {hardDeleteConfirm 
+                {hardDeleteConfirm
                   ? 'This action cannot be undone. All data will be permanently deleted.'
                   : 'This will archive the staff member. They can be restored later if needed.'}
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               <p style={{ color: LUXE_COLORS.lightText }}>
                 Are you sure you want to {hardDeleteConfirm ? 'permanently delete' : 'archive'}{' '}
                 <strong>{deletingStaff?.entity_name}</strong>?
               </p>
-              
+
               {hardDeleteConfirm && (
                 <Alert className="border-red-500/50 bg-red-500/10">
                   <AlertCircle className="h-4 w-4 text-red-500" />
@@ -686,7 +681,7 @@ export default function SalonStaffPage() {
                 </Alert>
               )}
             </div>
-            
+
             <DialogFooter>
               <Button
                 variant="outline"

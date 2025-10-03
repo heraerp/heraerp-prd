@@ -151,14 +151,14 @@ const WIDGET_DATA = {
 
 export function UnifiedDashboard() {
   const context = useSecuredSalonContext()
-  const { 
-    role, 
-    user, 
-    isLoading, 
+  const {
+    role,
+    user,
+    isLoading,
     isAuthenticated,
     getDashboardWidgets,
     getNavigationItems,
-    canViewFinancials 
+    canViewFinancials
   } = useSalonSecurity()
   const router = useRouter()
 
@@ -225,7 +225,7 @@ export function UnifiedDashboard() {
   // Use security-aware dashboard widgets
   const dashboardWidgets = getDashboardWidgets()
   const navigationItems = getNavigationItems()
-  
+
   // Filter widgets based on role permissions
   const widgets = dashboardWidgets
   const quickLinks = ROLE_FEATURES[role]?.quickLinks || []
@@ -273,12 +273,14 @@ export function UnifiedDashboard() {
                       </p>
                       <p className="text-2xl font-light mt-1" style={{ color: widget.color }}>
                         {/* Hide financial values if user doesn't have permission */}
-                        {widget.title.toLowerCase().includes('revenue') || 
-                         widget.title.toLowerCase().includes('expense') ||
-                         widget.title.toLowerCase().includes('profit') ||
-                         widget.title.toLowerCase().includes('payment') ? 
-                          (canViewFinancials ? widget.value : '***') : 
-                          widget.value}
+                        {widget.title.toLowerCase().includes('revenue') ||
+                        widget.title.toLowerCase().includes('expense') ||
+                        widget.title.toLowerCase().includes('profit') ||
+                        widget.title.toLowerCase().includes('payment')
+                          ? canViewFinancials
+                            ? widget.value
+                            : '***'
+                          : widget.value}
                       </p>
                       {widget.change && canViewFinancials && (
                         <p

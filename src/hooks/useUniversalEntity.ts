@@ -158,7 +158,9 @@ function mergeDynamic(rows: any[]) {
 
 // Helper to get authentication headers, including organization context
 async function getAuthHeaders(organizationId?: string | null): Promise<Record<string, string>> {
-  const { data: { session } } = await supabase.auth.getSession()
+  const {
+    data: { session }
+  } = await supabase.auth.getSession()
 
   if (!session?.access_token) {
     console.log('❌ No authentication available')
@@ -258,16 +260,16 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       const headers = await getAuthHeaders(organizationId)
       console.log('🌐 Making API call to:', `/api/v2/entities?${params}`)
       console.log('📋 Request headers:', headers)
-      
+
       const res = await fetch(`/api/v2/entities?${params}`, { headers })
       console.log('📈 Response status:', res.status, res.statusText)
-      
+
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
         console.error('❌ API error response:', err)
         throw new Error(err.error || 'Failed to fetch entities')
       }
-      
+
       const responseData = await res.json()
       console.log('📦 API response data:', responseData)
       return responseData
@@ -319,7 +321,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       }
       const created = await r.json()
       const entity_id = created?.data?.id || created?.data?.entity_id || created?.id
-      
+
       if (!entity_id) {
         console.error('Unexpected response format:', created)
         throw new Error('Failed to get entity ID from creation response')
@@ -422,14 +424,14 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       const r = await fetch('/api/v2/entities', {
         method: 'PUT',
         headers,
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           p_organization_id: organizationId,
-          entity_id, 
+          entity_id,
           ...updates,
           ...(dynamic_fields_formatted && { dynamic_fields: dynamic_fields_formatted })
         })
       })
-      
+
       if (!r.ok) {
         const error = await r.json().catch(() => ({}))
         throw new Error(error?.error || 'Update entity failed')

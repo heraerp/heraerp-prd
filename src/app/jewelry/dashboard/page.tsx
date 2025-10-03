@@ -103,13 +103,13 @@ export default function JewelryDashboard() {
     const timer = setTimeout(() => {
       const orgId = localStorage.getItem('organizationId')
       const jewelryRole = localStorage.getItem('jewelryRole')
-      
+
       if (!orgId || !jewelryRole) {
         // No organization context, redirect to demo
         router.push('/jewelry/demo')
         return
       }
-      
+
       setOrganizationId(orgId)
       setCurrentRole(jewelryRole)
       setIsLoading(false)
@@ -214,7 +214,7 @@ export default function JewelryDashboard() {
               <p className="jewelry-text-muted text-sm">Total Value</p>
             </div>
           </div>
-          
+
           {currentRole && (
             <div className="jewelry-glass-card p-4">
               <div className="text-center">

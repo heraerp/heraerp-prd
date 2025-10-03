@@ -256,7 +256,7 @@ export default function JewelryAIPage() {
         const DEMO_ORG_ID = 'f8d2c5e7-9a4b-6c8d-0e1f-2a3b4c5d6e7f'
         localStorage.setItem('organizationId', DEMO_ORG_ID)
         localStorage.setItem('jewelryRole', 'owner')
-        
+
         setOrganizationId(DEMO_ORG_ID)
         setJewelryRole('owner')
         setOrgLoading(false)
@@ -585,7 +585,9 @@ export default function JewelryAIPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold-500/10 border border-gold-500/30 rounded-full">
               <Brain className="h-4 w-4" style={{ color: '#E6C200' }} />
-              <span className="text-sm font-medium" style={{ color: '#E6C200' }}>Live Demo - HERA Jewelry AI Intelligence</span>
+              <span className="text-sm font-medium" style={{ color: '#E6C200' }}>
+                Live Demo - HERA Jewelry AI Intelligence
+              </span>
             </div>
           </motion.div>
 
@@ -627,8 +629,13 @@ export default function JewelryAIPage() {
                     color: activeTab === tab.key ? '#E6C200' : '#9CA3AF'
                   }}
                 >
-                  <tab.icon size={16} style={{ color: activeTab === tab.key ? '#E6C200' : '#9CA3AF' }} />
-                  <span style={{ color: activeTab === tab.key ? '#E6C200' : '#9CA3AF' }}>{tab.label}</span>
+                  <tab.icon
+                    size={16}
+                    style={{ color: activeTab === tab.key ? '#E6C200' : '#9CA3AF' }}
+                  />
+                  <span style={{ color: activeTab === tab.key ? '#E6C200' : '#9CA3AF' }}>
+                    {tab.label}
+                  </span>
                 </button>
               ))}
             </div>
@@ -646,7 +653,9 @@ export default function JewelryAIPage() {
               >
                 <div className="jewelry-glass-card jewelry-float p-6 text-center">
                   <Zap className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>94.2%</h3>
+                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>
+                    94.2%
+                  </h3>
                   <p className="text-sm font-medium" style={{ color: '#9CA3AF' }}>
                     AI Accuracy
                   </p>
@@ -661,7 +670,9 @@ export default function JewelryAIPage() {
                   style={{ animationDelay: '0.1s' }}
                 >
                   <Target className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>67</h3>
+                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>
+                    67
+                  </h3>
                   <p className="text-sm font-medium" style={{ color: '#9CA3AF' }}>
                     Active Recommendations
                   </p>
@@ -693,7 +704,9 @@ export default function JewelryAIPage() {
                   style={{ animationDelay: '0.3s' }}
                 >
                   <Activity className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>89.7%</h3>
+                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>
+                    89.7%
+                  </h3>
                   <p className="text-sm font-medium" style={{ color: '#9CA3AF' }}>
                     Automation Rate
                   </p>
@@ -713,7 +726,10 @@ export default function JewelryAIPage() {
                   className="jewelry-glass-panel p-6"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold flex items-center gap-2" style={{ color: '#F3F4F6' }}>
+                    <h3
+                      className="text-xl font-semibold flex items-center gap-2"
+                      style={{ color: '#F3F4F6' }}
+                    >
                       <Lightbulb size={24} style={{ color: '#E6C200' }} />
                       Recent Recommendations
                     </h3>
@@ -723,7 +739,9 @@ export default function JewelryAIPage() {
                       style={{ color: '#9CA3AF' }}
                     >
                       <Eye size={14} style={{ color: '#E6C200' }} />
-                      <span className="text-sm" style={{ color: '#9CA3AF' }}>View All</span>
+                      <span className="text-sm" style={{ color: '#9CA3AF' }}>
+                        View All
+                      </span>
                     </button>
                   </div>
 
@@ -744,7 +762,10 @@ export default function JewelryAIPage() {
                                 {rec.confidence}% confidence
                               </span>
                             </div>
-                            <h4 className="font-semibold text-base mb-2" style={{ color: '#F3F4F6' }}>
+                            <h4
+                              className="font-semibold text-base mb-2"
+                              style={{ color: '#F3F4F6' }}
+                            >
                               {rec.title}
                             </h4>
                             <p className="text-sm leading-relaxed" style={{ color: '#9CA3AF' }}>
@@ -763,7 +784,10 @@ export default function JewelryAIPage() {
                                 {formatCurrency(rec.impact.revenue)} impact
                               </span>
                             )}
-                            <button className="bg-gold-500/20 border border-gold-500/30 hover:bg-gold-500/30 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200" style={{ color: '#F3F4F6' }}>
+                            <button
+                              className="bg-gold-500/20 border border-gold-500/30 hover:bg-gold-500/30 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+                              style={{ color: '#F3F4F6' }}
+                            >
                               Review
                             </button>
                           </div>
@@ -781,7 +805,10 @@ export default function JewelryAIPage() {
                   className="jewelry-glass-panel p-6"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold flex items-center gap-2" style={{ color: '#F3F4F6' }}>
+                    <h3
+                      className="text-xl font-semibold flex items-center gap-2"
+                      style={{ color: '#F3F4F6' }}
+                    >
                       <Cpu size={24} style={{ color: '#E6C200' }} />
                       AI Model Status
                     </h3>
@@ -792,7 +819,9 @@ export default function JewelryAIPage() {
                         style={{ color: '#9CA3AF' }}
                       >
                         <Settings size={14} style={{ color: '#E6C200' }} />
-                        <span className="text-sm" style={{ color: '#9CA3AF' }}>Manage</span>
+                        <span className="text-sm" style={{ color: '#9CA3AF' }}>
+                          Manage
+                        </span>
                       </button>
                     )}
                   </div>
@@ -818,7 +847,9 @@ export default function JewelryAIPage() {
                             >
                               {model.accuracy}%
                             </p>
-                            <p className="text-sm" style={{ color: '#9CA3AF' }}>accuracy</p>
+                            <p className="text-sm" style={{ color: '#9CA3AF' }}>
+                              accuracy
+                            </p>
                           </div>
                         </div>
 

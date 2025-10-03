@@ -1,6 +1,6 @@
 /**
  * HERA DNA Pattern: Customer Detail Modal
- * 
+ *
  * Enhanced customer view with appointment history, preferences, and notes
  */
 
@@ -10,9 +10,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { 
-  User, Calendar, DollarSign, Heart, Phone, Mail, MapPin, 
-  Clock, Star, Gift, AlertCircle, Edit, MessageSquare, FileText 
+import {
+  User,
+  Calendar,
+  DollarSign,
+  Heart,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  Star,
+  Gift,
+  AlertCircle,
+  Edit,
+  MessageSquare,
+  FileText
 } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import { format } from 'date-fns'
@@ -37,36 +49,40 @@ export function CustomerDetailModal({
   transactions = []
 }: CustomerDetailModalProps) {
   if (!customer) return null
-  
+
   const fields = customer.dynamic_fields || {}
   const lifetimeValue = fields.lifetime_value?.value || 0
   const visitCount = fields.visit_count?.value || 0
   const avgTicket = fields.average_ticket?.value || 0
   const lastVisit = fields.last_visit?.value
-  const tags = fields.tags?.value?.split(',').map(t => t.trim()).filter(Boolean) || []
-  
+  const tags =
+    fields.tags?.value
+      ?.split(',')
+      .map(t => t.trim())
+      .filter(Boolean) || []
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
+      <DialogContent
         className="max-w-4xl max-h-[90vh] p-0"
-        style={{ 
+        style={{
           backgroundColor: LUXE_COLORS.charcoalLight,
           border: `1px solid ${LUXE_COLORS.gold}30`
         }}
       >
         {/* Header */}
-        <div 
+        <div
           className="p-6 border-b"
-          style={{ 
+          style={{
             borderColor: `${LUXE_COLORS.gold}20`,
             background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoal} 100%)`
           }}
         >
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{ 
+                style={{
                   backgroundColor: `${LUXE_COLORS.gold}20`,
                   border: `2px solid ${LUXE_COLORS.gold}`
                 }}
@@ -78,7 +94,7 @@ export function CustomerDetailModal({
                   {fields.name?.value || customer.entity_name}
                 </h2>
                 <div className="flex items-center gap-3 mt-2">
-                  <Badge 
+                  <Badge
                     className="text-xs"
                     style={{
                       backgroundColor: `${LUXE_COLORS.gold}20`,
@@ -89,7 +105,7 @@ export function CustomerDetailModal({
                     {fields.customer_type?.value || 'Regular'} Customer
                   </Badge>
                   {tags.map((tag, i) => (
-                    <Badge 
+                    <Badge
                       key={i}
                       variant="outline"
                       className="text-xs"
@@ -115,55 +131,63 @@ export function CustomerDetailModal({
               </Button>
             )}
           </div>
-          
+
           {/* Key Metrics */}
           <div className="grid grid-cols-4 gap-4 mt-6">
-            <div 
+            <div
               className="p-3 rounded-lg"
               style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }}
             >
               <div className="flex items-center gap-2 mb-1">
                 <DollarSign className="h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
-                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>Lifetime Value</span>
+                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                  Lifetime Value
+                </span>
               </div>
               <p className="text-xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
                 ${lifetimeValue.toFixed(0)}
               </p>
             </div>
-            
-            <div 
+
+            <div
               className="p-3 rounded-lg"
               style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }}
             >
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="h-4 w-4" style={{ color: LUXE_COLORS.emerald }} />
-                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>Total Visits</span>
+                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                  Total Visits
+                </span>
               </div>
               <p className="text-xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
                 {visitCount}
               </p>
             </div>
-            
-            <div 
+
+            <div
               className="p-3 rounded-lg"
               style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }}
             >
               <div className="flex items-center gap-2 mb-1">
                 <Star className="h-4 w-4" style={{ color: LUXE_COLORS.plum }} />
-                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>Avg Ticket</span>
+                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                  Avg Ticket
+                </span>
               </div>
               <p className="text-xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
                 ${avgTicket.toFixed(0)}
               </p>
             </div>
-            
-            <div 
+
+            <div
               className="p-3 rounded-lg"
               style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }}
             >
               <div className="flex items-center gap-2 mb-1">
                 <Clock className="h-4 w-4" style={{ color: LUXE_COLORS.orange }} />
-                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>Last Visit</span>
+                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                  Last Visit
+                </span>
               </div>
               <p className="text-sm font-medium" style={{ color: LUXE_COLORS.champagne }}>
                 {lastVisit ? format(new Date(lastVisit), 'MMM d, yyyy') : 'Never'}
@@ -171,12 +195,12 @@ export function CustomerDetailModal({
             </div>
           </div>
         </div>
-        
+
         {/* Content Tabs */}
         <Tabs defaultValue="details" className="flex-1">
-          <TabsList 
+          <TabsList
             className="w-full rounded-none border-b"
-            style={{ 
+            style={{
               backgroundColor: 'transparent',
               borderColor: `${LUXE_COLORS.gold}20`
             }}
@@ -194,7 +218,7 @@ export function CustomerDetailModal({
               Notes
             </TabsTrigger>
           </TabsList>
-          
+
           <ScrollArea className="h-[400px]">
             {/* Details Tab */}
             <TabsContent value="details" className="p-6 space-y-6">
@@ -232,7 +256,7 @@ export function CustomerDetailModal({
                   )}
                 </div>
               </div>
-              
+
               {/* Preferences */}
               <div>
                 <h3 className="text-lg font-semibold mb-4" style={{ color: LUXE_COLORS.gold }}>
@@ -241,38 +265,54 @@ export function CustomerDetailModal({
                 <div className="space-y-3">
                   {fields.preferred_stylist?.value && (
                     <div>
-                      <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Preferred Stylist</p>
-                      <p style={{ color: LUXE_COLORS.lightText }}>{fields.preferred_stylist.value}</p>
+                      <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                        Preferred Stylist
+                      </p>
+                      <p style={{ color: LUXE_COLORS.lightText }}>
+                        {fields.preferred_stylist.value}
+                      </p>
                     </div>
                   )}
                   {fields.allergies?.value && (
-                    <div 
+                    <div
                       className="p-3 rounded-lg flex items-start gap-3"
-                      style={{ backgroundColor: `${LUXE_COLORS.ruby}20`, border: `1px solid ${LUXE_COLORS.ruby}30` }}
+                      style={{
+                        backgroundColor: `${LUXE_COLORS.ruby}20`,
+                        border: `1px solid ${LUXE_COLORS.ruby}30`
+                      }}
                     >
-                      <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: LUXE_COLORS.ruby }} />
+                      <AlertCircle
+                        className="h-4 w-4 mt-0.5 flex-shrink-0"
+                        style={{ color: LUXE_COLORS.ruby }}
+                      />
                       <div>
-                        <p className="text-sm font-medium" style={{ color: LUXE_COLORS.ruby }}>Allergies & Sensitivities</p>
-                        <p className="text-sm mt-1" style={{ color: LUXE_COLORS.lightText }}>{fields.allergies.value}</p>
+                        <p className="text-sm font-medium" style={{ color: LUXE_COLORS.ruby }}>
+                          Allergies & Sensitivities
+                        </p>
+                        <p className="text-sm mt-1" style={{ color: LUXE_COLORS.lightText }}>
+                          {fields.allergies.value}
+                        </p>
                       </div>
                     </div>
                   )}
                   {fields.preferences?.value && (
                     <div>
-                      <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Service Preferences</p>
+                      <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                        Service Preferences
+                      </p>
                       <p style={{ color: LUXE_COLORS.lightText }}>{fields.preferences.value}</p>
                     </div>
                   )}
                 </div>
               </div>
             </TabsContent>
-            
+
             {/* Appointments Tab */}
             <TabsContent value="appointments" className="p-6">
               {appointments.length > 0 ? (
                 <div className="space-y-3">
                   {appointments.map((apt, index) => (
-                    <div 
+                    <div
                       key={index}
                       className="p-4 rounded-lg"
                       style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }}
@@ -284,18 +324,21 @@ export function CustomerDetailModal({
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <Calendar className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.bronze }} />
+                  <Calendar
+                    className="h-12 w-12 mx-auto mb-4"
+                    style={{ color: LUXE_COLORS.bronze }}
+                  />
                   <p style={{ color: LUXE_COLORS.bronze }}>No appointment history yet</p>
                 </div>
               )}
             </TabsContent>
-            
+
             {/* History Tab */}
             <TabsContent value="history" className="p-6">
               {transactions.length > 0 ? (
                 <div className="space-y-3">
                   {transactions.map((txn, index) => (
-                    <div 
+                    <div
                       key={index}
                       className="p-4 rounded-lg"
                       style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }}
@@ -307,32 +350,43 @@ export function CustomerDetailModal({
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <FileText className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.bronze }} />
+                  <FileText
+                    className="h-12 w-12 mx-auto mb-4"
+                    style={{ color: LUXE_COLORS.bronze }}
+                  />
                   <p style={{ color: LUXE_COLORS.bronze }}>No transaction history yet</p>
                 </div>
               )}
             </TabsContent>
-            
+
             {/* Notes Tab */}
             <TabsContent value="notes" className="p-6">
               <div className="space-y-4">
                 {fields.notes?.value && (
-                  <div 
+                  <div
                     className="p-4 rounded-lg"
                     style={{ backgroundColor: `${LUXE_COLORS.charcoal}80` }}
                   >
                     <div className="flex items-start gap-3">
-                      <MessageSquare className="h-4 w-4 mt-1" style={{ color: LUXE_COLORS.bronze }} />
+                      <MessageSquare
+                        className="h-4 w-4 mt-1"
+                        style={{ color: LUXE_COLORS.bronze }}
+                      />
                       <div className="flex-1">
-                        <p className="text-sm font-medium mb-2" style={{ color: LUXE_COLORS.gold }}>Internal Notes</p>
-                        <p className="text-sm whitespace-pre-wrap" style={{ color: LUXE_COLORS.lightText }}>
+                        <p className="text-sm font-medium mb-2" style={{ color: LUXE_COLORS.gold }}>
+                          Internal Notes
+                        </p>
+                        <p
+                          className="text-sm whitespace-pre-wrap"
+                          style={{ color: LUXE_COLORS.lightText }}
+                        >
                           {fields.notes.value}
                         </p>
                       </div>
                     </div>
                   </div>
                 )}
-                
+
                 <div className="pt-4 border-t" style={{ borderColor: `${LUXE_COLORS.gold}20` }}>
                   <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
                     Customer since: {format(new Date(customer.created_at), 'MMMM d, yyyy')}

@@ -15,7 +15,7 @@ interface SalonSecurityState {
   userId: string | null
   user: any | null
   organization: { id: string; name: string } | null
-  
+
   // Actions
   setInitialized: (data: {
     salonRole: string
@@ -25,9 +25,9 @@ interface SalonSecurityState {
     user?: any
     organization?: { id: string; name: string }
   }) => void
-  
+
   clearState: () => void
-  
+
   // Check if we need to re-initialize (e.g., after 30 minutes)
   shouldReinitialize: () => boolean
 }
@@ -43,8 +43,8 @@ export const useSalonSecurityStore = create<SalonSecurityState>()(
       organizationId: null,
       permissions: null,
       userId: null,
-      
-      setInitialized: (data) => {
+
+      setInitialized: data => {
         set({
           isInitialized: true,
           lastInitialized: Date.now(),
@@ -56,7 +56,7 @@ export const useSalonSecurityStore = create<SalonSecurityState>()(
           organization: data.organization || null
         })
       },
-      
+
       clearState: () => {
         set({
           isInitialized: false,
@@ -69,11 +69,11 @@ export const useSalonSecurityStore = create<SalonSecurityState>()(
           organization: null
         })
       },
-      
+
       shouldReinitialize: () => {
         const state = get()
         if (!state.isInitialized || !state.lastInitialized) return true
-        
+
         // Re-initialize if more than 30 minutes have passed
         const timeSinceInit = Date.now() - state.lastInitialized
         return timeSinceInit > REINIT_INTERVAL
@@ -81,7 +81,7 @@ export const useSalonSecurityStore = create<SalonSecurityState>()(
     }),
     {
       name: 'salon-security-store',
-      partialize: (state) => ({
+      partialize: state => ({
         isInitialized: state.isInitialized,
         lastInitialized: state.lastInitialized,
         salonRole: state.salonRole,

@@ -4,6 +4,10 @@ export const AMPLIFY_CONTENT_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_CONTENT',
   smartCode: 'HERA.AMPLIFY.CONTENT.ENTITY.V1',
   label: 'Content',
+  labels: {
+    singular: 'Content',
+    plural: 'Content'
+  },
   dynamicFields: [
     {
       name: 'source_type',

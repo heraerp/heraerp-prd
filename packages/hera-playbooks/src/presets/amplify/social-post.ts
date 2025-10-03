@@ -4,6 +4,10 @@ export const AMPLIFY_SOCIAL_POST_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_SOCIAL_POST',
   smartCode: 'HERA.AMPLIFY.SOCIAL.POST.ENTITY.V1',
   label: 'Social Posts',
+  labels: {
+    singular: 'Social Post',
+    plural: 'Social Posts'
+  },
   dynamicFields: [
     {
       name: 'platform',

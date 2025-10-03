@@ -4,6 +4,10 @@ export const AMPLIFY_TASK_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_TASK',
   smartCode: 'HERA.AMPLIFY.TASK.ENTITY.V1',
   label: 'Tasks',
+  labels: {
+    singular: 'Task',
+    plural: 'Tasks'
+  },
   dynamicFields: [
     {
       name: 'kind',

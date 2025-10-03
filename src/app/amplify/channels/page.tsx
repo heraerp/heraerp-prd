@@ -7,7 +7,7 @@ import { Share2 } from 'lucide-react'
 
 export default function AmplifyChannelsPage() {
   const { user } = useMultiOrgAuth()
-  
+
   return (
     <EntityPage
       preset={AMPLIFY_CHANNEL_PRESET}
@@ -15,10 +15,10 @@ export default function AmplifyChannelsPage() {
       title="Channels"
       subtitle="Configure publishing and social media channels"
       icon={Share2}
-      filtersDefault={{ 
-        include_dynamic: true, 
-        include_relationships: true, 
-        limit: 50 
+      filtersDefault={{
+        include_dynamic: true,
+        include_relationships: true,
+        limit: 50
       }}
     />
   )

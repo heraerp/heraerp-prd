@@ -1,10 +1,10 @@
 /**
  * HERA DNA SECURITY: Secured Financial Content Components
  * Demo DNA Component: HERA.DNA.SECURITY.SALON.FINANCIAL.DEMO.v1
- * 
+ *
  * Demonstrates the power of HERA DNA Security framework with real-world examples
  * of how to protect sensitive financial data using permission-based UI patterns.
- * 
+ *
  * Key DNA Features:
  * - Permission-based component rendering with HOC pattern
  * - Financial data masking for unauthorized roles
@@ -20,14 +20,7 @@ import { withSalonPermissions, SALON_PERMISSIONS } from '@/hooks/useSalonSecurit
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { LUXE_COLORS } from '@/lib/constants/salon'
-import { 
-  DollarSign, 
-  Receipt, 
-  TrendingUp, 
-  FileText, 
-  Download,
-  AlertTriangle 
-} from 'lucide-react'
+import { DollarSign, Receipt, TrendingUp, FileText, Download, AlertTriangle } from 'lucide-react'
 
 // Protected financial summary component
 const FinancialSummaryComponent: React.FC = () => {
@@ -217,9 +210,9 @@ export const SecuredFinancialSummary = withSalonPermissions(
   FinancialAccessDenied
 )(FinancialSummaryComponent)
 
-export const SecuredFinancialExport = withSalonPermissions(
-  [SALON_PERMISSIONS.FINANCE.EXPORT_FINANCIAL]
-)(FinancialExportComponent)
+export const SecuredFinancialExport = withSalonPermissions([
+  SALON_PERMISSIONS.FINANCE.EXPORT_FINANCIAL
+])(FinancialExportComponent)
 
 // Demo component showing how to use multiple permission levels
 export const FinancialPermissionsDemo: React.FC = () => {

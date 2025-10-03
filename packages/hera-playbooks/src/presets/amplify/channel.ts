@@ -4,6 +4,10 @@ export const AMPLIFY_CHANNEL_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_CHANNEL',
   smartCode: 'HERA.AMPLIFY.CHANNEL.ENTITY.V1',
   label: 'Channels',
+  labels: {
+    singular: 'Channel',
+    plural: 'Channels'
+  },
   dynamicFields: [
     {
       name: 'kind',

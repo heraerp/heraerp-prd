@@ -1,6 +1,6 @@
 /**
  * HERA Security Framework Demo API
- * 
+ *
  * Demonstrates the complete security framework implementation
  * with database context, authentication, and audit logging.
  */
@@ -29,14 +29,16 @@ async function handleGetSecurityDemo(req: NextRequest, context: SecurityContext)
     // Query data - RLS automatically filters by organization
     const { data: entities, error } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         entity_type,
         entity_name,
         organization_id,
         smart_code,
         created_at
-      `)
+      `
+      )
       .eq('entity_type', entityType)
       .limit(10)
 
@@ -79,11 +81,10 @@ async function handleGetSecurityDemo(req: NextRequest, context: SecurityContext)
         audit_logged: true
       }
     })
-
   } catch (error) {
     console.error('Security demo error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to fetch demo data',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
       },
@@ -102,10 +103,7 @@ async function handlePostSecurityDemo(req: NextRequest, context: SecurityContext
     const { entity_name, entity_type = 'demo_entity', dynamic_fields = {} } = body
 
     if (!entity_name) {
-      return NextResponse.json(
-        { error: 'entity_name is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'entity_name is required' }, { status: 400 })
     }
 
     const { createClient } = await import('@supabase/supabase-js')
@@ -177,40 +175,44 @@ async function handlePostSecurityDemo(req: NextRequest, context: SecurityContext
       // Continue anyway
     }
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        entity: {
-          id: entity.id,
-          entity_name: entity.entity_name,
-          entity_type: entity.entity_type,
-          organization_id: entity.organization_id,
-          smart_code: entity.smart_code
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          entity: {
+            id: entity.id,
+            entity_name: entity.entity_name,
+            entity_type: entity.entity_type,
+            organization_id: entity.organization_id,
+            smart_code: entity.smart_code
+          },
+          dynamic_fields: dynamicDataInserts.length,
+          transaction: transaction
+            ? {
+                id: transaction.id,
+                transaction_code: transaction.transaction_code,
+                smart_code: transaction.smart_code
+              }
+            : null
         },
-        dynamic_fields: dynamicDataInserts.length,
-        transaction: transaction ? {
-          id: transaction.id,
-          transaction_code: transaction.transaction_code,
-          smart_code: transaction.smart_code
-        } : null
+        context: {
+          organization_id: context.orgId,
+          user_id: context.userId,
+          role: context.role,
+          auth_mode: context.authMode
+        },
+        security_info: {
+          rls_enforced: true,
+          audit_logged: true,
+          context_validated: true
+        }
       },
-      context: {
-        organization_id: context.orgId,
-        user_id: context.userId,
-        role: context.role,
-        auth_mode: context.authMode
-      },
-      security_info: {
-        rls_enforced: true,
-        audit_logged: true,
-        context_validated: true
-      }
-    }, { status: 201 })
-
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Security demo creation error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to create demo data',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
       },
@@ -229,10 +231,7 @@ async function handleDeleteSecurityDemo(req: NextRequest, context: SecurityConte
     const entityId = searchParams.get('id')
 
     if (!entityId) {
-      return NextResponse.json(
-        { error: 'Entity ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Entity ID is required' }, { status: 400 })
     }
 
     const { createClient } = await import('@supabase/supabase-js')
@@ -249,10 +248,7 @@ async function handleDeleteSecurityDemo(req: NextRequest, context: SecurityConte
       .single()
 
     if (fetchError || !entity) {
-      return NextResponse.json(
-        { error: 'Entity not found or access denied' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Entity not found or access denied' }, { status: 404 })
     }
 
     // Delete related dynamic data first
@@ -266,10 +262,7 @@ async function handleDeleteSecurityDemo(req: NextRequest, context: SecurityConte
     }
 
     // Delete the entity
-    const { error: deleteError } = await supabase
-      .from('core_entities')
-      .delete()
-      .eq('id', entityId)
+    const { error: deleteError } = await supabase.from('core_entities').delete().eq('id', entityId)
 
     if (deleteError) {
       throw deleteError
@@ -305,21 +298,22 @@ async function handleDeleteSecurityDemo(req: NextRequest, context: SecurityConte
         name: entity.entity_name,
         type: entity.entity_type
       },
-      audit_transaction: auditTransaction ? {
-        id: auditTransaction.id,
-        transaction_code: auditTransaction.transaction_code
-      } : null,
+      audit_transaction: auditTransaction
+        ? {
+            id: auditTransaction.id,
+            transaction_code: auditTransaction.transaction_code
+          }
+        : null,
       context: {
         organization_id: context.orgId,
         user_id: context.userId,
         role: context.role
       }
     })
-
   } catch (error) {
     console.error('Security demo deletion error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to delete demo data',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
       },

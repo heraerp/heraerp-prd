@@ -72,7 +72,7 @@ export class HERAJWTService {
 
       // For salon users, determine organization_id based on email
       let organizationId = user.user_metadata?.organization_id
-      
+
       // Default to HairTalkz for salon users (michele@hairtalkz.com should use HairTalkz org)
       if (user.email?.includes('hairtalkz.com') || user.email?.includes('michele')) {
         organizationId = '0fd09e31-d257-4329-97eb-7d7f522ed6f0' // Hair Talkz Salon ID

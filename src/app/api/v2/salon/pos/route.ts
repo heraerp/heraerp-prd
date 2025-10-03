@@ -1,6 +1,6 @@
 /**
  * HERA Salon: Secured POS API
- * 
+ *
  * Provides secure point-of-sale operations with comprehensive audit logging
  * and role-based transaction processing.
  */
@@ -37,14 +37,16 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
         // Fetch active carts for this organization
         const { data: activeCarts, error: cartsError } = await supabase
           .from('universal_transactions')
-          .select(`
+          .select(
+            `
             id,
             transaction_code,
             total_amount,
             metadata,
             created_at,
             created_by
-          `)
+          `
+          )
           .eq('organization_id', context.orgId)
           .eq('transaction_type', 'pos_cart')
           .in('metadata->status', ['active', 'pending'])
@@ -56,12 +58,14 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
         // Fetch services available for sale
         const { data: services, error: servicesError } = await supabase
           .from('core_entities')
-          .select(`
+          .select(
+            `
             id,
             entity_name,
             entity_code,
             metadata
-          `)
+          `
+          )
           .eq('organization_id', context.orgId)
           .eq('entity_type', 'service')
           .eq('status', 'active')
@@ -74,12 +78,14 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
         if (canManageInventory) {
           const { data: productData, error: productsError } = await supabase
             .from('core_entities')
-            .select(`
+            .select(
+              `
               id,
               entity_name,
               entity_code,
               metadata
-            `)
+            `
+            )
             .eq('organization_id', context.orgId)
             .eq('entity_type', 'product')
             .eq('status', 'active')
@@ -106,23 +112,22 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
 
       case 'cart':
         if (!cartId) {
-          return NextResponse.json(
-            { error: 'Cart ID is required' },
-            { status: 400 }
-          )
+          return NextResponse.json({ error: 'Cart ID is required' }, { status: 400 })
         }
 
         // Fetch specific cart with line items
         const { data: cart, error: cartError } = await supabase
           .from('universal_transactions')
-          .select(`
+          .select(
+            `
             id,
             transaction_code,
             total_amount,
             metadata,
             created_at,
             created_by
-          `)
+          `
+          )
           .eq('id', cartId)
           .eq('organization_id', context.orgId)
           .single()
@@ -132,7 +137,8 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
         // Fetch cart line items
         const { data: lineItems, error: lineItemsError } = await supabase
           .from('universal_transaction_lines')
-          .select(`
+          .select(
+            `
             id,
             line_number,
             line_entity_id,
@@ -140,7 +146,8 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
             unit_price,
             line_amount,
             metadata
-          `)
+          `
+          )
           .eq('transaction_id', cartId)
           .eq('organization_id', context.orgId)
           .order('line_number')
@@ -163,14 +170,16 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
 
         const { data: recentTransactions, error: transactionsError } = await supabase
           .from('universal_transactions')
-          .select(`
+          .select(
+            `
             id,
             transaction_code,
             transaction_type,
             total_amount,
             metadata,
             created_at
-          `)
+          `
+          )
           .eq('organization_id', context.orgId)
           .in('transaction_type', ['pos_sale', 'pos_refund'])
           .order('created_at', { ascending: false })
@@ -184,10 +193,7 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
         break
 
       default:
-        return NextResponse.json(
-          { error: `Unknown action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
     }
 
     return NextResponse.json({
@@ -199,12 +205,11 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
         organization_id: context.orgId
       }
     })
-
   } catch (error) {
     console.error('Salon POS API error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to fetch POS data',
         code: 'POS_FETCH_FAILED',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -224,28 +229,25 @@ async function handlePostSalonPOS(req: NextRequest, context: SecurityContext) {
     const { action, data } = body
 
     if (!action) {
-      return NextResponse.json(
-        { error: 'Action is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Action is required' }, { status: 400 })
     }
 
     // Role-based action permissions
     const actionPermissions = {
-      'create_cart': ['owner', 'manager', 'receptionist'],
-      'add_item': ['owner', 'manager', 'receptionist', 'stylist'],
-      'remove_item': ['owner', 'manager', 'receptionist'],
-      'update_quantity': ['owner', 'manager', 'receptionist'],
-      'apply_discount': ['owner', 'manager'],
-      'process_payment': ['owner', 'manager', 'receptionist'],
-      'void_transaction': ['owner', 'manager'],
-      'process_refund': ['owner', 'manager']
+      create_cart: ['owner', 'manager', 'receptionist'],
+      add_item: ['owner', 'manager', 'receptionist', 'stylist'],
+      remove_item: ['owner', 'manager', 'receptionist'],
+      update_quantity: ['owner', 'manager', 'receptionist'],
+      apply_discount: ['owner', 'manager'],
+      process_payment: ['owner', 'manager', 'receptionist'],
+      void_transaction: ['owner', 'manager'],
+      process_refund: ['owner', 'manager']
     }
 
     const allowedRoles = actionPermissions[action]
     if (!allowedRoles || !allowedRoles.includes(context.role)) {
       return NextResponse.json(
-        { 
+        {
           error: 'Insufficient permissions for this POS action',
           code: 'POS_ACTION_FORBIDDEN',
           required_roles: allowedRoles
@@ -266,7 +268,7 @@ async function handlePostSalonPOS(req: NextRequest, context: SecurityContext) {
       case 'create_cart':
         // Create new POS cart
         const cartCode = `CART-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-        
+
         const { data: newCart, error: cartError } = await supabase
           .from('universal_transactions')
           .insert({
@@ -366,7 +368,7 @@ async function handlePostSalonPOS(req: NextRequest, context: SecurityContext) {
 
         if (updateCartError) throw updateCartError
 
-        result = { 
+        result = {
           lineItem: newLineItem,
           cart: updatedCart,
           item: {
@@ -393,7 +395,7 @@ async function handlePostSalonPOS(req: NextRequest, context: SecurityContext) {
         if (getCartError) throw getCartError
 
         const saleCode = `SALE-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-        
+
         // Create sale transaction
         const { data: saleTransaction, error: saleError } = await supabase
           .from('universal_transactions')
@@ -470,10 +472,7 @@ async function handlePostSalonPOS(req: NextRequest, context: SecurityContext) {
         break
 
       default:
-        return NextResponse.json(
-          { error: `Unknown POS action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown POS action: ${action}` }, { status: 400 })
     }
 
     return NextResponse.json({
@@ -487,12 +486,11 @@ async function handlePostSalonPOS(req: NextRequest, context: SecurityContext) {
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (error) {
     console.error('Salon POS action error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to execute POS action',
         code: 'POS_ACTION_FAILED',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined

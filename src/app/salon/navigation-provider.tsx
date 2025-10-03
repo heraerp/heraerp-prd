@@ -12,12 +12,12 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement
       const link = target.closest('a')
-      
+
       if (!link) return
-      
+
       const href = link.getAttribute('href')
       if (!href || !href.startsWith('/')) return
-      
+
       // Don't intercept external links or special key combinations
       if (
         href.startsWith('http') ||
@@ -29,10 +29,10 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
       ) {
         return
       }
-      
+
       // Prevent default navigation
       e.preventDefault()
-      
+
       // Use Next.js router for smooth client-side navigation
       if (href !== pathname) {
         router.push(href)

@@ -7,7 +7,7 @@ import { Megaphone } from 'lucide-react'
 
 export default function AmplifyCampaignsPage() {
   const { user } = useMultiOrgAuth()
-  
+
   return (
     <EntityPage
       preset={AMPLIFY_CAMPAIGN_PRESET}
@@ -15,10 +15,10 @@ export default function AmplifyCampaignsPage() {
       title="Amplify Campaigns"
       subtitle="AI-powered marketing campaigns that drive engagement"
       icon={Megaphone}
-      filtersDefault={{ 
-        include_dynamic: true, 
-        include_relationships: true, 
-        limit: 50 
+      filtersDefault={{
+        include_dynamic: true,
+        include_relationships: true,
+        limit: 50
       }}
     />
   )

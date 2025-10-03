@@ -5,13 +5,13 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { 
-  X, 
-  ExternalLink, 
-  Edit, 
-  RefreshCw, 
-  Award, 
-  FileText, 
+import {
+  X,
+  ExternalLink,
+  Edit,
+  RefreshCw,
+  Award,
+  FileText,
   Calendar,
   DollarSign,
   Hash,
@@ -20,18 +20,13 @@ import {
   Activity,
   Info
 } from 'lucide-react'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle,
+  SheetTitle
 } from '@/components/ui/sheet'
 
 // Mock detail data
@@ -228,11 +223,7 @@ export function DetailsDrawer({
     // Edit action
     if (['owner', 'manager'].includes(userRole)) {
       actions.push(
-        <Button
-          key="edit"
-          variant="outline"
-          className="border-yellow-500/50 text-yellow-400"
-        >
+        <Button key="edit" variant="outline" className="border-yellow-500/50 text-yellow-400">
           <Edit className="h-4 w-4 mr-2" />
           Edit
         </Button>
@@ -243,11 +234,7 @@ export function DetailsDrawer({
     if (entity.entity_type === 'GRADING_JOB') {
       if (['owner', 'manager', 'grader'].includes(userRole)) {
         actions.push(
-          <Button
-            key="regrade"
-            variant="outline"
-            className="border-blue-500/50 text-blue-400"
-          >
+          <Button key="regrade" variant="outline" className="border-blue-500/50 text-blue-400">
             <RefreshCw className="h-4 w-4 mr-2" />
             Regrade
           </Button>
@@ -256,10 +243,7 @@ export function DetailsDrawer({
 
       if (['owner', 'manager'].includes(userRole)) {
         actions.push(
-          <Button
-            key="certificate"
-            className="bg-green-600 hover:bg-green-700"
-          >
+          <Button key="certificate" className="bg-green-600 hover:bg-green-700">
             <Award className="h-4 w-4 mr-2" />
             Issue Certificate
           </Button>
@@ -269,11 +253,7 @@ export function DetailsDrawer({
 
     if (entity.entity_type === 'CERTIFICATE') {
       actions.push(
-        <Button
-          key="download"
-          variant="outline"
-          className="border-green-500/50 text-green-400"
-        >
+        <Button key="download" variant="outline" className="border-green-500/50 text-green-400">
           <FileText className="h-4 w-4 mr-2" />
           Download PDF
         </Button>
@@ -310,9 +290,7 @@ export function DetailsDrawer({
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-gray-400 font-mono">
-                    {entity.smart_code}
-                  </p>
+                  <p className="text-sm text-gray-400 font-mono">{entity.smart_code}</p>
                   <p className="text-xs text-gray-500 mt-1">
                     Updated {new Date(entity.updated_at).toLocaleString()}
                   </p>
@@ -326,11 +304,9 @@ export function DetailsDrawer({
                   <X className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               {/* Action Buttons */}
-              <div className="flex flex-wrap gap-2">
-                {renderActions()}
-              </div>
+              <div className="flex flex-wrap gap-2">{renderActions()}</div>
             </SheetHeader>
 
             <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -353,12 +329,15 @@ export function DetailsDrawer({
                       <Info className="h-5 w-5 mr-2" />
                       Details
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {Object.entries(entity.dynamic_data || {}).map(([key, value]) => {
                         const Icon = getFieldIcon(key)
                         return (
-                          <div key={key} className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/30">
+                          <div
+                            key={key}
+                            className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/30"
+                          >
                             <Icon className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-gray-300 capitalize">
@@ -382,7 +361,9 @@ export function DetailsDrawer({
                       </div>
                       <div>
                         <p className="text-gray-400">Created</p>
-                        <p className="text-gray-100">{new Date(entity.created_at).toLocaleString()}</p>
+                        <p className="text-gray-100">
+                          {new Date(entity.created_at).toLocaleString()}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -396,11 +377,14 @@ export function DetailsDrawer({
                       <LinkIcon className="h-5 w-5 mr-2" />
                       Relationships
                     </h3>
-                    
+
                     {entity.relationships && entity.relationships.length > 0 ? (
                       <div className="space-y-3">
                         {entity.relationships.map((rel: any, index: number) => (
-                          <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gray-800/30">
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-3 rounded-lg bg-gray-800/30"
+                          >
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
                                 <Badge className="bg-purple-500/20 text-purple-400">
@@ -408,9 +392,7 @@ export function DetailsDrawer({
                                 </Badge>
                                 <ExternalLink className="h-4 w-4 text-gray-400" />
                               </div>
-                              <p className="text-sm text-gray-100 mt-1">
-                                {rel.to_entity_name}
-                              </p>
+                              <p className="text-sm text-gray-100 mt-1">{rel.to_entity_name}</p>
                               <p className="text-xs text-gray-500">
                                 Created {new Date(rel.created_at).toLocaleDateString()}
                               </p>
@@ -442,7 +424,7 @@ export function DetailsDrawer({
                       <Activity className="h-5 w-5 mr-2" />
                       Activity Log
                     </h3>
-                    
+
                     {entity.activity && entity.activity.length > 0 ? (
                       <div className="space-y-4">
                         {entity.activity.map((activity: any) => (
@@ -457,9 +439,7 @@ export function DetailsDrawer({
                                   {new Date(activity.timestamp).toLocaleString()}
                                 </p>
                               </div>
-                              <p className="text-xs text-gray-400 mt-1">
-                                by {activity.user}
-                              </p>
+                              <p className="text-xs text-gray-400 mt-1">by {activity.user}</p>
                             </div>
                           </div>
                         ))}

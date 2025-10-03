@@ -4,6 +4,10 @@ export const AMPLIFY_ASSET_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_ASSET',
   smartCode: 'HERA.AMPLIFY.ASSET.ENTITY.V1',
   label: 'Assets',
+  labels: {
+    singular: 'Asset',
+    plural: 'Assets'
+  },
   dynamicFields: [
     {
       name: 'type',

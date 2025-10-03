@@ -1,6 +1,6 @@
 /**
  * HERA Staff Hook
- * 
+ *
  * Thin wrapper over useUniversalEntity for staff management
  * Provides staff-specific helpers and RPC integration
  */
@@ -127,9 +127,8 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
 
   // Helper to update staff
   const updateStaff = async (id: string, data: Partial<Parameters<typeof createStaff>[0]>) => {
-    const entity_name = data.first_name && data.last_name
-      ? `${data.first_name} ${data.last_name}`
-      : undefined
+    const entity_name =
+      data.first_name && data.last_name ? `${data.first_name} ${data.last_name}` : undefined
 
     // Build dynamic patch from provided fields
     const dynamic_patch: Record<string, any> = {}
@@ -197,7 +196,7 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     if (!userRole || ['owner', 'manager'].includes(userRole)) {
       return staffList
     }
-    
+
     // Remove hourly_cost for non-managers
     return staffList.map(s => ({
       ...s,

@@ -12,7 +12,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { SearchFacetsEnhanced } from './components/SearchFacetsEnhanced'
@@ -29,10 +29,10 @@ const SEARCHABLE_ENTITIES = [
   { value: 'GRADING_JOB', label: 'Grading Jobs', icon: '⚖️' },
   { value: 'CERTIFICATE', label: 'Certificates', icon: '📜' },
   { value: 'CUSTOMER', label: 'Customers', icon: '👤' },
-  { value: 'ORDER', label: 'Orders', icon: '📋' },
+  { value: 'ORDER', label: 'Orders', icon: '📋' }
 ] as const
 
-type EntityType = typeof SEARCHABLE_ENTITIES[number]['value']
+type EntityType = (typeof SEARCHABLE_ENTITIES)[number]['value']
 
 interface SearchFilters {
   [key: string]: any
@@ -52,7 +52,7 @@ export default function JewelrySearchPage() {
   const router = useRouter()
   const { currentOrganization, user } = useMultiOrgAuth()
   const [orgLoading, setOrgLoading] = useState(true)
-  
+
   // Initialize all state hooks before any conditional returns
   const [searchState, setSearchState] = useState<SearchState>({
     selectedEntities: ['JEWELRY_ITEM'],
@@ -61,7 +61,7 @@ export default function JewelrySearchPage() {
     sortBy: 'created_at',
     sortOrder: 'desc',
     viewMode: 'table',
-    selectedEntity: null,
+    selectedEntity: null
   })
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -92,19 +92,25 @@ export default function JewelrySearchPage() {
       selectedEntities: prev.selectedEntities.includes(entityType)
         ? prev.selectedEntities.filter(e => e !== entityType)
         : [...prev.selectedEntities, entityType],
-      filters: {}, // Reset filters when entities change
+      filters: {} // Reset filters when entities change
     }))
   }, [])
 
   // Handle search input
-  const handleSearchChange = useCallback((value: string) => {
-    updateSearchState({ searchQuery: value })
-  }, [updateSearchState])
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      updateSearchState({ searchQuery: value })
+    },
+    [updateSearchState]
+  )
 
   // Handle filter changes
-  const handleFiltersChange = useCallback((newFilters: SearchFilters) => {
-    updateSearchState({ filters: newFilters })
-  }, [updateSearchState])
+  const handleFiltersChange = useCallback(
+    (newFilters: SearchFilters) => {
+      updateSearchState({ filters: newFilters })
+    },
+    [updateSearchState]
+  )
 
   // Handle entity detail selection
   const handleOpenDetails = useCallback((entityId: string) => {
@@ -120,8 +126,8 @@ export default function JewelrySearchPage() {
 
   // Clear all filters
   const clearAllFilters = useCallback(() => {
-    updateSearchState({ 
-      searchQuery: '', 
+    updateSearchState({
+      searchQuery: '',
       filters: {},
       selectedEntities: ['JEWELRY_ITEM']
     })
@@ -135,16 +141,18 @@ export default function JewelrySearchPage() {
         selectedEntities: searchState.selectedEntities,
         filters: searchState.filters,
         sortBy: searchState.sortBy,
-        sortOrder: searchState.sortOrder,
+        sortOrder: searchState.sortOrder
       })
     }
   }, [searchState, saveView])
 
   // Active filter count
   const activeFilterCount = useMemo(() => {
-    return Object.keys(searchState.filters).length + 
-           (searchState.searchQuery ? 1 : 0) +
-           (searchState.selectedEntities.length > 1 ? 1 : 0)
+    return (
+      Object.keys(searchState.filters).length +
+      (searchState.searchQuery ? 1 : 0) +
+      (searchState.selectedEntities.length > 1 ? 1 : 0)
+    )
   }, [searchState.filters, searchState.searchQuery, searchState.selectedEntities])
 
   // Check for jewelry organization context
@@ -152,12 +160,12 @@ export default function JewelrySearchPage() {
     const timer = setTimeout(() => {
       const orgId = localStorage.getItem('organizationId')
       const role = localStorage.getItem('jewelryRole')
-      
+
       if (!orgId || !role) {
         router.push('/jewelry/demo')
         return
       }
-      
+
       setOrganizationId(orgId)
       setJewelryRole(role)
       setOrgLoading(false)
@@ -197,7 +205,9 @@ export default function JewelrySearchPage() {
 
       <div className="relative z-10 flex h-screen">
         {/* Left Panel - Facets */}
-        <div className={`transition-all duration-300 ${isFacetsOpen ? 'w-96' : 'w-0'} overflow-hidden`}>
+        <div
+          className={`transition-all duration-300 ${isFacetsOpen ? 'w-96' : 'w-0'} overflow-hidden`}
+        >
           <div className="h-full border-r border-yellow-500/30">
             <SearchFacetsEnhanced
               selectedEntities={searchState.selectedEntities}
@@ -220,9 +230,7 @@ export default function JewelrySearchPage() {
                   <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-amber-400 text-transparent bg-clip-text">
                     Global Search
                   </h1>
-                  <p className="text-gray-400 mt-1">
-                    Universal search across jewelry entities
-                  </p>
+                  <p className="text-gray-400 mt-1">Universal search across jewelry entities</p>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -268,10 +276,12 @@ export default function JewelrySearchPage() {
               <div className="space-y-4">
                 {/* Entity Selection */}
                 <div className="flex flex-wrap gap-2">
-                  {SEARCHABLE_ENTITIES.map((entity) => (
+                  {SEARCHABLE_ENTITIES.map(entity => (
                     <Button
                       key={entity.value}
-                      variant={searchState.selectedEntities.includes(entity.value) ? 'default' : 'outline'}
+                      variant={
+                        searchState.selectedEntities.includes(entity.value) ? 'default' : 'outline'
+                      }
                       size="sm"
                       onClick={() => handleEntityToggle(entity.value)}
                       className={
@@ -293,7 +303,7 @@ export default function JewelrySearchPage() {
                     <Input
                       placeholder="Search across selected entities..."
                       value={searchState.searchQuery}
-                      onChange={(e) => handleSearchChange(e.target.value)}
+                      onChange={e => handleSearchChange(e.target.value)}
                       className="pl-10 bg-gray-800/50 border-gray-600 text-gray-100 placeholder-gray-400"
                     />
                   </div>
@@ -304,14 +314,14 @@ export default function JewelrySearchPage() {
                       <SelectValue placeholder="Saved Views" />
                     </SelectTrigger>
                     <SelectContent>
-                      {savedViews.map((view) => (
+                      {savedViews.map(view => (
                         <SelectItem key={view.id} value={view.id}>
                           <div className="flex items-center justify-between w-full">
                             <span>{view.name}</span>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.stopPropagation()
                                 deleteView(view.id)
                               }}
@@ -361,7 +371,7 @@ export default function JewelrySearchPage() {
               organizationId={organizationId}
               userRole={jewelryRole || 'staff'}
               onOpenDetails={handleOpenDetails}
-              onSortChange={(field, order) => 
+              onSortChange={(field, order) =>
                 updateSearchState({ sortBy: field, sortOrder: order })
               }
             />

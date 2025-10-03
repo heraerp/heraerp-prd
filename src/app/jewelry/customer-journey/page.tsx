@@ -4,10 +4,22 @@ import React, { useEffect, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Search, UserPlus, Calendar, Palette, FileText, Hammer, 
-  Award, Truck, Heart, Star, Sparkles, ArrowDown,
-  CheckCircle, Clock, ArrowRight
+import {
+  Search,
+  UserPlus,
+  Calendar,
+  Palette,
+  FileText,
+  Hammer,
+  Award,
+  Truck,
+  Heart,
+  Star,
+  Sparkles,
+  ArrowDown,
+  CheckCircle,
+  Clock,
+  ArrowRight
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 // import { motion } from 'framer-motion'
@@ -170,9 +182,7 @@ export default function JewelryCustomerJourney() {
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-amber-400 text-transparent bg-clip-text mb-4">
             Jewelry Customer Journey
           </h1>
-          <p className="text-xl text-gray-300 mb-2">
-            From Discovery to Advocacy - Powered by HERA
-          </p>
+          <p className="text-xl text-gray-300 mb-2">From Discovery to Advocacy - Powered by HERA</p>
           <p className="text-gray-400 italic">
             One Platform. Every Touchpoint. Lifetime Relationships.
           </p>
@@ -202,12 +212,14 @@ export default function JewelryCustomerJourney() {
                   visibleStages.includes(index) ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <Card className={`
+                <Card
+                  className={`
                   bg-gray-800/80 backdrop-blur-xl border-2 
                   ${hoveredStage === stage.id ? 'border-yellow-400 shadow-2xl shadow-yellow-400/20' : 'border-yellow-500/50'}
                   transition-all duration-300 cursor-pointer
                   ${hoveredStage === stage.id ? 'transform scale-105' : ''}
-                `}>
+                `}
+                >
                   <div className="p-6 md:p-8">
                     {/* Stage Number */}
                     <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center shadow-lg">
@@ -216,27 +228,27 @@ export default function JewelryCustomerJourney() {
 
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                       {/* Icon */}
-                      <div className={`p-4 rounded-xl bg-gradient-to-br ${stage.color} shadow-lg flex-shrink-0`}>
+                      <div
+                        className={`p-4 rounded-xl bg-gradient-to-br ${stage.color} shadow-lg flex-shrink-0`}
+                      >
                         <stage.icon className="h-8 w-8 text-white" />
                       </div>
 
                       {/* Content */}
                       <div className="flex-1">
                         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
-                          <h3 className="text-2xl font-bold text-yellow-400">
-                            {stage.title}
-                          </h3>
+                          <h3 className="text-2xl font-bold text-yellow-400">{stage.title}</h3>
                           <Badge variant="outline" className="border-gray-600 text-gray-400 w-fit">
                             {stage.subtitle}
                           </Badge>
                         </div>
                         <p className="text-gray-300 mb-3">{stage.description}</p>
                         <p className="text-sm text-gray-500 font-mono mb-4">{stage.smartCode}</p>
-                        
+
                         {/* Actions */}
                         <div className="flex flex-wrap gap-2">
                           {stage.actions.map((action, actionIndex) => (
-                            <Badge 
+                            <Badge
                               key={actionIndex}
                               className="bg-gray-700/50 text-gray-300 border-gray-600"
                             >
@@ -293,11 +305,10 @@ export default function JewelryCustomerJourney() {
         {/* Bottom Info Box */}
         <Card className="max-w-4xl mx-auto mt-16 bg-gray-800/50 backdrop-blur-xl border-yellow-500/30">
           <div className="p-8 text-center">
-            <p className="text-xl text-yellow-400 font-semibold mb-2">
-              HERA Advantage
-            </p>
+            <p className="text-xl text-yellow-400 font-semibold mb-2">HERA Advantage</p>
             <p className="text-gray-300 mb-4">
-              Deploy this complete customer journey in 4-8 weeks<br />
+              Deploy this complete customer journey in 4-8 weeks
+              <br />
               vs. 12-18 months with traditional jewelry management systems
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-400">

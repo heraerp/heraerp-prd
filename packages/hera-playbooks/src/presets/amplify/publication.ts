@@ -4,6 +4,10 @@ export const AMPLIFY_PUBLICATION_PRESET: EntityPreset = {
   entityType: 'AMPLIFY_PUBLICATION',
   smartCode: 'HERA.AMPLIFY.PUBLICATION.ENTITY.V1',
   label: 'Publications',
+  labels: {
+    singular: 'Publication',
+    plural: 'Publications'
+  },
   dynamicFields: [
     {
       name: 'channel',

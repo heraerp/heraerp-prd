@@ -8,14 +8,11 @@ import { useToast } from '@/hooks/use-toast'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 import { EntityForm } from './EntityForm'
 import { EntityTable } from './EntityTable'
-import type { EntityPreset, Role } from '@/hooks/entityPresets'
+import type { Role } from '@/hooks/entityPresets'
+import type { EntityPreset } from '@hera/playbooks'
 
 export interface EntityPageProps {
   preset: EntityPreset & {
-    labels: {
-      singular: string
-      plural: string
-    }
     permissions?: {
       create?: (role: Role) => boolean
       edit?: (role: Role) => boolean
@@ -26,9 +23,11 @@ export interface EntityPageProps {
   userRole: Role
   title?: string
   subtitle?: string
+  icon?: React.ComponentType<{ className?: string }>
+  filtersDefault?: any
 }
 
-export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProps) {
+export function EntityPage({ preset, userRole, title, subtitle, icon: Icon, filtersDefault }: EntityPageProps) {
   const { toast } = useToast()
   const [open, setOpen] = useState(false)
   const [editRow, setEditRow] = useState<any>(null)
@@ -46,19 +45,19 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
     isUpdating,
     isDeleting
   } = useUniversalEntity({
-    entity_type: preset.entity_type,
+    entity_type: preset.entityType,
     dynamicFields: preset.dynamicFields,
     relationships: preset.relationships,
-    filters: { include_dynamic: true, limit: 100 }
+    filters: filtersDefault || { include_dynamic: true, limit: 100 }
   })
 
   // Create handler
   const onCreate = async (payload: any) => {
     try {
       await create({
-        entity_type: preset.entity_type,
+        entity_type: preset.entityType,
         entity_name: payload.entity_name || 'Untitled',
-        smart_code: `HERA.SALON.${preset.entity_type}.ENTITY.ITEM.v1`,
+        smart_code: preset.smartCode || `HERA.SALON.${preset.entityType}.ENTITY.ITEM.v1`,
         dynamic_fields: Object.fromEntries(
           (preset.dynamicFields || []).map(df => [
             df.name,
@@ -74,7 +73,7 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
         }
       })
       toast({
-        title: `${preset.labels.singular} created`,
+        title: `${preset.labels?.singular || preset.label || 'Entity'} created`,
         description: `Successfully created ${payload.entity_name || 'new item'}`
       })
       setOpen(false)
@@ -125,7 +124,7 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
       })
 
       toast({
-        title: `${preset.labels.singular} updated`,
+        title: `${preset.labels?.singular || preset.label || 'Entity'} updated`,
         description: 'Changes saved successfully'
       })
       setEditRow(null)
@@ -140,14 +139,14 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
 
   // Delete handler
   const onDelete = async (id: string) => {
-    if (!confirm(`Are you sure you want to delete this ${preset.labels.singular.toLowerCase()}?`)) {
+    if (!confirm(`Are you sure you want to delete this ${(preset.labels?.singular || preset.label || 'entity').toLowerCase()}?`)) {
       return
     }
 
     try {
       await remove({ entity_id: id, hard_delete: false })
       toast({
-        title: `${preset.labels.singular} deleted`,
+        title: `${preset.labels?.singular || preset.label || 'Entity'} deleted`,
         description: 'Item moved to archive'
       })
     } catch (e: any) {
@@ -169,9 +168,12 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{title ?? preset.labels.plural}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+            {Icon && <Icon className="h-6 w-6" />}
+            {title ?? preset.labels?.plural ?? preset.label}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            {subtitle ?? `Manage ${preset.labels.plural.toLowerCase()} via universal CRUD.`}
+            {subtitle ?? `Manage ${(preset.labels?.plural ?? preset.label ?? 'entities').toLowerCase()} via universal CRUD.`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -182,7 +184,7 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
           {canCreate && (
             <Button onClick={() => setOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
-              New {preset.labels.singular}
+              New {preset.labels?.singular || preset.label || 'Entity'}
             </Button>
           )}
         </div>
@@ -203,7 +205,7 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>New {preset.labels.singular}</DialogTitle>
+            <DialogTitle>New {preset.labels?.singular || preset.label || 'Entity'}</DialogTitle>
           </DialogHeader>
           <EntityForm
             key="create-form"
@@ -223,7 +225,7 @@ export function EntityPage({ preset, userRole, title, subtitle }: EntityPageProp
       <Dialog open={!!editRow} onOpenChange={v => !v && setEditRow(null)}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit {preset.labels.singular}</DialogTitle>
+            <DialogTitle>Edit {preset.labels?.singular || preset.label || 'Entity'}</DialogTitle>
           </DialogHeader>
           {editRow && (
             <EntityForm
