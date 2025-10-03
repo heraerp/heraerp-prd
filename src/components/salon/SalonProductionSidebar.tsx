@@ -221,7 +221,7 @@ export function SalonProductionSidebar() {
       id: 'pos',
       label: 'Point of Sale',
       icon: <ShoppingCart className="w-5 h-5" />,
-      href: '/salon/pos2',
+      href: '/salon/pos',
       color: 'hover:bg-orange-100',
       description: 'Salon POS for services and products'
     },

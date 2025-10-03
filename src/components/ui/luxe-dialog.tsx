@@ -33,11 +33,12 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     style={{
-      backgroundColor: 'rgba(11, 11, 11, 0.85)' // COLORS.black with opacity
+      backgroundColor: 'rgba(11, 11, 11, 0.90)', // Darker black with more opacity
+      backdropFilter: 'blur(8px)'
     }}
     {...props}
   />
@@ -77,17 +78,14 @@ const DialogContent = React.forwardRef<
       <div className="relative z-10">{children}</div>
 
       <DialogPrimitive.Close
-        className="absolute right-4 top-4 rounded-lg opacity-70 transition-all hover:opacity-100 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none p-1"
+        className="absolute right-4 top-4 rounded-lg transition-all hover:scale-110 focus:outline-none focus:ring-2 disabled:pointer-events-none p-2 z-50"
         style={{
-          color: COLORS.bronze,
-          '&:hover': {
-            color: COLORS.gold
-          },
-          focusRingColor: COLORS.gold,
-          focusRingOffsetColor: COLORS.charcoal
+          backgroundColor: `${COLORS.gold}20`,
+          border: `1px solid ${COLORS.gold}40`,
+          color: COLORS.gold
         }}
       >
-        <X className="h-4 w-4" />
+        <X className="h-5 w-5" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

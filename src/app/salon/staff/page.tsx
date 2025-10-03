@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSalonContext } from '@/app/salon/SalonProvider'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
-import { searchStaff } from '@/lib/playbook/entities'
-import { universalApi } from '@/lib/universal-api-v2'
-import { createNormalizedEntity } from '@/lib/services/entity-normalization-service'
-import { supabase } from '@/lib/supabase'
+import { useHeraStaff, type StaffFormValues } from '@/hooks/useHeraStaff'
+import { useHeraRoles, type RoleFormValues, type Role } from '@/hooks/useHeraRoles'
+import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { RoleModal } from './RoleModal'
 import {
   Plus,
   Clock,
@@ -18,7 +18,11 @@ import {
   Edit,
   Trash2,
   Palmtree,
-  ChevronRight
+  ChevronRight,
+  Shield,
+  Settings,
+  Building2,
+  MapPin
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -26,13 +30,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
+import { SalonLuxeModal } from '@/components/salon/SalonLuxeModal'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/luxe-dialog'
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { format } from 'date-fns'
@@ -53,15 +58,6 @@ const COLORS = {
   rose: '#E8B4B8'
 }
 
-interface Staff {
-  id: string
-  entity_name: string
-  entity_code: string
-  metadata?: any
-  dynamic_data?: Record<string, any>
-  created_at: string
-}
-
 interface StaffStats {
   totalStaff: number
   activeToday: number
@@ -73,146 +69,110 @@ function StaffContent() {
   const { user, organizationId } = useSalonContext()
   const { toast } = useToast()
 
-  const [staff, setStaff] = useState<Staff[]>([])
-  const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState<StaffStats>({
-    totalStaff: 0,
-    activeToday: 0,
-    onLeave: 0,
-    averageRating: 4.8
+  // Use the new useHeraStaff hook
+  const {
+    staff,
+    isLoading,
+    error,
+    createStaff,
+    isCreating,
+    refetch
+  } = useHeraStaff({
+    organizationId: organizationId || '',
+    includeArchived: false,
+    userRole: 'manager' // TODO: Get from auth context
   })
+
+  // Use the new useHeraRoles hook
+  const {
+    roles,
+    isLoading: isLoadingRoles,
+    createRole,
+    updateRole,
+    deleteRole,
+    isCreating: isCreatingRole,
+    isUpdating: isUpdatingRole,
+    isDeleting: isDeletingRole
+  } = useHeraRoles({
+    organizationId: organizationId || '',
+    includeInactive: false,
+    userRole: 'manager' // TODO: Get from auth context
+  })
+
   const [searchTerm, setSearchTerm] = useState('')
-  const [isAddingStaff, setIsAddingStaff] = useState(false)
-  const [newStaff, setNewStaff] = useState({
-    name: '',
-    role: 'stylist',
-    phone: '',
+  const [roleModalOpen, setRoleModalOpen] = useState(false)
+  const [selectedRole, setSelectedRole] = useState<Role | undefined>()
+  const [activeTab, setActiveTab] = useState<'staff' | 'roles'>('staff')
+  const [roleSearchTerm, setRoleSearchTerm] = useState('')
+  const [staffModalOpen, setStaffModalOpen] = useState(false)
+
+  // Branch filter hook
+  const {
+    branchId,
+    branches,
+    loading: branchesLoading,
+    setBranchId,
+    hasMultipleBranches
+  } = useBranchFilter(organizationId, 'salon-staff-list')
+
+  const [newStaff, setNewStaff] = useState<StaffFormValues>({
+    first_name: '',
+    last_name: '',
     email: '',
-    hourly_rate: '',
-    commission_rate: ''
+    phone: '',
+    role_id: undefined,
+    role_title: '',
+    status: 'active',
+    hourly_cost: 0,
+    display_rate: 0,
+    skills: [],
+    bio: ''
   })
 
-  useEffect(() => {
-    if (!organizationId) return
-    loadStaff()
-  }, [organizationId])
-
-  const loadStaff = async () => {
-    if (!organizationId) return
-
-    try {
-      setLoading(true)
-
-      // Set organization context for universal API
-      universalApi.setOrganizationId(organizationId)
-
-      // Use Playbook API to search for employees
-      console.log('Searching for staff with organizationId:', organizationId)
-      const staffResponse = await searchStaff({
-        organization_id: organizationId,
-        page: 1,
-        page_size: 500 // Increased to show all staff members
-      })
-
-      console.log('Staff response:', staffResponse)
-      console.log('Staff rows:', staffResponse?.rows)
-      console.log('Staff total:', staffResponse?.total)
-
-      if (staffResponse?.rows) {
-        const staffWithDetails = staffResponse.rows.map((s: any) => {
-          // Map the playbook response to the expected format
-          return {
-            id: s.id,
-            entity_name: s.entity_name,
-            entity_code: s.entity_code,
-            smart_code: s.smart_code,
-            created_at: s.created_at || new Date().toISOString(),
-            dynamic_data: {
-              role: s.role || 'employee',
-              branch_id: s.branch_id,
-              phone: s.phone,
-              email: s.email,
-              hourly_rate: s.hourly_rate,
-              commission_rate: s.commission_rate
-            }
-          }
-        })
-
-        setStaff(staffWithDetails)
-        setStats({
-          totalStaff: staffWithDetails.length,
-          activeToday: Math.floor(staffWithDetails.length * 0.8),
-          onLeave: Math.floor(staffWithDetails.length * 0.2),
-          averageRating: 4.8
-        })
-      }
-    } catch (error) {
-      console.error('Error loading staff:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to load staff members',
-        variant: 'destructive'
-      })
-    } finally {
-      setLoading(false)
-    }
+  // Calculate stats from staff data
+  const stats: StaffStats = {
+    totalStaff: staff?.length || 0,
+    activeToday: staff?.filter(s => s.status === 'active').length || 0,
+    onLeave: staff?.filter(s => s.status === 'on_leave').length || 0,
+    averageRating: 4.8
   }
 
   const handleAddStaff = async () => {
-    if (!organizationId || !newStaff.name) return
+    if (!organizationId || !newStaff.first_name || !newStaff.last_name) return
 
     try {
-      setIsAddingStaff(true)
+      // Find the selected role to get both role_id and role_title
+      const selectedRoleData = roles?.find(r => r.id === newStaff.role_id)
 
-      // Call the API to create the staff member
-      const response = await fetch('/api/v1/staff', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          organizationId,
-          name: newStaff.name,
-          role: newStaff.role,
-          phone: newStaff.phone,
-          email: newStaff.email,
-          hourly_rate: parseFloat(newStaff.hourly_rate) || 0,
-          commission_rate: parseFloat(newStaff.commission_rate) || 0
-        })
+      await createStaff({
+        ...newStaff,
+        role_id: selectedRoleData?.id,
+        role_title: selectedRoleData?.title || selectedRoleData?.entity_name || ''
       })
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to create staff member')
-      }
-
-      const result = await response.json()
-      console.log('Staff creation response:', result)
-
-      if (result.success) {
-        toast({
-          title: 'Success',
-          description: 'Staff member added successfully',
-          variant: 'default'
-        })
-      }
+      toast({
+        title: 'Success',
+        description: 'Staff member added successfully',
+        variant: 'default'
+      })
 
       // Reset form
       setNewStaff({
-        name: '',
-        role: 'stylist',
-        phone: '',
+        first_name: '',
+        last_name: '',
         email: '',
-        hourly_rate: '',
-        commission_rate: ''
+        phone: '',
+        role_id: undefined,
+        role_title: '',
+        status: 'active',
+        hourly_cost: 0,
+        display_rate: 0,
+        skills: [],
+        bio: ''
       })
 
-      // Close any open dialogs
-      const closeButton = document.querySelector('[aria-label="Close"]') as HTMLButtonElement
-      if (closeButton) closeButton.click()
-
-      // Reload staff list
-      await loadStaff()
+      // Close modal
+      setStaffModalOpen(false)
     } catch (error) {
       console.error('Error adding staff:', error)
       toast({
@@ -220,16 +180,99 @@ function StaffContent() {
         description: error instanceof Error ? error.message : 'Failed to add staff member',
         variant: 'destructive'
       })
-    } finally {
-      setIsAddingStaff(false)
     }
   }
 
-  const filteredStaff = staff.filter(
-    s =>
-      s.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.dynamic_data?.role?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Role modal handlers
+  const handleOpenRoleModal = (role?: Role) => {
+    setSelectedRole(role)
+    setRoleModalOpen(true)
+  }
+
+  const handleCloseRoleModal = () => {
+    setSelectedRole(undefined)
+    setRoleModalOpen(false)
+  }
+
+  const handleSaveRole = async (roleData: RoleFormValues) => {
+    if (!organizationId) return
+
+    try {
+      if (selectedRole) {
+        await updateRole(selectedRole.id, roleData)
+        toast({
+          title: 'Success',
+          description: 'Role updated successfully',
+          variant: 'default'
+        })
+      } else {
+        await createRole(roleData)
+        toast({
+          title: 'Success',
+          description: 'Role created successfully',
+          variant: 'default'
+        })
+      }
+    } catch (error) {
+      console.error('Error saving role:', error)
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to save role',
+        variant: 'destructive'
+      })
+      throw error
+    }
+  }
+
+  const handleDeleteRole = async (roleId: string) => {
+    if (!organizationId) return
+
+    try {
+      await deleteRole(roleId)
+      toast({
+        title: 'Success',
+        description: 'Role deleted successfully',
+        variant: 'default'
+      })
+    } catch (error) {
+      console.error('Error deleting role:', error)
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to delete role',
+        variant: 'destructive'
+      })
+      throw error
+    }
+  }
+
+  const filteredStaff = staff?.filter(
+    s => {
+      // Search filter
+      const matchesSearch = s.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.role_title?.toLowerCase().includes(searchTerm.toLowerCase())
+
+      // Branch filter
+      const matchesBranch = !branchId || s.metadata?.branch_id === branchId
+
+      return matchesSearch && matchesBranch
+    }
+  ) || []
+
+  const filteredRoles = roles?.filter(
+    r =>
+      r.title?.toLowerCase().includes(roleSearchTerm.toLowerCase()) ||
+      r.entity_name?.toLowerCase().includes(roleSearchTerm.toLowerCase()) ||
+      r.description?.toLowerCase().includes(roleSearchTerm.toLowerCase())
+  ) || []
+
+  // Role stats
+  const roleStats = {
+    totalRoles: roles?.length || 0,
+    activeRoles: roles?.filter(r => r.status === 'active').length || 0,
+    inactiveRoles: roles?.filter(r => r.status === 'inactive').length || 0
+  }
 
   if (!organizationId) {
     return (
@@ -255,6 +298,28 @@ function StaffContent() {
 
   return (
     <div className="min-h-screen p-6" style={{ backgroundColor: COLORS.black }}>
+      <style jsx>{`
+        input::placeholder,
+        textarea::placeholder {
+          color: ${COLORS.bronze} !important;
+          opacity: 0.7 !important;
+        }
+        input::-webkit-input-placeholder,
+        textarea::-webkit-input-placeholder {
+          color: ${COLORS.bronze} !important;
+          opacity: 0.7 !important;
+        }
+        input::-moz-placeholder,
+        textarea::-moz-placeholder {
+          color: ${COLORS.bronze} !important;
+          opacity: 0.7 !important;
+        }
+        input:-ms-input-placeholder,
+        textarea:-ms-input-placeholder {
+          color: ${COLORS.bronze} !important;
+          opacity: 0.7 !important;
+        }
+      `}</style>
       <div
         className="rounded-2xl p-8"
         style={{
@@ -264,7 +329,7 @@ function StaffContent() {
         }}
       >
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6">
           <div>
             <h1
               className="text-3xl font-bold mb-2"
@@ -277,7 +342,7 @@ function StaffContent() {
             >
               Staff Management
             </h1>
-            <p style={{ color: COLORS.bronze }}>Manage your salon team members</p>
+            <p style={{ color: COLORS.bronze }}>Manage staff members and roles</p>
           </div>
           <div className="flex gap-3">
             <Button
@@ -293,9 +358,10 @@ function StaffContent() {
               Manage Leave
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
-            <Dialog>
-              <DialogTrigger asChild>
+            {activeTab === 'staff' ? (
+              <>
                 <Button
+                  onClick={() => setStaffModalOpen(true)}
                   style={{
                     background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
                     color: COLORS.black,
@@ -306,163 +372,348 @@ function StaffContent() {
                   <Plus className="w-4 h-4 mr-2" />
                   Add Staff Member
                 </Button>
-              </DialogTrigger>
-              <DialogContent
-                style={{
-                  backgroundColor: COLORS.charcoal,
-                  border: `1px solid ${COLORS.gold}30`,
-                  color: COLORS.champagne
-                }}
-              >
-                <DialogHeader>
-                  <DialogTitle
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text'
-                    }}
-                  >
-                    Add New Staff Member
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="name" style={{ color: COLORS.bronze }}>
-                      Name
-                    </Label>
-                    <Input
-                      id="name"
-                      value={newStaff.name}
-                      onChange={e => setNewStaff({ ...newStaff, name: e.target.value })}
-                      placeholder="Staff member name"
-                      style={{
-                        backgroundColor: COLORS.charcoalLight,
-                        border: `1px solid ${COLORS.gold}30`,
-                        color: COLORS.champagne
-                      }}
-                    />
+
+                <SalonLuxeModal
+                  open={staffModalOpen}
+                  onClose={() => setStaffModalOpen(false)}
+                  title="Add New Staff Member"
+                  maxWidth="48rem"
+                >
+                <div className="space-y-5 pt-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="first_name" className="text-sm font-semibold mb-2 block" style={{ color: COLORS.champagne }}>
+                        First Name
+                      </Label>
+                      <Input
+                        id="first_name"
+                        value={newStaff.first_name}
+                        onChange={e => setNewStaff({ ...newStaff, first_name: e.target.value })}
+                        placeholder="First name"
+                        className="transition-all duration-200 border-0 outline-none"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}66`,
+                          color: COLORS.champagne,
+                          padding: '0.75rem',
+                          borderRadius: '0.375rem'
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = `2px solid ${COLORS.gold}`
+                          e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = `1px solid ${COLORS.gold}66`
+                          e.target.style.boxShadow = 'none'
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="last_name" className="text-sm font-semibold mb-2 block" style={{ color: COLORS.champagne }}>
+                        Last Name
+                      </Label>
+                      <Input
+                        id="last_name"
+                        value={newStaff.last_name}
+                        onChange={e => setNewStaff({ ...newStaff, last_name: e.target.value })}
+                        placeholder="Last name"
+                        className="transition-all duration-200 border-0 outline-none"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}66`,
+                          color: COLORS.champagne,
+                          padding: '0.75rem',
+                          borderRadius: '0.375rem'
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = `2px solid ${COLORS.gold}`
+                          e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = `1px solid ${COLORS.gold}66`
+                          e.target.style.boxShadow = 'none'
+                        }}
+                      />
+                    </div>
                   </div>
                   <div>
-                    <Label htmlFor="role" style={{ color: COLORS.bronze }}>
-                      Role
+                    <Label htmlFor="role_id" className="text-sm font-semibold mb-2 block" style={{ color: COLORS.champagne }}>
+                      Role <span style={{ color: COLORS.gold, fontSize: '1.2em' }}>*</span>
                     </Label>
-                    <select
-                      id="role"
-                      className="w-full px-3 py-2 rounded-md"
-                      value={newStaff.role}
-                      onChange={e => setNewStaff({ ...newStaff, role: e.target.value })}
-                      style={{
-                        backgroundColor: COLORS.charcoalLight,
-                        border: `1px solid ${COLORS.gold}30`,
-                        color: COLORS.champagne
-                      }}
+                    <Select
+                      value={newStaff.role_id || ''}
+                      onValueChange={(value) => setNewStaff({ ...newStaff, role_id: value })}
                     >
-                      <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>
-                        Stylist
-                      </option>
-                      <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>
-                        Senior Stylist
-                      </option>
-                      <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>
-                        Manager
-                      </option>
-                      <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>
-                        Receptionist
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <Label htmlFor="phone" style={{ color: COLORS.bronze }}>
-                      Phone
-                    </Label>
-                    <Input
-                      id="phone"
-                      value={newStaff.phone}
-                      onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
-                      placeholder="+971 50 123 4567"
-                      style={{
-                        backgroundColor: COLORS.charcoalLight,
-                        border: `1px solid ${COLORS.gold}30`,
-                        color: COLORS.champagne
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email" style={{ color: COLORS.bronze }}>
-                      Email
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={newStaff.email}
-                      onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
-                      placeholder="staff@salon.com"
-                      style={{
-                        backgroundColor: COLORS.charcoalLight,
-                        border: `1px solid ${COLORS.gold}30`,
-                        color: COLORS.champagne
-                      }}
-                    />
+                      <SelectTrigger
+                        className="border-[#D4AF37] focus:border-[#D4AF37] focus:ring-2 focus:ring-opacity-50 transition-all duration-200"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          color: COLORS.champagne,
+                          borderColor: `${COLORS.gold}40`,
+                          padding: '0.75rem'
+                        }}
+                      >
+                        <SelectValue placeholder="Select a role (required)" />
+                      </SelectTrigger>
+                      <SelectContent className="hera-select-content">
+                        {roles?.map((role) => (
+                          <SelectItem
+                            key={role.id}
+                            value={role.id}
+                            className="hera-select-item"
+                          >
+                            {role.title || role.entity_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="hourly_rate" style={{ color: COLORS.bronze }}>
-                        Hourly Rate (AED)
+                      <Label htmlFor="phone" className="text-sm font-semibold mb-2 block" style={{ color: COLORS.champagne }}>
+                        Phone
                       </Label>
                       <Input
-                        id="hourly_rate"
-                        type="number"
-                        value={newStaff.hourly_rate}
-                        onChange={e => setNewStaff({ ...newStaff, hourly_rate: e.target.value })}
-                        placeholder="50"
+                        id="phone"
+                        value={newStaff.phone || ''}
+                        onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
+                        placeholder="+971 50 123 4567"
+                        className="transition-all duration-200 border-0 outline-none"
                         style={{
                           backgroundColor: COLORS.charcoalLight,
-                          border: `1px solid ${COLORS.gold}30`,
-                          color: COLORS.champagne
+                          border: `1px solid ${COLORS.gold}66`,
+                          color: COLORS.champagne,
+                          padding: '0.75rem',
+                          borderRadius: '0.375rem'
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = `2px solid ${COLORS.gold}`
+                          e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = `1px solid ${COLORS.gold}66`
+                          e.target.style.boxShadow = 'none'
                         }}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="commission_rate" style={{ color: COLORS.bronze }}>
-                        Commission %
+                      <Label htmlFor="email" className="text-sm font-semibold mb-2 block" style={{ color: COLORS.champagne }}>
+                        Email
                       </Label>
                       <Input
-                        id="commission_rate"
-                        type="number"
-                        value={newStaff.commission_rate}
-                        onChange={e =>
-                          setNewStaff({ ...newStaff, commission_rate: e.target.value })
-                        }
-                        placeholder="20"
+                        id="email"
+                        type="email"
+                        value={newStaff.email}
+                        onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
+                        placeholder="staff@salon.com"
+                        className="transition-all duration-200 border-0 outline-none"
                         style={{
                           backgroundColor: COLORS.charcoalLight,
-                          border: `1px solid ${COLORS.gold}30`,
-                          color: COLORS.champagne
+                          border: `1px solid ${COLORS.gold}66`,
+                          color: COLORS.champagne,
+                          padding: '0.75rem',
+                          borderRadius: '0.375rem'
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = `2px solid ${COLORS.gold}`
+                          e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = `1px solid ${COLORS.gold}66`
+                          e.target.style.boxShadow = 'none'
                         }}
                       />
                     </div>
                   </div>
-                  <Button
-                    className="w-full hover:opacity-90 transition-opacity"
-                    onClick={handleAddStaff}
-                    disabled={isAddingStaff || !newStaff.name}
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                      color: COLORS.black,
-                      border: 'none'
-                    }}
-                  >
-                    {isAddingStaff ? 'Adding...' : 'Add Staff Member'}
-                  </Button>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="display_rate" className="text-sm font-semibold mb-2 block" style={{ color: COLORS.champagne }}>
+                        Display Rate (AED/hr)
+                      </Label>
+                      <Input
+                        id="display_rate"
+                        type="number"
+                        value={newStaff.display_rate || ''}
+                        onChange={e => setNewStaff({ ...newStaff, display_rate: parseFloat(e.target.value) || 0 })}
+                        placeholder="150"
+                        className="transition-all duration-200 border-0 outline-none"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}66`,
+                          color: COLORS.champagne,
+                          padding: '0.75rem',
+                          borderRadius: '0.375rem'
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = `2px solid ${COLORS.gold}`
+                          e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = `1px solid ${COLORS.gold}66`
+                          e.target.style.boxShadow = 'none'
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="hourly_cost" className="text-sm font-semibold mb-2 block" style={{ color: COLORS.champagne }}>
+                        Hourly Cost (AED)
+                      </Label>
+                      <Input
+                        id="hourly_cost"
+                        type="number"
+                        value={newStaff.hourly_cost || ''}
+                        onChange={e =>
+                          setNewStaff({ ...newStaff, hourly_cost: parseFloat(e.target.value) || 0 })
+                        }
+                        placeholder="80"
+                        className="transition-all duration-200 border-0 outline-none"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}66`,
+                          color: COLORS.champagne,
+                          padding: '0.75rem',
+                          borderRadius: '0.375rem'
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = `2px solid ${COLORS.gold}`
+                          e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = `1px solid ${COLORS.gold}66`
+                          e.target.style.boxShadow = 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {roles && roles.length === 0 ? (
+                    <Alert style={{
+                      backgroundColor: COLORS.charcoalLight,
+                      border: `1px solid ${COLORS.gold}40`,
+                      color: COLORS.champagne
+                    }}>
+                      <AlertDescription style={{ color: COLORS.bronze }}>
+                        Please create at least one role first before adding staff members.
+                        <Button
+                          onClick={() => {
+                            setStaffModalOpen(false)
+                            setActiveTab('roles')
+                            setTimeout(() => handleOpenRoleModal(), 300)
+                          }}
+                          className="mt-3 w-full"
+                          style={{
+                            background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                            color: COLORS.black,
+                            border: 'none'
+                          }}
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Go to Roles Tab
+                        </Button>
+                      </AlertDescription>
+                    </Alert>
+                  ) : (
+                    <Button
+                      className="w-full hover:opacity-90 transition-opacity"
+                      onClick={handleAddStaff}
+                      disabled={isCreating || !newStaff.first_name || !newStaff.last_name || !newStaff.role_id}
+                      style={{
+                        background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                        color: COLORS.black,
+                        border: 'none'
+                      }}
+                    >
+                      {isCreating ? 'Adding...' : 'Add Staff Member'}
+                    </Button>
+                  )}
                 </div>
-              </DialogContent>
-            </Dialog>
+                </SalonLuxeModal>
+              </>
+            ) : (
+              <Button
+                onClick={() => handleOpenRoleModal()}
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                  color: COLORS.black,
+                  border: 'none'
+                }}
+                className="hover:opacity-90"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Role
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* Enterprise Tabs */}
+        <div className="mb-6">
+          <div
+            className="flex gap-2 p-1 rounded-lg"
+            style={{
+              backgroundColor: COLORS.black,
+              border: `1px solid ${COLORS.gold}20`
+            }}
+          >
+            <button
+              onClick={() => setActiveTab('staff')}
+              className={cn(
+                'flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all duration-200',
+                activeTab === 'staff'
+                  ? 'shadow-lg'
+                  : 'hover:bg-opacity-50'
+              )}
+              style={{
+                backgroundColor: activeTab === 'staff' ? COLORS.gold : 'transparent',
+                color: activeTab === 'staff' ? COLORS.black : COLORS.champagne
+              }}
+            >
+              <Users className="w-4 h-4" />
+              Staff Members
+              <Badge
+                className="ml-2"
+                style={{
+                  backgroundColor: activeTab === 'staff' ? COLORS.black : COLORS.charcoalLight,
+                  color: activeTab === 'staff' ? COLORS.gold : COLORS.bronze,
+                  border: 'none'
+                }}
+              >
+                {stats.totalStaff}
+              </Badge>
+            </button>
+            <button
+              onClick={() => setActiveTab('roles')}
+              className={cn(
+                'flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all duration-200',
+                activeTab === 'roles'
+                  ? 'shadow-lg'
+                  : 'hover:bg-opacity-50'
+              )}
+              style={{
+                backgroundColor: activeTab === 'roles' ? COLORS.gold : 'transparent',
+                color: activeTab === 'roles' ? COLORS.black : COLORS.champagne
+              }}
+            >
+              <Shield className="w-4 h-4" />
+              Roles
+              <Badge
+                className="ml-2"
+                style={{
+                  backgroundColor: activeTab === 'roles' ? COLORS.black : COLORS.charcoalLight,
+                  color: activeTab === 'roles' ? COLORS.gold : COLORS.bronze,
+                  border: 'none'
+                }}
+              >
+                {roleStats.totalRoles}
+              </Badge>
+            </button>
+          </div>
+        </div>
+
+        {/* Staff Tab Content */}
+        {activeTab === 'staff' && (
+          <>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
             {
               title: 'Total Staff',
@@ -519,29 +770,95 @@ function StaffContent() {
           ))}
         </div>
 
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative">
-            <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
-              style={{ color: COLORS.bronze }}
-            />
-            <Input
-              placeholder="Search by name or role..."
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              className="pl-10 max-w-md"
-              style={{
-                backgroundColor: COLORS.charcoalLight,
-                border: `1px solid ${COLORS.gold}30`,
-                color: COLORS.champagne
-              }}
-            />
+            {/* Search and Filters */}
+        <div className="mb-6 space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
+                style={{ color: COLORS.bronze }}
+              />
+              <Input
+                placeholder="Search by name or role..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="pl-10 border-0 outline-none"
+                style={{
+                  backgroundColor: COLORS.charcoalLight,
+                  border: `1px solid ${COLORS.gold}30`,
+                  color: COLORS.champagne,
+                  borderRadius: '0.375rem'
+                }}
+              />
+            </div>
+
+            <div className="w-64">
+              <Select value={branchId || '__ALL__'} onValueChange={(value) => setBranchId(value === '__ALL__' ? '' : value)}>
+                <SelectTrigger
+                  className="border-0 outline-none"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight,
+                    border: `1px solid ${COLORS.gold}30`,
+                    color: COLORS.champagne
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" style={{ color: COLORS.bronze }} />
+                    <SelectValue placeholder="All locations" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__ALL__">All locations</SelectItem>
+                  {branchesLoading ? (
+                    <SelectItem value="__LOADING__" disabled>
+                      Loading...
+                    </SelectItem>
+                  ) : (
+                    branches.map(branch => (
+                      <SelectItem key={branch.id} value={branch.id}>
+                        {branch.entity_name || 'Unnamed Branch'}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          {/* Active Filters */}
+          {branchId && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm" style={{ color: COLORS.bronze }}>
+                Active filters:
+              </span>
+              <Badge
+                className="gap-1.5 font-medium border cursor-pointer hover:opacity-80 transition-opacity"
+                style={{
+                  backgroundColor: 'rgba(212, 175, 55, 0.15)',
+                  color: COLORS.gold,
+                  borderColor: 'rgba(212, 175, 55, 0.3)'
+                }}
+                onClick={() => setBranchId('')}
+              >
+                <Building2 className="w-3 h-3" />
+                <MapPin className="w-3 h-3" />
+                {branches.find(b => b.id === branchId)?.entity_name || 'Branch'}
+                <button
+                  className="ml-1 hover:text-white"
+                  onClick={e => {
+                    e.stopPropagation()
+                    setBranchId('')
+                  }}
+                >
+                  ×
+                </button>
+              </Badge>
+            </div>
+          )}
         </div>
 
         {/* Staff List */}
-        {loading ? (
+        {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div
               className="animate-spin rounded-full h-8 w-8 border-b-2"
@@ -585,7 +902,7 @@ function StaffContent() {
                         <h3 className="font-semibold text-lg" style={{ color: COLORS.champagne }}>
                           {member.entity_name}
                         </h3>
-                        {member.dynamic_data?.on_leave && (
+                        {member.status === 'on_leave' && (
                           <Badge
                             className="ml-2"
                             style={{
@@ -608,17 +925,17 @@ function StaffContent() {
                           border: `1px solid ${COLORS.emerald}40`
                         }}
                       >
-                        {member.dynamic_data?.role || 'Stylist'}
+                        {member.role_title || 'Staff Member'}
                       </Badge>
                       <div className="mt-3 space-y-1 text-sm" style={{ color: COLORS.bronze }}>
-                        {member.dynamic_data?.phone && <div>📱 {member.dynamic_data.phone}</div>}
-                        {member.dynamic_data?.email && <div>✉️ {member.dynamic_data.email}</div>}
+                        {member.phone && <div>📱 {member.phone}</div>}
+                        {member.email && <div>✉️ {member.email}</div>}
                         <div className="flex gap-4 mt-2">
-                          {member.dynamic_data?.hourly_rate && (
-                            <span>💰 AED {member.dynamic_data.hourly_rate}/hr</span>
+                          {member.display_rate && (
+                            <span>💰 AED {member.display_rate}/hr</span>
                           )}
-                          {member.dynamic_data?.commission_rate && (
-                            <span>📊 {member.dynamic_data.commission_rate}%</span>
+                          {member.skills && member.skills.length > 0 && (
+                            <span>🎨 {member.skills.slice(0, 2).join(', ')}</span>
                           )}
                         </div>
                       </div>
@@ -634,7 +951,7 @@ function StaffContent() {
         )}
 
         {/* Empty State */}
-        {!loading && filteredStaff.length === 0 && (
+        {!isLoading && filteredStaff.length === 0 && (
           <div className="text-center py-12">
             <Users className="h-12 w-12 mx-auto mb-4" style={{ color: COLORS.bronze }} />
             <h3 className="text-lg font-medium mb-2" style={{ color: COLORS.champagne }}>
@@ -646,175 +963,313 @@ function StaffContent() {
                 : 'Click "Add Staff Member" to add your first employee'}
             </p>
             {!searchTerm && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    className="mt-4"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                      color: COLORS.black,
-                      border: 'none'
-                    }}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Your First Staff Member
-                  </Button>
-                </DialogTrigger>
-                <DialogContent
-                  style={{
-                    backgroundColor: COLORS.charcoal,
-                    border: `1px solid ${COLORS.gold}30`,
-                    color: COLORS.champagne
-                  }}
-                >
-                  <DialogHeader>
-                    <DialogTitle
-                      style={{
-                        background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
-                      }}
-                    >
-                      Add New Staff Member
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="name-empty" style={{ color: COLORS.bronze }}>
-                        Name
-                      </Label>
-                      <Input
-                        id="name-empty"
-                        value={newStaff.name}
-                        onChange={e => setNewStaff({ ...newStaff, name: e.target.value })}
-                        placeholder="Staff member name"
-                        style={{
-                          backgroundColor: COLORS.charcoalLight,
-                          border: `1px solid ${COLORS.gold}30`,
-                          color: COLORS.champagne
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="role-empty" style={{ color: COLORS.bronze }}>
-                        Role
-                      </Label>
-                      <select
-                        id="role-empty"
-                        className="w-full px-3 py-2 rounded-md"
-                        value={newStaff.role}
-                        onChange={e => setNewStaff({ ...newStaff, role: e.target.value })}
-                        style={{
-                          backgroundColor: COLORS.charcoalLight,
-                          border: `1px solid ${COLORS.gold}30`,
-                          color: COLORS.champagne
-                        }}
-                      >
-                        <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>
-                          Stylist
-                        </option>
-                        <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>
-                          Senior Stylist
-                        </option>
-                        <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>
-                          Manager
-                        </option>
-                        <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>
-                          Receptionist
-                        </option>
-                      </select>
-                    </div>
-                    <div>
-                      <Label htmlFor="phone-empty" style={{ color: COLORS.bronze }}>
-                        Phone
-                      </Label>
-                      <Input
-                        id="phone-empty"
-                        value={newStaff.phone}
-                        onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
-                        placeholder="+971 50 123 4567"
-                        style={{
-                          backgroundColor: COLORS.charcoalLight,
-                          border: `1px solid ${COLORS.gold}30`,
-                          color: COLORS.champagne
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email-empty" style={{ color: COLORS.bronze }}>
-                        Email
-                      </Label>
-                      <Input
-                        id="email-empty"
-                        type="email"
-                        value={newStaff.email}
-                        onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
-                        placeholder="staff@salon.com"
-                        style={{
-                          backgroundColor: COLORS.charcoalLight,
-                          border: `1px solid ${COLORS.gold}30`,
-                          color: COLORS.champagne
-                        }}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="hourly_rate-empty" style={{ color: COLORS.bronze }}>
-                          Hourly Rate (AED)
-                        </Label>
-                        <Input
-                          id="hourly_rate-empty"
-                          type="number"
-                          value={newStaff.hourly_rate}
-                          onChange={e => setNewStaff({ ...newStaff, hourly_rate: e.target.value })}
-                          placeholder="50"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            border: `1px solid ${COLORS.gold}30`,
-                            color: COLORS.champagne
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="commission_rate-empty" style={{ color: COLORS.bronze }}>
-                          Commission %
-                        </Label>
-                        <Input
-                          id="commission_rate-empty"
-                          type="number"
-                          value={newStaff.commission_rate}
-                          onChange={e =>
-                            setNewStaff({ ...newStaff, commission_rate: e.target.value })
-                          }
-                          placeholder="20"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            border: `1px solid ${COLORS.gold}30`,
-                            color: COLORS.champagne
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <Button
-                      className="w-full hover:opacity-90 transition-opacity"
-                      onClick={handleAddStaff}
-                      disabled={isAddingStaff || !newStaff.name}
-                      style={{
-                        background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                        color: COLORS.black,
-                        border: 'none'
-                      }}
-                    >
-                      {isAddingStaff ? 'Adding...' : 'Add Staff Member'}
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button
+                className="mt-4"
+                onClick={() => setStaffModalOpen(true)}
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                  color: COLORS.black,
+                  border: 'none'
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Your First Staff Member
+              </Button>
             )}
           </div>
         )}
+          </>
+        )}
+
+        {/* Roles Tab Content - Enterprise Grade */}
+        {activeTab === 'roles' && (
+          <>
+            {/* Role Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {[
+                {
+                  title: 'Total Roles',
+                  value: roleStats.totalRoles,
+                  desc: 'Defined roles',
+                  icon: Shield,
+                  color: COLORS.gold
+                },
+                {
+                  title: 'Active',
+                  value: roleStats.activeRoles,
+                  desc: 'In use',
+                  icon: UserCheck,
+                  color: COLORS.emerald
+                },
+                {
+                  title: 'Inactive',
+                  value: roleStats.inactiveRoles,
+                  desc: 'Not in use',
+                  icon: Settings,
+                  color: COLORS.bronze
+                }
+              ].map((stat, index) => (
+                <Card
+                  key={index}
+                  style={{
+                    backgroundColor: COLORS.charcoalLight,
+                    border: `1px solid ${COLORS.gold}20`,
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+                  }}
+                >
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium" style={{ color: COLORS.bronze }}>
+                      {stat.title}
+                    </CardTitle>
+                    <stat.icon className="h-4 w-4" style={{ color: stat.color }} />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold" style={{ color: COLORS.champagne }}>
+                      {stat.value}
+                    </div>
+                    <p className="text-xs" style={{ color: COLORS.bronze }}>
+                      {stat.desc}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Role Search */}
+            <div className="mb-6">
+              <div className="relative">
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
+                  style={{ color: COLORS.bronze }}
+                />
+                <Input
+                  placeholder="Search roles by title, description..."
+                  value={roleSearchTerm}
+                  onChange={(e) => setRoleSearchTerm(e.target.value)}
+                  className="pl-10 max-w-md"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight,
+                    border: `1px solid ${COLORS.gold}30`,
+                    color: COLORS.champagne
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Enterprise Roles Table */}
+            {isLoadingRoles ? (
+              <div className="flex items-center justify-center py-12">
+                <div
+                  className="animate-spin rounded-full h-8 w-8 border-b-2"
+                  style={{ borderColor: COLORS.gold }}
+                />
+                <span className="ml-3" style={{ color: COLORS.bronze }}>
+                  Loading roles...
+                </span>
+              </div>
+            ) : filteredRoles && filteredRoles.length > 0 ? (
+              <Card
+                style={{
+                  backgroundColor: COLORS.charcoalLight,
+                  border: `1px solid ${COLORS.gold}20`,
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+                }}
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr
+                        className="border-b-2"
+                        style={{ borderColor: COLORS.gold + '30' }}
+                      >
+                        <th
+                          className="text-left py-4 px-6 font-semibold text-sm uppercase tracking-wider"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Role
+                        </th>
+                        <th
+                          className="text-left py-4 px-6 font-semibold text-sm uppercase tracking-wider"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Description
+                        </th>
+                        <th
+                          className="text-center py-4 px-6 font-semibold text-sm uppercase tracking-wider"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Rank
+                        </th>
+                        <th
+                          className="text-center py-4 px-6 font-semibold text-sm uppercase tracking-wider"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Status
+                        </th>
+                        <th
+                          className="text-right py-4 px-6 font-semibold text-sm uppercase tracking-wider"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredRoles.map((role, index) => (
+                        <tr
+                          key={role.id}
+                          className="border-b transition-all duration-200 hover:shadow-md"
+                          style={{
+                            borderColor: COLORS.gold + '10',
+                            backgroundColor: index % 2 === 0 ? 'transparent' : COLORS.black + '40'
+                          }}
+                        >
+                          <td className="py-4 px-6">
+                            <div className="flex items-center gap-3">
+                              <div
+                                className="p-2 rounded-lg"
+                                style={{
+                                  backgroundColor: COLORS.gold + '20',
+                                  border: `1px solid ${COLORS.gold}40`
+                                }}
+                              >
+                                <Shield className="h-4 w-4" style={{ color: COLORS.gold }} />
+                              </div>
+                              <div>
+                                <div
+                                  className="font-semibold"
+                                  style={{ color: COLORS.champagne }}
+                                >
+                                  {role.title || role.entity_name}
+                                </div>
+                                {role.rank && (
+                                  <div className="text-xs mt-1" style={{ color: COLORS.bronze }}>
+                                    Priority Level {role.rank}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="text-sm max-w-md" style={{ color: COLORS.bronze }}>
+                              {role.description || (
+                                <span style={{ opacity: 0.5 }}>No description provided</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-4 px-6 text-center">
+                            <div
+                              className="inline-flex items-center justify-center w-10 h-10 rounded-full font-bold"
+                              style={{
+                                backgroundColor: COLORS.emerald + '20',
+                                color: COLORS.emerald,
+                                border: `2px solid ${COLORS.emerald}40`
+                              }}
+                            >
+                              {role.rank || '-'}
+                            </div>
+                          </td>
+                          <td className="py-4 px-6 text-center">
+                            <Badge
+                              className="font-medium"
+                              style={{
+                                backgroundColor:
+                                  role.status === 'active'
+                                    ? COLORS.emerald + '20'
+                                    : COLORS.bronze + '20',
+                                color: role.status === 'active' ? COLORS.emerald : COLORS.bronze,
+                                border: `1px solid ${
+                                  role.status === 'active' ? COLORS.emerald : COLORS.bronze
+                                }40`,
+                                fontSize: '0.75rem',
+                                padding: '0.25rem 0.75rem'
+                              }}
+                            >
+                              {role.status || 'active'}
+                            </Badge>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => handleOpenRoleModal(role)}
+                                style={{
+                                  backgroundColor: COLORS.gold + '20',
+                                  color: COLORS.gold,
+                                  border: `1px solid ${COLORS.gold}40`
+                                }}
+                                className="hover:opacity-80 transition-opacity"
+                              >
+                                <Edit className="h-3 w-3 mr-1" />
+                                Edit
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            ) : (
+              <Card
+                style={{
+                  backgroundColor: COLORS.charcoalLight,
+                  border: `1px solid ${COLORS.gold}20`,
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+                }}
+              >
+                <CardContent className="py-16">
+                  <div className="text-center">
+                    <div
+                      className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4"
+                      style={{
+                        backgroundColor: COLORS.gold + '10',
+                        border: `2px dashed ${COLORS.gold}40`
+                      }}
+                    >
+                      <Shield className="h-10 w-10" style={{ color: COLORS.gold }} />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2" style={{ color: COLORS.champagne }}>
+                      {roleSearchTerm ? 'No roles found' : 'No roles defined yet'}
+                    </h3>
+                    <p className="text-sm mb-6" style={{ color: COLORS.bronze }}>
+                      {roleSearchTerm
+                        ? 'Try adjusting your search terms'
+                        : 'Create your first role to define permissions and hierarchy for your team'}
+                    </p>
+                    {!roleSearchTerm && (
+                      <Button
+                        onClick={() => handleOpenRoleModal()}
+                        style={{
+                          background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                          color: COLORS.black,
+                          border: 'none'
+                        }}
+                        className="hover:opacity-90"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create First Role
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
       </div>
+
+      {/* Role Modal */}
+      <RoleModal
+        open={roleModalOpen}
+        onOpenChange={handleCloseRoleModal}
+        onSave={handleSaveRole}
+        onDelete={handleDeleteRole}
+        role={selectedRole}
+        userRole="manager"
+        isLoading={isCreatingRole || isUpdatingRole || isDeletingRole}
+      />
     </div>
   )
 }

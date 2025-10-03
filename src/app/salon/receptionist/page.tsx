@@ -468,7 +468,7 @@ export default function ReceptionistDashboard() {
                     }}
                     asChild
                   >
-                    <Link href="/salon/pos2">
+                    <Link href="/salon/pos">
                       <CreditCard className="h-4 w-4 mr-3" />
                       Process Payment
                     </Link>

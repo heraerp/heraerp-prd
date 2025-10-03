@@ -126,7 +126,7 @@ export function useKanbanPlaybook(params: {
           // Special handling for TO_PAY status - redirect to POS
           if (targetColumn === 'TO_PAY') {
             setTimeout(() => {
-              const posUrl = `/salon/pos2?customer_id=${card.metadata?.customer_id || ''}&customer_name=${encodeURIComponent(card.customer_name)}&appointment_id=${card.id}&service=${encodeURIComponent(card.service_name)}&amount=${card.metadata?.price || 0}`
+              const posUrl = `/salon/pos?customer_id=${card.metadata?.customer_id || ''}&customer_name=${encodeURIComponent(card.customer_name)}&appointment_id=${card.id}&service=${encodeURIComponent(card.service_name)}&amount=${card.metadata?.price || 0}`
 
               toast({
                 title: 'Redirecting to POS',

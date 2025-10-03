@@ -60,7 +60,7 @@ const sidebarItems: SidebarItem[] = [
     badge: '3',
     badgeColor: COLORS.emerald
   },
-  { title: 'POS Terminal', href: '/salon/pos2', icon: CreditCard },
+  { title: 'POS Terminal', href: '/salon/pos', icon: CreditCard },
   { title: 'Kanban Board', href: '/salon/kanban', icon: Grid3x3 },
   { title: 'Customers', href: '/salon/customers', icon: Users },
   { title: 'Services', href: '/salon/services', icon: Scissors },

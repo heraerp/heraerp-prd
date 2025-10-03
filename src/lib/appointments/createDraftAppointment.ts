@@ -13,6 +13,7 @@ export type DraftInput = {
   customerEntityId: string
   preferredStylistEntityId?: string | null
   notes?: string
+  branchId?: string // branch/location ID
   idempotencyKey?: string // optional
 }
 
@@ -24,6 +25,7 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
     customerEntityId,
     preferredStylistEntityId,
     notes,
+    branchId,
     idempotencyKey
   } = input
 
@@ -56,6 +58,7 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
       end_time: endDate.toISOString(),
       duration_minutes: durationMin,
       notes: notes || null,
+      branch_id: branchId || null,
       idempotency_key: idempotencyKey || null,
       created_via: 'POS_MODAL',
       created_at: new Date().toISOString()

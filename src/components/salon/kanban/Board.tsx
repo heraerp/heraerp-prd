@@ -102,7 +102,16 @@ export function Board({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex h-full gap-4 p-6 overflow-x-auto">
+      <div
+        className="flex h-full gap-4 p-6 overflow-x-auto"
+        style={{
+          background: 'linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 50%, #0B0B0B 100%)',
+          backgroundImage: `
+            linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 50%, #0B0B0B 100%),
+            repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(212, 175, 55, 0.02) 10px, rgba(212, 175, 55, 0.02) 20px)
+          `
+        }}
+      >
         {KANBAN_COLUMNS.map(column => (
           <Column
             key={column.key}

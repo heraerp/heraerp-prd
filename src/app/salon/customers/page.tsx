@@ -1,479 +1,795 @@
+// ================================================================================
+// HERA SALON - CUSTOMERS PAGE
+// Smart Code: HERA.PAGES.SALON.CUSTOMERS.V1
+// Enterprise-grade customer management with HERA DNA UI
+// ================================================================================
+
 'use client'
 
-/**
- * Salon Customers Page
- *
- * Enterprise-grade customer management using the Salon Luxe CRUD pattern
- * Follows HERA DNA standards with proper smart codes and universal entity architecture
- */
-
+import React, { useState, useMemo, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import {
+  FormFieldDNA,
+  CardDNA,
+  InfoCardDNA,
+  SuccessCardDNA,
+  PrimaryButtonDNA,
+  SecondaryButtonDNA,
+  GhostButtonDNA,
+  BadgeDNA,
+  SuccessBadgeDNA,
+  WarningBadgeDNA,
+  ScrollAreaDNA
+} from '@/lib/dna/components/ui'
+import { Badge } from '@/components/ui/badge'
+import { PageHeader, PageHeaderButton, PageHeaderSearch } from '@/components/universal/PageHeader'
 import {
   Users,
-  Phone,
+  Search,
+  Filter,
+  Plus,
   Mail,
+  Phone,
   Calendar,
   DollarSign,
+  TrendingUp,
   Star,
-  Heart,
-  MapPin,
+  UserPlus,
+  Download,
+  Upload,
+  MoreVertical,
+  Edit,
+  Trash2,
+  Eye,
+  UserCheck,
   Clock,
-  Gift
+  MapPin,
+  Gift,
+  Heart,
+  Building2
 } from 'lucide-react'
-import { SalonLuxeCRUDPage } from '@/lib/dna/patterns/salon-luxe-crud-pattern'
-import { SalonLuxeCard } from '@/lib/dna/patterns/salon-luxe-card'
-import { LUXE_COLORS } from '@/lib/constants/salon'
-import { Badge } from '@/components/ui/badge'
+import { useCustomers } from '@/hooks/useCustomers'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { format } from 'date-fns'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { CustomerForm } from '@/components/salon/CustomerForm'
+import { useToast } from '@/hooks/use-toast'
 
-// Customer entity preset configuration with proper UPPERCASE smart codes
-const CUSTOMER_PRESET = {
-  entity_type: 'CUSTOMER',
-  labels: {
-    singular: 'Customer',
-    plural: 'Customers'
-  },
-  permissions: {
-    create: () => true,
-    edit: () => true,
-    delete: () => true,
-    view: () => true
-  },
-  smart_code: 'HERA.SALON.CUSTOMER.ENTITY.PERSON.V1',
-  dynamicFields: [
-    {
-      name: 'name',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.NAME.V1',
-      required: true,
-      ui: {
-        label: 'Full Name',
-        placeholder: 'e.g., Jennifer Smith'
-      }
-    },
-    {
-      name: 'email',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.EMAIL.V1',
-      required: true,
-      ui: {
-        label: 'Email Address',
-        placeholder: 'jennifer@example.com'
-      }
-    },
-    {
-      name: 'phone',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.PHONE.V1',
-      required: true,
-      ui: {
-        label: 'Phone Number',
-        placeholder: '+1 (555) 123-4567'
-      }
-    },
-    {
-      name: 'date_of_birth',
-      type: 'date' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.DOB.V1',
-      ui: {
-        label: 'Date of Birth'
-      }
-    },
-    {
-      name: 'address',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.ADDRESS.V1',
-      ui: {
-        label: 'Address',
-        placeholder: '123 Main St, City, State ZIP'
-      }
-    },
-    {
-      name: 'preferred_stylist',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.PREFERRED_STYLIST.V1',
-      ui: {
-        label: 'Preferred Stylist',
-        placeholder: 'Select or enter stylist name'
-      }
-    },
-    {
-      name: 'customer_type',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.TYPE.V1',
-      defaultValue: 'regular',
-      ui: {
-        label: 'Customer Type'
-      }
-    },
-    {
-      name: 'tags',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.TAGS.V1',
-      ui: {
-        label: 'Tags',
-        placeholder: 'e.g., VIP, Color Expert, Bridal'
-      }
-    },
-    {
-      name: 'allergies',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.ALLERGIES.V1',
-      ui: {
-        label: 'Allergies/Sensitivities',
-        placeholder: 'e.g., PPD, Ammonia, Fragrance'
-      }
-    },
-    {
-      name: 'preferences',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.PREFERENCES.V1',
-      ui: {
-        label: 'Service Preferences',
-        placeholder: 'e.g., Likes natural products, prefers morning appointments'
-      }
-    },
-    {
-      name: 'notes',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.NOTES.V1',
-      ui: {
-        label: 'Internal Notes',
-        placeholder: 'Private notes about the customer'
-      }
-    },
-    // Calculated fields (read-only, updated by system)
-    {
-      name: 'lifetime_value',
-      type: 'number' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.LTV.V1',
-      ui: {
-        label: 'Lifetime Value'
-      }
-    },
-    {
-      name: 'visit_count',
-      type: 'number' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.VISITS.V1',
-      ui: {
-        label: 'Total Visits'
-      }
-    },
-    {
-      name: 'last_visit',
-      type: 'date' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.LAST_VISIT.V1',
-      ui: {
-        label: 'Last Visit'
-      }
-    },
-    {
-      name: 'average_ticket',
-      type: 'number' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.AVG_TICKET.V1',
-      ui: {
-        label: 'Average Ticket'
-      }
-    },
-    {
-      name: 'status',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.STATUS.V1',
-      defaultValue: 'active',
-      ui: {
-        label: 'Status'
-      }
-    },
-    {
-      name: 'wallet_balance',
-      type: 'number' as const,
-      smart_code: 'HERA.SALON.CUSTOMER.DYN.WALLET.V1',
-      ui: {
-        label: 'Wallet Balance',
-        roles: ['owner', 'manager', 'accountant']
-      }
-    }
-  ]
+// Customer interface for type safety
+interface Customer {
+  entity: any
+  dynamicFields: {
+    email?: string
+    phone?: string
+    address?: string
+    date_of_birth?: string
+    preferences?: string
+    notes?: string
+    lifetime_value?: number
+    visit_count?: number
+    last_visit?: string
+    favorite_service?: string
+  }
+  transactions: any[]
+  relationships: any[]
 }
 
 export default function SalonCustomersPage() {
-  // Helper function to get customer type color
-  const getCustomerTypeColor = (type: string) => {
-    const typeColors: Record<string, string> = {
-      vip: LUXE_COLORS.gold,
-      regular: LUXE_COLORS.emerald,
-      new: LUXE_COLORS.sapphire,
-      inactive: LUXE_COLORS.bronze,
-      lost: LUXE_COLORS.ruby
+  const router = useRouter()
+  const { toast } = useToast()
+  const { currentOrganization, isLoading: authLoading } = useHERAAuth()
+
+  // Check for Hair Talkz subdomain
+  const getEffectiveOrgId = () => {
+    if (currentOrganization?.id) return currentOrganization.id
+
+    // Check if we're on hairtalkz or heratalkz subdomain
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname
+      if (
+        hostname.startsWith('hairtalkz.') ||
+        hostname === 'hairtalkz.localhost' ||
+        hostname.startsWith('heratalkz.') ||
+        hostname === 'heratalkz.localhost'
+      ) {
+        return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
+      }
     }
-    return typeColors[type] || LUXE_COLORS.bronze
+
+    return currentOrganization?.id
   }
 
-  // Helper function to format phone number
-  const formatPhoneNumber = (phone: string) => {
-    if (!phone) return ''
-    // Simple formatting for display
-    const cleaned = phone.replace(/\D/g, '')
-    if (cleaned.length === 10) {
-      return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
+  const organizationId = getEffectiveOrgId()
+
+  // State management
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [loyaltyFilter, setLoyaltyFilter] = useState('all')
+  const [sortBy, setSortBy] = useState('name')
+  const [showNewCustomerModal, setShowNewCustomerModal] = useState(false)
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
+  const [showActions, setShowActions] = useState<string | null>(null)
+
+  // Branch filter hook
+  const {
+    branchId,
+    branches,
+    loading: branchesLoading,
+    setBranchId,
+    hasMultipleBranches
+  } = useBranchFilter(organizationId, 'salon-customers-list')
+
+  // Fetch customers using existing hook
+  const { customers, stats, loading, error, refetch, createCustomer, deleteCustomer } =
+    useCustomers(organizationId)
+
+  // Filter and sort customers
+  const filteredCustomers = useMemo(() => {
+    let filtered = customers
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(customer => {
+        const name = customer.entity.entity_name?.toLowerCase() || ''
+        const email = customer.dynamicFields.email?.toLowerCase() || ''
+        const phone = customer.dynamicFields.phone?.toLowerCase() || ''
+        const search = searchTerm.toLowerCase()
+
+        return name.includes(search) || email.includes(search) || phone.includes(search)
+      })
     }
-    return phone
+
+    // Status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(customer => customer.entity.status === statusFilter)
+    }
+
+    // Loyalty filter
+    if (loyaltyFilter !== 'all') {
+      filtered = filtered.filter(customer => {
+        const loyaltyRel = customer.relationships.find(
+          r => r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
+        )
+        return loyaltyRel?.metadata?.status_name === loyaltyFilter
+      })
+    }
+
+    // Branch filter
+    if (branchId) {
+      filtered = filtered.filter(customer => {
+        return customer.entity.metadata?.branch_id === branchId
+      })
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return (a.entity.entity_name || '').localeCompare(b.entity.entity_name || '')
+        case 'recent':
+          return new Date(b.entity.created_at).getTime() - new Date(a.entity.created_at).getTime()
+        case 'value':
+          const aValue = a.transactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+          const bValue = b.transactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+          return bValue - aValue
+        default:
+          return 0
+      }
+    })
+
+    return filtered
+  }, [customers, searchTerm, statusFilter, loyaltyFilter, sortBy, branchId])
+
+  // Get loyalty tier for customer
+  const getCustomerLoyalty = (customer: Customer) => {
+    const loyaltyRel = customer.relationships.find(
+      r => r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
+    )
+    return loyaltyRel?.metadata?.status_name || 'Bronze'
   }
 
-  // Helper function to calculate days since last visit
-  const getDaysSinceLastVisit = (lastVisit: string) => {
-    if (!lastVisit) return null
-    const days = Math.floor((Date.now() - new Date(lastVisit).getTime()) / (24 * 60 * 60 * 1000))
-    return days
+  // Get customer lifetime value
+  const getCustomerValue = (customer: Customer) => {
+    return customer.transactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
   }
 
-  // Helper function to get visit frequency badge
-  const getVisitFrequencyBadge = (visitCount: number, daysSince: number | null) => {
-    if (!visitCount || daysSince === null) return null
+  // Get last visit date
+  const getLastVisit = (customer: Customer) => {
+    const lastTransaction = customer.transactions.sort(
+      (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+    )[0]
+    return lastTransaction?.transaction_date
+  }
 
-    const avgDaysBetweenVisits = daysSince / visitCount
+  // Handle customer click
+  const handleCustomerClick = (customer: Customer) => {
+    router.push(`/salon/customers/${customer.entity.id}`)
+  }
 
-    if (avgDaysBetweenVisits < 30) return { label: 'Frequent', color: LUXE_COLORS.emerald }
-    if (avgDaysBetweenVisits < 60) return { label: 'Regular', color: LUXE_COLORS.gold }
-    if (avgDaysBetweenVisits < 90) return { label: 'Occasional', color: LUXE_COLORS.orange }
-    return { label: 'Rare', color: LUXE_COLORS.ruby }
+  // Handle delete customer
+  const handleDeleteCustomer = async (customerId: string) => {
+    try {
+      await deleteCustomer(customerId)
+      toast({
+        title: 'Customer deleted',
+        description: 'The customer has been removed successfully'
+      })
+      setShowActions(null)
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete customer',
+        variant: 'destructive'
+      })
+    }
+  }
+
+  // Show loading state while auth is loading (but not if we have Hair Talkz subdomain)
+  const isHairTalkzSubdomain =
+    typeof window !== 'undefined' &&
+    (window.location.hostname.startsWith('hairtalkz.') ||
+      window.location.hostname === 'hairtalkz.localhost' ||
+      window.location.hostname.startsWith('heratalkz.') ||
+      window.location.hostname === 'heratalkz.localhost')
+
+  if (authLoading && !isHairTalkzSubdomain) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: 'var(--hera-black)' }}
+      >
+        <div
+          className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent"
+          style={{ borderColor: 'var(--hera-gold)' }}
+        />
+      </div>
+    )
+  }
+
+  // Check if organization is loaded
+  if (!organizationId) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: 'var(--hera-black)' }}
+      >
+        <div className="text-center">
+          <p style={{ color: 'var(--hera-bronze)' }}>No organization selected</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <SalonLuxeCRUDPage
-      title="Customers"
-      description="Build lasting relationships with your valued clients"
-      entityType="CUSTOMER"
-      preset={CUSTOMER_PRESET}
-      icon={Users}
-      searchPlaceholder="Search customers by name, email, phone, or tags..."
-      // Custom status options for customers
-      statusOptions={[
-        { value: 'all', label: 'All Customers', color: LUXE_COLORS.lightText },
-        { value: 'active', label: 'Active', color: LUXE_COLORS.emerald },
-        { value: 'vip', label: 'VIP', color: LUXE_COLORS.gold },
-        { value: 'new', label: 'New', color: LUXE_COLORS.sapphire },
-        { value: 'inactive', label: 'Inactive', color: LUXE_COLORS.bronze },
-        { value: 'lost', label: 'Lost', color: LUXE_COLORS.ruby }
-      ]}
-      // Additional filters for customer segmentation
-      additionalFilters={
-        <>
-          <Select>
-            <SelectTrigger
-              className="w-48 h-11"
-              style={{
-                backgroundColor: `${LUXE_COLORS.charcoal}80`,
-                border: `1px solid ${LUXE_COLORS.bronze}30`,
-                color: LUXE_COLORS.lightText
-              }}
-            >
-              <SelectValue placeholder="Visit Frequency" />
-            </SelectTrigger>
-            <SelectContent
-              className="luxe-select-content"
-              style={{
-                backgroundColor: LUXE_COLORS.charcoalLight,
-                border: `1px solid ${LUXE_COLORS.gold}30`
-              }}
-            >
-              <SelectItem value="all">All Frequencies</SelectItem>
-              <SelectItem value="weekly">Weekly</SelectItem>
-              <SelectItem value="monthly">Monthly</SelectItem>
-              <SelectItem value="quarterly">Quarterly</SelectItem>
-              <SelectItem value="rare">Rarely</SelectItem>
-            </SelectContent>
-          </Select>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--hera-black)' }}>
+      {/* Main content wrapper with charcoal background for depth */}
+      <div className="relative" style={{ minHeight: '100vh' }}>
+        {/* Subtle gradient overlay for depth */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at 20% 80%, var(--hera-gold)08 0%, transparent 50%),
+                           radial-gradient(circle at 80% 20%, var(--hera-bronze)05 0%, transparent 50%),
+                           radial-gradient(circle at 40% 40%, var(--hera-plum)03 0%, transparent 50%)`
+          }}
+        />
 
-          <Select>
-            <SelectTrigger
-              className="w-48 h-11"
-              style={{
-                backgroundColor: `${LUXE_COLORS.charcoal}80`,
-                border: `1px solid ${LUXE_COLORS.bronze}30`,
-                color: LUXE_COLORS.lightText
-              }}
-            >
-              <SelectValue placeholder="Spending Level" />
-            </SelectTrigger>
-            <SelectContent
-              className="luxe-select-content"
-              style={{
-                backgroundColor: LUXE_COLORS.charcoalLight,
-                border: `1px solid ${LUXE_COLORS.gold}30`
-              }}
-            >
-              <SelectItem value="all">All Levels</SelectItem>
-              <SelectItem value="high">High ($200+)</SelectItem>
-              <SelectItem value="medium">Medium ($100-200)</SelectItem>
-              <SelectItem value="low">Low (&lt;$100)</SelectItem>
-            </SelectContent>
-          </Select>
-        </>
-      }
-      // Validation and data transformation
-      onBeforeCreate={async data => {
-        if (!data.name) throw new Error('Customer name is required')
-        if (!data.email && !data.phone) {
-          throw new Error('Either email or phone number is required')
-        }
-
-        // Validate email format
-        if (data.email && !data.email.includes('@')) {
-          throw new Error('Invalid email format')
-        }
-
-        // Initialize calculated fields
-        data.lifetime_value = 0
-        data.visit_count = 0
-        data.customer_type = data.customer_type || 'new'
-
-        return data
-      }}
-      renderCard={(customer, handlers) => {
-        const lifetimeValue = customer.dynamic_fields?.lifetime_value?.value || 0
-        const visitCount = customer.dynamic_fields?.visit_count?.value || 0
-        const lastVisit = customer.dynamic_fields?.last_visit?.value
-        const avgTicket = customer.dynamic_fields?.average_ticket?.value || 0
-        const daysSince = getDaysSinceLastVisit(lastVisit)
-        const visitFrequency = getVisitFrequencyBadge(visitCount, daysSince)
-        const tags =
-          customer.dynamic_fields?.tags?.value
-            ?.split(',')
-            .map(t => t.trim())
-            .filter(Boolean) || []
-        const customerType = customer.dynamic_fields?.customer_type?.value || 'regular'
-
-        return (
-          <SalonLuxeCard
-            title={customer.dynamic_fields?.name?.value || customer.entity_name}
-            subtitle={
-              customer.dynamic_fields?.preferred_stylist?.value
-                ? `Prefers ${customer.dynamic_fields.preferred_stylist.value}`
-                : undefined
-            }
-            icon={Users}
-            colorTag={getCustomerTypeColor(customerType)}
-            status={customer.dynamic_fields?.status?.value || 'active'}
-            badges={[
-              {
-                label: 'LTV',
-                value: `$${lifetimeValue.toFixed(0)}`,
-                color: lifetimeValue > 1000 ? LUXE_COLORS.gold : LUXE_COLORS.bronze
-              },
-              {
-                label: 'Visits',
-                value: visitCount,
-                color: visitCount > 10 ? LUXE_COLORS.emerald : LUXE_COLORS.sapphire
-              },
-              ...(avgTicket > 0
-                ? [
-                    {
-                      label: 'Avg',
-                      value: `$${avgTicket.toFixed(0)}`,
-                      color: LUXE_COLORS.plum
-                    }
-                  ]
-                : []),
-              ...(visitFrequency ? [visitFrequency] : [])
+        {/* Content container */}
+        <div
+          className="container mx-auto px-6 py-8 relative"
+          style={{
+            backgroundColor: 'var(--hera-charcoal)',
+            minHeight: '100vh',
+            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
+          }}
+        >
+          <PageHeader
+            title="Customers"
+            breadcrumbs={[
+              { label: 'HERA' },
+              { label: 'SALON OS' },
+              { label: 'Customers', isActive: true }
             ]}
-            footer={
-              <div className="space-y-2">
-                <div
-                  className="flex items-center gap-4 text-xs"
-                  style={{ color: LUXE_COLORS.bronze }}
+            actions={
+              <>
+                <PageHeaderButton variant="secondary" icon={Upload}>
+                  Import
+                </PageHeaderButton>
+                <PageHeaderButton variant="secondary" icon={Download}>
+                  Export
+                </PageHeaderButton>
+                <PageHeaderButton
+                  variant="primary"
+                  icon={UserPlus}
+                  onClick={() => router.push('/salon/customers/new')}
                 >
-                  {customer.dynamic_fields?.email?.value && (
-                    <div className="flex items-center gap-1">
-                      <Mail className="h-3 w-3" />
-                      <span>{customer.dynamic_fields.email.value}</span>
-                    </div>
-                  )}
-                  {customer.dynamic_fields?.phone?.value && (
-                    <div className="flex items-center gap-1">
-                      <Phone className="h-3 w-3" />
-                      <span>{formatPhoneNumber(customer.dynamic_fields.phone.value)}</span>
-                    </div>
-                  )}
-                </div>
+                  Add Customer
+                </PageHeaderButton>
+              </>
+            }
+          />
 
-                {lastVisit && (
-                  <div
-                    className="flex items-center gap-1 text-xs"
-                    style={{ color: LUXE_COLORS.bronze }}
-                  >
-                    <Clock className="h-3 w-3" />
-                    <span>
-                      Last visit:{' '}
-                      {daysSince === 0
-                        ? 'Today'
-                        : daysSince === 1
-                          ? 'Yesterday'
-                          : daysSince < 7
-                            ? `${daysSince} days ago`
-                            : daysSince < 30
-                              ? `${Math.floor(daysSince / 7)} weeks ago`
-                              : `${Math.floor(daysSince / 30)} months ago`}
-                    </span>
+          <div className="space-y-6 salon-luxury-focus">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <InfoCardDNA>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: 'var(--hera-bronze)' }}>
+                      Total Customers
+                    </p>
+                    <p className="text-2xl font-bold" style={{ color: 'var(--hera-champagne)' }}>
+                      {stats.totalCustomers}
+                    </p>
+                    <p className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
+                      <TrendingUp
+                        className="inline w-4 h-4"
+                        style={{ color: 'var(--hera-gold)' }}
+                      />{' '}
+                      +12% this month
+                    </p>
                   </div>
-                )}
+                  <div
+                    className="p-3 rounded-lg"
+                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}
+                  >
+                    <Users className="w-8 h-8" style={{ color: 'var(--hera-gold)' }} />
+                  </div>
+                </div>
+              </InfoCardDNA>
 
-                {tags.length > 0 && (
-                  <div className="flex items-center gap-1 flex-wrap">
-                    {tags.slice(0, 3).map((tag, index) => (
-                      <Badge
-                        key={index}
-                        variant="outline"
-                        className="text-xs"
-                        style={{
-                          backgroundColor: `${LUXE_COLORS.gold}20`,
-                          color: LUXE_COLORS.gold,
-                          borderColor: `${LUXE_COLORS.gold}30`
+              <SuccessCardDNA>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: 'var(--hera-bronze)' }}>
+                      Total Revenue
+                    </p>
+                    <p className="text-2xl font-bold" style={{ color: 'var(--hera-champagne)' }}>
+                      AED {stats.totalRevenue.toLocaleString()}
+                    </p>
+                    <p className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
+                      From all customers
+                    </p>
+                  </div>
+                  <div
+                    className="p-3 rounded-lg"
+                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}
+                  >
+                    <DollarSign className="w-8 h-8" style={{ color: 'var(--hera-gold)' }} />
+                  </div>
+                </div>
+              </SuccessCardDNA>
+
+              <CardDNA>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: 'var(--hera-bronze)' }}>
+                      Average Spend
+                    </p>
+                    <p className="text-2xl font-bold" style={{ color: 'var(--hera-champagne)' }}>
+                      AED {stats.avgSpend}
+                    </p>
+                    <p className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
+                      Per customer
+                    </p>
+                  </div>
+                  <div
+                    className="p-3 rounded-lg"
+                    style={{ backgroundColor: 'rgba(140, 120, 83, 0.1)' }}
+                  >
+                    <TrendingUp className="w-8 h-8" style={{ color: 'var(--hera-bronze)' }} />
+                  </div>
+                </div>
+              </CardDNA>
+
+              <CardDNA>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: 'var(--hera-bronze)' }}>
+                      VIP Customers
+                    </p>
+                    <p className="text-2xl font-bold" style={{ color: 'var(--hera-champagne)' }}>
+                      {stats.vipCount}
+                    </p>
+                    <p className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
+                      Platinum tier
+                    </p>
+                  </div>
+                  <div
+                    className="p-3 rounded-lg"
+                    style={{ backgroundColor: 'rgba(90, 42, 64, 0.1)' }}
+                  >
+                    <Star className="w-8 h-8" style={{ color: 'var(--hera-plum)' }} />
+                  </div>
+                </div>
+              </CardDNA>
+            </div>
+
+            {/* Filters */}
+            <CardDNA>
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <FormFieldDNA
+                  type="text"
+                  label="Search Customers"
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  placeholder="Name, email or phone..."
+                  icon={Search}
+                />
+
+                <FormFieldDNA
+                  type="select"
+                  label="Status"
+                  value={statusFilter}
+                  onChange={setStatusFilter}
+                  icon={Filter}
+                  options={[
+                    { value: 'all', label: 'All Statuses' },
+                    { value: 'active', label: 'Active' },
+                    { value: 'inactive', label: 'Inactive' }
+                  ]}
+                />
+
+                <FormFieldDNA
+                  type="select"
+                  label="Loyalty Tier"
+                  value={loyaltyFilter}
+                  onChange={setLoyaltyFilter}
+                  icon={Star}
+                  options={[
+                    { value: 'all', label: 'All Tiers' },
+                    { value: 'Platinum', label: 'Platinum' },
+                    { value: 'Gold', label: 'Gold' },
+                    { value: 'Silver', label: 'Silver' },
+                    { value: 'Bronze', label: 'Bronze' }
+                  ]}
+                />
+
+                <FormFieldDNA
+                  type="select"
+                  label="Branch Location"
+                  value={branchId || '__ALL__'}
+                  onChange={(value) => setBranchId(value === '__ALL__' ? '' : value)}
+                  icon={Building2}
+                  options={[
+                    { value: '__ALL__', label: 'All Locations' },
+                    ...(branchesLoading
+                      ? [{ value: '__LOADING__', label: 'Loading...' }]
+                      : branches.map(branch => ({
+                          value: branch.id,
+                          label: branch.entity_name || 'Unnamed Branch'
+                        })))
+                  ]}
+                />
+
+                <FormFieldDNA
+                  type="select"
+                  label="Sort By"
+                  value={sortBy}
+                  onChange={setSortBy}
+                  options={[
+                    { value: 'name', label: 'Name (A-Z)' },
+                    { value: 'recent', label: 'Most Recent' },
+                    { value: 'value', label: 'Highest Value' }
+                  ]}
+                />
+              </div>
+
+              {/* Active Filters */}
+              {branchId && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
+                      Active filters:
+                    </span>
+                    <Badge
+                      className="gap-1.5 font-medium border cursor-pointer hover:opacity-80 transition-opacity"
+                      style={{
+                        backgroundColor: 'rgba(212, 175, 55, 0.15)',
+                        color: 'var(--hera-gold)',
+                        borderColor: 'rgba(212, 175, 55, 0.3)'
+                      }}
+                      onClick={() => setBranchId('')}
+                    >
+                      <Building2 className="w-3 h-3" />
+                      <MapPin className="w-3 h-3" />
+                      {branches.find(b => b.id === branchId)?.entity_name || 'Branch'}
+                      <button
+                        className="ml-1 hover:text-white"
+                        onClick={e => {
+                          e.stopPropagation()
+                          setBranchId('')
                         }}
                       >
-                        {tag}
-                      </Badge>
-                    ))}
-                    {tags.length > 3 && (
-                      <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
-                        +{tags.length - 3} more
-                      </span>
-                    )}
+                        ×
+                      </button>
+                    </Badge>
                   </div>
-                )}
+                </div>
+              )}
+            </CardDNA>
 
-                {customer.dynamic_fields?.date_of_birth?.value && (
+            {/* Customer List */}
+            <CardDNA>
+              {loading ? (
+                <div className="text-center py-12">
                   <div
-                    className="flex items-center gap-1 text-xs"
-                    style={{ color: LUXE_COLORS.bronze }}
-                  >
-                    <Gift className="h-3 w-3" />
-                    <span>
-                      Birthday:{' '}
-                      {format(new Date(customer.dynamic_fields.date_of_birth.value), 'MMM d')}
-                    </span>
+                    className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mx-auto"
+                    style={{ borderColor: 'var(--hera-gold)', borderTopColor: 'transparent' }}
+                  />
+                  <p className="mt-4" style={{ color: 'var(--hera-bronze)' }}>
+                    Loading customers...
+                  </p>
+                </div>
+              ) : error ? (
+                <div className="text-center py-12">
+                  <p style={{ color: 'var(--hera-rose)' }}>Error loading customers: {error}</p>
+                </div>
+              ) : filteredCustomers.length === 0 ? (
+                <div className="text-center py-12">
+                  <Users
+                    className="w-12 h-12 mx-auto mb-4"
+                    style={{ color: 'var(--hera-bronze)' }}
+                  />
+                  <p style={{ color: 'var(--hera-champagne)' }}>No customers found</p>
+                  <p className="text-sm mt-2" style={{ color: 'var(--hera-bronze)' }}>
+                    Try adjusting your filters or add a new customer
+                  </p>
+                </div>
+              ) : (
+                <ScrollAreaDNA height="h-[600px]">
+                  <div className="space-y-2 pr-4">
+                    {filteredCustomers.map(customer => {
+                      const loyaltyTier = getCustomerLoyalty(customer)
+                      const lifetimeValue = getCustomerValue(customer)
+                      const lastVisit = getLastVisit(customer)
+
+                      return (
+                        <div
+                          key={customer.entity.id}
+                          className="group relative p-4 rounded-lg transition-all cursor-pointer"
+                          style={{
+                            backgroundColor: 'var(--hera-charcoal)',
+                            border: '1px solid rgba(212, 175, 55, 0.2)',
+                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.borderColor = 'var(--hera-gold)'
+                            e.currentTarget.style.boxShadow = '0 4px 6px rgba(212, 175, 55, 0.1)'
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.2)'
+                            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)'
+                          }}
+                          onClick={() => handleCustomerClick(customer)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div
+                                className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-lg"
+                                style={{
+                                  background: `linear-gradient(135deg, var(--hera-gold) 0%, var(--hera-gold-dark) 100%)`,
+                                  color: 'var(--hera-black)'
+                                }}
+                              >
+                                {customer.entity.entity_name?.charAt(0).toUpperCase() || '?'}
+                              </div>
+
+                              <div>
+                                <h3
+                                  className="font-medium"
+                                  style={{ color: 'var(--hera-champagne)' }}
+                                >
+                                  {customer.entity.entity_name}
+                                </h3>
+                                <div className="flex items-center gap-4 mt-1">
+                                  {customer.dynamicFields.email && (
+                                    <span
+                                      className="text-sm flex items-center gap-1"
+                                      style={{ color: 'var(--hera-bronze)' }}
+                                    >
+                                      <Mail className="w-3 h-3" />
+                                      {customer.dynamicFields.email}
+                                    </span>
+                                  )}
+                                  {customer.dynamicFields.phone && (
+                                    <span
+                                      className="text-sm flex items-center gap-1"
+                                      style={{ color: 'var(--hera-bronze)' }}
+                                    >
+                                      <Phone className="w-3 h-3" />
+                                      {customer.dynamicFields.phone}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-4 mt-2">
+                                  <span className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
+                                    Lifetime Value:{' '}
+                                    <span
+                                      className="font-medium"
+                                      style={{ color: 'var(--hera-gold)' }}
+                                    >
+                                      AED {lifetimeValue}
+                                    </span>
+                                  </span>
+                                  {lastVisit && (
+                                    <span
+                                      className="text-sm flex items-center gap-1"
+                                      style={{ color: 'var(--hera-bronze)' }}
+                                    >
+                                      <Clock className="w-3 h-3" />
+                                      Last visit: {format(new Date(lastVisit), 'MMM dd, yyyy')}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <Badge
+                                className="gap-1 font-medium border"
+                                style={{
+                                  backgroundColor:
+                                    loyaltyTier === 'Platinum'
+                                      ? 'rgba(245, 230, 200, 0.15)'
+                                      : loyaltyTier === 'Gold'
+                                        ? 'rgba(212, 175, 55, 0.15)'
+                                        : loyaltyTier === 'Silver'
+                                          ? 'rgba(140, 120, 83, 0.15)'
+                                          : 'rgba(140, 120, 83, 0.1)',
+                                  color:
+                                    loyaltyTier === 'Platinum'
+                                      ? 'var(--hera-champagne)'
+                                      : loyaltyTier === 'Gold'
+                                        ? 'var(--hera-gold)'
+                                        : loyaltyTier === 'Silver'
+                                          ? 'var(--hera-bronze)'
+                                          : 'var(--hera-bronze)',
+                                  borderColor:
+                                    loyaltyTier === 'Platinum'
+                                      ? 'rgba(245, 230, 200, 0.3)'
+                                      : loyaltyTier === 'Gold'
+                                        ? 'rgba(212, 175, 55, 0.3)'
+                                        : loyaltyTier === 'Silver'
+                                          ? 'rgba(140, 120, 83, 0.3)'
+                                          : 'rgba(140, 120, 83, 0.2)'
+                                }}
+                              >
+                                <Star className="w-3 h-3" />
+                                {loyaltyTier}
+                              </Badge>
+
+                              <Badge
+                                className="gap-1 font-medium border"
+                                style={{
+                                  backgroundColor:
+                                    customer.entity.status === 'active'
+                                      ? 'rgba(212, 175, 55, 0.15)'
+                                      : 'rgba(140, 120, 83, 0.1)',
+                                  color:
+                                    customer.entity.status === 'active'
+                                      ? 'var(--hera-gold)'
+                                      : 'var(--hera-bronze)',
+                                  borderColor:
+                                    customer.entity.status === 'active'
+                                      ? 'rgba(212, 175, 55, 0.3)'
+                                      : 'rgba(140, 120, 83, 0.2)'
+                                }}
+                              >
+                                {customer.entity.status}
+                              </Badge>
+
+                              <div className="relative">
+                                <GhostButtonDNA
+                                  icon={MoreVertical}
+                                  onClick={e => {
+                                    e.stopPropagation()
+                                    setShowActions(
+                                      showActions === customer.entity.id ? null : customer.entity.id
+                                    )
+                                  }}
+                                />
+
+                                {showActions === customer.entity.id && (
+                                  <div
+                                    className="absolute right-0 top-full mt-2 w-48 rounded-lg shadow-lg py-2 z-10"
+                                    style={{
+                                      backgroundColor: 'var(--hera-charcoal)',
+                                      border: '1px solid rgba(212, 175, 55, 0.2)'
+                                    }}
+                                  >
+                                    <button
+                                      className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors"
+                                      style={{ color: 'var(--hera-light-text)' }}
+                                      onMouseEnter={e => {
+                                        e.currentTarget.style.backgroundColor =
+                                          'rgba(212, 175, 55, 0.1)'
+                                      }}
+                                      onMouseLeave={e => {
+                                        e.currentTarget.style.backgroundColor = 'transparent'
+                                      }}
+                                      onClick={e => {
+                                        e.stopPropagation()
+                                        router.push(`/salon/customers/${customer.entity.id}`)
+                                      }}
+                                    >
+                                      <Eye className="w-4 h-4" /> View Details
+                                    </button>
+                                    <button
+                                      className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors"
+                                      style={{ color: 'var(--hera-light-text)' }}
+                                      onMouseEnter={e => {
+                                        e.currentTarget.style.backgroundColor =
+                                          'rgba(212, 175, 55, 0.1)'
+                                      }}
+                                      onMouseLeave={e => {
+                                        e.currentTarget.style.backgroundColor = 'transparent'
+                                      }}
+                                      onClick={e => {
+                                        e.stopPropagation()
+                                        router.push(`/salon/customers/${customer.entity.id}/edit`)
+                                      }}
+                                    >
+                                      <Edit className="w-4 h-4" /> Edit
+                                    </button>
+                                    <button
+                                      className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors"
+                                      style={{ color: 'var(--hera-light-text)' }}
+                                      onMouseEnter={e => {
+                                        e.currentTarget.style.backgroundColor =
+                                          'rgba(212, 175, 55, 0.1)'
+                                      }}
+                                      onMouseLeave={e => {
+                                        e.currentTarget.style.backgroundColor = 'transparent'
+                                      }}
+                                      onClick={e => {
+                                        e.stopPropagation()
+                                        router.push(
+                                          `/salon/appointments/new?customerId=${customer.entity.id}`
+                                        )
+                                      }}
+                                    >
+                                      <Calendar className="w-4 h-4" /> Book Appointment
+                                    </button>
+                                    <hr
+                                      className="my-2"
+                                      style={{ borderColor: 'rgba(212, 175, 55, 0.2)' }}
+                                    />
+                                    <button
+                                      className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors"
+                                      style={{ color: 'var(--hera-rose)' }}
+                                      onMouseEnter={e => {
+                                        e.currentTarget.style.backgroundColor =
+                                          'rgba(232, 180, 184, 0.1)'
+                                      }}
+                                      onMouseLeave={e => {
+                                        e.currentTarget.style.backgroundColor = 'transparent'
+                                      }}
+                                      onClick={e => {
+                                        e.stopPropagation()
+                                        if (
+                                          confirm('Are you sure you want to delete this customer?')
+                                        ) {
+                                          handleDeleteCustomer(customer.entity.id)
+                                        }
+                                      }}
+                                    >
+                                      <Trash2 className="w-4 h-4" /> Delete
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
-                )}
-              </div>
-            }
-            onEdit={handlers.onEdit}
-            onArchive={handlers.onArchive}
-            canEdit={handlers.canEdit}
-            canDelete={handlers.canDelete}
-            createdAt={customer.created_at}
-            updatedAt={customer.updated_at}
-          />
-        )
-      }}
-      // Use custom customer form component
-      customFormComponent={CustomerForm}
-    />
+                </ScrollAreaDNA>
+              )}
+            </CardDNA>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

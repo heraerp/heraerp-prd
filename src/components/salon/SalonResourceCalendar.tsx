@@ -42,7 +42,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSalonContext } from '@/app/salon/SalonProvider'
 import { useCalendarPlaybook } from '@/hooks/useCalendarPlaybook'
 import {
   Select,
@@ -53,7 +53,6 @@ import {
 } from '@/components/ui/select'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BookAppointmentModal } from '@/components/salon/BookAppointmentModal'
 import { Checkbox } from '@/components/ui/checkbox'
 
 interface SalonResourceCalendarProps {
@@ -130,8 +129,7 @@ export function SalonResourceCalendar({
   currentOrganizationId,
   canViewAllBranches = false
 }: SalonResourceCalendarProps) {
-  const { organization, user } = useHERAAuth()
-  const organizationId = organization?.id || ''
+  const { organizationId, organization } = useSalonContext()
   const branchId = organization?.metadata?.branch_id as string | undefined
   const mounted = useIsMounted()
 
@@ -142,13 +140,6 @@ export function SalonResourceCalendar({
   const [selectedStylists, setSelectedStylists] = useState<string[]>(['all'])
   const [selectedBranches, setSelectedBranches] = useState<string[]>(['all'])
   const [showSidebar, setShowSidebar] = useState(true)
-  const [isBookingOpen, setIsBookingOpen] = useState(false)
-  const [bookingSlot, setBookingSlot] = useState<{
-    date: Date
-    time: string
-    stylistId?: string
-    branchId?: string
-  } | null>(null)
   const [draggedAppointment, setDraggedAppointment] = useState<Appointment | null>(null)
   const [dropTarget, setDropTarget] = useState<{
     date: Date
@@ -197,38 +188,20 @@ export function SalonResourceCalendar({
       toISO: dateRange.toISO
     })
 
-  // Assert valid UUID after all hooks
-  useEffect(() => {
-    if (organizationId) {
-      try {
-        assertUuid(organizationId)
-      } catch (error) {
-        console.error('Invalid organization ID:', organizationId, error)
-      }
-    }
-  }, [organizationId])
-
-  // Don't render calendar if no organization ID
-  if (!organizationId && mounted) {
-    return (
-      <div
-        className={cn(
-          'flex h-[800px] rounded-lg overflow-hidden items-center justify-center',
-          className
-        )}
-        style={{
-          backgroundColor: '#1A1A1A',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45)',
-          border: '1px solid rgba(212, 175, 55, 0.1)'
-        }}
-      >
-        <div className="text-center">
-          <AlertCircle className="w-8 h-8 mx-auto mb-4" style={{ color: '#8C7853' }} />
-          <p style={{ color: '#F5E6C8' }}>No organization selected</p>
-        </div>
-      </div>
-    )
-  }
+  // Helper function to get consistent colors for stylists
+  const getColorForIndex = useCallback((index: number): string => {
+    const colors = [
+      'bg-purple-600',
+      'bg-blue-600',
+      'bg-pink-600',
+      'bg-amber-600',
+      'bg-teal-600',
+      'bg-rose-600',
+      'bg-indigo-600',
+      'bg-emerald-600'
+    ]
+    return colors[index % colors.length]
+  }, [])
 
   // Transform staff data from Playbook API to Stylist format
   const allStylists: (Stylist & { branchId: string })[] = useMemo(() => {
@@ -249,22 +222,7 @@ export function SalonResourceCalendar({
       businessHours: { start: 9, end: 19 }, // Default hours
       branchId: s.branch_id || branchId || ''
     }))
-  }, [staff, mounted, branchId])
-
-  // Helper function to get consistent colors for stylists
-  const getColorForIndex = (index: number): string => {
-    const colors = [
-      'bg-purple-600',
-      'bg-blue-600',
-      'bg-pink-600',
-      'bg-amber-600',
-      'bg-teal-600',
-      'bg-rose-600',
-      'bg-indigo-600',
-      'bg-emerald-600'
-    ]
-    return colors[index % colors.length]
-  }
+  }, [staff, mounted, branchId, getColorForIndex])
 
   // Filter stylists based on selected branches
   const stylists = useMemo(() => {
@@ -272,7 +230,7 @@ export function SalonResourceCalendar({
       return allStylists
     }
     return allStylists.filter(s => selectedBranches.includes(s.branchId))
-  }, [selectedBranches])
+  }, [allStylists, selectedBranches])
 
   // Get selected stylists for resource view
   const displayedStylists = useMemo(() => {
@@ -280,7 +238,7 @@ export function SalonResourceCalendar({
       return stylists
     }
     return stylists.filter(s => selectedStylists.includes(s.id))
-  }, [selectedStylists])
+  }, [stylists, selectedStylists])
 
   // Generate time slots
   const timeSlots = useMemo(() => {
@@ -367,7 +325,7 @@ export function SalonResourceCalendar({
   }, [appointments, mounted, staffById, svcById, custById, branchId])
 
   // Get dates based on selected view
-  const getViewDates = () => {
+  const getViewDates = useCallback(() => {
     const dates = []
 
     if (selectedView === 'day') {
@@ -398,22 +356,22 @@ export function SalonResourceCalendar({
     }
 
     return dates
-  }
+  }, [selectedDate, selectedView])
 
-  const viewDates = getViewDates()
+  const viewDates = useMemo(() => getViewDates(), [getViewDates])
 
   // Format date for display
-  const formatDateHeader = (date: Date) => {
+  const formatDateHeader = useCallback((date: Date) => {
     const today = new Date()
     const isToday = date.toDateString() === today.toDateString()
     const dayName = date.toLocaleDateString('en-US', { weekday: 'short' })
     const dayNumber = date.getDate()
 
     return { dayName, dayNumber, isToday }
-  }
+  }, [])
 
   // Handle stylist selection
-  const handleStylistToggle = (stylistId: string) => {
+  const handleStylistToggle = useCallback((stylistId: string) => {
     if (stylistId === 'all') {
       setSelectedStylists(['all'])
     } else {
@@ -427,30 +385,30 @@ export function SalonResourceCalendar({
         }
       })
     }
-  }
+  }, [])
 
   // Check if time slot is within stylist's business hours
-  const isWithinBusinessHours = (stylist: Stylist, time: string) => {
+  const isWithinBusinessHours = useCallback((stylist: Stylist, time: string) => {
     const [hour] = time.split(':').map(Number)
     const businessHours = stylist.businessHours || BUSINESS_HOURS
     return hour >= businessHours.start && hour < businessHours.end
-  }
+  }, [])
 
   // Handle drag start
-  const handleDragStart = (e: React.DragEvent, appointment: Appointment) => {
+  const handleDragStart = useCallback((e: React.DragEvent, appointment: Appointment) => {
     setDraggedAppointment(appointment)
     e.dataTransfer.effectAllowed = 'move'
-  }
+  }, [])
 
   // Handle drag over
-  const handleDragOver = (e: React.DragEvent, date: Date, time: string, stylistId: string) => {
+  const handleDragOver = useCallback((e: React.DragEvent, date: Date, time: string, stylistId: string) => {
     e.preventDefault()
     e.dataTransfer.dropEffect = 'move'
     setDropTarget({ date, time, stylistId })
-  }
+  }, [])
 
   // Handle drop
-  const handleDrop = (e: React.DragEvent, date: Date, time: string, stylistId: string) => {
+  const handleDrop = useCallback((e: React.DragEvent, date: Date, time: string, stylistId: string) => {
     e.preventDefault()
     if (!draggedAppointment) return
 
@@ -467,7 +425,7 @@ export function SalonResourceCalendar({
 
     // After API call succeeds, the useCalendarPlaybook hook will automatically
     // refresh the data and update the UI
-  }
+  }, [draggedAppointment])
 
   // Handle keyboard navigation
   const handleKeyNavigation = useCallback(
@@ -538,6 +496,39 @@ export function SalonResourceCalendar({
     window.addEventListener('keydown', handleKeyNavigation)
     return () => window.removeEventListener('keydown', handleKeyNavigation)
   }, [handleKeyNavigation])
+
+  // Assert valid UUID after all hooks
+  useEffect(() => {
+    if (organizationId) {
+      try {
+        assertUuid(organizationId)
+      } catch (error) {
+        console.error('Invalid organization ID:', organizationId, error)
+      }
+    }
+  }, [organizationId])
+
+  // Don't render calendar if no organization ID
+  if (!organizationId && mounted) {
+    return (
+      <div
+        className={cn(
+          'flex h-[800px] rounded-lg overflow-hidden items-center justify-center',
+          className
+        )}
+        style={{
+          backgroundColor: '#1A1A1A',
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45)',
+          border: '1px solid rgba(212, 175, 55, 0.1)'
+        }}
+      >
+        <div className="text-center">
+          <AlertCircle className="w-8 h-8 mx-auto mb-4" style={{ color: '#8C7853' }} />
+          <p style={{ color: '#F5E6C8' }}>No organization selected</p>
+        </div>
+      </div>
+    )
+  }
 
   // Show loading state
   if (loading && !mounted) {
@@ -865,12 +856,11 @@ export function SalonResourceCalendar({
                 boxShadow: '0 6px 20px rgba(212,175,55,0.25)'
               }}
               onClick={() => {
-                setBookingSlot(null)
-                setIsBookingOpen(true)
+                window.location.href = '/salon/appointments/new'
               }}
             >
               <Plus className="w-4 h-4 mr-2" />
-              New Appointment
+              Book Appointment
             </Button>
           </div>
         </div>
@@ -1149,8 +1139,7 @@ export function SalonResourceCalendar({
                                     }}
                                     onClick={() => {
                                       if (!slotAppointments.length) {
-                                        setBookingSlot({ date: date, time: slot.time })
-                                        setIsBookingOpen(true)
+                                        window.location.href = '/salon/appointments/new'
                                       }
                                     }}
                                   >
@@ -1322,12 +1311,7 @@ export function SalonResourceCalendar({
                                   }}
                                   onClick={() => {
                                     if (!slotAppointments.length && isBusinessHour) {
-                                      setBookingSlot({
-                                        date: selectedDate,
-                                        time: slot.time,
-                                        stylistId: stylist.id
-                                      })
-                                      setIsBookingOpen(true)
+                                      window.location.href = '/salon/appointments/new'
                                     }
                                   }}
                                   onDragOver={e =>
@@ -1399,28 +1383,6 @@ export function SalonResourceCalendar({
           </div>
         </div>
       </div>
-
-      {/* Book Appointment Modal */}
-      <BookAppointmentModal
-        isOpen={isBookingOpen}
-        onClose={() => {
-          setIsBookingOpen(false)
-          setBookingSlot(null)
-        }}
-        onBookingComplete={booking => {
-          console.log('Booking completed:', booking)
-          // TODO: Call Playbook API to create the appointment
-          // After API call succeeds, the useCalendarPlaybook hook will automatically
-          // refresh the data and update the UI
-
-          setIsBookingOpen(false)
-          setBookingSlot(null)
-          onNewBooking?.()
-        }}
-        preSelectedDate={bookingSlot?.date}
-        preSelectedTime={bookingSlot?.time}
-        preSelectedStylist={bookingSlot?.stylistId}
-      />
     </div>
   )
 }

@@ -67,7 +67,7 @@ const USER_ROLES: UserRole[] = [
     label: 'Receptionist',
     description: 'Front desk operations & appointments',
     icon: User,
-    redirectPath: '/salon/pos2'
+    redirectPath: '/salon/pos'
   },
   {
     value: 'accountant',

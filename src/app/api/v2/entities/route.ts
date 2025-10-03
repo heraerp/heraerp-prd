@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { organizationId, id: userId } = authResult
+    const { organizationId, id: userId, email } = authResult
     const body = await request.json()
     const data = entitySchema.parse(body)
 
@@ -58,6 +58,27 @@ export async function POST(request: NextRequest) {
 
     const supabase = getSupabaseService()
 
+    // Ensure user exists as an entity (for audit trail references)
+    const { data: existingUser } = await supabase
+      .from('core_entities')
+      .select('id')
+      .eq('id', userId)
+      .eq('organization_id', organizationId)
+      .single()
+
+    if (!existingUser) {
+      // Create user entity
+      await supabase.from('core_entities').insert({
+        id: userId, // Use Supabase auth ID as entity ID
+        organization_id: organizationId,
+        entity_type: 'user',
+        entity_name: email || 'User',
+        entity_code: `USER-${userId.substring(0, 8)}`,
+        smart_code: 'HERA.CORE.USER.ENT.STANDARD.V1',
+        metadata: { email }
+      })
+    }
+
     // Step 1: Create entity using direct database insert
     const entityData = {
       organization_id: organizationId,
@@ -65,9 +86,8 @@ export async function POST(request: NextRequest) {
       entity_name: data.entity_name,
       smart_code: data.smart_code,
       entity_code: data.entity_code || `${data.entity_type.toUpperCase()}-${Date.now()}`,
-      metadata: data.metadata || {},
-      created_by: userId,
-      updated_by: userId
+      metadata: data.metadata || {}
+      // created_by and updated_by are set by database triggers (handle_audit_trail)
     }
 
     const { data: entityResult, error: entityError } = await supabase
@@ -94,9 +114,8 @@ export async function POST(request: NextRequest) {
           entity_id: entityId,
           field_name: fieldName,
           field_type: fieldConfig.type,
-          smart_code: fieldConfig.smart_code,
-          created_by: userId,
-          updated_by: userId
+          smart_code: fieldConfig.smart_code
+          // created_by and updated_by are set by database triggers
         }
 
         // Set the appropriate value field based on type

@@ -147,7 +147,7 @@ export function SalonDemoAuth() {
         // Redirect based on role
         const roleRedirects: Record<string, string> = {
           Owner: '/salon/dashboard',
-          Receptionist: '/salon/pos2',
+          Receptionist: '/salon/pos',
           Accountant: '/salon/finance',
           Administrator: '/salon/settings'
         }
@@ -199,7 +199,7 @@ export function SalonDemoAuth() {
         // Redirect based on role
         const roleRedirects: Record<string, string> = {
           Owner: '/salon/dashboard',
-          Receptionist: '/salon/pos2',
+          Receptionist: '/salon/pos',
           Accountant: '/salon/finance',
           Administrator: '/salon/settings'
         }

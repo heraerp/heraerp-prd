@@ -297,267 +297,50 @@ export const EMPLOYEE_PRESET = {
 }
 
 // Appointment configuration
-export const APPOINTMENT_PRESET: EntityPreset = {
+export const APPOINTMENT_PRESET = {
   entity_type: 'APPOINTMENT',
-  labels: {
-    singular: 'Appointment',
-    plural: 'Appointments'
-  },
-  permissions: {
-    create: (role: Role) => ['owner', 'manager', 'receptionist'].includes(role),
-    edit: (role: Role) => ['owner', 'manager', 'receptionist', 'staff'].includes(role),
-    delete: (role: Role) => ['owner', 'manager'].includes(role),
-    view: () => true
-  },
-  smart_code: 'HERA.SALON.APPOINTMENT.ENTITY.BOOKING.V1',
   dynamicFields: [
-    {
-      name: 'status',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.STATUS.V1',
-      required: true,
-      defaultValue: 'scheduled',
-      ui: {
-        label: 'Status',
-        widget: 'select',
-        optionsQueryKey: 'appointment_status_options',
-        helpText: 'Current status of the appointment'
-      }
-    },
     {
       name: 'start_time',
       type: 'date' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.START_TIME.V1',
-      required: true,
-      ui: {
-        label: 'Start Time',
-        widget: 'date',
-        placeholder: 'Select start date and time'
-      }
+      smart_code: 'HERA.SALON.APPT.DYN.START.v1',
+      required: true
     },
     {
       name: 'end_time',
       type: 'date' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.END_TIME.V1',
-      required: true,
-      ui: {
-        label: 'End Time',
-        widget: 'date',
-        placeholder: 'Select end date and time'
-      }
+      smart_code: 'HERA.SALON.APPT.DYN.END.v1',
+      required: true
     },
+    { name: 'notes', type: 'text' as const, smart_code: 'HERA.SALON.APPT.DYN.NOTES.v1' },
     {
-      name: 'duration_minutes',
-      type: 'number' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.DURATION_MIN.V1',
-      defaultValue: 60,
-      ui: {
-        label: 'Duration (minutes)',
-        min: 15,
-        placeholder: '60',
-        helpText: 'Automatically calculated from start and end time'
-      }
-    },
-    {
-      name: 'price_total',
-      type: 'number' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.PRICE_TOTAL.V1',
-      ui: {
-        label: 'Total Price',
-        placeholder: '0.00',
-        decimals: 2,
-        roles: ['owner', 'manager', 'accountant']
-      }
-    },
-    {
-      name: 'discount',
-      type: 'number' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.DISCOUNT.V1',
-      defaultValue: 0,
-      ui: {
-        label: 'Discount',
-        placeholder: '0.00',
-        decimals: 2,
-        min: 0,
-        roles: ['owner', 'manager', 'accountant']
-      }
-    },
-    {
-      name: 'tax',
-      type: 'number' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.TAX.V1',
-      defaultValue: 0,
-      ui: {
-        label: 'Tax',
-        placeholder: '0.00',
-        decimals: 2,
-        min: 0,
-        roles: ['owner', 'manager', 'accountant']
-      }
-    },
-    {
-      name: 'payment_status',
+      name: 'status',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.PAYMENT_STATUS.V1',
-      defaultValue: 'unpaid',
-      ui: {
-        label: 'Payment Status',
-        widget: 'select',
-        optionsQueryKey: 'payment_status_options',
-        roles: ['owner', 'manager', 'accountant']
-      }
+      smart_code: 'HERA.SALON.APPT.DYN.STATUS.v1',
+      defaultValue: 'scheduled'
     },
     {
-      name: 'source',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.SOURCE.V1',
-      defaultValue: 'walk_in',
-      ui: {
-        label: 'Booking Source',
-        widget: 'select',
-        optionsQueryKey: 'booking_source_options'
-      }
-    },
-    {
-      name: 'notes',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.NOTES.V1',
-      ui: {
-        label: 'Notes',
-        widget: 'textarea',
-        placeholder: 'Special requests or notes...'
-      }
-    },
-    {
-      name: 'room',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.ROOM.V1',
-      ui: {
-        label: 'Room',
-        placeholder: 'Room number or name'
-      }
-    },
-    {
-      name: 'chair',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.CHAIR.V1',
-      ui: {
-        label: 'Chair/Station',
-        placeholder: 'Chair or station number'
-      }
-    },
-    {
-      name: 'checkin_time',
-      type: 'date' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.CHECKIN_TIME.V1',
-      ui: {
-        label: 'Check-in Time',
-        widget: 'date'
-      }
-    },
-    {
-      name: 'checkout_time',
-      type: 'date' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.CHECKOUT_TIME.V1',
-      ui: {
-        label: 'Check-out Time',
-        widget: 'date'
-      }
-    },
-    {
-      name: 'series_id',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.SERIES_ID.V1',
-      ui: {
-        label: 'Recurring Series ID',
-        helpText: 'ID for recurring appointment series'
-      }
-    },
-    {
-      name: 'recurrence_rule',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.RECURRENCE_RULE.V1',
-      ui: {
-        label: 'Recurrence Rule',
-        placeholder: 'RRULE:FREQ=WEEKLY;BYDAY=MO',
-        helpText: 'iCal format recurrence rule'
-      }
-    },
-    {
-      name: 'reminders_sent',
-      type: 'json' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.REMINDERS_SENT.V1',
-      ui: {
-        label: 'Reminders Sent',
-        widget: 'json'
-      }
-    },
-    {
-      name: 'cancellation_reason',
-      type: 'text' as const,
-      smart_code: 'HERA.SALON.APPOINTMENT.DYN.CANCELLATION_REASON.V1',
-      ui: {
-        label: 'Cancellation Reason',
-        widget: 'textarea',
-        placeholder: 'Reason for cancellation...'
-      }
+      name: 'reminder_sent',
+      type: 'boolean' as const,
+      smart_code: 'HERA.SALON.APPT.DYN.REMINDER.v1',
+      defaultValue: false
     }
   ],
   relationships: [
     {
-      type: 'APPT_FOR_CUSTOMER',
-      smart_code: 'HERA.SALON.APPOINTMENT.REL.FOR_CUSTOMER.V1',
-      cardinality: 'one' as const,
-      required: true,
-      ui: {
-        label: 'Customer',
-        optionsQueryKey: 'customers',
-        helpText: 'Select the customer for this appointment'
-      }
+      type: 'FOR_CUSTOMER',
+      smart_code: 'HERA.SALON.APPT.REL.FOR_CUSTOMER.v1',
+      cardinality: 'one' as const
     },
     {
-      type: 'APPT_WITH_STAFF',
-      smart_code: 'HERA.SALON.APPOINTMENT.REL.WITH_STAFF.V1',
-      cardinality: 'one' as const,
-      required: true,
-      ui: {
-        label: 'Staff Member',
-        optionsQueryKey: 'staff',
-        helpText: 'Select the staff member providing the service'
-      }
+      type: 'WITH_EMPLOYEE',
+      smart_code: 'HERA.SALON.APPT.REL.WITH_EMPLOYEE.v1',
+      cardinality: 'one' as const
     },
     {
-      type: 'APPT_OF_SERVICE',
-      smart_code: 'HERA.SALON.APPOINTMENT.REL.OF_SERVICE.V1',
-      cardinality: 'one' as const,
-      required: true,
-      ui: {
-        label: 'Service',
-        optionsQueryKey: 'services',
-        helpText: 'Select the service being booked'
-      }
-    },
-    {
-      type: 'APPT_AT_LOCATION',
-      smart_code: 'HERA.SALON.APPOINTMENT.REL.AT_LOCATION.V1',
-      cardinality: 'one' as const,
-      required: false,
-      ui: {
-        label: 'Location',
-        optionsQueryKey: 'locations',
-        helpText: 'Select the salon location (if multiple)'
-      }
-    },
-    {
-      type: 'APPT_LINKED_INVOICE',
-      smart_code: 'HERA.SALON.APPOINTMENT.REL.LINKED_INVOICE.V1',
-      cardinality: 'one' as const,
-      required: false,
-      ui: {
-        label: 'Linked Invoice',
-        optionsQueryKey: 'invoices',
-        helpText: 'Invoice linked to this appointment'
-      }
+      type: 'INCLUDES_SERVICE',
+      smart_code: 'HERA.SALON.APPT.REL.INCLUDES_SERVICE.v1',
+      cardinality: 'many' as const
     }
   ]
 }
@@ -638,125 +421,6 @@ export const CATEGORY_PRESET = {
       cardinality: 'one' as const
     }
   ]
-}
-
-// Service Category configuration (salon-specific)
-export const SERVICE_CATEGORY_PRESET = {
-  entityType: 'CATEGORY', // canonical type
-  label: 'Service Category',
-  smartCode: 'HERA.SALON.CATEGORY.ENTITY.ITEM.V1',
-  description: 'Categorizes salon services for discovery, pricing and reporting.',
-  labels: {
-    singular: 'Service Category',
-    plural: 'Service Categories'
-  },
-  permissions: {
-    create: (role: Role) => ['owner', 'manager'].includes(role),
-    edit: (role: Role) => ['owner', 'manager'].includes(role),
-    delete: (role: Role) => ['owner', 'manager'].includes(role),
-    view: () => true
-  },
-  dynamicFields: [
-    {
-      name: 'kind',
-      type: 'text' as const,
-      required: true,
-      smart_code: 'HERA.SALON.CATEGORY.DYN.KIND.V1',
-      ui: {
-        label: 'Category Kind',
-        widget: 'select' as const,
-        options: ['SERVICE', 'PRODUCT', 'BUNDLE'],
-        defaultValue: 'SERVICE'
-      }
-    },
-    {
-      name: 'name',
-      type: 'text' as const,
-      required: true,
-      smart_code: 'HERA.SALON.CATEGORY.DYN.NAME.V1',
-      ui: {
-        label: 'Category Name',
-        placeholder: 'Hair, Nails, Spa…',
-        width: '2/3'
-      }
-    },
-    {
-      name: 'code',
-      type: 'text' as const,
-      required: false,
-      smart_code: 'HERA.SALON.CATEGORY.DYN.CODE.V1',
-      ui: {
-        label: 'Code',
-        placeholder: 'SRV-HAIR',
-        width: '1/3'
-      }
-    },
-    {
-      name: 'description',
-      type: 'text' as const,
-      required: false,
-      smart_code: 'HERA.SALON.CATEGORY.DYN.DESCRIPTION.V1',
-      ui: {
-        label: 'Description',
-        widget: 'textarea' as const
-      }
-    },
-    {
-      name: 'display_order',
-      type: 'number' as const,
-      required: false,
-      smart_code: 'HERA.SALON.CATEGORY.DYN.DISPLAY_ORDER.V1',
-      ui: {
-        label: 'Display Order',
-        widget: 'number' as const
-      }
-    },
-    {
-      name: 'status',
-      type: 'text' as const,
-      required: true,
-      smart_code: 'HERA.SALON.CATEGORY.DYN.STATUS.V1',
-      ui: {
-        label: 'Status',
-        widget: 'select' as const,
-        options: ['active', 'inactive', 'archived'],
-        defaultValue: 'active'
-      }
-    },
-    {
-      name: 'color_tag',
-      type: 'text' as const,
-      required: false,
-      smart_code: 'HERA.SALON.CATEGORY.DYN.COLOR_TAG.V1',
-      ui: {
-        label: 'Color Tag',
-        widget: 'color' as const
-      }
-    }
-  ],
-  relationships: [
-    // reverse of SERVICE_HAS_CATEGORY (services page will link to CATEGORY)
-    // left blank here; relationship is primarily initiated from SERVICE
-  ],
-  ui: {
-    tableColumns: [
-      { key: 'name' },
-      { key: 'code' },
-      { key: 'display_order' },
-      { key: 'status', format: 'badge' }
-    ],
-    defaultSort: { key: 'display_order', dir: 'asc' },
-    searchKeys: ['name', 'code', 'description'],
-    filters: [
-      {
-        key: 'kind',
-        type: 'select',
-        options: ['SERVICE', 'PRODUCT', 'BUNDLE'],
-        defaultValue: 'SERVICE'
-      },
-      { key: 'status', type: 'select', options: ['active', 'inactive', 'archived'] }
-    ]
-  }
 }
 
 // Brand configuration
@@ -881,9 +545,9 @@ export const ROLE_PRESET = {
     plural: 'Roles'
   },
   permissions: {
-    create: (role: Role) => ['owner', 'manager'].includes(role),
+    create: (role: Role) => ['owner'].includes(role),
     edit: (role: Role) => ['owner', 'manager'].includes(role),
-    delete: (role: Role) => ['owner', 'manager'].includes(role),
+    delete: (role: Role) => ['owner'].includes(role),
     view: () => true
   },
   dynamicFields: [
@@ -893,9 +557,9 @@ export const ROLE_PRESET = {
       smart_code: 'HERA.SALON.ROLE.DYN.TITLE.V1',
       required: true,
       ui: {
-        label: 'Role Title',
-        placeholder: 'e.g., Senior Stylist',
-        helpText: 'Official role title'
+        label: 'Title',
+        placeholder: 'Enter role title',
+        required: true
       }
     },
     {
@@ -904,8 +568,8 @@ export const ROLE_PRESET = {
       smart_code: 'HERA.SALON.ROLE.DYN.DESCRIPTION.V1',
       ui: {
         label: 'Description',
-        widget: 'textarea',
-        placeholder: 'Role responsibilities and details...'
+        placeholder: 'Role description',
+        widget: 'textarea'
       }
     },
     {
@@ -915,18 +579,34 @@ export const ROLE_PRESET = {
       defaultValue: [],
       ui: {
         label: 'Permissions',
+        helpText: 'Array of permission strings',
         widget: 'json',
-        roles: ['owner', 'manager']
+        roles: ['owner', 'manager'] // 🔒 Role-gated field
+      }
+    },
+    {
+      name: 'status',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.ROLE.DYN.STATUS.V1',
+      defaultValue: 'active',
+      ui: {
+        label: 'Status',
+        widget: 'select',
+        options: [
+          { value: 'active', label: 'Active' },
+          { value: 'inactive', label: 'Inactive' }
+        ]
       }
     },
     {
       name: 'rank',
       type: 'number' as const,
       smart_code: 'HERA.SALON.ROLE.DYN.RANK.V1',
-      defaultValue: 0,
       ui: {
         label: 'Rank',
-        helpText: 'Higher rank = more seniority'
+        placeholder: 'Role hierarchy rank (higher = more senior)',
+        min: 1,
+        max: 10
       }
     },
     {
@@ -943,17 +623,17 @@ export const ROLE_PRESET = {
   relationships: []
 }
 
-// Staff configuration
+// Staff configuration (Salon-specific with complete field set)
 export const STAFF_PRESET = {
   entity_type: 'STAFF',
   labels: {
     singular: 'Staff Member',
-    plural: 'Staff Members'
+    plural: 'Staff'
   },
   permissions: {
     create: (role: Role) => ['owner', 'manager'].includes(role),
-    edit: (role: Role) => ['owner', 'manager', 'receptionist'].includes(role),
-    delete: (role: Role) => ['owner', 'manager'].includes(role),
+    edit: (role: Role) => ['owner', 'manager'].includes(role),
+    delete: (role: Role) => ['owner'].includes(role),
     view: () => true
   },
   dynamicFields: [
@@ -964,8 +644,8 @@ export const STAFF_PRESET = {
       required: true,
       ui: {
         label: 'First Name',
-        placeholder: 'John',
-        helpText: 'Staff member first name'
+        placeholder: 'Enter first name',
+        required: true
       }
     },
     {
@@ -975,8 +655,8 @@ export const STAFF_PRESET = {
       required: true,
       ui: {
         label: 'Last Name',
-        placeholder: 'Doe',
-        helpText: 'Staff member last name'
+        placeholder: 'Enter last name',
+        required: true
       }
     },
     {
@@ -986,8 +666,9 @@ export const STAFF_PRESET = {
       required: true,
       ui: {
         label: 'Email',
-        placeholder: 'john.doe@salon.com',
-        helpText: 'Staff member email address'
+        placeholder: 'staff@salon.com',
+        required: true,
+        helpText: 'Valid email address required'
       }
     },
     {
@@ -995,9 +676,8 @@ export const STAFF_PRESET = {
       type: 'text' as const,
       smart_code: 'HERA.SALON.STAFF.DYN.PHONE.V1',
       ui: {
-        label: 'Phone',
-        placeholder: '+1 (555) 123-4567',
-        helpText: 'Contact phone number'
+        label: 'Phone Number',
+        placeholder: '+971 50 123 4567'
       }
     },
     {
@@ -1005,9 +685,9 @@ export const STAFF_PRESET = {
       type: 'text' as const,
       smart_code: 'HERA.SALON.STAFF.DYN.ROLE_TITLE.V1',
       ui: {
-        label: 'Role Title (Denormalized)',
-        placeholder: 'Senior Stylist',
-        helpText: 'Cached role title for display'
+        label: 'Role Title',
+        placeholder: 'e.g., Senior Stylist, Receptionist',
+        helpText: 'Job title or designation'
       }
     },
     {
@@ -1018,7 +698,7 @@ export const STAFF_PRESET = {
       ui: {
         label: 'Status',
         widget: 'select',
-        optionsQueryKey: 'staff_status_options'
+        helpText: 'Current employment status'
       }
     },
     {
@@ -1033,24 +713,28 @@ export const STAFF_PRESET = {
     {
       name: 'hourly_cost',
       type: 'number' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.HOURLY_COST.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.PRICE.COST.V1',
+      defaultValue: 0,
       ui: {
-        label: 'Hourly Cost',
-        placeholder: '25.00',
-        helpText: 'Internal cost per hour',
-        roles: ['owner', 'manager'],
-        decimals: 2
+        label: 'Hourly Cost (AED)',
+        placeholder: '0.00',
+        helpText: 'Internal cost per hour (visible to managers only)',
+        roles: ['owner', 'manager'], // 🔒 Role-gated field
+        decimals: 2,
+        min: 0
       }
     },
     {
       name: 'display_rate',
       type: 'number' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.DISPLAY_RATE.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.RATE.DISPLAY.V1',
+      defaultValue: 0,
       ui: {
-        label: 'Display Rate',
-        placeholder: '150.00',
+        label: 'Display Rate (AED)',
+        placeholder: '0.00',
         helpText: 'Customer-facing hourly rate',
-        decimals: 2
+        decimals: 2,
+        min: 0
       }
     },
     {
@@ -1060,8 +744,8 @@ export const STAFF_PRESET = {
       defaultValue: [],
       ui: {
         label: 'Skills',
-        widget: 'json',
-        helpText: 'List of skills and certifications'
+        helpText: 'Array of skill tags (e.g., ["color", "keratin", "extensions"])',
+        widget: 'json'
       }
     },
     {
@@ -1069,9 +753,9 @@ export const STAFF_PRESET = {
       type: 'text' as const,
       smart_code: 'HERA.SALON.STAFF.DYN.BIO.V1',
       ui: {
-        label: 'Bio',
-        widget: 'textarea',
-        placeholder: 'Professional biography...'
+        label: 'Biography',
+        placeholder: 'Professional bio for client-facing profiles',
+        widget: 'textarea'
       }
     },
     {
@@ -1080,7 +764,7 @@ export const STAFF_PRESET = {
       smart_code: 'HERA.SALON.STAFF.DYN.AVATAR_URL.V1',
       ui: {
         label: 'Avatar URL',
-        placeholder: 'https://...',
+        placeholder: 'https://example.com/avatar.jpg',
         helpText: 'Profile picture URL'
       }
     }
@@ -1093,8 +777,7 @@ export const STAFF_PRESET = {
       ui: {
         label: 'Role',
         widget: 'select',
-        optionsQueryKey: 'roles',
-        helpText: 'Staff member role'
+        optionsQueryKey: 'roles'
       }
     },
     {
@@ -1102,10 +785,10 @@ export const STAFF_PRESET = {
       smart_code: 'HERA.SALON.STAFF.REL.CAN_SERVICE.V1',
       cardinality: 'many' as const,
       ui: {
-        label: 'Services',
+        label: 'Can Perform Services',
         widget: 'multiselect',
         optionsQueryKey: 'services',
-        helpText: 'Services this staff member can perform'
+        helpText: 'Services this staff member is qualified to perform'
       }
     },
     {
@@ -1113,22 +796,20 @@ export const STAFF_PRESET = {
       smart_code: 'HERA.SALON.STAFF.REL.MEMBER_OF.V1',
       cardinality: 'one' as const,
       ui: {
-        label: 'Location',
+        label: 'Salon Location',
         widget: 'select',
-        optionsQueryKey: 'locations',
-        helpText: 'Salon location assignment'
+        optionsQueryKey: 'locations'
       }
     },
     {
       type: 'STAFF_REPORTS_TO',
       smart_code: 'HERA.SALON.STAFF.REL.REPORTS_TO.V1',
       cardinality: 'one' as const,
-      required: false,
       ui: {
         label: 'Reports To',
         widget: 'select',
         optionsQueryKey: 'staff',
-        helpText: 'Direct supervisor'
+        helpText: 'Direct manager (optional)'
       }
     }
   ]
@@ -1140,12 +821,12 @@ export const ENTITY_PRESETS = {
   SERVICE: SERVICE_PRESET,
   CUSTOMER: CUSTOMER_PRESET,
   EMPLOYEE: EMPLOYEE_PRESET,
+  STAFF: STAFF_PRESET,
   APPOINTMENT: APPOINTMENT_PRESET,
   VENDOR: VENDOR_PRESET,
   CATEGORY: CATEGORY_PRESET,
   BRAND: BRAND_PRESET,
-  ROLE: ROLE_PRESET,
-  STAFF: STAFF_PRESET
+  ROLE: ROLE_PRESET
 } as const
 
 // Jewelry-specific entity presets
@@ -1401,7 +1082,6 @@ export const JEWELRY_SUPPLIER_PRESET = {
 // Export as entityPresets for the explorer
 export const entityPresets = {
   ...ENTITY_PRESETS,
-  SERVICE_CATEGORY: SERVICE_CATEGORY_PRESET,
   JEWELRY_ITEM: JEWELRY_ITEM_PRESET,
   JEWELRY_CATEGORY: JEWELRY_CATEGORY_PRESET,
   JEWELRY_SUPPLIER: JEWELRY_SUPPLIER_PRESET,

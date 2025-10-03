@@ -14,6 +14,8 @@ import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalApi } from '@/lib/universal-api-v2'
 import { createDraftAppointment } from '@/lib/appointments/createDraftAppointment'
 import { upsertAppointmentLines } from '@/lib/appointments/upsertAppointmentLines'
+import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { BranchSelector } from '@/components/ui/BranchSelector'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -41,7 +43,9 @@ import {
   Check,
   Scissors,
   ShoppingBag,
-  ArrowLeft
+  ArrowLeft,
+  Building2,
+  MapPin
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -120,6 +124,16 @@ function NewAppointmentContent() {
 
   // Get customerId from URL if provided
   const customerIdFromUrl = searchParams.get('customerId')
+
+  // Branch filter hook
+  const {
+    branchId,
+    branches,
+    loading: branchesLoading,
+    error: branchesError,
+    setBranchId,
+    hasMultipleBranches
+  } = useBranchFilter(undefined, 'salon-appointments')
 
   // Form state
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
@@ -285,6 +299,14 @@ function NewAppointmentContent() {
       return
     }
 
+    if (hasMultipleBranches && !branchId) {
+      toast({
+        title: 'Error',
+        description: 'Please select a branch location'
+      })
+      return
+    }
+
     if (!selectedCustomer) {
       toast({
         title: 'Error',
@@ -322,14 +344,15 @@ function NewAppointmentContent() {
     try {
       const startAt = new Date(`${selectedDate}T${selectedTime}:00`).toISOString()
 
-      // Create draft appointment
+      // Create draft appointment with branch info
       const { id: appointmentId } = await createDraftAppointment({
         organizationId,
         startAt,
         durationMin: totalDuration,
         customerEntityId: selectedCustomer.id,
         preferredStylistEntityId: selectedStylist.id,
-        notes: notes || undefined
+        notes: notes || undefined,
+        branchId: branchId || undefined
       })
 
       // Create appointment lines
@@ -457,8 +480,128 @@ function NewAppointmentContent() {
       ) : (
         <div className="container mx-auto px-6 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - Customer & Time Selection */}
+            {/* Left Column - Branch, Customer & Time Selection */}
             <div className="space-y-4">
+              {/* Branch Location Selector - Enterprise Grade */}
+              <Card
+                className="p-5 transition-all duration-300 hover:translate-y-[-2px]"
+                style={{
+                  background: 'rgba(26,26,26,0.95)',
+                  border: '1px solid rgba(245,230,200,0.08)',
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(245,230,200,0.05)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                <h3 className="font-medium mb-4 flex items-center gap-2 text-[#F5E6C8]">
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center"
+                    style={{
+                      background:
+                        'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(184,134,11,0.1) 100%)',
+                      border: '1px solid rgba(212,175,55,0.3)'
+                    }}
+                  >
+                    <Building2 className="w-5 h-5 text-[#D4AF37]" />
+                  </div>
+                  Branch Location
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-[#F5E6C8]/70 text-sm mb-2 block">
+                      Select Branch {hasMultipleBranches && <span className="text-[#D4AF37]">*</span>}
+                    </Label>
+                      <Select value={branchId || ''} onValueChange={value => setBranchId(value)}>
+                        <SelectTrigger
+                          style={{
+                            background: 'rgba(0,0,0,0.3)',
+                            border: '1px solid rgba(245,230,200,0.15)',
+                            color: '#F5E6C8'
+                          }}
+                          className="w-full"
+                        >
+                          <div className="flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-[#D4AF37]" />
+                            <SelectValue placeholder="Choose location..." />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent
+                          className="hera-select-content"
+                          style={{
+                            background: 'rgba(26,26,26,0.98)',
+                            border: '1px solid rgba(245,230,200,0.15)'
+                          }}
+                        >
+                          {branchesLoading ? (
+                            <div className="px-2 py-4 text-center">
+                              <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#D4AF37] border-t-transparent mx-auto mb-2"></div>
+                              <p className="text-sm text-[#F5E6C8]/60">Loading branches...</p>
+                            </div>
+                          ) : branches.length === 0 ? (
+                            <div className="px-2 py-4 text-center">
+                              <p className="text-sm text-[#F5E6C8]/60 mb-2">No branches available</p>
+                              <p className="text-xs text-[#F5E6C8]/40">Add branches in Settings to enable multi-location</p>
+                            </div>
+                          ) : branches.length === 1 ? (
+                            <SelectItem
+                              value={branches[0].id}
+                              className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">{branches[0].name}</span>
+                                {branches[0].code && (
+                                  <span className="text-xs text-[#F5E6C8]/50">{branches[0].code}</span>
+                                )}
+                                <span className="text-xs text-emerald-400 mt-1">✓ Default location</span>
+                              </div>
+                            </SelectItem>
+                          ) : (
+                            branches.map(branch => (
+                              <SelectItem
+                                key={branch.id}
+                                value={branch.id}
+                                className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
+                              >
+                                <div className="flex flex-col">
+                                  <span className="font-medium">{branch.name}</span>
+                                  {branch.code && (
+                                    <span className="text-xs text-[#F5E6C8]/50">{branch.code}</span>
+                                  )}
+                                </div>
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                      {branchesError && (
+                        <p className="text-xs text-red-400 mt-2">Failed to load branches</p>
+                      )}
+                      {!branchesLoading && branches.length === 0 && (
+                        <div className="mt-3 p-3 rounded-lg" style={{ background: 'rgba(212,175,55,0.05)', border: '1px solid rgba(212,175,55,0.15)' }}>
+                          <p className="text-xs text-[#F5E6C8]/60">
+                            💡 Set up branch locations in Settings to enable multi-location tracking and reporting
+                          </p>
+                        </div>
+                      )}
+                      {!branchesLoading && branches.length === 1 && branchId && (
+                        <div className="mt-3 p-3 rounded-lg" style={{ background: 'rgba(15,111,92,0.1)', border: '1px solid rgba(15,111,92,0.2)' }}>
+                          <p className="text-xs text-emerald-400 flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            Single location: {branches[0].name}
+                          </p>
+                        </div>
+                      )}
+                      {branchId && hasMultipleBranches && (
+                        <div className="mt-3 flex items-center gap-2 p-2 rounded-lg" style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)' }}>
+                          <MapPin className="w-4 h-4 text-[#D4AF37]" />
+                          <span className="text-sm text-[#F5E6C8]">
+                            {branches.find(b => b.id === branchId)?.name}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+
               <Card
                 className="p-5 transition-all duration-300 hover:translate-y-[-2px]"
                 style={{
@@ -514,12 +657,11 @@ function NewAppointmentContent() {
                         placeholder="Search customers..."
                         value={customerSearch}
                         onChange={e => setCustomerSearch(e.target.value)}
-                        className="pl-9"
+                        className="pl-9 placeholder:text-[#F5E6C8]/40"
                         style={{
                           background: 'rgba(0,0,0,0.3)',
                           border: '1px solid rgba(245,230,200,0.15)',
-                          color: '#F5E6C8',
-                          '::placeholder': { color: 'rgba(245,230,200,0.4)' }
+                          color: '#F5E6C8'
                         }}
                       />
                     </div>
@@ -648,10 +790,12 @@ function NewAppointmentContent() {
                       value={selectedDate}
                       onChange={e => setSelectedDate(e.target.value)}
                       min={format(new Date(), 'yyyy-MM-dd')}
+                      className="text-[#F5E6C8]"
                       style={{
                         background: 'rgba(0,0,0,0.3)',
                         border: '1px solid rgba(245,230,200,0.15)',
-                        color: '#F5E6C8'
+                        color: '#F5E6C8',
+                        colorScheme: 'dark'
                       }}
                     />
                   </div>
@@ -738,7 +882,7 @@ function NewAppointmentContent() {
                     placeholder="Search services..."
                     value={serviceSearch}
                     onChange={e => setServiceSearch(e.target.value)}
-                    className="pl-9"
+                    className="pl-9 placeholder:text-[#F5E6C8]/40"
                     style={{
                       background: 'rgba(0,0,0,0.3)',
                       border: '1px solid rgba(245,230,200,0.15)',
@@ -937,6 +1081,18 @@ function NewAppointmentContent() {
                   Booking Summary
                 </h3>
                 <div className="space-y-3 text-sm">
+                  {branchId && hasMultipleBranches && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[#F5E6C8]/60 flex items-center gap-1">
+                        <Building2 className="w-3 h-3" />
+                        Branch:
+                      </span>
+                      <span className="font-medium text-[#F5E6C8]">
+                        {branches.find(b => b.id === branchId)?.name}
+                      </span>
+                    </div>
+                  )}
+
                   {selectedCustomer && (
                     <div className="flex justify-between">
                       <span className="text-[#F5E6C8]/60">Customer:</span>
@@ -983,6 +1139,7 @@ function NewAppointmentContent() {
                     size="lg"
                     onClick={handleSave}
                     disabled={
+                      (hasMultipleBranches && !branchId) ||
                       !selectedCustomer ||
                       !selectedStylist ||
                       !selectedTime ||

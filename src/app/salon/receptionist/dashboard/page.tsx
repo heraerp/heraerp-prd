@@ -300,7 +300,7 @@ export default function ReceptionistDashboard() {
             </Card>
           </Link>
 
-          <Link href="/salon/pos2" className="block">
+          <Link href="/salon/pos" className="block">
             <Card
               className="border-0 hover:scale-[1.02] transition-transform cursor-pointer h-full"
               style={{

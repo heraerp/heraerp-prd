@@ -360,38 +360,57 @@ export function CatalogPane({
         boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
       }}
     >
-      {/* Header */}
+      {/* Enhanced Header with Gradient */}
       <div
         className="p-6 border-b"
         style={{
-          borderColor: COLORS.bronze + '20',
-          backgroundColor: COLORS.charcoalLight,
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+          borderColor: `${COLORS.gold}30`,
+          background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
+          boxShadow: `0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px ${COLORS.gold}10`
         }}
       >
-        <h2 className="text-xl font-semibold mb-4" style={{ color: COLORS.champagne }}>
+        <h2
+          className="text-2xl font-bold mb-5 tracking-tight"
+          style={{
+            background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.01em'
+          }}
+        >
           Catalog
         </h2>
 
-        {/* Search */}
-        <div className="relative mb-4">
+        {/* Enhanced Search with Glow */}
+        <div className="relative mb-5">
           <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4"
-            style={{ color: COLORS.bronze }}
+            className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-5 h-5"
+            style={{ color: COLORS.gold }}
           />
           <input
             id="catalog-search"
             placeholder="Search services and products..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 py-2 rounded-lg border text-sm w-full"
+            className="pl-11 pr-4 py-3 rounded-xl border text-sm w-full focus:outline-none focus:ring-2 transition-all placeholder:text-opacity-60"
             style={{
-              borderColor: COLORS.bronze + '33',
+              borderColor: `${COLORS.gold}40`,
               backgroundColor: COLORS.charcoalDark,
-              color: COLORS.lightText,
-              boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
-            }}
+              color: COLORS.champagne,
+              boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 1px ${COLORS.gold}20`,
+              '--tw-ring-color': `${COLORS.gold}60`,
+              '--tw-ring-offset-color': 'transparent'
+            } as React.CSSProperties}
           />
+          <style jsx>{`
+            #catalog-search::placeholder {
+              color: ${COLORS.champagne};
+              opacity: 0.5;
+            }
+            #catalog-search:focus {
+              box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 2px ${COLORS.gold}40, 0 0 16px ${COLORS.gold}20;
+            }
+          `}</style>
         </div>
 
         {/* Tabs */}
@@ -456,27 +475,43 @@ export function CatalogPane({
         </Tabs>
       </div>
 
-      {/* Category Filter */}
-      <div className="px-6 py-4 border-b" style={{ borderColor: COLORS.bronze + '20' }}>
-        <div className="flex flex-wrap gap-2">
-          {categories.map(category => (
-            <Badge
-              key={category}
-              variant={selectedCategory === category ? 'default' : 'outline'}
-              className={cn(
-                'cursor-pointer transition-colors',
-                selectedCategory === category ? '' : ''
-              )}
-              style={{
-                backgroundColor: selectedCategory === category ? COLORS.gold : 'transparent',
-                color: selectedCategory === category ? COLORS.black : COLORS.champagne,
-                borderColor: COLORS.bronze + '50'
-              }}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category === 'all' ? 'All Categories' : category}
-            </Badge>
-          ))}
+      {/* Enhanced Category Filter with Luxury Styling */}
+      <div
+        className="px-6 py-4 border-b"
+        style={{
+          borderColor: `${COLORS.gold}20`,
+          background: `linear-gradient(to bottom, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`
+        }}
+      >
+        <div className="flex flex-wrap gap-2.5">
+          {categories.map(category => {
+            const isSelected = selectedCategory === category
+            return (
+              <Badge
+                key={category}
+                variant="outline"
+                className={cn(
+                  'cursor-pointer transition-all duration-200 hover:scale-105 px-4 py-2 text-sm font-medium border',
+                  isSelected ? 'shadow-lg' : 'hover:shadow-md'
+                )}
+                style={{
+                  background: isSelected
+                    ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                    : `${COLORS.charcoalDark}80`,
+                  color: isSelected ? COLORS.black : COLORS.champagne,
+                  borderColor: isSelected ? COLORS.gold : `${COLORS.gold}40`,
+                  boxShadow: isSelected
+                    ? `0 4px 12px ${COLORS.gold}40, 0 0 0 1px ${COLORS.gold}`
+                    : `0 0 0 1px ${COLORS.gold}20`
+                }}
+                onClick={() => setSelectedCategory(category)}
+              >
+                <span style={{ color: isSelected ? COLORS.black : COLORS.champagne }}>
+                  {category === 'all' ? 'All Categories' : category}
+                </span>
+              </Badge>
+            )
+          })}
         </div>
       </div>
 
@@ -504,33 +539,35 @@ export function CatalogPane({
             </p>
           </div>
         ) : (
-          <div className="grid gap-3">
+          <div className="grid gap-4">
             {filteredItems.map(item => (
               <Card
                 key={item.id}
-                className="group hover:shadow-md transition-all duration-200 cursor-pointer backdrop-blur-sm"
+                className="group hover:shadow-xl transition-all duration-300 cursor-pointer backdrop-blur-sm hover:scale-[1.02]"
                 style={{
-                  backgroundColor: COLORS.charcoalLight + '80',
-                  borderColor: COLORS.bronze + '33',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                  background: `linear-gradient(135deg, ${COLORS.charcoalLight}E6 0%, ${COLORS.charcoal}E6 100%)`,
+                  borderColor: `${COLORS.gold}30`,
+                  boxShadow: `0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px ${COLORS.gold}15`,
+                  transition: 'all 0.3s ease'
                 }}
                 onClick={() => handleAddItem(item)}
               >
-                <CardContent className="p-4">
+                <CardContent className="p-5">
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-medium truncate" style={{ color: COLORS.champagne }}>
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="font-semibold text-base truncate" style={{ color: COLORS.champagne }}>
                           {item.name}
                         </h3>
                         {item.category && (
                           <Badge
                             variant="secondary"
-                            className="text-xs"
+                            className="text-xs px-2.5 py-0.5"
                             style={{
-                              backgroundColor: COLORS.charcoalDark,
-                              color: COLORS.champagne,
-                              border: `1px solid ${COLORS.gold}33`
+                              background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                              color: COLORS.gold,
+                              border: `1px solid ${COLORS.gold}40`,
+                              fontWeight: 500
                             }}
                           >
                             {item.category}
@@ -540,23 +577,27 @@ export function CatalogPane({
 
                       {item.description && (
                         <p
-                          className="text-sm line-clamp-2 mb-2"
-                          style={{ color: COLORS.lightText, opacity: 0.8 }}
+                          className="text-sm line-clamp-2 mb-3"
+                          style={{ color: COLORS.champagne, opacity: 0.7 }}
                         >
                           {item.description}
                         </p>
                       )}
 
-                      <div
-                        className="flex items-center gap-4 text-sm"
-                        style={{ color: COLORS.bronze }}
-                      >
-                        <div className="flex items-center gap-1">
-                          <Tag className="w-3 h-3" />${item.price?.toFixed(2) || '0.00'}
+                      <div className="flex items-center gap-5 text-sm">
+                        <div
+                          className="flex items-center gap-2 font-bold text-lg"
+                          style={{ color: COLORS.gold }}
+                        >
+                          <Tag className="w-4 h-4" />
+                          AED {item.price?.toFixed(2) || '0.00'}
                         </div>
                         {activeTab === 'services' && item.duration_mins && (
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3" />
+                          <div
+                            className="flex items-center gap-1.5 font-medium"
+                            style={{ color: COLORS.champagne, opacity: 0.8 }}
+                          >
+                            <Star className="w-4 h-4" style={{ color: COLORS.gold }} />
                             {formatDuration(item.duration_mins)}
                           </div>
                         )}
@@ -566,19 +607,23 @@ export function CatalogPane({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2"
+                      className="opacity-60 group-hover:opacity-100 transition-all shrink-0 ml-4 hover:scale-110"
                       style={{
-                        color: COLORS.gold
+                        background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                        color: COLORS.gold,
+                        border: `1px solid ${COLORS.gold}40`,
+                        padding: '0.5rem',
+                        borderRadius: '0.75rem'
                       }}
                       disabled={pricingLoading === item.id}
                     >
                       {pricingLoading === item.id ? (
                         <div
-                          className="animate-spin rounded-full h-4 w-4 border-b-2"
+                          className="animate-spin rounded-full h-5 w-5 border-b-2"
                           style={{ borderColor: COLORS.gold }}
                         ></div>
                       ) : (
-                        <Plus className="w-4 h-4" />
+                        <Plus className="w-5 h-5" />
                       )}
                     </Button>
                   </div>

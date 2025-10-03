@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useTransition } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { EnterpriseLink } from '@/components/ui/enterprise-link'
 import {
   Calendar,
   Users,
@@ -77,12 +76,12 @@ const sidebarItems: SidebarItem[] = [
   { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
   {
     title: 'Appointments',
-    href: '/salon/appointments1',
+    href: '/salon/appointments',
     icon: Calendar,
     badge: '3',
     badgeColor: COLORS.emerald
   },
-  { title: 'POS', href: '/salon/pos2', icon: CreditCard },
+  { title: 'POS', href: '/salon/pos', icon: CreditCard },
   { title: 'Customers', href: '/salon/customers', icon: Users },
   { title: 'Services', href: '/salon/services', icon: Scissors },
   { title: 'Products', href: '/salon/products', icon: ShoppingBag },
@@ -101,8 +100,8 @@ const sidebarItems: SidebarItem[] = [
 const allApps: SidebarItem[] = [
   // Core modules
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
-  { title: 'Appointments', href: '/salon/appointments1', icon: Calendar },
-  { title: 'POS', href: '/salon/pos2', icon: CreditCard },
+  { title: 'Appointments', href: '/salon/appointments', icon: Calendar },
+  { title: 'POS', href: '/salon/pos', icon: CreditCard },
   { title: 'Customers', href: '/salon/customers', icon: Users },
   { title: 'Services', href: '/salon/services', icon: Scissors },
   { title: 'Inventory', href: '/salon/inventory', icon: Package },
@@ -250,10 +249,7 @@ function AppsModal({
                   <Link
                     key={app.href}
                     href={app.href}
-                    onClick={e => {
-                      e.stopPropagation()
-                      onClose()
-                    }}
+                    onClick={onClose}
                     className={cn(
                       'flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group',
                       'hover:scale-[1.02]'
@@ -321,9 +317,7 @@ export default function SalonDarkSidebar({
   extraItems?: SidebarItem[]
 }) {
   const pathname = usePathname()
-  const router = useRouter()
   const [showAppsModal, setShowAppsModal] = useState(false)
-  const [isPending, startTransition] = useTransition()
 
   const isActive = (href: string) => {
     if (href === pathname) return true
@@ -331,27 +325,6 @@ export default function SalonDarkSidebar({
     if (href !== '/salon-data' && pathname.startsWith(href)) return true
     return false
   }
-
-  const handleNavigation = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-      // Don't prevent default for external links or special key combinations
-      if (
-        href.startsWith('http') ||
-        href.startsWith('//') ||
-        e.ctrlKey ||
-        e.metaKey ||
-        e.shiftKey
-      ) {
-        return
-      }
-
-      e.preventDefault()
-      startTransition(() => {
-        router.push(href)
-      })
-    },
-    [router]
-  )
 
   // Use provided items or default sidebar items
   const navigationItems = items || sidebarItems

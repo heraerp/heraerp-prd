@@ -44,8 +44,8 @@ export class HERAJWTService {
       ) {
         const payload: JWTPayload = {
           sub: 'demo-user-123',
-          email: 'demo@hairtalkz.com', // Use salon email for demo
-          organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0', // Hair Talkz Salon ID
+          email: 'demo@example.com',
+          organization_id: 'demo-org-123',
           role: 'admin',
           permissions: [
             'entities:read',
@@ -70,12 +70,36 @@ export class HERAJWTService {
         return { valid: false, error: 'Invalid token' }
       }
 
-      // For salon users, determine organization_id based on email
-      let organizationId = user.user_metadata?.organization_id
+      // Fetch user's organization from the database
+      let organizationId: string | undefined
+      try {
+        // Try to get organization from user_organizations table
+        const { data: userOrg, error: orgError } = await supabase
+          .from('user_organizations')
+          .select('organization_id')
+          .eq('user_id', user.id)
+          .limit(1)
+          .single()
 
-      // Default to HairTalkz for salon users (michele@hairtalkz.com should use HairTalkz org)
-      if (user.email?.includes('hairtalkz.com') || user.email?.includes('michele')) {
-        organizationId = '0fd09e31-d257-4329-97eb-7d7f522ed6f0' // Hair Talkz Salon ID
+        console.log('[JWT Service] Organization lookup:', {
+          userId: user.id,
+          found: !!userOrg,
+          orgError: orgError?.message,
+          organizationId: userOrg?.organization_id
+        })
+
+        if (userOrg) {
+          organizationId = userOrg.organization_id
+        } else {
+          // Fallback: check if organizationId is in user metadata
+          organizationId = user.user_metadata?.organization_id
+          console.log('[JWT Service] Using metadata organization_id:', organizationId)
+        }
+      } catch (err) {
+        console.warn('[JWT Service] Failed to fetch organization_id:', err)
+        // Try metadata fallback
+        organizationId = user.user_metadata?.organization_id
+        console.log('[JWT Service] Exception - using metadata organization_id:', organizationId)
       }
 
       const payload: JWTPayload = {

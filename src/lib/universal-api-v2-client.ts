@@ -15,6 +15,38 @@ function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 }
 
+/**
+ * Get auth headers with Supabase token
+ */
+async function getAuthHeaders(): Promise<HeadersInit> {
+  // Only in browser
+  if (typeof window === 'undefined') return {}
+
+  try {
+    // Dynamically import supabase to avoid SSR issues
+    const { supabase } = await import('@/lib/supabase/client')
+    const { data: { session } } = await supabase.auth.getSession()
+
+    console.log('[getAuthHeaders] Session check:', {
+      hasSession: !!session,
+      hasToken: !!session?.access_token,
+      tokenLength: session?.access_token?.length
+    })
+
+    if (session?.access_token) {
+      return {
+        'Authorization': `Bearer ${session.access_token}`
+      }
+    } else {
+      console.warn('[getAuthHeaders] No access token found in session')
+    }
+  } catch (error) {
+    console.warn('[getAuthHeaders] Failed to get auth token:', error)
+  }
+
+  return {}
+}
+
 export type Json = Record<string, any>;
 
 // Dynamic field input types for batch operations (flexible version)
@@ -47,8 +79,9 @@ export async function getEntities(baseUrl: string = '', params: {
   if (params.p_parent_entity_id) qs.set('p_parent_entity_id', params.p_parent_entity_id)
   if (params.p_status) qs.set('p_status', params.p_status)
 
-  const res = await fetch(`${url}/api/universal/entities?${qs.toString()}`, {
-    headers: h(params.p_organization_id),
+  const authHeaders = await getAuthHeaders()
+  const res = await fetch(`${url}/api/v2/entities?${qs.toString()}`, {
+    headers: { ...h(params.p_organization_id), ...authHeaders },
     credentials: 'include'
   }).then(ok)
 
@@ -58,7 +91,7 @@ export async function getEntities(baseUrl: string = '', params: {
 }
 
 export async function readEntity(orgId: string, entityId: string) {
-  const res = await fetch(`/api/universal/entities/${entityId}?p_organization_id=${orgId}`, {
+  const res = await fetch(`/api/v2/entities/${entityId}?p_organization_id=${orgId}`, {
     headers: h(orgId),
     credentials: 'include'
   }).then(ok)
@@ -75,13 +108,13 @@ export async function deleteEntity(baseUrl: string = '', params: {
   }).toString();
 
   console.log('[deleteEntity] Request:', {
-    url: `${url}/api/universal/entities/${params.p_entity_id}?${qs}`,
+    url: `${url}/api/v2/entities/${params.p_entity_id}?${qs}`,
     organizationId: params.p_organization_id,
     entityId: params.p_entity_id,
-    fullUrl: `${url}/api/universal/entities/${params.p_entity_id}?${qs}`
+    fullUrl: `${url}/api/v2/entities/${params.p_entity_id}?${qs}`
   });
 
-  const res = await fetch(`${url}/api/universal/entities/${params.p_entity_id}?${qs}`, {
+  const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}?${qs}`, {
     method: 'DELETE',
     headers: h(params.p_organization_id),
     credentials: 'include'
@@ -111,11 +144,28 @@ export async function upsertEntity(baseUrl: string = '', body: {
   p_status?: string | null;
 }) {
   const url = baseUrl || getBaseUrl()
-  const res = await fetch(`${url}/api/universal/entities`, {
+  const authHeaders = await getAuthHeaders()
+
+  // Transform RPC-style parameters (p_*) to API v2 format (without p_ prefix)
+  const apiBody: any = {
+    entity_type: body.p_entity_type,
+    entity_name: body.p_entity_name,
+    smart_code: body.p_smart_code,
+  }
+
+  if (body.p_entity_code) apiBody.entity_code = body.p_entity_code
+  if (body.p_entity_id) apiBody.entity_id = body.p_entity_id
+  if (body.p_status) apiBody.metadata = { status: body.p_status }
+
+  const res = await fetch(`${url}/api/v2/entities`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-hera-org': body.p_organization_id },
+    headers: {
+      'content-type': 'application/json',
+      'x-hera-org': body.p_organization_id,
+      ...authHeaders
+    },
     credentials: 'include',
-    body: JSON.stringify(body)
+    body: JSON.stringify(apiBody)
   })
   if (!res.ok) {
     const err = await res.json().catch(() => null)
@@ -137,7 +187,7 @@ export async function getDynamicData(baseUrl: string = '', params: {
     )
   ).toString()
 
-  const res = await fetch(`${url}/api/universal/dynamic-data?${qs}`, {
+  const res = await fetch(`${url}/api/v2/dynamic-data?${qs}`, {
     headers: { 'x-hera-org': params.p_organization_id },
     credentials: 'include'
   })
@@ -161,7 +211,7 @@ export async function setDynamicData(
     p_smart_code: string
   }
 ) {
-  const res = await fetch(`/api/universal/dynamic-data`, {
+  const res = await fetch(`/api/v2/dynamic-data`, {
     method: 'POST',
     headers: { ...h(orgId), 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -177,7 +227,7 @@ export async function setDynamicDataBatch(baseUrl: string = '', params: {
   p_fields: DynamicFieldInput[];
 }) {
   const url = baseUrl || getBaseUrl()
-  const res = await fetch(`${url}/api/universal/dynamic-data/batch`, {
+  const res = await fetch(`${url}/api/v2/dynamic-data/batch`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-hera-org': params.p_organization_id },
     credentials: 'include',
@@ -210,7 +260,7 @@ export async function getTransactions(params: {
   if (params.startDate) qs.set('p_start_date', params.startDate)
   if (params.endDate) qs.set('p_end_date', params.endDate)
 
-  const res = await fetch(`/api/universal/transactions?${qs.toString()}`, {
+  const res = await fetch(`/api/v2/transactions?${qs.toString()}`, {
     headers: h(params.orgId),
     credentials: 'include'
   }).then(ok)
@@ -232,7 +282,7 @@ export async function createTransaction(
     p_metadata?: Json
   }
 ) {
-  const res = await fetch(`/api/universal/transactions`, {
+  const res = await fetch(`/api/v2/transactions`, {
     method: 'POST',
     headers: { ...h(orgId), 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -255,7 +305,7 @@ export async function getRelationships(params: {
   if (params.toEntityId) qs.set('p_to_entity_id', params.toEntityId)
   if (params.relationshipType) qs.set('p_relationship_type', params.relationshipType)
 
-  const res = await fetch(`/api/universal/relationships?${qs.toString()}`, {
+  const res = await fetch(`/api/v2/relationships?${qs.toString()}`, {
     headers: h(params.orgId),
     credentials: 'include'
   }).then(ok)
@@ -274,7 +324,7 @@ export async function createRelationship(
     p_relationship_data?: Json
   }
 ) {
-  const res = await fetch(`/api/universal/relationships`, {
+  const res = await fetch(`/api/v2/relationships`, {
     method: 'POST',
     headers: { ...h(orgId), 'Content-Type': 'application/json' },
     credentials: 'include',

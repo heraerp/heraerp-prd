@@ -40,7 +40,7 @@ const routeConfigs: RouteConfig[] = [
   { path: '/salon/appointments', allowedRoles: ['receptionist', 'owner', 'admin'] },
   { path: '/salon/appointments1', allowedRoles: ['receptionist', 'owner', 'admin'] },
   { path: '/salon/customers', allowedRoles: ['receptionist', 'owner', 'admin'] },
-  { path: '/salon/pos2', allowedRoles: ['receptionist', 'owner', 'admin'] },
+  { path: '/salon/pos', allowedRoles: ['receptionist', 'owner', 'admin'] },
   { path: '/salon/whatsapp', allowedRoles: ['receptionist', 'owner', 'admin'] },
 
   // Accountant routes

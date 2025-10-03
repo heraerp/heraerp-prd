@@ -54,7 +54,7 @@ export default function SalonDashboardPage() {
       // Only redirect if role is explicitly not owner
       if (currentRole && currentRole !== 'owner') {
         const redirectMap: Record<string, string> = {
-          receptionist: '/salon/pos2',
+          receptionist: '/salon/pos',
           accountant: '/salon/finance',
           admin: '/salon/settings',
           administrator: '/salon/settings'

@@ -7,10 +7,12 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { format, startOfToday } from 'date-fns'
 import { Plus, Calendar, RefreshCw } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
@@ -48,21 +50,17 @@ const useBranch = () => ({
 })
 
 export default function KanbanPage() {
+  const router = useRouter()
   const { user, organization } = useHERAAuth()
   const { currentBranch, branches } = useBranch()
   const { toast } = useToast()
-  // Initialize with a date that has appointment data, but allow user to change it
-  const [date, setDate] = useState(() => {
-    // Default to Sept 18, 2025 which has appointment data, or today
-    const hasDataDate = new Date('2025-09-18')
-    const today = startOfToday()
-    // Use data date for demo, but can be changed via date picker
-    return hasDataDate
-  })
+  // Initialize with today's date
+  const [date, setDate] = useState(() => startOfToday())
   const [selectedCard, setSelectedCard] = useState<KanbanCard | null>(null)
   const [rescheduleOpen, setRescheduleOpen] = useState(false)
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
+  const [cancellationType, setCancellationType] = useState<'no_show' | 'customer_request' | 'staff_unavailable' | 'emergency' | 'other'>('customer_request')
   const [cardToCancel, setCardToCancel] = useState<KanbanCard | null>(null)
   const [userId, setUserId] = useState<string>('')
 
@@ -178,12 +176,20 @@ export default function KanbanPage() {
 
   return (
     <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
-      <div className="h-screen flex flex-col bg-gradient-to-br from-muted/50 to-muted dark:from-background dark:to-background">
+      <div className="h-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 100%)' }}>
         {/* Luxe header */}
-        <header className="bg-background text-foreground px-6 py-4 shadow-xl border-b border-border">
+        <header className="px-6 py-4 shadow-xl" style={{ backgroundColor: '#1A1A1A', borderBottom: '1px solid #D4AF3740' }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
-              <h1 className="text-2xl font-light tracking-wide">
+              <h1
+                className="text-2xl font-light tracking-wide"
+                style={{
+                  background: 'linear-gradient(135deg, #F5E6C8 0%, #D4AF37 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
                 Appointments • {currentBranch.name}
               </h1>
 
@@ -192,10 +198,12 @@ export default function KanbanPage() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className={cn(
-                      'justify-start text-left font-normal bg-muted border-border hover:bg-accent',
-                      'text-foreground hover:text-foreground'
-                    )}
+                    className="justify-start text-left font-normal"
+                    style={{
+                      backgroundColor: '#0B0B0B',
+                      borderColor: '#8C7853',
+                      color: '#F5E6C8'
+                    }}
                   >
                     <Calendar className="mr-2 h-4 w-4" />
                     {format(date, 'EEEE, MMMM d')}
@@ -218,17 +226,19 @@ export default function KanbanPage() {
                 size="icon"
                 onClick={reload}
                 disabled={loading || isMoving}
-                className="text-foreground hover:text-foreground hover:bg-accent"
+                style={{ color: '#D4AF37' }}
+                className="hover:opacity-80"
               >
                 <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
               </Button>
 
               <Button
-                onClick={() => setDraftModalOpen(true)}
-                className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
+                onClick={() => router.push('/salon/appointments/new')}
+                style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)', color: '#0B0B0B' }}
+                className="hover:opacity-90 transition-opacity font-semibold"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                New Draft
+                New Appointment
               </Button>
             </div>
           </div>
@@ -353,11 +363,27 @@ export default function KanbanPage() {
 
             <div className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label>Reason for cancellation (optional)</Label>
+                <Label>Cancellation Type *</Label>
+                <Select value={cancellationType} onValueChange={(value: any) => setCancellationType(value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="no_show">No Show</SelectItem>
+                    <SelectItem value="customer_request">Customer Request</SelectItem>
+                    <SelectItem value="staff_unavailable">Staff Unavailable</SelectItem>
+                    <SelectItem value="emergency">Emergency</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Additional Notes (optional)</Label>
                 <Textarea
                   value={cancelReason}
                   onChange={e => setCancelReason(e.target.value)}
-                  placeholder="e.g., Customer request, emergency, no-show..."
+                  placeholder="Add any additional details..."
                   rows={3}
                 />
               </div>
@@ -369,6 +395,7 @@ export default function KanbanPage() {
                     setCancelModalOpen(false)
                     setCardToCancel(null)
                     setCancelReason('')
+                    setCancellationType('customer_request')
                   }}
                   className="flex-1"
                 >

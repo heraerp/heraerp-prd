@@ -51,7 +51,7 @@ const getSidebarItems = (role: string): SidebarItem[] => {
     // POS & Appointments - Receptionist main features
     {
       title: 'Point of Sale',
-      href: '/salon/pos2',
+      href: '/salon/pos',
       icon: CreditCard,
       roles: ['Owner', 'Receptionist', 'Administrator']
     },
@@ -150,7 +150,7 @@ const getAllApps = (role: string): SidebarItem[] => {
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home, roles: ['Owner', 'Administrator'] },
     {
       title: 'POS',
-      href: '/salon/pos2',
+      href: '/salon/pos',
       icon: CreditCard,
       roles: ['Owner', 'Receptionist', 'Administrator']
     },

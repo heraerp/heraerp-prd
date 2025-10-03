@@ -13,6 +13,7 @@
     "hera": "tsx src/cli/index.ts",
     "db:seed:test": "tsx scripts/seed-test.ts",
     "db:seed:print": "tsx scripts/seed-test.ts --dry-run",
+    "seed:salon-staff": "tsx scripts/seed/salon-staff.ts",
     "demo:setup": "node scripts/setup-demo-users.js",
     "demo:salon-users": "node scripts/create-salon-demo-users.js",
     "seed:salon-service-categories": "tsx scripts/seed/salon-service-categories.ts",

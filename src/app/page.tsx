@@ -129,7 +129,7 @@ export default function HomePage() {
                 Explore Live Demos
               </Link>
               <Link
-                href="/get-started"
+                href="/book-a-meeting"
                 className="px-5 py-2.5 rounded-xl text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-border transition-all"
               >
                 Get Started

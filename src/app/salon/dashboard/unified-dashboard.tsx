@@ -44,8 +44,8 @@ const ROLE_FEATURES = {
     widgets: ['todayAppointments', 'walkIns', 'checkedIn', 'todayRevenue'],
     quickLinks: [
       { title: 'Book Appointment', href: '/salon/appointments/new', icon: Calendar },
-      { title: 'Customer Check-in', href: '/salon/pos2', icon: CheckCircle },
-      { title: 'Process Payment', href: '/salon/pos2', icon: CreditCard },
+      { title: 'Customer Check-in', href: '/salon/pos', icon: CheckCircle },
+      { title: 'Process Payment', href: '/salon/pos', icon: CreditCard },
       { title: 'View Services', href: '/salon/services', icon: Scissors },
       { title: 'Customer List', href: '/salon/customers', icon: Users }
     ]
@@ -231,25 +231,22 @@ export function UnifiedDashboard() {
   const quickLinks = ROLE_FEATURES[role]?.quickLinks || []
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
-      <div className="container mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-light mb-2" style={{ color: LUXE_COLORS.gold }}>
-            Welcome back, {user?.user_metadata?.full_name || 'User'}
-          </h1>
-          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-            {role.charAt(0).toUpperCase() + role.slice(1)} Dashboard •{' '}
-            {new Date().toLocaleDateString('en-US', {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric'
-            })}
-          </p>
-        </div>
+    <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
+      {/* Elegant gradient background overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(circle at 10% 20%, ${LUXE_COLORS.gold}06 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, ${LUXE_COLORS.plum}04 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, ${LUXE_COLORS.emerald}03 0%, transparent 50%)
+          `,
+          opacity: 0.4
+        }}
+      />
 
-        {/* Widgets Grid - Dynamic based on role */}
+      <div className="relative container mx-auto px-8 py-8">
+        {/* Enhanced Widgets Grid - Luxury Salon Theme */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {widgets.map(widgetKey => {
             const widget = WIDGET_DATA[widgetKey as keyof typeof WIDGET_DATA]
@@ -259,19 +256,20 @@ export function UnifiedDashboard() {
             return (
               <Card
                 key={widgetKey}
-                className="border-0 hover:scale-[1.02] transition-transform cursor-pointer"
+                className="border-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
                 style={{
-                  backgroundColor: LUXE_COLORS.charcoalLight,
-                  borderColor: `${LUXE_COLORS.bronze}30`
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+                  border: `1px solid ${LUXE_COLORS.gold}20`,
+                  boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px ${LUXE_COLORS.gold}10`
                 }}
               >
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium mb-2" style={{ color: LUXE_COLORS.bronze }}>
                         {widget.title}
                       </p>
-                      <p className="text-2xl font-light mt-1" style={{ color: widget.color }}>
+                      <p className="text-3xl font-bold tracking-tight" style={{ color: widget.color }}>
                         {/* Hide financial values if user doesn't have permission */}
                         {widget.title.toLowerCase().includes('revenue') ||
                         widget.title.toLowerCase().includes('expense') ||
@@ -284,18 +282,28 @@ export function UnifiedDashboard() {
                       </p>
                       {widget.change && canViewFinancials && (
                         <p
-                          className="text-xs mt-1"
+                          className="text-xs mt-2 font-semibold flex items-center gap-1"
                           style={{
                             color: widget.change.startsWith('+')
                               ? LUXE_COLORS.emerald
                               : LUXE_COLORS.ruby
                           }}
                         >
+                          <TrendingUp className="w-3 h-3" />
                           {widget.change} from last month
                         </p>
                       )}
                     </div>
-                    <Icon className="h-8 w-8 opacity-50" style={{ color: widget.color }} />
+                    <div
+                      className="p-3 rounded-xl transition-all group-hover:scale-110"
+                      style={{
+                        background: `linear-gradient(135deg, ${widget.color}20 0%, ${widget.color}10 100%)`,
+                        border: `1px solid ${widget.color}30`,
+                        boxShadow: `0 0 12px ${widget.color}15`
+                      }}
+                    >
+                      <Icon className="h-7 w-7" style={{ color: widget.color }} />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -303,17 +311,27 @@ export function UnifiedDashboard() {
           })}
         </div>
 
-        {/* Quick Actions - Dynamic based on role */}
+        {/* Enhanced Quick Actions - Luxury Theme */}
         <Card
           className="border-0 mb-8"
           style={{
-            backgroundColor: LUXE_COLORS.charcoalLight,
-            border: `1px solid ${LUXE_COLORS.bronze}30`
+            background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+            border: `1px solid ${LUXE_COLORS.gold}20`,
+            boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px ${LUXE_COLORS.gold}10`
           }}
         >
           <CardHeader>
-            <CardTitle style={{ color: LUXE_COLORS.gold }}>Quick Actions</CardTitle>
-            <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+            <CardTitle
+              className="text-2xl font-bold tracking-tight"
+              style={{
+                background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}
+            >
+              Quick Actions
+            </CardTitle>
+            <CardDescription className="text-base" style={{ color: LUXE_COLORS.bronze }}>
               Frequently used features for your role
             </CardDescription>
           </CardHeader>
@@ -325,18 +343,29 @@ export function UnifiedDashboard() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="flex items-center justify-between p-4 rounded-lg hover:bg-black/20 transition-colors group"
+                    className="flex items-center justify-between p-5 rounded-xl transition-all duration-200 group hover:scale-[1.02]"
                     style={{
-                      backgroundColor: LUXE_COLORS.charcoal,
-                      border: `1px solid ${LUXE_COLORS.bronze}20`
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}80 0%, ${LUXE_COLORS.charcoal}80 100%)`,
+                      border: `1px solid ${LUXE_COLORS.gold}30`,
+                      boxShadow: `0 2px 8px rgba(0, 0, 0, 0.2)`
                     }}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className="h-5 w-5" style={{ color: LUXE_COLORS.gold }} />
-                      <span style={{ color: LUXE_COLORS.champagne }}>{link.title}</span>
+                      <div
+                        className="p-2 rounded-lg"
+                        style={{
+                          background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}10 100%)`,
+                          border: `1px solid ${LUXE_COLORS.gold}30`
+                        }}
+                      >
+                        <Icon className="h-5 w-5" style={{ color: LUXE_COLORS.gold }} />
+                      </div>
+                      <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                        {link.title}
+                      </span>
                     </div>
                     <ArrowRight
-                      className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="h-5 w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
                       style={{ color: LUXE_COLORS.gold }}
                     />
                   </Link>
@@ -346,25 +375,51 @@ export function UnifiedDashboard() {
           </CardContent>
         </Card>
 
-        {/* Role-specific content sections */}
+        {/* Enhanced Role-specific Sections */}
         {role === 'owner' && (
           <Card
             className="border-0"
             style={{
-              backgroundColor: LUXE_COLORS.charcoalLight,
-              border: `1px solid ${LUXE_COLORS.bronze}30`
+              background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+              border: `1px solid ${LUXE_COLORS.gold}20`,
+              boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px ${LUXE_COLORS.gold}10`
             }}
           >
             <CardHeader>
-              <CardTitle style={{ color: LUXE_COLORS.gold }}>Business Overview</CardTitle>
-              <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+              <CardTitle
+                className="text-2xl font-bold tracking-tight"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >
+                Business Overview
+              </CardTitle>
+              <CardDescription className="text-base" style={{ color: LUXE_COLORS.bronze }}>
                 Key metrics and insights for your salon
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8" style={{ color: LUXE_COLORS.bronze }}>
-                <BarChart3 className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                <p>Detailed analytics and reports will be displayed here</p>
+              <div
+                className="text-center py-12 rounded-xl"
+                style={{
+                  backgroundColor: `${LUXE_COLORS.charcoalDark}80`,
+                  border: `1px solid ${LUXE_COLORS.gold}20`
+                }}
+              >
+                <div
+                  className="p-4 rounded-xl inline-block mb-4"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}10 100%)`,
+                    border: `1px solid ${LUXE_COLORS.gold}30`
+                  }}
+                >
+                  <BarChart3 className="h-12 w-12" style={{ color: LUXE_COLORS.gold }} />
+                </div>
+                <p className="text-base" style={{ color: LUXE_COLORS.bronze }}>
+                  Detailed analytics and reports will be displayed here
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -374,27 +429,54 @@ export function UnifiedDashboard() {
           <Card
             className="border-0"
             style={{
-              backgroundColor: LUXE_COLORS.charcoalLight,
-              border: `1px solid ${LUXE_COLORS.bronze}30`
+              background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+              border: `1px solid ${LUXE_COLORS.gold}20`,
+              boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px ${LUXE_COLORS.gold}10`
             }}
           >
             <CardHeader>
-              <CardTitle style={{ color: LUXE_COLORS.gold }}>Upcoming Appointments</CardTitle>
-              <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+              <CardTitle
+                className="text-2xl font-bold tracking-tight"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >
+                Upcoming Appointments
+              </CardTitle>
+              <CardDescription className="text-base" style={{ color: LUXE_COLORS.bronze }}>
                 Next appointments for today
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="p-3 rounded" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                <div
+                  className="p-5 rounded-xl"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}80 0%, ${LUXE_COLORS.charcoal}80 100%)`,
+                    border: `1px solid ${LUXE_COLORS.gold}30`
+                  }}
+                >
                   <div className="flex justify-between items-center">
                     <div>
-                      <p style={{ color: LUXE_COLORS.champagne }}>Sarah Johnson - Hair Color</p>
+                      <p className="font-semibold mb-1" style={{ color: LUXE_COLORS.champagne }}>
+                        Sarah Johnson - Hair Color
+                      </p>
                       <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
                         2:00 PM with Emma
                       </p>
                     </div>
-                    <Button size="sm" variant="outline">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      style={{
+                        background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}20 0%, ${LUXE_COLORS.emerald}10 100%)`,
+                        border: `1px solid ${LUXE_COLORS.emerald}40`,
+                        color: LUXE_COLORS.emerald
+                      }}
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
                       Check In
                     </Button>
                   </div>
@@ -408,31 +490,51 @@ export function UnifiedDashboard() {
           <Card
             className="border-0"
             style={{
-              backgroundColor: LUXE_COLORS.charcoalLight,
-              border: `1px solid ${LUXE_COLORS.bronze}30`
+              background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+              border: `1px solid ${LUXE_COLORS.gold}20`,
+              boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px ${LUXE_COLORS.gold}10`
             }}
           >
             <CardHeader>
-              <CardTitle style={{ color: LUXE_COLORS.gold }}>Pending Tasks</CardTitle>
-              <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+              <CardTitle
+                className="text-2xl font-bold tracking-tight"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >
+                Pending Tasks
+              </CardTitle>
+              <CardDescription className="text-base" style={{ color: LUXE_COLORS.bronze }}>
                 Financial tasks requiring attention
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div
-                  className="flex items-center gap-3 p-3 rounded"
-                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                  className="flex items-center gap-3 p-4 rounded-xl"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}80 0%, ${LUXE_COLORS.charcoal}80 100%)`,
+                    border: `1px solid ${LUXE_COLORS.orange}30`
+                  }}
                 >
-                  <AlertCircle className="h-5 w-5" style={{ color: LUXE_COLORS.orange }} />
-                  <span style={{ color: LUXE_COLORS.champagne }}>VAT return due in 5 days</span>
+                  <AlertCircle className="h-6 w-6" style={{ color: LUXE_COLORS.orange }} />
+                  <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                    VAT return due in 5 days
+                  </span>
                 </div>
                 <div
-                  className="flex items-center gap-3 p-3 rounded"
-                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                  className="flex items-center gap-3 p-4 rounded-xl"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}80 0%, ${LUXE_COLORS.charcoal}80 100%)`,
+                    border: `1px solid ${LUXE_COLORS.plum}30`
+                  }}
                 >
-                  <Receipt className="h-5 w-5" style={{ color: LUXE_COLORS.plum }} />
-                  <span style={{ color: LUXE_COLORS.champagne }}>15 invoices pending approval</span>
+                  <Receipt className="h-6 w-6" style={{ color: LUXE_COLORS.plum }} />
+                  <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                    15 invoices pending approval
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -443,34 +545,58 @@ export function UnifiedDashboard() {
           <Card
             className="border-0"
             style={{
-              backgroundColor: LUXE_COLORS.charcoalLight,
-              border: `1px solid ${LUXE_COLORS.bronze}30`
+              background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+              border: `1px solid ${LUXE_COLORS.gold}20`,
+              boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px ${LUXE_COLORS.gold}10`
             }}
           >
             <CardHeader>
-              <CardTitle style={{ color: LUXE_COLORS.gold }}>System Health</CardTitle>
-              <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+              <CardTitle
+                className="text-2xl font-bold tracking-tight"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >
+                System Health
+              </CardTitle>
+              <CardDescription className="text-base" style={{ color: LUXE_COLORS.bronze }}>
                 Current system status and alerts
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div
-                  className="flex items-center justify-between p-3 rounded"
-                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                  className="flex items-center justify-between p-4 rounded-xl"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}80 0%, ${LUXE_COLORS.charcoal}80 100%)`,
+                    border: `1px solid ${LUXE_COLORS.emerald}30`
+                  }}
                 >
-                  <span style={{ color: LUXE_COLORS.champagne }}>Database Status</span>
+                  <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                    Database Status
+                  </span>
                   <span className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4" style={{ color: LUXE_COLORS.emerald }} />
-                    <span style={{ color: LUXE_COLORS.emerald }}>Healthy</span>
+                    <CheckCircle className="h-5 w-5" style={{ color: LUXE_COLORS.emerald }} />
+                    <span className="font-semibold" style={{ color: LUXE_COLORS.emerald }}>
+                      Healthy
+                    </span>
                   </span>
                 </div>
                 <div
-                  className="flex items-center justify-between p-3 rounded"
-                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                  className="flex items-center justify-between p-4 rounded-xl"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}80 0%, ${LUXE_COLORS.charcoal}80 100%)`,
+                    border: `1px solid ${LUXE_COLORS.gold}30`
+                  }}
                 >
-                  <span style={{ color: LUXE_COLORS.champagne }}>API Performance</span>
-                  <span style={{ color: LUXE_COLORS.gold }}>98.5% uptime</span>
+                  <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                    API Performance
+                  </span>
+                  <span className="font-semibold" style={{ color: LUXE_COLORS.gold }}>
+                    98.5% uptime
+                  </span>
                 </div>
               </div>
             </CardContent>

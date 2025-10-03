@@ -7,16 +7,16 @@
 'use client'
 
 import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSalonContext } from '@/app/salon/SalonProvider'
 
 export default function SalonAppointmentsCalendarPage() {
-  const { organization } = useHERAAuth()
+  const { organizationId, organization } = useSalonContext()
 
   // Default salon organizations for the calendar
   const salonOrganizations = [
     {
-      id: organization?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
-      organization_code: organization?.code || 'SALON-BR1',
+      id: organizationId || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
+      organization_code: 'SALON-BR1',
       organization_name: organization?.name || 'Hair Talkz • Park Regis Kris Kin (Karama)'
     }
   ]
@@ -46,7 +46,7 @@ export default function SalonAppointmentsCalendarPage() {
         >
           <SalonResourceCalendar
             organizations={salonOrganizations}
-            currentOrganizationId={organization?.id}
+            currentOrganizationId={organizationId}
             canViewAllBranches={false}
           />
         </div>

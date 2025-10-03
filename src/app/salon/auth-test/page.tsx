@@ -34,7 +34,7 @@ export default function AuthTestPage() {
 
     const routes: Record<string, string> = {
       owner: '/salon/dashboard',
-      receptionist: '/salon/pos2',
+      receptionist: '/salon/pos',
       accountant: '/salon/finance',
       admin: '/salon/settings'
     }

@@ -48,6 +48,7 @@ export function Card({
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id
   })
+  const [isHovered, setIsHovered] = React.useState(false)
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -60,21 +61,66 @@ export function Card({
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        ...style,
+        background: isHovered
+          ? 'linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 100%)'
+          : 'linear-gradient(135deg, #1A1A1A 0%, #141414 100%)',
+        borderColor: card.status === 'DRAFT' ? '#D4AF37' : '#8C785360',
+        borderWidth: isHovered ? '2px' : '1px',
+        color: '#F5E6C8',
+        boxShadow: isHovered
+          ? '0 8px 24px rgba(212, 175, 55, 0.2), 0 0 0 1px rgba(212, 175, 55, 0.1)'
+          : '0 2px 8px rgba(0, 0, 0, 0.3)',
+        transform: isHovered && !isDragging
+          ? `${CSS.Transform.toString(transform)} translateY(-2px)`
+          : CSS.Transform.toString(transform)
+      }}
       className={cn(
-        'relative bg-white dark:bg-zinc-900 rounded-lg border shadow-sm',
-        'cursor-move select-none',
-        isDragging && 'opacity-50 shadow-lg z-50',
-        card.status === 'DRAFT' && 'border-amber-200 dark:border-amber-900'
+        'relative rounded-lg border cursor-move select-none transition-all duration-300',
+        isDragging && 'opacity-50 shadow-2xl z-50 scale-105'
       )}
       {...attributes}
       {...listeners}
     >
       {/* Draft badge */}
       {card.status === 'DRAFT' && (
-        <div className="absolute -top-2 left-2">
-          <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-300 text-xs">
+        <div className="absolute -top-2 left-2 animate-in fade-in duration-300">
+          <Badge
+            variant="outline"
+            className="text-xs font-semibold shadow-lg"
+            style={{
+              background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+              color: '#0B0B0B',
+              borderColor: '#D4AF37',
+              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)'
+            }}
+          >
             Draft
+          </Badge>
+        </div>
+      )}
+
+      {/* Cancellation reason badge */}
+      {card.status === 'CANCELLED' && card.cancellation_reason && (
+        <div className="absolute -top-2 left-2 animate-in fade-in duration-300">
+          <Badge
+            variant="outline"
+            className="text-xs font-semibold shadow-lg"
+            style={{
+              background: card.cancellation_reason === 'no_show'
+                ? 'linear-gradient(135deg, #DC2626 0%, #991B1B 100%)'
+                : 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)',
+              color: '#FFFFFF',
+              borderColor: card.cancellation_reason === 'no_show' ? '#DC2626' : '#EA580C',
+              boxShadow: card.cancellation_reason === 'no_show'
+                ? '0 4px 12px rgba(220, 38, 38, 0.4)'
+                : '0 4px 12px rgba(234, 88, 12, 0.4)'
+            }}
+          >
+            {card.cancellation_reason === 'no_show' ? 'No Show' : 'Cancelled'}
           </Badge>
         </div>
       )}
@@ -83,7 +129,7 @@ export function Card({
         {/* Header with time and actions */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm">
-            <Clock className="w-3 h-3 ink-muted" />
+            <Clock className="w-3 h-3" style={{ color: '#D4AF37' }} />
             <span className="font-medium">
               {startTime} - {endTime}
             </span>
@@ -132,44 +178,67 @@ export function Card({
 
         {/* Customer name */}
         <div className="flex items-center gap-2">
-          <User className="w-3 h-3 ink-muted" />
+          <User className="w-3 h-3" style={{ color: '#D4AF37' }} />
           <span className="font-medium text-sm">{card.customer_name}</span>
-          {card.flags?.vip && <Star className="w-3 h-3 text-amber-500 fill-amber-500" />}
+          {card.flags?.vip && (
+            <Star
+              className="w-4 h-4 animate-pulse"
+              style={{
+                color: '#D4AF37',
+                fill: '#D4AF37',
+                filter: 'drop-shadow(0 0 4px rgba(212, 175, 55, 0.6))'
+              }}
+            />
+          )}
           {card.flags?.new && (
-            <Badge variant="secondary" className="text-xs px-1 py-0">
+            <Badge
+              variant="secondary"
+              className="text-xs px-2 py-0.5 font-semibold"
+              style={{
+                background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
+                color: '#FFFFFF',
+                border: 'none'
+              }}
+            >
               New
             </Badge>
           )}
         </div>
 
         {/* Service */}
-        <div className="flex items-center gap-2 text-sm dark:ink-muted">
-          <Scissors className="w-3 h-3" />
+        <div className="flex items-center gap-2 text-sm">
+          <Scissors className="w-3 h-3" style={{ color: '#D4AF37' }} />
           <span>{card.service_name}</span>
         </div>
 
         {/* Stylist */}
         {card.stylist_name && (
-          <div className="text-xs dark:ink-muted">with {card.stylist_name}</div>
+          <div className="text-xs" style={{ color: '#8C7853' }}>
+            with {card.stylist_name}
+          </div>
         )}
 
         {/* Status indicator */}
         {card.status !== 'DRAFT' && (
-          <div className="text-xs dark:ink-muted mt-2">
+          <div className="text-xs mt-2" style={{ color: '#8C7853' }}>
             Status: {card.status.replace('_', ' ').toLowerCase()}
             {card.status === 'TO_PAY' && (
-              <span className="ml-2 text-amber-600 dark:text-amber-400">💳 POS Ready</span>
+              <span className="ml-2" style={{ color: '#D4AF37' }}>💳 POS Ready</span>
             )}
           </div>
         )}
 
         {/* Draft actions */}
         {card.status === 'DRAFT' && (
-          <div className="flex gap-2 pt-2 border-t">
+          <div className="flex gap-2 pt-2 border-t" style={{ borderColor: '#8C785320' }}>
             <Button
               size="sm"
               variant="default"
-              className="flex-1 h-7 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
+              className="flex-1 h-7 font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                color: '#0B0B0B'
+              }}
               onClick={e => {
                 e.stopPropagation()
                 onConfirm?.()
@@ -180,7 +249,11 @@ export function Card({
             <Button
               size="sm"
               variant="outline"
-              className="flex-1 h-7"
+              className="flex-1 h-7 transition-all duration-300 hover:shadow-md hover:scale-105"
+              style={{
+                borderColor: '#8C7853',
+                color: '#F5E6C8'
+              }}
               onClick={e => {
                 e.stopPropagation()
                 onEdit?.()
@@ -193,11 +266,15 @@ export function Card({
 
         {/* TO_PAY actions */}
         {card.status === 'TO_PAY' && (
-          <div className="flex gap-2 pt-2 border-t">
+          <div className="flex gap-2 pt-2 border-t" style={{ borderColor: '#8C785320' }}>
             <Button
               size="sm"
               variant="default"
-              className="flex-1 h-7 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              className="flex-1 h-7 font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                color: '#FFFFFF'
+              }}
               onClick={e => {
                 e.stopPropagation()
                 onProcessPayment?.()

@@ -53,16 +53,25 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
     const validation = await jwtService.validateToken(token)
 
     if (!validation.valid || !validation.payload) {
+      console.warn('[verifyAuth] Token validation failed:', validation.error)
       return null
     }
 
     const payload = validation.payload
 
+    console.log('[verifyAuth] Token validated successfully:', {
+      userId: payload.sub,
+      email: payload.email,
+      organizationId: payload.organization_id,
+      hasOrganizationId: !!payload.organization_id,
+      role: payload.role
+    })
+
     return {
       id: payload.sub,
       email: payload.email,
       organizationId: payload.organization_id,
-      roles: payload.roles || [],
+      roles: payload.role ? [payload.role] : [],
       permissions: payload.permissions || []
     }
   } catch (error) {

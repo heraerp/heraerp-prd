@@ -45,7 +45,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
       badge: '3',
       badgeColor: LUXE_COLORS.emerald
     },
-    { title: 'POS', href: '/salon/pos2', icon: CreditCard },
+    { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     { title: 'Service Categories', href: '/salon/service-categories', icon: FolderOpen },
@@ -65,7 +65,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
       badge: '3',
       badgeColor: LUXE_COLORS.emerald
     },
-    { title: 'POS', href: '/salon/pos2', icon: CreditCard },
+    { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     { title: 'Service Categories', href: '/salon/service-categories', icon: FolderOpen },

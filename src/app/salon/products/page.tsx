@@ -5,13 +5,14 @@ import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSalonContext } from '../SalonProvider'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { useHeraCategories } from '@/hooks/useHeraCategories'
+import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { ProductList } from '@/components/salon/products/ProductList'
 import { ProductModal } from '@/components/salon/products/ProductModal'
 import { DeleteProductDialog } from '@/components/salon/products/DeleteProductDialog'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { Product } from '@/types/salon-product'
 import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
-import { Plus, Grid3X3, List, Package, Search, Download, Building2, Filter, X } from 'lucide-react'
+import { Plus, Grid3X3, List, Package, Search, Download, Building2, Filter, X, MapPin } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -54,6 +55,15 @@ function SalonProductsPageContent() {
   const [categoryFilter, setCategoryFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState('name_asc')
+
+  // Branch filter hook
+  const {
+    branchId,
+    branches,
+    loading: branchesLoading,
+    setBranchId,
+    hasMultipleBranches
+  } = useBranchFilter(organizationId, 'salon-products-list')
 
   // Fetch products using new Universal API v2
   const {
@@ -98,6 +108,11 @@ function SalonProductsPageContent() {
 
     // Category filter
     if (categoryFilter && product.category !== categoryFilter) {
+      return false
+    }
+
+    // Branch filter
+    if (branchId && product.metadata?.branch_id !== branchId) {
       return false
     }
 
@@ -357,6 +372,22 @@ function SalonProductsPageContent() {
                   <X className="h-3 w-3 cursor-pointer" onClick={() => setCategoryFilter('')} />
                 </Badge>
               )}
+
+              {branchId && (
+                <Badge
+                  variant="secondary"
+                  className="gap-1.5 bg-muted/50 cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={() => setBranchId('')}
+                >
+                  <Building2 className="h-3 w-3" />
+                  <MapPin className="h-3 w-3" />
+                  {branches.find(b => b.id === branchId)?.entity_name || 'Branch'}
+                  <X className="h-3 w-3" onClick={e => {
+                    e.stopPropagation()
+                    setBranchId('')
+                  }} />
+                </Badge>
+              )}
             </div>
 
             <div className="flex items-center gap-2">
@@ -403,6 +434,26 @@ function SalonProductsPageContent() {
                       {cat}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={branchId || '__ALL__'} onValueChange={(value) => setBranchId(value === '__ALL__' ? '' : value)}>
+                <SelectTrigger className="w-48 bg-background/30 border-border">
+                  <SelectValue placeholder="All locations" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__ALL__">All locations</SelectItem>
+                  {branchesLoading ? (
+                    <SelectItem value="__LOADING__" disabled>
+                      Loading...
+                    </SelectItem>
+                  ) : (
+                    branches.map(branch => (
+                      <SelectItem key={branch.id} value={branch.id}>
+                        {branch.entity_name || 'Unnamed Branch'}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
