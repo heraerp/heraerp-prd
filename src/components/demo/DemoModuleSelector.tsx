@@ -68,6 +68,18 @@ const DEMO_MODULES: DemoModule[] = [
       email: 'demo@techvantage.com',
       password: 'CRMDemo2025!'
     }
+  },
+  {
+    id: 'amplify',
+    name: 'Amplify AI',
+    description: 'Content amplification - AI-powered marketing engine',
+    icon: Sparkles,
+    gradient: 'from-purple-500 to-pink-600',
+    route: '/amplify',
+    credentials: {
+      email: 'demo@amplify.com',
+      password: 'AmplifyDemo2025!'
+    }
   }
 ]
 

@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useSalonContext } from '../SalonProvider'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSalonFinancialSecurity } from '@/hooks/useSalonSecurity'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -41,21 +42,18 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 import { useRouter } from 'next/navigation'
 
 export default function SalonFinancePage() {
-  const { organizationId, role, user, isLoading: authLoading, isAuthenticated } = useSalonContext()
+  const { organizationId, role, user, isLoading: authLoading, isAuthenticated } = useSecuredSalonContext()
+  const { 
+    canViewFinancials, 
+    canExportFinancial, 
+    canManagePricing, 
+    logFinancialAction,
+    executeSecurely 
+  } = useSalonFinancialSecurity()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('overview')
 
-  // Check if user has accountant role
-  useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      const userRole = role?.toLowerCase()
-      if (userRole !== 'accountant' && userRole !== 'owner') {
-        // Redirect non-accountants/owners
-        window.location.href = '/salon/auth'
-      }
-    }
-  }, [authLoading, isAuthenticated, role])
-
+  // Loading state
   if (authLoading) {
     return (
       <div
@@ -67,9 +65,47 @@ export default function SalonFinancePage() {
     )
   }
 
-  if (!isAuthenticated) {
-    return null
+  // Access control - check financial permissions
+  if (!canViewFinancials) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+      >
+        <Card
+          className="max-w-md w-full border-0"
+          style={{ backgroundColor: LUXE_COLORS.charcoalLight }}
+        >
+          <CardContent className="p-8 text-center">
+            <AlertCircle className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.ruby }} />
+            <h3 className="text-xl mb-2" style={{ color: LUXE_COLORS.gold }}>
+              Financial Access Restricted
+            </h3>
+            <p style={{ color: LUXE_COLORS.bronze }}>
+              Financial data access is restricted to owners, managers, and accountants. Please contact your manager for access.
+            </p>
+            <Button
+              onClick={() => router.push('/salon/dashboard')}
+              className="w-full mt-4"
+              style={{
+                backgroundColor: LUXE_COLORS.gold,
+                color: LUXE_COLORS.charcoal
+              }}
+            >
+              Return to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
+
+  // Log financial access
+  useEffect(() => {
+    if (isAuthenticated && canViewFinancials) {
+      logFinancialAction('financial_dashboard_accessed')
+    }
+  }, [isAuthenticated, canViewFinancials, logFinancialAction])
 
   // Mock financial data
   const financialSummary = {
@@ -101,10 +137,17 @@ export default function SalonFinancePage() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
-              <Button variant="outline" size="sm" style={{ borderColor: LUXE_COLORS.bronze }}>
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
+              {canExportFinancial && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  style={{ borderColor: LUXE_COLORS.bronze }}
+                  onClick={() => logFinancialAction('financial_data_exported')}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              )}
               <Button variant="outline" size="sm" style={{ borderColor: LUXE_COLORS.bronze }}>
                 <Calculator className="h-4 w-4 mr-2" />
                 Calculator

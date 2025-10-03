@@ -16,6 +16,7 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   '/salon/dashboard': ['owner', 'admin', 'receptionist', 'accountant'],
   '/salon/owner': ['owner', 'admin'], // Owner dashboard - restricted access
   '/salon/appointments': ['owner', 'receptionist', 'admin', 'accountant'],
+  '/salon/appointments1': ['owner', 'receptionist', 'admin', 'accountant'],
   '/salon/pos': ['owner', 'receptionist', 'admin'],
   '/salon/pos2': ['owner', 'receptionist', 'admin'],
   '/salon/customers': ['owner', 'receptionist', 'admin', 'accountant'],

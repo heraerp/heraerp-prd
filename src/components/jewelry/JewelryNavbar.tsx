@@ -14,7 +14,8 @@ const coreOperations = [
   { label: 'POS System', href: '/jewelry/pos' },
   { label: 'Inventory', href: '/jewelry/inventory' },
   { label: 'Mobile App', href: '/jewelry/mobile' },
-  { label: 'Search Items', href: '/jewelry/search' }
+  { label: 'Search Items', href: '/jewelry/search' },
+  { label: 'Smart AI', href: '/jewelry/ai' }
 ]
 
 const qualityCertification = [
@@ -58,8 +59,7 @@ const administration = [
   { label: 'Owner Portal', href: '/jewelry/owner' },
   { label: 'Security', href: '/jewelry/security' },
   { label: 'Branch Management', href: '/jewelry/branches' },
-  { label: 'Staff Portal', href: '/jewelry/staff' },
-  { label: 'Smart AI', href: '/jewelry/ai' }
+  { label: 'Staff Portal', href: '/jewelry/staff' }
 ]
 
 const documentation = [

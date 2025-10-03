@@ -23,6 +23,18 @@ fi
 
 echo "✅ All checks passed!"
 
+# HERA Enterprise Quality Check
+echo "🏆 Running HERA Enterprise Quality Check..."
+npm run quality:check
+
+if [ $? -ne 0 ]; then
+  echo "❌ Enterprise quality standards not met. Please fix issues before committing."
+  echo "💡 Run 'npm run quality:check' for detailed report"
+  exit 1
+fi
+
+echo "🏆 Enterprise quality standards met!"
+
 # Schema compat guard (fail if rewrites needed)
 FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\\.ya?ml$' || true)
 if [ -n "$FILES" ]; then

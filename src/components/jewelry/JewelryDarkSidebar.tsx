@@ -46,7 +46,8 @@ import {
   Target,
   Activity,
   Layers,
-  Fingerprint
+  Fingerprint,
+  Route
 } from 'lucide-react'
 
 // Royal Blue & Gold color palette for jewelry
@@ -76,6 +77,7 @@ export interface JewelrySidebarItem {
 // Main jewelry sidebar items
 const jewelrySidebarItems: JewelrySidebarItem[] = [
   { title: 'Dashboard', href: '/jewelry/dashboard', icon: Home },
+  { title: 'Search', href: '/jewelry/search', icon: Search },
   { title: 'Worklist', href: '/jewelry/worklist', icon: Gem },
   { title: 'POS', href: '/jewelry/pos', icon: CreditCard },
   { title: 'Inventory', href: '/jewelry/inventory', icon: Package },
@@ -88,6 +90,7 @@ const jewelrySidebarItems: JewelrySidebarItem[] = [
     badgeColor: JEWELRY_COLORS.gold
   },
   { title: 'Customers', href: '/jewelry/customers', icon: Users },
+  { title: 'Customer Journey', href: '/jewelry/customer-journey', icon: Route },
   { title: 'Reports', href: '/jewelry/reports', icon: BarChart3 }
 ]
 
@@ -95,10 +98,10 @@ const jewelrySidebarItems: JewelrySidebarItem[] = [
 const allJewelryApps: JewelrySidebarItem[] = [
   // Core Operations
   { title: 'Dashboard', href: '/jewelry/dashboard', icon: Home },
+  { title: 'Global Search', href: '/jewelry/search', icon: Search },
   { title: 'Worklist', href: '/jewelry/worklist', icon: Gem },
   { title: 'POS', href: '/jewelry/pos', icon: CreditCard },
   { title: 'Inventory', href: '/jewelry/inventory', icon: Package },
-  { title: 'Search', href: '/jewelry/search', icon: Search },
 
   // Quality & Certification
   { title: 'Appraisals', href: '/jewelry/appraisals', icon: Scale },
@@ -109,6 +112,7 @@ const allJewelryApps: JewelrySidebarItem[] = [
 
   // Customer Management
   { title: 'Customers', href: '/jewelry/customers', icon: Users },
+  { title: 'Customer Journey', href: '/jewelry/customer-journey', icon: Route },
   { title: 'Wishlist', href: '/jewelry/wishlist', icon: Heart },
   { title: 'Loyalty Program', href: '/jewelry/loyalty', icon: Gift },
   { title: 'VIP Services', href: '/jewelry/vip', icon: Crown },
@@ -158,6 +162,7 @@ const allJewelryApps: JewelrySidebarItem[] = [
 const bottomItems: JewelrySidebarItem[] = [
   { title: 'Analytics', href: '/jewelry/analytics', icon: TrendingUp },
   { title: 'Settings', href: '/jewelry/settings', icon: Settings },
+  { title: 'Demo', href: '/jewelry/demo?logout=true', icon: Users },
   { title: 'Owner', href: '/jewelry/owner', icon: Crown }
 ]
 

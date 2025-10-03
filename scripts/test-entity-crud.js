@@ -1,139 +1,115 @@
-// Test authenticated Entity CRUD operations
-async function testEntityCRUD() {
-  const baseUrl = 'http://localhost:3002'
+#!/usr/bin/env node
+
+const fetch = require('node-fetch');
+require('dotenv').config({ path: require('path').join(__dirname, '../.env.local') });
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const TEST_TOKEN = 'demo-token-salon-owner';
+
+async function apiCall(endpoint, options = {}) {
+  const url = `${API_BASE_URL}/api/v2/${endpoint}`;
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${TEST_TOKEN}`,
+      'x-hera-api-version': 'v2',
+      ...options.headers
+    }
+  });
   
-  console.log('🧪 Testing HERA Authenticated Entity CRUD Operations...\n')
+  const data = await response.json();
+  
+  if (!response.ok) {
+    console.error(`❌ ${options.method || 'GET'} ${endpoint} failed:`, data);
+    throw new Error(data.error || 'API call failed');
+  }
+  
+  return data;
+}
 
+async function testCRUD() {
+  console.log('🧪 Testing HERA V2 Entity CRUD Operations\n');
+  
   try {
-    // Step 1: Login to get authentication token
-    console.log('1️⃣ Authenticating with HERA...')
-    const loginResponse = await fetch(`${baseUrl}/api/v1/auth/login`, {
+    // 1. Create a test category
+    console.log('1️⃣ Creating test category...');
+    const createResponse = await apiCall('entities', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'mario@restaurant.com',
-        password: 'demo123'
+        entity_type: 'CATEGORY',
+        entity_name: 'Test Category ' + Date.now(),
+        smart_code: 'HERA.TEST.CATEGORY.ENTITY.ITEM.V1',
+        dynamic_fields: {
+          kind: { value: 'SERVICE', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.KIND.V1' },
+          name: { value: 'Test Category', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.NAME.V1' },
+          status: { value: 'active', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.STATUS.V1' }
+        }
       })
-    })
-
-    if (!loginResponse.ok) {
-      throw new Error('Authentication failed')
+    });
+    
+    console.log('✅ Created:', {
+      id: createResponse.data.id,
+      name: createResponse.data.entity_name
+    });
+    
+    const entityId = createResponse.data.id;
+    
+    // 2. Read all categories
+    console.log('\n2️⃣ Reading categories...');
+    const readResponse = await apiCall('entities?entity_type=CATEGORY&include_dynamic=true');
+    console.log(`✅ Found ${readResponse.data.length} categories`);
+    
+    // Find our created category
+    const ourCategory = readResponse.data.find(c => c.id === entityId);
+    if (ourCategory) {
+      console.log('✅ Our category found:', {
+        id: ourCategory.id,
+        name: ourCategory.entity_name,
+        kind: ourCategory.dynamic_fields?.kind?.value
+      });
     }
-
-    const loginData = await loginResponse.json()
-    const token = loginData.token
-    console.log('✅ Authentication successful')
-    console.log(`   User: ${loginData.user.name}`)
-    console.log(`   Organization: ${loginData.organization.name}`)
-
-    // Step 2: Test Entity Creation
-    console.log('\n2️⃣ Testing Entity Creation...')
-    const createResponse = await fetch(`${baseUrl}/api/v1/entities`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        entity_type: 'customer',
-        entity_name: 'Test Customer Corporation',
-        entity_code: 'TEST001',
-        entity_category: 'Enterprise',
-        description: 'A test customer created via authenticated CRUD API',
-        status: 'active'
-      })
-    })
-
-    if (!createResponse.ok) {
-      throw new Error('Entity creation failed')
-    }
-
-    const createData = await createResponse.json()
-    console.log('✅ Entity created successfully')
-    console.log(`   Entity ID: ${createData.data.id}`)
-    console.log(`   Entity Name: ${createData.data.entity_name}`)
-    const entityId = createData.data.id
-
-    // Step 3: Test Entity Reading
-    console.log('\n3️⃣ Testing Entity Reading...')
-    const readResponse = await fetch(`${baseUrl}/api/v1/entities?entity_type=customer&include_dynamic=true`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    })
-
-    if (!readResponse.ok) {
-      throw new Error('Entity reading failed')
-    }
-
-    const readData = await readResponse.json()
-    console.log('✅ Entities retrieved successfully')
-    console.log(`   Total entities: ${readData.count}`)
-    console.log(`   Organization filtered: Yes`)
-
-    // Step 4: Test Entity Update
-    console.log('\n4️⃣ Testing Entity Update...')
-    const updateResponse = await fetch(`${baseUrl}/api/v1/entities`, {
+    
+    // 3. Update the category
+    console.log('\n3️⃣ Updating category...');
+    const updateResponse = await apiCall('entities', {
       method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify({
-        id: entityId,
-        entity_name: 'Updated Test Customer Corporation',
-        description: 'Updated description via authenticated CRUD API',
-        status: 'active'
+        entity_id: entityId,
+        entity_name: 'Updated Test Category',
+        dynamic_fields: {
+          name: { value: 'Updated Test Category', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.NAME.V1' },
+          status: { value: 'inactive', type: 'text', smart_code: 'HERA.SALON.CATEGORY.DYN.STATUS.V1' }
+        }
       })
-    })
-
-    if (!updateResponse.ok) {
-      throw new Error('Entity update failed')
+    });
+    console.log('✅ Updated successfully');
+    
+    // 4. Delete (soft) the category
+    console.log('\n4️⃣ Soft deleting category...');
+    const deleteResponse = await apiCall(`entities/${entityId}?hard_delete=false`, {
+      method: 'DELETE'
+    });
+    console.log('✅ Soft deleted:', deleteResponse);
+    
+    // 5. Verify it is archived
+    console.log('\n5️⃣ Verifying archived status...');
+    const verifyResponse = await apiCall('entities?entity_type=CATEGORY&status=all&include_dynamic=true');
+    const archivedCategory = verifyResponse.data.find(c => c.id === entityId);
+    
+    if (archivedCategory && archivedCategory.status === 'archived') {
+      console.log('✅ Category is archived');
+    } else {
+      console.log('⚠️ Category status:', archivedCategory?.status || 'not found');
     }
-
-    console.log('✅ Entity updated successfully')
-
-    // Step 5: Test Entity Deletion
-    console.log('\n5️⃣ Testing Entity Deletion...')
-    const deleteResponse = await fetch(`${baseUrl}/api/v1/entities?id=${entityId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    })
-
-    if (!deleteResponse.ok) {
-      throw new Error('Entity deletion failed')
-    }
-
-    console.log('✅ Entity deleted successfully')
-
-    // Success Summary
-    console.log('\n🎉 HERA Authenticated Entity CRUD Tests Complete!')
-    console.log('✅ JWT Authentication working')
-    console.log('✅ Organization context preserved in all operations')
-    console.log('✅ CREATE operation successful')
-    console.log('✅ READ operation with filtering successful')
-    console.log('✅ UPDATE operation successful')
-    console.log('✅ DELETE operation successful')
-    console.log('✅ Multi-tenant isolation verified')
-
-    console.log('\n📋 Frontend Testing Instructions:')
-    console.log('1. Open http://localhost:3002/dashboard')
-    console.log('2. Login with: mario@restaurant.com / demo123')
-    console.log('3. Click "Show Entity Manager" button')
-    console.log('4. Test creating, editing, and deleting entities')
-    console.log('5. Verify all operations work with authentication')
-
+    
+    console.log('\n✅ All CRUD operations completed successfully!');
+    
   } catch (error) {
-    console.error('❌ Test failed:', error.message)
+    console.error('\n❌ Test failed:', error.message);
+    process.exit(1);
   }
 }
 
-if (require.main === module) {
-  testEntityCRUD()
-}
-
-module.exports = { testEntityCRUD }
+// Run the test
+testCRUD().catch(console.error);

@@ -55,7 +55,7 @@ const sidebarItems: SidebarItem[] = [
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
   {
     title: 'Appointments',
-    href: '/salon/appointments',
+    href: '/salon/appointments1',
     icon: Calendar,
     badge: '3',
     badgeColor: COLORS.emerald

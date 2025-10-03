@@ -541,7 +541,7 @@ export default function JewelryAIPage() {
       <div className="min-h-screen jewelry-gradient-primary flex items-center justify-center">
         <div className="jewelry-glass-card p-6">
           <Brain className="h-12 w-12 jewelry-text-gold animate-pulse mx-auto mb-4" />
-          <p className="!text-gray-100 dark:!text-gray-100 text-center">
+          <p className="text-center" style={{ color: '#F3F4F6' }}>
             Loading AI Intelligence...
           </p>
         </div>
@@ -555,10 +555,10 @@ export default function JewelryAIPage() {
       <div className="min-h-screen jewelry-gradient-primary flex items-center justify-center">
         <div className="jewelry-glass-card p-8 text-center">
           <Brain className="h-16 w-16 jewelry-text-gold mx-auto mb-4" />
-          <h2 className="!text-gray-100 dark:!text-gray-100 text-xl font-semibold mb-2">
+          <h2 className="text-xl font-semibold mb-2" style={{ color: '#F3F4F6' }}>
             Access Required
           </h2>
-          <p className="!text-gray-400 dark:!text-gray-400 mb-4">
+          <p className="mb-4" style={{ color: '#9CA3AF' }}>
             Please select an organization to access AI features
           </p>
         </div>
@@ -584,8 +584,8 @@ export default function JewelryAIPage() {
             className="text-center mb-4"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold-500/10 border border-gold-500/30 rounded-full">
-              <Brain className="h-4 w-4 text-gold-400" />
-              <span className="text-gold-400 text-sm font-medium">Live Demo - HERA Jewelry AI Intelligence</span>
+              <Brain className="h-4 w-4" style={{ color: '#E6C200' }} />
+              <span className="text-sm font-medium" style={{ color: '#E6C200' }}>Live Demo - HERA Jewelry AI Intelligence</span>
             </div>
           </motion.div>
 
@@ -596,11 +596,11 @@ export default function JewelryAIPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-8 p-6"
           >
-            <h1 className="!text-gray-100 dark:!text-gray-100 text-4xl md:text-5xl mb-4 font-bold">
-              <Brain className="inline-block mr-3 mb-2 jewelry-icon-gold" size={48} />
+            <h1 className="text-4xl md:text-5xl mb-4 font-bold" style={{ color: '#F3F4F6' }}>
+              <Brain className="inline-block mr-3 mb-2" size={48} style={{ color: '#E6C200' }} />
               AI-Powered Intelligence
             </h1>
-            <p className="!text-gray-400 dark:!text-gray-400 text-lg md:text-xl max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl max-w-3xl mx-auto" style={{ color: '#9CA3AF' }}>
               Advanced artificial intelligence for smart business decisions and automated
               optimization
             </p>
@@ -620,12 +620,15 @@ export default function JewelryAIPage() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`flex items-center space-x-2 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
                     activeTab === tab.key
-                      ? 'bg-gold-500/20 border border-gold-500/30 !text-gray-100 dark:!text-gray-100 shadow-lg'
-                      : 'bg-white/5 border border-white/10 !text-gray-400 dark:!text-gray-400 hover:bg-white/10 hover:!text-gray-100 dark:hover:!text-gray-100'
+                      ? 'bg-gold-500/20 border border-gold-500/30 shadow-lg'
+                      : 'bg-white/5 border border-white/10 hover:bg-white/10'
                   }`}
+                  style={{
+                    color: activeTab === tab.key ? '#E6C200' : '#9CA3AF'
+                  }}
                 >
-                  <tab.icon size={16} className={activeTab === tab.key ? 'text-gold-400' : 'text-gray-400'} />
-                  <span>{tab.label}</span>
+                  <tab.icon size={16} style={{ color: activeTab === tab.key ? '#E6C200' : '#9CA3AF' }} />
+                  <span style={{ color: activeTab === tab.key ? '#E6C200' : '#9CA3AF' }}>{tab.label}</span>
                 </button>
               ))}
             </div>
@@ -643,8 +646,8 @@ export default function JewelryAIPage() {
               >
                 <div className="jewelry-glass-card jewelry-float p-6 text-center">
                   <Zap className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="!text-gray-100 dark:!text-gray-100 text-3xl font-bold">94.2%</h3>
-                  <p className="!text-gray-400 dark:!text-gray-400 text-sm font-medium">
+                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>94.2%</h3>
+                  <p className="text-sm font-medium" style={{ color: '#9CA3AF' }}>
                     AI Accuracy
                   </p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
@@ -658,8 +661,8 @@ export default function JewelryAIPage() {
                   style={{ animationDelay: '0.1s' }}
                 >
                   <Target className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="!text-gray-100 dark:!text-gray-100 text-3xl font-bold">67</h3>
-                  <p className="!text-gray-400 dark:!text-gray-400 text-sm font-medium">
+                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>67</h3>
+                  <p className="text-sm font-medium" style={{ color: '#9CA3AF' }}>
                     Active Recommendations
                   </p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
@@ -673,10 +676,10 @@ export default function JewelryAIPage() {
                   style={{ animationDelay: '0.2s' }}
                 >
                   <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="!text-gray-100 dark:!text-gray-100 text-3xl font-bold">
-                    {['owner', 'manager'].includes(jewelryRole || '') ? '28.5L' : '***'}
+                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>
+                    {['owner', 'manager'].includes(jewelryRole || '') ? '$28.5L' : '***'}
                   </h3>
-                  <p className="!text-gray-400 dark:!text-gray-400 text-sm font-medium">
+                  <p className="text-sm font-medium" style={{ color: '#9CA3AF' }}>
                     AI-Generated Revenue
                   </p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
@@ -690,8 +693,8 @@ export default function JewelryAIPage() {
                   style={{ animationDelay: '0.3s' }}
                 >
                   <Activity className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="!text-gray-100 dark:!text-gray-100 text-3xl font-bold">89.7%</h3>
-                  <p className="!text-gray-400 dark:!text-gray-400 text-sm font-medium">
+                  <h3 className="text-3xl font-bold" style={{ color: '#F3F4F6' }}>89.7%</h3>
+                  <p className="text-sm font-medium" style={{ color: '#9CA3AF' }}>
                     Automation Rate
                   </p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
@@ -710,16 +713,17 @@ export default function JewelryAIPage() {
                   className="jewelry-glass-panel p-6"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="!text-gray-100 dark:!text-gray-100 text-xl font-semibold flex items-center gap-2">
-                      <Lightbulb className="jewelry-icon-gold" size={24} />
+                    <h3 className="text-xl font-semibold flex items-center gap-2" style={{ color: '#F3F4F6' }}>
+                      <Lightbulb size={24} style={{ color: '#E6C200' }} />
                       Recent Recommendations
                     </h3>
                     <button
                       onClick={() => setActiveTab('recommendations')}
-                      className="bg-white/5 border border-white/10 !text-gray-400 dark:!text-gray-400 hover:bg-white/10 hover:!text-gray-100 dark:hover:!text-gray-100 flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
+                      className="bg-white/5 border border-white/10 hover:bg-white/10 flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
+                      style={{ color: '#9CA3AF' }}
                     >
-                      <Eye className="text-gold-400" size={14} />
-                      <span className="text-sm !text-gray-400 dark:!text-gray-400 hover:!text-gray-100">View All</span>
+                      <Eye size={14} style={{ color: '#E6C200' }} />
+                      <span className="text-sm" style={{ color: '#9CA3AF' }}>View All</span>
                     </button>
                   </div>
 
@@ -740,26 +744,26 @@ export default function JewelryAIPage() {
                                 {rec.confidence}% confidence
                               </span>
                             </div>
-                            <h4 className="!text-gray-100 dark:!text-gray-100 font-semibold text-base mb-2">
+                            <h4 className="font-semibold text-base mb-2" style={{ color: '#F3F4F6' }}>
                               {rec.title}
                             </h4>
-                            <p className="!text-gray-400 dark:!text-gray-400 text-sm leading-relaxed">
+                            <p className="text-sm leading-relaxed" style={{ color: '#9CA3AF' }}>
                               {rec.description}
                             </p>
                           </div>
                         </div>
 
                         <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                          <span className="!text-gray-400 dark:!text-gray-400 text-sm">
+                          <span className="text-sm" style={{ color: '#9CA3AF' }}>
                             {rec.category}
                           </span>
                           <div className="flex items-center space-x-3">
                             {['owner', 'manager'].includes(jewelryRole || '') && (
-                              <span className="text-gold-400 font-semibold text-sm">
+                              <span className="font-semibold text-sm" style={{ color: '#E6C200' }}>
                                 {formatCurrency(rec.impact.revenue)} impact
                               </span>
                             )}
-                            <button className="bg-gold-500/20 border border-gold-500/30 !text-gray-100 dark:!text-gray-100 hover:bg-gold-500/30 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                            <button className="bg-gold-500/20 border border-gold-500/30 hover:bg-gold-500/30 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200" style={{ color: '#F3F4F6' }}>
                               Review
                             </button>
                           </div>
@@ -777,17 +781,18 @@ export default function JewelryAIPage() {
                   className="jewelry-glass-panel p-6"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="!text-gray-100 dark:!text-gray-100 text-xl font-semibold flex items-center gap-2">
-                      <Cpu className="jewelry-icon-gold" size={24} />
+                    <h3 className="text-xl font-semibold flex items-center gap-2" style={{ color: '#F3F4F6' }}>
+                      <Cpu size={24} style={{ color: '#E6C200' }} />
                       AI Model Status
                     </h3>
                     {['owner', 'manager'].includes(jewelryRole || '') && (
                       <button
                         onClick={() => setActiveTab('models')}
-                        className="bg-white/5 border border-white/10 !text-gray-400 dark:!text-gray-400 hover:bg-white/10 hover:!text-gray-100 dark:hover:!text-gray-100 flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
+                        className="bg-white/5 border border-white/10 hover:bg-white/10 flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
+                        style={{ color: '#9CA3AF' }}
                       >
-                        <Settings className="text-gold-400" size={14} />
-                        <span className="text-sm !text-gray-400 dark:!text-gray-400 hover:!text-gray-100">Manage</span>
+                        <Settings size={14} style={{ color: '#E6C200' }} />
+                        <span className="text-sm" style={{ color: '#9CA3AF' }}>Manage</span>
                       </button>
                     )}
                   </div>
@@ -799,10 +804,10 @@ export default function JewelryAIPage() {
                           <div className="flex items-center space-x-3">
                             {getStatusIcon(model.status)}
                             <div>
-                              <h4 className="!text-gray-100 dark:!text-gray-100 font-semibold text-base">
+                              <h4 className="font-semibold text-base" style={{ color: '#F3F4F6' }}>
                                 {model.name}
                               </h4>
-                              <p className="!text-gray-400 dark:!text-gray-400 text-sm">
+                              <p className="text-sm" style={{ color: '#9CA3AF' }}>
                                 {model.type} - v{model.version}
                               </p>
                             </div>
@@ -813,32 +818,32 @@ export default function JewelryAIPage() {
                             >
                               {model.accuracy}%
                             </p>
-                            <p className="!text-gray-400 dark:!text-gray-400 text-sm">accuracy</p>
+                            <p className="text-sm" style={{ color: '#9CA3AF' }}>accuracy</p>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-6 pt-4 border-t border-white/10">
                           <div className="text-center">
-                            <span className="!text-gray-400 dark:!text-gray-400 block text-sm">
+                            <span className="block text-sm" style={{ color: '#9CA3AF' }}>
                               Precision
                             </span>
-                            <span className="!text-gray-100 dark:!text-gray-100 text-lg font-semibold">
+                            <span className="text-lg font-semibold" style={{ color: '#F3F4F6' }}>
                               {(model.performance.precision * 100).toFixed(1)}%
                             </span>
                           </div>
                           <div className="text-center">
-                            <span className="!text-gray-400 dark:!text-gray-400 block text-sm">
+                            <span className="block text-sm" style={{ color: '#9CA3AF' }}>
                               Recall
                             </span>
-                            <span className="!text-gray-100 dark:!text-gray-100 text-lg font-semibold">
+                            <span className="text-lg font-semibold" style={{ color: '#F3F4F6' }}>
                               {(model.performance.recall * 100).toFixed(1)}%
                             </span>
                           </div>
                           <div className="text-center">
-                            <span className="!text-gray-400 dark:!text-gray-400 block text-sm">
+                            <span className="block text-sm" style={{ color: '#9CA3AF' }}>
                               F1 Score
                             </span>
-                            <span className="!text-gray-100 dark:!text-gray-100 text-lg font-semibold">
+                            <span className="text-lg font-semibold" style={{ color: '#F3F4F6' }}>
                               {(model.performance.f1Score * 100).toFixed(1)}%
                             </span>
                           </div>
@@ -860,10 +865,10 @@ export default function JewelryAIPage() {
               className="jewelry-glass-panel p-12 text-center"
             >
               <Brain className="mx-auto mb-6 jewelry-icon-gold" size={64} />
-              <h3 className="!text-gray-100 dark:!text-gray-100 text-2xl font-semibold mb-3">
+              <h3 className="text-2xl font-semibold mb-3" style={{ color: '#F3F4F6' }}>
                 {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Coming Soon
               </h3>
-              <p className="!text-gray-400 dark:!text-gray-400 text-lg max-w-md mx-auto">
+              <p className="text-lg max-w-md mx-auto" style={{ color: '#9CA3AF' }}>
                 Advanced AI capabilities for jewelry business intelligence and automation.
               </p>
             </motion.div>
@@ -876,9 +881,9 @@ export default function JewelryAIPage() {
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6 p-6"
           >
-            <p className="!text-gray-400 dark:!text-gray-400 text-sm">
+            <p className="text-sm" style={{ color: '#9CA3AF' }}>
               AI-powered intelligence by{' '}
-              <span className="!text-gray-100 dark:!text-gray-100 font-semibold">
+              <span className="font-semibold" style={{ color: '#F3F4F6' }}>
                 HERA Advanced Analytics Engine
               </span>
             </p>

@@ -50,7 +50,7 @@ const sidebarItems: SidebarItem[] = [
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
   {
     title: 'Appointments',
-    href: '/salon/appointments',
+    href: '/salon/appointments1',
     icon: Calendar,
     badge: '12',
     badgeColor: 'bg-violet-500'
@@ -71,7 +71,7 @@ const sidebarItems: SidebarItem[] = [
 const allApps: SidebarItem[] = [
   // Main Operations
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
-  { title: 'Appointments', href: '/appointments', icon: Calendar },
+  { title: 'Appointments', href: '/salon/appointments1', icon: Calendar },
   { title: 'POS Terminal', href: '/salon/pos2', icon: CreditCard },
   { title: 'Customer Management', href: '/salon/customers', icon: Users },
 

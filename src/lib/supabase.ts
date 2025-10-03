@@ -1,8 +1,21 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Supabase configuration - get fresh values at runtime
-const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const getSupabaseUrl = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  if (typeof window !== 'undefined' && !url) {
+    console.error('🚨 NEXT_PUBLIC_SUPABASE_URL is missing from client environment')
+  }
+  return url
+}
+
+const getSupabaseAnonKey = () => {
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+  if (typeof window !== 'undefined' && !key) {
+    console.error('🚨 NEXT_PUBLIC_SUPABASE_ANON_KEY is missing from client environment')
+  }
+  return key
+}
 
 // Use global singleton to prevent multiple instances across hot reloads
 const globalForSupabase = globalThis as unknown as {
@@ -18,6 +31,7 @@ export const getSupabase = () => {
 
   const url = getSupabaseUrl()
   const key = getSupabaseAnonKey()
+
 
   // Only create client if we have valid configuration
   if (url && key && !url.includes('placeholder')) {
@@ -56,8 +70,22 @@ export const getSupabase = () => {
       console.log('📍 Supabase client created from:', new Error().stack?.split('\n')[2])
     }
   } else {
+    // Enhanced error message for missing configuration
+    const errorMessage = `Supabase not configured properly. Missing: ${!url ? 'NEXT_PUBLIC_SUPABASE_URL' : ''} ${!key ? 'NEXT_PUBLIC_SUPABASE_ANON_KEY' : ''}`
+    
+    if (typeof window !== 'undefined') {
+      console.error('🚨 Supabase configuration error:', {
+        hasUrl: !!url,
+        hasKey: !!key,
+        urlPreview: url ? `${url.substring(0, 20)}...` : 'MISSING',
+        keyPreview: key ? `${key.substring(0, 20)}...` : 'MISSING',
+        environment: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+      })
+    }
+    
     // For build time, create a no-op client
-    const noop = () => Promise.reject(new Error('Supabase not configured'))
+    const noop = () => Promise.reject(new Error(errorMessage))
     globalForSupabase.supabaseInstance = {
       from: () => ({ select: noop, insert: noop, update: noop, delete: noop }),
       auth: { getSession: noop, signIn: noop, signOut: noop },

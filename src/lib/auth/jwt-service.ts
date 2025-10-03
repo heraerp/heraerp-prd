@@ -44,8 +44,8 @@ export class HERAJWTService {
       ) {
         const payload: JWTPayload = {
           sub: 'demo-user-123',
-          email: 'demo@example.com',
-          organization_id: 'demo-org-123',
+          email: 'demo@hairtalkz.com', // Use salon email for demo
+          organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0', // Hair Talkz Salon ID
           role: 'admin',
           permissions: [
             'entities:read',
@@ -70,9 +70,18 @@ export class HERAJWTService {
         return { valid: false, error: 'Invalid token' }
       }
 
+      // For salon users, determine organization_id based on email
+      let organizationId = user.user_metadata?.organization_id
+      
+      // Default to HairTalkz for salon users (michele@hairtalkz.com should use HairTalkz org)
+      if (user.email?.includes('hairtalkz.com') || user.email?.includes('michele')) {
+        organizationId = '0fd09e31-d257-4329-97eb-7d7f522ed6f0' // Hair Talkz Salon ID
+      }
+
       const payload: JWTPayload = {
         sub: user.id,
         email: user.email || '',
+        organization_id: organizationId,
         role: user.user_metadata?.role || 'user',
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + this.defaultExpiry,

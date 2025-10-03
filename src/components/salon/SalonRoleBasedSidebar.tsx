@@ -57,7 +57,7 @@ const getSidebarItems = (role: string): SidebarItem[] => {
     },
     {
       title: 'Appointments',
-      href: '/salon/appointments',
+      href: '/salon/appointments1',
       icon: Calendar,
       badge: '3',
       badgeColor: 'bg-violet-500',
@@ -156,7 +156,7 @@ const getAllApps = (role: string): SidebarItem[] => {
     },
     {
       title: 'Appointments',
-      href: '/salon/appointments',
+      href: '/salon/appointments1',
       icon: Calendar,
       roles: ['Owner', 'Receptionist', 'Administrator']
     },

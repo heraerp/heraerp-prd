@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
+import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import SalonDarkSidebar, { SidebarItem } from './SalonDarkSidebar'
 import {
   Home,
@@ -10,6 +11,7 @@ import {
   Users,
   Scissors,
   Package,
+  FolderOpen,
   MessageCircle,
   UserPlus,
   DollarSign,
@@ -38,7 +40,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
     {
       title: 'Appointments',
-      href: '/salon/appointments',
+      href: '/salon/appointments1',
       icon: Calendar,
       badge: '3',
       badgeColor: LUXE_COLORS.emerald
@@ -46,6 +48,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'POS', href: '/salon/pos2', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Services', href: '/salon/services', icon: Scissors },
+    { title: 'Service Categories', href: '/salon/service-categories', icon: FolderOpen },
     { title: 'Products', href: '/salon/products', icon: Package },
     { title: 'Inventory', href: '/salon/inventory', icon: Package },
     { title: 'Staff', href: '/salon/staff', icon: UserPlus },
@@ -57,7 +60,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Dashboard', href: '/salon/receptionist/dashboard', icon: Home },
     {
       title: 'Appointments',
-      href: '/salon/appointments',
+      href: '/salon/appointments1',
       icon: Calendar,
       badge: '3',
       badgeColor: LUXE_COLORS.emerald
@@ -65,6 +68,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'POS', href: '/salon/pos2', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Services', href: '/salon/services', icon: Scissors },
+    { title: 'Service Categories', href: '/salon/service-categories', icon: FolderOpen },
     {
       title: 'WhatsApp',
       href: '/salon/whatsapp',
@@ -101,7 +105,8 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
 }
 
 export default function SalonRoleBasedDarkSidebar() {
-  const { role, isLoading } = useSalonContext()
+  const { salonRole, isLoading } = useSecuredSalonContext()
+  const { getNavigationItems } = useSalonSecurity()
 
   if (isLoading) {
     return (
@@ -118,7 +123,7 @@ export default function SalonRoleBasedDarkSidebar() {
   }
 
   // Get role-specific items or default to owner
-  const userRole = role?.toLowerCase() as keyof typeof roleBasedSidebarItems
+  const userRole = salonRole?.toLowerCase() as keyof typeof roleBasedSidebarItems
   const sidebarItems = roleBasedSidebarItems[userRole] || roleBasedSidebarItems.owner
 
   // Pass the role-specific items to the base sidebar

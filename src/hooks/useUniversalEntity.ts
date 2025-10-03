@@ -156,15 +156,23 @@ function mergeDynamic(rows: any[]) {
   return out
 }
 
-// Helper to get authentication headers
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  // For the entity config demo, always use the demo token
-  // This ensures we have the correct organization_id and permissions
-  console.log('🚀 Using demo token for entity config demo')
-  return {
-    'Content-Type': 'application/json',
-    Authorization: 'Bearer demo-token-salon-receptionist'
+// Helper to get authentication headers, including organization context
+async function getAuthHeaders(organizationId?: string | null): Promise<Record<string, string>> {
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session?.access_token) {
+    console.log('❌ No authentication available')
+    throw new Error('Authentication required')
   }
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${session.access_token}`,
+    'x-hera-api-version': 'v2'
+  }
+  if (organizationId) headers['x-hera-org-id'] = organizationId
+
+  return headers
 }
 
 /**
@@ -247,13 +255,22 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       if (filters.priority) params.set('priority', filters.priority)
       if (filters.q) params.set('q', filters.q)
 
-      const headers = await getAuthHeaders()
+      const headers = await getAuthHeaders(organizationId)
+      console.log('🌐 Making API call to:', `/api/v2/entities?${params}`)
+      console.log('📋 Request headers:', headers)
+      
       const res = await fetch(`/api/v2/entities?${params}`, { headers })
+      console.log('📈 Response status:', res.status, res.statusText)
+      
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
+        console.error('❌ API error response:', err)
         throw new Error(err.error || 'Failed to fetch entities')
       }
-      return res.json()
+      
+      const responseData = await res.json()
+      console.log('📦 API response data:', responseData)
+      return responseData
     },
     // Important bits to avoid UI thrash:
     staleTime: 10_000,
@@ -276,25 +293,51 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
   // Create entity mutation with dynamic fields and relationships
   const createMutation = useMutation({
-    mutationFn: async (entity: UniversalEntity) => {
-      const headers = await getAuthHeaders()
+    mutationFn: async (entity: UniversalEntity & Record<string, any>) => {
+      const headers = await getAuthHeaders(organizationId)
+
+      // Prepare request body with organization context and entity type
+      const baseBody: any = {
+        p_organization_id: organizationId,
+        entity_type,
+        entity_name: entity.entity_name,
+        smart_code: entity.smart_code,
+        ...(entity.entity_code ? { entity_code: entity.entity_code } : {}),
+        ...(entity.metadata ? { metadata: entity.metadata } : {}),
+        ...(entity.dynamic_fields ? { dynamic_fields: entity.dynamic_fields } : {})
+      }
 
       // 1) Create entity
       const r = await fetch('/api/v2/entities', {
         method: 'POST',
         headers,
-        body: JSON.stringify(entity)
+        body: JSON.stringify(baseBody)
       })
-      if (!r.ok) throw new Error((await r.json())?.error || 'Create entity failed')
-      const created = await r.json() // {data:{id:...}} or {id:...}
-      const entity_id = created?.data?.id ?? created?.id
+      if (!r.ok) {
+        const errorData = await r.json().catch(() => ({ error: 'Create entity failed' }))
+        throw new Error(errorData?.error || 'Create entity failed')
+      }
+      const created = await r.json()
+      const entity_id = created?.data?.id || created?.data?.entity_id || created?.id
+      
+      if (!entity_id) {
+        console.error('Unexpected response format:', created)
+        throw new Error('Failed to get entity ID from creation response')
+      }
 
-      // 2) Dynamic fields batch (if provided)
-      const inline = entity.dynamic_fields ?? {}
-      const batchItems = toBatchItems(
-        config.dynamicFields,
-        Object.fromEntries(Object.entries(inline).map(([k, v]: any) => [k, v.value]))
+      // 2) Dynamic fields batch (support both inline dynamic_fields and top-level values)
+      const inline = (entity.dynamic_fields ?? {}) as Record<string, any>
+      const inlineValues = Object.fromEntries(
+        Object.entries(inline).map(([k, v]: any) => [k, v?.value])
       )
+      const topLevelValues: Record<string, any> = {}
+      for (const def of config.dynamicFields ?? []) {
+        if (def.name in entity && (entity as any)[def.name] !== undefined) {
+          topLevelValues[def.name] = (entity as any)[def.name]
+        }
+      }
+      const mergedValues = { ...topLevelValues, ...inlineValues }
+      const batchItems = toBatchItems(config.dynamicFields, mergedValues)
       if (batchItems.length) {
         await fetch('/api/v2/dynamic/batch', {
           method: 'POST',
@@ -308,8 +351,8 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       }
 
       // 3) Relationships (optional)
-      // Expect caller to pass metadata.relationships = { TYPE: [toId, ...] }
-      const relPayload = (entity as any)?.metadata?.relationships
+      // Accept either metadata.relationships or a top-level relationships map
+      const relPayload = (entity as any)?.metadata?.relationships || (entity as any)?.relationships
       if (relPayload && config.relationships?.length) {
         const rows: any[] = []
         for (const def of config.relationships) {
@@ -356,33 +399,43 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       dynamic_patch?: Record<string, any>
       relationships_patch?: Record<string, string[]> // TYPE -> [toIds]
     }) => {
-      const headers = await getAuthHeaders()
+      const headers = await getAuthHeaders(organizationId)
 
-      // 1) Patch entity
-      const r = await fetch('/api/v2/entities', {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({ entity_id, ...updates })
-      })
-      if (!r.ok) throw new Error((await r.json())?.error || 'Update entity failed')
-
-      // 2) Dynamic fields batch (only changed fields)
-      if (dynamic_patch && config.dynamicFields?.length) {
-        const items = toBatchItems(config.dynamicFields, dynamic_patch)
-        if (items.length) {
-          await fetch('/api/v2/dynamic/batch', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-              p_organization_id: organizationId,
-              p_entity_id: entity_id,
-              p_items: items
-            })
-          })
+      // Convert dynamic_patch to the dynamic_fields format if provided
+      let dynamic_fields_formatted: Record<string, any> | undefined
+      if (dynamic_patch) {
+        dynamic_fields_formatted = {}
+        for (const [key, value] of Object.entries(dynamic_patch)) {
+          // Find the field definition to get the type and smart_code
+          const fieldDef = config.dynamicFields?.find(f => f.name === key)
+          if (fieldDef) {
+            dynamic_fields_formatted[key] = {
+              value: value,
+              type: fieldDef.type,
+              smart_code: fieldDef.smart_code
+            }
+          }
         }
       }
 
-      // 3) Relationships upsert (idempotent)
+      // Use the main PUT endpoint with dynamic_fields included
+      const r = await fetch('/api/v2/entities', {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ 
+          p_organization_id: organizationId,
+          entity_id, 
+          ...updates,
+          ...(dynamic_fields_formatted && { dynamic_fields: dynamic_fields_formatted })
+        })
+      })
+      
+      if (!r.ok) {
+        const error = await r.json().catch(() => ({}))
+        throw new Error(error?.error || 'Update entity failed')
+      }
+
+      // Handle relationships if needed (keeping this for future use)
       if (relationships_patch && config.relationships?.length) {
         const rows: any[] = []
         for (const def of config.relationships) {
@@ -412,12 +465,13 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['entities', entity_type] })
+      queryClient.invalidateQueries({ queryKey: ['entities'] })
     }
   })
 
   // Get entity by ID with dynamic fields and relationships
   const getById = async (entity_id: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await getAuthHeaders(organizationId)
 
     const res = await fetch(`/api/v2/entities/${entity_id}`, { headers })
     if (!res.ok) throw new Error('Failed to fetch entity')
@@ -473,7 +527,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         hard_delete: hard_delete.toString()
       })
 
-      const headers = await getAuthHeaders()
+      const headers = await getAuthHeaders(organizationId)
       const response = await fetch(`/api/v2/entities/${entity_id}?${params}`, {
         method: 'DELETE',
         headers
@@ -510,7 +564,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
     // Direct helpers (optional external use)
     setDynamicFields: async (entity_id: string, values: Record<string, any>) => {
-      const headers = await getAuthHeaders()
+      const headers = await getAuthHeaders(organizationId)
       const items = toBatchItems(config.dynamicFields, values)
       if (!items.length) return
       await fetch('/api/v2/dynamic/batch', {
@@ -526,7 +580,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
     },
 
     link: async (entity_id: string, type: string, toIds: string[]) => {
-      const headers = await getAuthHeaders()
+      const headers = await getAuthHeaders(organizationId)
       const def = config.relationships?.find(r => r.type === type)
       if (!def) throw new Error(`Unknown relationship type: ${type}`)
       const rows = toIds.map(to => ({
@@ -640,7 +694,7 @@ export function useUniversalEntityDetail(
     queryFn: async () => {
       if (!entityId) return null
 
-      const headers = await getAuthHeaders()
+      const headers = await getAuthHeaders(organizationId)
 
       // 1) Get the base entity
       const res = await fetch(`/api/v2/entities/${entityId}`, { headers })

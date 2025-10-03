@@ -23,7 +23,8 @@ import {
   Calculator,
   Heart,
   Briefcase,
-  Plus
+  Plus,
+  Sparkles
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -39,7 +40,8 @@ const appIcons = {
   budgeting: Calculator,
   healthcare: Heart,
   financial: Briefcase,
-  retail: Package
+  retail: Package,
+  amplify: Sparkles
 }
 
 const appDescriptions = {
@@ -48,7 +50,8 @@ const appDescriptions = {
   accounting: 'Financial management & reporting',
   pos: 'Point of sale system',
   hrm: 'Human resource management',
-  analytics: 'Business intelligence & reports'
+  analytics: 'Business intelligence & reports',
+  amplify: 'AI-powered content amplification'
 }
 
 export default function OrganizationDashboard() {

@@ -1,0 +1,93 @@
+/* Salon Luxe Theme Styles */
+
+/* Input placeholder styling */
+.luxe-input::placeholder {
+  color: #8C7853; /* LUXE_COLORS.bronze */
+  opacity: 0.7;
+}
+
+/* Select dropdown styling */
+.luxe-select-content {
+  background-color: #232323;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.luxe-select-item:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Scrollbar styling for luxe theme */
+.luxe-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.luxe-scrollbar::-webkit-scrollbar-track {
+  background: rgba(26, 26, 26, 0.5);
+}
+
+.luxe-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+
+.luxe-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+/* Focus styles */
+.luxe-focus:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: rgba(212, 175, 55, 0.5);
+  border-color: #D4AF37;
+}
+
+/* Modal styling */
+.luxe-modal {
+  animation: luxe-modal-enter 0.3s ease-out;
+}
+
+@keyframes luxe-modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Modal backdrop blur */
+.luxe-modal-backdrop {
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Dropdown styling */
+.luxe-dropdown {
+  animation: luxe-dropdown-enter 0.2s ease-out;
+}
+
+@keyframes luxe-dropdown-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fix button visibility in dialogs */
+.luxe-modal button[type="submit"] {
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure dialog content has proper overflow */
+.luxe-modal .overflow-hidden {
+  overflow: visible !important;
+}

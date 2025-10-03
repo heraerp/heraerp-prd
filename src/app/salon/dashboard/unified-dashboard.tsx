@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { useSalonContext } from '../SalonProvider'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -149,7 +150,16 @@ const WIDGET_DATA = {
 }
 
 export function UnifiedDashboard() {
-  const { role, user, isLoading, isAuthenticated } = useSalonContext()
+  const context = useSecuredSalonContext()
+  const { 
+    role, 
+    user, 
+    isLoading, 
+    isAuthenticated,
+    getDashboardWidgets,
+    getNavigationItems,
+    canViewFinancials 
+  } = useSalonSecurity()
   const router = useRouter()
 
   // Redirect to role-specific dashboards
@@ -212,10 +222,13 @@ export function UnifiedDashboard() {
     )
   }
 
-  const userRole = role.toLowerCase() as keyof typeof ROLE_FEATURES
-  const features = ROLE_FEATURES[userRole] || ROLE_FEATURES.owner
-  const widgets = features.widgets
-  const quickLinks = features.quickLinks
+  // Use security-aware dashboard widgets
+  const dashboardWidgets = getDashboardWidgets()
+  const navigationItems = getNavigationItems()
+  
+  // Filter widgets based on role permissions
+  const widgets = dashboardWidgets
+  const quickLinks = ROLE_FEATURES[role]?.quickLinks || []
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
@@ -259,9 +272,15 @@ export function UnifiedDashboard() {
                         {widget.title}
                       </p>
                       <p className="text-2xl font-light mt-1" style={{ color: widget.color }}>
-                        {widget.value}
+                        {/* Hide financial values if user doesn't have permission */}
+                        {widget.title.toLowerCase().includes('revenue') || 
+                         widget.title.toLowerCase().includes('expense') ||
+                         widget.title.toLowerCase().includes('profit') ||
+                         widget.title.toLowerCase().includes('payment') ? 
+                          (canViewFinancials ? widget.value : '***') : 
+                          widget.value}
                       </p>
-                      {widget.change && (
+                      {widget.change && canViewFinancials && (
                         <p
                           className="text-xs mt-1"
                           style={{
@@ -326,7 +345,7 @@ export function UnifiedDashboard() {
         </Card>
 
         {/* Role-specific content sections */}
-        {userRole === 'owner' && (
+        {role === 'owner' && (
           <Card
             className="border-0"
             style={{
@@ -349,7 +368,7 @@ export function UnifiedDashboard() {
           </Card>
         )}
 
-        {userRole === 'receptionist' && (
+        {role === 'receptionist' && (
           <Card
             className="border-0"
             style={{
@@ -383,7 +402,7 @@ export function UnifiedDashboard() {
           </Card>
         )}
 
-        {userRole === 'accountant' && (
+        {role === 'accountant' && (
           <Card
             className="border-0"
             style={{
@@ -418,7 +437,7 @@ export function UnifiedDashboard() {
           </Card>
         )}
 
-        {userRole === 'admin' && (
+        {role === 'admin' && (
           <Card
             className="border-0"
             style={{

@@ -27,6 +27,7 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
+import { DemoUserSelector } from './DemoUserSelector'
 
 // Luxe color palette
 const COLORS = {
@@ -151,11 +152,34 @@ export function HairTalkzAuthSimple() {
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [selectedRole, setSelectedRole] = useState('')
+  const [showDemoUsers, setShowDemoUsers] = useState(false)
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleDemoUserSelect = async (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail)
+    setPassword(demoPassword)
+    
+    // Determine role from email
+    const roleFromEmail = demoEmail.includes('michele') ? 'owner' :
+                         demoEmail.includes('manager') ? 'manager' :
+                         demoEmail.includes('receptionist') ? 'receptionist' :
+                         demoEmail.includes('stylist') ? 'stylist' :
+                         demoEmail.includes('accountant') ? 'accountant' :
+                         demoEmail.includes('admin') ? 'admin' : 'owner'
+    
+    setSelectedRole(roleFromEmail)
+    
+    // Auto-login
+    await handleLogin(null, demoEmail, demoPassword, roleFromEmail)
+  }
 
-    if (!email || !password || !selectedRole) {
+  const handleLogin = async (e: React.FormEvent | null, loginEmail?: string, loginPassword?: string, loginRole?: string) => {
+    if (e) e.preventDefault()
+
+    const currentEmail = loginEmail || email
+    const currentPassword = loginPassword || password
+    const currentRole = loginRole || selectedRole
+
+    if (!currentEmail || !currentPassword || !currentRole) {
       toast({
         title: 'Missing Information',
         description: 'Please fill in all fields and select your role',
@@ -175,27 +199,15 @@ export function HairTalkzAuthSimple() {
 
       // Sign in with email and password
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
+        email: currentEmail,
+        password: currentPassword
       })
 
       if (error) throw error
 
       if (data.session) {
-        // Update user metadata with organization and role
-        const { error: updateError } = await supabase.auth.updateUser({
-          data: {
-            organization_id: HAIRTALKZ_ORG_ID,
-            role: selectedRole,
-            full_name: data.session.user.user_metadata?.full_name || email.split('@')[0],
-            roles: [selectedRole],
-            permissions: getRolePermissions(selectedRole)
-          }
-        })
-
-        if (updateError) {
-          console.error('Error updating user metadata:', updateError)
-        }
+        // ✅ CORRECT: No business logic in auth metadata
+        // Business data is now stored in HERA entities and dynamic data
 
         // Set local storage for organization context and RBAC
         localStorage.setItem('organizationId', HAIRTALKZ_ORG_ID)
@@ -458,6 +470,33 @@ export function HairTalkzAuthSimple() {
             </a>
           </div>
         </form>
+
+        {/* Demo Users Toggle */}
+        <div className="mt-6 text-center">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowDemoUsers(!showDemoUsers)}
+            className="text-sm"
+            style={{
+              borderColor: COLORS.bronze,
+              color: COLORS.bronze,
+              backgroundColor: 'transparent'
+            }}
+          >
+            {showDemoUsers ? 'Hide Demo Users' : 'Show Demo Users'} 🧪
+          </Button>
+        </div>
+
+        {/* Demo User Selector */}
+        {showDemoUsers && (
+          <div className="mt-6">
+            <DemoUserSelector 
+              onUserSelect={handleDemoUserSelect} 
+              isLoading={loading}
+            />
+          </div>
+        )}
 
         {/* Footer */}
         <div className="mt-8 text-center">

@@ -16,7 +16,8 @@ import {
   Settings,
   TrendingUp,
   Menu,
-  X
+  X,
+  Sparkles
 } from 'lucide-react'
 
 interface NavItem {
@@ -76,6 +77,13 @@ export function CRMLayout({ children }: CRMLayoutProps) {
     },
     { name: 'Activities', href: '/crm/activities', icon: Activity },
     { name: 'Reports', href: '/crm/reports', icon: FileText },
+    {
+      name: 'Amplify',
+      href: '/amplify',
+      icon: Sparkles,
+      badge: 'NEW',
+      badgeColor: 'bg-purple-600'
+    },
     { name: 'Settings', href: '/crm/settings', icon: Settings }
   ]
 

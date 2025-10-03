@@ -35,6 +35,19 @@ await apiV2.post('entities/dynamic-data', {
   smart_code: 'HERA.PRODUCT.PRICE.V1'
 })
 
+// HERA DNA SECURITY Implementation
+import { withSecurity } from '@/lib/security/security-middleware'
+import { useBusinessSecurity } from '@/hooks/useBusinessSecurity'
+
+export const GET = withSecurity(handleRequest, {
+  allowedRoles: ['owner', 'manager'],
+  enableAuditLogging: true
+})
+
+// Permission-based UI
+const { canViewFinancials, hasPermission } = useBusinessSecurity()
+if (!canViewFinancials) return <AccessDenied />
+
 // Select Component
 <Select value={category || undefined}>
   <SelectItem value="hair">Hair Services</SelectItem>
@@ -140,6 +153,99 @@ const product = new EntityBuilder('product', 'Shampoo', SmartCodes.product.entit
 ```
 
 **See**: `/UNIVERSAL-API-V2.md` for complete documentation and migration guide
+
+## 🛡️ HERA DNA SECURITY - BULLETPROOF ENTERPRISE SECURITY (MANDATORY - USE ALWAYS)
+
+**REVOLUTIONARY**: Universal security DNA that provides bulletproof enterprise-grade security across all HERA business modules with zero-trust architecture and perfect multi-tenant isolation.
+
+### **🧬 Core Security DNA Components**
+
+**CRITICAL**: Every HERA application MUST use HERA DNA SECURITY. No exceptions.
+
+#### **1. Security Provider Setup (MANDATORY)**
+```typescript
+// ALWAYS wrap your app with secured provider
+import { SecuredBusinessProvider } from '@/lib/security/SecuredBusinessProvider'
+
+export default function App() {
+  return (
+    <SecuredBusinessProvider businessType="salon">
+      <YourApp />
+    </SecuredBusinessProvider>
+  )
+}
+```
+
+#### **2. API Endpoint Protection (MANDATORY)**
+```typescript
+// ALWAYS use withSecurity middleware
+import { withSecurity } from '@/lib/security/security-middleware'
+
+async function handleRequest(req: NextRequest, context: SecurityContext) {
+  // Your business logic here - automatic org filtering applied
+}
+
+export const GET = withSecurity(handleRequest, {
+  allowedRoles: ['owner', 'manager'],
+  enableAuditLogging: true,
+  enableRateLimit: true
+})
+```
+
+#### **3. Component Permission Protection (MANDATORY)**
+```typescript
+// ALWAYS check permissions before showing sensitive data
+import { useBusinessSecurity } from '@/hooks/useBusinessSecurity'
+
+function FinancialComponent() {
+  const { canViewFinancials, hasPermission, executeSecurely } = useBusinessSecurity()
+  
+  if (!canViewFinancials) {
+    return <AccessDenied message="Financial access restricted to owners and accountants" />
+  }
+  
+  return <SensitiveFinancialData />
+}
+```
+
+#### **4. Higher-Order Component Protection (RECOMMENDED)**
+```typescript
+// Use HOC for automatic permission enforcement
+import { withPermissions } from '@/lib/security/withPermissions'
+
+const SecuredComponent = withPermissions(['finance:read'])(MyComponent)
+```
+
+### **🔒 Security Smart Codes (MANDATORY)**
+Every security operation MUST include intelligent business context:
+
+```typescript
+const SECURITY_SMART_CODES = {
+  'HERA.DNA.SECURITY.AUTH.LOGIN.v1': 'User authentication event',
+  'HERA.DNA.SECURITY.RBAC.PERMISSION.CHECK.v1': 'Permission validation',
+  'HERA.DNA.SECURITY.AUDIT.DATA.ACCESS.v1': 'Sensitive data access',
+  'HERA.DNA.SECURITY.VIOLATION.ATTEMPT.v1': 'Security violation attempt'
+}
+```
+
+### **🚨 Security Rules (NEVER VIOLATE)**
+1. **ALWAYS use secured providers** - Never bypass security context
+2. **ALWAYS protect API endpoints** - Use withSecurity middleware
+3. **ALWAYS check permissions** - Before displaying sensitive data
+4. **ALWAYS log security events** - Use executeSecurely for database operations
+5. **NEVER hardcode roles** - Use dynamic permission checking
+6. **NEVER bypass organization filtering** - Sacred boundary protection
+
+### **✅ Security Implementation Checklist**
+- [ ] App wrapped with SecuredBusinessProvider
+- [ ] All API endpoints use withSecurity middleware  
+- [ ] Components check permissions before rendering sensitive data
+- [ ] Database operations use executeSecurely
+- [ ] Security events logged with smart codes
+- [ ] Role-based UI elements implemented
+- [ ] Access denied fallbacks provided
+
+**See**: `/docs/HERA-DNA-SECURITY.md` for complete documentation and examples
 
 ## 🧬 HERA DNA SMART CODE RULES (MANDATORY - READ ALWAYS)
 

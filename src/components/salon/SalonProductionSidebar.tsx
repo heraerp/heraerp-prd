@@ -84,7 +84,7 @@ export function SalonProductionSidebar() {
       id: 'appointments',
       label: 'Appointments',
       icon: <Calendar className="w-5 h-5" />,
-      href: '/salon/appointments',
+      href: '/salon/appointments1',
       badge: '12',
       color: 'hover:bg-green-100'
     },

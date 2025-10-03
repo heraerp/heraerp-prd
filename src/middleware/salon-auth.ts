@@ -6,7 +6,7 @@ const HAIRTALKZ_ORG_ID = '378f24fb-d496-4ff7-8afa-ea34895a0eb8'
 const PUBLIC_ROUTES = ['/salon', '/salon/auth']
 const ROLE_ROUTES = {
   owner: ['/salon/dashboard'],
-  receptionist: ['/salon/pos', '/salon/appointments', '/salon/customers'],
+  receptionist: ['/salon/pos', '/salon/appointments1', '/salon/customers'],
   accountant: ['/salon/finance', '/salon/reports'],
   admin: ['/salon/settings', '/salon/users']
 }

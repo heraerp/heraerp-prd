@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   Crown,
@@ -15,13 +16,22 @@ import {
   Award,
   Calculator,
   DollarSign,
-  Search
+  Search,
+  Route
 } from 'lucide-react'
 import { JewelryAppTile } from '@/components/jewelry/JewelryAppTile'
 import '@/styles/jewelry-glassmorphism.css'
 
 // Featured apps for the dashboard
 const featuredApps = [
+  {
+    id: 'search',
+    title: 'Global Search',
+    description: 'Universal entity search',
+    icon: Search,
+    href: '/jewelry/search',
+    featured: true
+  },
   {
     id: 'pos',
     title: 'POS System',
@@ -69,11 +79,64 @@ const featuredApps = [
     icon: Crown,
     href: '/jewelry/vip',
     featured: true
+  },
+  {
+    id: 'customer-journey',
+    title: 'Customer Journey',
+    description: 'End-to-end experience map',
+    icon: Route,
+    href: '/jewelry/customer-journey',
+    featured: true
   }
 ]
 
 export default function JewelryDashboard() {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
+  const [organizationId, setOrganizationId] = useState<string | null>(null)
+  const [currentRole, setCurrentRole] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Check for organization context
+  useEffect(() => {
+    // Allow some time for auth to settle
+    const timer = setTimeout(() => {
+      const orgId = localStorage.getItem('organizationId')
+      const jewelryRole = localStorage.getItem('jewelryRole')
+      
+      if (!orgId || !jewelryRole) {
+        // No organization context, redirect to demo
+        router.push('/jewelry/demo')
+        return
+      }
+      
+      setOrganizationId(orgId)
+      setCurrentRole(jewelryRole)
+      setIsLoading(false)
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [router])
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen jewelry-gradient-bg flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="jewelry-glass-card p-6"
+        >
+          <Crown className="h-12 w-12 jewelry-text-gold" />
+        </motion.div>
+      </div>
+    )
+  }
+
+  // Don't render dashboard if no org context
+  if (!organizationId) {
+    return null
+  }
 
   const stats = [
     {
@@ -151,6 +214,21 @@ export default function JewelryDashboard() {
               <p className="jewelry-text-muted text-sm">Total Value</p>
             </div>
           </div>
+          
+          {currentRole && (
+            <div className="jewelry-glass-card p-4">
+              <div className="text-center">
+                <p className="jewelry-text-gold text-lg font-bold">{currentRole}</p>
+                <p className="jewelry-text-muted text-sm">Current Role</p>
+                <button
+                  onClick={() => router.push('/jewelry/demo?logout=true')}
+                  className="mt-2 text-xs jewelry-text-muted hover:jewelry-text-gold transition-colors"
+                >
+                  Switch Role
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </motion.div>
 

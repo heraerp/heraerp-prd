@@ -45,6 +45,9 @@ export const LUXE_COLORS = {
   plum: '#B794F4',
   emerald: '#0F6F5C',
   ruby: '#DC2626',
+  rubyDark: '#991B1B',
   sapphire: '#2563EB',
-  orange: '#F97316'
+  orange: '#F97316',
+  orangeDark: '#D97706',
+  purple: '#9333EA'
 }
