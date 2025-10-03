@@ -175,7 +175,7 @@ export function useSalonSecurity() {
   /**
    * Execute database operation within secure context
    */
-  const executeSecurely = useCallback(async <T>(
+  const executeSecurely = useCallback(async <T,>(
     operation: (client: any) => Promise<T>,
     options?: { bypassRLS?: boolean }
   ): Promise<T> => {

@@ -491,7 +491,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   /**
    * Execute operations within secure database context
    */
-  const executeSecurely = async <T>(
+  const executeSecurely = async <T,>(
     operation: (client: any) => Promise<T>,
     options?: { bypassRLS?: boolean }
   ): Promise<T> => {
