@@ -3,14 +3,14 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState } from 'react'
-import { useSalonContext } from '../SalonProvider'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { ServiceList } from '@/components/salon/services/ServiceList'
 import { ServiceModal } from '@/components/salon/services/ServiceModal'
 import { ServiceCategoryModal } from '@/components/salon/services/ServiceCategoryModal'
-import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
+import { useToast } from '@/components/ui/use-toast'
 import { Service, ServiceFormValues } from '@/types/salon-service'
 import { ServiceCategory, ServiceCategoryFormValues } from '@/types/salon-service'
 import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
@@ -67,8 +67,8 @@ const COLORS = {
 }
 
 function SalonServicesPageContent() {
-  const { organizationId, currency } = useSalonContext()
-  const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
+  const { organizationId, currency } = useSecuredSalonContext()
+  const { toast } = useToast()
 
   // Branch filter hook
   const {
@@ -163,29 +163,28 @@ function SalonServicesPageContent() {
 
   // CRUD handlers
   const handleSave = async (data: ServiceFormValues) => {
-    const loadingId = showLoading(
-      editingService ? 'Updating service...' : 'Creating service...',
-      'Please wait while we save your changes'
-    )
-
     try {
       if (editingService) {
         await updateService(editingService.id, data)
-        removeToast(loadingId)
-        showSuccess('Service updated successfully', `${data.name} has been updated`)
+        toast({
+          title: 'Service updated successfully',
+          description: `${data.name} has been updated`
+        })
       } else {
         await createService(data)
-        removeToast(loadingId)
-        showSuccess('Service created successfully', `${data.name} has been added`)
+        toast({
+          title: 'Service created successfully',
+          description: `${data.name} has been added`
+        })
       }
       setModalOpen(false)
       setEditingService(null)
     } catch (error: any) {
-      removeToast(loadingId)
-      showError(
-        editingService ? 'Failed to update service' : 'Failed to create service',
-        error.message || 'Please try again or contact support'
-      )
+      toast({
+        title: editingService ? 'Failed to update service' : 'Failed to create service',
+        description: error.message || 'Please try again or contact support',
+        variant: 'destructive'
+      })
     }
   }
 
@@ -203,75 +202,75 @@ function SalonServicesPageContent() {
     if (!serviceToDelete) return
 
     setIsDeleting(true)
-    const loadingId = showLoading('Deleting service...', 'This action cannot be undone')
 
     try {
       await deleteService(serviceToDelete.id)
-      removeToast(loadingId)
-      showSuccess('Service deleted', `${serviceToDelete.entity_name} has been permanently removed`)
+      toast({
+        title: 'Service deleted',
+        description: `${serviceToDelete.entity_name} has been permanently removed`
+      })
       setDeleteDialogOpen(false)
       setServiceToDelete(null)
     } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to delete service', error.message || 'Please try again')
+      toast({
+        title: 'Failed to delete service',
+        description: error.message || 'Please try again',
+        variant: 'destructive'
+      })
     } finally {
       setIsDeleting(false)
     }
   }
 
   const handleArchive = async (service: Service) => {
-    const loadingId = showLoading(
-      `${service.status === 'archived' ? 'Restoring' : 'Archiving'} service...`,
-      'Please wait'
-    )
-
     try {
       await archiveService(service.id, service.status !== 'archived')
-      removeToast(loadingId)
-      showSuccess(
-        service.status === 'archived' ? 'Service restored' : 'Service archived',
-        `${service.entity_name} has been ${service.status === 'archived' ? 'restored' : 'archived'}`
-      )
+      toast({
+        title: service.status === 'archived' ? 'Service restored' : 'Service archived',
+        description: `${service.entity_name} has been ${service.status === 'archived' ? 'restored' : 'archived'}`
+      })
     } catch (error: any) {
-      removeToast(loadingId)
-      showError(
-        `Failed to ${service.status === 'archived' ? 'restore' : 'archive'} service`,
-        error.message || 'Please try again'
-      )
+      toast({
+        title: `Failed to ${service.status === 'archived' ? 'restore' : 'archive'} service`,
+        description: error.message || 'Please try again',
+        variant: 'destructive'
+      })
     }
   }
 
   const handleRestore = handleArchive
 
   const handleExport = () => {
-    showSuccess('Export started', 'Your services will be exported shortly')
+    toast({
+      title: 'Export started',
+      description: 'Your services will be exported shortly'
+    })
   }
 
   // Category CRUD handlers
   const handleSaveCategory = async (data: ServiceCategoryFormValues) => {
-    const loadingId = showLoading(
-      editingCategory ? 'Updating category...' : 'Creating category...',
-      'Please wait while we save your changes'
-    )
-
     try {
       if (editingCategory) {
         await updateCategory(editingCategory.id, data)
-        removeToast(loadingId)
-        showSuccess('Category updated successfully', `${data.name} has been updated`)
+        toast({
+          title: 'Category updated successfully',
+          description: `${data.name} has been updated`
+        })
       } else {
         await createCategory(data)
-        removeToast(loadingId)
-        showSuccess('Category created successfully', `${data.name} has been added`)
+        toast({
+          title: 'Category created successfully',
+          description: `${data.name} has been added`
+        })
       }
       setCategoryModalOpen(false)
       setEditingCategory(null)
     } catch (error: any) {
-      removeToast(loadingId)
-      showError(
-        editingCategory ? 'Failed to update category' : 'Failed to create category',
-        error.message || 'Please try again or contact support'
-      )
+      toast({
+        title: editingCategory ? 'Failed to update category' : 'Failed to create category',
+        description: error.message || 'Please try again or contact support',
+        variant: 'destructive'
+      })
     }
   }
 
@@ -284,17 +283,21 @@ function SalonServicesPageContent() {
     if (!categoryToDelete) return
 
     setIsDeletingCategory(true)
-    const loadingId = showLoading('Deleting category...', 'This action cannot be undone')
 
     try {
       await deleteCategory(categoryToDelete.id)
-      removeToast(loadingId)
-      showSuccess('Category deleted', `${categoryToDelete.entity_name} has been removed`)
+      toast({
+        title: 'Category deleted',
+        description: `${categoryToDelete.entity_name} has been removed`
+      })
       setCategoryDeleteDialogOpen(false)
       setCategoryToDelete(null)
     } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to delete category', error.message || 'Please try again')
+      toast({
+        title: 'Failed to delete category',
+        description: error.message || 'Please try again',
+        variant: 'destructive'
+      })
     } finally {
       setIsDeletingCategory(false)
     }
@@ -912,9 +915,5 @@ function SalonServicesPageContent() {
 }
 
 export default function SalonServicesPage() {
-  return (
-    <StatusToastProvider>
-      <SalonServicesPageContent />
-    </StatusToastProvider>
-  )
+  return <SalonServicesPageContent />
 }
