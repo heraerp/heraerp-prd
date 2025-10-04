@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Sparkles, X, Clock, CalendarCheck, CalendarX, CheckCircle2 } from 'lucide-react'
+import { Sparkles, X, Clock, CalendarCheck, CalendarX, CheckCircle2, Building2, MapPin } from 'lucide-react'
 
 interface ServiceModalProps {
   open: boolean
@@ -47,7 +47,7 @@ const COLORS = {
 }
 
 export function ServiceModal({ open, onClose, service, onSave }: ServiceModalProps) {
-  const { organization, currency } = useSecuredSalonContext()
+  const { organization, currency, availableBranches } = useSecuredSalonContext()
   const organizationId = organization?.id
 
   // Fetch categories for dropdown
@@ -82,13 +82,26 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
       requires_booking: false,
       description: '',
       status: 'active',
-      currency: currency || 'AED'
+      currency: currency || 'AED',
+      branch_ids: [] // Default to no branches selected
     }
   })
 
   // Reset form when service changes
   useEffect(() => {
     if (service) {
+      // Extract branch IDs from AVAILABLE_AT relationships
+      const availableAtRels = (service as any).relationships?.available_at
+      let branchIds: string[] = []
+
+      if (Array.isArray(availableAtRels)) {
+        branchIds = availableAtRels
+          .filter(rel => rel?.to_entity?.id)
+          .map(rel => rel.to_entity.id)
+      } else if (availableAtRels?.to_entity?.id) {
+        branchIds = [availableAtRels.to_entity.id]
+      }
+
       form.reset({
         name: service.entity_name || '',
         code: service.entity_code || '',
@@ -98,7 +111,8 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
         requires_booking: service.requires_booking || false,
         description: service.entity_description || '',
         status: service.status || 'active',
-        currency: service.currency || currency || 'AED'
+        currency: service.currency || currency || 'AED',
+        branch_ids: branchIds
       })
     } else {
       form.reset({
@@ -110,7 +124,8 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
         requires_booking: false,
         description: '',
         status: 'active',
-        currency: currency || 'AED'
+        currency: currency || 'AED',
+        branch_ids: []
       })
     }
   }, [service, form, currency])
@@ -414,6 +429,156 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                     )}
                   />
                 </div>
+              </div>
+
+              {/* Branch Availability Section */}
+              <div
+                className="relative p-6 rounded-xl border backdrop-blur-sm animate-in fade-in duration-300"
+                style={{
+                  backgroundColor: COLORS.charcoalDark + 'E6',
+                  borderColor: COLORS.bronze + '30',
+                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                }}
+              >
+                {/* Section Header with Icon */}
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                  <h3
+                    className="text-lg font-semibold tracking-wide"
+                    style={{ color: COLORS.champagne }}
+                  >
+                    Branch Availability
+                  </h3>
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="branch_ids"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel
+                        className="text-sm font-medium tracking-wide flex items-center gap-2"
+                        style={{ color: COLORS.champagne }}
+                      >
+                        <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
+                        Select Locations Where This Service is Available
+                      </FormLabel>
+                      <FormControl>
+                        <div className="grid grid-cols-2 gap-3 mt-3">
+                          {availableBranches.length === 0 ? (
+                            <div
+                              className="col-span-2 p-4 rounded-lg text-center"
+                              style={{
+                                backgroundColor: COLORS.charcoalLight + '50',
+                                border: `1px dashed ${COLORS.bronze}40`,
+                                color: COLORS.lightText
+                              }}
+                            >
+                              <Building2
+                                className="w-8 h-8 mx-auto mb-2 opacity-50"
+                                style={{ color: COLORS.bronze }}
+                              />
+                              <p className="text-sm opacity-70">No branches available</p>
+                            </div>
+                          ) : (
+                            availableBranches.map(branch => {
+                              const isSelected = field.value?.includes(branch.id)
+                              return (
+                                <button
+                                  key={branch.id}
+                                  type="button"
+                                  onClick={() => {
+                                    const currentValue = field.value || []
+                                    if (isSelected) {
+                                      field.onChange(currentValue.filter(id => id !== branch.id))
+                                    } else {
+                                      field.onChange([...currentValue, branch.id])
+                                    }
+                                  }}
+                                  className="relative group transition-all duration-200 hover:scale-102"
+                                  style={{
+                                    backgroundColor: isSelected
+                                      ? COLORS.charcoalDark
+                                      : COLORS.charcoalLight + '50',
+                                    border: `2px solid ${isSelected ? COLORS.gold : COLORS.bronze + '40'}`,
+                                    borderRadius: '12px',
+                                    padding: '14px',
+                                    cursor: 'pointer',
+                                    boxShadow: isSelected ? `0 0 20px ${COLORS.gold}30` : 'none'
+                                  }}
+                                >
+                                  {/* Selection Indicator */}
+                                  {isSelected && (
+                                    <div
+                                      className="absolute top-2 right-2 animate-in zoom-in duration-200"
+                                      style={{ color: COLORS.gold }}
+                                    >
+                                      <CheckCircle2 className="w-5 h-5" />
+                                    </div>
+                                  )}
+
+                                  {/* Branch Icon */}
+                                  <div
+                                    className="mb-2 flex items-center justify-center w-10 h-10 rounded-lg mx-auto"
+                                    style={{
+                                      backgroundColor: isSelected
+                                        ? COLORS.gold + '20'
+                                        : COLORS.bronze + '20',
+                                      border: `1px solid ${isSelected ? COLORS.gold : COLORS.bronze}40`
+                                    }}
+                                  >
+                                    <MapPin
+                                      className="w-5 h-5"
+                                      style={{ color: isSelected ? COLORS.gold : COLORS.bronze }}
+                                    />
+                                  </div>
+
+                                  {/* Branch Name */}
+                                  <div className="text-center">
+                                    <p
+                                      className="font-semibold text-sm mb-0.5 truncate"
+                                      style={{
+                                        color: isSelected ? COLORS.champagne : COLORS.lightText
+                                      }}
+                                    >
+                                      {branch.entity_name}
+                                    </p>
+                                    {branch.entity_code && (
+                                      <p
+                                        className="text-xs truncate"
+                                        style={{
+                                          color: COLORS.bronze,
+                                          opacity: isSelected ? 0.9 : 0.6
+                                        }}
+                                      >
+                                        {branch.entity_code}
+                                      </p>
+                                    )}
+                                  </div>
+                                </button>
+                              )
+                            })
+                          )}
+                        </div>
+                      </FormControl>
+                      <p className="text-xs mt-3" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                        {field.value && field.value.length > 0 ? (
+                          <span>
+                            Selected:{' '}
+                            <span style={{ color: COLORS.gold, fontWeight: 600 }}>
+                              {field.value.length} location{field.value.length > 1 ? 's' : ''}
+                            </span>
+                          </span>
+                        ) : (
+                          <span style={{ color: COLORS.bronze }}>
+                            No locations selected - service will not appear in any branch
+                          </span>
+                        )}
+                      </p>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               {/* Pricing Section */}

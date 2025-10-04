@@ -491,11 +491,12 @@ function SalonServicesPageContent() {
               </p>
             </div>
             <div
-              className="p-4 rounded-lg"
+              className="p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer animate-in fade-in slide-in-from-bottom-2"
               style={{
                 backgroundColor: COLORS.charcoalLight + '95',
                 border: `1px solid ${COLORS.bronze}33`,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                animationDelay: '100ms'
               }}
             >
               <p className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
@@ -506,11 +507,12 @@ function SalonServicesPageContent() {
               </p>
             </div>
             <div
-              className="p-4 rounded-lg"
+              className="p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer animate-in fade-in slide-in-from-bottom-2"
               style={{
                 backgroundColor: COLORS.charcoalLight + '95',
                 border: `1px solid ${COLORS.bronze}33`,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                animationDelay: '200ms'
               }}
             >
               <p className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
@@ -521,11 +523,12 @@ function SalonServicesPageContent() {
               </p>
             </div>
             <div
-              className="p-4 rounded-lg"
+              className="p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer animate-in fade-in slide-in-from-bottom-2"
               style={{
                 backgroundColor: COLORS.charcoalLight + '95',
                 border: `1px solid ${COLORS.bronze}33`,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                animationDelay: '300ms'
               }}
             >
               <p className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
@@ -557,10 +560,14 @@ function SalonServicesPageContent() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className={showFilters ? 'text-foreground' : 'text-muted-foreground'}
+                className="transition-all duration-200 hover:scale-105"
+                style={{
+                  color: showFilters ? COLORS.gold : COLORS.lightText,
+                  backgroundColor: showFilters ? `${COLORS.gold}20` : 'transparent'
+                }}
               >
                 <Filter className="h-4 w-4 mr-1" />
-                Filters
+                <span className="font-medium">Filters</span>
               </Button>
 
               <div className="flex items-center gap-2">
@@ -609,30 +616,45 @@ function SalonServicesPageContent() {
 
             <div className="flex items-center gap-2">
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-48 bg-background/30 border-border">
+                <SelectTrigger
+                  className="w-48 transition-all duration-200 hover:scale-105 hover:border-gold/50"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight + '80',
+                    borderColor: COLORS.bronze + '40',
+                    color: COLORS.champagne
+                  }}
+                >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name_asc">Name (A-Z)</SelectItem>
-                  <SelectItem value="name_desc">Name (Z-A)</SelectItem>
-                  <SelectItem value="duration_asc">Duration (Shortest)</SelectItem>
-                  <SelectItem value="duration_desc">Duration (Longest)</SelectItem>
-                  <SelectItem value="price_asc">Price (Low to High)</SelectItem>
-                  <SelectItem value="price_desc">Price (High to Low)</SelectItem>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="name_asc" className="hera-select-item">Name (A-Z)</SelectItem>
+                  <SelectItem value="name_desc" className="hera-select-item">Name (Z-A)</SelectItem>
+                  <SelectItem value="duration_asc" className="hera-select-item">Duration (Shortest)</SelectItem>
+                  <SelectItem value="duration_desc" className="hera-select-item">Duration (Longest)</SelectItem>
+                  <SelectItem value="price_asc" className="hera-select-item">Price (Low to High)</SelectItem>
+                  <SelectItem value="price_desc" className="hera-select-item">Price (High to Low)</SelectItem>
                 </SelectContent>
               </Select>
 
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
-                style={{ color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText }}
+                className="p-2 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95"
+                style={{
+                  backgroundColor: viewMode === 'grid' ? `${COLORS.gold}20` : 'transparent',
+                  border: `1px solid ${viewMode === 'grid' ? COLORS.gold + '50' : COLORS.bronze + '30'}`,
+                  color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText
+                }}
               >
                 <Grid3X3 className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
-                style={{ color: viewMode === 'list' ? COLORS.gold : COLORS.lightText }}
+                className="p-2 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95"
+                style={{
+                  backgroundColor: viewMode === 'list' ? `${COLORS.gold}20` : 'transparent',
+                  border: `1px solid ${viewMode === 'list' ? COLORS.gold + '50' : COLORS.bronze + '30'}`,
+                  color: viewMode === 'list' ? COLORS.gold : COLORS.lightText
+                }}
               >
                 <List className="w-5 h-5" />
               </button>
@@ -641,36 +663,45 @@ function SalonServicesPageContent() {
 
           {/* Expandable Filters with Soft Animation */}
           {showFilters && (
-            <div className="mx-6 mt-4 pt-4 border-t border-border flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
-              {/* Branch Filter */}
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                  Location:
-                </span>
-                <BranchSelector variant="default" />
-              </div>
+            <div className="mx-6 mt-4 pt-4 border-t animate-in fade-in slide-in-from-top-2 duration-300" style={{ borderColor: COLORS.bronze + '30' }}>
+              <div className="flex items-center gap-6">
+                {/* Branch Filter */}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold whitespace-nowrap" style={{ color: COLORS.champagne }}>
+                    Location:
+                  </span>
+                  <BranchSelector variant="default" />
+                </div>
 
-              {/* Category Filter */}
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                  Category:
-                </span>
-                <Select
-                  value={categoryFilter || '__ALL__'}
-                  onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
-                >
-                  <SelectTrigger className="w-48 bg-background/30 border-border transition-all">
-                    <SelectValue placeholder="All categories" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__ALL__">All categories</SelectItem>
-                    {categories.map(cat => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {/* Category Filter */}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold whitespace-nowrap" style={{ color: COLORS.champagne }}>
+                    Category:
+                  </span>
+                  <Select
+                    value={categoryFilter || '__ALL__'}
+                    onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
+                  >
+                    <SelectTrigger
+                      className="w-48 transition-all duration-200 hover:border-gold/50"
+                      style={{
+                        backgroundColor: COLORS.charcoalLight + '80',
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <SelectValue placeholder="All categories" />
+                    </SelectTrigger>
+                    <SelectContent className="hera-select-content">
+                      <SelectItem value="__ALL__" className="hera-select-item">All categories</SelectItem>
+                      {categories.map(cat => (
+                        <SelectItem key={cat} value={cat} className="hera-select-item">
+                          {cat}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           )}

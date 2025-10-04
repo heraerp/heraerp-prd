@@ -59,7 +59,8 @@ export const ServiceFormSchema = z.object({
   requires_booking: z.boolean().optional(),
   description: z.string().optional(),
   status: z.enum(['active', 'archived']),
-  currency: z.string().optional()
+  currency: z.string().optional(),
+  branch_ids: z.array(z.string()).optional() // Branch availability via AVAILABLE_AT relationships
 })
 
 export type ServiceFormValues = z.infer<typeof ServiceFormSchema>
