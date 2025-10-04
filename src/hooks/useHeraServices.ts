@@ -41,7 +41,7 @@ export function useHeraServices({
       const result = await getEntities('', {
         p_organization_id: organizationId,
         p_entity_type: 'service',
-        p_status: includeArchived ? undefined : 'active'
+        p_status: includeArchived ? null : 'active'
       })
 
       const entities = Array.isArray(result) ? result : []

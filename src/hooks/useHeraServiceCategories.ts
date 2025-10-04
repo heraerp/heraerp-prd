@@ -67,8 +67,20 @@ export function useHeraServiceCategories({
                 mergedMetadata[field.field_name] = field.field_value_number
               } else if (field.field_type === 'boolean') {
                 mergedMetadata[field.field_name] = field.field_value_boolean
+              } else if (field.field_type === 'text') {
+                mergedMetadata[field.field_name] = field.field_value_text
+              } else if (field.field_type === 'json') {
+                mergedMetadata[field.field_name] = field.field_value_json
+              } else if (field.field_type === 'date') {
+                mergedMetadata[field.field_name] = field.field_value_date
               } else {
-                mergedMetadata[field.field_name] = field.field_value
+                // Fallback for unknown types
+                mergedMetadata[field.field_name] =
+                  field.field_value_text ||
+                  field.field_value_number ||
+                  field.field_value_boolean ||
+                  field.field_value_json ||
+                  field.field_value_date
               }
             })
 

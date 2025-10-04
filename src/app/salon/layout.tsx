@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import SalonRoleBasedDarkSidebar from '@/components/salon/SalonRoleBasedDarkSidebar'
 import { SecuredSalonProvider } from './SecuredSalonProvider'
-import { Toaster } from '@/components/ui/toaster'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { NavigationProvider } from './navigation-provider'
 import { PrefetchLinks } from './prefetch-links'
@@ -52,7 +51,6 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
           >
             {children}
           </main>
-          <Toaster />
         </SecuredSalonProvider>
       </NavigationProvider>
     </QueryClientProvider>

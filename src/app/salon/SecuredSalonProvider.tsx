@@ -38,6 +38,7 @@ interface Branch {
 }
 
 interface SalonSecurityContext extends SecurityContext {
+  organizationId: string // Alias for orgId for backward compatibility
   salonRole: 'owner' | 'manager' | 'receptionist' | 'stylist' | 'accountant' | 'admin'
   permissions: string[]
   organization: {
@@ -133,15 +134,17 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const [context, setContext] = useState<SalonSecurityContext>(() => {
     if (securityStore.isInitialized && !securityStore.shouldReinitialize()) {
       console.log('🚀 Using cached security context')
+      const orgId = securityStore.organizationId || HAIRTALKZ_ORG_ID
       return {
-        orgId: securityStore.organizationId || HAIRTALKZ_ORG_ID,
+        orgId: orgId,
+        organizationId: orgId, // Add organizationId alias for compatibility
         userId: securityStore.userId || '',
         role: 'user',
         salonRole: (securityStore.salonRole as any) || 'stylist',
         authMode: 'supabase',
         permissions: securityStore.permissions || [],
         organization: securityStore.organization || {
-          id: securityStore.organizationId || HAIRTALKZ_ORG_ID,
+          id: orgId,
           name: 'HairTalkz'
         },
         user: securityStore.user,
@@ -156,6 +159,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
     return {
       orgId: HAIRTALKZ_ORG_ID,
+      organizationId: HAIRTALKZ_ORG_ID, // Add organizationId alias for compatibility
       userId: '',
       role: 'user',
       salonRole: 'stylist',
@@ -311,6 +315,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       // Update context with secure data
       setContext({
         ...securityContext,
+        organizationId: securityContext.orgId, // Add organizationId alias for compatibility
         salonRole,
         permissions,
         organization,
@@ -553,6 +558,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const clearContext = () => {
     setContext(prev => ({
       ...prev,
+      organizationId: HAIRTALKZ_ORG_ID,
       userId: '',
       role: 'user',
       salonRole: 'stylist',

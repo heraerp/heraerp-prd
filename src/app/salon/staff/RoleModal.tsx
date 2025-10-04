@@ -322,31 +322,83 @@ export function RoleModal({
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Enterprise Delete Confirmation Dialog */}
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <DialogContent
-          className="max-w-md"
+          className="max-w-lg"
           style={{
             backgroundColor: COLORS.charcoal,
-            border: `1px solid ${COLORS.gold}`,
+            border: `2px solid #991B1B`,
             color: COLORS.lightText
           }}
         >
           <DialogHeader>
-            <DialogTitle style={{ color: COLORS.champagne }}>Delete Role?</DialogTitle>
+            <DialogTitle
+              className="text-2xl font-bold flex items-center gap-3"
+              style={{ color: '#FEE2E2' }}
+            >
+              <div
+                className="p-3 rounded-lg"
+                style={{
+                  backgroundColor: '#991B1B20',
+                  border: '2px solid #991B1B'
+                }}
+              >
+                <Trash2 className="h-6 w-6" style={{ color: '#991B1B' }} />
+              </div>
+              Permanent Deletion Warning
+            </DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <p style={{ color: COLORS.lightText }}>
-              Are you sure you want to delete the role &ldquo;{role?.title}
-              &rdquo;? This action cannot be undone.
-            </p>
+          <div className="py-6 space-y-4">
+            <div
+              className="p-4 rounded-lg border-l-4"
+              style={{
+                backgroundColor: '#991B1B10',
+                borderColor: '#991B1B'
+              }}
+            >
+              <p className="font-semibold mb-2" style={{ color: COLORS.champagne }}>
+                You are about to permanently delete:
+              </p>
+              <p className="text-lg font-bold" style={{ color: COLORS.gold }}>
+                &ldquo;{role?.title || role?.id}&rdquo;
+              </p>
+            </div>
+
+            <div className="space-y-2" style={{ color: COLORS.lightText }}>
+              <p className="font-semibold" style={{ color: '#FEE2E2' }}>
+                ⚠️ This action is irreversible and will:
+              </p>
+              <ul
+                className="list-disc list-inside space-y-1 ml-4"
+                style={{ color: COLORS.lightText }}
+              >
+                <li>Permanently remove this role from the system</li>
+                <li>Cannot be recovered after deletion</li>
+                <li>May affect staff members assigned to this role</li>
+              </ul>
+            </div>
+
+            <div
+              className="p-3 rounded-lg text-sm"
+              style={{
+                backgroundColor: COLORS.black,
+                border: `1px solid ${COLORS.gold}40`
+              }}
+            >
+              <p style={{ color: COLORS.bronze }}>
+                💡 <strong>Tip:</strong> Consider archiving instead if you might need this role in
+                the future.
+              </p>
+            </div>
           </div>
-          <DialogFooter className="flex gap-2">
+          <DialogFooter className="flex gap-3">
             <Button
               type="button"
               variant="outline"
               onClick={() => setDeleteConfirmOpen(false)}
               disabled={isDeleting}
+              className="flex-1"
               style={{
                 borderColor: COLORS.gold,
                 color: COLORS.champagne,
@@ -359,9 +411,11 @@ export function RoleModal({
               type="button"
               onClick={handleDelete}
               disabled={isDeleting}
+              className="flex-1"
               style={{
                 backgroundColor: '#991B1B',
-                color: '#FFFFFF'
+                color: '#FFFFFF',
+                border: '2px solid #7F1D1D'
               }}
             >
               {isDeleting ? (
@@ -372,7 +426,7 @@ export function RoleModal({
               ) : (
                 <>
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Role
+                  Yes, Delete Permanently
                 </>
               )}
             </Button>

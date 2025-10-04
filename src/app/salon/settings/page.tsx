@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useSalonContext } from '../SalonProvider'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -24,7 +24,7 @@ import {
 import { LUXE_COLORS } from '@/lib/constants/salon'
 
 export default function SalonSettingsPage() {
-  const { organizationId, role, user, isLoading: authLoading, isAuthenticated } = useSalonContext()
+  const { organizationId, role, user, isLoading: authLoading, isAuthenticated } = useSecuredSalonContext()
   const [activeTab, setActiveTab] = useState('general')
 
   // Check if user has admin role

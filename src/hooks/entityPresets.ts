@@ -299,25 +299,145 @@ export const EMPLOYEE_PRESET = {
 // Appointment configuration
 export const APPOINTMENT_PRESET = {
   entity_type: 'APPOINTMENT',
+  labels: {
+    singular: 'Appointment',
+    plural: 'Appointments'
+  },
+  permissions: {
+    create: (role: Role) => ['owner', 'manager', 'receptionist'].includes(role),
+    edit: (role: Role) => ['owner', 'manager', 'receptionist'].includes(role),
+    delete: (role: Role) => ['owner', 'manager'].includes(role),
+    view: () => true
+  },
   dynamicFields: [
     {
+      name: 'customer_id',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_ID.V1',
+      required: true,
+      ui: {
+        label: 'Customer ID',
+        required: true
+      }
+    },
+    {
+      name: 'customer_name',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_NAME.V1',
+      ui: {
+        label: 'Customer Name',
+        placeholder: 'Customer name'
+      }
+    },
+    {
+      name: 'stylist_id',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_ID.V1',
+      ui: {
+        label: 'Stylist ID'
+      }
+    },
+    {
+      name: 'stylist_name',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_NAME.V1',
+      ui: {
+        label: 'Stylist Name',
+        placeholder: 'Stylist name'
+      }
+    },
+    {
+      name: 'service_ids',
+      type: 'json' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.SERVICE_IDS.V1',
+      defaultValue: [],
+      ui: {
+        label: 'Services',
+        widget: 'json',
+        helpText: 'Array of service IDs'
+      }
+    },
+    {
       name: 'start_time',
-      type: 'date' as const,
-      smart_code: 'HERA.SALON.APPT.DYN.START.v1',
-      required: true
+      type: 'datetime' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.START_TIME.V1',
+      required: true,
+      ui: {
+        label: 'Start Time',
+        widget: 'date',
+        required: true
+      }
     },
     {
       name: 'end_time',
-      type: 'date' as const,
-      smart_code: 'HERA.SALON.APPT.DYN.END.v1',
-      required: true
+      type: 'datetime' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.END_TIME.V1',
+      ui: {
+        label: 'End Time',
+        widget: 'date'
+      }
     },
-    { name: 'notes', type: 'text' as const, smart_code: 'HERA.SALON.APPT.DYN.NOTES.v1' },
+    {
+      name: 'duration_minutes',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.DURATION.V1',
+      defaultValue: 60,
+      ui: {
+        label: 'Duration (minutes)',
+        placeholder: '60',
+        min: 15,
+        max: 480
+      }
+    },
+    {
+      name: 'price',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.PRICE.V1',
+      defaultValue: 0,
+      ui: {
+        label: 'Price (AED)',
+        placeholder: '0.00',
+        decimals: 2,
+        min: 0
+      }
+    },
+    {
+      name: 'currency_code',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.CURRENCY.V1',
+      defaultValue: 'AED',
+      ui: {
+        label: 'Currency',
+        placeholder: 'AED'
+      }
+    },
+    {
+      name: 'notes',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.NOTES.V1',
+      ui: {
+        label: 'Notes',
+        placeholder: 'Special requests or notes',
+        widget: 'textarea'
+      }
+    },
+    {
+      name: 'branch_id',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.APPT.FIELD.BRANCH_ID.V1',
+      ui: {
+        label: 'Branch ID'
+      }
+    },
     {
       name: 'status',
       type: 'text' as const,
       smart_code: 'HERA.SALON.APPT.DYN.STATUS.v1',
-      defaultValue: 'scheduled'
+      defaultValue: 'booked',
+      ui: {
+        label: 'Status',
+        widget: 'select'
+      }
     },
     {
       name: 'reminder_sent',

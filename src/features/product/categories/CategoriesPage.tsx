@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useHeraProductCategories } from '@/hooks/useHeraProductCategories'
 import {
@@ -111,7 +111,7 @@ function useResolvedOrganizationId(): string | undefined {
   const { organization } = useHERAAuth()
 
   try {
-    const salonContext = useSalonContext()
+    const salonContext = useSecuredSalonContext()
     if (salonContext?.organizationId) {
       return salonContext.organizationId
     }

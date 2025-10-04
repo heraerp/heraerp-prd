@@ -62,7 +62,7 @@ export function ProductList({
     return (
       <div className="space-y-2">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-16 bg-white/5 rounded-lg animate-pulse" />
+          <div key={i} className="h-16 bg-muted/50 rounded-lg animate-pulse" />
         ))}
       </div>
     )
@@ -114,7 +114,12 @@ export function ProductList({
         <TableBody>
           {products.map((product, index) => {
             const isArchived = product.status === 'archived'
-            const stockValue = (product.price || 0) * product.qty_on_hand
+            // Check for price in multiple locations (price_market, selling_price, price)
+            const sellingPrice = product.price_market || product.selling_price || product.price || 0
+            // Check for stock in multiple locations (stock_quantity, stock_level, qty_on_hand)
+            const stockQty =
+              product.stock_quantity || product.stock_level || product.qty_on_hand || 0
+            const stockValue = sellingPrice * stockQty
 
             return (
               <TableRow
@@ -166,26 +171,12 @@ export function ProductList({
 
                 <TableCell>
                   {(() => {
-                    // Try multiple possible locations for cost data
+                    // Check for cost price in multiple locations (price_cost, cost_price, metadata.cost)
                     const cost =
+                      product.price_cost ||
+                      product.cost_price ||
                       (product as any).metadata?.cost ||
-                      (product as any).cost ||
-                      ((product as any).metadata &&
-                      Object.keys((product as any).metadata).length > 0
-                        ? Object.entries((product as any).metadata).find(
-                            ([key]) => key === 'cost'
-                          )?.[1]
-                        : null)
-
-                    console.log('[ProductList] Cost display:', {
-                      productId: product.id,
-                      productName: product.entity_name,
-                      cost,
-                      metadata: (product as any).metadata,
-                      metadataKeys: (product as any).metadata
-                        ? Object.keys((product as any).metadata)
-                        : []
-                    })
+                      (product as any).cost
 
                     if (cost !== null && cost !== undefined && cost !== '') {
                       return (
@@ -204,9 +195,9 @@ export function ProductList({
                 </TableCell>
 
                 <TableCell>
-                  {product.price ? (
+                  {sellingPrice ? (
                     <span className="font-semibold" style={{ color: COLORS.gold }}>
-                      {currency} {product.price.toFixed(2)}
+                      {currency} {sellingPrice.toFixed(2)}
                     </span>
                   ) : (
                     <span className="text-sm" style={{ color: COLORS.lightText }}>
@@ -219,10 +210,10 @@ export function ProductList({
                   <span
                     className={cn(
                       'font-semibold',
-                      product.qty_on_hand < 10 ? 'text-red-400' : 'text-green-400'
+                      stockQty < 10 ? 'text-red-400' : 'text-green-400'
                     )}
                   >
-                    {product.qty_on_hand}
+                    {stockQty}
                   </span>
                 </TableCell>
 
@@ -236,7 +227,7 @@ export function ProductList({
                   {isArchived ? (
                     <Badge
                       variant="secondary"
-                      className="bg-gray-500/20 ink-muted border-gray-500/30"
+                      className="bg-muted/50 text-muted-foreground border-border/50"
                     >
                       Archived
                     </Badge>
@@ -357,7 +348,13 @@ function ProductCard({
   onRestore: (product: Product) => void
 }) {
   const isArchived = product.status === 'archived'
-  const stockValue = (product.price || 0) * product.qty_on_hand
+  // Check for price in multiple locations (price_market, selling_price, price)
+  const sellingPrice = product.price_market || product.selling_price || product.price || 0
+  // Check for cost in multiple locations (price_cost, cost_price, metadata.cost)
+  const costPrice = product.price_cost || product.cost_price || (product as any).metadata?.cost || 0
+  // Check for stock in multiple locations (stock_quantity, stock_level, qty_on_hand)
+  const stockQty = product.stock_quantity || product.stock_level || product.qty_on_hand || 0
+  const stockValue = sellingPrice * stockQty
 
   return (
     <div
@@ -401,7 +398,7 @@ function ProductCard({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="p-1 rounded hover:bg-black/20 transition-colors"
+              className="p-1 rounded hover:bg-muted/50 transition-colors"
               style={{ color: COLORS.lightText }}
             >
               <MoreVertical className="h-4 w-4" />
@@ -478,9 +475,7 @@ function ProductCard({
             Cost Price
           </p>
           <p className="font-semibold text-sm" style={{ color: COLORS.lightText }}>
-            {(product as any).metadata?.cost
-              ? `${currency} ${parseFloat((product as any).metadata.cost).toFixed(2)}`
-              : '-'}
+            {costPrice ? `${currency} ${costPrice.toFixed(2)}` : '-'}
           </p>
         </div>
         <div>
@@ -488,7 +483,7 @@ function ProductCard({
             Selling Price
           </p>
           <p className="font-semibold text-sm" style={{ color: COLORS.gold }}>
-            {product.price ? `${currency} ${product.price.toFixed(2)}` : '-'}
+            {sellingPrice ? `${currency} ${sellingPrice.toFixed(2)}` : '-'}
           </p>
         </div>
         <div>
@@ -498,10 +493,10 @@ function ProductCard({
           <p
             className={cn(
               'font-semibold text-sm',
-              product.qty_on_hand < 10 ? 'text-red-400' : 'text-green-400'
+              stockQty < 10 ? 'text-red-400' : 'text-green-400'
             )}
           >
-            {product.qty_on_hand}
+            {stockQty}
           </p>
         </div>
         <div>
@@ -510,10 +505,8 @@ function ProductCard({
           </p>
           <p className="font-semibold text-sm" style={{ color: COLORS.champagne }}>
             {(() => {
-              const cost = parseFloat((product as any).metadata?.cost || '0')
-              const price = product.price || 0
-              if (price === 0) return '0%'
-              const margin = (((price - cost) / price) * 100).toFixed(1)
+              if (sellingPrice === 0) return '0%'
+              const margin = (((sellingPrice - costPrice) / sellingPrice) * 100).toFixed(1)
               return `${margin}%`
             })()}
           </p>

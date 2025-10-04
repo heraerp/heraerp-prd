@@ -1,330 +1,211 @@
-'use client'
+/**
+ * HERA Product Categories Hook
+ *
+ * Thin wrapper over useUniversalEntity for category management
+ * Provides category-specific helpers and RPC integration
+ *
+ * ✅ FOLLOWS HERA CRUD ARCHITECTURE:
+ * - Uses useUniversalEntity (NO direct Supabase)
+ * - Uses CATEGORY_PRESET for dynamic fields
+ * - Follows staff/role pattern exactly
+ */
 
-import { useMemo } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  getEntities,
-  getDynamicData,
-  setDynamicDataBatch,
-  upsertEntity,
-  deleteEntity,
-  DynamicFieldInput
-} from '@/lib/universal-api-v2-client'
-import { createHeraCode } from '@/lib/smart-codes'
-import { ProductCategory, ProductCategoryFormValues } from '@/types/salon-product-category'
+import { useUniversalEntity } from './useUniversalEntity'
+import { CATEGORY_PRESET } from './entityPresets'
+import type { DynamicFieldDef } from './useUniversalEntity'
 
-interface UseHeraProductCategoriesOptions {
+export interface ProductCategory {
+  id: string
+  entity_name: string
+  entity_code?: string
+  smart_code: string
+  status: string
+  entity_description?: string
+  metadata?: any
+  // Flattened dynamic fields
+  name?: string
+  display_order?: number
+  icon?: string
+  color?: string
+  active?: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface UseHeraProductCategoriesOptions {
   organizationId?: string
   includeArchived?: boolean
+  filters?: {
+    include_dynamic?: boolean
+    include_relationships?: boolean
+    limit?: number
+    offset?: number
+    status?: string
+    search?: string
+  }
 }
 
-const CATEGORY_ENTITY_TYPE = 'product_category'
-const CATEGORY_ENTITY_SMART_CODE_FALLBACK = 'DEFAULT'
-const CATEGORY_DYNAMIC_SMART_CODE = 'HERA.SALON.PROD.CATEGORY.FIELD.V1'
-const DEFAULT_COLOR = '#D4AF37'
-const DEFAULT_ICON = 'Tag'
-
-function buildCategorySmartCode(source?: string) {
-  const cleaned = source?.trim() || CATEGORY_ENTITY_SMART_CODE_FALLBACK
-  const normalized = cleaned.replace(/[^A-Za-z0-9]+/g, '_') || CATEGORY_ENTITY_SMART_CODE_FALLBACK
-  return createHeraCode(['SALON', 'PROD', 'CATEGORY', normalized])
-}
-
-function resolveEntityId(response: any): string | undefined {
-  return (
-    response?.entity_id ||
-    response?.data?.entity_id ||
-    response?.data?.id ||
-    response?.id ||
-    response?.data?.data?.entity_id
-  )
-}
-
-export function useHeraProductCategories({
-  organizationId,
-  includeArchived = false
-}: UseHeraProductCategoriesOptions = {}) {
-  const queryClient = useQueryClient()
-
+export function useHeraProductCategories(options?: UseHeraProductCategoriesOptions) {
   const {
-    data: categories,
+    entities: categories,
     isLoading,
     error,
-    refetch
-  } = useQuery({
-    queryKey: ['product-categories', organizationId, { includeArchived }],
-    enabled: !!organizationId,
-    queryFn: async () => {
-      if (!organizationId) throw new Error('Organization ID required')
-
-      const result = await getEntities('', {
-        p_organization_id: organizationId,
-        p_entity_type: CATEGORY_ENTITY_TYPE,
-        p_status: includeArchived ? undefined : 'active'
-      })
-
-      // Defensive: ensure result is an array
-      const entities = Array.isArray(result) ? result : []
-
-      console.log('[useHeraProductCategories] Fetched categories:', {
-        isArray: Array.isArray(result),
-        count: entities.length,
-        organizationId,
-        resultType: typeof result,
-        resultKeys: result ? Object.keys(result).slice(0, 5) : []
-      })
-
-      const enriched = await Promise.all(
-        entities.map(async (entity: any) => {
-          let dynamicFields: any[] = []
-          try {
-            const response = await getDynamicData('', {
-              p_organization_id: organizationId,
-              p_entity_id: entity.id
-            })
-            // getDynamicData returns { data: [...] }, so extract the array
-            dynamicFields = Array.isArray(response?.data)
-              ? response.data
-              : Array.isArray(response)
-                ? response
-                : []
-          } catch (fetchError) {
-            console.warn('[useHeraProductCategories] Failed to load dynamic data', {
-              entityId: entity.id,
-              error: fetchError
-            })
-          }
-
-          const dynamicMap: Record<string, any> = {}
-          if (Array.isArray(dynamicFields)) {
-            dynamicFields.forEach(field => {
-              if (!field?.field_name) return
-
-              switch (field.field_type) {
-                case 'number':
-                  dynamicMap[field.field_name] = field.field_value_number ?? null
-                  break
-                case 'boolean':
-                  dynamicMap[field.field_name] = field.field_value_boolean ?? null
-                  break
-                case 'date':
-                case 'datetime':
-                  dynamicMap[field.field_name] = field.field_value_date ?? null
-                  break
-                case 'json':
-                  dynamicMap[field.field_name] = field.field_value_json ?? null
-                  break
-                default:
-                  dynamicMap[field.field_name] = field.field_value_text ?? null
-              }
-            })
-          }
-
-          const category: ProductCategory = {
-            id: entity.id,
-            entity_name: entity.entity_name,
-            entity_code: entity.entity_code || null,
-            status: entity.status === 'archived' ? 'archived' : 'active',
-            smart_code: entity.smart_code,
-            description: dynamicMap.description ?? entity.entity_description ?? null,
-            color: (dynamicMap.color as string | null) || DEFAULT_COLOR,
-            icon: (dynamicMap.icon as string | null) || DEFAULT_ICON,
-            sort_order:
-              typeof dynamicMap.sort_order === 'number'
-                ? dynamicMap.sort_order
-                : Number(dynamicMap.sort_order) || 0,
-            product_count:
-              typeof dynamicMap.product_count === 'number'
-                ? dynamicMap.product_count
-                : Number(dynamicMap.product_count) || 0,
-            created_at: entity.created_at || null,
-            updated_at: entity.updated_at || null
-          }
-
-          return category
-        })
-      )
-
-      return enriched.sort((a, b) => a.sort_order - b.sort_order)
-    }
+    refetch,
+    create: baseCreate,
+    update: baseUpdate,
+    delete: baseDelete,
+    archive: baseArchive,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useUniversalEntity({
+    entity_type: 'product_category',
+    organizationId: options?.organizationId,
+    filters: {
+      include_dynamic: true,
+      include_relationships: false,
+      limit: 100,
+      // Only filter by 'active' status when not including archived
+      ...(options?.includeArchived ? {} : { status: 'active' }),
+      ...options?.filters
+    },
+    dynamicFields: CATEGORY_PRESET.dynamicFields as DynamicFieldDef[]
   })
 
-  const createMutation = useMutation({
-    mutationFn: async (payload: ProductCategoryFormValues) => {
-      if (!organizationId) throw new Error('Organization ID required')
+  // Helper to create category with proper smart codes
+  const createCategory = async (data: {
+    name: string
+    description?: string
+    display_order?: number
+    icon?: string
+    color?: string
+    active?: boolean
+    status?: string
+  }) => {
+    const entity_name = data.name
 
-      console.log('[useHeraProductCategories] Creating category:', payload)
+    // Build dynamic_fields payload following useHeraStaff pattern
+    const dynamic_fields: Record<string, any> = {}
 
-      const smartCode = buildCategorySmartCode(payload.code || payload.name)
-
-      const entityResponse = await upsertEntity('', {
-        p_organization_id: organizationId,
-        p_entity_type: CATEGORY_ENTITY_TYPE,
-        p_entity_name: payload.name,
-        p_entity_code: payload.code || null,
-        p_smart_code: smartCode,
-        p_status: 'active'
-        // p_entity_description omitted - goes in dynamic data instead
-      })
-
-      console.log('[useHeraProductCategories] Entity created:', entityResponse)
-
-      const entityId = resolveEntityId(entityResponse)
-      if (!entityId) {
-        throw new Error('Failed to create product category: missing entity id')
+    if (data.display_order !== undefined) {
+      dynamic_fields.display_order = {
+        value: data.display_order,
+        type: 'number',
+        smart_code: 'HERA.SALON.CATEGORY.DYN.ORDER.v1'
       }
-
-      const dynamicFields: DynamicFieldInput[] = [
-        { field_name: 'description', field_type: 'text', field_value: payload.description || null },
-        { field_name: 'color', field_type: 'text', field_value: payload.color || DEFAULT_COLOR },
-        { field_name: 'icon', field_type: 'text', field_value: payload.icon || DEFAULT_ICON },
-        {
-          field_name: 'sort_order',
-          field_type: 'number',
-          field_value_number: payload.sort_order ?? 0
-        },
-        {
-          field_name: 'product_count',
-          field_type: 'number',
-          field_value_number: 0
-        }
-      ]
-
-      await setDynamicDataBatch('', {
-        p_organization_id: organizationId,
-        p_entity_id: entityId,
-        p_smart_code: CATEGORY_DYNAMIC_SMART_CODE,
-        p_fields: dynamicFields
-      })
-
-      console.log('[useHeraProductCategories] Category created successfully:', entityId)
-
-      return entityId
-    },
-    onSuccess: () => {
-      // Invalidate ALL category queries for this organization (both active and all)
-      queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryKey[0] === 'product-categories' && query.queryKey[1] === organizationId
-      })
     }
-  })
 
-  const updateMutation = useMutation({
-    mutationFn: async ({
-      category,
-      payload
-    }: {
-      category: ProductCategory
-      payload: ProductCategoryFormValues
-    }) => {
-      if (!organizationId) throw new Error('Organization ID required')
-
-      await upsertEntity('', {
-        p_organization_id: organizationId,
-        p_entity_type: CATEGORY_ENTITY_TYPE,
-        p_entity_id: category.id,
-        p_entity_name: payload.name,
-        p_entity_code: payload.code || category.entity_code || null,
-        p_smart_code: category.smart_code
-        // p_status and p_entity_description omitted to avoid RPC bug
-      })
-
-      const dynamicFields: DynamicFieldInput[] = [
-        { field_name: 'description', field_type: 'text', field_value: payload.description || null },
-        {
-          field_name: 'color',
-          field_type: 'text',
-          field_value: payload.color || category.color || DEFAULT_COLOR
-        },
-        {
-          field_name: 'icon',
-          field_type: 'text',
-          field_value: payload.icon || category.icon || DEFAULT_ICON
-        },
-        {
-          field_name: 'sort_order',
-          field_type: 'number',
-          field_value_number: payload.sort_order ?? category.sort_order ?? 0
-        }
-      ]
-
-      await setDynamicDataBatch('', {
-        p_organization_id: organizationId,
-        p_entity_id: category.id,
-        p_smart_code: CATEGORY_DYNAMIC_SMART_CODE,
-        p_fields: dynamicFields
-      })
-    },
-    onSuccess: () => {
-      // Invalidate ALL category queries for this organization
-      queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryKey[0] === 'product-categories' && query.queryKey[1] === organizationId
-      })
+    if (data.icon) {
+      dynamic_fields.icon = {
+        value: data.icon,
+        type: 'text',
+        smart_code: 'HERA.SALON.CATEGORY.DYN.ICON.v1'
+      }
     }
-  })
 
-  const deleteMutation = useMutation({
-    mutationFn: async (categoryId: string) => {
-      if (!organizationId) throw new Error('Organization ID required')
-
-      await deleteEntity('', {
-        p_organization_id: organizationId,
-        p_entity_id: categoryId
-      })
-    },
-    onSuccess: () => {
-      // Invalidate ALL category queries for this organization
-      queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryKey[0] === 'product-categories' && query.queryKey[1] === organizationId
-      })
+    if (data.color) {
+      dynamic_fields.color = {
+        value: data.color,
+        type: 'text',
+        smart_code: 'HERA.SALON.CATEGORY.DYN.COLOR.v1'
+      }
     }
-  })
 
-  const archiveMutation = useMutation({
-    mutationFn: async ({
-      category,
-      archived
-    }: {
-      category: ProductCategory
-      archived: boolean
-    }) => {
-      if (!organizationId) throw new Error('Organization ID required')
-
-      await upsertEntity('', {
-        p_organization_id: organizationId,
-        p_entity_type: CATEGORY_ENTITY_TYPE,
-        p_entity_id: category.id,
-        p_entity_name: category.entity_name,
-        p_entity_code: category.entity_code || null,
-        p_smart_code: category.smart_code
-        // p_status and p_entity_description omitted to avoid RPC bug
-        // Status managed via dynamic data or relationships
-      })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product-categories', organizationId] })
+    if (data.active !== undefined) {
+      dynamic_fields.active = {
+        value: data.active,
+        type: 'boolean',
+        smart_code: 'HERA.SALON.CATEGORY.DYN.ACTIVE.v1'
+      }
     }
-  })
 
-  const memoizedCategories = useMemo(() => categories || [], [categories])
+    return baseCreate({
+      entity_type: 'product_category',
+      entity_name,
+      smart_code: 'HERA.SALON.CATEGORY.ENT.PRODUCT.V1',
+      entity_description: data.description || null,
+      status: data.status === 'inactive' ? 'archived' : 'active',
+      dynamic_fields
+    } as any)
+  }
+
+  // Helper to update category
+  const updateCategory = async (id: string, data: Partial<Parameters<typeof createCategory>[0]>) => {
+    // Get existing category to build complete update
+    const category = (categories as ProductCategory[])?.find(c => c.id === id)
+
+    const entity_name = data.name || category?.entity_name
+
+    // Build dynamic patch from provided fields
+    const dynamic_patch: Record<string, any> = {}
+
+    if (data.display_order !== undefined) {
+      dynamic_patch.display_order = data.display_order
+    }
+
+    if (data.icon !== undefined) {
+      dynamic_patch.icon = data.icon
+    }
+
+    if (data.color !== undefined) {
+      dynamic_patch.color = data.color
+    }
+
+    if (data.active !== undefined) {
+      dynamic_patch.active = data.active
+    }
+
+    const payload: any = {
+      entity_id: id,
+      ...(entity_name && { entity_name }),
+      ...(data.description !== undefined && { entity_description: data.description }),
+      ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
+      ...(data.status !== undefined && { status: data.status === 'inactive' ? 'archived' : 'active' })
+    }
+
+    return baseUpdate(payload)
+  }
+
+  // Helper to archive category (soft delete)
+  const archiveCategory = async (id: string) => {
+    const category = (categories as ProductCategory[])?.find(c => c.id === id)
+    if (!category) throw new Error('Category not found')
+
+    console.log('[useHeraProductCategories] Archiving category:', { id })
+
+    return baseUpdate({
+      entity_id: id,
+      entity_name: category.entity_name,
+      status: 'archived'
+    })
+  }
+
+  // Helper to delete category (hard delete)
+  const deleteCategory = async (id: string, hardDelete = false) => {
+    if (!hardDelete) {
+      return archiveCategory(id)
+    }
+    return baseDelete({ entity_id: id, hard_delete: true })
+  }
+
+  // Debug logging
+  console.log('[useHeraProductCategories] Categories loaded:', {
+    count: (categories as ProductCategory[])?.length || 0,
+    sample: (categories as ProductCategory[])?.[0],
+    organizationId: options?.organizationId
+  })
 
   return {
-    categories: memoizedCategories,
+    categories: (categories as ProductCategory[]) || [],
     isLoading,
-    error: (error as Error | null)?.message,
+    error,
     refetch,
-    createCategory: (payload: ProductCategoryFormValues) => createMutation.mutateAsync(payload),
-    updateCategory: (category: ProductCategory, payload: ProductCategoryFormValues) =>
-      updateMutation.mutateAsync({ category, payload }),
-    deleteCategory: (categoryId: string) => deleteMutation.mutateAsync(categoryId),
-    archiveCategory: (category: ProductCategory, archived: boolean) =>
-      archiveMutation.mutateAsync({ category, archived }),
-    isCreating: createMutation.isPending,
-    isUpdating: updateMutation.isPending,
-    isDeleting: deleteMutation.isPending,
-    isArchiving: archiveMutation.isPending
+    createCategory,
+    updateCategory,
+    archiveCategory,
+    deleteCategory,
+    isCreating,
+    isUpdating,
+    isDeleting
   }
 }

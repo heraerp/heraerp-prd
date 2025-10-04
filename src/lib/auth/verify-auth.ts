@@ -59,18 +59,23 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
 
     const payload = validation.payload
 
+    // Get organization ID from JWT or fallback to header
+    const organizationId =
+      payload.organization_id || request.headers.get('x-hera-org') || undefined
+
     console.log('[verifyAuth] Token validated successfully:', {
       userId: payload.sub,
       email: payload.email,
-      organizationId: payload.organization_id,
-      hasOrganizationId: !!payload.organization_id,
+      organizationId: organizationId,
+      organizationIdSource: payload.organization_id ? 'jwt' : 'header',
+      hasOrganizationId: !!organizationId,
       role: payload.role
     })
 
     return {
       id: payload.sub,
       email: payload.email,
-      organizationId: payload.organization_id,
+      organizationId: organizationId,
       roles: payload.role ? [payload.role] : [],
       permissions: payload.permissions || []
     }

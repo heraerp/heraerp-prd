@@ -20,7 +20,10 @@ const entitySchema = z.object({
   entity_type: z.string(),
   entity_name: z.string(),
   entity_code: z.string().optional(),
+  entity_description: z.string().optional().nullable(),
   smart_code: z.string(),
+  parent_entity_id: z.string().uuid().optional().nullable(),
+  status: z.string().optional().nullable(),
   metadata: z.record(z.any()).optional(),
 
   // Dynamic fields - can be anything!
@@ -80,15 +83,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 1: Create entity using direct database insert
-    const entityData = {
+    const entityData: any = {
       organization_id: organizationId,
       entity_type: data.entity_type,
       entity_name: data.entity_name,
       smart_code: data.smart_code,
       entity_code: data.entity_code || `${data.entity_type.toUpperCase()}-${Date.now()}`,
-      metadata: data.metadata || {}
+      metadata: data.metadata || {},
+      status: data.status || 'active' // Default to 'active' if not provided
       // created_by and updated_by are set by database triggers (handle_audit_trail)
     }
+
+    // Add optional fields if provided
+    if (data.entity_description) entityData.entity_description = data.entity_description
+    if (data.parent_entity_id) entityData.parent_entity_id = data.parent_entity_id
 
     const { data: entityResult, error: entityError } = await supabase
       .from('core_entities')
@@ -182,220 +190,80 @@ export async function GET(request: NextRequest) {
     const { organizationId } = authResult
     const { searchParams } = new URL(request.url)
 
-    // Extract query parameters
-    const entity_type = searchParams.get('entity_type')
-    const entity_id = searchParams.get('entity_id')
-    const status = searchParams.get('status') || 'active'
-    const limit = parseInt(searchParams.get('limit') || '100')
-    const offset = parseInt(searchParams.get('offset') || '0')
-    const include_dynamic = searchParams.get('include_dynamic') !== 'false'
-    const branch_id = searchParams.get('branch_id')
-    const rel = searchParams.get('rel')
+    // Extract query parameters - support both p_ prefixed and non-prefixed
+    const entity_type = searchParams.get('p_entity_type') || searchParams.get('entity_type')
+    const entity_id = searchParams.get('p_entity_id') || searchParams.get('entity_id')
+    const statusParam = searchParams.get('p_status') || searchParams.get('status')
+    const status = !statusParam || statusParam === '' || statusParam === 'null' ? null : statusParam
+    const limit = parseInt(searchParams.get('p_limit') || searchParams.get('limit') || '100')
+    const offset = parseInt(searchParams.get('p_offset') || searchParams.get('offset') || '0')
+    const include_dynamic =
+      searchParams.get('p_include_dynamic') !== 'false' && searchParams.get('include_dynamic') !== 'false'
 
     const supabase = getSupabaseService()
 
-    console.log('🔍 Fetching entities with params:', {
+    console.log('🔍 [GET entities] Params:', {
       organizationId,
       entity_type,
       entity_id,
       status,
       include_dynamic,
       limit,
-      offset,
-      branch_id,
-      rel
+      offset
     })
 
-    console.log('🔍 Auth result details:', {
-      authUser: authResult,
-      requestOrigin: request.headers.get('origin'),
-      userAgent: request.headers.get('user-agent')?.substring(0, 50)
-    })
-
-    // Try HERA read function - use branch-aware version if branch filtering is requested
-    const rpcFunction = branch_id && rel ? 'hera_entity_read_with_branch_v1' : 'hera_entity_read_v2'
-    const rpcParams: any = {
+    // Call HERA RPC function v1
+    const { data: result, error: rpcError } = await supabase.rpc('hera_entity_read_v1', {
       p_organization_id: organizationId,
-      p_entity_id: entity_id,
-      p_entity_type: entity_type,
+      p_entity_id: entity_id || null,
+      p_entity_type: entity_type || null,
       p_status: status,
       p_include_relationships: false,
       p_include_dynamic_data: include_dynamic,
       p_limit: limit,
       p_offset: offset
+    })
+
+    if (rpcError) {
+      console.error('❌ [GET entities] RPC error:', rpcError)
+      return NextResponse.json(
+        { error: 'Failed to fetch entities via RPC', details: rpcError.message },
+        { status: 500 }
+      )
     }
 
-    // Add branch filtering params if using branch-aware function
-    if (branch_id && rel) {
-      rpcParams.p_branch_id = branch_id
-      rpcParams.p_relationship_type = rel
-    }
+    console.log('✅ [GET entities] RPC success:', {
+      hasResult: !!result,
+      isSuccess: result?.success,
+      dataCount: result?.data?.length || 0
+    })
 
-    const { data: result, error } = await supabase.rpc(rpcFunction, rpcParams)
-
-    if (error) {
-      console.error('RPC function failed, falling back to direct query:', error)
-
-      // Fallback to direct table query
-      console.log('🔄 Using fallback direct query with organizationId:', organizationId)
-
-      let query = supabase.from('core_entities').select('*').eq('organization_id', organizationId)
-
-      if (entity_type) {
-        console.log('🎯 Filtering by entity_type:', entity_type)
-        query = query.eq('entity_type', entity_type)
-      }
-
-      if (entity_id) {
-        console.log('🎯 Filtering by entity_id:', entity_id)
-        query = query.eq('id', entity_id)
-      }
-
-      // Branch filtering via relationships
-      if (branch_id && rel) {
-        console.log('🎯 Filtering by branch relationship:', { branch_id, rel })
-        
-        // First get entity IDs that have the specified relationship to the branch
-        const { data: relationships, error: relError } = await supabase
-          .from('core_relationships')
-          .select('from_entity_id')
-          .eq('organization_id', organizationId)
-          .eq('to_entity_id', branch_id)
-          .eq('relationship_type', rel)
-          .is('deleted_at', null)
-
-        if (relError) {
-          console.error('Failed to fetch relationships:', relError)
-          return NextResponse.json(
-            { error: 'Failed to apply branch filter', details: relError.message },
-            { status: 500 }
-          )
-        }
-
-        const entityIds = relationships?.map(r => r.from_entity_id) || []
-        console.log(`📋 Found ${entityIds.length} entities with ${rel} relationship to branch`)
-
-        if (entityIds.length === 0) {
-          // No entities found with this relationship, return empty result
-          return NextResponse.json({
-            success: true,
-            data: [],
-            pagination: {
-              total: 0,
-              limit: limit,
-              offset: offset
-            }
-          })
-        }
-
-        // Filter the main query by these entity IDs
-        query = query.in('id', entityIds)
-      }
-
-      query = query.limit(limit).range(offset, offset + limit - 1)
-
-      console.log('📋 Final query being executed')
-      const { data: entities, error: directError } = await query
-
-      console.log('📊 Direct query results:', {
-        success: !directError,
-        entityCount: entities?.length || 0,
-        error: directError?.message,
-        sampleEntity: entities?.[0]
-      })
-
-      if (directError) {
-        console.error('Direct query also failed:', directError)
-        return NextResponse.json(
-          { error: 'Failed to fetch entities', details: directError.message },
-          { status: 500 }
-        )
-      }
-
-      console.log('✅ Direct query succeeded, found entities:', entities?.length)
-
-      // If include_dynamic is true, fetch dynamic fields for each entity
-      if (include_dynamic && entities && entities.length > 0) {
-        console.log('🔄 Fetching dynamic fields for entities')
-
-        const entityIds = entities.map(e => e.id)
-        const { data: dynamicData, error: dynamicError } = await supabase
-          .from('core_dynamic_data')
-          .select('*')
-          .eq('organization_id', organizationId)
-          .in('entity_id', entityIds)
-
-        if (!dynamicError && dynamicData) {
-          console.log('📋 Found dynamic fields:', dynamicData.length)
-
-          // Group dynamic fields by entity_id
-          const dynamicByEntity = new Map()
-          for (const field of dynamicData) {
-            if (!dynamicByEntity.has(field.entity_id)) {
-              dynamicByEntity.set(field.entity_id, {})
-            }
-
-            const value =
-              field.field_value_text ||
-              field.field_value_number ||
-              field.field_value_boolean ||
-              field.field_value_date ||
-              field.field_value_json
-
-            dynamicByEntity.get(field.entity_id)[field.field_name] = {
-              value: value,
-              type: field.field_type,
-              smart_code: field.smart_code
-            }
-          }
-
-          // Merge dynamic fields into entities
-          for (const entity of entities) {
-            entity.dynamic_fields = dynamicByEntity.get(entity.id) || {}
-          }
-
-          console.log('🔗 Merged dynamic fields into entities')
-        }
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: entities || [],
-        pagination: {
-          total: entities?.length || 0,
-          limit: limit,
-          offset: offset
-        }
-      })
-    }
-
-    // Handle RPC v2 response format
+    // Handle RPC response
     if (result && result.success) {
       return NextResponse.json({
         success: true,
         data: result.data || [],
         pagination: {
-          total: result.metadata?.total || 0,
-          limit: limit,
-          offset: offset
-        }
-      })
-    } else {
-      // This shouldn't happen unless RPC failed
-      console.error('Unexpected RPC response format:', result)
-      return NextResponse.json({
-        success: true,
-        data: [],
-        pagination: {
-          total: 0,
-          limit: limit,
-          offset: offset
+          total: result.metadata?.total || (result.data?.length || 0),
+          limit,
+          offset
         }
       })
     }
-  } catch (error) {
-    console.error('Universal entity read error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+
+    // RPC returned but no success flag
+    console.warn('⚠️ [GET entities] RPC returned unexpected format:', result)
+    return NextResponse.json({
+      success: true,
+      data: [],
+      pagination: { total: 0, limit, offset }
+    })
+  } catch (error: any) {
+    console.error('❌ [GET entities] Exception:', error)
+    return NextResponse.json(
+      { error: 'Internal server error', details: error.message },
+      { status: 500 }
+    )
   }
 }
 
@@ -421,7 +289,15 @@ export async function PUT(request: NextRequest) {
     const supabase = getSupabaseService()
 
     // Update entity core fields if provided
-    if (data.entity_name || data.entity_code || data.metadata || data.smart_code) {
+    if (
+      data.entity_name ||
+      data.entity_code ||
+      data.entity_description ||
+      data.parent_entity_id ||
+      data.status ||
+      data.metadata ||
+      data.smart_code
+    ) {
       const updateData: any = {
         updated_by: userId,
         updated_at: new Date().toISOString()
@@ -429,6 +305,10 @@ export async function PUT(request: NextRequest) {
 
       if (data.entity_name) updateData.entity_name = data.entity_name
       if (data.entity_code) updateData.entity_code = data.entity_code
+      if (data.entity_description !== undefined)
+        updateData.entity_description = data.entity_description
+      if (data.parent_entity_id !== undefined) updateData.parent_entity_id = data.parent_entity_id
+      if (data.status !== undefined) updateData.status = data.status
       if (data.metadata) updateData.metadata = data.metadata
       if (data.smart_code) updateData.smart_code = data.smart_code
 

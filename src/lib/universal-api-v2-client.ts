@@ -72,7 +72,7 @@ export async function getEntities(
     p_entity_type?: string
     p_smart_code?: string
     p_parent_entity_id?: string
-    p_status?: string
+    p_status?: string | null
   }
 ) {
   const url = baseUrl || getBaseUrl()
@@ -82,7 +82,10 @@ export async function getEntities(
   if (params.p_entity_type) qs.set('p_entity_type', params.p_entity_type)
   if (params.p_smart_code) qs.set('p_smart_code', params.p_smart_code)
   if (params.p_parent_entity_id) qs.set('p_parent_entity_id', params.p_parent_entity_id)
-  if (params.p_status) qs.set('p_status', params.p_status)
+  // Explicitly handle status: undefined means not provided (use default), null or '' means show all
+  if (params.p_status !== undefined) {
+    qs.set('p_status', params.p_status || '')
+  }
 
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`${url}/api/v2/entities?${qs.toString()}`, {
@@ -112,21 +115,20 @@ export async function deleteEntity(
   }
 ) {
   const url = baseUrl || getBaseUrl()
-  const qs = new URLSearchParams({
-    organization_id: params.p_organization_id
-  }).toString()
+  const authHeaders = await getAuthHeaders()
 
   console.log('[deleteEntity] Request:', {
-    url: `${url}/api/v2/entities/${params.p_entity_id}?${qs}`,
+    url: `${url}/api/v2/entities/${params.p_entity_id}`,
     organizationId: params.p_organization_id,
-    entityId: params.p_entity_id,
-    fullUrl: `${url}/api/v2/entities/${params.p_entity_id}?${qs}`
+    entityId: params.p_entity_id
   })
 
-  const authHeaders = await getAuthHeaders()
-  const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}?${qs}`, {
+  const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}`, {
     method: 'DELETE',
-    headers: { ...h(params.p_organization_id), ...authHeaders },
+    headers: {
+      'x-hera-org': params.p_organization_id,
+      ...authHeaders
+    },
     credentials: 'include'
   })
   if (!res.ok) {
@@ -167,11 +169,24 @@ export async function upsertEntity(
   }
 
   if (body.p_entity_code) apiBody.entity_code = body.p_entity_code
+  if (body.p_entity_description) apiBody.entity_description = body.p_entity_description
   if (body.p_entity_id) apiBody.entity_id = body.p_entity_id
-  if (body.p_status) apiBody.metadata = { status: body.p_status }
+  if (body.p_parent_entity_id) apiBody.parent_entity_id = body.p_parent_entity_id
+  if (body.p_status) apiBody.status = body.p_status
+
+  // Use PUT for updates, POST for creates
+  const method = body.p_entity_id ? 'PUT' : 'POST'
+
+  console.log('[upsertEntity] Request:', {
+    method,
+    url,
+    apiBody,
+    orgId: body.p_organization_id,
+    isUpdate: !!body.p_entity_id
+  })
 
   const res = await fetch(`${url}/api/v2/entities`, {
-    method: 'POST',
+    method: method,
     headers: {
       'content-type': 'application/json',
       'x-hera-org': body.p_organization_id,
@@ -197,15 +212,18 @@ export async function getDynamicData(
   }
 ) {
   const url = baseUrl || getBaseUrl()
+  const authHeaders = await getAuthHeaders()
   const qs = new URLSearchParams(
     Object.fromEntries(
       Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
     )
   ).toString()
 
-  const authHeaders = await getAuthHeaders()
   const res = await fetch(`${url}/api/v2/dynamic-data?${qs}`, {
-    headers: { ...authHeaders, 'x-hera-org': params.p_organization_id },
+    headers: {
+      'x-hera-org': params.p_organization_id,
+      ...authHeaders
+    },
     credentials: 'include'
   })
   if (!res.ok) {
@@ -231,7 +249,11 @@ export async function setDynamicData(
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/dynamic-data`, {
     method: 'POST',
-    headers: { ...h(orgId), ...authHeaders, 'Content-Type': 'application/json' },
+    headers: {
+      ...h(orgId),
+      'Content-Type': 'application/json',
+      ...authHeaders
+    },
     credentials: 'include',
     body: JSON.stringify({ p_organization_id: orgId, ...body })
   }).then(ok)
@@ -251,7 +273,11 @@ export async function setDynamicDataBatch(
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`${url}/api/v2/dynamic-data/batch`, {
     method: 'POST',
-    headers: { ...authHeaders, 'content-type': 'application/json', 'x-hera-org': params.p_organization_id },
+    headers: {
+      'content-type': 'application/json',
+      'x-hera-org': params.p_organization_id,
+      ...authHeaders
+    },
     credentials: 'include',
     body: JSON.stringify(params)
   })

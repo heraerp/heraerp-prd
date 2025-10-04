@@ -1,345 +1,344 @@
-'use client'
+/**
+ * HERA Products Hook
+ *
+ * Thin wrapper over useUniversalEntity for product management
+ * Provides product-specific helpers and RPC integration
+ *
+ * ✅ FOLLOWS HERA CRUD ARCHITECTURE:
+ * - Uses useUniversalEntity (NO direct Supabase)
+ * - Uses PRODUCT_PRESET for dynamic fields
+ * - Follows staff/role pattern exactly
+ */
 
-import { useMemo } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  getEntities,
-  getDynamicData,
-  setDynamicDataBatch,
-  upsertEntity,
-  deleteEntity,
-  DynamicFieldInput
-} from '@/lib/universal-api-v2-client'
-import { Product } from '@/types/salon-product'
+import { useUniversalEntity } from './useUniversalEntity'
+import { PRODUCT_PRESET } from './entityPresets'
+import type { DynamicFieldDef } from './useUniversalEntity'
 
-interface ProductDynamicData {
+export interface Product {
+  id: string
+  entity_name: string
+  entity_code?: string
+  smart_code: string
+  status: string
+  entity_description?: string
+  metadata?: any
+  // Flattened dynamic fields (must match PRODUCT_PRESET field names)
+  name?: string
+  code?: string
   category?: string
+  price_cost?: number // ✅ Matches PRODUCT_PRESET
+  price_market?: number // ✅ Matches PRODUCT_PRESET
+  stock_quantity?: number // ✅ Matches PRODUCT_PRESET
+  reorder_level?: number
   brand?: string
-  price?: number
   barcode?: string
   sku?: string
-  cost?: number
-  qty_on_hand?: number
-  supplier_name?: string
-  low_stock_alert?: number
-  commission_amount?: number
-  commission_type?: 'fixed' | 'percentage'
-  is_retail?: boolean
-  is_professional?: boolean
-  selling_price?: number
   size?: string
-  // Add more fields as needed
+  // Backward compatibility aliases
+  cost_price?: number // Alias for price_cost
+  selling_price?: number // Alias for price_market
+  stock_level?: number // Alias for stock_quantity
+  created_at: string
+  updated_at: string
 }
 
-// No longer need to set organization context - we pass it with each request
-
-export function useHeraProducts({
-  includeArchived = false,
-  searchQuery = '',
-  categoryFilter = '',
-  organizationId
-}: {
+export interface UseHeraProductsOptions {
+  organizationId?: string
   includeArchived?: boolean
   searchQuery?: string
   categoryFilter?: string
-  organizationId?: string
-} = {}) {
-  const queryClient = useQueryClient()
+  filters?: {
+    include_dynamic?: boolean
+    include_relationships?: boolean
+    limit?: number
+    offset?: number
+    status?: string
+    search?: string
+  }
+}
 
-  // Fetch all product entities using Universal API v2
+export function useHeraProducts(options?: UseHeraProductsOptions) {
   const {
-    data: entities,
-    isLoading: entitiesLoading,
-    error: fetchError,
-    refetch
-  } = useQuery({
-    queryKey: ['products', organizationId, { includeArchived }],
-    queryFn: async () => {
-      if (!organizationId) throw new Error('Organization ID required')
-
-      const result = await universalApi.getEntities({
-        orgId: organizationId,
-        entityType: 'product',
-        status: includeArchived ? undefined : 'active' // Only get active products unless including archived
-      })
-
-      console.log('[useHeraProducts] Fetched products:', {
-        count: result.length,
-        organizationId
-      })
-
-      return result
+    entities: products,
+    isLoading,
+    error,
+    refetch,
+    create: baseCreate,
+    update: baseUpdate,
+    delete: baseDelete,
+    archive: baseArchive,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useUniversalEntity({
+    entity_type: 'product',
+    organizationId: options?.organizationId,
+    filters: {
+      include_dynamic: true,
+      include_relationships: false,
+      limit: 100,
+      // Only filter by 'active' status when not including archived
+      ...(options?.includeArchived ? {} : { status: 'active' }),
+      ...options?.filters
     },
-    enabled: !!organizationId
+    dynamicFields: PRODUCT_PRESET.dynamicFields as DynamicFieldDef[]
   })
 
-  const error = fetchError?.message
+  // Helper to create product with proper smart codes
+  const createProduct = async (data: {
+    name: string
+    code?: string
+    description?: string
+    category?: string
+    cost_price?: number
+    selling_price?: number
+    stock_level?: number
+    reorder_level?: number
+    brand?: string
+    barcode?: string
+    sku?: string
+    size?: string
+    status?: string
+  }) => {
+    const entity_name = data.name
+    const entity_code = data.code || data.name.toUpperCase().replace(/\s+/g, '_')
 
-  // Create mutations using Universal API v2
-  const createEntity = useMutation({
-    mutationFn: async (data: any) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      const result = await universalApi.upsertEntity(organizationId, data)
-      return result
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products', organizationId] })
-    }
-  })
+    // Build dynamic_fields payload following useHeraStaff pattern
+    const dynamic_fields: Record<string, any> = {}
 
-  const updateEntity = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      // For updates, we need to merge the existing data with updates
-      const result = await universalApi.upsertEntity(organizationId, {
-        ...updates,
-        p_entity_id: id
-      })
-      return result
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products', organizationId] })
-    }
-  })
-
-  const deleteEntity = useMutation({
-    mutationFn: async (id: string) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      const result = await universalApi.deleteEntity(organizationId, id)
-      return result
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products', organizationId] })
-    }
-  })
-
-  // Transform entities to Product format with dynamic data
-  const products = useMemo(() => {
-    if (!entities) return []
-
-    return entities
-      .filter(entity => {
-        // Filter by status
-        if (!includeArchived && entity.status === 'archived') {
-          return false
-        }
-
-        // Search filter
-        if (searchQuery) {
-          const query = searchQuery.toLowerCase()
-          return (
-            entity.entity_name.toLowerCase().includes(query) ||
-            entity.entity_code?.toLowerCase().includes(query) ||
-            false
-          )
-        }
-
-        return true
-      })
-      .map(entity => {
-        // Validate required fields for production
-        if (!entity || !entity.entity_name || !entity.smart_code || !entity.id) {
-          console.warn('Invalid entity data - missing required fields:', entity)
-          return null
-        }
-
-        // Only include entities with valid currency data if price is set
-        const hasPrice = entity.metadata?.price !== undefined && entity.metadata?.price !== null
-        const hasCurrency =
-          entity.metadata?.currency !== undefined && entity.metadata?.currency !== null
-
-        if (hasPrice && !hasCurrency) {
-          console.warn('Product has price but no currency, skipping:', entity.id)
-          return null
-        }
-
-        // Transform to Product type (no dummy defaults)
-        const product: Product = {
-          id: entity.id,
-          entity_name: entity.entity_name,
-          entity_code: entity.entity_code || null,
-          status: entity.status === 'archived' ? 'archived' : 'active',
-          smart_code: entity.smart_code,
-          qty_on_hand: entity.metadata?.qty_on_hand ? parseInt(entity.metadata.qty_on_hand) : 0,
-          price: hasPrice ? parseFloat(entity.metadata.price) : null,
-          category: entity.metadata?.category || null,
-          description: entity.metadata?.description || null,
-          currency: hasCurrency ? entity.metadata.currency : 'AED', // Only use AED if no price is set
-          requires_inventory: entity.metadata?.requires_inventory === true,
-          created_at: entity.created_at || null,
-          updated_at: entity.updated_at || null
-        }
-
-        // Store additional fields in a separate object if needed
-        // These are not part of the Product interface
-        const additionalData = {
-          brand: entity.metadata?.brand || '',
-          cost: parseFloat(entity.metadata?.cost || '0'),
-          barcode: entity.metadata?.barcode || '',
-          sku: entity.metadata?.sku || '',
-          size: entity.metadata?.size || '',
-          supplier_name: entity.metadata?.supplier_name || '',
-          selling_price: parseFloat(entity.metadata?.selling_price || '0'),
-          is_retail: entity.metadata?.is_retail !== false,
-          is_professional: entity.metadata?.is_professional === true,
-          low_stock_alert: parseInt(entity.metadata?.low_stock_alert || '10'),
-          commission_amount: parseFloat(entity.metadata?.commission_amount || '0'),
-          commission_type: entity.metadata?.commission_type || 'fixed'
-        }
-
-        // Could store additionalData somewhere if needed
-        // For now, just return the product
-        return product
-      })
-      .filter(product => product !== null)
-  }, [entities, includeArchived, searchQuery])
-
-  // Filter by category if needed
-  const filteredProducts = useMemo(() => {
-    if (!categoryFilter) return products
-
-    return products.filter(product => product.category === categoryFilter)
-  }, [products, categoryFilter])
-
-  // Create product function
-  const createProduct = async (productData: any) => {
-    // Map the form data to our expected format
-    const name = productData.name || productData.entity_name
-    const code = productData.code || productData.entity_code || ''
-
-    // Store all product data in metadata for now
-    // In production, you'd use dynamic fields
-    const metadata = {
-      description: productData.description || '',
-      category: productData.category || '',
-      brand: productData.brand || '',
-      price: productData.price?.toString() || '0',
-      cost: productData.cost?.toString() || '0',
-      qty_on_hand: productData.qty_on_hand?.toString() || '0',
-      barcode: productData.barcode || '',
-      sku: productData.sku || '',
-      size: productData.size || '',
-      supplier_name: productData.supplier_name || '',
-      selling_price: productData.selling_price?.toString() || productData.price?.toString() || '0',
-      is_retail: productData.is_retail !== false,
-      is_professional: productData.is_professional === true,
-      low_stock_alert: productData.low_stock_alert?.toString() || '10',
-      commission_amount: productData.commission_amount?.toString() || '0',
-      commission_type: productData.commission_type || 'fixed'
+    if (data.category !== undefined) {
+      dynamic_fields.category = {
+        value: data.category,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.CATEGORY.V1'
+      }
     }
 
-    // Create the entity using RPC API
-    const result = await createEntity.mutateAsync({
-      p_entity_type: 'product',
-      p_entity_name: name,
-      p_entity_code: code,
-      p_smart_code: 'HERA.SALON.PROD.ENT.RETAIL.V1',
-      p_entity_description: productData.description || null,
-      p_parent_entity_id: null
-    })
+    if (data.cost_price !== undefined) {
+      dynamic_fields.price_cost = {
+        value: data.cost_price,
+        type: 'number',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.COST.v1'
+      }
+    }
 
-    // TODO: Set dynamic fields for product-specific data
-    // For now, storing in metadata
+    if (data.selling_price !== undefined) {
+      dynamic_fields.price_market = {
+        value: data.selling_price,
+        type: 'number',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.v1'
+      }
+    }
 
-    // Dynamic fields would be set here in production
-    // For now, everything is stored in metadata
+    if (data.stock_level !== undefined) {
+      dynamic_fields.stock_quantity = {
+        value: data.stock_level,
+        type: 'number',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.STOCK.QTY.v1'
+      }
+    }
 
+    if (data.reorder_level !== undefined) {
+      dynamic_fields.reorder_level = {
+        value: data.reorder_level,
+        type: 'number',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.REORDER.LEVEL.v1'
+      }
+    }
+
+    if (data.brand) {
+      dynamic_fields.brand = {
+        value: data.brand,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BRAND.V1'
+      }
+    }
+
+    if (data.barcode) {
+      dynamic_fields.barcode = {
+        value: data.barcode,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.v1'
+      }
+    }
+
+    if (data.sku) {
+      dynamic_fields.sku = {
+        value: data.sku,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.SKU.v1'
+      }
+    }
+
+    if (data.size) {
+      dynamic_fields.size = {
+        value: data.size,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.SIZE.v1'
+      }
+    }
+
+    const result = await baseCreate({
+      entity_type: 'product',
+      entity_name,
+      entity_code,
+      smart_code: 'HERA.SALON.PROD.ENT.RETAIL.V1',
+      entity_description: data.description || null,
+      status: data.status === 'inactive' ? 'archived' : 'active',
+      dynamic_fields
+    } as any)
+
+    // Trigger refetch to show new product
+    await refetch()
     return result
   }
 
-  // Update product function
-  const updateProduct = async (productId: string, productData: any) => {
-    // Map the form data
-    const name = productData.name || productData.entity_name
-    const code = productData.code || productData.entity_code
+  // Helper to update product
+  const updateProduct = async (id: string, data: Partial<Parameters<typeof createProduct>[0]>) => {
+    // Get existing product to build complete update
+    const product = (products as Product[])?.find(p => p.id === id)
 
-    // Build metadata with all fields
-    const metadata: any = {}
+    const entity_name = data.name || product?.entity_name
+    const entity_code = data.code || product?.entity_code
 
-    // Add all product fields to metadata
-    const fields = [
-      'description',
-      'category',
-      'brand',
-      'price',
-      'cost',
-      'qty_on_hand',
-      'barcode',
-      'sku',
-      'size',
-      'supplier_name',
-      'selling_price',
-      'is_retail',
-      'is_professional',
-      'low_stock_alert',
-      'commission_amount',
-      'commission_type'
-    ]
+    // Build dynamic patch from provided fields
+    const dynamic_patch: Record<string, any> = {}
 
-    fields.forEach(field => {
-      if (productData[field] !== undefined) {
-        // Convert numbers to strings for storage
-        if (typeof productData[field] === 'number') {
-          metadata[field] = productData[field].toString()
-        } else {
-          metadata[field] = productData[field]
-        }
-      }
-    })
+    if (data.category !== undefined) {
+      dynamic_patch.category = data.category
+    }
 
-    // Update the entity using RPC API
-    await updateEntity.mutateAsync({
-      id: productId,
-      updates: {
-        p_entity_type: 'product',
-        p_entity_name: name || productData.entity_name,
-        p_entity_code: code || productData.entity_code,
-        p_smart_code: 'HERA.SALON.PROD.ENT.RETAIL.V1',
-        p_entity_description: productData.description || null
-      }
-    })
+    if (data.cost_price !== undefined) {
+      dynamic_patch.price_cost = data.cost_price // Map to correct field name
+    }
+
+    if (data.selling_price !== undefined) {
+      dynamic_patch.price_market = data.selling_price // Map to correct field name
+    }
+
+    if (data.stock_level !== undefined) {
+      dynamic_patch.stock_quantity = data.stock_level // Map to correct field name
+    }
+
+    if (data.reorder_level !== undefined) {
+      dynamic_patch.reorder_level = data.reorder_level
+    }
+
+    if (data.brand !== undefined) {
+      dynamic_patch.brand = data.brand
+    }
+
+    if (data.barcode !== undefined) {
+      dynamic_patch.barcode = data.barcode
+    }
+
+    if (data.sku !== undefined) {
+      dynamic_patch.sku = data.sku
+    }
+
+    if (data.size !== undefined) {
+      dynamic_patch.size = data.size
+    }
+
+    const payload: any = {
+      entity_id: id,
+      ...(entity_name && { entity_name }),
+      ...(entity_code && { entity_code }),
+      ...(data.description !== undefined && { entity_description: data.description }),
+      ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
+      ...(data.status !== undefined && { status: data.status === 'inactive' ? 'archived' : 'active' })
+    }
+
+    const result = await baseUpdate(payload)
+    // Trigger refetch to show updated product
+    await refetch()
+    return result
   }
 
-  // Archive/unarchive product
-  const archiveProduct = async (productId: string, archive: boolean = true) => {
-    // For now, we'll use the update mechanism
-    // In the future, this should update status via relationships
-    const product = entities?.find(e => e.id === productId)
-    if (!product) return
+  // Helper to archive product (soft delete)
+  const archiveProduct = async (id: string) => {
+    const product = (products as Product[])?.find(p => p.id === id)
+    if (!product) throw new Error('Product not found')
 
-    await updateEntity.mutateAsync({
-      id: productId,
-      updates: {
-        p_entity_type: 'product',
-        p_entity_name: product.entity_name,
-        p_entity_code: product.entity_code,
-        p_smart_code: product.smart_code,
-        p_entity_description: product.description || null
-      }
+    console.log('[useHeraProducts] Archiving product:', { id })
+
+    const result = await baseUpdate({
+      entity_id: id,
+      entity_name: product.entity_name,
+      status: 'archived'
     })
+
+    // Trigger refetch to update the list
+    await refetch()
+    return result
   }
 
-  // Delete product (soft delete)
-  const deleteProduct = async (productId: string) => {
-    await deleteEntity.mutateAsync(productId)
+  // Helper to restore archived product
+  const restoreProduct = async (id: string) => {
+    const product = (products as Product[])?.find(p => p.id === id)
+    if (!product) throw new Error('Product not found')
+
+    console.log('[useHeraProducts] Restoring product:', { id })
+
+    const result = await baseUpdate({
+      entity_id: id,
+      entity_name: product.entity_name,
+      status: 'active'
+    })
+
+    // Trigger refetch to update the list
+    await refetch()
+    return result
   }
+
+  // Helper to delete product (hard delete)
+  const deleteProduct = async (id: string, hardDelete = false) => {
+    if (!hardDelete) {
+      const result = await archiveProduct(id)
+      return result
+    }
+    const result = await baseDelete({ entity_id: id, hard_delete: true })
+    // Trigger refetch after hard delete
+    await refetch()
+    return result
+  }
+
+  // Filter products based on search and category
+  const filteredProducts = (products as Product[])?.filter(product => {
+    // Search filter
+    if (options?.searchQuery) {
+      const query = options.searchQuery.toLowerCase()
+      const matchesSearch =
+        product.entity_name?.toLowerCase().includes(query) ||
+        product.entity_code?.toLowerCase().includes(query) ||
+        product.category?.toLowerCase().includes(query) ||
+        product.brand?.toLowerCase().includes(query) ||
+        product.barcode?.toLowerCase().includes(query)
+
+      if (!matchesSearch) return false
+    }
+
+    // Category filter
+    if (options?.categoryFilter && product.category !== options.categoryFilter) {
+      return false
+    }
+
+    return true
+  }) || []
 
   return {
-    products: filteredProducts,
-    isLoading: entitiesLoading,
-    error: error,
+    products: filteredProducts as Product[],
+    allProducts: products as Product[],
+    isLoading,
+    error,
     refetch,
-
-    // Mutations
     createProduct,
     updateProduct,
-    deleteProduct,
     archiveProduct,
-
-    // Loading states
-    isCreating: createEntity.isPending,
-    isUpdating: updateEntity.isPending,
-    isDeleting: deleteEntity.isPending,
-    isArchiving: updateEntity.isPending
+    restoreProduct,
+    deleteProduct,
+    isCreating,
+    isUpdating,
+    isDeleting
   }
 }

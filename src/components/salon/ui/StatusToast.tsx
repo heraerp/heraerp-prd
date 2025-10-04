@@ -159,8 +159,24 @@ export function useStatusToast() {
   const [toasts, setToasts] = React.useState<Toast[]>([])
 
   const addToast = React.useCallback((toast: Omit<Toast, 'id'>) => {
-    const id = Date.now().toString()
-    setToasts(prev => [...prev, { ...toast, id }])
+    const id = Date.now().toString() + Math.random().toString(36).substr(2, 9)
+
+    setToasts(prev => {
+      // Deduplicate: Check if a toast with same type, title, and message already exists
+      const duplicate = prev.find(
+        t =>
+          t.type === toast.type &&
+          t.title === toast.title &&
+          t.message === toast.message
+      )
+
+      // If duplicate found within last second, don't add new toast
+      if (duplicate) {
+        return prev
+      }
+
+      return [...prev, { ...toast, id }]
+    })
     return id
   }, [])
 

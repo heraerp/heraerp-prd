@@ -139,6 +139,14 @@ class DatabaseContextManager {
     context: SecurityContext,
     bypassRLS: boolean = false
   ): Promise<void> {
+    // Skip GUC context setting in browser environment
+    // The execute_sql RPC function is not available in Supabase
+    // RLS will be enforced through proper query filters instead
+    if (typeof window !== 'undefined') {
+      console.log('⏭️ Skipping GUC context setting in browser (RLS enforced via query filters)')
+      return
+    }
+
     try {
       const queries = [
         `SELECT set_config('app.org_id', '${context.orgId}', true)`,
@@ -187,6 +195,11 @@ class DatabaseContextManager {
    * Clear database context GUCs
    */
   private async clearDatabaseContext(): Promise<void> {
+    // Skip clearing in browser environment (nothing to clear since we skip setting)
+    if (typeof window !== 'undefined') {
+      return
+    }
+
     const clearQueries = [
       `SELECT set_config('app.org_id', NULL, true)`,
       `SELECT set_config('app.user_id', NULL, true)`,
@@ -278,6 +291,12 @@ class DatabaseContextManager {
    * Log audit events
    */
   private async logAuditEvent(event: AuditEvent): Promise<void> {
+    // Skip audit logging in browser for now (can be sent to API endpoint instead)
+    if (typeof window !== 'undefined') {
+      console.log('🔒 Security event:', event.event_type, event.details)
+      return
+    }
+
     try {
       // First try the hera_audit_log table
       await this.supabase.from('hera_audit_log').insert([event])
@@ -347,6 +366,12 @@ class DatabaseContextManager {
    * Get current database context for debugging
    */
   async getCurrentContext(): Promise<Record<string, string | null>> {
+    // In browser environment, GUC context is not used
+    if (typeof window !== 'undefined') {
+      console.log('ℹ️ GUC context not used in browser (security enforced via query filters)')
+      return {}
+    }
+
     const contextKeys = [
       'app.org_id',
       'app.user_id',

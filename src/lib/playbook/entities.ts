@@ -870,8 +870,7 @@ export async function searchServices(params: {
   // Build service DTOs
   const services = ids.map(id => {
     const entity = id2entity.get(id)
-    const dynamics = byEntity.get(id)
-    const dynamicMap = new Map(dynamics?.map(d => [d.field_name, d]))
+    const dynamics = byEntity.get(id) || {}
 
     return {
       id,
@@ -879,12 +878,12 @@ export async function searchServices(params: {
       entity_name: entity?.entity_name,
       entity_code: entity?.entity_code,
       smart_code: entity?.smart_code,
-      category: dynamicMap.get('category')?.field_value_text || 'general',
-      duration_minutes: dynamicMap.get('duration_minutes')?.field_value_number || 30,
-      price: dynamicMap.get('price')?.field_value_number || 0,
-      currency_code: dynamicMap.get('currency_code')?.field_value_text || 'AED',
-      branch_ids: dynamicMap.get('branch_ids')?.field_value_json || [],
-      active: dynamicMap.get('active')?.field_value_text !== 'false'
+      category: dynamics.category || 'general',
+      duration_minutes: dynamics.duration_minutes || 30,
+      price: dynamics.price || 0,
+      currency_code: dynamics.currency_code || 'AED',
+      branch_ids: dynamics.branch_ids || [],
+      active: dynamics.active !== 'false'
     }
   })
 

@@ -1,43 +1,43 @@
-// ================================================================================
-// SALON APPOINTMENTS PAGE - LIST VIEW (PLAYBOOK API)
-// Smart Code: HERA.PAGES.SALON.APPOINTMENTS.V1
-// Uses Playbook API for appointment operations with Sacred Six tables
-// ================================================================================
-
 'use client'
 
-import { useState, useEffect } from 'react'
+export const dynamic = 'force-dynamic'
+
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { useAppointmentsPlaybook } from '@/hooks/useAppointmentsPlaybook'
-import { AppointmentStatus } from '@/lib/playbook/entities'
-import { format, startOfDay, endOfDay, addDays } from 'date-fns'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import {
-  Calendar,
-  Clock,
-  User,
-  Phone,
-  DollarSign,
+  useHeraAppointments,
+  type Appointment,
+  type AppointmentFormValues
+} from '@/hooks/useHeraAppointments'
+import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
+import { AppointmentModal } from '@/components/salon/appointments/AppointmentModal'
+import {
   Plus,
+  Clock,
+  Calendar,
+  CheckCircle,
+  CalendarDays,
   Search,
-  Filter,
-  ChevronRight,
-  MoreVertical,
   Edit,
   Trash2,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  CalendarDays,
-  Loader2,
   Building2,
-  MapPin,
-  X
+  Archive,
+  DollarSign
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from '@/components/ui/luxe-dialog'
+import { Loader2 } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -45,955 +45,806 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Card } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { cn } from '@/lib/utils'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { toast } from '@/hooks/use-toast'
-import { PageLayout } from '@/components/universal/PageLayout'
-import { PageHeader, PageHeaderButton } from '@/components/universal/PageHeader'
-import { NewAppointmentModal } from '@/components/salon/appointments/NewAppointmentModal'
-import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
-import {
-  cancelAppointmentV2,
-  noShowAppointmentV2,
-  checkInAppointmentV2
-} from '@/lib/salon/appointments-v2-helper'
+import { format } from 'date-fns'
 
-// Luxury color palette
-const LUXE_COLORS = {
+// Luxe color palette
+const COLORS = {
   black: '#0B0B0B',
   charcoal: '#1A1A1A',
   gold: '#D4AF37',
   goldDark: '#B8860B',
   champagne: '#F5E6C8',
   bronze: '#8C7853',
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323',
   emerald: '#0F6F5C',
-  plum: '#5A2A40',
   rose: '#E8B4B8'
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: any }> =
-  {
-    booked: {
-      label: 'Booked',
-      color: LUXE_COLORS.gold,
-      bgColor: `${LUXE_COLORS.gold}20`,
-      icon: CheckCircle
-    },
-    checked_in: {
-      label: 'Checked In',
-      color: LUXE_COLORS.emerald,
-      bgColor: `${LUXE_COLORS.emerald}20`,
-      icon: Clock
-    },
-    completed: {
-      label: 'Completed',
-      color: LUXE_COLORS.emerald,
-      bgColor: `${LUXE_COLORS.emerald}20`,
-      icon: CheckCircle
-    },
-    cancelled: {
-      label: 'Cancelled',
-      color: LUXE_COLORS.rose,
-      bgColor: `${LUXE_COLORS.rose}20`,
-      icon: XCircle
-    },
-    no_show: {
-      label: 'No Show',
-      color: LUXE_COLORS.bronze,
-      bgColor: `${LUXE_COLORS.bronze}20`,
-      icon: XCircle
-    }
-  }
+interface AppointmentStats {
+  totalAppointments: number
+  todayAppointments: number
+  upcomingAppointments: number
+  completedAppointments: number
+}
 
-function SalonAppointmentsContent() {
+function AppointmentsContent() {
   const router = useRouter()
-  const { organization, isAuthenticated, isLoading: contextLoading, selectedBranchId } = useSecuredSalonContext()
-  const organizationId = organization?.id
+  const { organizationId } = useSecuredSalonContext()
+  const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
 
-  // Branch filter hook - no persistence to prevent stuck filters
+  // State declarations
+  const [searchTerm, setSearchTerm] = useState('')
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | undefined>()
+  const [showArchivedAppointments, setShowArchivedAppointments] = useState(false)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [appointmentToDelete, setAppointmentToDelete] = useState<Appointment | null>(null)
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [dateFilter, setDateFilter] = useState<string>('all')
+
+  // Use the new useHeraAppointments hook
+  const {
+    appointments,
+    isLoading,
+    createAppointment,
+    updateAppointment,
+    archiveAppointment,
+    deleteAppointment,
+    restoreAppointment,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useHeraAppointments({
+    organizationId: organizationId || '',
+    includeArchived: showArchivedAppointments,
+    userRole: 'manager' // TODO: Get from auth context
+  })
+
+  // Branch filter hook
   const {
     branchId,
     branches,
     loading: branchesLoading,
     setBranchId,
     hasMultipleBranches
-  } = useBranchFilter(undefined, undefined, organizationId) // No persistKey
+  } = useBranchFilter(organizationId, 'salon-appointments-list')
 
-  // State for filters
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | 'all'>('all')
-  const [dateFilter, setDateFilter] = useState<'today' | 'tomorrow' | 'week' | 'all'>('all')
-  
-  const [showNewAppointmentModal, setShowNewAppointmentModal] = useState(false)
-  
-  const handleOpenModal = () => {
-    console.log('Opening new appointment modal')
-    setShowNewAppointmentModal(true)
+  // Calculate stats from appointment data
+  const stats: AppointmentStats = {
+    totalAppointments: appointments?.length || 0,
+    todayAppointments:
+      appointments?.filter(a => {
+        const appointmentDate = new Date(a.start_time || '')
+        const today = new Date()
+        return appointmentDate.toDateString() === today.toDateString()
+      }).length || 0,
+    upcomingAppointments:
+      appointments?.filter(a => {
+        const appointmentDate = new Date(a.start_time || '')
+        return appointmentDate > new Date() && a.status === 'booked'
+      }).length || 0,
+    completedAppointments: appointments?.filter(a => a.status === 'completed').length || 0
   }
 
-  // Always reset branch filter to 'all' on page load to prevent stuck filters
-  useEffect(() => {
-    // Clear any persisted branch filter and always start with 'all'
-    localStorage.removeItem('branch-filter-salon-appointments-list')
-    setBranchId(undefined)
-    console.log('📅 Reset branch filter to show all locations')
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // Appointment modal handlers
+  const handleOpenAppointmentModal = (appointment?: Appointment) => {
+    setSelectedAppointment(appointment)
+    setAppointmentModalOpen(true)
+  }
 
-  // Get organization ID from localStorage for demo mode
-  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
+  const handleCloseAppointmentModal = () => {
+    setSelectedAppointment(undefined)
+    setAppointmentModalOpen(false)
+  }
 
-  useEffect(() => {
-    const storedOrgId = localStorage.getItem('organizationId')
-    if (storedOrgId) {
-      setLocalOrgId(storedOrgId)
-    }
-  }, [])
+  const handleSaveAppointment = async (appointmentData: AppointmentFormValues) => {
+    if (!organizationId) return
 
-  // Calculate date range based on filter
-  const getDateRange = () => {
-    const today = startOfDay(new Date())
-
-    switch (dateFilter) {
-      case 'today':
-        return {
-          date_from: today.toISOString(),
-          date_to: endOfDay(today).toISOString()
-        }
-      case 'tomorrow':
-        const tomorrow = addDays(today, 1)
-        return {
-          date_from: tomorrow.toISOString(),
-          date_to: endOfDay(tomorrow).toISOString()
-        }
-      case 'week':
-        return {
-          date_from: today.toISOString(),
-          date_to: endOfDay(addDays(today, 7)).toISOString()
-        }
-      case 'all':
-      default:
-        // For 'all', show appointments from 1 year ago to 1 year in the future
-        // This ensures we catch appointments that might have been created with future dates
-        return {
-          date_from: addDays(today, -365).toISOString(),
-          date_to: endOfDay(addDays(today, 365)).toISOString()
-        }
+    try {
+      if (selectedAppointment) {
+        // Update existing appointment
+        await updateAppointment(selectedAppointment.id, appointmentData)
+        showSuccess('Appointment updated', 'Successfully updated appointment')
+      } else {
+        // Create new appointment
+        await createAppointment(appointmentData)
+        showSuccess('Appointment created', 'Successfully created new appointment')
+      }
+      handleCloseAppointmentModal()
+    } catch (error) {
+      console.error('Error saving appointment:', error)
+      showError(
+        'Failed to save appointment',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+      throw error
     }
   }
 
-  // Use Playbook hook
-  const playbookParams = {
-    ...getDateRange(),
-    status: statusFilter !== 'all' ? [statusFilter] : undefined,
-    branch_id: branchId && branchId !== 'all' && branchId !== undefined ? branchId : undefined,
-    q: searchTerm || undefined
+  const handleArchiveAppointment = async (appointmentId: string) => {
+    if (!organizationId) return
+
+    try {
+      await archiveAppointment(appointmentId)
+      showSuccess('Appointment archived', 'Successfully archived appointment')
+      handleCloseAppointmentModal()
+    } catch (error) {
+      console.error('Error archiving appointment:', error)
+      showError(
+        'Failed to archive appointment',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+      throw error
+    }
   }
-  
-  console.log('📅 Appointments page params:', {
-    branchId,
-    branch_id_passed: playbookParams.branch_id,
-    dateRange: getDateRange()
-  })
-  
-  const {
-    data: appointments,
-    total,
-    loading,
-    error,
-    organizationId: playbookOrgId,
-    refresh
-  } = useAppointmentsPlaybook(playbookParams)
 
-  // Update filters when changed
-  useEffect(() => {
-    refresh()
-  }, [searchTerm, statusFilter, dateFilter, branchId])
+  const handleDeleteAppointment = async (appointmentId: string) => {
+    if (!organizationId) return
 
-  const getStatusBadge = (status: AppointmentStatus) => {
-    const config = STATUS_CONFIG[status] || STATUS_CONFIG.booked
-    const Icon = config.icon
+    try {
+      await deleteAppointment(appointmentId, true)
+      showSuccess('Appointment deleted', 'Successfully deleted appointment permanently')
+      handleCloseAppointmentModal()
+    } catch (error) {
+      console.error('Error deleting appointment:', error)
+      showError(
+        'Failed to delete appointment',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+      throw error
+    }
+  }
+
+  const handleConfirmDeleteAppointment = async () => {
+    if (!appointmentToDelete) return
+
+    try {
+      await deleteAppointment(appointmentToDelete.id, true)
+      showSuccess('Appointment deleted', 'Successfully deleted appointment permanently')
+      setDeleteConfirmOpen(false)
+      setAppointmentToDelete(null)
+    } catch (error) {
+      showError(
+        'Failed to delete appointment',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+    }
+  }
+
+  const handleRestoreAppointment = async (appointment: Appointment) => {
+    const loadingId = showLoading('Restoring appointment...', 'Please wait')
+
+    try {
+      await restoreAppointment(appointment.id)
+      removeToast(loadingId)
+      showSuccess('Appointment restored', `${appointment.entity_name} has been restored`)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to restore appointment', error.message || 'Please try again')
+    }
+  }
+
+  const filteredAppointments =
+    appointments?.filter(a => {
+      // Search filter
+      const matchesSearch =
+        !searchTerm ||
+        (a.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+        (a.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+        (a.stylist_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
+
+      // Branch filter
+      const matchesBranch =
+        !hasMultipleBranches || !branchId || branchId === '__ALL__' || a.branch_id === branchId
+
+      // Status filter
+      const matchesStatus = statusFilter === 'all' || a.status === statusFilter
+
+      // Date filter
+      let matchesDate = true
+      if (dateFilter !== 'all' && a.start_time) {
+        const appointmentDate = new Date(a.start_time)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        switch (dateFilter) {
+          case 'today':
+            matchesDate = appointmentDate.toDateString() === today.toDateString()
+            break
+          case 'upcoming':
+            matchesDate = appointmentDate >= today
+            break
+          case 'past':
+            matchesDate = appointmentDate < today
+            break
+        }
+      }
+
+      return matchesSearch && matchesBranch && matchesStatus && matchesDate
+    }) || []
+
+  if (!organizationId) {
     return (
-      <Badge
-        className="gap-1 border transition-all duration-300 hover:scale-105 shadow-sm"
-        style={{
-          backgroundColor: config.bgColor,
-          color: config.color,
-          borderColor: config.color,
-          boxShadow: `0 2px 8px ${config.color}20`
-        }}
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: COLORS.black }}
       >
-        <Icon className="w-3 h-3 animate-pulse" style={{ animationDuration: '3s' }} />
-        {config.label}
-      </Badge>
-    )
-  }
-
-  // Get effective organization ID
-  const effectiveOrgId = organizationId || playbookOrgId || localOrgId
-
-  // Three-layer authorization pattern (adapted for demo mode)
-  // Layer 1: Authentication check (skip for demo mode)
-  if (!isAuthenticated && !localOrgId) {
-    return (
-      <div className="container mx-auto p-6 max-w-7xl">
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>Please log in to access this page.</AlertDescription>
-        </Alert>
-      </div>
-    )
-  }
-
-  // Layer 2: Context loading check
-  if (contextLoading && !localOrgId) {
-    return (
-      <div className="container mx-auto p-6 max-w-7xl">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center animate-fadeIn">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                 style={{ 
-                   background: `linear-gradient(135deg, ${LUXE_COLORS.gold}40 0%, ${LUXE_COLORS.goldDark}40 100%)`,
-                   boxShadow: `0 8px 32px ${LUXE_COLORS.gold}20`
-                 }}>
-              <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
-            </div>
-            <p className="mt-4" style={{ color: LUXE_COLORS.bronze }}>Loading...</p>
-          </div>
+        <div
+          className="text-center p-8 rounded-xl"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+          }}
+        >
+          <h2 className="text-xl font-medium mb-2" style={{ color: COLORS.champagne }}>
+            Loading...
+          </h2>
+          <p style={{ color: COLORS.lightText, opacity: 0.7 }}>Setting up appointments.</p>
         </div>
       </div>
     )
-  }
-
-  // Layer 3: Organization check
-  if (!effectiveOrgId) {
-    return (
-      <div className="container mx-auto p-6 max-w-7xl">
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            No organization context found. Please select an organization.
-          </AlertDescription>
-        </Alert>
-      </div>
-    )
-  }
-
-  const [actionId, setActionId] = useState<string | null>(null)
-
-  const handleCancel = async (id: string) => {
-    try {
-      setActionId(id)
-      await cancelAppointmentV2({ organizationId: effectiveOrgId!, appointmentId: id })
-      toast({ title: 'Appointment cancelled' })
-      await refresh()
-    } catch (e) {
-      const m = e instanceof Error ? e.message : 'Failed to cancel appointment'
-      toast({ title: 'Error', description: m, variant: 'destructive' })
-    } finally {
-      setActionId(null)
-    }
-  }
-
-  const handleNoShow = async (id: string) => {
-    try {
-      setActionId(id)
-      await noShowAppointmentV2({ organizationId: effectiveOrgId!, appointmentId: id })
-      toast({ title: 'Marked as no-show' })
-      await refresh()
-    } catch (e) {
-      const m = e instanceof Error ? e.message : 'Failed to mark no-show'
-      toast({ title: 'Error', description: m, variant: 'destructive' })
-    } finally {
-      setActionId(null)
-    }
-  }
-
-  const handleCheckIn = async (id: string) => {
-    try {
-      setActionId(id)
-      await checkInAppointmentV2({ organizationId: effectiveOrgId!, appointmentId: id })
-      toast({ title: 'Checked in' })
-      await refresh()
-    } catch (e) {
-      const m = e instanceof Error ? e.message : 'Failed to check in'
-      toast({ title: 'Error', description: m, variant: 'destructive' })
-    } finally {
-      setActionId(null)
-    }
   }
 
   return (
-    <div
-      className="min-h-screen transition-all duration-300"
-      style={{
-        background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)`
-      }}
-    >
-      <div className="p-6 animate-fadeIn">
-        {/* Page Header */}
-        <div className="mb-6 animate-slideDown">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transform transition-transform duration-300 hover:scale-110"
-                 style={{ 
-                   background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-                   boxShadow: `0 8px 32px ${LUXE_COLORS.gold}40`
-                 }}>
-              <Calendar className="w-6 h-6" style={{ color: LUXE_COLORS.black }} />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight" style={{ color: LUXE_COLORS.champagne }}>
-                Appointments
-              </h1>
-              <p className="text-sm mt-1 opacity-80 transition-opacity duration-300 hover:opacity-100" style={{ color: LUXE_COLORS.bronze }}>
-                Manage all salon appointments and bookings
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Page Actions */}
-        <div className="flex items-center justify-end gap-3 mb-6 animate-slideLeft">
-          <Button
-            variant="outline"
-            onClick={() => router.push('/salon/appointments/calendar')}
-            style={{
-              backgroundColor: LUXE_COLORS.black,
-              borderColor: LUXE_COLORS.bronze,
-              color: LUXE_COLORS.champagne
-            }}
-            className="hover:opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-lg"
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = LUXE_COLORS.gold
-              e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}30`
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-              e.currentTarget.style.boxShadow = ''
-            }}
-          >
-            <Calendar className="w-4 h-4 mr-2" />
-            Calendar View
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => router.push('/salon/kanban')}
-            style={{
-              backgroundColor: LUXE_COLORS.black,
-              borderColor: LUXE_COLORS.bronze,
-              color: LUXE_COLORS.champagne
-            }}
-            className="hover:opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-lg"
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = LUXE_COLORS.gold
-              e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}30`
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-              e.currentTarget.style.boxShadow = ''
-            }}
-          >
-            <CalendarDays className="w-4 h-4 mr-2" />
-            Kanban View
-          </Button>
-          <Button
-            style={{
-              background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-              color: LUXE_COLORS.black,
-              boxShadow: `0 4px 16px ${LUXE_COLORS.gold}40`
-            }}
-            className="hover:opacity-90 transition-all duration-300 font-semibold hover:scale-105 hover:shadow-2xl"
-            onClick={handleOpenModal}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-              e.currentTarget.style.boxShadow = `0 8px 24px ${LUXE_COLORS.gold}60`
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'scale(1)'
-              e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}40`
-            }}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Book Appointment
-          </Button>
-        </div>
-
-        {/* Error state */}
-        {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {/* Filters */}
-        <Card
-          className="p-6 mb-6 backdrop-blur shadow-lg border transition-all duration-300 animate-fadeInUp"
-          style={{
-            backgroundColor: `${LUXE_COLORS.charcoal}E6`,
-            borderColor: `${LUXE_COLORS.gold}40`,
-            backdropFilter: 'blur(10px)'
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}60`
-            e.currentTarget.style.boxShadow = `0 8px 32px ${LUXE_COLORS.gold}20`
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
-            e.currentTarget.style.boxShadow = ''
-          }}
-        >
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search
-                className="absolute left-3 top-2.5 h-4 w-4"
-                style={{ color: LUXE_COLORS.bronze }}
-              />
-              <Input
-                placeholder="Search by customer, stylist, or code..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="pl-9 transition-all duration-300 focus:scale-[1.02]"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.black}CC`,
-                  borderColor: LUXE_COLORS.bronze,
-                  color: LUXE_COLORS.champagne
-                }}
-                onFocus={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                  e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
-                }}
-                onBlur={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-                  e.currentTarget.style.boxShadow = ''
-                }}
-              />
-            </div>
-
-            {/* Branch Filter - Enterprise Grade */}
-            <Select
-              value={branchId === undefined || branchId === 'all' ? 'all' : branchId}
-              onValueChange={value => setBranchId(value === 'all' ? undefined : value)}
-            >
-              <SelectTrigger
-                className="w-[200px] transition-all duration-300 hover:scale-[1.02]"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.black}CC`,
-                  borderColor: LUXE_COLORS.bronze,
-                  color: LUXE_COLORS.champagne
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                  e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-                  e.currentTarget.style.boxShadow = ''
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
-                  <SelectValue placeholder="All Locations" />
-                </div>
-              </SelectTrigger>
-              <SelectContent className="hera-select-content">
-                <SelectItem value="all" className="hera-select-item">
-                  All Locations
-                </SelectItem>
-                {branchesLoading ? (
-                  <div className="px-2 py-3 text-center">
-                    <Loader2
-                      className="h-4 w-4 animate-spin mx-auto"
-                      style={{ color: LUXE_COLORS.gold }}
-                    />
-                  </div>
-                ) : branches.length === 0 ? (
-                  <div
-                    className="px-2 py-3 text-center text-sm"
-                    style={{ color: LUXE_COLORS.bronze }}
-                  >
-                    No branches configured
-                  </div>
-                ) : (
-                  branches.map(branch => (
-                    <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
-                        <div className="flex flex-col">
-                          <span className="font-medium">{branch.name}</span>
-                          {branch.code && <span className="text-xs opacity-60">{branch.code}</span>}
-                        </div>
-                      </div>
-                    </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
-
-            <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
-              <SelectTrigger
-                className="w-[180px] transition-all duration-300 hover:scale-[1.02]"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.black}CC`,
-                  borderColor: LUXE_COLORS.bronze,
-                  color: LUXE_COLORS.champagne
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                  e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-                  e.currentTarget.style.boxShadow = ''
-                }}
-              >
-                <SelectValue placeholder="Filter by date" />
-              </SelectTrigger>
-              <SelectContent className="hera-select-content">
-                <SelectItem value="all" className="hera-select-item">
-                  All appointments
-                </SelectItem>
-                <SelectItem value="today" className="hera-select-item">
-                  Today
-                </SelectItem>
-                <SelectItem value="tomorrow" className="hera-select-item">
-                  Tomorrow
-                </SelectItem>
-                <SelectItem value="week" className="hera-select-item">
-                  Next 7 days
-                </SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-              <SelectTrigger
-                className="w-[180px] transition-all duration-300 hover:scale-[1.02]"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.black}CC`,
-                  borderColor: LUXE_COLORS.bronze,
-                  color: LUXE_COLORS.champagne
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                  e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-                  e.currentTarget.style.boxShadow = ''
-                }}
-              >
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent className="hera-select-content">
-                <SelectItem value="all" className="hera-select-item">
-                  All statuses
-                </SelectItem>
-                <SelectItem value="booked" className="hera-select-item">
-                  Booked
-                </SelectItem>
-                <SelectItem value="checked_in" className="hera-select-item">
-                  Checked In
-                </SelectItem>
-                <SelectItem value="completed" className="hera-select-item">
-                  Completed
-                </SelectItem>
-                <SelectItem value="cancelled" className="hera-select-item">
-                  Cancelled
-                </SelectItem>
-                <SelectItem value="no_show" className="hera-select-item">
-                  No Show
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </Card>
-
-        {/* Active Filters Indicator */}
-        {branchId && branchId !== 'all' && (
-          <div className="mb-4 flex items-center gap-2 animate-slideDown">
-            <span className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-              Active Filters:
-            </span>
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-300 hover:scale-105"
+    <div className="min-h-screen p-6" style={{ backgroundColor: COLORS.black }}>
+      <div
+        className="rounded-2xl p-8"
+        style={{
+          backgroundColor: COLORS.charcoal,
+          border: `1px solid ${COLORS.gold}20`,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1
+              className="text-3xl font-bold mb-2"
               style={{
-                background: `${LUXE_COLORS.gold}20`,
-                border: `1px solid ${LUXE_COLORS.gold}40`,
-                boxShadow: `0 2px 8px ${LUXE_COLORS.gold}20`
+                background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
               }}
             >
-              <Building2 className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
-              <span className="text-sm font-medium" style={{ color: LUXE_COLORS.champagne }}>
-                {branches.find(b => b.id === branchId)?.name || branchId}
-              </span>
-              <button
-                onClick={() => setBranchId(undefined)}
-                className="ml-1 hover:opacity-70 transition-opacity"
-                style={{ color: LUXE_COLORS.gold }}
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </div>
+              Appointments
+            </h1>
+            <p style={{ color: COLORS.bronze }}>Manage salon appointments and bookings</p>
           </div>
-        )}
+          <div className="flex gap-3">
+            <Button
+              onClick={() => router.push('/salon/appointments/calendar')}
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emerald}DD 100%)`,
+                color: COLORS.champagne,
+                border: 'none'
+              }}
+              className="hover:opacity-90"
+            >
+              <Calendar className="w-4 h-4 mr-2" />
+              Calendar View
+            </Button>
+            <Button
+              onClick={() => handleOpenAppointmentModal()}
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                color: COLORS.black,
+                border: 'none'
+              }}
+              className="hover:opacity-90"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              New Appointment
+            </Button>
+          </div>
+        </div>
 
-        {/* Appointments List */}
-        {loading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i, index) => (
-              <Card
-                key={i}
-                className="p-6 backdrop-blur shadow-lg border animate-fadeIn"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.charcoal}E6`,
-                  borderColor: `${LUXE_COLORS.gold}40`,
-                  animationDelay: `${index * 0.1}s`
-                }}
-              >
-                <div className="animate-pulse">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div
-                      className="w-12 h-12 rounded-full"
-                      style={{ backgroundColor: `${LUXE_COLORS.gold}30` }}
-                    ></div>
-                    <div className="flex-1">
-                      <div
-                        className="h-4 rounded w-1/4 mb-2"
-                        style={{ backgroundColor: `${LUXE_COLORS.bronze}40` }}
-                      ></div>
-                      <div
-                        className="h-3 rounded w-1/2"
-                        style={{ backgroundColor: `${LUXE_COLORS.bronze}40` }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div
-                    className="h-3 rounded w-1/3 ml-16"
-                    style={{ backgroundColor: `${LUXE_COLORS.bronze}40` }}
-                  ></div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          {[
+            {
+              title: 'Total Appointments',
+              value: stats.totalAppointments,
+              desc: 'All time',
+              icon: CalendarDays,
+              color: COLORS.emerald
+            },
+            {
+              title: 'Today',
+              value: stats.todayAppointments,
+              desc: 'Scheduled today',
+              icon: Clock,
+              color: COLORS.gold
+            },
+            {
+              title: 'Upcoming',
+              value: stats.upcomingAppointments,
+              desc: 'Future bookings',
+              icon: Calendar,
+              color: COLORS.bronze
+            },
+            {
+              title: 'Completed',
+              value: stats.completedAppointments,
+              desc: 'Finished',
+              icon: CheckCircle,
+              color: COLORS.champagne
+            }
+          ].map((stat, index) => (
+            <Card
+              key={index}
+              style={{
+                backgroundColor: COLORS.charcoalLight,
+                border: `1px solid ${COLORS.gold}20`,
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+              }}
+            >
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium" style={{ color: COLORS.bronze }}>
+                  {stat.title}
+                </CardTitle>
+                <stat.icon className="h-4 w-4" style={{ color: stat.color }} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold" style={{ color: COLORS.champagne }}>
+                  {stat.value}
                 </div>
-              </Card>
-            ))}
-          </div>
-        ) : appointments.length === 0 ? (
-          <Card
-            className="p-12 text-center backdrop-blur shadow-lg border animate-fadeIn"
-            style={{
-              backgroundColor: `${LUXE_COLORS.charcoal}E6`,
-              borderColor: `${LUXE_COLORS.gold}40`,
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center animate-pulse"
-                 style={{ 
-                   background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.goldDark}20 100%)`,
-                   boxShadow: `0 8px 32px ${LUXE_COLORS.gold}10`
-                 }}>
-              <Calendar
-                className="w-10 h-10"
-                style={{ color: `${LUXE_COLORS.gold}60` }}
+                <p className="text-xs" style={{ color: COLORS.bronze }}>
+                  {stat.desc}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Search and Filters */}
+        <div className="mb-6 space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
+                style={{ color: COLORS.bronze }}
+              />
+              <Input
+                placeholder="Search by customer, stylist..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="pl-10 border-0 outline-none"
+                style={{
+                  backgroundColor: COLORS.charcoalLight,
+                  border: `1px solid ${COLORS.gold}30`,
+                  color: COLORS.champagne,
+                  borderRadius: '0.375rem'
+                }}
               />
             </div>
-            <h3 className="text-lg font-medium mb-1" style={{ color: LUXE_COLORS.champagne }}>
-              No appointments found
-            </h3>
-            <p className="mb-4" style={{ color: LUXE_COLORS.bronze }}>
-              {searchTerm || statusFilter !== 'all' || dateFilter !== 'all' || (branchId && branchId !== 'all')
-                ? 'Try adjusting your filters'
-                : 'Book your first appointment to get started'}
-            </p>
-            {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (!branchId || branchId === 'all') && (
-              <Button
-                onClick={handleOpenModal}
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-                  color: LUXE_COLORS.black,
-                  boxShadow: `0 4px 16px ${LUXE_COLORS.gold}40`
-                }}
-                className="hover:opacity-90 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-                  e.currentTarget.style.boxShadow = `0 8px 24px ${LUXE_COLORS.gold}60`
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'scale(1)'
-                  e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}40`
-                }}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Book Appointment
-              </Button>
-            )}
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            <p className="text-sm animate-fadeIn flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
-              <span className="inline-block w-2 h-2 rounded-full animate-pulse" 
-                    style={{ backgroundColor: LUXE_COLORS.gold }}></span>
-              Showing <span className="font-semibold" style={{ color: LUXE_COLORS.champagne }}>{appointments.length}</span> of <span className="font-semibold" style={{ color: LUXE_COLORS.champagne }}>{total}</span> appointments
-            </p>
 
-            {appointments.map((appointment, index) => {
-              const appointmentDate = new Date(appointment.start_time)
-              const isPast = appointmentDate < new Date()
+            <div className="w-64">
+              <Select
+                value={branchId || '__ALL__'}
+                onValueChange={value => setBranchId(value === '__ALL__' ? '' : value)}
+              >
+                <SelectTrigger
+                  className="border-0 outline-none"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight,
+                    border: `1px solid ${COLORS.gold}30`,
+                    color: COLORS.champagne
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" style={{ color: COLORS.bronze }} />
+                    <SelectValue placeholder="All locations" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__ALL__">All locations</SelectItem>
+                  {branchesLoading ? (
+                    <SelectItem value="__LOADING__" disabled>
+                      Loading...
+                    </SelectItem>
+                  ) : (
+                    branches.map(branch => (
+                      <SelectItem key={branch.id} value={branch.id}>
+                        {branch.name || 'Unnamed Branch'}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="w-48">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger
+                  className="border-0 outline-none"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight,
+                    border: `1px solid ${COLORS.gold}30`,
+                    color: COLORS.champagne
+                  }}
+                >
+                  <SelectValue placeholder="All statuses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All statuses</SelectItem>
+                  <SelectItem value="booked">Booked</SelectItem>
+                  <SelectItem value="checked_in">Checked In</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectItem value="no_show">No Show</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="w-48">
+              <Select value={dateFilter} onValueChange={setDateFilter}>
+                <SelectTrigger
+                  className="border-0 outline-none"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight,
+                    border: `1px solid ${COLORS.gold}30`,
+                    color: COLORS.champagne
+                  }}
+                >
+                  <SelectValue placeholder="All dates" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All dates</SelectItem>
+                  <SelectItem value="today">Today</SelectItem>
+                  <SelectItem value="upcoming">Upcoming</SelectItem>
+                  <SelectItem value="past">Past</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button
+              variant={showArchivedAppointments ? 'default' : 'outline'}
+              onClick={() => setShowArchivedAppointments(!showArchivedAppointments)}
+              style={{
+                backgroundColor: showArchivedAppointments ? COLORS.gold : 'transparent',
+                color: showArchivedAppointments ? COLORS.black : COLORS.champagne,
+                borderColor: COLORS.gold
+              }}
+              className="whitespace-nowrap"
+            >
+              <Archive className="h-4 w-4 mr-2" />
+              {showArchivedAppointments ? 'Hide Archived' : 'Show Archived'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Appointments List */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div
+              className="animate-spin rounded-full h-8 w-8 border-b-2"
+              style={{ borderColor: COLORS.gold }}
+            />
+            <span className="ml-3" style={{ color: COLORS.bronze }}>
+              Loading appointments...
+            </span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredAppointments.map(appointment => {
+              const appointmentDate = appointment.start_time
+                ? new Date(appointment.start_time)
+                : null
 
               return (
                 <Card
                   key={appointment.id}
-                  className={cn(
-                    'p-6 transition-all duration-300 hover:shadow-xl cursor-pointer backdrop-blur border animate-fadeInUp transform hover:-translate-y-1',
-                    isPast && 'opacity-60'
-                  )}
+                  className="transition-all duration-200 hover:scale-[1.02]"
                   style={{
-                    backgroundColor: `${LUXE_COLORS.charcoal}E6`,
-                    borderColor: `${LUXE_COLORS.gold}40`,
-                    backdropFilter: 'blur(10px)',
-                    animationDelay: `${Math.min(index * 0.05, 0.3)}s`
+                    backgroundColor: COLORS.charcoalLight,
+                    border: `1px solid ${COLORS.gold}20`,
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
+                    opacity: appointment.status === 'archived' ? 0.6 : 1
                   }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
-                    e.currentTarget.style.boxShadow = `0 12px 40px ${LUXE_COLORS.gold}30`
-                    e.currentTarget.style.backgroundColor = `${LUXE_COLORS.charcoal}F2`
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
-                    e.currentTarget.style.boxShadow = ''
-                    e.currentTarget.style.backgroundColor = `${LUXE_COLORS.charcoal}E6`
-                  }}
-                  onClick={() => router.push(`/salon/appointments/${appointment.id}`)}
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      {/* Header Row */}
-                      <div className="flex items-center gap-4 mb-3">
-                        <h3
-                          className="text-lg font-semibold transition-colors duration-300"
-                          style={{ color: LUXE_COLORS.champagne }}
-                        >
-                          {appointment.entity_name}
-                        </h3>
-                        <div className="flex items-center gap-2 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
-                          {getStatusBadge(appointment.status)}
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {/* Header */}
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-lg" style={{ color: COLORS.champagne }}>
+                            {appointment.customer_name || 'Customer'}
+                          </h3>
+                          <p className="text-sm mt-1" style={{ color: COLORS.bronze }}>
+                            {appointment.stylist_name || 'Unassigned'}
+                          </p>
                         </div>
                         <Badge
-                          variant="outline"
-                          className="gap-1 border !text-[#F5E6C8] transition-all duration-300 hover:scale-105"
                           style={{
-                            backgroundColor: `${LUXE_COLORS.bronze}20`,
-                            borderColor: LUXE_COLORS.bronze,
-                            color: LUXE_COLORS.champagne
+                            backgroundColor:
+                              appointment.status === 'booked'
+                                ? `${COLORS.gold}20`
+                                : appointment.status === 'completed'
+                                  ? `${COLORS.emerald}20`
+                                  : `${COLORS.bronze}20`,
+                            color:
+                              appointment.status === 'booked'
+                                ? COLORS.gold
+                                : appointment.status === 'completed'
+                                  ? COLORS.emerald
+                                  : COLORS.bronze,
+                            border: `1px solid ${
+                              appointment.status === 'booked'
+                                ? COLORS.gold
+                                : appointment.status === 'completed'
+                                  ? COLORS.emerald
+                                  : COLORS.bronze
+                            }40`
                           }}
                         >
-                          <Calendar className="w-3 h-3" style={{ color: LUXE_COLORS.champagne }} />
-                          <span style={{ color: LUXE_COLORS.champagne }}>
-                            {format(appointmentDate, 'MMM d, yyyy')}
-                          </span>
+                          {appointment.status}
                         </Badge>
-                        <Badge
-                          variant="outline"
-                          className="gap-1 border !text-[#F5E6C8] transition-all duration-300 hover:scale-105"
-                          style={{
-                            backgroundColor: `${LUXE_COLORS.bronze}20`,
-                            borderColor: LUXE_COLORS.bronze,
-                            color: LUXE_COLORS.champagne
-                          }}
-                        >
-                          <Clock className="w-3 h-3" style={{ color: LUXE_COLORS.champagne }} />
-                          <span style={{ color: LUXE_COLORS.champagne }}>
-                            {format(appointmentDate, 'h:mm a')}
-                          </span>
-                        </Badge>
-                        {appointment.metadata?.branch_id && (
-                          <Badge
-                            variant="outline"
-                            className="gap-1 border transition-all duration-300 hover:scale-105"
-                            style={{
-                              backgroundColor: `${LUXE_COLORS.gold}20`,
-                              borderColor: LUXE_COLORS.gold,
-                              color: LUXE_COLORS.champagne
-                            }}
-                          >
-                            <Building2 className="w-3 h-3" />
-                            {branches.find(b => b.id === appointment.metadata?.branch_id)?.name ||
-                              'Branch'}
-                          </Badge>
-                        )}
                       </div>
 
-                      {/* Details Row */}
-                      <div
-                        className="flex flex-wrap gap-4 text-sm"
-                        style={{ color: LUXE_COLORS.bronze }}
-                      >
-                        {appointment.service_ids && appointment.service_ids.length > 0 && (
-                          <div className="flex items-center gap-1">
-                            <span className="font-medium">Services:</span>
-                            <span>{appointment.service_ids.length} service(s)</span>
-                          </div>
+                      {/* Details */}
+                      <div className="space-y-2 text-sm">
+                        {appointmentDate && (
+                          <>
+                            <div
+                              className="flex items-center gap-2"
+                              style={{ color: COLORS.bronze }}
+                            >
+                              <Calendar className="w-4 h-4" />
+                              <span>{format(appointmentDate, 'MMM d, yyyy')}</span>
+                            </div>
+                            <div
+                              className="flex items-center gap-2"
+                              style={{ color: COLORS.bronze }}
+                            >
+                              <Clock className="w-4 h-4" />
+                              <span>{format(appointmentDate, 'h:mm a')}</span>
+                              {appointment.duration_minutes && (
+                                <span>({appointment.duration_minutes} min)</span>
+                              )}
+                            </div>
+                          </>
                         )}
-
-                        {appointment.price && appointment.price > 0 && (
-                          <div className="flex items-center gap-1">
-                            <DollarSign className="w-4 h-4 animate-pulse" style={{ color: LUXE_COLORS.gold, animationDuration: '4s' }} />
-                            <span className="font-medium transition-all duration-300 hover:scale-105 inline-block" style={{ color: LUXE_COLORS.champagne }}>
+                        {appointment.price !== undefined && appointment.price > 0 && (
+                          <div
+                            className="flex items-center gap-2"
+                            style={{ color: COLORS.champagne }}
+                          >
+                            <DollarSign className="w-4 h-4" style={{ color: COLORS.gold }} />
+                            <span className="font-medium">
                               {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
                             </span>
                           </div>
                         )}
-
-                        <div className="flex items-center gap-1">
-                          <span className="font-mono text-sm opacity-80 hover:opacity-100 transition-opacity duration-300" style={{ color: LUXE_COLORS.gold }}>
-                            #{appointment.entity_code}
-                          </span>
-                        </div>
                       </div>
 
                       {/* Notes */}
                       {appointment.notes && (
-                        <p className="mt-2 text-sm italic" style={{ color: LUXE_COLORS.bronze }}>
+                        <p className="text-sm italic" style={{ color: COLORS.bronze }}>
                           {appointment.notes}
                         </p>
                       )}
-                    </div>
 
-                    {/* Actions */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
+                      {/* Action Buttons */}
+                      <div
+                        className="pt-4 border-t flex gap-2"
+                        style={{ borderColor: COLORS.gold + '20' }}
+                      >
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="hover:opacity-80 transition-all duration-300 hover:scale-110"
-                          style={{ color: LUXE_COLORS.bronze }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.color = LUXE_COLORS.gold
-                            e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)'
+                          size="sm"
+                          onClick={() => handleOpenAppointmentModal(appointment)}
+                          style={{
+                            backgroundColor: COLORS.gold + '20',
+                            color: COLORS.gold,
+                            border: `1px solid ${COLORS.gold}40`,
+                            flex: 1
                           }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.color = LUXE_COLORS.bronze
-                            e.currentTarget.style.transform = ''
-                          }}
+                          className="hover:opacity-80 transition-opacity"
                         >
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="animate-fadeIn" style={{
-                        backgroundColor: LUXE_COLORS.charcoal,
-                        borderColor: LUXE_COLORS.gold,
-                        color: LUXE_COLORS.champagne
-                      }}>
-                        <DropdownMenuItem
-                          onClick={e => {
-                            e.stopPropagation()
-                            router.push(`/salon/appointments/${appointment.id}/edit`)
-                          }}
-                          className="hover:bg-opacity-10 cursor-pointer transition-colors duration-200"
-                          style={{ color: LUXE_COLORS.champagne }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.backgroundColor = `${LUXE_COLORS.gold}20`
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.backgroundColor = 'transparent'
-                          }}
-                        >
-                          <Edit className="w-4 h-4 mr-2" style={{ color: LUXE_COLORS.gold }} />
+                          <Edit className="h-3 w-3 mr-1" />
                           Edit
-                        </DropdownMenuItem>
+                        </Button>
 
-                        <DropdownMenuSeparator style={{ backgroundColor: `${LUXE_COLORS.gold}30` }} />
+                        {/* Show Archive button for active appointments */}
+                        {appointment.status !== 'archived' &&
+                          appointment.status !== 'cancelled' && (
+                            <Button
+                              size="sm"
+                              onClick={async () => {
+                                try {
+                                  await archiveAppointment(appointment.id)
+                                  showSuccess(
+                                    'Appointment archived',
+                                    'Successfully archived appointment'
+                                  )
+                                } catch (error) {
+                                  showError(
+                                    'Failed to archive appointment',
+                                    error instanceof Error ? error.message : 'Please try again'
+                                  )
+                                }
+                              }}
+                              style={{
+                                backgroundColor: COLORS.bronze + '20',
+                                color: COLORS.bronze,
+                                border: `1px solid ${COLORS.bronze}40`,
+                                flex: 1
+                              }}
+                              className="hover:opacity-80 transition-opacity"
+                            >
+                              <Archive className="h-3 w-3 mr-1" />
+                              Archive
+                            </Button>
+                          )}
 
-                        <DropdownMenuItem
-                          onClick={e => {
-                            e.stopPropagation()
-                            handleCancel(appointment.id)
-                          }}
-                          disabled={actionId === appointment.id}
-                          className="hover:bg-opacity-10 cursor-pointer transition-colors duration-200"
-                          style={{ color: LUXE_COLORS.rose }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.backgroundColor = `${LUXE_COLORS.rose}20`
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.backgroundColor = 'transparent'
-                          }}
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" style={{ color: LUXE_COLORS.rose }} />
-                          Cancel
-                        </DropdownMenuItem>
+                        {/* Show Restore button for archived appointments */}
+                        {appointment.status === 'archived' && (
+                          <Button
+                            size="sm"
+                            onClick={() => handleRestoreAppointment(appointment)}
+                            style={{
+                              backgroundColor: COLORS.emerald + '20',
+                              color: COLORS.emerald,
+                              border: `1px solid ${COLORS.emerald}40`,
+                              flex: 1
+                            }}
+                            className="hover:opacity-80 transition-opacity"
+                          >
+                            Restore
+                          </Button>
+                        )}
 
-                        <DropdownMenuItem
-                          onClick={e => {
-                            e.stopPropagation()
-                            handleNoShow(appointment.id)
-                          }}
-                          disabled={actionId === appointment.id}
-                          className="hover:bg-opacity-10 cursor-pointer transition-colors duration-200"
-                          style={{ color: LUXE_COLORS.champagne }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.backgroundColor = `${LUXE_COLORS.bronze}20`
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.backgroundColor = 'transparent'
-                          }}
-                        >
-                          <XCircle className="w-4 h-4 mr-2" style={{ color: LUXE_COLORS.bronze }} />
-                          Mark No-show
-                        </DropdownMenuItem>
-
-                        <DropdownMenuItem
-                          onClick={e => {
-                            e.stopPropagation()
-                            handleCheckIn(appointment.id)
-                          }}
-                          disabled={actionId === appointment.id}
-                          className="hover:bg-opacity-10 cursor-pointer transition-colors duration-200"
-                          style={{ color: LUXE_COLORS.champagne }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.backgroundColor = `${LUXE_COLORS.emerald}20`
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.backgroundColor = 'transparent'
-                          }}
-                        >
-                          <Clock className="w-4 h-4 mr-2" style={{ color: LUXE_COLORS.emerald }} />
-                          Check-in
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+                        {/* Show Delete button for archived appointments */}
+                        {appointment.status === 'archived' && (
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setAppointmentToDelete(appointment)
+                              setDeleteConfirmOpen(true)
+                            }}
+                            style={{
+                              backgroundColor: '#991B1B20',
+                              color: '#991B1B',
+                              border: `1px solid #991B1B40`,
+                              flex: 1
+                            }}
+                            className="hover:opacity-80 transition-opacity"
+                          >
+                            <Trash2 className="h-3 w-3 mr-1" />
+                            Delete
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
                 </Card>
               )
             })}
           </div>
         )}
 
-        {/* New Appointment Modal */}
-        {showNewAppointmentModal && (
-          <NewAppointmentModal
-            onClose={() => setShowNewAppointmentModal(false)}
-            onSuccess={() => {
-              setShowNewAppointmentModal(false)
-              refresh()
-            }}
-            organizationId={effectiveOrgId || undefined}
-            selectedBranchId={branchId}
-          />
+        {/* Empty State */}
+        {!isLoading && filteredAppointments.length === 0 && (
+          <div className="text-center py-12">
+            <Calendar className="h-12 w-12 mx-auto mb-4" style={{ color: COLORS.bronze }} />
+            <h3 className="text-lg font-medium mb-2" style={{ color: COLORS.champagne }}>
+              No appointments found
+            </h3>
+            <p style={{ color: COLORS.bronze }}>
+              {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
+                ? 'Try adjusting your filters'
+                : 'Click "New Appointment" to create your first booking'}
+            </p>
+            {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
+              <Button
+                className="mt-4"
+                onClick={() => setAppointmentModalOpen(true)}
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                  color: COLORS.black,
+                  border: 'none'
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Your First Appointment
+              </Button>
+            )}
+          </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent
+          className="max-w-md"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            border: `1px solid ${COLORS.gold}`,
+            color: COLORS.lightText
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle style={{ color: COLORS.champagne }} className="text-xl font-bold">
+              Delete Appointment?
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p style={{ color: COLORS.lightText }}>
+              Are you sure you want to permanently delete this appointment with{' '}
+              <strong style={{ color: COLORS.gold }}>
+                &ldquo;{appointmentToDelete?.customer_name}&rdquo;
+              </strong>
+              ?
+            </p>
+            <p className="mt-3 text-sm" style={{ color: COLORS.bronze }}>
+              This action cannot be undone.
+            </p>
+          </div>
+          <DialogFooter className="flex gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setDeleteConfirmOpen(false)
+                setAppointmentToDelete(null)
+              }}
+              disabled={isDeleting}
+              className="flex-1"
+              style={{
+                borderColor: COLORS.gold,
+                color: COLORS.champagne,
+                backgroundColor: 'transparent'
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleConfirmDeleteAppointment}
+              disabled={isDeleting}
+              className="flex-1"
+              style={{
+                backgroundColor: '#991B1B',
+                color: '#FFFFFF'
+              }}
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Appointment Modal */}
+      <AppointmentModal
+        open={appointmentModalOpen}
+        onOpenChange={handleCloseAppointmentModal}
+        onSave={handleSaveAppointment}
+        onArchive={handleArchiveAppointment}
+        onDelete={handleDeleteAppointment}
+        appointment={selectedAppointment}
+        userRole="manager"
+        isLoading={isCreating || isUpdating || isDeleting}
+      />
     </div>
   )
 }
 
-export default function SalonAppointmentsPage() {
+export default function AppointmentsPage() {
   return (
-    <SimpleSalonGuard requiredRoles={['owner', 'receptionist', 'admin']}>
-      <SalonAppointmentsContent />
-    </SimpleSalonGuard>
+    <StatusToastProvider>
+      <AppointmentsContent />
+    </StatusToastProvider>
   )
 }

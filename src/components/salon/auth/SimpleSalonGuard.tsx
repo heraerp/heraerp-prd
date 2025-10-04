@@ -33,8 +33,8 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
 export function SimpleSalonGuard({ children, requiredRoles = [] }: SimpleSalonGuardProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const { isLoading, isAuthenticated, user } = useSecuredSalonContext()
-  const role = user?.user_metadata?.role
+  const { isLoading, isAuthenticated, salonRole, user } = useSecuredSalonContext()
+  const role = salonRole
 
   // Debug mode - check localStorage
   const debugMode =

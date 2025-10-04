@@ -9,7 +9,7 @@ import {
   deleteEntity,
   DynamicFieldInput
 } from '@/lib/universal-api-v2-client'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 
 export interface Product {
   id: string
@@ -36,7 +36,7 @@ const UNIVERSAL_BASE =
     : (process.env.NEXT_PUBLIC_UNIVERSAL_API_BASE_URL ?? 'http://localhost:3000')
 
 export function useHeraProductsV2() {
-  const { organizationId } = useSalonContext()
+  const { organizationId } = useSecuredSalonContext()
   const qc = useQueryClient()
 
   // READ: products + dynamic fields

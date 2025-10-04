@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import {
   Package2,
   TruckIcon,
@@ -41,7 +41,7 @@ const COLORS = {
 }
 
 export default function SalonInventoryPage() {
-  const { organization, organizationId, isAuthenticated, isLoading } = useSalonContext()
+  const { organization, organizationId, isAuthenticated, isLoading } = useSecuredSalonContext()
   const contextLoading = isLoading
 
   const [activeTab, setActiveTab] = useState('items')

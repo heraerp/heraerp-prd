@@ -1,19 +1,17 @@
 /**
- * Universal Entity API v2 - DELETE endpoint
+ * Entity DELETE API v2
+ * DELETE /api/v2/entities/[id] - Delete entity by ID using RPC
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseService } from '@/lib/supabase-service'
 import { verifyAuth } from '@/lib/auth/verify-auth'
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const entityId = params.id
-
-    if (!entityId || !entityId.match(/^[0-9a-f-]{36}$/i)) {
-      return NextResponse.json({ error: 'Invalid entity ID' }, { status: 400 })
-    }
-
     const authResult = await verifyAuth(request)
 
     if (!authResult || !authResult.organizationId) {
@@ -21,124 +19,58 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
 
     const { organizationId } = authResult
-    const { searchParams } = new URL(request.url)
+    const { id: entityId } = await params
 
-    // Options from query params
-    const hard_delete = searchParams.get('hard_delete') === 'true'
-    const cascade = searchParams.get('cascade') !== 'false' // Default true
+    // Get query params
+    const { searchParams } = new URL(request.url)
+    const hardDelete = searchParams.get('hard_delete') === 'true'
+
+    console.log('[DELETE entity] Request:', {
+      entityId,
+      organizationId,
+      hardDelete
+    })
 
     const supabase = getSupabaseService()
 
-    // Try to delete entity using HERA RPC v2
-    const { data: result, error } = await supabase.rpc('hera_entity_delete_v2', {
+    // Call RPC function to handle delete with proper business logic
+    const { data, error } = await supabase.rpc('hera_entity_delete_v1', {
       p_organization_id: organizationId,
       p_entity_id: entityId,
-      p_hard_delete: hard_delete,
-      p_cascade: cascade
+      p_cascade_dynamic_data: true,
+      p_cascade_relationships: true
     })
 
     if (error) {
-      console.error('RPC delete failed, using fallback soft delete:', error)
+      console.error('[DELETE entity] RPC Error:', error)
 
-      // Fallback: perform soft delete by updating status in dynamic data
-      if (!hard_delete) {
-        // First, check if status field exists in dynamic data
-        const { data: existingStatus } = await supabase
-          .from('core_dynamic_data')
-          .select('id')
-          .eq('entity_id', entityId)
-          .eq('field_name', 'status')
-          .eq('organization_id', organizationId)
-          .single()
-
-        if (existingStatus) {
-          // Update existing status field
-          const { error: updateError } = await supabase
-            .from('core_dynamic_data')
-            .update({
-              field_value_text: 'archived',
-              updated_at: new Date().toISOString()
-            })
-            .eq('entity_id', entityId)
-            .eq('field_name', 'status')
-            .eq('organization_id', organizationId)
-
-          if (updateError) {
-            console.error('Failed to update status in dynamic data:', updateError)
-            return NextResponse.json(
-              { error: 'Failed to archive entity', details: updateError.message },
-              { status: 500 }
-            )
-          }
-        } else {
-          // Insert new status field
-          const { error: insertError } = await supabase.from('core_dynamic_data').insert({
-            entity_id: entityId,
-            organization_id: organizationId,
-            field_name: 'status',
-            field_type: 'text',
-            field_value_text: 'archived',
-            smart_code: 'HERA.SALON.CATEGORY.DYN.STATUS.V1'
-          })
-
-          if (insertError) {
-            console.error('Failed to insert status in dynamic data:', insertError)
-            return NextResponse.json(
-              { error: 'Failed to archive entity', details: insertError.message },
-              { status: 500 }
-            )
-          }
-        }
-
-        // Update the entity's updated_at timestamp
-        const { error: entityUpdateError } = await supabase
-          .from('core_entities')
-          .update({
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', entityId)
-          .eq('organization_id', organizationId)
-
-        if (entityUpdateError) {
-          console.error('Failed to update entity timestamp:', entityUpdateError)
-        }
-
-        return NextResponse.json({
-          success: true,
-          message: 'Entity archived successfully',
-          data: { operation: 'soft_delete_via_dynamic_data' }
-        })
-      } else {
-        // For hard delete, perform actual deletion
-        const { error: deleteError } = await supabase
-          .from('core_entities')
-          .delete()
-          .eq('id', entityId)
-          .eq('organization_id', organizationId)
-
-        if (deleteError) {
-          console.error('Fallback hard delete failed:', deleteError)
-          return NextResponse.json(
-            { error: 'Failed to delete entity', details: deleteError.message },
-            { status: 500 }
-          )
-        }
-
-        return NextResponse.json({
-          success: true,
-          message: 'Entity permanently deleted',
-          data: { operation: 'hard_delete_fallback' }
-        })
+      // Handle specific error cases
+      if (error.code === 'insufficient_privilege') {
+        return NextResponse.json({ error: 'Access denied' }, { status: 403 })
       }
+
+      if (error.code === 'no_data_found') {
+        return NextResponse.json({ error: 'Entity not found' }, { status: 404 })
+      }
+
+      return NextResponse.json(
+        { error: 'Failed to delete entity', details: error.message },
+        { status: 500 }
+      )
     }
+
+    console.log('[DELETE entity] Success:', data)
 
     return NextResponse.json({
       success: true,
-      message: hard_delete ? 'Entity permanently deleted' : 'Entity archived successfully',
-      data: result
+      message: hardDelete ? 'Entity permanently deleted' : 'Entity archived',
+      data: data
     })
-  } catch (error) {
-    console.error('Universal entity delete error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  } catch (error: any) {
+    console.error('[DELETE entity] Exception:', error)
+    return NextResponse.json(
+      { error: 'Internal server error', details: error.message },
+      { status: 500 }
+    )
   }
 }

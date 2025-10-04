@@ -7,10 +7,10 @@
 'use client'
 
 import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 
 export default function SalonAppointmentsCalendarPage() {
-  const { organizationId, organization } = useSalonContext()
+  const { organizationId, organization } = useSecuredSalonContext()
 
   // Default salon organizations for the calendar
   const salonOrganizations = [

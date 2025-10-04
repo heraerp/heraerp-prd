@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useSalonContext } from '../../SalonProvider'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -37,7 +37,7 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 import Link from 'next/link'
 
 export default function AdminDashboard() {
-  const { organizationId, role, user, isLoading, isAuthenticated } = useSalonContext()
+  const { organizationId, role, user, isLoading, isAuthenticated } = useSecuredSalonContext()
   const [activeTab, setActiveTab] = useState('overview')
 
   if (isLoading) {

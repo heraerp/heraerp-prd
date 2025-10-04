@@ -7,10 +7,12 @@ import { Category } from '@/types/salon-category'
 
 export function useHeraCategories({
   includeArchived = false,
-  organizationId
+  organizationId,
+  entityType = 'product_category'
 }: {
   includeArchived?: boolean
   organizationId?: string
+  entityType?: 'product_category' | 'service_category'
 } = {}) {
   const queryClient = useQueryClient()
 
@@ -21,13 +23,13 @@ export function useHeraCategories({
     error: fetchError,
     refetch
   } = useQuery({
-    queryKey: ['categories', organizationId, { includeArchived }],
+    queryKey: ['categories', entityType, organizationId, { includeArchived }],
     queryFn: async () => {
       if (!organizationId) throw new Error('Organization ID required')
 
       const result = await universalApi.getEntities({
         orgId: organizationId,
-        entityType: 'service_category',
+        entityType: entityType,
         status: includeArchived ? undefined : 'active'
       })
 

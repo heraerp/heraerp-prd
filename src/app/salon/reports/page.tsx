@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { universalApi } from '@/lib/universal-api-v2'
 import {
@@ -150,7 +150,7 @@ interface ReportStats {
 }
 
 function ReportsContent() {
-  const { organizationId, role } = useSalonContext()
+  const { organizationId, role } = useSecuredSalonContext()
   const [selectedCategory, setSelectedCategory] = useState<
     'all' | 'financial' | 'operational' | 'analytics'
   >('all')

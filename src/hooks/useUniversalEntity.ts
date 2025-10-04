@@ -4,6 +4,14 @@ import { useMemo, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { supabase } from '@/lib/supabase/client'
+import {
+  getEntities,
+  getDynamicData,
+  setDynamicDataBatch,
+  upsertEntity,
+  deleteEntity,
+  DynamicFieldInput
+} from '@/lib/universal-api-v2-client'
 
 // Universal entity type definition
 export interface UniversalEntity {
@@ -185,6 +193,7 @@ async function getAuthHeaders(organizationId?: string | null): Promise<Record<st
 // Config type for the hook
 export interface UseUniversalEntityConfig {
   entity_type: string
+  organizationId?: string // Optional: if not provided, will use useHERAAuth
   filters?: {
     status?: string
     priority?: string
@@ -201,7 +210,8 @@ export interface UseUniversalEntityConfig {
 export function useUniversalEntity(config: UseUniversalEntityConfig) {
   const { organization } = useHERAAuth()
   const queryClient = useQueryClient()
-  const organizationId = organization?.id
+  // Use passed organizationId if provided, otherwise fall back to useHERAAuth
+  const organizationId = config.organizationId || organization?.id
   const { entity_type, filters = {} } = config
 
   // Build query key - only include primitives
@@ -237,60 +247,103 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
   // A ref to keep the last stable array
   const lastStableRef = useRef<any[] | undefined>(undefined)
 
-  // Fetch entities
+  // Fetch entities with dynamic data (following useHeraServices pattern)
   const {
-    data: apiRaw,
+    data: entities,
     isLoading,
     error,
     refetch
   } = useQuery({
     queryKey,
     queryFn: async () => {
-      const params = new URLSearchParams({
+      if (!organizationId) throw new Error('Organization ID required')
+
+      console.log('[useUniversalEntity] Fetching entities:', {
         entity_type,
-        limit: String(filters.limit ?? 100),
-        offset: String(filters.offset ?? 0),
-        include_dynamic: String(filters.include_dynamic !== false),
-        include_relationships: String(!!filters.include_relationships)
+        organizationId,
+        status: filters.status
       })
-      if (filters.status) params.set('status', filters.status)
-      if (filters.priority) params.set('priority', filters.priority)
-      if (filters.q) params.set('q', filters.q)
 
-      const headers = await getAuthHeaders(organizationId)
-      console.log('🌐 Making API call to:', `/api/v2/entities?${params}`)
-      console.log('📋 Request headers:', headers)
+      // Fetch entities using RPC
+      const result = await getEntities('', {
+        p_organization_id: organizationId,
+        p_entity_type: entity_type,
+        p_status: filters.status || null // Pass null to get all statuses
+      })
 
-      const res = await fetch(`/api/v2/entities?${params}`, { headers })
-      console.log('📈 Response status:', res.status, res.statusText)
+      const entitiesArray = Array.isArray(result) ? result : []
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        console.error('❌ API error response:', err)
-        throw new Error(err.error || 'Failed to fetch entities')
-      }
+      console.log('[useUniversalEntity] Fetched entities:', {
+        count: entitiesArray.length,
+        isArray: Array.isArray(result)
+      })
 
-      const responseData = await res.json()
-      console.log('📦 API response data:', responseData)
-      return responseData
+      // Fetch dynamic data for each entity and merge
+      const entitiesWithDynamicData = await Promise.all(
+        entitiesArray.map(async (entity: any, index: number) => {
+          try {
+            const response = await getDynamicData('', {
+              p_organization_id: organizationId,
+              p_entity_id: entity.id
+            })
+
+            const dynamicData = Array.isArray(response?.data)
+              ? response.data
+              : Array.isArray(response)
+                ? response
+                : []
+
+            // Log first entity dynamic data
+            if (index === 0) {
+              console.log('[useUniversalEntity] First entity dynamic data:', {
+                entityId: entity.id,
+                entityName: entity.entity_name,
+                dynamicDataCount: dynamicData.length,
+                fields: dynamicData.map((f: any) => ({
+                  name: f.field_name,
+                  type: f.field_type,
+                  value: f.field_value_text || f.field_value_number || f.field_value_boolean
+                }))
+              })
+            }
+
+            // Merge dynamic data into a flat structure
+            const mergedData = { ...entity }
+            dynamicData.forEach((field: any) => {
+              if (field.field_type === 'number') {
+                mergedData[field.field_name] = field.field_value_number
+              } else if (field.field_type === 'boolean') {
+                mergedData[field.field_name] = field.field_value_boolean
+              } else if (field.field_type === 'text') {
+                mergedData[field.field_name] = field.field_value_text
+              } else if (field.field_type === 'json') {
+                mergedData[field.field_name] = field.field_value_json
+              } else if (field.field_type === 'date') {
+                mergedData[field.field_name] = field.field_value_date
+              } else {
+                // Fallback for unknown types
+                mergedData[field.field_name] =
+                  field.field_value_text ||
+                  field.field_value_number ||
+                  field.field_value_boolean ||
+                  field.field_value_json ||
+                  field.field_value_date
+              }
+            })
+
+            return mergedData
+          } catch (error) {
+            console.error('[useUniversalEntity] Failed to fetch dynamic data:', error)
+            return entity
+          }
+        })
+      )
+
+      return entitiesWithDynamicData
     },
-    // Important bits to avoid UI thrash:
+    enabled: !!organizationId,
     staleTime: 10_000,
-    refetchOnWindowFocus: false,
-    placeholderData: keepPreviousData,
-    select: (payload: any) => {
-      const rawArr: any[] = Array.isArray(payload?.data) ? payload.data : []
-      // 1) Normalize shapes
-      const normalized = rawArr.map(normalizeEntity)
-      // 2) Reuse previous refs for unchanged items
-      const shared = shareWithPrevious(lastStableRef.current, normalized)
-      // 3) Update the ref and freeze to catch accidental mutations
-      lastStableRef.current = shared
-      return {
-        data: process.env.NODE_ENV === 'development' ? Object.freeze(shared) : shared,
-        pagination: payload?.pagination ?? null
-      }
-    }
+    refetchOnWindowFocus: false
   })
 
   // Create entity mutation with dynamic fields and relationships
@@ -305,6 +358,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         entity_name: entity.entity_name,
         smart_code: entity.smart_code,
         ...(entity.entity_code ? { entity_code: entity.entity_code } : {}),
+        ...(entity.status ? { status: entity.status } : {}),
         ...(entity.metadata ? { metadata: entity.metadata } : {}),
         ...(entity.dynamic_fields ? { dynamic_fields: entity.dynamic_fields } : {})
       }
@@ -548,9 +602,9 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
   })
 
   return {
-    // Data
-    entities: apiRaw?.data || [],
-    pagination: apiRaw?.pagination,
+    // Data - now properly flattened with dynamic fields merged
+    entities: entities || [],
+    pagination: null, // Not used in current implementation
     isLoading,
     error: (error as any)?.message,
     refetch,
@@ -562,7 +616,17 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
     create: createMutation.mutateAsync,
     update: updateMutation.mutateAsync,
     delete: deleteMutation.mutateAsync,
-    archive: (entity_id: string) => deleteMutation.mutateAsync({ entity_id, hard_delete: false }),
+    archive: async (entity_id: string) => {
+      // Archive by updating status to 'archived' (following useHeraServices pattern)
+      const entity = entities?.find((e: any) => e.id === entity_id)
+      if (!entity) throw new Error('Entity not found')
+
+      return updateMutation.mutateAsync({
+        entity_id,
+        entity_name: entity.entity_name,
+        status: 'archived'
+      })
+    },
 
     // Direct helpers (optional external use)
     setDynamicFields: async (entity_id: string, values: Record<string, any>) => {

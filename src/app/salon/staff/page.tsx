@@ -66,13 +66,13 @@ interface StaffStats {
 }
 
 function StaffContent() {
-  const { 
-    user, 
+  const {
+    user,
     organization,
     selectedBranchId,
     availableBranches,
     setSelectedBranchId,
-    isLoadingBranches 
+    isLoadingBranches
   } = useSecuredSalonContext()
   const { toast } = useToast()
   const organizationId = organization?.id
@@ -840,7 +840,8 @@ function StaffContent() {
                   >
                     <Building2 className="w-3 h-3" />
                     <MapPin className="w-3 h-3" />
-                    {availableBranches.find(b => b.id === selectedBranchId)?.entity_name || 'Branch'}
+                    {availableBranches.find(b => b.id === selectedBranchId)?.entity_name ||
+                      'Branch'}
                     <button
                       className="ml-1 hover:text-white"
                       onClick={e => {
