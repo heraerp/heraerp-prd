@@ -566,7 +566,7 @@ function SalonServicesPageContent() {
               <div className="flex items-center gap-2">
                 {selectedBranchId && (
                   <div
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-left-2"
                     style={{
                       backgroundColor: COLORS.gold + '20',
                       borderColor: COLORS.gold + '40',
@@ -575,16 +575,18 @@ function SalonServicesPageContent() {
                   >
                     <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
                     <span>{availableBranches.find(b => b.id === selectedBranchId)?.entity_name || 'Branch'}</span>
-                    <X
-                      className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
+                    <button
                       onClick={() => setSelectedBranchId(null)}
-                      style={{ color: COLORS.gold }}
-                    />
+                      className="ml-1 hover:scale-110 active:scale-95 transition-all duration-200 rounded-full p-0.5 hover:bg-gold/20"
+                      aria-label="Clear branch filter"
+                    >
+                      <X className="h-3 w-3" style={{ color: COLORS.gold }} />
+                    </button>
                   </div>
                 )}
                 {categoryFilter && (
                   <div
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-left-2"
                     style={{
                       backgroundColor: COLORS.gold + '20',
                       borderColor: COLORS.gold + '40',
@@ -593,11 +595,13 @@ function SalonServicesPageContent() {
                   >
                     <Tag className="h-3 w-3" style={{ color: COLORS.gold }} />
                     <span>{categoryFilter}</span>
-                    <X
-                      className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
+                    <button
                       onClick={() => setCategoryFilter('')}
-                      style={{ color: COLORS.gold }}
-                    />
+                      className="ml-1 hover:scale-110 active:scale-95 transition-all duration-200 rounded-full p-0.5 hover:bg-gold/20"
+                      aria-label="Clear category filter"
+                    >
+                      <X className="h-3 w-3" style={{ color: COLORS.gold }} />
+                    </button>
                   </div>
                 )}
               </div>
@@ -635,36 +639,46 @@ function SalonServicesPageContent() {
             </div>
           </div>
 
-          {/* Expandable Filters */}
+          {/* Expandable Filters with Soft Animation */}
           {showFilters && (
-            <div className="mx-6 mt-4 pt-4 border-t border-border flex items-center gap-4">
+            <div className="mx-6 mt-4 pt-4 border-t border-border flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
               {/* Branch Filter */}
-              <BranchSelector variant="default" />
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                  Location:
+                </span>
+                <BranchSelector variant="default" />
+              </div>
 
               {/* Category Filter */}
-              <Select
-                value={categoryFilter || '__ALL__'}
-                onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
-              >
-                <SelectTrigger className="w-48 bg-background/30 border-border">
-                  <SelectValue placeholder="All categories" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__ALL__">All categories</SelectItem>
-                  {categories.map(cat => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                  Category:
+                </span>
+                <Select
+                  value={categoryFilter || '__ALL__'}
+                  onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
+                >
+                  <SelectTrigger className="w-48 bg-background/30 border-border transition-all">
+                    <SelectValue placeholder="All categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__ALL__">All categories</SelectItem>
+                    {categories.map(cat => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           )}
 
-          {/* Content Area */}
+          {/* Content Area with Fade-in Animation */}
           <div className="mx-6 mt-6 mb-6">
             {isLoading ? (
-              <div className="flex items-center justify-center h-64">
+              <div className="flex items-center justify-center h-64 animate-in fade-in duration-300">
                 <div className="text-center">
                   <Sparkles
                     className="w-12 h-12 mx-auto mb-3 animate-pulse"
@@ -674,24 +688,24 @@ function SalonServicesPageContent() {
                 </div>
               </div>
             ) : filteredServices.length === 0 ? (
-              <div className="flex items-center justify-center h-64">
+              <div className="flex items-center justify-center h-64 animate-in fade-in duration-300">
                 <div className="text-center">
                   <Sparkles
                     className="w-12 h-12 mx-auto mb-3 opacity-30"
                     style={{ color: COLORS.gold }}
                   />
                   <p className="text-lg mb-1" style={{ color: COLORS.champagne }}>
-                    {searchQuery || categoryFilter ? 'No services found' : 'No services yet'}
+                    {searchQuery || categoryFilter || selectedBranchId ? 'No services found' : 'No services yet'}
                   </p>
                   <p className="text-sm opacity-60 mb-4" style={{ color: COLORS.lightText }}>
-                    {searchQuery || categoryFilter
+                    {searchQuery || categoryFilter || selectedBranchId
                       ? 'Try adjusting your search or filters'
                       : 'Create your first service to start building your catalog'}
                   </p>
-                  {!searchQuery && !categoryFilter && (
+                  {!searchQuery && !categoryFilter && !selectedBranchId && (
                     <button
                       onClick={() => setModalOpen(true)}
-                      className="px-4 py-2 rounded-lg font-medium transition-all"
+                      className="px-4 py-2 rounded-lg font-medium transition-all hover:scale-105 active:scale-95"
                       style={{
                         background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
                         color: COLORS.black
@@ -703,16 +717,21 @@ function SalonServicesPageContent() {
                 </div>
               </div>
             ) : (
-              <ServiceList
-                services={filteredServices}
-                loading={isLoading}
-                viewMode={viewMode}
-                currency={currency}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onArchive={handleArchive}
-                onRestore={handleRestore}
-              />
+              <div
+                key={`${selectedBranchId}-${categoryFilter}-${searchQuery}`}
+                className="animate-in fade-in duration-300"
+              >
+                <ServiceList
+                  services={filteredServices}
+                  loading={isLoading}
+                  viewMode={viewMode}
+                  currency={currency}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onArchive={handleArchive}
+                  onRestore={handleRestore}
+                />
+              </div>
             )}
           </div>
 

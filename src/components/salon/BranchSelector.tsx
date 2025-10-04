@@ -40,10 +40,8 @@ export function BranchSelector({
     isLoading
   } = useSecuredSalonContext()
 
-  // If only one branch or no branches, don't show selector
-  if (availableBranches.length <= 1 && variant !== 'sidebar') {
-    return null
-  }
+  // Always show selector when there are branches (removed single branch auto-hide)
+  // This allows users to explicitly choose "All Locations" even with one branch
 
   // Loading state
   if (isLoading) {
@@ -69,22 +67,7 @@ export function BranchSelector({
     )
   }
 
-  // Single branch display
-  if (availableBranches.length === 1) {
-    const branch = availableBranches[0]
-    return (
-      <div className={cn('flex items-center gap-2', className)}>
-        {showIcon && (
-          <MapPin className="h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
-        )}
-        <span className="font-medium" style={{ color: LUXE_COLORS.gold }}>
-          {branch.entity_name}
-        </span>
-      </div>
-    )
-  }
-
-  // Multiple branches - show selector
+  // Show selector with "All Locations" option
   const selectorStyles = {
     default: {
       trigger: 'h-10 w-[200px]',
@@ -117,10 +100,13 @@ export function BranchSelector({
         />
       )}
       <Select
-        value={selectedBranchId || ''}
-        onValueChange={setSelectedBranchId}
+        value={selectedBranchId || '__ALL__'}
+        onValueChange={(value) => {
+          // Convert special "__ALL__" marker to null for "All Locations"
+          setSelectedBranchId(value === '__ALL__' ? null : value)
+        }}
       >
-        <SelectTrigger 
+        <SelectTrigger
           className={cn(
             'font-medium transition-all',
             style.trigger
@@ -131,7 +117,7 @@ export function BranchSelector({
             color: style.text
           }}
         >
-          <SelectValue placeholder="Select branch" />
+          <SelectValue placeholder="Select location" />
         </SelectTrigger>
         <SelectContent
           className="hera-select-content"
@@ -140,6 +126,25 @@ export function BranchSelector({
             border: `1px solid ${LUXE_COLORS.bronze}30`
           }}
         >
+          {/* All Locations Option - Default */}
+          <SelectItem
+            value="__ALL__"
+            className="hera-select-item font-semibold"
+            style={{ color: LUXE_COLORS.gold }}
+          >
+            <div className="flex items-center gap-2">
+              <Building2 className="h-3 w-3" />
+              <span>All Locations</span>
+              <span
+                className="text-xs ml-auto"
+                style={{ color: `${LUXE_COLORS.bronze}80` }}
+              >
+                {availableBranches.length} {availableBranches.length === 1 ? 'branch' : 'branches'}
+              </span>
+            </div>
+          </SelectItem>
+
+          {/* Individual Branches */}
           {availableBranches.map(branch => (
             <SelectItem
               key={branch.id}
@@ -148,10 +153,10 @@ export function BranchSelector({
               style={{ color: LUXE_COLORS.cream }}
             >
               <div className="flex items-center gap-2">
-                <Building2 className="h-3 w-3" />
+                <MapPin className="h-3 w-3" />
                 <span>{branch.entity_name}</span>
                 {branch.entity_code && (
-                  <span 
+                  <span
                     className="text-xs ml-auto"
                     style={{ color: `${LUXE_COLORS.bronze}80` }}
                   >

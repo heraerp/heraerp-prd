@@ -71,19 +71,22 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     relationships: SERVICE_PRESET.relationships as RelationshipDef[]
   })
 
-  // Filter services by branch if branch_id is provided
+  // Filter services by branch and category using HERA relationship patterns
   const filteredServices = useMemo(() => {
     if (!services) return services as ServiceEntity[]
-    
+
     let filtered = services as ServiceEntity[]
-    
-    // Filter by branch relationship
+
+    // Filter by AVAILABLE_AT branch relationship (when branch is selected, not "All Locations")
+    // When branch_id is null/undefined, no branch filter applied = show all services
     if (options?.filters?.branch_id) {
       filtered = filtered.filter(s => {
         // Check if service has AVAILABLE_AT relationship with the specified branch
+        // Smart Code: HERA.SALON.SERVICE.REL.AVAILABLE_AT.V1
         const availableAtRelationships = s.relationships?.available_at
         if (!availableAtRelationships) return false
-        
+
+        // Handle both array and single relationship formats
         if (Array.isArray(availableAtRelationships)) {
           return availableAtRelationships.some(rel => rel.to_entity?.id === options.filters?.branch_id)
         } else {
@@ -91,13 +94,15 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         }
       })
     }
-    
-    // Filter by category if provided
+    // When branch_id is null/undefined: no filtering, return all organization services
+
+    // Filter by HAS_CATEGORY relationship if category filter provided
     if (options?.filters?.category_id) {
       filtered = filtered.filter(s => {
         const categoryRelationship = s.relationships?.category
         if (!categoryRelationship) return false
-        
+
+        // Handle both array and single relationship formats
         if (Array.isArray(categoryRelationship)) {
           return categoryRelationship.some(rel => rel.to_entity?.id === options.filters?.category_id)
         } else {
@@ -105,7 +110,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         }
       })
     }
-    
+
     return filtered
   }, [services, options?.filters?.branch_id, options?.filters?.category_id])
 
