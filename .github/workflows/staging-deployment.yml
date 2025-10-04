@@ -1,0 +1,149 @@
+name: Staging Deployment
+
+on:
+  push:
+    branches:
+      - develop
+      - staging
+  pull_request:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: '20.9.0'
+
+jobs:
+  # Step 1: Code Quality Checks
+  quality-checks:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Type check
+        run: npx tsc --noEmit
+        continue-on-error: true
+
+  # Step 2: Build Test
+  build-test:
+    name: Build Test
+    runs-on: ubuntu-latest
+    needs: quality-checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SKIP_ENV_VALIDATION: true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: .next
+          retention-days: 1
+
+  # Step 3: Deploy to Staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build-test
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging'
+    environment:
+      name: staging
+      url: https://staging.heraerp.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway Staging
+        run: railway up --service heraerp-staging --environment staging
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_STAGING_TOKEN }}
+
+      - name: Wait for deployment
+        run: sleep 60
+
+      - name: Health check
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://staging.heraerp.com/api/health)
+          if [ $response != "200" ]; then
+            echo "❌ Health check failed with status $response"
+            exit 1
+          fi
+          echo "✅ Health check passed"
+
+  # Step 4: Smoke Tests on Staging
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Test homepage
+        run: |
+          curl -f https://staging.heraerp.com || exit 1
+
+      - name: Test API endpoints
+        run: |
+          curl -f https://staging.heraerp.com/api/v2/health || exit 1
+
+      - name: Test authentication flow
+        run: |
+          curl -f https://staging.heraerp.com/auth/login || exit 1
+
+  # Step 5: Notify on Success/Failure
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [smoke-tests]
+    if: always()
+    steps:
+      - name: Send success notification
+        if: success()
+        run: |
+          echo "✅ Staging deployment successful!"
+          echo "URL: https://staging.heraerp.com"
+
+      - name: Send failure notification
+        if: failure()
+        run: |
+          echo "❌ Staging deployment failed!"
+          echo "Check logs for details"
