@@ -121,29 +121,9 @@ function SalonServicesPageContent() {
   React.useEffect(() => {
     // If no branch is selected yet, explicitly set to null (All Locations)
     if (selectedBranchId === undefined) {
-      console.log('[Services Page] Initializing branch filter to All Locations')
       setSelectedBranchId(null)
     }
   }, [selectedBranchId, setSelectedBranchId])
-
-  // Debug: Log services to understand what's being fetched
-  React.useEffect(() => {
-    if (services) {
-      console.log('[Services Page] Services fetched:', {
-        count: services.length,
-        selectedBranch: selectedBranchId,
-        firstService: services[0]
-          ? {
-              id: services[0].id,
-              name: services[0].entity_name,
-              price_market: services[0].price_market,
-              duration_min: services[0].duration_min,
-              active: services[0].active
-            }
-          : null
-      })
-    }
-  }, [services, selectedBranchId])
 
   // Fetch categories using Universal API v2
   const {
@@ -188,17 +168,6 @@ function SalonServicesPageContent() {
 
     return true
   })
-
-  // Debug: Log filtered results
-  React.useEffect(() => {
-    console.log('[Services Page] Filtered services:', {
-      totalServices: services.length,
-      filteredCount: filteredServices.length,
-      searchQuery,
-      categoryFilter,
-      selectedBranchId
-    })
-  }, [filteredServices.length, services.length, searchQuery, categoryFilter, selectedBranchId])
 
   // CRUD handlers
   const handleSave = async (data: ServiceFormValues) => {

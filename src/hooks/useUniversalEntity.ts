@@ -293,26 +293,6 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
                 ? response
                 : []
 
-            // Debug: Log what we got from API for EVERY entity
-            console.log('[useUniversalEntity] Entity dynamic data fetch:', {
-              entityId: entity.id,
-              entityName: entity.entity_name,
-              responseType: Array.isArray(response?.data)
-                ? 'response.data'
-                : Array.isArray(response)
-                  ? 'response array'
-                  : 'empty',
-              dynamicDataCount: dynamicData.length,
-              rawResponse: response,
-              fields: dynamicData.map((f: any) => ({
-                name: f.field_name,
-                type: f.field_type,
-                textVal: f.field_value_text,
-                numVal: f.field_value_number,
-                boolVal: f.field_value_boolean
-              }))
-            })
-
             // Merge dynamic data into a flat structure
             const mergedData = { ...entity }
             dynamicData.forEach((field: any) => {
@@ -335,16 +315,6 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
                   field.field_value_json ||
                   field.field_value_date
               }
-            })
-
-            // Debug: Log flattened result for EVERY entity
-            console.log('[useUniversalEntity] After flattening:', {
-              entityId: mergedData.id,
-              entityName: mergedData.entity_name,
-              price_market: mergedData.price_market,
-              duration_min: mergedData.duration_min,
-              active: mergedData.active,
-              allKeys: Object.keys(mergedData)
             })
 
             return mergedData
