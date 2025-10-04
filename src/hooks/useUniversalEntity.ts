@@ -293,19 +293,25 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
                 ? response
                 : []
 
-            // Log first entity dynamic data
-            if (index === 0) {
-              console.log('[useUniversalEntity] First entity dynamic data:', {
-                entityId: entity.id,
-                entityName: entity.entity_name,
-                dynamicDataCount: dynamicData.length,
-                fields: dynamicData.map((f: any) => ({
-                  name: f.field_name,
-                  type: f.field_type,
-                  value: f.field_value_text || f.field_value_number || f.field_value_boolean
-                }))
-              })
-            }
+            // Debug: Log what we got from API for EVERY entity
+            console.log('[useUniversalEntity] Entity dynamic data fetch:', {
+              entityId: entity.id,
+              entityName: entity.entity_name,
+              responseType: Array.isArray(response?.data)
+                ? 'response.data'
+                : Array.isArray(response)
+                  ? 'response array'
+                  : 'empty',
+              dynamicDataCount: dynamicData.length,
+              rawResponse: response,
+              fields: dynamicData.map((f: any) => ({
+                name: f.field_name,
+                type: f.field_type,
+                textVal: f.field_value_text,
+                numVal: f.field_value_number,
+                boolVal: f.field_value_boolean
+              }))
+            })
 
             // Merge dynamic data into a flat structure
             const mergedData = { ...entity }
@@ -331,16 +337,14 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
               }
             })
 
-            // Debug: Log flattened result
-            console.log('[useUniversalEntity] Flattened entity:', {
+            // Debug: Log flattened result for EVERY entity
+            console.log('[useUniversalEntity] After flattening:', {
               entityId: mergedData.id,
               entityName: mergedData.entity_name,
               price_market: mergedData.price_market,
               duration_min: mergedData.duration_min,
               active: mergedData.active,
-              hasAllFields: !!(
-                mergedData.price_market !== undefined && mergedData.duration_min !== undefined
-              )
+              allKeys: Object.keys(mergedData)
             })
 
             return mergedData

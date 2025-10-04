@@ -117,6 +117,15 @@ function SalonServicesPageContent() {
     }
   })
 
+  // Ensure default filter is "All Locations" on mount
+  React.useEffect(() => {
+    // If no branch is selected yet, explicitly set to null (All Locations)
+    if (selectedBranchId === undefined) {
+      console.log('[Services Page] Initializing branch filter to All Locations')
+      setSelectedBranchId(null)
+    }
+  }, [selectedBranchId, setSelectedBranchId])
+
   // Debug: Log services to understand what's being fetched
   React.useEffect(() => {
     if (services) {
@@ -713,34 +722,34 @@ function SalonServicesPageContent() {
               className="mx-6 mt-4 pt-4 border-t animate-in fade-in slide-in-from-top-2 duration-300"
               style={{ borderColor: COLORS.bronze + '30' }}
             >
-              <div className="flex items-center gap-6">
-                {/* Branch Filter */}
-                <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-4">
+                {/* Branch Filter - Compact & Enterprise-Grade */}
+                <div className="flex items-center gap-2">
                   <span
-                    className="text-sm font-semibold whitespace-nowrap shrink-0"
-                    style={{ color: COLORS.champagne }}
+                    className="text-xs font-medium uppercase tracking-wider opacity-70 shrink-0"
+                    style={{ color: COLORS.bronze }}
                   >
-                    Location:
+                    Location
                   </span>
-                  <div className="min-w-[240px] max-w-sm">
-                    <BranchSelector variant="default" />
+                  <div className="w-[180px]">
+                    <BranchSelector variant="minimal" showIcon={false} />
                   </div>
                 </div>
 
-                {/* Category Filter */}
-                <div className="flex items-center gap-3">
+                {/* Category Filter - Compact & Enterprise-Grade */}
+                <div className="flex items-center gap-2">
                   <span
-                    className="text-sm font-semibold whitespace-nowrap"
-                    style={{ color: COLORS.champagne }}
+                    className="text-xs font-medium uppercase tracking-wider opacity-70 shrink-0"
+                    style={{ color: COLORS.bronze }}
                   >
-                    Category:
+                    Category
                   </span>
                   <Select
                     value={categoryFilter || '__ALL__'}
                     onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
                   >
                     <SelectTrigger
-                      className="w-48 transition-all duration-200 hover:border-gold/50"
+                      className="w-[180px] h-9 text-sm transition-all duration-200 hover:border-gold/50"
                       style={{
                         backgroundColor: COLORS.charcoalLight + '80',
                         borderColor: COLORS.bronze + '40',
