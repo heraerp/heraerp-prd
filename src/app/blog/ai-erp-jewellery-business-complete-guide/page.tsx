@@ -183,7 +183,7 @@ export default function JewelleryERPBlogPost() {
             <h4 className="text-lg font-semibold text-green-900 dark:text-green-300 mb-3">The HERA ERP Solution</h4>
             <p className="text-green-800 dark:text-green-200"><strong>Patent-Pending Universal Data Model:</strong></p>
             <ul className="mt-3 space-y-2 text-green-800 dark:text-green-200">
-              <li>✅ <strong>30-second deployment</strong> from requirements to live system</li>
+              <li>✅ <strong>1-week implementation</strong> from requirements to fully operational system</li>
               <li>✅ <strong>Zero customization costs</strong> - infinitely flexible out-of-the-box</li>
               <li>✅ <strong>AI-native design</strong> with built-in intelligence for jewellery business</li>
               <li>✅ <strong>Complete integration</strong> between inventory, CRM, accounting, and compliance</li>
@@ -303,7 +303,7 @@ export default function JewelleryERPBlogPost() {
               </Link>
             </div>
             <p className="text-sm text-blue-100 mt-4">
-              No credit card required • 14-day free trial • Setup in 30 seconds
+              No credit card required • 14-day free trial • 1-week implementation
             </p>
           </div>
 
@@ -327,7 +327,7 @@ export default function JewelleryERPBlogPost() {
                 How long does it take to implement HERA ERP in my jewellery business?
               </h4>
               <p className="text-slate-700 dark:text-slate-300">
-                30 seconds to deploy, 1-2 days to master. Unlike traditional ERP systems requiring 6-12 months implementation, HERA is live instantly. You can start managing inventory and processing sales immediately. Most jewellery businesses are fully operational within 1-2 days, including staff training and data migration.
+                1 week to deploy, fully operational in 5-7 business days. Unlike traditional ERP systems requiring 6-12 months implementation, HERA can be implemented in just one week. Day 1-2: Initial setup and data migration. Day 3-4: Staff training and workflow customization. Day 5-7: Testing and going live. Our implementation team guides you through each step, and our support team is available 24/7 to help ensure a smooth transition.
               </p>
             </div>
 
@@ -428,7 +428,7 @@ export default function JewelleryERPBlogPost() {
                 "name": "How long does it take to implement HERA ERP in my jewellery business?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "30 seconds to deploy, 1-2 days to master. Unlike traditional ERP systems requiring 6-12 months implementation, HERA is live instantly."
+                  "text": "1 week to deploy, fully operational in 5-7 business days. Unlike traditional ERP systems requiring 6-12 months implementation, HERA can be implemented in just one week with guided setup, data migration, staff training, and testing."
                 }
               },
               {

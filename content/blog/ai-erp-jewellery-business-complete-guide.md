@@ -94,7 +94,7 @@ Conventional jewellery ERP software requires:
 ### The HERA ERP Solution
 
 **Patent-Pending Universal Data Model**:
-- ✅ **30-second deployment** from requirements to live system
+- ✅ **1-week implementation** from requirements to fully operational system
 - ✅ **Zero customization costs** - infinitely flexible out-of-the-box
 - ✅ **AI-native design** with built-in intelligence for jewellery business
 - ✅ **Complete integration** between inventory, CRM, accounting, and compliance
@@ -240,7 +240,7 @@ HERA's 6-table architecture stores all business data (inventory, customers, tran
 **A**: HERA connects directly to WhatsApp Business for catalog sharing, order booking, and customer communication.
 
 **Q: "Affordable ERP for small jewellery shops"**
-**A**: HERA pricing starts at $49/month with zero setup costs and 30-second deployment—98% cheaper than traditional jewellery ERP solutions.
+**A**: HERA pricing starts at $49/month with zero setup costs and 1-week implementation—98% cheaper than traditional jewellery ERP solutions.
 
 **Q: "Custom jewellery order management software"**
 **A**: HERA tracks custom designs from initial consultation through workshop production to final delivery with full photo documentation.
@@ -367,7 +367,7 @@ HERA eliminates these risks with automated compliance, accurate tracking, and tr
 Traditional jewellery ERP requires massive upfront investment. HERA's revolutionary pricing:
 - **$49-449/month** based on business size
 - **Zero setup fees** or implementation costs
-- **30-second deployment** - live in minutes, not months
+- **1-week implementation** - fully operational in days, not months
 - **No long-term contracts** - cancel anytime
 - **Free migration** from existing systems
 - **14-day money-back guarantee**
@@ -431,7 +431,7 @@ HERA includes:
 
 ### 2. How long does it take to implement HERA ERP in my jewellery business?
 
-**30 seconds to deploy, 1-2 days to master.** Unlike traditional ERP systems requiring 6-12 months implementation, HERA is live instantly. You can start managing inventory and processing sales immediately. Most jewellery businesses are fully operational within 1-2 days, including staff training and data migration. Our setup wizard guides you through each step, and our support team is available 24/7 to help.
+**1 week to deploy, fully operational in 5-7 business days.** Unlike traditional ERP systems requiring 6-12 months implementation, HERA can be implemented in just one week. Day 1-2: Initial setup and data migration. Day 3-4: Staff training and workflow customization. Day 5-7: Testing and going live. Our implementation team guides you through each step, and our support team is available 24/7 to help ensure a smooth transition.
 
 ### 3. Does HERA ERP support my country's tax requirements (GST/VAT)?
 
@@ -511,7 +511,7 @@ Your valuable inventory and customer data is safer in HERA than on local compute
       "name": "How long does it take to implement HERA ERP in my jewellery business?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "30 seconds to deploy, 1-2 days to master. Unlike traditional ERP systems requiring 6-12 months implementation, HERA is live instantly. Most jewellery businesses are fully operational within 1-2 days, including staff training and data migration."
+        "text": "1 week to deploy, fully operational in 5-7 business days. Unlike traditional ERP systems requiring 6-12 months implementation, HERA can be implemented in just one week with guided setup, data migration, staff training, and testing."
       }
     },
     {
@@ -573,7 +573,7 @@ The jewellery industry is evolving rapidly. Customers demand personalized experi
 ✨ **35% higher customer retention** through AI-powered service
 
 And unlike traditional ERP systems, you get all this with:
-- ⚡ 30-second deployment (not 6-12 months)
+- ⚡ 1-week implementation (not 6-12 months)
 - 💰 $49-449/month pricing (not $50K-500K upfront)
 - 🎯 Zero customization required (infinitely flexible out-of-the-box)
 - 🚀 Immediate ROI (typically within first month)
