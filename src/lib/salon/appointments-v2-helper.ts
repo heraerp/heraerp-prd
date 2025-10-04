@@ -15,6 +15,7 @@ type BookArgs = {
   notes?: string
   price?: number
   currencyCode?: string
+  metadata?: Record<string, any>
 }
 
 export async function bookAppointmentV2(args: BookArgs): Promise<{
@@ -29,7 +30,8 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
     endISO,
     notes,
     price = 0,
-    currencyCode = 'AED'
+    currencyCode = 'AED',
+    metadata
   } = args
 
   const payload = {
@@ -48,7 +50,8 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
       service_ids: [serviceId],
       price,
       currency_code: currencyCode,
-      notes: notes || ''
+      notes: notes || '',
+      ...(metadata || {})
     },
     lines: [
       {
@@ -61,10 +64,30 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
     ]
   }
 
-  const res = await fetch('/api/v2/universal/txn-emit', {
+  const res = await fetch('/api/v1/transactions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body: JSON.stringify({
+      organization_id: organizationId,
+      transaction_type: 'appointment',
+      transaction_date: new Date().toISOString(),
+      source_entity_id: customerId,
+      target_entity_id: staffId,
+      total_amount: price,
+      currency_code: currencyCode,
+      notes: notes || '',
+      metadata: {
+        start_time: startISO,
+        end_time: endISO,
+        status: 'booked',
+        stylist_id: staffId,
+        customer_id: customerId,
+        service_ids: [serviceId],
+        branch_id: metadata?.branch_id,
+        ...metadata
+      },
+      smart_code: 'HERA.SALON.APPT.BOOK.CREATE.V1'
+    })
   })
 
   const data = await res.json().catch(() => ({}))
@@ -75,7 +98,39 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
     )
   }
 
-  return { transaction_id: data.transaction_id }
+  // After creating the transaction, store additional fields as dynamic data
+  const transactionId = data.id || data.transaction_id
+  
+  if (transactionId) {
+    // Create dynamic data for appointment fields
+    const dynamicFields = [
+      { field_name: 'start_time', field_value: startISO, field_type: 'text' },
+      { field_name: 'end_time', field_value: endISO, field_type: 'text' },
+      { field_name: 'status', field_value: 'booked', field_type: 'text' },
+      { field_name: 'stylist_id', field_value: staffId, field_type: 'text' },
+      { field_name: 'customer_id', field_value: customerId, field_type: 'text' },
+      { field_name: 'service_ids', field_value: JSON.stringify([serviceId]), field_type: 'text' },
+      { field_name: 'branch_id', field_value: metadata?.branch_id || '', field_type: 'text' }
+    ]
+    
+    // Create dynamic data entries
+    await Promise.all(
+      dynamicFields.map(field =>
+        fetch('/api/v1/dynamic-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            organization_id: organizationId,
+            entity_id: transactionId,
+            ...field,
+            smart_code: 'HERA.SALON.APPT.DYNAMIC.FIELD.V1'
+          })
+        })
+      )
+    )
+  }
+  
+  return { transaction_id: transactionId }
 }
 
 type UpdateArgs = {

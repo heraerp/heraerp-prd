@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
-import { useHeraServices } from '@/hooks/useHeraServices'
+import { useHeraServices } from '@/hooks/useHeraServicesV2'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
 import { ServiceList } from '@/components/salon/services/ServiceList'
 import { BranchSelector } from '@/components/salon/BranchSelector'
@@ -108,10 +108,11 @@ function SalonServicesPageContent() {
     deleteService,
     archiveService
   } = useHeraServices({
-    includeArchived,
-    searchQuery: '',
-    categoryFilter: '',
-    organizationId
+    filters: {
+      branch_id: selectedBranchId || undefined,  // Filter by selected branch
+      category_id: categoryFilter || undefined,
+      status: includeArchived ? undefined : 'active'
+    }
   })
 
   // Fetch categories using Universal API v2
@@ -162,13 +163,31 @@ function SalonServicesPageContent() {
   const handleSave = async (data: ServiceFormValues) => {
     try {
       if (editingService) {
-        await updateService(editingService.id, data)
+        await updateService(editingService.id, {
+          name: data.name,
+          price_market: data.price || 0,
+          duration_min: data.duration_minutes || 0,
+          commission_rate: 0.5, // Default commission rate
+          description: data.description,
+          active: data.status === 'active',
+          category_id: data.category,
+          branch_id: selectedBranchId || undefined  // Associate with selected branch
+        })
         toast({
           title: 'Service updated successfully',
           description: `${data.name} has been updated`
         })
       } else {
-        await createService(data)
+        await createService({
+          name: data.name,
+          price_market: data.price || 0,
+          duration_min: data.duration_minutes || 0,
+          commission_rate: 0.5, // Default commission rate
+          description: data.description,
+          active: data.status === 'active',
+          category_id: data.category,
+          branch_id: selectedBranchId || undefined  // Associate with selected branch
+        })
         toast({
           title: 'Service created successfully',
           description: `${data.name} has been added`

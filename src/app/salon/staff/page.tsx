@@ -79,9 +79,9 @@ function StaffContent() {
 
   // Use the new useHeraStaff hook
   const { staff, isLoading, error, createStaff, isCreating, refetch } = useHeraStaff({
-    organizationId: organizationId || '',
-    includeArchived: false,
-    userRole: 'manager' // TODO: Get from auth context
+    filters: {
+      branch_id: selectedBranchId || undefined  // Filter by selected branch
+    }
   })
 
   // Use the new useHeraRoles hook
@@ -139,7 +139,8 @@ function StaffContent() {
       await createStaff({
         ...newStaff,
         role_id: selectedRoleData?.id,
-        role_title: selectedRoleData?.title || selectedRoleData?.entity_name || ''
+        role_title: selectedRoleData?.title || selectedRoleData?.entity_name || '',
+        branch_id: selectedBranchId || undefined  // Associate with selected branch
       })
 
       toast({

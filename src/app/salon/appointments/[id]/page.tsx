@@ -36,6 +36,19 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+// Luxury color palette
+const LUXE_COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
+  bronze: '#8C7853',
+  emerald: '#0F6F5C',
+  plum: '#5A2A40',
+  rose: '#E8B4B8'
+}
+
 interface PageProps {
   params: Promise<{
     id: string
@@ -66,53 +79,53 @@ interface TransactionLine {
   entity?: any // The service/product entity
 }
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: any }> = {
   DRAFT: {
     label: 'Draft',
-    color:
-      'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700',
+    color: LUXE_COLORS.bronze,
+    bgColor: `${LUXE_COLORS.bronze}20`,
     icon: AlertCircle
   },
   BOOKED: {
     label: 'Booked',
-    color:
-      'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700',
+    color: LUXE_COLORS.gold,
+    bgColor: `${LUXE_COLORS.gold}20`,
     icon: Calendar
   },
   CONFIRMED: {
     label: 'Confirmed',
-    color:
-      'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700',
+    color: LUXE_COLORS.gold,
+    bgColor: `${LUXE_COLORS.gold}20`,
     icon: CheckCircle
   },
   CHECKED_IN: {
     label: 'Checked In',
-    color:
-      'bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-700',
+    color: LUXE_COLORS.emerald,
+    bgColor: `${LUXE_COLORS.emerald}20`,
     icon: User
   },
   IN_SERVICE: {
     label: 'In Service',
-    color:
-      'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700',
+    color: LUXE_COLORS.plum,
+    bgColor: `${LUXE_COLORS.plum}20`,
     icon: Clock
   },
   COMPLETED: {
     label: 'Completed',
-    color:
-      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700',
+    color: LUXE_COLORS.emerald,
+    bgColor: `${LUXE_COLORS.emerald}20`,
     icon: CheckCircle
   },
   CANCELLED: {
     label: 'Cancelled',
-    color:
-      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700',
+    color: LUXE_COLORS.rose,
+    bgColor: `${LUXE_COLORS.rose}20`,
     icon: XCircle
   },
   NO_SHOW: {
     label: 'No Show',
-    color:
-      'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-700',
+    color: LUXE_COLORS.bronze,
+    bgColor: `${LUXE_COLORS.bronze}20`,
     icon: XCircle
   }
 }
@@ -120,10 +133,16 @@ const STATUS_CONFIG = {
 export default function ViewAppointmentPage({ params }: PageProps) {
   const router = useRouter()
   const { organization } = useHERAAuth()
+  
+  // Get organization ID from localStorage for demo mode
+  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
 
   // Check for Hair Talkz subdomain
   const getEffectiveOrgId = () => {
     if (organization?.id) return organization.id
+    
+    // Check localStorage for demo mode
+    if (localOrgId) return localOrgId
 
     // Check if we're on hairtalkz or heratalkz subdomain
     if (typeof window !== 'undefined') {
@@ -153,17 +172,26 @@ export default function ViewAppointmentPage({ params }: PageProps) {
   const [stylist, setStylist] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
+  
+  // Load localStorage org ID
+  useEffect(() => {
+    const storedOrgId = localStorage.getItem('organizationId')
+    if (storedOrgId) {
+      setLocalOrgId(storedOrgId)
+    }
+  }, [])
 
   // Load appointment details
   useEffect(() => {
-    if (!organizationId || !unwrappedParams.id) return
+    const orgId = organizationId || localOrgId
+    if (!orgId || !unwrappedParams.id) return
 
     const loadAppointmentDetails = async () => {
       try {
         setLoading(true)
 
         // Set organization ID on universalApi
-        universalApi.setOrganizationId(organizationId)
+        universalApi.setOrganizationId(orgId)
 
         console.log('📊 Loading appointment details for:', unwrappedParams.id)
 
@@ -237,7 +265,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
     }
 
     loadAppointmentDetails()
-  }, [organizationId, unwrappedParams.id])
+  }, [organizationId, localOrgId, unwrappedParams.id])
 
   const handleCancel = async () => {
     if (!confirm('Are you sure you want to cancel this appointment?')) return
@@ -271,14 +299,23 @@ export default function ViewAppointmentPage({ params }: PageProps) {
     const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.DRAFT
     const Icon = config.icon
     return (
-      <Badge className={cn('gap-1', config.color)}>
+      <Badge 
+        className="gap-1 border"
+        style={{
+          backgroundColor: config.bgColor,
+          color: config.color,
+          borderColor: config.color
+        }}
+      >
         <Icon className="w-3 h-3" />
         {config.label}
       </Badge>
     )
   }
-
-  if (!organizationId) {
+  
+  const effectiveOrgId = organizationId || localOrgId
+  
+  if (!effectiveOrgId) {
     return (
       <div className="container mx-auto p-6 max-w-7xl">
         <div className="flex items-center justify-center h-64">
@@ -297,12 +334,12 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}>
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-violet-600 border-t-transparent mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading appointment details...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mx-auto mb-4" style={{ borderColor: LUXE_COLORS.gold }}></div>
+              <p style={{ color: LUXE_COLORS.bronze }}>Loading appointment details...</p>
             </div>
           </div>
         </div>
@@ -340,9 +377,9 @@ export default function ViewAppointmentPage({ params }: PageProps) {
     appointment.metadata?.duration || appointment.metadata?.total_service_duration_minutes || 60
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-violet-50 to-pink-50 dark:from-violet-950/20 dark:to-pink-950/20 border-b">
+      <div className="border-b" style={{ backgroundColor: `${LUXE_COLORS.charcoal}CC`, borderColor: `${LUXE_COLORS.gold}40` }}>
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -350,19 +387,21 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 variant="ghost"
                 size="icon"
                 onClick={() => router.push('/salon/appointments')}
-                className="hover:bg-violet-100 dark:hover:bg-violet-800"
+                className="hover:opacity-80"
+                style={{ color: LUXE_COLORS.champagne }}
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-600 to-pink-600 flex items-center justify-center shadow-lg">
-                  <Calendar className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg" 
+                     style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)` }}>
+                  <Calendar className="w-5 h-5" style={{ color: LUXE_COLORS.black }} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <h1 className="text-2xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
                     Appointment Details
                   </h1>
-                  <p className="text-sm text-amber-600 dark:text-amber-400">
+                  <p className="text-sm" style={{ color: LUXE_COLORS.gold }}>
                     #{appointment.transaction_code}
                   </p>
                 </div>
@@ -374,7 +413,12 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               <Button
                 variant="outline"
                 onClick={() => router.push(`/salon/appointments/${unwrappedParams.id}/edit`)}
-                className="gap-2"
+                className="gap-2 hover:opacity-80"
+                style={{
+                  backgroundColor: LUXE_COLORS.black,
+                  borderColor: LUXE_COLORS.bronze,
+                  color: LUXE_COLORS.champagne
+                }}
               >
                 <Edit className="w-4 h-4" />
                 Edit
@@ -383,7 +427,11 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 variant="outline"
                 onClick={handleCancel}
                 disabled={deleting || status === 'CANCELLED' || status === 'COMPLETED'}
-                className="gap-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                className="gap-2 hover:opacity-80"
+                style={{
+                  borderColor: LUXE_COLORS.rose,
+                  color: LUXE_COLORS.rose
+                }}
               >
                 <XCircle className="w-4 h-4" />
                 Cancel Appointment
@@ -397,28 +445,39 @@ export default function ViewAppointmentPage({ params }: PageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Customer & Stylist Details */}
           <div className="space-y-4">
-            <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
-              <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-                <div className="w-8 h-8 rounded-full bg-violet-100 dark:bg-violet-900 flex items-center justify-center">
-                  <User className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+            <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+                  style={{
+                    backgroundColor: LUXE_COLORS.charcoal,
+                    borderColor: `${LUXE_COLORS.gold}40`
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  }}>
+              <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                     style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)` }}>
+                  <User className="w-4 h-4" style={{ color: LUXE_COLORS.black }} />
                 </div>
                 Customer Details
               </h3>
               {customer ? (
                 <div className="space-y-3">
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100 text-lg">
+                    <p className="font-medium text-lg" style={{ color: LUXE_COLORS.champagne }}>
                       {customer.entity_name}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
                       Customer Code: {customer.entity_code}
                     </p>
                   </div>
 
                   {customer.metadata?.phone && (
                     <div className="flex items-center gap-2 text-sm">
-                      <Phone className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                      <span className="text-gray-700 dark:text-gray-300">
+                      <Phone className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+                      <span style={{ color: LUXE_COLORS.champagne }}>
                         {customer.metadata.phone}
                       </span>
                     </div>
@@ -426,8 +485,8 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
                   {customer.metadata?.email && (
                     <div className="flex items-center gap-2 text-sm">
-                      <Mail className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                      <span className="text-gray-700 dark:text-gray-300">
+                      <Mail className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+                      <span style={{ color: LUXE_COLORS.champagne }}>
                         {customer.metadata.email}
                       </span>
                     </div>
@@ -435,42 +494,58 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
                   {customer.metadata?.address && (
                     <div className="flex items-start gap-2 text-sm">
-                      <MapPin className="w-4 h-4 text-gray-500 dark:text-gray-400 mt-0.5" />
-                      <span className="text-gray-700 dark:text-gray-300">
+                      <MapPin className="w-4 h-4 mt-0.5" style={{ color: LUXE_COLORS.gold }} />
+                      <span style={{ color: LUXE_COLORS.champagne }}>
                         {customer.metadata.address}
                       </span>
                     </div>
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground">No customer information available</p>
+                <p style={{ color: LUXE_COLORS.bronze }}>No customer information available</p>
               )}
             </Card>
 
-            <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
-              <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-                <div className="w-8 h-8 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
-                  <User className="w-4 h-4 text-pink-600 dark:text-pink-400" />
+            <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+                  style={{
+                    backgroundColor: LUXE_COLORS.charcoal,
+                    borderColor: `${LUXE_COLORS.gold}40`
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  }}>
+              <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                     style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.plum} 0%, ${LUXE_COLORS.rose} 100%)` }}>
+                  <User className="w-4 h-4" style={{ color: 'white' }} />
                 </div>
                 Stylist Details
               </h3>
               {stylist ? (
                 <div className="space-y-3">
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100 text-lg">
+                    <p className="font-medium text-lg" style={{ color: LUXE_COLORS.champagne }}>
                       {stylist.entity_name}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
                       Employee Code: {stylist.entity_code}
                     </p>
                   </div>
 
                   {stylist.metadata?.specialties && stylist.metadata.specialties.length > 0 && (
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Specialties:</p>
+                      <p className="text-sm mb-1" style={{ color: LUXE_COLORS.bronze }}>Specialties:</p>
                       <div className="flex flex-wrap gap-1">
                         {stylist.metadata.specialties.map((specialty: string, index: number) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
+                          <Badge key={index} className="text-xs border"
+                                style={{
+                                  backgroundColor: `${LUXE_COLORS.plum}20`,
+                                  borderColor: LUXE_COLORS.plum,
+                                  color: LUXE_COLORS.champagne
+                                }}>
                             {specialty}
                           </Badge>
                         ))}
@@ -480,52 +555,63 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
                   {stylist.metadata?.hourly_rate && (
                     <div className="text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Hourly Rate: </span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">
+                      <span style={{ color: LUXE_COLORS.bronze }}>Hourly Rate: </span>
+                      <span className="font-medium" style={{ color: LUXE_COLORS.gold }}>
                         AED {stylist.metadata.hourly_rate}
                       </span>
                     </div>
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground">No stylist information available</p>
+                <p style={{ color: LUXE_COLORS.bronze }}>No stylist information available</p>
               )}
             </Card>
 
-            <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
-              <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+                  style={{
+                    backgroundColor: LUXE_COLORS.charcoal,
+                    borderColor: `${LUXE_COLORS.gold}40`
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  }}>
+              <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                     style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.gold} 100%)` }}>
+                  <Calendar className="w-4 h-4" style={{ color: 'white' }} />
                 </div>
                 Appointment Time
               </h3>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Date</p>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Date</p>
+                  <p className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                     {format(appointmentDate, 'MMMM d, yyyy')}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Time</p>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Time</p>
+                  <p className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                     {format(appointmentDate, 'h:mm a')}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Duration</p>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Duration</p>
+                  <p className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                     {totalDuration} minutes
                   </p>
                 </div>
 
                 {appointment.metadata?.notes && (
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Notes</p>
-                    <div className="p-3 bg-muted rounded-lg">
-                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                    <p className="text-sm mb-1" style={{ color: LUXE_COLORS.bronze }}>Notes</p>
+                    <div className="p-3 rounded-lg" style={{ backgroundColor: `${LUXE_COLORS.black}80` }}>
+                      <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
                         {appointment.metadata.notes}
                       </p>
                     </div>
@@ -537,38 +623,58 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
           {/* Center Column - Services */}
           <div className="space-y-4">
-            <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors h-fit">
-              <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
-                  <Scissors className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl h-fit"
+                  style={{
+                    backgroundColor: LUXE_COLORS.charcoal,
+                    borderColor: `${LUXE_COLORS.gold}40`
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  }}>
+              <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                     style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.bronze} 100%)` }}>
+                  <Scissors className="w-4 h-4" style={{ color: 'white' }} />
                 </div>
                 Services Booked
                 {transactionLines.length > 0 && (
-                  <Badge variant="secondary" className="ml-auto">
+                  <Badge className="ml-auto border"
+                        style={{
+                          backgroundColor: `${LUXE_COLORS.gold}20`,
+                          borderColor: LUXE_COLORS.gold,
+                          color: LUXE_COLORS.champagne
+                        }}>
                     {transactionLines.length} item{transactionLines.length !== 1 ? 's' : ''}
                   </Badge>
                 )}
               </h3>
 
               {transactionLines.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8 dark:text-gray-400">
+                <p className="text-center py-8" style={{ color: LUXE_COLORS.bronze }}>
                   No services found
                 </p>
               ) : (
                 <ScrollArea className="h-[600px] pr-2 appointment-scrollbar">
                   <div className="space-y-3">
                     {transactionLines.map(line => (
-                      <div key={line.id} className="p-4 border rounded-lg bg-card">
+                      <div key={line.id} className="p-4 border rounded-lg transition-all"
+                           style={{
+                             backgroundColor: `${LUXE_COLORS.black}80`,
+                             borderColor: `${LUXE_COLORS.gold}30`
+                           }}>
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
-                            <p className="font-medium text-amber-600 dark:text-amber-400">
+                            <p className="font-medium" style={{ color: LUXE_COLORS.gold }}>
                               {line.entity?.entity_name || line.description}
                             </p>
                             {line.entity && (
-                              <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                              <div className="flex items-center gap-3 text-sm mt-1">
                                 <span className="flex items-center gap-1">
-                                  <Clock className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-                                  <span className="dark:text-gray-400">
+                                  <Clock className="w-3 h-3" style={{ color: LUXE_COLORS.bronze }} />
+                                  <span style={{ color: LUXE_COLORS.champagne }}>
                                     {line.entity.metadata?.duration_minutes ||
                                       line.line_data?.duration_minutes ||
                                       30}{' '}
@@ -576,24 +682,29 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                                   </span>
                                 </span>
                                 <span className="flex items-center gap-1">
-                                  <DollarSign className="w-3 h-3 text-amber-500 dark:text-amber-400" />
-                                  <span className="dark:text-amber-400">
+                                  <DollarSign className="w-3 h-3" style={{ color: LUXE_COLORS.gold }} />
+                                  <span style={{ color: LUXE_COLORS.gold }}>
                                     AED {line.unit_amount.toFixed(2)}
                                   </span>
                                 </span>
                               </div>
                             )}
                           </div>
-                          <Badge variant="outline" className="ml-2">
+                          <Badge className="ml-2 border"
+                                style={{
+                                  backgroundColor: `${LUXE_COLORS.bronze}20`,
+                                  borderColor: LUXE_COLORS.bronze,
+                                  color: LUXE_COLORS.champagne
+                                }}>
                             {line.line_type}
                           </Badge>
                         </div>
 
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-amber-600 dark:text-amber-400">
+                          <span style={{ color: LUXE_COLORS.bronze }}>
                             Quantity: {line.quantity}
                           </span>
-                          <span className="font-medium text-gray-900 dark:text-gray-100">
+                          <span className="font-medium" style={{ color: LUXE_COLORS.gold }}>
                             Total: AED {line.line_amount.toFixed(2)}
                           </span>
                         </div>
@@ -607,45 +718,51 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
           {/* Right Column - Summary */}
           <div className="space-y-4">
-            <Card className="p-4 border-2 border-violet-400 dark:border-violet-600 bg-violet-50 dark:bg-violet-950/30">
-              <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-                <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center">
-                  <DollarSign className="w-4 h-4 text-white" />
+            <Card className="p-4 backdrop-blur shadow-lg border-2 transition-all hover:shadow-xl"
+                  style={{
+                    backgroundColor: LUXE_COLORS.charcoal,
+                    borderColor: LUXE_COLORS.gold,
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`
+                  }}>
+              <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
+                     style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)` }}>
+                  <DollarSign className="w-4 h-4" style={{ color: LUXE_COLORS.black }} />
                 </div>
                 Appointment Summary
               </h3>
               <div className="space-y-3">
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Status:</span>
+                    <span style={{ color: LUXE_COLORS.bronze }}>Status:</span>
                     <span>{getStatusBadge(status)}</span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Booking Code:</span>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                    <span style={{ color: LUXE_COLORS.bronze }}>Booking Code:</span>
+                    <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                       #{appointment.transaction_code}
                     </span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Items:</span>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                    <span style={{ color: LUXE_COLORS.bronze }}>Items:</span>
+                    <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                       {transactionLines.length} service{transactionLines.length !== 1 ? 's' : ''}
                     </span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Total Duration:</span>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                    <span style={{ color: LUXE_COLORS.bronze }}>Total Duration:</span>
+                    <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                       {totalDuration} minutes
                     </span>
                   </div>
 
-                  <div className="pt-2 border-t dark:border-gray-600">
+                  <div className="pt-2 border-t" style={{ borderColor: `${LUXE_COLORS.gold}40` }}>
                     <div className="flex justify-between text-lg font-semibold">
-                      <span className="text-gray-900 dark:text-gray-100">Total Amount:</span>
-                      <span className="text-amber-600 dark:text-amber-400">
+                      <span style={{ color: LUXE_COLORS.champagne }}>Total Amount:</span>
+                      <span style={{ color: LUXE_COLORS.gold }}>
                         AED {appointment.total_amount.toFixed(2)}
                       </span>
                     </div>
@@ -653,8 +770,8 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 </div>
 
                 {appointment.metadata?.created_at && (
-                  <div className="pt-2 border-t dark:border-gray-600">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="pt-2 border-t" style={{ borderColor: `${LUXE_COLORS.gold}40` }}>
+                    <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
                       Created on{' '}
                       {format(new Date(appointment.metadata.created_at), 'MMM d, yyyy at h:mm a')}
                     </p>
@@ -662,15 +779,19 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 )}
 
                 {status === 'CANCELLED' && (
-                  <div className="mt-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                  <div className="mt-3 p-3 rounded-lg border"
+                       style={{
+                         backgroundColor: `${LUXE_COLORS.rose}20`,
+                         borderColor: LUXE_COLORS.rose
+                       }}>
                     <div className="flex items-start gap-2">
-                      <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5" />
+                      <XCircle className="w-4 h-4 mt-0.5" style={{ color: LUXE_COLORS.rose }} />
                       <div className="text-sm">
-                        <p className="font-medium text-red-700 dark:text-red-300">
+                        <p className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                           This appointment has been cancelled
                         </p>
                         {appointment.metadata?.cancelled_at && (
-                          <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                          <p className="text-xs mt-1" style={{ color: LUXE_COLORS.rose }}>
                             Cancelled on{' '}
                             {format(
                               new Date(appointment.metadata.cancelled_at),
@@ -685,17 +806,33 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               </div>
             </Card>
 
-            <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
-              <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-                <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+            <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+                  style={{
+                    backgroundColor: LUXE_COLORS.charcoal,
+                    borderColor: `${LUXE_COLORS.gold}40`
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  }}>
+              <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                     style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.bronze} 0%, ${LUXE_COLORS.gold} 100%)` }}>
+                  <FileText className="w-4 h-4" style={{ color: 'white' }} />
                 </div>
                 Quick Actions
               </h3>
               <div className="space-y-2">
                 <Button
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:opacity-80"
                   variant="outline"
+                  style={{
+                    backgroundColor: LUXE_COLORS.black,
+                    borderColor: LUXE_COLORS.bronze,
+                    color: LUXE_COLORS.champagne
+                  }}
                   onClick={() => router.push(`/salon/appointments/${unwrappedParams.id}/edit`)}
                 >
                   <Edit className="w-4 h-4 mr-2" />
@@ -703,8 +840,13 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 </Button>
 
                 <Button
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:opacity-80"
                   variant="outline"
+                  style={{
+                    backgroundColor: LUXE_COLORS.black,
+                    borderColor: LUXE_COLORS.bronze,
+                    color: LUXE_COLORS.champagne
+                  }}
                   onClick={() => {
                     // TODO: Implement duplicate functionality
                     console.log(
@@ -718,8 +860,13 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 </Button>
 
                 <Button
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:opacity-80"
                   variant="outline"
+                  style={{
+                    backgroundColor: LUXE_COLORS.black,
+                    borderColor: LUXE_COLORS.bronze,
+                    color: LUXE_COLORS.champagne
+                  }}
                   onClick={() => {
                     // TODO: Implement print functionality
                     window.print()
@@ -730,8 +877,13 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 </Button>
 
                 <Button
-                  className="w-full justify-start text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                  className="w-full justify-start hover:opacity-80"
                   variant="outline"
+                  style={{
+                    backgroundColor: LUXE_COLORS.black,
+                    borderColor: LUXE_COLORS.rose,
+                    color: LUXE_COLORS.rose
+                  }}
                   onClick={handleCancel}
                   disabled={deleting || status === 'CANCELLED' || status === 'COMPLETED'}
                 >

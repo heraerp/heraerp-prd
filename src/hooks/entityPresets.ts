@@ -879,7 +879,11 @@ export const BRANCH_PRESET = {
       ui: {
         label: 'Status',
         widget: 'select' as const,
-        helpText: 'Active branches can receive bookings'
+        helpText: 'Active branches can receive bookings',
+        options: [
+          { value: 'active', label: 'Active' },
+          { value: 'inactive', label: 'Inactive' }
+        ]
       }
     }
   ] as DynamicFieldDefUI[],
@@ -908,7 +912,27 @@ export const BRANCH_PRESET = {
         optionsQueryKey: 'services'
       }
     }
-  ] as RelationshipDefUI[]
+  ] as RelationshipDefUI[],
+  formGroups: [
+    {
+      name: 'basic',
+      title: 'Basic Information',
+      fields: ['entity_name', 'code', 'status']
+    },
+    {
+      name: 'location',
+      title: 'Location Details',
+      fields: ['address', 'phone', 'timezone']
+    }
+  ],
+  ui: {
+    displayName: 'Branch',
+    pluralName: 'Branches',
+    icon: 'Building2',
+    description: 'Manage your salon locations and branches',
+    searchFields: ['entity_name', 'code', 'address'],
+    listFields: ['entity_name', 'code', 'address', 'phone', 'status']
+  }
 }
 
 // Preset registry for easy access

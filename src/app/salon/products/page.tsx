@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSalonContext } from '../SalonProvider'
-import { useHeraProducts } from '@/hooks/useHeraProducts'
+import { useHeraProducts } from '@/hooks/useHeraProductsV3'
 import { useHeraCategories } from '@/hooks/useHeraCategories'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { ProductList } from '@/components/salon/products/ProductList'
@@ -86,10 +86,11 @@ function SalonProductsPageContent() {
     deleteProduct,
     archiveProduct
   } = useHeraProducts({
-    includeArchived,
-    searchQuery: '',
-    categoryFilter: '',
-    organizationId
+    filters: {
+      branch_id: branchId || undefined,  // Filter by selected branch
+      category_id: categoryFilter || undefined,
+      status: includeArchived ? undefined : 'active'
+    }
   })
 
   // Fetch categories for filtering using Universal API v2
@@ -138,12 +139,29 @@ function SalonProductsPageContent() {
     )
 
     try {
+      const productData = {
+        name: data.name,
+        code: data.code,
+        price: data.price || 0,
+        cost: data.cost || 0,
+        qty_on_hand: data.qty_on_hand || 0,
+        min_stock: data.min_stock || 10,
+        barcode: data.barcode,
+        size: data.size,
+        unit: data.unit,
+        sku_code: data.sku,
+        commission_rate: data.commission_rate || 0.5,
+        active: data.status === 'active',
+        category_id: data.category,
+        branch_id: branchId || undefined  // Associate with selected branch
+      }
+
       if (editingProduct) {
-        await updateProduct(editingProduct.id, data)
+        await updateProduct(editingProduct.id, productData)
         removeToast(loadingId)
         showSuccess('Product updated successfully', `${data.name} has been updated`)
       } else {
-        await createProduct(data)
+        await createProduct(productData)
         removeToast(loadingId)
         showSuccess('Product created successfully', `${data.name} has been added`)
       }

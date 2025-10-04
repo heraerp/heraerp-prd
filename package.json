@@ -80,6 +80,7 @@
     "validate:smart-codes": "node scripts/validate-smart-codes.js",
     "build:check": "node scripts/build-check.js",
     "predeploy": "node scripts/improved-pre-deploy.js && npm run validate:smart-codes",
+    "backfill:branches": "tsx scripts/backfill-branch-relationships.ts",
     "validate": "node scripts/pre-deploy-validation.js",
     "quality:check": "node scripts/quality-check.js",
     "quality:themes": "node scripts/generate-industry-theme.js",

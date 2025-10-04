@@ -10,11 +10,13 @@ import { between } from '@/lib/kanban/rank'
 
 export function useKanbanPlaybook(params: {
   organization_id: string
-  branch_id: string
+  branch_id?: string
   date: string
+  dateFrom?: Date
+  dateTo?: Date
   userId: string
 }) {
-  const { organization_id, branch_id, date, userId } = params
+  const { organization_id, branch_id, date, dateFrom, dateTo, userId } = params
   const { toast } = useToast()
   const [cards, setCards] = useState<KanbanCard[]>([])
   const [loading, setLoading] = useState(false)
@@ -27,7 +29,9 @@ export function useKanbanPlaybook(params: {
       const appointments = await playbook.listAppointmentsForKanban({
         organization_id,
         branch_id,
-        date
+        date,
+        dateFrom,
+        dateTo
       })
       setCards(appointments)
     } catch (error) {

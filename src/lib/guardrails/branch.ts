@@ -62,7 +62,7 @@ export async function validateBranchExists(
 
     const response = await universalApi.read('core_entities', {
       organization_id,
-      entity_type: 'branch',
+      entity_type: 'BRANCH',
       id: branch_id
     })
 
@@ -95,7 +95,7 @@ export async function getOrganizationBranches(
 
     const response = await universalApi.read('core_entities', {
       organization_id,
-      entity_type: 'branch'
+      entity_type: 'BRANCH'
     })
 
     if (!response.success || !response.data) {

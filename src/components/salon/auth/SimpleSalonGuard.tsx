@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { LoadingState } from '@/components/states/Loading'
 import { AlertTriangle } from 'lucide-react'
 
@@ -33,7 +33,8 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
 export function SimpleSalonGuard({ children, requiredRoles = [] }: SimpleSalonGuardProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const { isLoading, isAuthenticated, role, user } = useSalonContext()
+  const { isLoading, isAuthenticated, user } = useSecuredSalonContext()
+  const role = user?.user_metadata?.role
 
   // Debug mode - check localStorage
   const debugMode =

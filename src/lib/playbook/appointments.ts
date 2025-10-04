@@ -89,14 +89,32 @@ export interface AppointmentData {
 // Extended API for appointments with DRAFT support and reschedule
 export async function listAppointmentsForKanban(params: {
   organization_id: string
-  branch_id: string
+  branch_id?: string
   date: string // YYYY-MM-DD
+  dateFrom?: Date
+  dateTo?: Date
 }): Promise<KanbanCard[]> {
-  const { organization_id, branch_id, date } = params
+  const { organization_id, branch_id, date, dateFrom, dateTo } = params
 
   try {
-    // Use the real salon appointments API endpoint
-    const apiUrl = `/api/v1/salon/appointments?organization_id=${organization_id}&date=${date}`
+    // Build URL with optional date range and branch filter
+    let apiUrl = `/api/v1/salon/appointments?organization_id=${organization_id}`
+    
+    // If we have date range, use it; otherwise fall back to single date
+    if (dateFrom && dateTo) {
+      // Format dates for API
+      const fromStr = dateFrom.toISOString().split('T')[0]
+      const toStr = dateTo.toISOString().split('T')[0]
+      apiUrl += `&date_from=${fromStr}&date_to=${toStr}`
+    } else {
+      apiUrl += `&date=${date}`
+    }
+    
+    // Add branch filter if specified
+    if (branch_id) {
+      apiUrl += `&branch_id=${branch_id}`
+    }
+    
     console.log('Fetching appointments from:', apiUrl)
 
     const response = await fetch(apiUrl)
@@ -118,7 +136,10 @@ export async function listAppointmentsForKanban(params: {
       return []
     }
 
-    console.log(`📅 Found ${appointments.length} appointments for ${date}`)
+    const dateDisplay = dateFrom && dateTo 
+      ? `${dateFrom.toLocaleDateString()} - ${dateTo.toLocaleDateString()}`
+      : date
+    console.log(`📅 Found ${appointments.length} appointments for ${dateDisplay}`)
 
     // Transform appointments to KanbanCard format
     const cards: KanbanCard[] = []

@@ -1,5 +1,5 @@
 // ============================================================================
-// HERA • Kanban Column Component
+// HERA • Kanban Column Component - Enterprise Edition
 // ============================================================================
 
 import React from 'react'
@@ -8,6 +8,19 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { cn } from '@/lib/utils'
 import { KanbanCard } from '@/schemas/kanban'
 import { Card } from './Card'
+
+// Luxury color palette
+const LUXE_COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
+  bronze: '#8C7853',
+  emerald: '#0F6F5C',
+  plum: '#5A2A40',
+  rose: '#E8B4B8'
+}
 
 interface ColumnProps {
   id: string
@@ -21,25 +34,26 @@ export function Column({ id, title, cards, onCardAction, isDraft = false }: Colu
   const { setNodeRef, isOver } = useDroppable({ id })
 
   return (
-    <div className="w-80 flex-shrink-0 flex flex-col h-full">
+    <div className="w-80 flex-shrink-0 flex flex-col h-full transition-all duration-300">
       {/* Column header */}
       <div
-        className="px-4 py-3 rounded-t-lg font-medium flex items-center justify-between transition-all duration-300"
+        className="px-4 py-3 rounded-t-lg font-medium flex items-center justify-between transition-all duration-300 hover:shadow-xl"
         style={{
           background: isDraft
-            ? 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)'
-            : 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)',
-          color: isDraft ? '#0B0B0B' : '#F5E6C8',
-          borderBottom: `2px solid ${isDraft ? '#D4AF37' : '#8C7853'}`,
-          boxShadow: isDraft ? '0 4px 12px rgba(212, 175, 55, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.4)'
+            ? `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`
+            : `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`,
+          color: isDraft ? LUXE_COLORS.black : LUXE_COLORS.champagne,
+          borderBottom: `2px solid ${isDraft ? LUXE_COLORS.gold : LUXE_COLORS.bronze}`,
+          boxShadow: isDraft ? `0 4px 12px ${LUXE_COLORS.gold}50` : `0 2px 8px ${LUXE_COLORS.black}60`
         }}
       >
-        <span className="tracking-wide">{title}</span>
+        <span className="tracking-wide text-lg">{title}</span>
         <span
-          className="text-sm font-normal px-2 py-1 rounded-full transition-all duration-300"
+          className="text-sm font-semibold px-3 py-1.5 rounded-full transition-all duration-300 hover:scale-110"
           style={{
-            background: isDraft ? 'rgba(11, 11, 11, 0.2)' : 'rgba(212, 175, 55, 0.15)',
-            color: isDraft ? '#0B0B0B' : '#D4AF37'
+            background: isDraft ? `${LUXE_COLORS.black}30` : `${LUXE_COLORS.gold}20`,
+            color: isDraft ? LUXE_COLORS.black : LUXE_COLORS.gold,
+            boxShadow: `0 2px 8px ${isDraft ? LUXE_COLORS.black : LUXE_COLORS.gold}20`
           }}
         >
           {cards.length}

@@ -36,39 +36,61 @@ export interface UseBranchFilterReturn {
 
 export function useBranchFilter(
   defaultBranchId?: string,
-  persistKey?: string
+  persistKey?: string,
+  organizationId?: string
 ): UseBranchFilterReturn {
   const { currentOrganization } = useHERAAuth()
-  const [branchId, setBranchIdState] = useState<string | undefined>(defaultBranchId)
+  const effectiveOrgId = organizationId || currentOrganization?.id
+  
+  // Initialize with persisted value or default to undefined (shows all)
+  const [branchId, setBranchIdState] = useState<string | undefined>(() => {
+    // Only persist if persistKey is explicitly provided
+    if (persistKey && typeof window !== 'undefined') {
+      const stored = localStorage.getItem(`branch-filter-${persistKey}`)
+      // Only use stored value if it's valid and not 'all'
+      if (stored && stored !== 'undefined' && stored !== 'null' && stored !== 'all') {
+        return stored
+      }
+    }
+    // Default to undefined (which means 'all') unless defaultBranchId is provided
+    return defaultBranchId || undefined
+  })
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   // Load branches on mount or organization change
   useEffect(() => {
-    if (currentOrganization?.id) {
+    if (effectiveOrgId) {
       loadBranches()
     }
-  }, [currentOrganization?.id])
+  }, [effectiveOrgId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Handle persistence
+  // Validate persisted branch ID when branches are loaded
   useEffect(() => {
-    if (persistKey && typeof window !== 'undefined') {
-      const stored = localStorage.getItem(`branch-filter-${persistKey}`)
-      if (stored && branches.some(b => b.id === stored)) {
-        setBranchIdState(stored)
+    if (persistKey && typeof window !== 'undefined' && branches.length > 0 && branchId && branchId !== 'all') {
+      // Check if the current branchId is still valid
+      if (!branches.some(b => b.id === branchId)) {
+        console.log('📍 Stored branch no longer exists, clearing filter:', branchId)
+        setBranchIdState(undefined) // Reset to undefined (show all)
+        localStorage.removeItem(`branch-filter-${persistKey}`) // Clear persistence
       }
     }
-  }, [persistKey, branches])
+  }, [persistKey, branches, branchId])
 
   const loadBranches = async () => {
-    if (!currentOrganization?.id) return
+    if (!effectiveOrgId) {
+      console.log('useBranchFilter: No organization ID, skipping branch load')
+      return
+    }
 
     setLoading(true)
     setError(null)
+    console.log('useBranchFilter: Loading branches for org:', effectiveOrgId)
 
     try {
-      const branchList = await getOrganizationBranches(currentOrganization.id)
+      const branchList = await getOrganizationBranches(effectiveOrgId)
+      console.log('useBranchFilter: Loaded branches:', branchList)
       setBranches(branchList)
 
       // Auto-select if only one branch
@@ -85,13 +107,16 @@ export function useBranchFilter(
   }
 
   const setBranchId = (newBranchId: string | undefined) => {
+    // Keep undefined as undefined (don't normalize to 'all')
     setBranchIdState(newBranchId)
 
     // Persist if enabled
     if (persistKey && typeof window !== 'undefined') {
-      if (newBranchId) {
+      if (newBranchId && newBranchId !== 'undefined' && newBranchId !== 'all') {
+        // Only persist specific branch selections
         localStorage.setItem(`branch-filter-${persistKey}`, newBranchId)
       } else {
+        // Clear persistence for 'all' or undefined
         localStorage.removeItem(`branch-filter-${persistKey}`)
       }
     }

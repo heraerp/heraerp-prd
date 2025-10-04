@@ -143,6 +143,7 @@ export async function searchAppointments(
     page = 1,
     page_size = 50
   } = params
+  
 
   // Set organization context
   universalApi.setOrganizationId(organization_id)
@@ -195,14 +196,42 @@ export async function searchAppointments(
   // 4) Build DTOs
   const byEntity = groupDynamicByEntity(dynRows)
   const id2transaction = new Map<string, any>(transactions.map((t: any) => [t.id, t]))
-  const appointments: AppointmentDTO[] = idsToFetch.map(id =>
-    toAppointmentDTOFromTransaction(id2transaction.get(id), byEntity.get(id))
-  )
+  const appointments: AppointmentDTO[] = idsToFetch.map((id, index) => {
+    const appointment = toAppointmentDTOFromTransaction(id2transaction.get(id), byEntity.get(id))
+    if (index === 0) {
+      console.log('📅 First appointment:', {
+        id: appointment.id,
+        start_time: appointment.start_time,
+        branch_id: appointment.branch_id,
+        hasFilters,
+        filters: { date_from, date_to, status, branch_id, q }
+      })
+    }
+    return appointment
+  })
+  
 
   // 5) Apply client-side filters if any
   let filteredAppointments = appointments
   if (hasFilters) {
-    filteredAppointments = appointments.filter(a => {
+    filteredAppointments = appointments.filter((a, index) => {
+      // Debug first appointment
+      if (index === 0) {
+        console.log('📅 Filtering logic:', {
+          appointment_branch: a.branch_id,
+          filter_branch: branch_id,
+          branchCheck: !branch_id || a.branch_id === branch_id,
+          searchTerm: q,
+          searchCheck: !q || (a.entity_name?.toLowerCase().includes(q.toLowerCase()) ||
+                              a.entity_code?.toLowerCase().includes(q.toLowerCase()) ||
+                              a.notes?.toLowerCase().includes(q.toLowerCase())),
+          willPassFilter: (!branch_id || a.branch_id === branch_id) && 
+                         (!q || (a.entity_name?.toLowerCase().includes(q.toLowerCase()) ||
+                                a.entity_code?.toLowerCase().includes(q.toLowerCase()) ||
+                                a.notes?.toLowerCase().includes(q.toLowerCase())))
+        })
+      }
+      
       // Date filters
       if (date_from && new Date(a.start_time) < new Date(date_from)) return false
       if (date_to && new Date(a.start_time) > new Date(date_to)) return false
@@ -489,7 +518,7 @@ function toAppointmentDTOFromTransaction(
     status: v<AppointmentStatus>('status', 'booked'),
     stylist_id: v<string>('stylist_id'),
     customer_id: v<string>('customer_id'),
-    branch_id: v<string>('branch_id'),
+    branch_id: v<string>('branch_id') ?? transaction?.metadata?.branch_id,
     chair_id: v<string>('chair_id'),
     service_ids: v<string[]>('service_ids', []),
     notes: v<string>('notes') ?? transaction?.notes,
@@ -516,7 +545,7 @@ function toAppointmentDTO(entity: any, dyn: Record<string, any> = {}): Appointme
     status: v<AppointmentStatus>('status', 'booked'),
     stylist_id: v<string>('stylist_id'),
     customer_id: v<string>('customer_id'),
-    branch_id: v<string>('branch_id'),
+    branch_id: v<string>('branch_id') ?? transaction?.metadata?.branch_id,
     chair_id: v<string>('chair_id'),
     service_ids: v<string[]>('service_ids', []),
     notes: v<string>('notes'),

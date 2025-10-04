@@ -3,7 +3,7 @@
 import React from 'react'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 import { BRANCH_PRESET } from '@/hooks/entityPresets'
-import { EntityForm } from '@/lib/entity-framework/EntityForm'
+import { BranchForm } from '@/components/salon/BranchForm'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -21,16 +21,12 @@ export default function BranchesPage() {
     entity_type: 'BRANCH',
     filters: {
       include_dynamic: true,
-      limit: 200,
-      organization_id: organization.id
+      limit: 200
     }
   })
 
   const handleCreate = async (data: any) => {
-    await branches.create({
-      ...data,
-      organization_id: organization.id
-    })
+    await branches.create(data)
     setShowForm(false)
   }
 
@@ -95,8 +91,7 @@ export default function BranchesPage() {
           >
             Create New Branch
           </h2>
-          <EntityForm
-            preset={BRANCH_PRESET}
+          <BranchForm
             onSubmit={handleCreate}
             onCancel={() => setShowForm(false)}
           />
@@ -117,8 +112,7 @@ export default function BranchesPage() {
           >
             Edit Branch
           </h2>
-          <EntityForm
-            preset={BRANCH_PRESET}
+          <BranchForm
             entity={selectedBranch}
             onSubmit={(data) => handleUpdate(selectedBranch.id, data)}
             onCancel={() => setSelectedBranch(null)}

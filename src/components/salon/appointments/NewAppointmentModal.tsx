@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { X, Calendar, Clock, User, Scissors, DollarSign, FileText, Loader2 } from 'lucide-react'
+import { X, Calendar, Clock, User, Scissors, DollarSign, FileText, Loader2, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -18,12 +18,13 @@ import { addDays, parseISO } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { universalApi } from '@/lib/universal-api'
 import { bookAppointmentV2 } from '@/lib/salon/appointments-v2-helper'
-import { toast } from '@/hooks/use-toast'
+import { useToast } from '@/hooks/use-toast'
 
 interface NewAppointmentModalProps {
   onClose: () => void
   onSuccess: () => void
   organizationId?: string
+  selectedBranchId?: string
 }
 
 interface Service {
@@ -46,11 +47,20 @@ interface Customer {
   email?: string
 }
 
+interface Branch {
+  id: string
+  name: string
+  code?: string
+}
+
 export function NewAppointmentModal({
   onClose,
   onSuccess,
-  organizationId
+  organizationId,
+  selectedBranchId
 }: NewAppointmentModalProps) {
+  console.log('NewAppointmentModal rendering with:', { organizationId, selectedBranchId })
+  const { toast } = useToast()
   // Check for Hair Talkz subdomain
   const getEffectiveOrgId = () => {
     if (organizationId) return organizationId
@@ -72,10 +82,12 @@ export function NewAppointmentModal({
   }
 
   const effectiveOrgId = getEffectiveOrgId()
+  console.log('Effective org ID in modal:', effectiveOrgId)
   const [formLoading, setFormLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  // Form state
+  // Form state - initialize branchId with selectedBranchId prop
+  const [branchId, setBranchId] = useState(selectedBranchId || '')
   const [customerId, setCustomerId] = useState('')
   const [serviceId, setServiceId] = useState('')
   const [staffId, setStaffId] = useState('')
@@ -84,6 +96,7 @@ export function NewAppointmentModal({
   const [notes, setNotes] = useState('')
 
   // Data state
+  const [branches, setBranches] = useState<Branch[]>([])
   const [customers, setCustomers] = useState<Customer[]>([])
   const [services, setServices] = useState<Service[]>([])
   const [staff, setStaff] = useState<Staff[]>([])
@@ -92,17 +105,63 @@ export function NewAppointmentModal({
   // Selected service details
   const selectedService = services.find(s => s.id === serviceId)
 
-  // Fetch customers, services, and staff on mount
+  // Fetch branches, customers, services, and staff on mount
   useEffect(() => {
-    if (!effectiveOrgId) return
+    if (!effectiveOrgId) {
+      console.log('No effective org ID, skipping data fetch')
+      return
+    }
 
     const fetchData = async () => {
       setFormLoading(true)
+      console.log('Fetching appointment modal data for org:', effectiveOrgId)
+      
+      // Set a timeout to ensure loading state is cleared
+      const loadingTimeout = setTimeout(() => {
+        console.log('Loading timeout reached, forcing loading to false')
+        setFormLoading(false)
+      }, 5000)
+      
+      // Set organization ID on universalApi
+      universalApi.setOrganizationId(effectiveOrgId!)
+      
       try {
+        // Fetch branches first separately to debug
+        console.log('Fetching branches...')
+        const branchesResp = await universalApi.getEntities({ 
+          organizationId: effectiveOrgId, 
+          filters: { entity_type: 'BRANCH' } 
+        })
+        
+        console.log('Branches response:', branchesResp)
+        
+        if (branchesResp.success && branchesResp.data) {
+          const branchList = branchesResp.data.map((b: any) => ({
+            id: b.id,
+            name: b.entity_name,
+            code: b.entity_code
+          }))
+          console.log('Setting branches:', branchList)
+          setBranches(branchList)
+        } else {
+          console.log('No branches found or error:', branchesResp.error)
+          setBranches([])
+        }
+        
+        // Fetch other data
         const [customersResp, servicesResp, staffResp] = await Promise.all([
-          universalApi.getEntities('customer', effectiveOrgId),
-          universalApi.getEntities('service', effectiveOrgId),
-          universalApi.getEntities('employee', effectiveOrgId)
+          universalApi.getEntities({ 
+            organizationId: effectiveOrgId, 
+            filters: { entity_type: 'customer' } 
+          }),
+          universalApi.getEntities({ 
+            organizationId: effectiveOrgId, 
+            filters: { entity_type: 'service' } 
+          }),
+          universalApi.getEntities({ 
+            organizationId: effectiveOrgId, 
+            filters: { entity_type: 'employee' } 
+          })
         ])
 
         // Transform customers
@@ -140,12 +199,19 @@ export function NewAppointmentModal({
           )
         }
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error('Error fetching appointment modal data:', error)
         toast({
           title: 'Error',
           description: 'Failed to load appointment data'
         })
+        // Ensure we set empty arrays on error
+        setBranches([])
+        setCustomers([])
+        setServices([])
+        setStaff([])
       } finally {
+        console.log('Setting form loading to false')
+        clearTimeout(loadingTimeout)
         setFormLoading(false)
       }
     }
@@ -171,7 +237,7 @@ export function NewAppointmentModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!customerId || !serviceId || !staffId || !appointmentDate || !appointmentTime) {
+    if (!branchId || !customerId || !serviceId || !staffId || !appointmentDate || !appointmentTime) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields'
@@ -196,11 +262,22 @@ export function NewAppointmentModal({
         endISO: end.toISOString(),
         notes,
         price: selectedService?.price || 0,
-        currencyCode: 'AED'
+        currencyCode: 'AED',
+        metadata: {
+          branch_id: branchId
+        }
       })
 
-      toast({ title: 'Success', description: 'Appointment created successfully' })
-      onSuccess()
+      toast({
+        title: 'Success',
+        description: 'Appointment created successfully',
+        variant: 'default'
+      })
+      
+      // Add a small delay to ensure toast is shown before modal closes
+      setTimeout(() => {
+        onSuccess()
+      }, 100)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to create appointment'
       toast({ title: 'Error', description: message, variant: 'destructive' })
@@ -263,6 +340,47 @@ export function NewAppointmentModal({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Branch Selection */}
+          <div className="space-y-2">
+            <Label htmlFor="branch" className="flex items-center gap-2 !ink dark:!text-gray-300">
+              <Building2 className="w-4 h-4" />
+              Location *
+            </Label>
+            <Select value={branchId} onValueChange={setBranchId} disabled={formLoading}>
+              <SelectTrigger
+                id="branch"
+                className="bg-muted/50 border-border !text-foreground focus:border-indigo-500 hover:bg-muted-foreground/10/50"
+              >
+                <SelectValue placeholder="Select a location" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-border">
+                {console.log('Branch dropdown state:', { formLoading, branchesLength: branches.length, branches }) || null}
+                {formLoading ? (
+                  <div className="px-2 py-3 text-center">
+                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                    <p className="text-sm text-muted-foreground mt-1">Loading branches...</p>
+                  </div>
+                ) : branches.length === 0 ? (
+                  <div className="px-2 py-3 text-center">
+                    <p className="text-sm text-muted-foreground">No branches available</p>
+                    <SelectItem value="test" className="!text-gray-300">
+                      Test Branch (Hardcoded)
+                    </SelectItem>
+                  </div>
+                ) : (
+                  branches.map(branch => (
+                    <SelectItem key={branch.id} value={branch.id} className="!text-gray-300">
+                      {branch.name}
+                      {branch.code && (
+                        <span className="text-sm text-muted-foreground ml-2">({branch.code})</span>
+                      )}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Customer Selection */}
           <div className="space-y-2">
             <Label htmlFor="customer" className="flex items-center gap-2 !ink dark:!text-gray-300">
@@ -454,6 +572,7 @@ export function NewAppointmentModal({
               disabled={
                 submitting ||
                 formLoading ||
+                !branchId ||
                 !customerId ||
                 !serviceId ||
                 !staffId ||

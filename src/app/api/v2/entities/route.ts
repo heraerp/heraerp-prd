@@ -189,6 +189,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100')
     const offset = parseInt(searchParams.get('offset') || '0')
     const include_dynamic = searchParams.get('include_dynamic') !== 'false'
+    const branch_id = searchParams.get('branch_id')
+    const rel = searchParams.get('rel')
 
     const supabase = getSupabaseService()
 
@@ -199,7 +201,9 @@ export async function GET(request: NextRequest) {
       status,
       include_dynamic,
       limit,
-      offset
+      offset,
+      branch_id,
+      rel
     })
 
     console.log('🔍 Auth result details:', {
@@ -208,8 +212,9 @@ export async function GET(request: NextRequest) {
       userAgent: request.headers.get('user-agent')?.substring(0, 50)
     })
 
-    // Try HERA read function v2 first
-    const { data: result, error } = await supabase.rpc('hera_entity_read_v2', {
+    // Try HERA read function - use branch-aware version if branch filtering is requested
+    const rpcFunction = branch_id && rel ? 'hera_entity_read_with_branch_v1' : 'hera_entity_read_v2'
+    const rpcParams: any = {
       p_organization_id: organizationId,
       p_entity_id: entity_id,
       p_entity_type: entity_type,
@@ -218,7 +223,15 @@ export async function GET(request: NextRequest) {
       p_include_dynamic_data: include_dynamic,
       p_limit: limit,
       p_offset: offset
-    })
+    }
+
+    // Add branch filtering params if using branch-aware function
+    if (branch_id && rel) {
+      rpcParams.p_branch_id = branch_id
+      rpcParams.p_relationship_type = rel
+    }
+
+    const { data: result, error } = await supabase.rpc(rpcFunction, rpcParams)
 
     if (error) {
       console.error('RPC function failed, falling back to direct query:', error)
@@ -236,6 +249,47 @@ export async function GET(request: NextRequest) {
       if (entity_id) {
         console.log('🎯 Filtering by entity_id:', entity_id)
         query = query.eq('id', entity_id)
+      }
+
+      // Branch filtering via relationships
+      if (branch_id && rel) {
+        console.log('🎯 Filtering by branch relationship:', { branch_id, rel })
+        
+        // First get entity IDs that have the specified relationship to the branch
+        const { data: relationships, error: relError } = await supabase
+          .from('core_relationships')
+          .select('from_entity_id')
+          .eq('organization_id', organizationId)
+          .eq('to_entity_id', branch_id)
+          .eq('relationship_type', rel)
+          .is('deleted_at', null)
+
+        if (relError) {
+          console.error('Failed to fetch relationships:', relError)
+          return NextResponse.json(
+            { error: 'Failed to apply branch filter', details: relError.message },
+            { status: 500 }
+          )
+        }
+
+        const entityIds = relationships?.map(r => r.from_entity_id) || []
+        console.log(`📋 Found ${entityIds.length} entities with ${rel} relationship to branch`)
+
+        if (entityIds.length === 0) {
+          // No entities found with this relationship, return empty result
+          return NextResponse.json({
+            success: true,
+            data: [],
+            pagination: {
+              total: 0,
+              limit: limit,
+              offset: offset
+            }
+          })
+        }
+
+        // Filter the main query by these entity IDs
+        query = query.in('id', entityIds)
       }
 
       query = query.limit(limit).range(offset, offset + limit - 1)

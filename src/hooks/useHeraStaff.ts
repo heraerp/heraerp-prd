@@ -5,6 +5,7 @@
  * Provides staff-specific helpers and RPC integration
  */
 
+import { useMemo } from 'react'
 import { useUniversalEntity } from './useUniversalEntity'
 import { STAFF_PRESET } from './entityPresets'
 import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
@@ -46,6 +47,7 @@ export interface UseHeraStaffOptions {
     offset?: number
     status?: string
     search?: string
+    branch_id?: string  // Add branch filtering
   }
 }
 
@@ -68,7 +70,12 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
       include_dynamic: true,
       include_relationships: true,
       limit: 100,
-      ...options?.filters
+      ...options?.filters,
+      // Pass branch filtering to API if supported
+      ...(options?.filters?.branch_id ? {
+        branch_id: options.filters.branch_id,
+        rel: 'MEMBER_OF'
+      } : {})
     },
     dynamicFields: STAFF_PRESET.dynamicFields as DynamicFieldDef[],
     relationships: STAFF_PRESET.relationships as RelationshipDef[]
@@ -92,6 +99,7 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     service_ids?: string[]
     location_id?: string
     supervisor_id?: string
+    branch_id?: string  // Add branch support
   }) => {
     const entity_name = `${data.first_name} ${data.last_name}`
 
@@ -113,7 +121,9 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
       ...(data.role_id ? { STAFF_HAS_ROLE: [data.role_id] } : {}),
       ...(data.service_ids ? { STAFF_CAN_SERVICE: data.service_ids } : {}),
       ...(data.location_id ? { STAFF_MEMBER_OF: [data.location_id] } : {}),
-      ...(data.supervisor_id ? { STAFF_REPORTS_TO: [data.supervisor_id] } : {})
+      ...(data.supervisor_id ? { STAFF_REPORTS_TO: [data.supervisor_id] } : {}),
+      // Add branch relationship - use MEMBER_OF for branch association
+      ...(data.branch_id ? { MEMBER_OF: [data.branch_id] } : {})
     }
 
     return baseCreate({
@@ -145,6 +155,7 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     if (data.service_ids) relationships_patch['STAFF_CAN_SERVICE'] = data.service_ids
     if (data.location_id) relationships_patch['STAFF_MEMBER_OF'] = [data.location_id]
     if (data.supervisor_id) relationships_patch['STAFF_REPORTS_TO'] = [data.supervisor_id]
+    if (data.branch_id) relationships_patch['MEMBER_OF'] = [data.branch_id]
 
     const payload: any = {
       entity_id: id,

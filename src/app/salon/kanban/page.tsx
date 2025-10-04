@@ -5,8 +5,8 @@
 'use client'
 
 import React, { useState, useCallback, useEffect } from 'react'
-import { format, startOfToday } from 'date-fns'
-import { Plus, Calendar, RefreshCw } from 'lucide-react'
+import { format, startOfToday, addDays } from 'date-fns'
+import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -37,31 +37,60 @@ import { KanbanCard } from '@/schemas/kanban'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useAppointmentsPlaybook } from '@/hooks/useAppointmentsPlaybook'
+import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 
-// Salon organization ID
+// Luxury color palette
+const LUXE_COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
+  bronze: '#8C7853',
+  emerald: '#0F6F5C',
+  plum: '#5A2A40',
+  rose: '#E8B4B8'
+}
+
+// Salon organization ID (fallback)
 const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
-
-// Mock branch hook - replace with actual branch management
-const useBranch = () => ({
-  currentBranch: {
-    id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
-    name: 'Hair Talkz • Park Regis Kris Kin (Karama)'
-  },
-  branches: [
-    {
-      id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
-      name: 'Hair Talkz • Park Regis Kris Kin (Karama)'
-    }
-  ]
-})
 
 export default function KanbanPage() {
   const router = useRouter()
-  const { user, organization } = useHERAAuth()
-  const { currentBranch, branches } = useBranch()
+  const { organization: authOrganization, isAuthenticated, isLoading: contextLoading } = useSecuredSalonContext()
   const { toast } = useToast()
-  // Initialize with today's date
-  const [date, setDate] = useState(() => startOfToday())
+  
+  // Get organization ID from localStorage for demo mode
+  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
+  
+  useEffect(() => {
+    const storedOrgId = localStorage.getItem('organizationId')
+    if (storedOrgId) {
+      setLocalOrgId(storedOrgId)
+    }
+  }, [])
+  
+  const organizationId = authOrganization?.id || localOrgId || SALON_ORG_ID
+  
+  // Always reset branch filter to 'all' on page load
+  useEffect(() => {
+    localStorage.removeItem('branch-filter-salon-kanban')
+  }, [])
+  
+  // Branch filter hook - no persistence
+  const {
+    branchId,
+    branches,
+    loading: branchesLoading,
+    setBranchId,
+    hasMultipleBranches
+  } = useBranchFilter(undefined, undefined, organizationId)
+  
+  // Date filter state - default to "all" (show past year to future year)
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'tomorrow' | 'week' | 'custom'>('all')
+  const [customDate, setCustomDate] = useState<Date | undefined>(undefined)
+  
   const [selectedCard, setSelectedCard] = useState<KanbanCard | null>(null)
   const [rescheduleOpen, setRescheduleOpen] = useState(false)
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
@@ -88,6 +117,35 @@ export default function KanbanPage() {
     duration: '60'
   })
 
+  // Calculate date range based on filter
+  const getDateRange = () => {
+    const today = startOfToday()
+    
+    switch (dateFilter) {
+      case 'today':
+        return { date: format(today, 'yyyy-MM-dd'), dateFrom: today, dateTo: today }
+      case 'tomorrow':
+        const tomorrow = addDays(today, 1)
+        return { date: format(tomorrow, 'yyyy-MM-dd'), dateFrom: tomorrow, dateTo: tomorrow }
+      case 'week':
+        const weekEnd = addDays(today, 7)
+        return { date: format(today, 'yyyy-MM-dd'), dateFrom: today, dateTo: weekEnd }
+      case 'custom':
+        if (customDate) {
+          return { date: format(customDate, 'yyyy-MM-dd'), dateFrom: customDate, dateTo: customDate }
+        }
+        return { date: format(today, 'yyyy-MM-dd'), dateFrom: today, dateTo: today }
+      case 'all':
+      default:
+        // Show appointments from 1 year ago to 1 year in the future
+        const yearAgo = addDays(today, -365)
+        const yearAhead = addDays(today, 365)
+        return { date: format(today, 'yyyy-MM-dd'), dateFrom: yearAgo, dateTo: yearAhead }
+    }
+  }
+
+  const dateRange = getDateRange()
+
   const {
     cards,
     cardsByColumn,
@@ -99,9 +157,11 @@ export default function KanbanPage() {
     reload,
     canTransition
   } = useKanbanPlaybook({
-    organization_id: SALON_ORG_ID,
-    branch_id: currentBranch.id,
-    date: format(date, 'yyyy-MM-dd'),
+    organization_id: organizationId,
+    branch_id: branchId && branchId !== 'all' ? branchId : undefined,
+    date: dateRange.date,
+    dateFrom: dateRange.dateFrom,
+    dateTo: dateRange.dateTo,
     userId: userId || 'demo-user'
   })
 
@@ -182,77 +242,273 @@ export default function KanbanPage() {
     setCancelReason('')
   }
 
+  // Check authorization layers
+  if (!isAuthenticated && !localOrgId) {
+    return (
+      <div className="container mx-auto p-6 max-w-7xl">
+        <div className="text-center">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Please log in to access this page
+          </h2>
+        </div>
+      </div>
+    )
+  }
+
+  if (contextLoading && !localOrgId) {
+    return (
+      <div className="min-h-screen" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}>
+        <div className="container mx-auto px-6 py-12">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center animate-fadeIn">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                   style={{ 
+                     background: `linear-gradient(135deg, ${LUXE_COLORS.gold}40 0%, ${LUXE_COLORS.goldDark}40 100%)`,
+                     boxShadow: `0 8px 32px ${LUXE_COLORS.gold}20`
+                   }}>
+                <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
+              </div>
+              <p className="mt-4" style={{ color: LUXE_COLORS.bronze }}>Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
       <div
-        className="h-screen flex flex-col"
-        style={{ background: 'linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 100%)' }}
+        className="h-screen flex flex-col transition-all duration-300"
+        style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}
       >
         {/* Luxe header */}
         <header
-          className="px-6 py-4 shadow-xl"
-          style={{ backgroundColor: '#1A1A1A', borderBottom: '1px solid #D4AF3740' }}
+          className="px-6 py-4 shadow-xl backdrop-blur transition-all duration-300 animate-slideDown"
+          style={{ 
+            backgroundColor: `${LUXE_COLORS.charcoal}E6`, 
+            borderBottom: `1px solid ${LUXE_COLORS.gold}40`,
+            backdropFilter: 'blur(10px)'
+          }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
-              <h1
-                className="text-2xl font-light tracking-wide"
-                style={{
-                  background: 'linear-gradient(135deg, #F5E6C8 0%, #D4AF37 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}
-              >
-                Appointments • {currentBranch.name}
-              </h1>
-
-              {/* Date picker */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="justify-start text-left font-normal"
-                    style={{
-                      backgroundColor: '#0B0B0B',
-                      borderColor: '#8C7853',
-                      color: '#F5E6C8'
-                    }}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transform transition-transform duration-300 hover:scale-110 animate-fadeIn"
+                     style={{ 
+                       background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                       boxShadow: `0 8px 32px ${LUXE_COLORS.gold}40`
+                     }}>
+                  <CalendarDays className="w-6 h-6" style={{ color: LUXE_COLORS.black }} />
+                </div>
+                <div>
+                  <h1
+                    className="text-2xl font-bold tracking-tight transition-all duration-300"
+                    style={{ color: LUXE_COLORS.champagne }}
                   >
-                    <Calendar className="mr-2 h-4 w-4" />
-                    {format(date, 'EEEE, MMMM d')}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <CalendarComponent
-                    mode="single"
-                    selected={date}
-                    onSelect={d => d && setDate(d)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+                    Kanban Board
+                  </h1>
+                  <p className="text-sm mt-1 opacity-80 transition-opacity duration-300 hover:opacity-100" 
+                     style={{ color: LUXE_COLORS.bronze }}>
+                    Drag and drop appointments to manage workflow
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 animate-slideLeft">
+              {/* Branch Filter */}
+              <Select
+                value={branchId === undefined || branchId === 'all' ? 'all' : branchId}
+                onValueChange={value => setBranchId(value === 'all' ? undefined : value)}
+              >
+                <SelectTrigger
+                  className="w-[200px] transition-all duration-300 hover:scale-[1.02]"
+                  style={{
+                    backgroundColor: `${LUXE_COLORS.black}CC`,
+                    borderColor: LUXE_COLORS.bronze,
+                    color: LUXE_COLORS.champagne
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                    e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = LUXE_COLORS.bronze
+                    e.currentTarget.style.boxShadow = ''
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
+                    <SelectValue placeholder="All Locations" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="all" className="hera-select-item">
+                    All Locations
+                  </SelectItem>
+                  {branchesLoading ? (
+                    <div className="px-2 py-3 text-center">
+                      <Loader2
+                        className="h-4 w-4 animate-spin mx-auto"
+                        style={{ color: LUXE_COLORS.gold }}
+                      />
+                    </div>
+                  ) : branches.length === 0 ? (
+                    <div
+                      className="px-2 py-3 text-center text-sm"
+                      style={{ color: LUXE_COLORS.bronze }}
+                    >
+                      No branches configured
+                    </div>
+                  ) : (
+                    branches.map(branch => (
+                      <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
+                          <div className="flex flex-col">
+                            <span className="font-medium">{branch.name}</span>
+                            {branch.code && <span className="text-xs opacity-60">{branch.code}</span>}
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+
+              {/* Date Filter */}
+              <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
+                <SelectTrigger
+                  className="w-[180px] transition-all duration-300 hover:scale-[1.02]"
+                  style={{
+                    backgroundColor: `${LUXE_COLORS.black}CC`,
+                    borderColor: LUXE_COLORS.bronze,
+                    color: LUXE_COLORS.champagne
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                    e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = LUXE_COLORS.bronze
+                    e.currentTarget.style.boxShadow = ''
+                  }}
+                >
+                  <SelectValue placeholder="Filter by date" />
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="all" className="hera-select-item">
+                    All appointments
+                  </SelectItem>
+                  <SelectItem value="today" className="hera-select-item">
+                    Today
+                  </SelectItem>
+                  <SelectItem value="tomorrow" className="hera-select-item">
+                    Tomorrow
+                  </SelectItem>
+                  <SelectItem value="week" className="hera-select-item">
+                    Next 7 days
+                  </SelectItem>
+                  <SelectItem value="custom" className="hera-select-item">
+                    Custom date...
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Custom Date Picker */}
+              {dateFilter === 'custom' && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="justify-start text-left font-normal transition-all duration-300 hover:scale-[1.02]"
+                      style={{
+                        backgroundColor: `${LUXE_COLORS.black}CC`,
+                        borderColor: LUXE_COLORS.bronze,
+                        color: LUXE_COLORS.champagne
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                        e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.borderColor = LUXE_COLORS.bronze
+                        e.currentTarget.style.boxShadow = ''
+                      }}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
+                      {customDate ? format(customDate, 'MMM d, yyyy') : 'Select date'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarComponent
+                      mode="single"
+                      selected={customDate}
+                      onSelect={d => setCustomDate(d)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={reload}
                 disabled={loading || isMoving}
-                style={{ color: '#D4AF37' }}
-                className="hover:opacity-80"
+                style={{ color: LUXE_COLORS.gold }}
+                className="hover:opacity-80 transition-all duration-300 hover:scale-110"
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = LUXE_COLORS.champagne
+                  e.currentTarget.style.transform = 'rotate(180deg) scale(1.1)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = LUXE_COLORS.gold
+                  e.currentTarget.style.transform = ''
+                }}
               >
                 <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
               </Button>
 
               <Button
+                onClick={() => router.push('/salon/appointments')}
+                variant="outline"
+                style={{
+                  backgroundColor: LUXE_COLORS.black,
+                  borderColor: LUXE_COLORS.bronze,
+                  color: LUXE_COLORS.champagne
+                }}
+                className="hover:opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                  e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}30`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = LUXE_COLORS.bronze
+                  e.currentTarget.style.boxShadow = ''
+                }}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                List View
+              </Button>
+
+              <Button
                 onClick={() => router.push('/salon/appointments/new')}
                 style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
-                  color: '#0B0B0B'
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                  color: LUXE_COLORS.black,
+                  boxShadow: `0 4px 16px ${LUXE_COLORS.gold}40`
                 }}
-                className="hover:opacity-90 transition-opacity font-semibold"
+                className="hover:opacity-90 transition-all duration-300 font-semibold hover:scale-105 hover:shadow-2xl"
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
+                  e.currentTarget.style.boxShadow = `0 8px 24px ${LUXE_COLORS.gold}60`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                  e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}40`
+                }}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 New Appointment
@@ -260,6 +516,32 @@ export default function KanbanPage() {
             </div>
           </div>
         </header>
+
+        {/* Active Filters Indicator */}
+        {(branchId && branchId !== 'all') && (
+          <div className="px-6 py-2 flex items-center gap-2 animate-slideDown" style={{ backgroundColor: `${LUXE_COLORS.charcoal}CC` }}>
+            <span className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+              Active Filters:
+            </span>
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-300 hover:scale-105"
+              style={{
+                background: `${LUXE_COLORS.gold}20`,
+                border: `1px solid ${LUXE_COLORS.gold}40`,
+                boxShadow: `0 2px 8px ${LUXE_COLORS.gold}20`
+              }}
+            >
+              {branchId && branchId !== 'all' && (
+                <>
+                  <Building2 className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
+                  <span className="text-sm font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                    {branches.find(b => b.id === branchId)?.name || branchId}
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Kanban board */}
         <div className="flex-1 overflow-hidden">

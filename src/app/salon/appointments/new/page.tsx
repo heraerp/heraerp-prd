@@ -11,6 +11,7 @@ import '@/styles/dialog-overrides.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format, addMinutes } from 'date-fns'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
 import { createDraftAppointment } from '@/lib/appointments/createDraftAppointment'
 import { upsertAppointmentLines } from '@/lib/appointments/upsertAppointmentLines'
@@ -96,6 +97,7 @@ function NewAppointmentContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { organization } = useHERAAuth()
+  const { selectedBranchId } = useSecuredSalonContext()
 
   // Demo organization ID for Hair Talkz Salon
   const DEFAULT_SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
@@ -125,7 +127,7 @@ function NewAppointmentContent() {
   // Get customerId from URL if provided
   const customerIdFromUrl = searchParams.get('customerId')
 
-  // Branch filter hook
+  // Branch filter hook - initialize with selected branch from context
   const {
     branchId,
     branches,
@@ -133,7 +135,7 @@ function NewAppointmentContent() {
     error: branchesError,
     setBranchId,
     hasMultipleBranches
-  } = useBranchFilter(undefined, 'salon-appointments')
+  } = useBranchFilter(selectedBranchId, 'salon-appointments', organizationId)
 
   // Form state
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
@@ -345,6 +347,7 @@ function NewAppointmentContent() {
       const startAt = new Date(`${selectedDate}T${selectedTime}:00`).toISOString()
 
       // Create draft appointment with branch info
+      console.log('Creating appointment with branch:', branchId)
       const { id: appointmentId } = await createDraftAppointment({
         organizationId,
         startAt,
@@ -354,6 +357,7 @@ function NewAppointmentContent() {
         notes: notes || undefined,
         branchId: branchId || undefined
       })
+      console.log('Appointment created with ID:', appointmentId)
 
       // Create appointment lines
       await upsertAppointmentLines({
@@ -373,8 +377,10 @@ function NewAppointmentContent() {
         description: 'Appointment created successfully'
       })
 
-      // Redirect to appointments list
-      router.push('/salon/appointments')
+      // Delay redirect to allow toast to show
+      setTimeout(() => {
+        router.push('/salon/appointments')
+      }, 1000)
     } catch (error) {
       console.error('Error creating appointment:', error)
       toast({
@@ -511,6 +517,7 @@ function NewAppointmentContent() {
                       Select Branch{' '}
                       {hasMultipleBranches && <span className="text-[#D4AF37]">*</span>}
                     </Label>
+                    {console.log('Branch dropdown debug:', { branchesLoading, branchesLength: branches.length, branches, branchId })}
                     <Select value={branchId || ''} onValueChange={value => setBranchId(value)}>
                       <SelectTrigger
                         style={{
