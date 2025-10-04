@@ -12,7 +12,7 @@ cmds = ["npm ci --production=false"]
 cmds = ["npm run build"]
 
 [start]
-cmd = "next start -H 0.0.0.0 -p ${PORT:-3000}"
+cmd = "npx next start -H 0.0.0.0 -p ${PORT:-3000}"
 
 [variables]
 # Set NODE_ENV after build to ensure devDependencies are available during build
