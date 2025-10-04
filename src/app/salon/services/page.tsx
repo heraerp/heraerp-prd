@@ -67,13 +67,13 @@ const COLORS = {
 }
 
 function SalonServicesPageContent() {
-  const { 
-    organization, 
+  const {
+    organization,
     currency,
     selectedBranchId,
     availableBranches,
     setSelectedBranchId,
-    isLoadingBranches 
+    isLoadingBranches
   } = useSecuredSalonContext()
   const { toast } = useToast()
   const organizationId = organization?.id
@@ -99,6 +99,7 @@ function SalonServicesPageContent() {
   const [editingCategory, setEditingCategory] = useState<ServiceCategory | null>(null)
 
   // Fetch services using Universal API v2
+  // CRITICAL: Use null explicitly for "All Locations", not undefined
   const {
     services,
     isLoading,
@@ -110,11 +111,30 @@ function SalonServicesPageContent() {
   } = useHeraServices({
     organizationId,
     filters: {
-      branch_id: selectedBranchId || undefined,  // Filter by selected branch
+      branch_id: selectedBranchId === null ? undefined : selectedBranchId, // null = All Locations (no filter)
       category_id: categoryFilter || undefined,
       status: includeArchived ? undefined : 'active'
     }
   })
+
+  // Debug: Log services to understand what's being fetched
+  React.useEffect(() => {
+    if (services) {
+      console.log('[Services Page] Services fetched:', {
+        count: services.length,
+        selectedBranch: selectedBranchId,
+        firstService: services[0]
+          ? {
+              id: services[0].id,
+              name: services[0].entity_name,
+              price_market: services[0].price_market,
+              duration_min: services[0].duration_min,
+              active: services[0].active
+            }
+          : null
+      })
+    }
+  }, [services, selectedBranchId])
 
   // Fetch categories using Universal API v2
   const {
@@ -149,8 +169,8 @@ function SalonServicesPageContent() {
       }
     }
 
-    // Branch filter - TODO: Update this to use relationships once services are linked to branches
-    // For now, services are shown regardless of selected branch
+    // Branch filter is handled in useHeraServices hook via AVAILABLE_AT relationships
+    // No additional filtering needed here
 
     // Category filter
     if (categoryFilter && service.category !== categoryFilter) {
@@ -159,6 +179,17 @@ function SalonServicesPageContent() {
 
     return true
   })
+
+  // Debug: Log filtered results
+  React.useEffect(() => {
+    console.log('[Services Page] Filtered services:', {
+      totalServices: services.length,
+      filteredCount: filteredServices.length,
+      searchQuery,
+      categoryFilter,
+      selectedBranchId
+    })
+  }, [filteredServices.length, services.length, searchQuery, categoryFilter, selectedBranchId])
 
   // CRUD handlers
   const handleSave = async (data: ServiceFormValues) => {
@@ -397,37 +428,41 @@ function SalonServicesPageContent() {
           {/* Error Banner */}
           {error && (
             <div
-              className="mx-6 mt-4 text-sm px-3 py-2 rounded-lg border flex items-center gap-2"
+              className="mx-6 mt-4 text-sm px-3 py-2 rounded-lg border flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300"
               style={{
                 backgroundColor: 'rgba(255, 0, 0, 0.1)',
                 borderColor: 'rgba(255, 0, 0, 0.3)',
                 color: COLORS.lightText
               }}
             >
-              <Sparkles className="h-4 w-4" style={{ color: '#FF6B6B' }} />
+              <Sparkles className="h-4 w-4 animate-pulse" style={{ color: '#FF6B6B' }} />
               {error}
             </div>
           )}
 
           {/* Categories Section */}
           {serviceCategories.length > 0 && (
-            <div className="mx-6 mt-6">
+            <div className="mx-6 mt-6 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Tag className="w-4 h-4" style={{ color: COLORS.gold }} />
+                  <Tag
+                    className="w-4 h-4 transition-transform duration-200 hover:scale-110"
+                    style={{ color: COLORS.gold }}
+                  />
                   <h3 className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
                     Categories ({serviceCategories.length})
                   </h3>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                {serviceCategories.map(category => (
+                {serviceCategories.map((category, index) => (
                   <div
                     key={category.id}
-                    className="group relative px-3 py-1.5 rounded-lg border transition-all"
+                    className="group relative px-3 py-1.5 rounded-lg border transition-all duration-200 hover:scale-105 hover:shadow-md animate-in fade-in slide-in-from-left-2"
                     style={{
                       backgroundColor: category.color + '15',
                       borderColor: category.color + '40',
+                      animationDelay: `${index * 50}ms`,
                       color: COLORS.champagne
                     }}
                   >
@@ -471,11 +506,12 @@ function SalonServicesPageContent() {
           {/* Stats Cards */}
           <div className="mx-6 mt-6 grid grid-cols-4 gap-4">
             <div
-              className="p-4 rounded-lg"
+              className="p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer animate-in fade-in slide-in-from-bottom-2"
               style={{
                 backgroundColor: COLORS.charcoalLight + '95',
                 border: `1px solid ${COLORS.bronze}33`,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                animationDelay: '0ms'
               }}
             >
               <p className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
@@ -576,7 +612,10 @@ function SalonServicesPageContent() {
                     }}
                   >
                     <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                    <span>{availableBranches.find(b => b.id === selectedBranchId)?.entity_name || 'Branch'}</span>
+                    <span>
+                      {availableBranches.find(b => b.id === selectedBranchId)?.entity_name ||
+                        'Branch'}
+                    </span>
                     <button
                       onClick={() => setSelectedBranchId(null)}
                       className="ml-1 hover:scale-110 active:scale-95 transition-all duration-200 rounded-full p-0.5 hover:bg-gold/20"
@@ -622,12 +661,24 @@ function SalonServicesPageContent() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="hera-select-content">
-                  <SelectItem value="name_asc" className="hera-select-item">Name (A-Z)</SelectItem>
-                  <SelectItem value="name_desc" className="hera-select-item">Name (Z-A)</SelectItem>
-                  <SelectItem value="duration_asc" className="hera-select-item">Duration (Shortest)</SelectItem>
-                  <SelectItem value="duration_desc" className="hera-select-item">Duration (Longest)</SelectItem>
-                  <SelectItem value="price_asc" className="hera-select-item">Price (Low to High)</SelectItem>
-                  <SelectItem value="price_desc" className="hera-select-item">Price (High to Low)</SelectItem>
+                  <SelectItem value="name_asc" className="hera-select-item">
+                    Name (A-Z)
+                  </SelectItem>
+                  <SelectItem value="name_desc" className="hera-select-item">
+                    Name (Z-A)
+                  </SelectItem>
+                  <SelectItem value="duration_asc" className="hera-select-item">
+                    Duration (Shortest)
+                  </SelectItem>
+                  <SelectItem value="duration_desc" className="hera-select-item">
+                    Duration (Longest)
+                  </SelectItem>
+                  <SelectItem value="price_asc" className="hera-select-item">
+                    Price (Low to High)
+                  </SelectItem>
+                  <SelectItem value="price_desc" className="hera-select-item">
+                    Price (High to Low)
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -658,19 +709,30 @@ function SalonServicesPageContent() {
 
           {/* Expandable Filters with Soft Animation */}
           {showFilters && (
-            <div className="mx-6 mt-4 pt-4 border-t animate-in fade-in slide-in-from-top-2 duration-300" style={{ borderColor: COLORS.bronze + '30' }}>
+            <div
+              className="mx-6 mt-4 pt-4 border-t animate-in fade-in slide-in-from-top-2 duration-300"
+              style={{ borderColor: COLORS.bronze + '30' }}
+            >
               <div className="flex items-center gap-6">
                 {/* Branch Filter */}
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold whitespace-nowrap" style={{ color: COLORS.champagne }}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <span
+                    className="text-sm font-semibold whitespace-nowrap shrink-0"
+                    style={{ color: COLORS.champagne }}
+                  >
                     Location:
                   </span>
-                  <BranchSelector variant="default" />
+                  <div className="min-w-[240px] max-w-sm">
+                    <BranchSelector variant="default" />
+                  </div>
                 </div>
 
                 {/* Category Filter */}
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold whitespace-nowrap" style={{ color: COLORS.champagne }}>
+                  <span
+                    className="text-sm font-semibold whitespace-nowrap"
+                    style={{ color: COLORS.champagne }}
+                  >
                     Category:
                   </span>
                   <Select
@@ -688,7 +750,9 @@ function SalonServicesPageContent() {
                       <SelectValue placeholder="All categories" />
                     </SelectTrigger>
                     <SelectContent className="hera-select-content">
-                      <SelectItem value="__ALL__" className="hera-select-item">All categories</SelectItem>
+                      <SelectItem value="__ALL__" className="hera-select-item">
+                        All categories
+                      </SelectItem>
                       {categories.map(cat => (
                         <SelectItem key={cat} value={cat} className="hera-select-item">
                           {cat}
@@ -721,7 +785,9 @@ function SalonServicesPageContent() {
                     style={{ color: COLORS.gold }}
                   />
                   <p className="text-lg mb-1" style={{ color: COLORS.champagne }}>
-                    {searchQuery || categoryFilter || selectedBranchId ? 'No services found' : 'No services yet'}
+                    {searchQuery || categoryFilter || selectedBranchId
+                      ? 'No services found'
+                      : 'No services yet'}
                   </p>
                   <p className="text-sm opacity-60 mb-4" style={{ color: COLORS.lightText }}>
                     {searchQuery || categoryFilter || selectedBranchId

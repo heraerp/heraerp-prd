@@ -331,6 +331,18 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
               }
             })
 
+            // Debug: Log flattened result
+            console.log('[useUniversalEntity] Flattened entity:', {
+              entityId: mergedData.id,
+              entityName: mergedData.entity_name,
+              price_market: mergedData.price_market,
+              duration_min: mergedData.duration_min,
+              active: mergedData.active,
+              hasAllFields: !!(
+                mergedData.price_market !== undefined && mergedData.duration_min !== undefined
+              )
+            })
+
             return mergedData
           } catch (error) {
             console.error('[useUniversalEntity] Failed to fetch dynamic data:', error)
