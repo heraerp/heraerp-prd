@@ -108,6 +108,7 @@ function SalonServicesPageContent() {
     deleteService,
     archiveService
   } = useHeraServices({
+    organizationId,
     filters: {
       branch_id: selectedBranchId || undefined,  // Filter by selected branch
       category_id: categoryFilter || undefined,

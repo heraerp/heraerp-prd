@@ -32,6 +32,7 @@ export interface ServiceEntity {
 }
 
 export interface UseHeraServicesOptions {
+  organizationId?: string
   filters?: {
     include_dynamic?: boolean
     include_relationships?: boolean
@@ -59,6 +60,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     isDeleting
   } = useUniversalEntity({
     entity_type: 'service',
+    organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
       include_relationships: true,
