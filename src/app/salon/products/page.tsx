@@ -1,11 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { useSalonContext } from '../SalonProvider'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraProducts } from '@/hooks/useHeraProductsV3'
 import { useHeraCategories } from '@/hooks/useHeraCategories'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { ProductList } from '@/components/salon/products/ProductList'
 import { ProductModal } from '@/components/salon/products/ProductModal'
 import { DeleteProductDialog } from '@/components/salon/products/DeleteProductDialog'
@@ -51,7 +49,14 @@ const COLORS = {
 }
 
 function SalonProductsPageContent() {
-  const { organizationId } = useSalonContext()
+  const {
+    organization,
+    selectedBranchId,
+    availableBranches,
+    setSelectedBranchId,
+    isLoadingBranches
+  } = useSecuredSalonContext()
+  const organizationId = organization?.id
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
 
   // State
@@ -67,15 +72,6 @@ function SalonProductsPageContent() {
   const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState('name_asc')
 
-  // Branch filter hook
-  const {
-    branchId,
-    branches,
-    loading: branchesLoading,
-    setBranchId,
-    hasMultipleBranches
-  } = useBranchFilter(organizationId, 'salon-products-list')
-
   // Fetch products using new Universal API v2
   const {
     products,
@@ -87,7 +83,7 @@ function SalonProductsPageContent() {
     archiveProduct
   } = useHeraProducts({
     filters: {
-      branch_id: branchId || undefined,  // Filter by selected branch
+      branch_id: selectedBranchId || undefined,  // Filter by selected branch
       category_id: categoryFilter || undefined,
       status: includeArchived ? undefined : 'active'
     }
@@ -124,7 +120,7 @@ function SalonProductsPageContent() {
     }
 
     // Branch filter
-    if (branchId && product.metadata?.branch_id !== branchId) {
+    if (selectedBranchId && product.metadata?.branch_id !== selectedBranchId) {
       return false
     }
 
@@ -153,7 +149,7 @@ function SalonProductsPageContent() {
         commission_rate: data.commission_rate || 0.5,
         active: data.status === 'active',
         category_id: data.category,
-        branch_id: branchId || undefined  // Associate with selected branch
+        branch_id: selectedBranchId || undefined  // Associate with selected branch
       }
 
       if (editingProduct) {
@@ -402,20 +398,20 @@ function SalonProductsPageContent() {
                 </Badge>
               )}
 
-              {branchId && (
+              {selectedBranchId && (
                 <Badge
                   variant="secondary"
                   className="gap-1.5 bg-muted/50 cursor-pointer hover:opacity-80 transition-opacity"
-                  onClick={() => setBranchId('')}
+                  onClick={() => setSelectedBranchId(null)}
                 >
                   <Building2 className="h-3 w-3" />
                   <MapPin className="h-3 w-3" />
-                  {branches.find(b => b.id === branchId)?.entity_name || 'Branch'}
+                  {availableBranches.find(b => b.id === selectedBranchId)?.entity_name || 'Branch'}
                   <X
                     className="h-3 w-3"
                     onClick={e => {
                       e.stopPropagation()
-                      setBranchId('')
+                      setSelectedBranchId(null)
                     }}
                   />
                 </Badge>
@@ -470,20 +466,20 @@ function SalonProductsPageContent() {
               </Select>
 
               <Select
-                value={branchId || '__ALL__'}
-                onValueChange={value => setBranchId(value === '__ALL__' ? '' : value)}
+                value={selectedBranchId || '__ALL__'}
+                onValueChange={value => setSelectedBranchId(value === '__ALL__' ? null : value)}
               >
                 <SelectTrigger className="w-48 bg-background/30 border-border">
                   <SelectValue placeholder="All locations" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="__ALL__">All locations</SelectItem>
-                  {branchesLoading ? (
+                  {isLoadingBranches ? (
                     <SelectItem value="__LOADING__" disabled>
                       Loading...
                     </SelectItem>
                   ) : (
-                    branches.map(branch => (
+                    availableBranches.map(branch => (
                       <SelectItem key={branch.id} value={branch.id}>
                         {branch.entity_name || 'Unnamed Branch'}
                       </SelectItem>
@@ -576,17 +572,6 @@ function SalonProductsPageContent() {
 }
 
 export default function SalonProductsPage() {
-  const { organizationId } = useSalonContext()
-
-  // Wait for organizationId to be available
-  if (!organizationId) {
-    return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    )
-  }
-
   return (
     <StatusToastProvider>
       <SalonProductsPageContent />

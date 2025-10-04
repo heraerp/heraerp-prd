@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Service, ServiceFormValues, ServiceFormSchema } from '@/types/salon-service'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Form,
@@ -47,7 +47,8 @@ const COLORS = {
 }
 
 export function ServiceModal({ open, onClose, service, onSave }: ServiceModalProps) {
-  const { organizationId, currency } = useSalonContext()
+  const { organization, currency } = useSecuredSalonContext()
+  const organizationId = organization?.id
 
   // Fetch categories for dropdown
   const { categories: categoryList, isLoading: categoriesLoading } = useHeraServiceCategories({
@@ -211,7 +212,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
               <button
                 type="button"
                 onClick={handleClose}
-                className="rounded-lg p-2 transition-all duration-200 hover:bg-white/10"
+                className="rounded-lg p-2 transition-all duration-200 hover:bg-muted"
                 style={{ color: COLORS.lightText }}
               >
                 <X className="h-5 w-5" />

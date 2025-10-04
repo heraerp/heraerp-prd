@@ -96,8 +96,9 @@ export async function getEntities(
 }
 
 export async function readEntity(orgId: string, entityId: string) {
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/entities/${entityId}?p_organization_id=${orgId}`, {
-    headers: h(orgId),
+    headers: { ...h(orgId), ...authHeaders },
     credentials: 'include'
   }).then(ok)
   return await res.json()
@@ -122,9 +123,10 @@ export async function deleteEntity(
     fullUrl: `${url}/api/v2/entities/${params.p_entity_id}?${qs}`
   })
 
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}?${qs}`, {
     method: 'DELETE',
-    headers: h(params.p_organization_id),
+    headers: { ...h(params.p_organization_id), ...authHeaders },
     credentials: 'include'
   })
   if (!res.ok) {
@@ -201,8 +203,9 @@ export async function getDynamicData(
     )
   ).toString()
 
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`${url}/api/v2/dynamic-data?${qs}`, {
-    headers: { 'x-hera-org': params.p_organization_id },
+    headers: { ...authHeaders, 'x-hera-org': params.p_organization_id },
     credentials: 'include'
   })
   if (!res.ok) {
@@ -225,9 +228,10 @@ export async function setDynamicData(
     p_smart_code: string
   }
 ) {
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/dynamic-data`, {
     method: 'POST',
-    headers: { ...h(orgId), 'Content-Type': 'application/json' },
+    headers: { ...h(orgId), ...authHeaders, 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({ p_organization_id: orgId, ...body })
   }).then(ok)
@@ -242,11 +246,12 @@ export async function setDynamicDataBatch(
     p_smart_code: string // e.g., 'HERA.SALON.PROD.DYN.v1'
     p_fields: DynamicFieldInput[]
   }
-) {
+){
   const url = baseUrl || getBaseUrl()
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`${url}/api/v2/dynamic-data/batch`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-hera-org': params.p_organization_id },
+    headers: { ...authHeaders, 'content-type': 'application/json', 'x-hera-org': params.p_organization_id },
     credentials: 'include',
     body: JSON.stringify(params)
   })
@@ -277,8 +282,9 @@ export async function getTransactions(params: {
   if (params.startDate) qs.set('p_start_date', params.startDate)
   if (params.endDate) qs.set('p_end_date', params.endDate)
 
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/transactions?${qs.toString()}`, {
-    headers: h(params.orgId),
+    headers: { ...h(params.orgId), ...authHeaders },
     credentials: 'include'
   }).then(ok)
 
@@ -299,9 +305,10 @@ export async function createTransaction(
     p_metadata?: Json
   }
 ) {
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/transactions`, {
     method: 'POST',
-    headers: { ...h(orgId), 'Content-Type': 'application/json' },
+    headers: { ...h(orgId), ...authHeaders, 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({ p_organization_id: orgId, ...body })
   }).then(ok)
@@ -322,8 +329,9 @@ export async function getRelationships(params: {
   if (params.toEntityId) qs.set('p_to_entity_id', params.toEntityId)
   if (params.relationshipType) qs.set('p_relationship_type', params.relationshipType)
 
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/relationships?${qs.toString()}`, {
-    headers: h(params.orgId),
+    headers: { ...h(params.orgId), ...authHeaders },
     credentials: 'include'
   }).then(ok)
 
@@ -341,9 +349,10 @@ export async function createRelationship(
     p_relationship_data?: Json
   }
 ) {
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/relationships`, {
     method: 'POST',
-    headers: { ...h(orgId), 'Content-Type': 'application/json' },
+    headers: { ...h(orgId), ...authHeaders, 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({ p_organization_id: orgId, ...body })
   }).then(ok)

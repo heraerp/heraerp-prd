@@ -296,13 +296,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       const securityContext = contextResolution.securityContext
 
-      // Validate organization access
-      const detectedOrgId = getSalonOrgId(window.location.hostname, window.location.pathname)
-      if (securityContext.orgId !== detectedOrgId) {
-        throw new Error(
-          `Organization mismatch: expected ${detectedOrgId}, got ${securityContext.orgId}`
-        )
-      }
+      console.log('✅ Using organization from user auth:', securityContext.orgId)
 
       // Get salon-specific role and permissions
       const salonRole = await getSalonRole(securityContext)

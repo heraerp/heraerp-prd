@@ -42,7 +42,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useCalendarPlaybook } from '@/hooks/useCalendarPlaybook'
 import {
   Select,
@@ -129,7 +129,8 @@ export function SalonResourceCalendar({
   currentOrganizationId,
   canViewAllBranches = false
 }: SalonResourceCalendarProps) {
-  const { organizationId, organization } = useSalonContext()
+  const { organization } = useSecuredSalonContext()
+  const organizationId = organization?.id
   const branchId = organization?.metadata?.branch_id as string | undefined
   const mounted = useIsMounted()
 

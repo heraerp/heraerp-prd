@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useSalonContext } from '@/app/salon/SalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 
 interface SalonLinkProps {
   href: string
@@ -18,7 +18,8 @@ interface SalonLinkProps {
  */
 export function SalonLink({ href, children, className, onClick, prefetch = true }: SalonLinkProps) {
   const router = useRouter()
-  const { isAuthenticated, organizationId } = useSalonContext()
+  const { isAuthenticated, organization } = useSecuredSalonContext()
+  const organizationId = organization?.id
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // If not authenticated, prevent navigation
