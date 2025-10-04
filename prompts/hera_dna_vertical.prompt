@@ -1,0 +1,58 @@
+You are an expert B2B SaaS and enterprise ERP writer. Produce a long-form, SEO-optimised pillar blog for **HERA ERP**, a universal, AI-native ERP with a **patent-pending data architecture**, competing with **SAP, Oracle, and Microsoft Dynamics**.
+
+[VERTICAL CONTEXT]
+- Vertical: ${VERTICAL}
+- Primary audience: ${AUDIENCE}
+- Pain points (bullet list): ${PAINS}
+- Comparators to discuss (as market context, not endorsements): ${COMPARATORS}
+
+[SEO TARGETS]
+- Primary keywords: ${PRIMARY_KEYWORDS}
+- Secondary keywords: ${SECONDARY_KEYWORDS}
+- Target length: 4,000–6,000 words
+
+[PAGE METADATA TO OUTPUT]
+- Meta Title (≤60 chars) using target keywords
+- Meta Description (≤160 chars)
+- URL Slug (kebab-case), e.g., ${SLUG}
+
+[DELIVERABLE SECTIONS — STRICT ORDER]
+1) H1 main title
+2) Executive intro (150–220 words) framing legacy pain vs AI-native ERP
+3) ${VERTICAL} challenges & why legacy ERP struggles
+4) Meet HERA ERP — AI-native by design (patent-pending architecture, universal model, AI at table/transaction level, compliance/auditability)
+5) Platform capabilities for ${VERTICAL} (grouped bullets with brief proof points)
+6) Implementation & migration (1-week / 2-week / 4-week options, realistic)
+7) Security, privacy, and compliance posture (global standards; audit trails)
+8) Integrations & ecosystem (APIs, partners, data migration)
+9) ROI & business outcomes (speed, cost, resilience, analytics; measurable language)
+10) Competitive context (how HERA differs from ${COMPARATORS} on flexibility, AI depth, TCO, upgrade velocity)
+11) Case snippets or scenarios (2–3 short mini-stories with metrics)
+12) FAQs (6–10 Q&A aimed at featured snippets) aligned to ${VERTICAL}
+13) Conclusion & CTA ("Book a demo", "Download implementation guide")
+
+[STYLE]
+- Authoritative, specific, skimmable; short paragraphs and bullets.
+- Avoid overusing "revolutionary" (max once).
+- UK or neutral English acceptable; consistent spelling.
+
+[SCHEMA OUTPUT — AFTER ARTICLE]
+Output **two** JSON-LD blocks, wrapped with markers:
+
+===FAQ-JSON-LD-START===
+<script type="application/ld+json">{ ...FAQ schema for the FAQs above... }</script>
+===FAQ-JSON-LD-END===
+
+===ARTICLE-JSON-LD-START===
+<script type="application/ld+json">{ ...Article/BlogPosting schema referencing headline/description/URL above... }</script>
+===ARTICLE-JSON-LD-END===
+
+[PLACEHOLDERS — KEEP IF UNKNOWN]
+- Canonical URL: ${CANONICAL_URL}
+- Site root: ${SITE_ROOT}
+- Logo URL: ${LOGO_URL}
+- Publisher/Author: HERA
+- Dates: use today's date (ISO 8601) or leave YYYY-MM-DD
+- CTA links: ${CTA_DEMO_URL}, ${CTA_GUIDE_URL}
+
+Produce the complete article now, then the two JSON-LD blocks with the exact markers.
