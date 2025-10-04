@@ -172,6 +172,24 @@ function SalonServicesPageContent() {
   // CRUD handlers
   const handleSave = async (data: ServiceFormValues) => {
     try {
+      // CRITICAL: If no branches are selected, default to ALL branches
+      // This ensures the service is visible regardless of branch filter
+      const branchesToLink =
+        data.branch_ids && data.branch_ids.length > 0
+          ? data.branch_ids
+          : availableBranches.map(b => b.id) // Default to ALL branches
+
+      console.log('[handleSave] Creating/updating service:', {
+        name: data.name,
+        price: data.price,
+        duration: data.duration_minutes,
+        status: data.status,
+        selectedBranches: data.branch_ids?.length || 0,
+        defaultingToAllBranches: !data.branch_ids || data.branch_ids.length === 0,
+        totalBranches: availableBranches.length,
+        branchesToLink: branchesToLink.length
+      })
+
       // Map form data to hook's expected format
       const serviceData = {
         name: data.name,
@@ -181,7 +199,7 @@ function SalonServicesPageContent() {
         description: data.description || '',
         active: data.status === 'active',
         category_id: data.category || undefined,
-        branch_ids: data.branch_ids && data.branch_ids.length > 0 ? data.branch_ids : undefined
+        branch_ids: branchesToLink // Always link to at least one branch
       }
 
       if (editingService) {
@@ -700,9 +718,7 @@ function SalonServicesPageContent() {
                   >
                     Location
                   </span>
-                  <div className="w-[180px]">
-                    <BranchSelector variant="minimal" showIcon={false} />
-                  </div>
+                  <BranchSelector variant="minimal" showIcon={false} />
                 </div>
 
                 {/* Category Filter - Compact & Enterprise-Grade */}

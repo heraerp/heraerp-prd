@@ -171,15 +171,15 @@ export function ServiceList({
                   <div className="flex items-center gap-1">
                     <Clock className="w-3 h-3" style={{ color: COLORS.lightText }} />
                     <span className="font-semibold" style={{ color: COLORS.lightText }}>
-                      {formatDuration(service.duration_minutes)}
+                      {formatDuration(service.duration_min || service.duration_minutes)}
                     </span>
                   </div>
                 </TableCell>
 
                 <TableCell>
-                  {service.price ? (
+                  {service.price_market || service.price ? (
                     <span className="font-semibold" style={{ color: COLORS.gold }}>
-                      {currency} {service.price.toFixed(2)}
+                      {currency} {(service.price_market || service.price || 0).toFixed(2)}
                     </span>
                   ) : (
                     <span className="text-sm" style={{ color: COLORS.lightText }}>
@@ -432,7 +432,7 @@ function ServiceCard({
       <div className="flex items-center gap-2 mb-4">
         <Clock className="w-4 h-4" style={{ color: COLORS.gold }} />
         <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-          {formatDuration(service.duration_minutes)}
+          {formatDuration(service.duration_min || service.duration_minutes)}
         </span>
       </div>
 
@@ -442,7 +442,9 @@ function ServiceCard({
           Price
         </p>
         <p className="font-semibold text-lg" style={{ color: COLORS.gold }}>
-          {service.price ? `${currency} ${service.price.toFixed(2)}` : '-'}
+          {service.price_market || service.price
+            ? `${currency} ${(service.price_market || service.price || 0).toFixed(2)}`
+            : '-'}
         </p>
       </div>
 
