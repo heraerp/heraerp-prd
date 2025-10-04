@@ -102,15 +102,18 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
         branchIds = [availableAtRels.to_entity.id]
       }
 
+      // Map service dynamic fields to form fields
+      // Service has: price_market, duration_min, active, description (dynamic field)
+      // Form expects: price, duration_minutes, status, description
       form.reset({
         name: service.entity_name || '',
         code: service.entity_code || '',
         category: service.category || '',
-        price: service.price || undefined,
-        duration_minutes: service.duration_minutes || undefined,
+        price: service.price_market || service.price || undefined,
+        duration_minutes: service.duration_min || service.duration_minutes || undefined,
         requires_booking: service.requires_booking || false,
-        description: service.entity_description || '',
-        status: service.status || 'active',
+        description: service.description || service.entity_description || '',
+        status: service.active !== undefined ? (service.active ? 'active' : 'archived') : (service.status || 'active'),
         currency: service.currency || currency || 'AED',
         branch_ids: branchIds
       })

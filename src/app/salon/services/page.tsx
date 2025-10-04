@@ -163,32 +163,26 @@ function SalonServicesPageContent() {
   // CRUD handlers
   const handleSave = async (data: ServiceFormValues) => {
     try {
+      // Map form data to hook's expected format
+      const serviceData = {
+        name: data.name,
+        price_market: data.price || 0,
+        duration_min: data.duration_minutes || 0,
+        commission_rate: 0.5, // Default commission rate
+        description: data.description || '',
+        active: data.status === 'active',
+        category_id: data.category || undefined,
+        branch_ids: data.branch_ids && data.branch_ids.length > 0 ? data.branch_ids : undefined
+      }
+
       if (editingService) {
-        await updateService(editingService.id, {
-          name: data.name,
-          price_market: data.price || 0,
-          duration_min: data.duration_minutes || 0,
-          commission_rate: 0.5, // Default commission rate
-          description: data.description,
-          active: data.status === 'active',
-          category_id: data.category,
-          branch_id: selectedBranchId || undefined  // Associate with selected branch
-        })
+        await updateService(editingService.id, serviceData)
         toast({
           title: 'Service updated successfully',
           description: `${data.name} has been updated`
         })
       } else {
-        await createService({
-          name: data.name,
-          price_market: data.price || 0,
-          duration_min: data.duration_minutes || 0,
-          commission_rate: 0.5, // Default commission rate
-          description: data.description,
-          active: data.status === 'active',
-          category_id: data.category,
-          branch_id: selectedBranchId || undefined  // Associate with selected branch
-        })
+        await createService(serviceData)
         toast({
           title: 'Service created successfully',
           description: `${data.name} has been added`
@@ -197,6 +191,7 @@ function SalonServicesPageContent() {
       setModalOpen(false)
       setEditingService(null)
     } catch (error: any) {
+      console.error('Service save error:', error)
       toast({
         title: editingService ? 'Failed to update service' : 'Failed to create service',
         description: error.message || 'Please try again or contact support',

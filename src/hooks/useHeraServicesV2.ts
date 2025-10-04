@@ -125,7 +125,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     category_id?: string
     performed_by_role_ids?: string[]
     required_product_ids?: string[]
-    branch_id?: string  // Add branch support
+    branch_ids?: string[]  // Support multiple branches via AVAILABLE_AT relationships
   }) => {
     // Map provided primitives to dynamic_fields payload using preset definitions
     const dynamic_fields: Record<string, any> = {}
@@ -145,8 +145,8 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
       ...(data.category_id ? { HAS_CATEGORY: [data.category_id] } : {}),
       ...(data.performed_by_role_ids ? { PERFORMED_BY_ROLE: data.performed_by_role_ids } : {}),
       ...(data.required_product_ids ? { REQUIRES_PRODUCT: data.required_product_ids } : {}),
-      // Add branch relationship - use AVAILABLE_AT for service availability at branches
-      ...(data.branch_id ? { AVAILABLE_AT: [data.branch_id] } : {})
+      // Add branch relationships - use AVAILABLE_AT for service availability at branches
+      ...(data.branch_ids && data.branch_ids.length > 0 ? { AVAILABLE_AT: data.branch_ids } : {})
     }
 
     return baseCreate({
@@ -174,7 +174,10 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     if (data.category_id) relationships_patch['HAS_CATEGORY'] = [data.category_id]
     if (data.performed_by_role_ids) relationships_patch['PERFORMED_BY_ROLE'] = data.performed_by_role_ids
     if (data.required_product_ids) relationships_patch['REQUIRES_PRODUCT'] = data.required_product_ids
-    if (data.branch_id) relationships_patch['AVAILABLE_AT'] = [data.branch_id]
+    if (data.branch_ids !== undefined) {
+      // Support multiple branches - if array is empty, it removes all AVAILABLE_AT relationships
+      relationships_patch['AVAILABLE_AT'] = data.branch_ids
+    }
 
     const payload: any = {
       entity_id: id,

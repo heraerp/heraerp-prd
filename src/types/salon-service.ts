@@ -32,10 +32,17 @@ export interface Service {
   created_at: string | null
   updated_at: string | null
 
-  // Dynamic fields
+  // Dynamic fields (matching SERVICE_PRESET field names)
+  price_market?: number
+  duration_min?: number
+  commission_rate?: number
+  description?: string
+  active?: boolean
+
+  // Legacy/display fields for backward compatibility
   category?: string
-  price?: number
-  duration_minutes?: number
+  price?: number // Alias for price_market
+  duration_minutes?: number // Alias for duration_min
   requires_booking?: boolean
   color?: string
   currency?: string
