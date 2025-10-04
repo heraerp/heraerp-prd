@@ -58,7 +58,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     isUpdating,
     isDeleting
   } = useUniversalEntity({
-    entity_type: 'SERVICE',
+    entity_type: 'service',
     filters: {
       include_dynamic: true,
       include_relationships: true,
@@ -143,7 +143,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     }
 
     return baseCreate({
-      entity_type: 'SERVICE',
+      entity_type: 'service',
       entity_name: data.name,
       smart_code: 'HERA.SALON.SERVICE.ENTITY.SERVICE.V1',
       dynamic_fields,
