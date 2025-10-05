@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Search, Plus, Scissors, Package, Tag, Star, Building2, MapPin, X, Loader2 } from 'lucide-react'
+import { Search, Plus, Scissors, Package, Tag, Star, Building2, MapPin, X, Loader2, User } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -31,13 +31,17 @@ interface CatalogPaneProps {
   onAddItem: (item: PosItem, staffId?: string, staffName?: string) => void
   currentCustomerId?: string
   currentAppointmentId?: string
+  defaultStylistId?: string
+  defaultStylistName?: string
 }
 
 export function CatalogPane({
   organizationId,
   onAddItem,
   currentCustomerId,
-  currentAppointmentId
+  currentAppointmentId,
+  defaultStylistId,
+  defaultStylistName
 }: CatalogPaneProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
@@ -89,10 +93,16 @@ export function CatalogPane({
   }, [items])
 
   const handleAddItem = (item: PosItem) => {
-    // For services, show stylist selection modal (required)
+    // For services: if we have a default stylist, use it directly; otherwise show modal
     if (item.__kind === 'SERVICE') {
-      setSelectedItem(item)
-      setShowStylistModal(true)
+      if (defaultStylistId && defaultStylistName) {
+        // Use default stylist automatically
+        onAddItem(item, defaultStylistId, defaultStylistName)
+      } else {
+        // Show modal to select first stylist
+        setSelectedItem(item)
+        setShowStylistModal(true)
+      }
       return
     }
 
@@ -156,17 +166,34 @@ export function CatalogPane({
           boxShadow: `0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px ${COLORS.gold}10`
         }}
       >
-        <h2
-          className="text-2xl font-bold mb-5 tracking-tight"
-          style={{
-            background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            letterSpacing: '-0.01em'
-          }}
-        >
-          Catalog
-        </h2>
+        <div className="flex items-center justify-between mb-5">
+          <h2
+            className="text-2xl font-bold tracking-tight"
+            style={{
+              background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.01em'
+            }}
+          >
+            Catalog
+          </h2>
+          {defaultStylistName && (
+            <div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg animate-fadeIn"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.goldDark}10 100%)`,
+                border: `1px solid ${COLORS.gold}50`,
+                boxShadow: `0 2px 8px ${COLORS.gold}20`
+              }}
+            >
+              <User className="w-4 h-4" style={{ color: COLORS.gold }} />
+              <span className="text-xs font-semibold" style={{ color: COLORS.champagne }}>
+                Bill Stylist: {defaultStylistName}
+              </span>
+            </div>
+          )}
+        </div>
 
         {/* Enhanced Search with Glow */}
         <div className="relative mb-5">
@@ -533,8 +560,8 @@ export function CatalogPane({
               setSelectedItem(null)
             }}
             service={selectedItem.raw}
-            staff={staff}
             organizationId={organizationId}
+            branchId={branchId}
             onConfirm={handleStylistConfirm}
           />
         )}

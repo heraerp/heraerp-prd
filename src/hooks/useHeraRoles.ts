@@ -54,6 +54,7 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
     update: baseUpdate,
     delete: baseDelete,
     archive: baseArchive,
+    restore,
     isCreating,
     isUpdating,
     isDeleting
@@ -160,6 +161,11 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
     return baseArchive(id)
   }
 
+  // Helper to restore role (set status='active')
+  const restoreRole = async (id: string) => {
+    return restore(id)
+  }
+
   // Helper to delete role (hard delete)
   const deleteRole = async (id: string, hardDelete = false) => {
     if (!hardDelete) {
@@ -195,6 +201,7 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
     createRole,
     updateRole,
     archiveRole,
+    restoreRole,
     deleteRole,
     getActiveRoles,
     getRoleByTitle,

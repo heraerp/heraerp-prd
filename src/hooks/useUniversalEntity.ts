@@ -180,7 +180,7 @@ async function getAuthHeaders(organizationId?: string | null): Promise<Record<st
     Authorization: `Bearer ${session.access_token}`,
     'x-hera-api-version': 'v2'
   }
-  if (organizationId) headers['x-hera-org-id'] = organizationId
+  if (organizationId) headers['x-hera-org'] = organizationId // Must match verifyAuth
 
   return headers
 }
@@ -278,52 +278,123 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         isArray: Array.isArray(result)
       })
 
-      // Fetch dynamic data for each entity and merge
-      const entitiesWithDynamicData = await Promise.all(
-        entitiesArray.map(async (entity: any, index: number) => {
-          try {
-            const response = await getDynamicData('', {
-              p_organization_id: organizationId,
-              p_entity_id: entity.id
-            })
+      // Fetch dynamic data for ALL entities in ONE batch call
+      const headers = await getAuthHeaders(organizationId)
+      const entityIds = entitiesArray.map(e => e.id)
 
-            const dynamicData = Array.isArray(response?.data)
-              ? response.data
-              : Array.isArray(response)
-                ? response
-                : []
+      let allDynamicData: any[] = []
+      if (entityIds.length > 0) {
+        try {
+          const response = await fetch(
+            `/api/v2/dynamic-data?p_entity_ids=${entityIds.join(',')}`,
+            { headers }
+          )
+          if (response.ok) {
+            const result = await response.json()
+            allDynamicData = result.data || []
+          }
+        } catch (error) {
+          console.error('[useUniversalEntity] Failed to fetch dynamic data batch:', error)
+        }
+      }
 
-            // Merge dynamic data into a flat structure
-            const mergedData = { ...entity }
-            dynamicData.forEach((field: any) => {
-              if (field.field_type === 'number') {
-                mergedData[field.field_name] = field.field_value_number
-              } else if (field.field_type === 'boolean') {
-                mergedData[field.field_name] = field.field_value_boolean
-              } else if (field.field_type === 'text') {
-                mergedData[field.field_name] = field.field_value_text
-              } else if (field.field_type === 'json') {
-                mergedData[field.field_name] = field.field_value_json
-              } else if (field.field_type === 'date') {
-                mergedData[field.field_name] = field.field_value_date
-              } else {
-                // Fallback for unknown types
-                mergedData[field.field_name] =
-                  field.field_value_text ||
-                  field.field_value_number ||
-                  field.field_value_boolean ||
-                  field.field_value_json ||
-                  field.field_value_date
-              }
-            })
+      // Group dynamic data by entity_id
+      const dynamicDataByEntity = new Map<string, any[]>()
+      allDynamicData.forEach((field: any) => {
+        if (!dynamicDataByEntity.has(field.entity_id)) {
+          dynamicDataByEntity.set(field.entity_id, [])
+        }
+        dynamicDataByEntity.get(field.entity_id)!.push(field)
+      })
 
-            return mergedData
-          } catch (error) {
-            console.error('[useUniversalEntity] Failed to fetch dynamic data:', error)
-            return entity
+      // Merge dynamic data into entities
+      const entitiesWithDynamicData = entitiesArray.map((entity: any) => {
+        const dynamicData = dynamicDataByEntity.get(entity.id) || []
+        const mergedData = { ...entity }
+
+        dynamicData.forEach((field: any) => {
+          if (field.field_type === 'number') {
+            mergedData[field.field_name] = field.field_value_number
+          } else if (field.field_type === 'boolean') {
+            mergedData[field.field_name] = field.field_value_boolean
+          } else if (field.field_type === 'text') {
+            mergedData[field.field_name] = field.field_value_text
+          } else if (field.field_type === 'json') {
+            mergedData[field.field_name] = field.field_value_json
+          } else if (field.field_type === 'date') {
+            mergedData[field.field_name] = field.field_value_date
+          } else {
+            // Fallback for unknown types
+            mergedData[field.field_name] =
+              field.field_value_text ||
+              field.field_value_number ||
+              field.field_value_boolean ||
+              field.field_value_json ||
+              field.field_value_date
           }
         })
-      )
+
+        return mergedData
+      })
+
+      // Fetch relationships for all entities if requested
+      if (filters.include_relationships && entitiesWithDynamicData.length > 0) {
+        // Reuse headers from above to avoid extra auth calls
+
+        // Get all relationship types from config
+        const relationshipTypes = config.relationships?.map(r => r.type) || []
+
+        if (relationshipTypes.length > 0) {
+          // Fetch relationships for all entities in one call per type
+          const entityIds = entitiesWithDynamicData.map(e => e.id)
+
+          for (const relType of relationshipTypes) {
+            try {
+              const response = await fetch('/api/v2/relationships/list', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                  filters: {
+                    relationship_type: relType,
+                    status: 'ACTIVE'
+                  },
+                  limit: 1000
+                })
+              })
+
+              if (response.ok) {
+                const { items } = await response.json()
+
+                // Group relationships by from_entity_id
+                const relsByEntity = new Map<string, any[]>()
+                items.forEach((rel: any) => {
+                  if (entityIds.includes(rel.from_entity_id)) {
+                    if (!relsByEntity.has(rel.from_entity_id)) {
+                      relsByEntity.set(rel.from_entity_id, [])
+                    }
+                    relsByEntity.get(rel.from_entity_id)!.push(rel)
+                  }
+                })
+
+                // Merge relationships into entities
+                entitiesWithDynamicData.forEach(entity => {
+                  if (!entity.relationships) entity.relationships = {}
+                  const rels = relsByEntity.get(entity.id) || []
+                  // Store with both original casing and lowercase for compatibility
+                  const relArray = rels.map(r => ({
+                    ...r,
+                    to_entity: r.to_entity || { id: r.to_entity_id }
+                  }))
+                  entity.relationships[relType.toLowerCase()] = relArray
+                  entity.relationships[relType] = relArray // Keep original casing too
+                })
+              }
+            } catch (error) {
+              console.error(`[useUniversalEntity] Failed to fetch ${relType} relationships:`, error)
+            }
+          }
+        }
+      }
 
       return entitiesWithDynamicData
     },
@@ -381,7 +452,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       const mergedValues = { ...topLevelValues, ...inlineValues }
       const batchItems = toBatchItems(config.dynamicFields, mergedValues)
       if (batchItems.length) {
-        await fetch('/api/v2/dynamic/batch', {
+        await fetch('/api/v2/dynamic-data/batch', {
           method: 'POST',
           headers,
           body: JSON.stringify({
@@ -395,27 +466,51 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       // 3) Relationships (optional)
       // Accept either metadata.relationships or a top-level relationships map
       const relPayload = (entity as any)?.metadata?.relationships || (entity as any)?.relationships
+      if (relPayload) {
+        console.log('[useUniversalEntity] Relationship payload received:', {
+          types: Object.keys(relPayload),
+          values: relPayload
+        })
+      }
       if (relPayload && config.relationships?.length) {
-        const rows: any[] = []
+        // Process each relationship type separately using bulk_upsert
         for (const def of config.relationships) {
           const toIds: string[] = relPayload[def.type] ?? []
-          for (const to of toIds) {
-            rows.push({
-              from_entity_id: entity_id,
-              to_entity_id: to,
-              relationship_type: def.type,
-              smart_code: def.smart_code,
-              relationship_direction: 'forward',
-              is_active: true
-            })
-          }
-        }
-        if (rows.length) {
-          await fetch('/api/v2/relationships/upsert-batch', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({ p_organization_id: organizationId, p_rows: rows })
+          console.log(`[useUniversalEntity] Processing ${def.type}:`, {
+            expectedType: def.type,
+            receivedIds: toIds,
+            isValid: toIds.length > 0 && toIds.every(id => id)
           })
+          // Only create relationships if we have valid IDs
+          if (toIds.length > 0 && toIds.every(id => id)) {
+            console.log(`[useUniversalEntity] Creating ${def.type} relationships:`, {
+              count: toIds.length,
+              from: entity_id,
+              to: toIds
+            })
+
+            const response = await fetch('/api/v2/relationships/bulk_upsert', {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({
+                relationship_type: def.type,
+                smart_code: def.smart_code,
+                pairs: toIds.map(to => ({
+                  from_entity_id: entity_id,
+                  to_entity_id: to
+                })),
+                status: 'ACTIVE'
+              })
+            })
+
+            if (!response.ok) {
+              const error = await response.json().catch(() => ({}))
+              console.error(`[useUniversalEntity] Failed to create ${def.type} relationships:`, error)
+              throw new Error(error.error || `Failed to create ${def.type} relationships`)
+            }
+          } else if (toIds.length > 0) {
+            console.warn(`[useUniversalEntity] Skipping ${def.type} - contains invalid IDs:`, toIds)
+          }
         }
       }
 
@@ -477,29 +572,32 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         throw new Error(error?.error || 'Update entity failed')
       }
 
-      // Handle relationships if needed (keeping this for future use)
+      // Handle relationships if needed
       if (relationships_patch && config.relationships?.length) {
-        const rows: any[] = []
+        // Process each relationship type separately using bulk_upsert
         for (const def of config.relationships) {
           const toIds = relationships_patch[def.type]
           if (!toIds) continue
-          for (const to of toIds) {
-            rows.push({
-              from_entity_id: entity_id,
-              to_entity_id: to,
-              relationship_type: def.type,
-              smart_code: def.smart_code,
-              relationship_direction: 'forward',
-              is_active: true
+
+          if (toIds.length > 0) {
+            await fetch('/api/v2/relationships/bulk_upsert', {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({
+                relationship_type: def.type,
+                smart_code: def.smart_code,
+                pairs: toIds.map(to => ({
+                  from_entity_id: entity_id,
+                  to_entity_id: to
+                })),
+                status: 'ACTIVE'
+              })
             })
+          } else {
+            // Empty array means remove all relationships of this type
+            // We could call a delete endpoint here if needed
+            console.log(`Removing all ${def.type} relationships for entity ${entity_id}`)
           }
-        }
-        if (rows.length) {
-          await fetch('/api/v2/relationships/upsert-batch', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({ p_organization_id: organizationId, p_rows: rows })
-          })
         }
       }
 
@@ -556,34 +654,88 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
     return { entity: base?.data ?? base, dynamic, relationships: rels }
   }
 
-  // Delete entity mutation
+  // Delete entity mutation - Enhanced RPC implementation
+  // Supports both soft delete (archive) and hard delete with cascade
   const deleteMutation = useMutation({
     mutationFn: async ({
       entity_id,
-      hard_delete = false
+      hard_delete = false,
+      cascade = true,
+      reason,
+      smart_code = 'HERA.CORE.ENTITY.DELETE.V1'
     }: {
       entity_id: string
       hard_delete?: boolean
+      cascade?: boolean
+      reason?: string
+      smart_code?: string
     }) => {
+      const headers = await getAuthHeaders(organizationId)
+
+      // Build query params following RPC contract
       const params = new URLSearchParams({
-        hard_delete: hard_delete.toString()
+        hard_delete: hard_delete.toString(),
+        cascade: cascade.toString(),
+        smart_code
       })
 
-      const headers = await getAuthHeaders(organizationId)
+      if (reason) {
+        params.append('reason', reason)
+      }
+
+      console.log('[useUniversalEntity] Delete request:', {
+        entity_id,
+        mode: hard_delete ? 'HARD' : 'SOFT',
+        cascade,
+        entity_type
+      })
+
       const response = await fetch(`/api/v2/entities/${entity_id}?${params}`, {
         method: 'DELETE',
         headers
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to delete entity')
+        const error = await response.json().catch(() => ({
+          error: { code: 'UNKNOWN_ERROR', message: `HTTP ${response.status}` }
+        }))
+
+        // Handle specific error codes
+        if (error.error?.code === 'RELATIONSHIP_CONFLICT') {
+          throw new Error(
+            `Cannot delete: Active relationships exist. ${
+              cascade ? 'Try hard_delete=true' : 'Set cascade=true'
+            }`
+          )
+        } else if (error.error?.code === 'FORBIDDEN') {
+          throw new Error('Not authorized to delete this entity')
+        }
+
+        throw new Error(error.error?.message || error.error || 'Failed to delete entity')
       }
 
-      return response.json()
+      const result = await response.json()
+
+      // Log delete result
+      console.log('[useUniversalEntity] Delete completed:', {
+        entity_id: result.entity_id,
+        mode: result.mode,
+        cascade_applied: result.cascade_applied,
+        affected_relationships: result.affected_relationships,
+        tombstone_id: result.tombstone_id
+      })
+
+      return result
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ['entities', entity_type] })
+      queryClient.invalidateQueries({ queryKey: ['entities'] })
+      console.log(
+        `✅ Deleted ${entity_type} (${result.mode} mode, ${result.affected_relationships} relationships affected)`
+      )
+    },
+    onError: (error: Error) => {
+      console.error('[useUniversalEntity] Delete failed:', error.message)
     }
   })
 
@@ -603,7 +755,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
     update: updateMutation.mutateAsync,
     delete: deleteMutation.mutateAsync,
     archive: async (entity_id: string) => {
-      // Archive by updating status to 'archived' (following useHeraServices pattern)
+      // Archive by updating status to 'archived'
       const entity = entities?.find((e: any) => e.id === entity_id)
       if (!entity) throw new Error('Entity not found')
 
@@ -611,6 +763,17 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         entity_id,
         entity_name: entity.entity_name,
         status: 'archived'
+      })
+    },
+    restore: async (entity_id: string) => {
+      // Restore by updating status to 'active'
+      const entity = entities?.find((e: any) => e.id === entity_id)
+      if (!entity) throw new Error('Entity not found')
+
+      return updateMutation.mutateAsync({
+        entity_id,
+        entity_name: entity.entity_name,
+        status: 'active'
       })
     },
 

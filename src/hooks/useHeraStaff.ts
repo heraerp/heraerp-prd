@@ -5,6 +5,7 @@
  * Provides staff-specific helpers and RPC integration
  */
 
+import { useMemo } from 'react'
 import { useUniversalEntity } from './useUniversalEntity'
 import { STAFF_PRESET } from './entityPresets'
 import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
@@ -40,6 +41,7 @@ export interface UseHeraStaffOptions {
   filters?: {
     include_dynamic?: boolean
     include_relationships?: boolean
+    branch_id?: string
     limit?: number
     offset?: number
     status?: string
@@ -57,6 +59,7 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     update: baseUpdate,
     delete: baseDelete,
     archive: baseArchive,
+    restore: baseRestore,
     isCreating,
     isUpdating,
     isDeleting
@@ -65,14 +68,15 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
-      include_relationships: false,
+      include_relationships: true, // Enable relationships for branch filtering
       limit: 100,
       // Only filter by 'active' status when not including archived
       // When includeArchived is true, don't pass status to get all staff
       ...(options?.includeArchived ? {} : { status: 'active' }),
       ...options?.filters
     },
-    dynamicFields: STAFF_PRESET.dynamicFields as DynamicFieldDef[]
+    dynamicFields: STAFF_PRESET.dynamicFields as DynamicFieldDef[],
+    relationships: STAFF_PRESET.relationships as RelationshipDef[]
   })
 
   // Helper to create staff with proper smart codes and relationships
@@ -91,6 +95,7 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     bio?: string
     avatar_url?: string
     service_ids?: string[]
+    branch_ids?: string[]  // Support for multiple branch assignments
     location_id?: string
     supervisor_id?: string
   }) => {
@@ -179,12 +184,21 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
       }
     }
 
+    // Build relationships payload for branches
+    const relationships: Record<string, string[]> = {}
+    if (data.branch_ids && data.branch_ids.length > 0) {
+      relationships.STAFF_MEMBER_OF = data.branch_ids
+    }
+
     return baseCreate({
       entity_type: 'staff',
       entity_name,
       smart_code: 'HERA.SALON.STAFF.ENTITY.PERSON.V1',
       status: data.status === 'inactive' ? 'archived' : 'active',
-      dynamic_fields
+      dynamic_fields,
+      metadata: {
+        relationships
+      }
     } as any)
   }
 
@@ -247,10 +261,18 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
       dynamic_patch.bio = data.bio
     }
 
+    // Build relationships patch for branches
+    const relationships_patch: Record<string, string[]> = {}
+    if (data.branch_ids !== undefined) {
+      // Support multiple branches - if array is empty, it removes all STAFF_MEMBER_OF relationships
+      relationships_patch['STAFF_MEMBER_OF'] = data.branch_ids
+    }
+
     const payload: any = {
       entity_id: id,
       ...(entity_name && { entity_name }),
       ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
+      ...(Object.keys(relationships_patch).length ? { relationships_patch } : {}),
       ...(data.status !== undefined && {
         status: data.status === 'inactive' ? 'archived' : 'active'
       })
@@ -259,26 +281,26 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     return baseUpdate(payload)
   }
 
-  // Helper to archive staff (soft delete) - following useHeraProducts pattern
+  // Helper to archive staff (soft delete)
   const archiveStaff = async (id: string) => {
-    const staffMember = (staff as StaffMember[])?.find(s => s.id === id)
-    if (!staffMember) throw new Error('Staff member not found')
-
-    console.log('[useHeraStaff] Archiving staff:', { id })
-
-    return baseUpdate({
-      entity_id: id,
-      entity_name: staffMember.entity_name,
-      status: 'archived' // ← Set status to archived using UPDATE, not DELETE
-    })
+    return baseArchive(id)
   }
 
-  // Helper to delete staff (hard delete)
-  const deleteStaff = async (id: string, hardDelete = false) => {
-    if (!hardDelete) {
-      return archiveStaff(id)
-    }
-    return baseDelete({ entity_id: id, hard_delete: true })
+  // Helper to restore staff (set status to active)
+  const restoreStaff = async (id: string) => {
+    return baseRestore(id)
+  }
+
+  // Helper to delete staff (HARD DELETE - physically removes from database)
+  // For archiving, use archiveStaff() instead
+  const deleteStaff = async (id: string, reason?: string) => {
+    return baseDelete({
+      entity_id: id,
+      hard_delete: true, // Hard delete - permanently removes the staff
+      cascade: true, // Always cascade relationships
+      reason: reason || 'Permanently delete staff member',
+      smart_code: 'HERA.SALON.STAFF.DELETE.V1'
+    })
   }
 
   // Helper to link role
@@ -319,14 +341,42 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     }))
   }
 
+  // Filter staff by branch using STAFF_MEMBER_OF relationship
+  const filteredStaff = useMemo(() => {
+    if (!staff) return staff as StaffMember[]
+
+    // If no branch filter, return all staff
+    if (!options?.filters?.branch_id || options.filters.branch_id === 'all') {
+      return staff as StaffMember[]
+    }
+
+    // Filter by STAFF_MEMBER_OF relationship
+    return (staff as any[]).filter((s: any) => {
+      const memberOfRels =
+        s.relationships?.staff_member_of ||
+        s.relationships?.STAFF_MEMBER_OF ||
+        s.relationships?.member_of
+
+      if (!memberOfRels) return false
+
+      // Handle both array and single relationship formats
+      if (Array.isArray(memberOfRels)) {
+        return memberOfRels.some(rel => rel.to_entity?.id === options.filters?.branch_id)
+      } else {
+        return memberOfRels.to_entity?.id === options.filters?.branch_id
+      }
+    }) as StaffMember[]
+  }, [staff, options?.filters?.branch_id])
+
   return {
-    staff: staff as StaffMember[],
+    staff: filteredStaff,
     isLoading,
     error,
     refetch,
     createStaff,
     updateStaff,
     archiveStaff,
+    restoreStaff,
     deleteStaff,
     linkRole,
     linkServices,

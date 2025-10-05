@@ -35,7 +35,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import { StylistAssignmentModal } from './StylistAssignmentModal'
+import { StylistSelectionModal } from './StylistSelectionModal'
 import { cn } from '@/lib/utils'
 
 interface LineItem {
@@ -84,6 +84,7 @@ interface PosTicket {
 interface TicketEditorProps {
   ticket: PosTicket
   organizationId: string
+  branchId?: string
   onUpdateItem: (id: string, updates: Partial<LineItem>) => void
   onRemoveItem: (id: string) => void
   onAddDiscount: (discount: Omit<Discount, 'id'>) => void
@@ -93,6 +94,7 @@ interface TicketEditorProps {
 export function TicketEditor({
   ticket,
   organizationId,
+  branchId,
   onUpdateItem,
   onRemoveItem,
   onAddDiscount,
@@ -344,7 +346,7 @@ export function TicketEditor({
   }
 
   return (
-    <div className="h-full flex flex-col bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
+    <div className="h-full flex flex-col bg-muted/30 backdrop-blur-sm">
       {/* Ticket Header */}
       <div className="p-6 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-between mb-4">
@@ -368,7 +370,7 @@ export function TicketEditor({
         {ticket.lineItems.map((item, index) => (
           <Card
             key={item.id}
-            className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-700"
+            className="group bg-card/80 backdrop-blur-sm border-border"
           >
             <CardContent className="p-4">
               <div className="space-y-3">
@@ -537,16 +539,19 @@ export function TicketEditor({
         )}
       </div>
 
-      {/* Stylist Assignment Modal */}
+      {/* Stylist Selection Modal */}
       {stylistModalItem && (
-        <StylistAssignmentModal
+        <StylistSelectionModal
           open={stylistModalOpen}
-          onClose={() => setStylistModalOpen(false)}
-          serviceId={stylistModalItem.entity_id}
-          serviceName={stylistModalItem.entity_name}
+          onClose={() => {
+            setStylistModalOpen(false)
+            setStylistModalItem(null)
+          }}
+          service={{ entity_id: stylistModalItem.entity_id, entity_name: stylistModalItem.entity_name }}
           organizationId={organizationId}
+          branchId={branchId}
           currentStylistId={stylistModalItem.stylist_id}
-          onAssign={handleStylistAssign}
+          onConfirm={handleStylistAssign}
         />
       )}
     </div>

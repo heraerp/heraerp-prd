@@ -50,6 +50,7 @@ export interface UseHeraProductsOptions {
   filters?: {
     include_dynamic?: boolean
     include_relationships?: boolean
+    branch_id?: string
     limit?: number
     offset?: number
     status?: string
@@ -75,7 +76,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
-      include_relationships: false,
+      include_relationships: true, // Enable relationships for branch filtering
       limit: 100,
       // Only filter by 'active' status when not including archived
       ...(options?.includeArchived ? {} : { status: 'active' }),
@@ -303,8 +304,23 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     return result
   }
 
-  // Filter products based on search and category
+  // Filter products based on search, category, and branch
   const filteredProducts = (products as Product[])?.filter(product => {
+    // Branch filter (via STOCK_AT relationship)
+    if (options?.filters?.branch_id && options.filters.branch_id !== 'all') {
+      const productWithRels = product as any
+      const stockAtRels =
+        productWithRels.relationships?.stock_at ||
+        productWithRels.relationships?.STOCK_AT ||
+        []
+
+      const hasBranch = Array.isArray(stockAtRels)
+        ? stockAtRels.some((rel: any) => rel.to_entity_id === options.filters?.branch_id)
+        : false
+
+      if (!hasBranch) return false
+    }
+
     // Search filter
     if (options?.searchQuery) {
       const query = options.searchQuery.toLowerCase()

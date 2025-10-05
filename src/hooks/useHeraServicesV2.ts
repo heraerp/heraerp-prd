@@ -55,6 +55,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     update: baseUpdate,
     delete: baseDelete,
     archive: baseArchive,
+    restore: baseRestore,
     isCreating,
     isUpdating,
     isDeleting
@@ -71,11 +72,36 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     relationships: SERVICE_PRESET.relationships as RelationshipDef[]
   })
 
-  // Filter services by branch and category using HERA relationship patterns
-  const filteredServices = useMemo(() => {
+  // Map services to include category name from relationships
+  const servicesWithCategory = useMemo(() => {
     if (!services) return services as ServiceEntity[]
 
-    let filtered = services as ServiceEntity[]
+    return (services as ServiceEntity[]).map(service => {
+      // Extract category name from has_category relationship
+      const categoryRels =
+        service.relationships?.has_category ||
+        service.relationships?.HAS_CATEGORY ||
+        service.relationships?.category
+
+      let categoryName = null
+      if (Array.isArray(categoryRels) && categoryRels.length > 0) {
+        categoryName = categoryRels[0].to_entity?.entity_name || null
+      } else if (categoryRels?.to_entity?.entity_name) {
+        categoryName = categoryRels.to_entity.entity_name
+      }
+
+      return {
+        ...service,
+        category: categoryName // Add category name for easy display
+      }
+    })
+  }, [services])
+
+  // Filter services by branch and category using HERA relationship patterns
+  const filteredServices = useMemo(() => {
+    if (!servicesWithCategory) return servicesWithCategory
+
+    let filtered = servicesWithCategory
 
     // Filter by AVAILABLE_AT branch relationship (when branch is selected, not "All Locations")
     // When branch_id is null/undefined, no branch filter applied = show all services
@@ -99,7 +125,10 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     // Filter by HAS_CATEGORY relationship if category filter provided
     if (options?.filters?.category_id) {
       filtered = filtered.filter(s => {
-        const categoryRelationship = s.relationships?.category
+        const categoryRelationship =
+          s.relationships?.has_category ||
+          s.relationships?.HAS_CATEGORY ||
+          s.relationships?.category
         if (!categoryRelationship) return false
 
         // Handle both array and single relationship formats
@@ -112,7 +141,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     }
 
     return filtered
-  }, [services, options?.filters?.branch_id, options?.filters?.category_id])
+  }, [servicesWithCategory, options?.filters?.branch_id, options?.filters?.category_id])
 
   // Helper to create service with proper smart codes and relationships
   const createService = async (data: {
@@ -122,11 +151,19 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     commission_rate?: number
     description?: string
     active?: boolean
+    requires_booking?: boolean
     category_id?: string
     performed_by_role_ids?: string[]
     required_product_ids?: string[]
     branch_ids?: string[]  // Support multiple branches via AVAILABLE_AT relationships
   }) => {
+    console.log('[useHeraServicesV2] createService called with data:', {
+      ...data,
+      category_id: data.category_id,
+      category_id_type: typeof data.category_id,
+      category_id_value: data.category_id ? `"${data.category_id}"` : 'undefined/empty'
+    })
+
     // Map provided primitives to dynamic_fields payload using preset definitions
     const dynamic_fields: Record<string, any> = {}
     for (const def of SERVICE_PRESET.dynamicFields) {
@@ -148,6 +185,12 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
       // Add branch relationships - use AVAILABLE_AT for service availability at branches
       ...(data.branch_ids && data.branch_ids.length > 0 ? { AVAILABLE_AT: data.branch_ids } : {})
     }
+
+    console.log('[useHeraServicesV2] Relationships object built:', {
+      relationships,
+      hasCategory: !!data.category_id,
+      categoryValue: data.category_id
+    })
 
     return baseCreate({
       entity_type: 'service',
@@ -194,12 +237,21 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     return baseArchive(id)
   }
 
-  // Helper to delete service (hard delete)
-  const deleteService = async (id: string, hardDelete = false) => {
-    if (!hardDelete) {
-      return archiveService(id)
-    }
-    return baseDelete(id)
+  // Helper to restore service (set status to active)
+  const restoreService = async (id: string) => {
+    return baseRestore(id)
+  }
+
+  // Helper to delete service (HARD DELETE - physically removes from database)
+  // For archiving, use archiveService() instead
+  const deleteService = async (id: string, reason?: string) => {
+    return baseDelete({
+      entity_id: id,
+      hard_delete: true, // Hard delete - permanently removes the service
+      cascade: true, // Always cascade relationships
+      reason: reason || 'Permanently delete service',
+      smart_code: 'HERA.SALON.SERVICE.DELETE.V1'
+    })
   }
 
   // Helper to link category
@@ -245,6 +297,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     createService,
     updateService,
     archiveService,
+    restoreService,
     deleteService,
     linkCategory,
     linkPerformedByRoles,

@@ -70,36 +70,34 @@ export class HERAJWTService {
         return { valid: false, error: 'Invalid token' }
       }
 
-      // Fetch user's organization from the database
-      let organizationId: string | undefined
-      try {
-        // Try to get organization from user_organizations table
-        const { data: userOrg, error: orgError } = await supabase
-          .from('user_organizations')
-          .select('organization_id')
-          .eq('user_id', user.id)
-          .limit(1)
-          .single()
+      // HERA DNA: Get organization from user metadata (stored during registration)
+      // No separate user_organizations table - HERA uses universal architecture
+      let organizationId: string | undefined = user.user_metadata?.organization_id
 
-        console.log('[JWT Service] Organization lookup:', {
-          userId: user.id,
-          found: !!userOrg,
-          orgError: orgError?.message,
-          organizationId: userOrg?.organization_id
-        })
+      console.log('[JWT Service] Organization lookup:', {
+        userId: user.id,
+        found: !!organizationId,
+        organizationId,
+        source: 'user_metadata'
+      })
 
-        if (userOrg) {
-          organizationId = userOrg.organization_id
-        } else {
-          // Fallback: check if organizationId is in user metadata
-          organizationId = user.user_metadata?.organization_id
-          console.log('[JWT Service] Using metadata organization_id:', organizationId)
+      // If not in metadata, try to resolve from core_entities user entity
+      if (!organizationId) {
+        try {
+          const { data: userEntity } = await supabase
+            .from('core_entities')
+            .select('organization_id')
+            .eq('id', user.id)
+            .eq('entity_type', 'user')
+            .single()
+
+          if (userEntity) {
+            organizationId = userEntity.organization_id
+            console.log('[JWT Service] Using user entity organization_id:', organizationId)
+          }
+        } catch (err) {
+          console.warn('[JWT Service] Failed to fetch from core_entities:', err)
         }
-      } catch (err) {
-        console.warn('[JWT Service] Failed to fetch organization_id:', err)
-        // Try metadata fallback
-        organizationId = user.user_metadata?.organization_id
-        console.log('[JWT Service] Exception - using metadata organization_id:', organizationId)
       }
 
       const payload: JWTPayload = {

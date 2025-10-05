@@ -22,8 +22,15 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, Trash2, Archive, ChevronDown, ChevronUp, Briefcase, Calendar } from 'lucide-react'
+import { Loader2, Trash2, Archive, ChevronDown, ChevronUp, Briefcase, Calendar, Building2, MapPin, CheckCircle2 } from 'lucide-react'
 import type { Role } from '@/hooks/useHeraRoles'
+
+// Branch interface
+interface Branch {
+  id: string
+  entity_name: string
+  entity_code?: string
+}
 
 // Luxe color palette
 const COLORS = {
@@ -50,7 +57,8 @@ const staffSchema = z.object({
   // Advanced fields
   hourly_cost: z.number().min(0).optional(),
   display_rate: z.number().min(0).optional(),
-  hire_date: z.string().optional()
+  hire_date: z.string().optional(),
+  branch_ids: z.array(z.string()).optional()
 })
 
 type StaffSchemaType = z.infer<typeof staffSchema>
@@ -66,6 +74,7 @@ export interface StaffFormValues {
   hire_date?: string
   hourly_cost?: number
   display_rate?: number
+  branch_ids?: string[]
 }
 
 interface StaffModalProps {
@@ -87,8 +96,10 @@ interface StaffModalProps {
     hire_date?: string
     hourly_cost?: number
     display_rate?: number
+    relationships?: any
   }
   roles: Role[]
+  branches?: Branch[]
   userRole?: 'owner' | 'manager' | 'receptionist' | 'staff'
   isLoading?: boolean
 }
@@ -101,6 +112,7 @@ export function StaffModal({
   onArchive,
   staff,
   roles,
+  branches = [],
   userRole = 'staff',
   isLoading = false
 }: StaffModalProps) {
@@ -116,6 +128,15 @@ export function StaffModal({
   const fullNameFromStaff = staff
     ? `${staff.first_name || ''} ${staff.last_name || ''}`.trim() || staff.entity_name || ''
     : ''
+
+  // Extract branch IDs from STAFF_MEMBER_OF relationships
+  const branchIdsFromStaff = staff?.relationships?.staff_member_of
+    ? Array.isArray(staff.relationships.staff_member_of)
+      ? staff.relationships.staff_member_of.filter((rel: any) => rel?.to_entity?.id).map((rel: any) => rel.to_entity.id)
+      : staff.relationships.staff_member_of?.to_entity?.id
+        ? [staff.relationships.staff_member_of.to_entity.id]
+        : []
+    : []
 
   const {
     register,
@@ -166,7 +187,8 @@ export function StaffModal({
         status: (staff?.status === 'archived' ? 'inactive' : 'active') as 'active' | 'inactive',
         hourly_cost: staff?.hourly_cost || 0,
         display_rate: staff?.display_rate || 0,
-        hire_date: staff?.hire_date || ''
+        hire_date: staff?.hire_date || '',
+        branch_ids: branchIdsFromStaff
       })
 
       // Auto-expand advanced if any advanced fields have values
@@ -196,7 +218,8 @@ export function StaffModal({
         status: data.status === 'inactive' ? 'inactive' : 'active',
         hire_date: data.hire_date,
         hourly_cost: data.hourly_cost,
-        display_rate: data.display_rate
+        display_rate: data.display_rate,
+        branch_ids: data.branch_ids
       }
 
       await onSave(staffData)
@@ -393,6 +416,162 @@ export function StaffModal({
                   </SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            {/* Branch Assignment Section - Enterprise Grade */}
+            <div
+              className="relative p-6 rounded-xl border backdrop-blur-sm"
+              style={{
+                backgroundColor: COLORS.charcoal + 'E6',
+                borderColor: COLORS.bronze + '30',
+                boxShadow: `0 4px 12px ${COLORS.black}40`
+              }}
+            >
+              {/* Section Header with Icon */}
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                <h3
+                  className="text-lg font-semibold tracking-wide"
+                  style={{ color: COLORS.champagne }}
+                >
+                  Branch Assignment
+                </h3>
+              </div>
+
+              <div className="space-y-3">
+                <Label
+                  className="text-sm font-medium tracking-wide flex items-center gap-2"
+                  style={{ color: COLORS.champagne }}
+                >
+                  <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
+                  Select Locations Where This Staff Member Works
+                </Label>
+                <div className="grid grid-cols-2 gap-3 mt-3">
+                  {branches.length === 0 ? (
+                    <div
+                      className="col-span-2 p-4 rounded-lg text-center"
+                      style={{
+                        backgroundColor: COLORS.charcoalLight + '50',
+                        border: `1px dashed ${COLORS.bronze}40`,
+                        color: COLORS.lightText
+                      }}
+                    >
+                      <Building2
+                        className="w-8 h-8 mx-auto mb-2 opacity-50"
+                        style={{ color: COLORS.bronze }}
+                      />
+                      <p className="text-sm opacity-70">No branches available</p>
+                    </div>
+                  ) : (
+                    branches.map(branch => {
+                      const branchIds = watch('branch_ids') || []
+                      const isSelected = branchIds.includes(branch.id)
+                      return (
+                        <button
+                          key={branch.id}
+                          type="button"
+                          onClick={() => {
+                            const currentValue = watch('branch_ids') || []
+                            if (isSelected) {
+                              setValue('branch_ids', currentValue.filter(id => id !== branch.id))
+                            } else {
+                              setValue('branch_ids', [...currentValue, branch.id])
+                            }
+                          }}
+                          className="relative group transition-all duration-200 hover:scale-102"
+                          style={{
+                            backgroundColor: isSelected
+                              ? COLORS.charcoal
+                              : COLORS.charcoalLight + '50',
+                            border: `2px solid ${isSelected ? COLORS.gold : COLORS.bronze + '40'}`,
+                            borderRadius: '12px',
+                            padding: '14px',
+                            cursor: 'pointer',
+                            boxShadow: isSelected ? `0 0 20px ${COLORS.gold}30` : 'none'
+                          }}
+                        >
+                          {/* Selection Indicator */}
+                          {isSelected && (
+                            <div
+                              className="absolute top-2 right-2 animate-in zoom-in duration-200"
+                              style={{ color: COLORS.gold }}
+                            >
+                              <CheckCircle2 className="w-5 h-5" />
+                            </div>
+                          )}
+
+                          {/* Branch Icon */}
+                          <div
+                            className="mb-2 flex items-center justify-center w-10 h-10 rounded-lg mx-auto"
+                            style={{
+                              backgroundColor: isSelected
+                                ? COLORS.gold + '20'
+                                : COLORS.bronze + '20',
+                              border: `1px solid ${isSelected ? COLORS.gold : COLORS.bronze}40`
+                            }}
+                          >
+                            <MapPin
+                              className="w-5 h-5"
+                              style={{ color: isSelected ? COLORS.gold : COLORS.bronze }}
+                            />
+                          </div>
+
+                          {/* Branch Name */}
+                          <div className="text-center">
+                            <p
+                              className="font-semibold text-sm mb-0.5 truncate"
+                              style={{
+                                color: isSelected ? COLORS.champagne : COLORS.lightText
+                              }}
+                            >
+                              {branch.entity_name}
+                            </p>
+                            {branch.entity_code && (
+                              <p
+                                className="text-xs truncate"
+                                style={{
+                                  color: COLORS.bronze,
+                                  opacity: isSelected ? 0.9 : 0.6
+                                }}
+                              >
+                                {branch.entity_code}
+                              </p>
+                            )}
+                          </div>
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
+                <div className="mt-3">
+                  {watch('branch_ids') && watch('branch_ids')!.length > 0 ? (
+                    <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                      Assigned to:{' '}
+                      <span style={{ color: COLORS.gold, fontWeight: 600 }}>
+                        {watch('branch_ids')!.length} location{watch('branch_ids')!.length > 1 ? 's' : ''}
+                      </span>
+                    </p>
+                  ) : (
+                    <div
+                      className="p-3 rounded-lg border flex items-start gap-2 animate-in fade-in slide-in-from-top-2"
+                      style={{
+                        backgroundColor: COLORS.gold + '10',
+                        borderColor: COLORS.gold + '40'
+                      }}
+                    >
+                      <Building2 className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: COLORS.gold }} />
+                      <div>
+                        <p className="text-xs font-semibold mb-1" style={{ color: COLORS.gold }}>
+                          Auto-Assignment Active
+                        </p>
+                        <p className="text-xs" style={{ color: COLORS.champagne, opacity: 0.9 }}>
+                          No locations selected. This staff member will be automatically assigned to <strong>all {branches.length} location{branches.length > 1 ? 's' : ''}</strong> when saved.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Advanced Fields Toggle */}

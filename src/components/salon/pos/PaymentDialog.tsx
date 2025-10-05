@@ -31,6 +31,21 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useSalonPosIntegration } from '@/lib/playbook/salon-pos-integration'
 import { cn } from '@/lib/utils'
 
+// Salon Luxe Color Palette
+const COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
+  bronze: '#8C7853',
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323',
+  emerald: '#0F6F5C',
+  red: '#FF6B6B'
+}
+
 interface PaymentMethod {
   id: string
   type: 'cash' | 'card' | 'voucher'
@@ -267,54 +282,81 @@ export function PaymentDialog({
       <DialogContent
         className="max-w-2xl max-h-[90vh] overflow-y-auto"
         aria-describedby="payment-desc"
+        style={{
+          backgroundColor: COLORS.charcoal,
+          borderColor: `${COLORS.gold}30`
+        }}
       >
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Receipt className="w-5 h-5" style={{ color: '#D4AF37' }} />
-            Process Payment - ${(totals?.total || 0).toFixed(2)}
+        <DialogHeader className="border-b pb-4" style={{ borderColor: `${COLORS.gold}20` }}>
+          <DialogTitle className="flex items-center gap-3">
+            <div
+              className="p-2 rounded-lg"
+              style={{
+                background: `${COLORS.gold}20`,
+                border: `1px solid ${COLORS.gold}40`
+              }}
+            >
+              <Receipt className="w-5 h-5" style={{ color: COLORS.gold }} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold" style={{ color: COLORS.champagne }}>
+                Process Payment
+              </h3>
+              <p className="text-sm font-normal" style={{ color: COLORS.bronze }}>
+                AED {(totals?.total || 0).toFixed(2)}
+              </p>
+            </div>
           </DialogTitle>
           <DialogDescription id="payment-desc" className="sr-only">
             Select payment methods and confirm the amounts for your transaction.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-5 pt-5">
           {/* Order Summary */}
           <Card
+            className="border transition-all"
             style={{
-              backgroundColor: '#0F0F0F',
-              border: '1px solid rgba(212, 175, 55, 0.2)',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+              backgroundColor: COLORS.charcoalLight,
+              borderColor: `${COLORS.gold}20`,
+              boxShadow: `0 1px 3px ${COLORS.black}20`
             }}
           >
             <CardContent className="p-4">
               <div className="space-y-2">
-                <div className="flex justify-between text-sm" style={{ color: '#E0E0E0' }}>
+                <div className="flex justify-between text-sm" style={{ color: COLORS.lightText }}>
                   <span>Items ({ticket?.lineItems?.length || 0}):</span>
-                  <span>${(totals?.subtotal || 0).toFixed(2)}</span>
+                  <span className="font-medium" style={{ color: COLORS.champagne }}>
+                    AED {(totals?.subtotal || 0).toFixed(2)}
+                  </span>
                 </div>
                 {(totals?.discountAmount || 0) > 0 && (
-                  <div className="flex justify-between text-sm" style={{ color: '#0F6F5C' }}>
+                  <div className="flex justify-between text-sm" style={{ color: COLORS.emerald }}>
                     <span>Discounts:</span>
-                    <span>-${(totals?.discountAmount || 0).toFixed(2)}</span>
+                    <span className="font-medium">-AED {(totals?.discountAmount || 0).toFixed(2)}</span>
                   </div>
                 )}
                 {(totals?.tipAmount || 0) > 0 && (
-                  <div className="flex justify-between text-sm" style={{ color: '#D4AF37' }}>
-                    <span>Tips:</span>
-                    <span>+${(totals?.tipAmount || 0).toFixed(2)}</span>
+                  <div className="flex justify-between text-sm" style={{ color: COLORS.gold }}>
+                    <span>Gratuity:</span>
+                    <span className="font-medium">+AED {(totals?.tipAmount || 0).toFixed(2)}</span>
                   </div>
                 )}
                 {(totals?.taxAmount || 0) > 0 && (
-                  <div className="flex justify-between text-sm" style={{ color: '#E0E0E0' }}>
+                  <div className="flex justify-between text-sm" style={{ color: COLORS.lightText }}>
                     <span>Tax (5%):</span>
-                    <span>${(totals?.taxAmount || 0).toFixed(2)}</span>
+                    <span className="font-medium" style={{ color: COLORS.champagne }}>
+                      AED {(totals?.taxAmount || 0).toFixed(2)}
+                    </span>
                   </div>
                 )}
-                <Separator style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }} />
-                <div className="flex justify-between font-bold text-lg">
-                  <span style={{ color: '#F5E6C8' }}>Total Due:</span>
-                  <span style={{ color: '#D4AF37' }}>${(totals?.total || 0).toFixed(2)}</span>
+                <Separator style={{ backgroundColor: `${COLORS.gold}30`, height: '1px', margin: '0.5rem 0' }} />
+                <div className="flex justify-between font-bold text-base p-2.5 rounded-lg" style={{
+                  background: `${COLORS.gold}15`,
+                  border: `1px solid ${COLORS.gold}40`
+                }}>
+                  <span style={{ color: COLORS.champagne }}>Total Due:</span>
+                  <span style={{ color: COLORS.gold }}>AED {(totals?.total || 0).toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>
@@ -322,7 +364,7 @@ export function PaymentDialog({
 
           {/* Payment Methods */}
           <div>
-            <h3 className="font-medium mb-3 ink dark:text-white">Payment Methods</h3>
+            <h3 className="font-semibold mb-3 text-sm" style={{ color: COLORS.champagne }}>Payment Methods</h3>
             <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="card" className="flex items-center gap-2">
@@ -477,13 +519,19 @@ export function PaymentDialog({
                 {payments.map(payment => (
                   <div
                     key={payment.id}
-                    className="flex items-center justify-between p-3 border rounded-md"
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                    style={{
+                      backgroundColor: COLORS.charcoalLight,
+                      borderColor: `${COLORS.gold}20`
+                    }}
                   >
                     <div className="flex items-center gap-3">
                       {getPaymentIcon(payment.type)}
                       <div>
-                        <div className="font-medium">${payment.amount.toFixed(2)}</div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="font-semibold text-sm" style={{ color: COLORS.champagne }}>
+                          AED {payment.amount.toFixed(2)}
+                        </div>
+                        <div className="text-xs" style={{ color: COLORS.bronze }}>
                           {payment.type.charAt(0).toUpperCase() + payment.type.slice(1)}
                           {payment.reference && ` - ${payment.reference}`}
                         </div>
@@ -493,7 +541,8 @@ export function PaymentDialog({
                       variant="ghost"
                       size="sm"
                       onClick={() => removePayment(payment.id)}
-                      className="text-red-600 hover:text-red-700"
+                      style={{ color: COLORS.red }}
+                      className="hover:opacity-80"
                     >
                       <X className="w-4 h-4" />
                     </Button>
@@ -505,54 +554,58 @@ export function PaymentDialog({
 
           {/* Payment Summary */}
           <div
-            className="p-4 rounded-lg"
+            className="p-4 rounded-lg border transition-all"
             style={{
-              backgroundColor: '#0F0F0F',
-              border: '1px solid rgba(212, 175, 55, 0.3)',
-              background:
-                'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(183, 148, 244, 0.05) 100%)'
+              backgroundColor: COLORS.charcoalLight,
+              borderColor: `${COLORS.gold}30`,
+              boxShadow: `0 2px 4px ${COLORS.black}20`
             }}
           >
-            <div className="space-y-3">
-              <div className="flex justify-between text-lg">
-                <span className="font-medium" style={{ color: '#F5E6C8' }}>
+            <div className="space-y-2.5">
+              <div className="flex justify-between text-base">
+                <span className="font-medium" style={{ color: COLORS.champagne }}>
                   Total Due:
                 </span>
-                <span className="font-bold" style={{ color: '#D4AF37' }}>
-                  ${(totals?.total || 0).toFixed(2)}
+                <span className="font-bold" style={{ color: COLORS.gold }}>
+                  AED {(totals?.total || 0).toFixed(2)}
                 </span>
               </div>
               {payments.length > 0 && (
                 <>
-                  <Separator style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }} />
-                  <div className="flex justify-between" style={{ color: '#E0E0E0' }}>
+                  <Separator style={{ backgroundColor: `${COLORS.gold}20`, height: '1px' }} />
+                  <div className="flex justify-between text-sm" style={{ color: COLORS.lightText }}>
                     <span>Amount Tendered:</span>
-                    <span className="font-semibold">${paidAmount.toFixed(2)}</span>
+                    <span className="font-semibold" style={{ color: COLORS.champagne }}>
+                      AED {paidAmount.toFixed(2)}
+                    </span>
                   </div>
                 </>
               )}
               {remainingAmount > 0.01 ? (
-                <div className="flex justify-between text-lg">
-                  <span className="font-medium" style={{ color: '#F5E6C8' }}>
+                <div className="flex justify-between text-base p-2.5 rounded-lg" style={{
+                  background: `${COLORS.red}15`,
+                  border: `1px solid ${COLORS.red}40`
+                }}>
+                  <span className="font-medium" style={{ color: COLORS.champagne }}>
                     Balance to Pay:
                   </span>
-                  <span className="font-bold" style={{ color: '#FF6B6B' }}>
-                    ${remainingAmount.toFixed(2)}
+                  <span className="font-bold" style={{ color: COLORS.red }}>
+                    AED {remainingAmount.toFixed(2)}
                   </span>
                 </div>
               ) : changeAmount > 0 ? (
                 <div
-                  className="flex justify-between text-lg p-2 rounded"
+                  className="flex justify-between text-base p-2.5 rounded-lg"
                   style={{
-                    backgroundColor: 'rgba(15, 111, 92, 0.2)',
-                    border: '1px solid rgba(15, 111, 92, 0.3)'
+                    background: `${COLORS.emerald}15`,
+                    border: `1px solid ${COLORS.emerald}40`
                   }}
                 >
-                  <span className="font-medium" style={{ color: '#0F6F5C' }}>
+                  <span className="font-medium" style={{ color: COLORS.champagne }}>
                     Change Due:
                   </span>
-                  <span className="font-bold" style={{ color: '#0F6F5C' }}>
-                    ${changeAmount.toFixed(2)}
+                  <span className="font-bold" style={{ color: COLORS.emerald }}>
+                    AED {changeAmount.toFixed(2)}
                   </span>
                 </div>
               ) : null}

@@ -137,13 +137,18 @@ export function useHeraServiceCategories({
     }
   })
 
-  // Delete mutation
+  // Delete mutation - Enhanced RPC implementation
+  // Defaults to soft delete (archive) for safety
   const deleteEntityMutation = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (params: { id: string; hard_delete?: boolean; reason?: string }) => {
       if (!organizationId) throw new Error('Organization ID required')
       return await deleteEntity('', {
         p_organization_id: organizationId,
-        p_entity_id: id
+        p_entity_id: params.id,
+        hard_delete: params.hard_delete ?? false, // Soft delete by default
+        cascade: true, // Always cascade relationships
+        reason: params.reason || 'Archive service category',
+        smart_code: 'HERA.SALON.SERVICE.CATEGORY.DELETE.V1'
       })
     },
     onSuccess: () => {
@@ -264,7 +269,11 @@ export function useHeraServiceCategories({
   }
 
   // Delete category
-  const deleteCategory = async (categoryId: string) => {
+  // PRODUCTION PATTERN: Soft delete by default, hard delete only for cleanup
+  const deleteCategory = async (
+    categoryId: string,
+    options?: { hard_delete?: boolean; reason?: string }
+  ) => {
     if (!organizationId) throw new Error('Organization ID required')
 
     const category = entities?.find(c => c.id === categoryId)
@@ -277,9 +286,17 @@ export function useHeraServiceCategories({
       )
     }
 
-    console.log('[useHeraServiceCategories] Deleting category:', categoryId)
+    console.log('[useHeraServiceCategories] Deleting category:', {
+      categoryId,
+      mode: options?.hard_delete ? 'HARD' : 'SOFT',
+      reason: options?.reason
+    })
 
-    await deleteEntityMutation.mutateAsync(categoryId)
+    await deleteEntityMutation.mutateAsync({
+      id: categoryId,
+      hard_delete: options?.hard_delete,
+      reason: options?.reason || `Delete category: ${category.entity_name}`
+    })
 
     console.log('[useHeraServiceCategories] Category deleted successfully')
   }

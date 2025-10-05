@@ -29,12 +29,6 @@ async function getAuthHeaders(): Promise<HeadersInit> {
       data: { session }
     } = await supabase.auth.getSession()
 
-    console.log('[getAuthHeaders] Session check:', {
-      hasSession: !!session,
-      hasToken: !!session?.access_token,
-      tokenLength: session?.access_token?.length
-    })
-
     if (session?.access_token) {
       return {
         Authorization: `Bearer ${session.access_token}`
@@ -112,18 +106,35 @@ export async function deleteEntity(
   params: {
     p_organization_id: string
     p_entity_id: string
+    hard_delete?: boolean
+    cascade?: boolean
+    reason?: string
+    smart_code?: string
   }
 ) {
   const url = baseUrl || getBaseUrl()
   const authHeaders = await getAuthHeaders()
 
+  // Build query params with RPC contract defaults
+  const queryParams = new URLSearchParams({
+    hard_delete: (params.hard_delete ?? false).toString(),
+    cascade: (params.cascade ?? true).toString(),
+    smart_code: params.smart_code ?? 'HERA.CORE.ENTITY.DELETE.V1'
+  })
+
+  if (params.reason) {
+    queryParams.append('reason', params.reason)
+  }
+
   console.log('[deleteEntity] Request:', {
     url: `${url}/api/v2/entities/${params.p_entity_id}`,
     organizationId: params.p_organization_id,
-    entityId: params.p_entity_id
+    entityId: params.p_entity_id,
+    mode: params.hard_delete ? 'HARD' : 'SOFT',
+    cascade: params.cascade ?? true
   })
 
-  const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}`, {
+  const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}?${queryParams}`, {
     method: 'DELETE',
     headers: {
       'x-hera-org': params.p_organization_id,

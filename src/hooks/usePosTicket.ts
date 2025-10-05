@@ -43,7 +43,11 @@ interface PosTicket {
   notes?: string
   customer_id?: string
   customer_name?: string
+  customer_email?: string
+  customer_phone?: string
   appointment_id?: string
+  branch_id?: string
+  branch_name?: string
 }
 
 interface Totals {
@@ -160,7 +164,11 @@ export function usePosTicket(organizationId: string) {
     (updates: {
       customer_id?: string
       customer_name?: string
+      customer_email?: string
+      customer_phone?: string
       appointment_id?: string
+      branch_id?: string
+      branch_name?: string
       notes?: string
     }) => {
       setTicket(prev => ({

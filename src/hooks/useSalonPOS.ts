@@ -61,13 +61,14 @@ export function useSalonPOS(options?: UseSalonPOSOptions): UseSalonPOSReturn {
     setBranchId
   } = useBranchFilter(undefined, undefined, organizationId)
 
-  // Use existing hooks - they handle all data fetching
+  // Use existing hooks - they handle all data fetching with proper branch filtering
   const {
     services,
     isLoading: servicesLoading,
     error: servicesError,
     refetch: refetchServices
   } = useHeraServices({
+    organizationId,
     filters: {
       include_dynamic: true,
       include_relationships: true,
@@ -84,10 +85,16 @@ export function useSalonPOS(options?: UseSalonPOSOptions): UseSalonPOSReturn {
     error: productsError,
     refetch: refetchProducts
   } = useHeraProducts({
+    organizationId,
     includeArchived: false,
     searchQuery: search || '',
     categoryFilter: categoryId || '',
-    organizationId
+    filters: {
+      include_dynamic: true,
+      include_relationships: true,
+      branch_id: branchId && branchId !== 'all' ? branchId : undefined,
+      limit: 100
+    }
   })
 
   const {
@@ -98,12 +105,30 @@ export function useSalonPOS(options?: UseSalonPOSOptions): UseSalonPOSReturn {
   } = useHeraStaff({
     organizationId,
     filters: {
-      branch_id: branchId && branchId !== 'all' ? branchId : undefined
+      include_dynamic: true,
+      include_relationships: false,
+      branch_id: branchId && branchId !== 'all' ? branchId : undefined,
+      limit: 100
     }
+  })
+
+  console.log('[useSalonPOS] Staff data:', {
+    count: staff?.length || 0,
+    isLoading: staffLoading,
+    error: staffError,
+    branchId,
+    organizationId
   })
 
   // Merge services and products into unified POS items
   const items: PosItem[] = useMemo(() => {
+    console.log('[useSalonPOS] Creating POS items:', {
+      servicesCount: services?.length || 0,
+      productsCount: products?.length || 0,
+      sampleService: services?.[0],
+      branchId
+    })
+
     const serviceItems: PosItem[] =
       (services || []).map((svc: any) => ({
         __kind: 'SERVICE' as const,
@@ -111,13 +136,18 @@ export function useSalonPOS(options?: UseSalonPOSOptions): UseSalonPOSReturn {
         id: svc.id,
         title: svc.entity_name,
         code: svc.entity_code,
-        category: svc.relationships?.category?.to_entity?.entity_name || null,
-        description: svc.dynamic_fields?.description?.value || null,
-        price: svc.dynamic_fields?.price_market?.value || 0,
-        imageUrl: svc.dynamic_fields?.image_url?.value || null,
-        duration: svc.dynamic_fields?.duration_min?.value || null,
+        category: svc.category || null, // useHeraServices flattens category from relationships
+        description: svc.service_description || svc.description || null, // Try both field names
+        price: svc.market_price || svc.price_market || svc.price || 0, // Try multiple field names
+        imageUrl: svc.image_url || svc.imageUrl || null, // Try both field names
+        duration: svc.duration_minutes || svc.duration_min || null, // FIXED: use duration_minutes
         metadata: svc.metadata
       })) || []
+
+    console.log('[useSalonPOS] Created service items:', {
+      count: serviceItems.length,
+      sample: serviceItems[0]
+    })
 
     const productItems: PosItem[] =
       (products || []).map((prd: any) => ({
@@ -126,10 +156,10 @@ export function useSalonPOS(options?: UseSalonPOSOptions): UseSalonPOSReturn {
         id: prd.id,
         title: prd.entity_name,
         code: prd.entity_code,
-        category: prd.category || null,
-        description: prd.description || null,
-        price: prd.price || 0,
-        imageUrl: prd.metadata?.image_url || null,
+        category: prd.category || null, // Products don't have flattened category from hook, but should have it
+        description: prd.entity_description || null, // Use entity_description field
+        price: prd.price_market || prd.price || 0, // Try price_market first, fallback to price
+        imageUrl: prd.image_url || null, // Flattened dynamic field
         duration: null,
         metadata: prd.metadata
       })) || []

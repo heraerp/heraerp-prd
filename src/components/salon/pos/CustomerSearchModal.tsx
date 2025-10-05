@@ -124,11 +124,15 @@ export function CustomerSearchModal({
           backgroundColor: COLORS.charcoal,
           borderColor: COLORS.bronze + '33'
         }}
+        aria-describedby="customer-search-description"
       >
         <DialogHeader className="p-6 border-b" style={{ borderColor: COLORS.bronze + '20' }}>
           <DialogTitle style={{ color: COLORS.champagne }}>
             Search Customers & Appointments
           </DialogTitle>
+          <p id="customer-search-description" className="sr-only">
+            Search for customers by name, phone, or email, and view their appointments.
+          </p>
         </DialogHeader>
 
         {/* Search and Tabs */}

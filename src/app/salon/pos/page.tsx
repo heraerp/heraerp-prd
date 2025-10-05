@@ -5,7 +5,6 @@ import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
 import { flags } from '@/config/flags'
 import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
-import { BranchSelector } from '@/components/salon/BranchSelector'
 import { CatalogPane } from '@/components/salon/pos/CatalogPane'
 import { CartSidebar } from '@/components/salon/pos/CartSidebar'
 import { PaymentDialog } from '@/components/salon/pos/PaymentDialog'
@@ -19,29 +18,16 @@ import { useCustomerLookup } from '@/hooks/useCustomerLookup'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import {
-  ChevronRight,
   Search,
   ShoppingCart,
   CreditCard,
-  Receipt as ReceiptIcon,
   Settings,
   Monitor,
-  Users,
   FileText,
   User,
-  Building2,
-  MapPin,
   Sparkles,
   Clock
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 // Luxe salon color palette for enterprise-grade aesthetics
 const COLORS = {
@@ -60,13 +46,12 @@ const COLORS = {
 }
 
 function POSContent() {
-  const { 
-    user, 
+  const {
+    user,
     organization,
     selectedBranchId,
     availableBranches,
-    setSelectedBranchId,
-    isLoadingBranches 
+    setSelectedBranchId
   } = useSecuredSalonContext()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
   const [commissionsEnabled, setCommissionsEnabled] = useState(true)
@@ -87,6 +72,8 @@ function POSContent() {
   const [completedSale, setCompletedSale] = useState<any>(null)
   const [isCustomerSearchOpen, setIsCustomerSearchOpen] = useState(false)
   const [isTicketDetailsOpen, setIsTicketDetailsOpen] = useState(false)
+  const [defaultStylistId, setDefaultStylistId] = useState<string | undefined>(undefined)
+  const [defaultStylistName, setDefaultStylistName] = useState<string | undefined>(undefined)
 
   // Load commission settings
   useEffect(() => {
@@ -130,8 +117,7 @@ function POSContent() {
   const appointmentLookupResult = useAppointmentLookup(effectiveOrgId || 'demo-org')
   const { loadAppointment } = appointmentLookupResult
 
-  const customerLookupResult = useCustomerLookup(effectiveOrgId || 'demo-org')
-  const { searchCustomers } = customerLookupResult
+  useCustomerLookup(effectiveOrgId || 'demo-org')
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -166,18 +152,48 @@ function POSContent() {
     if (fullAppointment) {
       addItemsFromAppointment({
         appointment_id: fullAppointment.id,
-        customer_id: fullAppointment.customer_id,
+        customer_id: fullAppointment.customer_id || '',
         customer_name: fullAppointment.customer_name || 'Walk-in',
         services:
           fullAppointment.service_ids?.map((serviceId: string, index: number) => ({
             id: serviceId,
             name: fullAppointment.service_names?.[index] || `Service ${index + 1}`,
             price: 0,
-            stylist_id: fullAppointment.stylist_id,
-            stylist_name: fullAppointment.stylist_name
+            ...(fullAppointment.stylist_id ? { stylist_id: fullAppointment.stylist_id } : {}),
+            ...(fullAppointment.stylist_name ? { stylist_name: fullAppointment.stylist_name } : {})
           })) || []
       })
     }
+  }
+
+  const handleAddItem = (item: any, staffId?: string, staffName?: string) => {
+    // For services: use provided stylist OR default stylist
+    let finalStylistId = staffId
+    let finalStylistName = staffName
+
+    if (item.__kind === 'SERVICE') {
+      // If stylist provided, set as default for the bill
+      if (staffId && staffName) {
+        setDefaultStylistId(staffId)
+        setDefaultStylistName(staffName)
+      }
+      // If no stylist provided but we have a default, use it
+      else if (!staffId && defaultStylistId && defaultStylistName) {
+        finalStylistId = defaultStylistId
+        finalStylistName = defaultStylistName
+      }
+    }
+
+    // Transform PosItem to LineItem format
+    addLineItem({
+      entity_id: item.id || item.entity_id || item.raw?.id,
+      entity_type: item.__kind === 'SERVICE' ? 'service' : 'product',
+      entity_name: item.title || item.entity_name || item.raw?.entity_name || 'Unknown Item',
+      quantity: 1,
+      unit_price: item.price || item.unit_price || item.raw?.price || 0,
+      ...(finalStylistId ? { stylist_id: finalStylistId } : {}),
+      ...(finalStylistName ? { stylist_name: finalStylistName } : {})
+    })
   }
 
   const handlePayment = () => {
@@ -190,6 +206,9 @@ function POSContent() {
     setIsPaymentOpen(false)
     setIsReceiptOpen(true)
     clearTicket()
+    // Clear default stylist for next bill
+    setDefaultStylistId(undefined)
+    setDefaultStylistName(undefined)
   }
 
   const totals = calculateTotals()
@@ -229,24 +248,90 @@ function POSContent() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.black }}>
-      {/* Elegant gradient background overlay */}
+      {/* Enhanced gradient background overlay with soft animation */}
       <div
-        className="fixed inset-0 pointer-events-none"
+        className="fixed inset-0 pointer-events-none animate-gradient"
         style={{
           background: `
-            radial-gradient(circle at 10% 20%, ${COLORS.gold}08 0%, transparent 40%),
-            radial-gradient(circle at 90% 80%, ${COLORS.plum}06 0%, transparent 40%),
-            radial-gradient(circle at 50% 50%, ${COLORS.emerald}04 0%, transparent 50%)
+            radial-gradient(ellipse 80% 60% at 10% 20%, ${COLORS.gold}10 0%, transparent 50%),
+            radial-gradient(ellipse 70% 50% at 90% 80%, ${COLORS.plum}08 0%, transparent 50%),
+            radial-gradient(ellipse 90% 70% at 50% 50%, ${COLORS.emerald}06 0%, transparent 60%),
+            linear-gradient(135deg, ${COLORS.charcoal}20 0%, transparent 100%)
           `,
-          opacity: 0.6
+          opacity: 0.7,
+          transition: 'opacity 0.6s ease-in-out'
         }}
       />
 
+      {/* Soft animated grain overlay for texture */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.015]"
+        style={{
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
+          animation: 'grain 8s steps(10) infinite'
+        }}
+      />
+
+      <style jsx>{`
+        @keyframes gradient {
+          0%, 100% { opacity: 0.7; }
+          50% { opacity: 0.85; }
+        }
+        @keyframes grain {
+          0%, 100% { transform: translate(0, 0); }
+          10% { transform: translate(-5%, -10%); }
+          30% { transform: translate(3%, -15%); }
+          50% { transform: translate(12%, 9%); }
+          70% { transform: translate(9%, 4%); }
+          90% { transform: translate(-1%, 7%); }
+        }
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .animate-gradient {
+          animation: gradient 8s ease-in-out infinite;
+        }
+        .animate-slideDown {
+          animation: slideDown 0.5s ease-out;
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.6s ease-out;
+        }
+        .animate-scaleIn {
+          animation: scaleIn 0.4s ease-out;
+        }
+      `}</style>
+
       {/* Main content wrapper */}
       <div className="relative" style={{ minHeight: '100vh' }}>
-        {/* Enhanced Header with Glassmorphism */}
+        {/* Enhanced Header with Glassmorphism and Soft Animation */}
         <div
-          className="sticky top-0 z-40 px-8 py-5 backdrop-blur-xl"
+          className="sticky top-0 z-40 px-8 py-5 backdrop-blur-xl transition-all duration-500 ease-out animate-slideDown"
           style={{
             backgroundColor: `${COLORS.charcoal}E6`,
             borderBottom: `1px solid ${COLORS.gold}20`,
@@ -304,9 +389,6 @@ function POSContent() {
 
             {/* Right Section - Controls */}
             <div className="flex items-center space-x-4">
-              {/* Branch Selector */}
-              <BranchSelector variant="default" />
-
               {/* Cashier Info */}
               <div className="flex items-center space-x-2.5">
                 <div
@@ -351,27 +433,31 @@ function POSContent() {
 
         {/* Main Content - Enhanced Two Pane Layout */}
         <div className="flex h-[calc(100vh-92px)]">
-          {/* Left Pane - Catalog with Enhanced Border */}
+          {/* Left Pane - Catalog with Enhanced Border and Soft Animation */}
           <div
-            className="flex-1 min-w-0"
+            className="flex-1 min-w-0 animate-fadeIn"
             style={{
               borderRight: `1px solid ${COLORS.gold}15`,
-              background: `linear-gradient(to bottom, ${COLORS.charcoal}00 0%, ${COLORS.charcoal}40 100%)`
+              background: `linear-gradient(to bottom, ${COLORS.charcoal}00 0%, ${COLORS.charcoal}40 100%)`,
+              animationDelay: '0.1s'
             }}
           >
             <CatalogPane
               organizationId={effectiveOrgId}
-              onAddItem={addLineItem}
-              currentCustomerId={ticket.customer_id}
-              currentAppointmentId={ticket.appointment_id}
+              onAddItem={handleAddItem}
+              {...(ticket.customer_id ? { currentCustomerId: ticket.customer_id } : {})}
+              {...(ticket.appointment_id ? { currentAppointmentId: ticket.appointment_id } : {})}
+              {...(defaultStylistId ? { defaultStylistId } : {})}
+              {...(defaultStylistName ? { defaultStylistName } : {})}
             />
           </div>
 
-          {/* Right Pane - Enhanced Cart Sidebar */}
+          {/* Right Pane - Enhanced Cart Sidebar with Soft Animation */}
           <div
-            className="w-[420px] shrink-0 flex flex-col"
+            className="w-[420px] shrink-0 flex flex-col animate-fadeIn"
             style={{
-              background: `linear-gradient(to bottom, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`
+              background: `linear-gradient(to bottom, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
+              animationDelay: '0.2s'
             }}
           >
             {/* Enhanced Action Buttons Bar */}
@@ -549,6 +635,16 @@ function POSContent() {
           onRemoveItem={removeLineItem}
           onAddDiscount={addDiscount}
           onAddTip={addTip}
+          onPayment={() => {
+            setIsTicketDetailsOpen(false)
+            setIsPaymentOpen(true)
+          }}
+          organizationId={effectiveOrgId}
+          {...(selectedBranchId ? { branchId: selectedBranchId } : {})}
+          {...(availableBranches?.find(b => b.id === selectedBranchId)?.entity_name ? { branchName: availableBranches.find(b => b.id === selectedBranchId)!.entity_name } : {})}
+          onCustomerSelect={handleCustomerSelect}
+          availableBranches={availableBranches || []}
+          onBranchChange={(branchId) => setSelectedBranchId(branchId)}
         />
 
         <PaymentDialog

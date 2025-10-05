@@ -1,42 +1,38 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { User, Check, Clock, Star } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { User, Check, Star, Award, Sparkles, Loader2, CheckCircle2, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/luxe-dialog'
-import { universalApi } from '@/lib/universal-api-v2'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useToast } from '@/hooks/use-toast'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { cn } from '@/lib/utils'
 
-interface Stylist {
-  id: string
-  name: string
-  specialties?: string[]
-  rating?: number
-  available?: boolean
-  avatar?: string
+// Luxe Salon Color Palette
+const COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
+  bronze: '#8C7853',
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323'
 }
 
 interface StylistSelectionModalProps {
   open: boolean
   onClose: () => void
-  service: {
-    id: string
-    name: string
-    entity_type: 'service' | 'product'
-    price: number
-  }
+  service: any
   organizationId: string
-  onConfirm: (data: {
-    entity_id: string
-    entity_type: 'service' | 'product'
-    entity_name: string
-    quantity: number
-    unit_price: number
-    stylist_id?: string
-    stylist_name?: string
-  }) => void
+  branchId?: string
+  currentStylistId?: string
+  onConfirm: (staffId: string, staffName?: string) => void
 }
 
 export function StylistSelectionModal({
@@ -44,288 +40,575 @@ export function StylistSelectionModal({
   onClose,
   service,
   organizationId,
+  branchId,
+  currentStylistId,
   onConfirm
 }: StylistSelectionModalProps) {
-  const [stylists, setStylists] = useState<Stylist[]>([])
-  const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [quantity, setQuantity] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedStaffId, setSelectedStaffId] = useState<string | null>(currentStylistId || null)
+  const [isConfirming, setIsConfirming] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const { toast } = useToast()
 
-  // Load stylists when modal opens
-  useEffect(() => {
-    if (open && organizationId) {
-      loadStylists()
+  // Use HERA Staff hook with branch filtering
+  const { staff, isLoading } = useHeraStaff({
+    organizationId,
+    filters: {
+      include_dynamic: true,
+      include_relationships: true,
+      branch_id: branchId && branchId !== 'all' ? branchId : undefined,
+      limit: 100
     }
-  }, [open, organizationId])
+  })
 
-  const loadStylists = async () => {
+  // Filter stylists based on search
+  const stylists = useMemo(() => {
+    if (!staff || !Array.isArray(staff)) {
+      return []
+    }
+
+    return staff.filter((stylist: any) => {
+      if (!stylist) return false
+
+      const matchesSearch =
+        !searchQuery ||
+        stylist.entity_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        stylist.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        stylist.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        stylist.role_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (stylist.skills &&
+          Array.isArray(stylist.skills) &&
+          stylist.skills.some((skill: string) =>
+            skill.toLowerCase().includes(searchQuery.toLowerCase())
+          ))
+
+      return matchesSearch
+    })
+  }, [staff, searchQuery])
+
+  const handleConfirm = async () => {
+    if (!selectedStaffId || isConfirming) return
+
+    const selectedStylist = staff?.find((s: any) => s.id === selectedStaffId)
+    if (!selectedStylist) return
+
     try {
-      setLoading(true)
-      universalApi.setOrganizationId(organizationId)
+      // Start confirmation process
+      setIsConfirming(true)
 
-      // Load employees who are stylists
-      const response = await universalApi.getEntities({
-        filters: {
-          entity_type: 'employee'
-        },
-        pageSize: 100
+      // Simulate processing for smooth UX (can be removed if backend is instant)
+      await new Promise(resolve => setTimeout(resolve, 400))
+
+      // Call the confirm callback
+      onConfirm(selectedStaffId, selectedStylist.entity_name)
+
+      // Show success state
+      setShowSuccess(true)
+
+      // Show success toast
+      toast({
+        title: (
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" style={{ color: COLORS.gold }} />
+            <span>Stylist Assigned</span>
+          </div>
+        ),
+        description: (
+          <div style={{ color: COLORS.bronze }}>
+            <strong style={{ color: COLORS.champagne }}>{selectedStylist.entity_name}</strong> has been
+            assigned to <strong style={{ color: COLORS.champagne }}>{service?.entity_name || service?.name}</strong>
+          </div>
+        ),
+        className: 'border-0 shadow-2xl',
+        style: {
+          backgroundColor: COLORS.charcoal,
+          borderColor: `${COLORS.gold}40`,
+          boxShadow: `0 8px 24px ${COLORS.black}, 0 0 0 1px ${COLORS.gold}40`
+        }
       })
 
-      if (response.success && response.data) {
-        const stylistData = response.data
-          .filter(emp => {
-            // Check if employee is a stylist based on metadata
-            const role = emp.metadata?.role || emp.metadata?.position
-            const isActive = emp.metadata?.is_active !== false
-            return (
-              isActive &&
-              (role === 'stylist' ||
-                role === 'senior_stylist' ||
-                role === 'master_stylist' ||
-                emp.metadata?.is_stylist === true)
-            )
-          })
-          .map(emp => ({
-            id: emp.id,
-            name: emp.entity_name,
-            specialties: emp.metadata?.specialties?.split(',') || [],
-            rating: emp.metadata?.rating || 4.5,
-            available: emp.metadata?.available !== false,
-            avatar: emp.metadata?.avatar_url
-          }))
+      // Wait for success animation
+      await new Promise(resolve => setTimeout(resolve, 800))
 
-        // Add a "No Preference" option
-        setStylists([
-          {
-            id: 'any',
-            name: 'Any Available Stylist',
-            specialties: ['All Services'],
-            rating: 0,
-            available: true
-          },
-          ...stylistData
-        ])
-      }
+      // Close modal
+      handleClose()
     } catch (error) {
-      console.error('Error loading stylists:', error)
-      // Fallback stylists for demo
-      setStylists([
-        {
-          id: 'any',
-          name: 'Any Available Stylist',
-          specialties: ['All Services'],
-          rating: 0,
-          available: true
-        },
-        {
-          id: 'sarah',
-          name: 'Sarah Johnson',
-          specialties: ['Color', 'Cuts'],
-          rating: 4.8,
-          available: true
-        },
-        {
-          id: 'mike',
-          name: 'Mike Chen',
-          specialties: ['Cuts', 'Styling'],
-          rating: 4.9,
-          available: true
-        },
-        {
-          id: 'lisa',
-          name: 'Lisa Williams',
-          specialties: ['Color', 'Treatments'],
-          rating: 4.7,
-          available: true
-        },
-        {
-          id: 'alex',
-          name: 'Alex Rodriguez',
-          specialties: ['Cuts', 'Beard'],
-          rating: 4.6,
-          available: false
-        }
-      ])
-    } finally {
-      setLoading(false)
+      console.error('Error confirming stylist:', error)
+      setIsConfirming(false)
+
+      toast({
+        title: 'Error',
+        description: 'Failed to assign stylist. Please try again.',
+        variant: 'destructive'
+      })
     }
   }
 
-  const handleConfirm = () => {
-    // For "Any Available Stylist", use walk-in as the stylist ID
-    const finalStylist =
-      selectedStylist?.id === 'any' ? { id: 'walk-in', name: 'Walk-in' } : selectedStylist
+  const handleClose = () => {
+    if (isConfirming) return // Prevent closing during confirmation
 
-    onConfirm({
-      entity_id: service.id,
-      entity_type: service.entity_type,
-      entity_name: service.name,
-      quantity,
-      unit_price: service.price,
-      stylist_id: finalStylist?.id,
-      stylist_name: finalStylist?.name
-    })
-
-    // Reset and close
-    setSelectedStylist(null)
-    setQuantity(1)
+    setSelectedStaffId(currentStylistId || null)
+    setSearchQuery('')
+    setIsConfirming(false)
+    setShowSuccess(false)
     onClose()
   }
 
-  const handleQuickAdd = () => {
-    // Quick add with "Walk-in" stylist
-    onConfirm({
-      entity_id: service.id,
-      entity_type: service.entity_type,
-      entity_name: service.name,
-      quantity: 1,
-      unit_price: service.price,
-      stylist_id: 'walk-in', // Special ID for walk-in services
-      stylist_name: 'Walk-in'
-    })
-    onClose()
+  const getInitials = (name: string) => {
+    if (!name) return '?'
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  const getDisplayRate = (stylist: any) => {
+    return stylist.display_rate || stylist.commission_rate || 30
+  }
+
+  const getSkills = (stylist: any) => {
+    if (!stylist.skills) return []
+    if (Array.isArray(stylist.skills)) return stylist.skills
+    try {
+      return typeof stylist.skills === 'string' ? JSON.parse(stylist.skills) : []
+    } catch {
+      return []
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={open => !open && onClose()}>
-      <DialogContent className="max-w-2xl bg-c2 text-champagne border border-borderl shadow-2xl rounded-2xl">
-        <DialogHeader>
-          <DialogTitle>Select Stylist for {service.name}</DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-6">
-          {/* Service Info */}
-          <div className="p-4 rounded-lg bg-c3 border border-borderl shadow-[0_2px_4px_rgba(0,0,0,0.2)]">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium text-champagne">{service.name}</h3>
-                <p className="text-sm mt-1 text-bronze">${service.price.toFixed(2)} per service</p>
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent
+        className="max-w-2xl max-h-[90vh] border-0 shadow-2xl flex flex-col"
+        style={{
+          backgroundColor: COLORS.charcoal,
+          boxShadow: `0 25px 50px -12px ${COLORS.black}, 0 0 0 1px ${COLORS.gold}20`
+        }}
+        aria-describedby="stylist-selection-description"
+      >
+        {/* Success Overlay */}
+        {showSuccess && (
+          <div
+            className="absolute inset-0 z-50 flex items-center justify-center animate-fadeIn"
+            style={{
+              backgroundColor: `${COLORS.black}95`,
+              backdropFilter: 'blur(8px)'
+            }}
+          >
+            <div className="text-center animate-scaleIn">
+              <div
+                className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center animate-successPulse"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                  boxShadow: `0 0 0 0 ${COLORS.gold}60, 0 8px 32px ${COLORS.gold}60`
+                }}
+              >
+                <CheckCircle2 className="w-12 h-12" style={{ color: COLORS.black }} />
               </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="h-8 w-8 p-0 border border-bronze/40 bg-c3 text-champagne hover:bg-borderl/50 transition-colors"
-                >
-                  -
-                </Button>
-                <span className="px-3 font-medium min-w-[3rem] text-center text-luxe-gold [text-shadow:0_0_10px_rgb(212_175_55_/_25%)]">
-                  {quantity}
-                </span>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="h-8 w-8 p-0 border border-bronze/40 bg-c3 text-champagne hover:bg-borderl/50 transition-colors"
-                >
-                  +
-                </Button>
-              </div>
+              <h3 className="text-2xl font-bold mb-2" style={{ color: COLORS.champagne }}>
+                Stylist Assigned!
+              </h3>
+              <p className="text-lg" style={{ color: COLORS.bronze }}>
+                Updating bill...
+              </p>
             </div>
           </div>
+        )}
 
-          {/* Stylist Selection */}
-          {loading ? (
-            <div className="py-8 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto border-luxe-gold"></div>
-              <p className="mt-4 text-champagne/80">Loading stylists...</p>
+        {/* Animated gradient overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-20 animate-gradient"
+          style={{
+            background: `
+              radial-gradient(ellipse 80% 60% at 30% 20%, ${COLORS.gold}40 0%, transparent 50%),
+              radial-gradient(ellipse 70% 50% at 70% 80%, ${COLORS.gold}20 0%, transparent 50%)
+            `
+          }}
+        />
+
+        <DialogHeader
+          className="pb-4 border-b relative z-10 flex-shrink-0"
+          style={{ borderColor: `${COLORS.gold}20` }}
+        >
+          <DialogTitle className="flex items-center gap-3">
+            <div
+              className="p-2.5 rounded-xl shadow-lg"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100())`,
+                boxShadow: `0 8px 20px ${COLORS.gold}40`
+              }}
+            >
+              <Sparkles className="w-5 h-5" style={{ color: COLORS.black }} />
             </div>
-          ) : (
-            <div className="space-y-3 max-h-96 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-luxe-charcoal [&::-webkit-scrollbar-thumb]:bg-bronze/30 [&::-webkit-scrollbar-thumb]:rounded">
-              {stylists.map(stylist => (
-                <Card
-                  key={stylist.id}
-                  className={cn(
-                    'cursor-pointer transition-all duration-200 border',
-                    'bg-c3 border-borderl hover:border-bronze/50 hover:shadow-md',
-                    selectedStylist?.id === stylist.id &&
-                      'ring-2 ring-luxe-gold bg-luxe-gold/[0.125] border-luxe-gold'
-                  )}
-                  onClick={() => setSelectedStylist(stylist)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center border border-bronze/30 bg-luxe-charcoal shadow-[inset_0_1px_2px_rgba(0,0,0,0.3)]">
-                          <User className="w-5 h-5 text-luxe-gold" />
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-champagne">{stylist.name}</h4>
-                          <div className="flex items-center gap-2 mt-1">
-                            {stylist.rating > 0 && (
-                              <div className="flex items-center gap-1">
-                                <Star className="w-3 h-3 fill-current text-luxe-gold" />
-                                <span className="text-xs text-bronze">{stylist.rating}</span>
-                              </div>
-                            )}
-                            <div className="flex gap-1">
-                              {stylist.specialties.slice(0, 2).map((spec, i) => (
-                                <Badge
-                                  key={i}
-                                  variant="secondary"
-                                  className="text-xs border border-bronze/30 bg-luxe-charcoal text-bronze shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)]"
-                                >
-                                  {spec}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {!stylist.available && stylist.id !== 'any' && (
-                          <Badge
-                            variant="secondary"
-                            className="border bg-danger/10 text-[#EF4444] border-danger/30 shadow-[0_0_4px_rgba(220,38,38,0.2)]"
-                          >
-                            Busy
-                          </Badge>
-                        )}
-                        {selectedStylist?.id === stylist.id && (
-                          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-luxe-gold">
-                            <Check className="w-4 h-4 text-luxe-black" />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+            <div>
+              <h2
+                className="text-xl font-semibold"
+                style={{ color: COLORS.champagne }}
+              >
+                Select Your Stylist <span className="text-xs opacity-50 font-normal">(Updated)</span>
+              </h2>
+              <p className="text-sm font-normal mt-0.5" style={{ color: COLORS.bronze }}>
+                for{' '}
+                <span className="font-semibold" style={{ color: COLORS.gold }}>
+                  {service?.entity_name || service?.name}
+                </span>
+              </p>
+            </div>
+          </DialogTitle>
+          <p id="stylist-selection-description" className="sr-only">
+            Select a stylist to assign to your service. Browse available stylists and choose the one you prefer.
+          </p>
+        </DialogHeader>
+
+        <div className="space-y-4 overflow-y-auto pr-2 pb-4 flex-1 relative z-10 custom-scrollbar min-h-0">
+          {/* Search */}
+          <div className="relative group animate-slideDown">
+            <Search
+              className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 transition-colors"
+              style={{ color: COLORS.bronze }}
+            />
+            <Input
+              placeholder="Search by name, role, or skills..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="pl-10 h-11 border transition-all"
+              style={{
+                backgroundColor: COLORS.charcoalLight,
+                borderColor: `${COLORS.gold}30`,
+                color: COLORS.champagne
+              }}
+            />
+          </div>
+
+          {/* Loading State */}
+          {isLoading && (
+            <div className="text-center py-12 animate-fadeIn">
+              <div
+                className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold}40 0%, ${COLORS.goldDark}40 100%)`,
+                  boxShadow: `0 8px 32px ${COLORS.gold}20`
+                }}
+              >
+                <div
+                  className="animate-spin rounded-full h-10 w-10 border-2"
+                  style={{ borderColor: COLORS.gold, borderTopColor: 'transparent' }}
+                />
+              </div>
+              <p style={{ color: COLORS.bronze }}>Loading stylists...</p>
             </div>
           )}
 
-          {/* Actions */}
-          <div className="flex gap-2 pt-4 border-t border-bronze/20">
-            <Button
-              variant="ghost"
-              onClick={handleQuickAdd}
-              className="border border-bronze/40 bg-c3 text-champagne hover:bg-borderl/50 transition-colors"
-            >
-              Add as Walk-in
-            </Button>
-            <div className="flex-1" />
-            <Button
-              variant="ghost"
-              onClick={onClose}
-              className="border border-bronze/40 bg-c3 text-bronze hover:bg-borderl/50 transition-colors"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleConfirm}
-              disabled={!selectedStylist}
-              className={cn(
-                'transition-all duration-200',
-                selectedStylist
-                  ? 'bg-gradient-to-r from-luxe-gold to-luxe-gold-600 text-luxe-black hover:opacity-90 shadow-[0_4px_12px_rgba(212,175,55,0.25)]'
-                  : 'bg-c3 text-bronze border border-bronze/30 opacity-50 cursor-not-allowed'
+          {/* Stylists List */}
+          {!isLoading && (
+            <div className="space-y-3">
+              {stylists.length === 0 ? (
+                <div className="text-center py-12 animate-fadeIn">
+                  <div
+                    className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+                    style={{
+                      backgroundColor: COLORS.charcoalLight,
+                      boxShadow: `inset 0 2px 4px ${COLORS.black}60`
+                    }}
+                  >
+                    <User className="w-8 h-8" style={{ color: COLORS.bronze }} />
+                  </div>
+                  <h3 className="font-semibold mb-2" style={{ color: COLORS.champagne }}>
+                    No stylists found
+                  </h3>
+                  <p className="text-sm" style={{ color: COLORS.bronze }}>
+                    {searchQuery
+                      ? 'Try adjusting your search terms'
+                      : branchId && branchId !== 'all'
+                      ? 'No stylists available at this branch'
+                      : 'No stylists available'}
+                  </p>
+                </div>
+              ) : (
+                stylists.map((stylist: any, index: number) => {
+                  const isSelected = selectedStaffId === stylist.id
+                  const skills = getSkills(stylist)
+                  const displayRate = getDisplayRate(stylist)
+
+                return (
+                  <Card
+                    key={stylist.id}
+                    className={cn(
+                      'cursor-pointer transition-all duration-300 hover:shadow-xl border-2 animate-scaleIn',
+                      isConfirming && !isSelected && 'opacity-50 pointer-events-none'
+                    )}
+                    style={{
+                      backgroundColor: isSelected
+                        ? `${COLORS.gold}15`
+                        : COLORS.charcoalLight,
+                      borderColor: isSelected ? COLORS.gold : `${COLORS.gold}20`,
+                      boxShadow: isSelected
+                        ? `0 8px 24px ${COLORS.gold}40, 0 0 0 1px ${COLORS.gold}`
+                        : `0 2px 8px ${COLORS.black}40`,
+                      animationDelay: `${index * 50}ms`
+                    }}
+                    onClick={() => !isConfirming && setSelectedStaffId(stylist.id)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-4">
+                        {/* Avatar */}
+                        <div className="relative flex-shrink-0">
+                          <Avatar
+                            className="w-14 h-14 ring-2 transition-all duration-300"
+                            style={{
+                              ringColor: isSelected ? COLORS.gold : `${COLORS.gold}30`,
+                              boxShadow: isSelected
+                                ? `0 4px 12px ${COLORS.gold}60`
+                                : 'none'
+                            }}
+                          >
+                            <AvatarImage src={stylist.avatarUrl || undefined} />
+                            <AvatarFallback
+                              className="text-base font-semibold"
+                              style={{
+                                background: isSelected
+                                  ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                                  : `linear-gradient(135deg, ${COLORS.bronze} 0%, ${COLORS.bronze}80 100%)`,
+                                color: isSelected ? COLORS.black : COLORS.champagne
+                              }}
+                            >
+                              {getInitials(stylist.entity_name || 'Unknown')}
+                            </AvatarFallback>
+                          </Avatar>
+                          {isSelected && (
+                            <div
+                              className="absolute -top-1 -right-1 rounded-full p-1 shadow-lg animate-pulse"
+                              style={{
+                                background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                              }}
+                            >
+                              <Check className="w-4 h-4" style={{ color: COLORS.black }} />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Stylist Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                              <h3
+                                className="font-semibold text-base mb-0.5"
+                                style={{
+                                  color: isSelected ? COLORS.champagne : COLORS.lightText
+                                }}
+                              >
+                                {stylist.entity_name}
+                              </h3>
+                              <p
+                                className="text-xs font-medium"
+                                style={{ color: COLORS.bronze }}
+                              >
+                                {stylist.role_title || stylist.entity_code || 'Stylist'}
+                              </p>
+                            </div>
+                            <Badge
+                              className="text-xs font-semibold shadow-sm border"
+                              style={{
+                                backgroundColor: isSelected
+                                  ? COLORS.gold
+                                  : `${COLORS.gold}20`,
+                                borderColor: COLORS.gold,
+                                color: isSelected ? COLORS.black : COLORS.gold
+                              }}
+                            >
+                              Available
+                            </Badge>
+                          </div>
+
+                          {/* Skills */}
+                          {skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mb-3">
+                              {skills.slice(0, 3).map((skill: string, index: number) => (
+                                <Badge
+                                  key={index}
+                                  variant="outline"
+                                  className="text-xs border"
+                                  style={{
+                                    backgroundColor: `${COLORS.charcoalDark}`,
+                                    borderColor: `${COLORS.bronze}40`,
+                                    color: COLORS.bronze
+                                  }}
+                                >
+                                  {skill}
+                                </Badge>
+                              ))}
+                              {skills.length > 3 && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs border"
+                                  style={{
+                                    backgroundColor: `${COLORS.charcoalDark}`,
+                                    borderColor: `${COLORS.bronze}40`,
+                                    color: COLORS.bronze
+                                  }}
+                                >
+                                  +{skills.length - 3} more
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Stats */}
+                          <div className="flex items-center gap-4 text-xs">
+                            <div
+                              className="flex items-center gap-1.5 font-medium"
+                              style={{
+                                color: isSelected ? COLORS.gold : COLORS.bronze
+                              }}
+                            >
+                              <Star className="w-3.5 h-3.5 fill-current" />
+                              <span>{displayRate}% commission</span>
+                            </div>
+                            {stylist.hire_date && (
+                              <div
+                                className="flex items-center gap-1.5 font-medium"
+                                style={{
+                                  color: isSelected ? COLORS.gold : COLORS.bronze
+                                }}
+                              >
+                                <Award className="w-3.5 h-3.5" />
+                                <span>Since {new Date(stylist.hire_date).getFullYear()}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })
               )}
-            >
-              Add to Cart
-            </Button>
-          </div>
+            </div>
+          )}
         </div>
+
+        {/* Action Buttons */}
+        <div
+          className="flex gap-3 pt-4 border-t mt-0 relative z-10 flex-shrink-0"
+          style={{ borderColor: `${COLORS.gold}20` }}
+        >
+          <Button
+            variant="outline"
+            onClick={handleClose}
+            disabled={isConfirming}
+            className="flex-1 h-11 font-medium border hover:opacity-80 transition-all"
+            style={{
+              backgroundColor: COLORS.charcoalLight,
+              borderColor: `${COLORS.bronze}60`,
+              color: COLORS.bronze,
+              opacity: isConfirming ? 0.5 : 1
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirm}
+            disabled={!selectedStaffId || isConfirming}
+            className={cn(
+              'flex-1 h-11 font-semibold shadow-lg transition-all duration-300'
+            )}
+            style={{
+              background: selectedStaffId && !isConfirming
+                ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                : `${COLORS.charcoalLight}`,
+              color: selectedStaffId && !isConfirming ? COLORS.black : COLORS.lightText,
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: selectedStaffId && !isConfirming ? COLORS.gold : `${COLORS.gold}40`,
+              boxShadow: selectedStaffId && !isConfirming
+                ? `0 4px 16px ${COLORS.gold}50`
+                : 'none',
+              opacity: !selectedStaffId || isConfirming ? 0.6 : 1
+            }}
+          >
+            {isConfirming ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Assigning Stylist...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 mr-2" />
+                {!selectedStaffId ? 'Select Stylist First' : 'Assign Stylist'}
+              </>
+            )}
+          </Button>
+        </div>
+
+        <style jsx>{`
+          @keyframes gradient {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.3; }
+          }
+          @keyframes slideDown {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes scaleIn {
+            from {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+          @keyframes successPulse {
+            0%, 100% {
+              box-shadow: 0 0 0 0 ${COLORS.gold}60, 0 8px 32px ${COLORS.gold}60;
+            }
+            50% {
+              box-shadow: 0 0 0 20px ${COLORS.gold}00, 0 8px 32px ${COLORS.gold}80;
+            }
+          }
+          .animate-gradient {
+            animation: gradient 8s ease-in-out infinite;
+          }
+          .animate-slideDown {
+            animation: slideDown 0.4s ease-out;
+          }
+          .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+          }
+          .animate-scaleIn {
+            animation: scaleIn 0.4s ease-out backwards;
+          }
+          .animate-successPulse {
+            animation: successPulse 1.5s ease-out infinite;
+          }
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: ${COLORS.charcoalDark};
+            border-radius: 4px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: ${COLORS.bronze}40;
+            border-radius: 4px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: ${COLORS.bronze}60;
+          }
+        `}</style>
       </DialogContent>
     </Dialog>
   )

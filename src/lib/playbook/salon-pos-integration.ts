@@ -148,10 +148,10 @@ export class SalonPosIntegrationService {
     }>
   > {
     try {
-      // Load all stylists
+      // Load all staff (changed from 'employee' to 'staff' entity type)
       const stylistsResponse = await universalApi.getEntities({
         filters: {
-          entity_type: 'employee'
+          entity_type: 'staff'
         },
         organizationId: this.organizationId
       })
@@ -160,6 +160,9 @@ export class SalonPosIntegrationService {
 
       const stylists = []
       for (const stylist of stylistsResponse.data) {
+        // Check if staff is active (not archived)
+        if (stylist.status === 'archived') continue
+
         // Load stylist dynamic data
         const stylistDataResponse = await universalApi.getDynamicFields(stylist.id)
 
@@ -170,20 +173,22 @@ export class SalonPosIntegrationService {
             field.field_value_text ||
             field.field_value_number ||
             field.field_value_date ||
-            field.field_value_boolean
+            field.field_value_boolean ||
+            field.field_value_json
         })
 
-        // Check if stylist is active and a stylist role
-        if (stylistFields.role === 'stylist' && stylistFields.is_active !== false) {
-          stylists.push({
-            id: stylist.id,
-            name: stylist.entity_name,
-            specialties: stylistFields.specialties ? stylistFields.specialties.split(',') : [],
-            commission_rate: stylistFields.commission_rate || 30,
-            available: true, // Would check actual availability
-            next_available: dateTime
-          })
-        }
+        // Get skills array (stored as JSON field)
+        const skills = stylistFields.skills || []
+        const skillsArray = Array.isArray(skills) ? skills : []
+
+        stylists.push({
+          id: stylist.id,
+          name: stylist.entity_name,
+          specialties: skillsArray, // Use skills field from staff schema
+          commission_rate: stylistFields.commission_rate || stylistFields.display_rate || 30,
+          available: true, // Would check actual availability
+          next_available: dateTime
+        })
       }
 
       return stylists

@@ -102,13 +102,38 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
         branchIds = [availableAtRels.to_entity.id]
       }
 
+      // Extract category ID from HAS_CATEGORY relationship
+      // Note: useUniversalEntity stores relationships as lowercase keys
+      const categoryRels =
+        (service as any).relationships?.has_category ||
+        (service as any).relationships?.HAS_CATEGORY ||
+        (service as any).relationships?.category
+      let categoryId = ''
+
+      console.log('[ServiceModal] Extracting category:', {
+        service_id: service.id,
+        relationships: (service as any).relationships,
+        categoryRels,
+        isArray: Array.isArray(categoryRels)
+      })
+
+      if (Array.isArray(categoryRels) && categoryRels.length > 0) {
+        categoryId = categoryRels[0].to_entity?.id || categoryRels[0].to_entity_id || ''
+      } else if (categoryRels?.to_entity?.id) {
+        categoryId = categoryRels.to_entity.id
+      } else if (categoryRels?.to_entity_id) {
+        categoryId = categoryRels.to_entity_id
+      }
+
+      console.log('[ServiceModal] Extracted category ID:', categoryId)
+
       // Map service dynamic fields to form fields
       // Service has: price_market, duration_min, active, description (dynamic field)
       // Form expects: price, duration_minutes, status, description
       form.reset({
         name: service.entity_name || '',
         code: service.entity_code || '',
-        category: service.category || '',
+        category: categoryId, // Use category ID from relationship
         price: service.price_market || service.price || undefined,
         duration_minutes: service.duration_min || service.duration_minutes || undefined,
         requires_booking: service.requires_booking || false,
@@ -369,7 +394,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                               </div>
                             ) : (
                               categoryOptions.map(cat => (
-                                <SelectItem key={cat.id} value={cat.entity_name}>
+                                <SelectItem key={cat.id} value={cat.id}>
                                   {cat.entity_name}
                                 </SelectItem>
                               ))

@@ -22,25 +22,28 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
 
     const entity_id = searchParams.get('p_entity_id')
+    const entity_ids = searchParams.get('p_entity_ids') // Support batch fetch
     const field_name = searchParams.get('p_field_name')
 
-    if (!entity_id) {
-      return NextResponse.json({ error: 'entity_id required' }, { status: 400 })
+    // Support both single and multiple entity IDs
+    if (!entity_id && !entity_ids) {
+      return NextResponse.json({ error: 'entity_id or entity_ids required' }, { status: 400 })
     }
 
     const supabase = getSupabaseService()
-
-    console.log('[dynamic-data GET] Fetching:', {
-      organizationId,
-      entity_id,
-      field_name
-    })
 
     let query = supabase
       .from('core_dynamic_data')
       .select('*')
       .eq('organization_id', organizationId)
-      .eq('entity_id', entity_id)
+
+    // Handle batch fetch or single fetch
+    if (entity_ids) {
+      const idsArray = entity_ids.split(',')
+      query = query.in('entity_id', idsArray)
+    } else if (entity_id) {
+      query = query.eq('entity_id', entity_id)
+    }
 
     if (field_name) {
       query = query.eq('field_name', field_name)
@@ -55,10 +58,6 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       )
     }
-
-    console.log('[dynamic-data GET] Success:', {
-      count: data?.length || 0
-    })
 
     return NextResponse.json({
       success: true,

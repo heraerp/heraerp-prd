@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { useHeraStaff, type StaffFormValues } from '@/hooks/useHeraStaff'
 import { useHeraRoles, type RoleFormValues, type Role } from '@/hooks/useHeraRoles'
 import { RoleModal } from './RoleModal'
+import { StaffModal } from './StaffModal'
 import { BranchSelector } from '@/components/salon/BranchSelector'
 import {
   Plus,
@@ -22,7 +23,11 @@ import {
   Shield,
   Settings,
   Building2,
-  MapPin
+  MapPin,
+  MoreVertical,
+  Archive,
+  ArchiveRestore,
+  X
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -30,7 +35,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
-import { SalonLuxeModal } from '@/components/salon/SalonLuxeModal'
 import {
   Select,
   SelectContent,
@@ -38,8 +42,16 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Label } from '@/components/ui/label'
-import { useToast } from '@/hooks/use-toast'
+import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 
@@ -74,14 +86,49 @@ function StaffContent() {
     setSelectedBranchId,
     isLoadingBranches
   } = useSecuredSalonContext()
-  const { toast } = useToast()
+  const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
   const organizationId = organization?.id
 
+  // State declarations (MUST be before hook calls that use them)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [includeArchived, setIncludeArchived] = useState(false)
+  const [roleModalOpen, setRoleModalOpen] = useState(false)
+  const [selectedRole, setSelectedRole] = useState<Role | undefined>()
+  const [activeTab, setActiveTab] = useState<'staff' | 'roles'>('staff')
+  const [roleSearchTerm, setRoleSearchTerm] = useState('')
+  const [staffModalOpen, setStaffModalOpen] = useState(false)
+  const [editingStaff, setEditingStaff] = useState<any>(null)
+
+  // Ensure default filter is "All Locations" on mount (run once)
+  React.useEffect(() => {
+    // Always set to null on first mount to show all staff
+    setSelectedBranchId(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Use the new useHeraStaff hook
-  const { staff, isLoading, error, createStaff, isCreating, refetch } = useHeraStaff({
+  // CRITICAL: Don't filter by branch when selectedBranchId is null (show all)
+  const {
+    staff,
+    isLoading,
+    error,
+    createStaff,
+    updateStaff,
+    deleteStaff,
+    archiveStaff,
+    restoreStaff,
+    isCreating,
+    isUpdating,
+    isDeleting,
+    refetch
+  } = useHeraStaff({
+    organizationId: organizationId || '',
     filters: {
-      branch_id: selectedBranchId || undefined  // Filter by selected branch
-    }
+      // Only add branch_id filter if a specific branch is selected
+      ...(selectedBranchId && selectedBranchId !== null ? { branch_id: selectedBranchId } : {}),
+      status: includeArchived ? undefined : 'active'
+    },
+    includeArchived
   })
 
   // Use the new useHeraRoles hook
@@ -91,34 +138,15 @@ function StaffContent() {
     createRole,
     updateRole,
     deleteRole,
+    archiveRole,
+    restoreRole,
     isCreating: isCreatingRole,
     isUpdating: isUpdatingRole,
     isDeleting: isDeletingRole
   } = useHeraRoles({
     organizationId: organizationId || '',
-    includeInactive: false,
+    includeInactive: includeArchived, // Show archived roles when includeArchived is true
     userRole: 'manager' // TODO: Get from auth context
-  })
-
-  const [searchTerm, setSearchTerm] = useState('')
-  const [roleModalOpen, setRoleModalOpen] = useState(false)
-  const [selectedRole, setSelectedRole] = useState<Role | undefined>()
-  const [activeTab, setActiveTab] = useState<'staff' | 'roles'>('staff')
-  const [roleSearchTerm, setRoleSearchTerm] = useState('')
-  const [staffModalOpen, setStaffModalOpen] = useState(false)
-
-  const [newStaff, setNewStaff] = useState<StaffFormValues>({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    role_id: undefined,
-    role_title: '',
-    status: 'active',
-    hourly_cost: 0,
-    display_rate: 0,
-    skills: [],
-    bio: ''
   })
 
   // Calculate stats from staff data
@@ -129,50 +157,131 @@ function StaffContent() {
     averageRating: 4.8
   }
 
-  const handleAddStaff = async () => {
-    if (!organizationId || !newStaff.first_name || !newStaff.last_name) return
+  const handleSaveStaff = async (staffData: StaffFormValues) => {
+    if (!organizationId) return
+
+    // Construct staff name from first_name and last_name (matching the createStaff pattern)
+    const staffName = staffData.full_name ||
+                     `${staffData.first_name || ''} ${staffData.last_name || ''}`.trim() ||
+                     'Staff member'
+
+    // If no branches selected, assign to ALL available branches
+    const branchIds = staffData.branch_ids && staffData.branch_ids.length > 0
+      ? staffData.branch_ids
+      : availableBranches.map(b => b.id)
+
+    const staffDataWithBranches = {
+      ...staffData,
+      branch_ids: branchIds
+    }
+
+    const loadingId = showLoading(
+      editingStaff ? 'Updating staff member...' : 'Creating staff member...',
+      'Please wait while we save your changes'
+    )
 
     try {
-      // Find the selected role to get both role_id and role_title
-      const selectedRoleData = roles?.find(r => r.id === newStaff.role_id)
+      if (editingStaff) {
+        // Update existing staff
+        await updateStaff(editingStaff.id, staffDataWithBranches)
+        removeToast(loadingId)
+        showSuccess(
+          'Staff member updated successfully',
+          `${staffName} has been updated`
+        )
+      } else {
+        // Create new staff
+        await createStaff(staffDataWithBranches)
+        removeToast(loadingId)
+        showSuccess(
+          'Staff member created successfully',
+          `${staffName} has been added to your team`
+        )
+      }
 
-      await createStaff({
-        ...newStaff,
-        role_id: selectedRoleData?.id,
-        role_title: selectedRoleData?.title || selectedRoleData?.entity_name || '',
-        branch_id: selectedBranchId || undefined  // Associate with selected branch
-      })
-
-      toast({
-        title: 'Success',
-        description: 'Staff member added successfully',
-        variant: 'default'
-      })
-
-      // Reset form
-      setNewStaff({
-        first_name: '',
-        last_name: '',
-        email: '',
-        phone: '',
-        role_id: undefined,
-        role_title: '',
-        status: 'active',
-        hourly_cost: 0,
-        display_rate: 0,
-        skills: [],
-        bio: ''
-      })
-
-      // Close modal
       setStaffModalOpen(false)
+      setEditingStaff(null)
+      refetch()
     } catch (error) {
-      console.error('Error adding staff:', error)
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to add staff member',
-        variant: 'destructive'
-      })
+      console.error('Error saving staff:', error)
+      removeToast(loadingId)
+      showError(
+        editingStaff ? 'Failed to update staff member' : 'Failed to create staff member',
+        error instanceof Error ? error.message : 'Please try again or contact support'
+      )
+      throw error // Re-throw so modal knows to stay open
+    }
+  }
+
+  const handleDeleteStaff = async (staffId: string) => {
+    if (!organizationId) return
+
+    const staffMember = staff?.find(s => s.id === staffId)
+    const staffName = staffMember?.entity_name || 'Staff member'
+
+    const loadingId = showLoading('Deleting staff member...', 'This action cannot be undone')
+
+    try {
+      await deleteStaff(staffId, 'Permanently delete staff member')
+      removeToast(loadingId)
+      showSuccess('Staff member deleted', `${staffName} has been permanently removed`)
+      refetch()
+    } catch (error) {
+      console.error('Error deleting staff:', error)
+      removeToast(loadingId)
+      showError(
+        'Failed to delete staff member',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+      throw error
+    }
+  }
+
+  const handleArchiveStaff = async (staffId: string) => {
+    if (!organizationId) return
+
+    const staffMember = staff?.find(s => s.id === staffId)
+    const staffName = staffMember?.entity_name || 'Staff member'
+
+    const loadingId = showLoading('Archiving staff member...', 'Please wait')
+
+    try {
+      await archiveStaff(staffId)
+      removeToast(loadingId)
+      showSuccess('Staff member archived', `${staffName} has been archived`)
+      refetch()
+    } catch (error) {
+      console.error('Error archiving staff:', error)
+      removeToast(loadingId)
+      showError(
+        'Failed to archive staff member',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+      throw error
+    }
+  }
+
+  const handleRestoreStaff = async (staffId: string) => {
+    if (!organizationId) return
+
+    const staffMember = staff?.find(s => s.id === staffId)
+    const staffName = staffMember?.entity_name || 'Staff member'
+
+    const loadingId = showLoading('Restoring staff member...', 'Please wait')
+
+    try {
+      await restoreStaff(staffId)
+      removeToast(loadingId)
+      showSuccess('Staff member restored', `${staffName} has been restored`)
+      refetch()
+    } catch (error) {
+      console.error('Error restoring staff:', error)
+      removeToast(loadingId)
+      showError(
+        'Failed to restore staff member',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+      throw error
     }
   }
 
@@ -190,29 +299,28 @@ function StaffContent() {
   const handleSaveRole = async (roleData: RoleFormValues) => {
     if (!organizationId) return
 
+    const loadingId = showLoading(
+      selectedRole ? 'Updating role...' : 'Creating role...',
+      'Please wait'
+    )
+
     try {
       if (selectedRole) {
         await updateRole(selectedRole.id, roleData)
-        toast({
-          title: 'Success',
-          description: 'Role updated successfully',
-          variant: 'default'
-        })
+        removeToast(loadingId)
+        showSuccess('Role updated successfully', `${roleData.title} has been updated`)
       } else {
         await createRole(roleData)
-        toast({
-          title: 'Success',
-          description: 'Role created successfully',
-          variant: 'default'
-        })
+        removeToast(loadingId)
+        showSuccess('Role created successfully', `${roleData.title} has been added`)
       }
     } catch (error) {
       console.error('Error saving role:', error)
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to save role',
-        variant: 'destructive'
-      })
+      removeToast(loadingId)
+      showError(
+        selectedRole ? 'Failed to update role' : 'Failed to create role',
+        error instanceof Error ? error.message : 'Please try again or contact support'
+      )
       throw error
     }
   }
@@ -220,20 +328,68 @@ function StaffContent() {
   const handleDeleteRole = async (roleId: string) => {
     if (!organizationId) return
 
+    const role = roles?.find(r => r.id === roleId)
+    const roleName = role?.title || role?.entity_name || 'Role'
+
+    const loadingId = showLoading('Deleting role...', 'This action cannot be undone')
+
     try {
       await deleteRole(roleId)
-      toast({
-        title: 'Success',
-        description: 'Role deleted successfully',
-        variant: 'default'
-      })
+      removeToast(loadingId)
+      showSuccess('Role deleted', `${roleName} has been removed`)
     } catch (error) {
       console.error('Error deleting role:', error)
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to delete role',
-        variant: 'destructive'
-      })
+      removeToast(loadingId)
+      showError(
+        'Failed to delete role',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+      throw error
+    }
+  }
+
+  const handleArchiveRole = async (roleId: string) => {
+    if (!organizationId) return
+
+    const role = roles?.find(r => r.id === roleId)
+    const roleName = role?.title || role?.entity_name || 'Role'
+
+    const loadingId = showLoading('Archiving role...', 'Please wait')
+
+    try {
+      await archiveRole(roleId)
+      removeToast(loadingId)
+      showSuccess('Role archived', `${roleName} has been archived`)
+    } catch (error) {
+      console.error('Error archiving role:', error)
+      removeToast(loadingId)
+      showError(
+        'Failed to archive role',
+        error instanceof Error ? error.message : 'Please try again'
+      )
+      throw error
+    }
+  }
+
+  const handleRestoreRole = async (roleId: string) => {
+    if (!organizationId) return
+
+    const role = roles?.find(r => r.id === roleId)
+    const roleName = role?.title || role?.entity_name || 'Role'
+
+    const loadingId = showLoading('Restoring role...', 'Please wait')
+
+    try {
+      await restoreRole(roleId)
+      removeToast(loadingId)
+      showSuccess('Role restored', `${roleName} has been restored`)
+    } catch (error) {
+      console.error('Error restoring role:', error)
+      removeToast(loadingId)
+      showError(
+        'Failed to restore role',
+        error instanceof Error ? error.message : 'Please try again'
+      )
       throw error
     }
   }
@@ -259,6 +415,24 @@ function StaffContent() {
         r.entity_name?.toLowerCase().includes(roleSearchTerm.toLowerCase()) ||
         r.description?.toLowerCase().includes(roleSearchTerm.toLowerCase())
     ) || []
+
+  // Calculate staff count per role
+  const getStaffCountForRole = (roleId: string) => {
+    const role = roles?.find(r => r.id === roleId)
+    if (!role) return 0
+
+    return staff?.filter(s => {
+      // First check if there's a direct role_id match
+      if (s.role_id === roleId) return true
+
+      // Then check if role_title matches this role's title or entity_name
+      const roleTitle = s.role_title?.toLowerCase() || ''
+      const thisRoleTitle = role.title?.toLowerCase() || ''
+      const thisRoleEntityName = role.entity_name?.toLowerCase() || ''
+
+      return roleTitle && (roleTitle === thisRoleTitle || roleTitle === thisRoleEntityName)
+    }).length || 0
+  }
 
   // Role stats
   const roleStats = {
@@ -354,7 +528,10 @@ function StaffContent() {
             {activeTab === 'staff' ? (
               <>
                 <Button
-                  onClick={() => setStaffModalOpen(true)}
+                  onClick={() => {
+                    setEditingStaff(null)
+                    setStaffModalOpen(true)
+                  }}
                   style={{
                     background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
                     color: COLORS.black,
@@ -366,299 +543,18 @@ function StaffContent() {
                   Add Staff Member
                 </Button>
 
-                <SalonLuxeModal
+                <StaffModal
                   open={staffModalOpen}
-                  onClose={() => setStaffModalOpen(false)}
-                  title="Add New Staff Member"
-                  maxWidth="48rem"
-                >
-                  <div className="space-y-5 pt-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label
-                          htmlFor="first_name"
-                          className="text-sm font-semibold mb-2 block"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          First Name
-                        </Label>
-                        <Input
-                          id="first_name"
-                          value={newStaff.first_name}
-                          onChange={e => setNewStaff({ ...newStaff, first_name: e.target.value })}
-                          placeholder="First name"
-                          className="transition-all duration-200 border-0 outline-none"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            border: `1px solid ${COLORS.gold}66`,
-                            color: COLORS.champagne,
-                            padding: '0.75rem',
-                            borderRadius: '0.375rem'
-                          }}
-                          onFocus={e => {
-                            e.target.style.border = `2px solid ${COLORS.gold}`
-                            e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
-                          }}
-                          onBlur={e => {
-                            e.target.style.border = `1px solid ${COLORS.gold}66`
-                            e.target.style.boxShadow = 'none'
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <Label
-                          htmlFor="last_name"
-                          className="text-sm font-semibold mb-2 block"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          Last Name
-                        </Label>
-                        <Input
-                          id="last_name"
-                          value={newStaff.last_name}
-                          onChange={e => setNewStaff({ ...newStaff, last_name: e.target.value })}
-                          placeholder="Last name"
-                          className="transition-all duration-200 border-0 outline-none"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            border: `1px solid ${COLORS.gold}66`,
-                            color: COLORS.champagne,
-                            padding: '0.75rem',
-                            borderRadius: '0.375rem'
-                          }}
-                          onFocus={e => {
-                            e.target.style.border = `2px solid ${COLORS.gold}`
-                            e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
-                          }}
-                          onBlur={e => {
-                            e.target.style.border = `1px solid ${COLORS.gold}66`
-                            e.target.style.boxShadow = 'none'
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <Label
-                        htmlFor="role_id"
-                        className="text-sm font-semibold mb-2 block"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        Role <span style={{ color: COLORS.gold, fontSize: '1.2em' }}>*</span>
-                      </Label>
-                      <Select
-                        value={newStaff.role_id || ''}
-                        onValueChange={value => setNewStaff({ ...newStaff, role_id: value })}
-                      >
-                        <SelectTrigger
-                          className="border-[#D4AF37] focus:border-[#D4AF37] focus:ring-2 focus:ring-opacity-50 transition-all duration-200"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            color: COLORS.champagne,
-                            borderColor: `${COLORS.gold}40`,
-                            padding: '0.75rem'
-                          }}
-                        >
-                          <SelectValue placeholder="Select a role (required)" />
-                        </SelectTrigger>
-                        <SelectContent className="hera-select-content">
-                          {roles?.map(role => (
-                            <SelectItem key={role.id} value={role.id} className="hera-select-item">
-                              {role.title || role.entity_name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label
-                          htmlFor="phone"
-                          className="text-sm font-semibold mb-2 block"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          Phone
-                        </Label>
-                        <Input
-                          id="phone"
-                          value={newStaff.phone || ''}
-                          onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
-                          placeholder="+971 50 123 4567"
-                          className="transition-all duration-200 border-0 outline-none"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            border: `1px solid ${COLORS.gold}66`,
-                            color: COLORS.champagne,
-                            padding: '0.75rem',
-                            borderRadius: '0.375rem'
-                          }}
-                          onFocus={e => {
-                            e.target.style.border = `2px solid ${COLORS.gold}`
-                            e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
-                          }}
-                          onBlur={e => {
-                            e.target.style.border = `1px solid ${COLORS.gold}66`
-                            e.target.style.boxShadow = 'none'
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <Label
-                          htmlFor="email"
-                          className="text-sm font-semibold mb-2 block"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          Email
-                        </Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={newStaff.email}
-                          onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
-                          placeholder="staff@salon.com"
-                          className="transition-all duration-200 border-0 outline-none"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            border: `1px solid ${COLORS.gold}66`,
-                            color: COLORS.champagne,
-                            padding: '0.75rem',
-                            borderRadius: '0.375rem'
-                          }}
-                          onFocus={e => {
-                            e.target.style.border = `2px solid ${COLORS.gold}`
-                            e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
-                          }}
-                          onBlur={e => {
-                            e.target.style.border = `1px solid ${COLORS.gold}66`
-                            e.target.style.boxShadow = 'none'
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label
-                          htmlFor="display_rate"
-                          className="text-sm font-semibold mb-2 block"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          Display Rate (AED/hr)
-                        </Label>
-                        <Input
-                          id="display_rate"
-                          type="number"
-                          value={newStaff.display_rate || ''}
-                          onChange={e =>
-                            setNewStaff({
-                              ...newStaff,
-                              display_rate: parseFloat(e.target.value) || 0
-                            })
-                          }
-                          placeholder="150"
-                          className="transition-all duration-200 border-0 outline-none"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            border: `1px solid ${COLORS.gold}66`,
-                            color: COLORS.champagne,
-                            padding: '0.75rem',
-                            borderRadius: '0.375rem'
-                          }}
-                          onFocus={e => {
-                            e.target.style.border = `2px solid ${COLORS.gold}`
-                            e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
-                          }}
-                          onBlur={e => {
-                            e.target.style.border = `1px solid ${COLORS.gold}66`
-                            e.target.style.boxShadow = 'none'
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <Label
-                          htmlFor="hourly_cost"
-                          className="text-sm font-semibold mb-2 block"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          Hourly Cost (AED)
-                        </Label>
-                        <Input
-                          id="hourly_cost"
-                          type="number"
-                          value={newStaff.hourly_cost || ''}
-                          onChange={e =>
-                            setNewStaff({
-                              ...newStaff,
-                              hourly_cost: parseFloat(e.target.value) || 0
-                            })
-                          }
-                          placeholder="80"
-                          className="transition-all duration-200 border-0 outline-none"
-                          style={{
-                            backgroundColor: COLORS.charcoalLight,
-                            border: `1px solid ${COLORS.gold}66`,
-                            color: COLORS.champagne,
-                            padding: '0.75rem',
-                            borderRadius: '0.375rem'
-                          }}
-                          onFocus={e => {
-                            e.target.style.border = `2px solid ${COLORS.gold}`
-                            e.target.style.boxShadow = `0 0 0 3px ${COLORS.gold}20`
-                          }}
-                          onBlur={e => {
-                            e.target.style.border = `1px solid ${COLORS.gold}66`
-                            e.target.style.boxShadow = 'none'
-                          }}
-                        />
-                      </div>
-                    </div>
-                    {roles && roles.length === 0 ? (
-                      <Alert
-                        style={{
-                          backgroundColor: COLORS.charcoalLight,
-                          border: `1px solid ${COLORS.gold}40`,
-                          color: COLORS.champagne
-                        }}
-                      >
-                        <AlertDescription style={{ color: COLORS.bronze }}>
-                          Please create at least one role first before adding staff members.
-                          <Button
-                            onClick={() => {
-                              setStaffModalOpen(false)
-                              setActiveTab('roles')
-                              setTimeout(() => handleOpenRoleModal(), 300)
-                            }}
-                            className="mt-3 w-full"
-                            style={{
-                              background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                              color: COLORS.black,
-                              border: 'none'
-                            }}
-                          >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Go to Roles Tab
-                          </Button>
-                        </AlertDescription>
-                      </Alert>
-                    ) : (
-                      <Button
-                        className="w-full hover:opacity-90 transition-opacity"
-                        onClick={handleAddStaff}
-                        disabled={
-                          isCreating ||
-                          !newStaff.first_name ||
-                          !newStaff.last_name ||
-                          !newStaff.role_id
-                        }
-                        style={{
-                          background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                          color: COLORS.black,
-                          border: 'none'
-                        }}
-                      >
-                        {isCreating ? 'Adding...' : 'Add Staff Member'}
-                      </Button>
-                    )}
-                  </div>
-                </SalonLuxeModal>
+                  onOpenChange={setStaffModalOpen}
+                  onSave={handleSaveStaff}
+                  onDelete={handleDeleteStaff}
+                  onArchive={handleArchiveStaff}
+                  staff={editingStaff}
+                  roles={roles || []}
+                  branches={availableBranches || []}
+                  userRole="manager"
+                  isLoading={isCreating || isUpdating}
+                />
               </>
             ) : (
               <Button
@@ -740,7 +636,7 @@ function StaffContent() {
         {/* Staff Tab Content */}
         {activeTab === 'staff' && (
           <>
-            {/* Stats Cards */}
+            {/* Stats Cards - Luxe Gradient Design */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               {[
                 {
@@ -748,49 +644,68 @@ function StaffContent() {
                   value: stats.totalStaff,
                   desc: 'Team members',
                   icon: Users,
-                  color: COLORS.emerald
+                  gradient: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.emerald}15 100%)`
                 },
                 {
                   title: 'Active Today',
                   value: stats.activeToday,
                   desc: 'Working now',
                   icon: UserCheck,
-                  color: COLORS.gold
+                  gradient: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.goldDark}10 100%)`
                 },
                 {
                   title: 'On Leave',
                   value: stats.onLeave,
                   desc: 'Away today',
                   icon: Calendar,
-                  color: COLORS.bronze
+                  gradient: `linear-gradient(135deg, ${COLORS.bronze}15 0%, ${COLORS.rose}15 100%)`
                 },
                 {
                   title: 'Avg Rating',
                   value: stats.averageRating,
                   desc: 'Out of 5.0',
                   icon: TrendingUp,
-                  color: COLORS.champagne
+                  gradient: `linear-gradient(135deg, ${COLORS.champagne}15 0%, ${COLORS.gold}15 100%)`
                 }
               ].map((stat, index) => (
                 <Card
                   key={index}
+                  className="group transition-all duration-500 hover:scale-105 hover:shadow-2xl animate-in fade-in slide-in-from-bottom-4"
                   style={{
+                    background: stat.gradient,
                     backgroundColor: COLORS.charcoalLight,
-                    border: `1px solid ${COLORS.gold}20`,
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+                    border: `1px solid ${COLORS.gold}30`,
+                    boxShadow: `0 4px 20px ${COLORS.black}40`,
+                    backdropFilter: 'blur(10px)',
+                    animationDelay: `${index * 100}ms`,
+                    animationDuration: '600ms'
                   }}
                 >
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium" style={{ color: COLORS.bronze }}>
+                    <CardTitle
+                      className="text-sm font-semibold tracking-wide transition-colors duration-300 group-hover:text-champagne"
+                      style={{ color: COLORS.bronze }}
+                    >
                       {stat.title}
                     </CardTitle>
-                    <stat.icon className="h-4 w-4" style={{ color: stat.color }} />
+                    <div
+                      className="p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
+                      style={{
+                        backgroundColor: `${COLORS.gold}20`,
+                        border: `1px solid ${COLORS.gold}40`
+                      }}
+                    >
+                      <stat.icon className="h-5 w-5" style={{ color: COLORS.gold }} />
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold" style={{ color: COLORS.champagne }}>
+                    <div
+                      className="text-3xl font-bold mb-1 transition-all duration-300 group-hover:scale-110"
+                      style={{ color: COLORS.champagne }}
+                    >
                       {stat.value}
                     </div>
-                    <p className="text-xs" style={{ color: COLORS.bronze }}>
+                    <p className="text-xs font-medium" style={{ color: COLORS.bronze, opacity: 0.8 }}>
                       {stat.desc}
                     </p>
                   </CardContent>
@@ -798,62 +713,95 @@ function StaffContent() {
               ))}
             </div>
 
-            {/* Search and Filters */}
-            <div className="mb-6 space-y-4">
-              <div className="flex items-center gap-4">
+            {/* Search and Filters - Luxe Design */}
+            <div className="mb-8 space-y-4">
+              {/* Archive Toggle and Search */}
+              <div className="flex items-center justify-between gap-4 p-4 rounded-xl backdrop-blur-xl" style={{
+                background: `linear-gradient(135deg, ${COLORS.charcoalLight}90 0%, ${COLORS.charcoal}90 100%)`,
+                border: `1px solid ${COLORS.gold}20`,
+                boxShadow: `0 4px 12px ${COLORS.black}40`
+              }}>
+                <div className="flex items-center gap-4">
+                  <Tabs
+                    value={includeArchived ? 'all' : 'active'}
+                    onValueChange={v => setIncludeArchived(v === 'all')}
+                  >
+                    <TabsList className="transition-all duration-300" style={{
+                      background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
+                      border: `1px solid ${COLORS.gold}30`,
+                      padding: '4px'
+                    }}>
+                      <TabsTrigger
+                        value="active"
+                        className="transition-all duration-300 data-[state=active]:bg-gradient-to-r"
+                        style={{
+                          color: COLORS.champagne
+                        }}
+                      >
+                        Active
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="all"
+                        className="transition-all duration-300 data-[state=active]:bg-gradient-to-r"
+                        style={{
+                          color: COLORS.champagne
+                        }}
+                      >
+                        All Staff
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+
+                  <div className="flex items-center gap-2">
+                    {selectedBranchId && (
+                      <div
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-left-2"
+                        style={{
+                          backgroundColor: COLORS.gold + '20',
+                          borderColor: COLORS.gold + '40',
+                          color: COLORS.champagne
+                        }}
+                      >
+                        <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
+                        <span>
+                          {availableBranches.find(b => b.id === selectedBranchId)?.entity_name ||
+                            'Branch'}
+                        </span>
+                        <button
+                          onClick={() => setSelectedBranchId(null)}
+                          className="ml-1 hover:scale-110 active:scale-95 transition-all duration-200 rounded-full p-0.5 hover:bg-gold/20"
+                          aria-label="Clear branch filter"
+                        >
+                          <X className="h-3 w-3" style={{ color: COLORS.gold }} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="relative flex-1 max-w-md">
                   <Search
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
-                    style={{ color: COLORS.bronze }}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 transition-all duration-300"
+                    style={{ color: COLORS.gold }}
                   />
                   <Input
                     placeholder="Search by name or role..."
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="pl-10 border-0 outline-none"
+                    className="pl-12 pr-4 py-3 border-0 outline-none transition-all duration-300 focus:ring-2 focus:scale-[1.02]"
                     style={{
-                      backgroundColor: COLORS.charcoalLight,
+                      background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
                       border: `1px solid ${COLORS.gold}30`,
                       color: COLORS.champagne,
-                      borderRadius: '0.375rem'
+                      borderRadius: '0.75rem',
+                      boxShadow: `inset 0 2px 8px ${COLORS.black}40`,
+                      ringColor: `${COLORS.gold}40`
                     }}
                   />
                 </div>
 
                 <BranchSelector variant="default" />
               </div>
-
-              {/* Active Filters */}
-              {selectedBranchId && (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm" style={{ color: COLORS.bronze }}>
-                    Active filters:
-                  </span>
-                  <Badge
-                    className="gap-1.5 font-medium border cursor-pointer hover:opacity-80 transition-opacity"
-                    style={{
-                      backgroundColor: 'rgba(212, 175, 55, 0.15)',
-                      color: COLORS.gold,
-                      borderColor: 'rgba(212, 175, 55, 0.3)'
-                    }}
-                    onClick={() => setSelectedBranchId(null)}
-                  >
-                    <Building2 className="w-3 h-3" />
-                    <MapPin className="w-3 h-3" />
-                    {availableBranches.find(b => b.id === selectedBranchId)?.entity_name ||
-                      'Branch'}
-                    <button
-                      className="ml-1 hover:text-white"
-                      onClick={e => {
-                        e.stopPropagation()
-                        setSelectedBranchId(null)
-                      }}
-                    >
-                      ×
-                    </button>
-                  </Badge>
-                </div>
-              )}
             </div>
 
             {/* Staff List */}
@@ -869,115 +817,293 @@ function StaffContent() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredStaff.map(member => (
-                  <Card
-                    key={member.id}
-                    className="transition-all duration-200 hover:scale-[1.02]"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      border: `1px solid ${COLORS.gold}20`,
-                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
-                    }}
-                  >
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4">
-                        <Avatar
-                          className="h-12 w-12"
-                          style={{
-                            backgroundColor: COLORS.gold,
-                            color: COLORS.black
-                          }}
-                        >
-                          <AvatarFallback
-                            style={{ backgroundColor: COLORS.gold, color: COLORS.black }}
-                          >
-                            {member.entity_name
-                              .split(' ')
-                              .map(n => n[0])
-                              .join('')
-                              .toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <h3
-                              className="font-semibold text-lg"
-                              style={{ color: COLORS.champagne }}
-                            >
-                              {member.entity_name}
-                            </h3>
-                            {member.status === 'on_leave' && (
-                              <Badge
-                                className="ml-2"
-                                style={{
-                                  backgroundColor: `${COLORS.rose}20`,
-                                  color: COLORS.rose,
-                                  border: `1px solid ${COLORS.rose}40`,
-                                  fontSize: '0.75rem'
-                                }}
-                              >
-                                <Palmtree className="w-3 h-3 mr-1" />
-                                On Leave
-                              </Badge>
-                            )}
-                          </div>
+                {filteredStaff.map((member, index) => {
+                  const isArchived = member.status === 'archived'
+                  return (
+                    <Card
+                      key={member.id}
+                      className="group relative overflow-hidden transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl animate-in fade-in slide-in-from-bottom-3"
+                      style={{
+                        background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
+                        border: `1px solid ${isArchived ? COLORS.bronze + '30' : COLORS.gold + '30'}`,
+                        boxShadow: `0 8px 24px ${COLORS.black}60`,
+                        backdropFilter: 'blur(10px)',
+                        animationDelay: `${index * 80}ms`,
+                        animationDuration: '500ms'
+                      }}
+                    >
+                      {/* Gradient Overlay */}
+                      <div
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                        style={{
+                          background: `radial-gradient(circle at top right, ${COLORS.gold}15 0%, transparent 70%)`
+                        }}
+                      />
+
+                      {/* Archived Badge */}
+                      {isArchived && (
+                        <div className="absolute top-3 right-3 z-10">
                           <Badge
-                            className="mt-1"
+                            className="text-xs font-semibold"
                             style={{
-                              backgroundColor: `${COLORS.emerald}20`,
-                              color: COLORS.emerald,
-                              border: `1px solid ${COLORS.emerald}40`
+                              backgroundColor: `${COLORS.bronze}30`,
+                              color: COLORS.bronze,
+                              border: `1px solid ${COLORS.bronze}60`
                             }}
                           >
-                            {member.role_title || 'Staff Member'}
+                            Archived
                           </Badge>
-                          <div className="mt-3 space-y-1 text-sm" style={{ color: COLORS.bronze }}>
-                            {member.phone && <div>📱 {member.phone}</div>}
-                            {member.email && <div>✉️ {member.email}</div>}
-                            <div className="flex gap-4 mt-2">
-                              {member.display_rate && <span>💰 AED {member.display_rate}/hr</span>}
-                              {member.skills && member.skills.length > 0 && (
-                                <span>🎨 {member.skills.slice(0, 2).join(', ')}</span>
+                        </div>
+                      )}
+
+                      <CardContent className="p-6 relative z-10">
+                        <div className="flex items-start space-x-4">
+                          <div className="relative">
+                            <Avatar
+                              className="h-14 w-14 ring-2 transition-all duration-300 group-hover:ring-4 group-hover:scale-110"
+                              style={{
+                                backgroundColor: COLORS.gold,
+                                color: COLORS.black,
+                                ringColor: `${COLORS.gold}40`
+                              }}
+                            >
+                              <AvatarFallback
+                                className="font-bold text-lg"
+                                style={{ backgroundColor: COLORS.gold, color: COLORS.black }}
+                              >
+                                {member.entity_name
+                                  .split(' ')
+                                  .map(n => n[0])
+                                  .join('')
+                                  .toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            {/* Active Status Indicator */}
+                            {!isArchived && member.status === 'active' && (
+                              <div
+                                className="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 animate-pulse"
+                                style={{
+                                  backgroundColor: COLORS.emerald,
+                                  borderColor: COLORS.charcoalLight
+                                }}
+                              />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <h3
+                                className="font-bold text-lg transition-colors duration-300 group-hover:text-gold"
+                                style={{ color: COLORS.champagne }}
+                              >
+                                {member.entity_name}
+                              </h3>
+                              {member.status === 'on_leave' && (
+                                <Badge
+                                  className="ml-2 animate-in fade-in"
+                                  style={{
+                                    backgroundColor: `${COLORS.rose}20`,
+                                    color: COLORS.rose,
+                                    border: `1px solid ${COLORS.rose}40`,
+                                    fontSize: '0.75rem'
+                                  }}
+                                >
+                                  <Palmtree className="w-3 h-3 mr-1" />
+                                  On Leave
+                                </Badge>
                               )}
                             </div>
-                          </div>
-                          <div
-                            className="mt-3 text-xs"
-                            style={{ color: COLORS.bronze, opacity: 0.7 }}
-                          >
-                            Joined {format(new Date(member.created_at), 'MMM d, yyyy')}
+                            <Badge
+                              className="mt-2 transition-all duration-300 group-hover:scale-105"
+                              style={{
+                                background: `linear-gradient(135deg, ${COLORS.emerald}20 0%, ${COLORS.gold}10 100%)`,
+                                color: COLORS.emerald,
+                                border: `1px solid ${COLORS.emerald}40`,
+                                fontWeight: 600
+                              }}
+                            >
+                              {member.role_title || 'Staff Member'}
+                            </Badge>
+                            {/* Contact and Additional Info */}
+                            <div
+                              className="mt-4 space-y-2 text-sm transition-all duration-300 group-hover:text-champagne"
+                              style={{ color: COLORS.bronze }}
+                            >
+                              {member.phone && (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs">📱</span>
+                                  <span className="font-medium">{member.phone}</span>
+                                </div>
+                              )}
+                              {member.email && (
+                                <div className="flex items-center gap-2 truncate">
+                                  <span className="text-xs">✉️</span>
+                                  <span className="font-medium truncate">{member.email}</span>
+                                </div>
+                              )}
+
+                              {/* Only show this section if there's rate or skills */}
+                              {((member.display_rate && member.display_rate > 0) || (member.skills && member.skills.length > 0)) && (
+                                <div className="flex gap-4 mt-3 pt-3 border-t" style={{ borderColor: `${COLORS.bronze}20` }}>
+                                  {member.display_rate && member.display_rate > 0 && (
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-xs">💰</span>
+                                      <span className="font-bold" style={{ color: COLORS.gold }}>
+                                        AED {member.display_rate}/hr
+                                      </span>
+                                    </div>
+                                  )}
+                                  {member.skills && member.skills.length > 0 && (
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-xs">🎨</span>
+                                      <span className="text-xs">{member.skills.slice(0, 2).join(', ')}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Only show hire date if it exists */}
+                            {member.hire_date && (
+                              <div
+                                className="mt-4 pt-3 text-xs flex items-center justify-between border-t"
+                                style={{ color: COLORS.bronze, opacity: 0.6, borderColor: `${COLORS.bronze}20` }}
+                              >
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  <span>Joined {format(new Date(member.hire_date), 'MMM d, yyyy')}</span>
+                                </div>
+                              </div>
+                            )}
+                            <div className="mt-4 flex justify-end">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                    style={{
+                                      background: `linear-gradient(135deg, ${COLORS.gold}15 0%, transparent 100%)`,
+                                      borderColor: COLORS.gold + '40',
+                                      color: COLORS.champagne,
+                                      backdropFilter: 'blur(10px)'
+                                    }}
+                                  >
+                                    <MoreVertical className="w-4 h-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="backdrop-blur-xl"
+                                  style={{
+                                    background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.charcoalDark} 100%)`,
+                                    border: `1px solid ${COLORS.gold}40`,
+                                    boxShadow: `0 8px 32px ${COLORS.black}80`
+                                  }}
+                                >
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      setEditingStaff(member)
+                                      setStaffModalOpen(true)
+                                    }}
+                                    style={{ color: COLORS.lightText }}
+                                    className="hover:!bg-cyan-900/30 hover:!text-cyan-300 transition-all duration-200 cursor-pointer"
+                                  >
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    <span className="font-medium">Edit</span>
+                                  </DropdownMenuItem>
+
+                                  <DropdownMenuSeparator style={{ backgroundColor: COLORS.gold + '20' }} />
+
+                                  {member.status === 'archived' ? (
+                                    <DropdownMenuItem
+                                      onClick={() => handleRestoreStaff(member.id)}
+                                      style={{ color: COLORS.lightText }}
+                                      className="hover:!bg-green-900/30 hover:!text-green-300 transition-all duration-200 cursor-pointer"
+                                    >
+                                      <ArchiveRestore className="mr-2 h-4 w-4" />
+                                      <span className="font-medium">Restore</span>
+                                    </DropdownMenuItem>
+                                  ) : (
+                                    <DropdownMenuItem
+                                      onClick={() => handleArchiveStaff(member.id)}
+                                      style={{ color: COLORS.lightText }}
+                                      className="hover:!bg-yellow-900/30 hover:!text-yellow-300 transition-all duration-200 cursor-pointer"
+                                    >
+                                      <Archive className="mr-2 h-4 w-4" />
+                                      <span className="font-medium">Archive</span>
+                                    </DropdownMenuItem>
+                                  )}
+
+                                  <DropdownMenuSeparator style={{ backgroundColor: COLORS.gold + '20' }} />
+
+                                  <DropdownMenuItem
+                                    onClick={() => handleDeleteStaff(member.id)}
+                                    className="hover:!bg-red-900/30 hover:!text-red-300 transition-all duration-200 cursor-pointer"
+                                    style={{ color: '#FF6B6B' }}
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    <span className="font-medium">Delete</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  )
+                })}
               </div>
             )}
 
-            {/* Empty State */}
+            {/* Empty State - Luxe Design */}
             {!isLoading && filteredStaff.length === 0 && (
-              <div className="text-center py-12">
-                <Users className="h-12 w-12 mx-auto mb-4" style={{ color: COLORS.bronze }} />
-                <h3 className="text-lg font-medium mb-2" style={{ color: COLORS.champagne }}>
+              <div
+                className="text-center py-20 rounded-2xl backdrop-blur-xl animate-in fade-in zoom-in duration-700"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.charcoalLight}60 0%, ${COLORS.charcoal}60 100%)`,
+                  border: `1px solid ${COLORS.gold}20`,
+                  boxShadow: `0 8px 32px ${COLORS.black}40`
+                }}
+              >
+                <div
+                  className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center animate-pulse"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.bronze}20 100%)`,
+                    border: `2px solid ${COLORS.gold}40`
+                  }}
+                >
+                  <Users className="h-10 w-10" style={{ color: COLORS.gold }} />
+                </div>
+                <h3
+                  className="text-2xl font-bold mb-3 tracking-wide"
+                  style={{ color: COLORS.champagne }}
+                >
                   No staff members found
                 </h3>
-                <p style={{ color: COLORS.bronze }}>
+                <p className="text-base font-medium mb-6" style={{ color: COLORS.bronze, opacity: 0.8 }}>
                   {searchTerm
-                    ? 'Try adjusting your search terms'
-                    : 'Click "Add Staff Member" to add your first employee'}
+                    ? 'Try adjusting your search terms or filters'
+                    : 'Click below to build your dream team'}
                 </p>
                 {!searchTerm && (
                   <Button
-                    className="mt-4"
-                    onClick={() => setStaffModalOpen(true)}
+                    className="mt-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                    onClick={() => {
+                      setEditingStaff(null)
+                      setStaffModalOpen(true)
+                    }}
                     style={{
                       background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
                       color: COLORS.black,
-                      border: 'none'
+                      border: 'none',
+                      padding: '1rem 2rem',
+                      fontSize: '1rem',
+                      fontWeight: 600,
+                      boxShadow: `0 4px 16px ${COLORS.gold}40`
                     }}
                   >
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-5 h-5 mr-2" />
                     Add Your First Staff Member
                   </Button>
                 )}
@@ -1100,6 +1226,12 @@ function StaffContent() {
                           className="text-center py-4 px-6 font-semibold text-sm uppercase tracking-wider"
                           style={{ color: COLORS.champagne }}
                         >
+                          Staff Count
+                        </th>
+                        <th
+                          className="text-center py-4 px-6 font-semibold text-sm uppercase tracking-wider"
+                          style={{ color: COLORS.champagne }}
+                        >
                           Rank
                         </th>
                         <th
@@ -1158,6 +1290,19 @@ function StaffContent() {
                           </td>
                           <td className="py-4 px-6 text-center">
                             <div
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                              style={{
+                                backgroundColor: getStaffCountForRole(role.id) > 0 ? COLORS.gold + '20' : COLORS.bronze + '10',
+                                color: getStaffCountForRole(role.id) > 0 ? COLORS.gold : COLORS.bronze,
+                                border: `2px solid ${getStaffCountForRole(role.id) > 0 ? COLORS.gold + '40' : COLORS.bronze + '30'}`
+                              }}
+                            >
+                              <Users className="w-4 h-4" />
+                              <span className="text-lg">{getStaffCountForRole(role.id)}</span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6 text-center">
+                            <div
                               className="inline-flex items-center justify-center w-10 h-10 rounded-full font-bold"
                               style={{
                                 backgroundColor: COLORS.emerald + '20',
@@ -1188,20 +1333,75 @@ function StaffContent() {
                             </Badge>
                           </td>
                           <td className="py-4 px-6">
-                            <div className="flex items-center justify-end gap-2">
-                              <Button
-                                size="sm"
-                                onClick={() => handleOpenRoleModal(role)}
-                                style={{
-                                  backgroundColor: COLORS.gold + '20',
-                                  color: COLORS.gold,
-                                  border: `1px solid ${COLORS.gold}40`
-                                }}
-                                className="hover:opacity-80 transition-opacity"
-                              >
-                                <Edit className="h-3 w-3 mr-1" />
-                                Edit
-                              </Button>
+                            <div className="flex items-center justify-end">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                    style={{
+                                      background: `linear-gradient(135deg, ${COLORS.gold}15 0%, transparent 100%)`,
+                                      borderColor: COLORS.gold + '40',
+                                      color: COLORS.champagne,
+                                      backdropFilter: 'blur(10px)'
+                                    }}
+                                  >
+                                    <MoreVertical className="w-4 h-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="backdrop-blur-xl"
+                                  style={{
+                                    background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.charcoalDark} 100%)`,
+                                    border: `1px solid ${COLORS.gold}40`,
+                                    boxShadow: `0 8px 32px ${COLORS.black}80`
+                                  }}
+                                >
+                                  <DropdownMenuItem
+                                    onClick={() => handleOpenRoleModal(role)}
+                                    style={{ color: COLORS.lightText }}
+                                    className="hover:!bg-cyan-900/30 hover:!text-cyan-300 transition-all duration-200 cursor-pointer"
+                                  >
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    <span className="font-medium">Edit</span>
+                                  </DropdownMenuItem>
+
+                                  <DropdownMenuSeparator style={{ backgroundColor: COLORS.gold + '20' }} />
+
+                                  {role.status === 'archived' || role.status === 'inactive' ? (
+                                    <DropdownMenuItem
+                                      onClick={() => handleRestoreRole(role.id)}
+                                      style={{ color: COLORS.lightText }}
+                                      className="hover:!bg-green-900/30 hover:!text-green-300 transition-all duration-200 cursor-pointer"
+                                    >
+                                      <ArchiveRestore className="mr-2 h-4 w-4" />
+                                      <span className="font-medium">Restore</span>
+                                    </DropdownMenuItem>
+                                  ) : (
+                                    <DropdownMenuItem
+                                      onClick={() => handleArchiveRole(role.id)}
+                                      style={{ color: COLORS.lightText }}
+                                      className="hover:!bg-yellow-900/30 hover:!text-yellow-300 transition-all duration-200 cursor-pointer"
+                                    >
+                                      <Archive className="mr-2 h-4 w-4" />
+                                      <span className="font-medium">Archive</span>
+                                    </DropdownMenuItem>
+                                  )}
+
+                                  <DropdownMenuSeparator style={{ backgroundColor: COLORS.gold + '20' }} />
+
+                                  <DropdownMenuItem
+                                    onClick={() => handleDeleteRole(role.id)}
+                                    className="hover:!bg-red-900/30 hover:!text-red-300 transition-all duration-200 cursor-pointer"
+                                    style={{ color: '#FF6B6B' }}
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    <span className="font-medium">Delete</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                           </td>
                         </tr>
@@ -1276,7 +1476,9 @@ function StaffContent() {
 export default function StaffPage() {
   return (
     <SalonAuthGuard requiredRoles={['Owner', 'Administrator', 'owner', 'administrator']}>
-      <StaffContent />
+      <StatusToastProvider>
+        <StaffContent />
+      </StatusToastProvider>
     </SalonAuthGuard>
   )
 }

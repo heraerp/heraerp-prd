@@ -108,6 +108,11 @@ export const PRODUCT_PRESET = {
       type: 'SUPPLIED_BY',
       smart_code: 'HERA.SALON.PRODUCT.REL.SUPPLIED_BY.v1',
       cardinality: 'many' as const
+    },
+    {
+      type: 'STOCK_AT',
+      smart_code: 'HERA.SALON.PRODUCT.REL.STOCK_AT.v1',
+      cardinality: 'many' as const
     }
   ]
 }
@@ -154,6 +159,12 @@ export const SERVICE_PRESET = {
       type: 'boolean' as const,
       smart_code: 'HERA.SALON.SERVICE.DYN.ACTIVE.v1',
       defaultValue: true
+    },
+    {
+      name: 'requires_booking',
+      type: 'boolean' as const,
+      smart_code: 'HERA.SALON.SERVICE.DYN.REQUIRES_BOOKING.v1',
+      defaultValue: false
     }
   ],
   relationships: [
@@ -170,6 +181,11 @@ export const SERVICE_PRESET = {
     {
       type: 'REQUIRES_PRODUCT',
       smart_code: 'HERA.SALON.SERVICE.REL.REQUIRES_PRODUCT.v1',
+      cardinality: 'many' as const
+    },
+    {
+      type: 'AVAILABLE_AT',
+      smart_code: 'HERA.SALON.SERVICE.REL.AVAILABLE_AT.v1',
       cardinality: 'many' as const
     }
   ]
