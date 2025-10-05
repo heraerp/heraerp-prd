@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../../SecuredSalonProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
