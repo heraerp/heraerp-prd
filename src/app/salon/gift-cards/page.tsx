@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth'
 import { apiV2 } from '@/lib/client/fetchV2'
 import { Plus, Gift, DollarSign, Calendar, Search, Download, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -60,7 +60,7 @@ interface GiftCardTransaction {
 }
 
 export default function GiftCardsPage() {
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
   const [giftCards, setGiftCards] = useState<GiftCard[]>([])
   const [selectedCard, setSelectedCard] = useState<GiftCard | null>(null)
   const [transactions, setTransactions] = useState<GiftCardTransaction[]>([])

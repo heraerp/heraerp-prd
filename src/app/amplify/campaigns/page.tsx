@@ -2,11 +2,11 @@
 
 import { EntityPage } from '@/components/entity/EntityPage'
 import { AMPLIFY_CAMPAIGN_PRESET } from '@hera/playbooks/presets/amplify'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth'
 import { Megaphone } from 'lucide-react'
 
 export default function AmplifyCampaignsPage() {
-  const { user } = useMultiOrgAuth()
+  const { user } = useHERAAuth()
 
   return (
     <EntityPage

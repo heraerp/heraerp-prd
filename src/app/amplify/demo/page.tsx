@@ -1,6 +1,6 @@
 'use client'
 
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { Loader2, Sparkles, FileText, Zap } from 'lucide-react'
 
 export default function AmplifyDemoPage() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization } = useHERAAuth()
   const { toast } = useToast()
   const [isProcessing, setIsProcessing] = useState(false)
 
