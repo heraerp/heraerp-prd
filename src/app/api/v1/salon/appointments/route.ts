@@ -13,9 +13,12 @@ export async function GET(request: NextRequest) {
     const organizationId =
       searchParams.get('organization_id') || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID
     const date = searchParams.get('date') || new Date().toISOString().split('T')[0]
+    const dateFrom = searchParams.get('date_from')
+    const dateTo = searchParams.get('date_to')
+    const branchId = searchParams.get('branch_id')
 
-    // Fetch appointments with proper relationships
-    const { data: appointments, error } = await supabase
+    // Build base query
+    let query = supabase
       .from('universal_transactions')
       .select(
         `
@@ -24,11 +27,27 @@ export async function GET(request: NextRequest) {
         stylist:target_entity_id(id, entity_name, entity_type)
       `
       )
-      .eq('organization_id', organizationId)
+      .eq('organization_id', organizationId as string)
       .eq('transaction_type', 'APPOINTMENT')
-      .gte('transaction_date', date + 'T00:00:00.000Z')
-      .lte('transaction_date', date + 'T23:59:59.999Z')
-      .order('transaction_date')
+
+    // Optional branch filter
+    if (branchId) {
+      query = query.eq('branch_id', branchId)
+    }
+
+    // Date filters: prefer range if provided, otherwise single day
+    if (dateFrom && dateTo) {
+      query = query
+        .gte('transaction_date', `${dateFrom}T00:00:00.000Z`)
+        .lte('transaction_date', `${dateTo}T23:59:59.999Z`)
+    } else {
+      query = query
+        .gte('transaction_date', `${date}T00:00:00.000Z`)
+        .lte('transaction_date', `${date}T23:59:59.999Z`)
+    }
+
+    // Execute
+    const { data: appointments, error } = await query.order('transaction_date')
 
     if (error) {
       console.error('Error fetching appointments:', error)

@@ -17,6 +17,7 @@ import { formatDate } from '@/lib/date-utils'
 import { addDays, parseISO } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { universalApi } from '@/lib/universal-api'
+import { useCustomers, useServices, useEmployees } from '@/hooks/useEntity'
 import { bookAppointmentV2 } from '@/lib/salon/appointments-v2-helper'
 import { useToast } from '@/hooks/use-toast'
 
@@ -97,9 +98,50 @@ export function NewAppointmentModal({
 
   // Data state
   const [branches, setBranches] = useState<Branch[]>([])
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [services, setServices] = useState<Service[]>([])
-  const [staff, setStaff] = useState<Staff[]>([])
+  // Universal Wrapper hooks (org-aware, dynamic fields)
+  const { data: customerEntities = [] } = useCustomers({
+    organizationId: effectiveOrgId,
+    includeDynamicData: true
+  })
+  const { data: serviceEntities = [] } = useServices({
+    organizationId: effectiveOrgId,
+    includeDynamicData: true,
+    disableBranchContext: true
+  })
+  const { data: employeeEntities = [] } = useEmployees({
+    organizationId: effectiveOrgId,
+    includeDynamicData: true
+  })
+  // Derived lists for UI
+  const customers = React.useMemo<Customer[]>(
+    () =>
+      customerEntities.map((c: any) => ({
+        id: c.id,
+        name: c.entity_name,
+        phone: c.dynamic_fields?.phone?.value ?? c.metadata?.phone,
+        email: c.dynamic_fields?.email?.value ?? c.metadata?.email
+      })),
+    [customerEntities]
+  )
+  const services = React.useMemo<Service[]>(
+    () =>
+      serviceEntities.map((s: any) => ({
+        id: s.id,
+        name: s.entity_name,
+        duration: s.dynamic_fields?.duration_min?.value ?? s.metadata?.duration ?? 60,
+        price: s.dynamic_fields?.price_market?.value ?? s.metadata?.price ?? 0
+      })),
+    [serviceEntities]
+  )
+  const staff = React.useMemo<Staff[]>(
+    () =>
+      employeeEntities.map((e: any) => ({
+        id: e.id,
+        name: e.entity_name,
+        specializations: e.metadata?.specializations || []
+      })),
+    [employeeEntities]
+  )
   const [availableSlots, setAvailableSlots] = useState<string[]>([])
 
   // Selected service details
@@ -206,9 +248,6 @@ export function NewAppointmentModal({
         })
         // Ensure we set empty arrays on error
         setBranches([])
-        setCustomers([])
-        setServices([])
-        setStaff([])
       } finally {
         console.log('Setting form loading to false')
         clearTimeout(loadingTimeout)
