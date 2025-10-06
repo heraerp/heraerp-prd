@@ -1,0 +1,19 @@
+{
+  "namespace": "HERA.RETAIL.*",
+  "version": 1,
+  "rules": [
+    {
+      "code": "HERA.RETAIL.POS.TXN.INVOICE.v1",
+      "debits": ["COGS","GST_INPUT?"],
+      "credits": ["INVENTORY","SALES","GST_OUTPUT","CASH|CARD|UPI|AR"],
+      "derivations": {
+        "COGS": "sum(lines.qty*lines.avg_cost)",
+        "INVENTORY": "COGS",
+        "SALES": "sum(lines.qty*lines.unit_price_ex_tax)",
+        "GST_OUTPUT": "sum(lines.tax_out)",
+        "GST_INPUT": "sum(lines.tax_in)",
+        "CASH|CARD|UPI|AR": "sum(payments.amount)"
+      }
+    }
+  ]
+}

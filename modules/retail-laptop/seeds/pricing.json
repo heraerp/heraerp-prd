@@ -1,0 +1,10 @@
+{
+  "price_lists": [
+    { "code": "RETAIL-IN", "currency": "INR" },
+    { "code": "WHOLESALE-IN", "currency": "INR" }
+  ],
+  "bindings": [
+    { "sku": "TP-E14-16-512", "price_list": "RETAIL-IN", "price": 62999 },
+    { "sku": "TP-E14-16-512", "price_list": "WHOLESALE-IN", "price": 58500 }
+  ]
+}
