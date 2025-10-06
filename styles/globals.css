@@ -23,21 +23,25 @@
   /* Elegant Gradient */
   --gradient-elegant: linear-gradient(135deg, #472663, #6B3FA0);
   
-  /* shadcn/ui default theme variables */
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
+  /* shadcn/ui default theme variables (Infrared & Purple semantic tokens) */
+  --background: 244 244 249;
+  --foreground: 30 30 30;
+  --primary: 222 53 76;          /* #DE354C */
+  --primary-foreground: 255 255 255;
+  --secondary: 60 24 116;        /* #3C1874 */
+  --secondary-foreground: 255 255 255;
   --card: 0 0% 100%;
   --card-foreground: 222.2 84% 4.9%;
   --popover: 0 0% 100%;
   --popover-foreground: 222.2 84% 4.9%;
-  --muted: 210 40% 98%;
-  --muted-foreground: 215.4 16.3% 46.9%;
+  --muted: 108 92 125;
+  --muted-foreground: 240 240 245;
   --accent: 210 40% 98%;
   --accent-foreground: 222.2 84% 4.9%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
+  --border: 230 230 235;
+  --input: 230 230 235;
   --ring: 262.1 83.3% 57.8%; /* Primary focus ring */
   --radius: 0.5rem;
 }
