@@ -59,8 +59,40 @@ export async function DELETE(
 
     const affectedRelationships = relCount || 0
 
+    // CRITICAL: Check if entity is referenced in transaction lines (AUDIT PROTECTION)
+    const { count: txnLineCount } = await supabase
+      .from('universal_transaction_lines')
+      .select('*', { count: 'exact', head: true })
+      .eq('line_entity_id', entityId)
+      .eq('organization_id', organizationId)
+
+    const transactionReferences = txnLineCount || 0
+
+    // PREVENT hard delete if entity is used in any transactions (audit/financial integrity)
+    if (hardDelete && transactionReferences > 0) {
+      console.log('[DELETE entity] Blocked: Entity has transaction history', {
+        entityId,
+        transactionReferences
+      })
+
+      return NextResponse.json(
+        {
+          error: {
+            code: 'TRANSACTION_INTEGRITY_VIOLATION',
+            message: `Cannot delete: Entity is used in ${transactionReferences} transaction line(s). For audit and financial reporting purposes, entities with transaction history can only be archived (soft delete).`,
+            details: {
+              transaction_references: transactionReferences,
+              suggestion: 'Use soft delete (archive) instead by setting hard_delete=false'
+            }
+          }
+        },
+        { status: 409 }
+      )
+    }
+
     if (hardDelete) {
       // HARD DELETE - Physical deletion with optional cascade
+      // Only allowed if no transaction history exists
       console.log('[DELETE entity] Hard delete:', { entityId, cascade, affectedRelationships })
 
       // Check for active relationships if cascade is false
@@ -69,7 +101,8 @@ export async function DELETE(
           {
             error: {
               code: 'RELATIONSHIP_CONFLICT',
-              message: 'Active relationships prevent hard delete; try soft delete or set cascade=true'
+              message:
+                'Active relationships prevent hard delete; try soft delete or set cascade=true'
             }
           },
           { status: 409 }
@@ -109,14 +142,22 @@ export async function DELETE(
 
       if (entityError) {
         console.error('[DELETE entity] Entity delete error:', entityError)
+
+        // Check if it's a foreign key constraint violation
+        const isForeignKeyError = entityError.message?.includes('foreign key constraint') ||
+                                  entityError.code === '23503'
+
         return NextResponse.json(
           {
             error: {
-              code: 'DELETE_FAILED',
-              message: entityError.message
+              code: isForeignKeyError ? 'FOREIGN_KEY_CONSTRAINT' : 'DELETE_FAILED',
+              message: isForeignKeyError
+                ? 'Cannot delete: Entity is referenced by other records. Try soft delete (archive) or delete with cascade=true'
+                : entityError.message,
+              details: entityError.message
             }
           },
-          { status: 500 }
+          { status: isForeignKeyError ? 409 : 500 }
         )
       }
 
