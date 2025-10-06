@@ -1,5 +1,7 @@
 'use client'
 
+ 
+
 import { useState, useEffect } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
@@ -17,17 +19,7 @@ import { useAppointmentLookup } from '@/hooks/useAppointmentLookup'
 import { useCustomerLookup } from '@/hooks/useCustomerLookup'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Search,
-  ShoppingCart,
-  CreditCard,
-  Settings,
-  Monitor,
-  FileText,
-  User,
-  Sparkles,
-  Clock
-} from 'lucide-react'
+import { ShoppingCart, CreditCard, Monitor, Sparkles } from 'lucide-react'
 
 // Luxe salon color palette for enterprise-grade aesthetics
 const COLORS = {
@@ -190,7 +182,7 @@ function POSContent() {
       entity_type: item.__kind === 'SERVICE' ? 'service' : 'product',
       entity_name: item.title || item.entity_name || item.raw?.entity_name || 'Unknown Item',
       quantity: 1,
-      unit_price: item.price || item.unit_price || item.raw?.price || 0,
+      unit_price: Number(item.price || item.unit_price || item.raw?.price || 0),
       ...(finalStylistId ? { stylist_id: finalStylistId } : {}),
       ...(finalStylistName ? { stylist_name: finalStylistName } : {})
     })
@@ -263,11 +255,14 @@ function POSContent() {
         }}
       />
 
-      {/* Soft animated grain overlay for texture */}
+      {/* Soft animated grain overlay for texture (simplified to avoid SVG inline parsing issues) */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-[0.015]"
+        className="fixed inset-0 pointer-events-none opacity-[0.02]"
         style={{
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
+          background:
+            `radial-gradient(circle at 25% 25%, ${COLORS.charcoalLight}20 0, transparent 50%),` +
+            `radial-gradient(circle at 75% 75%, ${COLORS.charcoalLight}15 0, transparent 50%)`,
+          mixBlendMode: 'overlay' as any,
           animation: 'grain 8s steps(10) infinite'
         }}
       />
@@ -313,23 +308,15 @@ function POSContent() {
             transform: scale(1);
           }
         }
-        .animate-gradient {
-          animation: gradient 8s ease-in-out infinite;
-        }
-        .animate-slideDown {
-          animation: slideDown 0.5s ease-out;
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.6s ease-out;
-        }
-        .animate-scaleIn {
-          animation: scaleIn 0.4s ease-out;
-        }
+        .animate-gradient { animation: gradient 8s ease-in-out infinite; }
+        .animate-slideDown { animation: slideDown 0.5s ease-out; }
+        .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
+        .animate-scaleIn { animation: scaleIn 0.4s ease-out; }
       `}</style>
 
       {/* Main content wrapper */}
       <div className="relative" style={{ minHeight: '100vh' }}>
-        {/* Enhanced Header with Glassmorphism and Soft Animation */}
+        {/* Enhanced Header */}
         <div
           className="sticky top-0 z-40 px-8 py-5 backdrop-blur-xl transition-all duration-500 ease-out animate-slideDown"
           style={{
@@ -339,9 +326,7 @@ function POSContent() {
           }}
         >
           <div className="flex items-center justify-between">
-            {/* Left Section - Branding & Title */}
             <div className="flex items-center space-x-6">
-              {/* Title with Icon */}
               <div className="flex items-center space-x-4">
                 <div
                   className="p-3 rounded-xl"
@@ -366,7 +351,6 @@ function POSContent() {
                 </h1>
               </div>
 
-              {/* Live Status Badge */}
               <Badge
                 className="px-4 py-1.5 font-semibold"
                 style={{
@@ -383,57 +367,14 @@ function POSContent() {
                 Live
               </Badge>
 
-              {/* Commission Badge */}
               <PosCommissionBadge commissionsEnabled={commissionsEnabled} />
-            </div>
-
-            {/* Right Section - Controls */}
-            <div className="flex items-center space-x-4">
-              {/* Cashier Info */}
-              <div className="flex items-center space-x-2.5">
-                <div
-                  className="p-2 rounded-lg"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.bronze}15 0%, ${COLORS.bronze}08 100%)`,
-                    border: `1px solid ${COLORS.bronze}30`
-                  }}
-                >
-                  <User className="w-4 h-4" style={{ color: COLORS.bronze }} />
-                </div>
-                <div
-                  className="px-4 py-2 rounded-lg font-medium text-sm"
-                  style={{
-                    backgroundColor: `${COLORS.charcoalDark}CC`,
-                    border: `1px solid ${COLORS.bronze}30`,
-                    color: COLORS.champagne,
-                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
-                  }}
-                >
-                  {user?.email || localStorage.getItem('salonUserName') || 'Staff Member'}
-                </div>
-              </div>
-
-              {/* Settings Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                className="p-2.5 transition-all hover:scale-105"
-                style={{
-                  backgroundColor: `${COLORS.charcoalDark}CC`,
-                  border: `1px solid ${COLORS.bronze}30`,
-                  color: COLORS.bronze,
-                  boxShadow: `0 0 0 1px ${COLORS.bronze}10`
-                }}
-              >
-                <Settings className="w-4 h-4" style={{ color: COLORS.bronze }} />
-              </Button>
             </div>
           </div>
         </div>
 
-        {/* Main Content - Enhanced Two Pane Layout */}
+        {/* Main Content - Two Pane Layout */}
         <div className="flex h-[calc(100vh-92px)]">
-          {/* Left Pane - Catalog with Enhanced Border and Soft Animation */}
+          {/* Left Pane - Catalog */}
           <div
             className="flex-1 min-w-0 animate-fadeIn"
             style={{
@@ -443,7 +384,7 @@ function POSContent() {
             }}
           >
             <CatalogPane
-              organizationId={effectiveOrgId}
+              organizationId={effectiveOrgId!}
               onAddItem={handleAddItem}
               {...(ticket.customer_id ? { currentCustomerId: ticket.customer_id } : {})}
               {...(ticket.appointment_id ? { currentAppointmentId: ticket.appointment_id } : {})}
@@ -452,7 +393,7 @@ function POSContent() {
             />
           </div>
 
-          {/* Right Pane - Enhanced Cart Sidebar with Soft Animation */}
+          {/* Right Pane - Cart Sidebar */}
           <div
             className="w-[420px] shrink-0 flex flex-col animate-fadeIn"
             style={{
@@ -460,121 +401,15 @@ function POSContent() {
               animationDelay: '0.2s'
             }}
           >
-            {/* Enhanced Action Buttons Bar */}
-            <div
-              className="p-6"
-              style={{
-                borderBottom: `1px solid ${COLORS.gold}15`,
-                background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoalDark} 100%)`,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-              }}
-            >
-              {/* Quick Actions Grid */}
-              <div className="grid grid-cols-2 gap-3 mb-5">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsCustomerSearchOpen(true)}
-                  className="flex items-center justify-center gap-2 py-6 font-medium transition-all hover:scale-[1.02]"
-                  style={{
-                    backgroundColor: `${COLORS.charcoalDark}80`,
-                    border: `1px solid ${COLORS.gold}40`,
-                    color: COLORS.champagne,
-                    boxShadow: `0 0 0 1px ${COLORS.gold}10`
-                  }}
-                >
-                  <Search className="w-4 h-4" style={{ color: COLORS.gold }} />
-                  Find Customer
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsTicketDetailsOpen(true)}
-                  disabled={ticket.lineItems.length === 0}
-                  className="flex items-center justify-center gap-2 py-6 font-medium transition-all hover:scale-[1.02]"
-                  style={{
-                    backgroundColor: `${COLORS.charcoalDark}80`,
-                    border: `1px solid ${COLORS.bronze}40`,
-                    color: COLORS.champagne,
-                    boxShadow: `0 0 0 1px ${COLORS.bronze}10`,
-                    opacity: ticket.lineItems.length === 0 ? 0.5 : 1
-                  }}
-                >
-                  <FileText className="w-4 h-4" style={{ color: COLORS.bronze }} />
-                  Details
-                </Button>
-              </div>
+            <CartSidebar
+              ticket={ticket}
+              totals={totals}
+              onUpdateItem={updateLineItem}
+              onRemoveItem={removeLineItem}
+              onPayment={handlePayment}
+              commissionsEnabled={commissionsEnabled}
+            />
 
-              {/* Enhanced Customer Info Card */}
-              {ticket.customer_name && (
-                <div
-                  className="p-4 rounded-xl mb-4"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.gold}12 0%, ${COLORS.gold}06 100%)`,
-                    border: `1px solid ${COLORS.gold}30`,
-                    boxShadow: '0 2px 8px rgba(212, 175, 55, 0.1)'
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="p-2.5 rounded-lg"
-                      style={{
-                        background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                        boxShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
-                      }}
-                    >
-                      <User className="w-5 h-5" style={{ color: COLORS.black }} />
-                    </div>
-                    <div className="flex-1">
-                      <div
-                        className="font-semibold text-sm mb-0.5"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        {ticket.customer_name}
-                      </div>
-                      <div
-                        className="text-xs flex items-center gap-1.5"
-                        style={{ color: COLORS.bronze }}
-                      >
-                        <Clock className="w-3 h-3" />
-                        {ticket.customer_phone || 'No phone'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Enhanced Quick Stats */}
-              <div
-                className="flex items-center justify-between p-4 rounded-xl"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
-                  border: `1px solid ${COLORS.bronze}20`
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <ShoppingCart className="w-4 h-4" style={{ color: COLORS.bronze }} />
-                  <span className="font-medium" style={{ color: COLORS.bronze }}>
-                    {ticket.lineItems.length} item{ticket.lineItems.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
-                <div className="font-bold text-lg" style={{ color: COLORS.gold }}>
-                  AED {(totals?.total || 0).toFixed(2)}
-                </div>
-              </div>
-            </div>
-
-            {/* Cart Items Scrollable Area */}
-            <div className="flex-1 overflow-hidden">
-              <CartSidebar
-                ticket={ticket}
-                totals={totals}
-                onUpdateItem={updateLineItem}
-                onRemoveItem={removeLineItem}
-                onPayment={handlePayment}
-                commissionsEnabled={commissionsEnabled}
-              />
-            </div>
-
-            {/* Enhanced Bottom Action Bar */}
             <div
               className="p-6"
               style={{
@@ -589,12 +424,6 @@ function POSContent() {
                   onClick={clearTicket}
                   disabled={ticket.lineItems.length === 0}
                   className="px-6 py-6 font-medium"
-                  style={{
-                    backgroundColor: `${COLORS.charcoalDark}80`,
-                    border: `1px solid ${COLORS.rose}40`,
-                    color: COLORS.rose,
-                    opacity: ticket.lineItems.length === 0 ? 0.5 : 1
-                  }}
                 >
                   Clear Ticket
                 </Button>
@@ -602,12 +431,6 @@ function POSContent() {
                   onClick={handlePayment}
                   disabled={ticket.lineItems.length === 0}
                   className="flex-1 py-6 font-bold text-base transition-all hover:scale-[1.02]"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                    color: COLORS.black,
-                    boxShadow: `0 4px 12px ${COLORS.gold}40, 0 0 0 1px ${COLORS.gold}`,
-                    opacity: ticket.lineItems.length === 0 ? 0.5 : 1
-                  }}
                 >
                   <CreditCard className="w-5 h-5 mr-2" />
                   Pay AED {(totals?.total || 0).toFixed(2)}
@@ -639,12 +462,14 @@ function POSContent() {
             setIsTicketDetailsOpen(false)
             setIsPaymentOpen(true)
           }}
-          organizationId={effectiveOrgId}
+          organizationId={effectiveOrgId!}
           {...(selectedBranchId ? { branchId: selectedBranchId } : {})}
-          {...(availableBranches?.find(b => b.id === selectedBranchId)?.entity_name ? { branchName: availableBranches.find(b => b.id === selectedBranchId)!.entity_name } : {})}
+          {...(availableBranches?.find(b => b.id === selectedBranchId)?.entity_name
+            ? { branchName: availableBranches.find(b => b.id === selectedBranchId)!.entity_name }
+            : {})}
           onCustomerSelect={handleCustomerSelect}
           availableBranches={availableBranches || []}
-          onBranchChange={(branchId) => setSelectedBranchId(branchId)}
+          onBranchChange={branchId => setSelectedBranchId(branchId)}
         />
 
         <PaymentDialog
@@ -652,26 +477,17 @@ function POSContent() {
           onClose={() => setIsPaymentOpen(false)}
           ticket={ticket}
           totals={totals}
-          organizationId={effectiveOrgId}
+          organizationId={effectiveOrgId!}
           onComplete={handlePaymentComplete}
         />
 
-        <Receipt
-          open={isReceiptOpen}
-          onClose={() => setIsReceiptOpen(false)}
-          saleData={completedSale}
-        />
+        <Receipt open={isReceiptOpen} onClose={() => setIsReceiptOpen(false)} saleData={completedSale} />
 
         {/* Mobile Cart Floating Button */}
         <div className="lg:hidden fixed bottom-6 right-6 z-50">
           <Button
             size="lg"
             className="rounded-full shadow-2xl py-7 px-8 font-bold transition-all hover:scale-110"
-            style={{
-              background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-              color: COLORS.black,
-              boxShadow: `0 8px 24px ${COLORS.gold}60, 0 0 0 1px ${COLORS.gold}`
-            }}
           >
             <ShoppingCart className="w-6 h-6 mr-2" />
             {ticket.lineItems.length}

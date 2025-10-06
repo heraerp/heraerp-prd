@@ -338,7 +338,7 @@ export class SalonPosIntegrationService {
       const transactionData = {
         organization_id: this.organizationId,
         transaction_type: 'sale', // Using 'sale' to avoid validation errors
-        smart_code: heraCode('HERA.SALON.POS.SALE.HEADER.V1'), // Keep POS-specific smart code
+        smart_code: HERA_CODES.SALON.POS.SALE.HEADER,
         total_amount: totals.total,
         business_context: {
           branch_id: options.branch_id,
