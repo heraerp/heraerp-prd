@@ -235,13 +235,67 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         }
       }
 
-      // TODO: Check for real user session here
-      // For now, just set not authenticated
-      setState(prev => ({
-        ...prev,
-        isAuthenticated: false,
-        isLoading: false
-      }))
+      // Check for real Supabase session
+      try {
+        const { createClient } = await import('@/lib/supabase/client')
+        const supabase = createClient()
+        const {
+          data: { session }
+        } = await supabase.auth.getSession()
+
+        if (session?.access_token) {
+          // Introspect via API v2 to get org/role/permissions
+          const introspectRes = await fetch('/api/v2/auth/introspect', {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+            credentials: 'include'
+          })
+          if (introspectRes.ok) {
+            const info = await introspectRes.json()
+
+            // Ensure attach is complete (idempotent)
+            await fetch('/api/v2/auth/attach', {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${session.access_token}` },
+              credentials: 'include'
+            }).catch(() => {})
+
+            const user: HERAUser = {
+              id: info.user_id,
+              entity_id: info.user_id,
+              name: info.email?.split('@')[0] || 'User',
+              email: info.email || '',
+              role: (info.roles && info.roles[0]) || 'user',
+              session_type: 'real',
+              expires_at: new Date(Date.now() + 50 * 60 * 1000).toISOString()
+            }
+            const organization: HERAOrganization = {
+              id: info.organization_id,
+              name: 'Organization',
+              type: 'business',
+              industry: 'services'
+            }
+
+            // Save org cookie for legacy consumers
+            setCookie('HERA_ORG_ID', organization.id)
+
+            setState(prev => ({
+              ...prev,
+              user,
+              organization,
+              isAuthenticated: true,
+              isLoading: false,
+              sessionType: 'real',
+              scopes: info.permissions || []
+            }))
+            return
+          }
+        }
+      } catch (e) {
+        // Ignore and fall through to unauthenticated
+      }
+
+      // Default: not authenticated
+      setState(prev => ({ ...prev, isAuthenticated: false, isLoading: false }))
     } catch (error) {
       console.error('💥 HERA Auth initialization error:', error)
       setState(prev => ({

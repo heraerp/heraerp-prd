@@ -2,11 +2,11 @@
 
 import { EntityPage } from '@/components/entity/EntityPage'
 import { AMPLIFY_PUBLICATION_PRESET } from '@hera/playbooks/presets/amplify'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth'
 import { Newspaper } from 'lucide-react'
 
 export default function AmplifyPublicationsPage() {
-  const { user } = useMultiOrgAuth()
+  const { user } = useHERAAuth()
 
   return (
     <EntityPage

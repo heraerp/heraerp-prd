@@ -2,11 +2,11 @@
 
 import { EntityPage } from '@/components/entity/EntityPage'
 import { AMPLIFY_REPORT_PRESET } from '@hera/playbooks/presets/amplify'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth'
 import { FileBarChart } from 'lucide-react'
 
 export default function AmplifyReportsPage() {
-  const { user } = useMultiOrgAuth()
+  const { user } = useHERAAuth()
 
   return (
     <EntityPage

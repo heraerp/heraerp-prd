@@ -108,7 +108,7 @@ export async function summarizeSalesByBranchDay({
           value: [
             'HERA.SALON.SALES.ORDER.SERVICE.V1',
             'HERA.SALON.SALES.ORDER.PRODUCT.V1',
-            'HERA.SALON.POS.TXN.SALE.V1'
+            'HERA.SALON.POS.SALE.HEADER.V1'
           ]
         },
         { field: 'when_ts', operator: 'gte', value: dayStart },

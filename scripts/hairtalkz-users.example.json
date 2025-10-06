@@ -1,0 +1,9 @@
+[
+  { "email": "michele@hairtalkz.com", "password": "<PASSWORD_OWNER>", "role": "owner", "orgId": "378f24fb-d496-4ff7-8afa-ea34895a0eb8" },
+  { "email": "manager@hairtalkz.com", "password": "<PASSWORD_MANAGER>", "role": "manager", "orgId": "378f24fb-d496-4ff7-8afa-ea34895a0eb8" },
+  { "email": "receptionist@hairtalkz.com", "password": "<PASSWORD_RECEPTIONIST>", "role": "receptionist", "orgId": "378f24fb-d496-4ff7-8afa-ea34895a0eb8" },
+  { "email": "stylist@hairtalkz.com", "password": "<PASSWORD_STYLIST>", "role": "stylist", "orgId": "378f24fb-d496-4ff7-8afa-ea34895a0eb8" },
+  { "email": "accountant@hairtalkz.com", "password": "<PASSWORD_ACCOUNTANT>", "role": "accountant", "orgId": "378f24fb-d496-4ff7-8afa-ea34895a0eb8" },
+  { "email": "admin@hairtalkz.com", "password": "<PASSWORD_ADMIN>", "role": "admin", "orgId": "378f24fb-d496-4ff7-8afa-ea34895a0eb8" }
+]
+

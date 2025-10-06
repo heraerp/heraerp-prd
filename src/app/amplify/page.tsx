@@ -1,6 +1,6 @@
 'use client'
 
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -71,7 +71,7 @@ const modules = [
 ]
 
 export default function AmplifyDashboard() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization } = useHERAAuth()
   const router = useRouter()
 
   return (

@@ -2,11 +2,11 @@
 
 import { EntityPage } from '@/components/entity/EntityPage'
 import { AMPLIFY_SOCIAL_POST_PRESET } from '@hera/playbooks/presets/amplify'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth'
 import { Calendar } from 'lucide-react'
 
 export default function AmplifySchedulePage() {
-  const { user } = useMultiOrgAuth()
+  const { user } = useHERAAuth()
 
   return (
     <EntityPage

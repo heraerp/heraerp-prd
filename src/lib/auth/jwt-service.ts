@@ -100,11 +100,50 @@ export class HERAJWTService {
         }
       }
 
+      // Derive role and permissions
+      const role = (user.user_metadata?.role as string) || 'user'
+      const metaPerms = (user.user_metadata?.permissions as string[]) || []
+
+      const rolePerms: Record<string, string[]> = {
+        owner: [
+          'entities:read',
+          'entities:write',
+          'relationships:read',
+          'relationships:write',
+          'transactions:read',
+          'transactions:write'
+        ],
+        admin: [
+          'entities:read',
+          'entities:write',
+          'relationships:read',
+          'relationships:write',
+          'transactions:read',
+          'transactions:write',
+          'users:manage'
+        ],
+        manager: [
+          'entities:read',
+          'entities:write',
+          'relationships:read',
+          'relationships:write',
+          'transactions:read',
+          'transactions:write'
+        ],
+        receptionist: ['entities:read', 'relationships:read', 'transactions:read'],
+        stylist: ['entities:read', 'relationships:read'],
+        accountant: ['entities:read', 'transactions:read']
+      }
+
+      const derivedPerms = rolePerms[role] || ['entities:read']
+      const permissions = Array.from(new Set([...(metaPerms || []), ...derivedPerms]))
+
       const payload: JWTPayload = {
         sub: user.id,
         email: user.email || '',
         organization_id: organizationId,
-        role: user.user_metadata?.role || 'user',
+        role,
+        permissions,
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + this.defaultExpiry,
         iss: this.issuer

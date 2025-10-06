@@ -21,6 +21,7 @@ const SALON_ORG_ID = '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Michele's salon
 const ROUTE_PERMISSIONS: Record<string, string[]> = {
   '/salon/dashboard': ['Owner', 'Administrator'],
   '/salon/pos': ['Owner', 'Receptionist', 'Administrator'],
+  '/pos/sale': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/customers': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/appointments': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/appointments1': ['Owner', 'Receptionist', 'Administrator'],

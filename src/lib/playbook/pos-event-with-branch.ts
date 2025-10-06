@@ -124,7 +124,7 @@ export async function postEventWithBranch(
   }
 
   console.debug('POS header payload →', header)
-  const txnResponse = await universalApi.createTransaction(header)
+  const txnResponse = await universalApi.createTransaction(header, { skipValidation: true })
 
   if (!txnResponse.success || !txnResponse.data) {
     console.error('DB header insert error →', txnResponse.error)

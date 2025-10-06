@@ -18,7 +18,7 @@ import { Separator } from '@/components/ui/separator'
 import { SearchFacetsEnhanced } from './components/SearchFacetsEnhanced'
 import { SearchResultsEnhanced } from './components/SearchResultsEnhanced'
 import { DetailsDrawer } from './components/DetailsDrawer'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useSavedViews } from '@/hooks/useSavedViews'
 import '@/styles/jewelry-glassmorphism.css'
@@ -50,7 +50,7 @@ interface SearchState {
 
 export default function JewelrySearchPage() {
   const router = useRouter()
-  const { currentOrganization, user } = useMultiOrgAuth()
+  const { currentOrganization, user } = useHERAAuth()
   const [orgLoading, setOrgLoading] = useState(true)
 
   // Initialize all state hooks before any conditional returns
