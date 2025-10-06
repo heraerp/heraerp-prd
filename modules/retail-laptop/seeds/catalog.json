@@ -1,0 +1,26 @@
+{
+  "brands": [{ "code": "LENOVO", "name": "Lenovo" }],
+  "categories": [{ "code": "LAPTOP", "name": "Laptops" }],
+  "products": [
+    {
+      "smart_code": "HERA.RETAIL.LAPTOP.PRODUCT.ENTITY.ITEM.v1",
+      "name": "Lenovo ThinkPad E14",
+      "category": "LAPTOP",
+      "brand": "LENOVO",
+      "dynamic": {
+        "HSN_CODE": "84713010",
+        "GST_RATE": 18,
+        "WARRANTY_MONTHS": 12,
+        "SERIAL_TRACKING": true
+      },
+      "skus": [
+        {
+          "sku": "TP-E14-16-512",
+          "mrp": 65000,
+          "price_wholesale": 58500,
+          "price_retail": 62999
+        }
+      ]
+    }
+  ]
+}

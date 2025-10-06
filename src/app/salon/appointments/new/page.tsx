@@ -13,6 +13,7 @@ import { format, addMinutes } from 'date-fns'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
+import { useCustomers, useServices, useEmployees } from '@/hooks/useEntity'
 import { createDraftAppointment } from '@/lib/appointments/createDraftAppointment'
 import { upsertAppointmentLines } from '@/lib/appointments/upsertAppointmentLines'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
@@ -145,11 +146,33 @@ function NewAppointmentContent() {
   const [notes, setNotes] = useState('')
 
   // Data state
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [services, setServices] = useState<Service[]>([])
-  const [stylists, setStylists] = useState<Stylist[]>([])
+  // Customers: use Universal Entity Wrapper for reactive DB data
+  const {
+    data: customers = [],
+    isLoading: customersLoading,
+    error: customersError,
+    refetch: refetchCustomers
+  } = useCustomers({
+    organizationId,
+    filters: {},
+    includeRelationships: false,
+    includeDynamicData: true
+  })
+  const {
+    data: services = [],
+    isLoading: servicesLoading,
+    error: servicesError,
+    refetch: refetchServices
+  } = useServices({ organizationId, includeDynamicData: true, disableBranchContext: true })
+
+  const {
+    data: stylists = [],
+    isLoading: stylistsLoading,
+    error: stylistsError,
+    refetch: refetchStylists
+  } = useEmployees({ organizationId, includeDynamicData: true })
+
   const [cart, setCart] = useState<CartItem[]>([])
-  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
   // Search state
@@ -191,58 +214,9 @@ function NewAppointmentContent() {
   const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalDuration = cart.reduce((sum, item) => sum + item.duration * item.quantity, 0)
 
-  // Load initial data
+  // Keep Universal API org context aligned (used elsewhere in flows)
   useEffect(() => {
-    if (!organizationId) return
-
-    const loadData = async () => {
-      try {
-        setLoading(true)
-
-        // Set organization ID on universalApi
-        universalApi.setOrganizationId(organizationId)
-
-        console.log('📊 Loading appointment data for org:', organizationId)
-
-        // Load customers
-        const customersResponse = await universalApi.read('core_entities', {
-          organization_id: organizationId,
-          entity_type: 'customer'
-        })
-
-        console.log('👥 Customers response:', customersResponse)
-
-        // Load services
-        const servicesResponse = await universalApi.read('core_entities', {
-          organization_id: organizationId,
-          entity_type: 'service'
-        })
-
-        console.log('✂️ Services response:', servicesResponse)
-
-        // Load stylists
-        const stylistsResponse = await universalApi.read('core_entities', {
-          organization_id: organizationId,
-          entity_type: 'employee'
-        })
-
-        console.log('💇 Stylists response:', stylistsResponse)
-
-        if (customersResponse.success) setCustomers(customersResponse.data || [])
-        if (servicesResponse.success) setServices(servicesResponse.data || [])
-        if (stylistsResponse.success) setStylists(stylistsResponse.data || [])
-      } catch (error) {
-        console.error('Error loading data:', error)
-        toast({
-          title: 'Error',
-          description: 'Failed to load appointment data'
-        })
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadData()
+    if (organizationId) universalApi.setOrganizationId(organizationId)
   }, [organizationId])
 
   // Pre-select customer if customerId is provided in URL
@@ -263,13 +237,17 @@ function NewAppointmentContent() {
     if (existingItem) {
       updateQuantity(service.id, 1)
     } else {
+      const svcAny: any = service as any
+      const price = svcAny?.dynamic_fields?.price_market?.value ?? svcAny?.metadata?.price ?? 0
+      const duration =
+        svcAny?.dynamic_fields?.duration_min?.value ?? svcAny?.metadata?.duration_minutes ?? 30
       setCart([
         ...cart,
         {
           service,
           quantity: 1,
-          price: service.metadata?.price || 0,
-          duration: service.metadata?.duration_minutes || 30
+          price,
+          duration
         }
       ])
     }
@@ -474,7 +452,7 @@ function NewAppointmentContent() {
         </div>
       </div>
 
-      {loading ? (
+  {customersLoading || servicesLoading || stylistsLoading ? (
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
@@ -725,7 +703,7 @@ function NewAppointmentContent() {
                           >
                             <p className="font-medium text-[#F5E6C8]">{customer.entity_name}</p>
                             <p className="text-sm text-[#F5E6C8]/50">
-                              {customer.metadata?.phone || 'No phone'}
+                              {((customer as any).dynamic_fields?.phone?.value ?? (customer as any).metadata?.phone) || 'No phone'}
                             </p>
                           </div>
                         ))}
@@ -950,11 +928,16 @@ function NewAppointmentContent() {
                             <div className="flex items-center gap-3 text-sm text-[#F5E6C8]/50">
                               <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3 text-[#D4AF37]/50" />
-                                <span>{service.metadata?.duration_minutes || 30} min</span>
+                                <span>
+                                  {((service as any).dynamic_fields?.duration_min?.value ?? (service as any).metadata?.duration_minutes) || 30}
+                                  {' '}min
+                                </span>
                               </span>
                               <span className="flex items-center gap-1">
                                 <DollarSign className="w-3 h-3 text-[#D4AF37]/50" />
-                                <span>AED {service.metadata?.price || 0}</span>
+                                <span>
+                                  AED {((service as any).dynamic_fields?.price_market?.value ?? (service as any).metadata?.price) || 0}
+                                </span>
                               </span>
                             </div>
                           </div>

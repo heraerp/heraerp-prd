@@ -1,0 +1,6 @@
+{
+  "header": { "smart_code": "HERA.RETAIL.PURCH.TXN.PO.v1" },
+  "lines": [
+    { "sku": "TP-E14-16-512", "qty": 5, "unit_cost": 52000 }
+  ]
+}

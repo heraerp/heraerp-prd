@@ -64,19 +64,17 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
     ]
   }
 
-  const res = await fetch('/api/v1/transactions', {
+  const res = await fetch('/api/v2/transactions/post', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      organization_id: organizationId,
+      smart_code: 'HERA.SALON.APPT.BOOK.CREATE.V1',
       transaction_type: 'appointment',
       transaction_date: new Date().toISOString(),
       source_entity_id: customerId,
       target_entity_id: staffId,
-      total_amount: price,
-      currency_code: currencyCode,
-      notes: notes || '',
-      metadata: {
+      business_context: {
         start_time: startISO,
         end_time: endISO,
         status: 'booked',
@@ -85,8 +83,7 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
         service_ids: [serviceId],
         branch_id: metadata?.branch_id,
         ...metadata
-      },
-      smart_code: 'HERA.SALON.APPT.BOOK.CREATE.V1'
+      }
     })
   })
 
@@ -157,11 +154,19 @@ export async function updateAppointmentV2(args: UpdateArgs): Promise<void> {
       ...(status ? { status } : {}),
       ...(notes ? { notes } : {})
     },
-    lines: [] as any[]
+    // At least one line is required by schema/guardrails
+    lines: [
+      {
+        line_type: 'status_change',
+        entity_id: appointmentId,
+        description: status ? `to ${status}` : 'appointment update'
+      }
+    ] as any[]
   }
 
-  const res = await fetch('/api/v2/universal/txn-emit', {
+  const res = await fetch('/api/v2/transactions/post', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
@@ -188,11 +193,14 @@ export async function cancelAppointmentV2(args: {
       status: 'cancelled',
       ...(reason ? { notes: reason } : {})
     },
-    lines: [] as any[]
+    lines: [
+      { line_type: 'status_change', entity_id: appointmentId, description: 'to cancelled' }
+    ] as any[]
   }
 
-  const res = await fetch('/api/v2/universal/txn-emit', {
+  const res = await fetch('/api/v2/transactions/post', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
@@ -219,11 +227,14 @@ export async function noShowAppointmentV2(args: {
       status: 'no_show',
       ...(notes ? { notes } : {})
     },
-    lines: [] as any[]
+    lines: [
+      { line_type: 'status_change', entity_id: appointmentId, description: 'to no_show' }
+    ] as any[]
   }
 
-  const res = await fetch('/api/v2/universal/txn-emit', {
+  const res = await fetch('/api/v2/transactions/post', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })

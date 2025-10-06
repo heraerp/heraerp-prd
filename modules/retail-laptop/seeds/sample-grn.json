@@ -1,0 +1,10 @@
+{
+  "header": { "smart_code": "HERA.RETAIL.PURCH.TXN.GRN.v1", "link_to": "PO:latest" },
+  "lines": [
+    {
+      "sku": "TP-E14-16-512",
+      "qty": 5,
+      "serials": ["E14S001","E14S002","E14S003","E14S004","E14S005"]
+    }
+  ]
+}
