@@ -1,795 +1,615 @@
-// ================================================================================
-// HERA SALON - CUSTOMERS PAGE
-// Smart Code: HERA.PAGES.SALON.CUSTOMERS.V1
-// Enterprise-grade customer management with HERA DNA UI
-// ================================================================================
-
 'use client'
 
-import React, { useState, useMemo, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import {
-  FormFieldDNA,
-  CardDNA,
-  InfoCardDNA,
-  SuccessCardDNA,
-  PrimaryButtonDNA,
-  SecondaryButtonDNA,
-  GhostButtonDNA,
-  BadgeDNA,
-  SuccessBadgeDNA,
-  WarningBadgeDNA,
-  ScrollAreaDNA
-} from '@/lib/dna/components/ui'
-import { Badge } from '@/components/ui/badge'
-import { PageHeader, PageHeaderButton, PageHeaderSearch } from '@/components/universal/PageHeader'
-import {
-  Users,
-  Search,
-  Filter,
-  Plus,
-  Mail,
-  Phone,
-  Calendar,
-  DollarSign,
-  TrendingUp,
-  Star,
-  UserPlus,
-  Download,
-  Upload,
-  MoreVertical,
-  Edit,
-  Trash2,
-  Eye,
-  UserCheck,
-  Clock,
-  MapPin,
-  Gift,
-  Heart,
-  Building2
-} from 'lucide-react'
-import { useCustomers } from '@/hooks/useCustomers'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
-import { format } from 'date-fns'
-import { useToast } from '@/hooks/use-toast'
+export const dynamic = 'force-dynamic'
 
-// Customer interface for type safety
-interface Customer {
-  entity: any
-  dynamicFields: {
-    email?: string
-    phone?: string
-    address?: string
-    date_of_birth?: string
-    preferences?: string
-    notes?: string
-    lifetime_value?: number
-    visit_count?: number
-    last_visit?: string
-    favorite_service?: string
-  }
-  transactions: any[]
-  relationships: any[]
+import React, { useState } from 'react'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useHeraCustomers, type CustomerEntity } from '@/hooks/useHeraCustomers'
+import { CustomerList } from '@/components/salon/customers/CustomerList'
+import { CustomerModal, type CustomerFormData } from '@/components/salon/customers/CustomerModal'
+import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
+import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
+import {
+  Plus,
+  Grid3X3,
+  List,
+  Users,
+  Star,
+  TrendingUp,
+  DollarSign,
+  Filter,
+  X,
+  Archive,
+  UserPlus
+} from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
+
+const COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
+  bronze: '#8C7853',
+  emerald: '#0F6F5C',
+  plum: '#B794F4',
+  rose: '#E8B4B8',
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323'
 }
 
-export default function SalonCustomersPage() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const { currentOrganization, isLoading: authLoading } = useHERAAuth()
+function SalonCustomersPageContent() {
+  const { organizationId } = useSecuredSalonContext()
+  const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
 
-  // Check for Hair Talkz subdomain
-  const getEffectiveOrgId = () => {
-    if (currentOrganization?.id) return currentOrganization.id
+  // State
+  const [searchQuery, setSearchQuery] = useState('')
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [includeArchived, setIncludeArchived] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editingCustomer, setEditingCustomer] = useState<CustomerEntity | null>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [customerToDelete, setCustomerToDelete] = useState<CustomerEntity | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
 
-    // Check if we're on hairtalkz or heratalkz subdomain
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname
-      if (
-        hostname.startsWith('hairtalkz.') ||
-        hostname === 'hairtalkz.localhost' ||
-        hostname.startsWith('heratalkz.') ||
-        hostname === 'heratalkz.localhost'
-      ) {
-        return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
-      }
-    }
-
-    return currentOrganization?.id
-  }
-
-  const organizationId = getEffectiveOrgId()
-
-  // State management
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [loyaltyFilter, setLoyaltyFilter] = useState('all')
-  const [sortBy, setSortBy] = useState('name')
-  const [showNewCustomerModal, setShowNewCustomerModal] = useState(false)
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
-  const [showActions, setShowActions] = useState<string | null>(null)
-
-  // Branch filter hook
+  // Fetch customers using Universal API v2
   const {
-    branchId,
-    branches,
-    loading: branchesLoading,
-    setBranchId,
-    hasMultipleBranches
-  } = useBranchFilter(organizationId, 'salon-customers-list')
+    customers,
+    allCustomers,
+    isLoading,
+    error,
+    createCustomer,
+    updateCustomer,
+    deleteCustomer,
+    archiveCustomer,
+    restoreCustomer,
+    getCustomerStats,
+    refetch: refetchCustomers
+  } = useHeraCustomers({
+    includeArchived,
+    searchQuery,
+    organizationId
+  })
 
-  // Fetch customers using existing hook
-  const { customers, stats, loading, error, refetch, createCustomer, deleteCustomer } =
-    useCustomers(organizationId)
+  // Get customer statistics
+  const stats = getCustomerStats()
+  const activeCount = allCustomers.filter(c => c.status === 'active').length
+  const archivedCount = allCustomers.filter(c => c.status === 'archived').length
 
-  // Filter and sort customers
-  const filteredCustomers = useMemo(() => {
-    let filtered = customers
-
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(customer => {
-        const name = customer.entity.entity_name?.toLowerCase() || ''
-        const email = customer.dynamicFields.email?.toLowerCase() || ''
-        const phone = customer.dynamicFields.phone?.toLowerCase() || ''
-        const search = searchTerm.toLowerCase()
-
-        return name.includes(search) || email.includes(search) || phone.includes(search)
-      })
-    }
-
-    // Status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(customer => customer.entity.status === statusFilter)
-    }
-
-    // Loyalty filter
-    if (loyaltyFilter !== 'all') {
-      filtered = filtered.filter(customer => {
-        const loyaltyRel = customer.relationships.find(
-          r => r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
-        )
-        return loyaltyRel?.metadata?.status_name === loyaltyFilter
-      })
-    }
-
-    // Branch filter
-    if (branchId) {
-      filtered = filtered.filter(customer => {
-        return customer.entity.metadata?.branch_id === branchId
-      })
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return (a.entity.entity_name || '').localeCompare(b.entity.entity_name || '')
-        case 'recent':
-          return new Date(b.entity.created_at).getTime() - new Date(a.entity.created_at).getTime()
-        case 'value':
-          const aValue = a.transactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
-          const bValue = b.transactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
-          return bValue - aValue
-        default:
-          return 0
-      }
-    })
-
-    return filtered
-  }, [customers, searchTerm, statusFilter, loyaltyFilter, sortBy, branchId])
-
-  // Get loyalty tier for customer
-  const getCustomerLoyalty = (customer: Customer) => {
-    const loyaltyRel = customer.relationships.find(
-      r => r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
+  // CRUD Handlers
+  const handleSave = async (data: CustomerFormData) => {
+    const loadingId = showLoading(
+      editingCustomer ? 'Updating customer...' : 'Creating customer...',
+      'Please wait while we save your changes'
     )
-    return loyaltyRel?.metadata?.status_name || 'Bronze'
-  }
 
-  // Get customer lifetime value
-  const getCustomerValue = (customer: Customer) => {
-    return customer.transactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
-  }
-
-  // Get last visit date
-  const getLastVisit = (customer: Customer) => {
-    const lastTransaction = customer.transactions.sort(
-      (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
-    )[0]
-    return lastTransaction?.transaction_date
-  }
-
-  // Handle customer click
-  const handleCustomerClick = (customer: Customer) => {
-    router.push(`/salon/customers/${customer.entity.id}`)
-  }
-
-  // Handle delete customer
-  const handleDeleteCustomer = async (customerId: string) => {
     try {
-      await deleteCustomer(customerId)
-      toast({
-        title: 'Customer deleted',
-        description: 'The customer has been removed successfully'
-      })
-      setShowActions(null)
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to delete customer',
-        variant: 'destructive'
-      })
+      if (editingCustomer) {
+        await updateCustomer(editingCustomer.id, data)
+        removeToast(loadingId)
+        showSuccess('Customer updated successfully', `${data.name} has been updated`)
+      } else {
+        await createCustomer(data)
+        removeToast(loadingId)
+        showSuccess('Customer created successfully', `${data.name} has been added`)
+      }
+      setModalOpen(false)
+      setEditingCustomer(null)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError(
+        editingCustomer ? 'Failed to update customer' : 'Failed to create customer',
+        error.message || 'Please try again or contact support'
+      )
     }
   }
 
-  // Show loading state while auth is loading (but not if we have Hair Talkz subdomain)
-  const isHairTalkzSubdomain =
-    typeof window !== 'undefined' &&
-    (window.location.hostname.startsWith('hairtalkz.') ||
-      window.location.hostname === 'hairtalkz.localhost' ||
-      window.location.hostname.startsWith('heratalkz.') ||
-      window.location.hostname === 'heratalkz.localhost')
-
-  if (authLoading && !isHairTalkzSubdomain) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: 'var(--hera-black)' }}
-      >
-        <div
-          className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent"
-          style={{ borderColor: 'var(--hera-gold)' }}
-        />
-      </div>
-    )
+  const handleEdit = (customer: CustomerEntity) => {
+    setEditingCustomer(customer)
+    setModalOpen(true)
   }
 
-  // Check if organization is loaded
-  if (!organizationId) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: 'var(--hera-black)' }}
-      >
-        <div className="text-center">
-          <p style={{ color: 'var(--hera-bronze)' }}>No organization selected</p>
-        </div>
-      </div>
-    )
+  const handleDelete = (customer: CustomerEntity) => {
+    setCustomerToDelete(customer)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!customerToDelete) return
+
+    const loadingId = showLoading('Processing deletion...', 'Checking customer usage...')
+    setIsDeleting(true)
+
+    try {
+      await deleteCustomer(customerToDelete.id, true)
+      removeToast(loadingId)
+      showSuccess(
+        'Customer deleted permanently',
+        `${customerToDelete.entity_name} has been permanently removed from the system.`
+      )
+      setDeleteDialogOpen(false)
+      setCustomerToDelete(null)
+    } catch (error: any) {
+      removeToast(loadingId)
+
+      // ENTERPRISE-GRADE ERROR HANDLING
+      const errorCode = error.code || error.error?.code
+      const errorMessage = error.message || error.error?.message || ''
+
+      const isExpectedFallback =
+        errorCode === 'FOREIGN_KEY_CONSTRAINT' || errorCode === 'TRANSACTION_INTEGRITY_VIOLATION'
+
+      if (!isExpectedFallback) {
+        console.log('[handleConfirmDelete] Unexpected error:', {
+          errorCode,
+          errorMessage,
+          fullError: error
+        })
+      }
+
+      // Transaction Integrity Violation - MUST soft delete
+      if (errorCode === 'TRANSACTION_INTEGRITY_VIOLATION') {
+        try {
+          console.info(
+            '✅ [handleConfirmDelete] Automatic fallback to soft delete (transaction history exists)',
+            {
+              customerId: customerToDelete.id,
+              customerName: customerToDelete.entity_name
+            }
+          )
+
+          const softDeleteLoadingId = showLoading(
+            'Customer has transaction history',
+            'Marking as deleted to preserve audit trail...'
+          )
+
+          await updateCustomer(customerToDelete.id, { status: 'deleted' } as any)
+
+          console.info('✅ [handleConfirmDelete] Soft delete completed successfully:', {
+            customerId: customerToDelete.id,
+            newStatus: 'deleted'
+          })
+
+          await refetchCustomers()
+
+          removeToast(softDeleteLoadingId)
+          showSuccess(
+            'Customer marked as deleted',
+            `${customerToDelete.entity_name} has transaction history and cannot be permanently removed. It has been marked as deleted.`
+          )
+          setDeleteDialogOpen(false)
+          setCustomerToDelete(null)
+        } catch (softDeleteError: any) {
+          console.error('[handleConfirmDelete] Soft delete failed:', {
+            customerId: customerToDelete.id,
+            error: softDeleteError
+          })
+          showError(
+            'Failed to mark customer as deleted',
+            softDeleteError.message || 'Please contact support'
+          )
+        }
+      }
+      // Foreign Key Constraint
+      else if (errorCode === 'FOREIGN_KEY_CONSTRAINT') {
+        try {
+          console.info(
+            '✅ [handleConfirmDelete] Automatic fallback to soft delete (referenced by other records)',
+            {
+              customerId: customerToDelete.id,
+              customerName: customerToDelete.entity_name
+            }
+          )
+
+          const softDeleteLoadingId = showLoading(
+            'Customer is referenced',
+            'Marking as deleted to preserve data integrity...'
+          )
+
+          await updateCustomer(customerToDelete.id, { status: 'deleted' } as any)
+
+          await refetchCustomers()
+
+          removeToast(softDeleteLoadingId)
+          showSuccess(
+            'Customer marked as deleted',
+            `${customerToDelete.entity_name} is referenced by other records. It has been marked as deleted.`
+          )
+          setDeleteDialogOpen(false)
+          setCustomerToDelete(null)
+        } catch (softDeleteError: any) {
+          showError(
+            'Failed to mark customer as deleted',
+            softDeleteError.message || 'Please contact support'
+          )
+        }
+      }
+      // Permission or other errors
+      else if (errorCode === 'FORBIDDEN') {
+        showError('Permission denied', 'You do not have permission to delete this customer')
+      } else {
+        showError(
+          'Failed to delete customer',
+          errorMessage || 'An unexpected error occurred. Please try again.'
+        )
+      }
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleArchive = async (customer: CustomerEntity) => {
+    const loadingId = showLoading('Archiving customer...', 'Please wait...')
+
+    try {
+      await archiveCustomer(customer.id)
+      removeToast(loadingId)
+      showSuccess('Customer archived', `${customer.entity_name} has been archived`)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to archive customer', error.message || 'Please try again')
+    }
+  }
+
+  const handleRestore = async (customer: CustomerEntity) => {
+    const loadingId = showLoading('Restoring customer...', 'Please wait...')
+
+    try {
+      await restoreCustomer(customer.id)
+      removeToast(loadingId)
+      showSuccess('Customer restored', `${customer.entity_name} has been restored to active`)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to restore customer', error.message || 'Please try again')
+    }
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--hera-black)' }}>
-      {/* Main content wrapper with charcoal background for depth */}
-      <div className="relative" style={{ minHeight: '100vh' }}>
-        {/* Subtle gradient overlay for depth */}
+    <div className="h-screen overflow-hidden" style={{ backgroundColor: COLORS.black }}>
+      <div className="h-full flex flex-col">
+        {/* Background gradient */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none opacity-30"
           style={{
-            background: `radial-gradient(circle at 20% 80%, var(--hera-gold)08 0%, transparent 50%),
-                           radial-gradient(circle at 80% 20%, var(--hera-bronze)05 0%, transparent 50%),
-                           radial-gradient(circle at 40% 40%, var(--hera-plum)03 0%, transparent 50%)`
+            background:
+              'radial-gradient(ellipse at top right, rgba(212, 175, 55, 0.15), transparent 50%), radial-gradient(ellipse at bottom left, rgba(15, 111, 92, 0.1), transparent 50%)'
           }}
         />
 
-        {/* Content container */}
+        {/* Page Header */}
         <div
-          className="container mx-auto px-6 py-8 relative"
-          style={{
-            backgroundColor: 'var(--hera-charcoal)',
-            minHeight: '100vh',
-            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
-          }}
+          className="relative z-10 px-6 py-4 border-b"
+          style={{ borderColor: COLORS.bronze + '30' }}
         >
           <PageHeader
             title="Customers"
-            breadcrumbs={[
-              { label: 'HERA' },
-              { label: 'SALON OS' },
-              { label: 'Customers', isActive: true }
-            ]}
             actions={
               <>
-                <PageHeaderButton variant="secondary" icon={Upload}>
-                  Import
-                </PageHeaderButton>
-                <PageHeaderButton variant="secondary" icon={Download}>
-                  Export
-                </PageHeaderButton>
-                <PageHeaderButton
-                  variant="primary"
-                  icon={UserPlus}
-                  onClick={() => router.push('/salon/customers/new')}
-                >
+                <PageHeaderSearch
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  placeholder="Search customers..."
+                />
+                <PageHeaderButton icon={Plus} onClick={() => setModalOpen(true)}>
                   Add Customer
                 </PageHeaderButton>
               </>
             }
           />
+        </div>
 
-          <div className="space-y-6 salon-luxury-focus">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <InfoCardDNA>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: 'var(--hera-bronze)' }}>
-                      Total Customers
-                    </p>
-                    <p className="text-2xl font-bold" style={{ color: 'var(--hera-champagne)' }}>
-                      {stats.totalCustomers}
-                    </p>
-                    <p className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
-                      <TrendingUp
-                        className="inline w-4 h-4"
-                        style={{ color: 'var(--hera-gold)' }}
-                      />{' '}
-                      +12% this month
-                    </p>
-                  </div>
+        {/* Stats Cards */}
+        <div className="relative z-10 px-6 py-4">
+          <div className="grid grid-cols-4 gap-4">
+            {/* Total Customers */}
+            <div
+              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emerald}15 0%, ${COLORS.charcoal}f5 50%, ${COLORS.charcoal}f0 100%)`,
+                border: `1.5px solid ${COLORS.emerald}60`,
+                boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 30px ${COLORS.emerald}15`
+              }}
+            >
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-3">
                   <div
-                    className="p-3 rounded-lg"
-                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}
+                    className="p-2 rounded-lg"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.emerald}40 0%, ${COLORS.emerald}20 100%)`,
+                      border: `1.5px solid ${COLORS.emerald}60`
+                    }}
                   >
-                    <Users className="w-8 h-8" style={{ color: 'var(--hera-gold)' }} />
+                    <Users className="h-4 w-4" style={{ color: COLORS.emerald }} />
                   </div>
                 </div>
-              </InfoCardDNA>
-
-              <SuccessCardDNA>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: 'var(--hera-bronze)' }}>
-                      Total Revenue
-                    </p>
-                    <p className="text-2xl font-bold" style={{ color: 'var(--hera-champagne)' }}>
-                      AED {stats.totalRevenue.toLocaleString()}
-                    </p>
-                    <p className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
-                      From all customers
-                    </p>
-                  </div>
-                  <div
-                    className="p-3 rounded-lg"
-                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}
-                  >
-                    <DollarSign className="w-8 h-8" style={{ color: 'var(--hera-gold)' }} />
-                  </div>
-                </div>
-              </SuccessCardDNA>
-
-              <CardDNA>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: 'var(--hera-bronze)' }}>
-                      Average Spend
-                    </p>
-                    <p className="text-2xl font-bold" style={{ color: 'var(--hera-champagne)' }}>
-                      AED {stats.avgSpend}
-                    </p>
-                    <p className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
-                      Per customer
-                    </p>
-                  </div>
-                  <div
-                    className="p-3 rounded-lg"
-                    style={{ backgroundColor: 'rgba(140, 120, 83, 0.1)' }}
-                  >
-                    <TrendingUp className="w-8 h-8" style={{ color: 'var(--hera-bronze)' }} />
-                  </div>
-                </div>
-              </CardDNA>
-
-              <CardDNA>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: 'var(--hera-bronze)' }}>
-                      VIP Customers
-                    </p>
-                    <p className="text-2xl font-bold" style={{ color: 'var(--hera-champagne)' }}>
-                      {stats.vipCount}
-                    </p>
-                    <p className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
-                      Platinum tier
-                    </p>
-                  </div>
-                  <div
-                    className="p-3 rounded-lg"
-                    style={{ backgroundColor: 'rgba(90, 42, 64, 0.1)' }}
-                  >
-                    <Star className="w-8 h-8" style={{ color: 'var(--hera-plum)' }} />
-                  </div>
-                </div>
-              </CardDNA>
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
+                  style={{ color: COLORS.bronze }}
+                >
+                  Total Customers
+                </p>
+                <p className="text-2xl font-bold mb-0.5" style={{ color: COLORS.champagne }}>
+                  {stats.totalCustomers}
+                </p>
+                <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                  All time customers
+                </p>
+              </div>
             </div>
 
-            {/* Filters */}
-            <CardDNA>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <FormFieldDNA
-                  type="text"
-                  label="Search Customers"
-                  value={searchTerm}
-                  onChange={setSearchTerm}
-                  placeholder="Name, email or phone..."
-                  icon={Search}
-                />
-
-                <FormFieldDNA
-                  type="select"
-                  label="Status"
-                  value={statusFilter}
-                  onChange={setStatusFilter}
-                  icon={Filter}
-                  options={[
-                    { value: 'all', label: 'All Statuses' },
-                    { value: 'active', label: 'Active' },
-                    { value: 'inactive', label: 'Inactive' }
-                  ]}
-                />
-
-                <FormFieldDNA
-                  type="select"
-                  label="Loyalty Tier"
-                  value={loyaltyFilter}
-                  onChange={setLoyaltyFilter}
-                  icon={Star}
-                  options={[
-                    { value: 'all', label: 'All Tiers' },
-                    { value: 'Platinum', label: 'Platinum' },
-                    { value: 'Gold', label: 'Gold' },
-                    { value: 'Silver', label: 'Silver' },
-                    { value: 'Bronze', label: 'Bronze' }
-                  ]}
-                />
-
-                <FormFieldDNA
-                  type="select"
-                  label="Branch Location"
-                  value={branchId || '__ALL__'}
-                  onChange={value => setBranchId(value === '__ALL__' ? '' : value)}
-                  icon={Building2}
-                  options={[
-                    { value: '__ALL__', label: 'All Locations' },
-                    ...(branchesLoading
-                      ? [{ value: '__LOADING__', label: 'Loading...' }]
-                      : branches.map(branch => ({
-                          value: branch.id,
-                          label: branch.entity_name || 'Unnamed Branch'
-                        })))
-                  ]}
-                />
-
-                <FormFieldDNA
-                  type="select"
-                  label="Sort By"
-                  value={sortBy}
-                  onChange={setSortBy}
-                  options={[
-                    { value: 'name', label: 'Name (A-Z)' },
-                    { value: 'recent', label: 'Most Recent' },
-                    { value: 'value', label: 'Highest Value' }
-                  ]}
-                />
-              </div>
-
-              {/* Active Filters */}
-              {branchId && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
-                      Active filters:
-                    </span>
-                    <Badge
-                      className="gap-1.5 font-medium border cursor-pointer hover:opacity-80 transition-opacity"
-                      style={{
-                        backgroundColor: 'rgba(212, 175, 55, 0.15)',
-                        color: 'var(--hera-gold)',
-                        borderColor: 'rgba(212, 175, 55, 0.3)'
-                      }}
-                      onClick={() => setBranchId('')}
-                    >
-                      <Building2 className="w-3 h-3" />
-                      <MapPin className="w-3 h-3" />
-                      {branches.find(b => b.id === branchId)?.entity_name || 'Branch'}
-                      <button
-                        className="ml-1 hover:text-white"
-                        onClick={e => {
-                          e.stopPropagation()
-                          setBranchId('')
-                        }}
-                      >
-                        ×
-                      </button>
-                    </Badge>
-                  </div>
-                </div>
-              )}
-            </CardDNA>
-
-            {/* Customer List */}
-            <CardDNA>
-              {loading ? (
-                <div className="text-center py-12">
+            {/* VIP Customers */}
+            <div
+              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.plum}15 0%, ${COLORS.charcoal}f5 50%, ${COLORS.charcoal}f0 100%)`,
+                border: `1.5px solid ${COLORS.plum}60`,
+                boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 30px ${COLORS.plum}15`
+              }}
+            >
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-3">
                   <div
-                    className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mx-auto"
-                    style={{ borderColor: 'var(--hera-gold)', borderTopColor: 'transparent' }}
-                  />
-                  <p className="mt-4" style={{ color: 'var(--hera-bronze)' }}>
-                    Loading customers...
-                  </p>
-                </div>
-              ) : error ? (
-                <div className="text-center py-12">
-                  <p style={{ color: 'var(--hera-rose)' }}>Error loading customers: {error}</p>
-                </div>
-              ) : filteredCustomers.length === 0 ? (
-                <div className="text-center py-12">
-                  <Users
-                    className="w-12 h-12 mx-auto mb-4"
-                    style={{ color: 'var(--hera-bronze)' }}
-                  />
-                  <p style={{ color: 'var(--hera-champagne)' }}>No customers found</p>
-                  <p className="text-sm mt-2" style={{ color: 'var(--hera-bronze)' }}>
-                    Try adjusting your filters or add a new customer
-                  </p>
-                </div>
-              ) : (
-                <ScrollAreaDNA height="h-[600px]">
-                  <div className="space-y-2 pr-4">
-                    {filteredCustomers.map(customer => {
-                      const loyaltyTier = getCustomerLoyalty(customer)
-                      const lifetimeValue = getCustomerValue(customer)
-                      const lastVisit = getLastVisit(customer)
-
-                      return (
-                        <div
-                          key={customer.entity.id}
-                          className="group relative p-4 rounded-lg transition-all cursor-pointer"
-                          style={{
-                            backgroundColor: 'var(--hera-charcoal)',
-                            border: '1px solid rgba(212, 175, 55, 0.2)',
-                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-                          }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.borderColor = 'var(--hera-gold)'
-                            e.currentTarget.style.boxShadow = '0 4px 6px rgba(212, 175, 55, 0.1)'
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.2)'
-                            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)'
-                          }}
-                          onClick={() => handleCustomerClick(customer)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                              <div
-                                className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-lg"
-                                style={{
-                                  background: `linear-gradient(135deg, var(--hera-gold) 0%, var(--hera-gold-dark) 100%)`,
-                                  color: 'var(--hera-black)'
-                                }}
-                              >
-                                {customer.entity.entity_name?.charAt(0).toUpperCase() || '?'}
-                              </div>
-
-                              <div>
-                                <h3
-                                  className="font-medium"
-                                  style={{ color: 'var(--hera-champagne)' }}
-                                >
-                                  {customer.entity.entity_name}
-                                </h3>
-                                <div className="flex items-center gap-4 mt-1">
-                                  {customer.dynamicFields.email && (
-                                    <span
-                                      className="text-sm flex items-center gap-1"
-                                      style={{ color: 'var(--hera-bronze)' }}
-                                    >
-                                      <Mail className="w-3 h-3" />
-                                      {customer.dynamicFields.email}
-                                    </span>
-                                  )}
-                                  {customer.dynamicFields.phone && (
-                                    <span
-                                      className="text-sm flex items-center gap-1"
-                                      style={{ color: 'var(--hera-bronze)' }}
-                                    >
-                                      <Phone className="w-3 h-3" />
-                                      {customer.dynamicFields.phone}
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="flex items-center gap-4 mt-2">
-                                  <span className="text-sm" style={{ color: 'var(--hera-bronze)' }}>
-                                    Lifetime Value:{' '}
-                                    <span
-                                      className="font-medium"
-                                      style={{ color: 'var(--hera-gold)' }}
-                                    >
-                                      AED {lifetimeValue}
-                                    </span>
-                                  </span>
-                                  {lastVisit && (
-                                    <span
-                                      className="text-sm flex items-center gap-1"
-                                      style={{ color: 'var(--hera-bronze)' }}
-                                    >
-                                      <Clock className="w-3 h-3" />
-                                      Last visit: {format(new Date(lastVisit), 'MMM dd, yyyy')}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                              <Badge
-                                className="gap-1 font-medium border"
-                                style={{
-                                  backgroundColor:
-                                    loyaltyTier === 'Platinum'
-                                      ? 'rgba(245, 230, 200, 0.15)'
-                                      : loyaltyTier === 'Gold'
-                                        ? 'rgba(212, 175, 55, 0.15)'
-                                        : loyaltyTier === 'Silver'
-                                          ? 'rgba(140, 120, 83, 0.15)'
-                                          : 'rgba(140, 120, 83, 0.1)',
-                                  color:
-                                    loyaltyTier === 'Platinum'
-                                      ? 'var(--hera-champagne)'
-                                      : loyaltyTier === 'Gold'
-                                        ? 'var(--hera-gold)'
-                                        : loyaltyTier === 'Silver'
-                                          ? 'var(--hera-bronze)'
-                                          : 'var(--hera-bronze)',
-                                  borderColor:
-                                    loyaltyTier === 'Platinum'
-                                      ? 'rgba(245, 230, 200, 0.3)'
-                                      : loyaltyTier === 'Gold'
-                                        ? 'rgba(212, 175, 55, 0.3)'
-                                        : loyaltyTier === 'Silver'
-                                          ? 'rgba(140, 120, 83, 0.3)'
-                                          : 'rgba(140, 120, 83, 0.2)'
-                                }}
-                              >
-                                <Star className="w-3 h-3" />
-                                {loyaltyTier}
-                              </Badge>
-
-                              <Badge
-                                className="gap-1 font-medium border"
-                                style={{
-                                  backgroundColor:
-                                    customer.entity.status === 'active'
-                                      ? 'rgba(212, 175, 55, 0.15)'
-                                      : 'rgba(140, 120, 83, 0.1)',
-                                  color:
-                                    customer.entity.status === 'active'
-                                      ? 'var(--hera-gold)'
-                                      : 'var(--hera-bronze)',
-                                  borderColor:
-                                    customer.entity.status === 'active'
-                                      ? 'rgba(212, 175, 55, 0.3)'
-                                      : 'rgba(140, 120, 83, 0.2)'
-                                }}
-                              >
-                                {customer.entity.status}
-                              </Badge>
-
-                              <div className="relative">
-                                <GhostButtonDNA
-                                  icon={MoreVertical}
-                                  onClick={e => {
-                                    e.stopPropagation()
-                                    setShowActions(
-                                      showActions === customer.entity.id ? null : customer.entity.id
-                                    )
-                                  }}
-                                />
-
-                                {showActions === customer.entity.id && (
-                                  <div
-                                    className="absolute right-0 top-full mt-2 w-48 rounded-lg shadow-lg py-2 z-10"
-                                    style={{
-                                      backgroundColor: 'var(--hera-charcoal)',
-                                      border: '1px solid rgba(212, 175, 55, 0.2)'
-                                    }}
-                                  >
-                                    <button
-                                      className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors"
-                                      style={{ color: 'var(--hera-light-text)' }}
-                                      onMouseEnter={e => {
-                                        e.currentTarget.style.backgroundColor =
-                                          'rgba(212, 175, 55, 0.1)'
-                                      }}
-                                      onMouseLeave={e => {
-                                        e.currentTarget.style.backgroundColor = 'transparent'
-                                      }}
-                                      onClick={e => {
-                                        e.stopPropagation()
-                                        router.push(`/salon/customers/${customer.entity.id}`)
-                                      }}
-                                    >
-                                      <Eye className="w-4 h-4" /> View Details
-                                    </button>
-                                    <button
-                                      className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors"
-                                      style={{ color: 'var(--hera-light-text)' }}
-                                      onMouseEnter={e => {
-                                        e.currentTarget.style.backgroundColor =
-                                          'rgba(212, 175, 55, 0.1)'
-                                      }}
-                                      onMouseLeave={e => {
-                                        e.currentTarget.style.backgroundColor = 'transparent'
-                                      }}
-                                      onClick={e => {
-                                        e.stopPropagation()
-                                        router.push(`/salon/customers/${customer.entity.id}/edit`)
-                                      }}
-                                    >
-                                      <Edit className="w-4 h-4" /> Edit
-                                    </button>
-                                    <button
-                                      className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors"
-                                      style={{ color: 'var(--hera-light-text)' }}
-                                      onMouseEnter={e => {
-                                        e.currentTarget.style.backgroundColor =
-                                          'rgba(212, 175, 55, 0.1)'
-                                      }}
-                                      onMouseLeave={e => {
-                                        e.currentTarget.style.backgroundColor = 'transparent'
-                                      }}
-                                      onClick={e => {
-                                        e.stopPropagation()
-                                        router.push(
-                                          `/salon/appointments/new?customerId=${customer.entity.id}`
-                                        )
-                                      }}
-                                    >
-                                      <Calendar className="w-4 h-4" /> Book Appointment
-                                    </button>
-                                    <hr
-                                      className="my-2"
-                                      style={{ borderColor: 'rgba(212, 175, 55, 0.2)' }}
-                                    />
-                                    <button
-                                      className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors"
-                                      style={{ color: 'var(--hera-rose)' }}
-                                      onMouseEnter={e => {
-                                        e.currentTarget.style.backgroundColor =
-                                          'rgba(232, 180, 184, 0.1)'
-                                      }}
-                                      onMouseLeave={e => {
-                                        e.currentTarget.style.backgroundColor = 'transparent'
-                                      }}
-                                      onClick={e => {
-                                        e.stopPropagation()
-                                        if (
-                                          confirm('Are you sure you want to delete this customer?')
-                                        ) {
-                                          handleDeleteCustomer(customer.entity.id)
-                                        }
-                                      }}
-                                    >
-                                      <Trash2 className="w-4 h-4" /> Delete
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })}
+                    className="p-2 rounded-lg"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.gold}40 0%, ${COLORS.gold}20 100%)`,
+                      border: `1.5px solid ${COLORS.gold}60`
+                    }}
+                  >
+                    <Star className="h-4 w-4" style={{ color: COLORS.gold }} />
                   </div>
-                </ScrollAreaDNA>
-              )}
-            </CardDNA>
+                </div>
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
+                  style={{ color: COLORS.bronze }}
+                >
+                  VIP Customers
+                </p>
+                <p className="text-2xl font-bold mb-0.5" style={{ color: COLORS.gold }}>
+                  {stats.vipCustomers}
+                </p>
+                <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                  Premium members
+                </p>
+              </div>
+            </div>
+
+            {/* Active Customers */}
+            <div
+              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emerald}12 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
+                border: `1.5px solid ${COLORS.emerald}50`,
+                boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
+              }}
+            >
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-3">
+                  <div
+                    className="p-2 rounded-lg"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.emerald}30 0%, ${COLORS.emerald}15 100%)`,
+                      border: `1px solid ${COLORS.emerald}50`
+                    }}
+                  >
+                    <UserPlus className="h-4 w-4" style={{ color: COLORS.emerald }} />
+                  </div>
+                </div>
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
+                  style={{ color: COLORS.bronze }}
+                >
+                  Active Customers
+                </p>
+                <p className="text-2xl font-bold mb-0.5" style={{ color: COLORS.champagne }}>
+                  {activeCount}
+                </p>
+                <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                  Current active base
+                </p>
+              </div>
+            </div>
+
+            {/* Average Lifetime Value */}
+            <div
+              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 25%, ${COLORS.charcoal}f5 60%, ${COLORS.charcoal}f0 100%)`,
+                border: `1.5px solid ${COLORS.gold}80`,
+                boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 30px ${COLORS.gold}15`
+              }}
+            >
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-3">
+                  <div
+                    className="p-2 rounded-lg"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.gold}40 0%, ${COLORS.gold}20 100%)`,
+                      border: `1.5px solid ${COLORS.gold}80`
+                    }}
+                  >
+                    <DollarSign className="h-4 w-4" style={{ color: COLORS.gold }} />
+                  </div>
+                  <TrendingUp className="h-3 w-3 opacity-40" style={{ color: COLORS.gold }} />
+                </div>
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
+                  style={{ color: COLORS.bronze }}
+                >
+                  Avg Lifetime Value
+                </p>
+                <p className="text-2xl font-bold mb-0.5" style={{ color: COLORS.gold }}>
+                  AED {Math.round(stats.averageLifetimeValue).toLocaleString()}
+                </p>
+                <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                  Per customer
+                </p>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Toolbar */}
+        <div className="relative z-10 px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* View Mode Toggle */}
+            <div
+              className="flex items-center gap-1 p-1 rounded-lg"
+              style={{ backgroundColor: COLORS.charcoalLight }}
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                style={{
+                  backgroundColor: viewMode === 'grid' ? COLORS.gold + '20' : 'transparent',
+                  color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText
+                }}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewMode('list')}
+                style={{
+                  backgroundColor: viewMode === 'list' ? COLORS.gold + '20' : 'transparent',
+                  color: viewMode === 'list' ? COLORS.gold : COLORS.lightText
+                }}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Include Archived Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIncludeArchived(!includeArchived)}
+              style={{
+                backgroundColor: includeArchived ? COLORS.bronze + '20' : 'transparent',
+                color: includeArchived ? COLORS.bronze : COLORS.lightText,
+                border: `1px solid ${COLORS.bronze}30`
+              }}
+            >
+              <Archive className="h-4 w-4 mr-2" />
+              {includeArchived ? 'Hide Archived' : 'Show Archived'}
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge
+              variant="secondary"
+              style={{ backgroundColor: COLORS.charcoalLight, color: COLORS.lightText }}
+            >
+              {customers.length} customers
+            </Badge>
+          </div>
+        </div>
+
+        {/* Customer List */}
+        <div className="relative z-10 flex-1 overflow-auto px-6 pb-6">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <Users
+                  className="h-12 w-12 mx-auto mb-3 animate-pulse"
+                  style={{ color: COLORS.bronze }}
+                />
+                <p style={{ color: COLORS.lightText }}>Loading customers...</p>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center h-64">
+              <p style={{ color: COLORS.rose }}>Error loading customers: {error.message}</p>
+            </div>
+          ) : (
+            <CustomerList
+              customers={customers}
+              viewMode={viewMode}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onArchive={handleArchive}
+              onRestore={handleRestore}
+            />
+          )}
+        </div>
       </div>
+
+      {/* Customer Modal */}
+      <CustomerModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false)
+          setEditingCustomer(null)
+        }}
+        onSubmit={handleSave}
+        customer={editingCustomer}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent
+          style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.rose}40` }}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle style={{ color: COLORS.champagne }}>Delete Customer</AlertDialogTitle>
+            <AlertDialogDescription style={{ color: COLORS.lightText }}>
+              Are you sure you want to delete {customerToDelete?.entity_name}? This action cannot be
+              undone if the customer has no transaction history.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={isDeleting}
+              style={{
+                backgroundColor: COLORS.charcoalLight,
+                color: COLORS.lightText,
+                border: `1px solid ${COLORS.bronze}40`
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              style={{
+                backgroundColor: COLORS.rose,
+                color: COLORS.charcoalDark
+              }}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Customer'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
+  )
+}
+
+export default function SalonCustomersPage() {
+  return (
+    <StatusToastProvider>
+      <SalonCustomersPageContent />
+    </StatusToastProvider>
   )
 }

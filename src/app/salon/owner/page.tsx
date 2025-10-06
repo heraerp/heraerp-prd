@@ -1,372 +1,330 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase/client'
+export const dynamic = 'force-dynamic'
+
+import React, { useState, useMemo } from 'react'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useHeraCustomers } from '@/hooks/useHeraCustomers'
+import { useHeraServices } from '@/hooks/useHeraServicesV2'
+import { useHeraProducts } from '@/hooks/useHeraProducts'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
+import { usePosTicket } from '@/hooks/usePosTicket'
 import {
   TrendingUp,
   TrendingDown,
-  Calendar,
   Users,
-  UserCheck,
-  DollarSign,
+  Scissors,
   Package,
-  AlertCircle,
-  RefreshCw
+  DollarSign,
+  UserCheck,
+  RefreshCw,
+  Star,
+  ShoppingBag,
+  Calendar,
+  Sparkles,
+  ArrowUpRight,
+  ArrowDownRight
 } from 'lucide-react'
-import { Line, Doughnut } from 'react-chartjs-2'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  ChartOptions
-} from 'chart.js'
+import { Card } from '@/components/ui/card'
 
-// Register ChartJS components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement
-)
-
-interface KPIData {
-  monthlyRevenue: { amount: number; growth: number }
-  todaysAppointments: { count: number }
-  activeCustomers: { count: number; growth: number }
-  staffMembers: { count: number }
-  totalExpenses: { amount: number; growth: number }
-  lowStockItems: { count: number }
+const COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
+  bronze: '#8C7853',
+  emerald: '#0F6F5C',
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323'
 }
 
-interface FinancialData {
-  month_name: string
-  month_start: string
-  total_revenue_aed: number
-  total_expenses_aed: number
-  net_profit_aed: number
-  profit_margin_percentage: number
-  top_services_revenue_aed: number
-  top_products_revenue_aed: number
+interface StatCardProps {
+  title: string
+  value: string | number
+  change?: number
+  changeLabel?: string
+  icon: React.ElementType
+  iconColor: string
+  iconBgColor: string
+  gradient?: string
 }
 
-interface InventoryItem {
-  product_id: string
-  product_name: string
-  current_stock: number
-  reorder_level: number
-  unit_of_measure: string
-  stock_status: 'low' | 'out_of_stock' | 'normal'
+function StatCard({
+  title,
+  value,
+  change,
+  changeLabel,
+  icon: Icon,
+  iconColor,
+  iconBgColor,
+  gradient
+}: StatCardProps) {
+  const isPositive = change !== undefined ? change >= 0 : true
+
+  return (
+    <div
+      className="relative p-6 rounded-2xl transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl group overflow-hidden"
+      style={{
+        background:
+          gradient || `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.charcoal} 100%)`,
+        border: `1px solid ${COLORS.gold}20`,
+        backdropFilter: 'blur(10px)'
+      }}
+    >
+      {/* Animated Background Shimmer */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+        style={{
+          background: `linear-gradient(135deg, transparent 0%, ${COLORS.gold}10 50%, transparent 100%)`,
+          transform: 'translateX(-100%)',
+          animation: 'shimmer 3s infinite'
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10">
+        <div className="flex items-start justify-between mb-4">
+          {/* Icon */}
+          <div
+            className="p-3 rounded-xl transition-all duration-300 group-hover:scale-110"
+            style={{
+              background: `linear-gradient(135deg, ${iconBgColor}40 0%, ${iconBgColor}20 100%)`,
+              border: `1px solid ${iconColor}30`,
+              boxShadow: `0 4px 12px ${iconColor}20`
+            }}
+          >
+            <Icon className="w-6 h-6" style={{ color: iconColor }} />
+          </div>
+
+          {/* Change Indicator */}
+          {change !== undefined && (
+            <div
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-300"
+              style={{
+                backgroundColor: isPositive ? `${COLORS.emerald}20` : '#FF6B6B20',
+                color: isPositive ? COLORS.emerald : '#FF6B6B',
+                border: `1px solid ${isPositive ? COLORS.emerald : '#FF6B6B'}30`
+              }}
+            >
+              {isPositive ? (
+                <ArrowUpRight className="w-3 h-3" />
+              ) : (
+                <ArrowDownRight className="w-3 h-3" />
+              )}
+              {Math.abs(change).toFixed(1)}%
+            </div>
+          )}
+        </div>
+
+        {/* Title */}
+        <h3
+          className="text-sm font-medium mb-2 transition-all duration-300"
+          style={{ color: COLORS.bronze }}
+        >
+          {title}
+        </h3>
+
+        {/* Value */}
+        <p
+          className="text-3xl font-bold mb-1 transition-all duration-300 group-hover:text-shadow-lg"
+          style={{
+            background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}
+        >
+          {value}
+        </p>
+
+        {/* Change Label */}
+        {changeLabel && (
+          <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.6 }}>
+            {changeLabel}
+          </p>
+        )}
+      </div>
+
+      {/* Decorative Corner Accent */}
+      <div
+        className="absolute top-0 right-0 w-20 h-20 rounded-bl-full opacity-10 transition-all duration-500 group-hover:scale-150 group-hover:opacity-20"
+        style={{ background: iconColor }}
+      />
+    </div>
+  )
 }
 
 export default function OwnerDashboard() {
-  const [kpiData, setKpiData] = useState<KPIData | null>(null)
-  const [financialData, setFinancialData] = useState<FinancialData[]>([])
-  const [inventoryData, setInventoryData] = useState<InventoryItem[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { organizationId, organization, currency, isLoading: orgLoading } = useSecuredSalonContext()
   const [lastRefresh, setLastRefresh] = useState(new Date())
 
-  // Helper to get auth token
-  const getAuthToken = async (): Promise<string> => {
-    try {
-      const {
-        data: { session }
-      } = await supabase.auth.getSession()
-      return session?.access_token || ''
-    } catch (error) {
-      console.error('Failed to get auth token:', error)
-      return ''
+  // Fetch data using universal entity hooks
+  const {
+    customers,
+    allCustomers,
+    isLoading: customersLoading,
+    refetch: refetchCustomers
+  } = useHeraCustomers({
+    organizationId,
+    includeArchived: false
+  })
+
+  const {
+    services,
+    isLoading: servicesLoading,
+    refetch: refetchServices
+  } = useHeraServices({
+    organizationId,
+    filters: {}
+  })
+
+  const {
+    products,
+    isLoading: productsLoading,
+    refetch: refetchProducts
+  } = useHeraProducts({
+    organizationId,
+    includeArchived: false,
+    searchQuery: '',
+    categoryFilter: ''
+  })
+
+  const {
+    staff,
+    isLoading: staffLoading,
+    refetch: refetchStaff
+  } = useHeraStaff({
+    organizationId,
+    includeArchived: false
+  })
+
+  const {
+    tickets,
+    isLoading: ticketsLoading,
+    refetch: refetchTickets
+  } = usePosTicket({
+    organizationId,
+    filters: {}
+  })
+
+  // Calculate KPIs
+  const kpis = useMemo(() => {
+    // VIP Customers count
+    const vipCustomers = allCustomers?.filter(c => c.vip)?.length || 0
+
+    // Total revenue from tickets
+    const totalRevenue =
+      tickets?.reduce((sum, ticket) => {
+        return sum + (ticket.total_amount || 0)
+      }, 0) || 0
+
+    // Active services count
+    const activeServices = services?.filter(s => s.status === 'active')?.length || 0
+
+    // Low stock products
+    const lowStockProducts =
+      products?.filter(p => {
+        const stockQty = p.stock_quantity || p.stock_level || p.qty_on_hand || 0
+        const reorderLevel = p.reorder_level || 0
+        return stockQty > 0 && stockQty <= reorderLevel
+      })?.length || 0
+
+    // Total inventory value
+    const inventoryValue =
+      products?.reduce((sum, product) => {
+        const costPrice = product.price_cost || product.cost_price || product.price || 0
+        const stockQty = product.stock_quantity || product.stock_level || product.qty_on_hand || 0
+        const productValue = costPrice && stockQty ? costPrice * stockQty : 0
+        return sum + productValue
+      }, 0) || 0
+
+    // Active staff count
+    const activeStaff = staff?.filter(s => s.status === 'active')?.length || 0
+
+    return {
+      totalCustomers: customers?.length || 0,
+      vipCustomers,
+      totalRevenue,
+      activeServices,
+      totalProducts: products?.length || 0,
+      lowStockProducts,
+      inventoryValue,
+      activeStaff
     }
-  }
+  }, [customers, allCustomers, services, products, staff, tickets])
 
-  // Fetch all dashboard data
-  const fetchDashboardData = async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      // Fetch dashboard data using v2 API
-      const dashboardResponse = await fetch('/api/v2/salon/dashboard?timeRange=month', {
-        headers: {
-          'x-hera-api-version': 'v2',
-          Authorization: `Bearer ${await getAuthToken()}`
-        }
-      })
-      if (!dashboardResponse.ok) throw new Error('Failed to fetch dashboard data')
-      const dashboardData = await dashboardResponse.json()
-
-      // Map dashboard data to KPIs
-      if (dashboardData.success && dashboardData.data) {
-        const { financials, todayStats } = dashboardData.data
-        setKpiData({
-          monthlyRevenue: { amount: financials?.totalRevenue || 0, growth: 12.5 },
-          todaysAppointments: { count: todayStats?.appointmentsTotal || 0 },
-          activeCustomers: { count: 150, growth: 8 }, // This would come from actual data
-          staffMembers: { count: 5 },
-          totalExpenses: { amount: 75000, growth: -5.2 },
-          lowStockItems: { count: 3 }
-        })
-      }
-
-      // Use dashboard data for financial info
-      if (dashboardData.success && dashboardData.data?.financials) {
-        setFinancialData([
-          {
-            month_name: new Date().toLocaleString('default', { month: 'long' }),
-            month_start: new Date().toISOString().slice(0, 10),
-            total_revenue_aed: dashboardData.data.financials.totalRevenue || 0,
-            total_expenses_aed: 75000, // This would come from actual expense data
-            net_profit_aed: (dashboardData.data.financials.totalRevenue || 0) - 75000,
-            profit_margin_percentage: 15.5,
-            top_services_revenue_aed: (dashboardData.data.financials.totalRevenue || 0) * 0.7,
-            top_products_revenue_aed: (dashboardData.data.financials.totalRevenue || 0) * 0.3
-          }
-        ])
-      }
-
-      // Skip inventory for now - would need v2 endpoint
-      setInventoryData([])
-
-      setLastRefresh(new Date())
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Initial fetch and auto-refresh every 5 minutes
-  useEffect(() => {
-    fetchDashboardData()
-    const interval = setInterval(fetchDashboardData, 5 * 60 * 1000)
-    return () => clearInterval(interval)
-  }, [])
+  const isLoading =
+    orgLoading ||
+    customersLoading ||
+    servicesLoading ||
+    productsLoading ||
+    staffLoading ||
+    ticketsLoading
 
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-AE', {
       style: 'currency',
-      currency: 'AED',
+      currency: currency || 'AED',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(amount)
   }
 
-  // Format percentage with arrow
-  const formatGrowth = (percentage: number) => {
-    const isPositive = percentage >= 0
-    return (
-      <span
-        className="flex items-center"
-        style={{
-          color: isPositive ? '#0F6F5C' : '#FF6B6B'
-        }}
-      >
-        {isPositive ? (
-          <TrendingUp className="w-4 h-4 mr-1" />
-        ) : (
-          <TrendingDown className="w-4 h-4 mr-1" />
-        )}
-        {Math.abs(percentage).toFixed(1)}%
-      </span>
-    )
-  }
-
-  // Chart data for revenue trends
-  const revenueChartData = {
-    labels: financialData.map(d => d.month_name).slice(-6),
-    datasets: [
-      {
-        label: 'Revenue',
-        data: financialData.map(d => d.total_revenue_aed).slice(-6),
-        borderColor: '#D4AF37',
-        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-        tension: 0.4,
-        borderWidth: 2
-      },
-      {
-        label: 'Expenses',
-        data: financialData.map(d => d.total_expenses_aed).slice(-6),
-        borderColor: '#FF6B6B',
-        backgroundColor: 'rgba(255, 107, 107, 0.1)',
-        tension: 0.4,
-        borderWidth: 2
-      },
-      {
-        label: 'Net Profit',
-        data: financialData.map(d => d.net_profit_aed).slice(-6),
-        borderColor: '#0F6F5C',
-        backgroundColor: 'rgba(15, 111, 92, 0.1)',
-        tension: 0.4,
-        borderWidth: 2
-      }
-    ]
-  }
-
-  const chartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          color: '#B8B8B8',
-          font: {
-            size: 12
-          }
-        }
-      },
-      title: {
-        display: false
-      },
-      tooltip: {
-        backgroundColor: 'rgba(26, 26, 26, 0.9)',
-        titleColor: '#F5E6C8',
-        bodyColor: '#B8B8B8',
-        borderColor: 'rgba(212, 175, 55, 0.3)',
-        borderWidth: 1
-      }
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: '#B8B8B8'
-        },
-        grid: {
-          color: 'rgba(184, 184, 184, 0.1)'
-        }
-      },
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: '#B8B8B8',
-          callback: function (value) {
-            return formatCurrency(Number(value))
-          }
-        },
-        grid: {
-          color: 'rgba(184, 184, 184, 0.1)'
-        }
-      }
-    }
-  }
-
-  // Revenue breakdown chart data
-  const latestMonth = financialData[financialData.length - 1]
-  const revenueBreakdownData = latestMonth
-    ? {
-        labels: ['Services', 'Products'],
-        datasets: [
-          {
-            data: [
-              latestMonth.top_services_revenue_aed || 0,
-              latestMonth.top_products_revenue_aed || 0
-            ],
-            backgroundColor: ['#D4AF37', '#0F6F5C'],
-            borderWidth: 0
-          }
-        ]
-      }
-    : null
-
-  const doughnutOptions: ChartOptions<'doughnut'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          color: '#B8B8B8',
-          font: {
-            size: 12
-          }
-        }
-      },
-      tooltip: {
-        backgroundColor: 'rgba(26, 26, 26, 0.9)',
-        titleColor: '#F5E6C8',
-        bodyColor: '#B8B8B8',
-        borderColor: 'rgba(212, 175, 55, 0.3)',
-        borderWidth: 1
-      }
-    }
-  }
-
-  if (isLoading) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: '#1A1A1A' }}
-      >
-        <div className="text-center">
-          <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: '#D4AF37' }} />
-          <p style={{ color: '#B8B8B8' }}>Loading dashboard...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: '#1A1A1A' }}
-      >
-        <div className="text-center">
-          <AlertCircle className="w-8 h-8 mx-auto mb-4" style={{ color: '#FF6B6B' }} />
-          <p className="mb-4" style={{ color: '#FF6B6B' }}>
-            {error}
-          </p>
-          <button
-            onClick={fetchDashboardData}
-            className="px-4 py-2 rounded-lg transition-all duration-300"
-            style={{
-              backgroundColor: 'rgba(212, 175, 55, 0.2)',
-              color: '#F5E6C8',
-              border: '1px solid rgba(212, 175, 55, 0.3)'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.3)'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)'
-            }}
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    )
+  // Refresh all data
+  const handleRefresh = async () => {
+    await Promise.all([
+      refetchCustomers(),
+      refetchServices(),
+      refetchProducts(),
+      refetchStaff(),
+      refetchTickets()
+    ])
+    setLastRefresh(new Date())
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#1A1A1A' }}>
-      {/* Header */}
+    <div className="min-h-screen" style={{ backgroundColor: COLORS.black }}>
+      {/* Premium Header with Gradient */}
       <div
+        className="sticky top-0 z-30"
         style={{
-          backgroundColor: 'rgba(26, 26, 26, 0.95)',
-          borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
-          backdropFilter: 'blur(10px)'
+          background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.charcoal} 100%)`,
+          borderBottom: `1px solid ${COLORS.gold}20`,
+          backdropFilter: 'blur(20px)'
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-6 flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: '#F5E6C8' }}>
-                Welcome back, Michele
-              </h1>
-              <p style={{ color: '#B8B8B8' }}>
-                Owner •{' '}
+          <div className="py-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            {/* Title Section */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div
+                  className="p-2 rounded-xl"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.gold}30 0%, ${COLORS.gold}10 100%)`,
+                    border: `1px solid ${COLORS.gold}40`,
+                    boxShadow: `0 4px 12px ${COLORS.gold}20`
+                  }}
+                >
+                  <Sparkles className="w-6 h-6" style={{ color: COLORS.gold }} />
+                </div>
+                <h1
+                  className="text-3xl font-bold"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Owner Dashboard
+                </h1>
+              </div>
+              <p className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                {organization?.name || 'Hair Talkz Salon'} •{' '}
                 {new Date().toLocaleDateString('en-AE', {
                   weekday: 'long',
                   year: 'numeric',
@@ -375,349 +333,221 @@ export default function OwnerDashboard() {
                 })}
               </p>
             </div>
+
+            {/* Refresh Button */}
             <button
-              onClick={fetchDashboardData}
-              className="flex items-center px-4 py-2 text-sm transition-all duration-300 rounded-lg"
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                color: '#B8B8B8',
-                backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                border: '1px solid rgba(212, 175, 55, 0.2)'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)'
-                e.currentTarget.style.color = '#F5E6C8'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)'
-                e.currentTarget.style.color = '#B8B8B8'
+                background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                border: `1px solid ${COLORS.gold}30`,
+                color: COLORS.champagne
               }}
             >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Last updated:{' '}
-              {lastRefresh.toLocaleTimeString('en-AE', {
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
+              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">
+                Last updated:{' '}
+                {lastRefresh.toLocaleTimeString('en-AE', {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </span>
+              <span className="sm:hidden">Refresh</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Primary KPIs - 3 Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {/* Monthly Revenue */}
-          <div
-            className="p-6 rounded-xl transition-all duration-300"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div
-                className="p-2 rounded-lg"
-                style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }}
-              >
-                <DollarSign className="w-6 h-6" style={{ color: '#D4AF37' }} />
-              </div>
-              {kpiData && formatGrowth(kpiData.monthlyRevenue.growth)}
-            </div>
-            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>
-              Monthly Revenue
-            </h3>
-            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
-              {kpiData && formatCurrency(kpiData.monthlyRevenue.amount)}
-            </p>
-          </div>
+          {/* Total Revenue */}
+          <StatCard
+            title="Total Revenue"
+            value={formatCurrency(kpis.totalRevenue)}
+            change={12.5}
+            changeLabel="vs last month"
+            icon={DollarSign}
+            iconColor={COLORS.gold}
+            iconBgColor={COLORS.gold}
+            gradient={`linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.gold}15 100%)`}
+          />
 
-          {/* Today's Appointments */}
-          <div
-            className="p-6 rounded-xl transition-all duration-300"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(15, 111, 92, 0.2)' }}>
-                <Calendar className="w-6 h-6" style={{ color: '#0F6F5C' }} />
-              </div>
-            </div>
-            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>
-              Today's Appointments
-            </h3>
-            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
-              {kpiData?.todaysAppointments.count || 0}
-            </p>
-          </div>
+          {/* Total Customers */}
+          <StatCard
+            title="Total Customers"
+            value={kpis.totalCustomers}
+            change={8.2}
+            changeLabel={`${kpis.vipCustomers} VIP members`}
+            icon={Users}
+            iconColor={COLORS.emerald}
+            iconBgColor={COLORS.emerald}
+            gradient={`linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.emerald}15 100%)`}
+          />
 
-          {/* Active Customers */}
-          <div
-            className="p-6 rounded-xl transition-all duration-300"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(15, 111, 92, 0.2)' }}>
-                <Users className="w-6 h-6" style={{ color: '#0F6F5C' }} />
-              </div>
-              {kpiData && kpiData.activeCustomers.growth > 0 && (
-                <span className="text-sm" style={{ color: '#0F6F5C' }}>
-                  +{kpiData.activeCustomers.growth} new
-                </span>
-              )}
-            </div>
-            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>
-              Active Customers
-            </h3>
-            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
-              {kpiData?.activeCustomers.count || 0}
-            </p>
-          </div>
+          {/* Active Staff */}
+          <StatCard
+            title="Active Staff"
+            value={kpis.activeStaff}
+            icon={UserCheck}
+            iconColor={COLORS.bronze}
+            iconBgColor={COLORS.bronze}
+          />
+        </div>
 
-          {/* Staff Members */}
-          <div
-            className="p-6 rounded-xl transition-all duration-300"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div
-                className="p-2 rounded-lg"
-                style={{ backgroundColor: 'rgba(140, 120, 83, 0.2)' }}
-              >
-                <UserCheck className="w-6 h-6" style={{ color: '#8C7853' }} />
-              </div>
-            </div>
-            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>
-              Staff Members
-            </h3>
-            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
-              {kpiData?.staffMembers.count || 0}
-            </p>
-          </div>
+        {/* Secondary KPIs - 4 Column Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Active Services */}
+          <StatCard
+            title="Active Services"
+            value={kpis.activeServices}
+            icon={Scissors}
+            iconColor={COLORS.gold}
+            iconBgColor={COLORS.gold}
+          />
 
-          {/* Total Expenses */}
-          <div
-            className="p-6 rounded-xl transition-all duration-300"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div
-                className="p-2 rounded-lg"
-                style={{ backgroundColor: 'rgba(255, 107, 107, 0.2)' }}
-              >
-                <DollarSign className="w-6 h-6" style={{ color: '#FF6B6B' }} />
-              </div>
-              {kpiData && formatGrowth(kpiData.totalExpenses.growth)}
-            </div>
-            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>
-              Total Expenses
-            </h3>
-            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
-              {kpiData && formatCurrency(kpiData.totalExpenses.amount)}
-            </p>
-          </div>
+          {/* Total Products */}
+          <StatCard
+            title="Total Products"
+            value={kpis.totalProducts}
+            icon={ShoppingBag}
+            iconColor={COLORS.emerald}
+            iconBgColor={COLORS.emerald}
+          />
 
-          {/* Low Stock Items */}
-          <div
-            className="p-6 rounded-xl transition-all duration-300"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border:
-                kpiData && kpiData.lowStockItems.count > 0
-                  ? '2px solid rgba(255, 107, 107, 0.5)'
-                  : '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
+          {/* Inventory Value */}
+          <StatCard
+            title="Inventory Value"
+            value={formatCurrency(kpis.inventoryValue)}
+            icon={Package}
+            iconColor={COLORS.bronze}
+            iconBgColor={COLORS.bronze}
+          />
+
+          {/* Low Stock Alert */}
+          <StatCard
+            title="Low Stock Items"
+            value={kpis.lowStockProducts}
+            icon={Package}
+            iconColor={kpis.lowStockProducts > 0 ? '#FF6B6B' : COLORS.emerald}
+            iconBgColor={kpis.lowStockProducts > 0 ? '#FF6B6B' : COLORS.emerald}
+            gradient={
+              kpis.lowStockProducts > 0
+                ? `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, #FF6B6B15 100%)`
+                : undefined
+            }
+          />
+        </div>
+
+        {/* Quick Actions Section */}
+        <div
+          className="p-8 rounded-2xl"
+          style={{
+            background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.charcoal} 100%)`,
+            border: `1px solid ${COLORS.gold}20`,
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <h2
+            className="text-xl font-semibold mb-6 flex items-center gap-3"
+            style={{ color: COLORS.champagne }}
           >
-            <div className="flex items-center justify-between mb-4">
-              <div
-                className="p-2 rounded-lg"
-                style={{
-                  backgroundColor:
-                    kpiData && kpiData.lowStockItems.count > 0
-                      ? 'rgba(255, 107, 107, 0.2)'
-                      : 'rgba(184, 184, 184, 0.1)'
-                }}
-              >
-                <Package
-                  className="w-6 h-6"
-                  style={{
-                    color: kpiData && kpiData.lowStockItems.count > 0 ? '#FF6B6B' : '#B8B8B8'
-                  }}
-                />
-              </div>
-              {kpiData && kpiData.lowStockItems.count > 0 && (
-                <span className="text-sm font-medium" style={{ color: '#FF6B6B' }}>
-                  Alert
-                </span>
-              )}
-            </div>
-            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>
-              Low Stock Items
-            </h3>
-            <p
-              className="text-2xl font-bold mt-1"
+            <div
+              className="w-1 h-8 rounded-full"
               style={{
-                color: kpiData && kpiData.lowStockItems.count > 0 ? '#FF6B6B' : '#F5E6C8'
+                background: `linear-gradient(180deg, ${COLORS.gold} 0%, ${COLORS.bronze} 100%)`
+              }}
+            />
+            Quick Insights
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* VIP Customers Insight */}
+            <div
+              className="p-6 rounded-xl transition-all duration-300 hover:scale-105"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.gold}10 0%, transparent 100%)`,
+                border: `1px solid ${COLORS.gold}30`
               }}
             >
-              {kpiData?.lowStockItems.count || 0}
-            </p>
-          </div>
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Revenue Trends Chart */}
-          <div
-            className="lg:col-span-2 p-6 rounded-xl"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#F5E6C8' }}>
-              Financial Trends
-            </h2>
-            <div className="h-64">
-              {financialData.length > 0 && <Line data={revenueChartData} options={chartOptions} />}
+              <Star className="w-8 h-8 mb-3" style={{ color: COLORS.gold }} />
+              <h3 className="text-lg font-semibold mb-2" style={{ color: COLORS.champagne }}>
+                VIP Customers
+              </h3>
+              <p className="text-3xl font-bold mb-2" style={{ color: COLORS.gold }}>
+                {kpis.vipCustomers}
+              </p>
+              <p className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                {((kpis.vipCustomers / Math.max(kpis.totalCustomers, 1)) * 100).toFixed(1)}% of
+                total customers
+              </p>
             </div>
-          </div>
 
-          {/* Revenue Breakdown */}
-          <div
-            className="p-6 rounded-xl"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#F5E6C8' }}>
-              Revenue Breakdown
-            </h2>
-            <div className="h-64">
-              {revenueBreakdownData && (
-                <Doughnut data={revenueBreakdownData} options={doughnutOptions} />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Low Stock Alert Table */}
-        {inventoryData.length > 0 && (
-          <div
-            className="p-6 rounded-xl"
-            style={{
-              backgroundColor: 'rgba(26, 26, 26, 0.8)',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <h2
-              className="text-lg font-semibold mb-4 flex items-center"
-              style={{ color: '#F5E6C8' }}
+            {/* Services Performance */}
+            <div
+              className="p-6 rounded-xl transition-all duration-300 hover:scale-105"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emerald}10 0%, transparent 100%)`,
+                border: `1px solid ${COLORS.emerald}30`
+              }}
             >
-              <AlertCircle className="w-5 h-5 mr-2" style={{ color: '#FF6B6B' }} />
-              Inventory Alerts
-            </h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(212, 175, 55, 0.2)' }}>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: '#B8B8B8' }}
-                    >
-                      Product
-                    </th>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: '#B8B8B8' }}
-                    >
-                      Current Stock
-                    </th>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: '#B8B8B8' }}
-                    >
-                      Reorder Level
-                    </th>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: '#B8B8B8' }}
-                    >
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inventoryData.map((item, index) => (
-                    <tr
-                      key={item.product_id}
-                      style={{ borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}
-                    >
-                      <td
-                        className="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                        style={{ color: '#F5E6C8' }}
-                      >
-                        {item.product_name}
-                      </td>
-                      <td
-                        className="px-6 py-4 whitespace-nowrap text-sm"
-                        style={{ color: '#B8B8B8' }}
-                      >
-                        {item.current_stock} {item.unit_of_measure}
-                      </td>
-                      <td
-                        className="px-6 py-4 whitespace-nowrap text-sm"
-                        style={{ color: '#B8B8B8' }}
-                      >
-                        {item.reorder_level} {item.unit_of_measure}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          style={{
-                            backgroundColor:
-                              item.stock_status === 'out_of_stock'
-                                ? 'rgba(255, 107, 107, 0.2)'
-                                : 'rgba(212, 175, 55, 0.2)',
-                            color: item.stock_status === 'out_of_stock' ? '#FF6B6B' : '#D4AF37',
-                            border: `1px solid ${
-                              item.stock_status === 'out_of_stock'
-                                ? 'rgba(255, 107, 107, 0.3)'
-                                : 'rgba(212, 175, 55, 0.3)'
-                            }`
-                          }}
-                        >
-                          {item.stock_status === 'out_of_stock' ? 'Out of Stock' : 'Low Stock'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Scissors className="w-8 h-8 mb-3" style={{ color: COLORS.emerald }} />
+              <h3 className="text-lg font-semibold mb-2" style={{ color: COLORS.champagne }}>
+                Service Catalog
+              </h3>
+              <p className="text-3xl font-bold mb-2" style={{ color: COLORS.emerald }}>
+                {kpis.activeServices}
+              </p>
+              <p className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                Active services available
+              </p>
+            </div>
+
+            {/* Stock Health */}
+            <div
+              className="p-6 rounded-xl transition-all duration-300 hover:scale-105"
+              style={{
+                background:
+                  kpis.lowStockProducts > 0
+                    ? `linear-gradient(135deg, #FF6B6B10 0%, transparent 100%)`
+                    : `linear-gradient(135deg, ${COLORS.emerald}10 0%, transparent 100%)`,
+                border: `1px solid ${kpis.lowStockProducts > 0 ? '#FF6B6B30' : `${COLORS.emerald}30`}`
+              }}
+            >
+              <Package
+                className="w-8 h-8 mb-3"
+                style={{ color: kpis.lowStockProducts > 0 ? '#FF6B6B' : COLORS.emerald }}
+              />
+              <h3 className="text-lg font-semibold mb-2" style={{ color: COLORS.champagne }}>
+                Stock Health
+              </h3>
+              <p
+                className="text-3xl font-bold mb-2"
+                style={{ color: kpis.lowStockProducts > 0 ? '#FF6B6B' : COLORS.emerald }}
+              >
+                {kpis.lowStockProducts === 0 ? 'Healthy' : `${kpis.lowStockProducts} Alerts`}
+              </p>
+              <p className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                {kpis.lowStockProducts === 0 ? 'All products in stock' : 'Items need reordering'}
+              </p>
             </div>
           </div>
-        )}
+        </div>
       </div>
+
+      {/* CSS for shimmer animation */}
+      <style jsx>{`
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+      `}</style>
     </div>
   )
 }

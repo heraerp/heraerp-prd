@@ -15,6 +15,7 @@ export interface CustomerEntity {
   entity_name: string
   entity_code?: string
   smart_code: string
+  status: 'active' | 'archived' | 'deleted' // ✅ Added proper status typing
   dynamic_fields?: {
     phone?: { value: string }
     email?: { value: string }
@@ -24,6 +25,14 @@ export interface CustomerEntity {
     loyalty_points?: { value: number }
     lifetime_value?: { value: number }
   }
+  // Flattened fields for easier access
+  phone?: string
+  email?: string
+  vip?: boolean
+  notes?: string
+  birthday?: string
+  loyalty_points?: number
+  lifetime_value?: number
   relationships?: {
     referred_by?: { to_entity: any }
     preferred_stylist?: { to_entity: any }
@@ -33,6 +42,10 @@ export interface CustomerEntity {
 }
 
 export interface UseHeraCustomersOptions {
+  organizationId?: string
+  includeArchived?: boolean // ✅ Added includeArchived support
+  searchQuery?: string // ✅ Added searchQuery support
+  loyaltyFilter?: string
   filters?: {
     include_dynamic?: boolean
     include_relationships?: boolean
@@ -40,8 +53,8 @@ export interface UseHeraCustomersOptions {
     offset?: number
     status?: string
     search?: string
-    branch_id?: string  // Add branch filtering
-    vip_only?: boolean  // Add VIP filtering
+    branch_id?: string // Add branch filtering
+    vip_only?: boolean // Add VIP filtering
   }
 }
 
@@ -55,15 +68,19 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
     update: baseUpdate,
     delete: baseDelete,
     archive: baseArchive,
+    restore: baseRestore, // ✅ Added restore function
     isCreating,
     isUpdating,
     isDeleting
   } = useUniversalEntity({
     entity_type: 'CUSTOMER',
+    organizationId: options?.organizationId, // ✅ Added organizationId
     filters: {
       include_dynamic: true,
       include_relationships: true,
       limit: 100,
+      // ✅ Only filter by 'active' status when not including archived
+      ...(options?.includeArchived ? {} : { status: 'active' }),
       ...options?.filters
     },
     dynamicFields: CUSTOMER_PRESET.dynamicFields as DynamicFieldDef[],
@@ -73,31 +90,63 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
   // Filter customers by branch and other criteria
   const filteredCustomers = useMemo(() => {
     if (!customers) return customers as CustomerEntity[]
-    
+
     let filtered = customers as CustomerEntity[]
-    
+
+    // Filter by search query
+    if (options?.searchQuery) {
+      const query = options.searchQuery.toLowerCase()
+      filtered = filtered.filter(c => {
+        const matchesName = c.entity_name?.toLowerCase().includes(query)
+        const matchesEmail =
+          c.dynamic_fields?.email?.value?.toLowerCase().includes(query) ||
+          c.email?.toLowerCase().includes(query)
+        const matchesPhone =
+          c.dynamic_fields?.phone?.value?.toLowerCase().includes(query) ||
+          c.phone?.toLowerCase().includes(query)
+
+        return matchesName || matchesEmail || matchesPhone
+      })
+    }
+
+    // Filter by loyalty tier
+    if (options?.loyaltyFilter) {
+      filtered = filtered.filter(c => {
+        // Check relationships for loyalty tier
+        return true // TODO: Implement loyalty tier filtering via relationships
+      })
+    }
+
     // Filter by branch relationship
     if (options?.filters?.branch_id) {
       filtered = filtered.filter(c => {
         // Check if customer has CUSTOMER_OF relationship with the specified branch
         const customerOfRelationships = c.relationships?.customer_of
         if (!customerOfRelationships) return false
-        
+
         if (Array.isArray(customerOfRelationships)) {
-          return customerOfRelationships.some(rel => rel.to_entity?.id === options.filters?.branch_id)
+          return customerOfRelationships.some(
+            rel => rel.to_entity?.id === options.filters?.branch_id
+          )
         } else {
           return customerOfRelationships.to_entity?.id === options.filters?.branch_id
         }
       })
     }
-    
+
     // Filter by VIP status if requested
     if (options?.filters?.vip_only) {
-      filtered = filtered.filter(c => c.dynamic_fields?.vip?.value === true)
+      filtered = filtered.filter(c => c.dynamic_fields?.vip?.value === true || c.vip === true)
     }
-    
+
     return filtered
-  }, [customers, options?.filters?.branch_id, options?.filters?.vip_only])
+  }, [
+    customers,
+    options?.searchQuery,
+    options?.loyaltyFilter,
+    options?.filters?.branch_id,
+    options?.filters?.vip_only
+  ])
 
   // Helper to create customer with proper smart codes and relationships
   const createCustomer = async (data: {
@@ -111,7 +160,7 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
     lifetime_value?: number
     referred_by_id?: string
     preferred_stylist_id?: string
-    branch_id?: string  // Add branch support
+    branch_id?: string // Add branch support
   }) => {
     // Map provided primitives to dynamic_fields payload using preset definitions
     const dynamic_fields: Record<string, any> = {}
@@ -144,7 +193,10 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
   }
 
   // Helper to update customer
-  const updateCustomer = async (id: string, data: Partial<Parameters<typeof createCustomer>[0]>) => {
+  const updateCustomer = async (
+    id: string,
+    data: Partial<Parameters<typeof createCustomer>[0]>
+  ) => {
     // Build dynamic patch from provided fields
     const dynamic_patch: Record<string, any> = {}
     for (const def of CUSTOMER_PRESET.dynamicFields) {
@@ -157,7 +209,8 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
     // Relationships patch
     const relationships_patch: Record<string, string[]> = {}
     if (data.referred_by_id) relationships_patch['REFERRED_BY'] = [data.referred_by_id]
-    if (data.preferred_stylist_id) relationships_patch['PREFERRED_STYLIST'] = [data.preferred_stylist_id]
+    if (data.preferred_stylist_id)
+      relationships_patch['PREFERRED_STYLIST'] = [data.preferred_stylist_id]
     if (data.branch_id) relationships_patch['CUSTOMER_OF'] = [data.branch_id]
 
     const payload: any = {
@@ -172,15 +225,50 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
 
   // Helper to archive customer (soft delete)
   const archiveCustomer = async (id: string) => {
-    return baseArchive(id)
+    const customer = (customers as CustomerEntity[])?.find(c => c.id === id)
+    if (!customer) throw new Error('Customer not found')
+
+    console.log('[useHeraCustomers] Archiving customer:', { id })
+
+    const result = await baseUpdate({
+      entity_id: id,
+      entity_name: customer.entity_name,
+      status: 'archived'
+    })
+
+    // Trigger refetch to update the list
+    await refetch()
+    return result
   }
 
-  // Helper to delete customer (hard delete)
+  // Helper to restore archived customer
+  const restoreCustomer = async (id: string) => {
+    const customer = (customers as CustomerEntity[])?.find(c => c.id === id)
+    if (!customer) throw new Error('Customer not found')
+
+    console.log('[useHeraCustomers] Restoring customer:', { id })
+
+    const result = await baseUpdate({
+      entity_id: id,
+      entity_name: customer.entity_name,
+      status: 'active'
+    })
+
+    // Trigger refetch to update the list
+    await refetch()
+    return result
+  }
+
+  // Helper to delete customer (hard delete with soft delete fallback)
   const deleteCustomer = async (id: string, hardDelete = false) => {
     if (!hardDelete) {
-      return archiveCustomer(id)
+      const result = await archiveCustomer(id)
+      return result
     }
-    return baseDelete(id)
+    const result = await baseDelete({ entity_id: id, hard_delete: true })
+    // Trigger refetch after hard delete
+    await refetch()
+    return result
   }
 
   // Helper to update loyalty points
@@ -242,11 +330,20 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
 
   // Helper to get customer statistics
   const getCustomerStats = () => {
-    const allCustomers = customers as CustomerEntity[] || []
-    const vipCount = allCustomers.filter(c => c.dynamic_fields?.vip?.value === true).length
-    const totalLoyaltyPoints = allCustomers.reduce((sum, c) => sum + (c.dynamic_fields?.loyalty_points?.value || 0), 0)
-    const totalLifetimeValue = allCustomers.reduce((sum, c) => sum + (c.dynamic_fields?.lifetime_value?.value || 0), 0)
-    
+    const allCustomers = (customers as CustomerEntity[]) || []
+    // Check both flattened vip property and dynamic_fields.vip.value
+    const vipCount = allCustomers.filter(
+      c => c.vip === true || c.dynamic_fields?.vip?.value === true
+    ).length
+    const totalLoyaltyPoints = allCustomers.reduce(
+      (sum, c) => sum + (c.loyalty_points || c.dynamic_fields?.loyalty_points?.value || 0),
+      0
+    )
+    const totalLifetimeValue = allCustomers.reduce(
+      (sum, c) => sum + (c.lifetime_value || c.dynamic_fields?.lifetime_value?.value || 0),
+      0
+    )
+
     return {
       totalCustomers: allCustomers.length,
       vipCustomers: vipCount,
@@ -260,12 +357,14 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
 
   return {
     customers: filteredCustomers,
+    allCustomers: customers as CustomerEntity[], // ✅ Added allCustomers for full list access
     isLoading,
     error,
     refetch,
     createCustomer,
     updateCustomer,
     archiveCustomer,
+    restoreCustomer, // ✅ Added restoreCustomer function
     deleteCustomer,
     updateLoyaltyPoints,
     addLoyaltyPoints,

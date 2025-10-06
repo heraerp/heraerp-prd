@@ -36,7 +36,6 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 // Define role-specific sidebar items
 const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
   owner: [
-    { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
     { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
     {
       title: 'Appointments',
@@ -46,11 +45,11 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
       badgeColor: LUXE_COLORS.emerald
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
-    { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     { title: 'Products', href: '/salon/products', icon: Package },
-    { title: 'Inventory', href: '/salon/inventory', icon: Package },
     { title: 'Staff', href: '/salon/staff', icon: UserPlus },
+    { title: 'Customers', href: '/salon/customers', icon: Users },
+    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
     { title: 'Reports', href: '/salon/reports', icon: BarChart3 }
   ],
