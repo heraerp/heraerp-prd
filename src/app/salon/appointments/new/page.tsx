@@ -13,11 +13,20 @@ import { format, addMinutes } from 'date-fns'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
-import { useCustomers, useServices, useEmployees } from '@/hooks/useEntity'
 import { createDraftAppointment } from '@/lib/appointments/createDraftAppointment'
 import { upsertAppointmentLines } from '@/lib/appointments/upsertAppointmentLines'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { useHeraCustomers } from '@/hooks/useHeraCustomers'
+import { useHeraServices } from '@/hooks/useHeraServicesV2'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { BranchSelector } from '@/components/ui/BranchSelector'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -54,22 +63,39 @@ import { cn } from '@/lib/utils'
 interface Customer {
   id: string
   entity_name: string
-  entity_code: string
-  metadata?: {
-    phone?: string
-    email?: string
+  entity_code?: string
+  // Flattened fields from useHeraCustomers
+  phone?: string
+  email?: string
+  vip?: boolean
+  notes?: string
+  // Also support dynamic_fields structure for compatibility
+  dynamic_fields?: {
+    phone?: { value: string }
+    email?: { value: string }
+    vip?: { value: boolean }
+    notes?: { value: string }
   }
 }
 
 interface Service {
   id: string
   entity_name: string
-  entity_code: string
-  metadata?: {
-    price?: number
-    duration_minutes?: number
-    category?: string
+  entity_code?: string
+  category?: string
+  // Fields from useHeraServices (dynamic_fields)
+  dynamic_fields?: {
+    price_market?: { value: number }
+    duration_min?: { value: number }
+    commission_rate?: { value: number }
+    description?: { value: string }
   }
+  // Also support flattened fields for compatibility
+  price_market?: number
+  duration_min?: number
+  // Legacy field names
+  price_amount?: number
+  duration_minutes?: number
 }
 
 interface Stylist {
@@ -138,6 +164,41 @@ function NewAppointmentContent() {
     hasMultipleBranches
   } = useBranchFilter(selectedBranchId, 'salon-appointments', organizationId)
 
+  // Use enterprise-grade HERA hooks for data
+  const {
+    customers,
+    isLoading: customersLoading,
+    error: customersError,
+    createCustomer
+  } = useHeraCustomers({
+    organizationId,
+    includeArchived: false
+  })
+
+  const {
+    services,
+    isLoading: servicesLoading,
+    error: servicesError
+  } = useHeraServices({
+    organizationId,
+    includeArchived: false,
+    filters: {
+      branch_id: branchId || 'all'
+    }
+  })
+
+  const {
+    staff: stylists,
+    isLoading: staffLoading,
+    error: staffError
+  } = useHeraStaff({
+    organizationId,
+    includeArchived: false,
+    filters: {
+      branch_id: branchId || 'all'
+    }
+  })
+
   // Form state
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [selectedTime, setSelectedTime] = useState('')
@@ -145,56 +206,72 @@ function NewAppointmentContent() {
   const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null)
   const [notes, setNotes] = useState('')
 
-  // Data state
-  // Customers: use Universal Entity Wrapper for reactive DB data
-  const {
-    data: customers = [],
-    isLoading: customersLoading,
-    error: customersError,
-    refetch: refetchCustomers
-  } = useCustomers({
-    organizationId,
-    filters: {},
-    includeRelationships: false,
-    includeDynamicData: true
-  })
-  const {
-    data: services = [],
-    isLoading: servicesLoading,
-    error: servicesError,
-    refetch: refetchServices
-  } = useServices({ organizationId, includeDynamicData: true, disableBranchContext: true })
-
-  const {
-    data: stylists = [],
-    isLoading: stylistsLoading,
-    error: stylistsError,
-    refetch: refetchStylists
-  } = useEmployees({ organizationId, includeDynamicData: true })
-
+  // Cart and UI state
   const [cart, setCart] = useState<CartItem[]>([])
   const [saving, setSaving] = useState(false)
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+  const [createdAppointmentId, setCreatedAppointmentId] = useState<string | null>(null)
 
   // Search state
   const [customerSearch, setCustomerSearch] = useState('')
   const [serviceSearch, setServiceSearch] = useState('')
 
-  // Generate available time slots
+  // New customer modal state
+  const [showNewCustomerModal, setShowNewCustomerModal] = useState(false)
+  const [newCustomerData, setNewCustomerData] = useState({
+    name: '',
+    phone: '',
+    email: ''
+  })
+  const [creatingCustomer, setCreatingCustomer] = useState(false)
+
+  // Combined loading state
+  const loading = customersLoading || servicesLoading || staffLoading
+
+  // Generate available time slots (realistic working hours: 9 AM - 9 PM)
   const generateTimeSlots = (): TimeSlot[] => {
     const slots: TimeSlot[] = []
-    const date = new Date(`${selectedDate}T09:00:00`)
-    const endTime = new Date(`${selectedDate}T18:00:00`)
+    const now = new Date()
+    const selectedDateObj = new Date(selectedDate)
+    const isToday = selectedDateObj.toDateString() === now.toDateString()
 
-    while (date < endTime) {
-      const start = new Date(date)
-      const end = new Date(date.getTime() + 30 * 60 * 1000) // 30 min slots
+    // Working hours: 9:00 AM to 9:00 PM
+    const startHour = 9
+    const endHour = 21
+
+    // Start from current hour if today, otherwise from opening time
+    let currentHour = isToday ? Math.max(now.getHours(), startHour) : startHour
+    let currentMinute = isToday ? (now.getMinutes() < 30 ? 30 : 0) : 0
+
+    // If today and current minute is 30+, start from next hour
+    if (isToday && now.getMinutes() >= 30 && currentMinute === 0) {
+      currentHour += 1
+    }
+
+    // Generate 30-minute slots
+    while (currentHour < endHour || (currentHour === endHour && currentMinute === 0)) {
+      const startTime = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`
+
+      // Calculate end time (30 minutes later)
+      let endMinute = currentMinute + 30
+      let endHour = currentHour
+      if (endMinute >= 60) {
+        endMinute = 0
+        endHour += 1
+      }
+      const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`
 
       slots.push({
-        start: start.toTimeString().substring(0, 5),
-        end: end.toTimeString().substring(0, 5)
+        start: startTime,
+        end: endTime
       })
 
-      date.setMinutes(date.getMinutes() + 30)
+      // Move to next slot
+      currentMinute += 30
+      if (currentMinute >= 60) {
+        currentMinute = 0
+        currentHour += 1
+      }
     }
 
     return slots
@@ -214,11 +291,6 @@ function NewAppointmentContent() {
   const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalDuration = cart.reduce((sum, item) => sum + item.duration * item.quantity, 0)
 
-  // Keep Universal API org context aligned (used elsewhere in flows)
-  useEffect(() => {
-    if (organizationId) universalApi.setOrganizationId(organizationId)
-  }, [organizationId])
-
   // Pre-select customer if customerId is provided in URL
   useEffect(() => {
     if (customerIdFromUrl && customers.length > 0) {
@@ -230,6 +302,11 @@ function NewAppointmentContent() {
     }
   }, [customerIdFromUrl, customers])
 
+  // Clear selected time when date changes (time slots will be regenerated)
+  useEffect(() => {
+    setSelectedTime('')
+  }, [selectedDate])
+
   // Cart operations
   const addToCart = (service: Service) => {
     const existingItem = cart.find(item => item.service.id === service.id)
@@ -237,10 +314,19 @@ function NewAppointmentContent() {
     if (existingItem) {
       updateQuantity(service.id, 1)
     } else {
-      const svcAny: any = service as any
-      const price = svcAny?.dynamic_fields?.price_market?.value ?? svcAny?.metadata?.price ?? 0
+      // Extract price and duration from various possible locations
+      const price =
+        service.dynamic_fields?.price_market?.value ||
+        service.price_market ||
+        service.price_amount ||
+        0
+
       const duration =
-        svcAny?.dynamic_fields?.duration_min?.value ?? svcAny?.metadata?.duration_minutes ?? 30
+        service.dynamic_fields?.duration_min?.value ||
+        service.duration_min ||
+        service.duration_minutes ||
+        30
+
       setCart([
         ...cart,
         {
@@ -267,6 +353,56 @@ function NewAppointmentContent() {
 
   const removeFromCart = (serviceId: string) => {
     setCart(cart.filter(item => item.service.id !== serviceId))
+  }
+
+  // Create new customer
+  const handleCreateCustomer = async () => {
+    if (!newCustomerData.name.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Customer name is required'
+      })
+      return
+    }
+
+    setCreatingCustomer(true)
+
+    try {
+      const result = await createCustomer({
+        name: newCustomerData.name,
+        phone: newCustomerData.phone || undefined,
+        email: newCustomerData.email || undefined
+      })
+
+      if (result) {
+        toast({
+          title: 'Success',
+          description: 'Customer created successfully'
+        })
+
+        // Auto-select the newly created customer
+        const newCustomer = customers.find(c => c.id === result.id) || {
+          id: result.id,
+          entity_name: newCustomerData.name,
+          entity_code: result.entity_code || '',
+          phone: newCustomerData.phone,
+          email: newCustomerData.email
+        }
+        setSelectedCustomer(newCustomer as Customer)
+
+        // Reset form and close modal
+        setNewCustomerData({ name: '', phone: '', email: '' })
+        setShowNewCustomerModal(false)
+      }
+    } catch (error) {
+      console.error('Error creating customer:', error)
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to create customer'
+      })
+    } finally {
+      setCreatingCustomer(false)
+    }
   }
 
   // Save appointment
@@ -326,6 +462,8 @@ function NewAppointmentContent() {
 
       // Create draft appointment with branch info
       console.log('Creating appointment with branch:', branchId)
+      // ENTERPRISE PATTERN: Normalized data - store only IDs
+      // Customer/stylist names will be fetched separately via useHeraAppointments
       const { id: appointmentId } = await createDraftAppointment({
         organizationId,
         startAt,
@@ -350,15 +488,9 @@ function NewAppointmentContent() {
         }))
       })
 
-      toast({
-        title: 'Success',
-        description: 'Appointment created successfully'
-      })
-
-      // Delay redirect to allow toast to show
-      setTimeout(() => {
-        router.push('/salon/appointments')
-      }, 1000)
+      // Show success dialog instead of immediate redirect
+      setCreatedAppointmentId(appointmentId)
+      setShowSuccessDialog(true)
     } catch (error) {
       console.error('Error creating appointment:', error)
       toast({
@@ -452,12 +584,48 @@ function NewAppointmentContent() {
         </div>
       </div>
 
-  {customersLoading || servicesLoading || stylistsLoading ? (
+      {loading ? (
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#D4AF37] border-t-transparent mx-auto mb-4"></div>
               <p className="text-[#F5E6C8]/60">Loading appointment data...</p>
+              <div className="mt-4 space-y-1 text-sm text-[#F5E6C8]/40">
+                {customersLoading && <p>• Loading customers...</p>}
+                {servicesLoading && <p>• Loading services...</p>}
+                {staffLoading && <p>• Loading staff...</p>}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (customersError || servicesError || staffError) ? (
+        <div className="container mx-auto px-6 py-12">
+          <div className="max-w-md mx-auto">
+            <div
+              className="p-6 rounded-xl text-center"
+              style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)'
+              }}
+            >
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+                <X className="w-8 h-8 text-red-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-[#F5E6C8] mb-2">Failed to Load Data</h3>
+              <p className="text-sm text-[#F5E6C8]/60 mb-4">
+                {customersError && <span className="block">• {customersError.message || 'Failed to load customers'}</span>}
+                {servicesError && <span className="block">• {servicesError.message || 'Failed to load services'}</span>}
+                {staffError && <span className="block">• {staffError.message || 'Failed to load staff'}</span>}
+              </p>
+              <Button
+                onClick={() => window.location.reload()}
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                  color: '#0B0B0B'
+                }}
+              >
+                Retry
+              </Button>
             </div>
           </div>
         </div>
@@ -647,7 +815,9 @@ function NewAppointmentContent() {
                       <div>
                         <p className="font-medium text-[#F5E6C8]">{selectedCustomer.entity_name}</p>
                         <p className="text-sm text-[#F5E6C8]/60 mt-1">
-                          {selectedCustomer.metadata?.phone || 'No phone'}
+                          {selectedCustomer.phone ||
+                           selectedCustomer.dynamic_fields?.phone?.value ||
+                           'No phone'}
                         </p>
                       </div>
                       <Button
@@ -677,9 +847,34 @@ function NewAppointmentContent() {
                       />
                     </div>
 
+                    <Button
+                      onClick={() => setShowNewCustomerModal(true)}
+                      className="w-full mt-2 transition-all duration-240"
+                      style={{
+                        background:
+                          'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(184,134,11,0.1) 100%)',
+                        border: '1px solid rgba(212,175,55,0.3)',
+                        color: '#D4AF37',
+                        transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background =
+                          'linear-gradient(135deg, rgba(212,175,55,0.25) 0%, rgba(184,134,11,0.2) 100%)'
+                        e.currentTarget.style.transform = 'translateY(-1px)'
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background =
+                          'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(184,134,11,0.1) 100%)'
+                        e.currentTarget.style.transform = 'translateY(0)'
+                      }}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      New Customer
+                    </Button>
+
                     {customerSearch && (
                       <ScrollArea
-                        className="h-32"
+                        className="h-32 mt-2"
                         style={{ '--scrollbar-color': 'rgba(212,175,55,0.3)' } as any}
                       >
                         {filteredCustomers.map(customer => (
@@ -703,7 +898,9 @@ function NewAppointmentContent() {
                           >
                             <p className="font-medium text-[#F5E6C8]">{customer.entity_name}</p>
                             <p className="text-sm text-[#F5E6C8]/50">
-                              {((customer as any).dynamic_fields?.phone?.value ?? (customer as any).metadata?.phone) || 'No phone'}
+                              {customer.phone ||
+                               customer.dynamic_fields?.phone?.value ||
+                               'No phone'}
                             </p>
                           </div>
                         ))}
@@ -813,34 +1010,82 @@ function NewAppointmentContent() {
 
                   <div>
                     <Label className="text-[#F5E6C8]/70 text-sm">Time</Label>
-                    <Select value={selectedTime} onValueChange={setSelectedTime}>
-                      <SelectTrigger
+                    {timeSlots.length === 0 ? (
+                      <div
+                        className="p-3 rounded-lg text-sm text-center"
                         style={{
-                          background: 'rgba(0,0,0,0.3)',
-                          border: '1px solid rgba(245,230,200,0.15)',
-                          color: '#F5E6C8'
+                          background: 'rgba(212,175,55,0.1)',
+                          border: '1px solid rgba(212,175,55,0.2)',
+                          color: '#D4AF37'
                         }}
                       >
-                        <SelectValue placeholder="Select time" />
-                      </SelectTrigger>
-                      <SelectContent
-                        className="hera-select-content"
-                        style={{
-                          background: 'rgba(26,26,26,0.98)',
-                          border: '1px solid rgba(245,230,200,0.15)'
-                        }}
+                        <Clock className="w-4 h-4 mx-auto mb-1" />
+                        <p>No available time slots for this date</p>
+                        <p className="text-xs text-[#F5E6C8]/50 mt-1">
+                          Please select a future date
+                        </p>
+                      </div>
+                    ) : (
+                      <Select
+                        value={selectedTime}
+                        onValueChange={setSelectedTime}
+                        disabled={timeSlots.length === 0}
                       >
-                        {timeSlots.map(slot => (
-                          <SelectItem
-                            key={slot.start}
-                            value={slot.start}
-                            className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
-                          >
-                            {slot.start}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                        <SelectTrigger
+                          style={{
+                            background: 'rgba(0,0,0,0.3)',
+                            border: '1px solid rgba(245,230,200,0.15)',
+                            color: '#F5E6C8'
+                          }}
+                        >
+                          <SelectValue placeholder="Select time" />
+                        </SelectTrigger>
+                        <SelectContent
+                          className="hera-select-content"
+                          style={{
+                            background: 'rgba(26,26,26,0.98)',
+                            border: '1px solid rgba(245,230,200,0.15)'
+                          }}
+                        >
+                          {timeSlots.map(slot => {
+                            // Convert 24-hour to 12-hour format with AM/PM
+                            const [hours, minutes] = slot.start.split(':').map(Number)
+                            const period = hours >= 12 ? 'PM' : 'AM'
+                            const displayHours = hours % 12 || 12
+                            const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
+
+                            return (
+                              <SelectItem
+                                key={slot.start}
+                                value={slot.start}
+                                className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
+                              >
+                                {displayTime}
+                              </SelectItem>
+                            )
+                          })}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
+
+                  {/* Working hours info */}
+                  <div
+                    className="p-3 rounded-lg text-xs"
+                    style={{
+                      background: 'rgba(15,111,92,0.1)',
+                      border: '1px solid rgba(15,111,92,0.2)',
+                      color: 'rgba(245,230,200,0.7)'
+                    }}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <Clock className="w-3 h-3 text-emerald-400" />
+                      <span className="font-medium text-emerald-400">Working Hours</span>
+                    </div>
+                    <p>Monday - Sunday: 9:00 AM - 9:00 PM</p>
+                    <p className="mt-1 text-[#F5E6C8]/50">
+                      Appointments are available in 30-minute slots
+                    </p>
                   </div>
 
                   <div>
@@ -929,14 +1174,23 @@ function NewAppointmentContent() {
                               <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3 text-[#D4AF37]/50" />
                                 <span>
-                                  {((service as any).dynamic_fields?.duration_min?.value ?? (service as any).metadata?.duration_minutes) || 30}
-                                  {' '}min
+                                  {service.dynamic_fields?.duration_min?.value ||
+                                   service.duration_min ||
+                                   service.duration_minutes ||
+                                   30}{' '}
+                                  min
                                 </span>
                               </span>
                               <span className="flex items-center gap-1">
                                 <DollarSign className="w-3 h-3 text-[#D4AF37]/50" />
                                 <span>
-                                  AED {((service as any).dynamic_fields?.price_market?.value ?? (service as any).metadata?.price) || 0}
+                                  AED{' '}
+                                  {(
+                                    service.dynamic_fields?.price_market?.value ||
+                                    service.price_market ||
+                                    service.price_amount ||
+                                    0
+                                  ).toFixed(2)}
                                 </span>
                               </span>
                             </div>
@@ -1204,6 +1458,446 @@ function NewAppointmentContent() {
           </div>
         </div>
       )}
+
+      {/* New Customer Dialog - Enterprise Grade with Soft Animations */}
+      <Dialog open={showNewCustomerModal} onOpenChange={setShowNewCustomerModal}>
+        <DialogContent
+          className="sm:max-w-[500px] border-0 p-0 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.15)',
+            animation: 'slideUp 240ms cubic-bezier(0.22, 0.61, 0.36, 1)'
+          }}
+        >
+          {/* Header with gradient accent */}
+          <div
+            className="relative p-6 pb-4"
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(184,134,11,0.05) 100%)',
+              borderBottom: '1px solid rgba(245,230,200,0.1)'
+            }}
+          >
+            <div
+              className="absolute top-0 left-0 right-0 h-px"
+              style={{
+                background:
+                  'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)'
+              }}
+            ></div>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-2xl">
+                <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center"
+                  style={{
+                    background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                    boxShadow: '0 8px 20px rgba(212,175,55,0.3)'
+                  }}
+                >
+                  <User className="w-6 h-6 text-[#0B0B0B]" />
+                </div>
+                <span className="text-[#F5E6C8]">Add New Customer</span>
+              </DialogTitle>
+              <DialogDescription className="text-[#F5E6C8]/60 mt-2">
+                Create a new customer profile to book appointments
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          {/* Form content with soft animations */}
+          <div className="p-6 space-y-5">
+            <div className="space-y-2">
+              <Label className="text-[#F5E6C8]/80 text-sm font-medium">
+                Customer Name <span className="text-[#D4AF37]">*</span>
+              </Label>
+              <Input
+                placeholder="Enter full name..."
+                value={newCustomerData.name}
+                onChange={e => setNewCustomerData({ ...newCustomerData, name: e.target.value })}
+                className="transition-all duration-180"
+                style={{
+                  background: 'rgba(0,0,0,0.4)',
+                  border: '1px solid rgba(245,230,200,0.15)',
+                  color: '#F5E6C8',
+                  transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                }}
+                onFocus={e => {
+                  e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,175,55,0.1)'
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.15)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[#F5E6C8]/80 text-sm font-medium">
+                Phone Number (Optional)
+              </Label>
+              <Input
+                placeholder="Enter phone number..."
+                value={newCustomerData.phone}
+                onChange={e => setNewCustomerData({ ...newCustomerData, phone: e.target.value })}
+                className="transition-all duration-180"
+                style={{
+                  background: 'rgba(0,0,0,0.4)',
+                  border: '1px solid rgba(245,230,200,0.15)',
+                  color: '#F5E6C8',
+                  transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                }}
+                onFocus={e => {
+                  e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,175,55,0.1)'
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.15)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[#F5E6C8]/80 text-sm font-medium">Email (Optional)</Label>
+              <Input
+                type="email"
+                placeholder="Enter email address..."
+                value={newCustomerData.email}
+                onChange={e => setNewCustomerData({ ...newCustomerData, email: e.target.value })}
+                className="transition-all duration-180"
+                style={{
+                  background: 'rgba(0,0,0,0.4)',
+                  border: '1px solid rgba(245,230,200,0.15)',
+                  color: '#F5E6C8',
+                  transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                }}
+                onFocus={e => {
+                  e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,175,55,0.1)'
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.15)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              />
+            </div>
+
+            {/* Action buttons with enterprise hover effects */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                onClick={() => {
+                  setShowNewCustomerModal(false)
+                  setNewCustomerData({ name: '', phone: '', email: '' })
+                }}
+                disabled={creatingCustomer}
+                className="flex-1 transition-all duration-240"
+                style={{
+                  background: 'rgba(0,0,0,0.3)',
+                  border: '1px solid rgba(245,230,200,0.2)',
+                  color: '#F5E6C8',
+                  transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(245,230,200,0.1)'
+                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.3)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(0,0,0,0.3)'
+                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.2)'
+                }}
+              >
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </Button>
+
+              <Button
+                onClick={handleCreateCustomer}
+                disabled={creatingCustomer || !newCustomerData.name}
+                className="flex-1 transition-all duration-240"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                  color: '#0B0B0B',
+                  fontWeight: '600',
+                  border: 'none',
+                  boxShadow: '0 8px 24px rgba(212,175,55,0.3)',
+                  transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                }}
+                onMouseEnter={e => {
+                  if (!creatingCustomer && newCustomerData.name) {
+                    e.currentTarget.style.transform = 'translateY(-1px)'
+                    e.currentTarget.style.boxShadow = '0 12px 32px rgba(212,175,55,0.4)'
+                  }
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(212,175,55,0.3)'
+                }}
+              >
+                {creatingCustomer ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#0B0B0B] mr-2"></div>
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Create Customer
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* Helper text */}
+            <p
+              className="text-xs text-center pt-2"
+              style={{ color: 'rgba(245,230,200,0.5)' }}
+            >
+              <span className="text-[#D4AF37]">*</span> Name is required · Phone and Email are optional
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Confirmation Dialog - Enterprise Grade */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent
+          className="sm:max-w-[550px] border-0 p-0 overflow-y-auto max-h-[90vh]"
+          style={{
+            background: 'linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.2)',
+            animation: 'slideUp 300ms cubic-bezier(0.22, 0.61, 0.36, 1)'
+          }}
+        >
+          {/* Success Header with Golden Glow */}
+          <div
+            className="relative p-8 pb-6 text-center"
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(184,134,11,0.08) 100%)',
+              borderBottom: '1px solid rgba(245,230,200,0.15)'
+            }}
+          >
+            <div
+              className="absolute top-0 left-0 right-0 h-px"
+              style={{
+                background:
+                  'linear-gradient(90deg, transparent, rgba(212,175,55,0.6), transparent)'
+              }}
+            ></div>
+
+            {/* Success Icon with Animation */}
+            <div className="mb-4 relative">
+              <div
+                className="w-20 h-20 mx-auto rounded-full flex items-center justify-center relative"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                  boxShadow:
+                    '0 10px 40px rgba(212,175,55,0.4), 0 0 0 8px rgba(212,175,55,0.1), 0 0 0 16px rgba(212,175,55,0.05)',
+                  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                }}
+              >
+                <Check className="w-10 h-10 text-[#0B0B0B]" strokeWidth={3} />
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background:
+                      'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 60%)'
+                  }}
+                ></div>
+              </div>
+            </div>
+
+            <DialogHeader>
+              <DialogTitle className="text-3xl font-bold text-center mb-2">
+                <span
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #F5E6C8 0%, #D4AF37 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Appointment Confirmed!
+                </span>
+              </DialogTitle>
+              <DialogDescription className="text-[#F5E6C8]/70 text-base">
+                Your appointment has been successfully scheduled
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          {/* Appointment Details */}
+          <div className="p-8 space-y-4">
+            {/* Customer & Stylist Info */}
+            <div className="grid grid-cols-2 gap-4">
+              <div
+                className="p-4 rounded-lg"
+                style={{
+                  background: 'rgba(212,175,55,0.08)',
+                  border: '1px solid rgba(212,175,55,0.2)'
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <User className="w-4 h-4 text-[#D4AF37]" />
+                  <span className="text-xs text-[#F5E6C8]/60 font-medium">Customer</span>
+                </div>
+                <p className="text-[#F5E6C8] font-semibold">
+                  {selectedCustomer?.entity_name}
+                </p>
+              </div>
+
+              <div
+                className="p-4 rounded-lg"
+                style={{
+                  background: 'rgba(184,134,11,0.08)',
+                  border: '1px solid rgba(184,134,11,0.2)'
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Scissors className="w-4 h-4 text-[#B8860B]" />
+                  <span className="text-xs text-[#F5E6C8]/60 font-medium">Stylist</span>
+                </div>
+                <p className="text-[#F5E6C8] font-semibold">
+                  {selectedStylist?.entity_name}
+                </p>
+              </div>
+            </div>
+
+            {/* Date & Time */}
+            <div
+              className="p-4 rounded-lg"
+              style={{
+                background: 'rgba(212,175,55,0.08)',
+                border: '1px solid rgba(212,175,55,0.2)'
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    style={{
+                      background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)'
+                    }}
+                  >
+                    <Calendar className="w-5 h-5 text-[#0B0B0B]" />
+                  </div>
+                  <div>
+                    {selectedDate && selectedTime ? (
+                      <>
+                        <p className="text-[#F5E6C8] font-semibold">
+                          {format(new Date(`${selectedDate}T${selectedTime}`), 'EEEE, MMMM d, yyyy')}
+                        </p>
+                        <p className="text-sm text-[#F5E6C8]/60">
+                          {format(new Date(`${selectedDate}T${selectedTime}`), 'h:mm a')} •{' '}
+                          {totalDuration} minutes
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-[#F5E6C8]/60">Date/time not available</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Services Summary */}
+            <div
+              className="p-4 rounded-lg"
+              style={{
+                background: 'rgba(15,111,92,0.1)',
+                border: '1px solid rgba(15,111,92,0.2)'
+              }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm text-[#F5E6C8]/70 font-medium">
+                  {cart.length} Service{cart.length !== 1 ? 's' : ''}
+                </span>
+                <span className="text-xl font-bold text-[#D4AF37]">
+                  AED {totalAmount.toFixed(2)}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {cart.slice(0, 3).map((item, idx) => (
+                  <div key={idx} className="flex items-center justify-between text-sm">
+                    <span className="text-[#F5E6C8]/80">
+                      {item.quantity}x {item.service.entity_name}
+                    </span>
+                    <span className="text-[#F5E6C8]/60">
+                      AED {(item.price * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+                {cart.length > 3 && (
+                  <p className="text-xs text-[#F5E6C8]/50 text-center pt-2">
+                    +{cart.length - 3} more service{cart.length - 3 !== 1 ? 's' : ''}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                onClick={() => router.push('/salon/appointments')}
+                className="flex-1 transition-all duration-240"
+                style={{
+                  background: 'rgba(245,230,200,0.1)',
+                  border: '1px solid rgba(245,230,200,0.2)',
+                  color: '#F5E6C8',
+                  transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(245,230,200,0.15)'
+                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.3)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(245,230,200,0.1)'
+                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.2)'
+                }}
+              >
+                View All Appointments
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setShowSuccessDialog(false)
+                  // Reset form for new appointment
+                  setSelectedCustomer(null)
+                  setSelectedStylist(null)
+                  setSelectedTime('')
+                  setCart([])
+                  setNotes('')
+                  setSelectedDate(format(new Date(), 'yyyy-MM-dd'))
+                }}
+                className="flex-1 transition-all duration-240"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                  color: '#0B0B0B',
+                  fontWeight: '600',
+                  border: 'none',
+                  boxShadow: '0 8px 24px rgba(212,175,55,0.3)',
+                  transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-1px)'
+                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(212,175,55,0.4)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(212,175,55,0.3)'
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Book Another
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

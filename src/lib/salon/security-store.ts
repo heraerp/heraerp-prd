@@ -1,10 +1,29 @@
 /**
  * Salon Security Store
  * Persistent security context to prevent re-initialization on navigation
+ *
+ * SECURITY: organizationId is NOT persisted - must always come from JWT
  */
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+
+// 🧹 One-time cleanup: Remove stale organization cache from previous version
+if (typeof window !== 'undefined') {
+  try {
+    const staleStore = localStorage.getItem('salon-security-store')
+    if (staleStore) {
+      const parsed = JSON.parse(staleStore)
+      if (parsed?.state?.organizationId || parsed?.state?.organization) {
+        console.warn('🧹 Removing stale organization cache from localStorage')
+        localStorage.removeItem('salon-security-store')
+        localStorage.removeItem('organizationId')
+      }
+    }
+  } catch (e) {
+    // Ignore parsing errors
+  }
+}
 
 interface SalonSecurityState {
   isInitialized: boolean
@@ -82,14 +101,16 @@ export const useSalonSecurityStore = create<SalonSecurityState>()(
     {
       name: 'salon-security-store',
       partialize: state => ({
+        // ⚠️ SECURITY: Do NOT persist organizationId or organization
+        // These must ALWAYS come from JWT validation, never from cache
         isInitialized: state.isInitialized,
         lastInitialized: state.lastInitialized,
         salonRole: state.salonRole,
-        organizationId: state.organizationId,
+        // organizationId: NOT PERSISTED - always from JWT
         permissions: state.permissions,
         userId: state.userId,
-        user: state.user,
-        organization: state.organization
+        user: state.user
+        // organization: NOT PERSISTED - always from JWT
       })
     }
   )

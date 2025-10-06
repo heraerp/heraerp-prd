@@ -1,10 +1,10 @@
 // ================================================================================
-// CREATE DRAFT APPOINTMENT
+// CREATE DRAFT APPOINTMENT - HERA Universal API Pattern
 // Smart Code: HERA.LIB.APPOINTMENT.CREATE.DRAFT.V1
-// Creates a DRAFT appointment header with smart_code and org filter
+// Uses Universal API v2 with proper RPC calls
 // ================================================================================
 
-import { supabase } from '@/lib/supabase'
+import { upsertEntity, setDynamicDataBatch } from '@/lib/universal-api-v2-client'
 
 export type DraftInput = {
   organizationId: string
@@ -39,46 +39,131 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
   const startDate = new Date(startAt)
   const endDate = new Date(startDate.getTime() + durationMin * 60 * 1000)
 
-  // Generate transaction code
-  const transactionCode = `APT-${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${Date.now().toString().slice(-6)}`
+  // Format appointment name: "Appointment - Date"
+  const appointmentName = `Appointment - ${startDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  })}`
 
-  // Create appointment transaction
-  const appointmentData = {
-    organization_id: organizationId,
-    transaction_type: 'APPOINTMENT',
-    transaction_code: transactionCode,
-    transaction_date: startDate.toISOString(),
-    source_entity_id: customerEntityId,
-    target_entity_id: preferredStylistEntityId || null,
-    total_amount: 0, // Will be calculated from services
-    smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.HEADER.V1',
-    metadata: {
-      status: 'DRAFT',
-      start_time: startDate.toISOString(),
-      end_time: endDate.toISOString(),
-      duration_minutes: durationMin,
-      notes: notes || null,
-      branch_id: branchId || null,
-      idempotency_key: idempotencyKey || null,
-      created_via: 'POS_MODAL',
-      created_at: new Date().toISOString()
+  // Generate appointment code
+  const appointmentCode = `APT-${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${Date.now().toString().slice(-6)}`
+
+  console.log('[createDraftAppointment] Creating appointment entity:', {
+    name: appointmentName,
+    code: appointmentCode,
+    organizationId
+  })
+
+  // Step 1: Create appointment entity using Universal API
+  const entityResult = await upsertEntity('', {
+    p_organization_id: organizationId,
+    p_entity_type: 'appointment',
+    p_entity_name: appointmentName,
+    p_entity_code: appointmentCode,
+    p_smart_code: 'HERA.SALON.APPOINTMENT.ENTITY.BOOKING.V1',
+    p_status: 'booked'
+  })
+
+  if (!entityResult || !entityResult.data) {
+    throw new Error('Failed to create appointment entity')
+  }
+
+  // Extract the ID from the entity result - it could be entityResult.data.id or entityResult.data itself if it's a UUID
+  const appointmentId = typeof entityResult.data === 'string'
+    ? entityResult.data
+    : entityResult.data.id || entityResult.data.entity_id
+
+  console.log('[createDraftAppointment] Entity created:', {
+    appointmentId,
+    fullResult: entityResult.data
+  })
+
+  // Step 2: Add dynamic data fields for appointment details
+  // ENTERPRISE PATTERN: Normalized data - store only IDs, not names
+  // Names will be fetched separately from customer/staff entities
+  const dynamicFields = [
+    {
+      field_name: 'customer_id',
+      field_type: 'text' as const,
+      field_value: customerEntityId
+    },
+    {
+      field_name: 'stylist_id',
+      field_type: 'text' as const,
+      field_value: preferredStylistEntityId || ''
+    },
+    {
+      field_name: 'start_time',
+      field_type: 'text' as const,
+      field_value: startDate.toISOString()
+    },
+    {
+      field_name: 'end_time',
+      field_type: 'text' as const,
+      field_value: endDate.toISOString()
+    },
+    {
+      field_name: 'duration_minutes',
+      field_type: 'number' as const,
+      field_value_number: durationMin
+    },
+    {
+      field_name: 'currency_code',
+      field_type: 'text' as const,
+      field_value: 'AED'
+    },
+    {
+      field_name: 'price',
+      field_type: 'number' as const,
+      field_value_number: 0
     }
+  ]
+
+  // Add optional fields
+  if (notes) {
+    dynamicFields.push({
+      field_name: 'notes',
+      field_type: 'text' as const,
+      field_value: notes
+    })
   }
 
-  const { data, error } = await supabase
-    .from('universal_transactions')
-    .insert(appointmentData)
-    .select('id')
-    .single()
-
-  if (error) {
-    console.error('Error creating draft appointment:', error)
-    throw new Error(`Failed to create appointment: ${error.message}`)
+  if (branchId) {
+    dynamicFields.push({
+      field_name: 'branch_id',
+      field_type: 'text' as const,
+      field_value: branchId
+    })
   }
 
-  if (!data) {
-    throw new Error('No data returned from appointment creation')
+  console.log('[createDraftAppointment] Adding dynamic fields:', dynamicFields.length)
+
+  // Insert all dynamic fields using batch API
+  try {
+    console.log('[createDraftAppointment] Calling setDynamicDataBatch with:', {
+      p_organization_id: organizationId,
+      p_entity_id: appointmentId,
+      p_smart_code: 'HERA.SALON.APPOINTMENT.DYN.BATCH.V1',
+      p_fields: dynamicFields
+    })
+
+    const batchResult = await setDynamicDataBatch('', {
+      p_organization_id: organizationId,
+      p_entity_id: appointmentId,
+      p_smart_code: 'HERA.SALON.APPOINTMENT.DYN.BATCH.V1',
+      p_fields: dynamicFields
+    })
+
+    console.log('✅ Created appointment with dynamic data:', {
+      appointmentId,
+      batchResult
+    })
+  } catch (error) {
+    console.error('❌ Error adding dynamic fields:', error)
+    // Don't fail the whole operation if dynamic fields fail
+    throw error // Re-throw so we can see the error in the UI
   }
 
-  return { id: data.id as string }
+  return { id: appointmentId }
 }

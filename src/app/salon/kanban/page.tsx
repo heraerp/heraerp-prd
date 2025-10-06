@@ -34,9 +34,6 @@ import { Board } from '@/components/salon/kanban/Board'
 import { ReschedulePanel } from '@/components/salon/kanban/ReschedulePanel'
 import { useKanbanPlaybook } from '@/hooks/useKanbanPlaybook'
 import { KanbanCard } from '@/schemas/kanban'
-import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { useAppointmentsPlaybook } from '@/hooks/useAppointmentsPlaybook'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 
@@ -58,20 +55,8 @@ const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 export default function KanbanPage() {
   const router = useRouter()
-  const { organization: authOrganization, isAuthenticated, isLoading: contextLoading } = useSecuredSalonContext()
+  const { organizationId, organization: authOrganization, isAuthenticated, isLoading: contextLoading } = useSecuredSalonContext()
   const { toast } = useToast()
-  
-  // Get organization ID from localStorage for demo mode
-  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
-  
-  useEffect(() => {
-    const storedOrgId = localStorage.getItem('organizationId')
-    if (storedOrgId) {
-      setLocalOrgId(storedOrgId)
-    }
-  }, [])
-  
-  const organizationId = authOrganization?.id || localOrgId || SALON_ORG_ID
   
   // Always reset branch filter to 'all' on page load
   useEffect(() => {
@@ -206,7 +191,7 @@ export default function KanbanPage() {
     }
 
     const [hours, minutes] = start_time.split(':').map(Number)
-    const start = new Date(date)
+    const start = new Date(dateRange.dateFrom)
     start.setHours(hours, minutes, 0, 0)
 
     const end = new Date(start)
@@ -243,7 +228,7 @@ export default function KanbanPage() {
   }
 
   // Check authorization layers
-  if (!isAuthenticated && !localOrgId) {
+  if (!isAuthenticated) {
     return (
       <div className="container mx-auto p-6 max-w-7xl">
         <div className="text-center">
@@ -255,20 +240,20 @@ export default function KanbanPage() {
     )
   }
 
-  if (contextLoading && !localOrgId) {
+  if (contextLoading) {
     return (
       <div className="min-h-screen" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}>
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center animate-fadeIn">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                   style={{ 
+                   style={{
                      background: `linear-gradient(135deg, ${LUXE_COLORS.gold}40 0%, ${LUXE_COLORS.goldDark}40 100%)`,
                      boxShadow: `0 8px 32px ${LUXE_COLORS.gold}20`
                    }}>
                 <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
               </div>
-              <p className="mt-4" style={{ color: LUXE_COLORS.bronze }}>Loading...</p>
+              <p className="mt-4" style={{ color: LUXE_COLORS.bronze }}>Loading organization context...</p>
             </div>
           </div>
         </div>
@@ -276,12 +261,26 @@ export default function KanbanPage() {
     )
   }
 
+  if (!organizationId) {
+    return (
+      <div className="container mx-auto p-6 max-w-7xl">
+        <div className="text-center">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            No organization context found
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            Please ensure you are properly authenticated
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
-      <div
-        className="h-screen flex flex-col transition-all duration-300"
-        style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}
-      >
+    <div
+      className="h-screen flex flex-col transition-all duration-300"
+      style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}
+    >
         {/* Luxe header */}
         <header
           className="px-6 py-4 shadow-xl backdrop-blur transition-all duration-300 animate-slideDown"
@@ -494,6 +493,28 @@ export default function KanbanPage() {
               </Button>
 
               <Button
+                onClick={() => router.push('/salon/appointments/calendar')}
+                variant="outline"
+                style={{
+                  backgroundColor: LUXE_COLORS.black,
+                  borderColor: LUXE_COLORS.emerald,
+                  color: LUXE_COLORS.champagne
+                }}
+                className="hover:opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                  e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}30`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = LUXE_COLORS.emerald
+                  e.currentTarget.style.boxShadow = ''
+                }}
+              >
+                <CalendarDays className="h-4 w-4 mr-2" />
+                Calendar View
+              </Button>
+
+              <Button
                 onClick={() => router.push('/salon/appointments/new')}
                 style={{
                   background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
@@ -560,7 +581,7 @@ export default function KanbanPage() {
           onOpenChange={setRescheduleOpen}
           appointment={selectedCard}
           organization_id={SALON_ORG_ID}
-          branch_id={currentBranch.id}
+          branch_id={branchId && branchId !== 'all' ? branchId : (branches.length > 0 ? branches[0].id : undefined)}
           branches={branches}
           staff={[
             { id: 'staff1', name: 'Sarah' },
@@ -711,6 +732,5 @@ export default function KanbanPage() {
           </DialogContent>
         </Dialog>
       </div>
-    </SalonAuthGuard>
   )
 }

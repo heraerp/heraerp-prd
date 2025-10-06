@@ -8,16 +8,78 @@
 
 import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
+import { Loader2, AlertCircle } from 'lucide-react'
+
+const LUXE_COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  champagne: '#F5E6C8'
+}
 
 export default function SalonAppointmentsCalendarPage() {
-  const { organizationId, organization } = useSecuredSalonContext()
+  const { organizationId, organization, isLoading } = useSecuredSalonContext()
+
+  // Show loading state while JWT authentication is being verified
+  if (isLoading) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.black }}
+      >
+        <div
+          className="text-center p-8 rounded-xl backdrop-blur-xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%)',
+            border: `1px solid ${LUXE_COLORS.gold}20`,
+            boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+          }}
+        >
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <h2 className="text-xl font-medium mb-2" style={{ color: LUXE_COLORS.champagne }}>
+            Loading Calendar...
+          </h2>
+          <p className="text-sm" style={{ color: `${LUXE_COLORS.gold}80` }}>
+            Verifying organization access...
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error if no organization ID is available from JWT
+  if (!organizationId) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.black }}
+      >
+        <div
+          className="text-center p-8 rounded-xl backdrop-blur-xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%)',
+            border: `1px solid ${LUXE_COLORS.gold}20`,
+            boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+          }}
+        >
+          <AlertCircle className="w-8 h-8 mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <h2 className="text-xl font-medium mb-2" style={{ color: LUXE_COLORS.champagne }}>
+            Authentication Required
+          </h2>
+          <p className="text-sm" style={{ color: `${LUXE_COLORS.gold}80` }}>
+            Please sign in to access the salon calendar.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   // Default salon organizations for the calendar
   const salonOrganizations = [
     {
-      id: organizationId || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
+      id: organizationId,
       organization_code: 'SALON-BR1',
-      organization_name: organization?.name || 'Hair Talkz • Park Regis Kris Kin (Karama)'
+      organization_name: organization?.name || 'Hair Talkz Salon'
     }
   ]
 
@@ -46,7 +108,6 @@ export default function SalonAppointmentsCalendarPage() {
         >
           <SalonResourceCalendar
             organizations={salonOrganizations}
-            currentOrganizationId={organizationId}
             canViewAllBranches={false}
           />
         </div>

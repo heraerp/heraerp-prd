@@ -35,75 +35,65 @@ export async function resolveUserEntity(authUserId: string): Promise<{
   error?: UserResolutionError
 }> {
   try {
-    // 1. Find user entity using auth_user_id in metadata
-    const { data: userEntities, error: entityError } = await supabase
+    // 1. Find USER entity (id = auth user id, in platform org)
+    const { data: userEntity, error: entityError } = await supabase
       .from('core_entities')
       .select('*')
-      .eq('entity_type', 'user')
-      .contains('metadata', { auth_user_id: authUserId })
+      .eq('id', authUserId)
+      .or('entity_type.eq.USER,entity_type.eq.user')
+      .maybeSingle()
 
     if (entityError) {
       return {
         success: false,
         error: {
           type: 'database_error',
-          message: `Failed to query user entities: ${entityError.message}`,
+          message: `Failed to query user entity: ${entityError.message}`,
           authUserId
         }
       }
     }
 
-    if (!userEntities || userEntities.length === 0) {
-      // For salon demo - create a virtual user entity for immediate working
-      console.warn(
-        `No HERA user entity found for auth user ID: ${authUserId}, creating virtual entity`
-      )
-
-      // Get default organization ID for salon demo
-      const defaultOrgId =
-        process.env.DEFAULT_ORGANIZATION_ID || 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
-
+    if (!userEntity) {
+      console.warn(`No USER entity found for: ${authUserId}`)
       return {
-        success: true,
-        data: {
-          userId: authUserId,
-          organizationId: defaultOrgId,
-          entityId: `virtual-${authUserId}`,
-          salonRole: 'owner', // Default to owner for salon demo
-          permissions: ['salon:read:all', 'salon:write:all', 'salon:admin:full'],
-          userEntity: {
-            id: `virtual-${authUserId}`,
-            organization_id: defaultOrgId,
-            entity_type: 'user',
-            entity_name: 'Demo User',
-            metadata: { auth_user_id: authUserId, virtual: true }
-          },
-          dynamicData: {
-            salon_role: { value: 'owner', type: 'text', smart_code: 'HERA.SALON.USER.ROLE.v1' },
-            permissions: {
-              value: ['salon:read:all', 'salon:write:all', 'salon:admin:full'],
-              type: 'json',
-              smart_code: 'HERA.SALON.USER.PERMISSIONS.v1'
-            }
-          }
+        success: false,
+        error: {
+          type: 'not_found',
+          message: 'User entity not found',
+          authUserId
         }
       }
     }
 
-    if (userEntities.length > 1) {
-      // In future, this could support multi-organization users
-      // For now, take the first one (salon demo has one org per user)
-      console.warn(`Multiple user entities found for auth ID ${authUserId}, using first one`)
+    // 2. Find organization via USER_MEMBER_OF_ORG relationship
+    const { data: relationship, error: relError } = await supabase
+      .from('core_relationships')
+      .select('to_entity_id, organization_id')
+      .eq('from_entity_id', authUserId)
+      .eq('relationship_type', 'USER_MEMBER_OF_ORG')
+      .maybeSingle()
+
+    if (relError || !relationship) {
+      console.warn(`No USER_MEMBER_OF_ORG relationship for: ${authUserId}`)
+      return {
+        success: false,
+        error: {
+          type: 'not_found',
+          message: 'User organization membership not found',
+          authUserId
+        }
+      }
     }
 
-    const userEntity = userEntities[0]
+    const organizationId = relationship.organization_id
 
-    // 2. Get all dynamic data for this user entity
+    // 3. Get all dynamic data for this user entity in the tenant org
     const { data: dynamicData, error: dynamicError } = await supabase
       .from('core_dynamic_data')
       .select('field_name, field_value_text, field_value_json, field_type, smart_code')
       .eq('entity_id', userEntity.id)
-      .eq('organization_id', userEntity.organization_id)
+      .eq('organization_id', organizationId)
 
     if (dynamicError) {
       return {
@@ -116,7 +106,7 @@ export async function resolveUserEntity(authUserId: string): Promise<{
       }
     }
 
-    // 3. Build dynamic data map
+    // 4. Build dynamic data map
     const dynamicDataMap: Record<string, any> = {}
     dynamicData?.forEach(field => {
       const value = field.field_type === 'json' ? field.field_value_json : field.field_value_text
@@ -127,7 +117,7 @@ export async function resolveUserEntity(authUserId: string): Promise<{
       }
     })
 
-    // 4. Extract business information from dynamic data
+    // 5. Extract business information from dynamic data
     const salonRole = dynamicDataMap.salon_role?.value || 'user'
     const permissions = dynamicDataMap.permissions?.value || []
 
@@ -135,7 +125,7 @@ export async function resolveUserEntity(authUserId: string): Promise<{
       success: true,
       data: {
         userId: authUserId,
-        organizationId: userEntity.organization_id,
+        organizationId,
         entityId: userEntity.id,
         salonRole,
         permissions: Array.isArray(permissions) ? permissions : [],

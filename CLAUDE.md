@@ -1411,6 +1411,24 @@ if (!organizationId) {
 
 **CRITICAL**: See `/docs/AUTHORIZATION-PATTERN.md` for complete implementation guide. Skipping any layer will cause infinite loading or security vulnerabilities!
 
+### **📚 COMPLETE AUTHORIZATION REFERENCE (CANONICAL)**
+**See: `/docs/HERA-AUTHORIZATION-ARCHITECTURE.md`** - The complete, canonical reference for HERA's authorization system.
+
+This document contains:
+- **Architecture Overview**: Three-tier system (Supabase Auth → HERA Entities → Dynamic Data)
+- **Data Model**: Complete flow from user signup to API requests
+- **Organization Resolution**: USER entity (platform org) → USER_MEMBER_OF_ORG relationship → Tenant org
+- **Critical Rules**: USER entities ALWAYS in platform org (`00000000...`), membership via relationships
+- **Common Issues**: Complete debugging guide for 401/403 errors
+- **Debug Checklist**: Step-by-step troubleshooting flow
+- **Best Practices**: Code examples and patterns
+
+**Key Points:**
+- JWT Service: Get org from `user_metadata.organization_id` first, fallback to `USER_MEMBER_OF_ORG` relationship
+- All API requests MUST match JWT organization (403 if mismatch)
+- fetchV2 automatically adds auth headers (Authorization + x-hera-api-version)
+- Dynamic data (roles, permissions) stored in TENANT org, not platform org
+
 ### **Three-Layer Security Model**:
 1. **Layer 1: Organization Isolation** - Sacred organization_id boundary (zero data leakage)
 2. **Layer 2: Entity-Level Permissions** - Dynamic role-based access through universal entities

@@ -1,56 +1,39 @@
 'use client'
 
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import '@/styles/microsoft-calendar.css'
+import '@/styles/salon-calendar-animations.css'
 import {
-  Calendar,
   ChevronLeft,
   ChevronRight,
   Plus,
   Search,
   Filter,
-  Users,
-  Clock,
-  Video,
-  Phone,
   MapPin,
   Star,
   Sparkles,
   Grid3x3,
-  List,
-  CalendarDays,
   User,
   Crown,
   Zap,
   Scissors,
   Palette,
-  ChevronDown,
   MoreVertical,
-  Bell,
   Settings,
   X,
   Columns,
-  Square,
-  CheckSquare,
-  Building2,
   Loader2,
   AlertCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { useCalendarPlaybook } from '@/hooks/useCalendarPlaybook'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
+import { useHeraAppointments } from '@/hooks/useHeraAppointments'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
+import { useHeraCustomers } from '@/hooks/useHeraCustomers'
+import { useHeraServices } from '@/hooks/useHeraServicesV2'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -124,14 +107,13 @@ function useIsMounted() {
 
 export function SalonResourceCalendar({
   className,
-  onNewBooking,
   organizations = [],
-  currentOrganizationId,
   canViewAllBranches = false
 }: SalonResourceCalendarProps) {
-  const { organization } = useSecuredSalonContext()
-  const organizationId = organization?.id
-  const branchId = organization?.metadata?.branch_id as string | undefined
+  const { organizationId } = useSecuredSalonContext()
+  // ✅ CRITICAL: Use organizationId directly from JWT context
+  // This is the validated organization ID from JWT token, not from cache
+  const branchId = undefined // Branch filtering via client-side selection
   const mounted = useIsMounted()
 
   // All hooks must be called before any conditional returns
@@ -180,14 +162,37 @@ export function SalonResourceCalendar({
     }
   }, [selectedDate, selectedView])
 
-  // Use calendar playbook hook to fetch data
-  const { loading, error, appointments, staff, services, customers, staffById, svcById, custById } =
-    useCalendarPlaybook({
-      organization_id: organizationId,
-      branch_id: canViewAllBranches ? undefined : branchId,
-      fromISO: dateRange.fromISO,
-      toISO: dateRange.toISO
-    })
+  // ✅ Use HERA RPC hooks for data fetching (same as appointments page)
+  const {
+    appointments: rawAppointments,
+    isLoading: appointmentsLoading,
+    error: appointmentsError
+  } = useHeraAppointments({
+    organizationId,
+    filters: {
+      ...(branchId && !canViewAllBranches ? { branch_id: branchId } : {}),
+      date_from: dateRange.fromISO,
+      date_to: dateRange.toISO
+    }
+  })
+
+  const { staff, isLoading: staffLoading } = useHeraStaff({
+    organizationId,
+    filters: {
+      ...(branchId && !canViewAllBranches ? { branch_id: branchId } : {})
+    }
+  })
+
+  const { isLoading: customersLoading } = useHeraCustomers({
+    organizationId
+  })
+
+  const { isLoading: servicesLoading } = useHeraServices({
+    organizationId
+  })
+
+  const loading = appointmentsLoading || staffLoading || customersLoading || servicesLoading
+  const error = appointmentsError
 
   // Helper function to get consistent colors for stylists
   const getColorForIndex = useCallback((index: number): string => {
@@ -201,29 +206,29 @@ export function SalonResourceCalendar({
       'bg-indigo-600',
       'bg-emerald-600'
     ]
-    return colors[index % colors.length]
+    return colors[index % colors.length] || 'bg-purple-600'
   }, [])
 
-  // Transform staff data from Playbook API to Stylist format
+  // ✅ Transform HERA staff data to Stylist format
   const allStylists: (Stylist & { branchId: string })[] = useMemo(() => {
     if (!staff.length && !mounted) {
-      // Return hardcoded data for initial render to prevent hydration mismatch
+      // Return empty array for initial render to prevent hydration mismatch
       return []
     }
 
-    // Map staff data from Playbook to Stylist format
-    return staff.map((s, index) => ({
+    // Map HERA staff data to Stylist format
+    return staff.map((s: any, index: number) => ({
       id: s.id,
       name: s.entity_name || 'Staff Member',
-      title: s.role || 'Stylist',
+      title: s.metadata?.role || s.metadata?.designation || 'Stylist',
       avatar: s.entity_name?.charAt(0).toUpperCase() || 'S',
       color: getColorForIndex(index),
-      available: s.available !== false,
-      status: s.available === false ? 'away' : 'available',
+      available: s.metadata?.available !== false,
+      status: s.metadata?.available === false ? 'away' : 'available',
       businessHours: { start: 9, end: 19 }, // Default hours
-      branchId: s.branch_id || branchId || ''
+      branchId: s.metadata?.branch_id || ''
     }))
-  }, [staff, mounted, branchId, getColorForIndex])
+  }, [staff, mounted, getColorForIndex])
 
   // Filter stylists based on selected branches
   const stylists = useMemo(() => {
@@ -263,9 +268,9 @@ export function SalonResourceCalendar({
     return slots
   }, [])
 
-  // Transform appointments data from Playbook API to local Appointment format
+  // ✅ Transform HERA appointments to calendar format
   const transformedAppointments = useMemo(() => {
-    if (!appointments.length || !mounted) {
+    if (!rawAppointments.length || !mounted) {
       // Return empty array for initial render to prevent hydration mismatch
       return []
     }
@@ -281,34 +286,29 @@ export function SalonResourceCalendar({
       default: { icon: <Scissors className="w-3 h-3" />, color: '#6B7280' }
     }
 
-    return appointments.map(apt => {
+    return rawAppointments.map((apt: any) => {
       const startDate = new Date(apt.start_time)
       const time = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`
 
-      // Get service info from services
-      const service = apt.service_ids?.[0] ? svcById.get(apt.service_ids[0]) : null
-      const serviceType = service?.category || 'default'
-      const serviceInfo = serviceIconMap[serviceType] || serviceIconMap.default
+      // Get service info (appointment might have service in metadata)
+      const serviceType = apt.metadata?.service_type || 'default'
+      const serviceInfo = serviceIconMap[serviceType] || serviceIconMap['default']
 
-      // Get customer info
-      const customer = apt.customer_id ? custById.get(apt.customer_id) : null
-      const customerName = customer?.entity_name || 'Walk-in Customer'
+      // Customer and stylist names come from enriched appointment data
+      const customerName = apt.customer_name || 'Walk-in Customer'
+      const stylistId = apt.stylist_id || ''
 
-      // Get stylist info
-      const stylist = apt.stylist_id ? staffById.get(apt.stylist_id) : null
-      const stylistId = stylist?.id || apt.stylist_id || ''
-
-      // Get branch info - now comes from entity data
-      const appointmentBranchId = apt.branch_id || branchId || ''
+      // Get branch info from metadata
+      const appointmentBranchId = apt.branch_id || ''
 
       return {
         id: apt.id,
-        title: service?.entity_name || apt.entity_name || 'Appointment',
+        title: apt.entity_name || 'Appointment',
         client: customerName,
         stylist: stylistId,
         time,
         date: startDate,
-        duration: service?.duration_minutes || 60,
+        duration: apt.duration_minutes || 60,
         service: serviceType,
         status:
           apt.status === 'completed'
@@ -316,14 +316,14 @@ export function SalonResourceCalendar({
             : apt.status === 'cancelled'
               ? 'tentative'
               : 'confirmed',
-        price: `AED ${apt.price || service?.price || 0}`,
-        color: serviceInfo.color,
-        icon: serviceInfo.icon,
+        price: `AED ${apt.total_amount || 0}`,
+        color: serviceInfo?.color || '#6B7280',
+        icon: serviceInfo?.icon || <Scissors className="w-3 h-3" />,
         station: `station-1`,
         branchId: appointmentBranchId
       }
     })
-  }, [appointments, mounted, staffById, svcById, custById, branchId])
+  }, [rawAppointments, mounted])
 
   // Get dates based on selected view
   const getViewDates = useCallback(() => {
@@ -390,7 +390,8 @@ export function SalonResourceCalendar({
 
   // Check if time slot is within stylist's business hours
   const isWithinBusinessHours = useCallback((stylist: Stylist, time: string) => {
-    const [hour] = time.split(':').map(Number)
+    const [hourStr] = time.split(':')
+    const hour = hourStr ? Number(hourStr) : 9
     const businessHours = stylist.businessHours || BUSINESS_HOURS
     return hour >= businessHours.start && hour < businessHours.end
   }, [])
@@ -602,7 +603,7 @@ export function SalonResourceCalendar({
 
   return (
     <div
-      className={cn('flex h-[800px] rounded-lg overflow-hidden', className)}
+      className={cn('flex h-[800px] rounded-lg overflow-hidden calendar-fade-in', className)}
       style={{
         backgroundColor: COLORS.charcoal,
         boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(212, 175, 55, 0.1)',
@@ -710,6 +711,11 @@ export function SalonResourceCalendar({
                 size="sm"
                 className="flex-1"
                 onClick={() => setViewMode('single')}
+                style={{
+                  backgroundColor: viewMode === 'single' ? COLORS.gold : 'transparent',
+                  color: viewMode === 'single' ? COLORS.black : COLORS.champagne,
+                  borderColor: COLORS.bronze
+                }}
               >
                 <User className="w-4 h-4 mr-2" />
                 Single View
@@ -719,13 +725,18 @@ export function SalonResourceCalendar({
                 size="sm"
                 className="flex-1"
                 onClick={() => setViewMode('resource')}
+                style={{
+                  backgroundColor: viewMode === 'resource' ? COLORS.gold : 'transparent',
+                  color: viewMode === 'resource' ? COLORS.black : COLORS.champagne,
+                  borderColor: COLORS.bronze
+                }}
               >
                 <Columns className="w-4 h-4 mr-2" />
                 Resource View
               </Button>
             </div>
 
-            {/* Mini Calendar */}
+            {/* Mini Calendar - Enterprise Grade */}
             <div
               className="rounded-lg p-3"
               style={{
@@ -733,22 +744,110 @@ export function SalonResourceCalendar({
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
               }}
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+              <div className="flex items-center justify-between mb-3 calendar-mini-header">
+                <span className="text-sm font-semibold tracking-wide" style={{ color: COLORS.champagne }}>
                   {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 calendar-mini-nav-button"
+                    style={{ color: COLORS.bronze }}
+                    onClick={() => {
+                      const newDate = new Date(selectedDate)
+                      newDate.setMonth(newDate.getMonth() - 1)
+                      setSelectedDate(newDate)
+                    }}
+                  >
                     <ChevronLeft className="w-3 h-3" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 calendar-mini-nav-button"
+                    style={{ color: COLORS.bronze }}
+                    onClick={() => {
+                      const newDate = new Date(selectedDate)
+                      newDate.setMonth(newDate.getMonth() + 1)
+                      setSelectedDate(newDate)
+                    }}
+                  >
                     <ChevronRight className="w-3 h-3" />
                   </Button>
                 </div>
               </div>
-              {/* Mini calendar grid would go here */}
-              <div className="text-xs text-center py-4" style={{ color: COLORS.bronze }}>
-                Mini calendar view
+
+              {/* Day of week headers */}
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+                  <div
+                    key={i}
+                    className="text-center text-xs font-semibold py-1 calendar-dow-header"
+                    style={{ color: COLORS.gold }}
+                  >
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              {/* Calendar grid */}
+              <div className="grid grid-cols-7 gap-1">
+                {(() => {
+                  const year = selectedDate.getFullYear()
+                  const month = selectedDate.getMonth()
+                  const firstDay = new Date(year, month, 1).getDay()
+                  const daysInMonth = new Date(year, month + 1, 0).getDate()
+                  const today = new Date()
+                  const isToday = (day: number) =>
+                    today.getFullYear() === year &&
+                    today.getMonth() === month &&
+                    today.getDate() === day
+                  const isSelected = (day: number) =>
+                    selectedDate.getFullYear() === year &&
+                    selectedDate.getMonth() === month &&
+                    selectedDate.getDate() === day
+
+                  const days = []
+                  // Empty cells for days before month starts
+                  for (let i = 0; i < firstDay; i++) {
+                    days.push(<div key={`empty-${i}`} />)
+                  }
+                  // Actual days of the month
+                  for (let day = 1; day <= daysInMonth; day++) {
+                    const dayIsToday = isToday(day)
+                    const dayIsSelected = isSelected(day)
+                    days.push(
+                      <button
+                        key={day}
+                        onClick={() => {
+                          const newDate = new Date(year, month, day)
+                          setSelectedDate(newDate)
+                        }}
+                        className={cn(
+                          'calendar-mini-day text-xs font-medium py-1.5 rounded-md',
+                          dayIsToday && 'calendar-mini-today ring-2 ring-offset-1 font-bold shadow-md',
+                          dayIsSelected && 'calendar-mini-selected font-bold'
+                        )}
+                        style={{
+                          color: dayIsToday
+                            ? COLORS.black
+                            : dayIsSelected
+                              ? COLORS.champagne
+                              : COLORS.lightText,
+                          backgroundColor: dayIsToday
+                            ? COLORS.gold
+                            : dayIsSelected
+                              ? `${COLORS.gold}40`
+                              : 'transparent'
+                        }}
+                      >
+                        {day}
+                      </button>
+                    )
+                  }
+                  return days
+                })()}
               </div>
             </div>
           </div>
@@ -790,7 +889,7 @@ export function SalonResourceCalendar({
                   <div
                     key={stylist.id}
                     className={cn(
-                      'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all sidebar-item',
+                      'flex items-center gap-3 p-3 rounded-lg cursor-pointer calendar-sidebar-item',
                       selectedStylists.includes(stylist.id)
                         ? 'bg-amber-50/10 dark:bg-amber-900/20 border border-amber-200/30 dark:border-amber-700/30'
                         : 'hover:bg-amber-50/5 dark:hover:bg-amber-900/10'
@@ -811,6 +910,7 @@ export function SalonResourceCalendar({
                       <div
                         className={cn(
                           'absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800',
+                          'calendar-avatar-status',
                           stylist.status === 'available'
                             ? 'bg-green-500'
                             : stylist.status === 'busy'
@@ -855,7 +955,7 @@ export function SalonResourceCalendar({
           {/* Sidebar Footer */}
           <div className="p-4 border-t" style={{ borderColor: `${COLORS.gold}33` }}>
             <Button
-              className="w-full font-semibold tracking-wide uppercase"
+              className="w-full font-semibold tracking-wide uppercase calendar-action-button"
               style={{
                 backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
                 color: COLORS.black,
@@ -866,7 +966,7 @@ export function SalonResourceCalendar({
                 window.location.href = '/salon/appointments/new'
               }}
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4 mr-2 calendar-icon" />
               Book Appointment
             </Button>
           </div>
@@ -1051,7 +1151,7 @@ export function SalonResourceCalendar({
                   viewMode === 'resource' ? 'h-[calc(100%-5rem)]' : 'h-[calc(100%-3.5rem)]'
                 )}
               >
-                {timeSlots.map((slot, idx) => (
+                {timeSlots.map((slot) => (
                   <div
                     key={slot.time}
                     className="h-16 border-b px-2 py-1"
@@ -1118,7 +1218,7 @@ export function SalonResourceCalendar({
                             <div>
                               {timeSlots.map((slot, slotIdx) => {
                                 const slotAppointments = transformedAppointments.filter(
-                                  apt =>
+                                  (apt: Appointment) =>
                                     apt.time === slot.time &&
                                     apt.date.toDateString() === date.toDateString() &&
                                     (selectedStylists.includes('all') ||
@@ -1131,18 +1231,11 @@ export function SalonResourceCalendar({
                                   <div
                                     key={`${dayIdx}-${slotIdx}`}
                                     className={cn(
-                                      'h-16 border-b relative group time-slot',
-                                      'hover:bg-opacity-20 cursor-pointer'
+                                      'h-16 border-b relative group calendar-time-slot'
                                     )}
                                     style={{
                                       borderColor: `${COLORS.gold}1A`,
                                       backgroundColor: 'transparent'
-                                    }}
-                                    onMouseEnter={e => {
-                                      e.currentTarget.style.backgroundColor = `${COLORS.gold}0D`
-                                    }}
-                                    onMouseLeave={e => {
-                                      e.currentTarget.style.backgroundColor = 'transparent'
                                     }}
                                     onClick={() => {
                                       if (!slotAppointments.length) {
@@ -1151,7 +1244,7 @@ export function SalonResourceCalendar({
                                     }}
                                   >
                                     {/* Appointments */}
-                                    {slotAppointments.map((apt, aptIdx) => {
+                                    {slotAppointments.map((apt: Appointment, aptIdx: number) => {
                                       const durationSlots = Math.ceil(
                                         apt.duration / BUSINESS_HOURS.slotDuration
                                       )
@@ -1163,9 +1256,8 @@ export function SalonResourceCalendar({
                                           draggable
                                           onDragStart={e => handleDragStart(e, apt)}
                                           className={cn(
-                                            'absolute inset-x-1 top-1 mx-1 rounded-md p-2 cursor-move appointment-card',
-                                            'transform transition-all hover:scale-[1.02] hover:shadow-md',
-                                            'border-l-4',
+                                            'absolute inset-x-1 top-1 mx-1 rounded-md p-2 cursor-move',
+                                            'calendar-appointment-card border-l-4',
                                             `appointment-${apt.service}`
                                           )}
                                           style={{
@@ -1198,7 +1290,7 @@ export function SalonResourceCalendar({
                                               <div className="flex items-center gap-2 mt-1">
                                                 <Badge
                                                   variant="secondary"
-                                                  className="text-xs px-1 py-0"
+                                                  className="text-xs px-1 py-0 calendar-appointment-badge"
                                                   style={{
                                                     backgroundColor: `${apt.color}20`,
                                                     color: apt.color,
@@ -1236,7 +1328,7 @@ export function SalonResourceCalendar({
                         )
                       })
                     : // Resource view mode
-                      displayedStylists.map((stylist, stylistIdx) => (
+                      displayedStylists.map((stylist) => (
                         <div
                           key={stylist.id}
                           className="flex-1 min-w-[200px] border-r last:border-r-0"
@@ -1287,7 +1379,7 @@ export function SalonResourceCalendar({
                           <div>
                             {timeSlots.map((slot, slotIdx) => {
                               const slotAppointments = transformedAppointments.filter(
-                                apt =>
+                                (apt: Appointment) =>
                                   apt.time === slot.time &&
                                   apt.stylist === stylist.id &&
                                   apt.date.toDateString() === selectedDate.toDateString() &&
@@ -1305,16 +1397,15 @@ export function SalonResourceCalendar({
                                 <div
                                   key={`${stylist.id}-${slotIdx}`}
                                   className={cn(
-                                    'h-16 border-b relative group time-slot',
+                                    'h-16 border-b relative group calendar-time-slot',
                                     isBusinessHour && 'cursor-pointer',
-                                    isDropTarget && 'ring-2'
+                                    isDropTarget && 'calendar-drop-target ring-2'
                                   )}
                                   style={{
                                     borderColor: `${COLORS.gold}1A`,
                                     backgroundColor: !isBusinessHour
                                       ? `${COLORS.charcoal}66`
-                                      : 'transparent',
-                                    ringColor: isDropTarget ? COLORS.gold : undefined
+                                      : 'transparent'
                                   }}
                                   onClick={() => {
                                     if (!slotAppointments.length && isBusinessHour) {
@@ -1340,7 +1431,7 @@ export function SalonResourceCalendar({
                                   )}
 
                                   {/* Appointments */}
-                                  {slotAppointments.map((apt, aptIdx) => {
+                                  {slotAppointments.map((apt: Appointment, aptIdx: number) => {
                                     const durationSlots = Math.ceil(
                                       apt.duration / BUSINESS_HOURS.slotDuration
                                     )
@@ -1351,9 +1442,8 @@ export function SalonResourceCalendar({
                                         draggable
                                         onDragStart={e => handleDragStart(e, apt)}
                                         className={cn(
-                                          'absolute inset-x-1 top-1 mx-1 rounded-md p-2 cursor-move appointment-card',
-                                          'transform transition-all hover:scale-[1.02] hover:shadow-md',
-                                          'border-l-4',
+                                          'absolute inset-x-1 top-1 mx-1 rounded-md p-2 cursor-move',
+                                          'calendar-appointment-card border-l-4',
                                           `appointment-${apt.service}`
                                         )}
                                         style={{
@@ -1429,7 +1519,7 @@ function AppointmentCard({
           <div className="flex items-center gap-2 mt-1">
             <Badge
               variant="secondary"
-              className="text-xs px-1 py-0"
+              className="text-xs px-1 py-0 calendar-appointment-badge"
               style={{
                 backgroundColor: `${appointment.color}20`,
                 color: appointment.color,

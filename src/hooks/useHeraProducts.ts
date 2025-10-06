@@ -10,9 +10,10 @@
  * - Follows staff/role pattern exactly
  */
 
+import { useMemo } from 'react'
 import { useUniversalEntity } from './useUniversalEntity'
 import { PRODUCT_PRESET } from './entityPresets'
-import type { DynamicFieldDef } from './useUniversalEntity'
+import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
 
 export interface Product {
   id: string
@@ -82,7 +83,8 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       ...(options?.includeArchived ? {} : { status: 'active' }),
       ...options?.filters
     },
-    dynamicFields: PRODUCT_PRESET.dynamicFields as DynamicFieldDef[]
+    dynamicFields: PRODUCT_PRESET.dynamicFields as DynamicFieldDef[],
+    relationships: PRODUCT_PRESET.relationships as RelationshipDef[]
   })
 
   // Helper to create product with proper smart codes
@@ -100,6 +102,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     sku?: string
     size?: string
     status?: string
+    branch_ids?: string[]
   }) => {
     const entity_name = data.name
     const entity_code = data.code || data.name.toUpperCase().replace(/\s+/g, '_')
@@ -186,7 +189,12 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       smart_code: 'HERA.SALON.PROD.ENT.RETAIL.V1',
       entity_description: data.description || null,
       status: data.status === 'inactive' ? 'archived' : 'active',
-      dynamic_fields
+      dynamic_fields,
+      metadata: data.branch_ids && data.branch_ids.length > 0 ? {
+        relationships: {
+          STOCK_AT: data.branch_ids
+        }
+      } : undefined
     } as any)
 
     // Trigger refetch to show new product
@@ -241,13 +249,23 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_patch.size = data.size
     }
 
+    // Build relationships patch if branch_ids provided
+    const relationships_patch = data.branch_ids !== undefined ? {
+      STOCK_AT: data.branch_ids
+    } : undefined
+
     const payload: any = {
       entity_id: id,
       ...(entity_name && { entity_name }),
       ...(entity_code && { entity_code }),
       ...(data.description !== undefined && { entity_description: data.description }),
       ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
-      ...(data.status !== undefined && { status: data.status === 'inactive' ? 'archived' : 'active' })
+      ...(relationships_patch && { relationships_patch })
+    }
+
+    // Handle status separately if needed
+    if (data.status !== undefined) {
+      payload.status = data.status === 'inactive' ? 'archived' : 'active'
     }
 
     const result = await baseUpdate(payload)
@@ -304,43 +322,63 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     return result
   }
 
-  // Filter products based on search, category, and branch
-  const filteredProducts = (products as Product[])?.filter(product => {
-    // Branch filter (via STOCK_AT relationship)
+  // Filter products by branch, search, and category using HERA relationship patterns
+  const filteredProducts = useMemo(() => {
+    if (!products) return []
+
+    let filtered = products as Product[]
+
+    console.log('[useHeraProducts] Filtering products:', {
+      total: filtered.length,
+      branch_id: options?.filters?.branch_id,
+      sample_product_relationships: filtered[0] ? (filtered[0] as any).relationships : 'no products'
+    })
+
+    // Filter by STOCK_AT branch relationship (when branch is selected, not "All Locations")
     if (options?.filters?.branch_id && options.filters.branch_id !== 'all') {
-      const productWithRels = product as any
-      const stockAtRels =
-        productWithRels.relationships?.stock_at ||
-        productWithRels.relationships?.STOCK_AT ||
-        []
+      filtered = filtered.filter(p => {
+        // Check if product has STOCK_AT relationship with the specified branch
+        const stockAtRelationships = (p as any).relationships?.stock_at || (p as any).relationships?.STOCK_AT
 
-      const hasBranch = Array.isArray(stockAtRels)
-        ? stockAtRels.some((rel: any) => rel.to_entity_id === options.filters?.branch_id)
-        : false
+        console.log('[useHeraProducts] Product filter check:', {
+          product: p.entity_name,
+          has_relationships: !!(p as any).relationships,
+          stockAtRelationships,
+          branch_id_filter: options.filters?.branch_id
+        })
 
-      if (!hasBranch) return false
+        if (!stockAtRelationships) return false
+
+        // Handle both array and single relationship formats
+        if (Array.isArray(stockAtRelationships)) {
+          return stockAtRelationships.some((rel: any) => rel.to_entity?.id === options.filters?.branch_id)
+        } else {
+          return stockAtRelationships.to_entity?.id === options.filters?.branch_id
+        }
+      })
+
+      console.log('[useHeraProducts] After branch filter:', filtered.length)
     }
 
     // Search filter
     if (options?.searchQuery) {
       const query = options.searchQuery.toLowerCase()
-      const matchesSearch =
+      filtered = filtered.filter(product =>
         product.entity_name?.toLowerCase().includes(query) ||
         product.entity_code?.toLowerCase().includes(query) ||
         product.category?.toLowerCase().includes(query) ||
         product.brand?.toLowerCase().includes(query) ||
         product.barcode?.toLowerCase().includes(query)
-
-      if (!matchesSearch) return false
+      )
     }
 
     // Category filter
-    if (options?.categoryFilter && product.category !== options.categoryFilter) {
-      return false
+    if (options?.categoryFilter) {
+      filtered = filtered.filter(product => product.category === options.categoryFilter)
     }
 
-    return true
-  }) || []
+    return filtered
+  }, [products, options?.filters?.branch_id, options?.searchQuery, options?.categoryFilter])
 
   return {
     products: filteredProducts as Product[],

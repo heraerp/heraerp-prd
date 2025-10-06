@@ -67,6 +67,8 @@ export async function getEntities(
     p_smart_code?: string
     p_parent_entity_id?: string
     p_status?: string | null
+    p_include_relationships?: boolean
+    p_include_dynamic?: boolean
   }
 ) {
   const url = baseUrl || getBaseUrl()
@@ -79,6 +81,13 @@ export async function getEntities(
   // Explicitly handle status: undefined means not provided (use default), null or '' means show all
   if (params.p_status !== undefined) {
     qs.set('p_status', params.p_status || '')
+  }
+  // Include relationships and dynamic data flags
+  if (params.p_include_relationships !== undefined) {
+    qs.set('p_include_relationships', params.p_include_relationships.toString())
+  }
+  if (params.p_include_dynamic !== undefined) {
+    qs.set('p_include_dynamic', params.p_include_dynamic.toString())
   }
 
   const authHeaders = await getAuthHeaders()
@@ -326,7 +335,11 @@ export async function getTransactions(params: {
   }).then(ok)
 
   const body = await res.json()
-  return Array.isArray(body) ? body : (body.data ?? [])
+  // Support multiple response formats:
+  // 1. Direct array: [...]
+  // 2. { data: [...] }
+  // 3. { transactions: [...] } (from txn-query endpoint)
+  return Array.isArray(body) ? body : (body.transactions ?? body.data ?? [])
 }
 
 export async function createTransaction(

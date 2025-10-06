@@ -38,6 +38,19 @@
   .animate-delay-300 {
     animation-delay: 300ms;
   }
+}
+
+/* HERA Enterprise Animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@layer utilities {
 
   /* ========================================================================== */
   /* HERA Semantic Utility Classes - Dark-Only Theme Stabilization */

@@ -199,6 +199,8 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('p_offset') || searchParams.get('offset') || '0')
     const include_dynamic =
       searchParams.get('p_include_dynamic') !== 'false' && searchParams.get('include_dynamic') !== 'false'
+    const include_relationships =
+      searchParams.get('p_include_relationships') !== 'false' && searchParams.get('include_relationships') !== 'false'
 
     const supabase = getSupabaseService()
 
@@ -208,8 +210,20 @@ export async function GET(request: NextRequest) {
       entity_id,
       status,
       include_dynamic,
+      include_relationships,
       limit,
       offset
+    })
+
+    console.log('📡 [GET entities] Calling RPC with:', {
+      p_organization_id: organizationId,
+      p_entity_id: entity_id || null,
+      p_entity_type: entity_type || null,
+      p_status: status,
+      p_include_relationships: include_relationships,
+      p_include_dynamic_data: include_dynamic,
+      p_limit: limit,
+      p_offset: offset
     })
 
     // Call HERA RPC function v1
@@ -218,7 +232,7 @@ export async function GET(request: NextRequest) {
       p_entity_id: entity_id || null,
       p_entity_type: entity_type || null,
       p_status: status,
-      p_include_relationships: false,
+      p_include_relationships: include_relationships,
       p_include_dynamic_data: include_dynamic,
       p_limit: limit,
       p_offset: offset
@@ -235,7 +249,9 @@ export async function GET(request: NextRequest) {
     console.log('✅ [GET entities] RPC success:', {
       hasResult: !!result,
       isSuccess: result?.success,
-      dataCount: result?.data?.length || 0
+      dataCount: result?.data?.length || 0,
+      firstItemHasRelationships: result?.data?.[0] ? !!result.data[0].relationships : false,
+      firstItemSample: result?.data?.[0] || null
     })
 
     // Handle RPC response

@@ -41,7 +41,8 @@ export const ProductFormSchema = z.object({
   reorder_level: z.number().int().min(0, 'Reorder level must be non-negative').optional(),
   description: z.string().max(1000, 'Description too long').optional(),
   requires_inventory: z.boolean().default(false),
-  status: z.enum(['active', 'archived']).default('active')
+  status: z.enum(['active', 'archived']).default('active'),
+  branch_ids: z.array(z.string()).optional() // Branch relationships via STOCK_AT
 })
 
 export type ProductForm = z.infer<typeof ProductFormSchema>
