@@ -164,6 +164,19 @@ function mergeDynamic(rows: any[]) {
   return out
 }
 
+// ================================================================================
+// ENTERPRISE PATTERN: Entity Type Normalization
+// ================================================================================
+
+/**
+ * Normalizes entity_type to uppercase for consistency
+ * HERA Standard: All entity types are UPPERCASE (CUSTOMER, STAFF, PRODUCT, etc.)
+ */
+function normalizeEntityType(entityType: string): string {
+  if (!entityType) return entityType
+  return entityType.toUpperCase()
+}
+
 // Helper to get authentication headers, including organization context
 async function getAuthHeaders(organizationId?: string | null): Promise<Record<string, string>> {
   const {
@@ -212,7 +225,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
   const queryClient = useQueryClient()
   // Use passed organizationId if provided, otherwise fall back to useHERAAuth
   const organizationId = config.organizationId || organization?.id
-  const { entity_type, filters = {} } = config
+
+  // ✅ ENTERPRISE PATTERN: Normalize entity_type to uppercase
+  const entity_type = normalizeEntityType(config.entity_type)
+  const { filters = {} } = config
 
   // Build query key - only include primitives
   const queryKey = useMemo(
@@ -268,22 +284,48 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       const result = await getEntities('', {
         p_organization_id: organizationId,
         p_entity_type: entity_type,
-        p_status: filters.status || null // Pass null to get all statuses
+        p_status: filters.status || null, // Pass null to get all statuses
+        p_include_relationships: !!filters.include_relationships,
+        p_include_dynamic: filters.include_dynamic !== false
       })
 
       const entitiesArray = Array.isArray(result) ? result : []
 
       console.log('[useUniversalEntity] Fetched entities:', {
         count: entitiesArray.length,
-        isArray: Array.isArray(result)
+        isArray: Array.isArray(result),
+        first_entity: entitiesArray[0],
+        first_entity_has_relationships: entitiesArray[0] ? !!entitiesArray[0].relationships : false,
+        first_entity_relationships: entitiesArray[0]?.relationships
       })
 
-      // Fetch dynamic data for ALL entities in ONE batch call
+      // Check if entities already have dynamic_fields from RPC
+      const hasDynamicFieldsInRpc = entitiesArray[0]?.dynamic_fields
+      console.log('[useUniversalEntity] Dynamic fields check:', {
+        hasDynamicFieldsInRpc: !!hasDynamicFieldsInRpc,
+        firstEntityDynamicFields: entitiesArray[0]?.dynamic_fields
+      })
+
+      // Fetch dynamic data for ALL entities in ONE batch call (only if not already in RPC response)
       const headers = await getAuthHeaders(organizationId)
       const entityIds = entitiesArray.map(e => e.id)
 
       let allDynamicData: any[] = []
-      if (entityIds.length > 0) {
+
+      // If RPC already returned dynamic_fields, use those
+      if (hasDynamicFieldsInRpc) {
+        entitiesArray.forEach(entity => {
+          if (entity.dynamic_fields && Array.isArray(entity.dynamic_fields)) {
+            entity.dynamic_fields.forEach((field: any) => {
+              allDynamicData.push({
+                ...field,
+                entity_id: entity.id
+              })
+            })
+          }
+        })
+        console.log('[useUniversalEntity] Using dynamic fields from RPC:', allDynamicData.length)
+      } else if (entityIds.length > 0) {
         try {
           const response = await fetch(
             `/api/v2/dynamic-data?p_entity_ids=${entityIds.join(',')}`,
@@ -292,6 +334,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
           if (response.ok) {
             const result = await response.json()
             allDynamicData = result.data || []
+            console.log('[useUniversalEntity] Fetched dynamic data from API:', allDynamicData.length)
           }
         } catch (error) {
           console.error('[useUniversalEntity] Failed to fetch dynamic data batch:', error)
@@ -335,6 +378,12 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         })
 
         return mergedData
+      })
+
+      console.log('[useUniversalEntity] Entities with dynamic data:', {
+        count: entitiesWithDynamicData.length,
+        first_entity_merged: entitiesWithDynamicData[0],
+        dynamicDataCount: allDynamicData.length
       })
 
       // Fetch relationships for all entities if requested

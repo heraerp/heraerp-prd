@@ -32,6 +32,10 @@ export interface UseBranchFilterReturn {
   // Helpers
   selectedBranch: Branch | undefined
   hasMultipleBranches: boolean
+
+  // Aliases for consistency with other hooks
+  selectedBranchId: string | undefined
+  setSelectedBranchId: (branchId: string | undefined) => void
 }
 
 export function useBranchFilter(
@@ -133,7 +137,10 @@ export function useBranchFilter(
     setBranchId,
     refreshBranches: loadBranches,
     selectedBranch,
-    hasMultipleBranches
+    hasMultipleBranches,
+    // Aliases for consistency
+    selectedBranchId: branchId,
+    setSelectedBranchId: setBranchId
   }
 }
 

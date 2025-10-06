@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { Product } from '@/types/salon-product'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,11 +21,15 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { formatDistanceToNow } from 'date-fns'
-import { Edit, Trash2, Archive, ArchiveRestore, MoreVertical, Package } from 'lucide-react'
+import { Edit, Trash2, Archive, ArchiveRestore, MoreVertical, Package, ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { InventoryChip } from './InventoryChip'
+import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { useInventorySettings, shouldDisplayInventoryChip } from '@/hooks/useInventorySettings'
 
 interface ProductListProps {
   products: Product[]
+  organizationId: string
   loading?: boolean
   viewMode?: 'grid' | 'list'
   currency?: string
@@ -50,6 +55,7 @@ const COLORS = {
 
 export function ProductList({
   products,
+  organizationId,
   loading = false,
   viewMode = 'list',
   currency = 'AED',
@@ -58,11 +64,78 @@ export function ProductList({
   onArchive,
   onRestore
 }: ProductListProps) {
+  const { selectedBranchId } = useBranchFilter()
+  const { settings } = useInventorySettings(organizationId)
+
   if (loading) {
-    return (
+    return viewMode === 'grid' ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="relative p-5 rounded-xl overflow-hidden animate-pulse"
+            style={{
+              background: `linear-gradient(135deg, ${COLORS.charcoalLight}e8 0%, ${COLORS.charcoalDark}f0 100%)`,
+              border: `1px solid ${COLORS.bronze}20`,
+              minHeight: '280px'
+            }}
+          >
+            {/* Shimmer effect */}
+            <div
+              className="absolute inset-0 opacity-20"
+              style={{
+                background: `linear-gradient(90deg, transparent, ${COLORS.champagne}10, transparent)`,
+                animation: 'shimmer 2s infinite'
+              }}
+            />
+            <div className="relative z-10 space-y-3">
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-11 h-11 rounded-lg shrink-0"
+                  style={{ backgroundColor: COLORS.gold + '15' }}
+                />
+                <div className="flex-1 space-y-2">
+                  <div className="h-5 rounded" style={{ backgroundColor: COLORS.champagne + '15', width: '80%' }} />
+                  <div className="h-4 rounded" style={{ backgroundColor: COLORS.bronze + '12', width: '40%' }} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2.5">
+                {[...Array(4)].map((_, j) => (
+                  <div
+                    key={j}
+                    className="h-14 rounded-lg"
+                    style={{ backgroundColor: COLORS.charcoalDark + '40' }}
+                  />
+                ))}
+              </div>
+              <div className="h-10 rounded-lg" style={{ backgroundColor: COLORS.charcoalDark + '40' }} />
+              <div className="flex gap-2">
+                <div className="h-7 flex-1 rounded" style={{ backgroundColor: COLORS.gold + '12' }} />
+                <div className="h-7 w-16 rounded-lg" style={{ backgroundColor: COLORS.gold + '12' }} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
       <div className="space-y-2">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-16 bg-muted/50 rounded-lg animate-pulse" />
+          <div
+            key={i}
+            className="h-20 rounded-lg overflow-hidden animate-pulse"
+            style={{
+              background: `linear-gradient(135deg, ${COLORS.charcoalLight}e8 0%, ${COLORS.charcoalDark}f0 100%)`,
+              border: `1px solid ${COLORS.bronze}20`
+            }}
+          >
+            <div
+              className="h-full opacity-15"
+              style={{
+                background: `linear-gradient(90deg, transparent, ${COLORS.champagne}30, transparent)`,
+                animation: 'shimmer 2s infinite'
+              }}
+            />
+          </div>
         ))}
       </div>
     )
@@ -75,7 +148,9 @@ export function ProductList({
           <ProductCard
             key={product.id}
             product={product}
+            organizationId={organizationId}
             currency={currency}
+            settings={settings}
             onEdit={onEdit}
             onDelete={onDelete}
             onArchive={onArchive}
@@ -105,6 +180,7 @@ export function ProductList({
             <TableHead className="!text-[#F5E6C8]">Cost Price</TableHead>
             <TableHead className="!text-[#F5E6C8]">Selling Price</TableHead>
             <TableHead className="!text-[#F5E6C8]">Stock</TableHead>
+            <TableHead className="!text-[#F5E6C8]">Inventory</TableHead>
             <TableHead className="!text-[#F5E6C8]">Value</TableHead>
             <TableHead className="!text-[#F5E6C8]">Status</TableHead>
             <TableHead className="!text-[#F5E6C8]">Updated</TableHead>
@@ -218,6 +294,23 @@ export function ProductList({
                 </TableCell>
 
                 <TableCell>
+                  <div className="flex items-center gap-2">
+                    <InventoryChip
+                      productId={product.id}
+                      organizationId={organizationId}
+                    />
+                    <Link
+                      href={`/salon/inventory?productId=${product.id}${selectedBranchId ? `&branchId=${selectedBranchId}` : ''}`}
+                      className="text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
+                      aria-label={`View inventory for ${product.entity_name}`}
+                    >
+                      <span className="text-xs underline-offset-4 hover:underline">View</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </TableCell>
+
+                <TableCell>
                   <span className="font-semibold" style={{ color: COLORS.champagne }}>
                     {currency} {stockValue.toFixed(2)}
                   </span>
@@ -318,7 +411,7 @@ export function ProductList({
           {products.length === 0 && (
             <TableRow>
               <TableCell
-                colSpan={9}
+                colSpan={10}
                 className="h-32 text-center"
                 style={{ color: COLORS.lightText, opacity: 0.5 }}
               >
@@ -334,19 +427,24 @@ export function ProductList({
 
 function ProductCard({
   product,
+  organizationId,
   currency = 'AED',
+  settings,
   onEdit,
   onDelete,
   onArchive,
   onRestore
 }: {
   product: Product
+  organizationId: string
   currency?: string
+  settings?: any
   onEdit: (product: Product) => void
   onDelete: (product: Product) => void
   onArchive: (product: Product) => void
   onRestore: (product: Product) => void
 }) {
+  const { selectedBranchId } = useBranchFilter()
   const isArchived = product.status === 'archived'
   // Check for price in multiple locations (price_market, selling_price, price)
   const sellingPrice = product.price_market || product.selling_price || product.price || 0
@@ -355,50 +453,65 @@ function ProductCard({
   // Check for stock in multiple locations (stock_quantity, stock_level, qty_on_hand)
   const stockQty = product.stock_quantity || product.stock_level || product.qty_on_hand || 0
   const stockValue = sellingPrice * stockQty
+  const margin = sellingPrice > 0 ? (((sellingPrice - costPrice) / sellingPrice) * 100).toFixed(1) : '0'
 
   return (
     <div
       className={cn(
-        'relative p-6 rounded-xl transition-all duration-200',
+        'group relative p-5 rounded-xl overflow-hidden',
+        'transition-all duration-300 ease-out',
         'hover:shadow-xl hover:scale-[1.02]',
         isArchived && 'opacity-60'
       )}
       style={{
-        backgroundColor: COLORS.charcoalLight,
+        background: `linear-gradient(135deg, ${COLORS.charcoalLight}e8 0%, ${COLORS.charcoalDark}f0 100%)`,
+        backdropFilter: 'blur(10px)',
         border: `1px solid ${COLORS.bronze}20`,
-        boxShadow: `0 4px 12px rgba(0,0,0,0.2)`
+        boxShadow: `0 4px 16px rgba(0,0,0,0.2)`
       }}
     >
-      {/* Status Badge */}
-      {isArchived && (
-        <Badge
-          variant="secondary"
-          className="absolute top-2 right-2 text-xs"
-          style={{
-            backgroundColor: COLORS.bronze + '20',
-            color: COLORS.bronze
-          }}
-        >
-          Archived
-        </Badge>
-      )}
-
-      {/* Icon and Actions */}
-      <div className="flex items-start justify-between mb-4">
+      {/* Subtle hover gradient */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{
+          background: `linear-gradient(135deg, ${COLORS.gold}08 0%, transparent 100%)`
+        }}
+      />
+      {/* Header: Icon, Name, Actions */}
+      <div className="flex items-start gap-3 mb-4 relative z-10">
         <div
-          className="w-12 h-12 rounded-lg flex items-center justify-center"
+          className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
           style={{
-            backgroundColor: COLORS.gold + '20',
+            background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
             border: `1px solid ${COLORS.gold}40`
           }}
         >
-          <Package className="w-6 h-6" style={{ color: COLORS.gold }} />
+          <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-base mb-1 leading-tight truncate" style={{ color: COLORS.champagne }}>
+            {product.entity_name}
+          </h3>
+          {product.entity_code && (
+            <code
+              className="text-[9px] font-mono px-1.5 py-0.5 rounded inline-block truncate max-w-full"
+              style={{
+                backgroundColor: COLORS.bronze + '15',
+                color: COLORS.bronze,
+                border: `1px solid ${COLORS.bronze}30`
+              }}
+              title={product.entity_code}
+            >
+              {product.entity_code}
+            </code>
+          )}
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="p-1 rounded hover:bg-muted/50 transition-colors"
+              className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"
               style={{ color: COLORS.lightText }}
             >
               <MoreVertical className="h-4 w-4" />
@@ -416,9 +529,7 @@ function ProductCard({
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-
             <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-
             {isArchived ? (
               <DropdownMenuItem
                 onClick={() => onRestore(product)}
@@ -438,9 +549,7 @@ function ProductCard({
                 Archive
               </DropdownMenuItem>
             )}
-
             <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-
             <DropdownMenuItem
               onClick={() => onDelete(product)}
               className="hover:!bg-red-900/20 hover:!text-red-300"
@@ -453,84 +562,106 @@ function ProductCard({
         </DropdownMenu>
       </div>
 
-      {/* Product Name */}
-      <h3 className="font-semibold text-lg mb-2" style={{ color: COLORS.champagne }}>
-        {product.entity_name}
-      </h3>
+      {/* Status & Category Badges */}
+      <div className="flex gap-2 mb-3 relative z-10">
+        {isArchived && (
+          <Badge
+            variant="secondary"
+            className="text-[10px] font-medium"
+            style={{
+              backgroundColor: COLORS.bronze + '20',
+              color: COLORS.champagne,
+              border: `1px solid ${COLORS.bronze}40`
+            }}
+          >
+            Archived
+          </Badge>
+        )}
+        {product.category && (
+          <Badge
+            variant="secondary"
+            className="text-[10px] font-medium"
+            style={{
+              backgroundColor: '#10B981' + '20',
+              color: '#10B981',
+              border: `1px solid #10B98140`
+            }}
+          >
+            {product.category}
+          </Badge>
+        )}
+      </div>
 
-      {/* Category */}
-      {product.category && (
-        <Badge
-          variant="secondary"
-          className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+      {/* Metrics Grid - Cleaner, lighter design */}
+      <div className="grid grid-cols-3 gap-2.5 mb-3 relative z-10">
+        <div
+          className="p-2.5 rounded-lg"
+          style={{
+            backgroundColor: COLORS.gold + '08',
+            border: `1px solid ${COLORS.gold}20`
+          }}
         >
-          {product.category}
-        </Badge>
-      )}
-
-      {/* Pricing and Stock */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div>
-          <p className="text-xs" style={{ color: COLORS.lightText }}>
-            Cost Price
+          <p className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60" style={{ color: COLORS.gold }}>
+            Price
           </p>
-          <p className="font-semibold text-sm" style={{ color: COLORS.lightText }}>
-            {costPrice ? `${currency} ${costPrice.toFixed(2)}` : '-'}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs" style={{ color: COLORS.lightText }}>
-            Selling Price
-          </p>
-          <p className="font-semibold text-sm" style={{ color: COLORS.gold }}>
+          <p className="font-bold text-sm" style={{ color: COLORS.gold }}>
             {sellingPrice ? `${currency} ${sellingPrice.toFixed(2)}` : '-'}
           </p>
         </div>
-        <div>
-          <p className="text-xs" style={{ color: COLORS.lightText }}>
-            Stock
+
+        <div
+          className="p-2.5 rounded-lg"
+          style={{
+            backgroundColor: COLORS.bronze + '08',
+            border: `1px solid ${COLORS.bronze}20`
+          }}
+        >
+          <p className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60" style={{ color: COLORS.bronze }}>
+            Cost
           </p>
-          <p
-            className={cn(
-              'font-semibold text-sm',
-              stockQty < 10 ? 'text-red-400' : 'text-green-400'
-            )}
-          >
-            {stockQty}
+          <p className="font-bold text-sm" style={{ color: COLORS.champagne }}>
+            {costPrice ? `${currency} ${costPrice.toFixed(2)}` : '-'}
           </p>
         </div>
-        <div>
-          <p className="text-xs" style={{ color: COLORS.lightText }}>
+
+        <div
+          className="p-2.5 rounded-lg"
+          style={{
+            backgroundColor: COLORS.champagne + '08',
+            border: `1px solid ${COLORS.champagne}20`
+          }}
+        >
+          <p className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60" style={{ color: COLORS.champagne }}>
             Margin
           </p>
-          <p className="font-semibold text-sm" style={{ color: COLORS.champagne }}>
-            {(() => {
-              if (sellingPrice === 0) return '0%'
-              const margin = (((sellingPrice - costPrice) / sellingPrice) * 100).toFixed(1)
-              return `${margin}%`
-            })()}
+          <p className="font-bold text-sm" style={{ color: COLORS.champagne }}>
+            {margin}%
           </p>
         </div>
       </div>
 
-      {/* Total Value */}
-      <div
-        className="flex items-center justify-between pt-4 border-t"
-        style={{ borderColor: COLORS.bronze + '20' }}
-      >
-        <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.6 }}>
-          Total Value
-        </span>
-        <span className="font-semibold" style={{ color: COLORS.champagne }}>
-          {currency} {stockValue.toFixed(2)}
-        </span>
-      </div>
-
-      {/* Code */}
-      {product.entity_code && (
-        <p className="text-xs mt-2 font-mono" style={{ color: COLORS.bronze, opacity: 0.6 }}>
-          {product.entity_code}
-        </p>
+      {/* Inventory Section - Only show if inventory management is enabled */}
+      {shouldDisplayInventoryChip(settings, product) && (
+        <div className="flex items-center gap-2 relative z-10">
+          <div className="flex-1">
+            <InventoryChip
+              productId={product.id}
+              organizationId={organizationId}
+              showStatus={false}
+            />
+          </div>
+          <Link
+            href={`/salon/inventory?productId=${product.id}${selectedBranchId ? `&branchId=${selectedBranchId}` : ''}`}
+            className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{
+              color: COLORS.gold,
+              backgroundColor: COLORS.gold + '12',
+              border: `1px solid ${COLORS.gold}30`
+            }}
+          >
+            Manage
+          </Link>
+        </div>
       )}
     </div>
   )

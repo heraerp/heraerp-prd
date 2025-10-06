@@ -66,7 +66,7 @@ export default function EditAppointmentPage() {
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState('CONFIRMED')
 
-  // Check for demo session on mount
+  // Check for demo session on mount (for fallback only)
   useEffect(() => {
     const checkDemoSession = () => {
       const cookies = document.cookie.split(';').reduce(
@@ -89,11 +89,31 @@ export default function EditAppointmentPage() {
     checkDemoSession()
   }, [])
 
-  // Use demo org ID if available, otherwise use authenticated org
-  const organizationId =
-    demoOrganizationId ||
-    organization?.id ||
-    (sessionStorage.getItem('isDemoLogin') === 'true' ? DEFAULT_SALON_ORG_ID : null)
+  // Get effective organization ID with security priority
+  const getEffectiveOrgId = () => {
+    // PRIORITY 1: Always use authenticated JWT organization (multi-tenant security)
+    if (organization?.id) {
+      console.log('[Edit Page Auth] Using JWT organization:', organization.id)
+      return organization.id
+    }
+
+    // PRIORITY 2: Demo cookie only for demo/unauthenticated mode
+    if (demoOrganizationId) {
+      console.log('[Edit Page Auth] Using demo cookie organization:', demoOrganizationId)
+      return demoOrganizationId
+    }
+
+    // PRIORITY 3: SessionStorage as final fallback
+    if (sessionStorage.getItem('isDemoLogin') === 'true') {
+      console.log('[Edit Page Auth] Using default demo organization (sessionStorage fallback)')
+      return DEFAULT_SALON_ORG_ID
+    }
+
+    console.warn('[Edit Page Auth] No organization ID found')
+    return null
+  }
+
+  const organizationId = getEffectiveOrgId()
 
   // Load appointment details
   const loadAppointment = async () => {

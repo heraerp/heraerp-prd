@@ -81,22 +81,22 @@ export class HERAJWTService {
         source: 'user_metadata'
       })
 
-      // If not in metadata, try to resolve from core_entities user entity
+      // If not in metadata, follow USER_MEMBER_OF_ORG relationship (proper HERA architecture)
       if (!organizationId) {
         try {
-          const { data: userEntity } = await supabase
-            .from('core_entities')
-            .select('organization_id')
-            .eq('id', user.id)
-            .eq('entity_type', 'user')
-            .single()
+          const { data: relationship } = await supabase
+            .from('core_relationships')
+            .select('to_entity_id')
+            .eq('from_entity_id', user.id)
+            .eq('relationship_type', 'USER_MEMBER_OF_ORG')
+            .maybeSingle()
 
-          if (userEntity) {
-            organizationId = userEntity.organization_id
-            console.log('[JWT Service] Using user entity organization_id:', organizationId)
+          if (relationship) {
+            organizationId = relationship.to_entity_id
+            console.log('[JWT Service] Using USER_MEMBER_OF_ORG relationship:', organizationId)
           }
         } catch (err) {
-          console.warn('[JWT Service] Failed to fetch from core_entities:', err)
+          console.warn('[JWT Service] Failed to fetch relationship:', err)
         }
       }
 

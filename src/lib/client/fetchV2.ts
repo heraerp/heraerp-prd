@@ -2,9 +2,32 @@
 // Ensures all client requests use v2 endpoints with proper headers
 
 /**
+ * Get auth headers with Supabase token (browser only)
+ */
+async function getAuthHeaders(): Promise<HeadersInit> {
+  if (typeof window === 'undefined') return {}
+
+  try {
+    const { supabase } = await import('@/lib/supabase/client')
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (session?.access_token) {
+      return {
+        Authorization: `Bearer ${session.access_token}`
+      }
+    }
+  } catch (error) {
+    console.warn('[fetchV2] Failed to get auth token:', error)
+  }
+
+  return {}
+}
+
+/**
  * Fetch wrapper that enforces v2 API usage
  * - Automatically prefixes URLs with /api/v2/
  * - Adds required x-hera-api-version header
+ * - Automatically includes Supabase auth token
  * - Ensures apiVersion: 'v2' is in the body
  */
 export async function fetchV2(input: string, init: RequestInit = {}): Promise<Response> {
@@ -19,9 +42,17 @@ export async function fetchV2(input: string, init: RequestInit = {}): Promise<Re
     url = `/api/v2/${input.replace(/^\//, '')}`
   }
 
+  // Get auth headers
+  const authHeaders = await getAuthHeaders()
+
   // Setup headers
   const headers = new Headers(init.headers ?? {})
   headers.set('x-hera-api-version', 'v2')
+
+  // Add auth headers
+  Object.entries(authHeaders).forEach(([key, value]) => {
+    headers.set(key, value)
+  })
 
   // Set content-type if body exists
   if (init.body && !headers.has('content-type')) {
@@ -42,9 +73,14 @@ export async function fetchV2(input: string, init: RequestInit = {}): Promise<Re
   }
 
   // Make the request
+  // Use relative URLs in browser (automatically uses current origin)
+  // Only use absolute URLs on server-side or when URL is already absolute
   const fullUrl = url.startsWith('http')
     ? url
-    : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}${url}`
+    : typeof window !== 'undefined'
+    ? url // Browser: use relative URL (same origin)
+    : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}${url}` // Server: need absolute URL
+
   console.log(`[fetchV2] Making request to: ${fullUrl}`)
 
   const response = await fetch(fullUrl, {

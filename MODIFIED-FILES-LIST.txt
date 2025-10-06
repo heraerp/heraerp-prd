@@ -1,0 +1,99 @@
+=================================================================
+ENTITY TYPE FIX - MODIFIED FILES LIST
+=================================================================
+Date: October 6, 2025
+Total Files Modified: 24 files
+
+=================================================================
+CRITICAL CHANGES (Must Restore These)
+=================================================================
+
+1. src/hooks/useUniversalEntity.ts
+   - Added normalizeEntityType() function
+   - Automatic uppercase enforcement for all entity_type values
+
+2. src/hooks/useHeraAppointments.ts
+   - Changed customer fetch to uppercase 'CUSTOMER'
+   - Added dual-fetch for staff (uppercase + lowercase)
+   - Fixed loading states to wait for both fetches
+   - Updated enrichment logic
+
+=================================================================
+MODIFIED FILES (From git status)
+=================================================================
+
+M  src/app/api/v2/entities/route.ts
+M  src/app/salon/appointments/new/page.tsx
+M  src/app/salon/appointments/page.tsx
+M  src/app/salon/inventory/page.tsx
+M  src/components/salon/SalonRoleBasedDarkSidebar.tsx
+M  src/hooks/useHeraAppointments.ts           ⭐ CRITICAL
+M  src/hooks/useHeraProducts.ts
+M  src/hooks/useUniversalEntity.ts            ⭐ CRITICAL
+M  src/lib/appointments/createDraftAppointment.ts
+M  src/lib/appointments/upsertAppointmentLines.ts
+M  src/lib/universal-api-v2-client.ts
+M  src/types/hera-database.types.ts
+
+=================================================================
+NEW FILES CREATED (Keep These)
+=================================================================
+
+Documentation:
+  ENTITY-TYPE-FIX-SUMMARY.md
+  ENTITY-TYPE-QUICK-START.md
+  ENTITY-TYPE-STANDARDIZATION.md
+  NORMALIZED-VS-DENORMALIZED-DATA.md
+  RESTORE-ENTITY-TYPE-FIX.md              ⭐ RESTORATION GUIDE
+  ENTITY-TYPE-FIX.patch                   ⭐ BACKUP PATCH
+
+Migration Scripts:
+  database/migrations/20251006_standardize_entity_types_uppercase.sql
+  scripts/check-customer-entity.js
+  scripts/fix-organization-entity-types.js
+  scripts/migrate-entity-types-uppercase.js
+
+Other:
+  check-today-appointments.js
+  docs/ENTERPRISE-INVENTORY-SYSTEM.md
+  src/app/salon/customers/page.tsx.backup
+  src/components/salon/inventory/StockTransferDialog.tsx
+  src/components/salon/products/BranchStockManager.tsx
+  src/hooks/useHeraInventory.ts
+  src/lib/services/inventory-service.ts
+  src/types/inventory.ts
+
+=================================================================
+RESTORATION STEPS
+=================================================================
+
+After pulling from main:
+
+1. Apply the patch:
+   git apply ENTITY-TYPE-FIX.patch
+
+   OR
+
+2. Restore from stash:
+   git stash pop
+
+3. If conflicts, refer to:
+   RESTORE-ENTITY-TYPE-FIX.md (detailed manual restoration guide)
+
+4. Verify critical changes:
+   - Check normalizeEntityType() in useUniversalEntity.ts
+   - Check dual-fetch in useHeraAppointments.ts
+   - Test appointments page for customer/staff names
+
+=================================================================
+BACKUP VERIFICATION
+=================================================================
+
+✅ Patch file created: ENTITY-TYPE-FIX.patch (4377 lines)
+✅ Restoration guide: RESTORE-ENTITY-TYPE-FIX.md
+✅ Change summary: ENTITY-TYPE-FIX-SUMMARY.md
+✅ Modified files list: This file
+
+Safe to stash and pull from main! 🚀
+
+=================================================================

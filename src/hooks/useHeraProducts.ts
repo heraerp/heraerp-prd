@@ -13,7 +13,7 @@
 import { useMemo } from 'react'
 import { useUniversalEntity } from './useUniversalEntity'
 import { PRODUCT_PRESET } from './entityPresets'
-import type { DynamicFieldDef } from './useUniversalEntity'
+import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
 
 export interface Product {
   id: string
@@ -83,7 +83,8 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       ...(options?.includeArchived ? {} : { status: 'active' }),
       ...options?.filters
     },
-    dynamicFields: PRODUCT_PRESET.dynamicFields as DynamicFieldDef[]
+    dynamicFields: PRODUCT_PRESET.dynamicFields as DynamicFieldDef[],
+    relationships: PRODUCT_PRESET.relationships as RelationshipDef[]
   })
 
   // Helper to create product with proper smart codes
@@ -327,11 +328,25 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
 
     let filtered = products as Product[]
 
+    console.log('[useHeraProducts] Filtering products:', {
+      total: filtered.length,
+      branch_id: options?.filters?.branch_id,
+      sample_product_relationships: filtered[0] ? (filtered[0] as any).relationships : 'no products'
+    })
+
     // Filter by STOCK_AT branch relationship (when branch is selected, not "All Locations")
     if (options?.filters?.branch_id && options.filters.branch_id !== 'all') {
       filtered = filtered.filter(p => {
         // Check if product has STOCK_AT relationship with the specified branch
         const stockAtRelationships = (p as any).relationships?.stock_at || (p as any).relationships?.STOCK_AT
+
+        console.log('[useHeraProducts] Product filter check:', {
+          product: p.entity_name,
+          has_relationships: !!(p as any).relationships,
+          stockAtRelationships,
+          branch_id_filter: options.filters?.branch_id
+        })
+
         if (!stockAtRelationships) return false
 
         // Handle both array and single relationship formats
@@ -341,6 +356,8 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
           return stockAtRelationships.to_entity?.id === options.filters?.branch_id
         }
       })
+
+      console.log('[useHeraProducts] After branch filter:', filtered.length)
     }
 
     // Search filter

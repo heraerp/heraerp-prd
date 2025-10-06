@@ -101,10 +101,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
       category: '',
       cost_price: undefined,
       selling_price: undefined,
-      stock_level: undefined,
-      reorder_level: undefined,
       description: '',
-      requires_inventory: false,
       branch_ids: [] // Branch selection support
     }
   })
@@ -132,11 +129,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
         // Check both field name conventions: price_cost (storage) and cost_price (UI)
         cost_price: product.price_cost || product.cost_price || undefined,
         selling_price: product.price_market || product.selling_price || product.price || undefined,
-        stock_level:
-          product.stock_quantity || product.stock_level || product.qty_on_hand || undefined,
-        reorder_level: product.reorder_level || undefined,
         description: product.description || '',
-        requires_inventory: product.requires_inventory || false,
         branch_ids: branchIds // Set branch IDs from relationships
       })
     } else {
@@ -146,10 +139,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
         category: '',
         cost_price: undefined,
         selling_price: undefined,
-        stock_level: undefined,
-        reorder_level: undefined,
         description: '',
-        requires_inventory: false,
         branch_ids: [] // Empty array for new products
       })
     }
@@ -179,11 +169,6 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
 
   // Check for negative margin (cost > selling)
   const hasNegativeMargin = costPrice && sellingPrice && costPrice > sellingPrice
-
-  const stockLevel = form.watch('stock_level')
-  const reorderLevel = form.watch('reorder_level')
-  const needsReorder =
-    stockLevel !== undefined && reorderLevel !== undefined && stockLevel <= reorderLevel
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -248,8 +233,8 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                   </DialogTitle>
                   <p className="text-sm" style={{ color: COLORS.lightText, opacity: 0.8 }}>
                     {product
-                      ? 'Update product details, pricing and inventory'
-                      : 'Add a premium product with complete financial tracking'}
+                      ? 'Update product details, pricing and branch availability'
+                      : 'Add a premium product with pricing and branch availability'}
                   </p>
                 </div>
               </div>
@@ -609,203 +594,6 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                   </div>
                 </div>
               )}
-
-              {/* Inventory Management Section */}
-              <div
-                className="relative p-6 rounded-xl border backdrop-blur-sm"
-                style={{
-                  backgroundColor: COLORS.charcoalDark + 'E6',
-                  borderColor: needsReorder ? '#ef4444' + '40' : COLORS.bronze + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
-                }}
-              >
-                {/* Section Header with Icon */}
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-1 h-6 rounded-full"
-                      style={{ backgroundColor: needsReorder ? '#ef4444' : COLORS.gold }}
-                    />
-                    <h3
-                      className="text-lg font-semibold tracking-wide"
-                      style={{ color: COLORS.champagne }}
-                    >
-                      Inventory Management
-                    </h3>
-                  </div>
-                  {needsReorder && (
-                    <div
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg animate-pulse"
-                      style={{
-                        backgroundColor: '#ef444420',
-                        border: '1px solid #ef444440'
-                      }}
-                    >
-                      <AlertCircle className="w-4 h-4" style={{ color: '#ef4444' }} />
-                      <span className="text-sm font-semibold" style={{ color: '#ef4444' }}>
-                        Low Stock Alert
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-5">
-                  <FormField
-                    control={form.control}
-                    name="stock_level"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel
-                          className="text-sm font-medium tracking-wide flex items-center gap-2"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          <Box className="w-4 h-4" style={{ color: COLORS.gold }} />
-                          Current Stock Level
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              type="number"
-                              placeholder="0"
-                              className="h-12 rounded-lg pr-16 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                              style={
-                                {
-                                  backgroundColor: COLORS.charcoalLight + '80',
-                                  borderColor: needsReorder ? '#ef444440' : COLORS.bronze + '40',
-                                  color: COLORS.champagne,
-                                  '--tw-ring-color': COLORS.gold + '60'
-                                } as React.CSSProperties
-                              }
-                              onChange={e => {
-                                const value = e.target.value
-                                field.onChange(value === '' ? undefined : parseInt(value))
-                              }}
-                              value={field.value ?? ''}
-                            />
-                            <span
-                              className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium"
-                              style={{ color: COLORS.bronze }}
-                            >
-                              units
-                            </span>
-                          </div>
-                        </FormControl>
-                        <FormDescription
-                          className="text-xs"
-                          style={{ color: COLORS.bronze, opacity: 0.7 }}
-                        >
-                          Available inventory quantity
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="reorder_level"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel
-                          className="text-sm font-medium tracking-wide flex items-center gap-2"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          <BarChart3 className="w-4 h-4" style={{ color: COLORS.bronze }} />
-                          Reorder Level
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              type="number"
-                              placeholder="0"
-                              className="h-12 rounded-lg pr-16 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                              style={
-                                {
-                                  backgroundColor: COLORS.charcoalLight + '80',
-                                  borderColor: COLORS.bronze + '40',
-                                  color: COLORS.champagne,
-                                  '--tw-ring-color': COLORS.gold + '60'
-                                } as React.CSSProperties
-                              }
-                              onChange={e => {
-                                const value = e.target.value
-                                field.onChange(value === '' ? undefined : parseInt(value))
-                              }}
-                              value={field.value ?? ''}
-                            />
-                            <span
-                              className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium"
-                              style={{ color: COLORS.bronze }}
-                            >
-                              units
-                            </span>
-                          </div>
-                        </FormControl>
-                        <FormDescription
-                          className="text-xs"
-                          style={{ color: COLORS.bronze, opacity: 0.7 }}
-                        >
-                          Minimum stock before reorder
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="mt-6">
-                  <FormField
-                    control={form.control}
-                    name="requires_inventory"
-                    render={({ field }) => (
-                      <FormItem
-                        className="flex flex-row items-center justify-between rounded-xl border p-5"
-                        style={{
-                          backgroundColor: COLORS.charcoalLight + '50',
-                          borderColor: COLORS.bronze + '40'
-                        }}
-                      >
-                        <div className="flex items-center gap-3 flex-1">
-                          <div
-                            className="w-10 h-10 rounded-lg flex items-center justify-center"
-                            style={{
-                              backgroundColor: COLORS.gold + '20',
-                              border: `1px solid ${COLORS.gold}40`
-                            }}
-                          >
-                            <Box className="w-5 h-5" style={{ color: COLORS.gold }} />
-                          </div>
-                          <div className="space-y-0.5">
-                            <FormLabel
-                              className="text-sm font-semibold cursor-pointer"
-                              style={{ color: COLORS.champagne }}
-                            >
-                              Track Inventory
-                            </FormLabel>
-                            <p
-                              className="text-xs"
-                              style={{ color: COLORS.lightText, opacity: 0.7 }}
-                            >
-                              Enable stock tracking and low stock alerts
-                            </p>
-                          </div>
-                        </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            style={{
-                              backgroundColor: field.value ? COLORS.gold : COLORS.bronze + '40'
-                            }}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
 
               {/* Branch Availability Section */}
               <div

@@ -19,7 +19,9 @@ import {
   Key,
   Loader2,
   Save,
-  RefreshCw
+  RefreshCw,
+  Package,
+  ArrowRight
 } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 
@@ -100,7 +102,7 @@ export default function SalonSettingsPage() {
                     <div>
                       <Label style={{ color: LUXE_COLORS.bronze }}>Salon Name</Label>
                       <Input
-                        value="HairTalkz"
+                        defaultValue="HairTalkz"
                         style={{
                           backgroundColor: LUXE_COLORS.charcoal,
                           border: `1px solid ${LUXE_COLORS.bronze}30`,
@@ -111,7 +113,7 @@ export default function SalonSettingsPage() {
                     <div>
                       <Label style={{ color: LUXE_COLORS.bronze }}>Phone Number</Label>
                       <Input
-                        value="+971 4 123 4567"
+                        defaultValue="+971 4 123 4567"
                         style={{
                           backgroundColor: LUXE_COLORS.charcoal,
                           border: `1px solid ${LUXE_COLORS.bronze}30`,
@@ -123,7 +125,7 @@ export default function SalonSettingsPage() {
                   <div>
                     <Label style={{ color: LUXE_COLORS.bronze }}>Address</Label>
                     <Input
-                      value="123 Sheikh Zayed Road, Dubai, UAE"
+                      defaultValue="123 Sheikh Zayed Road, Dubai, UAE"
                       style={{
                         backgroundColor: LUXE_COLORS.charcoal,
                         border: `1px solid ${LUXE_COLORS.bronze}30`,
@@ -173,6 +175,46 @@ export default function SalonSettingsPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Inventory Settings */}
+              <Card
+                className="border-0"
+                style={{
+                  backgroundColor: LUXE_COLORS.charcoalLight,
+                  border: `1px solid ${LUXE_COLORS.bronze}30`
+                }}
+              >
+                <CardHeader>
+                  <CardTitle style={{ color: LUXE_COLORS.gold }}>
+                    <div className="flex items-center gap-2">
+                      <Package className="w-5 h-5" />
+                      Inventory Management
+                    </div>
+                  </CardTitle>
+                  <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                    Configure inventory tracking and stock management settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p style={{ color: LUXE_COLORS.champagne }}>
+                        Enable inventory tracking, manage stock levels, and configure branch-specific inventory settings.
+                      </p>
+                      <p className="text-sm mt-2" style={{ color: LUXE_COLORS.bronze }}>
+                        Control which products require inventory tracking and set organization-wide defaults.
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => (window.location.href = '/salon/settings/inventory')}
+                      style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}
+                    >
+                      Configure
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -284,7 +326,7 @@ export default function SalonSettingsPage() {
                     <Label style={{ color: LUXE_COLORS.champagne }}>Minimum password length</Label>
                     <Input
                       type="number"
-                      value="8"
+                      defaultValue="8"
                       className="w-20"
                       style={{
                         backgroundColor: LUXE_COLORS.charcoal,
@@ -333,7 +375,7 @@ export default function SalonSettingsPage() {
                     </Label>
                     <Input
                       type="number"
-                      value="30"
+                      defaultValue="30"
                       className="w-20"
                       style={{
                         backgroundColor: LUXE_COLORS.charcoal,
@@ -378,7 +420,7 @@ export default function SalonSettingsPage() {
                   <Label style={{ color: LUXE_COLORS.bronze }}>API Key</Label>
                   <div className="flex gap-2 mt-2">
                     <Input
-                      value="sk_live_****************************"
+                      defaultValue="sk_live_****************************"
                       readOnly
                       style={{
                         backgroundColor: LUXE_COLORS.charcoal,

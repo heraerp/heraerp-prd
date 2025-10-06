@@ -23,7 +23,7 @@ import { supabase } from '@/lib/supabase/client'
 import { dbContext } from '@/lib/security/database-context'
 import { createSecurityContextFromAuth } from '@/lib/security/user-entity-resolver'
 import type { SecurityContext } from '@/lib/security/database-context'
-import { HAIRTALKZ_ORG_ID, getSalonOrgId, LUXE_COLORS } from '@/lib/constants/salon'
+import { LUXE_COLORS } from '@/lib/constants/salon'
 import { Loader2, Shield, AlertTriangle, Clock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
@@ -130,44 +130,24 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   })
   const [availableBranches, setAvailableBranches] = useState<Branch[]>([])
 
-  // Initialize context from store if available
+  // Initialize context - ALWAYS start with loading state to force JWT validation
+  // This ensures we never use cached org ID that doesn't match JWT
   const [context, setContext] = useState<SalonSecurityContext>(() => {
-    if (securityStore.isInitialized && !securityStore.shouldReinitialize()) {
-      console.log('🚀 Using cached security context')
-      const orgId = securityStore.organizationId || HAIRTALKZ_ORG_ID
-      return {
-        orgId: orgId,
-        organizationId: orgId, // Add organizationId alias for compatibility
-        userId: securityStore.userId || '',
-        role: 'user',
-        salonRole: (securityStore.salonRole as any) || 'stylist',
-        authMode: 'supabase',
-        permissions: securityStore.permissions || [],
-        organization: securityStore.organization || {
-          id: orgId,
-          name: 'HairTalkz'
-        },
-        user: securityStore.user,
-        isLoading: false, // Already initialized
-        isAuthenticated: true,
-        selectedBranchId: null,
-        selectedBranch: null,
-        availableBranches: [],
-        setSelectedBranchId: () => {}
-      }
-    }
+    // ⚠️ SECURITY: Always validate JWT on mount, even if cache exists
+    // This prevents using stale/wrong organization ID from cache
+    console.log('🔐 Starting with loading state - JWT validation required')
 
     return {
-      orgId: HAIRTALKZ_ORG_ID,
-      organizationId: HAIRTALKZ_ORG_ID, // Add organizationId alias for compatibility
+      orgId: '', // Empty until JWT validation completes
+      organizationId: '', // Empty until JWT validation completes
       userId: '',
       role: 'user',
       salonRole: 'stylist',
       authMode: 'supabase',
       permissions: [],
-      organization: { id: HAIRTALKZ_ORG_ID, name: 'HairTalkz' },
+      organization: { id: '', name: '' }, // Empty until JWT validation
       user: null,
-      isLoading: true,
+      isLoading: true, // 🔒 ALWAYS start with loading to force JWT validation
       isAuthenticated: false,
       selectedBranchId: null,
       selectedBranch: null,
@@ -301,6 +281,29 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       const securityContext = contextResolution.securityContext
 
       console.log('✅ Using organization from user auth:', securityContext.orgId)
+
+      // 🔒 SECURITY: Clear all caches if org ID doesn't match JWT
+      const cachedOrgId = localStorage.getItem('organizationId')
+      const storeOrgId = securityStore.organizationId
+
+      if ((cachedOrgId && cachedOrgId !== securityContext.orgId) ||
+          (storeOrgId && storeOrgId !== securityContext.orgId)) {
+        console.warn('🚨 Cached organization ID mismatch - clearing ALL stale caches')
+        console.warn(`   localStorage: ${cachedOrgId}`)
+        console.warn(`   Zustand store: ${storeOrgId}`)
+        console.warn(`   JWT (correct): ${securityContext.orgId}`)
+
+        // Clear localStorage
+        localStorage.removeItem('organizationId')
+        localStorage.removeItem('salonRole')
+        localStorage.removeItem('userPermissions')
+        localStorage.removeItem('selectedBranchId')
+
+        // Clear Zustand persisted store
+        securityStore.clearState()
+
+        console.log('✅ All caches cleared - using JWT organization ID')
+      }
 
       // Get salon-specific role and permissions
       const salonRole = await getSalonRole(securityContext)
@@ -467,14 +470,10 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    */
   const loadOrganizationDetails = async (orgId: string) => {
     try {
-      // Validate organization ID format
+      // Validate organization ID format - must be valid UUID from JWT
       if (!orgId || orgId === 'undefined' || orgId.length !== 36) {
-        console.warn('🚨 Invalid organization ID format:', orgId)
-        return {
-          id: HAIRTALKZ_ORG_ID,
-          name: 'HairTalkz',
-          settings: {}
-        }
+        console.error('🚨 Invalid organization ID - JWT validation failed:', orgId)
+        throw new Error('Invalid organization ID from JWT token')
       }
 
       return await dbContext.executeWithContext(
@@ -558,7 +557,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const clearContext = () => {
     setContext(prev => ({
       ...prev,
-      organizationId: HAIRTALKZ_ORG_ID,
+      orgId: '', // Clear organization ID - requires re-authentication
+      organizationId: '', // Clear organization ID - requires re-authentication
       userId: '',
       role: 'user',
       salonRole: 'stylist',

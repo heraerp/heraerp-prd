@@ -1,0 +1,580 @@
+/**
+ * HERA Appointments Hook
+ *
+ * Thin wrapper over useUniversalEntity for appointment management
+ * Provides appointment-specific helpers and RPC integration
+ */
+
+import { useMemo, useState, useEffect } from 'react'
+import { useUniversalEntity } from './useUniversalEntity'
+import { APPOINTMENT_PRESET } from './entityPresets'
+import type { DynamicFieldDef } from './useUniversalEntity'
+
+export interface Appointment {
+  id: string
+  entity_name: string
+  entity_code?: string
+  smart_code: string
+  status: string
+  entity_description?: string
+  metadata?: any
+  // Flattened dynamic fields
+  customer_id?: string
+  customer_name?: string
+  stylist_id?: string
+  stylist_name?: string
+  service_ids?: string[]
+  start_time?: string
+  end_time?: string
+  duration_minutes?: number
+  price?: number
+  currency_code?: string
+  notes?: string
+  branch_id?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface AppointmentFormValues {
+  customer_id: string
+  customer_name?: string
+  stylist_id?: string
+  stylist_name?: string
+  service_ids?: string[]
+  start_time: string
+  end_time?: string
+  duration_minutes?: number
+  price?: number
+  currency_code?: string
+  notes?: string
+  branch_id?: string
+  status?: string
+}
+
+export interface UseHeraAppointmentsOptions {
+  organizationId?: string
+  includeArchived?: boolean
+  userRole?: string
+  filters?: {
+    include_dynamic?: boolean
+    include_relationships?: boolean
+    limit?: number
+    offset?: number
+    status?: string
+    search?: string
+    branch_id?: string
+    date_from?: string
+    date_to?: string
+  }
+}
+
+export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
+  // Fetch appointments
+  const {
+    entities: appointments,
+    isLoading,
+    error,
+    refetch,
+    create: baseCreate,
+    update: baseUpdate,
+    delete: baseDelete,
+    archive: baseArchive,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useUniversalEntity({
+    entity_type: 'appointment',
+    organizationId: options?.organizationId,
+    filters: {
+      include_dynamic: true,
+      include_relationships: false,
+      limit: 100,
+      // Get all appointments - we'll filter by status client-side since RPC doesn't support comma-separated values
+      status: null,
+      ...options?.filters
+    },
+    dynamicFields: APPOINTMENT_PRESET.dynamicFields as DynamicFieldDef[]
+  })
+
+  // ENTERPRISE PATTERN: Normalized Data - Fetch customers separately
+  // IMPORTANT: Use uppercase entity_type to match useHeraCustomers/useHeraStaff convention
+  const { entities: customers, isLoading: customersLoading } = useUniversalEntity({
+    entity_type: 'CUSTOMER', // ✅ Uppercase matches normalized standard
+    organizationId: options?.organizationId,
+    filters: {
+      include_dynamic: false, // We only need entity names, not full details
+      limit: 1000 // Reasonable limit for customers
+    }
+  })
+
+  // ENTERPRISE PATTERN: Normalized Data - Fetch staff separately
+  // NOTE: useUniversalEntity normalizes to uppercase, so this will query for 'STAFF'
+  const { entities: staff, isLoading: staffLoading } = useUniversalEntity({
+    entity_type: 'STAFF', // ✅ Normalized to uppercase
+    organizationId: options?.organizationId,
+    filters: {
+      include_dynamic: false,
+      limit: 500
+    }
+  })
+
+  // BACKWARD COMPATIBILITY: Direct fetch for lowercase 'staff' (bypasses normalization)
+  // This is a workaround for staff entities that couldn't be updated due to constraints
+  const [staffLegacy, setStaffLegacy] = useState<any[]>([])
+  const [staffLegacyLoading, setStaffLegacyLoading] = useState(true)
+
+  useEffect(() => {
+    if (!options?.organizationId) return
+
+    const fetchLegacyStaff = async () => {
+      try {
+        const response = await fetch('/api/v2/entities?' + new URLSearchParams({
+          organization_id: options.organizationId!,
+          entity_type: 'staff', // ⚠️ Lowercase query (bypasses normalization)
+          include_dynamic: 'false',
+          limit: '500'
+        }), {
+          headers: {
+            'x-hera-api-version': 'v2'
+          }
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          setStaffLegacy(result.data || [])
+        }
+      } catch (error) {
+        console.log('[useHeraAppointments] Legacy staff fetch failed:', error)
+      } finally {
+        setStaffLegacyLoading(false)
+      }
+    }
+
+    fetchLegacyStaff()
+  }, [options?.organizationId])
+
+  // Merge normalized STAFF and legacy staff
+  const allStaff = useMemo(() => {
+    const merged = [
+      ...(staff || []),
+      ...(staffLegacy || [])
+    ]
+    console.log('[useHeraAppointments] Staff merge:', {
+      staff: staff?.length || 0,
+      staffLegacy: staffLegacy.length,
+      merged: merged.length
+    })
+    return merged
+  }, [staff, staffLegacy])
+
+  const allStaffLoading = staffLoading || staffLegacyLoading
+
+  // Create lookup maps for O(1) access (enterprise performance pattern)
+  const customerMap = useMemo(() => {
+    if (!customers) return new Map<string, string>()
+    const map = new Map(
+      customers.map(c => [c.id, c.entity_name])
+    )
+    console.log('[useHeraAppointments] Customer map created:', {
+      totalCustomers: customers.length,
+      sampleCustomers: Array.from(map.entries()).slice(0, 3)
+    })
+    return map
+  }, [customers])
+
+  const staffMap = useMemo(() => {
+    if (!allStaff || allStaff.length === 0) return new Map<string, string>()
+    const map = new Map(
+      allStaff.map(s => [s.id, s.entity_name])
+    )
+    console.log('[useHeraAppointments] Staff map created:', {
+      totalStaff: allStaff.length,
+      sampleStaff: Array.from(map.entries()).slice(0, 3)
+    })
+    return map
+  }, [allStaff])
+
+  // Helper to create appointment with proper smart codes
+  const createAppointment = async (data: AppointmentFormValues) => {
+    // Build entity_name from customer and time
+    const startDate = new Date(data.start_time)
+    const entity_name = `${data.customer_name || 'Customer'} - ${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+
+    // Build dynamic_fields payload
+    const dynamic_fields: Record<string, any> = {}
+
+    if (data.customer_id) {
+      dynamic_fields.customer_id = {
+        value: data.customer_id,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_ID.V1'
+      }
+    }
+
+    if (data.customer_name) {
+      dynamic_fields.customer_name = {
+        value: data.customer_name,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_NAME.V1'
+      }
+    }
+
+    if (data.stylist_id) {
+      dynamic_fields.stylist_id = {
+        value: data.stylist_id,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_ID.V1'
+      }
+    }
+
+    if (data.stylist_name) {
+      dynamic_fields.stylist_name = {
+        value: data.stylist_name,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_NAME.V1'
+      }
+    }
+
+    if (data.service_ids && data.service_ids.length > 0) {
+      dynamic_fields.service_ids = {
+        value: data.service_ids,
+        type: 'json',
+        smart_code: 'HERA.SALON.APPT.FIELD.SERVICE_IDS.V1'
+      }
+    }
+
+    if (data.start_time) {
+      dynamic_fields.start_time = {
+        value: data.start_time,
+        type: 'datetime',
+        smart_code: 'HERA.SALON.APPT.FIELD.START_TIME.V1'
+      }
+    }
+
+    if (data.end_time) {
+      dynamic_fields.end_time = {
+        value: data.end_time,
+        type: 'datetime',
+        smart_code: 'HERA.SALON.APPT.FIELD.END_TIME.V1'
+      }
+    }
+
+    if (data.duration_minutes !== undefined) {
+      dynamic_fields.duration_minutes = {
+        value: data.duration_minutes,
+        type: 'number',
+        smart_code: 'HERA.SALON.APPT.FIELD.DURATION.V1'
+      }
+    }
+
+    if (data.price !== undefined) {
+      dynamic_fields.price = {
+        value: data.price,
+        type: 'number',
+        smart_code: 'HERA.SALON.APPT.FIELD.PRICE.V1'
+      }
+    }
+
+    if (data.currency_code) {
+      dynamic_fields.currency_code = {
+        value: data.currency_code,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.CURRENCY.V1'
+      }
+    }
+
+    if (data.notes) {
+      dynamic_fields.notes = {
+        value: data.notes,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.NOTES.V1'
+      }
+    }
+
+    if (data.branch_id) {
+      dynamic_fields.branch_id = {
+        value: data.branch_id,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.BRANCH_ID.V1'
+      }
+    }
+
+    const result = await baseCreate({
+      entity_name,
+      entity_code: `APPT-${Date.now()}`,
+      smart_code: 'HERA.SALON.APPT.ENT.V1',
+      status: data.status || 'booked',
+      entity_description: data.notes,
+      dynamic_fields
+    })
+
+    await refetch()
+    return result
+  }
+
+  // Helper to update appointment
+  const updateAppointment = async (id: string, data: Partial<AppointmentFormValues>) => {
+    // Find the appointment to get current data
+    const appointment = (appointments as Appointment[])?.find(a => a.id === id)
+    if (!appointment) throw new Error('Appointment not found')
+
+    // Build dynamic_fields payload (only include changed fields)
+    const dynamic_fields: Record<string, any> = {}
+
+    if (data.customer_id !== undefined) {
+      dynamic_fields.customer_id = {
+        value: data.customer_id,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_ID.V1'
+      }
+    }
+
+    if (data.customer_name !== undefined) {
+      dynamic_fields.customer_name = {
+        value: data.customer_name,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_NAME.V1'
+      }
+    }
+
+    if (data.stylist_id !== undefined) {
+      dynamic_fields.stylist_id = {
+        value: data.stylist_id,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_ID.V1'
+      }
+    }
+
+    if (data.stylist_name !== undefined) {
+      dynamic_fields.stylist_name = {
+        value: data.stylist_name,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_NAME.V1'
+      }
+    }
+
+    if (data.service_ids !== undefined) {
+      dynamic_fields.service_ids = {
+        value: data.service_ids,
+        type: 'json',
+        smart_code: 'HERA.SALON.APPT.FIELD.SERVICE_IDS.V1'
+      }
+    }
+
+    if (data.start_time !== undefined) {
+      dynamic_fields.start_time = {
+        value: data.start_time,
+        type: 'datetime',
+        smart_code: 'HERA.SALON.APPT.FIELD.START_TIME.V1'
+      }
+    }
+
+    if (data.end_time !== undefined) {
+      dynamic_fields.end_time = {
+        value: data.end_time,
+        type: 'datetime',
+        smart_code: 'HERA.SALON.APPT.FIELD.END_TIME.V1'
+      }
+    }
+
+    if (data.duration_minutes !== undefined) {
+      dynamic_fields.duration_minutes = {
+        value: data.duration_minutes,
+        type: 'number',
+        smart_code: 'HERA.SALON.APPT.FIELD.DURATION.V1'
+      }
+    }
+
+    if (data.price !== undefined) {
+      dynamic_fields.price = {
+        value: data.price,
+        type: 'number',
+        smart_code: 'HERA.SALON.APPT.FIELD.PRICE.V1'
+      }
+    }
+
+    if (data.currency_code !== undefined) {
+      dynamic_fields.currency_code = {
+        value: data.currency_code,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.CURRENCY.V1'
+      }
+    }
+
+    if (data.notes !== undefined) {
+      dynamic_fields.notes = {
+        value: data.notes,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.NOTES.V1'
+      }
+    }
+
+    if (data.branch_id !== undefined) {
+      dynamic_fields.branch_id = {
+        value: data.branch_id,
+        type: 'text',
+        smart_code: 'HERA.SALON.APPT.FIELD.BRANCH_ID.V1'
+      }
+    }
+
+    // Update entity name if time changed
+    let entity_name = appointment.entity_name
+    if (data.start_time || data.customer_name) {
+      const startDate = new Date(data.start_time || appointment.start_time || new Date())
+      entity_name = `${data.customer_name || appointment.customer_name || 'Customer'} - ${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    }
+
+    const result = await baseUpdate({
+      entity_id: id,
+      entity_name,
+      status: data.status,
+      entity_description: data.notes,
+      dynamic_fields: Object.keys(dynamic_fields).length > 0 ? dynamic_fields : undefined
+    })
+
+    await refetch()
+    return result
+  }
+
+  // Helper to archive appointment
+  const archiveAppointment = async (id: string) => {
+    const result = await baseArchive({ entity_id: id })
+    await refetch()
+    return result
+  }
+
+  // Helper to delete appointment (hard delete)
+  const deleteAppointment = async (id: string, hardDelete = false) => {
+    if (!hardDelete) {
+      return await archiveAppointment(id)
+    }
+    const result = await baseDelete({ entity_id: id, hard_delete: true })
+    await refetch()
+    return result
+  }
+
+  // Helper to restore archived appointment
+  const restoreAppointment = async (id: string) => {
+    const appointment = (appointments as Appointment[])?.find(a => a.id === id)
+    if (!appointment) throw new Error('Appointment not found')
+
+    const result = await baseUpdate({
+      entity_id: id,
+      entity_name: appointment.entity_name,
+      status: 'booked'
+    })
+
+    await refetch()
+    return result
+  }
+
+  // ENTERPRISE PATTERN: Normalized Data Enrichment
+  // Fetch customer/staff names using IDs (proper relational pattern)
+  const enrichedAppointments = useMemo(() => {
+    if (!appointments || appointments.length === 0) return []
+
+    return (appointments as Appointment[]).map(apt => {
+      // Look up customer name by ID (normalized approach)
+      // FALLBACK: Use denormalized customer_name if ID lookup fails (backward compatibility)
+      let customerName = 'Unknown Customer'
+      if (apt.customer_id) {
+        customerName = customerMap.get(apt.customer_id) || apt.customer_name || 'Unknown Customer'
+      } else if (apt.customer_name) {
+        // Old denormalized data without customer_id
+        customerName = apt.customer_name
+      }
+
+      // Look up stylist name by ID (normalized approach)
+      // FALLBACK: Use denormalized stylist_name if ID lookup fails (backward compatibility)
+      let stylistName = 'Unassigned'
+      if (apt.stylist_id) {
+        stylistName = staffMap.get(apt.stylist_id) || apt.stylist_name || 'Unassigned'
+      } else if (apt.stylist_name) {
+        // Old denormalized data without stylist_id
+        stylistName = apt.stylist_name
+      }
+
+      // Debug logging for first appointment
+      if (apt === appointments[0]) {
+        console.log('[useHeraAppointments] Enriching appointment (first one):', {
+          appointmentId: apt.id,
+          appointmentName: apt.entity_name,
+          customer_id: apt.customer_id,
+          customer_id_type: typeof apt.customer_id,
+          customerFound: customerMap.has(apt.customer_id || ''),
+          customerName,
+          stylist_id: apt.stylist_id,
+          stylist_id_type: typeof apt.stylist_id,
+          stylistFound: staffMap.has(apt.stylist_id || ''),
+          stylistName,
+          customerMapSize: customerMap.size,
+          staffMapSize: staffMap.size,
+          allCustomerIds: Array.from(customerMap.keys()),
+          allCustomerEntries: Array.from(customerMap.entries()),
+          allStaffIds: Array.from(staffMap.keys()),
+          appointmentDynamicFields: apt
+        })
+      }
+
+      return {
+        ...apt,
+        customer_name: customerName,
+        stylist_name: stylistName
+      }
+    })
+  }, [appointments, customerMap, staffMap]) // Dependencies are stable - only change when data changes
+
+  // Filter appointments client-side since RPC doesn't support comma-separated status values
+  const filteredAppointments = enrichedAppointments?.filter(apt => {
+    // If includeArchived is true, return all appointments
+    if (options?.includeArchived) return true
+
+    // Check status - it could be in entity.status OR in dynamic fields
+    // Old appointments have status in dynamic fields, new ones in entity.status
+    const validStatuses = ['booked', 'checked_in', 'completed', 'active']
+    const entityStatus = apt.status
+    const dynamicStatus = (apt as any).dynamic_fields?.status?.value || (apt as any).status
+
+    const isValid = validStatuses.includes(entityStatus) || validStatuses.includes(dynamicStatus)
+
+    console.log('[useHeraAppointments] Filtering appointment:', {
+      id: apt.id,
+      name: apt.entity_name,
+      entityStatus,
+      dynamicStatus,
+      isValid,
+      validStatuses
+    })
+
+    return isValid
+  })
+
+  console.log('[useHeraAppointments] Final filtered appointments:', {
+    totalCount: appointments?.length || 0,
+    filteredCount: filteredAppointments?.length || 0,
+    includeArchived: options?.includeArchived,
+    enrichmentStatus: {
+      customersLoaded: !customersLoading,
+      staffLoaded: !allStaffLoading,
+      fullyEnriched: !customersLoading && !allStaffLoading
+    }
+  })
+
+  // Combined loading state - appointments are only fully loaded when enrichment data is ready
+  const isFullyLoaded = !isLoading && !customersLoading && !allStaffLoading
+
+  return {
+    appointments: filteredAppointments,
+    isLoading: !isFullyLoaded, // Show loading until ALL data is ready (normalized pattern)
+    error,
+    refetch,
+    createAppointment,
+    updateAppointment,
+    archiveAppointment,
+    deleteAppointment,
+    restoreAppointment,
+    isCreating,
+    isUpdating,
+    isDeleting
+  }
+}

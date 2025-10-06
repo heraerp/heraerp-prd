@@ -76,42 +76,87 @@ export async function GET(request: NextRequest) {
     // Auth verification
     const authResult = await verifyAuth(request)
     if (!authResult || !authResult.organizationId) {
+      console.error('[Transactions GET] Auth failed:', { authResult })
       return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
     const transactionId = searchParams.get('txn_id') || searchParams.get('transaction_id')
-    const organizationId = searchParams.get('organization_id')
+    // Support both p_ prefixed and non-prefixed parameters (like entities endpoint)
+    const organizationId = searchParams.get('p_organization_id') || searchParams.get('organization_id')
 
     // Organization isolation enforcement
     if (!organizationId || organizationId !== authResult.organizationId) {
+      console.error('[Transactions GET] Organization mismatch:', {
+        requestOrgId: organizationId,
+        jwtOrgId: authResult.organizationId,
+        userId: authResult.id,
+        userEmail: authResult.email,
+        match: organizationId === authResult.organizationId
+      })
       return NextResponse.json(
-        { error: 'forbidden', details: 'organization_id mismatch' },
+        {
+          error: 'forbidden',
+          details: 'organization_id mismatch',
+          requested: organizationId,
+          jwt: authResult.organizationId,
+          user: authResult.email,
+          help: 'The organization_id in your request does not match your JWT token. Please login with a user that belongs to the correct organization.'
+        },
         { status: 403 }
       )
     }
 
     // Delegate based on whether we're reading specific transaction or querying
-    let universalPath: string
     if (transactionId) {
-      universalPath = '/api/v2/universal/txn-read'
-    } else {
-      universalPath = '/api/v2/universal/txn-query'
-    }
-
-    const universalRequest = new NextRequest(
-      new URL(universalPath + '?' + searchParams.toString(), request.url),
-      {
-        method: 'GET',
-        headers: request.headers
-      }
-    )
-
-    if (transactionId) {
+      // Delegate to txn-read (GET)
+      const universalPath = '/api/v2/universal/txn-read'
+      const universalRequest = new NextRequest(
+        new URL(universalPath + '?' + searchParams.toString(), request.url),
+        {
+          method: 'GET',
+          headers: request.headers
+        }
+      )
       const { GET: universalHandler } = await import('../universal/txn-read/route')
       return await universalHandler(universalRequest)
     } else {
-      const { GET: universalHandler } = await import('../universal/txn-query/route')
+      // Delegate to txn-query (POST) - convert GET params to POST body
+      const universalPath = '/api/v2/universal/txn-query'
+
+      // Build POST body from query parameters
+      const body: any = {
+        organization_id: organizationId
+      }
+
+      // Extract all supported query parameters and add to body
+      const transactionType = searchParams.get('p_transaction_type') || searchParams.get('transaction_type')
+      const sourceEntityId = searchParams.get('p_source_entity_id') || searchParams.get('source_entity_id')
+      const targetEntityId = searchParams.get('p_target_entity_id') || searchParams.get('target_entity_id')
+      const smartCodeLike = searchParams.get('p_smart_code_like') || searchParams.get('smart_code_like')
+      const dateFrom = searchParams.get('p_date_from') || searchParams.get('date_from')
+      const dateTo = searchParams.get('p_date_to') || searchParams.get('date_to')
+      const limit = searchParams.get('p_limit') || searchParams.get('limit')
+      const offset = searchParams.get('p_offset') || searchParams.get('offset')
+      const includeLines = searchParams.get('p_include_lines') || searchParams.get('include_lines')
+
+      if (transactionType) body.transaction_type = transactionType
+      if (sourceEntityId) body.source_entity_id = sourceEntityId
+      if (targetEntityId) body.target_entity_id = targetEntityId
+      if (smartCodeLike) body.smart_code_like = smartCodeLike
+      if (dateFrom) body.date_from = dateFrom
+      if (dateTo) body.date_to = dateTo
+      if (limit) body.limit = parseInt(limit)
+      if (offset) body.offset = parseInt(offset)
+      if (includeLines) body.include_lines = includeLines === 'true'
+
+      const universalRequest = new NextRequest(new URL(universalPath, request.url), {
+        method: 'POST',
+        headers: request.headers,
+        body: JSON.stringify(body)
+      })
+
+      const { POST: universalHandler } = await import('../universal/txn-query/route')
       return await universalHandler(universalRequest)
     }
   } catch (error) {

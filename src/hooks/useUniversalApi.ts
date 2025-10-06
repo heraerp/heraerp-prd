@@ -63,35 +63,59 @@ export function useUniversalApi(organizationId?: string): UseUniversalApiReturn 
       try {
         const { table, method, data: requestData, filters } = options
 
-        // Build URL with table
-        let url = `/api/v1/universal/${table}`
+        // Build URL with proper Universal API pattern
+        let url = `/api/v1/universal`
 
         // Add filters for GET requests
-        if (method === 'GET' && filters) {
+        if (method === 'GET') {
           const params = new URLSearchParams()
+
+          // Universal API requires action=read for GET
+          params.append('action', 'read')
+          params.append('table', table)
 
           // Always add organization filter (guardrail)
           params.append('organization_id', contextOrgId)
 
           // Add additional filters
-          Object.entries(filters).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-              params.append(key, String(value))
-            }
-          })
+          if (filters) {
+            Object.entries(filters).forEach(([key, value]) => {
+              if (value !== undefined && value !== null) {
+                params.append(key, String(value))
+              }
+            })
+          }
 
           url += `?${params.toString()}`
         }
 
-        // Prepare request body for POST/PUT
+        // Prepare request body for POST/PUT/DELETE
         let body: string | undefined
-        if (method !== 'GET' && requestData) {
-          // Always inject organization_id (guardrail)
-          const dataWithOrg = {
-            ...requestData,
+        if (method === 'POST') {
+          // Universal API POST requires action and table in body
+          const bodyData = {
+            action: 'create',
+            table,
+            data: requestData,
             organization_id: contextOrgId
           }
-          body = JSON.stringify(dataWithOrg)
+          body = JSON.stringify(bodyData)
+        } else if (method === 'PUT') {
+          // Universal API PUT requires table, id, and data in body
+          const bodyData = {
+            table,
+            id: requestData?.id,
+            data: requestData,
+            organization_id: contextOrgId
+          }
+          body = JSON.stringify(bodyData)
+        } else if (method === 'DELETE') {
+          // DELETE uses query params
+          const params = new URLSearchParams()
+          params.append('table', table)
+          params.append('id', requestData?.id || '')
+          params.append('organization_id', contextOrgId)
+          url += `?${params.toString()}`
         }
 
         console.log(`Universal API ${method} ${url}`, requestData)

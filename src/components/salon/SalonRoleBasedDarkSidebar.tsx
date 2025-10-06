@@ -3,6 +3,7 @@
 import React from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
+import { useInventorySettings } from '@/hooks/useInventorySettings'
 import SalonDarkSidebar, { SidebarItem } from './SalonDarkSidebar'
 import {
   Home,
@@ -39,7 +40,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
     {
       title: 'Appointments',
-      href: '/salon/appointments1',
+      href: '/salon/appointments',
       icon: Calendar,
       badge: '3',
       badgeColor: LUXE_COLORS.emerald
@@ -47,9 +48,9 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     { title: 'Products', href: '/salon/products', icon: Package },
+    { title: 'Inventory', href: '/salon/inventory', icon: FolderOpen },
     { title: 'Staff', href: '/salon/staff', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users },
-    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
     { title: 'Reports', href: '/salon/reports', icon: BarChart3 }
   ],
@@ -58,7 +59,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Dashboard', href: '/salon/receptionist/dashboard', icon: Home },
     {
       title: 'Appointments',
-      href: '/salon/appointments1',
+      href: '/salon/appointments',
       icon: Calendar,
       badge: '3',
       badgeColor: LUXE_COLORS.emerald
@@ -102,8 +103,9 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
 }
 
 export default function SalonRoleBasedDarkSidebar() {
-  const { salonRole, isLoading } = useSecuredSalonContext()
+  const { salonRole, organizationId, isLoading } = useSecuredSalonContext()
   const { getNavigationItems } = useSalonSecurity()
+  const { settings } = useInventorySettings(organizationId)
 
   if (isLoading) {
     return (
@@ -121,7 +123,12 @@ export default function SalonRoleBasedDarkSidebar() {
 
   // Get role-specific items or default to owner
   const userRole = salonRole?.toLowerCase() as keyof typeof roleBasedSidebarItems
-  const sidebarItems = roleBasedSidebarItems[userRole] || roleBasedSidebarItems.owner
+  let sidebarItems = roleBasedSidebarItems[userRole] || roleBasedSidebarItems.owner
+
+  // Filter out Inventory link if inventory management is disabled
+  if (!settings?.inventoryEnabled) {
+    sidebarItems = sidebarItems.filter(item => item.href !== '/salon/inventory')
+  }
 
   // Pass the role-specific items to the base sidebar
   return <SalonDarkSidebar items={sidebarItems} />

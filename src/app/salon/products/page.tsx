@@ -2,7 +2,8 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
@@ -72,6 +73,9 @@ const COLORS = {
 function SalonProductsPageContent() {
   const { organizationId } = useSecuredSalonContext()
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
+  const searchParams = useSearchParams()
+  const highlightedProductId = searchParams.get('productId')
+  const productRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
   // State
   const [searchQuery, setSearchQuery] = useState('')
@@ -170,6 +174,24 @@ function SalonProductsPageContent() {
 
     return true
   })
+
+  // Scroll to highlighted product from deep link
+  useEffect(() => {
+    if (highlightedProductId && filteredProducts.length > 0) {
+      const productExists = filteredProducts.some(p => p.id === highlightedProductId)
+      if (productExists) {
+        setTimeout(() => {
+          const element = document.getElementById(`product-${highlightedProductId}`)
+          if (element) {
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            })
+          }
+        }, 300)
+      }
+    }
+  }, [highlightedProductId, filteredProducts])
 
   // CRUD handlers
   const handleSave = async (data: any) => {
@@ -398,6 +420,42 @@ function SalonProductsPageContent() {
             >
               <Package className="h-4 w-4" style={{ color: '#FF6B6B' }} />
               {error}
+            </div>
+          )}
+
+          {/* Highlight Banner - Coming from Inventory */}
+          {highlightedProductId && (
+            <div className="mx-6 mt-4">
+              <div
+                className="rounded-xl border p-4"
+                style={{
+                  borderColor: COLORS.gold + '40',
+                  backgroundColor: COLORS.gold + '10'
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
+                    <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                      Showing product from inventory
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const url = new URL(window.location.href)
+                      url.searchParams.delete('productId')
+                      window.history.pushState({}, '', url.toString())
+                      window.location.reload()
+                    }}
+                    style={{ color: COLORS.lightText }}
+                    className="hover:opacity-70"
+                  >
+                    Clear filter
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -1008,6 +1066,7 @@ function SalonProductsPageContent() {
             ) : (
               <ProductList
                 products={filteredProducts}
+                organizationId={organizationId}
                 loading={isLoading}
                 viewMode={viewMode}
                 onEdit={handleEdit}
