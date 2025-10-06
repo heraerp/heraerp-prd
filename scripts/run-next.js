@@ -7,7 +7,8 @@ const { spawn } = require('node:child_process')
 const fs = require('node:fs')
 
 const port = process.env.PORT || '3000'
-const host = process.env.HOST || '0.0.0.0'
+const host = process.env.HOST || process.env.HOSTNAME || '0.0.0.0'
+process.env.HOSTNAME = host
 
 function run(cmd, args) {
   const child = spawn(cmd, args, { stdio: 'inherit', env: process.env })
@@ -18,11 +19,19 @@ function run(cmd, args) {
   })
 }
 
-// Try using local Next binary first; fall back to npx if missing
-const localNext = './node_modules/.bin/next'
-if (fs.existsSync(localNext)) {
-  run(localNext, ['start', '-H', host, '-p', port])
+// Prefer Next standalone server if present (no next CLI required)
+const standaloneServer = '.next/standalone/server.js'
+if (fs.existsSync(standaloneServer)) {
+  console.log('[run-next] Starting Next standalone server')
+  run('node', [standaloneServer])
 } else {
-  console.warn('[run-next] Local next binary not found, using npx')
-  run('npx', ['next', 'start', '-H', host, '-p', port])
+  // Fallback: Try using local Next binary first; fall back to npx if missing
+  const localNext = './node_modules/.bin/next'
+  if (fs.existsSync(localNext)) {
+    console.log('[run-next] Starting via local next binary')
+    run(localNext, ['start', '-H', host, '-p', port])
+  } else {
+    console.warn('[run-next] Local next binary not found, using npx')
+    run('npx', ['next', 'start', '-H', host, '-p', port])
+  }
 }
