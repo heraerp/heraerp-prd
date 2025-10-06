@@ -100,6 +100,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     sku?: string
     size?: string
     status?: string
+    branch_ids?: string[]
   }) => {
     const entity_name = data.name
     const entity_code = data.code || data.name.toUpperCase().replace(/\s+/g, '_')
@@ -186,7 +187,12 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       smart_code: 'HERA.SALON.PROD.ENT.RETAIL.V1',
       entity_description: data.description || null,
       status: data.status === 'inactive' ? 'archived' : 'active',
-      dynamic_fields
+      dynamic_fields,
+      metadata: data.branch_ids && data.branch_ids.length > 0 ? {
+        relationships: {
+          STOCK_AT: data.branch_ids
+        }
+      } : undefined
     } as any)
 
     // Trigger refetch to show new product
@@ -241,13 +247,23 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_patch.size = data.size
     }
 
+    // Build relationships patch if branch_ids provided
+    const relationships_patch = data.branch_ids !== undefined ? {
+      STOCK_AT: data.branch_ids
+    } : undefined
+
     const payload: any = {
       entity_id: id,
       ...(entity_name && { entity_name }),
       ...(entity_code && { entity_code }),
       ...(data.description !== undefined && { entity_description: data.description }),
       ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
-      ...(data.status !== undefined && { status: data.status === 'inactive' ? 'archived' : 'active' })
+      ...(relationships_patch && { relationships_patch })
+    }
+
+    // Handle status separately if needed
+    if (data.status !== undefined) {
+      payload.status = data.status === 'inactive' ? 'archived' : 'active'
     }
 
     const result = await baseUpdate(payload)
