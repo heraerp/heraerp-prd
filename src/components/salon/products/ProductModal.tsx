@@ -36,7 +36,10 @@ import {
   Box,
   TrendingUp,
   AlertCircle,
-  BarChart3
+  BarChart3,
+  Building2,
+  MapPin,
+  Check
 } from 'lucide-react'
 
 const COLORS = {
@@ -60,7 +63,7 @@ interface ProductModalProps {
 }
 
 export function ProductModal({ open, onClose, product, onSave }: ProductModalProps) {
-  const { organizationId } = useSecuredSalonContext()
+  const { organizationId, availableBranches } = useSecuredSalonContext()
 
   // Fetch product categories for dropdown
   const { categories: categoryList, isLoading: categoriesLoading } = useHeraProductCategories({
@@ -101,13 +104,27 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
       stock_level: undefined,
       reorder_level: undefined,
       description: '',
-      requires_inventory: false
+      requires_inventory: false,
+      branch_ids: [] // Branch selection support
     }
   })
 
   // Reset form when product changes
   useEffect(() => {
     if (product) {
+      // Extract branch IDs from STOCK_AT relationships
+      const stockAtRels =
+        (product as any).relationships?.stock_at ||
+        (product as any).relationships?.STOCK_AT ||
+        (product as any).relationships?.stockAt
+      let branchIds: string[] = []
+
+      if (Array.isArray(stockAtRels)) {
+        branchIds = stockAtRels.filter(rel => rel?.to_entity?.id).map(rel => rel.to_entity.id)
+      } else if (stockAtRels?.to_entity?.id) {
+        branchIds = [stockAtRels.to_entity.id]
+      }
+
       form.reset({
         name: product.entity_name || '',
         code: product.entity_code || '',
@@ -119,7 +136,8 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
           product.stock_quantity || product.stock_level || product.qty_on_hand || undefined,
         reorder_level: product.reorder_level || undefined,
         description: product.description || '',
-        requires_inventory: product.requires_inventory || false
+        requires_inventory: product.requires_inventory || false,
+        branch_ids: branchIds // Set branch IDs from relationships
       })
     } else {
       form.reset({
@@ -131,7 +149,8 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
         stock_level: undefined,
         reorder_level: undefined,
         description: '',
-        requires_inventory: false
+        requires_inventory: false,
+        branch_ids: [] // Empty array for new products
       })
     }
   }, [product, form])
@@ -786,6 +805,157 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     )}
                   />
                 </div>
+              </div>
+
+              {/* Branch Availability Section */}
+              <div
+                className="relative p-6 rounded-xl border backdrop-blur-sm"
+                style={{
+                  backgroundColor: COLORS.charcoalDark + 'E6',
+                  borderColor: COLORS.bronze + '30',
+                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                }}
+              >
+                {/* Section Header with Icon */}
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                  <h3
+                    className="text-lg font-semibold tracking-wide"
+                    style={{ color: COLORS.champagne }}
+                  >
+                    Branch Availability
+                  </h3>
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="branch_ids"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel
+                        className="text-sm font-medium tracking-wide flex items-center gap-2"
+                        style={{ color: COLORS.champagne }}
+                      >
+                        <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
+                        Select Locations Where This Product is Stocked
+                      </FormLabel>
+                      <FormControl>
+                        <div className="grid grid-cols-2 gap-3 mt-3">
+                          {availableBranches.length === 0 ? (
+                            <div
+                              className="col-span-2 p-4 rounded-lg text-center"
+                              style={{
+                                backgroundColor: COLORS.charcoalLight + '50',
+                                border: `1px dashed ${COLORS.bronze}40`,
+                                color: COLORS.lightText
+                              }}
+                            >
+                              <Building2
+                                className="w-8 h-8 mx-auto mb-2 opacity-50"
+                                style={{ color: COLORS.bronze }}
+                              />
+                              <p className="text-sm opacity-70">No branches available</p>
+                            </div>
+                          ) : (
+                            availableBranches.map(branch => {
+                              const isSelected = field.value?.includes(branch.id)
+                              return (
+                                <button
+                                  key={branch.id}
+                                  type="button"
+                                  onClick={() => {
+                                    const currentValue = field.value || []
+                                    if (isSelected) {
+                                      field.onChange(currentValue.filter(id => id !== branch.id))
+                                    } else {
+                                      field.onChange([...currentValue, branch.id])
+                                    }
+                                  }}
+                                  className="relative group transition-all duration-200 hover:scale-102"
+                                  style={{
+                                    backgroundColor: isSelected
+                                      ? COLORS.charcoalDark
+                                      : COLORS.charcoalLight + '50',
+                                    border: `2px solid ${isSelected ? COLORS.gold : COLORS.bronze + '40'}`,
+                                    borderRadius: '12px',
+                                    padding: '14px',
+                                    cursor: 'pointer',
+                                    boxShadow: isSelected ? `0 0 20px ${COLORS.gold}30` : 'none'
+                                  }}
+                                >
+                                  {/* Selection Indicator */}
+                                  {isSelected && (
+                                    <div
+                                      className="absolute top-2 right-2"
+                                      style={{ color: COLORS.gold }}
+                                    >
+                                      <div
+                                        className="w-6 h-6 rounded-full flex items-center justify-center"
+                                        style={{
+                                          backgroundColor: COLORS.gold,
+                                          boxShadow: `0 0 10px ${COLORS.gold}60`
+                                        }}
+                                      >
+                                        <Check className="w-4 h-4" style={{ color: COLORS.black }} />
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Branch Info */}
+                                  <div className="flex items-center gap-3">
+                                    <div
+                                      className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                                      style={{
+                                        backgroundColor: isSelected
+                                          ? COLORS.gold + '20'
+                                          : COLORS.bronze + '20',
+                                        border: `1px solid ${isSelected ? COLORS.gold + '40' : COLORS.bronze + '30'}`
+                                      }}
+                                    >
+                                      <MapPin
+                                        className="w-5 h-5"
+                                        style={{
+                                          color: isSelected ? COLORS.gold : COLORS.bronze
+                                        }}
+                                      />
+                                    </div>
+                                    <div className="text-left flex-1">
+                                      <p
+                                        className="text-sm font-semibold line-clamp-1"
+                                        style={{
+                                          color: isSelected ? COLORS.champagne : COLORS.lightText
+                                        }}
+                                      >
+                                        {branch.entity_name}
+                                      </p>
+                                      {branch.entity_code && (
+                                        <p
+                                          className="text-xs opacity-70 mt-0.5"
+                                          style={{ color: COLORS.bronze }}
+                                        >
+                                          {branch.entity_code}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                </button>
+                              )
+                            })
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormDescription
+                        className="text-xs mt-3"
+                        style={{ color: COLORS.bronze, opacity: 0.7 }}
+                      >
+                        {field.value && field.value.length > 0
+                          ? `Product will be available at ${field.value.length} selected ${field.value.length === 1 ? 'location' : 'locations'}`
+                          : 'No branches selected - product will be available at ALL locations by default'}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               {/* Description Section */}
