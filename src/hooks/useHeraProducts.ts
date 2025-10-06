@@ -10,6 +10,7 @@
  * - Follows staff/role pattern exactly
  */
 
+import { useMemo } from 'react'
 import { useUniversalEntity } from './useUniversalEntity'
 import { PRODUCT_PRESET } from './entityPresets'
 import type { DynamicFieldDef } from './useUniversalEntity'
@@ -320,43 +321,47 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     return result
   }
 
-  // Filter products based on search, category, and branch
-  const filteredProducts = (products as Product[])?.filter(product => {
-    // Branch filter (via STOCK_AT relationship)
+  // Filter products by branch, search, and category using HERA relationship patterns
+  const filteredProducts = useMemo(() => {
+    if (!products) return []
+
+    let filtered = products as Product[]
+
+    // Filter by STOCK_AT branch relationship (when branch is selected, not "All Locations")
     if (options?.filters?.branch_id && options.filters.branch_id !== 'all') {
-      const productWithRels = product as any
-      const stockAtRels =
-        productWithRels.relationships?.stock_at ||
-        productWithRels.relationships?.STOCK_AT ||
-        []
+      filtered = filtered.filter(p => {
+        // Check if product has STOCK_AT relationship with the specified branch
+        const stockAtRelationships = (p as any).relationships?.stock_at || (p as any).relationships?.STOCK_AT
+        if (!stockAtRelationships) return false
 
-      const hasBranch = Array.isArray(stockAtRels)
-        ? stockAtRels.some((rel: any) => rel.to_entity?.id === options.filters?.branch_id || rel.to_entity_id === options.filters?.branch_id)
-        : (stockAtRels?.to_entity?.id === options.filters?.branch_id || stockAtRels?.to_entity_id === options.filters?.branch_id)
-
-      if (!hasBranch) return false
+        // Handle both array and single relationship formats
+        if (Array.isArray(stockAtRelationships)) {
+          return stockAtRelationships.some((rel: any) => rel.to_entity?.id === options.filters?.branch_id)
+        } else {
+          return stockAtRelationships.to_entity?.id === options.filters?.branch_id
+        }
+      })
     }
 
     // Search filter
     if (options?.searchQuery) {
       const query = options.searchQuery.toLowerCase()
-      const matchesSearch =
+      filtered = filtered.filter(product =>
         product.entity_name?.toLowerCase().includes(query) ||
         product.entity_code?.toLowerCase().includes(query) ||
         product.category?.toLowerCase().includes(query) ||
         product.brand?.toLowerCase().includes(query) ||
         product.barcode?.toLowerCase().includes(query)
-
-      if (!matchesSearch) return false
+      )
     }
 
     // Category filter
-    if (options?.categoryFilter && product.category !== options.categoryFilter) {
-      return false
+    if (options?.categoryFilter) {
+      filtered = filtered.filter(product => product.category === options.categoryFilter)
     }
 
-    return true
-  }) || []
+    return filtered
+  }, [products, options?.filters?.branch_id, options?.searchQuery, options?.categoryFilter])
 
   return {
     products: filteredProducts as Product[],
