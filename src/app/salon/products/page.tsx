@@ -100,7 +100,7 @@ function SalonProductsPageContent() {
     loading: branchesLoading,
     setBranchId,
     hasMultipleBranches
-  } = useBranchFilter(undefined, 'salon-products-list')
+  } = useBranchFilter(undefined, 'salon-products-list', organizationId)
 
   // Fetch products using new Universal API v2
   const {
@@ -116,7 +116,12 @@ function SalonProductsPageContent() {
     includeArchived,
     searchQuery: '',
     categoryFilter: '',
-    organizationId
+    organizationId,
+    filters: {
+      include_dynamic: true,
+      include_relationships: true,
+      branch_id: branchId || 'all' // Pass branch filter to hook
+    }
   })
 
   // Fetch product categories using Universal API v2
@@ -160,10 +165,8 @@ function SalonProductsPageContent() {
       return false
     }
 
-    // Branch filter
-    if (branchId && product.metadata?.branch_id !== branchId) {
-      return false
-    }
+    // Branch filter is now handled by useHeraProducts hook via relationships
+    // No need for manual client-side filtering
 
     return true
   })
@@ -315,10 +318,13 @@ function SalonProductsPageContent() {
   const activeCount = products.filter(p => p.status === 'active').length
   const archivedCount = products.filter(p => p.status === 'archived').length
   const totalValue = products.reduce(
-    (sum, product) => sum + (product.price || 0) * product.qty_on_hand,
+    (sum, product) =>
+      sum + (product.price_cost || 0) * (product.stock_quantity || 0),
     0
   )
-  const lowStockCount = products.filter(p => p.qty_on_hand < 10).length
+  const lowStockCount = products.filter(
+    p => (p.stock_quantity || 0) < (p.reorder_level || 10)
+  ).length
 
   return (
     <div className="h-screen overflow-hidden" style={{ backgroundColor: COLORS.black }}>
