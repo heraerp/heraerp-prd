@@ -331,8 +331,8 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
         []
 
       const hasBranch = Array.isArray(stockAtRels)
-        ? stockAtRels.some((rel: any) => rel.to_entity_id === options.filters?.branch_id)
-        : false
+        ? stockAtRels.some((rel: any) => rel.to_entity?.id === options.filters?.branch_id || rel.to_entity_id === options.filters?.branch_id)
+        : (stockAtRels?.to_entity?.id === options.filters?.branch_id || stockAtRels?.to_entity_id === options.filters?.branch_id)
 
       if (!hasBranch) return false
     }
