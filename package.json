@@ -10,6 +10,11 @@
     "npm": ">=9.0.0"
   },
   "scripts": {
+    "manifest:build": "tsx scripts/manifest/build.ts",
+    "manifest:persist": "tsx scripts/manifest/persist.ts",
+    "manifest:diff": "tsx scripts/manifest/diff.ts",
+    "manifest:apply": "tsx scripts/manifest/apply.ts",
+    "manifest:all": "npm run manifest:build && npm run manifest:persist && npm run manifest:diff",
     "hera": "tsx src/cli/index.ts",
     "db:seed:test": "tsx scripts/seed-test.ts",
     "db:seed:print": "tsx scripts/seed-test.ts --dry-run",
