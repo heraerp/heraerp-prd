@@ -5,11 +5,12 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   const method = req.method
 
-  // Always allow Railway/infra healthcheck and static assets
-  // Health endpoints: return 200 directly to be robust even if route wasn't compiled
-  if (pathname === '/api/health' || pathname === '/api/healthz') {
-    if (method === 'HEAD') return new NextResponse(null, { status: 200 })
-    return new NextResponse('ok', { status: 200, headers: { 'content-type': 'text/plain' } })
+  // Bypass health checks so the route handles GET/HEAD itself
+  if (
+    pathname === '/api/healthz' ||
+    pathname === '/api/v2/healthz'
+  ) {
+    return NextResponse.next()
   }
 
   // Always let static/public assets through
@@ -59,6 +60,6 @@ export function middleware(req: NextRequest) {
 
 // Belt-and-suspenders: ensure matcher excludes allowed paths above
 export const config = {
-  // Run on everything except static/public assets so health paths get handled here
-  matcher: ['/((?!_next/|favicon.ico|robots.txt|sitemap.xml).*)']
+  // Exclude health paths and static/public assets
+  matcher: ['/((?!api/healthz|api/v2/healthz|_next/|favicon.ico|robots.txt|sitemap.xml).*)']
 }

@@ -55,8 +55,8 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // Ensure /api/healthz always resolves, even if a route fails to compile
-        { source: '/api/healthz', destination: '/api/health' }
+        // Ensure /api/healthz always resolves to the implemented health endpoint
+        { source: '/api/healthz', destination: '/api/v2/healthz' }
       ],
       afterFiles: [],
       fallback: []
