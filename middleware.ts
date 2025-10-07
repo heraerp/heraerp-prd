@@ -1,14 +1,17 @@
-import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
+
+const HEALTH_PREFIXES = ['/api/health', '/api/healthz', '/api/v2/healthz']
 
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
+  const url = req.nextUrl
+  const pathname = url.pathname
   const method = req.method
 
-  // Bypass health checks so the route handles GET/HEAD itself
+  // Bypass health checks entirely (GET/HEAD/OPTIONS), allow any trailing segment/query
   if (
-    pathname === '/api/healthz' ||
-    pathname === '/api/v2/healthz'
+    (method === 'GET' || method === 'HEAD' || method === 'OPTIONS') &&
+    HEALTH_PREFIXES.some(p => pathname === p || pathname.startsWith(p + '/'))
   ) {
     return NextResponse.next()
   }
@@ -23,18 +26,18 @@ export function middleware(req: NextRequest) {
     return NextResponse.next()
   }
 
-  // Preserve existing API v2 enforcement (only for API routes)
-  const isApi = pathname.startsWith('/api/')
-  const isV2 = pathname.startsWith('/api/v2/')
-
   // Allow Next.js internal API routes
   if (pathname.startsWith('/api/_next/')) {
     return NextResponse.next()
   }
 
-  // Block all non-v2 API routes (except the allowed ones above)
+  // API v2 enforcement
+  const isApi = pathname.startsWith('/api/')
+  const isV2 = pathname.startsWith('/api/v2/')
+
+  // Block all non-v2 API routes (except the allowlisted ones above)
   if (isApi && !isV2) {
-    console.warn(`[API v2 Enforcement] Blocked legacy API call: ${pathname}`)
+    // Keep middleware light: no async, small payload
     return new NextResponse(
       JSON.stringify({
         error: 'Use API v2. Prefix routes with /api/v2.',
@@ -54,12 +57,15 @@ export function middleware(req: NextRequest) {
     )
   }
 
-  // Existing logic (auth redirects, tenant resolution, etc.) could go here
+  // (Auth/org resolution etc. can continue here)
   return NextResponse.next()
 }
 
-// Belt-and-suspenders: ensure matcher excludes allowed paths above
+// Exclude health paths and static/public assets from the middleware matcher itself
 export const config = {
-  // Exclude health paths and static/public assets
-  matcher: ['/((?!api/healthz|api/v2/healthz|_next/|favicon.ico|robots.txt|sitemap.xml).*)']
+  matcher: [
+    // everything except health endpoints + static/public
+    '/((?!api/health(?:/.*)?$|api/healthz(?:/.*)?$|api/v2/healthz(?:/.*)?$|_next/|favicon\\.ico$|robots\\.txt$|sitemap\\.xml$).*)',
+  ],
 }
+
