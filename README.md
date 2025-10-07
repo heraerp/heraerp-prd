@@ -43,6 +43,11 @@ Universal patterns that adapt to any industry:
 ### **Deploy to Railway (Recommended)**
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/hera-erp)
 
+Note for Railway deployments
+- Set Service → Settings → Healthcheck → Path to `/api/healthz`.
+- This endpoint is always accessible (no auth/redirects) and is bypassed by middleware.
+- The production server binds to `0.0.0.0` and respects the `PORT` env automatically.
+
 ### **30-Second Implementation**
 Deploy any business type instantly:
 
