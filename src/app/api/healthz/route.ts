@@ -7,7 +7,6 @@ export async function GET() {
   })
 }
 
-// Some platforms use HEAD for healthchecks—cover it too.
 export async function HEAD() {
   return new Response(null, { status: 200 })
 }

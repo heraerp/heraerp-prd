@@ -52,6 +52,16 @@ const nextConfig: NextConfig = {
   
   // Enable strict mode for better development experience
   reactStrictMode: true,
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // Ensure /api/healthz always resolves, even if a route fails to compile
+        { source: '/api/healthz', destination: '/api/health' }
+      ],
+      afterFiles: [],
+      fallback: []
+    }
+  }
 };
 
 export default nextConfig;
