@@ -2,22 +2,12 @@
 
 import React from 'react'
 import { usePathname } from 'next/navigation'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import SalonRoleBasedDarkSidebar from '@/components/salon/SalonRoleBasedDarkSidebar'
 import { SecuredSalonProvider } from './SecuredSalonProvider'
+import { SalonQueryWrapper } from './SalonQueryWrapper'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { NavigationProvider } from './navigation-provider'
 import { PrefetchLinks } from './prefetch-links'
-
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      refetchOnWindowFocus: false
-    }
-  }
-})
 
 export default function SalonLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -30,8 +20,8 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <NavigationProvider>
+    <NavigationProvider>
+      <SalonQueryWrapper>
         <SecuredSalonProvider>
           {/* Prefetch common routes for better performance */}
           <PrefetchLinks />
@@ -49,10 +39,12 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
               position: 'relative'
             }}
           >
-            {children}
+            <React.Suspense fallback={<div>Loading...</div>}>
+              {children}
+            </React.Suspense>
           </main>
         </SecuredSalonProvider>
-      </NavigationProvider>
-    </QueryClientProvider>
+      </SalonQueryWrapper>
+    </NavigationProvider>
   )
 }
