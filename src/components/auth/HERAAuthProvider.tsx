@@ -5,7 +5,7 @@
 
 'use client'
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useEffect, useState, ReactNode, useRef } from 'react'
 import { demoAuthService, type DemoUserType } from '@/lib/auth/demo-auth-service'
 import { useRouter } from 'next/navigation'
 
@@ -62,6 +62,16 @@ interface HERAAuthProviderProps {
 export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const router = useRouter()
 
+  // Config knobs (env-overridable)
+  const AUTH_INTROSPECT_FALLBACK_ENABLED =
+    (process.env.NEXT_PUBLIC_AUTH_INTROSPECT_FALLBACK_ENABLED ?? 'true') !== 'false'
+  const INTROSPECT_TIMEOUT_MS = Number(process.env.NEXT_PUBLIC_INTROSPECT_TIMEOUT_MS || 2000)
+  const CONTEXT_TTL_MS = Number(process.env.NEXT_PUBLIC_CONTEXT_TTL_MS || 5 * 60 * 1000)
+  const CACHE_KEY = 'hera-auth-context-cache-v1'
+
+  // In-memory cache for this tab (persists across renders)
+  const memoryCacheRef = useRef<any>(null)
+
   const [state, setState] = useState({
     user: null as HERAUser | null,
     organization: null as HERAOrganization | null,
@@ -76,6 +86,44 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   // Initialize on mount - check for existing sessions
   useEffect(() => {
     initializeAuth()
+    // Subscribe to auth state changes to invalidate cache on sign-in/out/refresh
+    let unsubscribe: (() => void) | undefined
+    ;(async () => {
+      try {
+        const { createClient } = await import('@/lib/supabase/client')
+        const supabase = createClient()
+        const { data } = supabase.auth.onAuthStateChange((event, session) => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('🔐 HERA Auth onAuthStateChange:', event, {
+              hasSession: !!session
+            })
+          }
+          clearCachedContext()
+          initializeAuth()
+        })
+        unsubscribe = () => data.subscription.unsubscribe()
+      } catch (_) {
+        // no-op
+      }
+    })()
+
+    // Re-validate on tab focus if cache expired
+    const onFocus = () => {
+      const cached = getCachedContext()
+      if (!cached || Date.now() > cached.expiresAt) {
+        clearCachedContext()
+        initializeAuth()
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', onFocus)
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', onFocus)
+      }
+      if (unsubscribe) unsubscribe()
+    }
   }, [])
 
   // Session expiry timer
@@ -244,50 +292,127 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         } = await supabase.auth.getSession()
 
         if (session?.access_token) {
-          // Introspect via API v2 to get org/role/permissions
-          const introspectRes = await fetch('/api/v2/auth/introspect', {
-            headers: { Authorization: `Bearer ${session.access_token}` },
-            credentials: 'include'
-          })
-          if (introspectRes.ok) {
-            const info = await introspectRes.json()
-
-            // Ensure attach is complete (idempotent)
-            await fetch('/api/v2/auth/attach', {
-              method: 'POST',
-              headers: { Authorization: `Bearer ${session.access_token}` },
-              credentials: 'include'
-            }).catch(() => {})
-
-            const user: HERAUser = {
-              id: info.user_id,
-              entity_id: info.user_id,
-              name: info.email?.split('@')[0] || 'User',
-              email: info.email || '',
-              role: (info.roles && info.roles[0]) || 'user',
-              session_type: 'real',
-              expires_at: new Date(Date.now() + 50 * 60 * 1000).toISOString()
+          // Try cached context first (short TTL)
+          const cached = getCachedContext()
+          if (cached && cached.user_id === session.user.id && Date.now() < cached.expiresAt) {
+            if (process.env.NODE_ENV === 'development') {
+              console.log('🗄️  HERA Auth: Using cached context', {
+                source: cached.source,
+                ttl_ms_remaining: cached.expiresAt - Date.now()
+              })
             }
-            const organization: HERAOrganization = {
-              id: info.organization_id,
-              name: 'Organization',
-              type: 'business',
-              industry: 'services'
-            }
-
-            // Save org cookie for legacy consumers
-            setCookie('HERA_ORG_ID', organization.id)
-
-            setState(prev => ({
-              ...prev,
-              user,
-              organization,
-              isAuthenticated: true,
-              isLoading: false,
-              sessionType: 'real',
-              scopes: info.permissions || []
-            }))
+            applyResolvedContext(cached)
             return
+          }
+
+          // Try API introspection first (if deployed)
+          try {
+            const introspectRes = await fetchWithTimeout(
+              '/api/v2/auth/introspect',
+              {
+                headers: { Authorization: `Bearer ${session.access_token}` },
+                credentials: 'include'
+              },
+              INTROSPECT_TIMEOUT_MS
+            )
+            if (introspectRes.ok) {
+              const info = await introspectRes.json()
+
+              // Ensure attach is complete (idempotent)
+              await fetch('/api/v2/auth/attach', {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                  'x-hera-org-id': info.organization_id
+                },
+                credentials: 'include'
+              })
+                .then(r => {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.log('✅ TX.AUTH_ATTACH_OK.V1')
+                  }
+                })
+                .catch(() => {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.log('⚠️  TX.AUTH_ATTACH_FAIL.V1')
+                  }
+                })
+
+              const user: HERAUser = {
+                id: info.user_id,
+                entity_id: info.user_id,
+                name: info.email?.split('@')[0] || 'User',
+                email: info.email || '',
+                role: (info.roles && info.roles[0]) || 'user',
+                session_type: 'real',
+                expires_at: new Date(Date.now() + 50 * 60 * 1000).toISOString()
+              }
+              const organization: HERAOrganization = {
+                id: info.organization_id,
+                name: 'Organization',
+                type: 'business',
+                industry: 'services'
+              }
+
+              setCookie('HERA_ORG_ID', organization.id)
+
+              const payload = {
+                user_id: user.id,
+                email: user.email,
+                organization_id: organization.id,
+                roles: info.roles || [user.role],
+                permissions: info.permissions || [],
+                source: 'server'
+              }
+              cacheContext(payload)
+              applyResolvedContext(payload)
+              return
+            }
+          } catch (_) {
+            // Ignore and fallback to client-side resolution
+          }
+
+          // Fallback: resolve org/role/permissions client-side (no API dependency)
+          if (AUTH_INTROSPECT_FALLBACK_ENABLED) try {
+            const { resolveUserEntity } = await import('@/lib/security/user-entity-resolver')
+            const resolution = await resolveUserEntity(session.user.id)
+            if (resolution.success && resolution.data) {
+              // Ensure attach endpoint runs if available (idempotent)
+              fetch('/api/v2/auth/attach', {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                  'x-hera-org-id': resolution.data.organizationId
+                },
+                credentials: 'include'
+              })
+                .then(r => {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.log('✅ TX.AUTH_ATTACH_OK.V1')
+                  }
+                })
+                .catch(() => {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.log('⚠️  TX.AUTH_ATTACH_FAIL.V1')
+                  }
+                })
+
+              const payload = {
+                user_id: resolution.data.userId,
+                email: session.user.email || '',
+                organization_id: resolution.data.organizationId,
+                roles: [resolution.data.salonRole || 'user'],
+                permissions: Array.isArray(resolution.data.permissions)
+                  ? resolution.data.permissions
+                  : [],
+                source: 'fallback'
+              }
+              cacheContext(payload)
+              applyResolvedContext(payload)
+              return
+            }
+          } catch (_) {
+            // If resolution fails, fall through to unauthenticated
           }
         }
       } catch (e) {
@@ -368,6 +493,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const logout = async () => {
     try {
       await demoAuthService.clearDemoSession()
+      clearCachedContext()
 
       // Clear the org cookie
       if (typeof document !== 'undefined') {
@@ -403,6 +529,109 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const hasScope = (requiredScope: string): boolean => {
     return demoAuthService.hasScope(requiredScope, state.scopes)
+  }
+
+  // Fetch with timeout helper
+  async function fetchWithTimeout(input: RequestInfo, init: RequestInit, timeoutMs: number) {
+    const controller = new AbortController()
+    const id = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      const res = await fetch(input, { ...init, signal: controller.signal })
+      return res
+    } finally {
+      clearTimeout(id)
+    }
+  }
+
+  // Cache helpers
+  function cacheContext(payload: {
+    user_id: string
+    email: string
+    organization_id: string
+    roles: string[]
+    permissions: string[]
+    source: 'server' | 'fallback'
+  }) {
+    const wrapped = {
+      ...payload,
+      expiresAt: Date.now() + CONTEXT_TTL_MS
+    }
+    memoryCacheRef.current = wrapped
+    try {
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify(wrapped))
+      }
+    } catch (_) {}
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🧠 HERA Auth: Context cached', { source: payload.source, ttl_ms: CONTEXT_TTL_MS })
+    }
+  }
+
+  function getCachedContext():
+    | (ReturnType<typeof JSON.parse> & { expiresAt: number; source: string; user_id: string })
+    | null {
+    if (memoryCacheRef.current && Date.now() < memoryCacheRef.current.expiresAt)
+      return memoryCacheRef.current
+    try {
+      if (typeof sessionStorage === 'undefined') return null
+      const raw = sessionStorage.getItem(CACHE_KEY)
+      if (!raw) return null
+      const parsed = JSON.parse(raw)
+      return parsed
+    } catch (_) {
+      return null
+    }
+  }
+
+  function clearCachedContext() {
+    memoryCacheRef.current = null
+    try {
+      if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(CACHE_KEY)
+    } catch (_) {}
+  }
+
+  // Apply resolved context into provider state
+  function applyResolvedContext(payload: {
+    user_id: string
+    email: string
+    organization_id: string
+    roles: string[]
+    permissions: string[]
+    source: 'server' | 'fallback'
+  }) {
+    const user: HERAUser = {
+      id: payload.user_id,
+      entity_id: payload.user_id,
+      name: payload.email?.split('@')[0] || 'User',
+      email: payload.email || '',
+      role: payload.roles?.[0] || 'user',
+      session_type: 'real',
+      expires_at: new Date(Date.now() + 50 * 60 * 1000).toISOString()
+    }
+    const organization: HERAOrganization = {
+      id: payload.organization_id,
+      name: 'Organization',
+      type: 'business',
+      industry: 'services'
+    }
+    setCookie('HERA_ORG_ID', organization.id)
+    setState(prev => ({
+      ...prev,
+      user,
+      organization,
+      isAuthenticated: true,
+      isLoading: false,
+      sessionType: 'real',
+      scopes: payload.permissions || []
+    }))
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        payload.source === 'fallback'
+          ? '✅ TX.AUTH_INTROSPECT_FALLBACK.V1'
+          : '✅ TX.AUTH_INTROSPECT_OK.V1',
+        { source: payload.source }
+      )
+    }
   }
 
   // Helper function to get cookie value

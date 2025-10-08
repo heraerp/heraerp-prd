@@ -35,38 +35,7 @@ export async function resolveUserEntity(authUserId: string): Promise<{
   error?: UserResolutionError
 }> {
   try {
-    // 1. Find USER entity (id = auth user id, in platform org)
-    const { data: userEntity, error: entityError } = await supabase
-      .from('core_entities')
-      .select('*')
-      .eq('id', authUserId)
-      .or('entity_type.eq.USER,entity_type.eq.user')
-      .maybeSingle()
-
-    if (entityError) {
-      return {
-        success: false,
-        error: {
-          type: 'database_error',
-          message: `Failed to query user entity: ${entityError.message}`,
-          authUserId
-        }
-      }
-    }
-
-    if (!userEntity) {
-      console.warn(`No USER entity found for: ${authUserId}`)
-      return {
-        success: false,
-        error: {
-          type: 'not_found',
-          message: 'User entity not found',
-          authUserId
-        }
-      }
-    }
-
-    // 2. Find organization via USER_MEMBER_OF_ORG relationship
+    // 1) Find organization via USER_MEMBER_OF_ORG relationship (tenant-scoped and RLS-friendly)
     const { data: relationship, error: relError } = await supabase
       .from('core_relationships')
       .select('to_entity_id, organization_id')
@@ -88,11 +57,11 @@ export async function resolveUserEntity(authUserId: string): Promise<{
 
     const organizationId = relationship.organization_id
 
-    // 3. Get all dynamic data for this user entity in the tenant org
+    // 2) Get all dynamic data for this user entity in the tenant org
     const { data: dynamicData, error: dynamicError } = await supabase
       .from('core_dynamic_data')
       .select('field_name, field_value_text, field_value_json, field_type, smart_code')
-      .eq('entity_id', userEntity.id)
+      .eq('entity_id', authUserId)
       .eq('organization_id', organizationId)
 
     if (dynamicError) {
@@ -126,10 +95,10 @@ export async function resolveUserEntity(authUserId: string): Promise<{
       data: {
         userId: authUserId,
         organizationId,
-        entityId: userEntity.id,
+        entityId: authUserId,
         salonRole,
         permissions: Array.isArray(permissions) ? permissions : [],
-        userEntity,
+        userEntity: undefined,
         dynamicData: dynamicDataMap
       }
     }
@@ -149,18 +118,46 @@ export async function resolveUserEntity(authUserId: string): Promise<{
  * Create security context from user entity resolution
  * Compatible with HERA DNA SECURITY framework
  */
-export async function createSecurityContextFromAuth(authUserId: string): Promise<{
+export async function createSecurityContextFromAuth(
+  authUserId: string,
+  options?: { accessToken?: string; retries?: number }
+): Promise<{
   success: boolean
   securityContext?: SecurityContext
   error?: UserResolutionError
 }> {
-  const resolution = await resolveUserEntity(authUserId)
+  const retries = Math.max(0, options?.retries ?? 0)
+
+  const attachAndRetry = async (remaining: number) => {
+    if (remaining <= 0) return resolveUserEntity(authUserId)
+
+    // If we have an access token, nudge the server to ensure membership
+    if (options?.accessToken) {
+      try {
+        await fetch('/api/v2/auth/attach', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${options.accessToken}` },
+          credentials: 'include'
+        })
+      } catch {
+        // ignore
+      }
+    }
+
+    // brief backoff
+    await new Promise(r => setTimeout(r, 300))
+    return resolveUserEntity(authUserId)
+  }
+
+  let resolution = await resolveUserEntity(authUserId)
+
+  // Retry flow only for membership-not-found
+  if ((!resolution.success || !resolution.data) && resolution.error?.type === 'not_found') {
+    resolution = await attachAndRetry(retries)
+  }
 
   if (!resolution.success || !resolution.data) {
-    return {
-      success: false,
-      error: resolution.error
-    }
+    return { success: false, error: resolution.error }
   }
 
   const { data } = resolution

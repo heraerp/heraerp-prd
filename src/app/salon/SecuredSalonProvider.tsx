@@ -28,6 +28,7 @@ import { Loader2, Shield, AlertTriangle, Clock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { useSalonSecurityStore } from '@/lib/salon/security-store'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface Branch {
   id: string
@@ -119,6 +120,7 @@ const SALON_ROLE_PERMISSIONS = {
 export function SecuredSalonProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const securityStore = useSalonSecurityStore()
+  const auth = useHERAAuth()
   
   // Branch state
   const [selectedBranchId, setSelectedBranchIdState] = useState<string | null>(() => {
@@ -168,8 +170,16 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       lastInitialized: securityStore.lastInitialized,
       timeSinceInit: securityStore.lastInitialized
         ? Date.now() - securityStore.lastInitialized
-        : null
+        : null,
+      authLoading: auth.isLoading,
+      isAuthenticated: auth.isAuthenticated
     })
+
+    // Wait for HERA auth to be fully ready before initializing
+    if (auth.isLoading || !auth.isAuthenticated) {
+      console.log('⏸️ Waiting for HERA Auth to be ready...')
+      return
+    }
 
     // Only initialize if not already cached or if we need to reinitialize
     if (!securityStore.isInitialized || securityStore.shouldReinitialize()) {
@@ -206,7 +216,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [auth.isLoading, auth.isAuthenticated])
 
   /**
    * Initialize secure authentication context
@@ -269,8 +279,11 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         method: 'GET'
       }
 
-      // ✅ CORRECT: Resolve security context from HERA entities (proper architecture)
-      const contextResolution = await createSecurityContextFromAuth(session.user.id)
+      // ✅ Resolve security context from HERA entities with attach+retry (library-level)
+      const contextResolution = await createSecurityContextFromAuth(session.user.id, {
+        accessToken: session.access_token,
+        retries: 2
+      })
 
       if (!contextResolution.success || !contextResolution.securityContext) {
         throw new Error(
