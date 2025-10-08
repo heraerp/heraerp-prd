@@ -37,6 +37,8 @@ import { useHeraServices } from '@/hooks/useHeraServicesV2'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Skeleton } from '@/components/ui/skeleton'
+import { BranchSelector } from '@/components/salon/BranchSelector'
 
 interface SalonResourceCalendarProps {
   className?: string
@@ -194,6 +196,19 @@ export function SalonResourceCalendar({
   const loading = appointmentsLoading || staffLoading || customersLoading || servicesLoading
   const error = appointmentsError
 
+  // Tiny navigation skeleton when changing week/day/month
+  const [isViewLoading, setIsViewLoading] = useState(false)
+  useEffect(() => {
+    // trigger a brief skeleton on view/date change
+    setIsViewLoading(true)
+    const t = setTimeout(() => setIsViewLoading(false), 400)
+    return () => clearTimeout(t)
+  }, [selectedDate, selectedView])
+  useEffect(() => {
+    // if network finished, hide skeleton immediately
+    if (!loading) setIsViewLoading(false)
+  }, [loading])
+
   // Helper function to get consistent colors for stylists
   const getColorForIndex = useCallback((index: number): string => {
     const colors = [
@@ -217,7 +232,7 @@ export function SalonResourceCalendar({
     }
 
     // Map HERA staff data to Stylist format
-    return staff.map((s: any, index: number) => ({
+    const mapped = staff.map((s: any, index: number) => ({
       id: s.id,
       name: s.entity_name || 'Staff Member',
       title: s.metadata?.role || s.metadata?.designation || 'Stylist',
@@ -228,6 +243,21 @@ export function SalonResourceCalendar({
       businessHours: { start: 9, end: 19 }, // Default hours
       branchId: s.metadata?.branch_id || ''
     }))
+
+    // Virtual stylist to show appointments with no stylist assignment
+    const unassigned: (Stylist & { branchId: string }) = {
+      id: 'unassigned',
+      name: 'Unassigned',
+      title: '—',
+      avatar: 'U',
+      color: getColorForIndex(0),
+      available: true,
+      status: 'available',
+      businessHours: { start: 9, end: 19 },
+      branchId: ''
+    }
+
+    return [unassigned, ...mapped]
   }, [staff, mounted, getColorForIndex])
 
   // Filter stylists based on selected branches
@@ -603,13 +633,18 @@ export function SalonResourceCalendar({
 
   return (
     <div
-      className={cn('flex h-[800px] rounded-lg overflow-hidden calendar-fade-in', className)}
+      className={cn('relative flex h-[800px] rounded-lg overflow-hidden calendar-fade-in', className)}
       style={{
         backgroundColor: COLORS.charcoal,
         boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(212, 175, 55, 0.1)',
         border: `1px solid ${COLORS.gold}1A`
       }}
     >
+      {(isViewLoading || loading) && (
+        <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+          <Skeleton className="h-6 w-28" data-testid="calendar-loading" />
+        </div>
+      )}
       {/* Sidebar */}
       {showSidebar && (
         <div
@@ -636,73 +671,13 @@ export function SalonResourceCalendar({
               </Button>
             </div>
 
-            {/* Branch Filter - Show for demo purposes */}
-            {organizations.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2" style={{ color: COLORS.champagne }}>
-                  Branch Filter
-                </h4>
-                <div className="space-y-2">
-                  {/* All branches option */}
-                  <div
-                    className={cn(
-                      'flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all',
-                      selectedBranches.includes('all')
-                        ? 'bg-amber-50/10 dark:bg-amber-900/20 border border-amber-200/30 dark:border-amber-700/30'
-                        : 'hover:bg-amber-50/5 dark:hover:bg-amber-900/10'
-                    )}
-                    onClick={() => setSelectedBranches(['all'])}
-                  >
-                    <Checkbox
-                      checked={selectedBranches.includes('all')}
-                      className="data-[state=checked]:bg-amber-600 data-[state=checked]:border-amber-600 dark:data-[state=checked]:bg-amber-500 dark:data-[state=checked]:border-amber-500"
-                    />
-                    <MapPin className="w-4 h-4 text-muted-foreground dark:text-muted-foreground" />
-                    <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                      All Branches
-                    </span>
-                  </div>
-
-                  {/* Individual branches */}
-                  {organizations
-                    .filter(org => org.organization_code !== 'SALON-GROUP')
-                    .map(org => (
-                      <div
-                        key={org.id}
-                        className={cn(
-                          'flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all',
-                          selectedBranches.includes(org.id)
-                            ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700'
-                            : 'hover:bg-muted dark:hover:bg-muted-foreground/10'
-                        )}
-                        onClick={() => {
-                          if (selectedBranches.includes('all')) {
-                            setSelectedBranches([org.id])
-                          } else if (selectedBranches.includes(org.id)) {
-                            const newSelection = selectedBranches.filter(id => id !== org.id)
-                            setSelectedBranches(newSelection.length === 0 ? ['all'] : newSelection)
-                          } else {
-                            setSelectedBranches([
-                              ...selectedBranches.filter(id => id !== 'all'),
-                              org.id
-                            ])
-                          }
-                        }}
-                      >
-                        <Checkbox
-                          checked={selectedBranches.includes(org.id)}
-                          disabled={selectedBranches.includes('all')}
-                          className="data-[state=checked]:bg-amber-600 data-[state=checked]:border-amber-600 dark:data-[state=checked]:bg-amber-500 dark:data-[state=checked]:border-amber-500"
-                        />
-                        <MapPin className="w-4 h-4" style={{ color: COLORS.bronze }} />
-                        <span className="text-sm" style={{ color: COLORS.champagne }}>
-                          {org.organization_name.split('•')[1]?.trim() || org.organization_name}
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
+            {/* Branch Filter */}
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold mb-2" style={{ color: COLORS.champagne }}>
+                Branch
+              </h4>
+              <BranchSelector variant="sidebar" showIcon={false} />
+            </div>
 
             {/* View Mode Toggle */}
             <div className="flex items-center gap-2 mb-4">
@@ -1217,15 +1192,14 @@ export function SalonResourceCalendar({
                             {/* Time Slots */}
                             <div>
                               {timeSlots.map((slot, slotIdx) => {
-                                const slotAppointments = transformedAppointments.filter(
-                                  (apt: Appointment) =>
-                                    apt.time === slot.time &&
-                                    apt.date.toDateString() === date.toDateString() &&
-                                    (selectedStylists.includes('all') ||
-                                      selectedStylists.includes(apt.stylist)) &&
-                                    (selectedBranches.includes('all') ||
-                                      selectedBranches.includes(apt.branchId))
-                                )
+                              const slotAppointments = transformedAppointments.filter(
+                                (apt: Appointment) =>
+                                  apt.time === slot.time &&
+                                  apt.date.toDateString() === date.toDateString() &&
+                                  (selectedStylists.includes('all') ||
+                                    selectedStylists.includes(apt.stylist || 'unassigned')) &&
+                                  (!selectedBranchId || apt.branchId === selectedBranchId)
+                              )
 
                                 return (
                                   <div
@@ -1381,10 +1355,10 @@ export function SalonResourceCalendar({
                               const slotAppointments = transformedAppointments.filter(
                                 (apt: Appointment) =>
                                   apt.time === slot.time &&
-                                  apt.stylist === stylist.id &&
+                                  ((apt.stylist && apt.stylist === stylist.id) ||
+                                    (!apt.stylist && stylist.id === 'unassigned')) &&
                                   apt.date.toDateString() === selectedDate.toDateString() &&
-                                  (selectedBranches.includes('all') ||
-                                    selectedBranches.includes(apt.branchId))
+                                  (!selectedBranchId || apt.branchId === selectedBranchId)
                               )
 
                               const isBusinessHour = isWithinBusinessHours(stylist, slot.time)

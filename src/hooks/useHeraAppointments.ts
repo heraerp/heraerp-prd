@@ -78,7 +78,9 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       // Which calls hera_txn_query_v1 RPC with transaction_type filtering
       const txns = await getTransactions({
         orgId: options.organizationId,
-        transactionType: 'APPOINTMENT' // ✅ UPPERCASE - server-side RPC filtering
+        transactionType: 'APPOINTMENT', // ✅ UPPERCASE - server-side RPC filtering
+        startDate: options.filters?.date_from,
+        endDate: options.filters?.date_to
       })
 
       console.log('[useHeraAppointments] RPC Response:', {
@@ -88,7 +90,10 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
 
       return txns
     },
-    enabled: !!options?.organizationId
+    enabled: !!options?.organizationId,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
   })
 
   // Fetch customers using PROPER RPC wrapper
@@ -297,6 +302,19 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     isLoading,
     error: transactionsError,
     refetch: refetchTransactions,
+    // Optimistically add/update an appointment in all appointment caches
+    upsertLocal: (apt: Appointment) => {
+      const qk = ['appointment-transactions']
+      // Update any matching queries regardless of date filter
+      queryClient.setQueriesData({ queryKey: qk, exact: false }, (old: any) => {
+        const arr = Array.isArray(old) ? old : old?.appointments
+        if (!arr) return old ?? [apt]
+        const idx = arr.findIndex((a: Appointment) => a.id === apt.id)
+        const next = idx >= 0 ? [...arr.slice(0, idx), apt, ...arr.slice(idx + 1)] : [apt, ...arr]
+        // Preserve shape if previous was object
+        return Array.isArray(old) ? next : { ...(old || {}), appointments: next }
+      })
+    },
     // Stub methods for compatibility
     createAppointment: async () => { throw new Error('Not implemented') },
     updateAppointment: async () => { throw new Error('Not implemented') },
