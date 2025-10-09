@@ -14,10 +14,10 @@ CI = "true"
 SKIP_ENV_VALIDATION = "true"
 
 [deploy]
-healthcheckPath = "/api/health"
-healthcheckTimeout = 300
+healthcheckPath = "/api/ping"
+healthcheckTimeout = 60
 restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 5
+restartPolicyMaxRetries = 3
 
 [deploy.env]
 NODE_ENV = "production"
