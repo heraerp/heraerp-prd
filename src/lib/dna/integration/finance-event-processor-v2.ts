@@ -472,54 +472,9 @@ export class FinanceEventProcessorV2 {
 
 /**
  * React Hook for Finance Event Processing v2
+ * NOTE: This hook has been moved to a separate client-side file to avoid server-side import issues
+ * See: /src/hooks/useFinanceProcessorV2.ts
  */
-import { useState, useEffect } from 'react'
-
-export function useFinanceProcessorV2(organizationId: string) {
-  const [processor, setProcessor] = useState<FinanceEventProcessorV2 | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [stats, setStats] = useState<any>(null)
-
-  useEffect(() => {
-    let mounted = true
-
-    async function loadProcessor() {
-      try {
-        const proc = await FinanceEventProcessorV2.getInstance(organizationId)
-        if (mounted) {
-          setProcessor(proc)
-          setStats(proc.getProcessingStats())
-          setLoading(false)
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err.message)
-          setLoading(false)
-        }
-      }
-    }
-
-    loadProcessor()
-
-    return () => {
-      mounted = false
-    }
-  }, [organizationId])
-
-  // Update stats periodically
-  useEffect(() => {
-    if (processor && !loading) {
-      const interval = setInterval(() => {
-        setStats(processor.getProcessingStats())
-      }, 5000) // Update every 5 seconds
-
-      return () => clearInterval(interval)
-    }
-  }, [processor, loading])
-
-  return { processor, loading, error, stats }
-}
 
 /**
  * Example usage in a salon POS component:
