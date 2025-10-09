@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { validateEvent, preflight } from '@/lib/guardrail'
-import { supabase } from '@/lib/db'
+import { callFunction } from '@/lib/db'
 
 export const runtime = 'nodejs'
 
@@ -23,80 +23,44 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'guardrail_failed', details: checks }, { status: 400 })
   }
 
+  // DB call: hera_txn_emit_v1 using direct RPC
+  const rpcParams = {
+    p_organization_id: body.organization_id,
+    p_transaction_type: body.transaction_type,
+    p_smart_code: body.smart_code,
+    p_transaction_code: body.transaction_code ?? `TXN-${Date.now()}`,
+    p_transaction_date: body.transaction_date,
+    p_source_entity_id: body.source_entity_id ?? null,
+    p_target_entity_id: body.target_entity_id ?? null,
+    p_total_amount: body.total_amount ?? 0,
+    p_transaction_status: body.transaction_status ?? 'pending',
+    p_reference_number: body.reference_number ?? null,
+    p_external_reference: body.external_reference ?? null,
+    p_business_context: body.business_context ?? {},
+    p_metadata: body.metadata ?? {},
+    p_approval_required: body.approval_required ?? false,
+    p_approved_by: body.approved_by ?? null,
+    p_approved_at: body.approved_at ?? null,
+    p_transaction_currency_code: body.transaction_currency_code ?? 'AED',
+    p_base_currency_code: body.base_currency_code ?? 'AED',
+    p_exchange_rate: body.exchange_rate ?? 1.0,
+    p_exchange_rate_date: body.exchange_rate_date ?? null,
+    p_exchange_rate_type: body.exchange_rate_type ?? null,
+    p_fiscal_period_entity_id: body.fiscal_period_entity_id ?? null,
+    p_fiscal_year: body.fiscal_year ?? new Date().getFullYear(),
+    p_fiscal_period: body.fiscal_period ?? new Date().getMonth() + 1,
+    p_posting_period_code: body.posting_period_code ?? null,
+    p_lines: body.lines ?? [],
+    p_actor_user_id: body.actor_user_id ?? null
+  }
+
   try {
-    // Step 1: Insert transaction header
-    // Generate transaction number
-    const transactionNumber = `${body.transaction_type}-${Date.now().toString().slice(-8)}`
-
-    const { data: transaction, error: txnError } = await supabase
-      .from('universal_transactions')
-      .insert({
-        organization_id: body.organization_id,
-        transaction_type: body.transaction_type,
-        transaction_code: transactionNumber,
-        transaction_date: body.transaction_date,
-        source_entity_id: body.source_entity_id || null,
-        target_entity_id: body.target_entity_id || null,
-        transaction_status: body.business_context?.status || 'completed',
-        smart_code: body.smart_code,
-        total_amount: 0, // Will be calculated from lines
-        metadata: body.business_context || {}
-      })
-      .select('id')
-      .single()
-
-    if (txnError) {
-      console.error('Error inserting transaction:', txnError)
-      throw new Error(txnError.message)
-    }
-
-    const transactionId = transaction.id
-
-    // Step 2: Insert transaction lines
-    if (body.lines && body.lines.length > 0) {
-      const lines = body.lines.map((line: any, index: number) => {
-        const quantity = line.quantity || 1
-        const unitAmount = line.unit_amount || 0
-        const lineAmount = line.line_amount || quantity * unitAmount
-
-        return {
-          transaction_id: transactionId,
-          organization_id: body.organization_id,
-          line_number: index + 1,
-          entity_id: line.entity_id || null,
-          line_type: line.line_type || 'item',
-          description: line.description || line.line_type || 'Transaction line',
-          quantity,
-          unit_amount: unitAmount,
-          line_amount: lineAmount,
-          discount_amount: line.discount_amount || 0,
-          tax_amount: line.tax_amount || 0,
-          smart_code: line.smart_code || body.smart_code || 'HERA.TXN.LINE.DEFAULT.V1',
-          line_data: { line_type: line.line_type }
-        }
-      })
-
-      const { error: linesError } = await supabase.from('universal_transaction_lines').insert(lines)
-
-      if (linesError) {
-        console.error('Error inserting transaction lines:', linesError)
-        // Rollback transaction by deleting it
-        await supabase.from('universal_transactions').delete().eq('id', transactionId)
-        throw new Error(linesError.message)
-      }
-
-      // Step 3: Update total amount
-      const totalAmount = lines.reduce((sum, line) => sum + (line.line_amount || 0), 0)
-      await supabase
-        .from('universal_transactions')
-        .update({ total_amount: totalAmount })
-        .eq('id', transactionId)
-    }
+    const transaction_id = await callFunction('hera_txn_emit_v1', rpcParams)
 
     return NextResponse.json(
       {
         api_version: 'v2',
-        transaction_id: transactionId
+        transaction_id: transaction_id
       },
       { status: 201 }
     )

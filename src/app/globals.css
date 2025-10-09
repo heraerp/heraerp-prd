@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* HERA Financial Reports - Force High Contrast Text */
+.hera-financial-text {
+  @apply !text-gray-900 dark:!text-gray-100;
+}
+
+.hera-financial-text-secondary {
+  @apply !text-gray-600 dark:!text-gray-300;
+}
+
+.hera-financial-text-muted {
+  @apply !text-gray-500 dark:!text-gray-400;
+}
+
 /* Salon Sidebar Custom Scrollbar Styles */
 .salon-sidebar-nav::-webkit-scrollbar {
   width: 6px;

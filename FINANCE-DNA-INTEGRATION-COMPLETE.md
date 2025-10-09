@@ -1,4 +1,12 @@
-# FINANCE DNA INTEGRATION - COMPLETE IMPLEMENTATION
+# ⚠️ DEPRECATED: Finance DNA v1 Integration Complete (LEGACY)
+
+**IMPORTANT**: This documentation is for Finance DNA v1 which is now deprecated. 
+
+**Please use Finance DNA v2**: See `/docs/FINANCE-DNA-V2-INTEGRATION.md` for the current production system.
+
+---
+
+# FINANCE DNA v1 INTEGRATION - COMPLETE IMPLEMENTATION (LEGACY)
 
 ## 🧬 Revolutionary Achievement
 
