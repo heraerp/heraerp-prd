@@ -1,5 +1,5 @@
 // HERA Database Types - Auto-generated from actual schema
-// Generated: 2025-10-09T11:59:32.354Z
+// Generated: 2025-10-09T13:35:11.135Z
 // Run 'node mcp-server/schema-introspection.js' to update
 
 export interface CoreOrganizations {
@@ -76,29 +76,7 @@ export interface CoreDynamicData {
 }
 
 export interface CoreRelationships {
-  id: string
   organization_id: string
-  from_entity_id: string
-  to_entity_id: string
-  relationship_type: string
-  relationship_direction?: string
-  relationship_strength?: string
-  relationship_data?: string
-  smart_code?: string
-  smart_code_status?: string
-  ai_confidence?: string
-  ai_classification?: string
-  ai_insights?: string
-  business_logic?: string
-  validation_rules?: string
-  is_active?: boolean
-  effective_date?: string
-  expiration_date?: string
-  created_at?: string
-  updated_at?: string
-  created_by?: string
-  updated_by?: string
-  version?: string
 }
 
 export interface UniversalTransactions {

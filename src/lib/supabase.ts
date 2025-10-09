@@ -22,6 +22,19 @@ const globalForSupabase = globalThis as unknown as {
   supabaseInstance?: ReturnType<typeof createClient>
 }
 
+// Utility function to clear invalid auth tokens
+const clearInvalidTokens = () => {
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.removeItem('hera-supabase-auth')
+      sessionStorage.clear()
+      console.log('🧹 Cleared invalid auth tokens')
+    } catch (error) {
+      console.error('Failed to clear tokens:', error)
+    }
+  }
+}
+
 // Initialize Supabase client only when needed
 export const getSupabase = () => {
   // If already initialized globally, return the instance
@@ -34,7 +47,7 @@ export const getSupabase = () => {
 
   // Only create client if we have valid configuration
   if (url && key && !url.includes('placeholder')) {
-    globalForSupabase.supabaseInstance = createClient(url, key, {
+    const client = createClient(url, key, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
@@ -51,6 +64,16 @@ export const getSupabase = () => {
         schema: 'public'
       }
     })
+
+    // Add error handling for auth errors
+    client.auth.onAuthStateChange((event, session) => {
+      if (event === 'TOKEN_REFRESHED' && !session) {
+        console.warn('🚨 Token refresh failed, clearing invalid tokens')
+        clearInvalidTokens()
+      }
+    })
+
+    globalForSupabase.supabaseInstance = client
 
     // Log configuration status (not the actual values)
     if (typeof window !== 'undefined') {
@@ -103,6 +126,9 @@ export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
     return client[prop as keyof typeof client]
   }
 })
+
+// Export utility functions
+export { clearInvalidTokens }
 
 // Database types for HERA tables
 export interface Organization {

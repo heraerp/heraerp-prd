@@ -246,6 +246,25 @@ async function testPolicyExecution() {
 }
 
 async function testCreateJournalEntry() {
+  // First, get the actual entity IDs for our accounts
+  const { data: accounts, error: accountsError } = await supabase
+    .from('core_entities')
+    .select('id, entity_code')
+    .eq('organization_id', CLEAN_ORG_ID)
+    .eq('entity_type', 'gl_account')
+    .in('entity_code', ['1100', '4100']);
+    
+  if (accountsError || !accounts || accounts.length < 2) {
+    return { success: false, error: 'Required GL accounts not found' };
+  }
+  
+  const cashAccount = accounts.find(a => a.entity_code === '1100');
+  const revenueAccount = accounts.find(a => a.entity_code === '4100');
+  
+  if (!cashAccount || !revenueAccount) {
+    return { success: false, error: 'Cash or Revenue account not found' };
+  }
+
   // Create a balanced journal entry
   const { data: txData, error: txError } = await supabase
     .from('universal_transactions')
@@ -265,13 +284,13 @@ async function testCreateJournalEntry() {
     return { success: false, error: txError.message };
   }
   
-  // Create balanced transaction lines
+  // Create balanced transaction lines with correct entity UUIDs
   const lines = [
     {
       transaction_id: txData.id,
       organization_id: CLEAN_ORG_ID,
       line_number: 1,
-      entity_id: '1100', // Cash account code
+      entity_id: cashAccount.id, // Use actual UUID
       line_type: 'DEBIT',
       line_amount: 1000.00,
       smart_code: 'HERA.ACCOUNTING.JOURNAL.LINE.v2'
@@ -280,7 +299,7 @@ async function testCreateJournalEntry() {
       transaction_id: txData.id,
       organization_id: CLEAN_ORG_ID,
       line_number: 2,
-      entity_id: '4100', // Revenue account code
+      entity_id: revenueAccount.id, // Use actual UUID
       line_type: 'CREDIT',
       line_amount: 1000.00,
       smart_code: 'HERA.ACCOUNTING.JOURNAL.LINE.v2'
