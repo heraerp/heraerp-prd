@@ -2,7 +2,7 @@
 /**
  * Finance DNA v2 - CI Runner Script
  * Smart Code: HERA.ACCOUNTING.CI.RUNNER.v2
- * 
+ *
  * Command-line interface for Finance DNA v2 CI/CD operations
  * with comprehensive validation, testing, and reporting.
  */
@@ -37,9 +37,9 @@ program
   .description('Run complete Finance DNA v2 CI validation pipeline')
   .option('--quick', 'Run quick CI validation only')
   .option('--parallel', 'Enable parallel processing', true)
-  .action(async (options) => {
+  .action(async options => {
     const globalOpts = program.opts()
-    
+
     console.log(chalk.cyan.bold('🚀 Finance DNA v2 CI Pipeline'))
     console.log(chalk.gray(`Environment: ${globalOpts.environment}`))
     console.log(chalk.gray(`Strict Mode: ${globalOpts.strict}`))
@@ -81,7 +81,6 @@ program
       }
 
       process.exit(result.exit_code)
-
     } catch (error) {
       console.error(chalk.red.bold('💥 CI Pipeline Error:'), error.message)
       process.exit(1)
@@ -93,9 +92,9 @@ program
   .command('smoke-test')
   .description('Run Finance DNA v2 smoke tests only')
   .option('--quick', 'Run quick smoke tests only')
-  .action(async (options) => {
+  .action(async options => {
     const globalOpts = program.opts()
-    
+
     console.log(chalk.cyan.bold('🧪 Finance DNA v2 Smoke Tests'))
     console.log('')
 
@@ -122,7 +121,6 @@ program
       }
 
       process.exit(result.exit_code)
-
     } catch (error) {
       console.error(chalk.red.bold('💥 Smoke Test Error:'), error.message)
       process.exit(1)
@@ -156,7 +154,7 @@ program
       for (const smartCode of smartCodes) {
         const result = HERAGuardrailsV2.validateSmartCodeV2(smartCode)
         results.push({ smartCode, result })
-        
+
         if (result.passed) {
           console.log(chalk.green(`✅ ${smartCode}`))
         } else {
@@ -176,7 +174,6 @@ program
         console.log(chalk.red.bold(`❌ Found ${totalViolations} Smart Code violations!`))
         process.exit(1)
       }
-
     } catch (error) {
       console.error(chalk.red.bold('💥 Smart Code Validation Error:'), error.message)
       process.exit(1)
@@ -189,7 +186,7 @@ program
   .description('Run Finance DNA v2 performance benchmarks')
   .option('--load <count>', 'Number of concurrent transactions', '100')
   .option('--duration <seconds>', 'Test duration in seconds', '30')
-  .action(async (options) => {
+  .action(async options => {
     console.log(chalk.cyan.bold('⚡ Finance DNA v2 Performance Benchmarks'))
     console.log(chalk.gray(`Load: ${options.load} concurrent transactions`))
     console.log(chalk.gray(`Duration: ${options.duration} seconds`))
@@ -208,7 +205,7 @@ program
       console.log(`  Success Rate: ${results.successRate}%`)
       console.log(`  Memory Usage: ${results.memoryUsage}MB`)
 
-      const benchmarksMet = 
+      const benchmarksMet =
         results.avgResponseTime <= 100 &&
         results.throughput >= 100 &&
         results.successRate >= 99.5 &&
@@ -221,7 +218,6 @@ program
         console.log(chalk.red.bold('\n❌ Performance benchmarks not met!'))
         process.exit(1)
       }
-
     } catch (error) {
       console.error(chalk.red.bold('💥 Performance Test Error:'), error.message)
       process.exit(1)
@@ -249,11 +245,11 @@ program
       ]
 
       let passedChecks = 0
-      
+
       for (const check of securityChecks) {
         // Simulate security check
         const passed = Math.random() > 0.1 // 90% success rate for simulation
-        
+
         if (passed) {
           console.log(chalk.green(`✅ ${check}`))
           passedChecks++
@@ -264,15 +260,18 @@ program
 
       console.log('')
       const successRate = (passedChecks / securityChecks.length) * 100
-      
+
       if (successRate >= 90) {
-        console.log(chalk.green.bold(`✅ Security audit passed! (${successRate.toFixed(1)}% checks passed)`))
+        console.log(
+          chalk.green.bold(`✅ Security audit passed! (${successRate.toFixed(1)}% checks passed)`)
+        )
         process.exit(0)
       } else {
-        console.log(chalk.red.bold(`❌ Security audit failed! (${successRate.toFixed(1)}% checks passed)`))
+        console.log(
+          chalk.red.bold(`❌ Security audit failed! (${successRate.toFixed(1)}% checks passed)`)
+        )
         process.exit(1)
       }
-
     } catch (error) {
       console.error(chalk.red.bold('💥 Security Audit Error:'), error.message)
       process.exit(1)
@@ -285,7 +284,7 @@ program
   .description('Check Finance DNA v2 deployment readiness')
   .action(async () => {
     const globalOpts = program.opts()
-    
+
     console.log(chalk.cyan.bold('🚀 Finance DNA v2 Deployment Readiness Check'))
     console.log(chalk.gray(`Target Environment: ${globalOpts.environment}`))
     console.log('')
@@ -309,7 +308,7 @@ program
         try {
           const result = await check()
           results.push({ name, passed: result, error: null })
-          
+
           if (result) {
             console.log(chalk.green(`✅ ${name}`))
             passedChecks++
@@ -324,15 +323,18 @@ program
 
       console.log('')
       const readinessScore = (passedChecks / checks.length) * 100
-      
+
       if (readinessScore >= 95) {
-        console.log(chalk.green.bold(`🚀 Deployment ready! (${readinessScore.toFixed(1)}% checks passed)`))
+        console.log(
+          chalk.green.bold(`🚀 Deployment ready! (${readinessScore.toFixed(1)}% checks passed)`)
+        )
         process.exit(0)
       } else {
-        console.log(chalk.red.bold(`❌ Deployment not ready! (${readinessScore.toFixed(1)}% checks passed)`))
+        console.log(
+          chalk.red.bold(`❌ Deployment not ready! (${readinessScore.toFixed(1)}% checks passed)`)
+        )
         process.exit(1)
       }
-
     } catch (error) {
       console.error(chalk.red.bold('💥 Deployment Readiness Error:'), error.message)
       process.exit(1)
@@ -353,8 +355,11 @@ async function generateCIReport(result: any, reportPath: string) {
       total_gates: result.results.gate_results.length,
       passed_gates: result.results.gate_results.filter(g => g.passed).length,
       total_smoke_tests: result.results.smoke_test_results.test_results?.length || 0,
-      passed_smoke_tests: result.results.smoke_test_results.test_results?.filter(t => t.passed).length || 0,
-      performance_tier: result.results.performance_summary.benchmarks_met ? 'ENTERPRISE' : 'STANDARD'
+      passed_smoke_tests:
+        result.results.smoke_test_results.test_results?.filter(t => t.passed).length || 0,
+      performance_tier: result.results.performance_summary.benchmarks_met
+        ? 'ENTERPRISE'
+        : 'STANDARD'
     }
   }
 
@@ -365,12 +370,12 @@ async function generateCIReport(result: any, reportPath: string) {
 async function simulatePerformanceTest(load: number, duration: number) {
   // Simulate performance testing
   await new Promise(resolve => setTimeout(resolve, 2000))
-  
+
   return {
     avgResponseTime: Math.random() * 50 + 30, // 30-80ms
-    throughput: Math.random() * 50 + 120,     // 120-170 tps
-    successRate: 99.5 + Math.random() * 0.5,  // 99.5-100%
-    memoryUsage: Math.random() * 50 + 200     // 200-250MB
+    throughput: Math.random() * 50 + 120, // 120-170 tps
+    successRate: 99.5 + Math.random() * 0.5, // 99.5-100%
+    memoryUsage: Math.random() * 50 + 200 // 200-250MB
   }
 }
 

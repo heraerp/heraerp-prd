@@ -19,9 +19,16 @@ export interface AuthUser {
 }
 
 const ROLE_PERMS: Record<string, string[]> = {
-  OWNER: ['entities:read','entities:write','relationships:read','relationships:write','transactions:read','transactions:write'],
-  MANAGER: ['entities:read','entities:write','relationships:read','transactions:read'],
-  STAFF: ['entities:read','transactions:read'],
+  OWNER: [
+    'entities:read',
+    'entities:write',
+    'relationships:read',
+    'relationships:write',
+    'transactions:read',
+    'transactions:write'
+  ],
+  MANAGER: ['entities:read', 'entities:write', 'relationships:read', 'transactions:read'],
+  STAFF: ['entities:read', 'transactions:read']
 }
 
 function expandPermissions(roles: string[]) {
@@ -36,15 +43,21 @@ function supabaseForToken(token: string) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       auth: { persistSession: false, detectSessionInUrl: false },
-      global: { headers: { Authorization: `Bearer ${token}` } },
+      global: { headers: { Authorization: `Bearer ${token}` } }
     }
   )
 }
 
 async function withTimeout<T>(p: Promise<T>, ms = 2000): Promise<T> {
   let to: any
-  const t = new Promise<never>((_, rej) => { to = setTimeout(() => rej(new Error('INTROSPECT_TIMEOUT')), ms) })
-  try { return await Promise.race([p, t]) as T } finally { clearTimeout(to) }
+  const t = new Promise<never>((_, rej) => {
+    to = setTimeout(() => rej(new Error('INTROSPECT_TIMEOUT')), ms)
+  })
+  try {
+    return (await Promise.race([p, t])) as T
+  } finally {
+    clearTimeout(to)
+  }
 }
 
 /**
@@ -63,7 +76,7 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
         email: 'demo@herasalon.com',
         organizationId: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
         roles: ['receptionist'],
-        permissions: ['read:services','write:services'],
+        permissions: ['read:services', 'write:services']
       }
     }
     if (token === 'demo-token-jewelry-admin') {
@@ -72,7 +85,7 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
         email: 'admin@luxejewelry.com',
         organizationId: '80e6659c-3dfb-4fc8-b13a-70423ac4a9ce',
         roles: ['admin'],
-        permissions: ['*'],
+        permissions: ['*']
       }
     }
 
@@ -97,16 +110,24 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
     let organizationIdSource: 'header' | 'jwt' | 'resolved' | 'none' = 'none'
 
     if (headerOrg && allowedOrgs.includes(headerOrg)) {
-      organizationId = headerOrg; organizationIdSource = 'header'
+      organizationId = headerOrg
+      organizationIdSource = 'header'
     } else if (jwtOrg && allowedOrgs.includes(jwtOrg)) {
-      organizationId = jwtOrg; organizationIdSource = 'jwt'
+      organizationId = jwtOrg
+      organizationIdSource = 'jwt'
     } else if (allowedOrgs.length) {
-      organizationId = allowedOrgs[0]; organizationIdSource = 'resolved'
+      organizationId = allowedOrgs[0]
+      organizationIdSource = 'resolved'
     }
 
     // No valid org membership → unauthorized (enforce org-scoping invariant)
     if (!organizationId) {
-      console.warn('[verifyAuth] No valid org membership', { userId: payload.sub, jwtOrg, headerOrg, allowedOrgs })
+      console.warn('[verifyAuth] No valid org membership', {
+        userId: payload.sub,
+        jwtOrg,
+        headerOrg,
+        allowedOrgs
+      })
       return null
     }
 
@@ -131,7 +152,7 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
       organizationIdSource,
       hasOrganizationId: !!organizationId,
       roles,
-      allowedOrgs,
+      allowedOrgs
     })
 
     return {
@@ -139,7 +160,7 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
       email: (payload as any).email,
       organizationId,
       roles,
-      permissions,
+      permissions
     }
   } catch (error) {
     console.error('Auth verification error:', error)

@@ -165,7 +165,13 @@ export async function setBranchStock(
   })
 
   // Check and create alert if needed
-  await checkAndCreateStockAlert(organizationId, productId, branchId, input.quantity, input.reorder_level)
+  await checkAndCreateStockAlert(
+    organizationId,
+    productId,
+    branchId,
+    input.quantity,
+    input.reorder_level
+  )
 }
 
 // ==================== STOCK MOVEMENTS ====================
@@ -178,7 +184,15 @@ export async function recordStockMovement(
   userId: string,
   input: StockMovementInput
 ): Promise<StockMovement> {
-  const { product_id, branch_id, movement_type, quantity, unit_cost, from_branch_id, to_branch_id } = input
+  const {
+    product_id,
+    branch_id,
+    movement_type,
+    quantity,
+    unit_cost,
+    from_branch_id,
+    to_branch_id
+  } = input
 
   // Get current stock level
   const inventory = await getProductInventory(organizationId, product_id)
@@ -187,8 +201,18 @@ export async function recordStockMovement(
 
   // Calculate new quantity based on movement type
   let newQty = currentQty
-  const isIncrease = ['purchase', 'transfer_in', 'adjustment_in', 'return_from_customer'].includes(movement_type)
-  const isDecrease = ['sale', 'transfer_out', 'adjustment_out', 'return_to_supplier', 'damage', 'expiry', 'sample'].includes(movement_type)
+  const isIncrease = ['purchase', 'transfer_in', 'adjustment_in', 'return_from_customer'].includes(
+    movement_type
+  )
+  const isDecrease = [
+    'sale',
+    'transfer_out',
+    'adjustment_out',
+    'return_to_supplier',
+    'damage',
+    'expiry',
+    'sample'
+  ].includes(movement_type)
 
   if (isIncrease) {
     newQty = currentQty + quantity
@@ -441,12 +465,15 @@ async function checkAndCreateStockAlert(
 
   if (status === 'in_stock') return
 
-  const alertType = status === 'out_of_stock' ? 'out_of_stock' :
-                    status === 'low_stock' ? 'low_stock' : 'overstock'
+  const alertType =
+    status === 'out_of_stock' ? 'out_of_stock' : status === 'low_stock' ? 'low_stock' : 'overstock'
 
-  const smartCode = status === 'out_of_stock' ? INVENTORY_SMART_CODES.ALERT_OUT_STOCK :
-                    status === 'low_stock' ? INVENTORY_SMART_CODES.ALERT_LOW_STOCK :
-                    INVENTORY_SMART_CODES.ALERT_OVERSTOCK
+  const smartCode =
+    status === 'out_of_stock'
+      ? INVENTORY_SMART_CODES.ALERT_OUT_STOCK
+      : status === 'low_stock'
+        ? INVENTORY_SMART_CODES.ALERT_LOW_STOCK
+        : INVENTORY_SMART_CODES.ALERT_OVERSTOCK
 
   // Create alert entity
   await apiV2.post('entities', {

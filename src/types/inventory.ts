@@ -158,9 +158,17 @@ export const BranchStockSchema = z.object({
 
 export const StockMovementSchema = z.object({
   movement_type: z.enum([
-    'purchase', 'sale', 'transfer_out', 'transfer_in',
-    'adjustment_in', 'adjustment_out', 'return_from_customer',
-    'return_to_supplier', 'damage', 'expiry', 'sample'
+    'purchase',
+    'sale',
+    'transfer_out',
+    'transfer_in',
+    'adjustment_in',
+    'adjustment_out',
+    'return_from_customer',
+    'return_to_supplier',
+    'damage',
+    'expiry',
+    'sample'
   ]),
   product_id: z.string().uuid(),
   branch_id: z.string().uuid(),
@@ -173,17 +181,23 @@ export const StockMovementSchema = z.object({
   notes: z.string().max(1000).optional()
 })
 
-export const StockTransferSchema = z.object({
-  from_branch_id: z.string().uuid(),
-  to_branch_id: z.string().uuid(),
-  items: z.array(z.object({
-    product_id: z.string().uuid(),
-    quantity: z.number().int().positive()
-  })).min(1, 'At least one item required'),
-  notes: z.string().max(1000).optional()
-}).refine(data => data.from_branch_id !== data.to_branch_id, {
-  message: 'Source and destination branches must be different'
-})
+export const StockTransferSchema = z
+  .object({
+    from_branch_id: z.string().uuid(),
+    to_branch_id: z.string().uuid(),
+    items: z
+      .array(
+        z.object({
+          product_id: z.string().uuid(),
+          quantity: z.number().int().positive()
+        })
+      )
+      .min(1, 'At least one item required'),
+    notes: z.string().max(1000).optional()
+  })
+  .refine(data => data.from_branch_id !== data.to_branch_id, {
+    message: 'Source and destination branches must be different'
+  })
 
 export const StockCountSchema = z.object({
   branch_id: z.string().uuid(),
@@ -245,10 +259,14 @@ export function getStockStatus(quantity: number, reorderLevel: number): BranchSt
 
 export function getAlertSeverity(stockStatus: BranchStock['status']): StockAlert['severity'] {
   switch (stockStatus) {
-    case 'out_of_stock': return 'critical'
-    case 'low_stock': return 'warning'
-    case 'overstock': return 'info'
-    default: return 'info'
+    case 'out_of_stock':
+      return 'critical'
+    case 'low_stock':
+      return 'warning'
+    case 'overstock':
+      return 'info'
+    default:
+      return 'info'
   }
 }
 

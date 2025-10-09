@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, {  useState, useEffect, useRef, useMemo, useCallback , Suspense } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
@@ -1241,7 +1241,6 @@ function SalonProductsPageContent() {
 }
 
 function SalonProductsContent() {
-
   const { organizationId } = useSecuredSalonContext()
 
   // Wait for organizationId to be available
@@ -1253,18 +1252,16 @@ function SalonProductsContent() {
     )
   }
 
-  
-return (
+  return (
     <StatusToastProvider>
       <SalonProductsPageContent />
     </StatusToastProvider>
   )
-
 }
 
 export default function SalonProductsPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

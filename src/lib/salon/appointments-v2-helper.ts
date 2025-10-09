@@ -97,7 +97,7 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
 
   // After creating the transaction, store additional fields as dynamic data
   const transactionId = data.id || data.transaction_id
-  
+
   if (transactionId) {
     // Create dynamic data for appointment fields
     const dynamicFields = [
@@ -109,7 +109,7 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
       { field_name: 'service_ids', field_value: JSON.stringify([serviceId]), field_type: 'text' },
       { field_name: 'branch_id', field_value: metadata?.branch_id || '', field_type: 'text' }
     ]
-    
+
     // Create dynamic data entries
     await Promise.all(
       dynamicFields.map(field =>
@@ -126,7 +126,7 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
       )
     )
   }
-  
+
   return { transaction_id: transactionId }
 }
 

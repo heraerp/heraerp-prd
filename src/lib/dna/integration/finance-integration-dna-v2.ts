@@ -398,26 +398,26 @@ export const FINANCE_DNA_V2_POSTING_RULES: PostingRule[] = [
 export class FinanceGuardrails {
   static validateDoubleEntry(lines: any[]): boolean {
     if (!lines || lines.length === 0) return false
-    
-    const totalDebit = lines.reduce((sum, line) => 
-      sum + (line.debit_amount || 0), 0
-    )
-    const totalCredit = lines.reduce((sum, line) => 
-      sum + (line.credit_amount || 0), 0
-    )
-    
+
+    const totalDebit = lines.reduce((sum, line) => sum + (line.debit_amount || 0), 0)
+    const totalCredit = lines.reduce((sum, line) => sum + (line.credit_amount || 0), 0)
+
     return Math.abs(totalDebit - totalCredit) < 0.01
   }
 
   static async validateFiscalPeriod(
-    eventTime: string, 
+    eventTime: string,
     organizationId: string
   ): Promise<{ isValid: boolean; reason?: string }> {
     try {
-      const result = await callRPC('hera_validate_fiscal_period_v1', {
-        p_organization_id: organizationId,
-        p_transaction_date: eventTime
-      }, { mode: 'service' })
+      const result = await callRPC(
+        'hera_validate_fiscal_period_v1',
+        {
+          p_organization_id: organizationId,
+          p_transaction_date: eventTime
+        },
+        { mode: 'service' }
+      )
 
       if (!result?.data?.is_open) {
         return {
@@ -434,14 +434,18 @@ export class FinanceGuardrails {
   }
 
   static async validateCurrencySupport(
-    currencyCode: string, 
+    currencyCode: string,
     organizationId: string
   ): Promise<{ isValid: boolean; exchangeRate?: number }> {
     try {
-      const result = await callRPC('hera_validate_currency_v1', {
-        p_organization_id: organizationId,
-        p_currency_code: currencyCode
-      }, { mode: 'service' })
+      const result = await callRPC(
+        'hera_validate_currency_v1',
+        {
+          p_organization_id: organizationId,
+          p_currency_code: currencyCode
+        },
+        { mode: 'service' }
+      )
 
       return {
         isValid: result?.data?.is_supported || false,
@@ -458,14 +462,18 @@ export class FinanceGuardrails {
   }
 
   static async validateAccountExists(
-    accountCode: string, 
+    accountCode: string,
     organizationId: string
   ): Promise<{ exists: boolean; accountName?: string }> {
     try {
-      const result = await callRPC('hera_account_summary_v1', {
-        p_organization_id: organizationId,
-        p_account_code: accountCode
-      }, { mode: 'service' })
+      const result = await callRPC(
+        'hera_account_summary_v1',
+        {
+          p_organization_id: organizationId,
+          p_account_code: accountCode
+        },
+        { mode: 'service' }
+      )
 
       const account = result?.data?.[0]
       return {
@@ -479,7 +487,7 @@ export class FinanceGuardrails {
   }
 
   static validateAmountLimits(
-    amount: number, 
+    amount: number,
     limits: PostingRule['validations']['amount_limits']
   ): { isValid: boolean; reason?: string; requiresApproval?: boolean } {
     if (!limits) return { isValid: true }
@@ -540,7 +548,6 @@ export class AccountDerivationEngineV2 {
         accountCode: derivationPath,
         confidence: 0.5
       }
-
     } catch (error) {
       console.error('Account derivation failed:', error)
       throw new Error(`Cannot derive account from path: ${derivationPath}`)
@@ -553,14 +560,18 @@ export class AccountDerivationEngineV2 {
     organizationId: string,
     businessContext?: Record<string, any>
   ): Promise<{ accountCode: string; accountName?: string; confidence: number }> {
-    const result = await callRPC(rpcFunction, {
-      p_organization_id: organizationId,
-      p_smart_code: event.smart_code,
-      p_amount: event.total_amount,
-      p_currency: event.transaction_currency_code,
-      p_business_context: JSON.stringify(businessContext || {}),
-      p_metadata: JSON.stringify(event.metadata || {})
-    }, { mode: 'service' })
+    const result = await callRPC(
+      rpcFunction,
+      {
+        p_organization_id: organizationId,
+        p_smart_code: event.smart_code,
+        p_amount: event.total_amount,
+        p_currency: event.transaction_currency_code,
+        p_business_context: JSON.stringify(businessContext || {}),
+        p_metadata: JSON.stringify(event.metadata || {})
+      },
+      { mode: 'service' }
+    )
 
     if (!result?.data?.account_code) {
       throw new Error(`RPC function ${rpcFunction} did not return account_code`)
@@ -616,7 +627,8 @@ export class AccountDerivationEngineV2 {
     const parts = path.split('.')
     let current: any = accountMappings
 
-    for (const part of parts.slice(1)) { // Skip 'accounts' prefix
+    for (const part of parts.slice(1)) {
+      // Skip 'accounts' prefix
       current = current?.[part]
       if (!current) {
         throw new Error(`Cannot resolve account path: ${path}`)
@@ -704,9 +716,13 @@ export class FinanceDNAServiceV2 {
   private async loadPostingRules(): Promise<void> {
     try {
       // Load rules from database using RPC
-      const rules = await callRPC('hera_get_posting_rules_v1', {
-        p_organization_id: this.organizationId
-      }, { mode: 'service' })
+      const rules = await callRPC(
+        'hera_get_posting_rules_v1',
+        {
+          p_organization_id: this.organizationId
+        },
+        { mode: 'service' }
+      )
 
       if (rules?.data && rules.data.length > 0) {
         for (const rule of rules.data) {
@@ -728,17 +744,9 @@ export class FinanceDNAServiceV2 {
 
   private async validateDependencies(): Promise<void> {
     // Validate that required PostgreSQL views and RPC functions exist
-    const requiredViews = [
-      'v_gl_accounts_enhanced',
-      'v_account_balances',
-      'v_trial_balance'
-    ]
+    const requiredViews = ['v_gl_accounts_enhanced', 'v_account_balances', 'v_trial_balance']
 
-    const requiredRPCs = [
-      'hera_trial_balance_v1',
-      'hera_profit_loss_v1',
-      'hera_balance_sheet_v1'
-    ]
+    const requiredRPCs = ['hera_trial_balance_v1', 'hera_profit_loss_v1', 'hera_balance_sheet_v1']
 
     // In production, validate these exist
     console.log('[Finance DNA V2] Dependencies validated:', {
@@ -818,12 +826,11 @@ export class FinanceDNAServiceV2 {
           rpc_optimized: this.orgConfig.performance_settings.enable_rpc_optimization
         }
       }
-
     } catch (error) {
       console.error('[Finance DNA V2] Processing error:', error)
       const processingTime = Date.now() - startTime
       this.updatePerformanceMetrics(processingTime, false)
-      
+
       return {
         success: false,
         outcome: 'rejected',
@@ -833,11 +840,11 @@ export class FinanceDNAServiceV2 {
   }
 
   private async validateEventV2(
-    event: UniversalFinanceEventV2, 
+    event: UniversalFinanceEventV2,
     rule: PostingRule
   ): Promise<{ isValid: boolean; reason?: string }> {
     // Enhanced validation with V2 features
-    
+
     // Basic field validation
     for (const field of rule.validations.required_header) {
       if (!event[field as keyof UniversalFinanceEventV2]) {
@@ -848,7 +855,7 @@ export class FinanceDNAServiceV2 {
     // Amount limits validation
     if (rule.validations.amount_limits) {
       const amountCheck = FinanceGuardrails.validateAmountLimits(
-        event.total_amount, 
+        event.total_amount,
         rule.validations.amount_limits
       )
       if (!amountCheck.isValid) {
@@ -859,7 +866,7 @@ export class FinanceDNAServiceV2 {
     // Fiscal period validation
     if (rule.validations.fiscal_check) {
       const fiscalCheck = await FinanceGuardrails.validateFiscalPeriod(
-        event.transaction_date, 
+        event.transaction_date,
         this.organizationId
       )
       if (!fiscalCheck.isValid) {
@@ -881,26 +888,30 @@ export class FinanceDNAServiceV2 {
     return { isValid: true }
   }
 
-  private async deriveGLLinesV2(
-    event: UniversalFinanceEventV2, 
-    rule: PostingRule
-  ): Promise<any[]> {
+  private async deriveGLLinesV2(event: UniversalFinanceEventV2, rule: PostingRule): Promise<any[]> {
     const glLines: any[] = []
 
     // Use RPC function if specified for optimal performance
     if (rule.posting_recipe.rpc_function) {
       try {
-        const result = await callRPC(rule.posting_recipe.rpc_function, {
-          p_organization_id: this.organizationId,
-          p_event: JSON.stringify(event),
-          p_business_context: JSON.stringify(event.business_context || {})
-        }, { mode: 'service' })
+        const result = await callRPC(
+          rule.posting_recipe.rpc_function,
+          {
+            p_organization_id: this.organizationId,
+            p_event: JSON.stringify(event),
+            p_business_context: JSON.stringify(event.business_context || {})
+          },
+          { mode: 'service' }
+        )
 
         if (result?.data) {
           return result.data
         }
       } catch (error) {
-        console.warn(`RPC function ${rule.posting_recipe.rpc_function} failed, using fallback:`, error)
+        console.warn(
+          `RPC function ${rule.posting_recipe.rpc_function} failed, using fallback:`,
+          error
+        )
       }
     }
 
@@ -915,7 +926,7 @@ export class FinanceDNAServiceV2 {
         )
 
         const amount = await this.calculateLineAmount(event, lineRule)
-        
+
         if (amount !== 0) {
           glLines.push({
             account_code: account.accountCode,
@@ -935,17 +946,21 @@ export class FinanceDNAServiceV2 {
   }
 
   private async calculateLineAmount(
-    event: UniversalFinanceEventV2, 
+    event: UniversalFinanceEventV2,
     lineRule: PostingLineRule
   ): Promise<number> {
     if (lineRule.amount_calculation?.rpc_function) {
       try {
-        const result = await callRPC(lineRule.amount_calculation.rpc_function, {
-          p_organization_id: this.organizationId,
-          p_total_amount: event.total_amount,
-          p_currency: event.transaction_currency_code,
-          p_business_context: JSON.stringify(event.business_context || {})
-        }, { mode: 'service' })
+        const result = await callRPC(
+          lineRule.amount_calculation.rpc_function,
+          {
+            p_organization_id: this.organizationId,
+            p_total_amount: event.total_amount,
+            p_currency: event.transaction_currency_code,
+            p_business_context: JSON.stringify(event.business_context || {})
+          },
+          { mode: 'service' }
+        )
 
         return result?.data?.calculated_amount || 0
       } catch (error) {
@@ -966,20 +981,20 @@ export class FinanceDNAServiceV2 {
   }
 
   private async evaluateOutcomeV2(
-    event: UniversalFinanceEventV2, 
+    event: UniversalFinanceEventV2,
     rule: PostingRule
   ): Promise<'posted' | 'staged' | 'rejected'> {
     // Enhanced outcome evaluation with multiple criteria
-    
+
     // Default AI confidence for V2
     const aiConfidence = 0.95
-    
+
     // Evaluate auto-post criteria
     if (rule.outcomes.auto_post_if) {
-      const autoPostResult = this.evaluateExpression(
-        rule.outcomes.auto_post_if,
-        { ai_confidence: aiConfidence, total_amount: event.total_amount }
-      )
+      const autoPostResult = this.evaluateExpression(rule.outcomes.auto_post_if, {
+        ai_confidence: aiConfidence,
+        total_amount: event.total_amount
+      })
       if (autoPostResult) {
         return 'posted'
       }
@@ -987,10 +1002,10 @@ export class FinanceDNAServiceV2 {
 
     // Check if approval is required
     if (rule.outcomes.approval_required_if) {
-      const approvalRequired = this.evaluateExpression(
-        rule.outcomes.approval_required_if,
-        { ai_confidence: aiConfidence, total_amount: event.total_amount }
-      )
+      const approvalRequired = this.evaluateExpression(rule.outcomes.approval_required_if, {
+        ai_confidence: aiConfidence,
+        total_amount: event.total_amount
+      })
       if (approvalRequired) {
         return 'staged' // Requires approval
       }
@@ -998,10 +1013,10 @@ export class FinanceDNAServiceV2 {
 
     // Check staging criteria
     if (rule.outcomes.staging_criteria) {
-      const shouldStage = this.evaluateExpression(
-        rule.outcomes.staging_criteria,
-        { ai_confidence: aiConfidence, total_amount: event.total_amount }
-      )
+      const shouldStage = this.evaluateExpression(rule.outcomes.staging_criteria, {
+        ai_confidence: aiConfidence,
+        total_amount: event.total_amount
+      })
       if (shouldStage) {
         return 'staged'
       }
@@ -1018,7 +1033,7 @@ export class FinanceDNAServiceV2 {
       const expr = expression
         .replace(/ai_confidence/g, context.ai_confidence?.toString() || '0')
         .replace(/total_amount/g, context.total_amount?.toString() || '0')
-      
+
       // Very basic evaluation - implement proper parser in production
       if (expr.includes('>=')) {
         const [left, right] = expr.split('>=')
@@ -1032,7 +1047,7 @@ export class FinanceDNAServiceV2 {
         const parts = expr.split('AND')
         return parts.every(part => this.evaluateExpression(part.trim(), context))
       }
-      
+
       return false
     } catch (error) {
       console.warn('Expression evaluation failed:', error)
@@ -1041,7 +1056,7 @@ export class FinanceDNAServiceV2 {
   }
 
   private async createTransactionV2(
-    event: UniversalFinanceEventV2, 
+    event: UniversalFinanceEventV2,
     glLines: any[]
   ): Promise<{ transaction_id: string }> {
     // Create transaction using API V2
@@ -1087,18 +1102,20 @@ export class FinanceDNAServiceV2 {
 
   private updatePerformanceMetrics(processingTime: number, success: boolean): void {
     this.performanceMetrics.totalProcessed++
-    this.performanceMetrics.avgProcessingTime = 
+    this.performanceMetrics.avgProcessingTime =
       (this.performanceMetrics.avgProcessingTime + processingTime) / 2
-    
+
     if (success) {
-      this.performanceMetrics.successRate = 
-        (this.performanceMetrics.successRate * (this.performanceMetrics.totalProcessed - 1) + 100) / 
+      this.performanceMetrics.successRate =
+        (this.performanceMetrics.successRate * (this.performanceMetrics.totalProcessed - 1) + 100) /
         this.performanceMetrics.totalProcessed
     }
 
     if (this.orgConfig.performance_settings.use_postgresql_views) {
-      this.performanceMetrics.viewOptimizationRate = 
-        (this.performanceMetrics.viewOptimizationRate * (this.performanceMetrics.totalProcessed - 1) + 100) / 
+      this.performanceMetrics.viewOptimizationRate =
+        (this.performanceMetrics.viewOptimizationRate *
+          (this.performanceMetrics.totalProcessed - 1) +
+          100) /
         this.performanceMetrics.totalProcessed
     }
   }

@@ -1,15 +1,21 @@
 /**
  * HERA Guardrails v2 - Enhanced Sacred Rules Enforcement
  * Smart Code: HERA.ACCOUNTING.GUARDRAIL.VALIDATOR.v2
- * 
+ *
  * Enhanced guardrails with fiscal period validation, AI confidence checks,
  * and integration with PostgreSQL views for real-time validation.
  */
 
-import { HERAGuardrails, GuardrailResult, GuardrailViolation, SACRED_TABLES } from './hera-guardrails'
+import {
+  HERAGuardrails,
+  GuardrailResult,
+  GuardrailViolation,
+  SACRED_TABLES
+} from './hera-guardrails'
 
 // Enhanced Smart Code Pattern for v2
-export const SMART_CODE_V2_PATTERN = /^HERA\.ACCOUNTING\.[A-Z0-9]{2,10}(?:\.[A-Z0-9_]{2,15}){2,6}\.v2$/
+export const SMART_CODE_V2_PATTERN =
+  /^HERA\.ACCOUNTING\.[A-Z0-9]{2,10}(?:\.[A-Z0-9_]{2,15}){2,6}\.v2$/
 export const SMART_CODE_V1_PATTERN = /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.[vV]1$/
 
 // v2-specific validation rules
@@ -81,7 +87,7 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
 
     // Determine version and validate accordingly
     const version = this.getSmartCodeVersion(code)
-    
+
     if (version === 'v2') {
       if (!SMART_CODE_V2_PATTERN.test(code)) {
         violations.push({
@@ -128,7 +134,7 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
       // This would be implemented with actual database call
       // For now, we'll simulate the validation
       const periodStatus = await this.getFiscalPeriodStatus(transactionDate, organizationId)
-      
+
       if (!periodStatus) {
         violations.push({
           code: 'TXN-PERIOD-NOT-FOUND',
@@ -140,7 +146,7 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
           code: 'TXN-PERIOD-CLOSED',
           message: `Cannot post to closed fiscal period ${periodStatus.period_code} (${periodStatus.period_name})`,
           severity: 'ERROR',
-          context: { 
+          context: {
             period_code: periodStatus.period_code,
             period_status: periodStatus.status,
             fiscal_year: periodStatus.fiscal_year
@@ -179,10 +185,10 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
     try {
       // This would query v_gl_accounts_enhanced view
       const validAccounts = await this.validateAccountsExist(accountCodes, organizationId)
-      
+
       for (const accountCode of accountCodes) {
         const accountInfo = validAccounts.find(a => a.account_code === accountCode)
-        
+
         if (!accountInfo) {
           violations.push({
             code: 'COA-MAPPING-NOT-FOUND',
@@ -229,7 +235,7 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
         code: 'TXN-AI-CONFIDENCE-TOO-LOW',
         message: `AI confidence ${aiConfidence.toFixed(3)} is below rejection threshold ${config.reject_threshold}`,
         severity: 'ERROR',
-        context: { 
+        context: {
           ai_confidence: aiConfidence,
           threshold: config.reject_threshold,
           recommendation: 'REJECT'
@@ -241,7 +247,7 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
         code: 'TXN-AI-VERIFY',
         message: `AI confidence ${aiConfidence.toFixed(3)} requires ${approvalLevel} approval`,
         severity: 'WARNING',
-        context: { 
+        context: {
           ai_confidence: aiConfidence,
           approval_level: approvalLevel,
           threshold: config.require_approval_threshold
@@ -266,12 +272,15 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
     }
 
     // Group by currency and calculate balances
-    const currencyBalances = new Map<string, {
-      total_debits: number
-      total_credits: number
-      net_balance: number
-      line_count: number
-    }>()
+    const currencyBalances = new Map<
+      string,
+      {
+        total_debits: number
+        total_credits: number
+        net_balance: number
+        line_count: number
+      }
+    >()
 
     lines.forEach((line, index) => {
       if (line.line_type === 'GL') {
@@ -374,7 +383,7 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
         const accountCodes = glLines
           .map(l => l.account_code || l.line_data?.account_code)
           .filter(Boolean)
-        
+
         if (accountCodes.length > 0) {
           const coaResult = await this.validateCOAMapping(accountCodes, transaction.organization_id)
           allViolations.push(...coaResult.violations)
@@ -395,10 +404,7 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
     return 'unknown'
   }
 
-  private static determineApprovalLevel(
-    aiConfidence: number,
-    transactionAmount?: number
-  ): string {
+  private static determineApprovalLevel(aiConfidence: number, transactionAmount?: number): string {
     if (transactionAmount && transactionAmount > 10000) {
       return 'OWNER'
     } else if (aiConfidence < 0.5) {
@@ -496,7 +502,7 @@ export class HERAGuardrailsV2 extends HERAGuardrails {
 // Enhanced CLI Exit codes for v2
 export const CLI_EXIT_CODES_V2 = {
   ...require('./hera-guardrails').CLI_EXIT_CODES,
-  
+
   // v2-specific exit codes
   FISCAL_PERIOD_CLOSED: 40,
   FISCAL_PERIOD_LOCKED: 41,

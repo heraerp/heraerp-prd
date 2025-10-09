@@ -11,7 +11,7 @@
  * ✅ Inventory valuation
  */
 
-import React, {  useState, useMemo, useEffect, useCallback , Suspense } from 'react'
+import React, { useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -77,7 +77,6 @@ const COLORS = {
 }
 
 function SalonInventoryContent() {
-
   const { organizationId } = useSecuredSalonContext()
   const { user } = useHERAAuth()
   const router = useRouter()
@@ -349,8 +348,7 @@ function SalonInventoryContent() {
     )
   }
 
-  
-return (
+  return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.charcoalDark }}>
       {/* Gradient overlay */}
       <div
@@ -971,12 +969,11 @@ return (
       </div>
     </div>
   )
-
 }
 
 export default function SalonInventoryPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

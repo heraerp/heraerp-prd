@@ -1,7 +1,7 @@
 /**
  * Financial Reporting API v2 - Enhanced Performance Layer
  * Smart Code: HERA.ACCOUNTING.REPORTING.API.v2
- * 
+ *
  * High-performance TypeScript interface for Finance DNA v2 reporting
  * with intelligent caching, streaming responses, and comprehensive
  * financial statement generation capabilities.
@@ -83,7 +83,12 @@ export interface TrialBalanceReport {
 }
 
 export interface ProfitLossLineItem {
-  section_name: 'REVENUE' | 'COST_OF_GOODS_SOLD' | 'OPERATING_EXPENSES' | 'OTHER_INCOME' | 'OTHER_EXPENSES'
+  section_name:
+    | 'REVENUE'
+    | 'COST_OF_GOODS_SOLD'
+    | 'OPERATING_EXPENSES'
+    | 'OTHER_INCOME'
+    | 'OTHER_EXPENSES'
   account_category: string
   account_code: string
   account_name: string
@@ -250,9 +255,7 @@ export class FinancialReportingAPIV2 {
   /**
    * Generate enhanced trial balance with sub-account support
    */
-  static async generateTrialBalance(
-    config: FinancialReportConfig
-  ): Promise<TrialBalanceReport> {
+  static async generateTrialBalance(config: FinancialReportConfig): Promise<TrialBalanceReport> {
     const startTime = performance.now()
 
     try {
@@ -263,20 +266,26 @@ export class FinancialReportingAPIV2 {
       )
 
       if (!fiscalValidation.passed) {
-        throw new Error(`Fiscal period validation failed: ${fiscalValidation.violations[0]?.message}`)
+        throw new Error(
+          `Fiscal period validation failed: ${fiscalValidation.violations[0]?.message}`
+        )
       }
 
       // Call enhanced RPC function
-      const result = await callFunction('hera_generate_trial_balance_v2', {
-        p_organization_id: config.organizationId,
-        p_period_start: config.startDate,
-        p_period_end: config.endDate,
-        p_include_sub_accounts: config.includeSubAccounts ?? true,
-        p_zero_balance_accounts: config.includeZeroBalances ?? false,
-        p_account_filter: config.accountFilter,
-        p_cost_center_filter: config.costCenterFilter,
-        p_currency_code: config.currency ?? 'USD'
-      }, { mode: 'rpc' })
+      const result = await callFunction(
+        'hera_generate_trial_balance_v2',
+        {
+          p_organization_id: config.organizationId,
+          p_period_start: config.startDate,
+          p_period_end: config.endDate,
+          p_include_sub_accounts: config.includeSubAccounts ?? true,
+          p_zero_balance_accounts: config.includeZeroBalances ?? false,
+          p_account_filter: config.accountFilter,
+          p_cost_center_filter: config.costCenterFilter,
+          p_currency_code: config.currency ?? 'USD'
+        },
+        { mode: 'rpc' }
+      )
 
       if (!result.success) {
         throw new Error(`Trial balance generation failed: ${result.error}`)
@@ -323,7 +332,6 @@ export class FinancialReportingAPIV2 {
         line_items: lineItems,
         drill_down_available: lineItems.some(item => item.sub_account_count > 0)
       }
-
     } catch (error) {
       console.error('Trial balance generation error:', error)
       throw new Error(`Failed to generate trial balance: ${error.message}`)
@@ -346,20 +354,26 @@ export class FinancialReportingAPIV2 {
       )
 
       if (!fiscalValidation.passed) {
-        throw new Error(`Fiscal period validation failed: ${fiscalValidation.violations[0]?.message}`)
+        throw new Error(
+          `Fiscal period validation failed: ${fiscalValidation.violations[0]?.message}`
+        )
       }
 
       // Call enhanced P&L RPC function
-      const result = await callFunction('hera_generate_profit_loss_v2', {
-        p_organization_id: config.organizationId,
-        p_current_period_start: config.startDate,
-        p_current_period_end: config.endDate,
-        p_compare_previous_period: config.comparePreviousPeriod ?? true,
-        p_compare_budget: config.compareBudget ?? false,
-        p_include_percentages: config.includePercentages ?? true,
-        p_currency_code: config.currency ?? 'USD',
-        p_cost_center_filter: config.costCenterFilter
-      }, { mode: 'rpc' })
+      const result = await callFunction(
+        'hera_generate_profit_loss_v2',
+        {
+          p_organization_id: config.organizationId,
+          p_current_period_start: config.startDate,
+          p_current_period_end: config.endDate,
+          p_compare_previous_period: config.comparePreviousPeriod ?? true,
+          p_compare_budget: config.compareBudget ?? false,
+          p_include_percentages: config.includePercentages ?? true,
+          p_currency_code: config.currency ?? 'USD',
+          p_cost_center_filter: config.costCenterFilter
+        },
+        { mode: 'rpc' }
+      )
 
       if (!result.success) {
         throw new Error(`P&L statement generation failed: ${result.error}`)
@@ -378,10 +392,22 @@ export class FinancialReportingAPIV2 {
 
       // Calculate summary metrics
       const totalRevenue = sections.revenue.reduce((sum, item) => sum + item.current_period, 0)
-      const totalCOGS = sections.cost_of_goods_sold.reduce((sum, item) => sum + item.current_period, 0)
-      const totalOpex = sections.operating_expenses.reduce((sum, item) => sum + item.current_period, 0)
-      const totalOtherIncome = sections.other_income.reduce((sum, item) => sum + item.current_period, 0)
-      const totalOtherExpenses = sections.other_expenses.reduce((sum, item) => sum + item.current_period, 0)
+      const totalCOGS = sections.cost_of_goods_sold.reduce(
+        (sum, item) => sum + item.current_period,
+        0
+      )
+      const totalOpex = sections.operating_expenses.reduce(
+        (sum, item) => sum + item.current_period,
+        0
+      )
+      const totalOtherIncome = sections.other_income.reduce(
+        (sum, item) => sum + item.current_period,
+        0
+      )
+      const totalOtherExpenses = sections.other_expenses.reduce(
+        (sum, item) => sum + item.current_period,
+        0
+      )
 
       const grossProfit = totalRevenue - totalCOGS
       const operatingIncome = grossProfit - totalOpex
@@ -408,7 +434,8 @@ export class FinancialReportingAPIV2 {
           operating_income: operatingIncome,
           net_income: netIncome,
           gross_margin_percentage: totalRevenue !== 0 ? (grossProfit / totalRevenue) * 100 : 0,
-          operating_margin_percentage: totalRevenue !== 0 ? (operatingIncome / totalRevenue) * 100 : 0,
+          operating_margin_percentage:
+            totalRevenue !== 0 ? (operatingIncome / totalRevenue) * 100 : 0,
           net_margin_percentage: totalRevenue !== 0 ? (netIncome / totalRevenue) * 100 : 0,
           performance_metrics: {
             processing_time_ms: processingTime,
@@ -421,21 +448,22 @@ export class FinancialReportingAPIV2 {
           }
         },
         sections,
-        comparative_analysis: config.comparePreviousPeriod ? {
-          revenue_growth: this.calculateGrowthRate(
-            sections.revenue.reduce((sum, item) => sum + item.current_period, 0),
-            sections.revenue.reduce((sum, item) => sum + item.previous_period, 0)
-          ),
-          expense_growth: this.calculateGrowthRate(
-            totalCOGS + totalOpex,
-            sections.cost_of_goods_sold.reduce((sum, item) => sum + item.previous_period, 0) +
-            sections.operating_expenses.reduce((sum, item) => sum + item.previous_period, 0)
-          ),
-          margin_improvement: 0, // Would calculate based on previous period margins
-          key_insights: []
-        } : undefined
+        comparative_analysis: config.comparePreviousPeriod
+          ? {
+              revenue_growth: this.calculateGrowthRate(
+                sections.revenue.reduce((sum, item) => sum + item.current_period, 0),
+                sections.revenue.reduce((sum, item) => sum + item.previous_period, 0)
+              ),
+              expense_growth: this.calculateGrowthRate(
+                totalCOGS + totalOpex,
+                sections.cost_of_goods_sold.reduce((sum, item) => sum + item.previous_period, 0) +
+                  sections.operating_expenses.reduce((sum, item) => sum + item.previous_period, 0)
+              ),
+              margin_improvement: 0, // Would calculate based on previous period margins
+              key_insights: []
+            }
+          : undefined
       }
-
     } catch (error) {
       console.error('P&L statement generation error:', error)
       throw new Error(`Failed to generate P&L statement: ${error.message}`)
@@ -455,13 +483,17 @@ export class FinancialReportingAPIV2 {
 
     try {
       // Call enhanced balance sheet RPC function
-      const result = await callFunction('hera_generate_balance_sheet_v2', {
-        p_organization_id: config.organizationId,
-        p_as_of_date: config.asOfDate,
-        p_include_ratios: config.includeRatios ?? true,
-        p_currency_code: config.currency ?? 'USD',
-        p_comparative_date: config.comparativeDate
-      }, { mode: 'rpc' })
+      const result = await callFunction(
+        'hera_generate_balance_sheet_v2',
+        {
+          p_organization_id: config.organizationId,
+          p_as_of_date: config.asOfDate,
+          p_include_ratios: config.includeRatios ?? true,
+          p_currency_code: config.currency ?? 'USD',
+          p_comparative_date: config.comparativeDate
+        },
+        { mode: 'rpc' }
+      )
 
       if (!result.success) {
         throw new Error(`Balance sheet generation failed: ${result.error}`)
@@ -478,7 +510,10 @@ export class FinancialReportingAPIV2 {
 
       // Calculate summary metrics
       const totalAssets = sections.assets.reduce((sum, item) => sum + item.current_balance, 0)
-      const totalLiabilities = sections.liabilities.reduce((sum, item) => sum + item.current_balance, 0)
+      const totalLiabilities = sections.liabilities.reduce(
+        (sum, item) => sum + item.current_balance,
+        0
+      )
       const totalEquity = sections.equity.reduce((sum, item) => sum + item.current_balance, 0)
       const balanceDifference = Math.abs(totalAssets - (totalLiabilities + totalEquity))
       const isBalanced = balanceDifference < 0.01
@@ -522,15 +557,17 @@ export class FinancialReportingAPIV2 {
           }
         },
         sections,
-        financial_ratios: config.includeRatios ? {
-          current_ratio: currentLiabilities !== 0 ? currentAssets / currentLiabilities : 0,
-          quick_ratio: 0, // Would need more detailed current assets breakdown
-          debt_to_equity_ratio: totalEquity !== 0 ? totalLiabilities / totalEquity : 0,
-          return_on_assets: 0, // Would need net income from P&L
-          return_on_equity: 0, // Would need net income from P&L
-          asset_turnover: 0, // Would need revenue from P&L
-          equity_multiplier: totalEquity !== 0 ? totalAssets / totalEquity : 0
-        } : undefined,
+        financial_ratios: config.includeRatios
+          ? {
+              current_ratio: currentLiabilities !== 0 ? currentAssets / currentLiabilities : 0,
+              quick_ratio: 0, // Would need more detailed current assets breakdown
+              debt_to_equity_ratio: totalEquity !== 0 ? totalLiabilities / totalEquity : 0,
+              return_on_assets: 0, // Would need net income from P&L
+              return_on_equity: 0, // Would need net income from P&L
+              asset_turnover: 0, // Would need revenue from P&L
+              equity_multiplier: totalEquity !== 0 ? totalAssets / totalEquity : 0
+            }
+          : undefined,
         liquidity_analysis: {
           current_assets: currentAssets,
           current_liabilities: currentLiabilities,
@@ -540,7 +577,6 @@ export class FinancialReportingAPIV2 {
           liquidity_score: 0 // Would be calculated based on multiple factors
         }
       }
-
     } catch (error) {
       console.error('Balance sheet generation error:', error)
       throw new Error(`Failed to generate balance sheet: ${error.message}`)
@@ -565,12 +601,16 @@ export class FinancialReportingAPIV2 {
 
     try {
       // Get account information
-      const accountResult = await callFunction('get_account_details_v2', {
-        p_organization_id: organizationId,
-        p_account_code: accountCode,
-        p_period_start: periodStart,
-        p_period_end: periodEnd
-      }, { mode: 'rpc' })
+      const accountResult = await callFunction(
+        'get_account_details_v2',
+        {
+          p_organization_id: organizationId,
+          p_account_code: accountCode,
+          p_period_start: periodStart,
+          p_period_end: periodEnd
+        },
+        { mode: 'rpc' }
+      )
 
       if (!accountResult.success) {
         throw new Error(`Account details lookup failed: ${accountResult.error}`)
@@ -588,12 +628,12 @@ export class FinancialReportingAPIV2 {
           data_source: 'LIVE_CALCULATION',
           validation_engine: 'v2_enhanced',
           performance_tier: this.getPerformanceTier(processingTime),
-          total_records: (accountResult.data?.transaction_history?.length || 0) + 
-                        (accountResult.data?.sub_accounts?.length || 0),
+          total_records:
+            (accountResult.data?.transaction_history?.length || 0) +
+            (accountResult.data?.sub_accounts?.length || 0),
           data_freshness: new Date().toISOString()
         }
       }
-
     } catch (error) {
       console.error('Account details lookup error:', error)
       throw new Error(`Failed to get account details: ${error.message}`)
@@ -614,11 +654,15 @@ export class FinancialReportingAPIV2 {
     const startTime = performance.now()
 
     try {
-      const result = await callFunction('export_financial_report_v2', {
-        report_data: reportData,
-        export_format: format,
-        organization_id: reportData.report_header.organization_id
-      }, { mode: 'rpc' })
+      const result = await callFunction(
+        'export_financial_report_v2',
+        {
+          report_data: reportData,
+          export_format: format,
+          organization_id: reportData.report_header.organization_id
+        },
+        { mode: 'rpc' }
+      )
 
       if (!result.success) {
         throw new Error(`Report export failed: ${result.error}`)
@@ -631,7 +675,6 @@ export class FinancialReportingAPIV2 {
         file_size_bytes: result.data.file_size_bytes,
         generation_time_ms: processingTime
       }
-
     } catch (error) {
       console.error('Report export error:', error)
       throw new Error(`Failed to export report: ${error.message}`)
@@ -643,16 +686,19 @@ export class FinancialReportingAPIV2 {
    */
   static async clearReportCache(organizationId: string): Promise<number> {
     try {
-      const result = await callFunction('clear_financial_reports_cache', {
-        p_organization_id: organizationId
-      }, { mode: 'rpc' })
+      const result = await callFunction(
+        'clear_financial_reports_cache',
+        {
+          p_organization_id: organizationId
+        },
+        { mode: 'rpc' }
+      )
 
       if (!result.success) {
         throw new Error(`Cache clear failed: ${result.error}`)
       }
 
       return result.data.cleared_count || 0
-
     } catch (error) {
       console.error('Cache clear error:', error)
       throw new Error(`Failed to clear report cache: ${error.message}`)
@@ -663,7 +709,9 @@ export class FinancialReportingAPIV2 {
   // Utility Methods
   // ============================================================================
 
-  private static getPerformanceTier(processingTimeMs: number): 'ENTERPRISE' | 'PREMIUM' | 'STANDARD' {
+  private static getPerformanceTier(
+    processingTimeMs: number
+  ): 'ENTERPRISE' | 'PREMIUM' | 'STANDARD' {
     if (processingTimeMs < this.performanceThresholds.enterprise_ms) {
       return 'ENTERPRISE'
     } else if (processingTimeMs < this.performanceThresholds.premium_ms) {
@@ -759,10 +807,12 @@ export function useProfitLossStatement(config: FinancialReportConfig) {
   }
 }
 
-export function useBalanceSheet(config: Omit<FinancialReportConfig, 'startDate' | 'endDate'> & {
-  asOfDate: string
-  comparativeDate?: string
-}) {
+export function useBalanceSheet(
+  config: Omit<FinancialReportConfig, 'startDate' | 'endDate'> & {
+    asOfDate: string
+    comparativeDate?: string
+  }
+) {
   const [report, setReport] = useState<BalanceSheetReport | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -801,7 +851,7 @@ export function useBalanceSheet(config: Omit<FinancialReportConfig, 'startDate' 
 
 /**
  * Example Usage:
- * 
+ *
  * // Trial Balance Report
  * const { report, isLoading, isBalanced } = useTrialBalance({
  *   organizationId: 'org-123',
@@ -810,8 +860,8 @@ export function useBalanceSheet(config: Omit<FinancialReportConfig, 'startDate' 
  *   currency: 'USD',
  *   includeSubAccounts: true
  * })
- * 
- * // P&L Statement  
+ *
+ * // P&L Statement
  * const { report: plReport, profitabilityMetrics } = useProfitLossStatement({
  *   organizationId: 'org-123',
  *   startDate: '2024-01-01',
@@ -819,7 +869,7 @@ export function useBalanceSheet(config: Omit<FinancialReportConfig, 'startDate' 
  *   comparePreviousPeriod: true,
  *   includePercentages: true
  * })
- * 
+ *
  * // Balance Sheet
  * const { report: bsReport, financialRatios } = useBalanceSheet({
  *   organizationId: 'org-123',

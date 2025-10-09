@@ -19,15 +19,15 @@ export async function callRPC(
 ) {
   try {
     const supabase = getSupabase()
-    
+
     // Call the RPC function with parameters
     const { data, error } = await supabase.rpc(functionName, params)
-    
+
     if (error) {
       console.error(`RPC call failed for ${functionName}:`, error)
       throw new Error(`RPC call failed: ${error.message}`)
     }
-    
+
     return {
       success: true,
       data,
@@ -58,7 +58,7 @@ export async function batchRPC(
   const results = await Promise.allSettled(
     calls.map(({ functionName, params }) => callRPC(functionName, params))
   )
-  
+
   return results.map((result, index) => ({
     functionName: calls[index].functionName,
     success: result.status === 'fulfilled',

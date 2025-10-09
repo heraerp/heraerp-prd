@@ -27,4 +27,3 @@ export function withHERAAuth(handler: NextHandler, opts?: GuardOptions) {
     return handler(req, auth)
   }
 }
-

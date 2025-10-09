@@ -143,7 +143,6 @@ export async function searchAppointments(
     page = 1,
     page_size = 50
   } = params
-  
 
   // Set organization context
   universalApi.setOrganizationId(organization_id)
@@ -209,7 +208,6 @@ export async function searchAppointments(
     }
     return appointment
   })
-  
 
   // 5) Apply client-side filters if any
   let filteredAppointments = appointments
@@ -222,16 +220,20 @@ export async function searchAppointments(
           filter_branch: branch_id,
           branchCheck: !branch_id || a.branch_id === branch_id,
           searchTerm: q,
-          searchCheck: !q || (a.entity_name?.toLowerCase().includes(q.toLowerCase()) ||
-                              a.entity_code?.toLowerCase().includes(q.toLowerCase()) ||
-                              a.notes?.toLowerCase().includes(q.toLowerCase())),
-          willPassFilter: (!branch_id || a.branch_id === branch_id) && 
-                         (!q || (a.entity_name?.toLowerCase().includes(q.toLowerCase()) ||
-                                a.entity_code?.toLowerCase().includes(q.toLowerCase()) ||
-                                a.notes?.toLowerCase().includes(q.toLowerCase())))
+          searchCheck:
+            !q ||
+            a.entity_name?.toLowerCase().includes(q.toLowerCase()) ||
+            a.entity_code?.toLowerCase().includes(q.toLowerCase()) ||
+            a.notes?.toLowerCase().includes(q.toLowerCase()),
+          willPassFilter:
+            (!branch_id || a.branch_id === branch_id) &&
+            (!q ||
+              a.entity_name?.toLowerCase().includes(q.toLowerCase()) ||
+              a.entity_code?.toLowerCase().includes(q.toLowerCase()) ||
+              a.notes?.toLowerCase().includes(q.toLowerCase()))
         })
       }
-      
+
       // Date filters
       if (date_from && new Date(a.start_time) < new Date(date_from)) return false
       if (date_to && new Date(a.start_time) > new Date(date_to)) return false

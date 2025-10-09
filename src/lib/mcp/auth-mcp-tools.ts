@@ -19,4 +19,3 @@ export const HERA_AUTH_MCP = {
 }
 
 export type HERAAuthMCP = typeof HERA_AUTH_MCP
-

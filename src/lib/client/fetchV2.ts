@@ -9,7 +9,9 @@ async function getAuthHeaders(): Promise<HeadersInit> {
 
   try {
     const { supabase } = await import('@/lib/supabase/client')
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
 
     if (session?.access_token) {
       return {
@@ -78,8 +80,8 @@ export async function fetchV2(input: string, init: RequestInit = {}): Promise<Re
   const fullUrl = url.startsWith('http')
     ? url
     : typeof window !== 'undefined'
-    ? url // Browser: use relative URL (same origin)
-    : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}${url}` // Server: need absolute URL
+      ? url // Browser: use relative URL (same origin)
+      : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}${url}` // Server: need absolute URL
 
   console.log(`[fetchV2] Making request to: ${fullUrl}`)
 

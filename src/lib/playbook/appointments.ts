@@ -146,10 +146,7 @@ export async function listAppointmentsForKanban(params: {
             value = r.field_value_date
           } else if (r.field_value_number !== null && r.field_value_number !== undefined) {
             value = Number(r.field_value_number)
-          } else if (
-            r.field_value_boolean !== null &&
-            r.field_value_boolean !== undefined
-          ) {
+          } else if (r.field_value_boolean !== null && r.field_value_boolean !== undefined) {
             value = !!r.field_value_boolean
           } else if (r.field_value_text !== null && r.field_value_text !== undefined) {
             value = r.field_value_text
@@ -207,7 +204,11 @@ export async function listAppointmentsForKanban(params: {
         rank,
         start: startISO,
         end: endISO,
-        customer_name: (dyn.customer_name as string) || (dyn.client_name as string) || r.entity_name || 'Walk-in Customer',
+        customer_name:
+          (dyn.customer_name as string) ||
+          (dyn.client_name as string) ||
+          r.entity_name ||
+          'Walk-in Customer',
         service_name: (dyn.service_name as string) || 'Hair Service',
         stylist_name: (dyn.stylist_name as string) || undefined,
         flags: {
@@ -270,7 +271,7 @@ export async function postStatusChange(params: {
       notes: params.reason
     })
 
-    console.log(`✅ Successfully updated appointment status to ${params.to_status} (v2)`) 
+    console.log(`✅ Successfully updated appointment status to ${params.to_status} (v2)`)
 
     // (Optional) We can emit an audit record via txn-emit if needed.
 

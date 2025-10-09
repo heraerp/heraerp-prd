@@ -1,6 +1,6 @@
 /**
  * Finance Event Processor v2 - Revolutionary Enhancement
- * 
+ *
  * Key v2 Features:
  * - PostgreSQL RPC integration for 10x+ performance
  * - Real-time fiscal period validation
@@ -8,7 +8,7 @@
  * - Multi-tier approval workflows
  * - Enhanced multi-currency support
  * - Policy-as-data configuration
- * 
+ *
  * Smart Code: HERA.ACCOUNTING.PROCESSOR.EVENT.v2
  */
 
@@ -103,27 +103,30 @@ export class FinanceEventProcessorV2 {
   /**
    * Process any business event with enhanced v2 capabilities
    */
-  async processBusinessEvent(params: {
-    smart_code: string
-    source_system: string
-    origin_txn_id: string
-    currency: string
-    total_amount: number
-    transaction_date?: string
-    payment_method?: string
-    revenue_type?: string
-    expense_type?: string
-    ai_confidence?: number
-    metadata?: Record<string, any>
-    lines?: Array<{
-      entity_id: string
-      role: string
-      amount: number
-      type: 'debit' | 'credit'
-      relationships?: Record<string, string>
+  async processBusinessEvent(
+    params: {
+      smart_code: string
+      source_system: string
+      origin_txn_id: string
+      currency: string
+      total_amount: number
+      transaction_date?: string
+      payment_method?: string
+      revenue_type?: string
+      expense_type?: string
+      ai_confidence?: number
       metadata?: Record<string, any>
-    }>
-  }, options: ProcessingOptions = {}): Promise<FinanceEventResultV2> {
+      lines?: Array<{
+        entity_id: string
+        role: string
+        amount: number
+        type: 'debit' | 'credit'
+        relationships?: Record<string, string>
+        metadata?: Record<string, any>
+      }>
+    },
+    options: ProcessingOptions = {}
+  ): Promise<FinanceEventResultV2> {
     const startTime = performance.now()
 
     try {
@@ -148,7 +151,8 @@ export class FinanceEventProcessorV2 {
             cache_hits: 0,
             performance_tier: 'STANDARD'
           },
-          message: 'Validation failed: ' + validationResult.violations.map(v => v.message).join(', ')
+          message:
+            'Validation failed: ' + validationResult.violations.map(v => v.message).join(', ')
         }
       }
 
@@ -167,19 +171,23 @@ export class FinanceEventProcessorV2 {
       }
 
       // Call enhanced PostgreSQL RPC function
-      const rpcResult = await callFunction('hera_generate_gl_lines_v2', {
-        p_organization_id: this.organizationId,
-        p_transaction_data: transactionData,
-        p_ai_confidence: params.ai_confidence || 0.8,
-        p_validate_only: options.validate_only || false
-      }, { mode: 'rpc' })
+      const rpcResult = await callFunction(
+        'hera_generate_gl_lines_v2',
+        {
+          p_organization_id: this.organizationId,
+          p_transaction_data: transactionData,
+          p_ai_confidence: params.ai_confidence || 0.8,
+          p_validate_only: options.validate_only || false
+        },
+        { mode: 'rpc' }
+      )
 
       if (!rpcResult.success) {
         throw new Error(`RPC call failed: ${rpcResult.error}`)
       }
 
       const result = rpcResult.data[0] // RPC returns array
-      
+
       // Update processing stats
       this.updateProcessingStats(result.performance_metrics)
 
@@ -192,12 +200,13 @@ export class FinanceEventProcessorV2 {
         validation_result: result.validation_result,
         ai_recommendations: result.ai_recommendations,
         performance_metrics: result.performance_metrics,
-        message: result.success ? 'Transaction processed successfully' : 'Transaction failed validation'
+        message: result.success
+          ? 'Transaction processed successfully'
+          : 'Transaction failed validation'
       }
-
     } catch (error) {
       console.error('Finance event processing error:', error)
-      
+
       return {
         success: false,
         posting_status: 'rejected',
@@ -322,13 +331,13 @@ export class FinanceEventProcessorV2 {
     // Process in batches with controlled parallelism
     for (let i = 0; i < events.length; i += batchSize) {
       const batch = events.slice(i, i + batchSize)
-      
+
       if (options.parallel_processing) {
         // Parallel processing within batch
-        const batchPromises = batch.map(event => 
+        const batchPromises = batch.map(event =>
           this.processBusinessEvent(event, { ...options, batch_mode: true })
         )
-        
+
         const batchResults = await Promise.allSettled(batchPromises)
         batchResults.forEach(result => {
           if (result.status === 'fulfilled') {
@@ -453,19 +462,18 @@ export class FinanceEventProcessorV2 {
 
   private updateProcessingStats(metrics: any) {
     this.processingStats.total_processed++
-    
+
     // Update average processing time
     const currentAvg = this.processingStats.avg_processing_time
     const newTime = metrics.processing_time_ms
-    this.processingStats.avg_processing_time = 
-      (currentAvg * (this.processingStats.total_processed - 1) + newTime) / 
+    this.processingStats.avg_processing_time =
+      (currentAvg * (this.processingStats.total_processed - 1) + newTime) /
       this.processingStats.total_processed
 
     // Update cache hit ratio
     if (metrics.cache_hits && metrics.database_calls) {
       const hitRatio = metrics.cache_hits / metrics.database_calls
-      this.processingStats.cache_hit_ratio = 
-        (this.processingStats.cache_hit_ratio + hitRatio) / 2
+      this.processingStats.cache_hit_ratio = (this.processingStats.cache_hit_ratio + hitRatio) / 2
     }
   }
 }
@@ -478,9 +486,9 @@ export class FinanceEventProcessorV2 {
 
 /**
  * Example usage in a salon POS component:
- * 
+ *
  * const { processor, stats } = useFinanceProcessorV2(organizationId)
- * 
+ *
  * const handleServiceComplete = async (serviceData) => {
  *   const result = await processor.postRevenue({
  *     amount: serviceData.total,
@@ -496,11 +504,11 @@ export class FinanceEventProcessorV2 {
  *       appointment_id: serviceData.appointment_id
  *     }
  *   })
- * 
+ *
  *   if (result.success) {
  *     console.log('Posted to GL:', result.journal_entry_id)
  *     console.log('Performance:', result.performance_metrics.performance_tier)
- *     
+ *
  *     if (result.posting_status === 'staged') {
  *       // Handle approval workflow
  *       console.log('Requires approval:', result.validation_result.approval_level)

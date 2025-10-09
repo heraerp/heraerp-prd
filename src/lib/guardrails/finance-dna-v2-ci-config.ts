@@ -1,7 +1,7 @@
 /**
  * Finance DNA v2 - CI/CD Integration Configuration
  * Smart Code: HERA.ACCOUNTING.CI.GUARDRAIL.CONFIG.v2
- * 
+ *
  * Comprehensive CI pipeline integration for Finance DNA v2 guardrails
  * with automated smoke tests and deployment gates.
  */
@@ -114,7 +114,7 @@ export class FinanceDNAV2CIIntegration {
       conditions: {
         max_errors: 2,
         max_warnings: 10,
-        required_confidence_score: 0.90
+        required_confidence_score: 0.9
       },
       bypass_roles: ['finance_manager'],
       notification_required: false
@@ -163,10 +163,10 @@ export class FinanceDNAV2CIIntegration {
     try {
       // Execute CI Gates
       console.log(`\n📋 Executing CI Gates (${this.gateRules.length} gates)...`)
-      
+
       for (const gate of this.gateRules) {
         console.log(`\n🔍 Gate: ${gate.gate_id}`)
-        
+
         const gateResult = await this.executeGate(gate, effectiveConfig)
         results.gate_results.push(gateResult)
 
@@ -200,7 +200,6 @@ export class FinanceDNAV2CIIntegration {
           if (finalExitCode === 0) finalExitCode = CLI_EXIT_CODES_V2.PERFORMANCE_DEGRADED
         }
       }
-
     } catch (error) {
       console.error(`💥 CI Pipeline Error: ${error.message}`)
       overallSuccess = false
@@ -216,7 +215,9 @@ export class FinanceDNAV2CIIntegration {
     console.log(`Overall Success: ${overallSuccess ? '✅' : '❌'}`)
     console.log(`Exit Code: ${finalExitCode}`)
     console.log(`Total Time: ${totalTime.toFixed(2)}ms`)
-    console.log(`Gates Passed: ${results.gate_results.filter(g => g.passed).length}/${results.gate_results.length}`)
+    console.log(
+      `Gates Passed: ${results.gate_results.filter(g => g.passed).length}/${results.gate_results.length}`
+    )
 
     if (recommendations.length > 0) {
       console.log(`\n💡 Recommendations:`)
@@ -244,7 +245,7 @@ export class FinanceDNAV2CIIntegration {
     performance_metrics?: any
   }> {
     const startTime = performance.now()
-    
+
     try {
       let validationResult: GuardrailResult
 
@@ -252,19 +253,19 @@ export class FinanceDNAV2CIIntegration {
         case 'FINANCE_DNA_V2_CORE_VALIDATION':
           validationResult = await this.validateCoreFunctionality()
           break
-        
+
         case 'GL_BALANCE_INTEGRITY':
           validationResult = await this.validateGLBalanceIntegrity()
           break
-        
+
         case 'FISCAL_PERIOD_COMPLIANCE':
           validationResult = await this.validateFiscalPeriodCompliance()
           break
-        
+
         case 'COA_MAPPING_INTEGRITY':
           validationResult = await this.validateCOAMappingIntegrity()
           break
-        
+
         default:
           validationResult = { passed: true, violations: [] }
       }
@@ -272,7 +273,7 @@ export class FinanceDNAV2CIIntegration {
       const errors = validationResult.violations.filter(v => v.severity === 'ERROR')
       const warnings = validationResult.violations.filter(v => v.severity === 'WARNING')
 
-      const passed = 
+      const passed =
         errors.length <= gate.conditions.max_errors &&
         warnings.length <= gate.conditions.max_warnings &&
         validationResult.passed
@@ -293,11 +294,13 @@ export class FinanceDNAV2CIIntegration {
       return {
         gate_id: gate.gate_id,
         passed: false,
-        violations: [{
-          code: 'GATE_EXECUTION_ERROR',
-          message: `Gate execution failed: ${error.message}`,
-          severity: 'ERROR'
-        }]
+        violations: [
+          {
+            code: 'GATE_EXECUTION_ERROR',
+            message: `Gate execution failed: ${error.message}`,
+            severity: 'ERROR'
+          }
+        ]
       }
     }
   }
@@ -361,9 +364,7 @@ export class FinanceDNAV2CIIntegration {
   /**
    * Execute performance benchmarks
    */
-  private static async executePerformanceBenchmarks(
-    config: CISmokeTestConfig
-  ): Promise<{
+  private static async executePerformanceBenchmarks(config: CISmokeTestConfig): Promise<{
     benchmarks_met: boolean
     metrics: {
       avg_processing_time_ms: number
@@ -380,8 +381,8 @@ export class FinanceDNAV2CIIntegration {
     // Simulate performance testing
     const metrics = {
       avg_processing_time_ms: 45, // Simulated
-      memory_usage_mb: 128,       // Simulated
-      throughput_per_second: 150  // Simulated
+      memory_usage_mb: 128, // Simulated
+      throughput_per_second: 150 // Simulated
     }
 
     const benchmarkResults = [
@@ -389,7 +390,8 @@ export class FinanceDNAV2CIIntegration {
         metric: 'Processing Time',
         actual: metrics.avg_processing_time_ms,
         expected: config.performance_benchmarks.max_processing_time_ms,
-        passed: metrics.avg_processing_time_ms <= config.performance_benchmarks.max_processing_time_ms
+        passed:
+          metrics.avg_processing_time_ms <= config.performance_benchmarks.max_processing_time_ms
       },
       {
         metric: 'Memory Usage',
@@ -401,7 +403,8 @@ export class FinanceDNAV2CIIntegration {
         metric: 'Throughput',
         actual: metrics.throughput_per_second,
         expected: config.performance_benchmarks.min_throughput_per_second,
-        passed: metrics.throughput_per_second >= config.performance_benchmarks.min_throughput_per_second
+        passed:
+          metrics.throughput_per_second >= config.performance_benchmarks.min_throughput_per_second
       }
     ]
 
@@ -420,13 +423,13 @@ export class FinanceDNAV2CIIntegration {
       smart_code: 'HERA.ACCOUNTING.GL.TXN.JOURNAL.v2',
       organization_id: '123e4567-e89b-12d3-a456-426614174000',
       transaction_date: '2024-12-09',
-      total_amount: 1000.00,
+      total_amount: 1000.0,
       ai_confidence: 0.85,
       lines: [
         {
           line_type: 'GL',
           account_code: '1100000',
-          debit_amount: 1000.00,
+          debit_amount: 1000.0,
           credit_amount: 0,
           currency: 'USD'
         },
@@ -434,7 +437,7 @@ export class FinanceDNAV2CIIntegration {
           line_type: 'GL',
           account_code: '4100000',
           debit_amount: 0,
-          credit_amount: 1000.00,
+          credit_amount: 1000.0,
           currency: 'USD'
         }
       ]
@@ -469,7 +472,7 @@ export class FinanceDNAV2CIIntegration {
   // Smoke test implementations
   private static async smokeTestGLBalance(): Promise<any> {
     const startTime = performance.now()
-    
+
     try {
       const result = await this.validateGLBalanceIntegrity()
       return {
@@ -490,7 +493,7 @@ export class FinanceDNAV2CIIntegration {
 
   private static async smokeTestFiscalPeriod(): Promise<any> {
     const startTime = performance.now()
-    
+
     try {
       const result = await this.validateFiscalPeriodCompliance()
       return {
@@ -511,7 +514,7 @@ export class FinanceDNAV2CIIntegration {
 
   private static async smokeTestCOAMapping(): Promise<any> {
     const startTime = performance.now()
-    
+
     try {
       const result = await this.validateCOAMappingIntegrity()
       return {
@@ -532,7 +535,7 @@ export class FinanceDNAV2CIIntegration {
 
   private static async smokeTestAIConfidence(): Promise<any> {
     const startTime = performance.now()
-    
+
     try {
       const result = HERAGuardrailsV2.validateAIConfidence(0.85, 1000, 'manager')
       return {
@@ -553,7 +556,7 @@ export class FinanceDNAV2CIIntegration {
 
   private static async smokeTestMultiCurrency(): Promise<any> {
     const startTime = performance.now()
-    
+
     try {
       const mockLines = [
         { line_type: 'GL', debit_amount: 1000, credit_amount: 0, currency: 'USD' },
@@ -561,7 +564,7 @@ export class FinanceDNAV2CIIntegration {
         { line_type: 'GL', debit_amount: 500, credit_amount: 0, currency: 'EUR' },
         { line_type: 'GL', debit_amount: 0, credit_amount: 500, currency: 'EUR' }
       ]
-      
+
       const result = HERAGuardrailsV2.validateMultiCurrencyGLBalance(mockLines)
       return {
         test_name: 'Multi-Currency Balance Validation',
@@ -613,13 +616,13 @@ export const CLI_COMMANDS: CLICommand[] = [
       '--strict': 'Enable strict mode validation',
       '--timeout': 'Timeout in milliseconds (default: 30000)'
     },
-    handler: async (options) => {
+    handler: async options => {
       const config: Partial<CIEnvironmentConfig> = {
         environment: options.environment || 'development',
         strict_mode: options.strict || false,
         smoke_test_timeout: options.timeout || 30000
       }
-      
+
       const result = await FinanceDNAV2CIIntegration.executeCI(config)
       return result.exit_code
     }
@@ -630,7 +633,7 @@ export const CLI_COMMANDS: CLICommand[] = [
     options: {
       '--quick': 'Run quick smoke tests only'
     },
-    handler: async (options) => {
+    handler: async options => {
       const testConfig: Partial<CISmokeTestConfig> = {
         gl_balance_validation: true,
         fiscal_period_validation: !options.quick,
@@ -638,7 +641,7 @@ export const CLI_COMMANDS: CLICommand[] = [
         ai_confidence_validation: true,
         multi_currency_validation: !options.quick
       }
-      
+
       const result = await FinanceDNAV2CIIntegration.executeCI({}, testConfig)
       return result.exit_code
     }

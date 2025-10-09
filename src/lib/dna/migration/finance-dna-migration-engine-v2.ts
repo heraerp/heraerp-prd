@@ -1,8 +1,8 @@
 /**
  * HERA Finance DNA v2 Migration Engine - Zero New Tables Implementation
- * 
+ *
  * Smart Code: HERA.ACCOUNTING.MIGRATION.ENGINE.ZERO.TABLES.v2
- * 
+ *
  * Sacred Six Tables compliant migration system using only CTEs and existing RPCs
  * No schema changes, no temporary tables, complete RLS compliance
  */
@@ -38,13 +38,15 @@ export const MigrationRecordSchema = z.object({
   target_table: z.string(),
   target_record_id: z.string().optional(),
   migration_status: z.enum(['PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED', 'REQUIRES_REVIEW']),
-  validation_result: z.object({
-    data_completeness: z.boolean(),
-    field_accuracy: z.boolean(),
-    relationship_integrity: z.boolean(),
-    business_rule_compliance: z.boolean(),
-    validation_score: z.number().min(0).max(100)
-  }).optional(),
+  validation_result: z
+    .object({
+      data_completeness: z.boolean(),
+      field_accuracy: z.boolean(),
+      relationship_integrity: z.boolean(),
+      business_rule_compliance: z.boolean(),
+      validation_score: z.number().min(0).max(100)
+    })
+    .optional(),
   error_details: z.array(z.string()).default([]),
   migration_timestamp: z.date(),
   validation_timestamp: z.date().optional(),
@@ -167,22 +169,22 @@ export class FinanceDNAMigrationEngineV2 {
    */
   public async startFullMigration(config: MigrationConfig): Promise<MigrationResult> {
     const startTime = Date.now()
-    
+
     try {
       console.log('🎯 Starting Finance DNA v2 Zero Tables Migration...')
-      
+
       // Phase 1: Preview migration candidates (CTE-only)
       console.log('🔍 Phase 1: Analyzing migration candidates...')
       const previewResult = await this.previewMigrationCandidates()
-      
+
       // Phase 2: Execute migration batch (Reverse + Repost with existing RPCs)
       console.log('🔄 Phase 2: Executing migration batch...')
       const migrationResult = await this.executeMigrationBatch(config)
-      
+
       // Phase 3: Apply reporting aliases (Metadata-only updates)
       console.log('📊 Phase 3: Applying reporting aliases...')
       const aliasResult = await this.applyReportingAliases()
-      
+
       // Phase 4: Comprehensive validation (Sacred Six tables only)
       console.log('✅ Phase 4: Running comprehensive validation...')
       const validationResult = await this.runZeroTablesValidation()
@@ -198,7 +200,9 @@ export class FinanceDNAMigrationEngineV2 {
         validation_score: validationResult.overall_integrity_score,
         performance_metrics: {
           total_time_ms: totalTimeMs,
-          records_per_second: Math.round(migrationResult.transactions_processed / (totalTimeMs / 1000)),
+          records_per_second: Math.round(
+            migrationResult.transactions_processed / (totalTimeMs / 1000)
+          ),
           cpu_peak_usage: 0, // Not applicable for Zero Tables approach
           memory_peak_usage: 0 // Not applicable for Zero Tables approach
         },
@@ -216,18 +220,23 @@ export class FinanceDNAMigrationEngineV2 {
       // Auto-rollback if validation fails and enabled
       if (!result.success && config.migration_options.auto_rollback_on_error) {
         console.log('⚠️ Migration validation failed - initiating auto-rollback...')
-        await this.rollbackZeroTablesMigration(config.migration_id, 'Auto-rollback due to validation failure')
+        await this.rollbackZeroTablesMigration(
+          config.migration_id,
+          'Auto-rollback due to validation failure'
+        )
         result.error_details = ['Migration validation failed - automatic rollback completed']
       }
 
       return result
-
     } catch (error) {
       console.error('❌ Zero Tables migration failed:', error)
-      
+
       // Emergency rollback using Zero Tables approach
       if (config.migration_options.auto_rollback_on_error) {
-        await this.rollbackZeroTablesMigration(config.migration_id, 'Emergency rollback due to error')
+        await this.rollbackZeroTablesMigration(
+          config.migration_id,
+          'Emergency rollback due to error'
+        )
       }
 
       return {
@@ -277,7 +286,7 @@ export class FinanceDNAMigrationEngineV2 {
       })
 
       const result = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(`Preview failed: ${result.error?.message || 'Unknown error'}`)
       }
@@ -298,7 +307,10 @@ export class FinanceDNAMigrationEngineV2 {
   /**
    * Migrate fiscal periods with enhanced v2 features
    */
-  private async migrateFiscalPeriods(migrationId: string, config: MigrationConfig): Promise<{ records_processed: number }> {
+  private async migrateFiscalPeriods(
+    migrationId: string,
+    config: MigrationConfig
+  ): Promise<{ records_processed: number }> {
     // Simulate fiscal periods migration
     const fiscalPeriods = await this.fetchV1FiscalPeriods()
     let processedCount = 0
@@ -307,18 +319,21 @@ export class FinanceDNAMigrationEngineV2 {
       try {
         // Transform v1 period to v2 format with enhanced features
         const v2Period = await this.transformFiscalPeriodV1ToV2(period)
-        
+
         // Save to v2 system
         await this.saveV2FiscalPeriod(v2Period)
-        
+
         processedCount++
       } catch (error) {
         console.error(`Failed to migrate fiscal period ${period.id}:`, error)
       }
     }
 
-    await this.updateMigrationProgress(migrationId, 'fiscal_periods', 
-      Math.round((processedCount / fiscalPeriods.length) * 100))
+    await this.updateMigrationProgress(
+      migrationId,
+      'fiscal_periods',
+      Math.round((processedCount / fiscalPeriods.length) * 100)
+    )
 
     return { records_processed: processedCount }
   }
@@ -326,17 +341,20 @@ export class FinanceDNAMigrationEngineV2 {
   /**
    * Migrate organization configuration to v2 enhanced format
    */
-  private async migrateOrganizationConfig(migrationId: string, config: MigrationConfig): Promise<{ records_processed: number }> {
+  private async migrateOrganizationConfig(
+    migrationId: string,
+    config: MigrationConfig
+  ): Promise<{ records_processed: number }> {
     // Simulate organization config migration
     const orgConfig = await this.fetchV1OrganizationConfig()
-    
+
     try {
       // Transform v1 config to v2 format with new features
       const v2Config = await this.transformOrgConfigV1ToV2(orgConfig)
-      
+
       // Save to v2 system
       await this.saveV2OrganizationConfig(v2Config)
-      
+
       await this.updateMigrationProgress(migrationId, 'organization_config', 100)
       return { records_processed: 1 }
     } catch (error) {
@@ -348,15 +366,18 @@ export class FinanceDNAMigrationEngineV2 {
   /**
    * Migrate transaction history for v2 compatibility
    */
-  private async migrateTransactionHistory(migrationId: string, config: MigrationConfig): Promise<{ records_processed: number }> {
+  private async migrateTransactionHistory(
+    migrationId: string,
+    config: MigrationConfig
+  ): Promise<{ records_processed: number }> {
     // For transaction history, we primarily need to ensure compatibility
     // rather than full migration since v2 is backward compatible
-    
+
     const transactionCount = await this.getV1TransactionCount()
-    
+
     // Validate that all v1 transactions are accessible via v2 API
     const validationResult = await this.validateTransactionCompatibility()
-    
+
     if (validationResult.success) {
       await this.updateMigrationProgress(migrationId, 'transaction_history', 100)
       return { records_processed: transactionCount }
@@ -369,27 +390,31 @@ export class FinanceDNAMigrationEngineV2 {
   /**
    * Run comprehensive validation of migrated data
    */
-  private async runComprehensiveValidation(migrationId: string, config: MigrationConfig): Promise<ValidationReport> {
+  private async runComprehensiveValidation(
+    migrationId: string,
+    config: MigrationConfig
+  ): Promise<ValidationReport> {
     console.log('🔍 Running comprehensive validation...')
 
     // Validate posting rules
     const postingRulesValidation = await this.validatePostingRules()
-    
+
     // Validate fiscal periods
     const fiscalPeriodsValidation = await this.validateFiscalPeriods()
-    
+
     // Validate organization config
     const orgConfigValidation = await this.validateOrganizationConfig()
-    
+
     // Validate transaction compatibility
     const transactionValidation = await this.validateTransactionCompatibility()
 
     // Calculate overall integrity score
     const overallScore = Math.round(
-      (postingRulesValidation.integrity_score + 
-       fiscalPeriodsValidation.integrity_score + 
-       orgConfigValidation.integrity_score + 
-       transactionValidation.integrity_score) / 4
+      (postingRulesValidation.integrity_score +
+        fiscalPeriodsValidation.integrity_score +
+        orgConfigValidation.integrity_score +
+        transactionValidation.integrity_score) /
+        4
     )
 
     const report: ValidationReport = {
@@ -420,10 +445,10 @@ export class FinanceDNAMigrationEngineV2 {
    */
   private async createRollbackCheckpoint(migrationId: string): Promise<string> {
     const checkpointId = `checkpoint_${migrationId}_${Date.now()}`
-    
+
     // Create backup of current state
     await this.backupCurrentState(checkpointId)
-    
+
     console.log(`✅ Rollback checkpoint created: ${checkpointId}`)
     return checkpointId
   }
@@ -433,14 +458,14 @@ export class FinanceDNAMigrationEngineV2 {
    */
   public async rollbackMigration(migrationId: string, checkpointId: string): Promise<void> {
     console.log(`🔄 Rolling back migration ${migrationId} to checkpoint ${checkpointId}...`)
-    
+
     try {
       // Restore from checkpoint
       await this.restoreFromCheckpoint(checkpointId)
-      
+
       // Validate rollback success
       const validation = await this.validateRollbackIntegrity()
-      
+
       if (validation.success) {
         console.log('✅ Rollback completed successfully')
       } else {
@@ -449,7 +474,9 @@ export class FinanceDNAMigrationEngineV2 {
       }
     } catch (error) {
       console.error('❌ Rollback failed:', error)
-      throw new Error(`Rollback failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Rollback failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -458,10 +485,10 @@ export class FinanceDNAMigrationEngineV2 {
    */
   private async emergencyRollback(migrationId: string): Promise<void> {
     console.log(`🚨 Emergency rollback initiated for migration ${migrationId}`)
-    
+
     // Find latest stable checkpoint
     const latestCheckpoint = await this.findLatestStableCheckpoint(migrationId)
-    
+
     if (latestCheckpoint) {
       await this.rollbackMigration(migrationId, latestCheckpoint)
     } else {
@@ -479,7 +506,10 @@ export class FinanceDNAMigrationEngineV2 {
 
   // ===== PRIVATE HELPER METHODS =====
 
-  private async initializeMigrationTracking(migrationId: string, config: MigrationConfig): Promise<void> {
+  private async initializeMigrationTracking(
+    migrationId: string,
+    config: MigrationConfig
+  ): Promise<void> {
     const progress: MigrationProgress = {
       migration_id: migrationId,
       organization_id: this.organizationId,
@@ -507,15 +537,21 @@ export class FinanceDNAMigrationEngineV2 {
     this.migrationRecords.set(migrationId, [])
   }
 
-  private async updateMigrationProgress(migrationId: string, phase: keyof MigrationProgress['phase_progress'], progress: number): Promise<void> {
+  private async updateMigrationProgress(
+    migrationId: string,
+    phase: keyof MigrationProgress['phase_progress'],
+    progress: number
+  ): Promise<void> {
     const currentProgress = this.migrationProgress.get(migrationId)
     if (currentProgress) {
       currentProgress.phase_progress[phase] = progress
-      
+
       // Calculate overall progress
       const phases = Object.values(currentProgress.phase_progress)
-      currentProgress.overall_progress = Math.round(phases.reduce((sum, p) => sum + p, 0) / phases.length)
-      
+      currentProgress.overall_progress = Math.round(
+        phases.reduce((sum, p) => sum + p, 0) / phases.length
+      )
+
       this.migrationProgress.set(migrationId, currentProgress)
     }
   }
@@ -531,7 +567,9 @@ export class FinanceDNAMigrationEngineV2 {
     return Array.from({ length: 25 }, (_, i) => ({
       id: `rule_${i}`,
       smart_code: `HERA.SALON.V1.RULE.${i}`,
-      rule_data: { /* v1 rule data */ }
+      rule_data: {
+        /* v1 rule data */
+      }
     }))
   }
 
@@ -548,7 +586,9 @@ export class FinanceDNAMigrationEngineV2 {
     // Simulate fetching v1 organization config
     return {
       id: 'org_config_1',
-      finance_policy: { /* v1 config data */ }
+      finance_policy: {
+        /* v1 config data */
+      }
     }
   }
 
@@ -558,7 +598,9 @@ export class FinanceDNAMigrationEngineV2 {
       id: `v2_${v1Rule.id}`,
       smart_code: v1Rule.smart_code.replace('.V1.', '.V2.'),
       rule_version: 'v2.1',
-      enhanced_features: { /* new v2 features */ }
+      enhanced_features: {
+        /* new v2 features */
+      }
     }
   }
 
@@ -655,7 +697,9 @@ export class FinanceDNAMigrationEngineV2 {
     } else if (overallScore >= 95) {
       recommendations.push('Migration mostly successful - monitor for any issues')
     } else {
-      recommendations.push('Migration requires attention - review error details and consider rollback')
+      recommendations.push(
+        'Migration requires attention - review error details and consider rollback'
+      )
     }
 
     return recommendations
@@ -718,7 +762,10 @@ export class MigrationUtilities {
   /**
    * Generate migration configuration based on organization analysis
    */
-  public static generateOptimalMigrationConfig(organizationId: string, analysisResult: any): MigrationConfig {
+  public static generateOptimalMigrationConfig(
+    organizationId: string,
+    analysisResult: any
+  ): MigrationConfig {
     return {
       migration_id: crypto.randomUUID(),
       organization_id: organizationId,

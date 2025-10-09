@@ -1,7 +1,7 @@
 /**
  * Fiscal DNA Compatibility Layer - v1 to v2 Bridge
  * Smart Code: HERA.ACCOUNTING.FISCAL.COMPATIBILITY.LAYER.v2
- * 
+ *
  * Provides seamless integration between existing v1 fiscal period
  * management and enhanced v2 validation framework. Ensures zero
  * downtime migration and backward compatibility.
@@ -143,18 +143,16 @@ export class FiscalDNACompatibilityLayer {
     try {
       // Use v2 validation if enabled
       if (this.migrationConfig.enable_v2_validation) {
-        const v2Result = await this.validateWithV2Enhanced(
-          transactionDate,
-          organizationId,
-          options
-        )
+        const v2Result = await this.validateWithV2Enhanced(transactionDate, organizationId, options)
 
         // If v2 validation succeeds or fallback is disabled, return v2 result
         if (v2Result.is_valid || !this.migrationConfig.fallback_to_v1) {
           return {
             valid: v2Result.is_valid,
             period: v2Result.period_status,
-            errors: v2Result.is_valid ? [] : [v2Result.validation_result.message || 'Validation failed'],
+            errors: v2Result.is_valid
+              ? []
+              : [v2Result.validation_result.message || 'Validation failed'],
             warnings: v2Result.warnings.map(w => w.message),
             allowedActions: v2Result.allowed_actions,
             performanceMetrics: {
@@ -181,10 +179,9 @@ export class FiscalDNACompatibilityLayer {
           fallback_used: this.migrationConfig.enable_v2_validation
         }
       }
-
     } catch (error) {
       console.error('Fiscal validation error:', error)
-      
+
       return {
         valid: false,
         errors: [`Fiscal validation failed: ${error.message}`],
@@ -205,13 +202,17 @@ export class FiscalDNACompatibilityLayer {
     organizationId: string,
     options: any
   ): Promise<FiscalValidationResultV2> {
-    const result = await callFunction('hera_validate_fiscal_period_v2_enhanced', {
-      p_transaction_date: transactionDate,
-      p_organization_id: organizationId,
-      p_transaction_type: options.transactionType || 'JOURNAL_ENTRY',
-      p_bypass_user_role: options.userRole,
-      p_smart_code: options.smartCode
-    }, { mode: 'rpc' })
+    const result = await callFunction(
+      'hera_validate_fiscal_period_v2_enhanced',
+      {
+        p_transaction_date: transactionDate,
+        p_organization_id: organizationId,
+        p_transaction_type: options.transactionType || 'JOURNAL_ENTRY',
+        p_bypass_user_role: options.userRole,
+        p_smart_code: options.smartCode
+      },
+      { mode: 'rpc' }
+    )
 
     if (!result.success) {
       throw new Error(`v2 validation RPC failed: ${result.error}`)
@@ -236,11 +237,11 @@ export class FiscalDNACompatibilityLayer {
     try {
       // Use existing v1 validation logic
       const result = await HERAGuardrailsV2.validateFiscalPeriod(transactionDate, organizationId)
-      
+
       if (result.passed) {
         // Get period information using v1 method
         const period = await this.getCurrentFiscalPeriodV1(organizationId, transactionDate)
-        
+
         return {
           valid: true,
           period,
@@ -272,12 +273,16 @@ export class FiscalDNACompatibilityLayer {
   ): Promise<FiscalPeriodV1 | null> {
     try {
       const date = transactionDate || new Date().toISOString().split('T')[0]
-      
+
       // Query using existing core_entities structure
-      const result = await callFunction('get_fiscal_period_for_date', {
-        organization_id: organizationId,
-        transaction_date: date
-      }, { mode: 'rpc' })
+      const result = await callFunction(
+        'get_fiscal_period_for_date',
+        {
+          organization_id: organizationId,
+          transaction_date: date
+        },
+        { mode: 'rpc' }
+      )
 
       if (result.success && result.data.length > 0) {
         const period = result.data[0]
@@ -311,26 +316,38 @@ export class FiscalDNACompatibilityLayer {
   ): Promise<FiscalPeriodV2Enhanced | null> {
     try {
       const date = transactionDate || new Date().toISOString().split('T')[0]
-      
-      const result = await callFunction('get_enhanced_fiscal_period', {
-        organization_id: organizationId,
-        transaction_date: date
-      }, { mode: 'sql', query: `
+
+      const result = await callFunction(
+        'get_enhanced_fiscal_period',
+        {
+          organization_id: organizationId,
+          transaction_date: date
+        },
+        {
+          mode: 'sql',
+          query: `
         SELECT * FROM v_fiscal_periods_enhanced 
         WHERE organization_id = $1 
           AND $2 BETWEEN start_date AND end_date
         LIMIT 1
-      `, params: [organizationId, date] })
+      `,
+          params: [organizationId, date]
+        }
+      )
 
       if (result.success && result.data.length > 0) {
         const period = result.data[0]
-        
+
         // Calculate health score if not present
         if (!period.health_score) {
-          const healthResult = await callFunction('hera_calculate_period_health_score', {
-            p_period_id: period.period_id
-          }, { mode: 'rpc' })
-          
+          const healthResult = await callFunction(
+            'hera_calculate_period_health_score',
+            {
+              p_period_id: period.period_id
+            },
+            { mode: 'rpc' }
+          )
+
           period.health_score = healthResult.success ? healthResult.data[0] : 0
         }
 
@@ -372,20 +389,22 @@ export class FiscalDNACompatibilityLayer {
       transactionType?: string
       userRole?: string
     }>
-  ): Promise<Array<{
-    transactionDate: string
-    organizationId: string
-    valid: boolean
-    period?: FiscalPeriodV1 | FiscalPeriodV2Enhanced
-    errors?: string[]
-    warnings?: string[]
-  }>> {
+  ): Promise<
+    Array<{
+      transactionDate: string
+      organizationId: string
+      valid: boolean
+      period?: FiscalPeriodV1 | FiscalPeriodV2Enhanced
+      errors?: string[]
+      warnings?: string[]
+    }>
+  > {
     const startTime = performance.now()
-    
+
     try {
       // Use parallel processing for better performance
       const results = await Promise.allSettled(
-        transactions.map(async (txn) => {
+        transactions.map(async txn => {
           const validation = await this.validateFiscalPeriod(
             txn.transactionDate,
             txn.organizationId,
@@ -419,10 +438,9 @@ export class FiscalDNACompatibilityLayer {
           }
         }
       })
-
     } catch (error) {
       console.error('Batch validation error:', error)
-      
+
       // Return failed results for all transactions
       return transactions.map(txn => ({
         transactionDate: txn.transactionDate,
@@ -482,14 +500,18 @@ export class FiscalDNACompatibilityLayer {
 
     try {
       // Store metrics in universal_transactions for analysis
-      await callFunction('log_fiscal_validation_metrics', {
-        operation,
-        validation_engine: result.performanceMetrics?.validation_engine || 'unknown',
-        processing_time_ms: processingTimeMs,
-        success: result.valid,
-        performance_tier: result.performanceMetrics?.performance_tier || 'STANDARD',
-        timestamp: new Date().toISOString()
-      }, { mode: 'rpc' })
+      await callFunction(
+        'log_fiscal_validation_metrics',
+        {
+          operation,
+          validation_engine: result.performanceMetrics?.validation_engine || 'unknown',
+          processing_time_ms: processingTimeMs,
+          success: result.valid,
+          performance_tier: result.performanceMetrics?.performance_tier || 'STANDARD',
+          timestamp: new Date().toISOString()
+        },
+        { mode: 'rpc' }
+      )
     } catch (error) {
       console.warn('Failed to collect performance metrics:', error)
     }
@@ -499,10 +521,7 @@ export class FiscalDNACompatibilityLayer {
 // React Hook for fiscal period validation
 import { useState, useEffect } from 'react'
 
-export function useFiscalPeriodValidation(
-  organizationId: string,
-  transactionDate?: string
-) {
+export function useFiscalPeriodValidation(organizationId: string, transactionDate?: string) {
   const [period, setPeriod] = useState<FiscalPeriodV1 | FiscalPeriodV2Enhanced | null>(null)
   const [isValid, setIsValid] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -518,7 +537,7 @@ export function useFiscalPeriodValidation(
 
       try {
         setIsLoading(true)
-        
+
         const result = await FiscalDNACompatibilityLayer.validateFiscalPeriod(
           transactionDate || new Date().toISOString().split('T')[0],
           organizationId
@@ -566,20 +585,20 @@ export function useFiscalPeriodValidation(
 
 /**
  * Example usage:
- * 
+ *
  * // In a React component
  * const { period, isValid, isLoading, errors, warnings } = useFiscalPeriodValidation(
  *   organizationId,
  *   '2024-12-09'
  * )
- * 
+ *
  * // Direct validation
  * const result = await FiscalDNACompatibilityLayer.validateFiscalPeriod(
  *   '2024-12-09',
  *   organizationId,
  *   { transactionType: 'JOURNAL_ENTRY', userRole: 'finance_manager' }
  * )
- * 
+ *
  * // Batch validation
  * const batchResults = await FiscalDNACompatibilityLayer.validateBatchTransactions([
  *   { transactionDate: '2024-12-09', organizationId: 'org1' },

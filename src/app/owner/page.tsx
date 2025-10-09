@@ -1,6 +1,6 @@
 /**
  * Salon Owner Dashboard
- * 
+ *
  * Luxurious executive dashboard for salon owners with real-time metrics,
  * staff performance, financial insights, and quick actions.
  * Features Apple-inspired design with glassmorphism effects.
@@ -110,23 +110,94 @@ export default function SalonOwnerDashboard() {
         bookings: 15.2
       },
       chairStatus: [
-        { id: '1', stylist: 'Sarah M.', client: 'Emma Johnson', service: 'Hair Color', timeRemaining: 45, status: 'occupied' },
+        {
+          id: '1',
+          stylist: 'Sarah M.',
+          client: 'Emma Johnson',
+          service: 'Hair Color',
+          timeRemaining: 45,
+          status: 'occupied'
+        },
         { id: '2', stylist: 'Maya K.', status: 'available' },
-        { id: '3', stylist: 'Alex R.', client: 'Lisa Chen', service: 'Cut & Style', timeRemaining: 25, status: 'occupied' },
+        {
+          id: '3',
+          stylist: 'Alex R.',
+          client: 'Lisa Chen',
+          service: 'Cut & Style',
+          timeRemaining: 25,
+          status: 'occupied'
+        },
         { id: '4', stylist: 'Jordan T.', status: 'break' },
-        { id: '5', stylist: 'Taylor S.', client: 'Maria Garcia', service: 'Highlights', timeRemaining: 90, status: 'occupied' },
+        {
+          id: '5',
+          stylist: 'Taylor S.',
+          client: 'Maria Garcia',
+          service: 'Highlights',
+          timeRemaining: 90,
+          status: 'occupied'
+        },
         { id: '6', stylist: 'Casey L.', status: 'available' }
       ],
       topStylists: [
-        { id: '1', name: 'Sarah Mitchell', avatar: '/avatars/sarah.jpg', revenue: 2850, clients: 12, rating: 4.9, status: 'online' },
-        { id: '2', name: 'Maya Patel', avatar: '/avatars/maya.jpg', revenue: 2240, clients: 9, rating: 4.8, status: 'online' },
-        { id: '3', name: 'Alex Rodriguez', avatar: '/avatars/alex.jpg', revenue: 1980, clients: 8, rating: 4.7, status: 'offline' },
-        { id: '4', name: 'Taylor Chen', avatar: '/avatars/taylor.jpg', revenue: 1750, clients: 7, rating: 4.8, status: 'online' }
+        {
+          id: '1',
+          name: 'Sarah Mitchell',
+          avatar: '/avatars/sarah.jpg',
+          revenue: 2850,
+          clients: 12,
+          rating: 4.9,
+          status: 'online'
+        },
+        {
+          id: '2',
+          name: 'Maya Patel',
+          avatar: '/avatars/maya.jpg',
+          revenue: 2240,
+          clients: 9,
+          rating: 4.8,
+          status: 'online'
+        },
+        {
+          id: '3',
+          name: 'Alex Rodriguez',
+          avatar: '/avatars/alex.jpg',
+          revenue: 1980,
+          clients: 8,
+          rating: 4.7,
+          status: 'offline'
+        },
+        {
+          id: '4',
+          name: 'Taylor Chen',
+          avatar: '/avatars/taylor.jpg',
+          revenue: 1750,
+          clients: 7,
+          rating: 4.8,
+          status: 'online'
+        }
       ],
       recentTransactions: [
-        { id: '1', type: 'Service', amount: 185, description: 'Hair Color - Emma J.', time: '2:30 PM' },
-        { id: '2', type: 'Product', amount: 45, description: 'Shampoo Set - Lisa C.', time: '2:15 PM' },
-        { id: '3', type: 'Service', amount: 120, description: 'Cut & Style - Maria G.', time: '1:45 PM' },
+        {
+          id: '1',
+          type: 'Service',
+          amount: 185,
+          description: 'Hair Color - Emma J.',
+          time: '2:30 PM'
+        },
+        {
+          id: '2',
+          type: 'Product',
+          amount: 45,
+          description: 'Shampoo Set - Lisa C.',
+          time: '2:15 PM'
+        },
+        {
+          id: '3',
+          type: 'Service',
+          amount: 120,
+          description: 'Cut & Style - Maria G.',
+          time: '1:45 PM'
+        },
         { id: '4', type: 'Tip', amount: 25, description: 'Tip - Sarah M.', time: '1:30 PM' }
       ],
       upcomingTasks: [
@@ -163,16 +234,16 @@ export default function SalonOwnerDashboard() {
                   Luxe Salon
                 </h1>
                 <p className="text-sm text-gray-600">
-                  {currentTime.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  {currentTime.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                   })}
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="h-5 w-5" />
@@ -180,7 +251,7 @@ export default function SalonOwnerDashboard() {
                   3
                 </span>
               </Button>
-              
+
               <div className="flex items-center space-x-2">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src="/avatars/owner.jpg" alt="Owner" />
@@ -209,7 +280,7 @@ export default function SalonOwnerDashboard() {
             icon={<DollarSign className="h-6 w-6" />}
             color="gold"
           />
-          
+
           <SalonStatsCard
             title="Appointments"
             value={dashboardData.todayStats.appointments}
@@ -218,7 +289,7 @@ export default function SalonOwnerDashboard() {
             icon={<Calendar className="h-6 w-6" />}
             color="purple"
           />
-          
+
           <SalonStatsCard
             title="Active Clients"
             value={dashboardData.todayStats.clients}
@@ -227,7 +298,7 @@ export default function SalonOwnerDashboard() {
             icon={<Users className="h-6 w-6" />}
             color="rose"
           />
-          
+
           <SalonStatsCard
             title="Avg Rating"
             value={dashboardData.todayStats.avgRating.toFixed(1)}
@@ -255,35 +326,41 @@ export default function SalonOwnerDashboard() {
               }
             >
               <ResponsiveGrid cols={{ sm: 1, md: 2, lg: 3, xl: 3 }}>
-                {dashboardData.chairStatus.map((chair) => (
+                {dashboardData.chairStatus.map(chair => (
                   <div
                     key={chair.id}
                     className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                       chair.status === 'occupied'
                         ? 'border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20'
                         : chair.status === 'available'
-                        ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20'
-                        : 'border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20'
+                          ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20'
+                          : 'border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-semibold text-sm">Chair {chair.id}</h4>
                       <Badge
-                        variant={chair.status === 'occupied' ? 'default' : chair.status === 'available' ? 'secondary' : 'outline'}
+                        variant={
+                          chair.status === 'occupied'
+                            ? 'default'
+                            : chair.status === 'available'
+                              ? 'secondary'
+                              : 'outline'
+                        }
                         className={`text-xs ${
                           chair.status === 'occupied'
                             ? 'bg-purple-100 text-purple-700'
                             : chair.status === 'available'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-yellow-100 text-yellow-700'
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-yellow-100 text-yellow-700'
                         }`}
                       >
                         {chair.status}
                       </Badge>
                     </div>
-                    
+
                     <p className="text-sm font-medium mb-1">{chair.stylist}</p>
-                    
+
                     {chair.client && (
                       <>
                         <p className="text-xs text-gray-600 mb-1">{chair.client}</p>
@@ -294,8 +371,8 @@ export default function SalonOwnerDashboard() {
                               <span>Time remaining</span>
                               <span className="font-medium">{chair.timeRemaining}m</span>
                             </div>
-                            <Progress 
-                              value={((120 - chair.timeRemaining) / 120) * 100} 
+                            <Progress
+                              value={((120 - chair.timeRemaining) / 120) * 100}
                               className="h-2"
                             />
                           </div>
@@ -334,26 +411,10 @@ export default function SalonOwnerDashboard() {
               className="text-white"
             >
               <div className="grid grid-cols-2 gap-3">
-                <SalonQuickAction
-                  icon={<Plus />}
-                  label="New Booking"
-                  variant="glass"
-                />
-                <SalonQuickAction
-                  icon={<DollarSign />}
-                  label="Add Payment"
-                  variant="glass"
-                />
-                <SalonQuickAction
-                  icon={<Users />}
-                  label="Staff Check-in"
-                  variant="glass"
-                />
-                <SalonQuickAction
-                  icon={<Settings />}
-                  label="Settings"
-                  variant="glass"
-                />
+                <SalonQuickAction icon={<Plus />} label="New Booking" variant="glass" />
+                <SalonQuickAction icon={<DollarSign />} label="Add Payment" variant="glass" />
+                <SalonQuickAction icon={<Users />} label="Staff Check-in" variant="glass" />
+                <SalonQuickAction icon={<Settings />} label="Settings" variant="glass" />
               </div>
             </LuxeCard>
 
@@ -390,16 +451,17 @@ export default function SalonOwnerDashboard() {
               icon={<Activity className="h-5 w-5 text-purple-500" />}
             >
               <div className="space-y-3">
-                {dashboardData.recentTransactions.map((transaction) => (
-                  <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                {dashboardData.recentTransactions.map(transaction => (
+                  <div
+                    key={transaction.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg"
+                  >
                     <div>
                       <p className="text-sm font-medium">{transaction.description}</p>
                       <p className="text-xs text-gray-600">{transaction.time}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-green-600">
-                        +${transaction.amount}
-                      </p>
+                      <p className="text-sm font-semibold text-green-600">+${transaction.amount}</p>
                       <Badge variant="outline" className="text-xs">
                         {transaction.type}
                       </Badge>
@@ -407,7 +469,7 @@ export default function SalonOwnerDashboard() {
                   </div>
                 ))}
               </div>
-              
+
               <LuxeButton
                 variant="ghost"
                 size="sm"

@@ -288,7 +288,7 @@ export async function setDynamicDataBatch(
     p_smart_code: string // e.g., 'HERA.SALON.PROD.DYN.v1'
     p_fields: DynamicFieldInput[]
   }
-){
+) {
   const url = baseUrl || getBaseUrl()
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`${url}/api/v2/dynamic-data/batch`, {
@@ -376,17 +376,20 @@ export async function createTransaction(
     target_entity_id: body.p_to_entity_id || null,
     business_context: body.p_metadata || {},
     // Use provided lines or add placeholder for appointments if no lines provided
-    lines: body.p_lines && body.p_lines.length > 0
-      ? body.p_lines
-      : body.p_transaction_type === 'APPOINTMENT'
-      ? [{
-          line_type: 'service',
-          quantity: 1,
-          unit_amount: 0,
-          line_amount: 0,
-          description: 'Appointment placeholder - services to be added'
-        }]
-      : []
+    lines:
+      body.p_lines && body.p_lines.length > 0
+        ? body.p_lines
+        : body.p_transaction_type === 'APPOINTMENT'
+          ? [
+              {
+                line_type: 'service',
+                quantity: 1,
+                unit_amount: 0,
+                line_amount: 0,
+                description: 'Appointment placeholder - services to be added'
+              }
+            ]
+          : []
   }
 
   const res = await fetch(`/api/v2/transactions`, {

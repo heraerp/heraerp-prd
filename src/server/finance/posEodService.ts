@@ -1,6 +1,6 @@
 /**
  * HERA POS End-of-Day (EOD) Summary Service
- * 
+ *
  * Handles complex POS daily summary postings with:
  * - Sales revenue breakdown (services vs products)
  * - VAT calculations (input and output)
@@ -8,12 +8,16 @@
  * - Card processing fees
  * - Cash vs card settlement splits
  * - Staff commission accruals
- * 
+ *
  * Integrates with Auto-Posting Engine for balanced GL entries
  */
 
 import { z } from 'zod'
-import { UniversalFinanceEvent, SALON_FINANCE_SMART_CODES, FINANCE_TRANSACTION_TYPES } from '@/types/universal-finance-event'
+import {
+  UniversalFinanceEvent,
+  SALON_FINANCE_SMART_CODES,
+  FINANCE_TRANSACTION_TYPES
+} from '@/types/universal-finance-event'
 import { processUniversalFinanceEvent } from './autoPostingEngine'
 import { heraCode } from '@/lib/smart-codes'
 
@@ -26,7 +30,7 @@ export const POSDailySummarySchema = z.object({
   terminal_id: z.string().optional(),
   summary_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   shift_id: z.string().uuid().optional(),
-  
+
   // Sales breakdown
   sales: z.object({
     services: z.object({
@@ -41,14 +45,16 @@ export const POSDailySummarySchema = z.object({
       net_amount: z.number().min(0),
       transaction_count: z.number().int().min(0)
     }),
-    packages: z.object({
-      gross_amount: z.number().min(0),
-      vat_amount: z.number().min(0),
-      net_amount: z.number().min(0),
-      transaction_count: z.number().int().min(0)
-    }).optional()
+    packages: z
+      .object({
+        gross_amount: z.number().min(0),
+        vat_amount: z.number().min(0),
+        net_amount: z.number().min(0),
+        transaction_count: z.number().int().min(0)
+      })
+      .optional()
   }),
-  
+
   // Payment methods
   payments: z.object({
     cash: z.object({
@@ -60,53 +66,67 @@ export const POSDailySummarySchema = z.object({
       processing_fees: z.number().min(0),
       tips: z.number().min(0).optional()
     }),
-    vouchers: z.object({
-      redeemed: z.number().min(0),
-      fees: z.number().min(0).optional()
-    }).optional(),
-    other: z.object({
-      amount: z.number().min(0),
-      method: z.string()
-    }).optional()
+    vouchers: z
+      .object({
+        redeemed: z.number().min(0),
+        fees: z.number().min(0).optional()
+      })
+      .optional(),
+    other: z
+      .object({
+        amount: z.number().min(0),
+        method: z.string()
+      })
+      .optional()
   }),
-  
+
   // Staff information
-  staff: z.array(z.object({
-    staff_id: z.string().uuid(),
-    staff_name: z.string(),
-    services_revenue: z.number().min(0),
-    commission_rate: z.number().min(0).max(1),
-    commission_amount: z.number().min(0),
-    tips_allocated: z.number().min(0).optional()
-  })).optional(),
-  
+  staff: z
+    .array(
+      z.object({
+        staff_id: z.string().uuid(),
+        staff_name: z.string(),
+        services_revenue: z.number().min(0),
+        commission_rate: z.number().min(0).max(1),
+        commission_amount: z.number().min(0),
+        tips_allocated: z.number().min(0).optional()
+      })
+    )
+    .optional(),
+
   // Adjustments and discounts
-  adjustments: z.object({
-    discounts: z.number().min(0).optional(),
-    refunds: z.number().min(0).optional(),
-    voids: z.number().min(0).optional(),
-    promotions: z.number().min(0).optional()
-  }).optional(),
-  
+  adjustments: z
+    .object({
+      discounts: z.number().min(0).optional(),
+      refunds: z.number().min(0).optional(),
+      voids: z.number().min(0).optional(),
+      promotions: z.number().min(0).optional()
+    })
+    .optional(),
+
   // System reconciliation
-  reconciliation: z.object({
-    expected_total: z.number(),
-    actual_total: z.number(),
-    difference: z.number(),
-    variance_percentage: z.number(),
-    notes: z.string().optional()
-  }).optional(),
-  
+  reconciliation: z
+    .object({
+      expected_total: z.number(),
+      actual_total: z.number(),
+      difference: z.number(),
+      variance_percentage: z.number(),
+      notes: z.string().optional()
+    })
+    .optional(),
+
   // Currency
   currency_code: z.string().length(3).default('AED'),
-  
+
   // Additional metadata
-  metadata: z.object({
-    pos_system: z.string().optional(),
-    software_version: z.string().optional(),
-    processed_by: z.string().uuid().optional(),
-    auto_generated: z.boolean().default(false)
-  }).optional()
+  metadata: z
+    .object({
+      pos_system: z.string().optional(),
+      software_version: z.string().optional(),
+      processed_by: z.string().uuid().optional(),
+      auto_generated: z.boolean().default(false)
+    })
+    .optional()
 })
 
 export type POSDailySummary = z.infer<typeof POSDailySummarySchema>
@@ -153,18 +173,18 @@ export interface POSEODProcessingResult {
  */
 export class POSEODService {
   private organizationId: string
-  
+
   constructor(organizationId: string) {
     this.organizationId = organizationId
   }
-  
+
   /**
    * Process complete POS daily summary
    */
   async processDailySummary(summary: POSDailySummary): Promise<POSEODProcessingResult> {
     try {
       console.log(`[POS EOD] Processing daily summary for ${summary.summary_date}`)
-      
+
       // 1. Validate summary data
       const validation = this.validateSummary(summary)
       if (!validation.isValid) {
@@ -177,11 +197,11 @@ export class POSEODService {
           message: 'Summary validation failed'
         }
       }
-      
+
       const journalEntries: any[] = []
       const commissionAccruals: any[] = []
       const warnings: string[] = []
-      
+
       // 2. Process main sales summary
       const salesJournalResult = await this.processSalesSummary(summary)
       if (salesJournalResult.success && salesJournalResult.transaction_id) {
@@ -203,7 +223,7 @@ export class POSEODService {
           message: 'Failed to post sales summary'
         }
       }
-      
+
       // 3. Process staff commissions
       if (summary.staff && summary.staff.length > 0) {
         for (const staff of summary.staff) {
@@ -218,7 +238,7 @@ export class POSEODService {
                 total_amount: staff.commission_amount,
                 line_count: commissionResult.gl_lines?.length || 0
               })
-              
+
               commissionAccruals.push({
                 staff_id: staff.staff_id,
                 staff_name: staff.staff_name,
@@ -226,12 +246,14 @@ export class POSEODService {
                 accrual_transaction_id: commissionResult.transaction_id
               })
             } else {
-              warnings.push(`Failed to accrue commission for ${staff.staff_name}: ${commissionResult.message}`)
+              warnings.push(
+                `Failed to accrue commission for ${staff.staff_name}: ${commissionResult.message}`
+              )
             }
           }
         }
       }
-      
+
       // 4. Process payment method fees
       if (summary.payments.cards.processing_fees > 0) {
         const feesResult = await this.processPaymentFees(summary)
@@ -248,12 +270,14 @@ export class POSEODService {
           warnings.push(`Failed to post processing fees: ${feesResult.message}`)
         }
       }
-      
+
       // 5. Create summary record
       const summaryId = await this.createSummaryRecord(summary, journalEntries)
-      
-      console.log(`[POS EOD] ✅ Successfully processed daily summary: ${journalEntries.length} journal entries`)
-      
+
+      console.log(
+        `[POS EOD] ✅ Successfully processed daily summary: ${journalEntries.length} journal entries`
+      )
+
       return {
         success: true,
         summary_id: summaryId,
@@ -263,10 +287,9 @@ export class POSEODService {
         warnings: warnings.length > 0 ? warnings : undefined,
         message: `Successfully processed ${journalEntries.length} journal entries for daily summary`
       }
-      
     } catch (error) {
       console.error('[POS EOD] Error processing daily summary:', error)
-      
+
       return {
         success: false,
         journal_entries: [],
@@ -277,37 +300,41 @@ export class POSEODService {
       }
     }
   }
-  
+
   /**
    * Validate POS summary data
    */
   private validateSummary(summary: POSDailySummary): { isValid: boolean; errors: string[] } {
     const errors: string[] = []
-    
+
     try {
       // Schema validation
       POSDailySummarySchema.parse(summary)
-      
+
       // Business validation
       const totals = this.calculateTotals(summary)
-      
+
       // Check payment total matches sales total
       const paymentTotal = summary.payments.cash.collected + summary.payments.cards.settlement
       const variance = Math.abs(totals.gross_sales - paymentTotal)
-      
-      if (variance > 1.0) { // Allow 1 AED variance for rounding
-        errors.push(`Payment total (${paymentTotal}) does not match sales total (${totals.gross_sales}), variance: ${variance}`)
+
+      if (variance > 1.0) {
+        // Allow 1 AED variance for rounding
+        errors.push(
+          `Payment total (${paymentTotal}) does not match sales total (${totals.gross_sales}), variance: ${variance}`
+        )
       }
-      
+
       // Check VAT calculations
       const servicesTotalVat = summary.sales.services.vat_amount
       const productsTotalVat = summary.sales.products.vat_amount
-      const expectedVat = (summary.sales.services.net_amount + summary.sales.products.net_amount) * 0.05 // Assume 5% VAT
-      
-      if (Math.abs((servicesTotalVat + productsTotalVat) - expectedVat) > 0.5) {
+      const expectedVat =
+        (summary.sales.services.net_amount + summary.sales.products.net_amount) * 0.05 // Assume 5% VAT
+
+      if (Math.abs(servicesTotalVat + productsTotalVat - expectedVat) > 0.5) {
         errors.push('VAT calculation appears incorrect - check VAT amounts')
       }
-      
+
       // Check commission calculations
       if (summary.staff) {
         for (const staff of summary.staff) {
@@ -317,41 +344,40 @@ export class POSEODService {
           }
         }
       }
-      
+
       // Check date is not in future
       const summaryDate = new Date(summary.summary_date)
       const today = new Date()
       today.setHours(23, 59, 59, 999) // End of today
-      
+
       if (summaryDate > today) {
         errors.push('Summary date cannot be in the future')
       }
-      
+
       return {
         isValid: errors.length === 0,
         errors
       }
-      
     } catch (zodError) {
       if (zodError instanceof z.ZodError) {
         errors.push(...zodError.errors.map(e => `${e.path.join('.')}: ${e.message}`))
       } else {
         errors.push('Schema validation failed')
       }
-      
+
       return {
         isValid: false,
         errors
       }
     }
   }
-  
+
   /**
    * Process main sales summary UFE
    */
   private async processSalesSummary(summary: POSDailySummary) {
     const totals = this.calculateTotals(summary)
-    
+
     const ufe: UniversalFinanceEvent = {
       organization_id: this.organizationId,
       transaction_type: FINANCE_TRANSACTION_TYPES.POS_EOD,
@@ -386,10 +412,10 @@ export class POSEODService {
       },
       lines: []
     }
-    
+
     return await processUniversalFinanceEvent(this.organizationId, ufe)
   }
-  
+
   /**
    * Process individual staff commission accrual
    */
@@ -419,10 +445,10 @@ export class POSEODService {
       },
       lines: []
     }
-    
+
     return await processUniversalFinanceEvent(this.organizationId, ufe)
   }
-  
+
   /**
    * Process payment processing fees
    */
@@ -449,39 +475,42 @@ export class POSEODService {
       },
       lines: []
     }
-    
+
     return await processUniversalFinanceEvent(this.organizationId, ufe)
   }
-  
+
   /**
    * Calculate summary totals for validation and reporting
    */
   private calculateTotals(summary: POSDailySummary) {
-    const gross_sales = summary.sales.services.gross_amount + 
-                       summary.sales.products.gross_amount + 
-                       (summary.sales.packages?.gross_amount || 0)
-    
-    const net_sales = summary.sales.services.net_amount + 
-                     summary.sales.products.net_amount + 
-                     (summary.sales.packages?.net_amount || 0)
-    
-    const total_vat = summary.sales.services.vat_amount + 
-                     summary.sales.products.vat_amount + 
-                     (summary.sales.packages?.vat_amount || 0)
-    
-    const total_tips = (summary.payments.cash.tips || 0) + 
-                      (summary.payments.cards.tips || 0)
-    
-    const total_commission = summary.staff?.reduce((sum, staff) => sum + staff.commission_amount, 0) || 0
-    
-    const total_fees = summary.payments.cards.processing_fees + 
-                      (summary.payments.vouchers?.fees || 0)
-    
+    const gross_sales =
+      summary.sales.services.gross_amount +
+      summary.sales.products.gross_amount +
+      (summary.sales.packages?.gross_amount || 0)
+
+    const net_sales =
+      summary.sales.services.net_amount +
+      summary.sales.products.net_amount +
+      (summary.sales.packages?.net_amount || 0)
+
+    const total_vat =
+      summary.sales.services.vat_amount +
+      summary.sales.products.vat_amount +
+      (summary.sales.packages?.vat_amount || 0)
+
+    const total_tips = (summary.payments.cash.tips || 0) + (summary.payments.cards.tips || 0)
+
+    const total_commission =
+      summary.staff?.reduce((sum, staff) => sum + staff.commission_amount, 0) || 0
+
+    const total_fees =
+      summary.payments.cards.processing_fees + (summary.payments.vouchers?.fees || 0)
+
     const cash_collected = summary.payments.cash.collected
     const card_settlement = summary.payments.cards.settlement
-    
+
     const variance = summary.reconciliation?.difference || 0
-    
+
     return {
       gross_sales,
       net_sales,
@@ -494,20 +523,25 @@ export class POSEODService {
       variance
     }
   }
-  
+
   private getTotalSales(summary: POSDailySummary): number {
-    return summary.sales.services.gross_amount + 
-           summary.sales.products.gross_amount + 
-           (summary.sales.packages?.gross_amount || 0)
+    return (
+      summary.sales.services.gross_amount +
+      summary.sales.products.gross_amount +
+      (summary.sales.packages?.gross_amount || 0)
+    )
   }
-  
+
   /**
    * Create summary record in HERA for audit trail
    */
-  private async createSummaryRecord(summary: POSDailySummary, journalEntries: any[]): Promise<string> {
+  private async createSummaryRecord(
+    summary: POSDailySummary,
+    journalEntries: any[]
+  ): Promise<string> {
     try {
       const { apiV2 } = await import('@/lib/client/fetchV2')
-      
+
       // Create POS summary entity
       const { data: summaryEntity } = await apiV2.post('entities', {
         organization_id: this.organizationId,
@@ -524,7 +558,7 @@ export class POSEODService {
           processed_at: new Date().toISOString()
         }
       })
-      
+
       if (summaryEntity?.id) {
         // Store complete summary data as dynamic data
         await apiV2.post('entities/dynamic-data', {
@@ -535,7 +569,7 @@ export class POSEODService {
           smart_code: heraCode('HERA.SALON.POS.SUMMARY.DATA.V1'),
           field_description: 'Complete POS daily summary data'
         })
-        
+
         // Store journal entry references
         await apiV2.post('entities/dynamic-data', {
           entity_id: summaryEntity.id,
@@ -545,12 +579,11 @@ export class POSEODService {
           smart_code: heraCode('HERA.SALON.POS.SUMMARY.JOURNALS.V1'),
           field_description: 'References to generated journal entries'
         })
-        
+
         return summaryEntity.id
       }
-      
+
       throw new Error('Failed to create summary entity')
-      
     } catch (error) {
       console.error('[POS EOD] Error creating summary record:', error)
       return `error-${Date.now()}`
@@ -579,13 +612,16 @@ export async function processPOSDailySummary(
 /**
  * Helper function to create sample POS summary for testing
  */
-export function createSamplePOSSummary(organizationId: string, date: string = new Date().toISOString().split('T')[0]): POSDailySummary {
+export function createSamplePOSSummary(
+  organizationId: string,
+  date: string = new Date().toISOString().split('T')[0]
+): POSDailySummary {
   return {
     organization_id: organizationId,
     branch_id: 'demo-branch-downtown',
     terminal_id: 'POS-01',
     summary_date: date,
-    
+
     sales: {
       services: {
         gross_amount: 8500,
@@ -595,12 +631,12 @@ export function createSamplePOSSummary(organizationId: string, date: string = ne
       },
       products: {
         gross_amount: 1500,
-        vat_amount: 71.43, // 1428.57 * 0.05  
+        vat_amount: 71.43, // 1428.57 * 0.05
         net_amount: 1428.57,
         transaction_count: 12
       }
     },
-    
+
     payments: {
       cash: {
         collected: 2000,
@@ -612,7 +648,7 @@ export function createSamplePOSSummary(organizationId: string, date: string = ne
         tips: 200
       }
     },
-    
+
     staff: [
       {
         staff_id: 'staff-sarah-uuid',
@@ -623,7 +659,7 @@ export function createSamplePOSSummary(organizationId: string, date: string = ne
         tips_allocated: 175
       },
       {
-        staff_id: 'staff-maya-uuid', 
+        staff_id: 'staff-maya-uuid',
         staff_name: 'Maya (Stylist)',
         services_revenue: 3000,
         commission_rate: 0.12,
@@ -631,22 +667,22 @@ export function createSamplePOSSummary(organizationId: string, date: string = ne
         tips_allocated: 125
       }
     ],
-    
+
     adjustments: {
       discounts: 50,
       refunds: 0,
       voids: 0
     },
-    
+
     reconciliation: {
       expected_total: 10000,
       actual_total: 10000,
       difference: 0,
       variance_percentage: 0.0
     },
-    
+
     currency_code: 'AED',
-    
+
     metadata: {
       pos_system: 'HERA_POS',
       software_version: '2.1.0',
