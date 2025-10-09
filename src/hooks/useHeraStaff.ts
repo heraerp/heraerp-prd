@@ -291,16 +291,76 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     return baseRestore(id)
   }
 
-  // Helper to delete staff (HARD DELETE - physically removes from database)
-  // For archiving, use archiveStaff() instead
-  const deleteStaff = async (id: string, reason?: string) => {
-    return baseDelete({
-      entity_id: id,
-      hard_delete: true, // Hard delete - permanently removes the staff
-      cascade: true, // Always cascade relationships
-      reason: reason || 'Permanently delete staff member',
-      smart_code: 'HERA.SALON.STAFF.DELETE.V1'
-    })
+  // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
+  // Try hard delete first, but if staff is referenced in transactions, archive instead
+  const deleteStaff = async (id: string, reason?: string): Promise<{
+    success: boolean
+    archived: boolean
+    message?: string
+  }> => {
+    const staffMember = (staff as StaffMember[])?.find(s => s.id === id)
+    if (!staffMember) throw new Error('Staff member not found')
+
+    try {
+      // Attempt hard delete with cascade
+      await baseDelete({
+        entity_id: id,
+        hard_delete: true,
+        cascade: true,
+        reason: reason || 'Permanently delete staff member',
+        smart_code: 'HERA.SALON.STAFF.DELETE.V1'
+      })
+
+      // If we reach here, hard delete succeeded
+      return {
+        success: true,
+        archived: false
+      }
+    } catch (error: any) {
+      // 🎯 ENTERPRISE ERROR DETECTION: Match services pattern - simpler and more reliable
+      const errorMessage = error.message || ''
+
+      console.log('[useHeraStaff] Delete error caught:', {
+        errorType: error.constructor.name,
+        status: error.status || error.statusCode,
+        code: error.code,
+        message: errorMessage
+      })
+
+      // Check if error is due to foreign key constraint (referenced in transactions)
+      // Matches services pattern - check error.message for key indicators
+      const is409Conflict =
+        errorMessage.includes('409') ||
+        errorMessage.includes('Conflict') ||
+        errorMessage.includes('referenced') ||
+        errorMessage.includes('foreign key') ||
+        errorMessage.includes('transaction') ||
+        errorMessage.includes('Cannot delete')
+
+      if (is409Conflict) {
+        console.log('[useHeraStaff] Staff has references - fallback to archive')
+
+        // Staff is referenced - fallback to archive with warning
+        // 🎯 CRITICAL: DON'T throw, just archive and return success (matches services pattern)
+        await baseUpdate({
+          entity_id: id,
+          entity_name: staffMember.entity_name,
+          status: 'archived'
+        })
+
+        console.log('[useHeraStaff] Archive successful - returning success response')
+
+        return {
+          success: true,
+          archived: true,
+          message:
+            'Staff member is referenced by other records (appointments, transactions, or schedules) and cannot be deleted. They have been archived instead.'
+        }
+      }
+
+      // If it's a different error, re-throw it
+      throw error
+    }
   }
 
   // Helper to link role

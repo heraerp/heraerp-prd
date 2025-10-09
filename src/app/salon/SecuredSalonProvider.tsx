@@ -17,7 +17,7 @@
 
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react'
 import { supabase } from '@/lib/supabase/client'
 // NOTE: AuthResolver is server-side only, handled via API routes for client components
 import { dbContext } from '@/lib/security/database-context'
@@ -121,7 +121,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const router = useRouter()
   const securityStore = useSalonSecurityStore()
   const auth = useHERAAuth()
-  
+
   // Branch state
   const [selectedBranchId, setSelectedBranchIdState] = useState<string | null>(() => {
     // Try to restore from localStorage
@@ -161,33 +161,131 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const [authError, setAuthError] = useState<SalonAuthError | null>(null)
   const [retryCount, setRetryCount] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false)
+  const authCheckDoneRef = React.useRef(false) // 🎯 Track if initial auth check is complete
+
+  // 🎯 ENTERPRISE FIX: Sync context with security store AND HERAAuth
+  // SECURITY: organizationId comes from HERAAuth (JWT), not from store cache
+  useEffect(() => {
+    // Only run if we haven't initialized context yet
+    if (hasInitialized) {
+      return
+    }
+
+    // Need both store initialized AND organization from auth
+    const orgId = auth.currentOrganization?.id
+    if (!securityStore.isInitialized || !orgId) {
+      return
+    }
+
+    // ✅ SECURITY: Get organization ID from HERAAuth (JWT), not from cache
+    setContext(prev => ({
+      ...prev,
+      orgId,
+      organizationId: orgId,
+      userId: securityStore.userId || '',
+      salonRole: securityStore.salonRole || 'stylist',
+      permissions: securityStore.permissions || [],
+      organization: auth.currentOrganization || { id: orgId, name: '' },
+      user: securityStore.user || auth.user,
+      isLoading: false, // ✅ CRITICAL: Set loading to false
+      isAuthenticated: true,
+      selectedBranchId,
+      selectedBranch: null,
+      availableBranches: [],
+      setSelectedBranchId: handleSetBranch
+    }))
+
+    setHasInitialized(true)
+    authCheckDoneRef.current = true
+
+    // Load branches in background
+    loadBranches(orgId).then(branches => {
+      setAvailableBranches(branches)
+      setContext(prev => ({
+        ...prev,
+        availableBranches: branches,
+        selectedBranch: branches.find(b => b.id === selectedBranchId) || null
+      }))
+    }).catch((error) => {
+      console.error('Failed to load branches:', error)
+    })
+  }, [securityStore.isInitialized, auth.currentOrganization?.id, hasInitialized, selectedBranchId, auth.user]) // ✅ Depends on auth.currentOrganization
 
   useEffect(() => {
-    console.log('🔐 SecuredSalonProvider useEffect running:', {
-      pathname: window.location.pathname,
-      isInitialized: securityStore.isInitialized,
-      shouldReinitialize: securityStore.shouldReinitialize(),
-      lastInitialized: securityStore.lastInitialized,
-      timeSinceInit: securityStore.lastInitialized
-        ? Date.now() - securityStore.lastInitialized
-        : null,
-      authLoading: auth.isLoading,
-      isAuthenticated: auth.isAuthenticated
-    })
-
-    // Wait for HERA auth to be fully ready before initializing
-    if (auth.isLoading || !auth.isAuthenticated) {
-      console.log('⏸️ Waiting for HERA Auth to be ready...')
+    // 🎯 OPTIMIZATION: Skip if auth check already done and cache is still valid
+    if (authCheckDoneRef.current && securityStore.isInitialized && !securityStore.shouldReinitialize()) {
       return
+    }
+
+    // Wait for HERA auth to finish loading (only on first check)
+    if (auth.isLoading && !authCheckDoneRef.current) {
+      console.log('⏸️ Waiting for HERA Auth to finish loading...')
+      return
+    }
+
+    // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (after loading completes)
+    if (!auth.isAuthenticated) {
+      console.log('🚪 Not authenticated, redirecting to auth...')
+      authCheckDoneRef.current = false // Reset for next login
+      // Show unauthenticated state briefly before redirect
+      setContext(prev => ({
+        ...prev,
+        isLoading: false,
+        isAuthenticated: false
+      }))
+      // Redirect after a brief moment
+      const timer = setTimeout(() => redirectToAuth(), 500)
+      return () => clearTimeout(timer)
     }
 
     // Only initialize if not already cached or if we need to reinitialize
     if (!securityStore.isInitialized || securityStore.shouldReinitialize()) {
       console.log('🔄 Initializing security context...')
-      initializeSecureContext()
-    } else {
-      console.log('✅ Security context already initialized, skipping...')
+      initializeSecureContext().then(() => {
+        authCheckDoneRef.current = true // ✅ Mark auth check as complete
+        console.log('✅ Auth check complete and cached')
+      })
+    } else if (!hasInitialized) {
+      // ✅ SECURITY: Get organization ID from HERAAuth (JWT), not from cache
+      const orgId = auth.currentOrganization?.id
+
+      if (!orgId) {
+        console.log('⏸️ Waiting for organization from auth...')
+        return
+      }
+
+      console.log('✅ Security context already initialized, updating context with auth org')
+
+      // 🎯 CRITICAL FIX: Update context with store data + auth organization
+      setContext(prev => ({
+        ...prev,
+        orgId,
+        organizationId: orgId,
+        userId: securityStore.userId || '',
+        salonRole: securityStore.salonRole || 'stylist',
+        permissions: securityStore.permissions || [],
+        organization: auth.currentOrganization || { id: orgId, name: '' },
+        user: securityStore.user || auth.user,
+        isLoading: false, // ✅ CRITICAL: Set loading to false
+        isAuthenticated: true,
+        selectedBranchId,
+        selectedBranch: null,
+        availableBranches: [],
+        setSelectedBranchId: handleSetBranch
+      }))
+
       setHasInitialized(true)
+      authCheckDoneRef.current = true
+
+      // Load branches in background
+      loadBranches(orgId).then(branches => {
+        setAvailableBranches(branches)
+        setContext(prev => ({
+          ...prev,
+          availableBranches: branches,
+          selectedBranch: branches.find(b => b.id === selectedBranchId) || null
+        }))
+      }).catch(() => {})
     }
 
     // Listen for auth state changes
@@ -201,22 +299,30 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       if (event === 'SIGNED_IN' && session) {
         // Force re-initialization on sign in
+        console.log('🔐 SIGNED_IN event - resetting auth check')
+        authCheckDoneRef.current = false
         securityStore.clearState()
         await initializeSecureContext()
+        authCheckDoneRef.current = true
       } else if (event === 'SIGNED_OUT') {
+        console.log('🔐 SIGNED_OUT event - clearing state')
+        authCheckDoneRef.current = false
         securityStore.clearState()
         clearContext()
         redirectToAuth()
       } else if (event === 'TOKEN_REFRESHED') {
-        // Only reinitialize if needed
+        console.log('🔐 TOKEN_REFRESHED event')
+        // Only reinitialize if needed (cache expired)
         if (securityStore.shouldReinitialize()) {
+          console.log('🔄 Cache expired, reinitializing...')
           await initializeSecureContext()
+          authCheckDoneRef.current = true
         }
       }
     })
 
     return () => subscription.unsubscribe()
-  }, [auth.isLoading, auth.isAuthenticated])
+  }, [auth.isLoading, auth.isAuthenticated, auth.currentOrganization?.id, auth.user]) // ✅ Include org and user
 
   /**
    * Initialize secure authentication context
@@ -224,7 +330,10 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const initializeSecureContext = async () => {
     try {
       setAuthError(null)
-      setContext(prev => ({ ...prev, isLoading: true }))
+      // Only show loading if we don't have cached data (prevent page from disappearing on revalidation)
+      if (!securityStore.isInitialized || !hasInitialized) {
+        setContext(prev => ({ ...prev, isLoading: true }))
+      }
 
       // Skip auth on public pages
       if (isPublicPage()) {
@@ -638,27 +747,27 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   /**
    * Check if user has specific permission
    */
-  const hasPermission = (permission: string): boolean => {
+  const hasPermission = useCallback((permission: string): boolean => {
     return (
       context.permissions.includes(permission) || context.permissions.includes('salon:admin:full')
     )
-  }
+  }, [context.permissions])
 
   /**
    * Check if user has any of the specified permissions
    */
-  const hasAnyPermission = (permissions: string[]): boolean => {
+  const hasAnyPermission = useCallback((permissions: string[]): boolean => {
     return permissions.some(permission => hasPermission(permission))
-  }
+  }, [hasPermission])
 
-  // Enhanced context with security methods
-  const enhancedContext = {
+  // ⚡ PERFORMANCE: Memoize enhanced context to prevent excessive re-renders
+  const enhancedContext = useMemo(() => ({
     ...context,
     executeSecurely,
     hasPermission,
     hasAnyPermission,
     retry: initializeSecureContext
-  }
+  }), [context, hasPermission, hasAnyPermission])
 
   // Loading state - only show if not already initialized
   if (context.isLoading && (!securityStore.isInitialized || !hasInitialized)) {

@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
-import { Trash2, Package, AlertTriangle } from 'lucide-react'
+import { Trash2, Package, AlertTriangle, Archive } from 'lucide-react'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -149,7 +149,6 @@ export function DeleteProductDialog({
                   <p className="font-medium text-red-400 mb-2">Warning: Permanent Deletion</p>
                   <ul className="text-sm space-y-1" style={{ color: COLORS.lightText }}>
                     <li>• Product information will be permanently removed</li>
-                    <li>• Stock history and transaction records will remain for audit</li>
                     <li>• This action cannot be undone</li>
                     {product.qty_on_hand > 0 && (
                       <li className="text-red-400">
@@ -167,16 +166,25 @@ export function DeleteProductDialog({
             </div>
 
             <div
-              className="p-3 rounded-lg"
+              className="p-4 rounded-lg border"
               style={{
-                backgroundColor: COLORS.black + '30',
-                border: '1px solid ' + COLORS.bronze + '33'
+                backgroundColor: COLORS.gold + '10',
+                borderColor: COLORS.gold + '30'
               }}
             >
-              <p className="text-sm" style={{ color: COLORS.lightText }}>
-                <strong>Alternative:</strong> Consider archiving this product instead to preserve
-                historical data while removing it from active use.
-              </p>
+              <div className="flex items-start gap-3">
+                <Archive className="w-5 h-5 mt-0.5" style={{ color: COLORS.gold }} />
+                <div>
+                  <p className="font-medium mb-2" style={{ color: COLORS.gold }}>
+                    Smart Delete Protection
+                  </p>
+                  <p className="text-sm" style={{ color: COLORS.lightText }}>
+                    If this product is used in transactions or inventory movements, it will be{' '}
+                    <strong>automatically archived</strong> instead of deleted. This preserves
+                    historical data while removing the product from active use.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </AlertDialogHeader>

@@ -335,6 +335,7 @@ export async function getTransactions(params: {
   }).then(ok)
 
   const body = await res.json()
+
   // Support multiple response formats:
   // 1. Direct array: [...]
   // 2. { data: [...] }
@@ -353,16 +354,152 @@ export async function createTransaction(
     p_reference_entity_id?: string | null
     p_transaction_date?: string
     p_metadata?: Json
+    p_lines?: Array<{
+      line_type: string
+      entity_id?: string | null
+      quantity?: number | null
+      unit_amount?: number | null
+      line_amount?: number | null
+      description?: string | null
+    }>
   }
 ) {
   const authHeaders = await getAuthHeaders()
+
+  // Map parameters to what the API expects
+  const apiBody = {
+    organization_id: orgId,
+    transaction_type: body.p_transaction_type,
+    smart_code: body.p_smart_code,
+    transaction_date: body.p_transaction_date || new Date().toISOString(),
+    source_entity_id: body.p_from_entity_id || null,
+    target_entity_id: body.p_to_entity_id || null,
+    business_context: body.p_metadata || {},
+    // Use provided lines or add placeholder for appointments if no lines provided
+    lines: body.p_lines && body.p_lines.length > 0
+      ? body.p_lines
+      : body.p_transaction_type === 'APPOINTMENT'
+      ? [{
+          line_type: 'service',
+          quantity: 1,
+          unit_amount: 0,
+          line_amount: 0,
+          description: 'Appointment placeholder - services to be added'
+        }]
+      : []
+  }
+
   const res = await fetch(`/api/v2/transactions`, {
     method: 'POST',
     headers: { ...h(orgId), ...authHeaders, 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({ p_organization_id: orgId, ...body })
+    body: JSON.stringify(apiBody)
   }).then(ok)
-  return await res.json()
+
+  const result = await res.json()
+
+  // Return in consistent format: { data: transaction_id }
+  return {
+    data: result.transaction_id || result.data
+  }
+}
+
+// Update transaction (for appointments and other transaction updates)
+export async function updateTransaction(
+  transactionId: string,
+  orgId: string,
+  body: {
+    p_transaction_date?: string
+    p_source_entity_id?: string
+    p_target_entity_id?: string | null
+    p_total_amount?: number
+    p_status?: string
+    p_metadata?: Json
+    p_smart_code?: string
+  }
+) {
+  console.log('[updateTransaction] RPC wrapper called:', {
+    transactionId,
+    orgId,
+    body
+  })
+
+  const authHeaders = await getAuthHeaders()
+
+  const apiBody: any = {
+    p_organization_id: orgId
+  }
+
+  // Only include fields that are provided
+  if (body.p_transaction_date !== undefined) apiBody.p_transaction_date = body.p_transaction_date
+  if (body.p_source_entity_id !== undefined) apiBody.p_source_entity_id = body.p_source_entity_id
+  if (body.p_target_entity_id !== undefined) apiBody.p_target_entity_id = body.p_target_entity_id
+  if (body.p_total_amount !== undefined) apiBody.p_total_amount = body.p_total_amount
+  if (body.p_status !== undefined) apiBody.p_status = body.p_status
+  if (body.p_metadata !== undefined) apiBody.p_metadata = body.p_metadata
+  if (body.p_smart_code !== undefined) apiBody.p_smart_code = body.p_smart_code
+
+  console.log('[updateTransaction] Request body:', apiBody)
+  console.log('[updateTransaction] Request URL:', `/api/v2/transactions/${transactionId}`)
+
+  const res = await fetch(`/api/v2/transactions/${transactionId}`, {
+    method: 'PUT',
+    headers: {
+      ...h(orgId),
+      ...authHeaders,
+      'Content-Type': 'application/json',
+      'x-hera-api-version': 'v2'
+    },
+    credentials: 'include',
+    body: JSON.stringify(apiBody)
+  })
+
+  console.log('[updateTransaction] Response status:', res.status, res.statusText)
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: 'Update failed' }))
+    console.error('[updateTransaction] Error response:', error)
+    throw new Error(error.error || 'Failed to update transaction')
+  }
+
+  const result = await res.json()
+  console.log('[updateTransaction] Success response:', result)
+
+  return result
+}
+
+// Delete transaction (for appointments and other transaction deletions)
+export async function deleteTransaction(
+  transactionId: string,
+  orgId: string,
+  options?: {
+    force?: boolean
+  }
+) {
+  const authHeaders = await getAuthHeaders()
+
+  const queryParams = new URLSearchParams()
+  if (options?.force) {
+    queryParams.append('force', 'true')
+  }
+
+  const res = await fetch(`/api/v2/transactions/${transactionId}?${queryParams}`, {
+    method: 'DELETE',
+    headers: {
+      ...h(orgId),
+      ...authHeaders,
+      'Content-Type': 'application/json',
+      'x-hera-api-version': 'v2'
+    },
+    credentials: 'include'
+  })
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: 'Delete failed' }))
+    throw new Error(error.error || 'Failed to delete transaction')
+  }
+
+  return res.json()
 }
 
 // Relationship operations

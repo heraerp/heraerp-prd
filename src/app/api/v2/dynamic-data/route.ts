@@ -49,7 +49,20 @@ export async function GET(request: NextRequest) {
       query = query.eq('field_name', field_name)
     }
 
+    console.log('[dynamic-data GET] Query params:', {
+      organizationId,
+      entity_id,
+      entity_ids,
+      field_name
+    })
+
     const { data, error } = await query
+
+    console.log('[dynamic-data GET] Result:', {
+      success: !error,
+      count: data?.length || 0,
+      error: error?.message
+    })
 
     if (error) {
       console.error('[dynamic-data GET] Error:', error)

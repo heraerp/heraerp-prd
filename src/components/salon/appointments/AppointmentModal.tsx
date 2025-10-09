@@ -1,507 +1,1050 @@
+/**
+ * ✨ ENTERPRISE: Appointment View/Edit Modal
+ * Smart Code: HERA.SALON.APPOINTMENTS.MODAL.V1
+ *
+ * Features:
+ * - View/Edit in single modal
+ * - Time slot selection with conflict detection
+ * - Service add/remove
+ * - Branch/Customer/Stylist selection
+ * - Luxe theme with soft animations
+ * - Enterprise-grade UX
+ */
+
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { format, addMinutes, parse } from 'date-fns'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter
-} from '@/components/ui/luxe-dialog'
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, Trash2, Archive } from 'lucide-react'
-import type { AppointmentFormValues } from '@/hooks/useHeraAppointments'
+import {
+  Calendar,
+  Clock,
+  User,
+  DollarSign,
+  X,
+  Check,
+  Scissors,
+  Building2,
+  Save,
+  Edit2,
+  Plus,
+  Trash2,
+  Loader2
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { Appointment } from '@/hooks/useHeraAppointments'
 
-// Luxe color palette
-const COLORS = {
+// 🎨 Luxe Theme Colors
+const LUXE_COLORS = {
   black: '#0B0B0B',
+  charcoal: '#1A1A1A',
   gold: '#D4AF37',
   goldDark: '#B8860B',
   champagne: '#F5E6C8',
-  charcoal: '#1A1A1A',
-  charcoalLight: '#232323',
   bronze: '#8C7853',
-  lightText: '#E0E0E0'
+  emerald: '#0F6F5C',
+  rose: '#E8B4B8',
+  spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+  ease: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+  smooth: 'cubic-bezier(0.4, 0, 0.2, 1)'
 }
-
-// Zod validation schema
-const appointmentSchema = z.object({
-  customer_name: z.string().min(1, 'Customer name is required'),
-  customer_id: z.string().optional(),
-  stylist_name: z.string().optional(),
-  stylist_id: z.string().optional(),
-  start_time: z.string().min(1, 'Start time is required'),
-  duration_minutes: z.number().min(15, 'Minimum 15 minutes').default(60),
-  price: z.number().min(0).default(0),
-  currency_code: z.string().default('AED'),
-  notes: z.string().optional(),
-  status: z.enum(['booked', 'checked_in', 'completed', 'cancelled', 'no_show']).default('booked')
-})
-
-type AppointmentSchemaType = z.infer<typeof appointmentSchema>
 
 interface AppointmentModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSave: (data: AppointmentFormValues) => Promise<void>
-  onDelete?: (appointmentId: string) => Promise<void>
-  onArchive?: (appointmentId: string) => Promise<void>
-  appointment?:
-    | {
-        id: string
-        entity_name?: string
-        customer_name?: string
-        customer_id?: string
-        stylist_name?: string
-        stylist_id?: string
-        start_time?: string
-        end_time?: string
-        duration_minutes?: number
-        price?: number
-        currency_code?: string
-        notes?: string
-        status?: string
-      }
-    | undefined
-  userRole?: 'owner' | 'manager' | 'receptionist' | 'staff'
-  isLoading?: boolean
+  appointment: Appointment | null
+  customers: any[]
+  stylists: any[]
+  services: any[]
+  branches: any[]
+  onSave: (data: any) => Promise<void>
+  existingAppointments?: Appointment[]
+}
+
+interface TimeSlot {
+  start: string
+  end: string
+  hasConflict: boolean
 }
 
 export function AppointmentModal({
   open,
   onOpenChange,
-  onSave,
-  onDelete,
-  onArchive,
   appointment,
-  userRole = 'receptionist',
-  isLoading = false
+  customers,
+  stylists,
+  services,
+  branches,
+  onSave,
+  existingAppointments = []
 }: AppointmentModalProps) {
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
-  const isEditMode = !!appointment
-  const canDelete = ['owner', 'manager'].includes(userRole)
-  const canArchive = ['owner', 'manager', 'receptionist'].includes(userRole)
+  // Form state
+  const [selectedCustomer, setSelectedCustomer] = useState('')
+  const [selectedStylist, setSelectedStylist] = useState('')
+  const [selectedBranch, setSelectedBranch] = useState('')
+  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedTime, setSelectedTime] = useState('')
+  const [selectedServices, setSelectedServices] = useState<string[]>([])
+  const [notes, setNotes] = useState('')
+  const [duration, setDuration] = useState(60)
+  const [price, setPrice] = useState(0)
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    reset,
-    formState: { errors, isSubmitting }
-  } = useForm<AppointmentSchemaType>({
-    resolver: zodResolver(appointmentSchema),
-    defaultValues: {
-      customer_name: appointment?.customer_name || '',
-      customer_id: appointment?.customer_id || '',
-      stylist_name: appointment?.stylist_name || '',
-      stylist_id: appointment?.stylist_id || '',
-      start_time: appointment?.start_time || '',
-      duration_minutes: appointment?.duration_minutes || 60,
-      price: appointment?.price || 0,
-      currency_code: appointment?.currency_code || 'AED',
-      notes: appointment?.notes || '',
-      status: (appointment?.status as any) || 'booked'
-    }
-  })
-
-  // Reset form when dialog opens/closes
+  // Initialize form when appointment changes
   useEffect(() => {
-    if (open) {
-      reset({
-        customer_name: appointment?.customer_name || '',
-        customer_id: appointment?.customer_id || '',
-        stylist_name: appointment?.stylist_name || '',
-        stylist_id: appointment?.stylist_id || '',
-        start_time: appointment?.start_time
-          ? new Date(appointment.start_time).toISOString().slice(0, 16)
-          : '',
-        duration_minutes: appointment?.duration_minutes || 60,
-        price: appointment?.price || 0,
-        currency_code: appointment?.currency_code || 'AED',
-        notes: appointment?.notes || '',
-        status: (appointment?.status as any) || 'booked'
-      })
-    }
-  }, [open, appointment, reset])
+    if (appointment && open) {
+      console.log('[AppointmentModal] Initializing with appointment:', appointment)
+      console.log('[AppointmentModal] Metadata:', appointment.metadata)
 
-  const onSubmit = async (data: AppointmentSchemaType) => {
-    try {
-      // Calculate end_time from start_time + duration
-      const startDate = new Date(data.start_time)
-      const endDate = new Date(startDate.getTime() + data.duration_minutes * 60000)
+      setSelectedCustomer(appointment.customer_id || '')
+      setSelectedStylist(appointment.stylist_id || '')
+      setSelectedBranch(appointment.branch_id || '')
+      setSelectedDate(appointment.start_time ? format(new Date(appointment.start_time), 'yyyy-MM-dd') : '')
+      setSelectedTime(appointment.start_time ? format(new Date(appointment.start_time), 'HH:mm') : '')
+      setNotes(appointment.notes || '')
+      setDuration(appointment.duration_minutes || 60)
+      setPrice(appointment.price || 0)
 
-      const appointmentData: AppointmentFormValues = {
-        customer_name: data.customer_name,
-        customer_id: data.customer_id || `CUST-${Date.now()}`,
-        stylist_name: data.stylist_name,
-        stylist_id: data.stylist_id,
-        start_time: startDate.toISOString(),
-        end_time: endDate.toISOString(),
-        duration_minutes: data.duration_minutes,
-        price: data.price,
-        currency_code: data.currency_code,
-        notes: data.notes,
-        status: data.status
+      // ✨ ENTERPRISE: Extract service IDs from metadata - handle ALL possible formats
+      let serviceIds: string[] = []
+      const metadata = appointment.metadata || {}
+
+      console.log('[AppointmentModal] Full metadata structure:', JSON.stringify(metadata, null, 2))
+
+      // Option 1: metadata.service_ids (array)
+      if (Array.isArray(metadata.service_ids)) {
+        serviceIds = metadata.service_ids.filter(Boolean)
+        console.log('[AppointmentModal] Found service_ids array:', serviceIds)
+      }
+      // Option 2: metadata.service_ids (string - JSON or comma-separated)
+      else if (typeof metadata.service_ids === 'string' && metadata.service_ids.trim()) {
+        try {
+          const parsed = JSON.parse(metadata.service_ids)
+          serviceIds = Array.isArray(parsed) ? parsed : [parsed]
+        } catch {
+          serviceIds = metadata.service_ids.split(',').map((id: string) => id.trim()).filter(Boolean)
+        }
+        console.log('[AppointmentModal] Parsed service_ids string:', serviceIds)
+      }
+      // Option 3: metadata.services (array of objects with id property)
+      else if (Array.isArray(metadata.services) && metadata.services.length > 0) {
+        serviceIds = metadata.services.map((s: any) => s?.id || s).filter(Boolean)
+        console.log('[AppointmentModal] Extracted from services array:', serviceIds)
+      }
+      // Option 4: metadata.service_id (singular)
+      else if (metadata.service_id) {
+        serviceIds = [metadata.service_id]
+        console.log('[AppointmentModal] Found single service_id:', serviceIds)
+      }
+      // Option 5: Check appointment.service_ids directly (not in metadata)
+      else if ((appointment as any).service_ids) {
+        const directIds = (appointment as any).service_ids
+        serviceIds = Array.isArray(directIds) ? directIds : [directIds]
+        console.log('[AppointmentModal] Found service_ids on appointment object:', serviceIds)
       }
 
-      await onSave(appointmentData)
-      onOpenChange(false)
-    } catch (error) {
-      console.error('Failed to save appointment:', error)
+      console.log('[AppointmentModal] ✅ Final parsed service IDs:', serviceIds)
+      console.log('[AppointmentModal] Available services:', services.map(s => ({ id: s.id, name: s.entity_name })))
+
+      setSelectedServices(serviceIds)
+      setIsEditing(false)
     }
-  }
+  }, [appointment, open, services])
 
-  const handleDelete = async () => {
-    if (!appointment || !onDelete) return
+  // 🕐 ENTERPRISE: Generate time slots - EXACT COPY from /new page
+  const generateTimeSlots = useCallback((): TimeSlot[] => {
+    const slots: TimeSlot[] = []
+    const now = new Date()
+    const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date()
+    const isToday = selectedDateObj.toDateString() === now.toDateString()
 
+    // Working hours: 9:00 AM to 9:00 PM
+    const startHour = 9
+    const endHour = 21
+
+    // Start from current hour if today, otherwise from opening time
+    let currentHour = isToday ? Math.max(now.getHours(), startHour) : startHour
+    let currentMinute = isToday ? (now.getMinutes() < 30 ? 30 : 0) : 0
+
+    // If today and current minute is 30+, start from next hour
+    if (isToday && now.getMinutes() >= 30 && currentMinute === 0) {
+      currentHour += 1
+    }
+
+    // Generate 30-minute slots
+    while (currentHour < endHour || (currentHour === endHour && currentMinute === 0)) {
+      const startTime = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`
+
+      // Calculate end time (30 minutes later)
+      let endMinute = currentMinute + 30
+      let endHour = currentHour
+      if (endMinute >= 60) {
+        endMinute = 0
+        endHour += 1
+      }
+      const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`
+
+      slots.push({
+        start: startTime,
+        end: endTime,
+        hasConflict: false
+      })
+
+      // Move to next slot
+      currentMinute += 30
+      if (currentMinute >= 60) {
+        currentMinute = 0
+        currentHour += 1
+      }
+    }
+
+    return slots
+  }, [selectedDate])
+
+  // 🔍 ENTERPRISE: Check for time slot conflicts - EXACT COPY from /new page
+  const checkTimeSlotConflict = useCallback(
+    (slotStart: string) => {
+      if (!selectedStylist || !existingAppointments || existingAppointments.length === 0) {
+        return { hasConflict: false, conflictingAppointment: null }
+      }
+
+      // Parse slot start time
+      const [hours, minutes] = slotStart.split(':').map(Number)
+      const slotDateTime = new Date(selectedDate)
+      slotDateTime.setHours(hours, minutes, 0, 0)
+
+      // Calculate slot end time (30 minutes later)
+      const slotEndTime = new Date(slotDateTime)
+      slotEndTime.setMinutes(slotEndTime.getMinutes() + 30)
+
+      // ✨ ENTERPRISE: Only these statuses block time slots
+      const BLOCKING_STATUSES = [
+        'booked',           // Confirmed appointment
+        'checked_in',       // Customer has arrived
+        'in_progress',      // Service is happening
+        'payment_pending'   // Service done, awaiting payment
+      ]
+
+      // Check for conflicts with existing appointments for this stylist
+      const conflict = existingAppointments.find(apt => {
+        // Skip current appointment when editing
+        if (appointment && apt.id === appointment.id) return false
+
+        // Only check appointments for the selected stylist
+        if (apt.stylist_id !== selectedStylist) return false
+
+        // 🧬 ENTERPRISE: Only block time slots for confirmed/active appointments
+        if (!BLOCKING_STATUSES.includes(apt.status)) {
+          console.log(`[AppointmentModal] Skipping ${apt.status} appointment - doesn't block time slots`)
+          return false
+        }
+
+        // Parse appointment times
+        const aptStart = new Date(apt.start_time)
+        const aptEnd = new Date(apt.end_time)
+
+        // Check for overlap: slot overlaps if it starts before appointment ends AND ends after appointment starts
+        const overlaps = slotDateTime < aptEnd && slotEndTime > aptStart
+
+        if (overlaps) {
+          console.log(`[AppointmentModal] ⚠️ BLOCKED by ${apt.status} appointment:`, {
+            customer: apt.customer_name,
+            status: apt.status,
+            appointmentTime: `${format(aptStart, 'h:mm a')} - ${format(aptEnd, 'h:mm a')}`,
+            slotTime: `${format(slotDateTime, 'h:mm a')} - ${format(slotEndTime, 'h:mm a')}`
+          })
+        }
+
+        return overlaps
+      })
+
+      return {
+        hasConflict: !!conflict,
+        conflictingAppointment: conflict || null
+      }
+    },
+    [selectedStylist, existingAppointments, selectedDate, appointment]
+  )
+
+  // Generate available time slots
+  const timeSlots = useMemo(() => generateTimeSlots(), [generateTimeSlots])
+
+  const availableTimeSlots = useMemo(() => {
+    if (!selectedDate || !selectedStylist) return timeSlots
+
+    const today = format(new Date(), 'yyyy-MM-dd')
+    const isToday = selectedDate === today
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+
+    return timeSlots
+      .filter(slot => {
+        // If selected date is today, only show future time slots
+        if (isToday) {
+          const [slotHour, slotMinute] = slot.start.split(':').map(Number)
+          // Add 30 minute buffer for booking
+          if (slotHour < currentHour || (slotHour === currentHour && slotMinute <= currentMinute + 30)) {
+            return false
+          }
+        }
+        return true
+      })
+      .map(slot => ({
+        ...slot,
+        ...checkTimeSlotConflict(slot.start)
+      }))
+  }, [timeSlots, selectedDate, selectedStylist, checkTimeSlotConflict])
+
+  // Calculate total price and duration from selected services
+  useEffect(() => {
+    if (selectedServices.length > 0) {
+      const total = selectedServices.reduce((sum, serviceId) => {
+        const service = services.find(s => s.id === serviceId)
+        if (!service) return sum
+
+        const servicePrice = service.price_market || service.dynamic_fields?.price_market?.value || 0
+        return sum + servicePrice
+      }, 0)
+
+      const totalDuration = selectedServices.reduce((sum, serviceId) => {
+        const service = services.find(s => s.id === serviceId)
+        if (!service) return sum
+
+        const serviceDuration = service.duration_min || service.dynamic_fields?.duration_min?.value || 30
+        return sum + serviceDuration
+      }, 0)
+
+      setPrice(total)
+      setDuration(totalDuration)
+    }
+  }, [selectedServices, services])
+
+  // Handle save
+  const handleSave = async () => {
     try {
-      setIsDeleting(true)
-      await onDelete(appointment.id)
-      setDeleteConfirmOpen(false)
+      setIsSaving(true)
+
+      const startDateTime = new Date(`${selectedDate}T${selectedTime}`)
+      const endDateTime = addMinutes(startDateTime, duration)
+
+      await onSave({
+        customer_id: selectedCustomer,
+        stylist_id: selectedStylist || null,
+        branch_id: selectedBranch || null,
+        start_time: startDateTime.toISOString(),
+        end_time: endDateTime.toISOString(),
+        duration_minutes: duration,
+        price,
+        notes: notes.trim() || null,
+        service_ids: selectedServices
+      })
+
+      setIsEditing(false)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to delete appointment:', error)
+      console.error('Save failed:', error)
     } finally {
-      setIsDeleting(false)
+      setIsSaving(false)
     }
   }
 
-  const handleArchive = async () => {
-    if (!appointment || !onArchive) return
-
-    try {
-      await onArchive(appointment.id)
-      onOpenChange(false)
-    } catch (error) {
-      console.error('Failed to archive appointment:', error)
-    }
+  // Handle service toggle
+  const toggleService = (serviceId: string) => {
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
+        ? prev.filter(id => id !== serviceId)
+        : [...prev, serviceId]
+    )
   }
+
+  if (!appointment) return null
+
+  console.log('[AppointmentModal] Full appointment object:', appointment)
+  console.log('[AppointmentModal] Available services:', services.map(s => ({ id: s.id, name: s.entity_name })))
+  console.log('[AppointmentModal] Selected service IDs:', selectedServices)
+  console.log('[AppointmentModal] Branches data:', branches.map(b => ({ id: b.id, entity_name: b.entity_name, name: b.name })))
+  console.log('[AppointmentModal] Customers data:', customers.map(c => ({ id: c.id, entity_name: c.entity_name })))
+
+  // ✅ CRITICAL FIX: Handle both entity_name and name fields for branches
+  const customerName = customers.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown'
+  const stylistName = stylists.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
+  const branchName = branches.find(b => b.id === appointment.branch_id)?.entity_name
+    || branches.find(b => b.id === appointment.branch_id)?.name
+    || 'Main Branch'
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent
-          className="max-w-2xl max-h-[90vh] overflow-y-auto"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            border: `1px solid ${COLORS.gold}`,
-            color: COLORS.lightText
-          }}
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="max-w-4xl max-h-[90vh] p-0 border-0 overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%)',
+          backdropFilter: 'blur(20px)',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.2)'
+        }}
+      >
+        <DialogHeader
+          className="p-6 pb-4 flex flex-row items-center justify-between"
+          style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}15` }}
         >
-          <DialogHeader>
-            <DialogTitle style={{ color: COLORS.champagne }} className="text-2xl font-bold">
-              {isEditMode ? 'Edit Appointment' : 'New Appointment'}
+          <div className="flex-1">
+            <DialogTitle className="text-2xl flex items-center gap-3" style={{ color: LUXE_COLORS.champagne }}>
+              <Calendar className="w-6 h-6" style={{ color: LUXE_COLORS.gold }} />
+              Appointment Details
             </DialogTitle>
-          </DialogHeader>
+            <p className="text-sm mt-1" style={{ color: LUXE_COLORS.bronze }}>
+              {appointment.transaction_code}
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Customer Info */}
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="customer_name" style={{ color: COLORS.champagne }}>
-                  Customer Name *
-                </Label>
-                <Input
-                  id="customer_name"
-                  {...register('customer_name')}
-                  placeholder="Enter customer name"
-                  style={{
-                    backgroundColor: COLORS.charcoalLight,
-                    border: `1px solid ${COLORS.gold}30`,
-                    color: COLORS.champagne
-                  }}
-                />
-                {errors.customer_name && (
-                  <p className="text-sm text-red-400 mt-1">{errors.customer_name.message}</p>
-                )}
+          {/* ✅ ENTERPRISE: Action buttons */}
+          <div className="flex items-center gap-2">
+            {!isEditing && (
+              <Button
+                onClick={() => setIsEditing(true)}
+                className="transition-all duration-300"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                  color: LUXE_COLORS.black,
+                  border: 'none',
+                  fontWeight: '600'
+                }}
+              >
+                <Edit2 className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+            )}
+
+            {/* ✅ ENTERPRISE: Close button (X icon) - Always visible */}
+            <Button
+              onClick={() => onOpenChange(false)}
+              size="sm"
+              className="transition-all duration-300 w-9 h-9 p-0"
+              style={{
+                background: 'rgba(245,230,200,0.1)',
+                border: `1px solid ${LUXE_COLORS.gold}30`,
+                color: LUXE_COLORS.champagne
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(232,180,184,0.2)'
+                e.currentTarget.style.borderColor = `${LUXE_COLORS.rose}50`
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'rgba(245,230,200,0.1)'
+                e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}30`
+              }}
+              title="Close"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        </DialogHeader>
+
+        <ScrollArea className="max-h-[calc(90vh-200px)]">
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-4">
+                {/* Customer Selection */}
+                <div>
+                  <Label className="text-sm mb-2" style={{ color: LUXE_COLORS.champagne }}>
+                    Customer
+                  </Label>
+                  {isEditing ? (
+                    <Select value={selectedCustomer} onValueChange={setSelectedCustomer}>
+                      <SelectTrigger
+                        style={{
+                          background: 'rgba(245,230,200,0.05)',
+                          border: `1px solid ${LUXE_COLORS.gold}20`,
+                          color: LUXE_COLORS.champagne
+                        }}
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="hera-select-content">
+                        {customers.map(customer => (
+                          <SelectItem key={customer.id} value={customer.id}>
+                            {customer.entity_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <div
+                      className="p-3 rounded-lg"
+                      style={{
+                        background: 'rgba(212,175,55,0.1)',
+                        border: `1px solid ${LUXE_COLORS.gold}20`,
+                        color: LUXE_COLORS.champagne
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+                        <span>{customerName}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Stylist Selection */}
+                <div>
+                  <Label className="text-sm mb-2" style={{ color: LUXE_COLORS.champagne }}>
+                    Stylist
+                  </Label>
+                  {isEditing ? (
+                    <Select value={selectedStylist} onValueChange={setSelectedStylist}>
+                      <SelectTrigger
+                        style={{
+                          background: 'rgba(245,230,200,0.05)',
+                          border: `1px solid ${LUXE_COLORS.gold}20`,
+                          color: LUXE_COLORS.champagne
+                        }}
+                      >
+                        <SelectValue placeholder="Select stylist" />
+                      </SelectTrigger>
+                      <SelectContent className="hera-select-content">
+                        {stylists.map(stylist => (
+                          <SelectItem key={stylist.id} value={stylist.id}>
+                            {stylist.entity_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <div
+                      className="p-3 rounded-lg"
+                      style={{
+                        background: 'rgba(15,111,92,0.1)',
+                        border: `1px solid ${LUXE_COLORS.emerald}20`,
+                        color: LUXE_COLORS.champagne
+                      }}
+                    >
+                      {stylistName}
+                    </div>
+                  )}
+                </div>
+
+                {/* Branch Selection - Always show */}
+                <div>
+                  <Label className="text-sm mb-2" style={{ color: LUXE_COLORS.champagne }}>
+                    Branch
+                  </Label>
+                  {isEditing ? (
+                    branches.length > 0 ? (
+                      <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                        <SelectTrigger
+                          style={{
+                            background: 'rgba(245,230,200,0.05)',
+                            border: `1px solid ${LUXE_COLORS.gold}20`,
+                            color: LUXE_COLORS.champagne
+                          }}
+                        >
+                          <SelectValue placeholder="Select branch" />
+                        </SelectTrigger>
+                        <SelectContent className="hera-select-content">
+                          {branches.map(branch => (
+                            <SelectItem key={branch.id} value={branch.id}>
+                              {/* ✅ CRITICAL FIX: Handle both entity_name and name fields */}
+                              {branch.entity_name || branch.name || 'Unnamed Branch'}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div
+                        className="p-3 rounded-lg text-sm"
+                        style={{
+                          background: 'rgba(212,175,55,0.1)',
+                          border: `1px solid ${LUXE_COLORS.gold}20`,
+                          color: LUXE_COLORS.bronze
+                        }}
+                      >
+                        No branches available
+                      </div>
+                    )
+                  ) : (
+                    <div
+                      className="p-3 rounded-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(140,120,83,0.15) 0%, rgba(140,120,83,0.08) 100%)',
+                        border: `1px solid ${LUXE_COLORS.bronze}30`,
+                        color: LUXE_COLORS.champagne,
+                        boxShadow: '0 2px 8px rgba(140,120,83,0.1)'
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4" style={{ color: LUXE_COLORS.bronze }} />
+                        <span className="font-medium">{branchName}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Date Selection */}
+                <div>
+                  <Label className="text-sm mb-2 font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                    Date {isEditing && <span style={{ color: LUXE_COLORS.gold }}>*</span>}
+                  </Label>
+                  {isEditing ? (
+                    <input
+                      type="date"
+                      value={selectedDate}
+                      onChange={e => setSelectedDate(e.target.value)}
+                      min={format(new Date(), 'yyyy-MM-dd')}
+                      className="w-full px-4 py-3 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                      style={{
+                        background: 'rgba(245,230,200,0.1)',
+                        border: `1px solid ${LUXE_COLORS.gold}40`,
+                        color: LUXE_COLORS.champagne,
+                        fontSize: '0.95rem',
+                        fontWeight: '500'
+                      }}
+                      onFocus={e => {
+                        e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                        e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
+                      }}
+                      onBlur={e => {
+                        e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                        e.currentTarget.style.boxShadow = 'none'
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="p-3 rounded-lg"
+                      style={{
+                        background: 'rgba(59,130,246,0.1)',
+                        border: '1px solid rgba(59,130,246,0.2)',
+                        color: LUXE_COLORS.champagne
+                      }}
+                    >
+                      {appointment.start_time &&
+                        format(new Date(appointment.start_time), 'EEEE, MMMM d, yyyy')}
+                    </div>
+                  )}
+                </div>
+
+                {/* Time Selection */}
+                <div>
+                  <Label className="text-sm mb-2 font-medium flex items-center justify-between" style={{ color: LUXE_COLORS.champagne }}>
+                    <span>
+                      Time {isEditing && <span style={{ color: LUXE_COLORS.gold }}>*</span>}
+                      {isEditing && duration > 0 && (
+                        <span className="text-xs ml-2 font-normal" style={{ color: LUXE_COLORS.bronze }}>
+                          (Duration: {duration} min)
+                        </span>
+                      )}
+                    </span>
+                    {isEditing && selectedStylist && (
+                      <span className="text-[10px] font-normal" style={{ color: LUXE_COLORS.bronze, opacity: 0.8 }}>
+                        ✨ Draft appointments don't block slots
+                      </span>
+                    )}
+                  </Label>
+                  {isEditing ? (
+                    selectedStylist && selectedDate ? (
+                      <Select value={selectedTime} onValueChange={setSelectedTime}>
+                        <SelectTrigger
+                          className="h-12"
+                          style={{
+                            background: 'rgba(245,230,200,0.1)',
+                            border: `1px solid ${LUXE_COLORS.gold}40`,
+                            color: LUXE_COLORS.champagne,
+                            fontSize: '0.95rem',
+                            fontWeight: '500'
+                          }}
+                        >
+                          <SelectValue placeholder="Select time slot" />
+                        </SelectTrigger>
+                        <SelectContent className="hera-select-content max-h-[300px]">
+                          {availableTimeSlots.map(slot => {
+                            const [hours, minutes] = slot.start.split(':').map(Number)
+                            const period = hours >= 12 ? 'PM' : 'AM'
+                            const displayHours = hours % 12 || 12
+                            const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
+
+                            // Get conflict details for tooltip
+                            const conflictInfo = slot.hasConflict && slot.conflictingAppointment
+                              ? `${slot.conflictingAppointment.customer_name} (${slot.conflictingAppointment.status})`
+                              : ''
+
+                            return (
+                              <SelectItem
+                                key={slot.start}
+                                value={slot.start}
+                                disabled={slot.hasConflict}
+                                className={cn(
+                                  slot.hasConflict && 'opacity-50 cursor-not-allowed'
+                                )}
+                                title={conflictInfo}
+                              >
+                                <div className="flex items-center justify-between w-full gap-2">
+                                  <span>{displayTime}</span>
+                                  {slot.hasConflict && (
+                                    <div className="flex items-center gap-1">
+                                      <Badge
+                                        variant="destructive"
+                                        className="text-[10px] px-1.5 py-0"
+                                        style={{
+                                          background: 'rgba(239, 68, 68, 0.2)',
+                                          color: '#F87171',
+                                          border: '1px solid rgba(239, 68, 68, 0.3)'
+                                        }}
+                                      >
+                                        {slot.conflictingAppointment?.status || 'Booked'}
+                                      </Badge>
+                                      {slot.conflictingAppointment?.customer_name && (
+                                        <span className="text-[10px] text-gray-500 truncate max-w-[100px]">
+                                          {slot.conflictingAppointment.customer_name}
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </SelectItem>
+                            )
+                          })}
+                        </SelectContent>
+                      </Select>
+                    ) : !selectedStylist ? (
+                      <div
+                        className="p-3 rounded-lg text-sm text-center"
+                        style={{
+                          background: 'rgba(212,175,55,0.1)',
+                          border: `1px solid ${LUXE_COLORS.gold}20`,
+                          color: LUXE_COLORS.bronze
+                        }}
+                      >
+                        <Clock className="w-4 h-4 mx-auto mb-2" />
+                        <p className="font-medium">Select stylist first</p>
+                        <p className="text-xs mt-1" style={{ opacity: 0.7 }}>
+                          Stylist selection required to check availability
+                        </p>
+                      </div>
+                    ) : !selectedDate ? (
+                      <div
+                        className="p-3 rounded-lg text-sm text-center"
+                        style={{
+                          background: 'rgba(212,175,55,0.1)',
+                          border: `1px solid ${LUXE_COLORS.gold}20`,
+                          color: LUXE_COLORS.bronze
+                        }}
+                      >
+                        <Calendar className="w-4 h-4 mx-auto mb-2" />
+                        <p className="font-medium">Select date first</p>
+                        <p className="text-xs mt-1" style={{ opacity: 0.7 }}>
+                          Date selection required to show available time slots
+                        </p>
+                      </div>
+                    ) : null
+                  ) : (
+                    <div
+                      className="p-3 rounded-lg"
+                      style={{
+                        background: 'rgba(59,130,246,0.1)',
+                        border: '1px solid rgba(59,130,246,0.2)',
+                        color: LUXE_COLORS.champagne
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" style={{ color: '#3B82F6' }} />
+                        <span>
+                          {appointment.start_time &&
+                            format(new Date(appointment.start_time), 'h:mm a')}
+                          {' - '}
+                          {appointment.end_time &&
+                            format(new Date(appointment.end_time), 'h:mm a')}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div>
-                <Label htmlFor="stylist_name" style={{ color: COLORS.champagne }}>
-                  Stylist Name
+              {/* Right Column - Services */}
+              <div className="space-y-4">
+                <Label className="text-sm flex items-center justify-between" style={{ color: LUXE_COLORS.champagne }}>
+                  <span>Services</span>
+                  {isEditing && (
+                    <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                      Click to add/remove
+                    </span>
+                  )}
                 </Label>
-                <Input
-                  id="stylist_name"
-                  {...register('stylist_name')}
-                  placeholder="Enter stylist name (optional)"
-                  style={{
-                    backgroundColor: COLORS.charcoalLight,
-                    border: `1px solid ${COLORS.gold}30`,
-                    color: COLORS.champagne
-                  }}
-                />
-              </div>
-            </div>
 
-            {/* Date & Time */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="start_time" style={{ color: COLORS.champagne }}>
-                  Start Time *
-                </Label>
-                <Input
-                  id="start_time"
-                  type="datetime-local"
-                  {...register('start_time')}
-                  style={{
-                    backgroundColor: COLORS.charcoalLight,
-                    border: `1px solid ${COLORS.gold}30`,
-                    color: COLORS.champagne
-                  }}
-                />
-                {errors.start_time && (
-                  <p className="text-sm text-red-400 mt-1">{errors.start_time.message}</p>
-                )}
-              </div>
+                <ScrollArea className="h-[400px] pr-4">
+                  <div className="space-y-2">
+                    {/* 🔍 ENTERPRISE: Real-time debugging for services not loading issue */}
+                    {console.log('========== ENTERPRISE DEBUG START ==========')}
+                    {console.log('[AppointmentModal] 1. Services prop received:', services)}
+                    {console.log('[AppointmentModal] 2. Services count:', services?.length || 0)}
+                    {console.log('[AppointmentModal] 3. First service structure:', services?.[0])}
+                    {console.log('[AppointmentModal] 4. Selected service IDs:', selectedServices)}
+                    {console.log('[AppointmentModal] 5. isEditing mode:', isEditing)}
+                    {console.log('[AppointmentModal] 6. Appointment metadata:', appointment?.metadata)}
+                    {(() => {
+                      const filteredServices = services?.filter(service => {
+                        if (isEditing) return true
+                        const isSelected = selectedServices.some(selectedId =>
+                          String(selectedId) === String(service.id)
+                        )
+                        console.log(`[AppointmentModal] 7. Service "${service.entity_name}" (${service.id}): isSelected=${isSelected}`)
+                        return isSelected
+                      })
+                      console.log('[AppointmentModal] 8. Filtered services count:', filteredServices?.length || 0)
+                      console.log('[AppointmentModal] 9. Filtered services:', filteredServices)
+                      console.log('========== ENTERPRISE DEBUG END ==========')
+                      return null
+                    })()}
+                    {!isEditing && selectedServices.length === 0 ? (
+                      <div
+                        className="p-6 rounded-lg text-center"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.05) 100%)',
+                          border: `1px solid ${LUXE_COLORS.gold}20`,
+                          color: LUXE_COLORS.bronze
+                        }}
+                      >
+                        <Scissors className="w-8 h-8 mx-auto mb-2" style={{ color: LUXE_COLORS.gold }} />
+                        <p className="text-sm">No services selected for this appointment</p>
+                        <p className="text-xs mt-2" style={{ opacity: 0.7 }}>
+                          Click "Edit Appointment" to add services
+                        </p>
+                      </div>
+                    ) : !services || services.length === 0 ? (
+                      <div
+                        className="p-6 rounded-lg text-center"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(232,180,184,0.1) 0%, rgba(232,180,184,0.05) 100%)',
+                          border: `1px solid ${LUXE_COLORS.rose}20`,
+                          color: LUXE_COLORS.bronze
+                        }}
+                      >
+                        <Scissors className="w-8 h-8 mx-auto mb-2" style={{ color: LUXE_COLORS.rose }} />
+                        <p className="text-sm font-medium">⚠️ No services available</p>
+                        <p className="text-xs mt-2" style={{ opacity: 0.7 }}>
+                          Services data failed to load. Please check your connection and try again.
+                        </p>
+                      </div>
+                    ) : (
+                      services
+                        .filter(service => {
+                          if (isEditing) return true
+                          // Flexible ID matching - handle both string and number comparisons
+                          return selectedServices.some(selectedId =>
+                            String(selectedId) === String(service.id)
+                          )
+                        })
+                        .map(service => {
+                      // Flexible selection check
+                      const isSelected = selectedServices.some(selectedId =>
+                        String(selectedId) === String(service.id)
+                      )
+                      const servicePrice = service.price_market || service.dynamic_fields?.price_market?.value || 0
+                      const serviceDuration = service.duration_min || service.dynamic_fields?.duration_min?.value || 30
 
-              <div>
-                <Label htmlFor="duration_minutes" style={{ color: COLORS.champagne }}>
-                  Duration (minutes)
-                </Label>
-                <Input
-                  id="duration_minutes"
-                  type="number"
-                  {...register('duration_minutes', { valueAsNumber: true })}
-                  placeholder="60"
-                  min="15"
-                  max="480"
-                  style={{
-                    backgroundColor: COLORS.charcoalLight,
-                    border: `1px solid ${COLORS.gold}30`,
-                    color: COLORS.champagne
-                  }}
-                />
-                {errors.duration_minutes && (
-                  <p className="text-sm text-red-400 mt-1">{errors.duration_minutes.message}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Price & Status */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="price" style={{ color: COLORS.champagne }}>
-                  Price (AED)
-                </Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  {...register('price', { valueAsNumber: true })}
-                  placeholder="0.00"
-                  min="0"
-                  style={{
-                    backgroundColor: COLORS.charcoalLight,
-                    border: `1px solid ${COLORS.gold}30`,
-                    color: COLORS.champagne
-                  }}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="status" style={{ color: COLORS.champagne }}>
-                  Status
-                </Label>
-                <Select
-                  value={watch('status')}
-                  onValueChange={value => setValue('status', value as any)}
-                >
-                  <SelectTrigger
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      border: `1px solid ${COLORS.gold}30`,
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent className="hera-select-content">
-                    <SelectItem value="booked" className="hera-select-item">
-                      Booked
-                    </SelectItem>
-                    <SelectItem value="checked_in" className="hera-select-item">
-                      Checked In
-                    </SelectItem>
-                    <SelectItem value="completed" className="hera-select-item">
-                      Completed
-                    </SelectItem>
-                    <SelectItem value="cancelled" className="hera-select-item">
-                      Cancelled
-                    </SelectItem>
-                    <SelectItem value="no_show" className="hera-select-item">
-                      No Show
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                      return (
+                        <div
+                          key={service.id}
+                          onClick={() => isEditing && toggleService(service.id)}
+                          className={cn(
+                            'p-4 rounded-lg transition-all duration-300 cursor-pointer',
+                            isEditing && 'hover:scale-102'
+                          )}
+                          style={{
+                            background: isSelected
+                              ? 'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(212,175,55,0.1) 100%)'
+                              : 'rgba(245,230,200,0.05)',
+                            border: `1px solid ${isSelected ? LUXE_COLORS.gold : 'rgba(245,230,200,0.1)'}40`,
+                            pointerEvents: isEditing ? 'auto' : 'none',
+                            boxShadow: isSelected ? '0 4px 12px rgba(212,175,55,0.15)' : 'none'
+                          }}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                {isSelected && (
+                                  <Check className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+                                )}
+                                <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                                  {service.entity_name}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3 text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  {serviceDuration} min
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <DollarSign className="w-3 h-3" />
+                                  {servicePrice.toFixed(2)}
+                                </span>
+                              </div>
+                            </div>
+                            {isEditing && isSelected && (
+                              <div
+                                className="w-6 h-6 rounded-full flex items-center justify-center"
+                                style={{
+                                  background: LUXE_COLORS.gold,
+                                  color: LUXE_COLORS.black
+                                }}
+                              >
+                                <Check className="w-4 h-4" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })
+                    )}
+                  </div>
+                </ScrollArea>
               </div>
             </div>
 
             {/* Notes */}
             <div>
-              <Label htmlFor="notes" style={{ color: COLORS.champagne }}>
+              <Label className="text-sm mb-2" style={{ color: LUXE_COLORS.champagne }}>
                 Notes
               </Label>
-              <Textarea
-                id="notes"
-                {...register('notes')}
-                placeholder="Special requests or notes"
-                rows={3}
-                style={{
-                  backgroundColor: COLORS.charcoalLight,
-                  border: `1px solid ${COLORS.gold}30`,
-                  color: COLORS.champagne
-                }}
-              />
+              {isEditing ? (
+                <Textarea
+                  value={notes}
+                  onChange={e => setNotes(e.target.value)}
+                  rows={3}
+                  placeholder="Any special requests..."
+                  style={{
+                    background: 'rgba(245,230,200,0.05)',
+                    border: `1px solid ${LUXE_COLORS.gold}20`,
+                    color: LUXE_COLORS.champagne
+                  }}
+                />
+              ) : (
+                <div
+                  className="p-3 rounded-lg min-h-[60px]"
+                  style={{
+                    background: 'rgba(140,120,83,0.1)',
+                    border: `1px solid ${LUXE_COLORS.bronze}20`,
+                    color: LUXE_COLORS.champagne
+                  }}
+                >
+                  {notes || <span style={{ color: LUXE_COLORS.bronze, opacity: 0.5 }}>No notes</span>}
+                </div>
+              )}
             </div>
 
-            <DialogFooter className="flex gap-3">
-              {/* Archive/Delete buttons for existing appointments */}
-              {isEditMode && canArchive && appointment?.status !== 'archived' && (
-                <Button
-                  type="button"
-                  onClick={handleArchive}
-                  variant="outline"
-                  style={{
-                    backgroundColor: `${COLORS.bronze}20`,
-                    borderColor: COLORS.bronze,
-                    color: COLORS.bronze
-                  }}
-                >
-                  <Archive className="h-4 w-4 mr-2" />
-                  Archive
-                </Button>
-              )}
+            {/* Total */}
+            <div
+              className="p-4 rounded-lg"
+              style={{
+                background: `linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(184,134,11,0.10) 100%)`,
+                border: `1px solid ${LUXE_COLORS.gold}30`
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                  Total
+                </span>
+                <span className="text-2xl font-bold" style={{ color: LUXE_COLORS.gold }}>
+                  ${price.toFixed(2)}
+                </span>
+              </div>
+              <div className="text-sm mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                Duration: {duration} minutes • {selectedServices.length} service(s)
+              </div>
+            </div>
+          </div>
+        </ScrollArea>
 
-              {isEditMode && canDelete && appointment?.status === 'archived' && (
-                <Button
-                  type="button"
-                  onClick={() => setDeleteConfirmOpen(true)}
-                  variant="outline"
-                  style={{
-                    backgroundColor: '#991B1B20',
-                    borderColor: '#991B1B',
-                    color: '#991B1B'
-                  }}
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              )}
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isSubmitting}
-                style={{
-                  borderColor: COLORS.gold,
-                  color: COLORS.champagne,
-                  backgroundColor: 'transparent'
-                }}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                type="submit"
-                disabled={isSubmitting || isLoading}
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black
-                }}
-              >
-                {isSubmitting || isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>{isEditMode ? 'Save Changes' : 'Create Appointment'}</>
-                )}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <DialogContent
-          className="max-w-md"
+        {/* Footer Actions */}
+        <div
+          className="p-6 pt-4 flex gap-3"
           style={{
-            backgroundColor: COLORS.charcoal,
-            border: `1px solid ${COLORS.gold}`,
-            color: COLORS.lightText
+            borderTop: `1px solid ${LUXE_COLORS.gold}15`,
+            background: 'linear-gradient(to top, rgba(212,175,55,0.05) 0%, transparent 100%)'
           }}
         >
-          <DialogHeader>
-            <DialogTitle style={{ color: COLORS.champagne }} className="text-xl font-bold">
-              Delete Appointment?
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p style={{ color: COLORS.lightText }}>
-              Are you sure you want to permanently delete this appointment?
-            </p>
-            <p className="mt-3 text-sm" style={{ color: COLORS.bronze }}>
-              This action cannot be undone.
-            </p>
-          </div>
-          <DialogFooter className="flex gap-3">
+          {isEditing ? (
             <Button
-              type="button"
-              variant="outline"
-              onClick={() => setDeleteConfirmOpen(false)}
-              disabled={isDeleting}
+              onClick={handleSave}
+              disabled={isSaving || !selectedCustomer || !selectedDate || !selectedTime || selectedServices.length === 0}
+              className="w-full transition-all duration-300 hover:shadow-xl"
               style={{
-                borderColor: COLORS.gold,
-                color: COLORS.champagne,
-                backgroundColor: 'transparent'
+                background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                color: LUXE_COLORS.black,
+                border: 'none',
+                fontWeight: '600',
+                padding: '1.25rem',
+                fontSize: '1rem',
+                opacity: (isSaving || !selectedCustomer || !selectedDate || !selectedTime || selectedServices.length === 0) ? 0.5 : 1,
+                boxShadow: '0 8px 24px rgba(212,175,55,0.3)'
               }}
             >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              style={{
-                backgroundColor: '#991B1B',
-                color: '#FFFFFF'
-              }}
-            >
-              {isDeleting ? (
+              {isSaving ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Deleting...
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Saving...
                 </>
               ) : (
                 <>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
+                  <Save className="w-5 h-5 mr-2" />
+                  Save Changes
                 </>
               )}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+          ) : (
+            <div className="flex gap-3 w-full">
+              <Button
+                onClick={() => setIsEditing(true)}
+                className="flex-1 transition-all duration-300 hover:shadow-xl"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                  color: LUXE_COLORS.black,
+                  border: 'none',
+                  fontWeight: '600',
+                  padding: '1rem',
+                  boxShadow: '0 6px 20px rgba(212,175,55,0.3)'
+                }}
+              >
+                <Edit2 className="w-4 h-4 mr-2" />
+                Edit Appointment
+              </Button>
+              <Button
+                onClick={() => onOpenChange(false)}
+                className="flex-1 transition-all duration-300"
+                style={{
+                  background: 'rgba(245,230,200,0.1)',
+                  border: `1px solid ${LUXE_COLORS.gold}30`,
+                  color: LUXE_COLORS.champagne,
+                  fontWeight: '500',
+                  padding: '1rem'
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }

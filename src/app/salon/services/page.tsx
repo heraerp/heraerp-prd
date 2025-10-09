@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraServices } from '@/hooks/useHeraServicesV2'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
@@ -98,8 +98,22 @@ function SalonServicesPageContent() {
   const [isDeletingCategory, setIsDeletingCategory] = useState(false)
   const [editingCategory, setEditingCategory] = useState<ServiceCategory | null>(null)
 
-  // Fetch services using Universal API v2
-  // CRITICAL: Use null explicitly for "All Locations", not undefined
+  // 🎯 ENTERPRISE PATTERN: Fetch ALL services for global KPIs (dashboard metrics)
+  // This provides the "big picture" regardless of tab/filter selection
+  // NO filters applied to KPIs - always show complete organization data
+  const {
+    services: allServicesForKPIs,
+    isLoading: isLoadingKPIs
+  } = useHeraServices({
+    organizationId,
+    filters: {
+      branch_id: undefined, // No branch filter for KPIs
+      category_id: undefined, // No category filter for KPIs
+      status: undefined // Get ALL services (active + archived) for accurate KPIs
+    }
+  })
+
+  // Fetch filtered services for display list (controlled by tab + user filters)
   const {
     services,
     isLoading,
@@ -112,19 +126,12 @@ function SalonServicesPageContent() {
   } = useHeraServices({
     organizationId,
     filters: {
-      branch_id: selectedBranchId === null ? undefined : selectedBranchId, // null = All Locations (no filter)
+      // 🎯 CRITICAL: Only apply branch filter if explicitly selected (not on initial load)
+      branch_id: selectedBranchId && selectedBranchId !== null ? selectedBranchId : undefined,
       category_id: categoryFilter || undefined,
-      status: includeArchived ? undefined : 'active'
+      status: includeArchived ? undefined : 'active' // Tab controls list, not KPIs
     }
   })
-
-  // Ensure default filter is "All Locations" on mount
-  React.useEffect(() => {
-    // If no branch is selected yet, explicitly set to null (All Locations)
-    if (selectedBranchId === undefined) {
-      setSelectedBranchId(null)
-    }
-  }, [selectedBranchId, setSelectedBranchId])
 
   // Fetch categories using Universal API v2
   const {
@@ -140,38 +147,44 @@ function SalonServicesPageContent() {
     includeArchived: false
   })
 
-  const categories = serviceCategories
-    .filter(cat => cat && cat.entity_name)
-    .map(cat => cat.entity_name)
+  // Memoized computed values for performance
+  const categories = useMemo(
+    () => serviceCategories.filter(cat => cat && cat.entity_name).map(cat => cat.entity_name),
+    [serviceCategories]
+  )
 
-  // Filter services
-  const filteredServices = services.filter(service => {
-    if (!service || !service.entity_name) return false
+  // Filter services - memoized for performance
+  const filteredServices = useMemo(
+    () =>
+      services.filter(service => {
+        if (!service || !service.entity_name) return false
 
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      if (
-        !service.entity_name.toLowerCase().includes(query) &&
-        !service.entity_code?.toLowerCase().includes(query)
-      ) {
-        return false
-      }
-    }
+        // Search filter
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase()
+          if (
+            !service.entity_name.toLowerCase().includes(query) &&
+            !service.entity_code?.toLowerCase().includes(query)
+          ) {
+            return false
+          }
+        }
 
-    // Branch filter is handled in useHeraServices hook via AVAILABLE_AT relationships
-    // No additional filtering needed here
+        // Branch filter is handled in useHeraServices hook via AVAILABLE_AT relationships
+        // No additional filtering needed here
 
-    // Category filter
-    if (categoryFilter && service.category !== categoryFilter) {
-      return false
-    }
+        // Category filter
+        if (categoryFilter && service.category !== categoryFilter) {
+          return false
+        }
 
-    return true
-  })
+        return true
+      }),
+    [services, searchQuery, categoryFilter]
+  )
 
-  // CRUD handlers
-  const handleSave = async (data: ServiceFormValues) => {
+  // CRUD handlers - memoized for performance
+  const handleSave = useCallback(async (data: ServiceFormValues) => {
     const loadingId = showLoading(
       editingService ? 'Updating service...' : 'Creating service...',
       'Please wait while we save your changes'
@@ -207,7 +220,10 @@ function SalonServicesPageContent() {
         active: data.status === 'active',
         requires_booking: data.requires_booking || false,
         category_id: data.category || undefined,
-        branch_ids: branchesToLink // Always link to at least one branch
+        branch_ids: branchesToLink, // Always link to at least one branch
+        // 🎯 CRITICAL FIX: Pass status for BOTH create and edit (not conditional)
+        // This allows status dropdown to work properly in the modal
+        status: data.status
       }
 
       if (editingService) {
@@ -229,28 +245,45 @@ function SalonServicesPageContent() {
         error.message || 'Please try again or contact support'
       )
     }
-  }
+  }, [editingService, availableBranches, updateService, createService, showLoading, removeToast, showSuccess, showError])
 
-  const handleEdit = (service: Service) => {
+  const handleEdit = useCallback((service: Service) => {
     setEditingService(service)
     setModalOpen(true)
-  }
+  }, [])
 
-  const handleDelete = (service: Service) => {
+  const handleDelete = useCallback((service: Service) => {
     setServiceToDelete(service)
     setDeleteDialogOpen(true)
-  }
+  }, [])
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     if (!serviceToDelete) return
 
     const loadingId = showLoading('Deleting service...', 'This action cannot be undone')
     setIsDeleting(true)
 
     try {
-      await deleteService(serviceToDelete.id)
+      // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
+      // Try hard delete first, but if service is referenced, archive instead
+      const result = await deleteService(serviceToDelete.id)
+
       removeToast(loadingId)
-      showSuccess('Service deleted', `${serviceToDelete.entity_name} has been permanently removed`)
+
+      if (result.archived) {
+        // Service was archived instead of deleted (referenced in appointments/transactions)
+        showSuccess(
+          'Service archived',
+          result.message || `${serviceToDelete.entity_name} has been archived`
+        )
+      } else {
+        // Service was successfully deleted
+        showSuccess(
+          'Service deleted',
+          `${serviceToDelete.entity_name} has been permanently removed`
+        )
+      }
+
       setDeleteDialogOpen(false)
       setServiceToDelete(null)
     } catch (error: any) {
@@ -259,78 +292,87 @@ function SalonServicesPageContent() {
     } finally {
       setIsDeleting(false)
     }
-  }
+  }, [serviceToDelete, deleteService, showLoading, removeToast, showSuccess, showError])
 
-  const handleArchive = async (service: Service) => {
-    const loadingId = showLoading(
-      'Archiving service...',
-      'Please wait while we update the service status'
-    )
-
-    try {
-      await archiveService(service.id)
-      removeToast(loadingId)
-      showSuccess('Service archived', `${service.entity_name} has been archived`)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to archive service', error.message || 'Please try again')
-    }
-  }
-
-  const handleRestore = async (service: Service) => {
-    const loadingId = showLoading(
-      'Restoring service...',
-      'Please wait while we restore the service'
-    )
-
-    try {
-      await restoreService(service.id)
-      removeToast(loadingId)
-      showSuccess('Service restored', `${service.entity_name} has been restored`)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to restore service', error.message || 'Please try again')
-    }
-  }
-
-  const handleExport = () => {
-    showSuccess('Export started', 'Your services will be exported shortly')
-  }
-
-  // Category CRUD handlers
-  const handleSaveCategory = async (data: ServiceCategoryFormValues) => {
-    const loadingId = showLoading(
-      editingCategory ? 'Updating category...' : 'Creating category...',
-      'Please wait while we save your changes'
-    )
-
-    try {
-      if (editingCategory) {
-        await updateCategory(editingCategory.id, data)
-        removeToast(loadingId)
-        showSuccess('Category updated successfully', `${data.name} has been updated`)
-      } else {
-        await createCategory(data)
-        removeToast(loadingId)
-        showSuccess('Category created successfully', `${data.name} has been added`)
-      }
-      setCategoryModalOpen(false)
-      setEditingCategory(null)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError(
-        editingCategory ? 'Failed to update category' : 'Failed to create category',
-        error.message || 'Please try again or contact support'
+  const handleArchive = useCallback(
+    async (service: Service) => {
+      const loadingId = showLoading(
+        'Archiving service...',
+        'Please wait while we update the service status'
       )
-    }
-  }
 
-  const handleEditCategory = (category: ServiceCategory) => {
+      try {
+        await archiveService(service.id)
+        removeToast(loadingId)
+        showSuccess('Service archived', `${service.entity_name} has been archived`)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError('Failed to archive service', error.message || 'Please try again')
+      }
+    },
+    [archiveService, showLoading, removeToast, showSuccess, showError]
+  )
+
+  const handleRestore = useCallback(
+    async (service: Service) => {
+      const loadingId = showLoading(
+        'Restoring service...',
+        'Please wait while we restore the service'
+      )
+
+      try {
+        await restoreService(service.id)
+        removeToast(loadingId)
+        showSuccess('Service restored', `${service.entity_name} has been restored`)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError('Failed to restore service', error.message || 'Please try again')
+      }
+    },
+    [restoreService, showLoading, removeToast, showSuccess, showError]
+  )
+
+  const handleExport = useCallback(() => {
+    showSuccess('Export started', 'Your services will be exported shortly')
+  }, [showSuccess])
+
+  // Category CRUD handlers - memoized for performance
+  const handleSaveCategory = useCallback(
+    async (data: ServiceCategoryFormValues) => {
+      const loadingId = showLoading(
+        editingCategory ? 'Updating category...' : 'Creating category...',
+        'Please wait while we save your changes'
+      )
+
+      try {
+        if (editingCategory) {
+          await updateCategory(editingCategory.id, data)
+          removeToast(loadingId)
+          showSuccess('Category updated successfully', `${data.name} has been updated`)
+        } else {
+          await createCategory(data)
+          removeToast(loadingId)
+          showSuccess('Category created successfully', `${data.name} has been added`)
+        }
+        setCategoryModalOpen(false)
+        setEditingCategory(null)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError(
+          editingCategory ? 'Failed to update category' : 'Failed to create category',
+          error.message || 'Please try again or contact support'
+        )
+      }
+    },
+    [editingCategory, updateCategory, createCategory, showLoading, removeToast, showSuccess, showError]
+  )
+
+  const handleEditCategory = useCallback((category: ServiceCategory) => {
     setEditingCategory(category)
     setCategoryModalOpen(true)
-  }
+  }, [])
 
-  const handleDeleteCategory = async () => {
+  const handleDeleteCategory = useCallback(async () => {
     if (!categoryToDelete) return
 
     const loadingId = showLoading('Deleting category...', 'This action cannot be undone')
@@ -348,26 +390,49 @@ function SalonServicesPageContent() {
     } finally {
       setIsDeletingCategory(false)
     }
-  }
+  }, [categoryToDelete, deleteCategory, showLoading, removeToast, showSuccess, showError])
 
-  // Calculate stats
-  const activeCount = services.filter(s => s.status === 'active').length
-  const totalRevenue = services
-    .filter(s => s.status === 'active')
-    .reduce((sum, service) => sum + (service.price || 0), 0)
-  const avgDuration =
-    services.length > 0
-      ? services.reduce((sum, service) => sum + (service.duration_minutes || 0), 0) /
-        services.length
-      : 0
+  // Calculate global KPIs - memoized for performance
+  // 🎯 ENTERPRISE DASHBOARD PATTERN: KPIs show GLOBAL metrics, independent of tab/filter
+  // Tab selection controls the LIST below, not the dashboard metrics
+  // This is standard enterprise UX where KPIs = "big picture", Filters = "drill-down"
 
-  const formatDuration = (minutes: number) => {
+  const totalServicesCount = useMemo(
+    () => allServicesForKPIs?.length || 0,
+    [allServicesForKPIs]
+  )
+
+  const activeCount = useMemo(
+    () => allServicesForKPIs?.filter(s => s && s.status === 'active').length || 0,
+    [allServicesForKPIs]
+  )
+
+  const totalRevenue = useMemo(
+    () =>
+      allServicesForKPIs
+        ?.filter(s => s && s.status === 'active')
+        .reduce((sum, service) => sum + (service.price || 0), 0) || 0,
+    [allServicesForKPIs]
+  )
+
+  const avgDuration = useMemo(
+    () => {
+      const validServices = allServicesForKPIs?.filter(s => s && s.duration_minutes !== undefined) || []
+      return validServices.length > 0
+        ? validServices.reduce((sum, service) => sum + (service.duration_minutes || 0), 0) /
+          validServices.length
+        : 0
+    },
+    [allServicesForKPIs]
+  )
+
+  const formatDuration = useCallback((minutes: number) => {
     const hours = Math.floor(minutes / 60)
     const mins = Math.round(minutes % 60)
     if (hours > 0 && mins > 0) return `${hours}h ${mins}m`
     if (hours > 0) return `${hours}h`
     return `${mins}m`
-  }
+  }, [])
 
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
@@ -522,7 +587,7 @@ function SalonServicesPageContent() {
                 Total Services
               </p>
               <p className="text-2xl font-bold mt-1" style={{ color: COLORS.champagne }}>
-                {services.length}
+                {totalServicesCount}
               </p>
             </div>
             <div

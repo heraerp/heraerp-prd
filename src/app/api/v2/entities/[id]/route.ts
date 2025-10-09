@@ -59,29 +59,64 @@ export async function DELETE(
 
     const affectedRelationships = relCount || 0
 
-    // CRITICAL: Check if entity is referenced in transaction lines (AUDIT PROTECTION)
+    // 🎯 ENTERPRISE DIAGNOSTICS: Check all possible references
+
+    // Check transaction lines
     const { count: txnLineCount } = await supabase
       .from('universal_transaction_lines')
       .select('*', { count: 'exact', head: true })
       .eq('line_entity_id', entityId)
       .eq('organization_id', organizationId)
 
-    const transactionReferences = txnLineCount || 0
+    // Check transaction headers (from_entity_id, to_entity_id, and source_entity_id)
+    const { count: txnFromCount } = await supabase
+      .from('universal_transactions')
+      .select('*', { count: 'exact', head: true })
+      .eq('from_entity_id', entityId)
+      .eq('organization_id', organizationId)
+
+    const { count: txnToCount } = await supabase
+      .from('universal_transactions')
+      .select('*', { count: 'exact', head: true })
+      .eq('to_entity_id', entityId)
+      .eq('organization_id', organizationId)
+
+    // 🎯 CRITICAL: Check source_entity_id (used for curation, governance, etc.)
+    const { count: txnSourceCount } = await supabase
+      .from('universal_transactions')
+      .select('*', { count: 'exact', head: true })
+      .eq('source_entity_id', entityId)
+      .eq('organization_id', organizationId)
+
+    const transactionReferences =
+      (txnLineCount || 0) + (txnFromCount || 0) + (txnToCount || 0) + (txnSourceCount || 0)
+
+    // 🎯 ENTERPRISE DIAGNOSTICS: Log all references
+    console.log('[DELETE entity] Reference check:', {
+      entityId,
+      relationships: affectedRelationships,
+      transaction_lines: txnLineCount || 0,
+      transaction_from: txnFromCount || 0,
+      transaction_to: txnToCount || 0,
+      transaction_source: txnSourceCount || 0,
+      total_transaction_refs: transactionReferences
+    })
 
     // PREVENT hard delete if entity is used in any transactions (audit/financial integrity)
     if (hardDelete && transactionReferences > 0) {
-      console.log('[DELETE entity] Blocked: Entity has transaction history', {
-        entityId,
-        transactionReferences
-      })
+      console.log('[DELETE entity] Blocked: Entity has transaction history')
 
       return NextResponse.json(
         {
           error: {
             code: 'TRANSACTION_INTEGRITY_VIOLATION',
-            message: `Cannot delete: Entity is used in ${transactionReferences} transaction line(s). For audit and financial reporting purposes, entities with transaction history can only be archived (soft delete).`,
+            message: `Cannot delete: Entity is used in ${transactionReferences} transaction(s). For audit and financial reporting purposes, entities with transaction history can only be archived (soft delete).`,
             details: {
-              transaction_references: transactionReferences,
+              transaction_lines: txnLineCount || 0,
+              transaction_from: txnFromCount || 0,
+              transaction_to: txnToCount || 0,
+              transaction_source: txnSourceCount || 0,
+              total_references: transactionReferences,
               suggestion: 'Use soft delete (archive) instead by setting hard_delete=false'
             }
           }

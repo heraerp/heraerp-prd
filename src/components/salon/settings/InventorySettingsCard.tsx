@@ -14,6 +14,7 @@ import { Card } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Package,
   Building2,
@@ -40,20 +41,86 @@ interface InventorySettingsCardProps {
 }
 
 export function InventorySettingsCard({ organizationId, onSettingsChange }: InventorySettingsCardProps) {
-  const [isEnabled, setIsEnabled] = React.useState(false)
-  const [isLoading, setIsLoading] = React.useState(false)
+  const { settings, isLoading: isFetching, error, updateSettings, isUpdating } = useInventorySettings(organizationId)
+  const { toast } = useToast()
 
-  const handleToggle = async (value: boolean) => {
-    setIsLoading(true)
-    try {
-      // TODO: Save to database via API
-      setIsEnabled(value)
-      onSettingsChange?.()
-    } catch (error) {
-      console.error('Failed to update inventory settings:', error)
-    } finally {
-      setIsLoading(false)
-    }
+  const isEnabled = settings?.inventoryEnabled ?? false
+  const isLoading = isFetching || isUpdating
+
+  const handleToggle = (value: boolean) => {
+    console.log('[InventorySettingsCard] Toggle to:', value)
+    updateSettings({
+      organizationId,
+      inventoryEnabled: value
+    }, {
+      onSuccess: () => {
+        console.log('[InventorySettingsCard] Update successful')
+        toast({
+          title: 'Settings Updated',
+          description: `Inventory tracking ${value ? 'enabled' : 'disabled'} successfully`,
+          variant: 'default'
+        })
+        onSettingsChange?.()
+      },
+      onError: (error: any) => {
+        console.error('[InventorySettingsCard] Update failed:', error)
+        toast({
+          title: 'Update Failed',
+          description: error?.message || 'Failed to update inventory settings',
+          variant: 'destructive'
+        })
+      }
+    })
+  }
+
+  // Show error state if fetch failed
+  if (error && !settings) {
+    return (
+      <Card
+        className="p-6"
+        style={{
+          backgroundColor: COLORS.charcoalDark + 'E6',
+          borderColor: COLORS.bronze + '30',
+          boxShadow: `0 4px 12px rgba(0,0,0,0.4)`
+        }}
+      >
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center max-w-md">
+            <AlertTriangle className="w-12 h-12 mx-auto mb-3" style={{ color: '#FF6B6B' }} />
+            <h3 className="text-lg font-semibold mb-2" style={{ color: COLORS.champagne }}>
+              Failed to Load Settings
+            </h3>
+            <p className="text-sm mb-4" style={{ color: COLORS.bronze }}>
+              {error?.message || 'An error occurred while loading inventory settings.'}
+            </p>
+            <p className="text-xs" style={{ color: COLORS.bronze }}>
+              Organization ID: {organizationId}
+            </p>
+          </div>
+        </div>
+      </Card>
+    )
+  }
+
+  // Show loading state while fetching initial settings
+  if (isFetching && !settings) {
+    return (
+      <Card
+        className="p-6"
+        style={{
+          backgroundColor: COLORS.charcoalDark + 'E6',
+          borderColor: COLORS.bronze + '30',
+          boxShadow: `0 4px 12px rgba(0,0,0,0.4)`
+        }}
+      >
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 mx-auto mb-3 animate-spin" style={{ color: COLORS.gold }} />
+            <p style={{ color: COLORS.champagne }}>Loading settings...</p>
+          </div>
+        </div>
+      </Card>
+    )
   }
 
   return (
@@ -131,15 +198,21 @@ export function InventorySettingsCard({ organizationId, onSettingsChange }: Inve
               </p>
             </div>
           </div>
-          <Switch
-            checked={isEnabled}
-            onCheckedChange={handleToggle}
-            disabled={isLoading}
-            className="scale-125"
-            style={{
-              backgroundColor: isEnabled ? COLORS.gold : COLORS.bronze + '40'
-            }}
-          />
+          <div className="flex items-center gap-2">
+            {isUpdating && (
+              <Loader2 className="w-4 h-4 animate-spin" style={{ color: COLORS.gold }} />
+            )}
+            <Switch
+              checked={isEnabled}
+              onCheckedChange={handleToggle}
+              disabled={isUpdating}
+              className="scale-125"
+              style={{
+                backgroundColor: isEnabled ? COLORS.gold : COLORS.bronze + '40',
+                opacity: isUpdating ? 0.5 : 1
+              }}
+            />
+          </div>
         </div>
       </div>
 

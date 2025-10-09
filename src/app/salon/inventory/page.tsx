@@ -11,7 +11,7 @@
  * ✅ Inventory valuation
  */
 
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -155,8 +155,8 @@ export default function SalonInventoryPage() {
     [displayItems]
   )
 
-  // Handle opening stock management modal
-  const handleManageStock = async (item: InventoryItem) => {
+  // Handle opening stock management modal - memoized for performance
+  const handleManageStock = useCallback(async (item: InventoryItem) => {
     if (!organizationId) return
 
     setSelectedItem(item)
@@ -210,10 +210,10 @@ export default function SalonInventoryPage() {
 
     console.log('Final inventory:', inventory)
     setCurrentInventory(inventory)
-  }
+  }, [organizationId, branches])
 
-  // Handle stock update
-  const handleStockUpdate = async (branchId: string, quantity: number, reorderLevel: number) => {
+  // Handle stock update - memoized for performance
+  const handleStockUpdate = useCallback(async (branchId: string, quantity: number, reorderLevel: number) => {
     if (!organizationId || !selectedItem) return
 
     try {
@@ -243,10 +243,10 @@ export default function SalonInventoryPage() {
     } catch (error) {
       console.error('Failed to update stock:', error)
     }
-  }
+  }, [organizationId, selectedItem, refetch, currentInventory])
 
-  // Handle quick stock adjustment
-  const handleQuickAdjust = async (branchId: string, type: 'increase' | 'decrease', amount: number) => {
+  // Handle quick stock adjustment - memoized for performance
+  const handleQuickAdjust = useCallback(async (branchId: string, type: 'increase' | 'decrease', amount: number) => {
     if (!organizationId || !selectedItem || !user?.id) return
 
     const currentQty = currentInventory?.branch_stocks.find(bs => bs.branch_id === branchId)?.quantity || 0
@@ -281,7 +281,7 @@ export default function SalonInventoryPage() {
     } catch (error) {
       console.error('Failed to adjust stock:', error)
     }
-  }
+  }, [organizationId, selectedItem, user?.id, currentInventory, refetch])
 
   // Authentication checks
   if (!organizationId) {

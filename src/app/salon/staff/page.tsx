@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { useHeraStaff, type StaffFormValues } from '@/hooks/useHeraStaff'
 import { useHeraRoles, type RoleFormValues, type Role } from '@/hooks/useHeraRoles'
 import { RoleModal } from './RoleModal'
@@ -106,8 +105,21 @@ function StaffContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Use the new useHeraStaff hook
-  // CRITICAL: Don't filter by branch when selectedBranchId is null (show all)
+  // 🎯 ENTERPRISE PATTERN: Fetch ALL staff for global KPIs (dashboard metrics)
+  // This provides the "big picture" regardless of tab/filter selection
+  // NO filters applied to KPIs - always show complete organization data
+  const {
+    staff: allStaffForKPIs,
+    isLoading: isLoadingKPIs
+  } = useHeraStaff({
+    organizationId: organizationId || '',
+    filters: {
+      branch_id: undefined // No branch filter for KPIs
+    },
+    includeArchived: true // Get ALL staff (active + archived) for accurate KPIs
+  })
+
+  // Fetch filtered staff for display list (controlled by tab + user filters)
   const {
     staff,
     isLoading,
@@ -125,13 +137,22 @@ function StaffContent() {
     organizationId: organizationId || '',
     filters: {
       // Only add branch_id filter if a specific branch is selected
-      ...(selectedBranchId && selectedBranchId !== null ? { branch_id: selectedBranchId } : {}),
-      status: includeArchived ? undefined : 'active'
+      ...(selectedBranchId && selectedBranchId !== null ? { branch_id: selectedBranchId } : {})
     },
-    includeArchived
+    includeArchived // Tab controls list, not KPIs
   })
 
-  // Use the new useHeraRoles hook
+  // 🎯 ENTERPRISE PATTERN: Fetch ALL roles for global KPIs (dashboard metrics)
+  const {
+    roles: allRolesForKPIs,
+    isLoading: isLoadingRolesKPIs
+  } = useHeraRoles({
+    organizationId: organizationId || '',
+    includeInactive: true, // Get ALL roles for accurate KPIs
+    userRole: 'manager'
+  })
+
+  // Fetch filtered roles for display (controlled by tab)
   const {
     roles,
     isLoading: isLoadingRoles,
@@ -145,17 +166,23 @@ function StaffContent() {
     isDeleting: isDeletingRole
   } = useHeraRoles({
     organizationId: organizationId || '',
-    includeInactive: includeArchived, // Show archived roles when includeArchived is true
-    userRole: 'manager' // TODO: Get from auth context
+    includeInactive: includeArchived, // Tab controls list, not KPIs
+    userRole: 'manager'
   })
 
-  // Calculate stats from staff data
-  const stats: StaffStats = {
-    totalStaff: staff?.length || 0,
-    activeToday: staff?.filter(s => s.status === 'active').length || 0,
-    onLeave: staff?.filter(s => s.status === 'on_leave').length || 0,
-    averageRating: 4.8
-  }
+  // Calculate stats from ALL staff data - memoized for performance
+  // 🎯 ENTERPRISE DASHBOARD PATTERN: KPIs show GLOBAL metrics, independent of tab/filter
+  // Tab selection controls the LIST below, not the dashboard metrics
+  // This is standard enterprise UX where KPIs = "big picture", Filters = "drill-down"
+  const stats: StaffStats = useMemo(
+    () => ({
+      totalStaff: allStaffForKPIs?.length || 0,
+      activeToday: allStaffForKPIs?.filter(s => s && s.status === 'active').length || 0,
+      onLeave: allStaffForKPIs?.filter(s => s && s.status === 'on_leave').length || 0,
+      averageRating: 4.8
+    }),
+    [allStaffForKPIs]
+  )
 
   const handleSaveStaff = async (staffData: StaffFormValues) => {
     if (!organizationId) return
@@ -201,7 +228,7 @@ function StaffContent() {
 
       setStaffModalOpen(false)
       setEditingStaff(null)
-      refetch()
+      // 🎯 ENTERPRISE PATTERN: No explicit refetch needed - mutation auto-invalidates queries
     } catch (error) {
       console.error('Error saving staff:', error)
       removeToast(loadingId)
@@ -222,18 +249,39 @@ function StaffContent() {
     const loadingId = showLoading('Deleting staff member...', 'This action cannot be undone')
 
     try {
-      await deleteStaff(staffId, 'Permanently delete staff member')
+      // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
+      // Same pattern as services page for consistency
+      const result = await deleteStaff(staffId, 'Permanently delete staff member')
       removeToast(loadingId)
-      showSuccess('Staff member deleted', `${staffName} has been permanently removed`)
-      refetch()
-    } catch (error) {
-      console.error('Error deleting staff:', error)
-      removeToast(loadingId)
-      showError(
-        'Failed to delete staff member',
-        error instanceof Error ? error.message : 'Please try again'
-      )
-      throw error
+
+      if (result.archived) {
+        // Staff was archived instead of deleted (referenced in appointments/transactions)
+        showSuccess(
+          'Staff member archived',
+          result.message || `${staffName} has been archived`
+        )
+      } else {
+        // Staff was successfully deleted
+        showSuccess('Staff member deleted', `${staffName} has been permanently removed`)
+      }
+      // 🎯 ENTERPRISE PATTERN: No explicit refetch needed - mutation auto-invalidates queries
+    } catch (error: any) {
+      // 🎯 ENTERPRISE PATTERN: Don't log or show errors for successful archive fallbacks
+      const isArchiveSuccess =
+        error.message?.includes('archived') ||
+        error.message?.includes('referenced') ||
+        error.code === 'TRANSACTION_INTEGRITY_VIOLATION'
+
+      if (!isArchiveSuccess) {
+        console.error('Error deleting staff:', error)
+        removeToast(loadingId)
+        showError(
+          'Failed to delete staff member',
+          error instanceof Error ? error.message : 'Please try again'
+        )
+        throw error
+      }
+      // If archive fallback succeeded, the success toast was already shown by deleteStaff
     }
   }
 
@@ -247,9 +295,10 @@ function StaffContent() {
 
     try {
       await archiveStaff(staffId)
+      // 🎯 ENTERPRISE PATTERN: No explicit refetch needed - mutation auto-invalidates queries
+      // Same pattern as services page for consistency
       removeToast(loadingId)
       showSuccess('Staff member archived', `${staffName} has been archived`)
-      refetch()
     } catch (error) {
       console.error('Error archiving staff:', error)
       removeToast(loadingId)
@@ -257,7 +306,7 @@ function StaffContent() {
         'Failed to archive staff member',
         error instanceof Error ? error.message : 'Please try again'
       )
-      throw error
+      // ✅ Don't throw - let modal/dropdown handle UI state
     }
   }
 
@@ -271,9 +320,10 @@ function StaffContent() {
 
     try {
       await restoreStaff(staffId)
+      // 🎯 ENTERPRISE PATTERN: No explicit refetch needed - mutation auto-invalidates queries
+      // Same pattern as services page for consistency
       removeToast(loadingId)
       showSuccess('Staff member restored', `${staffName} has been restored`)
-      refetch()
     } catch (error) {
       console.error('Error restoring staff:', error)
       removeToast(loadingId)
@@ -281,7 +331,7 @@ function StaffContent() {
         'Failed to restore staff member',
         error instanceof Error ? error.message : 'Please try again'
       )
-      throw error
+      // ✅ Don't throw - let modal/dropdown handle UI state
     }
   }
 
@@ -367,7 +417,7 @@ function StaffContent() {
         'Failed to archive role',
         error instanceof Error ? error.message : 'Please try again'
       )
-      throw error
+      // ✅ Don't throw - let dropdown handle UI state
     }
   }
 
@@ -390,56 +440,74 @@ function StaffContent() {
         'Failed to restore role',
         error instanceof Error ? error.message : 'Please try again'
       )
-      throw error
+      // ✅ Don't throw - let dropdown handle UI state
     }
   }
 
-  const filteredStaff =
-    staff?.filter(s => {
-      // Search filter
-      const matchesSearch =
-        s.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.role_title?.toLowerCase().includes(searchTerm.toLowerCase())
+  // Memoized filtered lists for performance
+  const filteredStaff = useMemo(
+    () =>
+      staff?.filter(s => {
+        // Search filter
+        const matchesSearch =
+          s.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          s.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          s.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          s.role_title?.toLowerCase().includes(searchTerm.toLowerCase())
 
-      // Branch filter - TODO: Update this to use relationships once staff are linked to branches
-      // For now, all staff are shown regardless of selected branch
-      return matchesSearch
-    }) || []
+        // Branch filter - TODO: Update this to use relationships once staff are linked to branches
+        // For now, all staff are shown regardless of selected branch
+        return matchesSearch
+      }) || [],
+    [staff, searchTerm]
+  )
 
-  const filteredRoles =
-    roles?.filter(
-      r =>
-        r.title?.toLowerCase().includes(roleSearchTerm.toLowerCase()) ||
-        r.entity_name?.toLowerCase().includes(roleSearchTerm.toLowerCase()) ||
-        r.description?.toLowerCase().includes(roleSearchTerm.toLowerCase())
-    ) || []
+  const filteredRoles = useMemo(
+    () =>
+      roles?.filter(
+        r =>
+          r.title?.toLowerCase().includes(roleSearchTerm.toLowerCase()) ||
+          r.entity_name?.toLowerCase().includes(roleSearchTerm.toLowerCase()) ||
+          r.description?.toLowerCase().includes(roleSearchTerm.toLowerCase())
+      ) || [],
+    [roles, roleSearchTerm]
+  )
 
-  // Calculate staff count per role
-  const getStaffCountForRole = (roleId: string) => {
-    const role = roles?.find(r => r.id === roleId)
-    if (!role) return 0
+  // Calculate staff count per role - memoized for performance
+  // 🎯 ENTERPRISE PATTERN: Use ALL staff for accurate role assignment counts
+  const getStaffCountForRole = useCallback(
+    (roleId: string) => {
+      const role = roles?.find(r => r.id === roleId) || allRolesForKPIs?.find(r => r.id === roleId)
+      if (!role) return 0
 
-    return staff?.filter(s => {
-      // First check if there's a direct role_id match
-      if (s.role_id === roleId) return true
+      return (
+        allStaffForKPIs?.filter(s => {
+          // First check if there's a direct role_id match
+          if (s.role_id === roleId) return true
 
-      // Then check if role_title matches this role's title or entity_name
-      const roleTitle = s.role_title?.toLowerCase() || ''
-      const thisRoleTitle = role.title?.toLowerCase() || ''
-      const thisRoleEntityName = role.entity_name?.toLowerCase() || ''
+          // Then check if role_title matches this role's title or entity_name
+          const roleTitle = s.role_title?.toLowerCase() || ''
+          const thisRoleTitle = role.title?.toLowerCase() || ''
+          const thisRoleEntityName = role.entity_name?.toLowerCase() || ''
 
-      return roleTitle && (roleTitle === thisRoleTitle || roleTitle === thisRoleEntityName)
-    }).length || 0
-  }
+          return roleTitle && (roleTitle === thisRoleTitle || roleTitle === thisRoleEntityName)
+        }).length || 0
+      )
+    },
+    [roles, allRolesForKPIs, allStaffForKPIs]
+  )
 
-  // Role stats
-  const roleStats = {
-    totalRoles: roles?.length || 0,
-    activeRoles: roles?.filter(r => r.status === 'active').length || 0,
-    inactiveRoles: roles?.filter(r => r.status === 'inactive').length || 0
-  }
+  // Role stats from ALL roles - memoized for performance
+  // 🎯 ENTERPRISE DASHBOARD PATTERN: KPIs show GLOBAL metrics, independent of tab/filter
+  // Tab selection controls the LIST below, not the dashboard metrics
+  const roleStats = useMemo(
+    () => ({
+      totalRoles: allRolesForKPIs?.length || 0,
+      activeRoles: allRolesForKPIs?.filter(r => r.status === 'active').length || 0,
+      archivedRoles: allRolesForKPIs?.filter(r => r.status === 'archived' || r.status === 'inactive').length || 0
+    }),
+    [allRolesForKPIs]
+  )
 
   if (!organizationId) {
     return (
@@ -1133,10 +1201,10 @@ function StaffContent() {
                   color: COLORS.emerald
                 },
                 {
-                  title: 'Inactive',
-                  value: roleStats.inactiveRoles,
-                  desc: 'Not in use',
-                  icon: Settings,
+                  title: 'Archived',
+                  value: roleStats.archivedRoles,
+                  desc: includeArchived ? 'Archived roles' : 'Not shown',
+                  icon: Archive,
                   color: COLORS.bronze
                 }
               ].map((stat, index) => (
@@ -1166,24 +1234,65 @@ function StaffContent() {
               ))}
             </div>
 
-            {/* Role Search */}
-            <div className="mb-6">
-              <div className="relative">
-                <Search
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
-                  style={{ color: COLORS.bronze }}
-                />
-                <Input
-                  placeholder="Search roles by title, description..."
-                  value={roleSearchTerm}
-                  onChange={e => setRoleSearchTerm(e.target.value)}
-                  className="pl-10 max-w-md"
-                  style={{
-                    backgroundColor: COLORS.charcoalLight,
-                    border: `1px solid ${COLORS.gold}30`,
-                    color: COLORS.champagne
-                  }}
-                />
+            {/* Archive Toggle and Role Search */}
+            <div className="mb-8 space-y-4">
+              <div className="flex items-center justify-between gap-4 p-4 rounded-xl backdrop-blur-xl" style={{
+                background: `linear-gradient(135deg, ${COLORS.charcoalLight}90 0%, ${COLORS.charcoal}90 100%)`,
+                border: `1px solid ${COLORS.gold}20`,
+                boxShadow: `0 4px 12px ${COLORS.black}40`
+              }}>
+                <div className="flex items-center gap-4">
+                  <Tabs
+                    value={includeArchived ? 'all' : 'active'}
+                    onValueChange={v => setIncludeArchived(v === 'all')}
+                  >
+                    <TabsList className="transition-all duration-300" style={{
+                      background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
+                      border: `1px solid ${COLORS.gold}30`,
+                      padding: '4px'
+                    }}>
+                      <TabsTrigger
+                        value="active"
+                        className="transition-all duration-300 data-[state=active]:bg-gradient-to-r"
+                        style={{
+                          color: COLORS.champagne
+                        }}
+                      >
+                        Active Roles
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="all"
+                        className="transition-all duration-300 data-[state=active]:bg-gradient-to-r"
+                        style={{
+                          color: COLORS.champagne
+                        }}
+                      >
+                        All Roles
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </div>
+
+                <div className="relative flex-1 max-w-md">
+                  <Search
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 transition-all duration-300"
+                    style={{ color: COLORS.gold }}
+                  />
+                  <Input
+                    placeholder="Search roles by title, description..."
+                    value={roleSearchTerm}
+                    onChange={e => setRoleSearchTerm(e.target.value)}
+                    className="pl-12 pr-4 py-3 border-0 outline-none transition-all duration-300 focus:ring-2 focus:scale-[1.02]"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
+                      border: `1px solid ${COLORS.gold}30`,
+                      color: COLORS.champagne,
+                      borderRadius: '0.75rem',
+                      boxShadow: `inset 0 2px 8px ${COLORS.black}40`,
+                      ringColor: `${COLORS.gold}40`
+                    }}
+                  />
+                </div>
               </div>
             </div>
 
@@ -1249,38 +1358,55 @@ function StaffContent() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredRoles.map((role, index) => (
-                        <tr
-                          key={role.id}
-                          className="border-b transition-all duration-200 hover:shadow-md"
-                          style={{
-                            borderColor: COLORS.gold + '10',
-                            backgroundColor: index % 2 === 0 ? 'transparent' : COLORS.black + '40'
-                          }}
-                        >
-                          <td className="py-4 px-6">
-                            <div className="flex items-center gap-3">
-                              <div
-                                className="p-2 rounded-lg"
-                                style={{
-                                  backgroundColor: COLORS.gold + '20',
-                                  border: `1px solid ${COLORS.gold}40`
-                                }}
-                              >
-                                <Shield className="h-4 w-4" style={{ color: COLORS.gold }} />
-                              </div>
-                              <div>
-                                <div className="font-semibold" style={{ color: COLORS.champagne }}>
-                                  {role.title || role.entity_name}
+                      {filteredRoles.map((role, index) => {
+                        const isArchived = role.status === 'archived' || role.status === 'inactive'
+                        return (
+                          <tr
+                            key={role.id}
+                            className="border-b transition-all duration-200 hover:shadow-md"
+                            style={{
+                              borderColor: COLORS.gold + '10',
+                              backgroundColor: index % 2 === 0 ? 'transparent' : COLORS.black + '40',
+                              opacity: isArchived ? 0.7 : 1
+                            }}
+                          >
+                            <td className="py-4 px-6">
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className="p-2 rounded-lg"
+                                  style={{
+                                    backgroundColor: isArchived ? COLORS.bronze + '20' : COLORS.gold + '20',
+                                    border: `1px solid ${isArchived ? COLORS.bronze : COLORS.gold}40`
+                                  }}
+                                >
+                                  <Shield className="h-4 w-4" style={{ color: isArchived ? COLORS.bronze : COLORS.gold }} />
                                 </div>
-                                {role.rank && (
-                                  <div className="text-xs mt-1" style={{ color: COLORS.bronze }}>
-                                    Priority Level {role.rank}
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-semibold" style={{ color: COLORS.champagne }}>
+                                      {role.title || role.entity_name}
+                                    </span>
+                                    {isArchived && (
+                                      <Badge
+                                        className="text-xs font-semibold"
+                                        style={{
+                                          backgroundColor: `${COLORS.bronze}30`,
+                                          color: COLORS.bronze,
+                                          border: `1px solid ${COLORS.bronze}60`
+                                        }}
+                                      >
+                                        Archived
+                                      </Badge>
+                                    )}
                                   </div>
-                                )}
+                                  {role.rank && (
+                                    <div className="text-xs mt-1" style={{ color: COLORS.bronze }}>
+                                      Priority Level {role.rank}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </td>
+                            </td>
                           <td className="py-4 px-6">
                             <div className="text-sm max-w-md" style={{ color: COLORS.bronze }}>
                               {role.description || (
@@ -1317,19 +1443,16 @@ function StaffContent() {
                             <Badge
                               className="font-medium"
                               style={{
-                                backgroundColor:
-                                  role.status === 'active'
-                                    ? COLORS.emerald + '20'
-                                    : COLORS.bronze + '20',
-                                color: role.status === 'active' ? COLORS.emerald : COLORS.bronze,
-                                border: `1px solid ${
-                                  role.status === 'active' ? COLORS.emerald : COLORS.bronze
-                                }40`,
+                                backgroundColor: isArchived
+                                  ? COLORS.bronze + '20'
+                                  : COLORS.emerald + '20',
+                                color: isArchived ? COLORS.bronze : COLORS.emerald,
+                                border: `1px solid ${isArchived ? COLORS.bronze : COLORS.emerald}40`,
                                 fontSize: '0.75rem',
                                 padding: '0.25rem 0.75rem'
                               }}
                             >
-                              {role.status || 'active'}
+                              {isArchived ? 'Archived' : 'Active'}
                             </Badge>
                           </td>
                           <td className="py-4 px-6">
@@ -1405,7 +1528,8 @@ function StaffContent() {
                             </div>
                           </td>
                         </tr>
-                      ))}
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -1475,10 +1599,8 @@ function StaffContent() {
 
 export default function StaffPage() {
   return (
-    <SalonAuthGuard requiredRoles={['Owner', 'Administrator', 'owner', 'administrator']}>
-      <StatusToastProvider>
-        <StaffContent />
-      </StatusToastProvider>
-    </SalonAuthGuard>
+    <StatusToastProvider>
+      <StaffContent />
+    </StatusToastProvider>
   )
 }

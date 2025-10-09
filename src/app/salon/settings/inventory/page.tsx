@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { InventorySettingsCard } from '@/components/salon/settings/InventorySettingsCard'
-import { PageHeader } from '@/components/universal/PageHeader'
-import { Settings, Package, ArrowLeft } from 'lucide-react'
+import { Package, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
@@ -18,76 +17,29 @@ const COLORS = {
 }
 
 export default function InventorySettingsPage() {
-  const { organizationId, isLoading, isAuthenticated } = useSecuredSalonContext()
-  const [showTimeout, setShowTimeout] = useState(false)
+  const { organizationId } = useSecuredSalonContext()
 
-  // Add debugging
-  useEffect(() => {
-    console.log('[InventorySettings] Context state:', { organizationId, isLoading, isAuthenticated })
-  }, [organizationId, isLoading, isAuthenticated])
+  // Memoize callback to prevent unnecessary re-renders
+  const handleSettingsChange = useCallback(() => {
+    console.log('[InventorySettings] Settings updated successfully')
+  }, [])
 
-  // Set timeout to show message if loading takes too long (10 seconds)
-  useEffect(() => {
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowTimeout(true)
-      }, 10000)
-      return () => clearTimeout(timer)
-    } else {
-      setShowTimeout(false)
-    }
-  }, [isLoading])
-
-  if (isLoading) {
+  // Show loading only while waiting for organizationId
+  if (!organizationId) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: COLORS.black }}
       >
-        <div className="text-center max-w-md">
+        <div className="text-center">
           <Package className="w-12 h-12 mx-auto mb-4 animate-pulse" style={{ color: COLORS.gold }} />
-          <p style={{ color: COLORS.champagne }}>Loading settings...</p>
-          {showTimeout && (
-            <div className="mt-4 p-4 rounded-lg" style={{ backgroundColor: COLORS.charcoalDark, border: `1px solid ${COLORS.bronze}30` }}>
-              <p className="text-sm mb-2" style={{ color: COLORS.bronze }}>
-                Taking longer than expected. This may indicate:
-              </p>
-              <ul className="text-xs text-left space-y-1" style={{ color: COLORS.bronze }}>
-                <li>• No active session - try refreshing the page</li>
-                <li>• Network connectivity issues</li>
-                <li>• Session expired - you may need to <Link href="/salon/auth" className="underline" style={{ color: COLORS.gold }}>log in again</Link></li>
-              </ul>
-            </div>
-          )}
+          <p style={{ color: COLORS.champagne }}>Loading...</p>
         </div>
       </div>
     )
   }
 
-  if (!isAuthenticated || !organizationId) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: COLORS.black }}
-      >
-        <div className="text-center max-w-md">
-          <Package className="w-12 h-12 mx-auto mb-4" style={{ color: COLORS.bronze }} />
-          <h2 className="text-xl font-bold mb-2" style={{ color: COLORS.champagne }}>
-            Authentication Required
-          </h2>
-          <p className="mb-4" style={{ color: COLORS.bronze }}>
-            Please sign in to access inventory settings.
-          </p>
-          <Link href="/salon/auth">
-            <Button style={{ backgroundColor: COLORS.gold, color: COLORS.black }}>
-              Go to Login
-            </Button>
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
+  // organizationId is available, render the page immediately
   return (
     <div
       className="min-h-screen p-6"
@@ -135,9 +87,7 @@ export default function InventorySettingsPage() {
       <div className="max-w-4xl">
         <InventorySettingsCard
           organizationId={organizationId}
-          onSettingsChange={() => {
-            console.log('[InventorySettings] Settings updated successfully')
-          }}
+          onSettingsChange={handleSettingsChange}
         />
       </div>
 

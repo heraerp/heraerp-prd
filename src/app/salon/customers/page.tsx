@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraCustomers, type CustomerEntity } from '@/hooks/useHeraCustomers'
 import { CustomerList } from '@/components/salon/customers/CustomerList'
@@ -91,50 +91,59 @@ function SalonCustomersPageContent() {
     organizationId
   })
 
-  // Get customer statistics
-  const stats = getCustomerStats()
-  const activeCount = allCustomers.filter(c => c.status === 'active').length
-  const archivedCount = allCustomers.filter(c => c.status === 'archived').length
+  // Get customer statistics - memoized for performance
+  const stats = useMemo(() => getCustomerStats(), [getCustomerStats])
+  const activeCount = useMemo(
+    () => allCustomers.filter(c => c.status === 'active').length,
+    [allCustomers]
+  )
+  const archivedCount = useMemo(
+    () => allCustomers.filter(c => c.status === 'archived').length,
+    [allCustomers]
+  )
 
-  // CRUD Handlers
-  const handleSave = async (data: CustomerFormData) => {
-    const loadingId = showLoading(
-      editingCustomer ? 'Updating customer...' : 'Creating customer...',
-      'Please wait while we save your changes'
-    )
-
-    try {
-      if (editingCustomer) {
-        await updateCustomer(editingCustomer.id, data)
-        removeToast(loadingId)
-        showSuccess('Customer updated successfully', `${data.name} has been updated`)
-      } else {
-        await createCustomer(data)
-        removeToast(loadingId)
-        showSuccess('Customer created successfully', `${data.name} has been added`)
-      }
-      setModalOpen(false)
-      setEditingCustomer(null)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError(
-        editingCustomer ? 'Failed to update customer' : 'Failed to create customer',
-        error.message || 'Please try again or contact support'
+  // CRUD Handlers - memoized for performance
+  const handleSave = useCallback(
+    async (data: CustomerFormData) => {
+      const loadingId = showLoading(
+        editingCustomer ? 'Updating customer...' : 'Creating customer...',
+        'Please wait while we save your changes'
       )
-    }
-  }
 
-  const handleEdit = (customer: CustomerEntity) => {
+      try {
+        if (editingCustomer) {
+          await updateCustomer(editingCustomer.id, data)
+          removeToast(loadingId)
+          showSuccess('Customer updated successfully', `${data.name} has been updated`)
+        } else {
+          await createCustomer(data)
+          removeToast(loadingId)
+          showSuccess('Customer created successfully', `${data.name} has been added`)
+        }
+        setModalOpen(false)
+        setEditingCustomer(null)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError(
+          editingCustomer ? 'Failed to update customer' : 'Failed to create customer',
+          error.message || 'Please try again or contact support'
+        )
+      }
+    },
+    [editingCustomer, updateCustomer, createCustomer, showLoading, removeToast, showSuccess, showError]
+  )
+
+  const handleEdit = useCallback((customer: CustomerEntity) => {
     setEditingCustomer(customer)
     setModalOpen(true)
-  }
+  }, [])
 
-  const handleDelete = (customer: CustomerEntity) => {
+  const handleDelete = useCallback((customer: CustomerEntity) => {
     setCustomerToDelete(customer)
     setDeleteDialogOpen(true)
-  }
+  }, [])
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     if (!customerToDelete) return
 
     const loadingId = showLoading('Processing deletion...', 'Checking customer usage...')
@@ -256,33 +265,39 @@ function SalonCustomersPageContent() {
     } finally {
       setIsDeleting(false)
     }
-  }
+  }, [customerToDelete, deleteCustomer, updateCustomer, refetchCustomers, showLoading, removeToast, showSuccess, showError])
 
-  const handleArchive = async (customer: CustomerEntity) => {
-    const loadingId = showLoading('Archiving customer...', 'Please wait...')
+  const handleArchive = useCallback(
+    async (customer: CustomerEntity) => {
+      const loadingId = showLoading('Archiving customer...', 'Please wait...')
 
-    try {
-      await archiveCustomer(customer.id)
-      removeToast(loadingId)
-      showSuccess('Customer archived', `${customer.entity_name} has been archived`)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to archive customer', error.message || 'Please try again')
-    }
-  }
+      try {
+        await archiveCustomer(customer.id)
+        removeToast(loadingId)
+        showSuccess('Customer archived', `${customer.entity_name} has been archived`)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError('Failed to archive customer', error.message || 'Please try again')
+      }
+    },
+    [archiveCustomer, showLoading, removeToast, showSuccess, showError]
+  )
 
-  const handleRestore = async (customer: CustomerEntity) => {
-    const loadingId = showLoading('Restoring customer...', 'Please wait...')
+  const handleRestore = useCallback(
+    async (customer: CustomerEntity) => {
+      const loadingId = showLoading('Restoring customer...', 'Please wait...')
 
-    try {
-      await restoreCustomer(customer.id)
-      removeToast(loadingId)
-      showSuccess('Customer restored', `${customer.entity_name} has been restored to active`)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to restore customer', error.message || 'Please try again')
-    }
-  }
+      try {
+        await restoreCustomer(customer.id)
+        removeToast(loadingId)
+        showSuccess('Customer restored', `${customer.entity_name} has been restored to active`)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError('Failed to restore customer', error.message || 'Please try again')
+      }
+    },
+    [restoreCustomer, showLoading, removeToast, showSuccess, showError]
+  )
 
   return (
     <div className="h-screen overflow-hidden" style={{ backgroundColor: COLORS.black }}>

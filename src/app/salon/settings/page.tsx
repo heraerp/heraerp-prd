@@ -26,34 +26,8 @@ import {
 import { LUXE_COLORS } from '@/lib/constants/salon'
 
 export default function SalonSettingsPage() {
-  const { organizationId, role, user, isLoading: authLoading, isAuthenticated } = useSecuredSalonContext()
+  const { organizationId, role, user } = useSecuredSalonContext()
   const [activeTab, setActiveTab] = useState('general')
-
-  // Check if user has admin role
-  useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      const userRole = role?.toLowerCase()
-      if (userRole !== 'admin' && userRole !== 'owner') {
-        // Redirect non-admins/owners
-        window.location.href = '/salon/auth'
-      }
-    }
-  }, [authLoading, isAuthenticated, role])
-
-  if (authLoading) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: LUXE_COLORS.charcoal }}
-      >
-        <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
-      </div>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return null
-  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.charcoal }}>

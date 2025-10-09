@@ -2,7 +2,7 @@
 
  
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
 import { flags } from '@/config/flags'
@@ -130,80 +130,94 @@ function POSContent() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  const handleCustomerSelect = async (customer: any) => {
-    addCustomerToTicket({
-      customer_id: customer.id,
-      customer_name: customer.entity_name,
-      customer_email: customer.email,
-      customer_phone: customer.phone
-    })
-  }
-
-  const handleAppointmentSelect = async (appointment: any) => {
-    const fullAppointment = await loadAppointment(appointment.id)
-    if (fullAppointment) {
-      addItemsFromAppointment({
-        appointment_id: fullAppointment.id,
-        customer_id: fullAppointment.customer_id || '',
-        customer_name: fullAppointment.customer_name || 'Walk-in',
-        services:
-          fullAppointment.service_ids?.map((serviceId: string, index: number) => ({
-            id: serviceId,
-            name: fullAppointment.service_names?.[index] || `Service ${index + 1}`,
-            price: 0,
-            ...(fullAppointment.stylist_id ? { stylist_id: fullAppointment.stylist_id } : {}),
-            ...(fullAppointment.stylist_name ? { stylist_name: fullAppointment.stylist_name } : {})
-          })) || []
+  // Memoized handlers for performance
+  const handleCustomerSelect = useCallback(
+    async (customer: any) => {
+      addCustomerToTicket({
+        customer_id: customer.id,
+        customer_name: customer.entity_name,
+        customer_email: customer.email,
+        customer_phone: customer.phone
       })
-    }
-  }
+    },
+    [addCustomerToTicket]
+  )
 
-  const handleAddItem = (item: any, staffId?: string, staffName?: string) => {
-    // For services: use provided stylist OR default stylist
-    let finalStylistId = staffId
-    let finalStylistName = staffName
-
-    if (item.__kind === 'SERVICE') {
-      // If stylist provided, set as default for the bill
-      if (staffId && staffName) {
-        setDefaultStylistId(staffId)
-        setDefaultStylistName(staffName)
+  const handleAppointmentSelect = useCallback(
+    async (appointment: any) => {
+      const fullAppointment = await loadAppointment(appointment.id)
+      if (fullAppointment) {
+        addItemsFromAppointment({
+          appointment_id: fullAppointment.id,
+          customer_id: fullAppointment.customer_id || '',
+          customer_name: fullAppointment.customer_name || 'Walk-in',
+          services:
+            fullAppointment.service_ids?.map((serviceId: string, index: number) => ({
+              id: serviceId,
+              name: fullAppointment.service_names?.[index] || `Service ${index + 1}`,
+              price: 0,
+              ...(fullAppointment.stylist_id ? { stylist_id: fullAppointment.stylist_id } : {}),
+              ...(fullAppointment.stylist_name ? { stylist_name: fullAppointment.stylist_name } : {})
+            })) || []
+        })
       }
-      // If no stylist provided but we have a default, use it
-      else if (!staffId && defaultStylistId && defaultStylistName) {
-        finalStylistId = defaultStylistId
-        finalStylistName = defaultStylistName
+    },
+    [loadAppointment, addItemsFromAppointment]
+  )
+
+  const handleAddItem = useCallback(
+    (item: any, staffId?: string, staffName?: string) => {
+      // For services: use provided stylist OR default stylist
+      let finalStylistId = staffId
+      let finalStylistName = staffName
+
+      if (item.__kind === 'SERVICE') {
+        // If stylist provided, set as default for the bill
+        if (staffId && staffName) {
+          setDefaultStylistId(staffId)
+          setDefaultStylistName(staffName)
+        }
+        // If no stylist provided but we have a default, use it
+        else if (!staffId && defaultStylistId && defaultStylistName) {
+          finalStylistId = defaultStylistId
+          finalStylistName = defaultStylistName
+        }
       }
-    }
 
-    // Transform PosItem to LineItem format
-    addLineItem({
-      entity_id: item.id || item.entity_id || item.raw?.id,
-      entity_type: item.__kind === 'SERVICE' ? 'service' : 'product',
-      entity_name: item.title || item.entity_name || item.raw?.entity_name || 'Unknown Item',
-      quantity: 1,
-      unit_price: Number(item.price || item.unit_price || item.raw?.price || 0),
-      ...(finalStylistId ? { stylist_id: finalStylistId } : {}),
-      ...(finalStylistName ? { stylist_name: finalStylistName } : {})
-    })
-  }
+      // Transform PosItem to LineItem format
+      addLineItem({
+        entity_id: item.id || item.entity_id || item.raw?.id,
+        entity_type: item.__kind === 'SERVICE' ? 'service' : 'product',
+        entity_name: item.title || item.entity_name || item.raw?.entity_name || 'Unknown Item',
+        quantity: 1,
+        unit_price: Number(item.price || item.unit_price || item.raw?.price || 0),
+        ...(finalStylistId ? { stylist_id: finalStylistId } : {}),
+        ...(finalStylistName ? { stylist_name: finalStylistName } : {})
+      })
+    },
+    [defaultStylistId, defaultStylistName, addLineItem]
+  )
 
-  const handlePayment = () => {
+  const handlePayment = useCallback(() => {
     if (!ticket?.lineItems || ticket.lineItems.length === 0) return
     setIsPaymentOpen(true)
-  }
+  }, [ticket])
 
-  const handlePaymentComplete = (saleData: any) => {
-    setCompletedSale(saleData)
-    setIsPaymentOpen(false)
-    setIsReceiptOpen(true)
-    clearTicket()
-    // Clear default stylist for next bill
-    setDefaultStylistId(undefined)
-    setDefaultStylistName(undefined)
-  }
+  const handlePaymentComplete = useCallback(
+    (saleData: any) => {
+      setCompletedSale(saleData)
+      setIsPaymentOpen(false)
+      setIsReceiptOpen(true)
+      clearTicket()
+      // Clear default stylist for next bill
+      setDefaultStylistId(undefined)
+      setDefaultStylistName(undefined)
+    },
+    [clearTicket]
+  )
 
-  const totals = calculateTotals()
+  // Memoize totals calculation for performance
+  const totals = useMemo(() => calculateTotals(), [calculateTotals])
 
   if (!effectiveOrgId) {
     return (
