@@ -197,8 +197,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       } : undefined
     } as any)
 
-    // Trigger refetch to show new product
-    await refetch()
+    // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
     return result
   }
 
@@ -269,8 +268,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     }
 
     const result = await baseUpdate(payload)
-    // Trigger refetch to show updated product
-    await refetch()
+    // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
     return result
   }
 
@@ -279,7 +277,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     const product = (products as Product[])?.find(p => p.id === id)
     if (!product) throw new Error('Product not found')
 
-    console.log('[useHeraProducts] Archiving product:', { id })
+    // console.log('[useHeraProducts] Archiving product:', { id })
 
     const result = await baseUpdate({
       entity_id: id,
@@ -287,8 +285,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       status: 'archived'
     })
 
-    // Trigger refetch to update the list
-    await refetch()
+    // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
     return result
   }
 
@@ -297,7 +294,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     const product = (products as Product[])?.find(p => p.id === id)
     if (!product) throw new Error('Product not found')
 
-    console.log('[useHeraProducts] Restoring product:', { id })
+    // console.log('[useHeraProducts] Restoring product:', { id })
 
     const result = await baseUpdate({
       entity_id: id,
@@ -305,21 +302,73 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       status: 'active'
     })
 
-    // Trigger refetch to update the list
-    await refetch()
+    // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
     return result
   }
 
-  // Helper to delete product (hard delete)
-  const deleteProduct = async (id: string, hardDelete = false) => {
-    if (!hardDelete) {
-      const result = await archiveProduct(id)
-      return result
+  // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
+  // Try hard delete first, but if product is referenced in transactions, archive instead
+  const deleteProduct = async (id: string): Promise<{
+    success: boolean
+    archived: boolean
+    message?: string
+  }> => {
+    const product = (products as Product[])?.find(p => p.id === id)
+    if (!product) throw new Error('Product not found')
+
+    try {
+      // Attempt hard delete with cascade
+      await baseDelete({
+        entity_id: id,
+        hard_delete: true,
+        cascade: true,
+        reason: 'Permanently delete product',
+        smart_code: 'HERA.SALON.PRODUCT.DELETE.V1'
+      })
+
+      // If we reach here, hard delete succeeded
+      return {
+        success: true,
+        archived: false
+      }
+    } catch (error: any) {
+      // 🎯 ENTERPRISE ERROR DETECTION: Check multiple error patterns
+      const errorString = JSON.stringify(error).toLowerCase()
+      const errorMessage = (error.message || '').toLowerCase()
+      const is409Conflict =
+        error.status === 409 ||
+        error.statusCode === 409 ||
+        errorString.includes('409') ||
+        errorString.includes('conflict') ||
+        errorMessage.includes('409') ||
+        errorMessage.includes('conflict') ||
+        errorMessage.includes('referenced') ||
+        errorMessage.includes('foreign key') ||
+        errorMessage.includes('cannot delete')
+
+      if (is409Conflict) {
+        // Product is referenced - fallback to archive with warning
+        try {
+          await baseUpdate({
+            entity_id: id,
+            entity_name: product.entity_name,
+            status: 'archived'
+          })
+
+          return {
+            success: true,
+            archived: true,
+            message: 'Product is used in transactions and cannot be deleted. It has been archived instead.'
+          }
+        } catch (archiveError: any) {
+          // If archive also fails, throw a clear error
+          throw new Error(`Failed to delete and archive: ${archiveError.message || 'Unknown error'}`)
+        }
+      }
+
+      // If it's a different error, re-throw it
+      throw error
     }
-    const result = await baseDelete({ entity_id: id, hard_delete: true })
-    // Trigger refetch after hard delete
-    await refetch()
-    return result
   }
 
   // Filter products by branch, search, and category using HERA relationship patterns
@@ -328,11 +377,11 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
 
     let filtered = products as Product[]
 
-    console.log('[useHeraProducts] Filtering products:', {
-      total: filtered.length,
-      branch_id: options?.filters?.branch_id,
-      sample_product_relationships: filtered[0] ? (filtered[0] as any).relationships : 'no products'
-    })
+    // console.log('[useHeraProducts] Filtering products:', {
+    //   total: filtered.length,
+    //   branch_id: options?.filters?.branch_id,
+    //   sample_product_relationships: filtered[0] ? (filtered[0] as any).relationships : 'no products'
+    // })
 
     // Filter by STOCK_AT branch relationship (when branch is selected, not "All Locations")
     if (options?.filters?.branch_id && options.filters.branch_id !== 'all') {
@@ -340,12 +389,12 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
         // Check if product has STOCK_AT relationship with the specified branch
         const stockAtRelationships = (p as any).relationships?.stock_at || (p as any).relationships?.STOCK_AT
 
-        console.log('[useHeraProducts] Product filter check:', {
-          product: p.entity_name,
-          has_relationships: !!(p as any).relationships,
-          stockAtRelationships,
-          branch_id_filter: options.filters?.branch_id
-        })
+        // console.log('[useHeraProducts] Product filter check:', {
+        //   product: p.entity_name,
+        //   has_relationships: !!(p as any).relationships,
+        //   stockAtRelationships,
+        //   branch_id_filter: options.filters?.branch_id
+        // })
 
         if (!stockAtRelationships) return false
 
@@ -357,7 +406,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
         }
       })
 
-      console.log('[useHeraProducts] After branch filter:', filtered.length)
+      // console.log('[useHeraProducts] After branch filter:', filtered.length)
     }
 
     // Search filter

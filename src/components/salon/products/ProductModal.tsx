@@ -71,12 +71,12 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
     includeArchived: false
   })
 
-  console.log('[ProductModal] Categories received:', {
-    count: categoryList?.length || 0,
-    isLoading: categoriesLoading,
-    organizationId,
-    sample: categoryList?.[0]
-  })
+  // console.log('[ProductModal] Categories received:', {
+  //   count: categoryList?.length || 0,
+  //   isLoading: categoriesLoading,
+  //   organizationId,
+  //   sample: categoryList?.[0]
+  // })
 
   // Deduplicate categories by ID and sort by name
   const categories = (categoryList || [])

@@ -1,8 +1,12 @@
 /**
- * HERA Roles Hook
+ * HERA Employee Roles Hook
  *
- * Uses useUniversalEntity (now fixed to work like useHeraServices)
- * Follows the universal architecture pattern
+ * 🎯 ENTERPRISE-GRADE ROLE DIFFERENTIATION:
+ * - USER roles: System/authentication roles (managed separately)
+ * - EMPLOYEE_ROLE: Staff job positions (Stylist, Manager, Receptionist, etc.)
+ *
+ * This hook manages EMPLOYEE_ROLE entities only.
+ * Uses useUniversalEntity with automatic entity type normalization.
  */
 
 'use client'
@@ -10,6 +14,11 @@
 import { useUniversalEntity } from './useUniversalEntity'
 import { ROLE_PRESET } from './entityPresets'
 import type { DynamicFieldDef } from './useUniversalEntity'
+
+/**
+ * Enterprise Role Type Differentiation
+ */
+export type RoleType = 'EMPLOYEE_ROLE' | 'USER_ROLE'
 
 export interface Role {
   id: string
@@ -39,12 +48,35 @@ export interface RoleFormValues {
 }
 
 export interface UseHeraRolesOptions {
+  /**
+   * Include inactive/archived roles in results
+   * @default false
+   */
   includeInactive?: boolean
+
+  /**
+   * Organization ID for multi-tenant filtering
+   * @required
+   */
   organizationId?: string
+
+  /**
+   * User role for permission-based filtering (future use)
+   */
   userRole?: string
+
+  /**
+   * Role type to query
+   * @default 'EMPLOYEE_ROLE' - Staff job positions
+   */
+  roleType?: RoleType
 }
 
 export function useHeraRoles(options?: UseHeraRolesOptions) {
+  // 🎯 ENTERPRISE: Use EMPLOYEE_ROLE for staff job positions
+  // Will be automatically normalized to uppercase by useUniversalEntity
+  const roleEntityType = options?.roleType || 'EMPLOYEE_ROLE'
+
   const {
     entities: roles,
     isLoading,
@@ -59,7 +91,7 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
     isUpdating,
     isDeleting
   } = useUniversalEntity({
-    entity_type: 'role',
+    entity_type: roleEntityType, // 🎯 EMPLOYEE_ROLE (normalized to uppercase automatically)
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
@@ -70,19 +102,21 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
     dynamicFields: ROLE_PRESET.dynamicFields as DynamicFieldDef[]
   })
 
-  // Helper to create role with proper structure
+  // Helper to create employee role with proper structure
   const createRole = async (data: RoleFormValues) => {
     const entity_name = data.title
+
+    // 🎯 ENTERPRISE: Use EMPLOYEE_ROLE smart codes for staff job positions
     const dynamic_fields: Record<string, any> = {
       title: {
         value: data.title,
         type: 'text',
-        smart_code: 'HERA.SALON.ROLE.FIELD.TITLE.V1'
+        smart_code: 'HERA.SALON.EMPLOYEE.ROLE.FIELD.TITLE.V1'
       },
       active: {
         value: data.active !== false,
         type: 'boolean',
-        smart_code: 'HERA.SALON.ROLE.FIELD.ACTIVE.V1'
+        smart_code: 'HERA.SALON.EMPLOYEE.ROLE.FIELD.ACTIVE.V1'
       }
     }
 
@@ -90,7 +124,7 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
       dynamic_fields.description = {
         value: data.description,
         type: 'text',
-        smart_code: 'HERA.SALON.ROLE.FIELD.DESC.V1'
+        smart_code: 'HERA.SALON.EMPLOYEE.ROLE.FIELD.DESC.V1'
       }
     }
 
@@ -98,7 +132,7 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
       dynamic_fields.permissions = {
         value: data.permissions,
         type: 'json',
-        smart_code: 'HERA.SALON.ROLE.FIELD.PERMS.V1'
+        smart_code: 'HERA.SALON.EMPLOYEE.ROLE.FIELD.PERMS.V1'
       }
     }
 
@@ -106,20 +140,20 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
       dynamic_fields.rank = {
         value: data.rank,
         type: 'number',
-        smart_code: 'HERA.SALON.ROLE.FIELD.RANK.V1'
+        smart_code: 'HERA.SALON.EMPLOYEE.ROLE.FIELD.RANK.V1'
       }
     }
 
     return baseCreate({
-      entity_type: 'role',
+      entity_type: roleEntityType, // 🎯 EMPLOYEE_ROLE (auto-normalized)
       entity_name,
-      smart_code: 'HERA.SALON.ROLE.ENTITY.POSITION.V1',
+      smart_code: 'HERA.SALON.EMPLOYEE.ROLE.ENTITY.POSITION.V1',
       status: data.status === 'inactive' ? 'archived' : 'active',
       dynamic_fields
     } as any)
   }
 
-  // Helper to update role
+  // Helper to update employee role
   const updateRole = async (id: string, data: Partial<RoleFormValues>) => {
     const entity_name = data.title
 
@@ -156,17 +190,27 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
     return baseUpdate(payload)
   }
 
-  // Helper to archive role (uses UPDATE to set status='archived')
+  /**
+   * Archive employee role (soft delete)
+   * Sets status to 'archived', preserving data for audit trail
+   */
   const archiveRole = async (id: string) => {
     return baseArchive(id)
   }
 
-  // Helper to restore role (set status='active')
+  /**
+   * Restore archived employee role
+   * Sets status back to 'active'
+   */
   const restoreRole = async (id: string) => {
     return restore(id)
   }
 
-  // Helper to delete role (hard delete)
+  /**
+   * Delete employee role
+   * @param id - Role entity ID
+   * @param hardDelete - If false, archives instead of deleting (default: false)
+   */
   const deleteRole = async (id: string, hardDelete = false) => {
     if (!hardDelete) {
       return archiveRole(id)

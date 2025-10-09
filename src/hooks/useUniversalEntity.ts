@@ -177,6 +177,35 @@ function normalizeEntityType(entityType: string): string {
   return entityType.toUpperCase()
 }
 
+// ================================================================================
+// ENTERPRISE PATTERN: Enhanced Error with HTTP Status and Details
+// ================================================================================
+
+/**
+ * Enhanced Error class that preserves HTTP status codes and error details
+ * This ensures proper error handling throughout the application
+ */
+export class EnhancedError extends Error {
+  status: number
+  statusCode: number // Alias for compatibility
+  code: string
+  details?: any
+
+  constructor(message: string, status: number, code: string, details?: any) {
+    super(message)
+    this.name = 'EnhancedError'
+    this.status = status
+    this.statusCode = status // Alias for compatibility with different error detection patterns
+    this.code = code
+    this.details = details
+
+    // Maintain proper stack trace
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, EnhancedError)
+    }
+  }
+}
+
 // Helper to get authentication headers, including organization context
 async function getAuthHeaders(organizationId?: string | null): Promise<Record<string, string>> {
   const {
@@ -507,7 +536,8 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
           body: JSON.stringify({
             p_organization_id: organizationId,
             p_entity_id: entity_id,
-            p_items: batchItems
+            p_smart_code: entity.smart_code || 'HERA.ENTITY.DYNAMIC.FIELD.V1',
+            p_fields: batchItems
           })
         })
       }
@@ -749,18 +779,33 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
           error: { code: 'UNKNOWN_ERROR', message: `HTTP ${response.status}` }
         }))
 
-        // Handle specific error codes
-        if (error.error?.code === 'RELATIONSHIP_CONFLICT') {
-          throw new Error(
-            `Cannot delete: Active relationships exist. ${
-              cascade ? 'Try hard_delete=true' : 'Set cascade=true'
-            }`
-          )
-        } else if (error.error?.code === 'FORBIDDEN') {
-          throw new Error('Not authorized to delete this entity')
+        const errorCode = error.error?.code || 'UNKNOWN_ERROR'
+        const errorMessage = error.error?.message || error.error || 'Failed to delete entity'
+        const errorDetails = error.error?.details
+
+        // 🎯 ENTERPRISE PATTERN: Log 409 conflicts as info, not errors (expected behavior)
+        const is409Conflict =
+          response.status === 409 ||
+          errorCode === 'TRANSACTION_INTEGRITY_VIOLATION' ||
+          errorCode === 'FOREIGN_KEY_CONSTRAINT'
+
+        if (is409Conflict) {
+          console.log('[useUniversalEntity] Delete blocked (will fallback to archive):', {
+            status: response.status,
+            code: errorCode,
+            details: errorDetails
+          })
+        } else {
+          console.error('[useUniversalEntity] Delete error:', {
+            status: response.status,
+            code: errorCode,
+            message: errorMessage,
+            details: errorDetails
+          })
         }
 
-        throw new Error(error.error?.message || error.error || 'Failed to delete entity')
+        // 🎯 ENTERPRISE ERROR HANDLING: Throw enhanced error with full context
+        throw new EnhancedError(errorMessage, response.status, errorCode, errorDetails)
       }
 
       const result = await response.json()
@@ -783,8 +828,20 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         `✅ Deleted ${entity_type} (${result.mode} mode, ${result.affected_relationships} relationships affected)`
       )
     },
-    onError: (error: Error) => {
-      console.error('[useUniversalEntity] Delete failed:', error.message)
+    onError: (error: any) => {
+      // 🎯 ENTERPRISE PATTERN: Don't log 409 conflicts as errors
+      // These are expected and handled gracefully by calling code (archive fallback)
+      const is409Conflict =
+        error.status === 409 ||
+        error.statusCode === 409 ||
+        error.code === 'TRANSACTION_INTEGRITY_VIOLATION' ||
+        error.code === 'FOREIGN_KEY_CONSTRAINT'
+
+      if (is409Conflict) {
+        console.log('[useUniversalEntity] Delete blocked by references (will fallback to archive)')
+      } else {
+        console.error('[useUniversalEntity] Delete failed:', error.message)
+      }
     }
   })
 

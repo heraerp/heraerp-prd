@@ -9,12 +9,21 @@ import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { NavigationProvider } from './navigation-provider'
 import { PrefetchLinks } from './prefetch-links'
 
-// Create a client
+// Create a client outside component to prevent recreation on every render
+// Optimized for parallel loading and smart caching
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      refetchOnWindowFocus: false
+      staleTime: 1000 * 60 * 5, // 5 minutes - data stays fresh
+      gcTime: 1000 * 60 * 30, // 30 minutes - keep in cache longer for faster navigation
+      refetchOnWindowFocus: false,
+      refetchOnMount: false, // Don't refetch when component mounts if data exists
+      refetchOnReconnect: false, // Don't refetch on network reconnect
+      // Enable parallel queries by default
+      networkMode: 'online',
+      // Retry with exponential backoff
+      retry: 1,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)
     }
   }
 })

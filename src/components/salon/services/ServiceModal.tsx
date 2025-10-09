@@ -128,7 +128,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
       console.log('[ServiceModal] Extracted category ID:', categoryId)
 
       // Map service dynamic fields to form fields
-      // Service has: price_market, duration_min, active, description (dynamic field)
+      // Service has: price_market, duration_min, description (dynamic field), status (entity field)
       // Form expects: price, duration_minutes, status, description
       form.reset({
         name: service.entity_name || '',
@@ -138,7 +138,8 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
         duration_minutes: service.duration_min || service.duration_minutes || undefined,
         requires_booking: service.requires_booking || false,
         description: service.description || service.entity_description || '',
-        status: service.active !== undefined ? (service.active ? 'active' : 'archived') : (service.status || 'active'),
+        // 🎯 CRITICAL FIX: Use entity-level status field directly (not active dynamic field)
+        status: service.status || 'active',
         currency: service.currency || currency || 'AED',
         branch_ids: branchIds
       })
@@ -185,7 +186,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent
-        className="max-w-3xl max-h-[92vh] overflow-hidden flex flex-col p-0"
+        className="max-w-3xl max-h-[92vh] overflow-hidden flex flex-col p-0 animate-in fade-in zoom-in-95 duration-300"
         aria-describedby={undefined}
         style={{
           backgroundColor: COLORS.black,
@@ -270,11 +271,12 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
               {/* Basic Information Section */}
               <div
-                className="relative p-6 rounded-xl border backdrop-blur-sm"
+                className="relative p-6 rounded-xl border backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300"
                 style={{
                   backgroundColor: COLORS.charcoalDark + 'E6',
                   borderColor: COLORS.bronze + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                  boxShadow: `0 4px 12px ${COLORS.black}40`,
+                  animationDelay: '0ms'
                 }}
               >
                 {/* Section Header with Icon */}
@@ -387,14 +389,31 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                               />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent
+                            className="hera-select-content animate-in fade-in slide-in-from-top-2 duration-200"
+                            style={{
+                              backgroundColor: COLORS.charcoal,
+                              borderColor: COLORS.bronze + '40',
+                              boxShadow: `0 8px 24px ${COLORS.black}60`
+                            }}
+                          >
                             {categoryOptions.length === 0 ? (
-                              <div className="px-3 py-2 text-sm text-muted-foreground">
+                              <div
+                                className="px-3 py-2 text-sm"
+                                style={{ color: COLORS.lightText, opacity: 0.6 }}
+                              >
                                 No categories found
                               </div>
                             ) : (
                               categoryOptions.map(cat => (
-                                <SelectItem key={cat.id} value={cat.id}>
+                                <SelectItem
+                                  key={cat.id}
+                                  value={cat.id}
+                                  className="hera-select-item"
+                                  style={{
+                                    color: COLORS.champagne
+                                  }}
+                                >
                                   {cat.entity_name}
                                 </SelectItem>
                               ))
@@ -461,11 +480,12 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
 
               {/* Branch Availability Section */}
               <div
-                className="relative p-6 rounded-xl border backdrop-blur-sm animate-in fade-in duration-300"
+                className="relative p-6 rounded-xl border backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300"
                 style={{
                   backgroundColor: COLORS.charcoalDark + 'E6',
                   borderColor: COLORS.bronze + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                  boxShadow: `0 4px 12px ${COLORS.black}40`,
+                  animationDelay: '50ms'
                 }}
               >
                 {/* Section Header with Icon */}
@@ -611,11 +631,12 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
 
               {/* Pricing Section */}
               <div
-                className="relative p-6 rounded-xl border backdrop-blur-sm"
+                className="relative p-6 rounded-xl border backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300"
                 style={{
                   backgroundColor: COLORS.charcoalDark + 'E6',
                   borderColor: COLORS.bronze + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                  boxShadow: `0 4px 12px ${COLORS.black}40`,
+                  animationDelay: '100ms'
                 }}
               >
                 {/* Section Header with Icon */}
@@ -678,11 +699,12 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
 
               {/* Description & Settings Section */}
               <div
-                className="relative p-6 rounded-xl border backdrop-blur-sm"
+                className="relative p-6 rounded-xl border backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300"
                 style={{
                   backgroundColor: COLORS.charcoalDark + 'E6',
                   borderColor: COLORS.bronze + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                  boxShadow: `0 4px 12px ${COLORS.black}40`,
+                  animationDelay: '150ms'
                 }}
               >
                 {/* Section Header with Icon */}
@@ -903,9 +925,28 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                               <SelectValue placeholder="Select status" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="archived">Archived</SelectItem>
+                          <SelectContent
+                            className="hera-select-content animate-in fade-in slide-in-from-top-2 duration-200"
+                            style={{
+                              backgroundColor: COLORS.charcoal,
+                              borderColor: COLORS.bronze + '40',
+                              boxShadow: `0 8px 24px ${COLORS.black}60`
+                            }}
+                          >
+                            <SelectItem
+                              value="active"
+                              className="hera-select-item"
+                              style={{ color: COLORS.champagne }}
+                            >
+                              Active
+                            </SelectItem>
+                            <SelectItem
+                              value="archived"
+                              className="hera-select-item"
+                              style={{ color: COLORS.champagne }}
+                            >
+                              Archived
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -920,10 +961,11 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
 
         {/* Luxe Footer with Actions */}
         <div
-          className="px-8 py-5 border-t"
+          className="px-8 py-5 border-t animate-in fade-in slide-in-from-bottom-2 duration-300"
           style={{
             backgroundColor: COLORS.charcoal,
-            borderColor: COLORS.bronze + '30'
+            borderColor: COLORS.bronze + '30',
+            animationDelay: '200ms'
           }}
         >
           <div className="flex items-center justify-between">

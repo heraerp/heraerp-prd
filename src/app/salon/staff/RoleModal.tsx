@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter
 } from '@/components/ui/luxe-dialog'
 import { Button } from '@/components/ui/button'
@@ -160,6 +161,11 @@ export function RoleModal({
             <DialogTitle style={{ color: COLORS.champagne }} className="text-2xl font-bold">
               {isEditMode ? 'Edit Role' : 'Create New Role'}
             </DialogTitle>
+            <DialogDescription>
+              {isEditMode
+                ? 'Update role information, permissions, and hierarchy settings'
+                : 'Define a new role with specific permissions and responsibilities'}
+            </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

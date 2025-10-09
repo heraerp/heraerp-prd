@@ -42,32 +42,49 @@ export async function POST(request: NextRequest) {
 
     const validatedPayload = validation.data!
 
-    // Build filters object
-    const filters: Record<string, any> = {}
-    if (validatedPayload.source_entity_id)
-      filters.source_entity_id = validatedPayload.source_entity_id
-    if (validatedPayload.target_entity_id)
-      filters.target_entity_id = validatedPayload.target_entity_id
-    if (validatedPayload.transaction_type)
-      filters.transaction_type = validatedPayload.transaction_type
-    if (validatedPayload.smart_code_like) filters.smart_code_like = validatedPayload.smart_code_like
-    if (validatedPayload.date_from) filters.date_from = validatedPayload.date_from
-    if (validatedPayload.date_to) filters.date_to = validatedPayload.date_to
-    if (validatedPayload.limit) filters.limit = validatedPayload.limit
-    if (validatedPayload.offset) filters.offset = validatedPayload.offset
+    // Build query using direct Supabase table access
+    let query = supabase
+      .from('universal_transactions')
+      .select('*')
+      .eq('organization_id', validatedPayload.organization_id)
 
-    // Call database function
-    const { data, error } = await supabase.rpc('hera_txn_query_v1', {
-      p_org_id: validatedPayload.organization_id,
-      p_filters: filters
-    })
+    // Apply filters
+    if (validatedPayload.source_entity_id) {
+      query = query.eq('source_entity_id', validatedPayload.source_entity_id)
+    }
+    if (validatedPayload.target_entity_id) {
+      query = query.eq('target_entity_id', validatedPayload.target_entity_id)
+    }
+    if (validatedPayload.transaction_type) {
+      query = query.eq('transaction_type', validatedPayload.transaction_type)
+    }
+    if (validatedPayload.smart_code_like) {
+      query = query.like('notes', `%${validatedPayload.smart_code_like}%`)
+    }
+    if (validatedPayload.date_from) {
+      query = query.gte('transaction_date', validatedPayload.date_from)
+    }
+    if (validatedPayload.date_to) {
+      query = query.lte('transaction_date', validatedPayload.date_to)
+    }
+
+    // Apply pagination
+    query = query
+      .order('transaction_date', { ascending: false })
+      .order('created_at', { ascending: false })
+      .range(
+        validatedPayload.offset || 0,
+        (validatedPayload.offset || 0) + (validatedPayload.limit || 100) - 1
+      )
+
+    const { data, error } = await query
 
     if (error) {
       console.error('Database error:', error)
       return NextResponse.json({ success: false, error: error.message }, { status: 500 })
     }
 
-    let transactions = data?.data || []
+    let transactions = data || []
 
     // If include_lines is requested, fetch lines for all transactions in ONE query
     if (validatedPayload.include_lines && transactions.length > 0) {
@@ -81,29 +98,25 @@ export async function POST(request: NextRequest) {
           id,
           transaction_id,
           line_number,
+          entity_id,
           line_type,
-          line_entity_id,
+          description,
           quantity,
-          unit_price,
+          unit_amount,
           line_amount,
           discount_amount,
           tax_amount,
-          total_amount,
-          currency,
-          dr_cr,
           smart_code,
-          description,
-          status,
-          metadata,
+          line_data,
           ai_confidence,
           created_at,
-          updated_at,
-          version
+          updated_at
         `
         )
         .eq('organization_id', validatedPayload.organization_id)
         .in('transaction_id', transactionIds)
-        .order('transaction_id, line_number') // ORDER BY transaction_id, line_number for grouping
+        .order('transaction_id')
+        .order('line_number')
 
       if (!linesError && linesData) {
         // Group lines by transaction_id (optimized grouping)
@@ -126,9 +139,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       api_version: 'v2',
       transactions,
-      total: data?.total || 0,
-      limit: data?.limit || 100,
-      offset: data?.offset || 0
+      total: transactions.length,
+      limit: validatedPayload.limit || 100,
+      offset: validatedPayload.offset || 0
     })
   } catch (error) {
     console.error('API error:', error)

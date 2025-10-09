@@ -202,7 +202,11 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
   }
 
   // Helper to update service
-  const updateService = async (id: string, data: Partial<Parameters<typeof createService>[0]>) => {
+  const updateService = async (id: string, data: Partial<Parameters<typeof createService>[0]> & { status?: string }) => {
+    // 🎯 ENTERPRISE PATTERN: Get entity to ensure entity_name is always passed (same as archive/restore)
+    const service = (services as ServiceEntity[])?.find(s => s.id === id)
+    if (!service) throw new Error('Service not found')
+
     // Build dynamic patch from provided fields
     const dynamic_patch: Record<string, any> = {}
     for (const def of SERVICE_PRESET.dynamicFields) {
@@ -222,11 +226,14 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
       relationships_patch['AVAILABLE_AT'] = data.branch_ids
     }
 
+    // 🎯 ENTERPRISE PATTERN: Build payload like archive/restore (entity_name always required)
     const payload: any = {
       entity_id: id,
-      ...(data.name && { entity_name: data.name }),
+      entity_name: data.name || service.entity_name, // Always include entity_name
       ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
-      ...(Object.keys(relationships_patch).length ? { relationships_patch } : {})
+      ...(Object.keys(relationships_patch).length ? { relationships_patch } : {}),
+      // 🎯 CRITICAL: Status at entity level (NOT dynamic field) - same as archive/restore
+      ...(data.status !== undefined && { status: data.status })
     }
 
     return baseUpdate(payload)
@@ -242,16 +249,56 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     return baseRestore(id)
   }
 
-  // Helper to delete service (HARD DELETE - physically removes from database)
-  // For archiving, use archiveService() instead
-  const deleteService = async (id: string, reason?: string) => {
-    return baseDelete({
-      entity_id: id,
-      hard_delete: true, // Hard delete - permanently removes the service
-      cascade: true, // Always cascade relationships
-      reason: reason || 'Permanently delete service',
-      smart_code: 'HERA.SALON.SERVICE.DELETE.V1'
-    })
+  // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
+  // Try hard delete first, but if service is referenced in transactions, archive instead
+  const deleteService = async (id: string, reason?: string): Promise<{
+    success: boolean
+    archived: boolean
+    message?: string
+  }> => {
+    const service = (services as ServiceEntity[])?.find(s => s.id === id)
+    if (!service) throw new Error('Service not found')
+
+    try {
+      // Attempt hard delete with cascade
+      await baseDelete({
+        entity_id: id,
+        hard_delete: true,
+        cascade: true,
+        reason: reason || 'Permanently delete service',
+        smart_code: 'HERA.SALON.SERVICE.DELETE.V1'
+      })
+
+      // If we reach here, hard delete succeeded
+      return {
+        success: true,
+        archived: false
+      }
+    } catch (error: any) {
+      // Check if error is due to foreign key constraint (referenced in transactions)
+      const is409Conflict = error.message?.includes('409') ||
+                           error.message?.includes('Conflict') ||
+                           error.message?.includes('referenced') ||
+                           error.message?.includes('foreign key')
+
+      if (is409Conflict) {
+        // Service is referenced - fallback to archive with warning
+        await baseUpdate({
+          entity_id: id,
+          entity_name: service.entity_name,
+          status: 'archived'
+        })
+
+        return {
+          success: true,
+          archived: true,
+          message: 'Service is used in appointments or transactions and cannot be deleted. It has been archived instead.'
+        }
+      }
+
+      // If it's a different error, re-throw it
+      throw error
+    }
   }
 
   // Helper to link category

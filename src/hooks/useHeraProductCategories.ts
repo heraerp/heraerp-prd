@@ -171,7 +171,7 @@ export function useHeraProductCategories(options?: UseHeraProductCategoriesOptio
     const category = (categories as ProductCategory[])?.find(c => c.id === id)
     if (!category) throw new Error('Category not found')
 
-    console.log('[useHeraProductCategories] Archiving category:', { id })
+    // console.log('[useHeraProductCategories] Archiving category:', { id })
 
     return baseUpdate({
       entity_id: id,
@@ -188,12 +188,11 @@ export function useHeraProductCategories(options?: UseHeraProductCategoriesOptio
     return baseDelete({ entity_id: id, hard_delete: true })
   }
 
-  // Debug logging
-  console.log('[useHeraProductCategories] Categories loaded:', {
-    count: (categories as ProductCategory[])?.length || 0,
-    sample: (categories as ProductCategory[])?.[0],
-    organizationId: options?.organizationId
-  })
+  // console.log('[useHeraProductCategories] Categories loaded:', {
+  //   count: (categories as ProductCategory[])?.length || 0,
+  //   sample: (categories as ProductCategory[])?.[0],
+  //   organizationId: options?.organizationId
+  // })
 
   return {
     categories: (categories as ProductCategory[]) || [],

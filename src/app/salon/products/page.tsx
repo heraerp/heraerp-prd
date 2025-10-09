@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
@@ -142,38 +142,44 @@ function SalonProductsPageContent() {
     includeArchived: false
   })
 
-  const categories = productCategories
-    .filter(cat => cat && cat.entity_name)
-    .map(cat => cat.entity_name)
+  // Memoized categories for performance
+  const categories = useMemo(
+    () => productCategories.filter(cat => cat && cat.entity_name).map(cat => cat.entity_name),
+    [productCategories]
+  )
 
-  // Filter products
-  const filteredProducts = products.filter(product => {
-    // Skip invalid products
-    if (!product || !product.entity_name) {
-      return false
-    }
+  // Filter products - memoized for performance
+  const filteredProducts = useMemo(
+    () =>
+      products.filter(product => {
+        // Skip invalid products
+        if (!product || !product.entity_name) {
+          return false
+        }
 
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      if (
-        !product.entity_name.toLowerCase().includes(query) &&
-        !product.entity_code?.toLowerCase().includes(query)
-      ) {
-        return false
-      }
-    }
+        // Search filter
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase()
+          if (
+            !product.entity_name.toLowerCase().includes(query) &&
+            !product.entity_code?.toLowerCase().includes(query)
+          ) {
+            return false
+          }
+        }
 
-    // Category filter
-    if (categoryFilter && product.category !== categoryFilter) {
-      return false
-    }
+        // Category filter
+        if (categoryFilter && product.category !== categoryFilter) {
+          return false
+        }
 
-    // Branch filter is now handled by useHeraProducts hook via relationships
-    // No need for manual client-side filtering
+        // Branch filter is now handled by useHeraProducts hook via relationships
+        // No need for manual client-side filtering
 
-    return true
-  })
+        return true
+      }),
+    [products, searchQuery, categoryFilter]
+  )
 
   // Scroll to highlighted product from deep link
   useEffect(() => {
@@ -193,55 +199,74 @@ function SalonProductsPageContent() {
     }
   }, [highlightedProductId, filteredProducts])
 
-  // CRUD handlers
-  const handleSave = async (data: any) => {
-    const loadingId = showLoading(
-      editingProduct ? 'Updating product...' : 'Creating product...',
-      'Please wait while we save your changes'
-    )
-
-    try {
-      if (editingProduct) {
-        await updateProduct(editingProduct.id, data)
-        removeToast(loadingId)
-        showSuccess('Product updated successfully', `${data.name} has been updated`)
-      } else {
-        await createProduct(data)
-        removeToast(loadingId)
-        showSuccess('Product created successfully', `${data.name} has been added`)
-      }
-      setModalOpen(false)
-      setEditingProduct(null)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError(
-        editingProduct ? 'Failed to update product' : 'Failed to create product',
-        error.message || 'Please try again or contact support'
+  // CRUD handlers - memoized for performance
+  const handleSave = useCallback(
+    async (data: any) => {
+      const loadingId = showLoading(
+        editingProduct ? 'Updating product...' : 'Creating product...',
+        'Please wait while we save your changes'
       )
-    }
-  }
 
-  const handleEdit = (product: Product) => {
+      try {
+        if (editingProduct) {
+          await updateProduct(editingProduct.id, data)
+          removeToast(loadingId)
+          showSuccess('Product updated successfully', `${data.name} has been updated`)
+        } else {
+          await createProduct(data)
+          removeToast(loadingId)
+          showSuccess('Product created successfully', `${data.name} has been added`)
+        }
+        setModalOpen(false)
+        setEditingProduct(null)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError(
+          editingProduct ? 'Failed to update product' : 'Failed to create product',
+          error.message || 'Please try again or contact support'
+        )
+      }
+    },
+    [editingProduct, updateProduct, createProduct, showLoading, removeToast, showSuccess, showError]
+  )
+
+  const handleEdit = useCallback((product: Product) => {
     setEditingProduct(product)
     setModalOpen(true)
-  }
+  }, [])
 
-  const handleDelete = (product: Product) => {
+  const handleDelete = useCallback((product: Product) => {
     setProductToDelete(product)
     setDeleteDialogOpen(true)
-  }
+  }, [])
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     if (!productToDelete) return
 
     setIsDeleting(true)
     const loadingId = showLoading('Deleting product...', 'This action cannot be undone')
 
     try {
-      // Pass hardDelete: true for permanent deletion
-      await deleteProduct(productToDelete.id, true)
+      // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
+      // Try hard delete first, but if product is referenced, archive instead
+      const result = await deleteProduct(productToDelete.id)
+
       removeToast(loadingId)
-      showSuccess('Product deleted', `${productToDelete.entity_name} has been permanently removed`)
+
+      if (result.archived) {
+        // Product was archived instead of deleted (referenced in transactions)
+        showSuccess(
+          'Product archived',
+          result.message || `${productToDelete.entity_name} has been archived`
+        )
+      } else {
+        // Product was successfully deleted
+        showSuccess(
+          'Product deleted',
+          `${productToDelete.entity_name} has been permanently removed`
+        )
+      }
+
       setDeleteDialogOpen(false)
       setProductToDelete(null)
     } catch (error: any) {
@@ -250,38 +275,44 @@ function SalonProductsPageContent() {
     } finally {
       setIsDeleting(false)
     }
-  }
+  }, [productToDelete, deleteProduct, showLoading, removeToast, showSuccess, showError])
 
-  const handleArchive = async (product: Product) => {
-    const loadingId = showLoading('Archiving product...', 'Please wait')
+  const handleArchive = useCallback(
+    async (product: Product) => {
+      const loadingId = showLoading('Archiving product...', 'Please wait')
 
-    try {
-      await archiveProduct(product.id)
-      removeToast(loadingId)
-      showSuccess('Product archived', `${product.entity_name} has been archived`)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to archive product', error.message || 'Please try again')
-    }
-  }
+      try {
+        await archiveProduct(product.id)
+        removeToast(loadingId)
+        showSuccess('Product archived', `${product.entity_name} has been archived`)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError('Failed to archive product', error.message || 'Please try again')
+      }
+    },
+    [archiveProduct, showLoading, removeToast, showSuccess, showError]
+  )
 
-  const handleRestore = async (product: Product) => {
-    const loadingId = showLoading('Restoring product...', 'Please wait')
+  const handleRestore = useCallback(
+    async (product: Product) => {
+      const loadingId = showLoading('Restoring product...', 'Please wait')
 
-    try {
-      await restoreProduct(product.id)
-      removeToast(loadingId)
-      showSuccess('Product restored', `${product.entity_name} has been restored`)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to restore product', error.message || 'Please try again')
-    }
-  }
+      try {
+        await restoreProduct(product.id)
+        removeToast(loadingId)
+        showSuccess('Product restored', `${product.entity_name} has been restored`)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError('Failed to restore product', error.message || 'Please try again')
+      }
+    },
+    [restoreProduct, showLoading, removeToast, showSuccess, showError]
+  )
 
-  const handleExport = () => {
+  const handleExport = useCallback(() => {
     // TODO: Implement export functionality
     showSuccess('Export started', 'Your products will be exported shortly')
-  }
+  }, [showSuccess])
 
   // Category CRUD handlers
   const handleSaveCategory = async (data: ProductCategoryFormValues) => {
