@@ -41,3 +41,45 @@ console.log(`   BUILD_ID: ${hasBuildId ? 'present' : 'missing'}`)
 console.log(`   prerender-manifest.json: ${hasPrerender ? 'present' : 'missing'}`)
 console.log(`   standalone/server.js: ${hasStandalone ? 'present' : 'missing'}`)
 
+// Additional Railway-specific checks
+if (process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_DEPLOYMENT_ID) {
+  console.log('\n🚂 Railway deployment checks:')
+  
+  // Check Node.js version compatibility
+  const nodeVersion = process.version
+  console.log(`   Node.js version: ${nodeVersion}`)
+  
+  // Check memory usage
+  const memoryUsage = process.memoryUsage()
+  const memoryMB = Math.round(memoryUsage.heapUsed / 1024 / 1024)
+  console.log(`   Current memory usage: ${memoryMB}MB`)
+  
+  // Check standalone server content
+  if (hasStandalone) {
+    try {
+      const serverSize = fs.statSync(standaloneServer).size
+      console.log(`   Standalone server size: ${Math.round(serverSize / 1024)}KB`)
+      
+      const serverContent = fs.readFileSync(standaloneServer, 'utf8')
+      if (serverContent.includes('nextServer.prepare') || serverContent.includes('createServer')) {
+        console.log('   ✅ Standalone server appears to be valid Next.js server')
+      } else {
+        console.warn('   ⚠️  Standalone server content may be incomplete')
+      }
+    } catch (error) {
+      console.warn(`   ⚠️  Could not analyze standalone server: ${error.message}`)
+    }
+  }
+  
+  // Check for common deployment issues
+  const packageJson = path.join(nextDir, 'standalone', 'package.json')
+  if (exists(packageJson)) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(packageJson, 'utf8'))
+      console.log(`   ✅ Standalone package.json exists (scripts: ${Object.keys(pkg.scripts || {}).length})`)
+    } catch (error) {
+      console.warn(`   ⚠️  Standalone package.json is malformed: ${error.message}`)
+    }
+  }
+}
+
