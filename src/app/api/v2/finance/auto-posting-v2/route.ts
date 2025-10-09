@@ -13,7 +13,21 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyAuth } from '@/lib/auth/auth-utils'
+import { verifyAuth as baseVerifyAuth } from '@/lib/auth/verify-auth'
+
+// Compatibility wrapper for the Finance DNA v2 API
+async function verifyAuth(req: NextRequest) {
+  const authUser = await baseVerifyAuth(req)
+  if (!authUser) {
+    return { success: false, error: 'Authentication failed' }
+  }
+  return {
+    success: true,
+    organizationId: authUser.organizationId!,
+    userId: authUser.id,
+    user: authUser
+  }
+}
 import { FinanceEventProcessorV2 } from '@/lib/dna/integration/finance-event-processor-v2'
 import { HERAGuardrailsV2 } from '@/lib/guardrails/hera-guardrails-v2'
 import { z } from 'zod'

@@ -304,7 +304,7 @@ export default function SalonOwnerDashboard() {
                     )}
                   </div>
                 ))}
-              </div>
+              </ResponsiveGrid>
             </LuxeCard>
 
             {/* Performance Chart */}
