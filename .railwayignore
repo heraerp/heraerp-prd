@@ -1,5 +1,33 @@
-.git
-.next/cache
-node_modules/.cache
+# Railway deployment ignore
+
+# Development files
+.git/
+.next/cache/
+node_modules/.cache/
+.env.local
+.env.development
+.env.test
+
+# Testing and documentation
+tests/
+docs/
+playwright-report/
+test-results/
+coverage/
+
+# Development tools
+.vscode/
+.husky/
+.github/
+
+# Logs and temporary files
 *.log
+*.tmp
 .DS_Store
+.swp
+.swo
+
+# Large development dependencies
+packages/hera-testing/
+packages/hera-playbooks/
+monitoring/

@@ -1,0 +1,21 @@
+[build]
+builder = "nixpacks"
+
+[build.env]
+NPM_CONFIG_CACHE = "/opt/railway/.npm"
+NPM_CONFIG_PREFER_OFFLINE = "true"
+NPM_CONFIG_PROGRESS = "false"
+NPM_CONFIG_FUND = "false"
+NPM_CONFIG_AUDIT = "false"
+NODE_ENV = "production"
+NEXT_TELEMETRY_DISABLED = "1"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 5
+
+[deploy.env]
+NODE_ENV = "production"
+NEXT_TELEMETRY_DISABLED = "1"

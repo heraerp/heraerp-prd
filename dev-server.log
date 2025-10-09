@@ -33,3 +33,6 @@
  ✓ Compiled /api/v2/auth/attach in 5.6s (405 modules)
 [verifyAuth] Token validation failed: Invalid token
  POST /api/v2/auth/attach 401 in 7188ms
+ ✓ Compiled in 1423ms (184 modules)
+ ✓ Compiled in 602ms (184 modules)
+ ✓ Compiled in 797ms (184 modules)
