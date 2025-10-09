@@ -521,6 +521,78 @@ export const VENDOR_PRESET = {
   ]
 }
 
+// Service Category configuration
+export const SERVICE_CATEGORY_PRESET = {
+  entity_type: 'SERVICE_CATEGORY',
+  labels: {
+    singular: 'Service Category',
+    plural: 'Service Categories'
+  },
+  permissions: {
+    create: (role: Role) => ['owner', 'manager'].includes(role),
+    edit: (role: Role) => ['owner', 'manager'].includes(role),
+    delete: (role: Role) => ['owner', 'manager'].includes(role),
+    view: () => true
+  },
+  dynamicFields: [
+    {
+      name: 'color',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.COLOR.v1',
+      defaultValue: '#8B5CF6',
+      ui: {
+        label: 'Color',
+        placeholder: '#8B5CF6',
+        helpText: 'Hex color for category display'
+      }
+    },
+    {
+      name: 'icon',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.ICON.v1',
+      defaultValue: 'Sparkles',
+      ui: {
+        label: 'Icon',
+        placeholder: 'Sparkles',
+        helpText: 'Lucide icon name'
+      }
+    },
+    {
+      name: 'display_order',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.ORDER.v1',
+      defaultValue: 0,
+      ui: {
+        label: 'Display Order',
+        placeholder: '0',
+        helpText: 'Sort order for display'
+      }
+    },
+    {
+      name: 'active',
+      type: 'boolean' as const,
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.ACTIVE.v1',
+      defaultValue: true,
+      ui: {
+        label: 'Active',
+        widget: 'checkbox'
+      }
+    }
+  ],
+  relationships: [
+    {
+      type: 'PARENT_CATEGORY',
+      smart_code: 'HERA.SALON.SVC.CATEGORY.REL.PARENT.v1',
+      cardinality: 'one' as const,
+      ui: {
+        label: 'Parent Category',
+        widget: 'select',
+        optionsQueryKey: 'service-categories'
+      }
+    }
+  ]
+}
+
 // Category configuration (for products/services)
 export const CATEGORY_PRESET = {
   entity_type: 'CATEGORY',
@@ -1075,6 +1147,7 @@ export const BRANCH_PRESET = {
 export const ENTITY_PRESETS = {
   PRODUCT: PRODUCT_PRESET,
   SERVICE: SERVICE_PRESET,
+  SERVICE_CATEGORY: SERVICE_CATEGORY_PRESET,
   CUSTOMER: CUSTOMER_PRESET,
   EMPLOYEE: EMPLOYEE_PRESET,
   STAFF: STAFF_PRESET,

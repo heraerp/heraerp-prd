@@ -489,6 +489,106 @@ export function useOrganizationList(filters?: {
   })
 }
 
+// Fetch organization overview data
+export function useOrgOverview(id: string) {
+  const { currentOrgId } = useOrgStore()
+  const orgId = currentOrgId || CIVICFLOW_ORG_ID
+
+  return useQuery({
+    queryKey: ['org-overview', id, orgId],
+    queryFn: async () => {
+      const response = await fetch(`/api/civicflow/organizations/${id}/overview`, {
+        headers: { 'X-Organization-Id': orgId }
+      })
+      if (!response.ok) throw new Error('Failed to fetch organization overview')
+      return response.json()
+    },
+    staleTime: 5 * 60 * 1000
+  })
+}
+
+// Fetch organization activity
+export function useOrgActivity(id: string, filters?: OrgActivityFilters) {
+  const { currentOrgId } = useOrgStore()
+  const orgId = currentOrgId || CIVICFLOW_ORG_ID
+
+  return useQuery<{ data: OrgActivity[]; total: number }>({
+    queryKey: ['org-activity', id, orgId, filters],
+    queryFn: async () => {
+      const params = new URLSearchParams()
+      if (filters?.type) params.append('type', filters.type)
+      if (filters?.date_from) params.append('date_from', filters.date_from)
+      if (filters?.date_to) params.append('date_to', filters.date_to)
+
+      const response = await fetch(`/api/civicflow/organizations/${id}/activity?${params}`, {
+        headers: { 'X-Organization-Id': orgId }
+      })
+      if (!response.ok) throw new Error('Failed to fetch activity')
+      return response.json()
+    },
+    keepPreviousData: true
+  })
+}
+
+// Set primary contact
+export function useSetPrimaryContact(orgId: string) {
+  const queryClient = useQueryClient()
+  const { currentOrgId } = useOrgStore()
+  const tenantOrgId = currentOrgId || CIVICFLOW_ORG_ID
+
+  return useMutation({
+    mutationFn: async (contactId: string) => {
+      const response = await fetch(`/api/civicflow/organizations/${orgId}/contacts/${contactId}/primary`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Organization-Id': tenantOrgId
+        }
+      })
+
+      if (!response.ok) throw new Error('Failed to set primary contact')
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['org-contacts', orgId] })
+      toast.success('Primary contact updated')
+    },
+    onError: () => {
+      toast.error('Failed to update primary contact')
+    }
+  })
+}
+
+// Add document URL
+export function useAddDocumentUrl(orgId: string) {
+  const queryClient = useQueryClient()
+  const { currentOrgId } = useOrgStore()
+  const tenantOrgId = currentOrgId || CIVICFLOW_ORG_ID
+
+  return useMutation({
+    mutationFn: async (data: { url: string; title: string; type: string }) => {
+      const response = await fetch(`/api/civicflow/organizations/${orgId}/documents`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Organization-Id': tenantOrgId
+        },
+        body: JSON.stringify(data)
+      })
+
+      if (!response.ok) throw new Error('Failed to add document')
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['org-documents', orgId] })
+      toast.success('Document added')
+    },
+    onError: () => {
+      toast.error('Failed to add document')
+    }
+  })
+}
+
 // Create organization
 export function useCreateOrganization() {
   const queryClient = useQueryClient()

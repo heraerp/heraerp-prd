@@ -59,3 +59,13 @@ export const createServerClientWithOrg = async (organizationId: string) => {
 
   return client
 }
+
+/**
+ * Admin client for system operations (backwards compatibility)
+ */
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})

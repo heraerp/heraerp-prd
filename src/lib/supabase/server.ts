@@ -17,3 +17,6 @@ export const createServerClient = () => {
     }
   })
 }
+
+// Alias for backwards compatibility
+export const createClient = createServerClient
