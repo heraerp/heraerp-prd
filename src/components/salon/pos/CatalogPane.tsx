@@ -1,13 +1,31 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Search, Plus, Scissors, Package, Tag, Star, Building2, MapPin, X, Loader2, User } from 'lucide-react'
+import {
+  Search,
+  Plus,
+  Scissors,
+  Package,
+  Tag,
+  Star,
+  Building2,
+  MapPin,
+  X,
+  Loader2,
+  User
+} from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { useSalonPOS, type PosItem } from '@/hooks/useSalonPOS'
 import { StylistSelectionModal } from './StylistSelectionModal'
 import { cn } from '@/lib/utils'
@@ -50,14 +68,7 @@ export function CatalogPane({
   const [showStylistModal, setShowStylistModal] = useState(false)
 
   // Use composition hook for POS data
-  const {
-    items,
-    staff,
-    branchId,
-    branches,
-    isLoading,
-    setBranchId
-  } = useSalonPOS({
+  const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS({
     search: searchQuery,
     organizationId
   })
@@ -66,7 +77,8 @@ export function CatalogPane({
   const filteredItems = useMemo(() => {
     return items.filter(item => {
       // Tab filter
-      const matchesTab = activeTab === 'services' ? item.__kind === 'SERVICE' : item.__kind === 'PRODUCT'
+      const matchesTab =
+        activeTab === 'services' ? item.__kind === 'SERVICE' : item.__kind === 'PRODUCT'
 
       // Category filter
       const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory

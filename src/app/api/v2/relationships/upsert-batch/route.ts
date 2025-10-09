@@ -65,7 +65,10 @@ export async function POST(request: NextRequest) {
           .eq('relationship_type', relationshipType)
 
         if (deleteError) {
-          console.warn(`⚠️ Failed to delete existing ${relationshipType} relationships:`, deleteError)
+          console.warn(
+            `⚠️ Failed to delete existing ${relationshipType} relationships:`,
+            deleteError
+          )
         }
       }
     }
@@ -88,10 +91,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Insert new relationships
-    const { data, error } = await supabase
-      .from('core_relationships')
-      .insert(insertRows)
-      .select()
+    const { data, error } = await supabase.from('core_relationships').insert(insertRows).select()
 
     if (error) {
       console.error('❌ [Batch Relationship Upsert] Database error:', error)

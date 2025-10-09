@@ -153,13 +153,19 @@ export function EnterpriseBillSummary({
                     )}
                   </div>
                   {customer.email && (
-                    <div className="flex items-center gap-2 text-xs" style={{ color: COLORS.bronze }}>
+                    <div
+                      className="flex items-center gap-2 text-xs"
+                      style={{ color: COLORS.bronze }}
+                    >
                       <Mail className="w-3 h-3" />
                       <span>{customer.email}</span>
                     </div>
                   )}
                   {customer.phone && (
-                    <div className="flex items-center gap-2 text-xs" style={{ color: COLORS.bronze }}>
+                    <div
+                      className="flex items-center gap-2 text-xs"
+                      style={{ color: COLORS.bronze }}
+                    >
                       <Phone className="w-3 h-3" />
                       <span>{customer.phone}</span>
                     </div>
@@ -239,7 +245,10 @@ export function EnterpriseBillSummary({
                       {item.entity_name}
                     </p>
                     {item.stylist_name && (
-                      <div className="flex items-center gap-2 text-xs" style={{ color: COLORS.bronze }}>
+                      <div
+                        className="flex items-center gap-2 text-xs"
+                        style={{ color: COLORS.bronze }}
+                      >
                         <User className="w-3 h-3" />
                         <span>{item.stylist_name}</span>
                       </div>
@@ -384,8 +393,12 @@ export function EnterpriseBillSummary({
           }
         }
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
         @keyframes scaleIn {
           from {
@@ -398,8 +411,12 @@ export function EnterpriseBillSummary({
           }
         }
         @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
+          0% {
+            background-position: -200% 0;
+          }
+          100% {
+            background-position: 200% 0;
+          }
         }
         .animate-slideIn {
           animation: slideIn 0.5s ease-out;

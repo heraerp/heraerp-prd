@@ -1,0 +1,99 @@
+graph TB
+    subgraph "Finance DNA v2 Architecture"
+        subgraph "Sacred Six Tables"
+            CO[core_organizations<br/>Multi-tenant isolation]
+            CE[core_entities<br/>GL accounts, policies, users]
+            CD[core_dynamic_data<br/>Policy-as-data, configurations]
+            CR[core_relationships<br/>Account hierarchies, workflows]
+            UT[universal_transactions<br/>Journal entries, events]
+            UTL[universal_transaction_lines<br/>GL postings, details]
+        end
+        
+        subgraph "API Layer"
+            API[Universal API v2<br/>REST endpoints]
+            RPC[PostgreSQL RPCs<br/>High-performance functions]
+            MW[Enterprise Middleware<br/>Auth, RLS, Audit]
+        end
+        
+        subgraph "Security & Auth"
+            JWT[JWT Authentication<br/>Organization context]
+            RLS[Row Level Security<br/>Perfect isolation]
+            RBAC[Role-Based Access<br/>Dynamic permissions]
+            AUDIT[Audit Trail<br/>Complete logging]
+        end
+        
+        subgraph "Business Logic"
+            POLICY[Policy Engine<br/>Rules-as-data]
+            SMART[Smart Code Registry<br/>.v2 families]
+            GL[GL Posting Engine<br/>Automatic balancing]
+            REPORT[Reporting Engine<br/>Real-time generation]
+        end
+        
+        subgraph "Performance"
+            CACHE[Intelligent Caching<br/>Sub-second response]
+            MV[Materialized Views<br/>Pre-computed data]
+            IDX[Optimized Indexes<br/>RLS-aware queries]
+        end
+    end
+    
+    subgraph "External Systems"
+        CLIENT[Client Applications<br/>Web, Mobile, API]
+        ERP[Legacy ERP Systems<br/>Migration sources]
+        BANK[Banking Systems<br/>Transaction import]
+        REPORT_SYS[Reporting Systems<br/>BI, Analytics]
+    end
+    
+    %% Data Flow
+    CLIENT --> API
+    API --> MW
+    MW --> JWT
+    MW --> RLS
+    MW --> AUDIT
+    
+    %% Business Logic Flow
+    API --> RPC
+    RPC --> POLICY
+    RPC --> SMART
+    RPC --> GL
+    RPC --> REPORT
+    
+    %% Data Storage Flow
+    POLICY --> CE
+    POLICY --> CD
+    GL --> UT
+    GL --> UTL
+    SMART --> CE
+    SMART --> UT
+    
+    %% Performance Flow
+    REPORT --> MV
+    RPC --> CACHE
+    RPC --> IDX
+    
+    %% Security Flow
+    JWT --> RBAC
+    RBAC --> CR
+    RLS --> CO
+    RLS --> CE
+    RLS --> CD
+    RLS --> CR
+    RLS --> UT
+    RLS --> UTL
+    
+    %% External Integration
+    ERP --> API
+    BANK --> API
+    API --> REPORT_SYS
+    
+    %% Styling
+    classDef sacredSix fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef security fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef business fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef performance fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef external fill:#fafafa,stroke:#424242,stroke-width:2px
+    
+    class CO,CE,CD,CR,UT,UTL sacredSix
+    class JWT,RLS,RBAC,AUDIT security
+    class POLICY,SMART,GL,REPORT business
+    class CACHE,MV,IDX performance
+    class CLIENT,ERP,BANK,REPORT_SYS external

@@ -25,7 +25,16 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Sparkles, X, Clock, CalendarCheck, CalendarX, CheckCircle2, Building2, MapPin } from 'lucide-react'
+import {
+  Sparkles,
+  X,
+  Clock,
+  CalendarCheck,
+  CalendarX,
+  CheckCircle2,
+  Building2,
+  MapPin
+} from 'lucide-react'
 
 interface ServiceModalProps {
   open: boolean
@@ -95,9 +104,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
       let branchIds: string[] = []
 
       if (Array.isArray(availableAtRels)) {
-        branchIds = availableAtRels
-          .filter(rel => rel?.to_entity?.id)
-          .map(rel => rel.to_entity.id)
+        branchIds = availableAtRels.filter(rel => rel?.to_entity?.id).map(rel => rel.to_entity.id)
       } else if (availableAtRels?.to_entity?.id) {
         branchIds = [availableAtRels.to_entity.id]
       }

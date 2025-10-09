@@ -120,8 +120,8 @@ export function StylistAssignmentModal({
         ),
         description: (
           <div style={{ color: COLORS.bronze }}>
-            <strong style={{ color: COLORS.champagne }}>{selectedStylist.entity_name}</strong> has been
-            assigned to <strong style={{ color: COLORS.champagne }}>{serviceName}</strong>
+            <strong style={{ color: COLORS.champagne }}>{selectedStylist.entity_name}</strong> has
+            been assigned to <strong style={{ color: COLORS.champagne }}>{serviceName}</strong>
           </div>
         ),
         className: 'border-0 shadow-2xl',
@@ -320,8 +320,8 @@ export function StylistAssignmentModal({
                     {searchQuery
                       ? 'Try adjusting your search terms'
                       : branchId && branchId !== 'all'
-                      ? 'No stylists available at this branch'
-                      : 'No stylists available'}
+                        ? 'No stylists available at this branch'
+                        : 'No stylists available'}
                   </p>
                 </div>
               ) : (
@@ -338,9 +338,7 @@ export function StylistAssignmentModal({
                         isConfirming && !isSelected && 'opacity-50 pointer-events-none'
                       )}
                       style={{
-                        backgroundColor: isSelected
-                          ? `${COLORS.gold}15`
-                          : COLORS.charcoalLight,
+                        backgroundColor: isSelected ? `${COLORS.gold}15` : COLORS.charcoalLight,
                         borderColor: isSelected ? COLORS.gold : `${COLORS.gold}20`,
                         boxShadow: isSelected
                           ? `0 8px 24px ${COLORS.gold}40, 0 0 0 1px ${COLORS.gold}`
@@ -357,9 +355,7 @@ export function StylistAssignmentModal({
                               className="w-14 h-14 ring-2 transition-all duration-300"
                               style={{
                                 ringColor: isSelected ? COLORS.gold : `${COLORS.gold}30`,
-                                boxShadow: isSelected
-                                  ? `0 4px 12px ${COLORS.gold}60`
-                                  : 'none'
+                                boxShadow: isSelected ? `0 4px 12px ${COLORS.gold}60` : 'none'
                               }}
                             >
                               <AvatarImage src={stylist.avatar_url || undefined} />
@@ -411,9 +407,7 @@ export function StylistAssignmentModal({
                               <Badge
                                 className="text-xs font-semibold shadow-sm border"
                                 style={{
-                                  backgroundColor: isSelected
-                                    ? COLORS.gold
-                                    : `${COLORS.gold}20`,
+                                  backgroundColor: isSelected ? COLORS.gold : `${COLORS.gold}20`,
                                   borderColor: COLORS.gold,
                                   color: isSelected ? COLORS.black : COLORS.gold
                                 }}
@@ -474,9 +468,7 @@ export function StylistAssignmentModal({
                                   }}
                                 >
                                   <Award className="w-3.5 h-3.5" />
-                                  <span>
-                                    Since {new Date(stylist.hire_date).getFullYear()}
-                                  </span>
+                                  <span>Since {new Date(stylist.hire_date).getFullYear()}</span>
                                 </div>
                               )}
                             </div>
@@ -513,20 +505,18 @@ export function StylistAssignmentModal({
           <Button
             onClick={handleAssign}
             disabled={!selectedStylistId || isConfirming}
-            className={cn(
-              'flex-1 h-11 font-semibold shadow-lg transition-all duration-300'
-            )}
+            className={cn('flex-1 h-11 font-semibold shadow-lg transition-all duration-300')}
             style={{
-              background: selectedStylistId && !isConfirming
-                ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                : `${COLORS.charcoalLight}`,
+              background:
+                selectedStylistId && !isConfirming
+                  ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                  : `${COLORS.charcoalLight}`,
               color: selectedStylistId && !isConfirming ? COLORS.black : COLORS.lightText,
               borderWidth: '1px',
               borderStyle: 'solid',
               borderColor: selectedStylistId && !isConfirming ? COLORS.gold : `${COLORS.gold}40`,
-              boxShadow: selectedStylistId && !isConfirming
-                ? `0 4px 16px ${COLORS.gold}50`
-                : 'none',
+              boxShadow:
+                selectedStylistId && !isConfirming ? `0 4px 16px ${COLORS.gold}50` : 'none',
               opacity: !selectedStylistId || isConfirming ? 0.6 : 1
             }}
           >
@@ -546,8 +536,13 @@ export function StylistAssignmentModal({
 
         <style jsx>{`
           @keyframes gradient {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.3; }
+            0%,
+            100% {
+              opacity: 0.2;
+            }
+            50% {
+              opacity: 0.3;
+            }
           }
           @keyframes slideDown {
             from {
@@ -560,8 +555,12 @@ export function StylistAssignmentModal({
             }
           }
           @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
           }
           @keyframes scaleIn {
             from {
@@ -574,11 +573,16 @@ export function StylistAssignmentModal({
             }
           }
           @keyframes successPulse {
-            0%, 100% {
-              box-shadow: 0 0 0 0 ${COLORS.gold}60, 0 8px 32px ${COLORS.gold}60;
+            0%,
+            100% {
+              box-shadow:
+                0 0 0 0 ${COLORS.gold}60,
+                0 8px 32px ${COLORS.gold}60;
             }
             50% {
-              box-shadow: 0 0 0 20px ${COLORS.gold}00, 0 8px 32px ${COLORS.gold}80;
+              box-shadow:
+                0 0 0 20px ${COLORS.gold}00,
+                0 8px 32px ${COLORS.gold}80;
             }
           }
           .animate-gradient {

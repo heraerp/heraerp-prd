@@ -1,0 +1,143 @@
+```mermaid
+graph TB
+    subgraph "HERA Finance DNA v2 - Complete System Architecture"
+        subgraph "Client Layer"
+            WEB[Web Application<br/>React + TypeScript]
+            MOBILE[Mobile App<br/>React Native]
+            API_CLIENT[API Clients<br/>External Systems]
+        end
+
+        subgraph "API Gateway & Security"
+            GATEWAY[API Gateway<br/>Rate Limiting + Auth]
+            AUTH[Authentication<br/>JWT + MFA]
+            RBAC[Role-Based Access<br/>Dynamic Permissions]
+        end
+
+        subgraph "Application Layer"
+            FISCAL_API[Fiscal Period API<br/>Enhanced Validation]
+            REPORT_API[Financial Reports API<br/>High Performance]
+            MIGRATION_API[Zero Tables Migration<br/>CTE + RPC Pattern]
+            SECURITY_API[Security Validation<br/>Phase 8 Audit]
+        end
+
+        subgraph "Data Processing Layer"
+            FISCAL_ENGINE[Fiscal Period Engine<br/><10ms Validation]
+            REPORT_ENGINE[Reporting Engine<br/>Sub-second Generation]
+            MIGRATION_ENGINE[Migration Engine<br/>Zero New Tables]
+            CACHE_LAYER[Intelligent Cache<br/>85%+ Hit Rate]
+        end
+
+        subgraph "Database Layer - Sacred Six Tables"
+            PG_PRIMARY[(PostgreSQL Primary<br/>Enhanced RPC Functions)]
+            PG_READ[(PostgreSQL Read Replica<br/>Reporting Workloads)]
+            
+            subgraph "Sacred Six Tables"
+                CORE_ORG[core_organizations<br/>Multi-tenant Isolation]
+                CORE_ENT[core_entities<br/>Business Objects]
+                CORE_DYN[core_dynamic_data<br/>Custom Fields]
+                CORE_REL[core_relationships<br/>Entity Connections]
+                UNIV_TXN[universal_transactions<br/>Financial Transactions]
+                UNIV_LINES[universal_transaction_lines<br/>Transaction Details]
+            end
+
+            subgraph "Materialized Views"
+                MV_BALANCE[mv_account_balances_v2<br/>Real-time Balances]
+                MV_SUMMARY[mv_monthly_summaries_v2<br/>Period Summaries]
+                MV_HIERARCHY[mv_account_hierarchy_v2<br/>COA Structure]
+            end
+        end
+
+        subgraph "Enhanced RPC Functions"
+            RPC_FISCAL[hera_validate_fiscal_period_v2_enhanced]
+            RPC_TRIAL[hera_generate_trial_balance_v2]
+            RPC_PL[hera_generate_profit_loss_v2]
+            RPC_BS[hera_generate_balance_sheet_v2]
+            RPC_MIGRATE[hera_migration_execute_batch_v2]
+            RPC_SECURITY[hera_run_comprehensive_security_audit_v2]
+        end
+
+        subgraph "Security Layer"
+            RLS[Row Level Security<br/>Organization Isolation]
+            AUDIT[Audit Trail<br/>Complete Activity Log]
+            MONITOR[Security Monitoring<br/>Real-time Threat Detection]
+        end
+
+        subgraph "External Systems"
+            BANKS[Banking APIs<br/>Real-time Reconciliation]
+            ERP[External ERPs<br/>Data Synchronization]
+            REPORTING[BI Tools<br/>Advanced Analytics]
+        end
+
+        %% Client Connections
+        WEB --> GATEWAY
+        MOBILE --> GATEWAY
+        API_CLIENT --> GATEWAY
+
+        %% Security Flow
+        GATEWAY --> AUTH
+        AUTH --> RBAC
+        RBAC --> FISCAL_API
+        RBAC --> REPORT_API
+        RBAC --> MIGRATION_API
+        RBAC --> SECURITY_API
+
+        %% API to Engine Connections
+        FISCAL_API --> FISCAL_ENGINE
+        REPORT_API --> REPORT_ENGINE
+        MIGRATION_API --> MIGRATION_ENGINE
+        SECURITY_API --> CACHE_LAYER
+
+        %% Engine to Database Connections
+        FISCAL_ENGINE --> PG_PRIMARY
+        REPORT_ENGINE --> PG_READ
+        MIGRATION_ENGINE --> PG_PRIMARY
+        CACHE_LAYER --> PG_PRIMARY
+
+        %% RPC Function Connections
+        PG_PRIMARY --> RPC_FISCAL
+        PG_PRIMARY --> RPC_TRIAL
+        PG_PRIMARY --> RPC_PL
+        PG_PRIMARY --> RPC_BS
+        PG_PRIMARY --> RPC_MIGRATE
+        PG_PRIMARY --> RPC_SECURITY
+
+        %% Database Internal Connections
+        RPC_FISCAL -.-> CORE_ORG
+        RPC_TRIAL -.-> UNIV_TXN
+        RPC_PL -.-> UNIV_LINES
+        RPC_BS -.-> CORE_ENT
+        RPC_MIGRATE -.-> CORE_DYN
+        RPC_SECURITY -.-> CORE_REL
+
+        %% Materialized Views
+        UNIV_TXN -.-> MV_BALANCE
+        UNIV_LINES -.-> MV_SUMMARY
+        CORE_ENT -.-> MV_HIERARCHY
+
+        %% Security Connections
+        PG_PRIMARY --> RLS
+        RLS --> AUDIT
+        AUDIT --> MONITOR
+
+        %% External Integrations
+        REPORT_API --> BANKS
+        MIGRATION_API --> ERP
+        REPORT_ENGINE --> REPORTING
+
+    end
+
+    %% Styling
+    classDef clientLayer fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef securityLayer fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef apiLayer fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef dataLayer fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef dbLayer fill:#fff8e1,stroke:#f9a825,stroke-width:2px
+    classDef externalLayer fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+    class WEB,MOBILE,API_CLIENT clientLayer
+    class GATEWAY,AUTH,RBAC,RLS,AUDIT,MONITOR securityLayer
+    class FISCAL_API,REPORT_API,MIGRATION_API,SECURITY_API apiLayer
+    class FISCAL_ENGINE,REPORT_ENGINE,MIGRATION_ENGINE,CACHE_LAYER dataLayer
+    class PG_PRIMARY,PG_READ,CORE_ORG,CORE_ENT,CORE_DYN,CORE_REL,UNIV_TXN,UNIV_LINES dbLayer
+    class BANKS,ERP,REPORTING externalLayer
+```

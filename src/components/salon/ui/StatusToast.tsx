@@ -164,10 +164,7 @@ export function useStatusToast() {
     setToasts(prev => {
       // Deduplicate: Check if a toast with same type, title, and message already exists
       const duplicate = prev.find(
-        t =>
-          t.type === toast.type &&
-          t.title === toast.title &&
-          t.message === toast.message
+        t => t.type === toast.type && t.title === toast.title && t.message === toast.message
       )
 
       // If duplicate found within last second, don't add new toast

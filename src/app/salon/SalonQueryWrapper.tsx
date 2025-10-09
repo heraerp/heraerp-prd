@@ -21,9 +21,9 @@ const getOrCreateSalonQueryClient = () => {
           // Don't refetch on mount if we have cached data
           refetchOnMount: false,
           // Retry failed requests
-          retry: 2,
-        },
-      },
+          retry: 2
+        }
+      }
     })
   }
   return globalSalonQueryClient

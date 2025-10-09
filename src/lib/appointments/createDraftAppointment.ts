@@ -64,9 +64,10 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
   // Appointments are transactions, not entities!
   const transactionResult = await createTransaction(organizationId, {
     p_transaction_type: 'APPOINTMENT', // UPPERCASE
-    p_smart_code: status === 'draft'
-      ? 'HERA.SALON.APPOINTMENT.TXN.DRAFT.V1'
-      : 'HERA.SALON.APPOINTMENT.TXN.BOOKED.V1',
+    p_smart_code:
+      status === 'draft'
+        ? 'HERA.SALON.APPOINTMENT.TXN.DRAFT.V1'
+        : 'HERA.SALON.APPOINTMENT.TXN.BOOKED.V1',
     p_from_entity_id: customerEntityId, // Customer
     p_to_entity_id: preferredStylistEntityId || null, // Stylist
     p_transaction_date: startDate.toISOString(),
@@ -80,16 +81,17 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
       notes: notes || null
     },
     // Pass service lines to transaction
-    p_lines: serviceLines.length > 0
-      ? serviceLines.map(line => ({
-          line_type: 'service',
-          entity_id: line.entityId,
-          quantity: line.quantity,
-          unit_amount: line.unitAmount,
-          line_amount: line.lineAmount,
-          description: line.description || null
-        }))
-      : undefined // Will use placeholder if undefined
+    p_lines:
+      serviceLines.length > 0
+        ? serviceLines.map(line => ({
+            line_type: 'service',
+            entity_id: line.entityId,
+            quantity: line.quantity,
+            unit_amount: line.unitAmount,
+            line_amount: line.lineAmount,
+            description: line.description || null
+          }))
+        : undefined // Will use placeholder if undefined
   })
 
   if (!transactionResult || !transactionResult.data) {
@@ -97,9 +99,10 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
   }
 
   // Extract the ID from the transaction result
-  const appointmentId = typeof transactionResult.data === 'string'
-    ? transactionResult.data
-    : transactionResult.data.id || transactionResult.data.transaction_id
+  const appointmentId =
+    typeof transactionResult.data === 'string'
+      ? transactionResult.data
+      : transactionResult.data.id || transactionResult.data.transaction_id
 
   console.log('[createDraftAppointment] Transaction created:', {
     appointmentId,

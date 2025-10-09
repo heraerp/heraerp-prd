@@ -31,7 +31,8 @@ export async function POST(request: NextRequest) {
     // Build query with JOIN to get related entity details
     let query = supabase
       .from('core_relationships')
-      .select(`
+      .select(
+        `
         *,
         to_entity:core_entities!core_relationships_to_entity_id_fkey(
           id,
@@ -39,7 +40,8 @@ export async function POST(request: NextRequest) {
           entity_code,
           entity_type
         )
-      `)
+      `
+      )
       .eq('organization_id', authResult.organizationId)
 
     // Apply filters

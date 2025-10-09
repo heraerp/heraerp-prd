@@ -15,7 +15,11 @@
 import { useMemo } from 'react'
 import { useUniversalEntity } from './useUniversalEntity'
 import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
-import { getProductInventory, recordStockMovement, getStockAlerts } from '@/lib/services/inventory-service'
+import {
+  getProductInventory,
+  recordStockMovement,
+  getStockAlerts
+} from '@/lib/services/inventory-service'
 import type { ProductInventory, StockMovementInput, StockAlert } from '@/types/inventory'
 
 export interface InventoryItem {
@@ -259,11 +263,14 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
       smart_code: 'HERA.SALON.PROD.ENT.V1',
       status: data.status === 'inactive' ? 'archived' : 'active',
       dynamic_fields,
-      metadata: data.branch_ids && data.branch_ids.length > 0 ? {
-        relationships: {
-          STOCK_AT: data.branch_ids
-        }
-      } : undefined
+      metadata:
+        data.branch_ids && data.branch_ids.length > 0
+          ? {
+              relationships: {
+                STOCK_AT: data.branch_ids
+              }
+            }
+          : undefined
     } as any)
 
     await refetch()
@@ -290,9 +297,12 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     if (data.supplier !== undefined) dynamic_patch.supplier = data.supplier
 
     // Build relationships patch
-    const relationships_patch = data.branch_ids !== undefined ? {
-      STOCK_AT: data.branch_ids
-    } : undefined
+    const relationships_patch =
+      data.branch_ids !== undefined
+        ? {
+            STOCK_AT: data.branch_ids
+          }
+        : undefined
 
     const payload: any = {
       entity_id: id,
@@ -350,7 +360,8 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     // Filter by branch
     if (options?.branchId && options.branchId !== 'all') {
       filtered = filtered.filter(item => {
-        const stockAtRelationships = (item as any).relationships?.stock_at || (item as any).relationships?.STOCK_AT
+        const stockAtRelationships =
+          (item as any).relationships?.stock_at || (item as any).relationships?.STOCK_AT
         if (!stockAtRelationships) return false
 
         if (Array.isArray(stockAtRelationships)) {
@@ -364,11 +375,12 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     // Search filter
     if (options?.searchQuery) {
       const query = options.searchQuery.toLowerCase()
-      filtered = filtered.filter(item =>
-        item.entity_name?.toLowerCase().includes(query) ||
-        item.entity_code?.toLowerCase().includes(query) ||
-        item.sku?.toLowerCase().includes(query) ||
-        item.category?.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        item =>
+          item.entity_name?.toLowerCase().includes(query) ||
+          item.entity_code?.toLowerCase().includes(query) ||
+          item.sku?.toLowerCase().includes(query) ||
+          item.category?.toLowerCase().includes(query)
       )
     }
 
@@ -382,15 +394,19 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
       ...item,
       stock_value: (item.stock_quantity || 0) * (item.price_cost || 0),
       stock_status:
-        (item.stock_quantity || 0) === 0 ? 'out_of_stock' :
-        (item.stock_quantity || 0) <= (item.reorder_level || 10) ? 'low_stock' :
-        'in_stock'
+        (item.stock_quantity || 0) === 0
+          ? 'out_of_stock'
+          : (item.stock_quantity || 0) <= (item.reorder_level || 10)
+            ? 'low_stock'
+            : 'in_stock'
     }))
   }, [items, options?.branchId, options?.searchQuery, options?.categoryFilter])
 
   // Get low stock items count
   const lowStockCount = useMemo(() => {
-    return filteredItems.filter(item => item.stock_status === 'low_stock' || item.stock_status === 'out_of_stock').length
+    return filteredItems.filter(
+      item => item.stock_status === 'low_stock' || item.stock_status === 'out_of_stock'
+    ).length
   }, [filteredItems])
 
   // Get total inventory value
@@ -436,17 +452,10 @@ export function useHeraStockMovements(options?: UseHeraInventoryOptions) {
   })
 
   // Create stock movement
-  const createMovement = async (
-    userId: string,
-    data: StockMovementInput
-  ) => {
+  const createMovement = async (userId: string, data: StockMovementInput) => {
     if (!options?.organizationId) throw new Error('Organization ID required')
 
-    const movement = await recordStockMovement(
-      options.organizationId,
-      userId,
-      data
-    )
+    const movement = await recordStockMovement(options.organizationId, userId, data)
 
     await refetch()
     return movement

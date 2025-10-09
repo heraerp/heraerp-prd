@@ -1,0 +1,40 @@
+sequenceDiagram
+    participant Client
+    participant API as API Gateway
+    participant MW as Middleware
+    participant JWT as JWT Service
+    participant RLS as RLS Engine
+    participant DB as PostgreSQL
+    participant AUDIT as Audit Logger
+    
+    Note over Client,AUDIT: Finance DNA v2 RLS Enforcement Flow
+    
+    Client->>API: Request with JWT
+    Note right of Client: Headers:<br/>Authorization: Bearer token<br/>x-hera-api-version: v2
+    
+    API->>MW: Validate Request
+    MW->>JWT: Extract User Context
+    JWT-->>MW: User ID + Organization ID
+    
+    alt Invalid JWT or Organization
+        MW-->>API: 401 Unauthorized
+        API-->>Client: Access Denied
+    else Valid JWT
+        MW->>RLS: Set Organization Context
+        Note right of RLS: SET app.current_org = org_id
+        
+        MW->>DB: Execute Query with RLS
+        Note right of DB: RLS Policy Applied:<br/>WHERE organization_id = <br/>current_setting('app.current_org')::uuid
+        
+        DB-->>MW: Filtered Results
+        Note right of DB: Only organization's data returned
+        
+        MW->>AUDIT: Log Access Event
+        AUDIT->>DB: Store Audit Record
+        Note right of AUDIT: Smart Code:<br/>HERA.ACCOUNTING.SECURITY<br/>.RLS.ENFORCEMENT.v2
+        
+        MW-->>API: Success Response
+        API-->>Client: Filtered Data
+    end
+    
+    Note over Client,AUDIT: Perfect Multi-Tenant Isolation Achieved

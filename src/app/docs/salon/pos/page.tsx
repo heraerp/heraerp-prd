@@ -5,8 +5,8 @@ export default async function POSPage() {
     <SalonDocPage
       filename="pos.md"
       title="Point of Sale"
-      prevPage={{ href: "/docs/salon/services", label: "Service Catalog" }}
-      nextPage={{ href: "/docs/salon/multi-branch", label: "Multi-Branch Operations" }}
+      prevPage={{ href: '/docs/salon/services', label: 'Service Catalog' }}
+      nextPage={{ href: '/docs/salon/multi-branch', label: 'Multi-Branch Operations' }}
     />
   )
 }

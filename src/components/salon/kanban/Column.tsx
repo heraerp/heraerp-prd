@@ -44,7 +44,9 @@ export function Column({ id, title, cards, onCardAction, isDraft = false }: Colu
             : `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`,
           color: isDraft ? LUXE_COLORS.black : LUXE_COLORS.champagne,
           borderBottom: `2px solid ${isDraft ? LUXE_COLORS.gold : LUXE_COLORS.bronze}`,
-          boxShadow: isDraft ? `0 4px 12px ${LUXE_COLORS.gold}50` : `0 2px 8px ${LUXE_COLORS.black}60`
+          boxShadow: isDraft
+            ? `0 4px 12px ${LUXE_COLORS.gold}50`
+            : `0 2px 8px ${LUXE_COLORS.black}60`
         }}
       >
         <span className="tracking-wide text-lg">{title}</span>

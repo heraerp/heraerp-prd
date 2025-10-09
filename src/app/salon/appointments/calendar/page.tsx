@@ -36,7 +36,10 @@ export default function SalonAppointmentsCalendarPage() {
             boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
           }}
         >
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <Loader2
+            className="w-8 h-8 animate-spin mx-auto mb-4"
+            style={{ color: LUXE_COLORS.gold }}
+          />
           <h2 className="text-xl font-medium mb-2" style={{ color: LUXE_COLORS.champagne }}>
             Loading Calendar...
           </h2>
@@ -111,10 +114,7 @@ export default function SalonAppointmentsCalendarPage() {
             boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
           }}
         >
-          <SalonResourceCalendar
-            organizations={salonOrganizations}
-            canViewAllBranches={false}
-          />
+          <SalonResourceCalendar organizations={salonOrganizations} canViewAllBranches={false} />
         </div>
       </div>
     </div>

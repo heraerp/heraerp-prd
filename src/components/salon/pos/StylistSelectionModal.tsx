@@ -115,8 +115,11 @@ export function StylistSelectionModal({
         ),
         description: (
           <div style={{ color: COLORS.bronze }}>
-            <strong style={{ color: COLORS.champagne }}>{selectedStylist.entity_name}</strong> has been
-            assigned to <strong style={{ color: COLORS.champagne }}>{service?.entity_name || service?.name}</strong>
+            <strong style={{ color: COLORS.champagne }}>{selectedStylist.entity_name}</strong> has
+            been assigned to{' '}
+            <strong style={{ color: COLORS.champagne }}>
+              {service?.entity_name || service?.name}
+            </strong>
           </div>
         ),
         className: 'border-0 shadow-2xl',
@@ -243,11 +246,9 @@ export function StylistSelectionModal({
               <Sparkles className="w-5 h-5" style={{ color: COLORS.black }} />
             </div>
             <div>
-              <h2
-                className="text-xl font-semibold"
-                style={{ color: COLORS.champagne }}
-              >
-                Select Your Stylist <span className="text-xs opacity-50 font-normal">(Updated)</span>
+              <h2 className="text-xl font-semibold" style={{ color: COLORS.champagne }}>
+                Select Your Stylist{' '}
+                <span className="text-xs opacity-50 font-normal">(Updated)</span>
               </h2>
               <p className="text-sm font-normal mt-0.5" style={{ color: COLORS.bronze }}>
                 for{' '}
@@ -258,7 +259,8 @@ export function StylistSelectionModal({
             </div>
           </DialogTitle>
           <p id="stylist-selection-description" className="sr-only">
-            Select a stylist to assign to your service. Browse available stylists and choose the one you prefer.
+            Select a stylist to assign to your service. Browse available stylists and choose the one
+            you prefer.
           </p>
         </DialogHeader>
 
@@ -322,8 +324,8 @@ export function StylistSelectionModal({
                     {searchQuery
                       ? 'Try adjusting your search terms'
                       : branchId && branchId !== 'all'
-                      ? 'No stylists available at this branch'
-                      : 'No stylists available'}
+                        ? 'No stylists available at this branch'
+                        : 'No stylists available'}
                   </p>
                 </div>
               ) : (
@@ -332,158 +334,149 @@ export function StylistSelectionModal({
                   const skills = getSkills(stylist)
                   const displayRate = getDisplayRate(stylist)
 
-                return (
-                  <Card
-                    key={stylist.id}
-                    className={cn(
-                      'cursor-pointer transition-all duration-300 hover:shadow-xl border-2 animate-scaleIn',
-                      isConfirming && !isSelected && 'opacity-50 pointer-events-none'
-                    )}
-                    style={{
-                      backgroundColor: isSelected
-                        ? `${COLORS.gold}15`
-                        : COLORS.charcoalLight,
-                      borderColor: isSelected ? COLORS.gold : `${COLORS.gold}20`,
-                      boxShadow: isSelected
-                        ? `0 8px 24px ${COLORS.gold}40, 0 0 0 1px ${COLORS.gold}`
-                        : `0 2px 8px ${COLORS.black}40`,
-                      animationDelay: `${index * 50}ms`
-                    }}
-                    onClick={() => !isConfirming && setSelectedStaffId(stylist.id)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-4">
-                        {/* Avatar */}
-                        <div className="relative flex-shrink-0">
-                          <Avatar
-                            className="w-14 h-14 ring-2 transition-all duration-300"
-                            style={{
-                              ringColor: isSelected ? COLORS.gold : `${COLORS.gold}30`,
-                              boxShadow: isSelected
-                                ? `0 4px 12px ${COLORS.gold}60`
-                                : 'none'
-                            }}
-                          >
-                            <AvatarImage src={stylist.avatarUrl || undefined} />
-                            <AvatarFallback
-                              className="text-base font-semibold"
+                  return (
+                    <Card
+                      key={stylist.id}
+                      className={cn(
+                        'cursor-pointer transition-all duration-300 hover:shadow-xl border-2 animate-scaleIn',
+                        isConfirming && !isSelected && 'opacity-50 pointer-events-none'
+                      )}
+                      style={{
+                        backgroundColor: isSelected ? `${COLORS.gold}15` : COLORS.charcoalLight,
+                        borderColor: isSelected ? COLORS.gold : `${COLORS.gold}20`,
+                        boxShadow: isSelected
+                          ? `0 8px 24px ${COLORS.gold}40, 0 0 0 1px ${COLORS.gold}`
+                          : `0 2px 8px ${COLORS.black}40`,
+                        animationDelay: `${index * 50}ms`
+                      }}
+                      onClick={() => !isConfirming && setSelectedStaffId(stylist.id)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-4">
+                          {/* Avatar */}
+                          <div className="relative flex-shrink-0">
+                            <Avatar
+                              className="w-14 h-14 ring-2 transition-all duration-300"
                               style={{
-                                background: isSelected
-                                  ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                                  : `linear-gradient(135deg, ${COLORS.bronze} 0%, ${COLORS.bronze}80 100%)`,
-                                color: isSelected ? COLORS.black : COLORS.champagne
+                                ringColor: isSelected ? COLORS.gold : `${COLORS.gold}30`,
+                                boxShadow: isSelected ? `0 4px 12px ${COLORS.gold}60` : 'none'
                               }}
                             >
-                              {getInitials(stylist.entity_name || 'Unknown')}
-                            </AvatarFallback>
-                          </Avatar>
-                          {isSelected && (
-                            <div
-                              className="absolute -top-1 -right-1 rounded-full p-1 shadow-lg animate-pulse"
-                              style={{
-                                background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                              }}
-                            >
-                              <Check className="w-4 h-4" style={{ color: COLORS.black }} />
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Stylist Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2 mb-2">
-                            <div>
-                              <h3
-                                className="font-semibold text-base mb-0.5"
+                              <AvatarImage src={stylist.avatarUrl || undefined} />
+                              <AvatarFallback
+                                className="text-base font-semibold"
                                 style={{
-                                  color: isSelected ? COLORS.champagne : COLORS.lightText
+                                  background: isSelected
+                                    ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                                    : `linear-gradient(135deg, ${COLORS.bronze} 0%, ${COLORS.bronze}80 100%)`,
+                                  color: isSelected ? COLORS.black : COLORS.champagne
                                 }}
                               >
-                                {stylist.entity_name}
-                              </h3>
-                              <p
-                                className="text-xs font-medium"
-                                style={{ color: COLORS.bronze }}
+                                {getInitials(stylist.entity_name || 'Unknown')}
+                              </AvatarFallback>
+                            </Avatar>
+                            {isSelected && (
+                              <div
+                                className="absolute -top-1 -right-1 rounded-full p-1 shadow-lg animate-pulse"
+                                style={{
+                                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                                }}
                               >
-                                {stylist.role_title || stylist.entity_code || 'Stylist'}
-                              </p>
-                            </div>
-                            <Badge
-                              className="text-xs font-semibold shadow-sm border"
-                              style={{
-                                backgroundColor: isSelected
-                                  ? COLORS.gold
-                                  : `${COLORS.gold}20`,
-                                borderColor: COLORS.gold,
-                                color: isSelected ? COLORS.black : COLORS.gold
-                              }}
-                            >
-                              Available
-                            </Badge>
+                                <Check className="w-4 h-4" style={{ color: COLORS.black }} />
+                              </div>
+                            )}
                           </div>
 
-                          {/* Skills */}
-                          {skills.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5 mb-3">
-                              {skills.slice(0, 3).map((skill: string, index: number) => (
-                                <Badge
-                                  key={index}
-                                  variant="outline"
-                                  className="text-xs border"
+                          {/* Stylist Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                              <div>
+                                <h3
+                                  className="font-semibold text-base mb-0.5"
                                   style={{
-                                    backgroundColor: `${COLORS.charcoalDark}`,
-                                    borderColor: `${COLORS.bronze}40`,
-                                    color: COLORS.bronze
+                                    color: isSelected ? COLORS.champagne : COLORS.lightText
                                   }}
                                 >
-                                  {skill}
-                                </Badge>
-                              ))}
-                              {skills.length > 3 && (
-                                <Badge
-                                  variant="outline"
-                                  className="text-xs border"
-                                  style={{
-                                    backgroundColor: `${COLORS.charcoalDark}`,
-                                    borderColor: `${COLORS.bronze}40`,
-                                    color: COLORS.bronze
-                                  }}
-                                >
-                                  +{skills.length - 3} more
-                                </Badge>
-                              )}
+                                  {stylist.entity_name}
+                                </h3>
+                                <p className="text-xs font-medium" style={{ color: COLORS.bronze }}>
+                                  {stylist.role_title || stylist.entity_code || 'Stylist'}
+                                </p>
+                              </div>
+                              <Badge
+                                className="text-xs font-semibold shadow-sm border"
+                                style={{
+                                  backgroundColor: isSelected ? COLORS.gold : `${COLORS.gold}20`,
+                                  borderColor: COLORS.gold,
+                                  color: isSelected ? COLORS.black : COLORS.gold
+                                }}
+                              >
+                                Available
+                              </Badge>
                             </div>
-                          )}
 
-                          {/* Stats */}
-                          <div className="flex items-center gap-4 text-xs">
-                            <div
-                              className="flex items-center gap-1.5 font-medium"
-                              style={{
-                                color: isSelected ? COLORS.gold : COLORS.bronze
-                              }}
-                            >
-                              <Star className="w-3.5 h-3.5 fill-current" />
-                              <span>{displayRate}% commission</span>
-                            </div>
-                            {stylist.hire_date && (
+                            {/* Skills */}
+                            {skills.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 mb-3">
+                                {skills.slice(0, 3).map((skill: string, index: number) => (
+                                  <Badge
+                                    key={index}
+                                    variant="outline"
+                                    className="text-xs border"
+                                    style={{
+                                      backgroundColor: `${COLORS.charcoalDark}`,
+                                      borderColor: `${COLORS.bronze}40`,
+                                      color: COLORS.bronze
+                                    }}
+                                  >
+                                    {skill}
+                                  </Badge>
+                                ))}
+                                {skills.length > 3 && (
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs border"
+                                    style={{
+                                      backgroundColor: `${COLORS.charcoalDark}`,
+                                      borderColor: `${COLORS.bronze}40`,
+                                      color: COLORS.bronze
+                                    }}
+                                  >
+                                    +{skills.length - 3} more
+                                  </Badge>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Stats */}
+                            <div className="flex items-center gap-4 text-xs">
                               <div
                                 className="flex items-center gap-1.5 font-medium"
                                 style={{
                                   color: isSelected ? COLORS.gold : COLORS.bronze
                                 }}
                               >
-                                <Award className="w-3.5 h-3.5" />
-                                <span>Since {new Date(stylist.hire_date).getFullYear()}</span>
+                                <Star className="w-3.5 h-3.5 fill-current" />
+                                <span>{displayRate}% commission</span>
                               </div>
-                            )}
+                              {stylist.hire_date && (
+                                <div
+                                  className="flex items-center gap-1.5 font-medium"
+                                  style={{
+                                    color: isSelected ? COLORS.gold : COLORS.bronze
+                                  }}
+                                >
+                                  <Award className="w-3.5 h-3.5" />
+                                  <span>Since {new Date(stylist.hire_date).getFullYear()}</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })
+                      </CardContent>
+                    </Card>
+                  )
+                })
               )}
             </div>
           )}
@@ -511,20 +504,17 @@ export function StylistSelectionModal({
           <Button
             onClick={handleConfirm}
             disabled={!selectedStaffId || isConfirming}
-            className={cn(
-              'flex-1 h-11 font-semibold shadow-lg transition-all duration-300'
-            )}
+            className={cn('flex-1 h-11 font-semibold shadow-lg transition-all duration-300')}
             style={{
-              background: selectedStaffId && !isConfirming
-                ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                : `${COLORS.charcoalLight}`,
+              background:
+                selectedStaffId && !isConfirming
+                  ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                  : `${COLORS.charcoalLight}`,
               color: selectedStaffId && !isConfirming ? COLORS.black : COLORS.lightText,
               borderWidth: '1px',
               borderStyle: 'solid',
               borderColor: selectedStaffId && !isConfirming ? COLORS.gold : `${COLORS.gold}40`,
-              boxShadow: selectedStaffId && !isConfirming
-                ? `0 4px 16px ${COLORS.gold}50`
-                : 'none',
+              boxShadow: selectedStaffId && !isConfirming ? `0 4px 16px ${COLORS.gold}50` : 'none',
               opacity: !selectedStaffId || isConfirming ? 0.6 : 1
             }}
           >
@@ -544,8 +534,13 @@ export function StylistSelectionModal({
 
         <style jsx>{`
           @keyframes gradient {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.3; }
+            0%,
+            100% {
+              opacity: 0.2;
+            }
+            50% {
+              opacity: 0.3;
+            }
           }
           @keyframes slideDown {
             from {
@@ -558,8 +553,12 @@ export function StylistSelectionModal({
             }
           }
           @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
           }
           @keyframes scaleIn {
             from {
@@ -572,11 +571,16 @@ export function StylistSelectionModal({
             }
           }
           @keyframes successPulse {
-            0%, 100% {
-              box-shadow: 0 0 0 0 ${COLORS.gold}60, 0 8px 32px ${COLORS.gold}60;
+            0%,
+            100% {
+              box-shadow:
+                0 0 0 0 ${COLORS.gold}60,
+                0 8px 32px ${COLORS.gold}60;
             }
             50% {
-              box-shadow: 0 0 0 20px ${COLORS.gold}00, 0 8px 32px ${COLORS.gold}80;
+              box-shadow:
+                0 0 0 20px ${COLORS.gold}00,
+                0 8px 32px ${COLORS.gold}80;
             }
           }
           .animate-gradient {

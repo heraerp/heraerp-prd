@@ -12,16 +12,13 @@ import { createClient } from '@supabase/supabase-js'
  */
 export async function GET(request: NextRequest) {
   const startTime = Date.now()
-  const checks: Record<string, { status: 'ok' | 'error', message?: string, duration?: number }> = {}
+  const checks: Record<string, { status: 'ok' | 'error'; message?: string; duration?: number }> = {}
 
   // 1. Basic application health
   checks.application = { status: 'ok', message: 'Application running' }
 
   // 2. Environment variables check
-  const requiredEnvVars = [
-    'NEXT_PUBLIC_SUPABASE_URL',
-    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-  ]
+  const requiredEnvVars = ['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY']
 
   const missingVars = requiredEnvVars.filter(varName => !process.env[varName])
 
@@ -44,10 +41,7 @@ export async function GET(request: NextRequest) {
       )
 
       // Simple query to check database connection
-      const { error } = await supabase
-        .from('core_organizations')
-        .select('id')
-        .limit(1)
+      const { error } = await supabase.from('core_organizations').select('id').limit(1)
 
       if (error) {
         checks.database = {
@@ -87,7 +81,7 @@ export async function GET(request: NextRequest) {
     railway: {
       service: process.env.RAILWAY_SERVICE_NAME,
       environment: process.env.RAILWAY_ENVIRONMENT_NAME,
-      deployment: process.env.RAILWAY_DEPLOYMENT_ID,
+      deployment: process.env.RAILWAY_DEPLOYMENT_ID
     }
   }
 

@@ -48,13 +48,19 @@ export default function DocsHub() {
       <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 dark:from-gray-950 dark:via-blue-950 dark:to-indigo-950" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-900/20 via-transparent to-transparent dark:from-amber-900/10" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-900/20 via-transparent to-transparent dark:from-cyan-900/10" />
-      
+
       {/* Floating Gradient Orbs */}
       {mounted && (
         <>
           <div className="fixed top-20 left-10 w-72 h-72 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 dark:from-blue-600/10 dark:to-cyan-600/10 rounded-full blur-3xl animate-pulse" />
-          <div className="fixed bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-pink-400/20 dark:from-purple-600/10 dark:to-pink-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-gradient-to-r from-amber-400/10 to-orange-400/10 dark:from-amber-600/5 dark:to-orange-600/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+          <div
+            className="fixed bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-pink-400/20 dark:from-purple-600/10 dark:to-pink-600/10 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: '2s' }}
+          />
+          <div
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-gradient-to-r from-amber-400/10 to-orange-400/10 dark:from-amber-600/5 dark:to-orange-600/5 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: '4s' }}
+          />
         </>
       )}
 
@@ -79,22 +85,25 @@ export default function DocsHub() {
               </div>
               <div className="flex items-center gap-3">
                 <Link href="/docs/civicflow/search">
-                  <Button className="relative group overflow-hidden bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-amber-500/50 transition-all duration-300 text-gray-100" size="sm">
+                  <Button
+                    className="relative group overflow-hidden bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-amber-500/50 transition-all duration-300 text-gray-100"
+                    size="sm"
+                  >
                     <span className="absolute inset-0 bg-gradient-to-r from-amber-400/0 via-amber-400/10 to-amber-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                     <Search className="h-4 w-4 mr-2" />
                     Search Docs
                   </Button>
                 </Link>
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   className="group relative overflow-hidden bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-sm border border-amber-500/30 hover:border-amber-500/50 text-amber-300 transition-all duration-300"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-amber-400/0 via-amber-400/20 to-amber-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                   <Star className="h-4 w-4 mr-1" />
                   Star
                 </Button>
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   className="group relative overflow-hidden bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 hover:border-blue-500/50 text-blue-300 transition-all duration-300"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/20 to-blue-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -113,13 +122,15 @@ export default function DocsHub() {
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 py-12 space-y-16">
           {/* Hero Section */}
-          <div className={cn(
-            "relative overflow-hidden rounded-3xl",
-            "bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/40",
-            "backdrop-blur-xl border border-white/10 dark:border-gray-800/20",
-            "shadow-2xl transition-all duration-500",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'relative overflow-hidden rounded-3xl',
+              'bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/40',
+              'backdrop-blur-xl border border-white/10 dark:border-gray-800/20',
+              'shadow-2xl transition-all duration-500',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5" />
             <div className="relative p-12">
               <div className="text-center space-y-6">
@@ -127,18 +138,26 @@ export default function DocsHub() {
                   Welcome to HERA Documentation
                 </h1>
                 <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                  Explore our comprehensive guides, API references, and best practices for building with the revolutionary Universal Architecture
+                  Explore our comprehensive guides, API references, and best practices for building
+                  with the revolutionary Universal Architecture
                 </p>
                 <div className="flex items-center justify-center gap-4 pt-4">
                   <Link href="/docs/quickstart">
-                    <Button size="lg" className="group relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg transition-all duration-300 hover:shadow-amber-500/25 dark:hover:shadow-amber-400/25">
+                    <Button
+                      size="lg"
+                      className="group relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg transition-all duration-300 hover:shadow-amber-500/25 dark:hover:shadow-amber-400/25"
+                    >
                       <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                       <Rocket className="w-5 h-5 mr-2" />
                       Get Started
                     </Button>
                   </Link>
                   <Link href="/docs/api/rest">
-                    <Button size="lg" variant="outline" className="group border-gray-600 hover:border-amber-500 transition-all duration-300 text-gray-100">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="group border-gray-600 hover:border-amber-500 transition-all duration-300 text-gray-100"
+                    >
                       <Code2 className="w-5 h-5 mr-2 group-hover:text-amber-400 transition-colors" />
                       API Reference
                     </Button>
@@ -149,10 +168,12 @@ export default function DocsHub() {
           </div>
 
           {/* Search Section */}
-          <div className={cn(
-            "transition-all duration-500 delay-100",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-100',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 dark:from-blue-400/10 dark:to-cyan-400/10 backdrop-blur-sm">
                 <Search className="h-5 w-5 text-blue-400" />
@@ -161,13 +182,15 @@ export default function DocsHub() {
                 Search Documentation
               </h2>
             </div>
-            <Card className={cn(
-              "relative overflow-hidden",
-              "bg-gray-900/60 backdrop-blur-xl",
-              "border-white/10 dark:border-gray-800/20",
-              "shadow-xl hover:shadow-2xl transition-all duration-300",
-              "group"
-            )}>
+            <Card
+              className={cn(
+                'relative overflow-hidden',
+                'bg-gray-900/60 backdrop-blur-xl',
+                'border-white/10 dark:border-gray-800/20',
+                'shadow-xl hover:shadow-2xl transition-all duration-300',
+                'group'
+              )}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardContent className="relative p-8">
                 <Link href="/docs/civicflow/search" className="block">
@@ -178,7 +201,8 @@ export default function DocsHub() {
                         <Sparkles className="w-4 h-4 text-amber-400" />
                       </h3>
                       <p className="text-gray-300">
-                        Find what you need with AI-powered search, intelligent suggestions, and advanced filtering
+                        Find what you need with AI-powered search, intelligent suggestions, and
+                        advanced filtering
                       </p>
                     </div>
                     <Button className="group/btn relative overflow-hidden bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg transition-all duration-300 hover:shadow-blue-500/25 dark:hover:shadow-blue-400/25">
@@ -195,10 +219,12 @@ export default function DocsHub() {
           {/* Overview Section - Removed, integrated into hero */}
 
           {/* Quick Start */}
-          <div className={cn(
-            "transition-all duration-500 delay-200",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-200',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:from-purple-400/10 dark:to-pink-400/10 backdrop-blur-sm">
                 <Rocket className="h-5 w-5 text-purple-400" />
@@ -210,11 +236,11 @@ export default function DocsHub() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card
                 className={cn(
-                  "relative overflow-hidden cursor-pointer",
-                  "bg-gray-900/60 backdrop-blur-xl",
-                  "border-white/10 dark:border-gray-800/20",
-                  "shadow-lg hover:shadow-xl transition-all duration-300",
-                  "group hover:scale-[1.02]"
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
                 )}
                 onClick={() => router.push('/docs/quickstart')}
               >
@@ -230,20 +256,18 @@ export default function DocsHub() {
                 </CardHeader>
                 <CardContent className="relative">
                   <div className="p-2 bg-gray-800/50 rounded-lg backdrop-blur-sm">
-                    <code className="text-xs text-purple-300">
-                      npm install && npm run dev
-                    </code>
+                    <code className="text-xs text-purple-300">npm install && npm run dev</code>
                   </div>
                 </CardContent>
               </Card>
 
               <Card
                 className={cn(
-                  "relative overflow-hidden cursor-pointer",
-                  "bg-gray-900/60 backdrop-blur-xl",
-                  "border-white/10 dark:border-gray-800/20",
-                  "shadow-lg hover:shadow-xl transition-all duration-300",
-                  "group hover:scale-[1.02]"
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
                 )}
                 onClick={() => router.push('/docs/architecture')}
               >
@@ -271,11 +295,11 @@ export default function DocsHub() {
 
               <Card
                 className={cn(
-                  "relative overflow-hidden cursor-pointer",
-                  "bg-gray-900/60 backdrop-blur-xl",
-                  "border-white/10 dark:border-gray-800/20",
-                  "shadow-lg hover:shadow-xl transition-all duration-300",
-                  "group hover:scale-[1.02]"
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
                 )}
                 onClick={() => router.push('/docs/api/rest')}
               >
@@ -291,9 +315,7 @@ export default function DocsHub() {
                 </CardHeader>
                 <CardContent className="relative">
                   <div className="p-2 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
-                    <code className="text-xs text-blue-300">
-                      POST /api/v1/universal
-                    </code>
+                    <code className="text-xs text-blue-300">POST /api/v1/universal</code>
                   </div>
                 </CardContent>
               </Card>
@@ -301,10 +323,12 @@ export default function DocsHub() {
           </div>
 
           {/* Core Features */}
-          <div className={cn(
-            "transition-all duration-500 delay-300",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-300',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 dark:from-green-400/10 dark:to-emerald-400/10 backdrop-blur-sm">
                 <Database className="h-5 w-5 text-green-400" />
@@ -314,13 +338,15 @@ export default function DocsHub() {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className={cn(
-                "relative overflow-hidden cursor-pointer",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group hover:scale-[1.02]"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
+                )}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-2xl" />
                 <CardHeader className="relative pb-3">
@@ -335,19 +361,19 @@ export default function DocsHub() {
                   <p className="text-sm text-gray-300 mb-3">
                     Revolutionary architecture with infinite scalability
                   </p>
-                  <Badge className="bg-green-500/10 text-green-300 border-green-500/20">
-                    CORE
-                  </Badge>
+                  <Badge className="bg-green-500/10 text-green-300 border-green-500/20">CORE</Badge>
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden cursor-pointer",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group hover:scale-[1.02]"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
+                )}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-2xl" />
                 <CardHeader className="relative pb-3">
@@ -368,13 +394,15 @@ export default function DocsHub() {
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden cursor-pointer",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group hover:scale-[1.02]"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
+                )}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-2xl" />
                 <CardHeader className="relative pb-3">
@@ -398,10 +426,12 @@ export default function DocsHub() {
           </div>
 
           {/* Financial Features */}
-          <div className={cn(
-            "transition-all duration-500 delay-400",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-400',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 dark:from-amber-400/10 dark:to-yellow-400/10 backdrop-blur-sm">
                 <DollarSign className="h-5 w-5 text-amber-400" />
@@ -411,13 +441,16 @@ export default function DocsHub() {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className={cn(
-                "relative overflow-hidden cursor-pointer",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group hover:scale-[1.02]"
-              )} onClick={() => router.push('/docs/features/chart-of-accounts')}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
+                )}
+                onClick={() => router.push('/docs/features/chart-of-accounts')}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-yellow-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-2xl" />
                 <CardHeader className="relative pb-3">
@@ -430,7 +463,8 @@ export default function DocsHub() {
                 </CardHeader>
                 <CardContent className="relative">
                   <p className="text-sm text-gray-300 mb-3">
-                    <span className="text-amber-400 font-medium">Universal COA system</span> with 132 industry templates
+                    <span className="text-amber-400 font-medium">Universal COA system</span> with
+                    132 industry templates
                   </p>
                   <div className="flex gap-2">
                     <Badge className="bg-amber-500/10 text-amber-300 border-amber-500/20">
@@ -443,13 +477,16 @@ export default function DocsHub() {
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden cursor-pointer",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group hover:scale-[1.02]"
-              )} onClick={() => router.push('/docs/features/auto-journal')}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
+                )}
+                onClick={() => router.push('/docs/features/auto-journal')}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-2xl" />
                 <CardHeader className="relative pb-3">
@@ -462,7 +499,8 @@ export default function DocsHub() {
                 </CardHeader>
                 <CardContent className="relative">
                   <p className="text-sm text-gray-300 mb-3">
-                    <span className="text-purple-400 font-medium">85% automation rate</span> for journal entries
+                    <span className="text-purple-400 font-medium">85% automation rate</span> for
+                    journal entries
                   </p>
                   <div className="flex gap-2">
                     <Badge className="bg-purple-500/10 text-purple-300 border-purple-500/20">
@@ -475,13 +513,16 @@ export default function DocsHub() {
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden cursor-pointer",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group hover:scale-[1.02]"
-              )} onClick={() => router.push('/docs/features/ifrs-compliance')}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
+                )}
+                onClick={() => router.push('/docs/features/ifrs-compliance')}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-2xl" />
                 <CardHeader className="relative pb-3">
@@ -494,7 +535,10 @@ export default function DocsHub() {
                 </CardHeader>
                 <CardContent className="relative">
                   <p className="text-sm text-gray-300 mb-3">
-                    Built-in <span className="text-green-400 font-medium">international financial reporting standards</span>
+                    Built-in{' '}
+                    <span className="text-green-400 font-medium">
+                      international financial reporting standards
+                    </span>
                   </p>
                   <Badge className="bg-green-500/10 text-green-300 border-green-500/20">
                     STANDARD
@@ -502,13 +546,16 @@ export default function DocsHub() {
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden cursor-pointer",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group hover:scale-[1.02]"
-              )} onClick={() => router.push('/docs/universal-coa-dna')}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden cursor-pointer',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group hover:scale-[1.02]'
+                )}
+                onClick={() => router.push('/docs/universal-coa-dna')}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-full blur-2xl" />
                 <CardHeader className="relative pb-3">
@@ -537,10 +584,12 @@ export default function DocsHub() {
           </div>
 
           {/* Industry Solutions */}
-          <div className={cn(
-            "transition-all duration-500 delay-500",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-500',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 dark:from-indigo-400/10 dark:to-purple-400/10 backdrop-blur-sm">
                 <Building2 className="h-5 w-5 text-indigo-400" />
@@ -549,23 +598,25 @@ export default function DocsHub() {
                 Industry Solutions
               </h2>
             </div>
-            <div className={cn(
-              "relative overflow-hidden rounded-2xl",
-              "bg-gray-900/60 backdrop-blur-xl",
-              "border border-white/10 dark:border-gray-800/20",
-              "shadow-xl p-6"
-            )}>
+            <div
+              className={cn(
+                'relative overflow-hidden rounded-2xl',
+                'bg-gray-900/60 backdrop-blur-xl',
+                'border border-white/10 dark:border-gray-800/20',
+                'shadow-xl p-6'
+              )}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5" />
               <div className="relative grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 <Link
                   href="/docs/civicflow"
                   className={cn(
-                    "group relative overflow-hidden",
-                    "flex items-center justify-between p-4",
-                    "bg-gray-900/60 backdrop-blur-sm",
-                    "rounded-xl border border-white/10 dark:border-gray-800/20",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "hover:scale-[1.05] hover:bg-indigo-500/10 dark:hover:bg-indigo-500/10"
+                    'group relative overflow-hidden',
+                    'flex items-center justify-between p-4',
+                    'bg-gray-900/60 backdrop-blur-sm',
+                    'rounded-xl border border-white/10 dark:border-gray-800/20',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'hover:scale-[1.05] hover:bg-indigo-500/10 dark:hover:bg-indigo-500/10'
                   )}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-indigo-500/10 to-indigo-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -574,16 +625,16 @@ export default function DocsHub() {
                   </span>
                   <ArrowRight className="relative h-4 w-4 text-gray-400 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
                 </Link>
-                
+
                 <Link
                   href="/docs/salon"
                   className={cn(
-                    "group relative overflow-hidden",
-                    "flex items-center justify-between p-4",
-                    "bg-gray-900/60 backdrop-blur-sm",
-                    "rounded-xl border border-white/10 dark:border-gray-800/20",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "hover:scale-[1.05] hover:bg-emerald-500/10 dark:hover:bg-emerald-500/10"
+                    'group relative overflow-hidden',
+                    'flex items-center justify-between p-4',
+                    'bg-gray-900/60 backdrop-blur-sm',
+                    'rounded-xl border border-white/10 dark:border-gray-800/20',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'hover:scale-[1.05] hover:bg-emerald-500/10 dark:hover:bg-emerald-500/10'
                   )}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -592,16 +643,16 @@ export default function DocsHub() {
                   </span>
                   <ArrowRight className="relative h-4 w-4 text-gray-400 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
                 </Link>
-                
+
                 <Link
                   href="/docs/industries/restaurant"
                   className={cn(
-                    "group relative overflow-hidden",
-                    "flex items-center justify-between p-4",
-                    "bg-gray-900/60 backdrop-blur-sm",
-                    "rounded-xl border border-white/10 dark:border-gray-800/20",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "hover:scale-[1.05] hover:bg-orange-500/10 dark:hover:bg-orange-500/10"
+                    'group relative overflow-hidden',
+                    'flex items-center justify-between p-4',
+                    'bg-gray-900/60 backdrop-blur-sm',
+                    'rounded-xl border border-white/10 dark:border-gray-800/20',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'hover:scale-[1.05] hover:bg-orange-500/10 dark:hover:bg-orange-500/10'
                   )}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-orange-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -610,16 +661,16 @@ export default function DocsHub() {
                   </span>
                   <ArrowRight className="relative h-4 w-4 text-gray-400 group-hover:text-orange-400 group-hover:translate-x-1 transition-all" />
                 </Link>
-                
+
                 <Link
                   href="/docs/industries/healthcare"
                   className={cn(
-                    "group relative overflow-hidden",
-                    "flex items-center justify-between p-4",
-                    "bg-gray-900/60 backdrop-blur-sm",
-                    "rounded-xl border border-white/10 dark:border-gray-800/20",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "hover:scale-[1.05] hover:bg-red-500/10 dark:hover:bg-red-500/10"
+                    'group relative overflow-hidden',
+                    'flex items-center justify-between p-4',
+                    'bg-gray-900/60 backdrop-blur-sm',
+                    'rounded-xl border border-white/10 dark:border-gray-800/20',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'hover:scale-[1.05] hover:bg-red-500/10 dark:hover:bg-red-500/10'
                   )}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/10 to-red-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -628,16 +679,16 @@ export default function DocsHub() {
                   </span>
                   <ArrowRight className="relative h-4 w-4 text-gray-400 group-hover:text-red-400 group-hover:translate-x-1 transition-all" />
                 </Link>
-                
+
                 <Link
                   href="/docs/industries/retail"
                   className={cn(
-                    "group relative overflow-hidden",
-                    "flex items-center justify-between p-4",
-                    "bg-gray-900/60 backdrop-blur-sm",
-                    "rounded-xl border border-white/10 dark:border-gray-800/20",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "hover:scale-[1.05] hover:bg-pink-500/10 dark:hover:bg-pink-500/10"
+                    'group relative overflow-hidden',
+                    'flex items-center justify-between p-4',
+                    'bg-gray-900/60 backdrop-blur-sm',
+                    'rounded-xl border border-white/10 dark:border-gray-800/20',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'hover:scale-[1.05] hover:bg-pink-500/10 dark:hover:bg-pink-500/10'
                   )}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/10 to-pink-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -646,16 +697,16 @@ export default function DocsHub() {
                   </span>
                   <ArrowRight className="relative h-4 w-4 text-gray-400 group-hover:text-pink-400 group-hover:translate-x-1 transition-all" />
                 </Link>
-                
+
                 <Link
                   href="/docs/industries/manufacturing"
                   className={cn(
-                    "group relative overflow-hidden",
-                    "flex items-center justify-between p-4",
-                    "bg-gray-900/60 backdrop-blur-sm",
-                    "rounded-xl border border-white/10 dark:border-gray-800/20",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "hover:scale-[1.05] hover:bg-gray-500/10 dark:hover:bg-gray-500/10"
+                    'group relative overflow-hidden',
+                    'flex items-center justify-between p-4',
+                    'bg-gray-900/60 backdrop-blur-sm',
+                    'rounded-xl border border-white/10 dark:border-gray-800/20',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'hover:scale-[1.05] hover:bg-gray-500/10 dark:hover:bg-gray-500/10'
                   )}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-gray-500/0 via-gray-500/10 to-gray-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -669,10 +720,12 @@ export default function DocsHub() {
           </div>
 
           {/* Developer Resources */}
-          <div className={cn(
-            "transition-all duration-500 delay-600",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-600',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 dark:from-cyan-400/10 dark:to-blue-400/10 backdrop-blur-sm">
                 <Code2 className="h-5 w-5 text-cyan-400" />
@@ -682,13 +735,15 @@ export default function DocsHub() {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className={cn(
-                "relative overflow-hidden",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group'
+                )}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="relative pb-3">
                   <CardTitle className="text-lg text-gray-100 flex items-center gap-2">
@@ -701,8 +756,8 @@ export default function DocsHub() {
                 <CardContent className="relative">
                   <ul className="space-y-3 text-sm">
                     <li>
-                      <Link 
-                        href="/docs/api/rest" 
+                      <Link
+                        href="/docs/api/rest"
                         className="group/link flex items-center justify-between text-gray-300 hover:text-cyan-400 transition-colors"
                       >
                         <span>REST API</span>
@@ -719,8 +774,8 @@ export default function DocsHub() {
                       </Link>
                     </li>
                     <li>
-                      <Link 
-                        href="/docs/api/webhooks" 
+                      <Link
+                        href="/docs/api/webhooks"
                         className="group/link flex items-center justify-between text-gray-300 hover:text-cyan-400 transition-colors"
                       >
                         <span>Webhooks</span>
@@ -731,13 +786,15 @@ export default function DocsHub() {
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group'
+                )}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="relative pb-3">
                   <CardTitle className="text-lg text-gray-100 flex items-center gap-2">
@@ -780,13 +837,15 @@ export default function DocsHub() {
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10 dark:border-gray-800/20",
-                "shadow-lg hover:shadow-xl transition-all duration-300",
-                "group"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10 dark:border-gray-800/20',
+                  'shadow-lg hover:shadow-xl transition-all duration-300',
+                  'group'
+                )}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="relative pb-3">
                   <CardTitle className="text-lg text-gray-100 flex items-center gap-2">
@@ -799,8 +858,8 @@ export default function DocsHub() {
                 <CardContent className="relative">
                   <ul className="space-y-3 text-sm">
                     <li>
-                      <Link 
-                        href="/docs/claude-md" 
+                      <Link
+                        href="/docs/claude-md"
                         className="group/link flex items-center justify-between text-gray-300 hover:text-green-400 transition-colors"
                       >
                         <span>CLAUDE.md Guide</span>
@@ -808,8 +867,8 @@ export default function DocsHub() {
                       </Link>
                     </li>
                     <li>
-                      <Link 
-                        href="/docs/monitoring" 
+                      <Link
+                        href="/docs/monitoring"
                         className="group/link flex items-center justify-between text-gray-300 hover:text-green-400 transition-colors"
                       >
                         <span>Monitoring Setup</span>
@@ -817,8 +876,8 @@ export default function DocsHub() {
                       </Link>
                     </li>
                     <li>
-                      <Link 
-                        href="/docs/security" 
+                      <Link
+                        href="/docs/security"
                         className="group/link flex items-center justify-between text-gray-300 hover:text-green-400 transition-colors"
                       >
                         <span>Security Guide</span>
@@ -830,15 +889,16 @@ export default function DocsHub() {
               </Card>
             </div>
           </div>
-
         </main>
 
         {/* Glassmorphism Footer */}
-        <footer className={cn(
-          "relative mt-24",
-          "bg-gray-900/60 backdrop-blur-xl",
-          "border-t border-white/10 dark:border-gray-800/20"
-        )}>
+        <footer
+          className={cn(
+            'relative mt-24',
+            'bg-gray-900/60 backdrop-blur-xl',
+            'border-t border-white/10 dark:border-gray-800/20'
+          )}
+        >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-950/50" />
           <div className="relative max-w-7xl mx-auto px-4 py-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -857,7 +917,9 @@ export default function DocsHub() {
                   </div>
                 </div>
                 <p className="text-sm text-gray-300 leading-relaxed">
-                  Built with <span className="text-amber-400 font-medium">revolutionary universal design</span> that powers infinite business complexity.
+                  Built with{' '}
+                  <span className="text-amber-400 font-medium">revolutionary universal design</span>{' '}
+                  that powers infinite business complexity.
                 </p>
                 <div className="flex items-center gap-3">
                   <Badge className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-300 border-amber-500/20">
@@ -877,8 +939,8 @@ export default function DocsHub() {
                 </h3>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <Link 
-                      href="/docs/quickstart" 
+                    <Link
+                      href="/docs/quickstart"
                       className="text-gray-300 hover:text-cyan-400 transition-colors flex items-center gap-1 group"
                     >
                       <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
@@ -886,8 +948,8 @@ export default function DocsHub() {
                     </Link>
                   </li>
                   <li>
-                    <Link 
-                      href="/docs/api/rest" 
+                    <Link
+                      href="/docs/api/rest"
                       className="text-gray-300 hover:text-cyan-400 transition-colors flex items-center gap-1 group"
                     >
                       <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
@@ -895,8 +957,8 @@ export default function DocsHub() {
                     </Link>
                   </li>
                   <li>
-                    <Link 
-                      href="/docs/architecture" 
+                    <Link
+                      href="/docs/architecture"
                       className="text-gray-300 hover:text-cyan-400 transition-colors flex items-center gap-1 group"
                     >
                       <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
@@ -914,7 +976,7 @@ export default function DocsHub() {
                 </h3>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <a 
+                    <a
                       href="https://github.com/anthropics/claude-code/issues"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -925,8 +987,8 @@ export default function DocsHub() {
                     </a>
                   </li>
                   <li>
-                    <Link 
-                      href="/docs/community" 
+                    <Link
+                      href="/docs/community"
                       className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-1 group"
                     >
                       <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
@@ -934,8 +996,8 @@ export default function DocsHub() {
                     </Link>
                   </li>
                   <li>
-                    <Link 
-                      href="/docs/support" 
+                    <Link
+                      href="/docs/support"
                       className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-1 group"
                     >
                       <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
@@ -950,7 +1012,10 @@ export default function DocsHub() {
             <div className="mt-12 pt-8 border-t border-white/10 dark:border-gray-800/10">
               <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-300">
                 <p>
-                  © 2024 HERA. Enterprise Resource Planning with <span className="text-amber-400 font-medium">Revolutionary Universal Architecture</span>
+                  © 2024 HERA. Enterprise Resource Planning with{' '}
+                  <span className="text-amber-400 font-medium">
+                    Revolutionary Universal Architecture
+                  </span>
                 </p>
                 <div className="flex items-center gap-6">
                   <Link href="/docs/privacy" className="hover:text-gray-100 transition-colors">

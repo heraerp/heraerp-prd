@@ -166,7 +166,13 @@ function AppointmentsContent() {
 
   // 🔍 ENTERPRISE: Check for time slot conflicts - Only booked appointments block slots
   const checkTimeSlotConflict = useCallback(
-    (timeStr: string, date: string, stylistId: string | null, duration: number, excludeAppointmentId?: string) => {
+    (
+      timeStr: string,
+      date: string,
+      stylistId: string | null,
+      duration: number,
+      excludeAppointmentId?: string
+    ) => {
       if (!date || !stylistId) {
         return { hasConflict: false, conflictingAppointment: null }
       }
@@ -176,10 +182,10 @@ function AppointmentsContent() {
 
       // ✨ ENTERPRISE: Only these statuses block time slots
       const BLOCKING_STATUSES = [
-        'booked',           // Confirmed appointment
-        'checked_in',       // Customer has arrived
-        'in_progress',      // Service is happening
-        'payment_pending'   // Service done, awaiting payment
+        'booked', // Confirmed appointment
+        'checked_in', // Customer has arrived
+        'in_progress', // Service is happening
+        'payment_pending' // Service done, awaiting payment
       ]
 
       for (const apt of appointments || []) {
@@ -214,7 +220,13 @@ function AppointmentsContent() {
 
   // ⚡ PERFORMANCE: Memoize stats calculation
   const stats: AppointmentStats = useMemo(() => {
-    if (!appointments) return { totalAppointments: 0, todayAppointments: 0, upcomingAppointments: 0, completedAppointments: 0 }
+    if (!appointments)
+      return {
+        totalAppointments: 0,
+        todayAppointments: 0,
+        upcomingAppointments: 0,
+        completedAppointments: 0
+      }
 
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -273,13 +285,17 @@ function AppointmentsContent() {
         await updateAppointment({
           id: appointmentToCancel.id,
           data: {
-            notes: `${appointmentToCancel.notes || ''}\n\nCancellation reason: ${cancelReason}`.trim()
+            notes:
+              `${appointmentToCancel.notes || ''}\n\nCancellation reason: ${cancelReason}`.trim()
           }
         })
       }
 
       removeToast(loadingId)
-      showSuccess('Appointment cancelled', `${appointmentToCancel.customer_name}'s appointment has been cancelled`)
+      showSuccess(
+        'Appointment cancelled',
+        `${appointmentToCancel.customer_name}'s appointment has been cancelled`
+      )
       setCancelConfirmOpen(false)
       setAppointmentToCancel(null)
       setCancelReason('') // Reset reason
@@ -287,7 +303,16 @@ function AppointmentsContent() {
       removeToast(loadingId)
       showError('Failed to cancel appointment', error.message || 'Please try again')
     }
-  }, [appointmentToCancel, cancelReason, updateAppointmentStatus, updateAppointment, showLoading, removeToast, showSuccess, showError])
+  }, [
+    appointmentToCancel,
+    cancelReason,
+    updateAppointmentStatus,
+    updateAppointment,
+    showLoading,
+    removeToast,
+    showSuccess,
+    showError
+  ])
 
   const handleConfirmPostponeAppointment = useCallback(async () => {
     if (!appointmentToPostpone || !postponeDate || !postponeTime) {
@@ -308,7 +333,8 @@ function AppointmentsContent() {
         data: {
           start_time: newDateTime.toISOString(),
           end_time: newEndTime.toISOString(),
-          notes: `${appointmentToPostpone.notes || ''}\n\nRescheduled from ${format(new Date(appointmentToPostpone.start_time), 'MMM d, yyyy • h:mm a')}`.trim()
+          notes:
+            `${appointmentToPostpone.notes || ''}\n\nRescheduled from ${format(new Date(appointmentToPostpone.start_time), 'MMM d, yyyy • h:mm a')}`.trim()
         }
       })
 
@@ -325,37 +351,55 @@ function AppointmentsContent() {
       removeToast(loadingId)
       showError('Failed to reschedule appointment', error.message || 'Please try again')
     }
-  }, [appointmentToPostpone, postponeDate, postponeTime, updateAppointment, showLoading, removeToast, showSuccess, showError])
+  }, [
+    appointmentToPostpone,
+    postponeDate,
+    postponeTime,
+    updateAppointment,
+    showLoading,
+    removeToast,
+    showSuccess,
+    showError
+  ])
 
-  const handleRestoreAppointment = useCallback(async (appointment: Appointment) => {
-    const loadingId = showLoading('Restoring appointment...', 'Please wait')
+  const handleRestoreAppointment = useCallback(
+    async (appointment: Appointment) => {
+      const loadingId = showLoading('Restoring appointment...', 'Please wait')
 
-    try {
-      await restoreAppointment(appointment.id)
-      removeToast(loadingId)
-      showSuccess('Appointment restored', `${appointment.entity_name} has been restored`)
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to restore appointment', error.message || 'Please try again')
-    }
-  }, [restoreAppointment, showLoading, removeToast, showSuccess, showError])
+      try {
+        await restoreAppointment(appointment.id)
+        removeToast(loadingId)
+        showSuccess('Appointment restored', `${appointment.entity_name} has been restored`)
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError('Failed to restore appointment', error.message || 'Please try again')
+      }
+    },
+    [restoreAppointment, showLoading, removeToast, showSuccess, showError]
+  )
 
-  const handleStatusTransition = useCallback(async (appointment: Appointment, newStatus: AppointmentStatus) => {
-    const loadingId = showLoading(`Updating to ${STATUS_CONFIG[newStatus].label}...`, 'Please wait')
-
-    try {
-      // ✅ FIXED: Pass object with id and status properties (not separate parameters)
-      await updateAppointmentStatus({ id: appointment.id, status: newStatus })
-      removeToast(loadingId)
-      showSuccess(
-        'Status updated',
-        `Appointment status changed to ${STATUS_CONFIG[newStatus].label}`
+  const handleStatusTransition = useCallback(
+    async (appointment: Appointment, newStatus: AppointmentStatus) => {
+      const loadingId = showLoading(
+        `Updating to ${STATUS_CONFIG[newStatus].label}...`,
+        'Please wait'
       )
-    } catch (error: any) {
-      removeToast(loadingId)
-      showError('Failed to update status', error.message || 'Please try again')
-    }
-  }, [updateAppointmentStatus, showLoading, removeToast, showSuccess, showError])
+
+      try {
+        // ✅ FIXED: Pass object with id and status properties (not separate parameters)
+        await updateAppointmentStatus({ id: appointment.id, status: newStatus })
+        removeToast(loadingId)
+        showSuccess(
+          'Status updated',
+          `Appointment status changed to ${STATUS_CONFIG[newStatus].label}`
+        )
+      } catch (error: any) {
+        removeToast(loadingId)
+        showError('Failed to update status', error.message || 'Please try again')
+      }
+    },
+    [updateAppointmentStatus, showLoading, removeToast, showSuccess, showError]
+  )
 
   // ⚡ PERFORMANCE: Memoize filtered appointments
   const filteredAppointments = useMemo(() => {
@@ -401,11 +445,14 @@ function AppointmentsContent() {
   }, [appointments, searchTerm, hasMultipleBranches, branchId, statusFilter, dateFilter])
 
   // ⚡ PERFORMANCE: Memoize branch name lookup
-  const getBranchName = useCallback((branchId: string | null) => {
-    if (!branchId) return null
-    const branch = branches.find(b => b.id === branchId)
-    return branch?.name || null
-  }, [branches])
+  const getBranchName = useCallback(
+    (branchId: string | null) => {
+      if (!branchId) return null
+      const branch = branches.find(b => b.id === branchId)
+      return branch?.name || null
+    },
+    [branches]
+  )
 
   // 🎯 ENTERPRISE: Three-layer loading state
   // Layer 1: Context Loading (SecuredSalonProvider initializing)
@@ -423,7 +470,10 @@ function AppointmentsContent() {
             boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
           }}
         >
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <Loader2
+            className="w-8 h-8 animate-spin mx-auto mb-4"
+            style={{ color: LUXE_COLORS.gold }}
+          />
           <h2 className="text-xl font-medium mb-2" style={{ color: LUXE_COLORS.champagne }}>
             Initializing Security...
           </h2>
@@ -473,7 +523,10 @@ function AppointmentsContent() {
             boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
           }}
         >
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <Loader2
+            className="w-8 h-8 animate-spin mx-auto mb-4"
+            style={{ color: LUXE_COLORS.gold }}
+          />
           <h2 className="text-xl font-medium mb-2" style={{ color: LUXE_COLORS.champagne }}>
             Loading Organization...
           </h2>
@@ -526,9 +579,15 @@ function AppointmentsContent() {
                 onClick={() => setViewMode('grid')}
                 className="px-3 py-2 rounded-md transition-all duration-300"
                 style={{
-                  background: viewMode === 'grid' ? `linear-gradient(135deg, ${LUXE_COLORS.gold}30 0%, ${LUXE_COLORS.gold}20 100%)` : 'transparent',
+                  background:
+                    viewMode === 'grid'
+                      ? `linear-gradient(135deg, ${LUXE_COLORS.gold}30 0%, ${LUXE_COLORS.gold}20 100%)`
+                      : 'transparent',
                   color: viewMode === 'grid' ? LUXE_COLORS.gold : LUXE_COLORS.bronze,
-                  border: viewMode === 'grid' ? `1px solid ${LUXE_COLORS.gold}40` : '1px solid transparent',
+                  border:
+                    viewMode === 'grid'
+                      ? `1px solid ${LUXE_COLORS.gold}40`
+                      : '1px solid transparent',
                   transitionTimingFunction: LUXE_COLORS.spring
                 }}
               >
@@ -538,9 +597,15 @@ function AppointmentsContent() {
                 onClick={() => setViewMode('list')}
                 className="px-3 py-2 rounded-md transition-all duration-300"
                 style={{
-                  background: viewMode === 'list' ? `linear-gradient(135deg, ${LUXE_COLORS.gold}30 0%, ${LUXE_COLORS.gold}20 100%)` : 'transparent',
+                  background:
+                    viewMode === 'list'
+                      ? `linear-gradient(135deg, ${LUXE_COLORS.gold}30 0%, ${LUXE_COLORS.gold}20 100%)`
+                      : 'transparent',
                   color: viewMode === 'list' ? LUXE_COLORS.gold : LUXE_COLORS.bronze,
-                  border: viewMode === 'list' ? `1px solid ${LUXE_COLORS.gold}40` : '1px solid transparent',
+                  border:
+                    viewMode === 'list'
+                      ? `1px solid ${LUXE_COLORS.gold}40`
+                      : '1px solid transparent',
                   transitionTimingFunction: LUXE_COLORS.spring
                 }}
               >
@@ -626,7 +691,8 @@ function AppointmentsContent() {
               desc: 'All time',
               icon: CalendarDays,
               color: LUXE_COLORS.emerald,
-              gradient: 'linear-gradient(135deg, rgba(15,111,92,0.15) 0%, rgba(15,111,92,0.05) 100%)'
+              gradient:
+                'linear-gradient(135deg, rgba(15,111,92,0.15) 0%, rgba(15,111,92,0.05) 100%)'
             },
             {
               title: 'Today',
@@ -634,7 +700,8 @@ function AppointmentsContent() {
               desc: 'Scheduled today',
               icon: Clock,
               color: LUXE_COLORS.gold,
-              gradient: 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.05) 100%)'
+              gradient:
+                'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.05) 100%)'
             },
             {
               title: 'Upcoming',
@@ -642,7 +709,8 @@ function AppointmentsContent() {
               desc: 'Future bookings',
               icon: Calendar,
               color: LUXE_COLORS.bronze,
-              gradient: 'linear-gradient(135deg, rgba(140,120,83,0.15) 0%, rgba(140,120,83,0.05) 100%)'
+              gradient:
+                'linear-gradient(135deg, rgba(140,120,83,0.15) 0%, rgba(140,120,83,0.05) 100%)'
             },
             {
               title: 'Completed',
@@ -650,7 +718,8 @@ function AppointmentsContent() {
               desc: 'Finished',
               icon: CheckCircle,
               color: LUXE_COLORS.champagne,
-              gradient: 'linear-gradient(135deg, rgba(245,230,200,0.15) 0%, rgba(245,230,200,0.05) 100%)'
+              gradient:
+                'linear-gradient(135deg, rgba(245,230,200,0.15) 0%, rgba(245,230,200,0.05) 100%)'
             }
           ].map((stat, index) => (
             <div
@@ -741,7 +810,10 @@ function AppointmentsContent() {
                     }}
                   >
                     <div className="flex items-center gap-2 w-full overflow-hidden">
-                      <Building2 className="h-4 w-4 flex-shrink-0" style={{ color: LUXE_COLORS.bronze }} />
+                      <Building2
+                        className="h-4 w-4 flex-shrink-0"
+                        style={{ color: LUXE_COLORS.bronze }}
+                      />
                       <span className="truncate block max-w-[180px]">
                         <SelectValue placeholder="All locations" />
                       </span>
@@ -756,7 +828,10 @@ function AppointmentsContent() {
                     ) : (
                       branches.map(branch => (
                         <SelectItem key={branch.id} value={branch.id}>
-                          <span className="block truncate max-w-[240px]" title={branch.name || 'Unnamed Branch'}>
+                          <span
+                            className="block truncate max-w-[240px]"
+                            title={branch.name || 'Unnamed Branch'}
+                          >
                             {branch.name || 'Unnamed Branch'}
                           </span>
                         </SelectItem>
@@ -847,7 +922,10 @@ function AppointmentsContent() {
               transitionTimingFunction: LUXE_COLORS.spring
             }}
           >
-            <Sparkles className="w-12 h-12 mx-auto mb-4" style={{ color: LUXE_COLORS.bronze, opacity: 0.5 }} />
+            <Sparkles
+              className="w-12 h-12 mx-auto mb-4"
+              style={{ color: LUXE_COLORS.bronze, opacity: 0.5 }}
+            />
             <h3 className="text-xl font-medium mb-2" style={{ color: LUXE_COLORS.champagne }}>
               No appointments found
             </h3>
@@ -883,7 +961,13 @@ function AppointmentsContent() {
             )}
           </div>
         ) : (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                : 'space-y-4'
+            }
+          >
             {filteredAppointments.map(appointment => {
               const appointmentDate = appointment.start_time
                 ? new Date(appointment.start_time)
@@ -899,10 +983,14 @@ function AppointmentsContent() {
                   }}
                   className={`rounded-xl p-6 transition-all duration-500 cursor-pointer ${viewMode === 'list' ? 'flex items-center justify-between' : ''} relative overflow-hidden group`}
                   style={{
-                    background: 'linear-gradient(135deg, rgba(245,230,200,0.08) 0%, rgba(212,175,55,0.05) 50%, rgba(184,134,11,0.03) 100%)',
+                    background:
+                      'linear-gradient(135deg, rgba(245,230,200,0.08) 0%, rgba(212,175,55,0.05) 50%, rgba(184,134,11,0.03) 100%)',
                     border: `1px solid ${LUXE_COLORS.gold}25`,
                     boxShadow: '0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.1)',
-                    opacity: appointment.status === 'archived' || appointment.status === 'cancelled' ? 0.6 : 1,
+                    opacity:
+                      appointment.status === 'archived' || appointment.status === 'cancelled'
+                        ? 0.6
+                        : 1,
                     transitionTimingFunction: LUXE_COLORS.spring,
                     backdropFilter: 'blur(8px)'
                   }}
@@ -920,32 +1008,55 @@ function AppointmentsContent() {
                     `
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.transform = viewMode === 'grid' ? 'translateY(-8px) scale(1.03)' : 'translateX(6px)'
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(212,175,55,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
+                    e.currentTarget.style.transform =
+                      viewMode === 'grid' ? 'translateY(-8px) scale(1.03)' : 'translateX(6px)'
+                    e.currentTarget.style.boxShadow =
+                      '0 20px 40px rgba(212,175,55,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
                     e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}60`
                   }}
                   onMouseLeave={e => {
                     e.currentTarget.style.transform = 'translateY(0) scale(1) translateX(0)'
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.1)'
+                    e.currentTarget.style.boxShadow =
+                      '0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.1)'
                     e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}25`
-                    e.currentTarget.style.background = 'linear-gradient(135deg, rgba(245,230,200,0.08) 0%, rgba(212,175,55,0.05) 50%, rgba(184,134,11,0.03) 100%)'
+                    e.currentTarget.style.background =
+                      'linear-gradient(135deg, rgba(245,230,200,0.08) 0%, rgba(212,175,55,0.05) 50%, rgba(184,134,11,0.03) 100%)'
                   }}
                 >
-                  <div className={viewMode === 'list' ? 'flex-1 flex items-center gap-6' : 'space-y-4'}>
+                  <div
+                    className={viewMode === 'list' ? 'flex-1 flex items-center gap-6' : 'space-y-4'}
+                  >
                     {/* Header */}
-                    <div className={viewMode === 'list' ? 'flex-1' : 'flex items-start justify-between'}>
+                    <div
+                      className={
+                        viewMode === 'list' ? 'flex-1' : 'flex items-start justify-between'
+                      }
+                    >
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg mb-1" style={{ color: LUXE_COLORS.champagne }}>
+                        <h3
+                          className="font-semibold text-lg mb-1"
+                          style={{ color: LUXE_COLORS.champagne }}
+                        >
                           {appointment.customer_name || 'Customer'}
                         </h3>
-                        <div className="flex items-center gap-2 text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                        <div
+                          className="flex items-center gap-2 text-sm"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
                           <User className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">{appointment.stylist_name || 'Unassigned'}</span>
+                          <span className="truncate">
+                            {appointment.stylist_name || 'Unassigned'}
+                          </span>
                         </div>
                         {branchName && viewMode === 'list' && (
-                          <div className="flex items-center gap-2 text-xs mt-1" style={{ color: LUXE_COLORS.bronze, opacity: 0.7 }}>
+                          <div
+                            className="flex items-center gap-2 text-xs mt-1"
+                            style={{ color: LUXE_COLORS.bronze, opacity: 0.7 }}
+                          >
                             <Building2 className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate max-w-[200px]" title={branchName}>{branchName}</span>
+                            <span className="truncate max-w-[200px]" title={branchName}>
+                              {branchName}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -954,13 +1065,16 @@ function AppointmentsContent() {
                           className="transition-all duration-300 ml-2 flex-shrink-0"
                           style={{
                             background: `${STATUS_CONFIG[appointment.status as AppointmentStatus]?.color}20`,
-                            color: STATUS_CONFIG[appointment.status as AppointmentStatus]?.color || LUXE_COLORS.bronze,
+                            color:
+                              STATUS_CONFIG[appointment.status as AppointmentStatus]?.color ||
+                              LUXE_COLORS.bronze,
                             border: `1px solid ${STATUS_CONFIG[appointment.status as AppointmentStatus]?.color}40`,
                             fontWeight: '500',
                             textTransform: 'capitalize'
                           }}
                         >
-                          {STATUS_CONFIG[appointment.status as AppointmentStatus]?.label || appointment.status.replace('_', ' ')}
+                          {STATUS_CONFIG[appointment.status as AppointmentStatus]?.label ||
+                            appointment.status.replace('_', ' ')}
                         </Badge>
                       )}
                     </div>
@@ -970,13 +1084,29 @@ function AppointmentsContent() {
                       <div className="flex items-center gap-6">
                         {appointmentDate && (
                           <>
-                            <div className="flex items-center gap-2 text-sm min-w-[180px]" style={{ color: LUXE_COLORS.bronze }}>
-                              <Calendar className="w-4 h-4 flex-shrink-0" style={{ color: LUXE_COLORS.gold }} />
-                              <span className="font-medium whitespace-nowrap">{format(appointmentDate, 'MMM d, yyyy')}</span>
+                            <div
+                              className="flex items-center gap-2 text-sm min-w-[180px]"
+                              style={{ color: LUXE_COLORS.bronze }}
+                            >
+                              <Calendar
+                                className="w-4 h-4 flex-shrink-0"
+                                style={{ color: LUXE_COLORS.gold }}
+                              />
+                              <span className="font-medium whitespace-nowrap">
+                                {format(appointmentDate, 'MMM d, yyyy')}
+                              </span>
                             </div>
-                            <div className="flex items-center gap-2 text-sm min-w-[120px]" style={{ color: LUXE_COLORS.bronze }}>
-                              <Clock className="w-4 h-4 flex-shrink-0" style={{ color: LUXE_COLORS.gold }} />
-                              <span className="font-medium whitespace-nowrap">{format(appointmentDate, 'h:mm a')}</span>
+                            <div
+                              className="flex items-center gap-2 text-sm min-w-[120px]"
+                              style={{ color: LUXE_COLORS.bronze }}
+                            >
+                              <Clock
+                                className="w-4 h-4 flex-shrink-0"
+                                style={{ color: LUXE_COLORS.gold }}
+                              />
+                              <span className="font-medium whitespace-nowrap">
+                                {format(appointmentDate, 'h:mm a')}
+                              </span>
                             </div>
                           </>
                         )}
@@ -985,7 +1115,10 @@ function AppointmentsContent() {
                             className="flex items-center gap-2 text-sm font-medium min-w-[100px]"
                             style={{ color: LUXE_COLORS.champagne }}
                           >
-                            <DollarSign className="w-4 h-4 flex-shrink-0" style={{ color: LUXE_COLORS.gold }} />
+                            <DollarSign
+                              className="w-4 h-4 flex-shrink-0"
+                              style={{ color: LUXE_COLORS.gold }}
+                            />
                             <span className="whitespace-nowrap">
                               {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
                             </span>
@@ -995,7 +1128,9 @@ function AppointmentsContent() {
                           className="transition-all duration-300 flex-shrink-0"
                           style={{
                             background: `${STATUS_CONFIG[appointment.status as AppointmentStatus]?.color}20`,
-                            color: STATUS_CONFIG[appointment.status as AppointmentStatus]?.color || LUXE_COLORS.bronze,
+                            color:
+                              STATUS_CONFIG[appointment.status as AppointmentStatus]?.color ||
+                              LUXE_COLORS.bronze,
                             border: `1px solid ${STATUS_CONFIG[appointment.status as AppointmentStatus]?.color}40`,
                             fontWeight: '500',
                             textTransform: 'capitalize',
@@ -1003,32 +1138,60 @@ function AppointmentsContent() {
                             textAlign: 'center'
                           }}
                         >
-                          {STATUS_CONFIG[appointment.status as AppointmentStatus]?.label || appointment.status.replace('_', ' ')}
+                          {STATUS_CONFIG[appointment.status as AppointmentStatus]?.label ||
+                            appointment.status.replace('_', ' ')}
                         </Badge>
                       </div>
                     ) : (
-                      <div className="space-y-3 pt-3" style={{ borderTop: `1px solid ${LUXE_COLORS.gold}10` }}>
+                      <div
+                        className="space-y-3 pt-3"
+                        style={{ borderTop: `1px solid ${LUXE_COLORS.gold}10` }}
+                      >
                         {appointmentDate && (
                           <>
-                            <div className="flex items-center gap-3 text-sm" style={{ color: LUXE_COLORS.bronze }}>
-                              <Calendar className="w-4 h-4 flex-shrink-0" style={{ color: LUXE_COLORS.gold }} />
-                              <span className="font-medium">{format(appointmentDate, 'EEEE, MMM d, yyyy')}</span>
+                            <div
+                              className="flex items-center gap-3 text-sm"
+                              style={{ color: LUXE_COLORS.bronze }}
+                            >
+                              <Calendar
+                                className="w-4 h-4 flex-shrink-0"
+                                style={{ color: LUXE_COLORS.gold }}
+                              />
+                              <span className="font-medium">
+                                {format(appointmentDate, 'EEEE, MMM d, yyyy')}
+                              </span>
                             </div>
-                            <div className="flex items-center gap-3 text-sm" style={{ color: LUXE_COLORS.bronze }}>
-                              <Clock className="w-4 h-4 flex-shrink-0" style={{ color: LUXE_COLORS.gold }} />
+                            <div
+                              className="flex items-center gap-3 text-sm"
+                              style={{ color: LUXE_COLORS.bronze }}
+                            >
+                              <Clock
+                                className="w-4 h-4 flex-shrink-0"
+                                style={{ color: LUXE_COLORS.gold }}
+                              />
                               <span className="font-medium">
                                 {format(appointmentDate, 'h:mm a')}
                                 {appointment.duration_minutes && (
-                                  <span className="ml-2 opacity-70">({appointment.duration_minutes} min)</span>
+                                  <span className="ml-2 opacity-70">
+                                    ({appointment.duration_minutes} min)
+                                  </span>
                                 )}
                               </span>
                             </div>
                           </>
                         )}
                         {branchName && (
-                          <div className="flex items-center gap-3 text-sm" style={{ color: LUXE_COLORS.bronze }}>
-                            <Building2 className="w-4 h-4 flex-shrink-0" style={{ color: LUXE_COLORS.gold }} />
-                            <span className="truncate font-medium" title={branchName}>{branchName}</span>
+                          <div
+                            className="flex items-center gap-3 text-sm"
+                            style={{ color: LUXE_COLORS.bronze }}
+                          >
+                            <Building2
+                              className="w-4 h-4 flex-shrink-0"
+                              style={{ color: LUXE_COLORS.gold }}
+                            />
+                            <span className="truncate font-medium" title={branchName}>
+                              {branchName}
+                            </span>
                           </div>
                         )}
                         {appointment.price !== undefined && appointment.price > 0 && (
@@ -1036,7 +1199,10 @@ function AppointmentsContent() {
                             className="flex items-center gap-3 text-sm font-medium"
                             style={{ color: LUXE_COLORS.champagne }}
                           >
-                            <DollarSign className="w-4 h-4 flex-shrink-0" style={{ color: LUXE_COLORS.gold }} />
+                            <DollarSign
+                              className="w-4 h-4 flex-shrink-0"
+                              style={{ color: LUXE_COLORS.gold }}
+                            />
                             <span>
                               {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
                             </span>
@@ -1050,7 +1216,8 @@ function AppointmentsContent() {
                       <div
                         className="p-3 rounded-lg text-xs italic"
                         style={{
-                          background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(212,175,55,0.03) 100%)',
+                          background:
+                            'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(212,175,55,0.03) 100%)',
                           border: `1px solid ${LUXE_COLORS.gold}15`,
                           color: LUXE_COLORS.bronze
                         }}
@@ -1061,93 +1228,103 @@ function AppointmentsContent() {
                   </div>
 
                   {/* ✨ ENTERPRISE: Action Buttons Row */}
-                  <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: `1px solid ${LUXE_COLORS.gold}10` }} onClick={e => e.stopPropagation()}>
-
+                  <div
+                    className="flex items-center justify-between mt-4 pt-3"
+                    style={{ borderTop: `1px solid ${LUXE_COLORS.gold}10` }}
+                    onClick={e => e.stopPropagation()}
+                  >
                     {/* Status Transitions - Available next statuses */}
                     <div className="flex gap-2 flex-wrap flex-1">
                       {VALID_STATUS_TRANSITIONS[appointment.status as AppointmentStatus]
                         ?.filter(nextStatus => nextStatus !== 'cancelled') // 🎯 CRITICAL FIX: Remove duplicate cancel - we have dedicated icon button
-                        ?.map((nextStatus) => {
-                        const statusInfo = STATUS_CONFIG[nextStatus]
-                        return (
-                          <Button
-                            key={nextStatus}
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleStatusTransition(appointment, nextStatus)
-                            }}
-                            disabled={isUpdating}
-                            className="transition-all duration-300 font-medium"
-                            style={{
-                              background: `linear-gradient(135deg, ${statusInfo.color}20 0%, ${statusInfo.color}15 100%)`,
-                              color: statusInfo.color,
-                              border: `1px solid ${statusInfo.color}40`,
-                              transitionTimingFunction: LUXE_COLORS.spring,
-                              fontSize: '0.75rem',
-                              padding: '0.5rem 1rem',
-                              boxShadow: `0 2px 8px ${statusInfo.color}10`
-                            }}
-                            onMouseEnter={e => {
-                              e.currentTarget.style.background = `linear-gradient(135deg, ${statusInfo.color}35 0%, ${statusInfo.color}25 100%)`
-                              e.currentTarget.style.borderColor = `${statusInfo.color}70`
-                              e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-                              e.currentTarget.style.boxShadow = `0 6px 16px ${statusInfo.color}25`
-                            }}
-                            onMouseLeave={e => {
-                              e.currentTarget.style.background = `linear-gradient(135deg, ${statusInfo.color}20 0%, ${statusInfo.color}15 100%)`
-                              e.currentTarget.style.borderColor = `${statusInfo.color}40`
-                              e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                              e.currentTarget.style.boxShadow = `0 2px 8px ${statusInfo.color}10`
-                            }}
-                          >
-                            {statusInfo.label}
-                          </Button>
-                        )
-                      })}
+                        ?.map(nextStatus => {
+                          const statusInfo = STATUS_CONFIG[nextStatus]
+                          return (
+                            <Button
+                              key={nextStatus}
+                              size="sm"
+                              onClick={e => {
+                                e.stopPropagation()
+                                handleStatusTransition(appointment, nextStatus)
+                              }}
+                              disabled={isUpdating}
+                              className="transition-all duration-300 font-medium"
+                              style={{
+                                background: `linear-gradient(135deg, ${statusInfo.color}20 0%, ${statusInfo.color}15 100%)`,
+                                color: statusInfo.color,
+                                border: `1px solid ${statusInfo.color}40`,
+                                transitionTimingFunction: LUXE_COLORS.spring,
+                                fontSize: '0.75rem',
+                                padding: '0.5rem 1rem',
+                                boxShadow: `0 2px 8px ${statusInfo.color}10`
+                              }}
+                              onMouseEnter={e => {
+                                e.currentTarget.style.background = `linear-gradient(135deg, ${statusInfo.color}35 0%, ${statusInfo.color}25 100%)`
+                                e.currentTarget.style.borderColor = `${statusInfo.color}70`
+                                e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
+                                e.currentTarget.style.boxShadow = `0 6px 16px ${statusInfo.color}25`
+                              }}
+                              onMouseLeave={e => {
+                                e.currentTarget.style.background = `linear-gradient(135deg, ${statusInfo.color}20 0%, ${statusInfo.color}15 100%)`
+                                e.currentTarget.style.borderColor = `${statusInfo.color}40`
+                                e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                                e.currentTarget.style.boxShadow = `0 2px 8px ${statusInfo.color}10`
+                              }}
+                            >
+                              {statusInfo.label}
+                            </Button>
+                          )
+                        })}
                     </div>
 
                     {/* Quick Action Icons */}
                     <div className="flex gap-2 ml-2 flex-shrink-0">
                       {/* Cancel Button - All active appointments */}
-                      {appointment.status !== 'completed' && appointment.status !== 'cancelled' && appointment.status !== 'no_show' && (
-                        <Button
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setAppointmentToCancel(appointment)
-                            setCancelConfirmOpen(true)
-                          }}
-                          className="transition-all duration-300 w-9 h-9 p-0"
-                          style={{
-                            background: 'linear-gradient(135deg, rgba(140,120,83,0.25) 0%, rgba(140,120,83,0.15) 100%)',
-                            color: LUXE_COLORS.bronze,
-                            border: `1.5px solid ${LUXE_COLORS.bronze}50`,
-                            boxShadow: '0 2px 8px rgba(140,120,83,0.15)'
-                          }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(140,120,83,0.40) 0%, rgba(140,120,83,0.30) 100%)'
-                            e.currentTarget.style.transform = 'scale(1.15) rotate(-5deg)'
-                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(140,120,83,0.30)'
-                            e.currentTarget.style.borderColor = `${LUXE_COLORS.bronze}80`
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(140,120,83,0.25) 0%, rgba(140,120,83,0.15) 100%)'
-                            e.currentTarget.style.transform = 'scale(1) rotate(0deg)'
-                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(140,120,83,0.15)'
-                            e.currentTarget.style.borderColor = `${LUXE_COLORS.bronze}50`
-                          }}
-                          title="Cancel Appointment"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
+                      {appointment.status !== 'completed' &&
+                        appointment.status !== 'cancelled' &&
+                        appointment.status !== 'no_show' && (
+                          <Button
+                            size="sm"
+                            onClick={e => {
+                              e.stopPropagation()
+                              setAppointmentToCancel(appointment)
+                              setCancelConfirmOpen(true)
+                            }}
+                            className="transition-all duration-300 w-9 h-9 p-0"
+                            style={{
+                              background:
+                                'linear-gradient(135deg, rgba(140,120,83,0.25) 0%, rgba(140,120,83,0.15) 100%)',
+                              color: LUXE_COLORS.bronze,
+                              border: `1.5px solid ${LUXE_COLORS.bronze}50`,
+                              boxShadow: '0 2px 8px rgba(140,120,83,0.15)'
+                            }}
+                            onMouseEnter={e => {
+                              e.currentTarget.style.background =
+                                'linear-gradient(135deg, rgba(140,120,83,0.40) 0%, rgba(140,120,83,0.30) 100%)'
+                              e.currentTarget.style.transform = 'scale(1.15) rotate(-5deg)'
+                              e.currentTarget.style.boxShadow = '0 4px 16px rgba(140,120,83,0.30)'
+                              e.currentTarget.style.borderColor = `${LUXE_COLORS.bronze}80`
+                            }}
+                            onMouseLeave={e => {
+                              e.currentTarget.style.background =
+                                'linear-gradient(135deg, rgba(140,120,83,0.25) 0%, rgba(140,120,83,0.15) 100%)'
+                              e.currentTarget.style.transform = 'scale(1) rotate(0deg)'
+                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(140,120,83,0.15)'
+                              e.currentTarget.style.borderColor = `${LUXE_COLORS.bronze}50`
+                            }}
+                            title="Cancel Appointment"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
 
                       {/* Postpone Button - Draft, Booked, Checked In only */}
-                      {(appointment.status === 'draft' || appointment.status === 'booked' || appointment.status === 'checked_in') && (
+                      {(appointment.status === 'draft' ||
+                        appointment.status === 'booked' ||
+                        appointment.status === 'checked_in') && (
                         <Button
                           size="sm"
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation()
                             setAppointmentToPostpone(appointment)
                             setPostponeDialogOpen(true)
@@ -1159,19 +1336,22 @@ function AppointmentsContent() {
                           }}
                           className="transition-all duration-300 w-9 h-9 p-0"
                           style={{
-                            background: 'linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(59,130,246,0.15) 100%)',
+                            background:
+                              'linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(59,130,246,0.15) 100%)',
                             color: '#3B82F6',
                             border: '1.5px solid rgba(59,130,246,0.5)',
                             boxShadow: '0 2px 8px rgba(59,130,246,0.15)'
                           }}
                           onMouseEnter={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59,130,246,0.40) 0%, rgba(59,130,246,0.30) 100%)'
+                            e.currentTarget.style.background =
+                              'linear-gradient(135deg, rgba(59,130,246,0.40) 0%, rgba(59,130,246,0.30) 100%)'
                             e.currentTarget.style.transform = 'scale(1.15) rotate(5deg)'
                             e.currentTarget.style.boxShadow = '0 4px 16px rgba(59,130,246,0.30)'
                             e.currentTarget.style.borderColor = 'rgba(59,130,246,0.8)'
                           }}
                           onMouseLeave={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(59,130,246,0.15) 100%)'
+                            e.currentTarget.style.background =
+                              'linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(59,130,246,0.15) 100%)'
                             e.currentTarget.style.transform = 'scale(1) rotate(0deg)'
                             e.currentTarget.style.boxShadow = '0 2px 8px rgba(59,130,246,0.15)'
                             e.currentTarget.style.borderColor = 'rgba(59,130,246,0.5)'
@@ -1186,26 +1366,29 @@ function AppointmentsContent() {
                       {appointment.status === 'draft' && (
                         <Button
                           size="sm"
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation()
                             setAppointmentToDelete(appointment)
                             setDeleteConfirmOpen(true)
                           }}
                           className="transition-all duration-300 w-9 h-9 p-0"
                           style={{
-                            background: 'linear-gradient(135deg, rgba(232,180,184,0.25) 0%, rgba(232,180,184,0.15) 100%)',
+                            background:
+                              'linear-gradient(135deg, rgba(232,180,184,0.25) 0%, rgba(232,180,184,0.15) 100%)',
                             color: LUXE_COLORS.rose,
                             border: `1.5px solid ${LUXE_COLORS.rose}50`,
                             boxShadow: '0 2px 8px rgba(232,180,184,0.15)'
                           }}
                           onMouseEnter={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(232,180,184,0.40) 0%, rgba(232,180,184,0.30) 100%)'
+                            e.currentTarget.style.background =
+                              'linear-gradient(135deg, rgba(232,180,184,0.40) 0%, rgba(232,180,184,0.30) 100%)'
                             e.currentTarget.style.transform = 'scale(1.15) rotate(-5deg)'
                             e.currentTarget.style.boxShadow = '0 4px 16px rgba(232,180,184,0.30)'
                             e.currentTarget.style.borderColor = `${LUXE_COLORS.rose}80`
                           }}
                           onMouseLeave={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(232,180,184,0.25) 0%, rgba(232,180,184,0.15) 100%)'
+                            e.currentTarget.style.background =
+                              'linear-gradient(135deg, rgba(232,180,184,0.25) 0%, rgba(232,180,184,0.15) 100%)'
                             e.currentTarget.style.transform = 'scale(1) rotate(0deg)'
                             e.currentTarget.style.boxShadow = '0 2px 8px rgba(232,180,184,0.15)'
                             e.currentTarget.style.borderColor = `${LUXE_COLORS.rose}50`
@@ -1220,25 +1403,28 @@ function AppointmentsContent() {
                       {(appointment.status === 'cancelled' || appointment.status === 'no_show') && (
                         <Button
                           size="sm"
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation()
                             handleRestoreAppointment(appointment)
                           }}
                           className="transition-all duration-300 w-9 h-9 p-0"
                           style={{
-                            background: 'linear-gradient(135deg, rgba(15,111,92,0.25) 0%, rgba(15,111,92,0.15) 100%)',
+                            background:
+                              'linear-gradient(135deg, rgba(15,111,92,0.25) 0%, rgba(15,111,92,0.15) 100%)',
                             color: LUXE_COLORS.emerald,
                             border: `1.5px solid ${LUXE_COLORS.emerald}50`,
                             boxShadow: '0 2px 8px rgba(15,111,92,0.15)'
                           }}
                           onMouseEnter={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(15,111,92,0.40) 0%, rgba(15,111,92,0.30) 100%)'
+                            e.currentTarget.style.background =
+                              'linear-gradient(135deg, rgba(15,111,92,0.40) 0%, rgba(15,111,92,0.30) 100%)'
                             e.currentTarget.style.transform = 'scale(1.15) rotate(5deg)'
                             e.currentTarget.style.boxShadow = '0 4px 16px rgba(15,111,92,0.30)'
                             e.currentTarget.style.borderColor = `${LUXE_COLORS.emerald}80`
                           }}
                           onMouseLeave={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(15,111,92,0.25) 0%, rgba(15,111,92,0.15) 100%)'
+                            e.currentTarget.style.background =
+                              'linear-gradient(135deg, rgba(15,111,92,0.25) 0%, rgba(15,111,92,0.15) 100%)'
                             e.currentTarget.style.transform = 'scale(1) rotate(0deg)'
                             e.currentTarget.style.boxShadow = '0 2px 8px rgba(15,111,92,0.15)'
                             e.currentTarget.style.borderColor = `${LUXE_COLORS.emerald}50`
@@ -1267,14 +1453,18 @@ function AppointmentsContent() {
             boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.2)'
           }}
         >
-          <DialogHeader className="p-6 pb-4" style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}15` }}>
+          <DialogHeader
+            className="p-6 pb-4"
+            style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}15` }}
+          >
             <DialogTitle className="text-xl" style={{ color: LUXE_COLORS.champagne }}>
               Cancel Appointment
             </DialogTitle>
           </DialogHeader>
           <div className="p-6">
             <p className="mb-4" style={{ color: LUXE_COLORS.bronze }}>
-              Are you sure you want to cancel this appointment? The customer will need to be notified.
+              Are you sure you want to cancel this appointment? The customer will need to be
+              notified.
             </p>
             {appointmentToCancel && (
               <div
@@ -1301,7 +1491,7 @@ function AppointmentsContent() {
               <Textarea
                 placeholder="e.g., Customer requested, schedule conflict..."
                 value={cancelReason}
-                onChange={(e) => setCancelReason(e.target.value)}
+                onChange={e => setCancelReason(e.target.value)}
                 rows={3}
                 className="border-0"
                 style={{
@@ -1353,14 +1543,18 @@ function AppointmentsContent() {
             boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.2)'
           }}
         >
-          <DialogHeader className="p-6 pb-4" style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}15` }}>
+          <DialogHeader
+            className="p-6 pb-4"
+            style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}15` }}
+          >
             <DialogTitle className="text-xl" style={{ color: LUXE_COLORS.champagne }}>
               Delete Appointment Permanently
             </DialogTitle>
           </DialogHeader>
           <div className="p-6">
             <p className="mb-6" style={{ color: LUXE_COLORS.bronze }}>
-              Are you sure you want to permanently delete this appointment? This action cannot be undone and all data will be lost.
+              Are you sure you want to permanently delete this appointment? This action cannot be
+              undone and all data will be lost.
             </p>
             {appointmentToDelete && (
               <div
@@ -1430,8 +1624,14 @@ function AppointmentsContent() {
             boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(59,130,246,0.2)'
           }}
         >
-          <DialogHeader className="p-6 pb-4" style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}15` }}>
-            <DialogTitle className="text-xl flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+          <DialogHeader
+            className="p-6 pb-4"
+            style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}15` }}
+          >
+            <DialogTitle
+              className="text-xl flex items-center gap-2"
+              style={{ color: LUXE_COLORS.champagne }}
+            >
               <Clock className="w-5 h-5" style={{ color: '#3B82F6' }} />
               Reschedule Appointment
             </DialogTitle>
@@ -1452,7 +1652,8 @@ function AppointmentsContent() {
                   {appointmentToPostpone.customer_name || 'Customer'}
                 </p>
                 <p className="text-sm mb-2" style={{ color: LUXE_COLORS.bronze }}>
-                  Current: {appointmentToPostpone.start_time &&
+                  Current:{' '}
+                  {appointmentToPostpone.start_time &&
                     format(new Date(appointmentToPostpone.start_time), 'MMM d, yyyy • h:mm a')}
                 </p>
                 <p className="text-xs" style={{ color: LUXE_COLORS.bronze, opacity: 0.7 }}>
@@ -1469,7 +1670,7 @@ function AppointmentsContent() {
               <input
                 type="date"
                 value={postponeDate}
-                onChange={(e) => setPostponeDate(e.target.value)}
+                onChange={e => setPostponeDate(e.target.value)}
                 min={format(new Date(), 'yyyy-MM-dd')}
                 className="w-full px-3 py-2 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{
@@ -1482,7 +1683,10 @@ function AppointmentsContent() {
 
             {/* ✅ ENTERPRISE: Time Slot Selection with Conflict Detection */}
             <div className="space-y-2">
-              <Label className="flex items-center justify-between" style={{ color: LUXE_COLORS.champagne }}>
+              <Label
+                className="flex items-center justify-between"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 <span>
                   New Time <span style={{ color: '#3B82F6' }}>*</span>
                   {appointmentToPostpone && (
@@ -1492,7 +1696,10 @@ function AppointmentsContent() {
                   )}
                 </span>
                 {appointmentToPostpone?.stylist_id && (
-                  <span className="text-[10px] font-normal" style={{ color: LUXE_COLORS.bronze, opacity: 0.8 }}>
+                  <span
+                    className="text-[10px] font-normal"
+                    style={{ color: LUXE_COLORS.bronze, opacity: 0.8 }}
+                  >
                     ✨ Draft appointments don't block slots
                   </span>
                 )}
@@ -1518,7 +1725,10 @@ function AppointmentsContent() {
                           const now = new Date()
                           const [slotHour, slotMinute] = slot.start.split(':').map(Number)
                           // Add 30 minute buffer for booking
-                          if (slotHour < now.getHours() || (slotHour === now.getHours() && slotMinute <= now.getMinutes() + 30)) {
+                          if (
+                            slotHour < now.getHours() ||
+                            (slotHour === now.getHours() && slotMinute <= now.getMinutes() + 30)
+                          ) {
                             return false
                           }
                         }
@@ -1538,18 +1748,17 @@ function AppointmentsContent() {
                         const displayHours = hours % 12 || 12
                         const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
 
-                        const conflictInfo = conflict.hasConflict && conflict.conflictingAppointment
-                          ? `${conflict.conflictingAppointment.customer_name} (${conflict.conflictingAppointment.status})`
-                          : ''
+                        const conflictInfo =
+                          conflict.hasConflict && conflict.conflictingAppointment
+                            ? `${conflict.conflictingAppointment.customer_name} (${conflict.conflictingAppointment.status})`
+                            : ''
 
                         return (
                           <SelectItem
                             key={slot.start}
                             value={slot.start}
                             disabled={conflict.hasConflict}
-                            className={cn(
-                              conflict.hasConflict && 'opacity-50 cursor-not-allowed'
-                            )}
+                            className={cn(conflict.hasConflict && 'opacity-50 cursor-not-allowed')}
                             title={conflictInfo}
                           >
                             <div className="flex items-center justify-between w-full gap-2">
@@ -1608,7 +1817,10 @@ function AppointmentsContent() {
                   New Appointment Time:
                 </p>
                 <p className="text-sm mt-1" style={{ color: '#10B981' }}>
-                  {format(new Date(`${postponeDate}T${postponeTime}`), 'EEEE, MMMM d, yyyy • h:mm a')}
+                  {format(
+                    new Date(`${postponeDate}T${postponeTime}`),
+                    'EEEE, MMMM d, yyyy • h:mm a'
+                  )}
                 </p>
               </div>
             )}
@@ -1620,7 +1832,10 @@ function AppointmentsContent() {
               </p>
             )}
           </div>
-          <DialogFooter className="p-6 pt-4 flex gap-3" style={{ borderTop: `1px solid ${LUXE_COLORS.gold}15` }}>
+          <DialogFooter
+            className="p-6 pt-4 flex gap-3"
+            style={{ borderTop: `1px solid ${LUXE_COLORS.gold}15` }}
+          >
             <Button
               onClick={() => {
                 setPostponeDialogOpen(false)
@@ -1646,7 +1861,7 @@ function AppointmentsContent() {
                 color: 'white',
                 border: 'none',
                 fontWeight: '600',
-                opacity: (!postponeDate || !postponeTime) ? 0.5 : 1
+                opacity: !postponeDate || !postponeTime ? 0.5 : 1
               }}
             >
               <Clock className="w-4 h-4 mr-2" />
@@ -1666,7 +1881,7 @@ function AppointmentsContent() {
         services={services || []}
         branches={branches}
         existingAppointments={appointments || []}
-        onSave={async (data) => {
+        onSave={async data => {
           if (!selectedAppointment) return
 
           const loadingId = showLoading('Saving changes...', 'Please wait')

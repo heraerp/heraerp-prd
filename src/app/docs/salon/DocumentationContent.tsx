@@ -18,6 +18,9 @@ interface DocumentationContentProps {
   mermaidCharts: string[]
 }
 
-export default function DocumentationContent({ htmlContent, mermaidCharts }: DocumentationContentProps) {
+export default function DocumentationContent({
+  htmlContent,
+  mermaidCharts
+}: DocumentationContentProps) {
   return <ClientMermaidRenderer htmlContent={htmlContent} mermaidCharts={mermaidCharts} />
 }

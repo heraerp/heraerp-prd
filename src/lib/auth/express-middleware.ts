@@ -18,7 +18,8 @@ export function heraAuthMiddleware(opts?: GuardOptions) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const ctx = await getEnterpriseAuthContext(req as unknown as Request)
     if (!ctx) return res.status(401).json({ error: 'unauthorized' })
-    if (opts?.requireOrg && !ctx.organizationId) return res.status(401).json({ error: 'org_required' })
+    if (opts?.requireOrg && !ctx.organizationId)
+      return res.status(401).json({ error: 'org_required' })
     const rbac = checkRBAC(ctx, opts)
     if (!rbac.ok) return res.status(403).json({ error: 'forbidden', reason: rbac.reason })
     req.heraAuth = {
@@ -30,4 +31,3 @@ export function heraAuthMiddleware(opts?: GuardOptions) {
     next()
   }
 }
-

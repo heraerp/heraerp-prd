@@ -89,8 +89,8 @@ const BUSINESS_CONSTRAINTS = {
   maxAppointmentDuration: 240
 }
 
-export function EnterpriseCalendar({ 
-  className, 
+export function EnterpriseCalendar({
+  className,
   onNewBooking,
   features = {
     realTimeUpdates: true,
@@ -101,7 +101,10 @@ export function EnterpriseCalendar({
   }
 }: EnterpriseCalendarProps) {
   const { organizationId } = useSecuredSalonContext()
-  const { selectedBranchId, branches, setBranchId } = useBranchFilter(organizationId, 'salon-calendar')
+  const { selectedBranchId, branches, setBranchId } = useBranchFilter(
+    organizationId,
+    'salon-calendar'
+  )
   const queryClient = useQueryClient()
 
   // Calendar state
@@ -140,7 +143,13 @@ export function EnterpriseCalendar({
   const queries = useQueries({
     queries: [
       {
-        queryKey: ['appointments', organizationId, dateRange.start.toISOString(), dateRange.end.toISOString(), selectedBranchId],
+        queryKey: [
+          'appointments',
+          organizationId,
+          dateRange.start.toISOString(),
+          dateRange.end.toISOString(),
+          selectedBranchId
+        ],
         queryFn: async () => {
           if (!organizationId) return []
           return await getTransactions({
@@ -148,7 +157,9 @@ export function EnterpriseCalendar({
             transactionType: 'APPOINTMENT',
             startDate: dateRange.start.toISOString(),
             endDate: dateRange.end.toISOString(),
-            ...(selectedBranchId && selectedBranchId !== '__ALL__' ? { branchId: selectedBranchId } : {})
+            ...(selectedBranchId && selectedBranchId !== '__ALL__'
+              ? { branchId: selectedBranchId }
+              : {})
           })
         },
         enabled: !!organizationId,
@@ -162,7 +173,9 @@ export function EnterpriseCalendar({
           return await getEntities('', {
             p_organization_id: organizationId,
             p_entity_type: 'STAFF',
-            ...(selectedBranchId && selectedBranchId !== '__ALL__' ? { p_branch_id: selectedBranchId } : {})
+            ...(selectedBranchId && selectedBranchId !== '__ALL__'
+              ? { p_branch_id: selectedBranchId }
+              : {})
           })
         },
         enabled: !!organizationId,
@@ -196,7 +209,7 @@ export function EnterpriseCalendar({
   })
 
   const [appointmentsQuery, staffQuery, customersQuery, servicesQuery] = queries
-  
+
   const isLoading = queries.some(q => q.isLoading)
   const hasError = queries.some(q => q.error)
   const errors = queries.filter(q => q.error).map(q => q.error)
@@ -210,13 +223,18 @@ export function EnterpriseCalendar({
 
     // Create lookup maps for performance
     const customerMap = new Map(rawCustomers.map(c => [c.id, c.entity_name]))
-    const serviceMap = new Map(rawServices.map(s => [s.id, { name: s.entity_name, color: s.metadata?.color || '#3182ce' }]))
+    const serviceMap = new Map(
+      rawServices.map(s => [s.id, { name: s.entity_name, color: s.metadata?.color || '#3182ce' }])
+    )
 
     // Transform appointments with conflict detection
     const transformedAppointments: CalendarAppointment[] = rawAppointments.map(apt => {
       const metadata = apt.metadata || {}
-      const serviceInfo = serviceMap.get(metadata.service_id) || { name: 'Service', color: '#3182ce' }
-      
+      const serviceInfo = serviceMap.get(metadata.service_id) || {
+        name: 'Service',
+        color: '#3182ce'
+      }
+
       return {
         id: apt.id,
         title: serviceInfo.name,
@@ -255,7 +273,13 @@ export function EnterpriseCalendar({
       customers: rawCustomers,
       services: rawServices
     }
-  }, [appointmentsQuery.data, staffQuery.data, customersQuery.data, servicesQuery.data, features.conflictDetection])
+  }, [
+    appointmentsQuery.data,
+    staffQuery.data,
+    customersQuery.data,
+    servicesQuery.data,
+    features.conflictDetection
+  ])
 
   // Conflict detection function
   const detectConflicts = useCallback((appointment: any, allAppointments: any[]): string[] => {
@@ -289,7 +313,7 @@ export function EnterpriseCalendar({
       const hour = start + Math.floor((i * BUSINESS_CONSTRAINTS.slotDuration) / 60)
       const minute = (i * BUSINESS_CONSTRAINTS.slotDuration) % 60
       const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-      
+
       slots.push({
         time,
         displayTime: new Date(2024, 0, 1, hour, minute).toLocaleTimeString('en-US', {
@@ -315,12 +339,12 @@ export function EnterpriseCalendar({
   const viewDates = useMemo(() => {
     const dates = []
     const current = new Date(dateRange.start)
-    
+
     while (current <= dateRange.end) {
       dates.push(new Date(current))
       current.setDate(current.setDate() + 1)
     }
-    
+
     return dates
   }, [dateRange])
 
@@ -342,24 +366,27 @@ export function EnterpriseCalendar({
   }, [])
 
   // Navigation handlers
-  const navigateCalendar = useCallback((direction: 'prev' | 'next') => {
-    const newDate = new Date(selectedDate)
-    const amount = direction === 'next' ? 1 : -1
+  const navigateCalendar = useCallback(
+    (direction: 'prev' | 'next') => {
+      const newDate = new Date(selectedDate)
+      const amount = direction === 'next' ? 1 : -1
 
-    switch (viewMode) {
-      case 'day':
-        newDate.setDate(newDate.getDate() + amount)
-        break
-      case 'week':
-        newDate.setDate(newDate.getDate() + (amount * 7))
-        break
-      case 'month':
-        newDate.setMonth(newDate.getMonth() + amount)
-        break
-    }
+      switch (viewMode) {
+        case 'day':
+          newDate.setDate(newDate.getDate() + amount)
+          break
+        case 'week':
+          newDate.setDate(newDate.getDate() + amount * 7)
+          break
+        case 'month':
+          newDate.setMonth(newDate.getMonth() + amount)
+          break
+      }
 
-    setSelectedDate(newDate)
-  }, [selectedDate, viewMode])
+      setSelectedDate(newDate)
+    },
+    [selectedDate, viewMode]
+  )
 
   // Keyboard navigation
   useEffect(() => {
@@ -404,7 +431,7 @@ export function EnterpriseCalendar({
 
     // Note: This would connect to your WebSocket endpoint
     console.log('Setting up real-time updates for organization:', organizationId)
-    
+
     // Cleanup function would close WebSocket connection
     return () => {
       console.log('Cleaning up real-time updates')
@@ -421,9 +448,7 @@ export function EnterpriseCalendar({
           <p className="text-sm text-muted-foreground mb-4">
             {errors[0]?.message || 'Please try again'}
           </p>
-          <Button onClick={() => queryClient.invalidateQueries()}>
-            Retry
-          </Button>
+          <Button onClick={() => queryClient.invalidateQueries()}>Retry</Button>
         </div>
       </div>
     )
@@ -447,25 +472,13 @@ export function EnterpriseCalendar({
       <div className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigateCalendar('prev')}
-            >
+            <Button variant="outline" size="sm" onClick={() => navigateCalendar('prev')}>
               <ChevronLeft className="w-4 h-4" />
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSelectedDate(new Date())}
-            >
+            <Button variant="outline" size="sm" onClick={() => setSelectedDate(new Date())}>
               Today
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigateCalendar('next')}
-            >
+            <Button variant="outline" size="sm" onClick={() => navigateCalendar('next')}>
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
@@ -504,7 +517,7 @@ export function EnterpriseCalendar({
         </div>
 
         <div className="flex items-center gap-2">
-          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)}>
+          <Tabs value={viewMode} onValueChange={v => setViewMode(v as any)}>
             <TabsList>
               <TabsTrigger value="day">Day</TabsTrigger>
               <TabsTrigger value="week">Week</TabsTrigger>
@@ -528,13 +541,13 @@ export function EnterpriseCalendar({
         {/* Sidebar */}
         <div className="w-64 border-r bg-gray-50 p-4">
           <h3 className="font-semibold mb-3">Resources</h3>
-          
+
           {/* Branch Filter */}
           <div className="mb-4">
             <label className="text-sm font-medium mb-2 block">Branch</label>
             <select
               value={selectedBranchId || '__ALL__'}
-              onChange={(e) => setBranchId(e.target.value === '__ALL__' ? '' : e.target.value)}
+              onChange={e => setBranchId(e.target.value === '__ALL__' ? '' : e.target.value)}
               className="w-full p-2 border rounded-md text-sm"
             >
               <option value="__ALL__">All Branches</option>
@@ -552,11 +565,7 @@ export function EnterpriseCalendar({
               className="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-white"
               onClick={() => handleResourceToggle('all')}
             >
-              <input
-                type="checkbox"
-                checked={selectedResources.includes('all')}
-                readOnly
-              />
+              <input type="checkbox" checked={selectedResources.includes('all')} readOnly />
               <span className="text-sm font-medium">All Stylists</span>
             </div>
 
@@ -573,9 +582,7 @@ export function EnterpriseCalendar({
                   readOnly
                 />
                 <Avatar className="w-6 h-6">
-                  <AvatarFallback className="text-xs">
-                    {resource.name.charAt(0)}
-                  </AvatarFallback>
+                  <AvatarFallback className="text-xs">{resource.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{resource.name}</p>
@@ -583,10 +590,7 @@ export function EnterpriseCalendar({
                     {resource.businessHours.start}:00 - {resource.businessHours.end}:00
                   </p>
                 </div>
-                <Badge
-                  variant={resource.available ? 'default' : 'secondary'}
-                  className="text-xs"
-                >
+                <Badge variant={resource.available ? 'default' : 'secondary'} className="text-xs">
                   {resource.available ? 'Available' : 'Away'}
                 </Badge>
               </div>
@@ -605,9 +609,7 @@ export function EnterpriseCalendar({
               <div key={resource.id} className="flex-1 min-w-32 border-r p-2 text-center">
                 <div className="flex items-center justify-center gap-2">
                   <Avatar className="w-6 h-6">
-                    <AvatarFallback className="text-xs">
-                      {resource.name.charAt(0)}
-                    </AvatarFallback>
+                    <AvatarFallback className="text-xs">{resource.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">{resource.name}</p>
@@ -664,9 +666,7 @@ const TimeSlotRow = React.memo(({ timeSlot, resources, appointments }: any) => {
     <div className="flex border-b h-15">
       {/* Time column */}
       <div className="w-16 border-r p-2 bg-gray-50">
-        <span className="text-xs font-medium text-muted-foreground">
-          {timeSlot.displayTime}
-        </span>
+        <span className="text-xs font-medium text-muted-foreground">{timeSlot.displayTime}</span>
       </div>
 
       {/* Resource columns */}
@@ -677,8 +677,9 @@ const TimeSlotRow = React.memo(({ timeSlot, resources, appointments }: any) => {
           return apt.stylist_id === resource.id && aptTime === slotTime
         })
 
-        const isBusinessHour = timeSlot.hour >= resource.businessHours.start && 
-                              timeSlot.hour < resource.businessHours.end
+        const isBusinessHour =
+          timeSlot.hour >= resource.businessHours.start &&
+          timeSlot.hour < resource.businessHours.end
 
         return (
           <div

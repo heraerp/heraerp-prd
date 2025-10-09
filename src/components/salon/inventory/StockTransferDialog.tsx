@@ -22,7 +22,13 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import type { StockTransferInput } from '@/types/inventory'
 
@@ -81,21 +87,22 @@ export function StockTransferDialog({
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const availableProducts = products.filter(p =>
-    !items.some(item => item.product_id === p.id)
-  )
+  const availableProducts = products.filter(p => !items.some(item => item.product_id === p.id))
 
   const handleAddItem = () => {
     const product = products.find(p => p.id === selectedProductId)
     if (!product || quantity <= 0) return
 
-    setItems([...items, {
-      product_id: product.id,
-      product_name: product.name,
-      quantity,
-      available: product.available_qty,
-      cost_price: product.cost_price
-    }])
+    setItems([
+      ...items,
+      {
+        product_id: product.id,
+        product_name: product.name,
+        quantity,
+        available: product.available_qty,
+        cost_price: product.cost_price
+      }
+    ])
 
     setSelectedProductId('')
     setQuantity(1)
@@ -106,17 +113,22 @@ export function StockTransferDialog({
   }
 
   const handleUpdateQuantity = (productId: string, newQty: number) => {
-    setItems(items.map(item =>
-      item.product_id === productId
-        ? { ...item, quantity: Math.max(1, Math.min(newQty, item.available)) }
-        : item
-    ))
+    setItems(
+      items.map(item =>
+        item.product_id === productId
+          ? { ...item, quantity: Math.max(1, Math.min(newQty, item.available)) }
+          : item
+      )
+    )
   }
 
-  const canTransfer = fromBranchId && toBranchId && items.length > 0 &&
+  const canTransfer =
+    fromBranchId &&
+    toBranchId &&
+    items.length > 0 &&
     items.every(item => item.quantity <= item.available)
 
-  const totalValue = items.reduce((sum, item) => sum + (item.quantity * item.cost_price), 0)
+  const totalValue = items.reduce((sum, item) => sum + item.quantity * item.cost_price, 0)
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
 
   const handleSubmit = async () => {
@@ -205,11 +217,13 @@ export function StockTransferDialog({
                   <SelectValue placeholder="Select destination branch" />
                 </SelectTrigger>
                 <SelectContent className="hera-select-content">
-                  {branches.filter(b => b.id !== fromBranchId).map(branch => (
-                    <SelectItem key={branch.id} value={branch.id}>
-                      {branch.name}
-                    </SelectItem>
-                  ))}
+                  {branches
+                    .filter(b => b.id !== fromBranchId)
+                    .map(branch => (
+                      <SelectItem key={branch.id} value={branch.id}>
+                        {branch.name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
@@ -255,7 +269,7 @@ export function StockTransferDialog({
                 <Input
                   type="number"
                   value={quantity}
-                  onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                  onChange={e => setQuantity(parseInt(e.target.value) || 1)}
                   placeholder="Quantity"
                   className="w-32"
                   style={{
@@ -283,7 +297,7 @@ export function StockTransferDialog({
                 Transfer Items ({items.length})
               </h4>
 
-              {items.map((item) => (
+              {items.map(item => (
                 <div
                   key={item.product_id}
                   style={{
@@ -300,7 +314,8 @@ export function StockTransferDialog({
                         {item.product_name}
                       </div>
                       <div className="text-xs mt-1" style={{ color: COLORS.lightText + '80' }}>
-                        Available: {item.available} | Value: AED {(item.quantity * item.cost_price).toFixed(2)}
+                        Available: {item.available} | Value: AED{' '}
+                        {(item.quantity * item.cost_price).toFixed(2)}
                       </div>
                     </div>
 
@@ -308,7 +323,9 @@ export function StockTransferDialog({
                       <Input
                         type="number"
                         value={item.quantity}
-                        onChange={(e) => handleUpdateQuantity(item.product_id, parseInt(e.target.value) || 1)}
+                        onChange={e =>
+                          handleUpdateQuantity(item.product_id, parseInt(e.target.value) || 1)
+                        }
                         className="w-24"
                         style={{
                           backgroundColor: COLORS.charcoalDark,
@@ -345,17 +362,25 @@ export function StockTransferDialog({
               >
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>Total Items</div>
-                    <div className="text-xl font-bold" style={{ color: COLORS.gold }}>{totalItems}</div>
+                    <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>
+                      Total Items
+                    </div>
+                    <div className="text-xl font-bold" style={{ color: COLORS.gold }}>
+                      {totalItems}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>Total Value</div>
+                    <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>
+                      Total Value
+                    </div>
                     <div className="text-xl font-bold" style={{ color: COLORS.gold }}>
                       AED {totalValue.toFixed(2)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>Status</div>
+                    <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>
+                      Status
+                    </div>
                     <Badge
                       variant="outline"
                       style={{
@@ -379,7 +404,7 @@ export function StockTransferDialog({
             </label>
             <Input
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
               placeholder="Add transfer notes..."
               style={{
                 backgroundColor: COLORS.charcoalLight,

@@ -64,8 +64,9 @@ export function checkRBAC(
   if (!opts) return { ok: true }
   if (!checkAny(ctx.roles, opts.rolesAny)) return { ok: false, reason: 'missing_required_role' }
   if (!checkAll(ctx.roles, opts.rolesAll)) return { ok: false, reason: 'missing_required_role' }
-  if (!checkAny(ctx.permissions, opts.permsAny)) return { ok: false, reason: 'missing_required_permission' }
-  if (!checkAll(ctx.permissions, opts.permsAll)) return { ok: false, reason: 'missing_required_permission' }
+  if (!checkAny(ctx.permissions, opts.permsAny))
+    return { ok: false, reason: 'missing_required_permission' }
+  if (!checkAll(ctx.permissions, opts.permsAll))
+    return { ok: false, reason: 'missing_required_permission' }
   return { ok: true }
 }
-

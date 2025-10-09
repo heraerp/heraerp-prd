@@ -5,8 +5,8 @@ export default async function MultiBranchPage() {
     <SalonDocPage
       filename="multi-branch.md"
       title="Multi-Branch Operations"
-      prevPage={{ href: "/docs/salon/pos", label: "Point of Sale" }}
-      nextPage={{ href: "/docs/salon/financial-integration", label: "Financial Integration" }}
+      prevPage={{ href: '/docs/salon/pos', label: 'Point of Sale' }}
+      nextPage={{ href: '/docs/salon/financial-integration', label: 'Financial Integration' }}
     />
   )
 }

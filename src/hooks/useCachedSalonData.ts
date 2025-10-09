@@ -16,7 +16,7 @@ const SALON_QUERY_KEYS = {
   appointments: (orgId: string, filters?: any) => ['salon', 'appointments', orgId, filters],
   staff: (orgId: string, filters?: any) => ['salon', 'staff', orgId, filters],
   customers: (orgId: string, filters?: any) => ['salon', 'customers', orgId, filters],
-  services: (orgId: string, filters?: any) => ['salon', 'services', orgId, filters],
+  services: (orgId: string, filters?: any) => ['salon', 'services', orgId, filters]
 } as const
 
 /**
@@ -24,7 +24,7 @@ const SALON_QUERY_KEYS = {
  */
 export function useCachedAppointments(filters?: any) {
   const { organizationId } = useSecuredSalonContext()
-  
+
   return useQuery({
     queryKey: SALON_QUERY_KEYS.appointments(organizationId || '', filters),
     queryFn: () => {
@@ -34,7 +34,7 @@ export function useCachedAppointments(filters?: any) {
     },
     enabled: !!organizationId,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 15 * 60 * 1000, // 15 minutes
+    gcTime: 15 * 60 * 1000 // 15 minutes
   })
 }
 
@@ -43,7 +43,7 @@ export function useCachedAppointments(filters?: any) {
  */
 export function useCachedStaff(filters?: any) {
   const { organizationId } = useSecuredSalonContext()
-  
+
   return useQuery({
     queryKey: SALON_QUERY_KEYS.staff(organizationId || '', filters),
     queryFn: () => {
@@ -52,7 +52,7 @@ export function useCachedStaff(filters?: any) {
     },
     enabled: !!organizationId,
     staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 30 * 60 * 1000 // 30 minutes
   })
 }
 
@@ -61,7 +61,7 @@ export function useCachedStaff(filters?: any) {
  */
 export function useCachedCustomers(filters?: any) {
   const { organizationId } = useSecuredSalonContext()
-  
+
   return useQuery({
     queryKey: SALON_QUERY_KEYS.customers(organizationId || '', filters),
     queryFn: () => {
@@ -70,7 +70,7 @@ export function useCachedCustomers(filters?: any) {
     },
     enabled: !!organizationId,
     staleTime: 15 * 60 * 1000, // 15 minutes
-    gcTime: 45 * 60 * 1000, // 45 minutes
+    gcTime: 45 * 60 * 1000 // 45 minutes
   })
 }
 
@@ -79,7 +79,7 @@ export function useCachedCustomers(filters?: any) {
  */
 export function useCachedServices(filters?: any) {
   const { organizationId } = useSecuredSalonContext()
-  
+
   return useQuery({
     queryKey: SALON_QUERY_KEYS.services(organizationId || '', filters),
     queryFn: () => {
@@ -88,7 +88,7 @@ export function useCachedServices(filters?: any) {
     },
     enabled: !!organizationId,
     staleTime: 20 * 60 * 1000, // 20 minutes
-    gcTime: 60 * 60 * 1000, // 1 hour
+    gcTime: 60 * 60 * 1000 // 1 hour
   })
 }
 
@@ -97,18 +97,21 @@ export function useCachedServices(filters?: any) {
  */
 export function useCachedDashboardData() {
   const { organizationId } = useSecuredSalonContext()
-  
+
   const appointmentsQuery = useCachedAppointments()
   const staffQuery = useCachedStaff()
   const customersQuery = useCachedCustomers()
   const servicesQuery = useCachedServices()
-  
-  const isLoading = appointmentsQuery.isLoading || staffQuery.isLoading || 
-                   customersQuery.isLoading || servicesQuery.isLoading
-  
-  const error = appointmentsQuery.error || staffQuery.error || 
-               customersQuery.error || servicesQuery.error
-  
+
+  const isLoading =
+    appointmentsQuery.isLoading ||
+    staffQuery.isLoading ||
+    customersQuery.isLoading ||
+    servicesQuery.isLoading
+
+  const error =
+    appointmentsQuery.error || staffQuery.error || customersQuery.error || servicesQuery.error
+
   return {
     appointments: appointmentsQuery.data || [],
     staff: staffQuery.data || [],

@@ -14,46 +14,46 @@ if (typeof window !== 'undefined') {
       primaryColor: '#e6f7f3',
       primaryTextColor: '#065f46',
       primaryBorderColor: '#10b981',
-      
+
       // Secondary colors
       secondaryColor: '#e0f2fe',
       secondaryTextColor: '#0c4a6e',
       secondaryBorderColor: '#0ea5e9',
-      
+
       // Tertiary colors
       tertiaryColor: '#fef3c7',
       tertiaryTextColor: '#78350f',
       tertiaryBorderColor: '#fbbf24',
-      
+
       // Background colors
       background: '#ffffff',
       mainBkg: '#f0fdf4',
       secondBkg: '#f0f9ff',
       tertiaryBkg: '#fefce8',
-      
+
       // Text colors
       textColor: '#1f2937',
       taskTextColor: '#1f2937',
       taskTextDarkColor: '#1f2937',
-      
+
       // Lines and borders
       lineColor: '#6b7280',
       border1: '#10b981',
       border2: '#0ea5e9',
-      
+
       // Node styling
       nodeBkg: '#ffffff',
       nodeTextColor: '#1f2937',
       defaultLinkColor: '#6b7280',
-      
+
       // Cluster/Subgraph styling
       clusterBkg: '#f9fafb',
       clusterBorder: '#d1d5db',
-      
+
       // Special elements
       edgeLabelBackground: '#ffffff',
       titleColor: '#111827',
-      
+
       // Sequence diagram specific
       actorBorder: '#10b981',
       actorBkg: '#f0fdf4',
@@ -71,7 +71,7 @@ if (typeof window !== 'undefined') {
       activationBorderColor: '#10b981',
       activationBkgColor: '#f0fdf4',
       sequenceNumberColor: '#065f46',
-      
+
       // Git graph
       git0: '#ef4444',
       git1: '#f97316',
@@ -89,10 +89,10 @@ if (typeof window !== 'undefined') {
       gitInv5: '#ffffff',
       gitInv6: '#ffffff',
       gitInv7: '#ffffff',
-      
+
       // Font
       fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      fontSize: '14px',
+      fontSize: '14px'
     },
     flowchart: {
       htmlLabels: true,
@@ -118,19 +118,29 @@ interface ClientMermaidRendererProps {
   mermaidCharts: string[]
 }
 
-export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: ClientMermaidRendererProps) {
+export default function ClientMermaidRenderer({
+  htmlContent,
+  mermaidCharts
+}: ClientMermaidRendererProps) {
   const [renderedHtml, setRenderedHtml] = useState(htmlContent)
   const [expandedDiagram, setExpandedDiagram] = useState<number | null>(null)
   const [zoomLevel, setZoomLevel] = useState(1)
   const processedRef = useRef(false)
-  
+
   // Function to fix text colors on yellow backgrounds
   const fixYellowBackgroundTextColors = () => {
-    const yellowColors = ['#fef3c7', '#F5E6C8', '#fefce8', 'rgb(254, 243, 199)', 'rgb(245, 230, 200)', 'rgb(254, 252, 232)']
+    const yellowColors = [
+      '#fef3c7',
+      '#F5E6C8',
+      '#fefce8',
+      'rgb(254, 243, 199)',
+      'rgb(245, 230, 200)',
+      'rgb(254, 252, 232)'
+    ]
     const darkGray = '#374151'
-    
+
     // Find all SVG text elements
-    document.querySelectorAll('.mermaid text').forEach((textElement) => {
+    document.querySelectorAll('.mermaid text').forEach(textElement => {
       const parentNode = textElement.closest('g.node')
       if (parentNode) {
         const rect = parentNode.querySelector('rect')
@@ -144,18 +154,18 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
         }
       }
     })
-    
+
     // Also check for database table names specifically
     const dbTableNames = [
       'core_organizations',
-      'core_entities', 
+      'core_entities',
       'core_dynamic_data',
       'core_relationships',
       'universal_transactions',
       'universal_transaction_lines'
     ]
-    
-    document.querySelectorAll('.mermaid text').forEach((textElement) => {
+
+    document.querySelectorAll('.mermaid text').forEach(textElement => {
       const textContent = textElement.textContent || ''
       if (dbTableNames.some(name => textContent.includes(name))) {
         // Check if this text is on a yellow background
@@ -173,7 +183,7 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
       }
     })
   }
-  
+
   // Add global styles
   useEffect(() => {
     const styleId = 'mermaid-custom-styles'
@@ -276,7 +286,7 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
       `
       document.head.appendChild(style)
     }
-    
+
     return () => {
       const existingStyle = document.getElementById(styleId)
       if (existingStyle) {
@@ -284,96 +294,98 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
       }
     }
   }, [])
-  
+
   // Re-initialize mermaid when dark mode changes
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark')
-    
+
     mermaid.initialize({
       startOnLoad: false,
       theme: isDark ? 'dark' : 'neutral',
-      themeVariables: isDark ? {
-        // Dark mode theme
-        primaryColor: '#065f46',
-        primaryTextColor: '#d1fae5',
-        primaryBorderColor: '#10b981',
-        secondaryColor: '#0c4a6e',
-        secondaryTextColor: '#bae6fd',
-        secondaryBorderColor: '#0ea5e9',
-        tertiaryColor: '#78350f',
-        tertiaryTextColor: '#fef3c7',
-        tertiaryBorderColor: '#fbbf24',
-        background: '#1f2937',
-        mainBkg: '#065f46',
-        secondBkg: '#0c4a6e',
-        tertiaryBkg: '#78350f',
-        textColor: '#e5e7eb',
-        taskTextColor: '#e5e7eb',
-        lineColor: '#9ca3af',
-        border1: '#10b981',
-        border2: '#0ea5e9',
-        nodeBkg: '#374151',
-        nodeTextColor: '#e5e7eb',
-        defaultLinkColor: '#9ca3af',
-        clusterBkg: '#1f2937',
-        clusterBorder: '#4b5563',
-        edgeLabelBackground: '#374151',
-        titleColor: '#f3f4f6',
-        actorBorder: '#10b981',
-        actorBkg: '#065f46',
-        actorTextColor: '#d1fae5',
-        actorLineColor: '#9ca3af',
-        signalColor: '#d1d5db',
-        signalTextColor: '#e5e7eb',
-        labelBoxBorderColor: '#10b981',
-        labelBoxBkgColor: '#065f46',
-        labelTextColor: '#d1fae5',
-        fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
-        fontSize: '14px',
-      } : {
-        // Light mode theme (existing config)
-        primaryColor: '#e6f7f3',
-        primaryTextColor: '#065f46',
-        primaryBorderColor: '#10b981',
-        secondaryColor: '#e0f2fe',
-        secondaryTextColor: '#0c4a6e',
-        secondaryBorderColor: '#0ea5e9',
-        tertiaryColor: '#fef3c7',
-        tertiaryTextColor: '#374151', // Dark gray for yellow background
-        tertiaryBorderColor: '#f59e0b',
-        background: '#ffffff',
-        mainBkg: '#f0fdf4',
-        secondBkg: '#f0f9ff',
-        tertiaryBkg: '#fefce8',
-        textColor: '#1f2937',
-        taskTextColor: '#1f2937',
-        taskTextDarkColor: '#1f2937',
-        lineColor: '#6b7280',
-        border1: '#10b981',
-        border2: '#0ea5e9',
-        nodeBkg: '#ffffff',
-        nodeTextColor: '#1f2937',
-        defaultLinkColor: '#6b7280',
-        clusterBkg: '#f9fafb',
-        clusterBorder: '#d1d5db',
-        edgeLabelBackground: '#ffffff',
-        titleColor: '#111827',
-        actorBorder: '#10b981',
-        actorBkg: '#f0fdf4',
-        actorTextColor: '#065f46',
-        actorLineColor: '#6b7280',
-        signalColor: '#374151',
-        signalTextColor: '#1f2937',
-        labelBoxBorderColor: '#10b981',
-        labelBoxBkgColor: '#f0fdf4',
-        labelTextColor: '#065f46',
-        loopTextColor: '#1f2937',
-        noteBkgColor: '#fef3c7',
-        noteTextColor: '#374151', // Dark gray for better contrast on yellow
-        noteBorderColor: '#f59e0b',
-        fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
-        fontSize: '14px',
-      },
+      themeVariables: isDark
+        ? {
+            // Dark mode theme
+            primaryColor: '#065f46',
+            primaryTextColor: '#d1fae5',
+            primaryBorderColor: '#10b981',
+            secondaryColor: '#0c4a6e',
+            secondaryTextColor: '#bae6fd',
+            secondaryBorderColor: '#0ea5e9',
+            tertiaryColor: '#78350f',
+            tertiaryTextColor: '#fef3c7',
+            tertiaryBorderColor: '#fbbf24',
+            background: '#1f2937',
+            mainBkg: '#065f46',
+            secondBkg: '#0c4a6e',
+            tertiaryBkg: '#78350f',
+            textColor: '#e5e7eb',
+            taskTextColor: '#e5e7eb',
+            lineColor: '#9ca3af',
+            border1: '#10b981',
+            border2: '#0ea5e9',
+            nodeBkg: '#374151',
+            nodeTextColor: '#e5e7eb',
+            defaultLinkColor: '#9ca3af',
+            clusterBkg: '#1f2937',
+            clusterBorder: '#4b5563',
+            edgeLabelBackground: '#374151',
+            titleColor: '#f3f4f6',
+            actorBorder: '#10b981',
+            actorBkg: '#065f46',
+            actorTextColor: '#d1fae5',
+            actorLineColor: '#9ca3af',
+            signalColor: '#d1d5db',
+            signalTextColor: '#e5e7eb',
+            labelBoxBorderColor: '#10b981',
+            labelBoxBkgColor: '#065f46',
+            labelTextColor: '#d1fae5',
+            fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
+            fontSize: '14px'
+          }
+        : {
+            // Light mode theme (existing config)
+            primaryColor: '#e6f7f3',
+            primaryTextColor: '#065f46',
+            primaryBorderColor: '#10b981',
+            secondaryColor: '#e0f2fe',
+            secondaryTextColor: '#0c4a6e',
+            secondaryBorderColor: '#0ea5e9',
+            tertiaryColor: '#fef3c7',
+            tertiaryTextColor: '#374151', // Dark gray for yellow background
+            tertiaryBorderColor: '#f59e0b',
+            background: '#ffffff',
+            mainBkg: '#f0fdf4',
+            secondBkg: '#f0f9ff',
+            tertiaryBkg: '#fefce8',
+            textColor: '#1f2937',
+            taskTextColor: '#1f2937',
+            taskTextDarkColor: '#1f2937',
+            lineColor: '#6b7280',
+            border1: '#10b981',
+            border2: '#0ea5e9',
+            nodeBkg: '#ffffff',
+            nodeTextColor: '#1f2937',
+            defaultLinkColor: '#6b7280',
+            clusterBkg: '#f9fafb',
+            clusterBorder: '#d1d5db',
+            edgeLabelBackground: '#ffffff',
+            titleColor: '#111827',
+            actorBorder: '#10b981',
+            actorBkg: '#f0fdf4',
+            actorTextColor: '#065f46',
+            actorLineColor: '#6b7280',
+            signalColor: '#374151',
+            signalTextColor: '#1f2937',
+            labelBoxBorderColor: '#10b981',
+            labelBoxBkgColor: '#f0fdf4',
+            labelTextColor: '#065f46',
+            loopTextColor: '#1f2937',
+            noteBkgColor: '#fef3c7',
+            noteTextColor: '#374151', // Dark gray for better contrast on yellow
+            noteBorderColor: '#f59e0b',
+            fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
+            fontSize: '14px'
+          },
       flowchart: {
         htmlLabels: true,
         curve: 'basis',
@@ -383,25 +395,25 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
       }
     })
   }, [])
-  
+
   useEffect(() => {
     if (processedRef.current) return
     processedRef.current = true
-    
+
     const renderMermaidCharts = async () => {
       let newHtml = htmlContent
-      
+
       for (let i = 0; i < mermaidCharts.length; i++) {
         const chart = mermaidCharts[i]
         const elementId = `mermaid-render-${i}`
-        
+
         try {
           // Create a unique ID for this render
           const graphId = `mermaid-graph-${Date.now()}-${i}`
-          
+
           // Render the chart
           const { svg } = await mermaid.render(graphId, chart)
-          
+
           // Create a container with the rendered SVG and expand button
           const mermaidHtml = `
             <div class="my-8 mermaid-container" id="mermaid-container-${i}">
@@ -426,7 +438,7 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
               </div>
             </div>
           `
-          
+
           // Replace the placeholder
           newHtml = newHtml.replace(`<div id="mermaid-${i}"></div>`, mermaidHtml)
         } catch (error) {
@@ -443,30 +455,30 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
           newHtml = newHtml.replace(`<div id="mermaid-${i}"></div>`, fallbackHtml)
         }
       }
-      
+
       setRenderedHtml(newHtml)
-      
+
       // Fix text colors after all diagrams are rendered
       setTimeout(() => {
         fixYellowBackgroundTextColors()
       }, 300)
     }
-    
+
     if (mermaidCharts.length > 0) {
       renderMermaidCharts()
     }
   }, [htmlContent, mermaidCharts])
-  
+
   // Add expand functionality
   useEffect(() => {
     // Define the expand function globally
     if (typeof window !== 'undefined') {
-      (window as any).expandMermaidDiagram = (index: number) => {
+      ;(window as any).expandMermaidDiagram = (index: number) => {
         setExpandedDiagram(index)
       }
     }
   }, [])
-  
+
   // Render expanded diagram
   useEffect(() => {
     if (expandedDiagram !== null && mermaidCharts[expandedDiagram]) {
@@ -479,37 +491,39 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
             mermaid.initialize({
               startOnLoad: false,
               theme: isDark ? 'dark' : 'neutral',
-              themeVariables: isDark ? {
-                // Dark mode theme
-                primaryColor: '#065f46',
-                primaryTextColor: '#d1fae5',
-                primaryBorderColor: '#10b981',
-                secondaryColor: '#0c4a6e',
-                secondaryTextColor: '#bae6fd',
-                secondaryBorderColor: '#0ea5e9',
-                background: '#1f2937',
-                mainBkg: '#065f46',
-                secondBkg: '#0c4a6e',
-                textColor: '#e5e7eb',
-                nodeTextColor: '#e5e7eb',
-                fontSize: '16px', // Larger font for expanded view
-              } : {
-                // Light mode theme
-                primaryColor: '#e6f7f3',
-                primaryTextColor: '#065f46',
-                primaryBorderColor: '#10b981',
-                secondaryColor: '#e0f2fe',
-                secondaryTextColor: '#0c4a6e',
-                secondaryBorderColor: '#0ea5e9',
-                background: '#ffffff',
-                mainBkg: '#f0fdf4',
-                secondBkg: '#f0f9ff',
-                textColor: '#1f2937',
-                nodeTextColor: '#1f2937',
-                noteTextColor: '#374151', // Dark gray for yellow backgrounds
-                noteBorderColor: '#f59e0b',
-                fontSize: '16px', // Larger font for expanded view
-              },
+              themeVariables: isDark
+                ? {
+                    // Dark mode theme
+                    primaryColor: '#065f46',
+                    primaryTextColor: '#d1fae5',
+                    primaryBorderColor: '#10b981',
+                    secondaryColor: '#0c4a6e',
+                    secondaryTextColor: '#bae6fd',
+                    secondaryBorderColor: '#0ea5e9',
+                    background: '#1f2937',
+                    mainBkg: '#065f46',
+                    secondBkg: '#0c4a6e',
+                    textColor: '#e5e7eb',
+                    nodeTextColor: '#e5e7eb',
+                    fontSize: '16px' // Larger font for expanded view
+                  }
+                : {
+                    // Light mode theme
+                    primaryColor: '#e6f7f3',
+                    primaryTextColor: '#065f46',
+                    primaryBorderColor: '#10b981',
+                    secondaryColor: '#e0f2fe',
+                    secondaryTextColor: '#0c4a6e',
+                    secondaryBorderColor: '#0ea5e9',
+                    background: '#ffffff',
+                    mainBkg: '#f0fdf4',
+                    secondBkg: '#f0f9ff',
+                    textColor: '#1f2937',
+                    nodeTextColor: '#1f2937',
+                    noteTextColor: '#374151', // Dark gray for yellow backgrounds
+                    noteBorderColor: '#f59e0b',
+                    fontSize: '16px' // Larger font for expanded view
+                  },
               flowchart: {
                 htmlLabels: true,
                 curve: 'basis',
@@ -518,13 +532,13 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
                 padding: 20
               }
             })
-            
+
             const graphId = `expanded-graph-${Date.now()}`
             const { svg } = await mermaid.render(graphId, mermaidCharts[expandedDiagram])
-            
+
             // Store the SVG in a data attribute for zoom functionality
             expandedElement.setAttribute('data-svg', svg)
-            
+
             // Create a wrapper div that allows the SVG to scale properly
             expandedElement.innerHTML = `
               <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: auto;">
@@ -533,28 +547,30 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
                 </div>
               </div>
             `
-            
+
             // Fix text colors in expanded diagram too
             setTimeout(() => {
               fixYellowBackgroundTextColors()
             }, 200)
-            
+
             // Re-initialize mermaid back to normal settings after rendering
             setTimeout(() => {
               mermaid.initialize({
                 startOnLoad: false,
                 theme: isDark ? 'dark' : 'neutral',
-                themeVariables: isDark ? {
-                  primaryColor: '#065f46',
-                  primaryTextColor: '#d1fae5',
-                  primaryBorderColor: '#10b981',
-                  fontSize: '14px',
-                } : {
-                  primaryColor: '#e6f7f3',
-                  primaryTextColor: '#065f46',
-                  primaryBorderColor: '#10b981',
-                  fontSize: '14px',
-                },
+                themeVariables: isDark
+                  ? {
+                      primaryColor: '#065f46',
+                      primaryTextColor: '#d1fae5',
+                      primaryBorderColor: '#10b981',
+                      fontSize: '14px'
+                    }
+                  : {
+                      primaryColor: '#e6f7f3',
+                      primaryTextColor: '#065f46',
+                      primaryBorderColor: '#10b981',
+                      fontSize: '14px'
+                    },
                 flowchart: {
                   htmlLabels: true,
                   curve: 'basis',
@@ -569,12 +585,12 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
           }
         }
       }
-      
+
       // Small delay to ensure DOM is ready
       setTimeout(renderExpandedDiagram, 100)
     }
   }, [expandedDiagram, mermaidCharts, zoomLevel])
-  
+
   // Update zoom level when changed
   useEffect(() => {
     if (expandedDiagram !== null) {
@@ -587,20 +603,20 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
 
   return (
     <>
-      <article 
+      <article
         className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-800 dark:prose-headings:text-gray-100 prose-p:text-gray-500 dark:prose-p:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-gray-200 prose-code:bg-gray-100 dark:prose-code:bg-gray-900 prose-code:text-emerald-600 dark:prose-code:text-emerald-400 prose-pre:bg-gray-50 dark:prose-pre:bg-gray-900 prose-blockquote:border-emerald-600 prose-a:text-emerald-600 hover:prose-a:text-emerald-700 [&_.mermaid-container_svg]:max-w-full [&_.mermaid-container_svg]:h-auto"
         dangerouslySetInnerHTML={{ __html: renderedHtml }}
       />
-      
+
       {/* Expanded diagram modal */}
       {expandedDiagram !== null && mermaidCharts[expandedDiagram] && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setExpandedDiagram(null)}
         >
-          <div 
+          <div
             className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full h-full max-w-[95vw] max-h-[95vh] flex flex-col"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
@@ -658,7 +674,6 @@ export default function ClientMermaidRenderer({ htmlContent, mermaidCharts }: Cl
           </div>
         </div>
       )}
-      
     </>
   )
 }

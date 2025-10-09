@@ -6,13 +6,18 @@
 import { useMemo, useCallback } from 'react'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { useOptimizedSalonContext } from '@/app/salon/OptimizedSalonProvider'
-import { 
-  salonQueryKeys, 
-  salonCacheHelpers, 
+import {
+  salonQueryKeys,
+  salonCacheHelpers,
   salonPerformanceMonitor,
-  salonUIStateManager 
+  salonUIStateManager
 } from '@/lib/salon/global-salon-cache'
-import { getEntities, getTransactions, createEntity, updateEntity } from '@/lib/universal-api-v2-client'
+import {
+  getEntities,
+  getTransactions,
+  createEntity,
+  updateEntity
+} from '@/lib/universal-api-v2-client'
 
 // Hook for appointments with intelligent caching
 export function useOptimizedAppointments(options?: {
@@ -34,10 +39,10 @@ export function useOptimizedAppointments(options?: {
     queryKey,
     queryFn: async () => {
       if (!organizationId) return []
-      
+
       const start = Date.now()
       salonPerformanceMonitor.trackCacheHit(queryKey.join('-'), false)
-      
+
       const data = await getTransactions({
         orgId: organizationId,
         transactionType: 'APPOINTMENT',
@@ -45,7 +50,7 @@ export function useOptimizedAppointments(options?: {
         endDate: options?.dateRange?.end,
         ...(options?.branchId ? { branchId: options.branchId } : {})
       })
-      
+
       salonPerformanceMonitor.trackPageLoad('appointments', Date.now() - start)
       return data
     },
@@ -53,16 +58,19 @@ export function useOptimizedAppointments(options?: {
     staleTime: options?.realTime ? 30 * 1000 : 2 * 60 * 1000, // Real-time or 2 minutes
     refetchInterval: options?.realTime ? 30 * 1000 : false,
     refetchOnWindowFocus: options?.realTime,
-    select: useCallback((data: any[]) => {
-      // Client-side filtering for better performance
-      let filtered = data
-      
-      if (options?.status && options.status !== 'all') {
-        filtered = filtered.filter(apt => apt.metadata?.status === options.status)
-      }
-      
-      return filtered
-    }, [options?.status])
+    select: useCallback(
+      (data: any[]) => {
+        // Client-side filtering for better performance
+        let filtered = data
+
+        if (options?.status && options.status !== 'all') {
+          filtered = filtered.filter(apt => apt.metadata?.status === options.status)
+        }
+
+        return filtered
+      },
+      [options?.status]
+    )
   })
 
   // Optimistic mutation for quick updates
@@ -73,16 +81,16 @@ export function useOptimizedAppointments(options?: {
     onMutate: async ({ id, updates }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey })
-      
+
       // Snapshot previous value
       const previousData = queryClient.getQueryData(queryKey)
-      
+
       // Optimistically update
       queryClient.setQueryData(queryKey, (old: any[]) => {
         if (!old) return []
-        return old.map(apt => apt.id === id ? { ...apt, ...updates } : apt)
+        return old.map(apt => (apt.id === id ? { ...apt, ...updates } : apt))
       })
-      
+
       return { previousData }
     },
     onError: (err, variables, context) => {
@@ -93,7 +101,12 @@ export function useOptimizedAppointments(options?: {
     },
     onSuccess: () => {
       // Invalidate related queries
-      salonCacheHelpers.invalidateAfterMutation(queryClient, 'update', 'appointments', organizationId!)
+      salonCacheHelpers.invalidateAfterMutation(
+        queryClient,
+        'update',
+        'appointments',
+        organizationId!
+      )
     }
   })
 
@@ -103,7 +116,12 @@ export function useOptimizedAppointments(options?: {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
-      salonCacheHelpers.invalidateAfterMutation(queryClient, 'create', 'appointments', organizationId!)
+      salonCacheHelpers.invalidateAfterMutation(
+        queryClient,
+        'create',
+        'appointments',
+        organizationId!
+      )
     }
   })
 
@@ -113,13 +131,13 @@ export function useOptimizedAppointments(options?: {
     error: query.error,
     isValidating: query.isFetching,
     lastUpdated: query.dataUpdatedAt,
-    
+
     // Mutations
     updateAppointment: updateAppointment.mutate,
     createAppointment: createAppointment.mutate,
     isUpdating: updateAppointment.isPending,
     isCreating: createAppointment.isPending,
-    
+
     // Cache management
     refresh: () => queryClient.invalidateQueries({ queryKey }),
     prefetch: (dateRange: { start: string; end: string }) => {
@@ -139,23 +157,23 @@ export function useOptimizedStaff(options?: {
   includeUnavailable?: boolean
 }) {
   const { staff: cachedStaff, loadingStates, organizationId } = useOptimizedSalonContext()
-  
+
   // Use cached data first, then enhance with real-time updates if needed
   const filteredStaff = useMemo(() => {
     let filtered = cachedStaff || []
-    
+
     if (options?.branchId && options.branchId !== '__ALL__') {
       filtered = filtered.filter(staff => staff.metadata?.branch_id === options.branchId)
     }
-    
+
     if (options?.role) {
       filtered = filtered.filter(staff => staff.metadata?.role === options.role)
     }
-    
+
     if (!options?.includeUnavailable) {
       filtered = filtered.filter(staff => staff.metadata?.available !== false)
     }
-    
+
     return filtered
   }, [cachedStaff, options])
 
@@ -163,15 +181,21 @@ export function useOptimizedStaff(options?: {
     staff: filteredStaff,
     isLoading: loadingStates.staff,
     allStaff: cachedStaff,
-    
+
     // Helpers
-    getStaffById: useCallback((id: string) => {
-      return cachedStaff?.find(s => s.id === id)
-    }, [cachedStaff]),
-    
-    getStaffByRole: useCallback((role: string) => {
-      return cachedStaff?.filter(s => s.metadata?.role === role) || []
-    }, [cachedStaff])
+    getStaffById: useCallback(
+      (id: string) => {
+        return cachedStaff?.find(s => s.id === id)
+      },
+      [cachedStaff]
+    ),
+
+    getStaffByRole: useCallback(
+      (role: string) => {
+        return cachedStaff?.filter(s => s.metadata?.role === role) || []
+      },
+      [cachedStaff]
+    )
   }
 }
 
@@ -187,36 +211,37 @@ export function useOptimizedCustomers(options?: {
   // Use cached data with client-side filtering for performance
   const filteredCustomers = useMemo(() => {
     let filtered = cachedCustomers || []
-    
+
     if (options?.search) {
       const searchLower = options.search.toLowerCase()
-      filtered = filtered.filter(customer => 
-        customer.entity_name?.toLowerCase().includes(searchLower) ||
-        customer.metadata?.email?.toLowerCase().includes(searchLower) ||
-        customer.metadata?.phone?.includes(options.search!)
+      filtered = filtered.filter(
+        customer =>
+          customer.entity_name?.toLowerCase().includes(searchLower) ||
+          customer.metadata?.email?.toLowerCase().includes(searchLower) ||
+          customer.metadata?.phone?.includes(options.search!)
       )
     }
-    
+
     // Apply pagination
     if (options?.offset || options?.limit) {
       const start = options.offset || 0
       const end = start + (options.limit || 50)
       filtered = filtered.slice(start, end)
     }
-    
+
     return filtered
   }, [cachedCustomers, options])
 
   // Load more customers if needed
   const loadMore = useCallback(async () => {
     if (!organizationId) return
-    
+
     const currentCount = cachedCustomers?.length || 0
-    const moreQueryKey = salonQueryKeys.customers(organizationId, { 
-      limit: 500, 
-      offset: currentCount 
+    const moreQueryKey = salonQueryKeys.customers(organizationId, {
+      limit: 500,
+      offset: currentCount
     })
-    
+
     const moreData = await queryClient.fetchQuery({
       queryKey: moreQueryKey,
       queryFn: async () => {
@@ -229,7 +254,7 @@ export function useOptimizedCustomers(options?: {
       },
       staleTime: 10 * 60 * 1000
     })
-    
+
     // Merge with cached data
     if (moreData?.length) {
       const allCustomersKey = salonQueryKeys.customers(organizationId)
@@ -240,7 +265,7 @@ export function useOptimizedCustomers(options?: {
         return [...existing, ...uniqueNew]
       })
     }
-    
+
     return moreData
   }, [organizationId, cachedCustomers, queryClient])
 
@@ -249,38 +274,41 @@ export function useOptimizedCustomers(options?: {
     isLoading: loadingStates.customers,
     totalCount: cachedCustomers?.length || 0,
     hasMore: (cachedCustomers?.length || 0) % 1000 === 0, // Assume more if exact multiple
-    
+
     // Actions
     loadMore,
-    
+
     // Helpers
-    searchCustomers: useCallback((query: string) => {
-      return cachedCustomers?.filter(customer => 
-        customer.entity_name?.toLowerCase().includes(query.toLowerCase()) ||
-        customer.metadata?.email?.toLowerCase().includes(query.toLowerCase())
-      ) || []
-    }, [cachedCustomers])
+    searchCustomers: useCallback(
+      (query: string) => {
+        return (
+          cachedCustomers?.filter(
+            customer =>
+              customer.entity_name?.toLowerCase().includes(query.toLowerCase()) ||
+              customer.metadata?.email?.toLowerCase().includes(query.toLowerCase())
+          ) || []
+        )
+      },
+      [cachedCustomers]
+    )
   }
 }
 
 // Hook for services with category filtering
-export function useOptimizedServices(options?: {
-  categoryId?: string
-  available?: boolean
-}) {
+export function useOptimizedServices(options?: { categoryId?: string; available?: boolean }) {
   const { services: cachedServices, loadingStates } = useOptimizedSalonContext()
-  
+
   const filteredServices = useMemo(() => {
     let filtered = cachedServices || []
-    
+
     if (options?.categoryId) {
       filtered = filtered.filter(service => service.metadata?.category_id === options.categoryId)
     }
-    
+
     if (options?.available !== undefined) {
       filtered = filtered.filter(service => service.metadata?.available === options.available)
     }
-    
+
     return filtered
   }, [cachedServices, options])
 
@@ -288,12 +316,15 @@ export function useOptimizedServices(options?: {
     services: filteredServices,
     isLoading: loadingStates.services,
     allServices: cachedServices,
-    
+
     // Helpers
-    getServicesByCategory: useCallback((categoryId: string) => {
-      return cachedServices?.filter(s => s.metadata?.category_id === categoryId) || []
-    }, [cachedServices]),
-    
+    getServicesByCategory: useCallback(
+      (categoryId: string) => {
+        return cachedServices?.filter(s => s.metadata?.category_id === categoryId) || []
+      },
+      [cachedServices]
+    ),
+
     getPopularServices: useCallback(() => {
       return cachedServices?.filter(s => s.metadata?.popular === true) || []
     }, [cachedServices])
@@ -302,19 +333,17 @@ export function useOptimizedServices(options?: {
 
 // Hook for branch filtering with persistence
 export function useOptimizedBranchFilter(componentName: string) {
-  const { 
-    branches, 
-    organizationId, 
-    uiState, 
-    updateUIState,
-    loadingStates 
-  } = useOptimizedSalonContext()
+  const { branches, organizationId, uiState, updateUIState, loadingStates } =
+    useOptimizedSalonContext()
 
   const selectedBranchId = uiState?.selectedBranchId
 
-  const setBranchId = useCallback((branchId: string) => {
-    updateUIState({ selectedBranchId: branchId })
-  }, [updateUIState])
+  const setBranchId = useCallback(
+    (branchId: string) => {
+      updateUIState({ selectedBranchId: branchId })
+    },
+    [updateUIState]
+  )
 
   const hasMultipleBranches = branches.length > 1
 
@@ -324,33 +353,31 @@ export function useOptimizedBranchFilter(componentName: string) {
     setBranchId,
     hasMultipleBranches,
     isLoading: loadingStates.branches,
-    
+
     // Helpers
     getSelectedBranch: useCallback(() => {
       return branches.find(b => b.id === selectedBranchId)
     }, [branches, selectedBranchId]),
-    
-    getBranchName: useCallback((branchId: string) => {
-      return branches.find(b => b.id === branchId)?.entity_name || 'Unknown Branch'
-    }, [branches])
+
+    getBranchName: useCallback(
+      (branchId: string) => {
+        return branches.find(b => b.id === branchId)?.entity_name || 'Unknown Branch'
+      },
+      [branches]
+    )
   }
 }
 
 // Hook for salon dashboard data
 export function useOptimizedDashboardData() {
-  const { 
-    todayAppointments, 
-    staff, 
-    organizationId, 
-    performanceMetrics,
-    refreshAll
-  } = useOptimizedSalonContext()
+  const { todayAppointments, staff, organizationId, performanceMetrics, refreshAll } =
+    useOptimizedSalonContext()
 
   // Calculate dashboard metrics
   const dashboardStats = useMemo(() => {
     const today = new Date().toDateString()
     const todayAppts = todayAppointments || []
-    
+
     return {
       todayAppointments: todayAppts.length,
       completedToday: todayAppts.filter(apt => apt.metadata?.status === 'completed').length,
@@ -366,16 +393,21 @@ export function useOptimizedDashboardData() {
     todayAppointments,
     performanceMetrics,
     refreshAll,
-    
+
     // Quick actions
-    getUpcomingAppointments: useCallback((hours: number = 2) => {
-      const now = new Date()
-      const future = new Date(now.getTime() + hours * 60 * 60 * 1000)
-      
-      return todayAppointments?.filter(apt => {
-        const aptTime = new Date(apt.metadata?.start_time || apt.transaction_date)
-        return aptTime >= now && aptTime <= future
-      }) || []
-    }, [todayAppointments])
+    getUpcomingAppointments: useCallback(
+      (hours: number = 2) => {
+        const now = new Date()
+        const future = new Date(now.getTime() + hours * 60 * 60 * 1000)
+
+        return (
+          todayAppointments?.filter(apt => {
+            const aptTime = new Date(apt.metadata?.start_time || apt.transaction_date)
+            return aptTime >= now && aptTime <= future
+          }) || []
+        )
+      },
+      [todayAppointments]
+    )
   }
 }

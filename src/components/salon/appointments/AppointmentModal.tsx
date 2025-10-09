@@ -15,12 +15,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { format, addMinutes, parse } from 'date-fns'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -32,7 +27,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import {
   Calendar,
@@ -119,8 +114,12 @@ export function AppointmentModal({
       setSelectedCustomer(appointment.customer_id || '')
       setSelectedStylist(appointment.stylist_id || '')
       setSelectedBranch(appointment.branch_id || '')
-      setSelectedDate(appointment.start_time ? format(new Date(appointment.start_time), 'yyyy-MM-dd') : '')
-      setSelectedTime(appointment.start_time ? format(new Date(appointment.start_time), 'HH:mm') : '')
+      setSelectedDate(
+        appointment.start_time ? format(new Date(appointment.start_time), 'yyyy-MM-dd') : ''
+      )
+      setSelectedTime(
+        appointment.start_time ? format(new Date(appointment.start_time), 'HH:mm') : ''
+      )
       setNotes(appointment.notes || '')
       setDuration(appointment.duration_minutes || 60)
       setPrice(appointment.price || 0)
@@ -142,7 +141,10 @@ export function AppointmentModal({
           const parsed = JSON.parse(metadata.service_ids)
           serviceIds = Array.isArray(parsed) ? parsed : [parsed]
         } catch {
-          serviceIds = metadata.service_ids.split(',').map((id: string) => id.trim()).filter(Boolean)
+          serviceIds = metadata.service_ids
+            .split(',')
+            .map((id: string) => id.trim())
+            .filter(Boolean)
         }
         console.log('[AppointmentModal] Parsed service_ids string:', serviceIds)
       }
@@ -164,7 +166,10 @@ export function AppointmentModal({
       }
 
       console.log('[AppointmentModal] ✅ Final parsed service IDs:', serviceIds)
-      console.log('[AppointmentModal] Available services:', services.map(s => ({ id: s.id, name: s.entity_name })))
+      console.log(
+        '[AppointmentModal] Available services:',
+        services.map(s => ({ id: s.id, name: s.entity_name }))
+      )
 
       setSelectedServices(serviceIds)
       setIsEditing(false)
@@ -239,10 +244,10 @@ export function AppointmentModal({
 
       // ✨ ENTERPRISE: Only these statuses block time slots
       const BLOCKING_STATUSES = [
-        'booked',           // Confirmed appointment
-        'checked_in',       // Customer has arrived
-        'in_progress',      // Service is happening
-        'payment_pending'   // Service done, awaiting payment
+        'booked', // Confirmed appointment
+        'checked_in', // Customer has arrived
+        'in_progress', // Service is happening
+        'payment_pending' // Service done, awaiting payment
       ]
 
       // Check for conflicts with existing appointments for this stylist
@@ -255,7 +260,9 @@ export function AppointmentModal({
 
         // 🧬 ENTERPRISE: Only block time slots for confirmed/active appointments
         if (!BLOCKING_STATUSES.includes(apt.status)) {
-          console.log(`[AppointmentModal] Skipping ${apt.status} appointment - doesn't block time slots`)
+          console.log(
+            `[AppointmentModal] Skipping ${apt.status} appointment - doesn't block time slots`
+          )
           return false
         }
 
@@ -304,7 +311,10 @@ export function AppointmentModal({
         if (isToday) {
           const [slotHour, slotMinute] = slot.start.split(':').map(Number)
           // Add 30 minute buffer for booking
-          if (slotHour < currentHour || (slotHour === currentHour && slotMinute <= currentMinute + 30)) {
+          if (
+            slotHour < currentHour ||
+            (slotHour === currentHour && slotMinute <= currentMinute + 30)
+          ) {
             return false
           }
         }
@@ -323,7 +333,8 @@ export function AppointmentModal({
         const service = services.find(s => s.id === serviceId)
         if (!service) return sum
 
-        const servicePrice = service.price_market || service.dynamic_fields?.price_market?.value || 0
+        const servicePrice =
+          service.price_market || service.dynamic_fields?.price_market?.value || 0
         return sum + servicePrice
       }, 0)
 
@@ -331,7 +342,8 @@ export function AppointmentModal({
         const service = services.find(s => s.id === serviceId)
         if (!service) return sum
 
-        const serviceDuration = service.duration_min || service.dynamic_fields?.duration_min?.value || 30
+        const serviceDuration =
+          service.duration_min || service.dynamic_fields?.duration_min?.value || 30
         return sum + serviceDuration
       }, 0)
 
@@ -372,26 +384,36 @@ export function AppointmentModal({
   // Handle service toggle
   const toggleService = (serviceId: string) => {
     setSelectedServices(prev =>
-      prev.includes(serviceId)
-        ? prev.filter(id => id !== serviceId)
-        : [...prev, serviceId]
+      prev.includes(serviceId) ? prev.filter(id => id !== serviceId) : [...prev, serviceId]
     )
   }
 
   if (!appointment) return null
 
   console.log('[AppointmentModal] Full appointment object:', appointment)
-  console.log('[AppointmentModal] Available services:', services.map(s => ({ id: s.id, name: s.entity_name })))
+  console.log(
+    '[AppointmentModal] Available services:',
+    services.map(s => ({ id: s.id, name: s.entity_name }))
+  )
   console.log('[AppointmentModal] Selected service IDs:', selectedServices)
-  console.log('[AppointmentModal] Branches data:', branches.map(b => ({ id: b.id, entity_name: b.entity_name, name: b.name })))
-  console.log('[AppointmentModal] Customers data:', customers.map(c => ({ id: c.id, entity_name: c.entity_name })))
+  console.log(
+    '[AppointmentModal] Branches data:',
+    branches.map(b => ({ id: b.id, entity_name: b.entity_name, name: b.name }))
+  )
+  console.log(
+    '[AppointmentModal] Customers data:',
+    customers.map(c => ({ id: c.id, entity_name: c.entity_name }))
+  )
 
   // ✅ CRITICAL FIX: Handle both entity_name and name fields for branches
-  const customerName = customers.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown'
-  const stylistName = stylists.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
-  const branchName = branches.find(b => b.id === appointment.branch_id)?.entity_name
-    || branches.find(b => b.id === appointment.branch_id)?.name
-    || 'Main Branch'
+  const customerName =
+    customers.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown'
+  const stylistName =
+    stylists.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
+  const branchName =
+    branches.find(b => b.id === appointment.branch_id)?.entity_name ||
+    branches.find(b => b.id === appointment.branch_id)?.name ||
+    'Main Branch'
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -408,7 +430,10 @@ export function AppointmentModal({
           style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}15` }}
         >
           <div className="flex-1">
-            <DialogTitle className="text-2xl flex items-center gap-3" style={{ color: LUXE_COLORS.champagne }}>
+            <DialogTitle
+              className="text-2xl flex items-center gap-3"
+              style={{ color: LUXE_COLORS.champagne }}
+            >
               <Calendar className="w-6 h-6" style={{ color: LUXE_COLORS.gold }} />
               Appointment Details
             </DialogTitle>
@@ -586,7 +611,8 @@ export function AppointmentModal({
                     <div
                       className="p-3 rounded-lg"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(140,120,83,0.15) 0%, rgba(140,120,83,0.08) 100%)',
+                        background:
+                          'linear-gradient(135deg, rgba(140,120,83,0.15) 0%, rgba(140,120,83,0.08) 100%)',
                         border: `1px solid ${LUXE_COLORS.bronze}30`,
                         color: LUXE_COLORS.champagne,
                         boxShadow: '0 2px 8px rgba(140,120,83,0.1)'
@@ -602,7 +628,10 @@ export function AppointmentModal({
 
                 {/* Date Selection */}
                 <div>
-                  <Label className="text-sm mb-2 font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                  <Label
+                    className="text-sm mb-2 font-medium"
+                    style={{ color: LUXE_COLORS.champagne }}
+                  >
                     Date {isEditing && <span style={{ color: LUXE_COLORS.gold }}>*</span>}
                   </Label>
                   {isEditing ? (
@@ -645,17 +674,26 @@ export function AppointmentModal({
 
                 {/* Time Selection */}
                 <div>
-                  <Label className="text-sm mb-2 font-medium flex items-center justify-between" style={{ color: LUXE_COLORS.champagne }}>
+                  <Label
+                    className="text-sm mb-2 font-medium flex items-center justify-between"
+                    style={{ color: LUXE_COLORS.champagne }}
+                  >
                     <span>
                       Time {isEditing && <span style={{ color: LUXE_COLORS.gold }}>*</span>}
                       {isEditing && duration > 0 && (
-                        <span className="text-xs ml-2 font-normal" style={{ color: LUXE_COLORS.bronze }}>
+                        <span
+                          className="text-xs ml-2 font-normal"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
                           (Duration: {duration} min)
                         </span>
                       )}
                     </span>
                     {isEditing && selectedStylist && (
-                      <span className="text-[10px] font-normal" style={{ color: LUXE_COLORS.bronze, opacity: 0.8 }}>
+                      <span
+                        className="text-[10px] font-normal"
+                        style={{ color: LUXE_COLORS.bronze, opacity: 0.8 }}
+                      >
                         ✨ Draft appointments don't block slots
                       </span>
                     )}
@@ -683,18 +721,17 @@ export function AppointmentModal({
                             const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
 
                             // Get conflict details for tooltip
-                            const conflictInfo = slot.hasConflict && slot.conflictingAppointment
-                              ? `${slot.conflictingAppointment.customer_name} (${slot.conflictingAppointment.status})`
-                              : ''
+                            const conflictInfo =
+                              slot.hasConflict && slot.conflictingAppointment
+                                ? `${slot.conflictingAppointment.customer_name} (${slot.conflictingAppointment.status})`
+                                : ''
 
                             return (
                               <SelectItem
                                 key={slot.start}
                                 value={slot.start}
                                 disabled={slot.hasConflict}
-                                className={cn(
-                                  slot.hasConflict && 'opacity-50 cursor-not-allowed'
-                                )}
+                                className={cn(slot.hasConflict && 'opacity-50 cursor-not-allowed')}
                                 title={conflictInfo}
                               >
                                 <div className="flex items-center justify-between w-full gap-2">
@@ -771,8 +808,7 @@ export function AppointmentModal({
                           {appointment.start_time &&
                             format(new Date(appointment.start_time), 'h:mm a')}
                           {' - '}
-                          {appointment.end_time &&
-                            format(new Date(appointment.end_time), 'h:mm a')}
+                          {appointment.end_time && format(new Date(appointment.end_time), 'h:mm a')}
                         </span>
                       </div>
                     </div>
@@ -782,7 +818,10 @@ export function AppointmentModal({
 
               {/* Right Column - Services */}
               <div className="space-y-4">
-                <Label className="text-sm flex items-center justify-between" style={{ color: LUXE_COLORS.champagne }}>
+                <Label
+                  className="text-sm flex items-center justify-between"
+                  style={{ color: LUXE_COLORS.champagne }}
+                >
                   <span>Services</span>
                   {isEditing && (
                     <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
@@ -800,17 +839,25 @@ export function AppointmentModal({
                     {console.log('[AppointmentModal] 3. First service structure:', services?.[0])}
                     {console.log('[AppointmentModal] 4. Selected service IDs:', selectedServices)}
                     {console.log('[AppointmentModal] 5. isEditing mode:', isEditing)}
-                    {console.log('[AppointmentModal] 6. Appointment metadata:', appointment?.metadata)}
+                    {console.log(
+                      '[AppointmentModal] 6. Appointment metadata:',
+                      appointment?.metadata
+                    )}
                     {(() => {
                       const filteredServices = services?.filter(service => {
                         if (isEditing) return true
-                        const isSelected = selectedServices.some(selectedId =>
-                          String(selectedId) === String(service.id)
+                        const isSelected = selectedServices.some(
+                          selectedId => String(selectedId) === String(service.id)
                         )
-                        console.log(`[AppointmentModal] 7. Service "${service.entity_name}" (${service.id}): isSelected=${isSelected}`)
+                        console.log(
+                          `[AppointmentModal] 7. Service "${service.entity_name}" (${service.id}): isSelected=${isSelected}`
+                        )
                         return isSelected
                       })
-                      console.log('[AppointmentModal] 8. Filtered services count:', filteredServices?.length || 0)
+                      console.log(
+                        '[AppointmentModal] 8. Filtered services count:',
+                        filteredServices?.length || 0
+                      )
                       console.log('[AppointmentModal] 9. Filtered services:', filteredServices)
                       console.log('========== ENTERPRISE DEBUG END ==========')
                       return null
@@ -819,12 +866,16 @@ export function AppointmentModal({
                       <div
                         className="p-6 rounded-lg text-center"
                         style={{
-                          background: 'linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.05) 100%)',
+                          background:
+                            'linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.05) 100%)',
                           border: `1px solid ${LUXE_COLORS.gold}20`,
                           color: LUXE_COLORS.bronze
                         }}
                       >
-                        <Scissors className="w-8 h-8 mx-auto mb-2" style={{ color: LUXE_COLORS.gold }} />
+                        <Scissors
+                          className="w-8 h-8 mx-auto mb-2"
+                          style={{ color: LUXE_COLORS.gold }}
+                        />
                         <p className="text-sm">No services selected for this appointment</p>
                         <p className="text-xs mt-2" style={{ opacity: 0.7 }}>
                           Click "Edit Appointment" to add services
@@ -834,12 +885,16 @@ export function AppointmentModal({
                       <div
                         className="p-6 rounded-lg text-center"
                         style={{
-                          background: 'linear-gradient(135deg, rgba(232,180,184,0.1) 0%, rgba(232,180,184,0.05) 100%)',
+                          background:
+                            'linear-gradient(135deg, rgba(232,180,184,0.1) 0%, rgba(232,180,184,0.05) 100%)',
                           border: `1px solid ${LUXE_COLORS.rose}20`,
                           color: LUXE_COLORS.bronze
                         }}
                       >
-                        <Scissors className="w-8 h-8 mx-auto mb-2" style={{ color: LUXE_COLORS.rose }} />
+                        <Scissors
+                          className="w-8 h-8 mx-auto mb-2"
+                          style={{ color: LUXE_COLORS.rose }}
+                        />
                         <p className="text-sm font-medium">⚠️ No services available</p>
                         <p className="text-xs mt-2" style={{ opacity: 0.7 }}>
                           Services data failed to load. Please check your connection and try again.
@@ -850,71 +905,84 @@ export function AppointmentModal({
                         .filter(service => {
                           if (isEditing) return true
                           // Flexible ID matching - handle both string and number comparisons
-                          return selectedServices.some(selectedId =>
-                            String(selectedId) === String(service.id)
+                          return selectedServices.some(
+                            selectedId => String(selectedId) === String(service.id)
                           )
                         })
                         .map(service => {
-                      // Flexible selection check
-                      const isSelected = selectedServices.some(selectedId =>
-                        String(selectedId) === String(service.id)
-                      )
-                      const servicePrice = service.price_market || service.dynamic_fields?.price_market?.value || 0
-                      const serviceDuration = service.duration_min || service.dynamic_fields?.duration_min?.value || 30
+                          // Flexible selection check
+                          const isSelected = selectedServices.some(
+                            selectedId => String(selectedId) === String(service.id)
+                          )
+                          const servicePrice =
+                            service.price_market || service.dynamic_fields?.price_market?.value || 0
+                          const serviceDuration =
+                            service.duration_min ||
+                            service.dynamic_fields?.duration_min?.value ||
+                            30
 
-                      return (
-                        <div
-                          key={service.id}
-                          onClick={() => isEditing && toggleService(service.id)}
-                          className={cn(
-                            'p-4 rounded-lg transition-all duration-300 cursor-pointer',
-                            isEditing && 'hover:scale-102'
-                          )}
-                          style={{
-                            background: isSelected
-                              ? 'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(212,175,55,0.1) 100%)'
-                              : 'rgba(245,230,200,0.05)',
-                            border: `1px solid ${isSelected ? LUXE_COLORS.gold : 'rgba(245,230,200,0.1)'}40`,
-                            pointerEvents: isEditing ? 'auto' : 'none',
-                            boxShadow: isSelected ? '0 4px 12px rgba(212,175,55,0.15)' : 'none'
-                          }}
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                {isSelected && (
-                                  <Check className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+                          return (
+                            <div
+                              key={service.id}
+                              onClick={() => isEditing && toggleService(service.id)}
+                              className={cn(
+                                'p-4 rounded-lg transition-all duration-300 cursor-pointer',
+                                isEditing && 'hover:scale-102'
+                              )}
+                              style={{
+                                background: isSelected
+                                  ? 'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(212,175,55,0.1) 100%)'
+                                  : 'rgba(245,230,200,0.05)',
+                                border: `1px solid ${isSelected ? LUXE_COLORS.gold : 'rgba(245,230,200,0.1)'}40`,
+                                pointerEvents: isEditing ? 'auto' : 'none',
+                                boxShadow: isSelected ? '0 4px 12px rgba(212,175,55,0.15)' : 'none'
+                              }}
+                            >
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    {isSelected && (
+                                      <Check
+                                        className="w-4 h-4"
+                                        style={{ color: LUXE_COLORS.gold }}
+                                      />
+                                    )}
+                                    <span
+                                      className="font-medium"
+                                      style={{ color: LUXE_COLORS.champagne }}
+                                    >
+                                      {service.entity_name}
+                                    </span>
+                                  </div>
+                                  <div
+                                    className="flex items-center gap-3 text-sm"
+                                    style={{ color: LUXE_COLORS.bronze }}
+                                  >
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="w-3 h-3" />
+                                      {serviceDuration} min
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                      <DollarSign className="w-3 h-3" />
+                                      {servicePrice.toFixed(2)}
+                                    </span>
+                                  </div>
+                                </div>
+                                {isEditing && isSelected && (
+                                  <div
+                                    className="w-6 h-6 rounded-full flex items-center justify-center"
+                                    style={{
+                                      background: LUXE_COLORS.gold,
+                                      color: LUXE_COLORS.black
+                                    }}
+                                  >
+                                    <Check className="w-4 h-4" />
+                                  </div>
                                 )}
-                                <span className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
-                                  {service.entity_name}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-3 text-sm" style={{ color: LUXE_COLORS.bronze }}>
-                                <span className="flex items-center gap-1">
-                                  <Clock className="w-3 h-3" />
-                                  {serviceDuration} min
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <DollarSign className="w-3 h-3" />
-                                  {servicePrice.toFixed(2)}
-                                </span>
                               </div>
                             </div>
-                            {isEditing && isSelected && (
-                              <div
-                                className="w-6 h-6 rounded-full flex items-center justify-center"
-                                style={{
-                                  background: LUXE_COLORS.gold,
-                                  color: LUXE_COLORS.black
-                                }}
-                              >
-                                <Check className="w-4 h-4" />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    })
+                          )
+                        })
                     )}
                   </div>
                 </ScrollArea>
@@ -947,7 +1015,9 @@ export function AppointmentModal({
                     color: LUXE_COLORS.champagne
                   }}
                 >
-                  {notes || <span style={{ color: LUXE_COLORS.bronze, opacity: 0.5 }}>No notes</span>}
+                  {notes || (
+                    <span style={{ color: LUXE_COLORS.bronze, opacity: 0.5 }}>No notes</span>
+                  )}
                 </div>
               )}
             </div>
@@ -986,7 +1056,13 @@ export function AppointmentModal({
           {isEditing ? (
             <Button
               onClick={handleSave}
-              disabled={isSaving || !selectedCustomer || !selectedDate || !selectedTime || selectedServices.length === 0}
+              disabled={
+                isSaving ||
+                !selectedCustomer ||
+                !selectedDate ||
+                !selectedTime ||
+                selectedServices.length === 0
+              }
               className="w-full transition-all duration-300 hover:shadow-xl"
               style={{
                 background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
@@ -995,7 +1071,14 @@ export function AppointmentModal({
                 fontWeight: '600',
                 padding: '1.25rem',
                 fontSize: '1rem',
-                opacity: (isSaving || !selectedCustomer || !selectedDate || !selectedTime || selectedServices.length === 0) ? 0.5 : 1,
+                opacity:
+                  isSaving ||
+                  !selectedCustomer ||
+                  !selectedDate ||
+                  !selectedTime ||
+                  selectedServices.length === 0
+                    ? 0.5
+                    : 1,
                 boxShadow: '0 8px 24px rgba(212,175,55,0.3)'
               }}
             >

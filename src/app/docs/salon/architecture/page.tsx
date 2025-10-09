@@ -5,8 +5,8 @@ export default async function ArchitecturePage() {
     <SalonDocPage
       filename="architecture.md"
       title="Architecture"
-      prevPage={{ href: "/docs/salon/financial-integration", label: "Financial Integration" }}
-      nextPage={{ href: "/docs/salon", label: "Back to Overview" }}
+      prevPage={{ href: '/docs/salon/financial-integration', label: 'Financial Integration' }}
+      nextPage={{ href: '/docs/salon', label: 'Back to Overview' }}
     />
   )
 }

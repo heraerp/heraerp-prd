@@ -18,9 +18,9 @@ const createSimpleQueryClient = () => {
       queries: {
         staleTime: 5 * 60 * 1000, // 5 minutes
         refetchOnWindowFocus: false,
-        retry: 1,
-      },
-    },
+        retry: 1
+      }
+    }
   })
 }
 
@@ -47,7 +47,7 @@ interface Branch {
 interface SalonContextType extends SecurityContext {
   // Alias for backward compatibility
   organizationId: string | null
-  
+
   // Security context
   salonRole: 'owner' | 'manager' | 'receptionist' | 'stylist' | 'accountant' | 'admin'
   permissions: string[]
@@ -58,20 +58,20 @@ interface SalonContextType extends SecurityContext {
   }
   user: any
   isAuthenticated: boolean
-  
+
   // Branch context
   selectedBranchId: string | null
   selectedBranch: Branch | null
   availableBranches: Branch[]
   setSelectedBranchId: (branchId: string) => void
-  
+
   // Preloaded data with loading states
   branches: any[]
   staff: any[]
   customers: any[]
   services: any[]
   todayAppointments: any[]
-  
+
   // Loading states
   isInitialLoading: boolean
   isCriticalDataLoaded: boolean
@@ -82,7 +82,7 @@ interface SalonContextType extends SecurityContext {
     services: boolean
     appointments: boolean
   }
-  
+
   // Error states
   errors: {
     branches?: Error
@@ -91,23 +91,23 @@ interface SalonContextType extends SecurityContext {
     services?: Error
     appointments?: Error
   }
-  
+
   // Actions
   prefetchData: (dataType: string) => Promise<void>
   invalidateData: (dataType: string) => Promise<void>
   refreshAll: () => Promise<void>
-  
+
   // UI state management
   uiState: any
   updateUIState: (updates: any) => void
-  
+
   // Performance metrics
   performanceMetrics: {
     cacheHitRate: number
     averageLoadTime: number
     lastRefresh: number
   }
-  
+
   // Security methods
   executeSecurely: <T>(operation: (client: any) => Promise<T>) => Promise<T>
   hasPermission: (permission: string) => boolean
@@ -239,7 +239,9 @@ export function OptimizedSalonProvider({ children }: OptimizedSalonProviderProps
       setSecurityError(null)
 
       // Get current session
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
       if (!session?.user) {
         throw new Error('No active session')
       }
@@ -272,7 +274,9 @@ export function OptimizedSalonProvider({ children }: OptimizedSalonProviderProps
 
   const getSalonRole = async (secCtx: SecurityContext): Promise<SalonContextType['salonRole']> => {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user }
+      } = await supabase.auth.getUser()
       if (user?.email) {
         if (user.email.includes('michele')) return 'owner'
         if (user.email.includes('manager')) return 'manager'
@@ -288,20 +292,29 @@ export function OptimizedSalonProvider({ children }: OptimizedSalonProviderProps
   }
 
   // Security methods
-  const executeSecurely = useCallback(async <T,>(operation: (client: any) => Promise<T>): Promise<T> => {
-    if (!securityContext) {
-      throw new Error('Not authenticated')
-    }
-    return dbContext.executeWithContext(securityContext, operation)
-  }, [securityContext])
+  const executeSecurely = useCallback(
+    async <T,>(operation: (client: any) => Promise<T>): Promise<T> => {
+      if (!securityContext) {
+        throw new Error('Not authenticated')
+      }
+      return dbContext.executeWithContext(securityContext, operation)
+    },
+    [securityContext]
+  )
 
-  const hasPermission = useCallback((permission: string): boolean => {
-    return permissions.includes(permission) || permissions.includes('salon:admin:full')
-  }, [permissions])
+  const hasPermission = useCallback(
+    (permission: string): boolean => {
+      return permissions.includes(permission) || permissions.includes('salon:admin:full')
+    },
+    [permissions]
+  )
 
-  const hasAnyPermission = useCallback((perms: string[]): boolean => {
-    return perms.some(permission => hasPermission(permission))
-  }, [hasPermission])
+  const hasAnyPermission = useCallback(
+    (perms: string[]): boolean => {
+      return perms.some(permission => hasPermission(permission))
+    },
+    [hasPermission]
+  )
 
   const handleSetBranch = useCallback((branchId: string) => {
     setSelectedBranchIdState(branchId)
@@ -316,7 +329,7 @@ export function OptimizedSalonProvider({ children }: OptimizedSalonProviderProps
   const customers: any[] = []
   const services: any[] = []
   const todayAppointments: any[] = []
-  
+
   // Simple loading states
   const isInitialLoading = isSecurityLoading
   const isCriticalDataLoaded = !isSecurityLoading && !!securityContext
@@ -368,40 +381,40 @@ export function OptimizedSalonProvider({ children }: OptimizedSalonProviderProps
     user,
     isLoading: isSecurityLoading || isInitialLoading,
     isAuthenticated: isAuthenticated && !!securityContext,
-    
+
     // Branch context
     selectedBranchId,
     selectedBranch: branches.find((b: any) => b.id === selectedBranchId) || null,
     availableBranches: branches,
     setSelectedBranchId: handleSetBranch,
-    
+
     // Preloaded data
     branches,
     staff,
     customers,
     services,
     todayAppointments,
-    
+
     // Loading states
     isInitialLoading: isInitialLoading || isSecurityLoading,
     isCriticalDataLoaded: isCriticalDataLoaded && !isSecurityLoading,
     loadingStates,
-    
+
     // Error states
     errors,
-    
+
     // Actions
     prefetchData,
     invalidateData,
     refreshAll,
-    
+
     // UI state
     uiState,
     updateUIState,
-    
+
     // Performance metrics
     performanceMetrics,
-    
+
     // Security methods
     executeSecurely,
     hasPermission,
@@ -416,13 +429,9 @@ export function OptimizedSalonProvider({ children }: OptimizedSalonProviderProps
         <Card className="max-w-md p-6">
           <div className="text-center">
             <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-red-500" />
-            <h2 className="text-xl font-semibold mb-2 text-red-600">
-              Security Error
-            </h2>
-            <p className="text-sm text-gray-600 mb-4">
-              {securityError}
-            </p>
-            <button 
+            <h2 className="text-xl font-semibold mb-2 text-red-600">Security Error</h2>
+            <p className="text-sm text-gray-600 mb-4">{securityError}</p>
+            <button
               onClick={initializeSecurityContext}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
@@ -439,8 +448,8 @@ export function OptimizedSalonProvider({ children }: OptimizedSalonProviderProps
       <SalonContext.Provider value={contextValue}>
         {children}
         {process.env.NODE_ENV === 'development' && (
-          <ReactQueryDevtools 
-            initialIsOpen={false} 
+          <ReactQueryDevtools
+            initialIsOpen={false}
             position="bottom-right"
             buttonPosition="bottom-right"
           />
@@ -457,9 +466,7 @@ export function SalonLoadingScreen() {
       <div className="text-center">
         <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
         <h2 className="text-lg font-semibold mb-2">Loading Salon...</h2>
-        <p className="text-sm text-gray-600">
-          Preparing your salon management system
-        </p>
+        <p className="text-sm text-gray-600">Preparing your salon management system</p>
         <div className="mt-4 w-64 bg-gray-200 rounded-full h-2">
           <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '60%' }} />
         </div>
@@ -475,24 +482,20 @@ export function withSalonData<P extends object>(
 ) {
   return function SalonDataWrapper(props: P) {
     const { isInitialLoading, isCriticalDataLoaded, errors } = useOptimizedSalonContext()
-    
+
     // Show loading if initial load
     if (isInitialLoading) {
       return <SalonLoadingScreen />
     }
-    
+
     // Show error if critical data failed
     if (!isCriticalDataLoaded && Object.values(errors).some(error => error)) {
       return (
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-lg font-semibold mb-2 text-red-600">
-              Failed to load salon data
-            </h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Please refresh the page or contact support
-            </p>
-            <button 
+            <h2 className="text-lg font-semibold mb-2 text-red-600">Failed to load salon data</h2>
+            <p className="text-sm text-gray-600 mb-4">Please refresh the page or contact support</p>
+            <button
               onClick={() => window.location.reload()}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
@@ -502,7 +505,7 @@ export function withSalonData<P extends object>(
         </div>
       )
     }
-    
+
     return <WrappedComponent {...props} />
   }
 }

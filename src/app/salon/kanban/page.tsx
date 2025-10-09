@@ -55,14 +55,19 @@ const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 export default function KanbanPage() {
   const router = useRouter()
-  const { organizationId, organization: authOrganization, isAuthenticated, isLoading: contextLoading } = useSecuredSalonContext()
+  const {
+    organizationId,
+    organization: authOrganization,
+    isAuthenticated,
+    isLoading: contextLoading
+  } = useSecuredSalonContext()
   const { toast } = useToast()
-  
+
   // Always reset branch filter to 'all' on page load
   useEffect(() => {
     localStorage.removeItem('branch-filter-salon-kanban')
   }, [])
-  
+
   // Branch filter hook - no persistence
   const {
     branchId,
@@ -71,11 +76,13 @@ export default function KanbanPage() {
     setBranchId,
     hasMultipleBranches
   } = useBranchFilter(undefined, undefined, organizationId)
-  
+
   // Date filter state - default to "all" (show past year to future year)
-  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'tomorrow' | 'week' | 'custom'>('all')
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'tomorrow' | 'week' | 'custom'>(
+    'all'
+  )
   const [customDate, setCustomDate] = useState<Date | undefined>(undefined)
-  
+
   const [selectedCard, setSelectedCard] = useState<KanbanCard | null>(null)
   const [rescheduleOpen, setRescheduleOpen] = useState(false)
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
@@ -105,7 +112,7 @@ export default function KanbanPage() {
   // Calculate date range based on filter
   const getDateRange = () => {
     const today = startOfToday()
-    
+
     switch (dateFilter) {
       case 'today':
         return { date: format(today, 'yyyy-MM-dd'), dateFrom: today, dateTo: today }
@@ -117,7 +124,11 @@ export default function KanbanPage() {
         return { date: format(today, 'yyyy-MM-dd'), dateFrom: today, dateTo: weekEnd }
       case 'custom':
         if (customDate) {
-          return { date: format(customDate, 'yyyy-MM-dd'), dateFrom: customDate, dateTo: customDate }
+          return {
+            date: format(customDate, 'yyyy-MM-dd'),
+            dateFrom: customDate,
+            dateTo: customDate
+          }
         }
         return { date: format(today, 'yyyy-MM-dd'), dateFrom: today, dateTo: today }
       case 'all':
@@ -242,18 +253,27 @@ export default function KanbanPage() {
 
   if (contextLoading) {
     return (
-      <div className="min-h-screen" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}>
+      <div
+        className="min-h-screen"
+        style={{
+          background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)`
+        }}
+      >
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center animate-fadeIn">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                   style={{
-                     background: `linear-gradient(135deg, ${LUXE_COLORS.gold}40 0%, ${LUXE_COLORS.goldDark}40 100%)`,
-                     boxShadow: `0 8px 32px ${LUXE_COLORS.gold}20`
-                   }}>
+              <div
+                className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold}40 0%, ${LUXE_COLORS.goldDark}40 100%)`,
+                  boxShadow: `0 8px 32px ${LUXE_COLORS.gold}20`
+                }}
+              >
                 <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
               </div>
-              <p className="mt-4" style={{ color: LUXE_COLORS.bronze }}>Loading organization context...</p>
+              <p className="mt-4" style={{ color: LUXE_COLORS.bronze }}>
+                Loading organization context...
+              </p>
             </div>
           </div>
         </div>
@@ -279,458 +299,469 @@ export default function KanbanPage() {
   return (
     <div
       className="h-screen flex flex-col transition-all duration-300"
-      style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}
+      style={{
+        background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)`
+      }}
     >
-        {/* Luxe header */}
-        <header
-          className="px-6 py-4 shadow-xl backdrop-blur transition-all duration-300 animate-slideDown"
-          style={{ 
-            backgroundColor: `${LUXE_COLORS.charcoal}E6`, 
-            borderBottom: `1px solid ${LUXE_COLORS.gold}40`,
-            backdropFilter: 'blur(10px)'
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transform transition-transform duration-300 hover:scale-110 animate-fadeIn"
-                     style={{ 
-                       background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-                       boxShadow: `0 8px 32px ${LUXE_COLORS.gold}40`
-                     }}>
-                  <CalendarDays className="w-6 h-6" style={{ color: LUXE_COLORS.black }} />
-                </div>
-                <div>
-                  <h1
-                    className="text-2xl font-bold tracking-tight transition-all duration-300"
-                    style={{ color: LUXE_COLORS.champagne }}
-                  >
-                    Kanban Board
-                  </h1>
-                  <p className="text-sm mt-1 opacity-80 transition-opacity duration-300 hover:opacity-100" 
-                     style={{ color: LUXE_COLORS.bronze }}>
-                    Drag and drop appointments to manage workflow
-                  </p>
-                </div>
+      {/* Luxe header */}
+      <header
+        className="px-6 py-4 shadow-xl backdrop-blur transition-all duration-300 animate-slideDown"
+        style={{
+          backgroundColor: `${LUXE_COLORS.charcoal}E6`,
+          borderBottom: `1px solid ${LUXE_COLORS.gold}40`,
+          backdropFilter: 'blur(10px)'
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transform transition-transform duration-300 hover:scale-110 animate-fadeIn"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                  boxShadow: `0 8px 32px ${LUXE_COLORS.gold}40`
+                }}
+              >
+                <CalendarDays className="w-6 h-6" style={{ color: LUXE_COLORS.black }} />
+              </div>
+              <div>
+                <h1
+                  className="text-2xl font-bold tracking-tight transition-all duration-300"
+                  style={{ color: LUXE_COLORS.champagne }}
+                >
+                  Kanban Board
+                </h1>
+                <p
+                  className="text-sm mt-1 opacity-80 transition-opacity duration-300 hover:opacity-100"
+                  style={{ color: LUXE_COLORS.bronze }}
+                >
+                  Drag and drop appointments to manage workflow
+                </p>
               </div>
             </div>
+          </div>
 
-            <div className="flex items-center gap-3 animate-slideLeft">
-              {/* Branch Filter */}
-              <Select
-                value={branchId === undefined || branchId === 'all' ? 'all' : branchId}
-                onValueChange={value => setBranchId(value === 'all' ? undefined : value)}
-              >
-                <SelectTrigger
-                  className="w-[200px] transition-all duration-300 hover:scale-[1.02]"
-                  style={{
-                    backgroundColor: `${LUXE_COLORS.black}CC`,
-                    borderColor: LUXE_COLORS.bronze,
-                    color: LUXE_COLORS.champagne
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                    e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-                    e.currentTarget.style.boxShadow = ''
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
-                    <SelectValue placeholder="All Locations" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="hera-select-content">
-                  <SelectItem value="all" className="hera-select-item">
-                    All Locations
-                  </SelectItem>
-                  {branchesLoading ? (
-                    <div className="px-2 py-3 text-center">
-                      <Loader2
-                        className="h-4 w-4 animate-spin mx-auto"
-                        style={{ color: LUXE_COLORS.gold }}
-                      />
-                    </div>
-                  ) : branches.length === 0 ? (
-                    <div
-                      className="px-2 py-3 text-center text-sm"
-                      style={{ color: LUXE_COLORS.bronze }}
-                    >
-                      No branches configured
-                    </div>
-                  ) : (
-                    branches.map(branch => (
-                      <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
-                          <div className="flex flex-col">
-                            <span className="font-medium">{branch.name}</span>
-                            {branch.code && <span className="text-xs opacity-60">{branch.code}</span>}
-                          </div>
-                        </div>
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-
-              {/* Date Filter */}
-              <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
-                <SelectTrigger
-                  className="w-[180px] transition-all duration-300 hover:scale-[1.02]"
-                  style={{
-                    backgroundColor: `${LUXE_COLORS.black}CC`,
-                    borderColor: LUXE_COLORS.bronze,
-                    color: LUXE_COLORS.champagne
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                    e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-                    e.currentTarget.style.boxShadow = ''
-                  }}
-                >
-                  <SelectValue placeholder="Filter by date" />
-                </SelectTrigger>
-                <SelectContent className="hera-select-content">
-                  <SelectItem value="all" className="hera-select-item">
-                    All appointments
-                  </SelectItem>
-                  <SelectItem value="today" className="hera-select-item">
-                    Today
-                  </SelectItem>
-                  <SelectItem value="tomorrow" className="hera-select-item">
-                    Tomorrow
-                  </SelectItem>
-                  <SelectItem value="week" className="hera-select-item">
-                    Next 7 days
-                  </SelectItem>
-                  <SelectItem value="custom" className="hera-select-item">
-                    Custom date...
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Custom Date Picker */}
-              {dateFilter === 'custom' && (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="justify-start text-left font-normal transition-all duration-300 hover:scale-[1.02]"
-                      style={{
-                        backgroundColor: `${LUXE_COLORS.black}CC`,
-                        borderColor: LUXE_COLORS.bronze,
-                        color: LUXE_COLORS.champagne
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                        e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.borderColor = LUXE_COLORS.bronze
-                        e.currentTarget.style.boxShadow = ''
-                      }}
-                    >
-                      <Calendar className="mr-2 h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
-                      {customDate ? format(customDate, 'MMM d, yyyy') : 'Select date'}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <CalendarComponent
-                      mode="single"
-                      selected={customDate}
-                      onSelect={d => setCustomDate(d)}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              )}
-
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={reload}
-                disabled={loading || isMoving}
-                style={{ color: LUXE_COLORS.gold }}
-                className="hover:opacity-80 transition-all duration-300 hover:scale-110"
-                onMouseEnter={e => {
-                  e.currentTarget.style.color = LUXE_COLORS.champagne
-                  e.currentTarget.style.transform = 'rotate(180deg) scale(1.1)'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.color = LUXE_COLORS.gold
-                  e.currentTarget.style.transform = ''
-                }}
-              >
-                <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
-              </Button>
-
-              <Button
-                onClick={() => router.push('/salon/appointments')}
-                variant="outline"
+          <div className="flex items-center gap-3 animate-slideLeft">
+            {/* Branch Filter */}
+            <Select
+              value={branchId === undefined || branchId === 'all' ? 'all' : branchId}
+              onValueChange={value => setBranchId(value === 'all' ? undefined : value)}
+            >
+              <SelectTrigger
+                className="w-[200px] transition-all duration-300 hover:scale-[1.02]"
                 style={{
-                  backgroundColor: LUXE_COLORS.black,
+                  backgroundColor: `${LUXE_COLORS.black}CC`,
                   borderColor: LUXE_COLORS.bronze,
                   color: LUXE_COLORS.champagne
                 }}
-                className="hover:opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 onMouseEnter={e => {
                   e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                  e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}30`
+                  e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.borderColor = LUXE_COLORS.bronze
                   e.currentTarget.style.boxShadow = ''
                 }}
               >
-                <Calendar className="h-4 w-4 mr-2" />
-                List View
-              </Button>
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
+                  <SelectValue placeholder="All Locations" />
+                </div>
+              </SelectTrigger>
+              <SelectContent className="hera-select-content">
+                <SelectItem value="all" className="hera-select-item">
+                  All Locations
+                </SelectItem>
+                {branchesLoading ? (
+                  <div className="px-2 py-3 text-center">
+                    <Loader2
+                      className="h-4 w-4 animate-spin mx-auto"
+                      style={{ color: LUXE_COLORS.gold }}
+                    />
+                  </div>
+                ) : branches.length === 0 ? (
+                  <div
+                    className="px-2 py-3 text-center text-sm"
+                    style={{ color: LUXE_COLORS.bronze }}
+                  >
+                    No branches configured
+                  </div>
+                ) : (
+                  branches.map(branch => (
+                    <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
+                        <div className="flex flex-col">
+                          <span className="font-medium">{branch.name}</span>
+                          {branch.code && <span className="text-xs opacity-60">{branch.code}</span>}
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
 
-              <Button
-                onClick={() => router.push('/salon/appointments/calendar')}
-                variant="outline"
+            {/* Date Filter */}
+            <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
+              <SelectTrigger
+                className="w-[180px] transition-all duration-300 hover:scale-[1.02]"
                 style={{
-                  backgroundColor: LUXE_COLORS.black,
-                  borderColor: LUXE_COLORS.emerald,
+                  backgroundColor: `${LUXE_COLORS.black}CC`,
+                  borderColor: LUXE_COLORS.bronze,
                   color: LUXE_COLORS.champagne
                 }}
-                className="hover:opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 onMouseEnter={e => {
                   e.currentTarget.style.borderColor = LUXE_COLORS.gold
-                  e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}30`
+                  e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = LUXE_COLORS.emerald
+                  e.currentTarget.style.borderColor = LUXE_COLORS.bronze
                   e.currentTarget.style.boxShadow = ''
                 }}
               >
-                <CalendarDays className="h-4 w-4 mr-2" />
-                Calendar View
-              </Button>
+                <SelectValue placeholder="Filter by date" />
+              </SelectTrigger>
+              <SelectContent className="hera-select-content">
+                <SelectItem value="all" className="hera-select-item">
+                  All appointments
+                </SelectItem>
+                <SelectItem value="today" className="hera-select-item">
+                  Today
+                </SelectItem>
+                <SelectItem value="tomorrow" className="hera-select-item">
+                  Tomorrow
+                </SelectItem>
+                <SelectItem value="week" className="hera-select-item">
+                  Next 7 days
+                </SelectItem>
+                <SelectItem value="custom" className="hera-select-item">
+                  Custom date...
+                </SelectItem>
+              </SelectContent>
+            </Select>
 
-              <Button
-                onClick={() => router.push('/salon/appointments/new')}
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-                  color: LUXE_COLORS.black,
-                  boxShadow: `0 4px 16px ${LUXE_COLORS.gold}40`
-                }}
-                className="hover:opacity-90 transition-all duration-300 font-semibold hover:scale-105 hover:shadow-2xl"
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-                  e.currentTarget.style.boxShadow = `0 8px 24px ${LUXE_COLORS.gold}60`
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'scale(1)'
-                  e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}40`
-                }}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Appointment
-              </Button>
-            </div>
-          </div>
-        </header>
+            {/* Custom Date Picker */}
+            {dateFilter === 'custom' && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="justify-start text-left font-normal transition-all duration-300 hover:scale-[1.02]"
+                    style={{
+                      backgroundColor: `${LUXE_COLORS.black}CC`,
+                      borderColor: LUXE_COLORS.bronze,
+                      color: LUXE_COLORS.champagne
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                      e.currentTarget.style.boxShadow = `0 0 0 3px ${LUXE_COLORS.gold}20`
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = LUXE_COLORS.bronze
+                      e.currentTarget.style.boxShadow = ''
+                    }}
+                  >
+                    <Calendar className="mr-2 h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
+                    {customDate ? format(customDate, 'MMM d, yyyy') : 'Select date'}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    mode="single"
+                    selected={customDate}
+                    onSelect={d => setCustomDate(d)}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
 
-        {/* Active Filters Indicator */}
-        {(branchId && branchId !== 'all') && (
-          <div className="px-6 py-2 flex items-center gap-2 animate-slideDown" style={{ backgroundColor: `${LUXE_COLORS.charcoal}CC` }}>
-            <span className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-              Active Filters:
-            </span>
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-300 hover:scale-105"
-              style={{
-                background: `${LUXE_COLORS.gold}20`,
-                border: `1px solid ${LUXE_COLORS.gold}40`,
-                boxShadow: `0 2px 8px ${LUXE_COLORS.gold}20`
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={reload}
+              disabled={loading || isMoving}
+              style={{ color: LUXE_COLORS.gold }}
+              className="hover:opacity-80 transition-all duration-300 hover:scale-110"
+              onMouseEnter={e => {
+                e.currentTarget.style.color = LUXE_COLORS.champagne
+                e.currentTarget.style.transform = 'rotate(180deg) scale(1.1)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.color = LUXE_COLORS.gold
+                e.currentTarget.style.transform = ''
               }}
             >
-              {branchId && branchId !== 'all' && (
-                <>
-                  <Building2 className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
-                  <span className="text-sm font-medium" style={{ color: LUXE_COLORS.champagne }}>
-                    {branches.find(b => b.id === branchId)?.name || branchId}
-                  </span>
-                </>
-              )}
+              <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
+            </Button>
+
+            <Button
+              onClick={() => router.push('/salon/appointments')}
+              variant="outline"
+              style={{
+                backgroundColor: LUXE_COLORS.black,
+                borderColor: LUXE_COLORS.bronze,
+                color: LUXE_COLORS.champagne
+              }}
+              className="hover:opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}30`
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = LUXE_COLORS.bronze
+                e.currentTarget.style.boxShadow = ''
+              }}
+            >
+              <Calendar className="h-4 w-4 mr-2" />
+              List View
+            </Button>
+
+            <Button
+              onClick={() => router.push('/salon/appointments/calendar')}
+              variant="outline"
+              style={{
+                backgroundColor: LUXE_COLORS.black,
+                borderColor: LUXE_COLORS.emerald,
+                color: LUXE_COLORS.champagne
+              }}
+              className="hover:opacity-80 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = LUXE_COLORS.gold
+                e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}30`
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = LUXE_COLORS.emerald
+                e.currentTarget.style.boxShadow = ''
+              }}
+            >
+              <CalendarDays className="h-4 w-4 mr-2" />
+              Calendar View
+            </Button>
+
+            <Button
+              onClick={() => router.push('/salon/appointments/new')}
+              style={{
+                background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                color: LUXE_COLORS.black,
+                boxShadow: `0 4px 16px ${LUXE_COLORS.gold}40`
+              }}
+              className="hover:opacity-90 transition-all duration-300 font-semibold hover:scale-105 hover:shadow-2xl"
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
+                e.currentTarget.style.boxShadow = `0 8px 24px ${LUXE_COLORS.gold}60`
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'scale(1)'
+                e.currentTarget.style.boxShadow = `0 4px 16px ${LUXE_COLORS.gold}40`
+              }}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              New Appointment
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Active Filters Indicator */}
+      {branchId && branchId !== 'all' && (
+        <div
+          className="px-6 py-2 flex items-center gap-2 animate-slideDown"
+          style={{ backgroundColor: `${LUXE_COLORS.charcoal}CC` }}
+        >
+          <span className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+            Active Filters:
+          </span>
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-300 hover:scale-105"
+            style={{
+              background: `${LUXE_COLORS.gold}20`,
+              border: `1px solid ${LUXE_COLORS.gold}40`,
+              boxShadow: `0 2px 8px ${LUXE_COLORS.gold}20`
+            }}
+          >
+            {branchId && branchId !== 'all' && (
+              <>
+                <Building2 className="h-3 w-3" style={{ color: LUXE_COLORS.gold }} />
+                <span className="text-sm font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                  {branches.find(b => b.id === branchId)?.name || branchId}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Kanban board */}
+      <div className="flex-1 overflow-hidden">
+        <Board
+          cardsByColumn={cardsByColumn}
+          onMove={moveCard}
+          onCardAction={handleCardAction}
+          loading={loading}
+          isMoving={isMoving}
+        />
+      </div>
+
+      {/* Reschedule panel */}
+      <ReschedulePanel
+        open={rescheduleOpen}
+        onOpenChange={setRescheduleOpen}
+        appointment={selectedCard}
+        organization_id={SALON_ORG_ID}
+        branch_id={
+          branchId && branchId !== 'all'
+            ? branchId
+            : branches.length > 0
+              ? branches[0].id
+              : undefined
+        }
+        branches={branches}
+        staff={[
+          { id: 'staff1', name: 'Sarah' },
+          { id: 'staff2', name: 'Emma' },
+          { id: 'staff3', name: 'Lisa' }
+        ]}
+        currentUserId={userId || 'demo-user'}
+      />
+
+      {/* New Draft Modal */}
+      <Dialog open={draftModalOpen} onOpenChange={setDraftModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Draft Appointment</DialogTitle>
+            <DialogDescription>
+              Create a draft appointment that can be confirmed later
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label>Customer Name *</Label>
+              <Input
+                value={draftForm.customer_name}
+                onChange={e => setDraftForm(prev => ({ ...prev, customer_name: e.target.value }))}
+                placeholder="Enter customer name"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Service *</Label>
+              <Input
+                value={draftForm.service_name}
+                onChange={e => setDraftForm(prev => ({ ...prev, service_name: e.target.value }))}
+                placeholder="Enter service name"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Staff Member (optional)</Label>
+              <Input
+                value={draftForm.staff_name}
+                onChange={e => setDraftForm(prev => ({ ...prev, staff_name: e.target.value }))}
+                placeholder="Enter staff name"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Start Time *</Label>
+                <Input
+                  type="time"
+                  value={draftForm.start_time}
+                  onChange={e => setDraftForm(prev => ({ ...prev, start_time: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Duration (minutes)</Label>
+                <Input
+                  type="number"
+                  value={draftForm.duration}
+                  onChange={e => setDraftForm(prev => ({ ...prev, duration: e.target.value }))}
+                  min="15"
+                  step="15"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" onClick={() => setDraftModalOpen(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleCreateDraft}
+                className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
+              >
+                Create Draft
+              </Button>
             </div>
           </div>
-        )}
+        </DialogContent>
+      </Dialog>
 
-        {/* Kanban board */}
-        <div className="flex-1 overflow-hidden">
-          <Board
-            cardsByColumn={cardsByColumn}
-            onMove={moveCard}
-            onCardAction={handleCardAction}
-            loading={loading}
-            isMoving={isMoving}
-          />
-        </div>
+      {/* Cancel Confirmation Modal */}
+      <Dialog open={cancelModalOpen} onOpenChange={setCancelModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Cancel Appointment</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel this appointment for {cardToCancel?.customer_name}?
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
 
-        {/* Reschedule panel */}
-        <ReschedulePanel
-          open={rescheduleOpen}
-          onOpenChange={setRescheduleOpen}
-          appointment={selectedCard}
-          organization_id={SALON_ORG_ID}
-          branch_id={branchId && branchId !== 'all' ? branchId : (branches.length > 0 ? branches[0].id : undefined)}
-          branches={branches}
-          staff={[
-            { id: 'staff1', name: 'Sarah' },
-            { id: 'staff2', name: 'Emma' },
-            { id: 'staff3', name: 'Lisa' }
-          ]}
-          currentUserId={userId || 'demo-user'}
-        />
-
-        {/* New Draft Modal */}
-        <Dialog open={draftModalOpen} onOpenChange={setDraftModalOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create Draft Appointment</DialogTitle>
-              <DialogDescription>
-                Create a draft appointment that can be confirmed later
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>Customer Name *</Label>
-                <Input
-                  value={draftForm.customer_name}
-                  onChange={e => setDraftForm(prev => ({ ...prev, customer_name: e.target.value }))}
-                  placeholder="Enter customer name"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Service *</Label>
-                <Input
-                  value={draftForm.service_name}
-                  onChange={e => setDraftForm(prev => ({ ...prev, service_name: e.target.value }))}
-                  placeholder="Enter service name"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Staff Member (optional)</Label>
-                <Input
-                  value={draftForm.staff_name}
-                  onChange={e => setDraftForm(prev => ({ ...prev, staff_name: e.target.value }))}
-                  placeholder="Enter staff name"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Start Time *</Label>
-                  <Input
-                    type="time"
-                    value={draftForm.start_time}
-                    onChange={e => setDraftForm(prev => ({ ...prev, start_time: e.target.value }))}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Duration (minutes)</Label>
-                  <Input
-                    type="number"
-                    value={draftForm.duration}
-                    onChange={e => setDraftForm(prev => ({ ...prev, duration: e.target.value }))}
-                    min="15"
-                    step="15"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setDraftModalOpen(false)}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleCreateDraft}
-                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
-                >
-                  Create Draft
-                </Button>
-              </div>
+          <div className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label>Cancellation Type *</Label>
+              <Select
+                value={cancellationType}
+                onValueChange={(value: any) => setCancellationType(value)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="no_show">No Show</SelectItem>
+                  <SelectItem value="customer_request">Customer Request</SelectItem>
+                  <SelectItem value="staff_unavailable">Staff Unavailable</SelectItem>
+                  <SelectItem value="emergency">Emergency</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </DialogContent>
-        </Dialog>
 
-        {/* Cancel Confirmation Modal */}
-        <Dialog open={cancelModalOpen} onOpenChange={setCancelModalOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Cancel Appointment</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to cancel this appointment for {cardToCancel?.customer_name}?
-                This action cannot be undone.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>Cancellation Type *</Label>
-                <Select
-                  value={cancellationType}
-                  onValueChange={(value: any) => setCancellationType(value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="no_show">No Show</SelectItem>
-                    <SelectItem value="customer_request">Customer Request</SelectItem>
-                    <SelectItem value="staff_unavailable">Staff Unavailable</SelectItem>
-                    <SelectItem value="emergency">Emergency</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Additional Notes (optional)</Label>
-                <Textarea
-                  value={cancelReason}
-                  onChange={e => setCancelReason(e.target.value)}
-                  placeholder="Add any additional details..."
-                  rows={3}
-                />
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setCancelModalOpen(false)
-                    setCardToCancel(null)
-                    setCancelReason('')
-                    setCancellationType('customer_request')
-                  }}
-                  className="flex-1"
-                >
-                  Keep Appointment
-                </Button>
-                <Button onClick={handleCancelConfirm} variant="destructive" className="flex-1">
-                  Cancel Appointment
-                </Button>
-              </div>
+            <div className="space-y-2">
+              <Label>Additional Notes (optional)</Label>
+              <Textarea
+                value={cancelReason}
+                onChange={e => setCancelReason(e.target.value)}
+                placeholder="Add any additional details..."
+                rows={3}
+              />
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setCancelModalOpen(false)
+                  setCardToCancel(null)
+                  setCancelReason('')
+                  setCancellationType('customer_request')
+                }}
+                className="flex-1"
+              >
+                Keep Appointment
+              </Button>
+              <Button onClick={handleCancelConfirm} variant="destructive" className="flex-1">
+                Cancel Appointment
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }

@@ -12,17 +12,17 @@ export async function GET() {
       RAILWAY_ENVIRONMENT: process.env.RAILWAY_ENVIRONMENT,
       RAILWAY_SERVICE_NAME: process.env.RAILWAY_SERVICE_NAME,
       RAILWAY_DEPLOYMENT_ID: process.env.RAILWAY_DEPLOYMENT_ID,
-      PORT: process.env.PORT,
+      PORT: process.env.PORT
     },
     supabase: {
       url: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'configured' : 'missing',
-      anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'configured' : 'missing',
+      anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'configured' : 'missing'
     },
     server: {
       hostname: process.env.HOSTNAME || 'unknown',
       platform: process.platform,
       nodeVersion: process.version,
-      uptime: process.uptime(),
+      uptime: process.uptime()
     }
   }
 

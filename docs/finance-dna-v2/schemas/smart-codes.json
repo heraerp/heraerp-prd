@@ -1,0 +1,266 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heraerp.com/schemas/finance-dna-v2/smart-codes.json",
+  "title": "Finance DNA v2 Smart Code Validation Schema",
+  "description": "JSON Schema for validating Finance DNA v2 smart codes",
+  "type": "object",
+  "properties": {
+    "smartCode": {
+      "type": "string",
+      "pattern": "^HERA\\.ACCOUNTING\\.[A-Z]+(\\.[A-Z]+)*\\.v2$",
+      "minLength": 25,
+      "maxLength": 100,
+      "description": "Finance DNA v2 smart code format: HERA.ACCOUNTING.{MODULE}.{FUNCTION}.{TYPE}.v2"
+    },
+    "smartCodeFamily": {
+      "type": "string",
+      "enum": [
+        "GL_ACCOUNT",
+        "GL_TRANSACTION", 
+        "GL_LINE",
+        "POLICY_RULE",
+        "POLICY_CONFIG",
+        "POLICY_EVENT",
+        "FISCAL_PERIOD",
+        "MIGRATION",
+        "SECURITY",
+        "AUDIT",
+        "PERFORMANCE",
+        "REPORT",
+        "ERROR"
+      ],
+      "description": "Smart code family classification"
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "isValid": {
+          "type": "boolean",
+          "description": "Whether the smart code passes validation"
+        },
+        "validationErrors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of validation error messages"
+        },
+        "format": {
+          "type": "object",
+          "properties": {
+            "hasHeraPrefix": {
+              "type": "boolean"
+            },
+            "hasAccountingDomain": {
+              "type": "boolean"
+            },
+            "hasV2Version": {
+              "type": "boolean"
+            },
+            "minimumSegments": {
+              "type": "boolean"
+            },
+            "allUppercase": {
+              "type": "boolean"
+            }
+          },
+          "required": ["hasHeraPrefix", "hasAccountingDomain", "hasV2Version", "minimumSegments", "allUppercase"]
+        }
+      },
+      "required": ["isValid"]
+    }
+  },
+  "definitions": {
+    "glAccountSmartCodes": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "const": "HERA.ACCOUNTING.GL.ACC.ENTITY.v2"
+        },
+        "balance": {
+          "const": "HERA.ACCOUNTING.GL.ACC.BALANCE.INQUIRY.v2"  
+        },
+        "hierarchy": {
+          "enum": [
+            "HERA.ACCOUNTING.GL.ACC.HIERARCHY.PARENT.v2",
+            "HERA.ACCOUNTING.GL.ACC.HIERARCHY.CHILD.v2"
+          ]
+        }
+      }
+    },
+    "transactionSmartCodes": {
+      "type": "object", 
+      "properties": {
+        "journal": {
+          "const": "HERA.ACCOUNTING.GL.TXN.JOURNAL.v2"
+        },
+        "payment": {
+          "const": "HERA.ACCOUNTING.GL.TXN.PAYMENT.v2"
+        },
+        "receipt": {
+          "const": "HERA.ACCOUNTING.GL.TXN.RECEIPT.v2"
+        },
+        "autoPost": {
+          "const": "HERA.ACCOUNTING.GL.TXN.AUTO.POST.v2"
+        }
+      }
+    },
+    "lineSmartCodes": {
+      "type": "object",
+      "properties": {
+        "debit": {
+          "const": "HERA.ACCOUNTING.GL.LINE.DEBIT.v2"
+        },
+        "credit": {
+          "const": "HERA.ACCOUNTING.GL.LINE.CREDIT.v2"
+        }
+      }
+    },
+    "policySmartCodes": {
+      "type": "object",
+      "properties": {
+        "ruleEntity": {
+          "const": "HERA.ACCOUNTING.POLICY.RULE.ENTITY.v2"
+        },
+        "configs": {
+          "enum": [
+            "HERA.ACCOUNTING.POLICY.CONFIG.POSTING.v2",
+            "HERA.ACCOUNTING.POLICY.CONFIG.VALIDATION.v2", 
+            "HERA.ACCOUNTING.POLICY.CONFIG.APPROVAL.v2"
+          ]
+        },
+        "events": {
+          "enum": [
+            "HERA.ACCOUNTING.POLICY.EVENT.APPLIED.v2",
+            "HERA.ACCOUNTING.POLICY.EVENT.TRIGGERED.v2",
+            "HERA.ACCOUNTING.POLICY.EVENT.EXECUTED.v2"
+          ]
+        }
+      }
+    },
+    "reportSmartCodes": {
+      "type": "object",
+      "properties": {
+        "trialBalance": {
+          "const": "HERA.ACCOUNTING.REPORT.TRIAL.BALANCE.v2"
+        },
+        "profitLoss": {
+          "const": "HERA.ACCOUNTING.REPORT.PROFIT.LOSS.v2"
+        },
+        "balanceSheet": {
+          "const": "HERA.ACCOUNTING.REPORT.BALANCE.SHEET.v2"
+        }
+      }
+    },
+    "securitySmartCodes": {
+      "type": "object",
+      "properties": {
+        "rlsEnforcement": {
+          "const": "HERA.ACCOUNTING.SECURITY.RLS.ENFORCEMENT.v2"
+        },
+        "authSuccess": {
+          "const": "HERA.ACCOUNTING.SECURITY.AUTH.SUCCESS.v2"
+        },
+        "authFailure": {
+          "const": "HERA.ACCOUNTING.SECURITY.AUTH.FAILURE.v2"
+        },
+        "permissionCheck": {
+          "const": "HERA.ACCOUNTING.SECURITY.PERMISSION.CHECK.v2"
+        },
+        "permissionDenied": {
+          "const": "HERA.ACCOUNTING.SECURITY.PERMISSION.DENIED.v2"
+        }
+      }
+    },
+    "auditSmartCodes": {
+      "type": "object",
+      "properties": {
+        "entityCreate": {
+          "const": "HERA.ACCOUNTING.AUDIT.ENTITY.CREATE.v2"
+        },
+        "transactionCreate": {
+          "const": "HERA.ACCOUNTING.AUDIT.TRANSACTION.CREATE.v2"
+        },
+        "policyCreate": {
+          "const": "HERA.ACCOUNTING.AUDIT.POLICY.CREATE.v2"
+        },
+        "operation": {
+          "const": "HERA.ACCOUNTING.AUDIT.OPERATION.v2"
+        }
+      }
+    },
+    "migrationSmartCodes": {
+      "type": "object",
+      "properties": {
+        "candidatePreview": {
+          "const": "HERA.ACCOUNTING.MIGRATION.CANDIDATE.PREVIEW.v2"
+        },
+        "reverseRepost": {
+          "const": "HERA.ACCOUNTING.MIGRATION.REVERSE.REPOST.v2"
+        },
+        "aliasReporting": {
+          "const": "HERA.ACCOUNTING.MIGRATION.ALIAS.REPORTING.v2"
+        }
+      }
+    },
+    "errorSmartCodes": {
+      "type": "object",
+      "properties": {
+        "glBalance": {
+          "const": "HERA.ACCOUNTING.ERROR.GL.BALANCE.VALIDATION.v2"
+        },
+        "rateLimit": {
+          "const": "HERA.ACCOUNTING.ERROR.RATE.LIMIT.v2"
+        },
+        "smartCodeInvalid": {
+          "const": "HERA.ACCOUNTING.ERROR.SMART.CODE.INVALID.v2"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "smartCode": "HERA.ACCOUNTING.GL.ACC.ENTITY.v2",
+      "smartCodeFamily": "GL_ACCOUNT",
+      "validation": {
+        "isValid": true,
+        "format": {
+          "hasHeraPrefix": true,
+          "hasAccountingDomain": true,
+          "hasV2Version": true,
+          "minimumSegments": true,
+          "allUppercase": true
+        }
+      }
+    },
+    {
+      "smartCode": "HERA.ACCOUNTING.GL.TXN.JOURNAL.v2",
+      "smartCodeFamily": "GL_TRANSACTION",
+      "validation": {
+        "isValid": true,
+        "format": {
+          "hasHeraPrefix": true,
+          "hasAccountingDomain": true,
+          "hasV2Version": true,
+          "minimumSegments": true,
+          "allUppercase": true
+        }
+      }
+    },
+    {
+      "smartCode": "hera.accounting.gl.txn.journal.v2",
+      "smartCodeFamily": "GL_TRANSACTION",
+      "validation": {
+        "isValid": false,
+        "validationErrors": ["Smart code must be uppercase"],
+        "format": {
+          "hasHeraPrefix": true,
+          "hasAccountingDomain": true,
+          "hasV2Version": true,
+          "minimumSegments": true,
+          "allUppercase": false
+        }
+      }
+    }
+  ]
+}

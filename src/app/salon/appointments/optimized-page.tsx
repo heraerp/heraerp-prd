@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { 
+import {
   useOptimizedAppointments,
   useOptimizedStaff,
   useOptimizedCustomers,
@@ -37,20 +37,12 @@ function OptimizedAppointmentsPage() {
   const [viewMode, setViewMode] = useState<'today' | 'week' | 'month'>('today')
 
   // Get branch filter with persistence
-  const { 
-    selectedBranchId, 
-    setBranchId, 
-    hasMultipleBranches, 
-    branches 
-  } = useOptimizedBranchFilter('appointments-page')
+  const { selectedBranchId, setBranchId, hasMultipleBranches, branches } =
+    useOptimizedBranchFilter('appointments-page')
 
   // Get dashboard stats
-  const { 
-    stats, 
-    performanceMetrics, 
-    refreshAll,
-    getUpcomingAppointments
-  } = useOptimizedDashboardData()
+  const { stats, performanceMetrics, refreshAll, getUpcomingAppointments } =
+    useOptimizedDashboardData()
 
   // Calculate date range based on view mode
   const dateRange = useMemo(() => {
@@ -85,9 +77,9 @@ function OptimizedAppointmentsPage() {
   }, [viewMode])
 
   // Use optimized hooks with intelligent caching
-  const { 
-    appointments, 
-    isLoading, 
+  const {
+    appointments,
+    isLoading,
     isValidating,
     lastUpdated,
     updateAppointment,
@@ -116,7 +108,7 @@ function OptimizedAppointmentsPage() {
     return appointments.filter(apt => {
       const customer = customers.find(c => c.id === apt.source_entity_id)
       const stylist = getStaffById(apt.target_entity_id)
-      
+
       return (
         customer?.entity_name?.toLowerCase().includes(searchLower) ||
         stylist?.entity_name?.toLowerCase().includes(searchLower) ||
@@ -132,7 +124,7 @@ function OptimizedAppointmentsPage() {
       const weekStart = new Date()
       const weekEnd = new Date()
       weekEnd.setDate(weekEnd.getDate() + 7)
-      
+
       setTimeout(() => {
         prefetch({
           start: weekStart.toISOString(),
@@ -152,8 +144,12 @@ function OptimizedAppointmentsPage() {
           <div className="flex gap-4">
             <span>Cache Hit: {performanceMetrics.cacheHitRate.toFixed(1)}%</span>
             <span>Load Time: {performanceMetrics.averageLoadTime}ms</span>
-            <span>Last Refresh: {new Date(performanceMetrics.lastRefresh).toLocaleTimeString()}</span>
-            <span>Data Age: {lastUpdated ? `${Math.round((Date.now() - lastUpdated) / 1000)}s` : 'N/A'}</span>
+            <span>
+              Last Refresh: {new Date(performanceMetrics.lastRefresh).toLocaleTimeString()}
+            </span>
+            <span>
+              Data Age: {lastUpdated ? `${Math.round((Date.now() - lastUpdated) / 1000)}s` : 'N/A'}
+            </span>
           </div>
         </div>
       )}
@@ -164,13 +160,9 @@ function OptimizedAppointmentsPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Appointments</h1>
           <p className="text-gray-600">Manage your salon appointments efficiently</p>
         </div>
-        
+
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={refreshAll}
-            disabled={isValidating}
-          >
+          <Button variant="outline" onClick={refreshAll} disabled={isValidating}>
             <RefreshCw className={`w-4 h-4 mr-2 ${isValidating ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
@@ -190,9 +182,7 @@ function OptimizedAppointmentsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.todayAppointments}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.completedToday} completed
-            </p>
+            <p className="text-xs text-muted-foreground">{stats.completedToday} completed</p>
           </CardContent>
         </Card>
 
@@ -202,12 +192,8 @@ function OptimizedAppointmentsPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              AED {stats.totalRevenue.toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              From {stats.completedToday} services
-            </p>
+            <div className="text-2xl font-bold">AED {stats.totalRevenue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">From {stats.completedToday} services</p>
           </CardContent>
         </Card>
 
@@ -218,9 +204,7 @@ function OptimizedAppointmentsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.activeStaff}</div>
-            <p className="text-xs text-muted-foreground">
-              of {stats.totalStaff} total
-            </p>
+            <p className="text-xs text-muted-foreground">of {stats.totalStaff} total</p>
           </CardContent>
         </Card>
 
@@ -231,9 +215,7 @@ function OptimizedAppointmentsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{upcomingAppointments.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Need attention
-            </p>
+            <p className="text-xs text-muted-foreground">Need attention</p>
           </CardContent>
         </Card>
       </div>
@@ -246,7 +228,7 @@ function OptimizedAppointmentsPage() {
           <Input
             placeholder="Search customers, staff, notes..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -255,7 +237,7 @@ function OptimizedAppointmentsPage() {
         {hasMultipleBranches && (
           <select
             value={selectedBranchId || '__ALL__'}
-            onChange={(e) => setBranchId(e.target.value === '__ALL__' ? '' : e.target.value)}
+            onChange={e => setBranchId(e.target.value === '__ALL__' ? '' : e.target.value)}
             className="px-3 py-2 border rounded-md"
           >
             <option value="__ALL__">All Branches</option>
@@ -270,7 +252,7 @@ function OptimizedAppointmentsPage() {
         {/* Status Filter */}
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={e => setStatusFilter(e.target.value)}
           className="px-3 py-2 border rounded-md"
         >
           <option value="all">All Status</option>
@@ -283,7 +265,7 @@ function OptimizedAppointmentsPage() {
 
         {/* View Mode */}
         <div className="flex border rounded-md">
-          {(['today', 'week', 'month'] as const).map((mode) => (
+          {(['today', 'week', 'month'] as const).map(mode => (
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
@@ -303,9 +285,7 @@ function OptimizedAppointmentsPage() {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle>
-              Appointments ({filteredAppointments.length})
-            </CardTitle>
+            <CardTitle>Appointments ({filteredAppointments.length})</CardTitle>
             {isValidating && (
               <Badge variant="secondary">
                 <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
@@ -327,22 +307,21 @@ function OptimizedAppointmentsPage() {
           ) : filteredAppointments.length === 0 ? (
             <div className="text-center py-8">
               <Calendar className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No appointments found
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No appointments found</h3>
               <p className="text-gray-600">
-                {searchTerm || statusFilter !== 'all' 
+                {searchTerm || statusFilter !== 'all'
                   ? 'Try adjusting your filters'
-                  : 'Create your first appointment to get started'
-                }
+                  : 'Create your first appointment to get started'}
               </p>
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredAppointments.map((appointment) => {
+              {filteredAppointments.map(appointment => {
                 const customer = customers.find(c => c.id === appointment.source_entity_id)
                 const stylist = getStaffById(appointment.target_entity_id)
-                const startTime = new Date(appointment.metadata?.start_time || appointment.transaction_date)
+                const startTime = new Date(
+                  appointment.metadata?.start_time || appointment.transaction_date
+                )
 
                 return (
                   <div
@@ -376,9 +355,11 @@ function OptimizedAppointmentsPage() {
                       <div className="flex items-center gap-2">
                         <Badge
                           variant={
-                            appointment.metadata?.status === 'completed' ? 'default' :
-                            appointment.metadata?.status === 'confirmed' ? 'secondary' :
-                            'outline'
+                            appointment.metadata?.status === 'completed'
+                              ? 'default'
+                              : appointment.metadata?.status === 'confirmed'
+                                ? 'secondary'
+                                : 'outline'
                           }
                         >
                           {appointment.metadata?.status || 'pending'}
@@ -389,9 +370,7 @@ function OptimizedAppointmentsPage() {
                       </div>
                     </div>
                     {appointment.metadata?.notes && (
-                      <p className="mt-2 text-sm text-gray-600">
-                        {appointment.metadata.notes}
-                      </p>
+                      <p className="mt-2 text-sm text-gray-600">{appointment.metadata.notes}</p>
                     )}
                   </div>
                 )

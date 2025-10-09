@@ -1,0 +1,374 @@
+# Finance DNA v2 - CI/CD Pipeline
+# Smart Code: HERA.ACCOUNTING.CI.PIPELINE.v2
+#
+# Comprehensive CI pipeline for Finance DNA v2 with enhanced guardrails,
+# smoke tests, and deployment gates.
+
+name: Finance DNA v2 CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, feature/finance-dna-v2-* ]
+    paths:
+      - 'src/lib/dna/integration/**'
+      - 'src/lib/guardrails/**'
+      - 'src/app/api/v2/finance/**'
+      - 'database/functions/finance-*'
+      - 'database/seed/finance-*'
+      - '.github/workflows/finance-dna-v2-ci.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/lib/dna/integration/**'
+      - 'src/lib/guardrails/**'
+      - 'src/app/api/v2/finance/**'
+      - 'database/functions/finance-*'
+      - 'database/seed/finance-*'
+
+env:
+  NODE_VERSION: '18'
+  POSTGRES_VERSION: '15'
+  FINANCE_DNA_VERSION: 'v2'
+
+jobs:
+  # Phase 1: Code Quality & Security
+  code-quality:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript compilation
+        run: npm run type-check
+
+      - name: ESLint validation
+        run: npm run lint -- --max-warnings 0
+
+      - name: Security audit
+        run: npm audit --audit-level moderate
+
+      - name: Finance DNA v2 Smart Code validation
+        run: npm run finance-dna-v2:validate-smart-codes
+
+  # Phase 2: Finance DNA v2 Guardrails
+  finance-dna-v2-guardrails:
+    name: Finance DNA v2 Guardrails
+    runs-on: ubuntu-latest
+    needs: code-quality
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hera_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup test database
+        run: |
+          npm run db:setup-test
+          npm run db:migrate-test
+          npm run db:seed-finance-dna-v2-test
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_test
+
+      - name: Finance DNA v2 Core Validation
+        run: npm run finance-dna-v2:ci --environment=staging --strict
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_test
+
+      - name: GL Balance Integrity Tests
+        run: npm run finance-dna-v2:test-gl-balance
+
+      - name: Fiscal Period Compliance Tests
+        run: npm run finance-dna-v2:test-fiscal-periods
+
+      - name: COA Mapping Validation Tests
+        run: npm run finance-dna-v2:test-coa-mapping
+
+      - name: AI Confidence Workflow Tests
+        run: npm run finance-dna-v2:test-ai-workflows
+
+      - name: Multi-Currency Balance Tests
+        run: npm run finance-dna-v2:test-multi-currency
+
+      - name: Upload guardrails report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: finance-dna-v2-guardrails-report
+          path: reports/finance-dna-v2-guardrails.json
+
+  # Phase 3: Performance & Load Testing
+  performance-testing:
+    name: Performance & Load Testing
+    runs-on: ubuntu-latest
+    needs: finance-dna-v2-guardrails
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hera_perf_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup performance test database
+        run: |
+          npm run db:setup-perf-test
+          npm run db:migrate-perf-test
+          npm run db:seed-finance-dna-v2-perf-test
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_perf_test
+
+      - name: Finance DNA v2 Performance Benchmarks
+        run: npm run finance-dna-v2:performance-test
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_perf_test
+
+      - name: Load Testing - Single Transaction Processing
+        run: npm run finance-dna-v2:load-test-single
+
+      - name: Load Testing - Batch Processing
+        run: npm run finance-dna-v2:load-test-batch
+
+      - name: Memory Usage Analysis
+        run: npm run finance-dna-v2:memory-analysis
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v3
+        with:
+          name: finance-dna-v2-performance-report
+          path: reports/finance-dna-v2-performance.json
+
+  # Phase 4: Integration Testing
+  integration-testing:
+    name: Integration Testing
+    runs-on: ubuntu-latest
+    needs: performance-testing
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hera_integration_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup integration test environment
+        run: |
+          npm run db:setup-integration-test
+          npm run db:migrate-integration-test
+          npm run db:seed-integration-test
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_integration_test
+          REDIS_URL: redis://localhost:6379
+
+      - name: API Integration Tests
+        run: npm run finance-dna-v2:api-integration-test
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_integration_test
+          REDIS_URL: redis://localhost:6379
+
+      - name: End-to-End Finance Workflow Tests
+        run: npm run finance-dna-v2:e2e-test
+
+      - name: Backward Compatibility Tests (v1 → v2)
+        run: npm run finance-dna-v2:backward-compatibility-test
+
+      - name: Upload integration test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: finance-dna-v2-integration-report
+          path: reports/finance-dna-v2-integration.json
+
+  # Phase 5: Security & Compliance
+  security-compliance:
+    name: Security & Compliance
+    runs-on: ubuntu-latest
+    needs: integration-testing
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: SAST (Static Application Security Testing)
+        uses: github/codeql-action/init@v2
+        with:
+          languages: typescript
+
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      - name: Finance DNA v2 Security Audit
+        run: npm run finance-dna-v2:security-audit
+
+      - name: SQL Injection Protection Tests
+        run: npm run finance-dna-v2:test-sql-injection
+
+      - name: Authorization & Access Control Tests
+        run: npm run finance-dna-v2:test-authorization
+
+      - name: Audit Trail Validation
+        run: npm run finance-dna-v2:test-audit-trails
+
+      - name: PII Data Protection Tests
+        run: npm run finance-dna-v2:test-pii-protection
+
+  # Phase 6: Deployment Gates
+  deployment-gates:
+    name: Deployment Gates
+    runs-on: ubuntu-latest
+    needs: [finance-dna-v2-guardrails, performance-testing, integration-testing, security-compliance]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download all reports
+        uses: actions/download-artifact@v3
+
+      - name: Finance DNA v2 Deployment Readiness Check
+        run: npm run finance-dna-v2:deployment-readiness
+        env:
+          DEPLOYMENT_ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+      - name: Generate Deployment Report
+        run: npm run finance-dna-v2:generate-deployment-report
+
+      - name: Upload deployment report
+        uses: actions/upload-artifact@v3
+        with:
+          name: finance-dna-v2-deployment-report
+          path: reports/finance-dna-v2-deployment.json
+
+      - name: Notify Deployment Success
+        if: success()
+        run: |
+          echo "🚀 Finance DNA v2 passed all deployment gates!"
+          echo "Environment: ${{ github.ref == 'refs/heads/main' && 'PRODUCTION' || 'STAGING' }}"
+          echo "Version: ${{ env.FINANCE_DNA_VERSION }}"
+          echo "Commit: ${{ github.sha }}"
+
+  # Phase 7: Post-Deployment Monitoring (Production only)
+  post-deployment-monitoring:
+    name: Post-Deployment Monitoring
+    runs-on: ubuntu-latest
+    needs: deployment-gates
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Setup monitoring alerts
+        run: |
+          echo "Setting up Finance DNA v2 monitoring alerts..."
+          # This would integrate with monitoring systems
+          
+      - name: Health check endpoints
+        run: |
+          echo "Validating Finance DNA v2 health endpoints..."
+          # This would ping production health endpoints
+          
+      - name: Performance baseline validation
+        run: |
+          echo "Validating performance baselines..."
+          # This would validate performance metrics
+
+# Workflow Summary
+# 1. Code Quality & Security - Basic validation and security checks
+# 2. Finance DNA v2 Guardrails - Core business logic validation
+# 3. Performance & Load Testing - Ensure performance standards
+# 4. Integration Testing - End-to-end validation
+# 5. Security & Compliance - Security and compliance validation  
+# 6. Deployment Gates - Final deployment readiness check
+# 7. Post-Deployment Monitoring - Production monitoring setup

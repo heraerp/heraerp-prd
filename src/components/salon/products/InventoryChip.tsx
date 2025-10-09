@@ -16,7 +16,12 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Loader2, AlertCircle } from 'lucide-react'
-import { useInventoryLevels, getStockStatus, getStockStatusLabel, getStockStatusVariant } from '@/hooks/useInventoryLevels'
+import {
+  useInventoryLevels,
+  getStockStatus,
+  getStockStatusLabel,
+  getStockStatusVariant
+} from '@/hooks/useInventoryLevels'
 
 interface InventoryChipProps {
   productId: string
@@ -25,7 +30,12 @@ interface InventoryChipProps {
   className?: string
 }
 
-export function InventoryChip({ productId, organizationId, showStatus = false, className }: InventoryChipProps) {
+export function InventoryChip({
+  productId,
+  organizationId,
+  showStatus = false,
+  className
+}: InventoryChipProps) {
   const { data, isLoading, error } = useInventoryLevels([productId], organizationId)
 
   // Get level for this product
@@ -62,7 +72,11 @@ export function InventoryChip({ productId, organizationId, showStatus = false, c
 /**
  * Compact version for table cells
  */
-export function InventoryChipCompact({ productId, organizationId, className }: Omit<InventoryChipProps, 'showStatus'>) {
+export function InventoryChipCompact({
+  productId,
+  organizationId,
+  className
+}: Omit<InventoryChipProps, 'showStatus'>) {
   const { data, isLoading } = useInventoryLevels([productId], organizationId)
 
   if (isLoading) {
@@ -81,8 +95,6 @@ export function InventoryChipCompact({ productId, organizationId, className }: O
   }
 
   return (
-    <span className={`text-xs font-medium ${colors[status]} ${className || ''}`}>
-      {available}
-    </span>
+    <span className={`text-xs font-medium ${colors[status]} ${className || ''}`}>{available}</span>
   )
 }

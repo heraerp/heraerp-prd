@@ -1,7 +1,5 @@
 'use client'
 
- 
-
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
@@ -38,13 +36,8 @@ const COLORS = {
 }
 
 function POSContent() {
-  const {
-    user,
-    organization,
-    selectedBranchId,
-    availableBranches,
-    setSelectedBranchId
-  } = useSecuredSalonContext()
+  const { user, organization, selectedBranchId, availableBranches, setSelectedBranchId } =
+    useSecuredSalonContext()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
   const [commissionsEnabled, setCommissionsEnabled] = useState(true)
   const organizationId = organization?.id
@@ -157,7 +150,9 @@ function POSContent() {
               name: fullAppointment.service_names?.[index] || `Service ${index + 1}`,
               price: 0,
               ...(fullAppointment.stylist_id ? { stylist_id: fullAppointment.stylist_id } : {}),
-              ...(fullAppointment.stylist_name ? { stylist_name: fullAppointment.stylist_name } : {})
+              ...(fullAppointment.stylist_name
+                ? { stylist_name: fullAppointment.stylist_name }
+                : {})
             })) || []
         })
       }
@@ -283,16 +278,34 @@ function POSContent() {
 
       <style jsx>{`
         @keyframes gradient {
-          0%, 100% { opacity: 0.7; }
-          50% { opacity: 0.85; }
+          0%,
+          100% {
+            opacity: 0.7;
+          }
+          50% {
+            opacity: 0.85;
+          }
         }
         @keyframes grain {
-          0%, 100% { transform: translate(0, 0); }
-          10% { transform: translate(-5%, -10%); }
-          30% { transform: translate(3%, -15%); }
-          50% { transform: translate(12%, 9%); }
-          70% { transform: translate(9%, 4%); }
-          90% { transform: translate(-1%, 7%); }
+          0%,
+          100% {
+            transform: translate(0, 0);
+          }
+          10% {
+            transform: translate(-5%, -10%);
+          }
+          30% {
+            transform: translate(3%, -15%);
+          }
+          50% {
+            transform: translate(12%, 9%);
+          }
+          70% {
+            transform: translate(9%, 4%);
+          }
+          90% {
+            transform: translate(-1%, 7%);
+          }
         }
         @keyframes slideDown {
           from {
@@ -322,10 +335,18 @@ function POSContent() {
             transform: scale(1);
           }
         }
-        .animate-gradient { animation: gradient 8s ease-in-out infinite; }
-        .animate-slideDown { animation: slideDown 0.5s ease-out; }
-        .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
-        .animate-scaleIn { animation: scaleIn 0.4s ease-out; }
+        .animate-gradient {
+          animation: gradient 8s ease-in-out infinite;
+        }
+        .animate-slideDown {
+          animation: slideDown 0.5s ease-out;
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.6s ease-out;
+        }
+        .animate-scaleIn {
+          animation: scaleIn 0.4s ease-out;
+        }
       `}</style>
 
       {/* Main content wrapper */}
@@ -495,7 +516,11 @@ function POSContent() {
           onComplete={handlePaymentComplete}
         />
 
-        <Receipt open={isReceiptOpen} onClose={() => setIsReceiptOpen(false)} saleData={completedSale} />
+        <Receipt
+          open={isReceiptOpen}
+          onClose={() => setIsReceiptOpen(false)}
+          saleData={completedSale}
+        />
 
         {/* Mobile Cart Floating Button */}
         <div className="lg:hidden fixed bottom-6 right-6 z-50">

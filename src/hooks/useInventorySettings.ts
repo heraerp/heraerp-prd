@@ -87,7 +87,7 @@ export function useInventorySettings(organizationId?: string) {
         const fields = data?.data || []
         const getValue = (fieldName: string, defaultValue: any) => {
           const field = fields.find((f: any) => f.field_name === fieldName)
-          return field ? field.field_value_boolean ?? defaultValue : defaultValue
+          return field ? (field.field_value_boolean ?? defaultValue) : defaultValue
         }
 
         const settings = {
@@ -207,15 +207,18 @@ export function useInventorySettings(organizationId?: string) {
       return data
     },
     // Optimistic update - update UI immediately
-    onMutate: async (updates) => {
+    onMutate: async updates => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['inventory-settings', organizationId] })
 
       // Snapshot the previous value
-      const previousSettings = queryClient.getQueryData<InventorySettings>(['inventory-settings', organizationId])
+      const previousSettings = queryClient.getQueryData<InventorySettings>([
+        'inventory-settings',
+        organizationId
+      ])
 
       // Optimistically update to the new value
-      queryClient.setQueryData<InventorySettings>(['inventory-settings', organizationId], (old) => {
+      queryClient.setQueryData<InventorySettings>(['inventory-settings', organizationId], old => {
         if (!old) return old
         return {
           ...old,

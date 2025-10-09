@@ -2,13 +2,13 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { 
-  Shield, 
-  Lock, 
-  Key, 
-  UserCheck, 
-  Database, 
-  Globe, 
+import {
+  Shield,
+  Lock,
+  Key,
+  UserCheck,
+  Database,
+  Globe,
   Layers,
   AlertTriangle,
   CheckCircle2,
@@ -152,12 +152,15 @@ function FinancialDashboard() {
       <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-green-900/20 via-transparent to-transparent" />
-      
+
       {/* Floating Gradient Orbs */}
       {mounted && (
         <>
           <div className="fixed top-20 right-20 w-96 h-96 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-full blur-3xl animate-pulse" />
-          <div className="fixed bottom-20 left-20 w-[30rem] h-[30rem] bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div
+            className="fixed bottom-20 left-20 w-[30rem] h-[30rem] bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: '2s' }}
+          />
         </>
       )}
 
@@ -175,7 +178,11 @@ function FinancialDashboard() {
                 <span className="text-gray-100">Security</span>
               </nav>
               <Link href="/docs/hub">
-                <Button size="sm" variant="outline" className="border-gray-600 text-gray-100 hover:border-amber-500 transition-colors">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-gray-600 text-gray-100 hover:border-amber-500 transition-colors"
+                >
                   <ArrowRight className="w-4 h-4 mr-2" />
                   Back to Hub
                 </Button>
@@ -187,13 +194,15 @@ function FinancialDashboard() {
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 py-12 space-y-20">
           {/* Hero Section */}
-          <div className={cn(
-            "relative overflow-hidden rounded-3xl",
-            "bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/40",
-            "backdrop-blur-xl border border-white/10",
-            "shadow-2xl transition-all duration-500",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'relative overflow-hidden rounded-3xl',
+              'bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/40',
+              'backdrop-blur-xl border border-white/10',
+              'shadow-2xl transition-all duration-500',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-green-500/5" />
             <div className="relative p-12 md:p-16">
               <div className="max-w-4xl">
@@ -205,16 +214,16 @@ function FinancialDashboard() {
                     ENTERPRISE GRADE
                   </Badge>
                 </div>
-                
+
                 <h1 className="text-5xl md:text-6xl font-bold mb-6">
                   <span className="bg-gradient-to-r from-gray-100 via-blue-400 to-gray-100 bg-clip-text text-transparent bg-300% animate-gradient">
                     HERA DNA Security
                   </span>
                 </h1>
-                
+
                 <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-3xl">
-                  Bulletproof enterprise security with zero-trust architecture. Every request protected, 
-                  every action audited, every boundary sacred.
+                  Bulletproof enterprise security with zero-trust architecture. Every request
+                  protected, every action audited, every boundary sacred.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-6 text-sm">
@@ -236,10 +245,12 @@ function FinancialDashboard() {
           </div>
 
           {/* Security Layers */}
-          <div className={cn(
-            "transition-all duration-500 delay-100",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-100',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-8">
               <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-sm">
                 <Layers className="h-5 w-5 text-blue-400" />
@@ -254,30 +265,31 @@ function FinancialDashboard() {
                 <Card
                   key={index}
                   className={cn(
-                    "relative overflow-hidden",
-                    "bg-gray-900/60 backdrop-blur-xl",
-                    "border-white/10",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "group"
+                    'relative overflow-hidden',
+                    'bg-gray-900/60 backdrop-blur-xl',
+                    'border-white/10',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'group'
                   )}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     style={{
                       backgroundImage: `linear-gradient(to bottom right, ${layer.color})`
-                    }} 
+                    }}
                   />
                   <CardHeader className="relative pb-4">
                     <div className="flex items-start gap-4">
-                      <div className={cn(
-                        "p-3 rounded-xl bg-gradient-to-br backdrop-blur-sm",
-                        layer.color
-                      )}>
-                        <layer.icon className={cn("w-6 h-6", layer.iconColor)} />
+                      <div
+                        className={cn(
+                          'p-3 rounded-xl bg-gradient-to-br backdrop-blur-sm',
+                          layer.color
+                        )}
+                      >
+                        <layer.icon className={cn('w-6 h-6', layer.iconColor)} />
                       </div>
                       <div className="flex-1">
-                        <CardTitle className="text-xl text-gray-100 mb-1">
-                          {layer.title}
-                        </CardTitle>
+                        <CardTitle className="text-xl text-gray-100 mb-1">{layer.title}</CardTitle>
                         <CardDescription className="text-gray-400">
                           {layer.description}
                         </CardDescription>
@@ -300,10 +312,12 @@ function FinancialDashboard() {
           </div>
 
           {/* Three-Layer Pattern */}
-          <div className={cn(
-            "transition-all duration-500 delay-200",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-200',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-8">
               <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm">
                 <AlertTriangle className="h-5 w-5 text-amber-400" />
@@ -316,17 +330,20 @@ function FinancialDashboard() {
             <Alert className="bg-amber-900/20 border-amber-500/30 backdrop-blur-xl">
               <AlertTriangle className="h-4 w-4 text-amber-400" />
               <AlertDescription className="text-amber-300">
-                ALL production pages MUST implement this pattern. Skipping any layer will cause security vulnerabilities.
+                ALL production pages MUST implement this pattern. Skipping any layer will cause
+                security vulnerabilities.
               </AlertDescription>
             </Alert>
 
             <div className="mt-6 grid md:grid-cols-3 gap-6">
-              <Card className={cn(
-                "relative overflow-hidden",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10",
-                "shadow-lg"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10',
+                  'shadow-lg'
+                )}
+              >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-3">
@@ -342,18 +359,18 @@ function FinancialDashboard() {
   return <Alert>Please log in</Alert>
 }`}</code>
                   </pre>
-                  <p className="text-sm text-gray-400 mt-3">
-                    Verify user is logged in
-                  </p>
+                  <p className="text-sm text-gray-400 mt-3">Verify user is logged in</p>
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10",
-                "shadow-lg"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10',
+                  'shadow-lg'
+                )}
+              >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-yellow-500" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-3">
@@ -369,18 +386,18 @@ function FinancialDashboard() {
   return <LoadingSpinner />
 }`}</code>
                   </pre>
-                  <p className="text-sm text-gray-400 mt-3">
-                    Wait for security context
-                  </p>
+                  <p className="text-sm text-gray-400 mt-3">Wait for security context</p>
                 </CardContent>
               </Card>
 
-              <Card className={cn(
-                "relative overflow-hidden",
-                "bg-gray-900/60 backdrop-blur-xl",
-                "border-white/10",
-                "shadow-lg"
-              )}>
+              <Card
+                className={cn(
+                  'relative overflow-hidden',
+                  'bg-gray-900/60 backdrop-blur-xl',
+                  'border-white/10',
+                  'shadow-lg'
+                )}
+              >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-3">
@@ -396,34 +413,34 @@ function FinancialDashboard() {
   return <Alert>No org context</Alert>
 }`}</code>
                   </pre>
-                  <p className="text-sm text-gray-400 mt-3">
-                    Ensure org boundary
-                  </p>
+                  <p className="text-sm text-gray-400 mt-3">Ensure org boundary</p>
                 </CardContent>
               </Card>
             </div>
           </div>
 
           {/* Code Implementation */}
-          <div className={cn(
-            "transition-all duration-500 delay-300",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-300',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-8">
               <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm">
                 <Code2 className="h-5 w-5 text-purple-400" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-100">
-                Implementation Example
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-100">Implementation Example</h2>
             </div>
 
-            <Card className={cn(
-              "relative overflow-hidden",
-              "bg-gray-900/60 backdrop-blur-xl",
-              "border-white/10",
-              "shadow-xl"
-            )}>
+            <Card
+              className={cn(
+                'relative overflow-hidden',
+                'bg-gray-900/60 backdrop-blur-xl',
+                'border-white/10',
+                'shadow-xl'
+              )}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
               <CardContent className="relative p-8">
                 <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
@@ -436,17 +453,17 @@ function FinancialDashboard() {
           </div>
 
           {/* Enterprise Features */}
-          <div className={cn(
-            "transition-all duration-500 delay-400",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-400',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-8">
               <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-sm">
                 <ShieldCheck className="h-5 w-5 text-green-400" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-100">
-                Enterprise Security Features
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-100">Enterprise Security Features</h2>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -454,11 +471,11 @@ function FinancialDashboard() {
                 <Card
                   key={index}
                   className={cn(
-                    "relative overflow-hidden",
-                    "bg-gray-900/60 backdrop-blur-xl",
-                    "border-white/10",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "group"
+                    'relative overflow-hidden',
+                    'bg-gray-900/60 backdrop-blur-xl',
+                    'border-white/10',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'group'
                   )}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -471,14 +488,10 @@ function FinancialDashboard() {
                         {feature.status}
                       </Badge>
                     </div>
-                    <CardTitle className="text-lg text-gray-100 mt-3">
-                      {feature.title}
-                    </CardTitle>
+                    <CardTitle className="text-lg text-gray-100 mt-3">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="relative">
-                    <p className="text-sm text-gray-400">
-                      {feature.description}
-                    </p>
+                    <p className="text-sm text-gray-400">{feature.description}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -486,23 +499,29 @@ function FinancialDashboard() {
           </div>
 
           {/* Security Best Practices */}
-          <div className={cn(
-            "transition-all duration-500 delay-500",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
-            <Card className={cn(
-              "relative overflow-hidden",
-              "bg-gradient-to-br from-blue-900/40 via-indigo-900/40 to-purple-900/40",
-              "backdrop-blur-xl border border-white/10",
-              "shadow-xl"
-            )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-500',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
+            <Card
+              className={cn(
+                'relative overflow-hidden',
+                'bg-gradient-to-br from-blue-900/40 via-indigo-900/40 to-purple-900/40',
+                'backdrop-blur-xl border border-white/10',
+                'shadow-xl'
+              )}
+            >
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm rounded-xl border border-blue-500/20">
                     <Zap className="w-6 h-6 text-blue-400" />
                   </div>
                   <div>
-                    <CardTitle className="text-2xl text-gray-100">Security Best Practices</CardTitle>
+                    <CardTitle className="text-2xl text-gray-100">
+                      Security Best Practices
+                    </CardTitle>
                     <CardDescription className="text-gray-400">
                       Follow these rules to maintain HERA's security integrity
                     </CardDescription>
@@ -575,7 +594,10 @@ function FinancialDashboard() {
                     <FileKey className="w-4 h-4 flex-shrink-0 mt-0.5" />
                     <span>
                       For complete security documentation, see{' '}
-                      <Link href="/docs/hera-dna-security" className="underline hover:text-blue-200 transition-colors">
+                      <Link
+                        href="/docs/hera-dna-security"
+                        className="underline hover:text-blue-200 transition-colors"
+                      >
                         HERA DNA Security Guide
                       </Link>
                     </span>
@@ -586,28 +608,30 @@ function FinancialDashboard() {
           </div>
 
           {/* Related Documentation */}
-          <div className={cn(
-            "transition-all duration-500 delay-600",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-600',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-8">
               <div className="p-2 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 backdrop-blur-sm">
                 <Globe className="h-5 w-5 text-cyan-400" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-100">
-                Related Documentation
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-100">Related Documentation</h2>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               <Link href="/docs/authorization-pattern">
-                <Card className={cn(
-                  "relative overflow-hidden h-full",
-                  "bg-gray-900/60 backdrop-blur-xl",
-                  "border-white/10",
-                  "shadow-lg hover:shadow-xl transition-all duration-300",
-                  "group hover:scale-[1.02] cursor-pointer"
-                )}>
+                <Card
+                  className={cn(
+                    'relative overflow-hidden h-full',
+                    'bg-gray-900/60 backdrop-blur-xl',
+                    'border-white/10',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'group hover:scale-[1.02] cursor-pointer'
+                  )}
+                >
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardHeader className="relative">
                     <CardTitle className="text-lg text-gray-100 flex items-center gap-2">
@@ -622,13 +646,15 @@ function FinancialDashboard() {
               </Link>
 
               <Link href="/docs/enterprise/rbac">
-                <Card className={cn(
-                  "relative overflow-hidden h-full",
-                  "bg-gray-900/60 backdrop-blur-xl",
-                  "border-white/10",
-                  "shadow-lg hover:shadow-xl transition-all duration-300",
-                  "group hover:scale-[1.02] cursor-pointer"
-                )}>
+                <Card
+                  className={cn(
+                    'relative overflow-hidden h-full',
+                    'bg-gray-900/60 backdrop-blur-xl',
+                    'border-white/10',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'group hover:scale-[1.02] cursor-pointer'
+                  )}
+                >
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardHeader className="relative">
                     <CardTitle className="text-lg text-gray-100 flex items-center gap-2">
@@ -643,13 +669,15 @@ function FinancialDashboard() {
               </Link>
 
               <Link href="/docs/enterprise/audit">
-                <Card className={cn(
-                  "relative overflow-hidden h-full",
-                  "bg-gray-900/60 backdrop-blur-xl",
-                  "border-white/10",
-                  "shadow-lg hover:shadow-xl transition-all duration-300",
-                  "group hover:scale-[1.02] cursor-pointer"
-                )}>
+                <Card
+                  className={cn(
+                    'relative overflow-hidden h-full',
+                    'bg-gray-900/60 backdrop-blur-xl',
+                    'border-white/10',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'group hover:scale-[1.02] cursor-pointer'
+                  )}
+                >
                   <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardHeader className="relative">
                     <CardTitle className="text-lg text-gray-100 flex items-center gap-2">

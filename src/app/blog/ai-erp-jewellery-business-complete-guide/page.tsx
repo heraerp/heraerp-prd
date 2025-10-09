@@ -45,7 +45,13 @@ export default function JewelleryERPBlogPost() {
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-8">
-          {['AI ERP', 'Jewellery Business', 'Inventory Management', 'VAT/GST Automation', 'Sustainability'].map(tag => (
+          {[
+            'AI ERP',
+            'Jewellery Business',
+            'Inventory Management',
+            'VAT/GST Automation',
+            'Sustainability'
+          ].map(tag => (
             <span
               key={tag}
               className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
@@ -59,11 +65,18 @@ export default function JewelleryERPBlogPost() {
         {/* Introduction */}
         <div className="prose prose-lg dark:prose-invert max-w-none">
           <p className="text-xl text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
-            Running a jewellery business in 2025 means juggling precious metals inventory, intricate pricing calculations, complex tax compliance, and rising customer expectations—all while trying to stay profitable. Traditional ERP systems weren't built for the unique challenges of jewellery retail, leaving small and medium-sized businesses (SMBs) struggling with spreadsheets, manual processes, and disconnected software tools.
+            Running a jewellery business in 2025 means juggling precious metals inventory, intricate
+            pricing calculations, complex tax compliance, and rising customer expectations—all while
+            trying to stay profitable. Traditional ERP systems weren't built for the unique
+            challenges of jewellery retail, leaving small and medium-sized businesses (SMBs)
+            struggling with spreadsheets, manual processes, and disconnected software tools.
           </p>
 
           <p className="text-xl text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
-            Enter HERA ERP: the first AI-native, patent-pending ERP platform designed specifically for jewellery and retail SMBs. In this comprehensive guide, we'll explore how HERA ERP transforms jewellery business operations through intelligent automation, real-time insights, and sustainable growth strategies.
+            Enter HERA ERP: the first AI-native, patent-pending ERP platform designed specifically
+            for jewellery and retail SMBs. In this comprehensive guide, we'll explore how HERA ERP
+            transforms jewellery business operations through intelligent automation, real-time
+            insights, and sustainable growth strategies.
           </p>
 
           {/* Section 1 */}
@@ -76,24 +89,39 @@ export default function JewelleryERPBlogPost() {
           </h3>
 
           <p>
-            Jewellery inventory isn't like any other retail product. Each piece has multiple attributes that affect its value:
+            Jewellery inventory isn't like any other retail product. Each piece has multiple
+            attributes that affect its value:
           </p>
 
           <ul className="space-y-2 my-6">
-            <li><strong>Metal composition</strong> (gold purity: 18K, 22K, 24K; platinum; silver)</li>
-            <li><strong>Gemstone specifications</strong> (carat weight, clarity, cut, color)</li>
-            <li><strong>Making charges</strong> (labor costs that vary by design complexity)</li>
-            <li><strong>Fluctuating metal prices</strong> (daily gold and silver rate changes)</li>
-            <li><strong>Unique SKU requirements</strong> (every piece might have different attributes)</li>
+            <li>
+              <strong>Metal composition</strong> (gold purity: 18K, 22K, 24K; platinum; silver)
+            </li>
+            <li>
+              <strong>Gemstone specifications</strong> (carat weight, clarity, cut, color)
+            </li>
+            <li>
+              <strong>Making charges</strong> (labor costs that vary by design complexity)
+            </li>
+            <li>
+              <strong>Fluctuating metal prices</strong> (daily gold and silver rate changes)
+            </li>
+            <li>
+              <strong>Unique SKU requirements</strong> (every piece might have different attributes)
+            </li>
           </ul>
 
           <p>
-            Traditional inventory systems force jewellers into one of two bad options: oversimplify tracking (losing profit margin accuracy) or manually manage thousands of SKU variations (consuming hours of administrative time).
+            Traditional inventory systems force jewellers into one of two bad options: oversimplify
+            tracking (losing profit margin accuracy) or manually manage thousands of SKU variations
+            (consuming hours of administrative time).
           </p>
 
           <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-6 my-8">
             <p className="font-semibold text-red-800 dark:text-red-300">
-              <strong>The Real Cost:</strong> A typical jewellery SMB loses 15-20% of potential profit due to pricing errors, inventory discrepancies, and inability to track making charges accurately.
+              <strong>The Real Cost:</strong> A typical jewellery SMB loses 15-20% of potential
+              profit due to pricing errors, inventory discrepancies, and inability to track making
+              charges accurately.
             </p>
           </div>
 
@@ -101,16 +129,27 @@ export default function JewelleryERPBlogPost() {
             2. VAT/GST Compliance Nightmare
           </h3>
 
-          <p>
-            Jewellery taxation is uniquely complex across different markets:
-          </p>
+          <p>Jewellery taxation is uniquely complex across different markets:</p>
 
           <ul className="space-y-2 my-6">
-            <li><strong>UAE VAT:</strong> 5% on sales, with specific exemptions for investment-grade gold</li>
-            <li><strong>India GST:</strong> 3% on gold/silver, 5% on diamonds, with reverse charge mechanisms</li>
-            <li><strong>Multi-tier taxation:</strong> Different rates for making charges vs. materials</li>
-            <li><strong>Hallmarking compliance:</strong> Mandatory certification requirements</li>
-            <li><strong>Import/export documentation:</strong> Cross-border transactions with customs duties</li>
+            <li>
+              <strong>UAE VAT:</strong> 5% on sales, with specific exemptions for investment-grade
+              gold
+            </li>
+            <li>
+              <strong>India GST:</strong> 3% on gold/silver, 5% on diamonds, with reverse charge
+              mechanisms
+            </li>
+            <li>
+              <strong>Multi-tier taxation:</strong> Different rates for making charges vs. materials
+            </li>
+            <li>
+              <strong>Hallmarking compliance:</strong> Mandatory certification requirements
+            </li>
+            <li>
+              <strong>Import/export documentation:</strong> Cross-border transactions with customs
+              duties
+            </li>
           </ul>
 
           <p>Manual tax calculation leads to:</p>
@@ -152,10 +191,18 @@ export default function JewelleryERPBlogPost() {
           <p>Modern consumers demand transparency:</p>
 
           <ul className="space-y-2 my-6">
-            <li><strong>Conflict-free diamonds:</strong> Full provenance tracking</li>
-            <li><strong>Recycled metals:</strong> Documentation of recycled content percentage</li>
-            <li><strong>Ethical labor:</strong> Fair trade certifications</li>
-            <li><strong>Carbon footprint:</strong> Environmental impact reporting</li>
+            <li>
+              <strong>Conflict-free diamonds:</strong> Full provenance tracking
+            </li>
+            <li>
+              <strong>Recycled metals:</strong> Documentation of recycled content percentage
+            </li>
+            <li>
+              <strong>Ethical labor:</strong> Fair trade certifications
+            </li>
+            <li>
+              <strong>Carbon footprint:</strong> Environmental impact reporting
+            </li>
           </ul>
 
           {/* Section 2 */}
@@ -164,12 +211,19 @@ export default function JewelleryERPBlogPost() {
           </h2>
 
           <p>
-            Unlike traditional ERP systems built on rigid database schemas that require expensive customization, HERA ERP uses a revolutionary <strong>6-table universal architecture</strong> (patent pending) that adapts to any business need without schema changes.
+            Unlike traditional ERP systems built on rigid database schemas that require expensive
+            customization, HERA ERP uses a revolutionary{' '}
+            <strong>6-table universal architecture</strong> (patent pending) that adapts to any
+            business need without schema changes.
           </p>
 
           <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-6 my-8">
-            <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">The Traditional ERP Problem</h4>
-            <p className="text-blue-800 dark:text-blue-200">Conventional jewellery ERP software requires:</p>
+            <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">
+              The Traditional ERP Problem
+            </h4>
+            <p className="text-blue-800 dark:text-blue-200">
+              Conventional jewellery ERP software requires:
+            </p>
             <ul className="mt-3 space-y-2 text-blue-800 dark:text-blue-200">
               <li>❌ 6-12 months implementation time</li>
               <li>❌ $50,000-$500,000 upfront costs</li>
@@ -180,14 +234,32 @@ export default function JewelleryERPBlogPost() {
           </div>
 
           <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-6 my-8">
-            <h4 className="text-lg font-semibold text-green-900 dark:text-green-300 mb-3">The HERA ERP Solution</h4>
-            <p className="text-green-800 dark:text-green-200"><strong>Patent-Pending Universal Data Model:</strong></p>
+            <h4 className="text-lg font-semibold text-green-900 dark:text-green-300 mb-3">
+              The HERA ERP Solution
+            </h4>
+            <p className="text-green-800 dark:text-green-200">
+              <strong>Patent-Pending Universal Data Model:</strong>
+            </p>
             <ul className="mt-3 space-y-2 text-green-800 dark:text-green-200">
-              <li>✅ <strong>1-week implementation</strong> from requirements to fully operational system</li>
-              <li>✅ <strong>Zero customization costs</strong> - infinitely flexible out-of-the-box</li>
-              <li>✅ <strong>AI-native design</strong> with built-in intelligence for jewellery business</li>
-              <li>✅ <strong>Complete integration</strong> between inventory, CRM, accounting, and compliance</li>
-              <li>✅ <strong>Future-proof</strong> - adapts to new regulations and business needs automatically</li>
+              <li>
+                ✅ <strong>1-week implementation</strong> from requirements to fully operational
+                system
+              </li>
+              <li>
+                ✅ <strong>Zero customization costs</strong> - infinitely flexible out-of-the-box
+              </li>
+              <li>
+                ✅ <strong>AI-native design</strong> with built-in intelligence for jewellery
+                business
+              </li>
+              <li>
+                ✅ <strong>Complete integration</strong> between inventory, CRM, accounting, and
+                compliance
+              </li>
+              <li>
+                ✅ <strong>Future-proof</strong> - adapts to new regulations and business needs
+                automatically
+              </li>
             </ul>
           </div>
 
@@ -196,11 +268,16 @@ export default function JewelleryERPBlogPost() {
           </h3>
 
           <p>
-            HERA's 6-table architecture stores all business data (inventory, customers, transactions, compliance) in a universal format that AI can understand and optimize. Instead of hardcoding jewellery-specific rules, HERA learns your business patterns and automatically:
+            HERA's 6-table architecture stores all business data (inventory, customers,
+            transactions, compliance) in a universal format that AI can understand and optimize.
+            Instead of hardcoding jewellery-specific rules, HERA learns your business patterns and
+            automatically:
           </p>
 
           <ul className="space-y-2 my-6">
-            <li>Calculates optimal pricing based on metal rates, making charges, and market conditions</li>
+            <li>
+              Calculates optimal pricing based on metal rates, making charges, and market conditions
+            </li>
             <li>Generates GST/VAT filings with 99.9% accuracy</li>
             <li>Predicts inventory needs based on seasonal demand</li>
             <li>Personalizes customer recommendations using purchase history</li>
@@ -216,7 +293,9 @@ export default function JewelleryERPBlogPost() {
             1. Intelligent Inventory Automation
           </h3>
 
-          <p><strong>Real-Time Metal Price Integration:</strong></p>
+          <p>
+            <strong>Real-Time Metal Price Integration:</strong>
+          </p>
           <ul className="space-y-2 my-6">
             <li>Automatic daily updates from global commodity markets</li>
             <li>Instant price adjustments across all inventory</li>
@@ -224,7 +303,9 @@ export default function JewelleryERPBlogPost() {
             <li>Alert system for optimal buying opportunities</li>
           </ul>
 
-          <p><strong>Smart SKU Management:</strong></p>
+          <p>
+            <strong>Smart SKU Management:</strong>
+          </p>
           <ul className="space-y-2 my-6">
             <li>AI-generated SKU codes based on attributes (metal, purity, design, weight)</li>
             <li>Automatic variant creation for design collections</li>
@@ -234,7 +315,8 @@ export default function JewelleryERPBlogPost() {
 
           <div className="bg-purple-50 dark:bg-purple-900/20 border-l-4 border-purple-500 p-6 my-8">
             <p className="text-purple-900 dark:text-purple-200">
-              <strong>Example:</strong> A Dubai-based jeweller reduced inventory management time from 15 hours/week to 2 hours/week while improving pricing accuracy by 23%.
+              <strong>Example:</strong> A Dubai-based jeweller reduced inventory management time
+              from 15 hours/week to 2 hours/week while improving pricing accuracy by 23%.
             </p>
           </div>
 
@@ -242,7 +324,9 @@ export default function JewelleryERPBlogPost() {
             2. Automated VAT/GST Compliance
           </h3>
 
-          <p><strong>One-Click Tax Filing:</strong></p>
+          <p>
+            <strong>One-Click Tax Filing:</strong>
+          </p>
           <ul className="space-y-2 my-6">
             <li>Automatic GST return generation (GSTR-1, GSTR-3B for India)</li>
             <li>UAE VAT return preparation with electronic submission</li>
@@ -252,7 +336,8 @@ export default function JewelleryERPBlogPost() {
 
           <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-6 my-8">
             <p className="text-green-900 dark:text-green-200 font-semibold">
-              <strong>ROI:</strong> SMBs save 20-30 hours/month on tax compliance and reduce penalty risk by 95%.
+              <strong>ROI:</strong> SMBs save 20-30 hours/month on tax compliance and reduce penalty
+              risk by 95%.
             </p>
           </div>
 
@@ -260,7 +345,9 @@ export default function JewelleryERPBlogPost() {
             3. AI-Powered Customer Personalization
           </h3>
 
-          <p><strong>Lifetime Customer Portfolios:</strong></p>
+          <p>
+            <strong>Lifetime Customer Portfolios:</strong>
+          </p>
           <ul className="space-y-2 my-6">
             <li>Complete purchase history with product photos</li>
             <li>Repair and maintenance records</li>
@@ -268,7 +355,9 @@ export default function JewelleryERPBlogPost() {
             <li>Gift purchase patterns and occasions</li>
           </ul>
 
-          <p><strong>Intelligent Recommendations:</strong></p>
+          <p>
+            <strong>Intelligent Recommendations:</strong>
+          </p>
           <ul className="space-y-2 my-6">
             <li>ML-based product suggestions (customers who bought X also liked Y)</li>
             <li>Anniversary and birthday gift reminders with personalized options</li>
@@ -278,7 +367,8 @@ export default function JewelleryERPBlogPost() {
 
           <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-6 my-8">
             <p className="text-blue-900 dark:text-blue-200 font-semibold">
-              <strong>Customer Retention Impact:</strong> HERA users report 35% increase in repeat purchases and 2.5x higher average order value from personalized recommendations.
+              <strong>Customer Retention Impact:</strong> HERA users report 35% increase in repeat
+              purchases and 2.5x higher average order value from personalized recommendations.
             </p>
           </div>
 
@@ -318,7 +408,11 @@ export default function JewelleryERPBlogPost() {
                 Is HERA ERP suitable for small jewellery shops with just 1-2 locations?
               </h4>
               <p className="text-slate-700 dark:text-slate-300">
-                Yes, absolutely. HERA is specifically designed for jewellery SMBs. Our Starter plan ($49/month) is perfect for single-location shops with up to 5,000 SKUs and 3 users. You get all core features including inventory management, VAT/GST automation, customer CRM, and AI-powered pricing. As your business grows, you can seamlessly upgrade to higher plans without any disruption.
+                Yes, absolutely. HERA is specifically designed for jewellery SMBs. Our Starter plan
+                ($49/month) is perfect for single-location shops with up to 5,000 SKUs and 3 users.
+                You get all core features including inventory management, VAT/GST automation,
+                customer CRM, and AI-powered pricing. As your business grows, you can seamlessly
+                upgrade to higher plans without any disruption.
               </p>
             </div>
 
@@ -327,7 +421,12 @@ export default function JewelleryERPBlogPost() {
                 How long does it take to implement HERA ERP in my jewellery business?
               </h4>
               <p className="text-slate-700 dark:text-slate-300">
-                1 week to deploy, fully operational in 5-7 business days. Unlike traditional ERP systems requiring 6-12 months implementation, HERA can be implemented in just one week. Day 1-2: Initial setup and data migration. Day 3-4: Staff training and workflow customization. Day 5-7: Testing and going live. Our implementation team guides you through each step, and our support team is available 24/7 to help ensure a smooth transition.
+                1 week to deploy, fully operational in 5-7 business days. Unlike traditional ERP
+                systems requiring 6-12 months implementation, HERA can be implemented in just one
+                week. Day 1-2: Initial setup and data migration. Day 3-4: Staff training and
+                workflow customization. Day 5-7: Testing and going live. Our implementation team
+                guides you through each step, and our support team is available 24/7 to help ensure
+                a smooth transition.
               </p>
             </div>
 
@@ -336,7 +435,10 @@ export default function JewelleryERPBlogPost() {
                 Does HERA ERP support my country's tax requirements (GST/VAT)?
               </h4>
               <p className="text-slate-700 dark:text-slate-300">
-                Yes, HERA supports 40+ countries' tax systems including India (GST with GSTR-1, GSTR-3B, E-way bills), UAE (5% VAT with gold exemptions), all EU countries, USA (Sales Tax), Australia, Canada, Singapore, and more. Tax rates and rules are updated automatically when regulations change, ensuring you're always compliant.
+                Yes, HERA supports 40+ countries' tax systems including India (GST with GSTR-1,
+                GSTR-3B, E-way bills), UAE (5% VAT with gold exemptions), all EU countries, USA
+                (Sales Tax), Australia, Canada, Singapore, and more. Tax rates and rules are updated
+                automatically when regulations change, ensuring you're always compliant.
               </p>
             </div>
 
@@ -345,7 +447,10 @@ export default function JewelleryERPBlogPost() {
                 Can HERA integrate with my existing accounting software like Tally or QuickBooks?
               </h4>
               <p className="text-slate-700 dark:text-slate-300">
-                Yes, HERA offers seamless integration with popular accounting platforms including Tally (India), QuickBooks (Global), Xero, Zoho Books, and custom accounting systems via API. Your transactions, invoices, and tax data sync automatically, eliminating double-entry and ensuring your books are always accurate.
+                Yes, HERA offers seamless integration with popular accounting platforms including
+                Tally (India), QuickBooks (Global), Xero, Zoho Books, and custom accounting systems
+                via API. Your transactions, invoices, and tax data sync automatically, eliminating
+                double-entry and ensuring your books are always accurate.
               </p>
             </div>
 
@@ -354,7 +459,11 @@ export default function JewelleryERPBlogPost() {
                 Is my jewellery inventory and customer data secure in HERA ERP?
               </h4>
               <p className="text-slate-700 dark:text-slate-300">
-                Absolutely. HERA employs bank-level security with AES-256 encryption for data at rest and in transit, SOC 2 Type II certified cloud infrastructure, multi-factor authentication for all user access, role-based permissions, automatic daily backups with 30-day retention, GDPR compliance, and 24/7 security monitoring. Your valuable inventory and customer data is safer in HERA than on local computers or servers.
+                Absolutely. HERA employs bank-level security with AES-256 encryption for data at
+                rest and in transit, SOC 2 Type II certified cloud infrastructure, multi-factor
+                authentication for all user access, role-based permissions, automatic daily backups
+                with 30-day retention, GDPR compliance, and 24/7 security monitoring. Your valuable
+                inventory and customer data is safer in HERA than on local computers or servers.
               </p>
             </div>
           </div>
@@ -385,25 +494,27 @@ export default function JewelleryERPBlogPost() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            "headline": "AI ERP for Jewellery Business: The Complete Guide to Modern Jewellery Management",
-            "description": "Discover how HERA ERP's AI-powered, patent-pending architecture revolutionizes jewellery inventory, VAT/GST compliance, and customer personalization for SMBs.",
-            "image": "https://heraerp.com/images/blog/jewellery-erp-guide.jpg",
-            "author": {
-              "@type": "Organization",
-              "name": "HERA ERP Team"
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline:
+              'AI ERP for Jewellery Business: The Complete Guide to Modern Jewellery Management',
+            description:
+              "Discover how HERA ERP's AI-powered, patent-pending architecture revolutionizes jewellery inventory, VAT/GST compliance, and customer personalization for SMBs.",
+            image: 'https://heraerp.com/images/blog/jewellery-erp-guide.jpg',
+            author: {
+              '@type': 'Organization',
+              name: 'HERA ERP Team'
             },
-            "publisher": {
-              "@type": "Organization",
-              "name": "HERA ERP",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "https://heraerp.com/logo.png"
+            publisher: {
+              '@type': 'Organization',
+              name: 'HERA ERP',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://heraerp.com/logo.png'
               }
             },
-            "datePublished": "2025-10-04",
-            "dateModified": "2025-10-04"
+            datePublished: '2025-10-04',
+            dateModified: '2025-10-04'
           })
         }}
       />
@@ -412,31 +523,31 @@ export default function JewelleryERPBlogPost() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
               {
-                "@type": "Question",
-                "name": "Is HERA ERP suitable for small jewellery shops with just 1-2 locations?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes, absolutely. HERA is specifically designed for jewellery SMBs. Our Starter plan ($49/month) is perfect for single-location shops with up to 5,000 SKUs and 3 users."
+                '@type': 'Question',
+                name: 'Is HERA ERP suitable for small jewellery shops with just 1-2 locations?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes, absolutely. HERA is specifically designed for jewellery SMBs. Our Starter plan ($49/month) is perfect for single-location shops with up to 5,000 SKUs and 3 users.'
                 }
               },
               {
-                "@type": "Question",
-                "name": "How long does it take to implement HERA ERP in my jewellery business?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "1 week to deploy, fully operational in 5-7 business days. Unlike traditional ERP systems requiring 6-12 months implementation, HERA can be implemented in just one week with guided setup, data migration, staff training, and testing."
+                '@type': 'Question',
+                name: 'How long does it take to implement HERA ERP in my jewellery business?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: '1 week to deploy, fully operational in 5-7 business days. Unlike traditional ERP systems requiring 6-12 months implementation, HERA can be implemented in just one week with guided setup, data migration, staff training, and testing.'
                 }
               },
               {
-                "@type": "Question",
-                "name": "Does HERA ERP support my country's tax requirements (GST/VAT)?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes, HERA supports 40+ countries' tax systems including India (GST), UAE (VAT), all EU countries, USA (Sales Tax), and more."
+                '@type': 'Question',
+                name: "Does HERA ERP support my country's tax requirements (GST/VAT)?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Yes, HERA supports 40+ countries' tax systems including India (GST), UAE (VAT), all EU countries, USA (Sales Tax), and more."
                 }
               }
             ]

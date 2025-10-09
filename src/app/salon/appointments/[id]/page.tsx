@@ -23,14 +23,14 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import {
   Calendar,
@@ -100,56 +100,57 @@ interface TransactionLine {
   entity?: any // The service/product entity
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: any }> = {
-  DRAFT: {
-    label: 'Draft',
-    color: LUXE_COLORS.bronze,
-    bgColor: `${LUXE_COLORS.bronze}20`,
-    icon: AlertCircle
-  },
-  BOOKED: {
-    label: 'Booked',
-    color: LUXE_COLORS.gold,
-    bgColor: `${LUXE_COLORS.gold}20`,
-    icon: Calendar
-  },
-  CONFIRMED: {
-    label: 'Confirmed',
-    color: LUXE_COLORS.gold,
-    bgColor: `${LUXE_COLORS.gold}20`,
-    icon: CheckCircle
-  },
-  CHECKED_IN: {
-    label: 'Checked In',
-    color: LUXE_COLORS.emerald,
-    bgColor: `${LUXE_COLORS.emerald}20`,
-    icon: User
-  },
-  IN_SERVICE: {
-    label: 'In Service',
-    color: LUXE_COLORS.plum,
-    bgColor: `${LUXE_COLORS.plum}20`,
-    icon: Clock
-  },
-  COMPLETED: {
-    label: 'Completed',
-    color: LUXE_COLORS.emerald,
-    bgColor: `${LUXE_COLORS.emerald}20`,
-    icon: CheckCircle
-  },
-  CANCELLED: {
-    label: 'Cancelled',
-    color: LUXE_COLORS.rose,
-    bgColor: `${LUXE_COLORS.rose}20`,
-    icon: XCircle
-  },
-  NO_SHOW: {
-    label: 'No Show',
-    color: LUXE_COLORS.bronze,
-    bgColor: `${LUXE_COLORS.bronze}20`,
-    icon: XCircle
+const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: any }> =
+  {
+    DRAFT: {
+      label: 'Draft',
+      color: LUXE_COLORS.bronze,
+      bgColor: `${LUXE_COLORS.bronze}20`,
+      icon: AlertCircle
+    },
+    BOOKED: {
+      label: 'Booked',
+      color: LUXE_COLORS.gold,
+      bgColor: `${LUXE_COLORS.gold}20`,
+      icon: Calendar
+    },
+    CONFIRMED: {
+      label: 'Confirmed',
+      color: LUXE_COLORS.gold,
+      bgColor: `${LUXE_COLORS.gold}20`,
+      icon: CheckCircle
+    },
+    CHECKED_IN: {
+      label: 'Checked In',
+      color: LUXE_COLORS.emerald,
+      bgColor: `${LUXE_COLORS.emerald}20`,
+      icon: User
+    },
+    IN_SERVICE: {
+      label: 'In Service',
+      color: LUXE_COLORS.plum,
+      bgColor: `${LUXE_COLORS.plum}20`,
+      icon: Clock
+    },
+    COMPLETED: {
+      label: 'Completed',
+      color: LUXE_COLORS.emerald,
+      bgColor: `${LUXE_COLORS.emerald}20`,
+      icon: CheckCircle
+    },
+    CANCELLED: {
+      label: 'Cancelled',
+      color: LUXE_COLORS.rose,
+      bgColor: `${LUXE_COLORS.rose}20`,
+      icon: XCircle
+    },
+    NO_SHOW: {
+      label: 'No Show',
+      color: LUXE_COLORS.bronze,
+      bgColor: `${LUXE_COLORS.bronze}20`,
+      icon: XCircle
+    }
   }
-}
 
 // Helper function to convert minutes to "Xh Ymin" format
 function formatDuration(minutes: number): string {
@@ -471,11 +472,19 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}>
+      <div
+        className="min-h-screen"
+        style={{
+          background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)`
+        }}
+      >
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mx-auto mb-4" style={{ borderColor: LUXE_COLORS.gold }}></div>
+              <div
+                className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mx-auto mb-4"
+                style={{ borderColor: LUXE_COLORS.gold }}
+              ></div>
               <p style={{ color: LUXE_COLORS.bronze }}>Loading appointment details...</p>
             </div>
           </div>
@@ -538,9 +547,20 @@ export default function ViewAppointmentPage({ params }: PageProps) {
         }
       `}</style>
 
-      <div className="min-h-screen" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)` }}>
+      <div
+        className="min-h-screen"
+        style={{
+          background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 100%)`
+        }}
+      >
         {/* Header */}
-        <div className="border-b" style={{ backgroundColor: `${LUXE_COLORS.charcoal}CC`, borderColor: `${LUXE_COLORS.gold}40` }}>
+        <div
+          className="border-b"
+          style={{
+            backgroundColor: `${LUXE_COLORS.charcoal}CC`,
+            borderColor: `${LUXE_COLORS.gold}40`
+          }}
+        >
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -563,8 +583,12 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg"
-                       style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)` }}>
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg"
+                    style={{
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`
+                    }}
+                  >
                     <Calendar className="w-5 h-5" style={{ color: LUXE_COLORS.black }} />
                   </div>
                   <div>
@@ -657,23 +681,32 @@ export default function ViewAppointmentPage({ params }: PageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Customer & Stylist Details */}
             <div className="space-y-4">
-              <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+              <Card
+                className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+                style={{
+                  backgroundColor: LUXE_COLORS.charcoal,
+                  borderColor: `${LUXE_COLORS.gold}40`,
+                  transition: `all 0.4s ${LUXE_COLORS.spring}`
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
+              >
+                <h3
+                  className="font-medium mb-3 flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.champagne }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
-                      backgroundColor: LUXE_COLORS.charcoal,
-                      borderColor: `${LUXE_COLORS.gold}40`,
-                      transition: `all 0.4s ${LUXE_COLORS.spring}`
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`
                     }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
-                      e.currentTarget.style.transform = 'translateY(-4px)'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}>
-                <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                       style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)` }}>
+                  >
                     <User className="w-4 h-4" style={{ color: LUXE_COLORS.black }} />
                   </div>
                   Customer Details
@@ -718,23 +751,32 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 )}
               </Card>
 
-              <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+              <Card
+                className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+                style={{
+                  backgroundColor: LUXE_COLORS.charcoal,
+                  borderColor: `${LUXE_COLORS.gold}40`,
+                  transition: `all 0.4s ${LUXE_COLORS.spring}`
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
+              >
+                <h3
+                  className="font-medium mb-3 flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.champagne }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
-                      backgroundColor: LUXE_COLORS.charcoal,
-                      borderColor: `${LUXE_COLORS.gold}40`,
-                      transition: `all 0.4s ${LUXE_COLORS.spring}`
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.plum} 0%, ${LUXE_COLORS.rose} 100%)`
                     }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
-                      e.currentTarget.style.transform = 'translateY(-4px)'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}>
-                <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                       style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.plum} 0%, ${LUXE_COLORS.rose} 100%)` }}>
+                  >
                     <User className="w-4 h-4" style={{ color: 'white' }} />
                   </div>
                   Stylist Details
@@ -749,15 +791,20 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
                     {stylist.metadata?.specialties && stylist.metadata.specialties.length > 0 && (
                       <div>
-                        <p className="text-sm mb-1" style={{ color: LUXE_COLORS.bronze }}>Specialties:</p>
+                        <p className="text-sm mb-1" style={{ color: LUXE_COLORS.bronze }}>
+                          Specialties:
+                        </p>
                         <div className="flex flex-wrap gap-1">
                           {stylist.metadata.specialties.map((specialty: string, index: number) => (
-                            <Badge key={index} className="text-xs border"
-                                  style={{
-                                    backgroundColor: `${LUXE_COLORS.plum}20`,
-                                    borderColor: LUXE_COLORS.plum,
-                                    color: LUXE_COLORS.champagne
-                                  }}>
+                            <Badge
+                              key={index}
+                              className="text-xs border"
+                              style={{
+                                backgroundColor: `${LUXE_COLORS.plum}20`,
+                                borderColor: LUXE_COLORS.plum,
+                                color: LUXE_COLORS.champagne
+                              }}
+                            >
                               {specialty}
                             </Badge>
                           ))}
@@ -779,44 +826,59 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 )}
               </Card>
 
-              <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+              <Card
+                className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+                style={{
+                  backgroundColor: LUXE_COLORS.charcoal,
+                  borderColor: `${LUXE_COLORS.gold}40`,
+                  transition: `all 0.4s ${LUXE_COLORS.spring}`
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
+              >
+                <h3
+                  className="font-medium mb-3 flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.champagne }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
-                      backgroundColor: LUXE_COLORS.charcoal,
-                      borderColor: `${LUXE_COLORS.gold}40`,
-                      transition: `all 0.4s ${LUXE_COLORS.spring}`
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.gold} 100%)`
                     }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
-                      e.currentTarget.style.transform = 'translateY(-4px)'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}>
-                <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                       style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.gold} 100%)` }}>
+                  >
                     <Calendar className="w-4 h-4" style={{ color: 'white' }} />
                   </div>
                   Appointment Time
                 </h3>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Date</p>
+                    <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                      Date
+                    </p>
                     <p className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                       {format(appointmentDate, 'MMMM d, yyyy')}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Time</p>
+                    <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                      Time
+                    </p>
                     <p className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                       {format(appointmentDate, 'h:mm a')}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Duration</p>
+                    <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                      Duration
+                    </p>
                     <p className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
                       {formatDuration(totalDuration)}
                     </p>
@@ -824,8 +886,13 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
                   {appointment.metadata?.notes && (
                     <div>
-                      <p className="text-sm mb-1" style={{ color: LUXE_COLORS.bronze }}>Notes</p>
-                      <div className="p-3 rounded-lg" style={{ backgroundColor: `${LUXE_COLORS.black}80` }}>
+                      <p className="text-sm mb-1" style={{ color: LUXE_COLORS.bronze }}>
+                        Notes
+                      </p>
+                      <div
+                        className="p-3 rounded-lg"
+                        style={{ backgroundColor: `${LUXE_COLORS.black}80` }}
+                      >
                         <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
                           {appointment.metadata.notes}
                         </p>
@@ -838,33 +905,44 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
             {/* Center Column - Services */}
             <div className="space-y-4">
-              <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl h-fit"
+              <Card
+                className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl h-fit"
+                style={{
+                  backgroundColor: LUXE_COLORS.charcoal,
+                  borderColor: `${LUXE_COLORS.gold}40`,
+                  transition: `all 0.4s ${LUXE_COLORS.spring}`
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
+              >
+                <h3
+                  className="font-medium mb-3 flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.champagne }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
-                      backgroundColor: LUXE_COLORS.charcoal,
-                      borderColor: `${LUXE_COLORS.gold}40`,
-                      transition: `all 0.4s ${LUXE_COLORS.spring}`
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.bronze} 100%)`
                     }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
-                      e.currentTarget.style.transform = 'translateY(-4px)'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}>
-                <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                       style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.bronze} 100%)` }}>
+                  >
                     <Scissors className="w-4 h-4" style={{ color: 'white' }} />
                   </div>
                   Services Booked
                   {transactionLines.length > 0 && (
-                    <Badge className="ml-auto border"
-                          style={{
-                            backgroundColor: `${LUXE_COLORS.gold}20`,
-                            borderColor: LUXE_COLORS.gold,
-                            color: LUXE_COLORS.champagne
-                          }}>
+                    <Badge
+                      className="ml-auto border"
+                      style={{
+                        backgroundColor: `${LUXE_COLORS.gold}20`,
+                        borderColor: LUXE_COLORS.gold,
+                        color: LUXE_COLORS.champagne
+                      }}
+                    >
                       {transactionLines.length} item{transactionLines.length !== 1 ? 's' : ''}
                     </Badge>
                   )}
@@ -878,20 +956,23 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   <ScrollArea className="h-[600px] pr-2 appointment-scrollbar">
                     <div className="space-y-3">
                       {transactionLines.map(line => (
-                        <div key={line.id} className="p-4 border rounded-lg transition-all"
-                             style={{
-                               backgroundColor: `${LUXE_COLORS.black}80`,
-                               borderColor: `${LUXE_COLORS.gold}30`,
-                               transition: `all 0.3s ${LUXE_COLORS.spring}`
-                             }}
-                             onMouseEnter={e => {
-                               e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}60`
-                               e.currentTarget.style.transform = 'translateX(4px)'
-                             }}
-                             onMouseLeave={e => {
-                               e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}30`
-                               e.currentTarget.style.transform = 'translateX(0)'
-                             }}>
+                        <div
+                          key={line.id}
+                          className="p-4 border rounded-lg transition-all"
+                          style={{
+                            backgroundColor: `${LUXE_COLORS.black}80`,
+                            borderColor: `${LUXE_COLORS.gold}30`,
+                            transition: `all 0.3s ${LUXE_COLORS.spring}`
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}60`
+                            e.currentTarget.style.transform = 'translateX(4px)'
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}30`
+                            e.currentTarget.style.transform = 'translateX(0)'
+                          }}
+                        >
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex-1">
                               <p className="font-medium" style={{ color: LUXE_COLORS.gold }}>
@@ -900,17 +981,23 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                               {line.entity && (
                                 <div className="flex items-center gap-3 text-sm mt-1">
                                   <span className="flex items-center gap-1">
-                                    <Clock className="w-3 h-3" style={{ color: LUXE_COLORS.bronze }} />
+                                    <Clock
+                                      className="w-3 h-3"
+                                      style={{ color: LUXE_COLORS.bronze }}
+                                    />
                                     <span style={{ color: LUXE_COLORS.champagne }}>
                                       {formatDuration(
                                         line.entity.metadata?.duration_minutes ||
-                                        line.line_data?.duration_minutes ||
-                                        30
+                                          line.line_data?.duration_minutes ||
+                                          30
                                       )}
                                     </span>
                                   </span>
                                   <span className="flex items-center gap-1">
-                                    <DollarSign className="w-3 h-3" style={{ color: LUXE_COLORS.gold }} />
+                                    <DollarSign
+                                      className="w-3 h-3"
+                                      style={{ color: LUXE_COLORS.gold }}
+                                    />
                                     <span style={{ color: LUXE_COLORS.gold }}>
                                       AED {line.unit_amount.toFixed(2)}
                                     </span>
@@ -918,12 +1005,14 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                                 </div>
                               )}
                             </div>
-                            <Badge className="ml-2 border"
-                                  style={{
-                                    backgroundColor: `${LUXE_COLORS.bronze}20`,
-                                    borderColor: LUXE_COLORS.bronze,
-                                    color: LUXE_COLORS.champagne
-                                  }}>
+                            <Badge
+                              className="ml-2 border"
+                              style={{
+                                backgroundColor: `${LUXE_COLORS.bronze}20`,
+                                borderColor: LUXE_COLORS.bronze,
+                                color: LUXE_COLORS.champagne
+                              }}
+                            >
                               {line.line_type}
                             </Badge>
                           </div>
@@ -946,24 +1035,33 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
             {/* Right Column - Summary */}
             <div className="space-y-4">
-              <Card className="p-4 backdrop-blur shadow-lg border-2 transition-all hover:shadow-xl"
+              <Card
+                className="p-4 backdrop-blur shadow-lg border-2 transition-all hover:shadow-xl"
+                style={{
+                  backgroundColor: LUXE_COLORS.charcoal,
+                  borderColor: LUXE_COLORS.gold,
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`,
+                  transition: `all 0.4s ${LUXE_COLORS.spring}`
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                  e.currentTarget.style.boxShadow = `0 16px 32px ${LUXE_COLORS.gold}40`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              >
+                <h3
+                  className="font-medium mb-3 flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.champagne }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
                     style={{
-                      backgroundColor: LUXE_COLORS.charcoal,
-                      borderColor: LUXE_COLORS.gold,
-                      background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`,
-                      transition: `all 0.4s ${LUXE_COLORS.spring}`
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`
                     }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.transform = 'translateY(-4px)'
-                      e.currentTarget.style.boxShadow = `0 16px 32px ${LUXE_COLORS.gold}40`
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.transform = 'translateY(0)'
-                      e.currentTarget.style.boxShadow = 'none'
-                    }}>
-                <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
-                       style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)` }}>
+                  >
                     <DollarSign className="w-4 h-4" style={{ color: LUXE_COLORS.black }} />
                   </div>
                   Appointment Summary
@@ -1016,11 +1114,13 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   )}
 
                   {status === 'CANCELLED' && (
-                    <div className="mt-3 p-3 rounded-lg border"
-                         style={{
-                           backgroundColor: `${LUXE_COLORS.rose}20`,
-                           borderColor: LUXE_COLORS.rose
-                         }}>
+                    <div
+                      className="mt-3 p-3 rounded-lg border"
+                      style={{
+                        backgroundColor: `${LUXE_COLORS.rose}20`,
+                        borderColor: LUXE_COLORS.rose
+                      }}
+                    >
                       <div className="flex items-start gap-2">
                         <XCircle className="w-4 h-4 mt-0.5" style={{ color: LUXE_COLORS.rose }} />
                         <div className="text-sm">
@@ -1048,23 +1148,32 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 </div>
               </Card>
 
-              <Card className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+              <Card
+                className="p-4 backdrop-blur shadow-lg border transition-all hover:shadow-xl"
+                style={{
+                  backgroundColor: LUXE_COLORS.charcoal,
+                  borderColor: `${LUXE_COLORS.gold}40`,
+                  transition: `all 0.4s ${LUXE_COLORS.spring}`
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
+              >
+                <h3
+                  className="font-medium mb-3 flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.champagne }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
-                      backgroundColor: LUXE_COLORS.charcoal,
-                      borderColor: `${LUXE_COLORS.gold}40`,
-                      transition: `all 0.4s ${LUXE_COLORS.spring}`
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.bronze} 0%, ${LUXE_COLORS.gold} 100%)`
                     }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}80`
-                      e.currentTarget.style.transform = 'translateY(-4px)'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}>
-                <h3 className="font-medium mb-3 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                       style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.bronze} 0%, ${LUXE_COLORS.gold} 100%)` }}>
+                  >
                     <FileText className="w-4 h-4" style={{ color: 'white' }} />
                   </div>
                   Quick Actions
@@ -1173,23 +1282,25 @@ export default function ViewAppointmentPage({ params }: PageProps) {
           }}
         >
           <DialogHeader>
-            <DialogTitle style={{ color: LUXE_COLORS.champagne }}>
-              Cancel Appointment
-            </DialogTitle>
+            <DialogTitle style={{ color: LUXE_COLORS.champagne }}>Cancel Appointment</DialogTitle>
             <DialogDescription style={{ color: LUXE_COLORS.bronze }}>
               Are you sure you want to cancel this appointment? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div>
-              <Label htmlFor="cancel-reason" className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+              <Label
+                htmlFor="cancel-reason"
+                className="text-sm"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Cancellation Reason (Optional)
               </Label>
               <Textarea
                 id="cancel-reason"
                 placeholder="Enter reason for cancellation..."
                 value={cancelReason}
-                onChange={(e) => setCancelReason(e.target.value)}
+                onChange={e => setCancelReason(e.target.value)}
                 rows={3}
                 className="mt-1"
                 style={{
@@ -1238,16 +1349,18 @@ export default function ViewAppointmentPage({ params }: PageProps) {
           }}
         >
           <DialogHeader>
-            <DialogTitle style={{ color: LUXE_COLORS.champagne }}>
-              Postpone Appointment
-            </DialogTitle>
+            <DialogTitle style={{ color: LUXE_COLORS.champagne }}>Postpone Appointment</DialogTitle>
             <DialogDescription style={{ color: LUXE_COLORS.bronze }}>
               Select a new date and time for the appointment.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="postpone-days" className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+              <Label
+                htmlFor="postpone-days"
+                className="text-sm"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 Postpone by
               </Label>
               <Select value={postponeDays} onValueChange={setPostponeDays}>
@@ -1273,14 +1386,18 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               </Select>
             </div>
             <div>
-              <Label htmlFor="postpone-time" className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+              <Label
+                htmlFor="postpone-time"
+                className="text-sm"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
                 New Time (Optional)
               </Label>
               <input
                 id="postpone-time"
                 type="time"
                 value={postponeTime}
-                onChange={(e) => setPostponeTime(e.target.value)}
+                onChange={e => setPostponeTime(e.target.value)}
                 className="mt-1 w-full px-3 py-2 rounded-md"
                 style={{
                   backgroundColor: LUXE_COLORS.black,

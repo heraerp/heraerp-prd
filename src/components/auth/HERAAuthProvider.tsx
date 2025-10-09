@@ -373,47 +373,48 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
           }
 
           // Fallback: resolve org/role/permissions client-side (no API dependency)
-          if (AUTH_INTROSPECT_FALLBACK_ENABLED) try {
-            const { resolveUserEntity } = await import('@/lib/security/user-entity-resolver')
-            const resolution = await resolveUserEntity(session.user.id)
-            if (resolution.success && resolution.data) {
-              // Ensure attach endpoint runs if available (idempotent)
-              fetch('/api/v2/auth/attach', {
-                method: 'POST',
-                headers: {
-                  Authorization: `Bearer ${session.access_token}`,
-                  'x-hera-org-id': resolution.data.organizationId
-                },
-                credentials: 'include'
-              })
-                .then(r => {
-                  if (process.env.NODE_ENV === 'development') {
-                    console.log('✅ TX.AUTH_ATTACH_OK.V1')
-                  }
+          if (AUTH_INTROSPECT_FALLBACK_ENABLED)
+            try {
+              const { resolveUserEntity } = await import('@/lib/security/user-entity-resolver')
+              const resolution = await resolveUserEntity(session.user.id)
+              if (resolution.success && resolution.data) {
+                // Ensure attach endpoint runs if available (idempotent)
+                fetch('/api/v2/auth/attach', {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${session.access_token}`,
+                    'x-hera-org-id': resolution.data.organizationId
+                  },
+                  credentials: 'include'
                 })
-                .catch(() => {
-                  if (process.env.NODE_ENV === 'development') {
-                    console.log('⚠️  TX.AUTH_ATTACH_FAIL.V1')
-                  }
-                })
+                  .then(r => {
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('✅ TX.AUTH_ATTACH_OK.V1')
+                    }
+                  })
+                  .catch(() => {
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('⚠️  TX.AUTH_ATTACH_FAIL.V1')
+                    }
+                  })
 
-              const payload = {
-                user_id: resolution.data.userId,
-                email: session.user.email || '',
-                organization_id: resolution.data.organizationId,
-                roles: [resolution.data.salonRole || 'user'],
-                permissions: Array.isArray(resolution.data.permissions)
-                  ? resolution.data.permissions
-                  : [],
-                source: 'fallback'
+                const payload = {
+                  user_id: resolution.data.userId,
+                  email: session.user.email || '',
+                  organization_id: resolution.data.organizationId,
+                  roles: [resolution.data.salonRole || 'user'],
+                  permissions: Array.isArray(resolution.data.permissions)
+                    ? resolution.data.permissions
+                    : [],
+                  source: 'fallback'
+                }
+                cacheContext(payload)
+                applyResolvedContext(payload)
+                return
               }
-              cacheContext(payload)
-              applyResolvedContext(payload)
-              return
+            } catch (_) {
+              // If resolution fails, fall through to unauthenticated
             }
-          } catch (_) {
-            // If resolution fails, fall through to unauthenticated
-          }
         }
       } catch (e) {
         // Ignore and fall through to unauthenticated
@@ -563,7 +564,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       }
     } catch (_) {}
     if (process.env.NODE_ENV === 'development') {
-      console.log('🧠 HERA Auth: Context cached', { source: payload.source, ttl_ms: CONTEXT_TTL_MS })
+      console.log('🧠 HERA Auth: Context cached', {
+        source: payload.source,
+        ttl_ms: CONTEXT_TTL_MS
+      })
     }
   }
 

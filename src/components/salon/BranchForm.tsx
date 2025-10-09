@@ -5,7 +5,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { BRANCH_PRESET } from '@/hooks/entityPresets'
 
 interface BranchFormProps {
@@ -32,7 +38,7 @@ export function BranchForm({ entity, onSubmit, onCancel }: BranchFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+
     try {
       const submitData = {
         entity_type: 'BRANCH',
@@ -51,7 +57,7 @@ export function BranchForm({ entity, onSubmit, onCancel }: BranchFormProps) {
           return acc
         }, {} as any)
       }
-      
+
       await onSubmit(submitData)
     } catch (error) {
       console.error('Form submission error:', error)
@@ -65,7 +71,7 @@ export function BranchForm({ entity, onSubmit, onCancel }: BranchFormProps) {
       {/* Basic Information */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Basic Information</h3>
-        
+
         <div>
           <Label htmlFor="entity_name">Branch Name</Label>
           <Input
@@ -82,10 +88,12 @@ export function BranchForm({ entity, onSubmit, onCancel }: BranchFormProps) {
           <Input
             id="code"
             value={formData.dynamic_fields.code}
-            onChange={e => setFormData({ 
-              ...formData, 
-              dynamic_fields: { ...formData.dynamic_fields, code: e.target.value }
-            })}
+            onChange={e =>
+              setFormData({
+                ...formData,
+                dynamic_fields: { ...formData.dynamic_fields, code: e.target.value }
+              })
+            }
             placeholder="BR-001"
             required
           />
@@ -93,12 +101,14 @@ export function BranchForm({ entity, onSubmit, onCancel }: BranchFormProps) {
 
         <div>
           <Label htmlFor="status">Status</Label>
-          <Select 
+          <Select
             value={formData.dynamic_fields.status}
-            onValueChange={value => setFormData({
-              ...formData,
-              dynamic_fields: { ...formData.dynamic_fields, status: value }
-            })}
+            onValueChange={value =>
+              setFormData({
+                ...formData,
+                dynamic_fields: { ...formData.dynamic_fields, status: value }
+              })
+            }
           >
             <SelectTrigger id="status">
               <SelectValue placeholder="Select status" />
@@ -114,16 +124,18 @@ export function BranchForm({ entity, onSubmit, onCancel }: BranchFormProps) {
       {/* Location Details */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Location Details</h3>
-        
+
         <div>
           <Label htmlFor="address">Address</Label>
           <Textarea
             id="address"
             value={formData.dynamic_fields.address}
-            onChange={e => setFormData({
-              ...formData,
-              dynamic_fields: { ...formData.dynamic_fields, address: e.target.value }
-            })}
+            onChange={e =>
+              setFormData({
+                ...formData,
+                dynamic_fields: { ...formData.dynamic_fields, address: e.target.value }
+              })
+            }
             placeholder="123 Main St, City, State ZIP"
             rows={3}
           />
@@ -135,22 +147,26 @@ export function BranchForm({ entity, onSubmit, onCancel }: BranchFormProps) {
             id="phone"
             type="tel"
             value={formData.dynamic_fields.phone}
-            onChange={e => setFormData({
-              ...formData,
-              dynamic_fields: { ...formData.dynamic_fields, phone: e.target.value }
-            })}
+            onChange={e =>
+              setFormData({
+                ...formData,
+                dynamic_fields: { ...formData.dynamic_fields, phone: e.target.value }
+              })
+            }
             placeholder="+971 4 123 4567"
           />
         </div>
 
         <div>
           <Label htmlFor="timezone">Timezone</Label>
-          <Select 
+          <Select
             value={formData.dynamic_fields.timezone}
-            onValueChange={value => setFormData({
-              ...formData,
-              dynamic_fields: { ...formData.dynamic_fields, timezone: value }
-            })}
+            onValueChange={value =>
+              setFormData({
+                ...formData,
+                dynamic_fields: { ...formData.dynamic_fields, timezone: value }
+              })
+            }
           >
             <SelectTrigger id="timezone">
               <SelectValue placeholder="Select timezone" />
@@ -171,12 +187,7 @@ export function BranchForm({ entity, onSubmit, onCancel }: BranchFormProps) {
 
       {/* Actions */}
       <div className="flex gap-2 justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={isSubmitting}
-        >
+        <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>

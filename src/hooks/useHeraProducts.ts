@@ -190,11 +190,14 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       entity_description: data.description || null,
       status: data.status === 'inactive' ? 'archived' : 'active',
       dynamic_fields,
-      metadata: data.branch_ids && data.branch_ids.length > 0 ? {
-        relationships: {
-          STOCK_AT: data.branch_ids
-        }
-      } : undefined
+      metadata:
+        data.branch_ids && data.branch_ids.length > 0
+          ? {
+              relationships: {
+                STOCK_AT: data.branch_ids
+              }
+            }
+          : undefined
     } as any)
 
     // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
@@ -249,9 +252,12 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     }
 
     // Build relationships patch if branch_ids provided
-    const relationships_patch = data.branch_ids !== undefined ? {
-      STOCK_AT: data.branch_ids
-    } : undefined
+    const relationships_patch =
+      data.branch_ids !== undefined
+        ? {
+            STOCK_AT: data.branch_ids
+          }
+        : undefined
 
     const payload: any = {
       entity_id: id,
@@ -308,7 +314,9 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
 
   // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
   // Try hard delete first, but if product is referenced in transactions, archive instead
-  const deleteProduct = async (id: string): Promise<{
+  const deleteProduct = async (
+    id: string
+  ): Promise<{
     success: boolean
     archived: boolean
     message?: string
@@ -358,11 +366,14 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
           return {
             success: true,
             archived: true,
-            message: 'Product is used in transactions and cannot be deleted. It has been archived instead.'
+            message:
+              'Product is used in transactions and cannot be deleted. It has been archived instead.'
           }
         } catch (archiveError: any) {
           // If archive also fails, throw a clear error
-          throw new Error(`Failed to delete and archive: ${archiveError.message || 'Unknown error'}`)
+          throw new Error(
+            `Failed to delete and archive: ${archiveError.message || 'Unknown error'}`
+          )
         }
       }
 
@@ -387,7 +398,8 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     if (options?.filters?.branch_id && options.filters.branch_id !== 'all') {
       filtered = filtered.filter(p => {
         // Check if product has STOCK_AT relationship with the specified branch
-        const stockAtRelationships = (p as any).relationships?.stock_at || (p as any).relationships?.STOCK_AT
+        const stockAtRelationships =
+          (p as any).relationships?.stock_at || (p as any).relationships?.STOCK_AT
 
         // console.log('[useHeraProducts] Product filter check:', {
         //   product: p.entity_name,
@@ -400,7 +412,9 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
 
         // Handle both array and single relationship formats
         if (Array.isArray(stockAtRelationships)) {
-          return stockAtRelationships.some((rel: any) => rel.to_entity?.id === options.filters?.branch_id)
+          return stockAtRelationships.some(
+            (rel: any) => rel.to_entity?.id === options.filters?.branch_id
+          )
         } else {
           return stockAtRelationships.to_entity?.id === options.filters?.branch_id
         }
@@ -412,12 +426,13 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     // Search filter
     if (options?.searchQuery) {
       const query = options.searchQuery.toLowerCase()
-      filtered = filtered.filter(product =>
-        product.entity_name?.toLowerCase().includes(query) ||
-        product.entity_code?.toLowerCase().includes(query) ||
-        product.category?.toLowerCase().includes(query) ||
-        product.brand?.toLowerCase().includes(query) ||
-        product.barcode?.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        product =>
+          product.entity_name?.toLowerCase().includes(query) ||
+          product.entity_code?.toLowerCase().includes(query) ||
+          product.category?.toLowerCase().includes(query) ||
+          product.brand?.toLowerCase().includes(query) ||
+          product.barcode?.toLowerCase().includes(query)
       )
     }
 

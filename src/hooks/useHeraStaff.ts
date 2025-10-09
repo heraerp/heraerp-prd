@@ -95,7 +95,7 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     bio?: string
     avatar_url?: string
     service_ids?: string[]
-    branch_ids?: string[]  // Support for multiple branch assignments
+    branch_ids?: string[] // Support for multiple branch assignments
     location_id?: string
     supervisor_id?: string
   }) => {
@@ -293,7 +293,10 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
 
   // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
   // Try hard delete first, but if staff is referenced in transactions, archive instead
-  const deleteStaff = async (id: string, reason?: string): Promise<{
+  const deleteStaff = async (
+    id: string,
+    reason?: string
+  ): Promise<{
     success: boolean
     archived: boolean
     message?: string

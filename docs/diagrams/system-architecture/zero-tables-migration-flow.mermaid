@@ -1,0 +1,137 @@
+```mermaid
+graph TD
+    subgraph "Finance DNA v2 - Zero Tables Migration Architecture"
+        
+        subgraph "Phase 1: CTE-Only Preview"
+            START[Migration Request<br/>Organization ID + Date Range]
+            PREVIEW_CTE[Preview CTE Query<br/>No New Tables]
+            CANDIDATE_ID[Identify Migration Candidates<br/>Smart Code Analysis]
+            PREVIEW_RESULT[Preview Results<br/>JSON Response]
+        end
+
+        subgraph "Phase 2: Reverse + Repost Pattern"
+            BATCH_SELECT[Select Migration Batch<br/>CTE Candidate Selection]
+            REVERSE_TXN[Reverse Original Transaction<br/>hera_txn_reverse_v1()]
+            REPOST_TXN[Repost with v2 Smart Code<br/>hera_txn_emit_v1()]
+            VALIDATE_GL[Validate GL Balance<br/>Automatic Validation]
+        end
+
+        subgraph "Phase 3: Metadata-Only Aliases"
+            ALIAS_MAPPING[Create Smart Code Mapping<br/>v1 → v2 Translation]
+            UPDATE_METADATA[Update Transaction Metadata<br/>Reporting Aliases Only]
+            ALIAS_VALIDATE[Validate Alias Application<br/>No Data Movement]
+        end
+
+        subgraph "Phase 4: Sacred Six Validation"
+            INTEGRITY_CHECK[Sacred Six Integrity Check<br/>Zero New Tables Validation]
+            RLS_VALIDATE[RLS Policy Validation<br/>Organization Isolation]
+            SECURITY_AUDIT[Phase 8 Security Audit<br/>Comprehensive Validation]
+            FINAL_REPORT[Migration Completion Report<br/>Success/Failure Status]
+        end
+
+        subgraph "Sacred Six Tables (Unchanged)"
+            T1[core_organizations<br/>Multi-tenant Isolation]
+            T2[core_entities<br/>Business Objects]
+            T3[core_dynamic_data<br/>Custom Properties]
+            T4[core_relationships<br/>Entity Connections]
+            T5[universal_transactions<br/>Financial Transactions]
+            T6[universal_transaction_lines<br/>Transaction Details]
+        end
+
+        subgraph "Existing RPC Functions (Reused)"
+            RPC1[hera_txn_reverse_v1<br/>Transaction Reversal]
+            RPC2[hera_txn_emit_v1<br/>Transaction Posting]
+            RPC3[hera_entity_upsert_v1<br/>Entity Management]
+            RPC4[hera_dynamic_data_batch_v1<br/>Property Updates]
+        end
+
+        subgraph "Migration Validation"
+            V1[GL Balance Validation<br/>Debits = Credits]
+            V2[Smart Code Consistency<br/>v2 Format Compliance]
+            V3[Fiscal Period Compliance<br/>Period Status Validation]
+            V4[Security Compliance<br/>Phase 8 Standards]
+        end
+
+        subgraph "Rollback Capability"
+            ROLLBACK_TRIGGER{Migration Failed?}
+            EMERGENCY_ROLLBACK[Emergency Rollback<br/>Reverse All Changes]
+            RESTORE_STATE[Restore Original State<br/>Zero Tables Approach]
+        end
+
+        %% Phase 1 Flow
+        START --> PREVIEW_CTE
+        PREVIEW_CTE --> CANDIDATE_ID
+        CANDIDATE_ID --> PREVIEW_RESULT
+
+        %% Phase 2 Flow
+        PREVIEW_RESULT --> BATCH_SELECT
+        BATCH_SELECT --> REVERSE_TXN
+        REVERSE_TXN --> REPOST_TXN
+        REPOST_TXN --> VALIDATE_GL
+
+        %% Phase 3 Flow
+        VALIDATE_GL --> ALIAS_MAPPING
+        ALIAS_MAPPING --> UPDATE_METADATA
+        UPDATE_METADATA --> ALIAS_VALIDATE
+
+        %% Phase 4 Flow
+        ALIAS_VALIDATE --> INTEGRITY_CHECK
+        INTEGRITY_CHECK --> RLS_VALIDATE
+        RLS_VALIDATE --> SECURITY_AUDIT
+        SECURITY_AUDIT --> FINAL_REPORT
+
+        %% Sacred Six Connections
+        PREVIEW_CTE -.-> T5
+        REVERSE_TXN -.-> T5
+        REPOST_TXN -.-> T5
+        UPDATE_METADATA -.-> T5
+        INTEGRITY_CHECK -.-> T1
+        INTEGRITY_CHECK -.-> T2
+        INTEGRITY_CHECK -.-> T3
+        INTEGRITY_CHECK -.-> T4
+        INTEGRITY_CHECK -.-> T5
+        INTEGRITY_CHECK -.-> T6
+
+        %% RPC Function Usage
+        REVERSE_TXN --> RPC1
+        REPOST_TXN --> RPC2
+        UPDATE_METADATA --> RPC4
+
+        %% Validation Connections
+        VALIDATE_GL --> V1
+        ALIAS_VALIDATE --> V2
+        INTEGRITY_CHECK --> V3
+        SECURITY_AUDIT --> V4
+
+        %% Rollback Flow
+        V1 --> ROLLBACK_TRIGGER
+        V2 --> ROLLBACK_TRIGGER
+        V3 --> ROLLBACK_TRIGGER
+        V4 --> ROLLBACK_TRIGGER
+        ROLLBACK_TRIGGER -->|Yes| EMERGENCY_ROLLBACK
+        EMERGENCY_ROLLBACK --> RESTORE_STATE
+        ROLLBACK_TRIGGER -->|No| FINAL_REPORT
+
+        %% Success Path Highlight
+        START -.->|Success Path| FINAL_REPORT
+
+    end
+
+    %% Styling
+    classDef phaseBox fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef sacredSix fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px
+    classDef rpcFunction fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef validation fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef rollback fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    classDef successPath fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+
+    class START,PREVIEW_CTE,CANDIDATE_ID,PREVIEW_RESULT phaseBox
+    class BATCH_SELECT,REVERSE_TXN,REPOST_TXN,VALIDATE_GL phaseBox
+    class ALIAS_MAPPING,UPDATE_METADATA,ALIAS_VALIDATE phaseBox
+    class INTEGRITY_CHECK,RLS_VALIDATE,SECURITY_AUDIT,FINAL_REPORT phaseBox
+
+    class T1,T2,T3,T4,T5,T6 sacredSix
+    class RPC1,RPC2,RPC3,RPC4 rpcFunction
+    class V1,V2,V3,V4 validation
+    class ROLLBACK_TRIGGER,EMERGENCY_ROLLBACK,RESTORE_STATE rollback
+```

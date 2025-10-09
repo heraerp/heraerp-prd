@@ -96,9 +96,12 @@ export function EnhancedCustomerModal({
   }
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-      if (!isOpen) handleClose()
-    }}>
+    <Dialog
+      open={open}
+      onOpenChange={isOpen => {
+        if (!isOpen) handleClose()
+      }}
+    >
       <DialogContent
         className="max-w-4xl max-h-[90vh] p-0 gap-0 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-300"
         style={{
@@ -161,12 +164,14 @@ export function EnhancedCustomerModal({
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="pl-12 h-12 text-base border-2 transition-all placeholder:text-bronze/60"
-                style={{
-                  backgroundColor: COLORS.charcoalLight,
-                  borderColor: searchQuery ? `${COLORS.gold}50` : `${COLORS.gold}20`,
-                  color: COLORS.champagne,
-                  '--placeholder-color': `${COLORS.bronze}99`
-                } as React.CSSProperties}
+                style={
+                  {
+                    backgroundColor: COLORS.charcoalLight,
+                    borderColor: searchQuery ? `${COLORS.gold}50` : `${COLORS.gold}20`,
+                    color: COLORS.champagne,
+                    '--placeholder-color': `${COLORS.bronze}99`
+                  } as React.CSSProperties
+                }
                 autoFocus
               />
             </div>
@@ -181,16 +186,18 @@ export function EnhancedCustomerModal({
                   'cursor-pointer transition-all duration-200 border-2 hover:scale-[1.03] active:scale-[0.98]',
                   selectedCustomer?.id === 'walk-in' && 'ring-2'
                 )}
-                style={{
-                  backgroundColor: selectedCustomer?.id === 'walk-in'
-                    ? `${COLORS.gold}25`
-                    : COLORS.charcoalLight,
-                  borderColor: selectedCustomer?.id === 'walk-in'
-                    ? COLORS.gold
-                    : `${COLORS.gold}40`,
-                  '--tw-ring-color': COLORS.gold,
-                  '--tw-ring-offset-color': COLORS.charcoal
-                } as React.CSSProperties}
+                style={
+                  {
+                    backgroundColor:
+                      selectedCustomer?.id === 'walk-in'
+                        ? `${COLORS.gold}25`
+                        : COLORS.charcoalLight,
+                    borderColor:
+                      selectedCustomer?.id === 'walk-in' ? COLORS.gold : `${COLORS.gold}40`,
+                    '--tw-ring-color': COLORS.gold,
+                    '--tw-ring-offset-color': COLORS.charcoal
+                  } as React.CSSProperties
+                }
                 onClick={() =>
                   handleCustomerSelect({
                     id: 'walk-in',
@@ -262,7 +269,10 @@ export function EnhancedCustomerModal({
           <div className="px-6 pb-4">
             <div className="relative flex items-center gap-4">
               <div className="flex-1 h-px" style={{ backgroundColor: `${COLORS.gold}20` }} />
-              <span className="text-xs font-semibold tracking-wider" style={{ color: COLORS.bronze }}>
+              <span
+                className="text-xs font-semibold tracking-wider"
+                style={{ color: COLORS.bronze }}
+              >
                 EXISTING CUSTOMERS
               </span>
               <div className="flex-1 h-px" style={{ backgroundColor: `${COLORS.gold}20` }} />
@@ -319,24 +329,26 @@ export function EnhancedCustomerModal({
                         'cursor-pointer transition-all duration-200 border-2 hover:scale-[1.02] active:scale-[0.99]',
                         isSelected && 'ring-2'
                       )}
-                      style={{
-                        backgroundColor: isSelected
-                          ? `${COLORS.gold}20`
-                          : COLORS.charcoalLight,
-                        borderColor: isSelected ? COLORS.gold : `${COLORS.gold}30`,
-                        '--tw-ring-color': COLORS.gold,
-                        '--tw-ring-offset-color': COLORS.charcoal,
-                        animationDelay: `${index * 30}ms`
-                      } as React.CSSProperties}
+                      style={
+                        {
+                          backgroundColor: isSelected ? `${COLORS.gold}20` : COLORS.charcoalLight,
+                          borderColor: isSelected ? COLORS.gold : `${COLORS.gold}30`,
+                          '--tw-ring-color': COLORS.gold,
+                          '--tw-ring-offset-color': COLORS.charcoal,
+                          animationDelay: `${index * 30}ms`
+                        } as React.CSSProperties
+                      }
                       onClick={() => handleCustomerSelect(customer)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-center gap-4">
                           <Avatar
                             className="w-12 h-12 ring-2 flex-shrink-0"
-                            style={{
-                              '--tw-ring-color': isSelected ? COLORS.gold : `${COLORS.gold}40`
-                            } as React.CSSProperties}
+                            style={
+                              {
+                                '--tw-ring-color': isSelected ? COLORS.gold : `${COLORS.gold}40`
+                              } as React.CSSProperties
+                            }
                           >
                             <AvatarImage src={customer.avatar_url} />
                             <AvatarFallback
@@ -376,13 +388,19 @@ export function EnhancedCustomerModal({
                             </div>
                             <div className="space-y-0.5">
                               {customer.email && (
-                                <div className="flex items-center gap-2 text-xs" style={{ color: COLORS.bronze }}>
+                                <div
+                                  className="flex items-center gap-2 text-xs"
+                                  style={{ color: COLORS.bronze }}
+                                >
                                   <Mail className="w-3 h-3 flex-shrink-0" />
                                   <span className="truncate">{customer.email}</span>
                                 </div>
                               )}
                               {customer.phone && (
-                                <div className="flex items-center gap-2 text-xs" style={{ color: COLORS.bronze }}>
+                                <div
+                                  className="flex items-center gap-2 text-xs"
+                                  style={{ color: COLORS.bronze }}
+                                >
                                   <Phone className="w-3 h-3 flex-shrink-0" />
                                   <span>{customer.phone}</span>
                                 </div>
@@ -415,10 +433,7 @@ export function EnhancedCustomerModal({
         </div>
 
         {/* Footer Actions */}
-        <div
-          className="p-6 border-t relative z-10"
-          style={{ borderColor: `${COLORS.gold}20` }}
-        >
+        <div className="p-6 border-t relative z-10" style={{ borderColor: `${COLORS.gold}20` }}>
           <div className="flex gap-3">
             <Button
               variant="outline"
@@ -443,14 +458,14 @@ export function EnhancedCustomerModal({
                   : COLORS.charcoalDark,
                 color: selectedCustomer ? COLORS.black : COLORS.bronze,
                 border: selectedCustomer ? 'none' : `2px solid ${COLORS.bronze}40`,
-                boxShadow: selectedCustomer
-                  ? `0 8px 24px ${COLORS.gold}40`
-                  : 'none',
+                boxShadow: selectedCustomer ? `0 8px 24px ${COLORS.gold}40` : 'none',
                 cursor: selectedCustomer ? 'pointer' : 'not-allowed'
               }}
             >
               <UserPlus className="w-4 h-4 mr-2" />
-              {selectedCustomer ? `Continue with ${selectedCustomer.entity_name}` : 'Select a Customer'}
+              {selectedCustomer
+                ? `Continue with ${selectedCustomer.entity_name}`
+                : 'Select a Customer'}
             </Button>
           </div>
         </div>

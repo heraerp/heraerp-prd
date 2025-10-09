@@ -2,13 +2,13 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { 
-  ArrowRight, 
-  Rocket, 
-  Terminal, 
-  Database, 
-  Shield, 
-  Zap, 
+import {
+  ArrowRight,
+  Rocket,
+  Terminal,
+  Database,
+  Shield,
+  Zap,
   CheckCircle2,
   Code2,
   Settings,
@@ -116,12 +116,15 @@ export default function QuickstartPage() {
       <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-900/20 via-transparent to-transparent" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-900/20 via-transparent to-transparent" />
-      
+
       {/* Floating Gradient Orbs */}
       {mounted && (
         <>
           <div className="fixed top-40 left-20 w-96 h-96 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-full blur-3xl animate-pulse" />
-          <div className="fixed bottom-40 right-20 w-[30rem] h-[30rem] bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div
+            className="fixed bottom-40 right-20 w-[30rem] h-[30rem] bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: '2s' }}
+          />
         </>
       )}
 
@@ -139,7 +142,11 @@ export default function QuickstartPage() {
                 <span className="text-gray-100">Quick Start</span>
               </nav>
               <Link href="/docs/hub">
-                <Button size="sm" variant="outline" className="border-gray-600 text-gray-100 hover:border-amber-500 transition-colors">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-gray-600 text-gray-100 hover:border-amber-500 transition-colors"
+                >
                   <ArrowRight className="w-4 h-4 mr-2" />
                   Back to Hub
                 </Button>
@@ -151,13 +158,15 @@ export default function QuickstartPage() {
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 py-12 space-y-20">
           {/* Hero Section */}
-          <div className={cn(
-            "relative overflow-hidden rounded-3xl",
-            "bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/40",
-            "backdrop-blur-xl border border-white/10",
-            "shadow-2xl transition-all duration-500",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'relative overflow-hidden rounded-3xl',
+              'bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/40',
+              'backdrop-blur-xl border border-white/10',
+              'shadow-2xl transition-all duration-500',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5" />
             <div className="relative p-12 md:p-16">
               <div className="max-w-4xl">
@@ -169,16 +178,16 @@ export default function QuickstartPage() {
                     5 MINUTE SETUP
                   </Badge>
                 </div>
-                
+
                 <h1 className="text-5xl md:text-6xl font-bold mb-6">
                   <span className="bg-gradient-to-r from-gray-100 via-amber-400 to-gray-100 bg-clip-text text-transparent bg-300% animate-gradient">
                     Get Started with HERA
                   </span>
                 </h1>
-                
+
                 <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-3xl">
-                  Set up the revolutionary Universal ERP system in minutes. HERA's 6-table architecture 
-                  handles infinite business complexity with zero schema changes.
+                  Set up the revolutionary Universal ERP system in minutes. HERA's 6-table
+                  architecture handles infinite business complexity with zero schema changes.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-6 text-sm">
@@ -200,25 +209,27 @@ export default function QuickstartPage() {
           </div>
 
           {/* Prerequisites */}
-          <div className={cn(
-            "transition-all duration-500 delay-100",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-100',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-sm">
                 <CheckCircle2 className="h-5 w-5 text-blue-400" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-100">
-                Prerequisites
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-100">Prerequisites</h2>
             </div>
 
-            <Card className={cn(
-              "relative overflow-hidden",
-              "bg-gray-900/60 backdrop-blur-xl",
-              "border-white/10",
-              "shadow-xl"
-            )}>
+            <Card
+              className={cn(
+                'relative overflow-hidden',
+                'bg-gray-900/60 backdrop-blur-xl',
+                'border-white/10',
+                'shadow-xl'
+              )}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-cyan-500/5" />
               <CardContent className="relative p-8">
                 <div className="grid md:grid-cols-3 gap-6">
@@ -290,17 +301,17 @@ export default function QuickstartPage() {
           </div>
 
           {/* Installation Steps */}
-          <div className={cn(
-            "transition-all duration-500 delay-200",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-200',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm">
                 <Terminal className="h-5 w-5 text-purple-400" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-100">
-                Installation Steps
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-100">Installation Steps</h2>
             </div>
 
             <div className="space-y-6">
@@ -308,43 +319,49 @@ export default function QuickstartPage() {
                 <Card
                   key={step.number}
                   className={cn(
-                    "relative overflow-hidden",
-                    "bg-gray-900/60 backdrop-blur-xl",
-                    "border-white/10",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "group"
+                    'relative overflow-hidden',
+                    'bg-gray-900/60 backdrop-blur-xl',
+                    'border-white/10',
+                    'shadow-lg hover:shadow-xl transition-all duration-300',
+                    'group'
                   )}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     style={{
                       backgroundImage: `linear-gradient(to bottom right, ${step.color})`
-                    }} 
+                    }}
                   />
                   <CardContent className="relative p-8">
                     <div className="flex items-start gap-6">
                       <div className="flex-shrink-0">
-                        <div className={cn(
-                          "w-12 h-12 rounded-xl flex items-center justify-center",
-                          "bg-gradient-to-br backdrop-blur-sm border border-white/10",
-                          step.color
-                        )}>
-                          <step.icon className={cn("w-6 h-6", step.iconColor)} />
+                        <div
+                          className={cn(
+                            'w-12 h-12 rounded-xl flex items-center justify-center',
+                            'bg-gradient-to-br backdrop-blur-sm border border-white/10',
+                            step.color
+                          )}
+                        >
+                          <step.icon className={cn('w-6 h-6', step.iconColor)} />
                         </div>
                       </div>
-                      
+
                       <div className="flex-1 space-y-4">
                         <div>
                           <div className="flex items-center gap-3 mb-1">
                             <h3 className="text-lg font-semibold text-gray-100">
                               Step {step.number}: {step.title}
                             </h3>
-                            <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
+                            <Badge
+                              variant="outline"
+                              className="text-xs border-gray-600 text-gray-300"
+                            >
                               {step.time}
                             </Badge>
                           </div>
                           <p className="text-gray-400">{step.description}</p>
                         </div>
-                        
+
                         <div className="relative group/code">
                           <pre className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 overflow-x-auto border border-gray-700/50">
                             <code className="text-sm text-gray-300">{step.command}</code>
@@ -377,31 +394,35 @@ export default function QuickstartPage() {
           </div>
 
           {/* Configuration */}
-          <div className={cn(
-            "transition-all duration-500 delay-300",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-300',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-sm">
                 <Settings className="h-5 w-5 text-green-400" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-100">
-                Environment Configuration
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-100">Environment Configuration</h2>
             </div>
 
-            <Card className={cn(
-              "relative overflow-hidden",
-              "bg-gray-900/60 backdrop-blur-xl",
-              "border-white/10",
-              "shadow-xl"
-            )}>
+            <Card
+              className={cn(
+                'relative overflow-hidden',
+                'bg-gray-900/60 backdrop-blur-xl',
+                'border-white/10',
+                'shadow-xl'
+              )}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5" />
               <CardContent className="relative p-8">
                 <p className="text-gray-300 mb-6">
-                  Create a <code className="bg-gray-800/50 px-2 py-1 rounded text-amber-400">.env</code> file in your project root with the following variables:
+                  Create a{' '}
+                  <code className="bg-gray-800/50 px-2 py-1 rounded text-amber-400">.env</code> file
+                  in your project root with the following variables:
                 </p>
-                
+
                 <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
                   <pre className="text-sm overflow-x-auto">
                     <code className="text-gray-300">{`# Supabase Configuration
@@ -426,10 +447,15 @@ NODE_ENV=development`}</code>
                     <Sparkles className="w-4 h-4 flex-shrink-0 mt-0.5" />
                     <span>
                       Get your Supabase credentials from the{' '}
-                      <a href="https://app.supabase.io" target="_blank" rel="noopener noreferrer" className="underline hover:text-amber-200 transition-colors">
+                      <a
+                        href="https://app.supabase.io"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-amber-200 transition-colors"
+                      >
                         Supabase Dashboard
-                      </a>
-                      {' '}under Settings → API
+                      </a>{' '}
+                      under Settings → API
                     </span>
                   </p>
                 </div>
@@ -438,29 +464,31 @@ NODE_ENV=development`}</code>
           </div>
 
           {/* Next Steps */}
-          <div className={cn(
-            "transition-all duration-500 delay-400",
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}>
+          <div
+            className={cn(
+              'transition-all duration-500 delay-400',
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            )}
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm">
                 <Zap className="h-5 w-5 text-amber-400" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-100">
-                What's Next?
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-100">What's Next?</h2>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               {features.map((feature, index) => (
                 <Link key={index} href={feature.link}>
-                  <Card className={cn(
-                    "relative overflow-hidden h-full",
-                    "bg-gray-900/60 backdrop-blur-xl",
-                    "border-white/10",
-                    "shadow-lg hover:shadow-xl transition-all duration-300",
-                    "group hover:scale-[1.02] cursor-pointer"
-                  )}>
+                  <Card
+                    className={cn(
+                      'relative overflow-hidden h-full',
+                      'bg-gray-900/60 backdrop-blur-xl',
+                      'border-white/10',
+                      'shadow-lg hover:shadow-xl transition-all duration-300',
+                      'group hover:scale-[1.02] cursor-pointer'
+                    )}
+                  >
                     <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <CardHeader className="relative pb-3">
                       <div className="flex items-center gap-3">
@@ -493,7 +521,8 @@ NODE_ENV=development`}</code>
                     Ready to build your first business module?
                   </h3>
                   <p className="text-gray-300 mb-4">
-                    Follow our step-by-step guide to create a complete business solution using HERA's universal architecture.
+                    Follow our step-by-step guide to create a complete business solution using
+                    HERA's universal architecture.
                   </p>
                   <Link href="/docs/tutorials/first-module">
                     <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white">

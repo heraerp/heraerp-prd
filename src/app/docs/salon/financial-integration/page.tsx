@@ -5,8 +5,8 @@ export default async function FinancialIntegrationPage() {
     <SalonDocPage
       filename="financial-integration.md"
       title="Financial Integration"
-      prevPage={{ href: "/docs/salon/multi-branch", label: "Multi-Branch Operations" }}
-      nextPage={{ href: "/docs/salon/architecture", label: "Architecture" }}
+      prevPage={{ href: '/docs/salon/multi-branch', label: 'Multi-Branch Operations' }}
+      nextPage={{ href: '/docs/salon/architecture', label: 'Architecture' }}
     />
   )
 }

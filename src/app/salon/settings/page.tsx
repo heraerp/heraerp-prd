@@ -176,10 +176,12 @@ export default function SalonSettingsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p style={{ color: LUXE_COLORS.champagne }}>
-                        Enable inventory tracking, manage stock levels, and configure branch-specific inventory settings.
+                        Enable inventory tracking, manage stock levels, and configure
+                        branch-specific inventory settings.
                       </p>
                       <p className="text-sm mt-2" style={{ color: LUXE_COLORS.bronze }}>
-                        Control which products require inventory tracking and set organization-wide defaults.
+                        Control which products require inventory tracking and set organization-wide
+                        defaults.
                       </p>
                     </div>
                     <Button

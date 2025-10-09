@@ -199,21 +199,33 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     authCheckDoneRef.current = true
 
     // Load branches in background
-    loadBranches(orgId).then(branches => {
-      setAvailableBranches(branches)
-      setContext(prev => ({
-        ...prev,
-        availableBranches: branches,
-        selectedBranch: branches.find(b => b.id === selectedBranchId) || null
-      }))
-    }).catch((error) => {
-      console.error('Failed to load branches:', error)
-    })
-  }, [securityStore.isInitialized, auth.currentOrganization?.id, hasInitialized, selectedBranchId, auth.user]) // ✅ Depends on auth.currentOrganization
+    loadBranches(orgId)
+      .then(branches => {
+        setAvailableBranches(branches)
+        setContext(prev => ({
+          ...prev,
+          availableBranches: branches,
+          selectedBranch: branches.find(b => b.id === selectedBranchId) || null
+        }))
+      })
+      .catch(error => {
+        console.error('Failed to load branches:', error)
+      })
+  }, [
+    securityStore.isInitialized,
+    auth.currentOrganization?.id,
+    hasInitialized,
+    selectedBranchId,
+    auth.user
+  ]) // ✅ Depends on auth.currentOrganization
 
   useEffect(() => {
     // 🎯 OPTIMIZATION: Skip if auth check already done and cache is still valid
-    if (authCheckDoneRef.current && securityStore.isInitialized && !securityStore.shouldReinitialize()) {
+    if (
+      authCheckDoneRef.current &&
+      securityStore.isInitialized &&
+      !securityStore.shouldReinitialize()
+    ) {
       return
     }
 
@@ -278,14 +290,16 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       authCheckDoneRef.current = true
 
       // Load branches in background
-      loadBranches(orgId).then(branches => {
-        setAvailableBranches(branches)
-        setContext(prev => ({
-          ...prev,
-          availableBranches: branches,
-          selectedBranch: branches.find(b => b.id === selectedBranchId) || null
-        }))
-      }).catch(() => {})
+      loadBranches(orgId)
+        .then(branches => {
+          setAvailableBranches(branches)
+          setContext(prev => ({
+            ...prev,
+            availableBranches: branches,
+            selectedBranch: branches.find(b => b.id === selectedBranchId) || null
+          }))
+        })
+        .catch(() => {})
     }
 
     // Listen for auth state changes
@@ -408,8 +422,10 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       const cachedOrgId = localStorage.getItem('organizationId')
       const storeOrgId = securityStore.organizationId
 
-      if ((cachedOrgId && cachedOrgId !== securityContext.orgId) ||
-          (storeOrgId && storeOrgId !== securityContext.orgId)) {
+      if (
+        (cachedOrgId && cachedOrgId !== securityContext.orgId) ||
+        (storeOrgId && storeOrgId !== securityContext.orgId)
+      ) {
         console.warn('🚨 Cached organization ID mismatch - clearing ALL stale caches')
         console.warn(`   localStorage: ${cachedOrgId}`)
         console.warn(`   Zustand store: ${storeOrgId}`)
@@ -433,7 +449,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       // Load organization details
       const organization = await loadOrganizationDetails(securityContext.orgId)
-      
+
       // Load branches for the organization
       const branches = await loadBranches(securityContext.orgId)
 
@@ -643,7 +659,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       }
 
       setAvailableBranches(branches || [])
-      
+
       // Set default branch if not already selected
       if (!selectedBranchId && branches && branches.length > 0) {
         const defaultBranch = branches.find(b => b.entity_code === 'BR-001') || branches[0]
@@ -664,7 +680,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const handleSetBranch = (branchId: string) => {
     setSelectedBranchIdState(branchId)
     localStorage.setItem('selectedBranchId', branchId)
-    
+
     // Update context with new branch
     setContext(prev => ({
       ...prev,
@@ -747,27 +763,36 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   /**
    * Check if user has specific permission
    */
-  const hasPermission = useCallback((permission: string): boolean => {
-    return (
-      context.permissions.includes(permission) || context.permissions.includes('salon:admin:full')
-    )
-  }, [context.permissions])
+  const hasPermission = useCallback(
+    (permission: string): boolean => {
+      return (
+        context.permissions.includes(permission) || context.permissions.includes('salon:admin:full')
+      )
+    },
+    [context.permissions]
+  )
 
   /**
    * Check if user has any of the specified permissions
    */
-  const hasAnyPermission = useCallback((permissions: string[]): boolean => {
-    return permissions.some(permission => hasPermission(permission))
-  }, [hasPermission])
+  const hasAnyPermission = useCallback(
+    (permissions: string[]): boolean => {
+      return permissions.some(permission => hasPermission(permission))
+    },
+    [hasPermission]
+  )
 
   // ⚡ PERFORMANCE: Memoize enhanced context to prevent excessive re-renders
-  const enhancedContext = useMemo(() => ({
-    ...context,
-    executeSecurely,
-    hasPermission,
-    hasAnyPermission,
-    retry: initializeSecureContext
-  }), [context, hasPermission, hasAnyPermission])
+  const enhancedContext = useMemo(
+    () => ({
+      ...context,
+      executeSecurely,
+      hasPermission,
+      hasAnyPermission,
+      retry: initializeSecureContext
+    }),
+    [context, hasPermission, hasAnyPermission]
+  )
 
   // Loading state - only show if not already initialized
   if (context.isLoading && (!securityStore.isInitialized || !hasInitialized)) {

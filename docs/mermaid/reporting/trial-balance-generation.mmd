@@ -1,0 +1,66 @@
+flowchart TD
+    START([Client Requests Trial Balance]) --> VALIDATE{Validate Request}
+    
+    VALIDATE -->|Invalid| ERROR[Return Error Response]
+    VALIDATE -->|Valid| AUTH[Authenticate & Authorize]
+    
+    AUTH --> CONTEXT[Set Organization Context]
+    CONTEXT --> CACHE_CHECK{Check Cache}
+    
+    CACHE_CHECK -->|Cache Hit| CACHE_RETURN[Return Cached Result]
+    CACHE_CHECK -->|Cache Miss| STRATEGY{Performance Strategy}
+    
+    STRATEGY -->|Current Date + Fast| MV[Use Materialized View]
+    STRATEGY -->|Historical + Accuracy| DIRECT[Direct Calculation]
+    
+    subgraph "Materialized View Path"
+        MV --> MV_QUERY[Query mv_account_balances_v2]
+        MV_QUERY --> MV_FILTER[Apply Filters & Sorting]
+        MV_FILTER --> MV_FORMAT[Format Response]
+    end
+    
+    subgraph "Direct Calculation Path"
+        DIRECT --> ACCOUNTS[Get GL Accounts]
+        ACCOUNTS --> TRANSACTIONS[Get Transaction Lines]
+        TRANSACTIONS --> CALCULATE[Calculate Balances]
+        CALCULATE --> BALANCE[Validate GL Balance]
+        BALANCE --> DIRECT_FORMAT[Format Response]
+    end
+    
+    subgraph "Common Processing"
+        MV_FORMAT --> AUDIT_LOG[Log Audit Event]
+        DIRECT_FORMAT --> AUDIT_LOG
+        AUDIT_LOG --> CACHE_STORE[Store in Cache]
+        CACHE_STORE --> RESPONSE[Return Response]
+        CACHE_RETURN --> RESPONSE
+    end
+    
+    RESPONSE --> END([Trial Balance Delivered])
+    
+    subgraph "Performance Metrics"
+        PERF_MV[Materialized View: <3s]
+        PERF_DIRECT[Direct Calculation: <8s]
+        PERF_CACHE[Cache Hit: <500ms]
+    end
+    
+    subgraph "Audit Trail"
+        AUDIT_SMART[Smart Code:<br/>HERA.ACCOUNTING.REPORT<br/>.TRIAL.BALANCE.v2]
+        AUDIT_META[Metadata:<br/>- Generation time<br/>- Record count<br/>- User context<br/>- Performance tier]
+    end
+    
+    %% Error Handling
+    ERROR --> AUDIT_ERROR[Log Error Event]
+    AUDIT_ERROR --> END_ERROR([Error Response])
+    
+    %% Styling
+    classDef process fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef decision fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef performance fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef audit fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    
+    class START,CONTEXT,MV_QUERY,ACCOUNTS,RESPONSE,END process
+    class VALIDATE,CACHE_CHECK,STRATEGY,BALANCE decision
+    class PERF_MV,PERF_DIRECT,PERF_CACHE,MV,CACHE_STORE performance
+    class AUDIT_LOG,AUDIT_SMART,AUDIT_META audit
+    class ERROR,AUDIT_ERROR,END_ERROR error

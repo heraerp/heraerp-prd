@@ -81,14 +81,17 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     queryFn: async () => {
       if (!options?.organizationId) return []
 
-      const response = await fetch(`/api/v2/entities?${new URLSearchParams({
-        organization_id: options.organizationId!,
-        entity_type: 'CUSTOMER',
-        include_dynamic: 'false',
-        limit: '1000'
-      })}`, {
-        headers: { 'x-hera-api-version': 'v2' }
-      })
+      const response = await fetch(
+        `/api/v2/entities?${new URLSearchParams({
+          organization_id: options.organizationId!,
+          entity_type: 'CUSTOMER',
+          include_dynamic: 'false',
+          limit: '1000'
+        })}`,
+        {
+          headers: { 'x-hera-api-version': 'v2' }
+        }
+      )
 
       if (!response.ok) return []
       const result = await response.json()
@@ -103,14 +106,17 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     queryFn: async () => {
       if (!options?.organizationId) return []
 
-      const response = await fetch(`/api/v2/entities?${new URLSearchParams({
-        organization_id: options.organizationId!,
-        entity_type: 'STAFF',
-        include_dynamic: 'false',
-        limit: '500'
-      })}`, {
-        headers: { 'x-hera-api-version': 'v2' }
-      })
+      const response = await fetch(
+        `/api/v2/entities?${new URLSearchParams({
+          organization_id: options.organizationId!,
+          entity_type: 'STAFF',
+          include_dynamic: 'false',
+          limit: '500'
+        })}`,
+        {
+          headers: { 'x-hera-api-version': 'v2' }
+        }
+      )
 
       if (!response.ok) return []
       const result = await response.json()
@@ -124,14 +130,17 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     queryFn: async () => {
       if (!options?.organizationId) return []
 
-      const response = await fetch(`/api/v2/entities?${new URLSearchParams({
-        organization_id: options.organizationId!,
-        entity_type: 'staff',
-        include_dynamic: 'false',
-        limit: '500'
-      })}`, {
-        headers: { 'x-hera-api-version': 'v2' }
-      })
+      const response = await fetch(
+        `/api/v2/entities?${new URLSearchParams({
+          organization_id: options.organizationId!,
+          entity_type: 'staff',
+          include_dynamic: 'false',
+          limit: '500'
+        })}`,
+        {
+          headers: { 'x-hera-api-version': 'v2' }
+        }
+      )
 
       if (!response.ok) return []
       const result = await response.json()
@@ -182,7 +191,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       const metadata = txn.metadata || {}
       const customerName = customerMap.get(txn.source_entity_id) || 'Unknown Customer'
       const stylistName = txn.target_entity_id
-        ? (staffMap.get(txn.target_entity_id) || 'Unassigned')
+        ? staffMap.get(txn.target_entity_id) || 'Unassigned'
         : 'Unassigned'
 
       // Debug first appointment

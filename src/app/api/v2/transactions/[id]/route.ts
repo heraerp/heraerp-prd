@@ -9,10 +9,7 @@ export const runtime = 'nodejs'
  * PUT /api/v2/transactions/[id]
  * Updates an existing transaction (primarily metadata and status)
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Auth verification
     const authResult = await verifyAuth(request)
@@ -139,10 +136,7 @@ export async function PUT(
  * DELETE /api/v2/transactions/[id]
  * Deletes a transaction (hard delete or soft delete based on force parameter)
  */
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Auth verification
     const authResult = await verifyAuth(request)

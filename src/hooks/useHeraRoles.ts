@@ -184,7 +184,9 @@ export function useHeraRoles(options?: UseHeraRolesOptions) {
       entity_id: id,
       ...(entity_name && { entity_name }),
       ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
-      ...(data.status !== undefined && { status: data.status === 'inactive' ? 'archived' : 'active' })
+      ...(data.status !== undefined && {
+        status: data.status === 'inactive' ? 'archived' : 'active'
+      })
     }
 
     return baseUpdate(payload)

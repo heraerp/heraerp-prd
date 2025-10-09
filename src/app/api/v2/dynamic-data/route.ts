@@ -32,10 +32,7 @@ export async function GET(request: NextRequest) {
 
     const supabase = getSupabaseService()
 
-    let query = supabase
-      .from('core_dynamic_data')
-      .select('*')
-      .eq('organization_id', organizationId)
+    let query = supabase.from('core_dynamic_data').select('*').eq('organization_id', organizationId)
 
     // Handle batch fetch or single fetch
     if (entity_ids) {

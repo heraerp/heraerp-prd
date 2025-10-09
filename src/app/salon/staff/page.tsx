@@ -108,10 +108,7 @@ function StaffContent() {
   // 🎯 ENTERPRISE PATTERN: Fetch ALL staff for global KPIs (dashboard metrics)
   // This provides the "big picture" regardless of tab/filter selection
   // NO filters applied to KPIs - always show complete organization data
-  const {
-    staff: allStaffForKPIs,
-    isLoading: isLoadingKPIs
-  } = useHeraStaff({
+  const { staff: allStaffForKPIs, isLoading: isLoadingKPIs } = useHeraStaff({
     organizationId: organizationId || '',
     filters: {
       branch_id: undefined // No branch filter for KPIs
@@ -143,10 +140,7 @@ function StaffContent() {
   })
 
   // 🎯 ENTERPRISE PATTERN: Fetch ALL roles for global KPIs (dashboard metrics)
-  const {
-    roles: allRolesForKPIs,
-    isLoading: isLoadingRolesKPIs
-  } = useHeraRoles({
+  const { roles: allRolesForKPIs, isLoading: isLoadingRolesKPIs } = useHeraRoles({
     organizationId: organizationId || '',
     includeInactive: true, // Get ALL roles for accurate KPIs
     userRole: 'manager'
@@ -188,14 +182,16 @@ function StaffContent() {
     if (!organizationId) return
 
     // Construct staff name from first_name and last_name (matching the createStaff pattern)
-    const staffName = staffData.full_name ||
-                     `${staffData.first_name || ''} ${staffData.last_name || ''}`.trim() ||
-                     'Staff member'
+    const staffName =
+      staffData.full_name ||
+      `${staffData.first_name || ''} ${staffData.last_name || ''}`.trim() ||
+      'Staff member'
 
     // If no branches selected, assign to ALL available branches
-    const branchIds = staffData.branch_ids && staffData.branch_ids.length > 0
-      ? staffData.branch_ids
-      : availableBranches.map(b => b.id)
+    const branchIds =
+      staffData.branch_ids && staffData.branch_ids.length > 0
+        ? staffData.branch_ids
+        : availableBranches.map(b => b.id)
 
     const staffDataWithBranches = {
       ...staffData,
@@ -212,18 +208,12 @@ function StaffContent() {
         // Update existing staff
         await updateStaff(editingStaff.id, staffDataWithBranches)
         removeToast(loadingId)
-        showSuccess(
-          'Staff member updated successfully',
-          `${staffName} has been updated`
-        )
+        showSuccess('Staff member updated successfully', `${staffName} has been updated`)
       } else {
         // Create new staff
         await createStaff(staffDataWithBranches)
         removeToast(loadingId)
-        showSuccess(
-          'Staff member created successfully',
-          `${staffName} has been added to your team`
-        )
+        showSuccess('Staff member created successfully', `${staffName} has been added to your team`)
       }
 
       setStaffModalOpen(false)
@@ -256,10 +246,7 @@ function StaffContent() {
 
       if (result.archived) {
         // Staff was archived instead of deleted (referenced in appointments/transactions)
-        showSuccess(
-          'Staff member archived',
-          result.message || `${staffName} has been archived`
-        )
+        showSuccess('Staff member archived', result.message || `${staffName} has been archived`)
       } else {
         // Staff was successfully deleted
         showSuccess('Staff member deleted', `${staffName} has been permanently removed`)
@@ -504,7 +491,8 @@ function StaffContent() {
     () => ({
       totalRoles: allRolesForKPIs?.length || 0,
       activeRoles: allRolesForKPIs?.filter(r => r.status === 'active').length || 0,
-      archivedRoles: allRolesForKPIs?.filter(r => r.status === 'archived' || r.status === 'inactive').length || 0
+      archivedRoles:
+        allRolesForKPIs?.filter(r => r.status === 'archived' || r.status === 'inactive').length || 0
     }),
     [allRolesForKPIs]
   )
@@ -773,7 +761,10 @@ function StaffContent() {
                     >
                       {stat.value}
                     </div>
-                    <p className="text-xs font-medium" style={{ color: COLORS.bronze, opacity: 0.8 }}>
+                    <p
+                      className="text-xs font-medium"
+                      style={{ color: COLORS.bronze, opacity: 0.8 }}
+                    >
                       {stat.desc}
                     </p>
                   </CardContent>
@@ -784,21 +775,27 @@ function StaffContent() {
             {/* Search and Filters - Luxe Design */}
             <div className="mb-8 space-y-4">
               {/* Archive Toggle and Search */}
-              <div className="flex items-center justify-between gap-4 p-4 rounded-xl backdrop-blur-xl" style={{
-                background: `linear-gradient(135deg, ${COLORS.charcoalLight}90 0%, ${COLORS.charcoal}90 100%)`,
-                border: `1px solid ${COLORS.gold}20`,
-                boxShadow: `0 4px 12px ${COLORS.black}40`
-              }}>
+              <div
+                className="flex items-center justify-between gap-4 p-4 rounded-xl backdrop-blur-xl"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.charcoalLight}90 0%, ${COLORS.charcoal}90 100%)`,
+                  border: `1px solid ${COLORS.gold}20`,
+                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                }}
+              >
                 <div className="flex items-center gap-4">
                   <Tabs
                     value={includeArchived ? 'all' : 'active'}
                     onValueChange={v => setIncludeArchived(v === 'all')}
                   >
-                    <TabsList className="transition-all duration-300" style={{
-                      background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
-                      border: `1px solid ${COLORS.gold}30`,
-                      padding: '4px'
-                    }}>
+                    <TabsList
+                      className="transition-all duration-300"
+                      style={{
+                        background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
+                        border: `1px solid ${COLORS.gold}30`,
+                        padding: '4px'
+                      }}
+                    >
                       <TabsTrigger
                         value="active"
                         className="transition-all duration-300 data-[state=active]:bg-gradient-to-r"
@@ -1010,8 +1007,12 @@ function StaffContent() {
                               )}
 
                               {/* Only show this section if there's rate or skills */}
-                              {((member.display_rate && member.display_rate > 0) || (member.skills && member.skills.length > 0)) && (
-                                <div className="flex gap-4 mt-3 pt-3 border-t" style={{ borderColor: `${COLORS.bronze}20` }}>
+                              {((member.display_rate && member.display_rate > 0) ||
+                                (member.skills && member.skills.length > 0)) && (
+                                <div
+                                  className="flex gap-4 mt-3 pt-3 border-t"
+                                  style={{ borderColor: `${COLORS.bronze}20` }}
+                                >
                                   {member.display_rate && member.display_rate > 0 && (
                                     <div className="flex items-center gap-1">
                                       <span className="text-xs">💰</span>
@@ -1023,7 +1024,9 @@ function StaffContent() {
                                   {member.skills && member.skills.length > 0 && (
                                     <div className="flex items-center gap-1">
                                       <span className="text-xs">🎨</span>
-                                      <span className="text-xs">{member.skills.slice(0, 2).join(', ')}</span>
+                                      <span className="text-xs">
+                                        {member.skills.slice(0, 2).join(', ')}
+                                      </span>
                                     </div>
                                   )}
                                 </div>
@@ -1034,11 +1037,17 @@ function StaffContent() {
                             {member.hire_date && (
                               <div
                                 className="mt-4 pt-3 text-xs flex items-center justify-between border-t"
-                                style={{ color: COLORS.bronze, opacity: 0.6, borderColor: `${COLORS.bronze}20` }}
+                                style={{
+                                  color: COLORS.bronze,
+                                  opacity: 0.6,
+                                  borderColor: `${COLORS.bronze}20`
+                                }}
                               >
                                 <div className="flex items-center gap-1">
                                   <Clock className="w-3 h-3" />
-                                  <span>Joined {format(new Date(member.hire_date), 'MMM d, yyyy')}</span>
+                                  <span>
+                                    Joined {format(new Date(member.hire_date), 'MMM d, yyyy')}
+                                  </span>
                                 </div>
                               </div>
                             )}
@@ -1080,7 +1089,9 @@ function StaffContent() {
                                     <span className="font-medium">Edit</span>
                                   </DropdownMenuItem>
 
-                                  <DropdownMenuSeparator style={{ backgroundColor: COLORS.gold + '20' }} />
+                                  <DropdownMenuSeparator
+                                    style={{ backgroundColor: COLORS.gold + '20' }}
+                                  />
 
                                   {member.status === 'archived' ? (
                                     <DropdownMenuItem
@@ -1102,7 +1113,9 @@ function StaffContent() {
                                     </DropdownMenuItem>
                                   )}
 
-                                  <DropdownMenuSeparator style={{ backgroundColor: COLORS.gold + '20' }} />
+                                  <DropdownMenuSeparator
+                                    style={{ backgroundColor: COLORS.gold + '20' }}
+                                  />
 
                                   <DropdownMenuItem
                                     onClick={() => handleDeleteStaff(member.id)}
@@ -1149,7 +1162,10 @@ function StaffContent() {
                 >
                   No staff members found
                 </h3>
-                <p className="text-base font-medium mb-6" style={{ color: COLORS.bronze, opacity: 0.8 }}>
+                <p
+                  className="text-base font-medium mb-6"
+                  style={{ color: COLORS.bronze, opacity: 0.8 }}
+                >
                   {searchTerm
                     ? 'Try adjusting your search terms or filters'
                     : 'Click below to build your dream team'}
@@ -1236,21 +1252,27 @@ function StaffContent() {
 
             {/* Archive Toggle and Role Search */}
             <div className="mb-8 space-y-4">
-              <div className="flex items-center justify-between gap-4 p-4 rounded-xl backdrop-blur-xl" style={{
-                background: `linear-gradient(135deg, ${COLORS.charcoalLight}90 0%, ${COLORS.charcoal}90 100%)`,
-                border: `1px solid ${COLORS.gold}20`,
-                boxShadow: `0 4px 12px ${COLORS.black}40`
-              }}>
+              <div
+                className="flex items-center justify-between gap-4 p-4 rounded-xl backdrop-blur-xl"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.charcoalLight}90 0%, ${COLORS.charcoal}90 100%)`,
+                  border: `1px solid ${COLORS.gold}20`,
+                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                }}
+              >
                 <div className="flex items-center gap-4">
                   <Tabs
                     value={includeArchived ? 'all' : 'active'}
                     onValueChange={v => setIncludeArchived(v === 'all')}
                   >
-                    <TabsList className="transition-all duration-300" style={{
-                      background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
-                      border: `1px solid ${COLORS.gold}30`,
-                      padding: '4px'
-                    }}>
+                    <TabsList
+                      className="transition-all duration-300"
+                      style={{
+                        background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100%)`,
+                        border: `1px solid ${COLORS.gold}30`,
+                        padding: '4px'
+                      }}
+                    >
                       <TabsTrigger
                         value="active"
                         className="transition-all duration-300 data-[state=active]:bg-gradient-to-r"
@@ -1366,7 +1388,8 @@ function StaffContent() {
                             className="border-b transition-all duration-200 hover:shadow-md"
                             style={{
                               borderColor: COLORS.gold + '10',
-                              backgroundColor: index % 2 === 0 ? 'transparent' : COLORS.black + '40',
+                              backgroundColor:
+                                index % 2 === 0 ? 'transparent' : COLORS.black + '40',
                               opacity: isArchived ? 0.7 : 1
                             }}
                           >
@@ -1375,15 +1398,23 @@ function StaffContent() {
                                 <div
                                   className="p-2 rounded-lg"
                                   style={{
-                                    backgroundColor: isArchived ? COLORS.bronze + '20' : COLORS.gold + '20',
+                                    backgroundColor: isArchived
+                                      ? COLORS.bronze + '20'
+                                      : COLORS.gold + '20',
                                     border: `1px solid ${isArchived ? COLORS.bronze : COLORS.gold}40`
                                   }}
                                 >
-                                  <Shield className="h-4 w-4" style={{ color: isArchived ? COLORS.bronze : COLORS.gold }} />
+                                  <Shield
+                                    className="h-4 w-4"
+                                    style={{ color: isArchived ? COLORS.bronze : COLORS.gold }}
+                                  />
                                 </div>
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <span className="font-semibold" style={{ color: COLORS.champagne }}>
+                                    <span
+                                      className="font-semibold"
+                                      style={{ color: COLORS.champagne }}
+                                    >
                                       {role.title || role.entity_name}
                                     </span>
                                     {isArchived && (
@@ -1407,127 +1438,135 @@ function StaffContent() {
                                 </div>
                               </div>
                             </td>
-                          <td className="py-4 px-6">
-                            <div className="text-sm max-w-md" style={{ color: COLORS.bronze }}>
-                              {role.description || (
-                                <span style={{ opacity: 0.5 }}>No description provided</span>
-                              )}
-                            </div>
-                          </td>
-                          <td className="py-4 px-6 text-center">
-                            <div
-                              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all duration-300 hover:scale-105"
-                              style={{
-                                backgroundColor: getStaffCountForRole(role.id) > 0 ? COLORS.gold + '20' : COLORS.bronze + '10',
-                                color: getStaffCountForRole(role.id) > 0 ? COLORS.gold : COLORS.bronze,
-                                border: `2px solid ${getStaffCountForRole(role.id) > 0 ? COLORS.gold + '40' : COLORS.bronze + '30'}`
-                              }}
-                            >
-                              <Users className="w-4 h-4" />
-                              <span className="text-lg">{getStaffCountForRole(role.id)}</span>
-                            </div>
-                          </td>
-                          <td className="py-4 px-6 text-center">
-                            <div
-                              className="inline-flex items-center justify-center w-10 h-10 rounded-full font-bold"
-                              style={{
-                                backgroundColor: COLORS.emerald + '20',
-                                color: COLORS.emerald,
-                                border: `2px solid ${COLORS.emerald}40`
-                              }}
-                            >
-                              {role.rank || '-'}
-                            </div>
-                          </td>
-                          <td className="py-4 px-6 text-center">
-                            <Badge
-                              className="font-medium"
-                              style={{
-                                backgroundColor: isArchived
-                                  ? COLORS.bronze + '20'
-                                  : COLORS.emerald + '20',
-                                color: isArchived ? COLORS.bronze : COLORS.emerald,
-                                border: `1px solid ${isArchived ? COLORS.bronze : COLORS.emerald}40`,
-                                fontSize: '0.75rem',
-                                padding: '0.25rem 0.75rem'
-                              }}
-                            >
-                              {isArchived ? 'Archived' : 'Active'}
-                            </Badge>
-                          </td>
-                          <td className="py-4 px-6">
-                            <div className="flex items-center justify-end">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                            <td className="py-4 px-6">
+                              <div className="text-sm max-w-md" style={{ color: COLORS.bronze }}>
+                                {role.description || (
+                                  <span style={{ opacity: 0.5 }}>No description provided</span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <div
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                                style={{
+                                  backgroundColor:
+                                    getStaffCountForRole(role.id) > 0
+                                      ? COLORS.gold + '20'
+                                      : COLORS.bronze + '10',
+                                  color:
+                                    getStaffCountForRole(role.id) > 0 ? COLORS.gold : COLORS.bronze,
+                                  border: `2px solid ${getStaffCountForRole(role.id) > 0 ? COLORS.gold + '40' : COLORS.bronze + '30'}`
+                                }}
+                              >
+                                <Users className="w-4 h-4" />
+                                <span className="text-lg">{getStaffCountForRole(role.id)}</span>
+                              </div>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <div
+                                className="inline-flex items-center justify-center w-10 h-10 rounded-full font-bold"
+                                style={{
+                                  backgroundColor: COLORS.emerald + '20',
+                                  color: COLORS.emerald,
+                                  border: `2px solid ${COLORS.emerald}40`
+                                }}
+                              >
+                                {role.rank || '-'}
+                              </div>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <Badge
+                                className="font-medium"
+                                style={{
+                                  backgroundColor: isArchived
+                                    ? COLORS.bronze + '20'
+                                    : COLORS.emerald + '20',
+                                  color: isArchived ? COLORS.bronze : COLORS.emerald,
+                                  border: `1px solid ${isArchived ? COLORS.bronze : COLORS.emerald}40`,
+                                  fontSize: '0.75rem',
+                                  padding: '0.25rem 0.75rem'
+                                }}
+                              >
+                                {isArchived ? 'Archived' : 'Active'}
+                              </Badge>
+                            </td>
+                            <td className="py-4 px-6">
+                              <div className="flex items-center justify-end">
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                      style={{
+                                        background: `linear-gradient(135deg, ${COLORS.gold}15 0%, transparent 100%)`,
+                                        borderColor: COLORS.gold + '40',
+                                        color: COLORS.champagne,
+                                        backdropFilter: 'blur(10px)'
+                                      }}
+                                    >
+                                      <MoreVertical className="w-4 h-4" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent
+                                    align="end"
+                                    className="backdrop-blur-xl"
                                     style={{
-                                      background: `linear-gradient(135deg, ${COLORS.gold}15 0%, transparent 100%)`,
-                                      borderColor: COLORS.gold + '40',
-                                      color: COLORS.champagne,
-                                      backdropFilter: 'blur(10px)'
+                                      background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.charcoalDark} 100%)`,
+                                      border: `1px solid ${COLORS.gold}40`,
+                                      boxShadow: `0 8px 32px ${COLORS.black}80`
                                     }}
                                   >
-                                    <MoreVertical className="w-4 h-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                  align="end"
-                                  className="backdrop-blur-xl"
-                                  style={{
-                                    background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.charcoalDark} 100%)`,
-                                    border: `1px solid ${COLORS.gold}40`,
-                                    boxShadow: `0 8px 32px ${COLORS.black}80`
-                                  }}
-                                >
-                                  <DropdownMenuItem
-                                    onClick={() => handleOpenRoleModal(role)}
-                                    style={{ color: COLORS.lightText }}
-                                    className="hover:!bg-cyan-900/30 hover:!text-cyan-300 transition-all duration-200 cursor-pointer"
-                                  >
-                                    <Edit className="mr-2 h-4 w-4" />
-                                    <span className="font-medium">Edit</span>
-                                  </DropdownMenuItem>
-
-                                  <DropdownMenuSeparator style={{ backgroundColor: COLORS.gold + '20' }} />
-
-                                  {role.status === 'archived' || role.status === 'inactive' ? (
                                     <DropdownMenuItem
-                                      onClick={() => handleRestoreRole(role.id)}
+                                      onClick={() => handleOpenRoleModal(role)}
                                       style={{ color: COLORS.lightText }}
-                                      className="hover:!bg-green-900/30 hover:!text-green-300 transition-all duration-200 cursor-pointer"
+                                      className="hover:!bg-cyan-900/30 hover:!text-cyan-300 transition-all duration-200 cursor-pointer"
                                     >
-                                      <ArchiveRestore className="mr-2 h-4 w-4" />
-                                      <span className="font-medium">Restore</span>
+                                      <Edit className="mr-2 h-4 w-4" />
+                                      <span className="font-medium">Edit</span>
                                     </DropdownMenuItem>
-                                  ) : (
+
+                                    <DropdownMenuSeparator
+                                      style={{ backgroundColor: COLORS.gold + '20' }}
+                                    />
+
+                                    {role.status === 'archived' || role.status === 'inactive' ? (
+                                      <DropdownMenuItem
+                                        onClick={() => handleRestoreRole(role.id)}
+                                        style={{ color: COLORS.lightText }}
+                                        className="hover:!bg-green-900/30 hover:!text-green-300 transition-all duration-200 cursor-pointer"
+                                      >
+                                        <ArchiveRestore className="mr-2 h-4 w-4" />
+                                        <span className="font-medium">Restore</span>
+                                      </DropdownMenuItem>
+                                    ) : (
+                                      <DropdownMenuItem
+                                        onClick={() => handleArchiveRole(role.id)}
+                                        style={{ color: COLORS.lightText }}
+                                        className="hover:!bg-yellow-900/30 hover:!text-yellow-300 transition-all duration-200 cursor-pointer"
+                                      >
+                                        <Archive className="mr-2 h-4 w-4" />
+                                        <span className="font-medium">Archive</span>
+                                      </DropdownMenuItem>
+                                    )}
+
+                                    <DropdownMenuSeparator
+                                      style={{ backgroundColor: COLORS.gold + '20' }}
+                                    />
+
                                     <DropdownMenuItem
-                                      onClick={() => handleArchiveRole(role.id)}
-                                      style={{ color: COLORS.lightText }}
-                                      className="hover:!bg-yellow-900/30 hover:!text-yellow-300 transition-all duration-200 cursor-pointer"
+                                      onClick={() => handleDeleteRole(role.id)}
+                                      className="hover:!bg-red-900/30 hover:!text-red-300 transition-all duration-200 cursor-pointer"
+                                      style={{ color: '#FF6B6B' }}
                                     >
-                                      <Archive className="mr-2 h-4 w-4" />
-                                      <span className="font-medium">Archive</span>
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      <span className="font-medium">Delete</span>
                                     </DropdownMenuItem>
-                                  )}
-
-                                  <DropdownMenuSeparator style={{ backgroundColor: COLORS.gold + '20' }} />
-
-                                  <DropdownMenuItem
-                                    onClick={() => handleDeleteRole(role.id)}
-                                    className="hover:!bg-red-900/30 hover:!text-red-300 transition-all duration-200 cursor-pointer"
-                                    style={{ color: '#FF6B6B' }}
-                                  >
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    <span className="font-medium">Delete</span>
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                          </td>
-                        </tr>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </td>
+                          </tr>
                         )
                       })}
                     </tbody>

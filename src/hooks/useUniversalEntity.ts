@@ -356,14 +356,16 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         console.log('[useUniversalEntity] Using dynamic fields from RPC:', allDynamicData.length)
       } else if (entityIds.length > 0) {
         try {
-          const response = await fetch(
-            `/api/v2/dynamic-data?p_entity_ids=${entityIds.join(',')}`,
-            { headers }
-          )
+          const response = await fetch(`/api/v2/dynamic-data?p_entity_ids=${entityIds.join(',')}`, {
+            headers
+          })
           if (response.ok) {
             const result = await response.json()
             allDynamicData = result.data || []
-            console.log('[useUniversalEntity] Fetched dynamic data from API:', allDynamicData.length)
+            console.log(
+              '[useUniversalEntity] Fetched dynamic data from API:',
+              allDynamicData.length
+            )
           }
         } catch (error) {
           console.error('[useUniversalEntity] Failed to fetch dynamic data batch:', error)
@@ -584,7 +586,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
             if (!response.ok) {
               const error = await response.json().catch(() => ({}))
-              console.error(`[useUniversalEntity] Failed to create ${def.type} relationships:`, error)
+              console.error(
+                `[useUniversalEntity] Failed to create ${def.type} relationships:`,
+                error
+              )
               throw new Error(error.error || `Failed to create ${def.type} relationships`)
             }
           } else if (toIds.length > 0) {
@@ -821,7 +826,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
       return result
     },
-    onSuccess: (result) => {
+    onSuccess: result => {
       queryClient.invalidateQueries({ queryKey: ['entities', entity_type] })
       queryClient.invalidateQueries({ queryKey: ['entities'] })
       console.log(

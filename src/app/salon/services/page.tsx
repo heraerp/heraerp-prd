@@ -101,10 +101,7 @@ function SalonServicesPageContent() {
   // 🎯 ENTERPRISE PATTERN: Fetch ALL services for global KPIs (dashboard metrics)
   // This provides the "big picture" regardless of tab/filter selection
   // NO filters applied to KPIs - always show complete organization data
-  const {
-    services: allServicesForKPIs,
-    isLoading: isLoadingKPIs
-  } = useHeraServices({
+  const { services: allServicesForKPIs, isLoading: isLoadingKPIs } = useHeraServices({
     organizationId,
     filters: {
       branch_id: undefined, // No branch filter for KPIs
@@ -184,68 +181,80 @@ function SalonServicesPageContent() {
   )
 
   // CRUD handlers - memoized for performance
-  const handleSave = useCallback(async (data: ServiceFormValues) => {
-    const loadingId = showLoading(
-      editingService ? 'Updating service...' : 'Creating service...',
-      'Please wait while we save your changes'
-    )
-
-    try {
-      // CRITICAL: If no branches are selected, default to ALL branches
-      // This ensures the service is visible regardless of branch filter
-      const branchesToLink =
-        data.branch_ids && data.branch_ids.length > 0
-          ? data.branch_ids
-          : availableBranches.map(b => b.id) // Default to ALL branches
-
-      console.log('[handleSave] Creating/updating service:', {
-        name: data.name,
-        price: data.price,
-        duration: data.duration_minutes,
-        status: data.status,
-        category: data.category,
-        selectedBranches: data.branch_ids?.length || 0,
-        defaultingToAllBranches: !data.branch_ids || data.branch_ids.length === 0,
-        totalBranches: availableBranches.length,
-        branchesToLink: branchesToLink.length
-      })
-
-      // Map form data to hook's expected format
-      const serviceData = {
-        name: data.name,
-        price_market: data.price || 0,
-        duration_min: data.duration_minutes || 0,
-        commission_rate: 0.5, // Default commission rate
-        description: data.description || '',
-        active: data.status === 'active',
-        requires_booking: data.requires_booking || false,
-        category_id: data.category || undefined,
-        branch_ids: branchesToLink, // Always link to at least one branch
-        // 🎯 CRITICAL FIX: Pass status for BOTH create and edit (not conditional)
-        // This allows status dropdown to work properly in the modal
-        status: data.status
-      }
-
-      if (editingService) {
-        await updateService(editingService.id, serviceData)
-        removeToast(loadingId)
-        showSuccess('Service updated successfully', `${data.name} has been updated`)
-      } else {
-        await createService(serviceData)
-        removeToast(loadingId)
-        showSuccess('Service created successfully', `${data.name} has been added`)
-      }
-      setModalOpen(false)
-      setEditingService(null)
-    } catch (error: any) {
-      console.error('Service save error:', error)
-      removeToast(loadingId)
-      showError(
-        editingService ? 'Failed to update service' : 'Failed to create service',
-        error.message || 'Please try again or contact support'
+  const handleSave = useCallback(
+    async (data: ServiceFormValues) => {
+      const loadingId = showLoading(
+        editingService ? 'Updating service...' : 'Creating service...',
+        'Please wait while we save your changes'
       )
-    }
-  }, [editingService, availableBranches, updateService, createService, showLoading, removeToast, showSuccess, showError])
+
+      try {
+        // CRITICAL: If no branches are selected, default to ALL branches
+        // This ensures the service is visible regardless of branch filter
+        const branchesToLink =
+          data.branch_ids && data.branch_ids.length > 0
+            ? data.branch_ids
+            : availableBranches.map(b => b.id) // Default to ALL branches
+
+        console.log('[handleSave] Creating/updating service:', {
+          name: data.name,
+          price: data.price,
+          duration: data.duration_minutes,
+          status: data.status,
+          category: data.category,
+          selectedBranches: data.branch_ids?.length || 0,
+          defaultingToAllBranches: !data.branch_ids || data.branch_ids.length === 0,
+          totalBranches: availableBranches.length,
+          branchesToLink: branchesToLink.length
+        })
+
+        // Map form data to hook's expected format
+        const serviceData = {
+          name: data.name,
+          price_market: data.price || 0,
+          duration_min: data.duration_minutes || 0,
+          commission_rate: 0.5, // Default commission rate
+          description: data.description || '',
+          active: data.status === 'active',
+          requires_booking: data.requires_booking || false,
+          category_id: data.category || undefined,
+          branch_ids: branchesToLink, // Always link to at least one branch
+          // 🎯 CRITICAL FIX: Pass status for BOTH create and edit (not conditional)
+          // This allows status dropdown to work properly in the modal
+          status: data.status
+        }
+
+        if (editingService) {
+          await updateService(editingService.id, serviceData)
+          removeToast(loadingId)
+          showSuccess('Service updated successfully', `${data.name} has been updated`)
+        } else {
+          await createService(serviceData)
+          removeToast(loadingId)
+          showSuccess('Service created successfully', `${data.name} has been added`)
+        }
+        setModalOpen(false)
+        setEditingService(null)
+      } catch (error: any) {
+        console.error('Service save error:', error)
+        removeToast(loadingId)
+        showError(
+          editingService ? 'Failed to update service' : 'Failed to create service',
+          error.message || 'Please try again or contact support'
+        )
+      }
+    },
+    [
+      editingService,
+      availableBranches,
+      updateService,
+      createService,
+      showLoading,
+      removeToast,
+      showSuccess,
+      showError
+    ]
+  )
 
   const handleEdit = useCallback((service: Service) => {
     setEditingService(service)
@@ -364,7 +373,15 @@ function SalonServicesPageContent() {
         )
       }
     },
-    [editingCategory, updateCategory, createCategory, showLoading, removeToast, showSuccess, showError]
+    [
+      editingCategory,
+      updateCategory,
+      createCategory,
+      showLoading,
+      removeToast,
+      showSuccess,
+      showError
+    ]
   )
 
   const handleEditCategory = useCallback((category: ServiceCategory) => {
@@ -397,10 +414,7 @@ function SalonServicesPageContent() {
   // Tab selection controls the LIST below, not the dashboard metrics
   // This is standard enterprise UX where KPIs = "big picture", Filters = "drill-down"
 
-  const totalServicesCount = useMemo(
-    () => allServicesForKPIs?.length || 0,
-    [allServicesForKPIs]
-  )
+  const totalServicesCount = useMemo(() => allServicesForKPIs?.length || 0, [allServicesForKPIs])
 
   const activeCount = useMemo(
     () => allServicesForKPIs?.filter(s => s && s.status === 'active').length || 0,
@@ -415,16 +429,14 @@ function SalonServicesPageContent() {
     [allServicesForKPIs]
   )
 
-  const avgDuration = useMemo(
-    () => {
-      const validServices = allServicesForKPIs?.filter(s => s && s.duration_minutes !== undefined) || []
-      return validServices.length > 0
-        ? validServices.reduce((sum, service) => sum + (service.duration_minutes || 0), 0) /
+  const avgDuration = useMemo(() => {
+    const validServices =
+      allServicesForKPIs?.filter(s => s && s.duration_minutes !== undefined) || []
+    return validServices.length > 0
+      ? validServices.reduce((sum, service) => sum + (service.duration_minutes || 0), 0) /
           validServices.length
-        : 0
-    },
-    [allServicesForKPIs]
-  )
+      : 0
+  }, [allServicesForKPIs])
 
   const formatDuration = useCallback((minutes: number) => {
     const hours = Math.floor(minutes / 60)

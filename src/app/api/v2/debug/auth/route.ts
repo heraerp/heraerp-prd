@@ -18,7 +18,10 @@ export async function GET(request: NextRequest) {
   const token = authHeader.replace('Bearer ', '')
 
   // Try to get user from token
-  const { data: { user }, error } = await supabase.auth.getUser(token)
+  const {
+    data: { user },
+    error
+  } = await supabase.auth.getUser(token)
 
   if (error || !user) {
     return NextResponse.json({

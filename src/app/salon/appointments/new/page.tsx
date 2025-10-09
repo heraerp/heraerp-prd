@@ -204,10 +204,7 @@ function NewAppointmentContent() {
   })
 
   // ⚡ PERFORMANCE: Fetch existing appointments for conflict detection
-  const {
-    appointments,
-    isLoading: appointmentsLoading
-  } = useHeraAppointments({
+  const { appointments, isLoading: appointmentsLoading } = useHeraAppointments({
     organizationId,
     filters: {
       date_from: selectedDate,
@@ -315,10 +312,10 @@ function NewAppointmentContent() {
   // 🧬 ENTERPRISE: Status-based time slot blocking
   // Only these statuses actually block time slots (stylist is committed)
   const BLOCKING_STATUSES = [
-    'booked',           // Confirmed appointment
-    'checked_in',       // Customer has arrived
-    'in_progress',      // Service is happening
-    'payment_pending'   // Service done, awaiting payment
+    'booked', // Confirmed appointment
+    'checked_in', // Customer has arrived
+    'in_progress', // Service is happening
+    'payment_pending' // Service done, awaiting payment
   ]
 
   // ⚡ PERFORMANCE: Check for time slot conflicts
@@ -354,8 +351,7 @@ function NewAppointmentContent() {
         const aptEnd = new Date(apt.end_time)
 
         // Check for overlap: slot overlaps if it starts before appointment ends AND ends after appointment starts
-        const overlaps =
-          slotDateTime < aptEnd && slotEndTime > aptStart
+        const overlaps = slotDateTime < aptEnd && slotEndTime > aptStart
 
         if (overlaps) {
           console.log(`[Time Slot] BLOCKED by ${apt.status} appointment for ${apt.customer_name}`)
@@ -599,7 +595,7 @@ function NewAppointmentContent() {
       // 🎯 CRITICAL FIX: Invalidate React Query cache to auto-refresh appointments list
       // Use predicate to match all appointment-transactions queries regardless of params
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === 'appointment-transactions'
+        predicate: query => query.queryKey[0] === 'appointment-transactions'
       })
       await queryClient.invalidateQueries({ queryKey: ['entities', 'customer'] })
       await queryClient.invalidateQueries({ queryKey: ['entities', 'CUSTOMER'] })
@@ -718,7 +714,7 @@ function NewAppointmentContent() {
             </div>
           </div>
         </div>
-      ) : (customersError || servicesError || staffError) ? (
+      ) : customersError || servicesError || staffError ? (
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-md mx-auto">
             <div
@@ -733,9 +729,19 @@ function NewAppointmentContent() {
               </div>
               <h3 className="text-lg font-semibold text-[#F5E6C8] mb-2">Failed to Load Data</h3>
               <p className="text-sm text-[#F5E6C8]/60 mb-4">
-                {customersError && <span className="block">• {customersError.message || 'Failed to load customers'}</span>}
-                {servicesError && <span className="block">• {servicesError.message || 'Failed to load services'}</span>}
-                {staffError && <span className="block">• {staffError.message || 'Failed to load staff'}</span>}
+                {customersError && (
+                  <span className="block">
+                    • {customersError.message || 'Failed to load customers'}
+                  </span>
+                )}
+                {servicesError && (
+                  <span className="block">
+                    • {servicesError.message || 'Failed to load services'}
+                  </span>
+                )}
+                {staffError && (
+                  <span className="block">• {staffError.message || 'Failed to load staff'}</span>
+                )}
               </p>
               <Button
                 onClick={() => window.location.reload()}
@@ -935,8 +941,8 @@ function NewAppointmentContent() {
                         <p className="font-medium text-[#F5E6C8]">{selectedCustomer.entity_name}</p>
                         <p className="text-sm text-[#F5E6C8]/60 mt-1">
                           {selectedCustomer.phone ||
-                           selectedCustomer.dynamic_fields?.phone?.value ||
-                           'No phone'}
+                            selectedCustomer.dynamic_fields?.phone?.value ||
+                            'No phone'}
                         </p>
                       </div>
                       <Button
@@ -1018,8 +1024,8 @@ function NewAppointmentContent() {
                             <p className="font-medium text-[#F5E6C8]">{customer.entity_name}</p>
                             <p className="text-sm text-[#F5E6C8]/50">
                               {customer.phone ||
-                               customer.dynamic_fields?.phone?.value ||
-                               'No phone'}
+                                customer.dynamic_fields?.phone?.value ||
+                                'No phone'}
                             </p>
                           </div>
                         ))}
@@ -1139,8 +1145,16 @@ function NewAppointmentContent() {
                         )}
                       </span>
                       {selectedStylist && availableTimeSlots.length > 0 && (
-                        <span className="text-[10px] font-normal" style={{ color: 'rgba(245,230,200,0.5)' }}>
-                          {Math.round((availableTimeSlots.filter(s => !s.hasConflict).length / availableTimeSlots.length) * 100)}% free
+                        <span
+                          className="text-[10px] font-normal"
+                          style={{ color: 'rgba(245,230,200,0.5)' }}
+                        >
+                          {Math.round(
+                            (availableTimeSlots.filter(s => !s.hasConflict).length /
+                              availableTimeSlots.length) *
+                              100
+                          )}
+                          % free
                         </span>
                       )}
                     </Label>
@@ -1150,7 +1164,8 @@ function NewAppointmentContent() {
                       <div
                         className="p-6 rounded-lg text-center border-2 border-dashed transition-all duration-300"
                         style={{
-                          background: 'linear-gradient(135deg, rgba(212,175,55,0.05) 0%, rgba(184,134,11,0.03) 100%)',
+                          background:
+                            'linear-gradient(135deg, rgba(212,175,55,0.05) 0%, rgba(184,134,11,0.03) 100%)',
                           borderColor: 'rgba(212,175,55,0.3)',
                           color: '#D4AF37'
                         }}
@@ -1159,7 +1174,8 @@ function NewAppointmentContent() {
                           <div
                             className="w-12 h-12 rounded-full flex items-center justify-center"
                             style={{
-                              background: 'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(184,134,11,0.1) 100%)',
+                              background:
+                                'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(184,134,11,0.1) 100%)',
                               border: '1px solid rgba(212,175,55,0.3)'
                             }}
                           >
@@ -1194,7 +1210,8 @@ function NewAppointmentContent() {
                         <div
                           className="p-3 rounded-lg"
                           style={{
-                            background: 'linear-gradient(135deg, rgba(15,111,92,0.15) 0%, rgba(15,111,92,0.08) 100%)',
+                            background:
+                              'linear-gradient(135deg, rgba(15,111,92,0.15) 0%, rgba(15,111,92,0.08) 100%)',
                             border: '1px solid rgba(15,111,92,0.2)'
                           }}
                         >
@@ -1263,11 +1280,30 @@ function NewAppointmentContent() {
                               const conflictingApt = slot.conflictingAppointment
 
                               // Status badge colors for enterprise look
-                              const statusColors: Record<string, { bg: string; text: string; border: string }> = {
-                                booked: { bg: 'rgba(239, 68, 68, 0.2)', text: '#F87171', border: 'rgba(239, 68, 68, 0.3)' },
-                                checked_in: { bg: 'rgba(168, 85, 247, 0.2)', text: '#C084FC', border: 'rgba(168, 85, 247, 0.3)' },
-                                in_progress: { bg: 'rgba(249, 115, 22, 0.2)', text: '#FB923C', border: 'rgba(249, 115, 22, 0.3)' },
-                                payment_pending: { bg: 'rgba(239, 68, 68, 0.2)', text: '#F87171', border: 'rgba(239, 68, 68, 0.3)' }
+                              const statusColors: Record<
+                                string,
+                                { bg: string; text: string; border: string }
+                              > = {
+                                booked: {
+                                  bg: 'rgba(239, 68, 68, 0.2)',
+                                  text: '#F87171',
+                                  border: 'rgba(239, 68, 68, 0.3)'
+                                },
+                                checked_in: {
+                                  bg: 'rgba(168, 85, 247, 0.2)',
+                                  text: '#C084FC',
+                                  border: 'rgba(168, 85, 247, 0.3)'
+                                },
+                                in_progress: {
+                                  bg: 'rgba(249, 115, 22, 0.2)',
+                                  text: '#FB923C',
+                                  border: 'rgba(249, 115, 22, 0.3)'
+                                },
+                                payment_pending: {
+                                  bg: 'rgba(239, 68, 68, 0.2)',
+                                  text: '#F87171',
+                                  border: 'rgba(239, 68, 68, 0.3)'
+                                }
                               }
 
                               const statusColor = conflictingApt
@@ -1290,7 +1326,9 @@ function NewAppointmentContent() {
                                       {!isBooked && (
                                         <div className="w-2 h-2 rounded-full bg-emerald-400" />
                                       )}
-                                      <span className={!isBooked ? 'font-medium' : ''}>{displayTime}</span>
+                                      <span className={!isBooked ? 'font-medium' : ''}>
+                                        {displayTime}
+                                      </span>
                                     </div>
                                     {isBooked && conflictingApt && (
                                       <div className="flex items-center gap-1.5 text-xs">
@@ -1342,7 +1380,8 @@ function NewAppointmentContent() {
                   <div
                     className="p-3 rounded-lg text-xs"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.05) 100%)',
+                      background:
+                        'linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.05) 100%)',
                       border: '1px solid rgba(212,175,55,0.2)',
                       color: 'rgba(245,230,200,0.8)'
                     }}
@@ -1352,8 +1391,10 @@ function NewAppointmentContent() {
                       <span className="font-medium text-[#D4AF37]">Smart Time Slot Blocking</span>
                     </div>
                     <p className="leading-relaxed">
-                      ✨ Only <span className="font-semibold text-[#F5E6C8]">booked and active</span> appointments block time slots.
-                      Draft appointments don't block, allowing you to explore options freely.
+                      ✨ Only{' '}
+                      <span className="font-semibold text-[#F5E6C8]">booked and active</span>{' '}
+                      appointments block time slots. Draft appointments don't block, allowing you to
+                      explore options freely.
                     </p>
                   </div>
 
@@ -1786,8 +1827,7 @@ function NewAppointmentContent() {
             <div
               className="absolute top-0 left-0 right-0 h-px"
               style={{
-                background:
-                  'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)'
+                background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)'
               }}
             ></div>
             <DialogHeader>
@@ -1954,11 +1994,9 @@ function NewAppointmentContent() {
             </div>
 
             {/* Helper text */}
-            <p
-              className="text-xs text-center pt-2"
-              style={{ color: 'rgba(245,230,200,0.5)' }}
-            >
-              <span className="text-[#D4AF37]">*</span> Name is required · Phone and Email are optional
+            <p className="text-xs text-center pt-2" style={{ color: 'rgba(245,230,200,0.5)' }}>
+              <span className="text-[#D4AF37]">*</span> Name is required · Phone and Email are
+              optional
             </p>
           </div>
         </DialogContent>
@@ -1987,8 +2025,7 @@ function NewAppointmentContent() {
             <div
               className="absolute top-0 left-0 right-0 h-px"
               style={{
-                background:
-                  'linear-gradient(90deg, transparent, rgba(212,175,55,0.6), transparent)'
+                background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.6), transparent)'
               }}
             ></div>
 
@@ -2018,8 +2055,7 @@ function NewAppointmentContent() {
               <DialogTitle className="text-3xl font-bold text-center mb-2">
                 <span
                   style={{
-                    background:
-                      'linear-gradient(135deg, #F5E6C8 0%, #D4AF37 100%)',
+                    background: 'linear-gradient(135deg, #F5E6C8 0%, #D4AF37 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text'
@@ -2051,9 +2087,7 @@ function NewAppointmentContent() {
                   <User className="w-4 h-4 text-[#D4AF37]" />
                   <span className="text-xs text-[#F5E6C8]/60 font-medium">Customer</span>
                 </div>
-                <p className="text-[#F5E6C8] font-semibold">
-                  {selectedCustomer?.entity_name}
-                </p>
+                <p className="text-[#F5E6C8] font-semibold">{selectedCustomer?.entity_name}</p>
               </div>
 
               <div
@@ -2067,9 +2101,7 @@ function NewAppointmentContent() {
                   <Scissors className="w-4 h-4 text-[#B8860B]" />
                   <span className="text-xs text-[#F5E6C8]/60 font-medium">Stylist</span>
                 </div>
-                <p className="text-[#F5E6C8] font-semibold">
-                  {selectedStylist?.entity_name}
-                </p>
+                <p className="text-[#F5E6C8] font-semibold">{selectedStylist?.entity_name}</p>
               </div>
             </div>
 
@@ -2095,7 +2127,10 @@ function NewAppointmentContent() {
                     {selectedDate && selectedTime ? (
                       <>
                         <p className="text-[#F5E6C8] font-semibold">
-                          {format(new Date(`${selectedDate}T${selectedTime}`), 'EEEE, MMMM d, yyyy')}
+                          {format(
+                            new Date(`${selectedDate}T${selectedTime}`),
+                            'EEEE, MMMM d, yyyy'
+                          )}
                         </p>
                         <p className="text-sm text-[#F5E6C8]/60">
                           {format(new Date(`${selectedDate}T${selectedTime}`), 'h:mm a')} •{' '}
@@ -2151,7 +2186,7 @@ function NewAppointmentContent() {
                 onClick={async () => {
                   // 🎯 CRITICAL FIX: Wait for all queries to invalidate before navigation
                   await queryClient.invalidateQueries({
-                    predicate: (query) => query.queryKey[0] === 'appointment-transactions'
+                    predicate: query => query.queryKey[0] === 'appointment-transactions'
                   })
                   // Small delay to ensure cache propagation
                   await new Promise(resolve => setTimeout(resolve, 100))

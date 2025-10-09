@@ -41,9 +41,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Select the entity matching the JWT org if available
-    const userEntity = (userEntities || []).find(
-      e => e.organization_id === auth.organizationId
-    ) || (userEntities && userEntities[0])
+    const userEntity =
+      (userEntities || []).find(e => e.organization_id === auth.organizationId) ||
+      (userEntities && userEntities[0])
 
     let resolvedRole: string | undefined
     let resolvedPermissions: string[] = []
@@ -70,15 +70,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Prefer JWT roles if present; otherwise use resolved role
-    const roles = (auth.roles && auth.roles.length > 0)
-      ? auth.roles
-      : resolvedRole
-        ? [resolvedRole]
-        : []
+    const roles =
+      auth.roles && auth.roles.length > 0 ? auth.roles : resolvedRole ? [resolvedRole] : []
 
-    const permissions = (auth.permissions && auth.permissions.length > 0)
-      ? auth.permissions
-      : resolvedPermissions
+    const permissions =
+      auth.permissions && auth.permissions.length > 0 ? auth.permissions : resolvedPermissions
 
     return NextResponse.json(
       {
@@ -96,4 +92,3 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'internal_error', message: e?.message }, { status: 500 })
   }
 }
-

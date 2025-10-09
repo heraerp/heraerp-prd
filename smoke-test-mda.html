@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HERA MDA Smoke Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-section { margin: 20px 0; padding: 15px; border-left: 4px solid #007acc; background: #f8f9fa; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #007acc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #005999; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+        .token-input { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 HERA MDA Smoke Test</h1>
+        <p>This test validates the HERA Modern Digital Accountant (MDA) system components.</p>
+
+        <div class="test-section">
+            <h3>🔐 Authentication Setup</h3>
+            <p>Get your JWT token from the salon app (F12 > Application > Local Storage > auth token)</p>
+            <input type="text" id="jwtToken" class="token-input" placeholder="Paste JWT token here..." />
+            <input type="text" id="orgId" class="token-input" placeholder="Organization ID (e.g., 378f24fb-d496-4ff7-8afa-ea34895a0eb8)" value="378f24fb-d496-4ff7-8afa-ea34895a0eb8" />
+        </div>
+
+        <div class="test-section">
+            <h3>🏥 Health Check</h3>
+            <button onclick="testHealthCheck()">Test API Health</button>
+            <div id="healthResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Entities Test</h3>
+            <button onclick="testEntities()">Test Entities API</button>
+            <div id="entitiesResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>💰 Transaction Test (Safe)</h3>
+            <button onclick="testTransactionSafe()">Test Transaction Creation (Safe Mode)</button>
+            <div id="transactionResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 MDA Transaction Test</h3>
+            <button onclick="testMDATransaction()">Test MDA Transaction Creation</button>
+            <div id="mdaResult"></div>
+        </div>
+
+        <div id="debugLog"></div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('debugLog');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        function getAuthHeaders() {
+            const token = document.getElementById('jwtToken').value.trim();
+            if (!token) {
+                throw new Error('JWT token required');
+            }
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'x-hera-api-version': 'v2'
+            };
+        }
+
+        function getOrgId() {
+            return document.getElementById('orgId').value.trim() || '378f24fb-d496-4ff7-8afa-ea34895a0eb8';
+        }
+
+        async function testHealthCheck() {
+            const resultDiv = document.getElementById('healthResult');
+            try {
+                log('Testing API health...', 'info');
+                const response = await fetch('/api/v2/healthz');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ API Health: ${JSON.stringify(data)}</div>`;
+                    log('Health check passed', 'success');
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Health check failed: ${response.status}</div>`;
+                    log(`Health check failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Health check error: ${error.message}</div>`;
+                log(`Health check error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testEntities() {
+            const resultDiv = document.getElementById('entitiesResult');
+            try {
+                log('Testing entities API...', 'info');
+                const headers = getAuthHeaders();
+                const orgId = getOrgId();
+                
+                const response = await fetch(`/api/v2/entities?organization_id=${orgId}`, {
+                    headers
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ Entities API working. Found ${data.length || 0} entities.</div>`;
+                    log(`Entities test passed: ${data.length || 0} entities found`, 'success');
+                } else {
+                    const errorData = await response.json();
+                    resultDiv.innerHTML = `<div class="error">❌ Entities test failed: ${response.status} - ${JSON.stringify(errorData)}</div>`;
+                    log(`Entities test failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Entities test error: ${error.message}</div>`;
+                log(`Entities test error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testTransactionSafe() {
+            const resultDiv = document.getElementById('transactionResult');
+            try {
+                log('Testing transactions API in read mode...', 'info');
+                const headers = getAuthHeaders();
+                const orgId = getOrgId();
+                
+                const response = await fetch(`/api/v2/transactions?organization_id=${orgId}`, {
+                    headers
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ Transactions API readable. Response: ${JSON.stringify(data).substring(0, 200)}...</div>`;
+                    log('Transactions read test passed', 'success');
+                } else {
+                    const errorData = await response.json();
+                    resultDiv.innerHTML = `<div class="error">❌ Transactions test failed: ${response.status} - ${JSON.stringify(errorData)}</div>`;
+                    log(`Transactions test failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Transactions test error: ${error.message}</div>`;
+                log(`Transactions test error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testMDATransaction() {
+            const resultDiv = document.getElementById('mdaResult');
+            try {
+                log('Testing MDA transaction creation...', 'info');
+                const headers = getAuthHeaders();
+                const orgId = getOrgId();
+                
+                const transactionPayload = {
+                    organization_id: orgId,
+                    transaction_type: 'expense',
+                    smart_code: 'HERA.SALON.FINANCE.EXPENSE.SALARY.V1',
+                    transaction_date: new Date().toISOString(),
+                    source_entity_id: null,
+                    target_entity_id: null,
+                    business_context: {
+                        channel: 'SMOKE_TEST',
+                        description: 'Test salary payment for smoke test',
+                        category: 'salary',
+                        amount: 100.00,
+                        currency: 'AED'
+                    },
+                    lines: [
+                        {
+                            line_type: 'expense',
+                            line_number: 1,
+                            description: 'Test salary payment for smoke test',
+                            quantity: 1,
+                            unit_price: 100.00,
+                            line_amount: 100.00,
+                            smart_code: 'HERA.SALON.FINANCE.EXPENSE.SALARY.V1',
+                            metadata: {
+                                category: 'salary',
+                                test: true
+                            }
+                        }
+                    ]
+                };
+
+                log('Sending transaction payload: ' + JSON.stringify(transactionPayload, null, 2), 'info');
+
+                const response = await fetch('/api/v2/transactions', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(transactionPayload)
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ MDA Transaction created successfully!</div>
+                        <div class="info">Transaction ID: ${responseData.transaction_id}</div>
+                        <pre>${JSON.stringify(responseData, null, 2)}</pre>
+                    `;
+                    log(`MDA transaction test passed: ${responseData.transaction_id}`, 'success');
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ MDA Transaction failed: ${response.status}</div>
+                        <pre>Error: ${JSON.stringify(responseData, null, 2)}</pre>
+                    `;
+                    log(`MDA transaction test failed: ${response.status} - ${JSON.stringify(responseData)}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ MDA Transaction error: ${error.message}</div>`;
+                log(`MDA transaction test error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-populate JWT token from local storage if available
+        window.onload = function() {
+            try {
+                // Try to get Supabase session from localStorage
+                const supabaseSession = localStorage.getItem('sb-localhost-auth-token');
+                if (supabaseSession) {
+                    const sessionData = JSON.parse(supabaseSession);
+                    if (sessionData.access_token) {
+                        document.getElementById('jwtToken').value = sessionData.access_token;
+                        log('Auto-populated JWT token from localStorage', 'info');
+                    }
+                }
+            } catch (e) {
+                log('Could not auto-populate JWT token', 'info');
+            }
+        };
+    </script>
+</body>
+</html>

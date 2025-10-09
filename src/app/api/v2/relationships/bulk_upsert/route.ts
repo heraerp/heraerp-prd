@@ -100,14 +100,16 @@ export async function POST(request: NextRequest) {
       relationship_data: pair.metadata || metadata || {}
     }))
 
-    console.log(`📝 [Bulk Upsert] Inserting ${insertRows.length} relationships:`,
-      insertRows.map(r => ({ from: r.from_entity_id, to: r.to_entity_id, type: r.relationship_type }))
+    console.log(
+      `📝 [Bulk Upsert] Inserting ${insertRows.length} relationships:`,
+      insertRows.map(r => ({
+        from: r.from_entity_id,
+        to: r.to_entity_id,
+        type: r.relationship_type
+      }))
     )
 
-    const { data, error } = await supabase
-      .from('core_relationships')
-      .insert(insertRows)
-      .select()
+    const { data, error } = await supabase.from('core_relationships').insert(insertRows).select()
 
     if (error) {
       console.error('❌ [Bulk Relationship Upsert] Insert error:', error)

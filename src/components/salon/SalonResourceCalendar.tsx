@@ -245,7 +245,7 @@ export function SalonResourceCalendar({
     }))
 
     // Virtual stylist to show appointments with no stylist assignment
-    const unassigned: (Stylist & { branchId: string }) = {
+    const unassigned: Stylist & { branchId: string } = {
       id: 'unassigned',
       name: 'Unassigned',
       title: '—',
@@ -633,7 +633,10 @@ export function SalonResourceCalendar({
 
   return (
     <div
-      className={cn('relative flex h-[800px] rounded-lg overflow-hidden calendar-fade-in', className)}
+      className={cn(
+        'relative flex h-[800px] rounded-lg overflow-hidden calendar-fade-in',
+        className
+      )}
       style={{
         backgroundColor: COLORS.charcoal,
         boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(212, 175, 55, 0.1)',
@@ -720,7 +723,10 @@ export function SalonResourceCalendar({
               }}
             >
               <div className="flex items-center justify-between mb-3 calendar-mini-header">
-                <span className="text-sm font-semibold tracking-wide" style={{ color: COLORS.champagne }}>
+                <span
+                  className="text-sm font-semibold tracking-wide"
+                  style={{ color: COLORS.champagne }}
+                >
                   {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
                 <div className="flex gap-1">
@@ -801,7 +807,8 @@ export function SalonResourceCalendar({
                         }}
                         className={cn(
                           'calendar-mini-day text-xs font-medium py-1.5 rounded-md',
-                          dayIsToday && 'calendar-mini-today ring-2 ring-offset-1 font-bold shadow-md',
+                          dayIsToday &&
+                            'calendar-mini-today ring-2 ring-offset-1 font-bold shadow-md',
                           dayIsSelected && 'calendar-mini-selected font-bold'
                         )}
                         style={{
@@ -1126,7 +1133,7 @@ export function SalonResourceCalendar({
                   viewMode === 'resource' ? 'h-[calc(100%-5rem)]' : 'h-[calc(100%-3.5rem)]'
                 )}
               >
-                {timeSlots.map((slot) => (
+                {timeSlots.map(slot => (
                   <div
                     key={slot.time}
                     className="h-16 border-b px-2 py-1"
@@ -1192,14 +1199,14 @@ export function SalonResourceCalendar({
                             {/* Time Slots */}
                             <div>
                               {timeSlots.map((slot, slotIdx) => {
-                              const slotAppointments = transformedAppointments.filter(
-                                (apt: Appointment) =>
-                                  apt.time === slot.time &&
-                                  apt.date.toDateString() === date.toDateString() &&
-                                  (selectedStylists.includes('all') ||
-                                    selectedStylists.includes(apt.stylist || 'unassigned')) &&
-                                  (!selectedBranchId || apt.branchId === selectedBranchId)
-                              )
+                                const slotAppointments = transformedAppointments.filter(
+                                  (apt: Appointment) =>
+                                    apt.time === slot.time &&
+                                    apt.date.toDateString() === date.toDateString() &&
+                                    (selectedStylists.includes('all') ||
+                                      selectedStylists.includes(apt.stylist || 'unassigned')) &&
+                                    (!selectedBranchId || apt.branchId === selectedBranchId)
+                                )
 
                                 return (
                                   <div
@@ -1302,7 +1309,7 @@ export function SalonResourceCalendar({
                         )
                       })
                     : // Resource view mode
-                      displayedStylists.map((stylist) => (
+                      displayedStylists.map(stylist => (
                         <div
                           key={stylist.id}
                           className="flex-1 min-w-[200px] border-r last:border-r-0"

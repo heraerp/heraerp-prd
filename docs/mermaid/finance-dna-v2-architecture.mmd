@@ -1,0 +1,250 @@
+# Finance DNA v2 - System Architecture Diagrams
+
+## 1. Overall Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        A[React App] --> B[API Client]
+        C[Mobile App] --> B
+        D[Third Party] --> B
+    end
+    
+    subgraph "API Gateway"
+        B --> E[Authentication]
+        E --> F[Rate Limiting]
+        F --> G[Organization Context]
+    end
+    
+    subgraph "Finance DNA v2 Core"
+        G --> H[Policy Engine]
+        G --> I[Reporting Engine]
+        G --> J[Migration Engine]
+        
+        H --> K[Policy-as-Data]
+        I --> L[RPC Functions]
+        J --> M[Zero Tables Migration]
+    end
+    
+    subgraph "Sacred Six Tables"
+        K --> N[core_organizations]
+        K --> O[core_entities]
+        K --> P[core_dynamic_data]
+        K --> Q[core_relationships]
+        K --> R[universal_transactions]
+        K --> S[universal_transaction_lines]
+    end
+    
+    subgraph "Security Layer"
+        N --> T[RLS Policies]
+        O --> T
+        P --> T
+        Q --> T
+        R --> T
+        S --> T
+        
+        T --> U[Audit Trail]
+        T --> V[Organization Isolation]
+    end
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style H fill:#e8f5e8
+    style I fill:#e8f5e8
+    style J fill:#e8f5e8
+    style T fill:#fff3e0
+    
+    classDef tableClass fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    class N,O,P,Q,R,S tableClass
+```
+
+## 2. Policy-as-Data Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant API as API Layer
+    participant PE as Policy Engine
+    participant DB as Sacred Six Tables
+    
+    C->>API: Submit Transaction
+    API->>API: Validate JWT & Context
+    API->>PE: Execute Financial Policies
+    
+    PE->>DB: Query Applicable Policies
+    DB-->>PE: Return Policy Configurations
+    
+    loop For Each Policy
+        PE->>PE: Evaluate Trigger Conditions
+        alt Policy Applicable
+            PE->>DB: Execute Policy Rules
+            PE->>DB: Log Policy Execution
+        end
+    end
+    
+    PE-->>API: Policy Execution Results
+    API-->>C: Transaction Response
+    
+    Note over DB: All policies stored as entities<br/>All executions logged as transactions
+```
+
+## 3. RLS Security Model
+
+```mermaid
+graph LR
+    subgraph "Request Flow"
+        A[API Request] --> B[JWT Validation]
+        B --> C[Organization Context]
+        C --> D[RLS Policy Check]
+    end
+    
+    subgraph "RLS Enforcement"
+        D --> E{Organization Match?}
+        E -->|Yes| F[Allow Query]
+        E -->|No| G[Block Query]
+    end
+    
+    subgraph "Data Access"
+        F --> H[core_entities]
+        F --> I[universal_transactions]
+        F --> J[core_dynamic_data]
+        
+        H --> K[Organization Filtered]
+        I --> K
+        J --> K
+    end
+    
+    subgraph "Audit Trail"
+        F --> L[Log Access]
+        G --> M[Log Violation]
+        
+        L --> N[universal_transactions]
+        M --> N
+    end
+    
+    style E fill:#fff9c4
+    style G fill:#ffebee
+    style K fill:#e8f5e8
+    style N fill:#f3e5f5
+```
+
+## 4. Zero Tables Migration Process
+
+```mermaid
+stateDiagram-v2
+    [*] --> Assessment
+    Assessment --> Backup
+    Backup --> SmartCodeMapping
+    SmartCodeMapping --> ReverseTransactions
+    ReverseTransactions --> RepostV2
+    RepostV2 --> Validation
+    Validation --> Complete
+    
+    Assessment: Migration Assessment<br/>- Analyze complexity<br/>- Estimate time<br/>- Check readiness
+    
+    Backup: Backup & Preparation<br/>- Create migration batch<br/>- Snapshot current state<br/>- Validate data integrity
+    
+    SmartCodeMapping: Smart Code Mapping<br/>- Map v1 to v2 smart codes<br/>- Store mappings in dynamic data<br/>- Validate mappings
+    
+    ReverseTransactions: Reverse Original<br/>- Create reversal entries<br/>- Flip debit/credit amounts<br/>- Maintain balance
+    
+    RepostV2: Repost with v2<br/>- Recreate transactions<br/>- Apply v2 smart codes<br/>- Link to originals
+    
+    Validation: Validation & Testing<br/>- Check balances<br/>- Validate smart codes<br/>- Test functionality
+    
+    Complete --> [*]
+    
+    Validation --> Rollback: Issues Found
+    Rollback --> Assessment: Retry
+```
+
+## 5. Smart Code Classification System
+
+```mermaid
+graph TD
+    A[HERA.ACCOUNTING] --> B[GL Operations]
+    A --> C[Policy Management]
+    A --> D[Reporting]
+    A --> E[Migration]
+    A --> F[Audit]
+    
+    B --> B1[GL.ACC.ENTITY.v2]
+    B --> B2[GL.TXN.JOURNAL.v2]
+    B --> B3[GL.LINE.DEBIT.v2]
+    B --> B4[GL.LINE.CREDIT.v2]
+    
+    C --> C1[POLICY.RULE.ENTITY.v2]
+    C --> C2[POLICY.CONFIG.POSTING.v2]
+    C --> C3[POLICY.EVENT.EXECUTED.v2]
+    
+    D --> D1[REPORT.TRIAL.BALANCE.v2]
+    D --> D2[REPORT.PROFIT.LOSS.v2]
+    D --> D3[REPORT.BALANCE.SHEET.v2]
+    
+    E --> E1[MIGRATION.ASSESS.v2]
+    E --> E2[MIGRATION.REVERSE.v2]
+    E --> E3[MIGRATION.REPOST.v2]
+    
+    F --> F1[AUDIT.OPERATION.v2]
+    F --> F2[AUDIT.POLICY.CREATE.v2]
+    F --> F3[SECURITY.RLS.ENFORCEMENT.v2]
+    
+    style A fill:#e3f2fd
+    style B fill:#f1f8e9
+    style C fill:#fff3e0
+    style D fill:#fce4ec
+    style E fill:#f3e5f5
+    style F fill:#ffebee
+```
+
+## 6. Performance Optimization Architecture
+
+```mermaid
+graph TB
+    subgraph "Query Layer"
+        A[API Request] --> B[Query Optimization]
+        B --> C[Materialized Views]
+        B --> D[Indexed Queries]
+    end
+    
+    subgraph "Caching Layer"
+        C --> E[Report Cache]
+        D --> F[Policy Cache]
+        
+        E --> G[TTL Management]
+        F --> G
+    end
+    
+    subgraph "Database Layer"
+        G --> H[RLS Optimized Indexes]
+        H --> I[Partitioned Tables]
+        I --> J[Connection Pooling]
+    end
+    
+    subgraph "Performance Monitoring"
+        J --> K[Query Statistics]
+        K --> L[Performance Alerts]
+        L --> M[Auto-optimization]
+    end
+    
+    subgraph "Benchmarks"
+        N[Trial Balance < 500ms]
+        O[P&L Report < 1000ms]
+        P[Policy Execution < 200ms]
+        Q[Migration < 5min]
+    end
+    
+    M --> N
+    M --> O
+    M --> P
+    M --> Q
+    
+    style A fill:#e1f5fe
+    style E fill:#f3e5f5
+    style F fill:#f3e5f5
+    style H fill:#e8f5e8
+    style N fill:#e8f5e8
+    style O fill:#e8f5e8
+    style P fill:#e8f5e8
+    style Q fill:#e8f5e8
+```

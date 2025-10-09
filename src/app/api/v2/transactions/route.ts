@@ -83,7 +83,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const transactionId = searchParams.get('txn_id') || searchParams.get('transaction_id')
     // Support both p_ prefixed and non-prefixed parameters (like entities endpoint)
-    const organizationId = searchParams.get('p_organization_id') || searchParams.get('organization_id')
+    const organizationId =
+      searchParams.get('p_organization_id') || searchParams.get('organization_id')
 
     // Organization isolation enforcement
     if (!organizationId || organizationId !== authResult.organizationId) {
@@ -130,10 +131,14 @@ export async function GET(request: NextRequest) {
       }
 
       // Extract all supported query parameters and add to body
-      const transactionType = searchParams.get('p_transaction_type') || searchParams.get('transaction_type')
-      const sourceEntityId = searchParams.get('p_source_entity_id') || searchParams.get('source_entity_id')
-      const targetEntityId = searchParams.get('p_target_entity_id') || searchParams.get('target_entity_id')
-      const smartCodeLike = searchParams.get('p_smart_code_like') || searchParams.get('smart_code_like')
+      const transactionType =
+        searchParams.get('p_transaction_type') || searchParams.get('transaction_type')
+      const sourceEntityId =
+        searchParams.get('p_source_entity_id') || searchParams.get('source_entity_id')
+      const targetEntityId =
+        searchParams.get('p_target_entity_id') || searchParams.get('target_entity_id')
+      const smartCodeLike =
+        searchParams.get('p_smart_code_like') || searchParams.get('smart_code_like')
       const dateFrom = searchParams.get('p_date_from') || searchParams.get('date_from')
       const dateTo = searchParams.get('p_date_to') || searchParams.get('date_to')
       const limit = searchParams.get('p_limit') || searchParams.get('limit')

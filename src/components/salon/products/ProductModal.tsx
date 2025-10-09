@@ -684,7 +684,10 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                                           boxShadow: `0 0 10px ${COLORS.gold}60`
                                         }}
                                       >
-                                        <Check className="w-4 h-4" style={{ color: COLORS.black }} />
+                                        <Check
+                                          className="w-4 h-4"
+                                          style={{ color: COLORS.black }}
+                                        />
                                       </div>
                                     </div>
                                   )}

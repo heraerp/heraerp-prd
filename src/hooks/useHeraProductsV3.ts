@@ -44,7 +44,7 @@ export interface UseHeraProductsOptions {
     offset?: number
     status?: string
     search?: string
-    branch_id?: string  // Add branch filtering
+    branch_id?: string // Add branch filtering
     category_id?: string // Add category filtering
     low_stock?: boolean // Add low stock filtering
   }
@@ -78,16 +78,16 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
   // Filter products by branch and other criteria
   const filteredProducts = useMemo(() => {
     if (!products) return products as ProductEntity[]
-    
+
     let filtered = products as ProductEntity[]
-    
+
     // Filter by branch relationship
     if (options?.filters?.branch_id) {
       filtered = filtered.filter(p => {
         // Check if product has STOCK_AT relationship with the specified branch
         const stockAtRelationships = p.relationships?.stock_at
         if (!stockAtRelationships) return false
-        
+
         if (Array.isArray(stockAtRelationships)) {
           return stockAtRelationships.some(rel => rel.to_entity?.id === options.filters?.branch_id)
         } else {
@@ -95,21 +95,23 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
         }
       })
     }
-    
+
     // Filter by category if provided
     if (options?.filters?.category_id) {
       filtered = filtered.filter(p => {
         const categoryRelationship = p.relationships?.category
         if (!categoryRelationship) return false
-        
+
         if (Array.isArray(categoryRelationship)) {
-          return categoryRelationship.some(rel => rel.to_entity?.id === options.filters?.category_id)
+          return categoryRelationship.some(
+            rel => rel.to_entity?.id === options.filters?.category_id
+          )
         } else {
           return categoryRelationship.to_entity?.id === options.filters?.category_id
         }
       })
     }
-    
+
     // Filter by low stock if requested
     if (options?.filters?.low_stock) {
       filtered = filtered.filter(p => {
@@ -118,9 +120,14 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
         return qtyOnHand < minStock
       })
     }
-    
+
     return filtered
-  }, [products, options?.filters?.branch_id, options?.filters?.category_id, options?.filters?.low_stock])
+  }, [
+    products,
+    options?.filters?.branch_id,
+    options?.filters?.category_id,
+    options?.filters?.low_stock
+  ])
 
   // Helper to create product with proper smart codes and relationships
   const createProduct = async (data: {
@@ -139,7 +146,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     category_id?: string
     brand_id?: string
     supplier_ids?: string[]
-    branch_id?: string  // Add branch support
+    branch_id?: string // Add branch support
   }) => {
     // Map provided primitives to dynamic_fields payload using preset definitions
     const dynamic_fields: Record<string, any> = {}
@@ -255,12 +262,12 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
   const calculateMargin = (product: ProductEntity) => {
     const price = product.dynamic_fields?.price?.value || 0
     const cost = product.dynamic_fields?.cost?.value || 0
-    
+
     if (price === 0) return { margin: 0, marginPercent: 0 }
-    
+
     const margin = price - cost
     const marginPercent = (margin / price) * 100
-    
+
     return {
       margin,
       marginPercent,

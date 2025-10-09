@@ -387,10 +387,7 @@ export default function SalonDarkSidebar({
           e.currentTarget.style.backgroundColor = `${COLORS.charcoalLight}50`
         }}
       >
-        <Building2
-          className="h-5 w-5"
-          style={{ color: COLORS.gold }}
-        />
+        <Building2 className="h-5 w-5" style={{ color: COLORS.gold }} />
         <span
           className="text-[9px] mt-0.5 font-medium text-center leading-tight"
           style={{ color: COLORS.gold }}

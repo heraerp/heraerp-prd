@@ -182,7 +182,10 @@ export function CartSidebar({
             <ShoppingCart className="w-5 h-5" style={{ color: COLORS.gold }} />
           </div>
           <div>
-            <h2 className="text-base font-semibold tracking-wide" style={{ color: COLORS.champagne }}>
+            <h2
+              className="text-base font-semibold tracking-wide"
+              style={{ color: COLORS.champagne }}
+            >
               Shopping Cart
             </h2>
             <p className="text-xs font-normal" style={{ color: COLORS.bronze }}>
@@ -200,7 +203,9 @@ export function CartSidebar({
               border: `1px solid ${COLORS.gold}30`
             }}
           >
-            <p className="text-xs" style={{ color: COLORS.bronze }}>Subtotal</p>
+            <p className="text-xs" style={{ color: COLORS.bronze }}>
+              Subtotal
+            </p>
             <p className="text-sm font-semibold" style={{ color: COLORS.gold }}>
               AED {(totals?.subtotal || 0).toFixed(2)}
             </p>
@@ -257,130 +262,141 @@ export function CartSidebar({
                     }}
                   >
                     <CardContent className="p-3.5">
-                        {/* Item Header */}
-                        <div className="flex items-start justify-between mb-2.5">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1.5">
-                              <div
-                                className="p-1 rounded"
-                                style={{
-                                  background: `${COLORS.gold}15`,
-                                  border: `1px solid ${COLORS.gold}30`
-                                }}
-                              >
-                                {item.entity_type === 'service' ? (
-                                  <Scissors className="w-3.5 h-3.5" style={{ color: COLORS.gold }} />
-                                ) : (
-                                  <Package className="w-3.5 h-3.5" style={{ color: COLORS.silver }} />
-                                )}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h4
-                                  className="font-medium text-sm leading-tight"
-                                  style={{ color: COLORS.champagne }}
-                                >
-                                  {truncateText(item.entity_name, 30)}
-                                </h4>
-                              </div>
+                      {/* Item Header */}
+                      <div className="flex items-start justify-between mb-2.5">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <div
+                              className="p-1 rounded"
+                              style={{
+                                background: `${COLORS.gold}15`,
+                                border: `1px solid ${COLORS.gold}30`
+                              }}
+                            >
+                              {item.entity_type === 'service' ? (
+                                <Scissors className="w-3.5 h-3.5" style={{ color: COLORS.gold }} />
+                              ) : (
+                                <Package className="w-3.5 h-3.5" style={{ color: COLORS.silver }} />
+                              )}
                             </div>
-
-                            {item.stylist_name && (
-                              <div
-                                className="flex items-center gap-1.5 px-2 py-1 rounded mt-1.5"
-                                style={{
-                                  background: `${COLORS.gold}10`,
-                                  border: `1px solid ${COLORS.gold}25`
-                                }}
+                            <div className="flex-1 min-w-0">
+                              <h4
+                                className="font-medium text-sm leading-tight"
+                                style={{ color: COLORS.champagne }}
                               >
-                                <div
-                                  className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-semibold"
-                                  style={{
-                                    background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                                    color: COLORS.black
-                                  }}
-                                >
-                                  {getInitials(item.stylist_name)}
-                                </div>
-                                <p className="text-[11px] font-medium truncate flex-1" style={{ color: COLORS.gold }}>
-                                  {item.stylist_name}
-                                </p>
-                                <Award className="w-3 h-3 flex-shrink-0" style={{ color: COLORS.gold }} />
-                              </div>
-                            )}
+                                {truncateText(item.entity_name, 30)}
+                              </h4>
+                            </div>
                           </div>
 
+                          {item.stylist_name && (
+                            <div
+                              className="flex items-center gap-1.5 px-2 py-1 rounded mt-1.5"
+                              style={{
+                                background: `${COLORS.gold}10`,
+                                border: `1px solid ${COLORS.gold}25`
+                              }}
+                            >
+                              <div
+                                className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-semibold"
+                                style={{
+                                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                                  color: COLORS.black
+                                }}
+                              >
+                                {getInitials(item.stylist_name)}
+                              </div>
+                              <p
+                                className="text-[11px] font-medium truncate flex-1"
+                                style={{ color: COLORS.gold }}
+                              >
+                                {item.stylist_name}
+                              </p>
+                              <Award
+                                className="w-3 h-3 flex-shrink-0"
+                                style={{ color: COLORS.gold }}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onRemoveItem(item.id)}
+                          className="opacity-60 group-hover:opacity-100 transition-opacity h-7 w-7 p-0 ml-2"
+                          style={{
+                            color: '#EF4444'
+                          }}
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+
+                      {/* Quantity and Price */}
+                      <div
+                        className="flex items-center justify-between pt-2.5 border-t"
+                        style={{ borderColor: `${COLORS.gold}10` }}
+                      >
+                        <div
+                          className="flex items-center border rounded-lg overflow-hidden"
+                          style={{
+                            borderColor: `${COLORS.gold}30`,
+                            backgroundColor: COLORS.charcoalDark
+                          }}
+                        >
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => onRemoveItem(item.id)}
-                            className="opacity-60 group-hover:opacity-100 transition-opacity h-7 w-7 p-0 ml-2"
-                            style={{
-                              color: '#EF4444'
-                            }}
+                            onClick={() => handleQuantityChange(item.id, -1)}
+                            className="h-7 w-7 p-0 hover:bg-transparent transition-colors"
+                            style={{ color: COLORS.gold }}
                           >
-                            <X className="w-3.5 h-3.5" />
+                            <Minus className="w-3 h-3" />
+                          </Button>
+                          <span
+                            className="px-3 py-1 text-sm font-medium min-w-[2rem] text-center"
+                            style={{ color: COLORS.champagne }}
+                          >
+                            {item.quantity}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleQuantityChange(item.id, 1)}
+                            className="h-7 w-7 p-0 hover:bg-transparent transition-colors"
+                            style={{ color: COLORS.gold }}
+                          >
+                            <Plus className="w-3 h-3" />
                           </Button>
                         </div>
 
-                        {/* Quantity and Price */}
-                        <div className="flex items-center justify-between pt-2.5 border-t" style={{ borderColor: `${COLORS.gold}10` }}>
-                          <div
-                            className="flex items-center border rounded-lg overflow-hidden"
-                            style={{
-                              borderColor: `${COLORS.gold}30`,
-                              backgroundColor: COLORS.charcoalDark
-                            }}
-                          >
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleQuantityChange(item.id, -1)}
-                              className="h-7 w-7 p-0 hover:bg-transparent transition-colors"
-                              style={{ color: COLORS.gold }}
-                            >
-                              <Minus className="w-3 h-3" />
-                            </Button>
-                            <span
-                              className="px-3 py-1 text-sm font-medium min-w-[2rem] text-center"
-                              style={{ color: COLORS.champagne }}
-                            >
-                              {item.quantity}
-                            </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleQuantityChange(item.id, 1)}
-                              className="h-7 w-7 p-0 hover:bg-transparent transition-colors"
-                              style={{ color: COLORS.gold }}
-                            >
-                              <Plus className="w-3 h-3" />
-                            </Button>
+                        <div className="text-right">
+                          <div className="text-[10px] mb-0.5" style={{ color: COLORS.bronze }}>
+                            AED {(item?.unit_price || 0).toFixed(2)} each
                           </div>
-
-                          <div className="text-right">
-                            <div className="text-[10px] mb-0.5" style={{ color: COLORS.bronze }}>
-                              AED {(item?.unit_price || 0).toFixed(2)} each
-                            </div>
-                            <div className="font-semibold text-sm" style={{ color: COLORS.gold }}>
-                              AED {(item?.line_amount || 0).toFixed(2)}
-                            </div>
+                          <div className="font-semibold text-sm" style={{ color: COLORS.gold }}>
+                            AED {(item?.line_amount || 0).toFixed(2)}
                           </div>
                         </div>
+                      </div>
 
-                        {/* Notes Preview */}
-                        {item.notes && (
-                          <div
-                            className="mt-3 text-xs rounded-lg p-2.5"
-                            style={{
-                              backgroundColor: `${COLORS.charcoalDark}80`,
-                              color: COLORS.bronze,
-                              border: `1px solid ${COLORS.gold}20`
-                            }}
-                          >
-                            <span className="font-medium" style={{ color: COLORS.champagne }}>Note: </span>
-                            {truncateText(item.notes, 60)}
-                          </div>
-                        )}
+                      {/* Notes Preview */}
+                      {item.notes && (
+                        <div
+                          className="mt-3 text-xs rounded-lg p-2.5"
+                          style={{
+                            backgroundColor: `${COLORS.charcoalDark}80`,
+                            color: COLORS.bronze,
+                            border: `1px solid ${COLORS.gold}20`
+                          }}
+                        >
+                          <span className="font-medium" style={{ color: COLORS.champagne }}>
+                            Note:{' '}
+                          </span>
+                          {truncateText(item.notes, 60)}
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -398,7 +414,9 @@ export function CartSidebar({
             >
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="font-medium" style={{ color: COLORS.lightText }}>Subtotal</span>
+                  <span className="font-medium" style={{ color: COLORS.lightText }}>
+                    Subtotal
+                  </span>
                   <span className="font-semibold text-base" style={{ color: COLORS.champagne }}>
                     AED {(totals?.subtotal || 0).toFixed(2)}
                   </span>
@@ -406,7 +424,9 @@ export function CartSidebar({
 
                 {(totals?.discountAmount || 0) > 0 && (
                   <div className="flex justify-between items-center text-sm">
-                    <span className="font-medium" style={{ color: COLORS.emerald }}>Discount</span>
+                    <span className="font-medium" style={{ color: COLORS.emerald }}>
+                      Discount
+                    </span>
                     <span className="font-semibold text-base" style={{ color: COLORS.emerald }}>
                       -AED {(totals?.discountAmount || 0).toFixed(2)}
                     </span>
@@ -415,7 +435,9 @@ export function CartSidebar({
 
                 {(totals?.tipAmount || 0) > 0 && (
                   <div className="flex justify-between items-center text-sm">
-                    <span className="font-medium" style={{ color: COLORS.gold }}>Gratuity</span>
+                    <span className="font-medium" style={{ color: COLORS.gold }}>
+                      Gratuity
+                    </span>
                     <span className="font-semibold text-base" style={{ color: COLORS.gold }}>
                       +AED {(totals?.tipAmount || 0).toFixed(2)}
                     </span>
@@ -424,7 +446,9 @@ export function CartSidebar({
 
                 {(totals?.taxAmount || 0) > 0 && (
                   <div className="flex justify-between items-center text-sm">
-                    <span className="font-medium" style={{ color: COLORS.lightText }}>Tax</span>
+                    <span className="font-medium" style={{ color: COLORS.lightText }}>
+                      Tax
+                    </span>
                     <span className="font-semibold text-base" style={{ color: COLORS.champagne }}>
                       AED {(totals?.taxAmount || 0).toFixed(2)}
                     </span>
@@ -444,7 +468,10 @@ export function CartSidebar({
                 >
                   <div className="flex items-center gap-2.5">
                     <Sparkles className="w-6 h-6" style={{ color: COLORS.gold }} />
-                    <span className="text-lg font-bold tracking-wide" style={{ color: COLORS.champagne }}>
+                    <span
+                      className="text-lg font-bold tracking-wide"
+                      style={{ color: COLORS.champagne }}
+                    >
                       TOTAL
                     </span>
                   </div>
@@ -506,8 +533,12 @@ export function CartSidebar({
           }
         }
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
         @keyframes scaleIn {
           from {
@@ -520,12 +551,23 @@ export function CartSidebar({
           }
         }
         @keyframes shimmer {
-          0% { background-position: -200% 0; transform: translateX(-100%); }
-          100% { background-position: 200% 0; transform: translateX(100%); }
+          0% {
+            background-position: -200% 0;
+            transform: translateX(-100%);
+          }
+          100% {
+            background-position: 200% 0;
+            transform: translateX(100%);
+          }
         }
         @keyframes gradient {
-          0%, 100% { opacity: 0.1; }
-          50% { opacity: 0.15; }
+          0%,
+          100% {
+            opacity: 0.1;
+          }
+          50% {
+            opacity: 0.15;
+          }
         }
         .animate-slideIn {
           animation: slideIn 0.5s ease-out;

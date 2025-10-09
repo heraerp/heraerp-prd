@@ -24,7 +24,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { EnhancedCustomerModal } from './EnhancedCustomerModal'
 
@@ -158,7 +164,9 @@ export function TicketDetailsModal({
     filters: {
       include_dynamic: true,
       include_relationships: true,
-      ...(selectedBranchForBill && selectedBranchForBill !== 'all' ? { branch_id: selectedBranchForBill } : {}),
+      ...(selectedBranchForBill && selectedBranchForBill !== 'all'
+        ? { branch_id: selectedBranchForBill }
+        : {}),
       limit: 100
     }
   })
@@ -226,9 +234,7 @@ export function TicketDetailsModal({
     const item = ticket.lineItems.find(i => i.id === itemId)
     if (!item) return
 
-    const updatedAssignments = (item.staff_assignments || []).filter(
-      a => a.staff_id !== staffId
-    )
+    const updatedAssignments = (item.staff_assignments || []).filter(a => a.staff_id !== staffId)
 
     onUpdateItem(itemId, {
       staff_assignments: updatedAssignments
@@ -252,7 +258,10 @@ export function TicketDetailsModal({
 
   const handlePayment = () => {
     // Check if branch is selected when "all" was initially selected
-    if ((!branchId || branchId === 'all') && (!selectedBranchForBill || selectedBranchForBill === 'all')) {
+    if (
+      (!branchId || branchId === 'all') &&
+      (!selectedBranchForBill || selectedBranchForBill === 'all')
+    ) {
       setShowBranchWarning(true)
       return
     }
@@ -289,7 +298,10 @@ export function TicketDetailsModal({
           }}
         />
         {/* Header */}
-        <DialogHeader className="p-6 border-b flex-shrink-0 relative z-10" style={{ borderColor: `${COLORS.gold}20` }}>
+        <DialogHeader
+          className="p-6 border-b flex-shrink-0 relative z-10"
+          style={{ borderColor: `${COLORS.gold}20` }}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
@@ -306,7 +318,8 @@ export function TicketDetailsModal({
                   Bill Details
                 </DialogTitle>
                 <p className="text-sm font-normal mt-0.5" style={{ color: COLORS.bronze }}>
-                  {ticket?.created_at ? formatTime(ticket.created_at) : 'New bill'} • {ticket.lineItems.length} {ticket.lineItems.length === 1 ? 'item' : 'items'}
+                  {ticket?.created_at ? formatTime(ticket.created_at) : 'New bill'} •{' '}
+                  {ticket.lineItems.length} {ticket.lineItems.length === 1 ? 'item' : 'items'}
                 </p>
               </div>
             </div>
@@ -315,7 +328,10 @@ export function TicketDetailsModal({
           {/* Branch Selection - Always Editable */}
           {availableBranches && availableBranches.length > 0 && (
             <div className="mt-4 space-y-2">
-              <Label className="text-sm font-semibold flex items-center gap-2" style={{ color: COLORS.champagne }}>
+              <Label
+                className="text-sm font-semibold flex items-center gap-2"
+                style={{ color: COLORS.champagne }}
+              >
                 <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
                 Branch for This Bill
                 {(!branchId || branchId === 'all') && <span style={{ color: COLORS.red }}>*</span>}
@@ -328,7 +344,11 @@ export function TicketDetailsModal({
                   className="h-11 border-2 transition-all hover:scale-[1.01]"
                   style={{
                     backgroundColor: COLORS.charcoalDark,
-                    borderColor: showBranchWarning ? COLORS.red : selectedBranchForBill ? `${COLORS.gold}50` : `${COLORS.gold}30`,
+                    borderColor: showBranchWarning
+                      ? COLORS.red
+                      : selectedBranchForBill
+                        ? `${COLORS.gold}50`
+                        : `${COLORS.gold}30`,
                     color: COLORS.champagne
                   }}
                 >
@@ -337,21 +357,24 @@ export function TicketDetailsModal({
                       <div className="flex items-center gap-2">
                         <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
                         <span style={{ color: COLORS.champagne }}>
-                          {availableBranches.find(b => b.id === selectedBranchForBill)?.entity_name || branchName}
+                          {availableBranches.find(b => b.id === selectedBranchForBill)
+                            ?.entity_name || branchName}
                         </span>
                       </div>
                     )}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {availableBranches.filter(b => b.id !== 'all').map(branch => (
-                    <SelectItem key={branch.id} value={branch.id}>
-                      <div className="flex items-center gap-2">
-                        <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
-                        {branch.entity_name}
-                      </div>
-                    </SelectItem>
-                  ))}
+                  {availableBranches
+                    .filter(b => b.id !== 'all')
+                    .map(branch => (
+                      <SelectItem key={branch.id} value={branch.id}>
+                        <div className="flex items-center gap-2">
+                          <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
+                          {branch.entity_name}
+                        </div>
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
               {showBranchWarning && (
@@ -371,7 +394,8 @@ export function TicketDetailsModal({
           )}
 
           <p id="ticket-details-description" className="sr-only">
-            View and manage bill details including line items, stylists, adjustments, and payment options.
+            View and manage bill details including line items, stylists, adjustments, and payment
+            options.
           </p>
         </DialogHeader>
 
@@ -383,10 +407,7 @@ export function TicketDetailsModal({
             style={{ borderColor: `${COLORS.gold}20` }}
           >
             {/* Customer Info */}
-            <div
-              className="p-4 border-b flex-shrink-0"
-              style={{ borderColor: `${COLORS.gold}20` }}
-            >
+            <div className="p-4 border-b flex-shrink-0" style={{ borderColor: `${COLORS.gold}20` }}>
               {ticket?.customer_name ? (
                 <div className="flex items-center gap-3">
                   <div
@@ -469,7 +490,10 @@ export function TicketDetailsModal({
                                   ) : (
                                     <Package className="w-4 h-4" style={{ color: COLORS.gold }} />
                                   )}
-                                  <span className="font-medium text-sm" style={{ color: COLORS.champagne }}>
+                                  <span
+                                    className="font-medium text-sm"
+                                    style={{ color: COLORS.champagne }}
+                                  >
                                     {item.entity_name}
                                   </span>
                                 </div>
@@ -531,7 +555,10 @@ export function TicketDetailsModal({
                                   border: `1px solid ${COLORS.gold}30`
                                 }}
                               >
-                                <span className="text-xs font-medium" style={{ color: COLORS.bronze }}>
+                                <span
+                                  className="text-xs font-medium"
+                                  style={{ color: COLORS.bronze }}
+                                >
                                   Total
                                 </span>
                                 <span className="text-sm font-bold" style={{ color: COLORS.gold }}>
@@ -577,7 +604,10 @@ export function TicketDetailsModal({
                                   ) : (
                                     <Package className="w-4 h-4" style={{ color: COLORS.bronze }} />
                                   )}
-                                  <span className="font-medium text-sm" style={{ color: COLORS.champagne }}>
+                                  <span
+                                    className="font-medium text-sm"
+                                    style={{ color: COLORS.champagne }}
+                                  >
                                     {item.entity_name}
                                   </span>
                                 </div>
@@ -614,7 +644,10 @@ export function TicketDetailsModal({
 
                               {/* Staff Assignments */}
                               {item.entity_type === 'service' && (
-                                <div className="pt-2 border-t space-y-2" style={{ borderColor: `${COLORS.gold}15` }}>
+                                <div
+                                  className="pt-2 border-t space-y-2"
+                                  style={{ borderColor: `${COLORS.gold}15` }}
+                                >
                                   <div className="flex items-center justify-between">
                                     <Label className="text-xs" style={{ color: COLORS.bronze }}>
                                       Staff Assigned
@@ -650,7 +683,7 @@ export function TicketDetailsModal({
                                   {addingStaffToItem === item.id && (
                                     <Select
                                       value=""
-                                      onValueChange={(value) => handleAddStaff(item.id, value)}
+                                      onValueChange={value => handleAddStaff(item.id, value)}
                                       disabled={isLoadingStaff}
                                     >
                                       <SelectTrigger
@@ -661,7 +694,11 @@ export function TicketDetailsModal({
                                           color: COLORS.champagne
                                         }}
                                       >
-                                        <SelectValue placeholder={isLoadingStaff ? "Loading..." : "Select staff to add"} />
+                                        <SelectValue
+                                          placeholder={
+                                            isLoadingStaff ? 'Loading...' : 'Select staff to add'
+                                          }
+                                        />
                                       </SelectTrigger>
                                       <SelectContent>
                                         {staff
@@ -684,7 +721,9 @@ export function TicketDetailsModal({
                                                   {getInitials(stylist.entity_name)}
                                                 </div>
                                                 <div>
-                                                  <div className="font-medium">{stylist.entity_name}</div>
+                                                  <div className="font-medium">
+                                                    {stylist.entity_name}
+                                                  </div>
                                                   {stylist.role_title && (
                                                     <div className="text-xs opacity-70">
                                                       {stylist.role_title}
@@ -846,10 +885,7 @@ export function TicketDetailsModal({
             </ScrollArea>
 
             {/* Footer Actions */}
-            <div
-              className="p-4 border-t flex-shrink-0"
-              style={{ borderColor: `${COLORS.gold}20` }}
-            >
+            <div className="p-4 border-t flex-shrink-0" style={{ borderColor: `${COLORS.gold}20` }}>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -871,7 +907,8 @@ export function TicketDetailsModal({
                       !onPayment || ticket.lineItems.length === 0
                         ? COLORS.charcoalDark
                         : `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                    color: !onPayment || ticket.lineItems.length === 0 ? COLORS.bronze : COLORS.black,
+                    color:
+                      !onPayment || ticket.lineItems.length === 0 ? COLORS.bronze : COLORS.black,
                     opacity: !onPayment || ticket.lineItems.length === 0 ? 0.5 : 1
                   }}
                 >

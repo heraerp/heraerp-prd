@@ -179,8 +179,8 @@ export async function DELETE(
         console.error('[DELETE entity] Entity delete error:', entityError)
 
         // Check if it's a foreign key constraint violation
-        const isForeignKeyError = entityError.message?.includes('foreign key constraint') ||
-                                  entityError.code === '23503'
+        const isForeignKeyError =
+          entityError.message?.includes('foreign key constraint') || entityError.code === '23503'
 
         return NextResponse.json(
           {

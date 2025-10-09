@@ -32,7 +32,10 @@ export default function InventorySettingsPage() {
         style={{ backgroundColor: COLORS.black }}
       >
         <div className="text-center">
-          <Package className="w-12 h-12 mx-auto mb-4 animate-pulse" style={{ color: COLORS.gold }} />
+          <Package
+            className="w-12 h-12 mx-auto mb-4 animate-pulse"
+            style={{ color: COLORS.gold }}
+          />
           <p style={{ color: COLORS.champagne }}>Loading...</p>
         </div>
       </div>
@@ -41,19 +44,11 @@ export default function InventorySettingsPage() {
 
   // organizationId is available, render the page immediately
   return (
-    <div
-      className="min-h-screen p-6"
-      style={{ backgroundColor: COLORS.black }}
-    >
+    <div className="min-h-screen p-6" style={{ backgroundColor: COLORS.black }}>
       {/* Back Button */}
       <div className="mb-4">
         <Link href="/salon/settings">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2"
-            style={{ color: COLORS.bronze }}
-          >
+          <Button variant="ghost" size="sm" className="gap-2" style={{ color: COLORS.bronze }}>
             <ArrowLeft className="w-4 h-4" />
             Back to Settings
           </Button>
@@ -116,15 +111,15 @@ export default function InventorySettingsPage() {
           <li className="flex items-start gap-2">
             <span style={{ color: COLORS.gold }}>•</span>
             <span>
-              <strong style={{ color: COLORS.champagne }}>Track by Branch:</strong> Maintain separate
-              stock levels for each location
+              <strong style={{ color: COLORS.champagne }}>Track by Branch:</strong> Maintain
+              separate stock levels for each location
             </span>
           </li>
           <li className="flex items-start gap-2">
             <span style={{ color: COLORS.gold }}>•</span>
             <span>
-              <strong style={{ color: COLORS.champagne }}>Per-Product Control:</strong> Enable tracking
-              only for physical products (not services)
+              <strong style={{ color: COLORS.champagne }}>Per-Product Control:</strong> Enable
+              tracking only for physical products (not services)
             </span>
           </li>
         </ul>

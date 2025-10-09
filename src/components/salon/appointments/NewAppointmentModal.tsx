@@ -1,7 +1,17 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { X, Calendar, Clock, User, Scissors, DollarSign, FileText, Loader2, Building2 } from 'lucide-react'
+import {
+  X,
+  Calendar,
+  Clock,
+  User,
+  Scissors,
+  DollarSign,
+  FileText,
+  Loader2,
+  Building2
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -157,26 +167,26 @@ export function NewAppointmentModal({
     const fetchData = async () => {
       setFormLoading(true)
       console.log('Fetching appointment modal data for org:', effectiveOrgId)
-      
+
       // Set a timeout to ensure loading state is cleared
       const loadingTimeout = setTimeout(() => {
         console.log('Loading timeout reached, forcing loading to false')
         setFormLoading(false)
       }, 5000)
-      
+
       // Set organization ID on universalApi
       universalApi.setOrganizationId(effectiveOrgId!)
-      
+
       try {
         // Fetch branches first separately to debug
         console.log('Fetching branches...')
-        const branchesResp = await universalApi.getEntities({ 
-          organizationId: effectiveOrgId, 
-          filters: { entity_type: 'BRANCH' } 
+        const branchesResp = await universalApi.getEntities({
+          organizationId: effectiveOrgId,
+          filters: { entity_type: 'BRANCH' }
         })
-        
+
         console.log('Branches response:', branchesResp)
-        
+
         if (branchesResp.success && branchesResp.data) {
           const branchList = branchesResp.data.map((b: any) => ({
             id: b.id,
@@ -189,20 +199,20 @@ export function NewAppointmentModal({
           console.log('No branches found or error:', branchesResp.error)
           setBranches([])
         }
-        
+
         // Fetch other data
         const [customersResp, servicesResp, staffResp] = await Promise.all([
-          universalApi.getEntities({ 
-            organizationId: effectiveOrgId, 
-            filters: { entity_type: 'customer' } 
+          universalApi.getEntities({
+            organizationId: effectiveOrgId,
+            filters: { entity_type: 'customer' }
           }),
-          universalApi.getEntities({ 
-            organizationId: effectiveOrgId, 
-            filters: { entity_type: 'service' } 
+          universalApi.getEntities({
+            organizationId: effectiveOrgId,
+            filters: { entity_type: 'service' }
           }),
-          universalApi.getEntities({ 
-            organizationId: effectiveOrgId, 
-            filters: { entity_type: 'employee' } 
+          universalApi.getEntities({
+            organizationId: effectiveOrgId,
+            filters: { entity_type: 'employee' }
           })
         ])
 
@@ -276,7 +286,14 @@ export function NewAppointmentModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!branchId || !customerId || !serviceId || !staffId || !appointmentDate || !appointmentTime) {
+    if (
+      !branchId ||
+      !customerId ||
+      !serviceId ||
+      !staffId ||
+      !appointmentDate ||
+      !appointmentTime
+    ) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields'
@@ -312,7 +329,7 @@ export function NewAppointmentModal({
         description: 'Appointment created successfully',
         variant: 'default'
       })
-      
+
       // Add a small delay to ensure toast is shown before modal closes
       setTimeout(() => {
         onSuccess()
@@ -393,7 +410,11 @@ export function NewAppointmentModal({
                 <SelectValue placeholder="Select a location" />
               </SelectTrigger>
               <SelectContent className="bg-background border-border">
-                {console.log('Branch dropdown state:', { formLoading, branchesLength: branches.length, branches }) || null}
+                {console.log('Branch dropdown state:', {
+                  formLoading,
+                  branchesLength: branches.length,
+                  branches
+                }) || null}
                 {formLoading ? (
                   <div className="px-2 py-3 text-center">
                     <Loader2 className="h-4 w-4 animate-spin mx-auto" />

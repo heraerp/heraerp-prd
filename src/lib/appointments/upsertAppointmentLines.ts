@@ -22,9 +22,10 @@ export async function upsertAppointmentLines(input: LineInput): Promise<void> {
   const { organizationId, appointmentId, items } = input
 
   // Extract ID if appointmentId is an object
-  const entityId = typeof appointmentId === 'string'
-    ? appointmentId
-    : (appointmentId as any).id || (appointmentId as any).entity_id
+  const entityId =
+    typeof appointmentId === 'string'
+      ? appointmentId
+      : (appointmentId as any).id || (appointmentId as any).entity_id
 
   // Validate required fields
   if (!organizationId) throw new Error('Organization ID is required')

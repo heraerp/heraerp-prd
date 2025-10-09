@@ -96,33 +96,33 @@ export function Board({
     return (
       <div className="flex h-full gap-4 p-6 overflow-x-auto animate-fadeIn">
         {KANBAN_COLUMNS.map((column, index) => (
-          <div 
-            key={column.key} 
+          <div
+            key={column.key}
             className="w-80 flex-shrink-0 animate-slideUp"
             style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <div 
+            <div
               className="h-12 w-full mb-4 rounded-lg animate-pulse"
-              style={{ 
+              style={{
                 backgroundColor: `${LUXE_COLORS.gold}20`,
                 boxShadow: `0 4px 16px ${LUXE_COLORS.gold}10`
               }}
             />
             <div className="space-y-3">
-              <div 
+              <div
                 className="h-32 w-full rounded-lg animate-pulse"
                 style={{ backgroundColor: `${LUXE_COLORS.charcoal}40` }}
               />
-              <div 
+              <div
                 className="h-32 w-full rounded-lg animate-pulse"
-                style={{ 
+                style={{
                   backgroundColor: `${LUXE_COLORS.charcoal}40`,
                   animationDelay: '0.2s'
                 }}
               />
-              <div 
+              <div
                 className="h-32 w-full rounded-lg animate-pulse"
-                style={{ 
+                style={{
                   backgroundColor: `${LUXE_COLORS.charcoal}40`,
                   animationDelay: '0.4s'
                 }}
@@ -155,7 +155,7 @@ export function Board({
           <div
             key={column.key}
             className="animate-slideUp"
-            style={{ 
+            style={{
               animationDelay: `${index * 0.05}s`,
               animationFillMode: 'backwards'
             }}

@@ -40,8 +40,17 @@ interface InventorySettingsCardProps {
   onSettingsChange?: () => void
 }
 
-export function InventorySettingsCard({ organizationId, onSettingsChange }: InventorySettingsCardProps) {
-  const { settings, isLoading: isFetching, error, updateSettings, isUpdating } = useInventorySettings(organizationId)
+export function InventorySettingsCard({
+  organizationId,
+  onSettingsChange
+}: InventorySettingsCardProps) {
+  const {
+    settings,
+    isLoading: isFetching,
+    error,
+    updateSettings,
+    isUpdating
+  } = useInventorySettings(organizationId)
   const { toast } = useToast()
 
   const isEnabled = settings?.inventoryEnabled ?? false
@@ -49,28 +58,31 @@ export function InventorySettingsCard({ organizationId, onSettingsChange }: Inve
 
   const handleToggle = (value: boolean) => {
     console.log('[InventorySettingsCard] Toggle to:', value)
-    updateSettings({
-      organizationId,
-      inventoryEnabled: value
-    }, {
-      onSuccess: () => {
-        console.log('[InventorySettingsCard] Update successful')
-        toast({
-          title: 'Settings Updated',
-          description: `Inventory tracking ${value ? 'enabled' : 'disabled'} successfully`,
-          variant: 'default'
-        })
-        onSettingsChange?.()
+    updateSettings(
+      {
+        organizationId,
+        inventoryEnabled: value
       },
-      onError: (error: any) => {
-        console.error('[InventorySettingsCard] Update failed:', error)
-        toast({
-          title: 'Update Failed',
-          description: error?.message || 'Failed to update inventory settings',
-          variant: 'destructive'
-        })
+      {
+        onSuccess: () => {
+          console.log('[InventorySettingsCard] Update successful')
+          toast({
+            title: 'Settings Updated',
+            description: `Inventory tracking ${value ? 'enabled' : 'disabled'} successfully`,
+            variant: 'default'
+          })
+          onSettingsChange?.()
+        },
+        onError: (error: any) => {
+          console.error('[InventorySettingsCard] Update failed:', error)
+          toast({
+            title: 'Update Failed',
+            description: error?.message || 'Failed to update inventory settings',
+            variant: 'destructive'
+          })
+        }
       }
-    })
+    )
   }
 
   // Show error state if fetch failed
@@ -230,7 +242,10 @@ export function InventorySettingsCard({ organizationId, onSettingsChange }: Inve
           <Info className="w-5 h-5 mt-0.5" style={{ color: COLORS.bronze }} />
         )}
         <div>
-          <p className="text-sm font-medium mb-1" style={{ color: isEnabled ? COLORS.gold : COLORS.bronze }}>
+          <p
+            className="text-sm font-medium mb-1"
+            style={{ color: isEnabled ? COLORS.gold : COLORS.bronze }}
+          >
             {isEnabled ? 'Inventory Tracking Enabled' : 'Inventory Tracking Disabled'}
           </p>
           <p className="text-xs" style={{ color: COLORS.bronze }}>

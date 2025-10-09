@@ -130,7 +130,10 @@ export function useHeraProductCategories(options?: UseHeraProductCategoriesOptio
   }
 
   // Helper to update category
-  const updateCategory = async (id: string, data: Partial<Parameters<typeof createCategory>[0]>) => {
+  const updateCategory = async (
+    id: string,
+    data: Partial<Parameters<typeof createCategory>[0]>
+  ) => {
     // Get existing category to build complete update
     const category = (categories as ProductCategory[])?.find(c => c.id === id)
 
@@ -160,7 +163,9 @@ export function useHeraProductCategories(options?: UseHeraProductCategoriesOptio
       ...(entity_name && { entity_name }),
       ...(data.description !== undefined && { entity_description: data.description }),
       ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
-      ...(data.status !== undefined && { status: data.status === 'inactive' ? 'archived' : 'active' })
+      ...(data.status !== undefined && {
+        status: data.status === 'inactive' ? 'archived' : 'active'
+      })
     }
 
     return baseUpdate(payload)

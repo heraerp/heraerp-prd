@@ -74,12 +74,7 @@ export interface UsePosCartReturn {
   total: number
 
   // Actions - Add
-  addService: (
-    service: any,
-    staffId: string,
-    staffName?: string,
-    appointmentId?: string
-  ) => void
+  addService: (service: any, staffId: string, staffName?: string, appointmentId?: string) => void
   addProduct: (product: any, staffId?: string, staffName?: string) => void
 
   // Actions - Update
@@ -157,9 +152,7 @@ export function usePosCart(): UsePosCartReturn {
 
     setCartState(prev => ({
       ...prev,
-      lineItems: prev.lineItems.map((line, idx) =>
-        idx === index ? { ...line, qty } : line
-      )
+      lineItems: prev.lineItems.map((line, idx) => (idx === index ? { ...line, qty } : line))
     }))
   }, [])
 
@@ -240,7 +233,12 @@ export function usePosCart(): UsePosCartReturn {
     const total = subtotal - discountTotal + (cartState.tip_amount || 0)
 
     return { subtotal, discountTotal, total: Math.max(0, total) }
-  }, [cartState.lineItems, cartState.discount_amount, cartState.discount_type, cartState.tip_amount])
+  }, [
+    cartState.lineItems,
+    cartState.discount_amount,
+    cartState.discount_type,
+    cartState.tip_amount
+  ])
 
   return {
     // State

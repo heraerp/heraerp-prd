@@ -1,0 +1,239 @@
+{
+  "policyMetadata": {
+    "policyName": "Automatic Sales Transaction Posting Policy",
+    "policyType": "posting_automation",
+    "smartCode": "HERA.ACCOUNTING.POLICY.RULE.ENTITY.v2",
+    "version": "v2.1.0",
+    "description": "Automatically posts GL entries for sales transactions",
+    "priority": 1,
+    "status": "active",
+    "lastUpdated": "2025-01-10T10:30:00Z"
+  },
+  "triggerConditions": {
+    "smartCodePattern": "HERA\\.SALES\\.TXN\\.(ORDER|INVOICE)\\.v2",
+    "transactionTypes": ["sale", "invoice"],
+    "amountThreshold": {
+      "minimum": 0.01,
+      "maximum": 999999.99,
+      "currency": "USD"
+    },
+    "dateRange": {
+      "startDate": "2024-01-01",
+      "endDate": null,
+      "excludeWeekends": false,
+      "excludeHolidays": false
+    },
+    "businessRules": {
+      "requireCustomer": true,
+      "requireLineItems": true,
+      "validateTaxCalculation": true,
+      "checkInventoryAvailability": false
+    }
+  },
+  "postingRules": [
+    {
+      "sequence": 1,
+      "description": "Debit Cash Account",
+      "condition": "transaction.payment_method == 'cash' || transaction.payment_method == 'card'",
+      "accountMapping": {
+        "determinationMethod": "fixed",
+        "accountCode": "1100",
+        "accountType": "ASSET",
+        "accountName": "Cash - Operating",
+        "postingSide": "DEBIT"
+      },
+      "amountCalculation": {
+        "source": "transaction.total_amount",
+        "formula": "source * 1.0",
+        "adjustments": [],
+        "rounding": {
+          "method": "standard",
+          "precision": 2
+        }
+      },
+      "smartCode": "HERA.ACCOUNTING.GL.LINE.DEBIT.v2"
+    },
+    {
+      "sequence": 2,
+      "description": "Debit Accounts Receivable",
+      "condition": "transaction.payment_method == 'credit' || transaction.payment_terms != 'immediate'",
+      "accountMapping": {
+        "determinationMethod": "mapped",
+        "accountCode": "1200",
+        "accountType": "ASSET",
+        "accountName": "Accounts Receivable",
+        "postingSide": "DEBIT",
+        "mappingRules": {
+          "customerBased": true,
+          "termsBased": true
+        }
+      },
+      "amountCalculation": {
+        "source": "transaction.total_amount",
+        "formula": "source * 1.0"
+      },
+      "smartCode": "HERA.ACCOUNTING.GL.LINE.DEBIT.v2"
+    },
+    {
+      "sequence": 3,
+      "description": "Credit Sales Revenue",
+      "condition": "always",
+      "accountMapping": {
+        "determinationMethod": "calculated",
+        "accountCode": "4100",
+        "accountType": "REVENUE",
+        "accountName": "Sales Revenue",
+        "postingSide": "CREDIT",
+        "calculationRules": {
+          "basedOn": "product_category",
+          "mappingTable": {
+            "PRODUCT": "4100",
+            "SERVICE": "4200",
+            "SUBSCRIPTION": "4300"
+          }
+        }
+      },
+      "amountCalculation": {
+        "source": "transaction.subtotal_amount",
+        "formula": "source * 1.0",
+        "adjustments": [
+          {
+            "type": "discount_adjustment",
+            "condition": "transaction.discount_amount > 0",
+            "operation": "subtract",
+            "value": "transaction.discount_amount"
+          }
+        ]
+      },
+      "smartCode": "HERA.ACCOUNTING.GL.LINE.CREDIT.v2"
+    },
+    {
+      "sequence": 4,
+      "description": "Credit Sales Tax",
+      "condition": "transaction.tax_amount > 0",
+      "accountMapping": {
+        "determinationMethod": "fixed",
+        "accountCode": "2250",
+        "accountType": "LIABILITY",
+        "accountName": "Sales Tax Payable",
+        "postingSide": "CREDIT"
+      },
+      "amountCalculation": {
+        "source": "transaction.tax_amount",
+        "formula": "source * 1.0"
+      },
+      "smartCode": "HERA.ACCOUNTING.GL.LINE.CREDIT.v2"
+    }
+  ],
+  "validationRules": [
+    {
+      "ruleId": "gl_balance_check",
+      "ruleName": "GL Balance Validation",
+      "ruleType": "balance_validation",
+      "description": "Ensure debits equal credits",
+      "condition": "sum(debits) == sum(credits)",
+      "tolerance": 0.01,
+      "severity": "blocking",
+      "errorMessage": "GL posting is not balanced - debits must equal credits"
+    },
+    {
+      "ruleId": "account_existence_check",
+      "ruleName": "GL Account Validation",
+      "ruleType": "entity_validation",
+      "description": "Validate all GL accounts exist and are active",
+      "condition": "all_accounts_exist_and_active",
+      "severity": "blocking",
+      "errorMessage": "One or more GL accounts are invalid or inactive"
+    },
+    {
+      "ruleId": "fiscal_period_check",
+      "ruleName": "Fiscal Period Validation",
+      "ruleType": "period_validation",
+      "description": "Ensure posting to open fiscal period",
+      "condition": "transaction_date_in_open_period",
+      "severity": "warning",
+      "errorMessage": "Posting to closed fiscal period requires approval"
+    }
+  ],
+  "notificationSettings": {
+    "onSuccess": {
+      "enabled": true,
+      "recipients": ["finance@company.com"],
+      "template": "gl_posting_success"
+    },
+    "onError": {
+      "enabled": true,
+      "recipients": ["finance@company.com", "admin@company.com"],
+      "template": "gl_posting_error",
+      "escalation": {
+        "enabled": true,
+        "timeoutMinutes": 30,
+        "escalationRecipients": ["cfo@company.com"]
+      }
+    }
+  },
+  "auditConfiguration": {
+    "logLevel": "detailed",
+    "retentionDays": 2555,
+    "includeRequestData": true,
+    "includeResponseData": true,
+    "sensitiveFieldMasking": true,
+    "smartCode": "HERA.ACCOUNTING.AUDIT.POLICY.EXECUTION.v2"
+  },
+  "performanceSettings": {
+    "batchProcessing": {
+      "enabled": true,
+      "batchSize": 100,
+      "batchTimeoutSeconds": 300
+    },
+    "caching": {
+      "enabled": true,
+      "ttlSeconds": 300,
+      "cacheKey": "sales_posting_policy_v2"
+    },
+    "parallelProcessing": {
+      "enabled": false,
+      "maxConcurrency": 5
+    }
+  },
+  "testScenarios": [
+    {
+      "scenarioName": "Cash Sale - Standard",
+      "testData": {
+        "smart_code": "HERA.SALES.TXN.ORDER.v2",
+        "transaction_type": "sale",
+        "payment_method": "cash",
+        "total_amount": 1000.00,
+        "subtotal_amount": 909.09,
+        "tax_amount": 90.91,
+        "discount_amount": 0.00
+      },
+      "expectedResult": {
+        "postingTriggered": true,
+        "glLinesCount": 3,
+        "totalDebits": 1000.00,
+        "totalCredits": 1000.00,
+        "balanced": true
+      }
+    },
+    {
+      "scenarioName": "Credit Sale with Discount",
+      "testData": {
+        "smart_code": "HERA.SALES.TXN.ORDER.v2",
+        "transaction_type": "sale",
+        "payment_method": "credit",
+        "payment_terms": "NET30",
+        "total_amount": 850.00,
+        "subtotal_amount": 727.27,
+        "tax_amount": 72.73,
+        "discount_amount": 50.00
+      },
+      "expectedResult": {
+        "postingTriggered": true,
+        "glLinesCount": 3,
+        "accountsUsed": ["1200", "4100", "2250"],
+        "balanced": true
+      }
+    }
+  ]
+}

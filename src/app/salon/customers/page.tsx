@@ -130,7 +130,15 @@ function SalonCustomersPageContent() {
         )
       }
     },
-    [editingCustomer, updateCustomer, createCustomer, showLoading, removeToast, showSuccess, showError]
+    [
+      editingCustomer,
+      updateCustomer,
+      createCustomer,
+      showLoading,
+      removeToast,
+      showSuccess,
+      showError
+    ]
   )
 
   const handleEdit = useCallback((customer: CustomerEntity) => {
@@ -265,7 +273,16 @@ function SalonCustomersPageContent() {
     } finally {
       setIsDeleting(false)
     }
-  }, [customerToDelete, deleteCustomer, updateCustomer, refetchCustomers, showLoading, removeToast, showSuccess, showError])
+  }, [
+    customerToDelete,
+    deleteCustomer,
+    updateCustomer,
+    refetchCustomers,
+    showLoading,
+    removeToast,
+    showSuccess,
+    showError
+  ])
 
   const handleArchive = useCallback(
     async (customer: CustomerEntity) => {

@@ -22,7 +22,8 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'CivicFlow: Complete Guide to Modern Government CRM & Grants Management Software | HERA ERP',
+  title:
+    'CivicFlow: Complete Guide to Modern Government CRM & Grants Management Software | HERA ERP',
   description:
     'Transform your public sector operations with CivicFlow. 1-week implementation, 90% cost reduction vs traditional government CRM. Built-in grants management, AI-powered automation, and compliance tracking for government agencies and non-profits.',
   keywords:
@@ -66,7 +67,8 @@ export default function CivicFlowBlogPost() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'BlogPosting',
-            headline: 'CivicFlow: Complete Guide to Modern Government CRM & Grants Management Software',
+            headline:
+              'CivicFlow: Complete Guide to Modern Government CRM & Grants Management Software',
             description:
               'Comprehensive guide to CivicFlow government CRM platform. Learn how public sector agencies achieve 1-week implementation, 90% cost reduction, and complete grants management automation.',
             image: 'https://heraerp.com/og-civicflow-guide.jpg',
@@ -604,7 +606,9 @@ export default function CivicFlowBlogPost() {
                 Is my constituent data secure and compliant with privacy regulations?
               </h4>
               <p className="mb-4 text-gray-700 dark:text-gray-300">
-                <strong>Yes, CivicFlow is built with government-grade security and compliance.</strong>
+                <strong>
+                  Yes, CivicFlow is built with government-grade security and compliance.
+                </strong>
               </p>
               <p className="text-gray-700 dark:text-gray-300">
                 We provide data encryption (AES-256), role-based access control, audit logs,
@@ -649,9 +653,10 @@ export default function CivicFlowBlogPost() {
             About HERA & CivicFlow
           </h3>
           <p className="mb-6 text-lg text-gray-700 dark:text-gray-300">
-            CivicFlow is built on <strong>HERA (Hierarchical Enterprise Resource Architecture)</strong>,
-            the revolutionary ERP platform with a patent-pending Universal Data Model that eliminates
-            the complexity and cost of traditional enterprise software.
+            CivicFlow is built on{' '}
+            <strong>HERA (Hierarchical Enterprise Resource Architecture)</strong>, the revolutionary
+            ERP platform with a patent-pending Universal Data Model that eliminates the complexity
+            and cost of traditional enterprise software.
           </p>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <Link

@@ -22,7 +22,18 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, Trash2, Archive, ChevronDown, ChevronUp, Briefcase, Calendar, Building2, MapPin, CheckCircle2 } from 'lucide-react'
+import {
+  Loader2,
+  Trash2,
+  Archive,
+  ChevronDown,
+  ChevronUp,
+  Briefcase,
+  Calendar,
+  Building2,
+  MapPin,
+  CheckCircle2
+} from 'lucide-react'
 import type { Role } from '@/hooks/useHeraRoles'
 
 // Branch interface
@@ -132,7 +143,9 @@ export function StaffModal({
   // Extract branch IDs from STAFF_MEMBER_OF relationships
   const branchIdsFromStaff = staff?.relationships?.staff_member_of
     ? Array.isArray(staff.relationships.staff_member_of)
-      ? staff.relationships.staff_member_of.filter((rel: any) => rel?.to_entity?.id).map((rel: any) => rel.to_entity.id)
+      ? staff.relationships.staff_member_of
+          .filter((rel: any) => rel?.to_entity?.id)
+          .map((rel: any) => rel.to_entity.id)
       : staff.relationships.staff_member_of?.to_entity?.id
         ? [staff.relationships.staff_member_of.to_entity.id]
         : []
@@ -473,7 +486,10 @@ export function StaffModal({
                           onClick={() => {
                             const currentValue = watch('branch_ids') || []
                             if (isSelected) {
-                              setValue('branch_ids', currentValue.filter(id => id !== branch.id))
+                              setValue(
+                                'branch_ids',
+                                currentValue.filter(id => id !== branch.id)
+                              )
                             } else {
                               setValue('branch_ids', [...currentValue, branch.id])
                             }
@@ -548,7 +564,8 @@ export function StaffModal({
                     <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.7 }}>
                       Assigned to:{' '}
                       <span style={{ color: COLORS.gold, fontWeight: 600 }}>
-                        {watch('branch_ids')!.length} location{watch('branch_ids')!.length > 1 ? 's' : ''}
+                        {watch('branch_ids')!.length} location
+                        {watch('branch_ids')!.length > 1 ? 's' : ''}
                       </span>
                     </p>
                   ) : (
@@ -559,13 +576,20 @@ export function StaffModal({
                         borderColor: COLORS.gold + '40'
                       }}
                     >
-                      <Building2 className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: COLORS.gold }} />
+                      <Building2
+                        className="w-4 h-4 mt-0.5 flex-shrink-0"
+                        style={{ color: COLORS.gold }}
+                      />
                       <div>
                         <p className="text-xs font-semibold mb-1" style={{ color: COLORS.gold }}>
                           Auto-Assignment Active
                         </p>
                         <p className="text-xs" style={{ color: COLORS.champagne, opacity: 0.9 }}>
-                          No locations selected. This staff member will be automatically assigned to <strong>all {branches.length} location{branches.length > 1 ? 's' : ''}</strong> when saved.
+                          No locations selected. This staff member will be automatically assigned to{' '}
+                          <strong>
+                            all {branches.length} location{branches.length > 1 ? 's' : ''}
+                          </strong>{' '}
+                          when saved.
                         </p>
                       </div>
                     </div>

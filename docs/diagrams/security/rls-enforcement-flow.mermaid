@@ -1,0 +1,101 @@
+```mermaid
+sequenceDiagram
+    participant Client as Client Application
+    participant Gateway as API Gateway
+    participant Auth as Authentication Service
+    participant RLS as Row Level Security
+    participant DB as PostgreSQL Database
+    participant Audit as Audit System
+
+    Note over Client,Audit: Finance DNA v2 - Row Level Security Enforcement Flow
+
+    %% Authentication Phase
+    Client->>Gateway: API Request with JWT
+    Gateway->>Auth: Validate JWT Token
+    Auth->>Auth: Verify Signature (RS256)
+    Auth->>Auth: Check Expiration
+    Auth->>Auth: Validate Audience
+    
+    alt JWT Invalid
+        Auth-->>Gateway: Authentication Failed
+        Gateway-->>Client: 401 Unauthorized
+    else JWT Valid
+        Auth->>Auth: Extract Organization ID
+        Auth->>Gateway: JWT Validated + Org Context
+    end
+
+    %% Organization Context Setup
+    Gateway->>DB: Set Session Context
+    Note over DB: SET app.current_org = 'org-uuid'
+    DB-->>Gateway: Context Set
+
+    %% RLS Policy Enforcement
+    Gateway->>DB: Execute Query
+    Note over DB: Query with RLS Policy Applied
+    
+    DB->>RLS: Apply Organization Filter
+    Note over RLS: WHERE organization_id = current_setting('app.current_org')::uuid
+    
+    RLS->>DB: Filtered Query Execution
+    
+    alt Data Found in Organization
+        DB->>RLS: Return Filtered Results
+        RLS->>Gateway: Organization-Scoped Data
+        Gateway->>Client: Authorized Data Response
+        
+        %% Audit Success
+        Gateway->>Audit: Log Successful Access
+        Note over Audit: Smart Code: HERA.ACCOUNTING.SECURITY.ACCESS.SUCCESS.v2
+        
+    else No Data in Organization
+        DB->>RLS: Empty Result Set
+        RLS->>Gateway: No Data Found
+        Gateway->>Client: Empty Response
+        
+        %% Audit Access Attempt
+        Gateway->>Audit: Log Empty Result
+        Note over Audit: Smart Code: HERA.ACCOUNTING.SECURITY.ACCESS.EMPTY.v2
+        
+    else Cross-Organization Attempt
+        RLS->>RLS: Block Cross-Org Access
+        RLS->>Gateway: RLS Violation Detected
+        Gateway->>Client: 403 Forbidden
+        
+        %% Audit Security Violation
+        Gateway->>Audit: Log Security Violation
+        Note over Audit: Smart Code: HERA.ACCOUNTING.SECURITY.VIOLATION.CROSS.ORG.v2
+    end
+
+    %% Phase 8 Security Monitoring
+    rect rgb(255, 240, 240)
+        Note over Audit: Phase 8 Security Validation
+        Audit->>Audit: Analyze Access Pattern
+        Audit->>Audit: Check for Anomalies
+        
+        alt Suspicious Activity Detected
+            Audit->>Gateway: Trigger Security Alert
+            Gateway->>Auth: Enhanced Monitoring Mode
+            Note over Auth: Require MFA on Next Login
+        end
+    end
+
+    %% RLS Policy Examples
+    rect rgb(240, 248, 255)
+        Note over DB: RLS Policies on Sacred Six Tables
+        Note over DB: core_entities: organization_id filter
+        Note over DB: universal_transactions: organization_id filter
+        Note over DB: core_dynamic_data: organization_id filter
+        Note over DB: core_relationships: organization_id filter
+        Note over DB: universal_transaction_lines: organization_id filter
+        Note over DB: core_organizations: read-only access
+    end
+
+    %% Performance Metrics
+    rect rgb(240, 255, 240)
+        Note over Gateway,DB: Performance Benchmarks
+        Note over Gateway: API Response: <100ms
+        Note over RLS: RLS Overhead: <5ms
+        Note over DB: Query Execution: <50ms
+        Note over Audit: Audit Logging: <10ms
+    end
+```

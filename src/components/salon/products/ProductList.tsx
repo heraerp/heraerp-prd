@@ -21,7 +21,15 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { formatDistanceToNow } from 'date-fns'
-import { Edit, Trash2, Archive, ArchiveRestore, MoreVertical, Package, ExternalLink } from 'lucide-react'
+import {
+  Edit,
+  Trash2,
+  Archive,
+  ArchiveRestore,
+  MoreVertical,
+  Package,
+  ExternalLink
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { InventoryChip } from './InventoryChip'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
@@ -95,8 +103,14 @@ export function ProductList({
                   style={{ backgroundColor: COLORS.gold + '15' }}
                 />
                 <div className="flex-1 space-y-2">
-                  <div className="h-5 rounded" style={{ backgroundColor: COLORS.champagne + '15', width: '80%' }} />
-                  <div className="h-4 rounded" style={{ backgroundColor: COLORS.bronze + '12', width: '40%' }} />
+                  <div
+                    className="h-5 rounded"
+                    style={{ backgroundColor: COLORS.champagne + '15', width: '80%' }}
+                  />
+                  <div
+                    className="h-4 rounded"
+                    style={{ backgroundColor: COLORS.bronze + '12', width: '40%' }}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2.5">
@@ -108,10 +122,19 @@ export function ProductList({
                   />
                 ))}
               </div>
-              <div className="h-10 rounded-lg" style={{ backgroundColor: COLORS.charcoalDark + '40' }} />
+              <div
+                className="h-10 rounded-lg"
+                style={{ backgroundColor: COLORS.charcoalDark + '40' }}
+              />
               <div className="flex gap-2">
-                <div className="h-7 flex-1 rounded" style={{ backgroundColor: COLORS.gold + '12' }} />
-                <div className="h-7 w-16 rounded-lg" style={{ backgroundColor: COLORS.gold + '12' }} />
+                <div
+                  className="h-7 flex-1 rounded"
+                  style={{ backgroundColor: COLORS.gold + '12' }}
+                />
+                <div
+                  className="h-7 w-16 rounded-lg"
+                  style={{ backgroundColor: COLORS.gold + '12' }}
+                />
               </div>
             </div>
           </div>
@@ -295,10 +318,7 @@ export function ProductList({
 
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <InventoryChip
-                      productId={product.id}
-                      organizationId={organizationId}
-                    />
+                    <InventoryChip productId={product.id} organizationId={organizationId} />
                     <Link
                       href={`/salon/inventory?productId=${product.id}${selectedBranchId ? `&branchId=${selectedBranchId}` : ''}`}
                       className="text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
@@ -453,7 +473,8 @@ function ProductCard({
   // Check for stock in multiple locations (stock_quantity, stock_level, qty_on_hand)
   const stockQty = product.stock_quantity || product.stock_level || product.qty_on_hand || 0
   const stockValue = sellingPrice * stockQty
-  const margin = sellingPrice > 0 ? (((sellingPrice - costPrice) / sellingPrice) * 100).toFixed(1) : '0'
+  const margin =
+    sellingPrice > 0 ? (((sellingPrice - costPrice) / sellingPrice) * 100).toFixed(1) : '0'
 
   return (
     <div
@@ -490,7 +511,10 @@ function ProductCard({
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-base mb-1 leading-tight truncate" style={{ color: COLORS.champagne }}>
+          <h3
+            className="font-bold text-base mb-1 leading-tight truncate"
+            style={{ color: COLORS.champagne }}
+          >
             {product.entity_name}
           </h3>
           {product.entity_code && (
@@ -601,7 +625,10 @@ function ProductCard({
             border: `1px solid ${COLORS.gold}20`
           }}
         >
-          <p className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60" style={{ color: COLORS.gold }}>
+          <p
+            className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60"
+            style={{ color: COLORS.gold }}
+          >
             Price
           </p>
           <p className="font-bold text-sm" style={{ color: COLORS.gold }}>
@@ -616,7 +643,10 @@ function ProductCard({
             border: `1px solid ${COLORS.bronze}20`
           }}
         >
-          <p className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60" style={{ color: COLORS.bronze }}>
+          <p
+            className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60"
+            style={{ color: COLORS.bronze }}
+          >
             Cost
           </p>
           <p className="font-bold text-sm" style={{ color: COLORS.champagne }}>
@@ -631,7 +661,10 @@ function ProductCard({
             border: `1px solid ${COLORS.champagne}20`
           }}
         >
-          <p className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60" style={{ color: COLORS.champagne }}>
+          <p
+            className="text-[9px] uppercase tracking-wide mb-0.5 font-medium opacity-60"
+            style={{ color: COLORS.champagne }}
+          >
             Margin
           </p>
           <p className="font-bold text-sm" style={{ color: COLORS.champagne }}>

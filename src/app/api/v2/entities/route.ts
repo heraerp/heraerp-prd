@@ -198,9 +198,11 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('p_limit') || searchParams.get('limit') || '100')
     const offset = parseInt(searchParams.get('p_offset') || searchParams.get('offset') || '0')
     const include_dynamic =
-      searchParams.get('p_include_dynamic') !== 'false' && searchParams.get('include_dynamic') !== 'false'
+      searchParams.get('p_include_dynamic') !== 'false' &&
+      searchParams.get('include_dynamic') !== 'false'
     const include_relationships =
-      searchParams.get('p_include_relationships') !== 'false' && searchParams.get('include_relationships') !== 'false'
+      searchParams.get('p_include_relationships') !== 'false' &&
+      searchParams.get('include_relationships') !== 'false'
 
     const supabase = getSupabaseService()
 
@@ -260,7 +262,7 @@ export async function GET(request: NextRequest) {
         success: true,
         data: result.data || [],
         pagination: {
-          total: result.metadata?.total || (result.data?.length || 0),
+          total: result.metadata?.total || result.data?.length || 0,
           limit,
           offset
         }

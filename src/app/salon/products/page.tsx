@@ -371,8 +371,7 @@ function SalonProductsPageContent() {
   const activeCount = products.filter(p => p.status === 'active').length
   const archivedCount = products.filter(p => p.status === 'archived').length
   const totalValue = products.reduce(
-    (sum, product) =>
-      sum + (product.price_cost || 0) * (product.stock_quantity || 0),
+    (sum, product) => sum + (product.price_cost || 0) * (product.stock_quantity || 0),
     0
   )
   const lowStockCount = products.filter(
@@ -540,11 +539,17 @@ function SalonProductsPageContent() {
                       All Locations
                     </SelectItem>
                     {branchesLoading ? (
-                      <div className="px-2 py-3 text-center text-sm" style={{ color: COLORS.bronze }}>
+                      <div
+                        className="px-2 py-3 text-center text-sm"
+                        style={{ color: COLORS.bronze }}
+                      >
                         Loading...
                       </div>
                     ) : branches.length === 0 ? (
-                      <div className="px-2 py-3 text-center text-sm" style={{ color: COLORS.bronze }}>
+                      <div
+                        className="px-2 py-3 text-center text-sm"
+                        style={{ color: COLORS.bronze }}
+                      >
                         No branches
                       </div>
                     ) : (
@@ -630,7 +635,9 @@ function SalonProductsPageContent() {
                 <button
                   onClick={() => setIncludeArchived(!includeArchived)}
                   className={`px-3 py-2 rounded-lg transition-all flex items-center gap-2 ${
-                    includeArchived ? 'bg-gold/20 border-gold/40' : 'hover:bg-white/10 border-bronze/30'
+                    includeArchived
+                      ? 'bg-gold/20 border-gold/40'
+                      : 'hover:bg-white/10 border-bronze/30'
                   } border`}
                   style={{
                     color: includeArchived ? COLORS.gold : COLORS.lightText,
@@ -761,11 +768,17 @@ function SalonProductsPageContent() {
                 >
                   Total Products
                 </p>
-                <p className="text-2xl font-bold mb-0.5 tracking-tight" style={{ color: COLORS.champagne }}>
+                <p
+                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  style={{ color: COLORS.champagne }}
+                >
                   {products.length}
                 </p>
                 <div className="flex items-center gap-1.5 mt-1.5">
-                  <div className="w-1 h-1 rounded-full" style={{ backgroundColor: COLORS.bronze + '80' }} />
+                  <div
+                    className="w-1 h-1 rounded-full"
+                    style={{ backgroundColor: COLORS.bronze + '80' }}
+                  />
                   <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
                     Across all categories
                   </p>
@@ -819,11 +832,17 @@ function SalonProductsPageContent() {
                 >
                   Active Products
                 </p>
-                <p className="text-2xl font-bold mb-0.5 tracking-tight" style={{ color: COLORS.champagne }}>
+                <p
+                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  style={{ color: COLORS.champagne }}
+                >
                   {activeCount}
                 </p>
                 <div className="flex items-center gap-1.5 mt-1.5">
-                  <div className="w-1 h-1 rounded-full" style={{ backgroundColor: COLORS.gold + '80' }} />
+                  <div
+                    className="w-1 h-1 rounded-full"
+                    style={{ backgroundColor: COLORS.gold + '80' }}
+                  />
                   <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
                     Ready for sale
                   </p>
@@ -860,7 +879,10 @@ function SalonProductsPageContent() {
                   >
                     <DollarSign className="h-4 w-4" style={{ color: COLORS.gold }} />
                   </div>
-                  <TrendingUp className="h-3 w-3 opacity-40 group-hover:opacity-70 transition-opacity" style={{ color: COLORS.gold }} />
+                  <TrendingUp
+                    className="h-3 w-3 opacity-40 group-hover:opacity-70 transition-opacity"
+                    style={{ color: COLORS.gold }}
+                  />
                 </div>
                 <p
                   className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
@@ -868,7 +890,10 @@ function SalonProductsPageContent() {
                 >
                   Inventory Value
                 </p>
-                <p className="text-2xl font-bold mb-0.5 tracking-tight" style={{ color: COLORS.gold }}>
+                <p
+                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  style={{ color: COLORS.gold }}
+                >
                   AED {totalValue.toLocaleString()}
                 </p>
                 <div className="flex items-center gap-1.5 mt-1.5">
@@ -928,11 +953,17 @@ function SalonProductsPageContent() {
                 >
                   Low Stock Alert
                 </p>
-                <p className="text-2xl font-bold mb-0.5 tracking-tight" style={{ color: COLORS.rose }}>
+                <p
+                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  style={{ color: COLORS.rose }}
+                >
                   {lowStockCount}
                 </p>
                 <div className="flex items-center gap-1.5 mt-1.5">
-                  <div className="w-1 h-1 rounded-full animate-pulse" style={{ backgroundColor: COLORS.rose + '90' }} />
+                  <div
+                    className="w-1 h-1 rounded-full animate-pulse"
+                    style={{ backgroundColor: COLORS.rose + '90' }}
+                  />
                   <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
                     {lowStockCount > 0 ? 'Requires attention' : 'All products stocked'}
                   </p>
@@ -954,7 +985,9 @@ function SalonProductsPageContent() {
                 }}
               >
                 <Archive className="h-4 w-4" style={{ color: COLORS.bronze }} />
-                <span>Showing {archivedCount} archived product{archivedCount !== 1 ? 's' : ''}</span>
+                <span>
+                  Showing {archivedCount} archived product{archivedCount !== 1 ? 's' : ''}
+                </span>
               </div>
             )}
 

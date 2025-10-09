@@ -45,7 +45,7 @@ export function useBranchFilter(
 ): UseBranchFilterReturn {
   const { currentOrganization } = useHERAAuth()
   const effectiveOrgId = organizationId || currentOrganization?.id
-  
+
   // Initialize with persisted value or default to undefined (shows all)
   const [branchId, setBranchIdState] = useState<string | undefined>(() => {
     // Only persist if persistKey is explicitly provided
@@ -72,7 +72,13 @@ export function useBranchFilter(
 
   // Validate persisted branch ID when branches are loaded
   useEffect(() => {
-    if (persistKey && typeof window !== 'undefined' && branches.length > 0 && branchId && branchId !== 'all') {
+    if (
+      persistKey &&
+      typeof window !== 'undefined' &&
+      branches.length > 0 &&
+      branchId &&
+      branchId !== 'all'
+    ) {
       // Check if the current branchId is still valid
       if (!branches.some(b => b.id === branchId)) {
         console.log('📍 Stored branch no longer exists, clearing filter:', branchId)

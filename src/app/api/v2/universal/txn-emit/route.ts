@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       const lines = body.lines.map((line: any, index: number) => {
         const quantity = line.quantity || 1
         const unitAmount = line.unit_amount || 0
-        const lineAmount = line.line_amount || (quantity * unitAmount)
+        const lineAmount = line.line_amount || quantity * unitAmount
 
         return {
           transaction_id: transactionId,
@@ -76,17 +76,12 @@ export async function POST(req: NextRequest) {
         }
       })
 
-      const { error: linesError } = await supabase
-        .from('universal_transaction_lines')
-        .insert(lines)
+      const { error: linesError } = await supabase.from('universal_transaction_lines').insert(lines)
 
       if (linesError) {
         console.error('Error inserting transaction lines:', linesError)
         // Rollback transaction by deleting it
-        await supabase
-          .from('universal_transactions')
-          .delete()
-          .eq('id', transactionId)
+        await supabase.from('universal_transactions').delete().eq('id', transactionId)
         throw new Error(linesError.message)
       }
 

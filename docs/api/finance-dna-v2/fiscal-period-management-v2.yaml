@@ -1,0 +1,743 @@
+openapi: 3.0.3
+info:
+  title: Finance DNA v2 - Fiscal Period Management API
+  description: |
+    Enhanced fiscal period management with real-time validation, health scoring, and multi-organization support.
+    
+    **Key Features:**
+    - Sub-10ms validation response times
+    - Health scoring algorithm (0-100 scale)
+    - Multi-organization fiscal calendars
+    - Role-based override capabilities
+    - Comprehensive audit trails
+    
+    **Smart Code Integration:**
+    All operations include HERA smart codes for business intelligence and automatic GL posting.
+    
+    **Performance Benchmarks:**
+    - Response Time: <10ms for 99% of validation requests
+    - Concurrency: 50+ concurrent validations
+    - Scalability: 10,000+ fiscal periods per organization
+    - Reliability: 99.9% uptime
+    
+  version: 2.1.0
+  contact:
+    name: HERA Finance DNA v2 Team
+    email: finance-dna-v2@heraerp.com
+  license:
+    name: HERA Enterprise License
+    url: https://heraerp.com/license
+
+servers:
+  - url: https://api.heraerp.com/v2
+    description: Production Finance DNA v2 API
+  - url: https://staging-api.heraerp.com/v2
+    description: Staging Environment
+  - url: http://localhost:3000/api/v2
+    description: Local Development
+
+security:
+  - BearerAuth: []
+  - OrganizationHeader: []
+
+paths:
+  /fiscal-periods/validate:
+    post:
+      summary: Enhanced Fiscal Period Validation
+      description: |
+        Validates transaction posting against fiscal period status with enhanced v2 features:
+        - Real-time validation with <10ms response
+        - Health scoring for period integrity
+        - Role-based override capabilities
+        - Automatic audit trail generation
+        
+        **Smart Code**: `HERA.ACCOUNTING.FISCAL.PERIOD.VALIDATION.v2`
+      operationId: validateFiscalPeriod
+      tags:
+        - Fiscal Period Validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FiscalPeriodValidationRequest'
+            examples:
+              standard_validation:
+                summary: Standard user validation
+                value:
+                  transaction_date: "2025-01-15"
+                  transaction_type: "JOURNAL_ENTRY"
+                  user_role: "standard_user"
+              admin_override:
+                summary: Admin with override capability
+                value:
+                  transaction_date: "2024-12-31"
+                  transaction_type: "JOURNAL_ENTRY"
+                  user_role: "finance_admin"
+                  override_closed_period: true
+      responses:
+        '200':
+          description: Validation completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FiscalPeriodValidationResponse'
+              examples:
+                validation_passed:
+                  summary: Validation passed
+                  value:
+                    validation_passed: true
+                    period_status: "OPEN"
+                    health_score: 95
+                    organization_id: "123e4567-e89b-12d3-a456-426614174000"
+                    smart_code: "HERA.ACCOUNTING.FISCAL.PERIOD.VALIDATION.v2"
+                    processing_time_ms: 8
+                validation_failed:
+                  summary: Validation failed - closed period
+                  value:
+                    validation_passed: false
+                    period_status: "CLOSED"
+                    health_score: 85
+                    error_code: "FISCAL_PERIOD_CLOSED"
+                    error_message: "Cannot post to closed fiscal period 2024-12"
+                    override_available: true
+                    processing_time_ms: 6
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /fiscal-periods:
+    get:
+      summary: List Fiscal Periods
+      description: |
+        Retrieves fiscal periods for the organization with enhanced v2 metadata:
+        - Health scoring and integrity metrics
+        - Transaction volume statistics
+        - Period closure status and history
+        
+        **Smart Code**: `HERA.ACCOUNTING.FISCAL.PERIOD.LIST.v2`
+      operationId: listFiscalPeriods
+      tags:
+        - Fiscal Period Management
+      parameters:
+        - name: status
+          in: query
+          description: Filter by period status
+          schema:
+            type: string
+            enum: [OPEN, CLOSED, LOCKED, TRANSITIONAL]
+        - name: fiscal_year
+          in: query
+          description: Filter by fiscal year
+          schema:
+            type: integer
+            minimum: 2020
+            maximum: 2030
+        - name: include_health_metrics
+          in: query
+          description: Include health scoring and metrics
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: Fiscal periods retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FiscalPeriodsListResponse'
+
+    post:
+      summary: Create Fiscal Period
+      description: |
+        Creates a new fiscal period with enhanced v2 features:
+        - Automatic health score initialization
+        - Multi-organization calendar support
+        - Smart validation rules
+        
+        **Smart Code**: `HERA.ACCOUNTING.FISCAL.PERIOD.CREATE.v2`
+      operationId: createFiscalPeriod
+      tags:
+        - Fiscal Period Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFiscalPeriodRequest'
+      responses:
+        '201':
+          description: Fiscal period created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FiscalPeriodResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Fiscal period already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /fiscal-periods/{period_id}:
+    get:
+      summary: Get Fiscal Period Details
+      description: |
+        Retrieves detailed fiscal period information with v2 enhancements:
+        - Complete health metrics and scoring
+        - Transaction analysis and statistics
+        - Period closure audit trail
+        
+        **Smart Code**: `HERA.ACCOUNTING.FISCAL.PERIOD.DETAIL.v2`
+      operationId: getFiscalPeriod
+      tags:
+        - Fiscal Period Management
+      parameters:
+        - name: period_id
+          in: path
+          required: true
+          description: Fiscal period unique identifier
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Fiscal period details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FiscalPeriodDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      summary: Update Fiscal Period
+      description: |
+        Updates fiscal period with enhanced validation and audit trail.
+        
+        **Smart Code**: `HERA.ACCOUNTING.FISCAL.PERIOD.UPDATE.v2`
+      operationId: updateFiscalPeriod
+      tags:
+        - Fiscal Period Management
+      parameters:
+        - name: period_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFiscalPeriodRequest'
+      responses:
+        '200':
+          description: Fiscal period updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FiscalPeriodResponse'
+
+  /fiscal-periods/{period_id}/close:
+    post:
+      summary: Close Fiscal Period
+      description: |
+        Closes fiscal period with comprehensive validation and audit trail:
+        - Balance validation and integrity checks
+        - Automatic health score calculation
+        - Complete audit trail generation
+        
+        **Smart Code**: `HERA.ACCOUNTING.FISCAL.PERIOD.CLOSE.v2`
+      operationId: closeFiscalPeriod
+      tags:
+        - Fiscal Period Operations
+      parameters:
+        - name: period_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloseFiscalPeriodRequest'
+      responses:
+        '200':
+          description: Fiscal period closed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloseFiscalPeriodResponse'
+
+  /fiscal-periods/health-check:
+    post:
+      summary: Comprehensive Health Check
+      description: |
+        Runs comprehensive health check across all fiscal periods:
+        - Health scoring algorithm (0-100 scale)
+        - Data integrity validation
+        - Performance metrics analysis
+        
+        **Smart Code**: `HERA.ACCOUNTING.FISCAL.PERIOD.HEALTH.CHECK.v2`
+      operationId: fiscalPeriodHealthCheck
+      tags:
+        - Fiscal Period Health
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HealthCheckRequest'
+      responses:
+        '200':
+          description: Health check completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token with organization context
+    OrganizationHeader:
+      type: apiKey
+      in: header
+      name: x-hera-organization-id
+      description: Organization ID for multi-tenant isolation
+
+  schemas:
+    FiscalPeriodValidationRequest:
+      type: object
+      required:
+        - transaction_date
+      properties:
+        transaction_date:
+          type: string
+          format: date
+          description: Transaction date to validate
+          example: "2025-01-15"
+        transaction_type:
+          type: string
+          default: "JOURNAL_ENTRY"
+          enum: [JOURNAL_ENTRY, INVOICE, PAYMENT, ADJUSTMENT]
+          description: Type of transaction being validated
+        user_role:
+          type: string
+          default: "standard_user"
+          enum: [standard_user, finance_admin, owner]
+          description: User role for override capability evaluation
+        override_closed_period:
+          type: boolean
+          default: false
+          description: Request override for closed period (admin/owner only)
+
+    FiscalPeriodValidationResponse:
+      type: object
+      properties:
+        validation_passed:
+          type: boolean
+          description: Whether validation passed
+        period_status:
+          type: string
+          enum: [OPEN, CLOSED, LOCKED, TRANSITIONAL]
+          description: Current fiscal period status
+        health_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Period health score (0-100 scale)
+        organization_id:
+          type: string
+          format: uuid
+          description: Organization identifier
+        smart_code:
+          type: string
+          description: HERA smart code for business intelligence
+        processing_time_ms:
+          type: integer
+          description: Validation processing time in milliseconds
+        error_code:
+          type: string
+          description: Error code if validation failed
+        error_message:
+          type: string
+          description: Human-readable error message
+        override_available:
+          type: boolean
+          description: Whether override is available for current user
+        period_info:
+          $ref: '#/components/schemas/FiscalPeriodInfo'
+
+    FiscalPeriodInfo:
+      type: object
+      properties:
+        period_id:
+          type: string
+          format: uuid
+        period_name:
+          type: string
+          example: "2025-01"
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        fiscal_year:
+          type: integer
+        transaction_count:
+          type: integer
+        total_amount:
+          type: number
+          format: decimal
+        last_transaction_date:
+          type: string
+          format: date-time
+
+    FiscalPeriodsListResponse:
+      type: object
+      properties:
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/FiscalPeriodResponse'
+        total_count:
+          type: integer
+        organization_id:
+          type: string
+          format: uuid
+        smart_code:
+          type: string
+
+    FiscalPeriodResponse:
+      type: object
+      properties:
+        period_id:
+          type: string
+          format: uuid
+        period_name:
+          type: string
+        status:
+          type: string
+          enum: [OPEN, CLOSED, LOCKED, TRANSITIONAL]
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        fiscal_year:
+          type: integer
+        health_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        organization_id:
+          type: string
+          format: uuid
+        smart_code:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    FiscalPeriodDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/FiscalPeriodResponse'
+        - type: object
+          properties:
+            health_metrics:
+              $ref: '#/components/schemas/HealthMetrics'
+            transaction_statistics:
+              $ref: '#/components/schemas/TransactionStatistics'
+            audit_trail:
+              type: array
+              items:
+                $ref: '#/components/schemas/AuditEntry'
+
+    HealthMetrics:
+      type: object
+      properties:
+        overall_health_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        data_integrity_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        balance_accuracy_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        transaction_completeness_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        last_health_check:
+          type: string
+          format: date-time
+
+    TransactionStatistics:
+      type: object
+      properties:
+        total_transactions:
+          type: integer
+        total_amount:
+          type: number
+          format: decimal
+        transaction_types:
+          type: object
+          additionalProperties:
+            type: integer
+        daily_volume:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              count:
+                type: integer
+              amount:
+                type: number
+
+    CreateFiscalPeriodRequest:
+      type: object
+      required:
+        - period_name
+        - start_date
+        - end_date
+        - fiscal_year
+      properties:
+        period_name:
+          type: string
+          description: Period name (e.g., "2025-01")
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        fiscal_year:
+          type: integer
+          minimum: 2020
+          maximum: 2030
+        status:
+          type: string
+          enum: [OPEN, CLOSED]
+          default: OPEN
+
+    UpdateFiscalPeriodRequest:
+      type: object
+      properties:
+        period_name:
+          type: string
+        status:
+          type: string
+          enum: [OPEN, CLOSED, LOCKED, TRANSITIONAL]
+        end_date:
+          type: string
+          format: date
+
+    CloseFiscalPeriodRequest:
+      type: object
+      required:
+        - closure_reason
+      properties:
+        closure_reason:
+          type: string
+          description: Reason for closing the period
+        validate_balances:
+          type: boolean
+          default: true
+          description: Perform balance validation before closing
+        force_close:
+          type: boolean
+          default: false
+          description: Force close even with validation warnings
+
+    CloseFiscalPeriodResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        period_id:
+          type: string
+          format: uuid
+        final_health_score:
+          type: integer
+        closure_timestamp:
+          type: string
+          format: date-time
+        validation_results:
+          type: object
+          properties:
+            balance_validation:
+              type: boolean
+            data_integrity:
+              type: boolean
+            transaction_completeness:
+              type: boolean
+        warnings:
+          type: array
+          items:
+            type: string
+
+    HealthCheckRequest:
+      type: object
+      properties:
+        period_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Specific periods to check (empty for all)
+        include_recommendations:
+          type: boolean
+          default: true
+
+    HealthCheckResponse:
+      type: object
+      properties:
+        overall_health_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        periods_checked:
+          type: integer
+        period_health:
+          type: array
+          items:
+            type: object
+            properties:
+              period_id:
+                type: string
+                format: uuid
+              period_name:
+                type: string
+              health_score:
+                type: integer
+              issues:
+                type: array
+                items:
+                  type: string
+        recommendations:
+          type: array
+          items:
+            type: string
+        smart_code:
+          type: string
+
+    AuditEntry:
+      type: object
+      properties:
+        entry_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+        user_id:
+          type: string
+          format: uuid
+        timestamp:
+          type: string
+          format: date-time
+        details:
+          type: object
+        smart_code:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+        smart_code:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Unauthorized:
+      description: Unauthorized - invalid or missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  examples:
+    StandardValidation:
+      summary: Standard fiscal period validation
+      value:
+        transaction_date: "2025-01-15"
+        transaction_type: "JOURNAL_ENTRY"
+        user_role: "standard_user"
+
+    AdminOverride:
+      summary: Admin override for closed period
+      value:
+        transaction_date: "2024-12-31"
+        transaction_type: "JOURNAL_ENTRY"
+        user_role: "finance_admin"
+        override_closed_period: true

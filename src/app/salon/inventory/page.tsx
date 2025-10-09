@@ -18,11 +18,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
-import { useHeraInventory, useHeraStockMovements, type InventoryItem } from '@/hooks/useHeraInventory'
+import {
+  useHeraInventory,
+  useHeraStockMovements,
+  type InventoryItem
+} from '@/hooks/useHeraInventory'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { BranchStockManager } from '@/components/salon/products/BranchStockManager'
 import { getProductInventory, setBranchStock, adjustStock } from '@/lib/services/inventory-service'
@@ -145,149 +161,168 @@ export default function SalonInventoryPage() {
   }, [items, deepProductId])
 
   // Calculate summary metrics
-  const activeItems = useMemo(() =>
-    displayItems.filter(item => item.status === 'active').length,
+  const activeItems = useMemo(
+    () => displayItems.filter(item => item.status === 'active').length,
     [displayItems]
   )
 
-  const outOfStockCount = useMemo(() =>
-    displayItems.filter(item => item.stock_status === 'out_of_stock').length,
+  const outOfStockCount = useMemo(
+    () => displayItems.filter(item => item.stock_status === 'out_of_stock').length,
     [displayItems]
   )
 
   // Handle opening stock management modal - memoized for performance
-  const handleManageStock = useCallback(async (item: InventoryItem) => {
-    if (!organizationId) return
+  const handleManageStock = useCallback(
+    async (item: InventoryItem) => {
+      if (!organizationId) return
 
-    setSelectedItem(item)
-    setStockModalOpen(true)
+      setSelectedItem(item)
+      setStockModalOpen(true)
 
-    console.log('Item relationships:', (item as any).relationships)
-    console.log('Available branches:', branches)
+      console.log('Item relationships:', (item as any).relationships)
+      console.log('Available branches:', branches)
 
-    // Build inventory from current item data
-    const stockAtRels = (item as any).relationships?.stock_at || (item as any).relationships?.STOCK_AT || []
-    console.log('Stock at relationships:', stockAtRels)
+      // Build inventory from current item data
+      const stockAtRels =
+        (item as any).relationships?.stock_at || (item as any).relationships?.STOCK_AT || []
+      console.log('Stock at relationships:', stockAtRels)
 
-    // If no stock relationships, create entries for all available branches
-    let branchStocks = []
+      // If no stock relationships, create entries for all available branches
+      let branchStocks = []
 
-    if (Array.isArray(stockAtRels) && stockAtRels.length > 0) {
-      branchStocks = stockAtRels.map((rel: any) => ({
-        branch_id: rel.to_entity?.id || '',
-        branch_name: rel.to_entity?.entity_name || 'Unknown Branch',
-        quantity: item.stock_quantity || 0,
-        reorder_level: item.reorder_level || 10,
-        status: item.stock_status || 'in_stock',
-        value: (item.stock_quantity || 0) * (item.price_cost || 0)
-      }))
-    } else {
-      // No stock relationships - create entries for all branches
-      branchStocks = branches.map(branch => ({
-        branch_id: branch.id,
-        branch_name: branch.name,
-        quantity: 0,
-        reorder_level: 10,
-        status: 'out_of_stock' as const,
-        value: 0
-      }))
-    }
+      if (Array.isArray(stockAtRels) && stockAtRels.length > 0) {
+        branchStocks = stockAtRels.map((rel: any) => ({
+          branch_id: rel.to_entity?.id || '',
+          branch_name: rel.to_entity?.entity_name || 'Unknown Branch',
+          quantity: item.stock_quantity || 0,
+          reorder_level: item.reorder_level || 10,
+          status: item.stock_status || 'in_stock',
+          value: (item.stock_quantity || 0) * (item.price_cost || 0)
+        }))
+      } else {
+        // No stock relationships - create entries for all branches
+        branchStocks = branches.map(branch => ({
+          branch_id: branch.id,
+          branch_name: branch.name,
+          quantity: 0,
+          reorder_level: 10,
+          status: 'out_of_stock' as const,
+          value: 0
+        }))
+      }
 
-    console.log('Branch stocks:', branchStocks)
+      console.log('Branch stocks:', branchStocks)
 
-    const inventory: ProductInventory = {
-      product_id: item.id,
-      product_name: item.entity_name,
-      product_code: item.entity_code,
-      total_quantity: item.stock_quantity || 0,
-      total_value: item.stock_value || 0,
-      cost_price: item.price_cost || 0,
-      selling_price: item.price_market || 0,
-      branch_stocks: branchStocks,
-      requires_inventory: true,
-      track_by: 'unit'
-    }
+      const inventory: ProductInventory = {
+        product_id: item.id,
+        product_name: item.entity_name,
+        product_code: item.entity_code,
+        total_quantity: item.stock_quantity || 0,
+        total_value: item.stock_value || 0,
+        cost_price: item.price_cost || 0,
+        selling_price: item.price_market || 0,
+        branch_stocks: branchStocks,
+        requires_inventory: true,
+        track_by: 'unit'
+      }
 
-    console.log('Final inventory:', inventory)
-    setCurrentInventory(inventory)
-  }, [organizationId, branches])
+      console.log('Final inventory:', inventory)
+      setCurrentInventory(inventory)
+    },
+    [organizationId, branches]
+  )
 
   // Handle stock update - memoized for performance
-  const handleStockUpdate = useCallback(async (branchId: string, quantity: number, reorderLevel: number) => {
-    if (!organizationId || !selectedItem) return
+  const handleStockUpdate = useCallback(
+    async (branchId: string, quantity: number, reorderLevel: number) => {
+      if (!organizationId || !selectedItem) return
 
-    try {
-      await setBranchStock(organizationId, selectedItem.id, branchId, {
-        branch_id: branchId,
-        quantity,
-        reorder_level: reorderLevel
-      })
-
-      // Refetch items to get updated stock
-      await refetch()
-
-      // Update current inventory display
-      if (currentInventory) {
-        const updatedBranchStocks = currentInventory.branch_stocks.map(bs =>
-          bs.branch_id === branchId
-            ? { ...bs, quantity, reorder_level }
-            : bs
-        )
-        setCurrentInventory({
-          ...currentInventory,
-          branch_stocks: updatedBranchStocks,
-          total_quantity: updatedBranchStocks.reduce((sum, bs) => sum + bs.quantity, 0),
-          total_value: updatedBranchStocks.reduce((sum, bs) => sum + bs.value, 0)
+      try {
+        await setBranchStock(organizationId, selectedItem.id, branchId, {
+          branch_id: branchId,
+          quantity,
+          reorder_level: reorderLevel
         })
+
+        // Refetch items to get updated stock
+        await refetch()
+
+        // Update current inventory display
+        if (currentInventory) {
+          const updatedBranchStocks = currentInventory.branch_stocks.map(bs =>
+            bs.branch_id === branchId ? { ...bs, quantity, reorder_level } : bs
+          )
+          setCurrentInventory({
+            ...currentInventory,
+            branch_stocks: updatedBranchStocks,
+            total_quantity: updatedBranchStocks.reduce((sum, bs) => sum + bs.quantity, 0),
+            total_value: updatedBranchStocks.reduce((sum, bs) => sum + bs.value, 0)
+          })
+        }
+      } catch (error) {
+        console.error('Failed to update stock:', error)
       }
-    } catch (error) {
-      console.error('Failed to update stock:', error)
-    }
-  }, [organizationId, selectedItem, refetch, currentInventory])
+    },
+    [organizationId, selectedItem, refetch, currentInventory]
+  )
 
   // Handle quick stock adjustment - memoized for performance
-  const handleQuickAdjust = useCallback(async (branchId: string, type: 'increase' | 'decrease', amount: number) => {
-    if (!organizationId || !selectedItem || !user?.id) return
+  const handleQuickAdjust = useCallback(
+    async (branchId: string, type: 'increase' | 'decrease', amount: number) => {
+      if (!organizationId || !selectedItem || !user?.id) return
 
-    const currentQty = currentInventory?.branch_stocks.find(bs => bs.branch_id === branchId)?.quantity || 0
-    const newQty = type === 'increase' ? currentQty + amount : currentQty - amount
+      const currentQty =
+        currentInventory?.branch_stocks.find(bs => bs.branch_id === branchId)?.quantity || 0
+      const newQty = type === 'increase' ? currentQty + amount : currentQty - amount
 
-    try {
-      await adjustStock(organizationId, user.id, {
-        product_id: selectedItem.id,
-        branch_id: branchId,
-        adjustment_type: 'set',
-        quantity: Math.max(0, newQty),
-        reason: 'Quick adjustment'
-      })
-
-      // Refetch items to get updated stock
-      await refetch()
-
-      // Update current inventory display
-      if (currentInventory) {
-        const updatedBranchStocks = currentInventory.branch_stocks.map(bs =>
-          bs.branch_id === branchId
-            ? { ...bs, quantity: Math.max(0, newQty), value: Math.max(0, newQty) * (currentInventory.cost_price || 0) }
-            : bs
-        )
-        setCurrentInventory({
-          ...currentInventory,
-          branch_stocks: updatedBranchStocks,
-          total_quantity: updatedBranchStocks.reduce((sum, bs) => sum + bs.quantity, 0),
-          total_value: updatedBranchStocks.reduce((sum, bs) => sum + bs.value, 0)
+      try {
+        await adjustStock(organizationId, user.id, {
+          product_id: selectedItem.id,
+          branch_id: branchId,
+          adjustment_type: 'set',
+          quantity: Math.max(0, newQty),
+          reason: 'Quick adjustment'
         })
+
+        // Refetch items to get updated stock
+        await refetch()
+
+        // Update current inventory display
+        if (currentInventory) {
+          const updatedBranchStocks = currentInventory.branch_stocks.map(bs =>
+            bs.branch_id === branchId
+              ? {
+                  ...bs,
+                  quantity: Math.max(0, newQty),
+                  value: Math.max(0, newQty) * (currentInventory.cost_price || 0)
+                }
+              : bs
+          )
+          setCurrentInventory({
+            ...currentInventory,
+            branch_stocks: updatedBranchStocks,
+            total_quantity: updatedBranchStocks.reduce((sum, bs) => sum + bs.quantity, 0),
+            total_value: updatedBranchStocks.reduce((sum, bs) => sum + bs.value, 0)
+          })
+        }
+      } catch (error) {
+        console.error('Failed to adjust stock:', error)
       }
-    } catch (error) {
-      console.error('Failed to adjust stock:', error)
-    }
-  }, [organizationId, selectedItem, user?.id, currentInventory, refetch])
+    },
+    [organizationId, selectedItem, user?.id, currentInventory, refetch]
+  )
 
   // Authentication checks
   if (!organizationId) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: COLORS.charcoalDark }}>
-        <div className="text-center p-8 rounded-xl" style={{ backgroundColor: COLORS.charcoalLight }}>
+      <div
+        className="flex items-center justify-center min-h-screen"
+        style={{ backgroundColor: COLORS.charcoalDark }}
+      >
+        <div
+          className="text-center p-8 rounded-xl"
+          style={{ backgroundColor: COLORS.charcoalLight }}
+        >
           <h2 className="text-xl font-medium mb-2" style={{ color: COLORS.gold }}>
             No organization context found
           </h2>
@@ -301,8 +336,14 @@ export default function SalonInventoryPage() {
 
   if (contextLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: COLORS.charcoalDark }}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: COLORS.gold }} />
+      <div
+        className="flex items-center justify-center min-h-screen"
+        style={{ backgroundColor: COLORS.charcoalDark }}
+      >
+        <div
+          className="animate-spin rounded-full h-8 w-8 border-b-2"
+          style={{ borderColor: COLORS.gold }}
+        />
       </div>
     )
   }
@@ -407,7 +448,10 @@ export default function SalonInventoryPage() {
 
               <Button
                 className="gap-2"
-                style={{ background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`, color: COLORS.charcoalDark }}
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                  color: COLORS.charcoalDark
+                }}
               >
                 <Plus className="w-4 h-4" />
                 New Item
@@ -485,10 +529,16 @@ export default function SalonInventoryPage() {
           >
             <div className="flex items-center gap-3 mb-2">
               <Package2 className="w-5 h-5" style={{ color: COLORS.gold }} />
-              <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>Total Items</span>
+              <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>
+                Total Items
+              </span>
             </div>
-            <div className="text-3xl font-bold" style={{ color: COLORS.gold }}>{activeItems}</div>
-            <div className="text-xs mt-1" style={{ color: COLORS.lightText + '60' }}>Active inventory items</div>
+            <div className="text-3xl font-bold" style={{ color: COLORS.gold }}>
+              {activeItems}
+            </div>
+            <div className="text-xs mt-1" style={{ color: COLORS.lightText + '60' }}>
+              Active inventory items
+            </div>
           </div>
 
           <div
@@ -501,12 +551,16 @@ export default function SalonInventoryPage() {
           >
             <div className="flex items-center gap-3 mb-2">
               <DollarSign className="w-5 h-5" style={{ color: COLORS.emerald }} />
-              <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>Total Value</span>
+              <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>
+                Total Value
+              </span>
             </div>
             <div className="text-3xl font-bold" style={{ color: COLORS.emerald }}>
               AED {totalValue.toFixed(2)}
             </div>
-            <div className="text-xs mt-1" style={{ color: COLORS.lightText + '60' }}>Current inventory value</div>
+            <div className="text-xs mt-1" style={{ color: COLORS.lightText + '60' }}>
+              Current inventory value
+            </div>
           </div>
 
           <div
@@ -519,10 +573,16 @@ export default function SalonInventoryPage() {
           >
             <div className="flex items-center gap-3 mb-2">
               <AlertTriangle className="w-5 h-5" style={{ color: COLORS.rose }} />
-              <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>Low Stock</span>
+              <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>
+                Low Stock
+              </span>
             </div>
-            <div className="text-3xl font-bold" style={{ color: COLORS.rose }}>{lowStockCount}</div>
-            <div className="text-xs mt-1" style={{ color: COLORS.lightText + '60' }}>Items need restocking</div>
+            <div className="text-3xl font-bold" style={{ color: COLORS.rose }}>
+              {lowStockCount}
+            </div>
+            <div className="text-xs mt-1" style={{ color: COLORS.lightText + '60' }}>
+              Items need restocking
+            </div>
           </div>
 
           <div
@@ -535,10 +595,16 @@ export default function SalonInventoryPage() {
           >
             <div className="flex items-center gap-3 mb-2">
               <TrendingUp className="w-5 h-5" style={{ color: '#EF4444' }} />
-              <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>Out of Stock</span>
+              <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>
+                Out of Stock
+              </span>
             </div>
-            <div className="text-3xl font-bold" style={{ color: '#EF4444' }}>{outOfStockCount}</div>
-            <div className="text-xs mt-1" style={{ color: COLORS.lightText + '60' }}>Items unavailable</div>
+            <div className="text-3xl font-bold" style={{ color: '#EF4444' }}>
+              {outOfStockCount}
+            </div>
+            <div className="text-xs mt-1" style={{ color: COLORS.lightText + '60' }}>
+              Items unavailable
+            </div>
           </div>
         </div>
 
@@ -569,7 +635,10 @@ export default function SalonInventoryPage() {
                 </Badge>
               )}
               {activeTab === 'items' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ backgroundColor: COLORS.gold }} />
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-0.5"
+                  style={{ backgroundColor: COLORS.gold }}
+                />
               )}
             </TabsTrigger>
 
@@ -586,7 +655,10 @@ export default function SalonInventoryPage() {
                 {movements.length}
               </Badge>
               {activeTab === 'movements' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ backgroundColor: COLORS.gold }} />
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-0.5"
+                  style={{ backgroundColor: COLORS.gold }}
+                />
               )}
             </TabsTrigger>
 
@@ -600,7 +672,10 @@ export default function SalonInventoryPage() {
               <BarChart className="w-4 h-4 mr-2" />
               Valuation
               {activeTab === 'valuation' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ backgroundColor: COLORS.gold }} />
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-0.5"
+                  style={{ backgroundColor: COLORS.gold }}
+                />
               )}
             </TabsTrigger>
           </TabsList>
@@ -635,7 +710,11 @@ export default function SalonInventoryPage() {
                   {lowStockCount > 0 && (
                     <Badge
                       className="cursor-pointer"
-                      style={{ backgroundColor: '#EF444420', color: '#EF4444', borderColor: '#EF444450' }}
+                      style={{
+                        backgroundColor: '#EF444420',
+                        color: '#EF4444',
+                        borderColor: '#EF444450'
+                      }}
                     >
                       <Filter className="w-3 h-3 mr-1" />
                       {lowStockCount} Low Stock
@@ -660,12 +739,17 @@ export default function SalonInventoryPage() {
                 </div>
               ) : displayItems.length === 0 ? (
                 <div className="text-center py-12">
-                  <Package2 className="w-12 h-12 mx-auto mb-4" style={{ color: COLORS.gold + '40' }} />
+                  <Package2
+                    className="w-12 h-12 mx-auto mb-4"
+                    style={{ color: COLORS.gold + '40' }}
+                  />
                   <p style={{ color: COLORS.lightText }}>
                     {deepProductId ? 'Product not found in inventory' : 'No inventory items found'}
                   </p>
                   <p className="text-sm mt-2" style={{ color: COLORS.lightText + '60' }}>
-                    {deepProductId ? 'This product may not have inventory tracking enabled' : 'Add your first item to get started'}
+                    {deepProductId
+                      ? 'This product may not have inventory tracking enabled'
+                      : 'Add your first item to get started'}
                   </p>
                 </div>
               ) : (
@@ -677,9 +761,11 @@ export default function SalonInventoryPage() {
                       style={{
                         backgroundColor: COLORS.charcoalDark,
                         border: `1px solid ${
-                          item.stock_status === 'out_of_stock' ? '#EF4444' :
-                          item.stock_status === 'low_stock' ? '#F59E0B' :
-                          COLORS.gold
+                          item.stock_status === 'out_of_stock'
+                            ? '#EF4444'
+                            : item.stock_status === 'low_stock'
+                              ? '#F59E0B'
+                              : COLORS.gold
                         }30`
                       }}
                     >
@@ -690,32 +776,54 @@ export default function SalonInventoryPage() {
                               {item.entity_name}
                             </h3>
                             {item.sku && (
-                              <Badge variant="outline" style={{ borderColor: COLORS.bronze + '40' }}>
+                              <Badge
+                                variant="outline"
+                                style={{ borderColor: COLORS.bronze + '40' }}
+                              >
                                 {item.sku}
                               </Badge>
                             )}
                             <Badge
                               style={{
                                 backgroundColor:
-                                  item.stock_status === 'out_of_stock' ? '#EF444420' :
-                                  item.stock_status === 'low_stock' ? '#F59E0B20' :
-                                  '#10B98120',
+                                  item.stock_status === 'out_of_stock'
+                                    ? '#EF444420'
+                                    : item.stock_status === 'low_stock'
+                                      ? '#F59E0B20'
+                                      : '#10B98120',
                                 color:
-                                  item.stock_status === 'out_of_stock' ? '#EF4444' :
-                                  item.stock_status === 'low_stock' ? '#F59E0B' :
-                                  '#10B981'
+                                  item.stock_status === 'out_of_stock'
+                                    ? '#EF4444'
+                                    : item.stock_status === 'low_stock'
+                                      ? '#F59E0B'
+                                      : '#10B981'
                               }}
                             >
-                              {item.stock_status === 'out_of_stock' ? 'Out of Stock' :
-                               item.stock_status === 'low_stock' ? 'Low Stock' :
-                               'In Stock'}
+                              {item.stock_status === 'out_of_stock'
+                                ? 'Out of Stock'
+                                : item.stock_status === 'low_stock'
+                                  ? 'Low Stock'
+                                  : 'In Stock'}
                             </Badge>
                           </div>
-                          <div className="flex items-center gap-6 mt-2 text-sm" style={{ color: COLORS.lightText + '80' }}>
-                            <span>Qty: <strong>{item.stock_quantity || 0}</strong></span>
-                            <span>Cost: <strong>AED {(item.price_cost || 0).toFixed(2)}</strong></span>
-                            <span>Value: <strong>AED {(item.stock_value || 0).toFixed(2)}</strong></span>
-                            {item.category && <span>Category: <strong>{item.category}</strong></span>}
+                          <div
+                            className="flex items-center gap-6 mt-2 text-sm"
+                            style={{ color: COLORS.lightText + '80' }}
+                          >
+                            <span>
+                              Qty: <strong>{item.stock_quantity || 0}</strong>
+                            </span>
+                            <span>
+                              Cost: <strong>AED {(item.price_cost || 0).toFixed(2)}</strong>
+                            </span>
+                            <span>
+                              Value: <strong>AED {(item.stock_value || 0).toFixed(2)}</strong>
+                            </span>
+                            {item.category && (
+                              <span>
+                                Category: <strong>{item.category}</strong>
+                              </span>
+                            )}
                           </div>
                         </div>
                         <Button
@@ -753,7 +861,10 @@ export default function SalonInventoryPage() {
                 </div>
               ) : movements.length === 0 ? (
                 <div className="text-center py-12">
-                  <TruckIcon className="w-12 h-12 mx-auto mb-4" style={{ color: COLORS.gold + '40' }} />
+                  <TruckIcon
+                    className="w-12 h-12 mx-auto mb-4"
+                    style={{ color: COLORS.gold + '40' }}
+                  />
                   <p style={{ color: COLORS.lightText }}>No stock movements recorded</p>
                 </div>
               ) : (
@@ -846,7 +957,10 @@ export default function SalonInventoryPage() {
               />
             ) : (
               <div className="text-center py-12">
-                <Package2 className="w-12 h-12 mx-auto mb-4" style={{ color: COLORS.gold + '40' }} />
+                <Package2
+                  className="w-12 h-12 mx-auto mb-4"
+                  style={{ color: COLORS.gold + '40' }}
+                />
                 <p style={{ color: COLORS.lightText }}>No inventory data available</p>
               </div>
             )}

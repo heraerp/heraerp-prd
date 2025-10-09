@@ -32,10 +32,7 @@ export async function GET(request: NextRequest) {
     })
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const supabase = await createClient()
@@ -77,22 +74,23 @@ export async function GET(request: NextRequest) {
     })
 
     // Filter by branch if specified
-    const filteredLevels = branchId
-      ? levels.filter(l => l.branch_id === branchId)
-      : levels
+    const filteredLevels = branchId ? levels.filter(l => l.branch_id === branchId) : levels
 
     console.log('[Analytics Inventory Levels] Filtered levels:', filteredLevels.length)
 
-    return NextResponse.json({
-      items: filteredLevels,
-      total_count: filteredLevels.length,
-      cached_at: new Date().toISOString()
-    }, {
-      headers: {
-        'Cache-Control': 'private, max-age=30', // 30 second cache
-        'x-hera-api-version': 'v2'
+    return NextResponse.json(
+      {
+        items: filteredLevels,
+        total_count: filteredLevels.length,
+        cached_at: new Date().toISOString()
+      },
+      {
+        headers: {
+          'Cache-Control': 'private, max-age=30', // 30 second cache
+          'x-hera-api-version': 'v2'
+        }
       }
-    })
+    )
   } catch (error) {
     console.error('[Analytics Inventory Levels] Error:', error)
     return NextResponse.json(

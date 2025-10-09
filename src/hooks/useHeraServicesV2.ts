@@ -40,7 +40,7 @@ export interface UseHeraServicesOptions {
     offset?: number
     status?: string
     search?: string
-    branch_id?: string  // Add branch filtering
+    branch_id?: string // Add branch filtering
     category_id?: string // Add category filtering
   }
 }
@@ -114,7 +114,9 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
 
         // Handle both array and single relationship formats
         if (Array.isArray(availableAtRelationships)) {
-          return availableAtRelationships.some(rel => rel.to_entity?.id === options.filters?.branch_id)
+          return availableAtRelationships.some(
+            rel => rel.to_entity?.id === options.filters?.branch_id
+          )
         } else {
           return availableAtRelationships.to_entity?.id === options.filters?.branch_id
         }
@@ -133,7 +135,9 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
 
         // Handle both array and single relationship formats
         if (Array.isArray(categoryRelationship)) {
-          return categoryRelationship.some(rel => rel.to_entity?.id === options.filters?.category_id)
+          return categoryRelationship.some(
+            rel => rel.to_entity?.id === options.filters?.category_id
+          )
         } else {
           return categoryRelationship.to_entity?.id === options.filters?.category_id
         }
@@ -155,7 +159,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     category_id?: string
     performed_by_role_ids?: string[]
     required_product_ids?: string[]
-    branch_ids?: string[]  // Support multiple branches via AVAILABLE_AT relationships
+    branch_ids?: string[] // Support multiple branches via AVAILABLE_AT relationships
   }) => {
     console.log('[useHeraServicesV2] createService called with data:', {
       ...data,
@@ -202,7 +206,10 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
   }
 
   // Helper to update service
-  const updateService = async (id: string, data: Partial<Parameters<typeof createService>[0]> & { status?: string }) => {
+  const updateService = async (
+    id: string,
+    data: Partial<Parameters<typeof createService>[0]> & { status?: string }
+  ) => {
     // 🎯 ENTERPRISE PATTERN: Get entity to ensure entity_name is always passed (same as archive/restore)
     const service = (services as ServiceEntity[])?.find(s => s.id === id)
     if (!service) throw new Error('Service not found')
@@ -219,8 +226,10 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     // Relationships patch
     const relationships_patch: Record<string, string[]> = {}
     if (data.category_id) relationships_patch['HAS_CATEGORY'] = [data.category_id]
-    if (data.performed_by_role_ids) relationships_patch['PERFORMED_BY_ROLE'] = data.performed_by_role_ids
-    if (data.required_product_ids) relationships_patch['REQUIRES_PRODUCT'] = data.required_product_ids
+    if (data.performed_by_role_ids)
+      relationships_patch['PERFORMED_BY_ROLE'] = data.performed_by_role_ids
+    if (data.required_product_ids)
+      relationships_patch['REQUIRES_PRODUCT'] = data.required_product_ids
     if (data.branch_ids !== undefined) {
       // Support multiple branches - if array is empty, it removes all AVAILABLE_AT relationships
       relationships_patch['AVAILABLE_AT'] = data.branch_ids
@@ -251,7 +260,10 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
 
   // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
   // Try hard delete first, but if service is referenced in transactions, archive instead
-  const deleteService = async (id: string, reason?: string): Promise<{
+  const deleteService = async (
+    id: string,
+    reason?: string
+  ): Promise<{
     success: boolean
     archived: boolean
     message?: string
@@ -276,10 +288,11 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
       }
     } catch (error: any) {
       // Check if error is due to foreign key constraint (referenced in transactions)
-      const is409Conflict = error.message?.includes('409') ||
-                           error.message?.includes('Conflict') ||
-                           error.message?.includes('referenced') ||
-                           error.message?.includes('foreign key')
+      const is409Conflict =
+        error.message?.includes('409') ||
+        error.message?.includes('Conflict') ||
+        error.message?.includes('referenced') ||
+        error.message?.includes('foreign key')
 
       if (is409Conflict) {
         // Service is referenced - fallback to archive with warning
@@ -292,7 +305,8 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         return {
           success: true,
           archived: true,
-          message: 'Service is used in appointments or transactions and cannot be deleted. It has been archived instead.'
+          message:
+            'Service is used in appointments or transactions and cannot be deleted. It has been archived instead.'
         }
       }
 
@@ -327,7 +341,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
   const calculateServicePrice = (service: ServiceEntity) => {
     const price = service.dynamic_fields?.price_market?.value || 0
     const commission = service.dynamic_fields?.commission_rate?.value || 0.5
-    
+
     return {
       price,
       commission: price * commission,

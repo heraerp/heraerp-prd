@@ -368,10 +368,7 @@ export function TicketEditor({
       {/* Line Items */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {ticket.lineItems.map((item, index) => (
-          <Card
-            key={item.id}
-            className="group bg-card/80 backdrop-blur-sm border-border"
-          >
+          <Card key={item.id} className="group bg-card/80 backdrop-blur-sm border-border">
             <CardContent className="p-4">
               <div className="space-y-3">
                 {/* Item Header */}
@@ -547,7 +544,10 @@ export function TicketEditor({
             setStylistModalOpen(false)
             setStylistModalItem(null)
           }}
-          service={{ entity_id: stylistModalItem.entity_id, entity_name: stylistModalItem.entity_name }}
+          service={{
+            entity_id: stylistModalItem.entity_id,
+            entity_name: stylistModalItem.entity_name
+          }}
           organizationId={organizationId}
           branchId={branchId}
           currentStylistId={stylistModalItem.stylist_id}

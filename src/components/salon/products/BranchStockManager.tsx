@@ -12,7 +12,17 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Package, AlertTriangle, TrendingUp, TrendingDown, Minus, Plus, Edit2, Check, X } from 'lucide-react'
+import {
+  Package,
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  Plus,
+  Edit2,
+  Check,
+  X
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -52,21 +62,31 @@ export function BranchStockManager({
 
   const getStatusColor = (status: BranchStock['status']) => {
     switch (status) {
-      case 'out_of_stock': return '#EF4444'
-      case 'low_stock': return '#F59E0B'
-      case 'in_stock': return '#10B981'
-      case 'overstock': return '#3B82F6'
-      default: return COLORS.lightText
+      case 'out_of_stock':
+        return '#EF4444'
+      case 'low_stock':
+        return '#F59E0B'
+      case 'in_stock':
+        return '#10B981'
+      case 'overstock':
+        return '#3B82F6'
+      default:
+        return COLORS.lightText
     }
   }
 
   const getStatusLabel = (status: BranchStock['status']) => {
     switch (status) {
-      case 'out_of_stock': return 'Out of Stock'
-      case 'low_stock': return 'Low Stock'
-      case 'in_stock': return 'In Stock'
-      case 'overstock': return 'Overstock'
-      default: return 'Unknown'
+      case 'out_of_stock':
+        return 'Out of Stock'
+      case 'low_stock':
+        return 'Low Stock'
+      case 'in_stock':
+        return 'In Stock'
+      case 'overstock':
+        return 'Overstock'
+      default:
+        return 'Unknown'
     }
   }
 
@@ -128,7 +148,9 @@ export function BranchStockManager({
         >
           <div className="flex items-center gap-2 mb-2">
             <Package className="w-4 h-4" style={{ color: COLORS.gold }} />
-            <span className="text-xs font-medium" style={{ color: COLORS.lightText }}>Total Stock</span>
+            <span className="text-xs font-medium" style={{ color: COLORS.lightText }}>
+              Total Stock
+            </span>
           </div>
           <div className="text-2xl font-bold" style={{ color: COLORS.gold }}>
             {inventory.total_quantity}
@@ -149,7 +171,9 @@ export function BranchStockManager({
         >
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-4 h-4" style={{ color: COLORS.emerald }} />
-            <span className="text-xs font-medium" style={{ color: COLORS.lightText }}>Total Value</span>
+            <span className="text-xs font-medium" style={{ color: COLORS.lightText }}>
+              Total Value
+            </span>
           </div>
           <div className="text-2xl font-bold" style={{ color: COLORS.emerald }}>
             AED {inventory.total_value.toFixed(2)}
@@ -170,10 +194,16 @@ export function BranchStockManager({
         >
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="w-4 h-4" style={{ color: COLORS.rose }} />
-            <span className="text-xs font-medium" style={{ color: COLORS.lightText }}>Low Stock</span>
+            <span className="text-xs font-medium" style={{ color: COLORS.lightText }}>
+              Low Stock
+            </span>
           </div>
           <div className="text-2xl font-bold" style={{ color: COLORS.rose }}>
-            {inventory.branch_stocks.filter(bs => bs.status === 'low_stock' || bs.status === 'out_of_stock').length}
+            {
+              inventory.branch_stocks.filter(
+                bs => bs.status === 'low_stock' || bs.status === 'out_of_stock'
+              ).length
+            }
           </div>
           <div className="text-xs mt-1" style={{ color: COLORS.lightText + '80' }}>
             branches need restocking
@@ -187,7 +217,7 @@ export function BranchStockManager({
           Stock Levels by Branch
         </h4>
 
-        {inventory.branch_stocks.map((branch) => {
+        {inventory.branch_stocks.map(branch => {
           const isEditing = editing?.branchId === branch.branch_id
           const statusColor = getStatusColor(branch.status)
 
@@ -226,11 +256,13 @@ export function BranchStockManager({
                     // Edit Mode
                     <div className="flex items-center gap-3">
                       <div className="flex-1">
-                        <label className="text-xs" style={{ color: COLORS.lightText + '80' }}>Quantity</label>
+                        <label className="text-xs" style={{ color: COLORS.lightText + '80' }}>
+                          Quantity
+                        </label>
                         <Input
                           type="number"
                           value={editing.quantity}
-                          onChange={(e) => setEditing({ ...editing, quantity: e.target.value })}
+                          onChange={e => setEditing({ ...editing, quantity: e.target.value })}
                           className="mt-1"
                           style={{
                             backgroundColor: COLORS.charcoalDark,
@@ -240,11 +272,13 @@ export function BranchStockManager({
                         />
                       </div>
                       <div className="flex-1">
-                        <label className="text-xs" style={{ color: COLORS.lightText + '80' }}>Reorder Level</label>
+                        <label className="text-xs" style={{ color: COLORS.lightText + '80' }}>
+                          Reorder Level
+                        </label>
                         <Input
                           type="number"
                           value={editing.reorderLevel}
-                          onChange={(e) => setEditing({ ...editing, reorderLevel: e.target.value })}
+                          onChange={e => setEditing({ ...editing, reorderLevel: e.target.value })}
                           className="mt-1"
                           style={{
                             backgroundColor: COLORS.charcoalDark,
@@ -277,19 +311,25 @@ export function BranchStockManager({
                     // View Mode
                     <div className="flex items-center gap-6">
                       <div>
-                        <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>Quantity</div>
+                        <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>
+                          Quantity
+                        </div>
                         <div className="text-xl font-bold" style={{ color: statusColor }}>
                           {branch.quantity}
                         </div>
                       </div>
                       <div>
-                        <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>Reorder At</div>
+                        <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>
+                          Reorder At
+                        </div>
                         <div className="text-sm font-medium" style={{ color: COLORS.lightText }}>
                           {branch.reorder_level}
                         </div>
                       </div>
                       <div>
-                        <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>Value</div>
+                        <div className="text-xs" style={{ color: COLORS.lightText + '80' }}>
+                          Value
+                        </div>
                         <div className="text-sm font-medium" style={{ color: COLORS.gold }}>
                           AED {(branch.value || 0).toFixed(2)}
                         </div>

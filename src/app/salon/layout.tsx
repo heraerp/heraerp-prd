@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
       networkMode: 'online',
       // Retry with exponential backoff
       retry: 1,
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000)
     }
   }
 })
@@ -58,9 +58,7 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
               position: 'relative'
             }}
           >
-            <React.Suspense fallback={<div>Loading...</div>}>
-              {children}
-            </React.Suspense>
+            <React.Suspense fallback={<div>Loading...</div>}>{children}</React.Suspense>
           </main>
         </SecuredSalonProvider>
       </SalonQueryWrapper>

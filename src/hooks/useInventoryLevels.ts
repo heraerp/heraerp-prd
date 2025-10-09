@@ -78,7 +78,10 @@ export function useInventoryLevels(
         if (error) throw error
         return data as InventoryLevelsResponse
       } catch (analyticsError) {
-        console.warn('[useInventoryLevels] Analytics endpoint failed, falling back to RPC:', analyticsError)
+        console.warn(
+          '[useInventoryLevels] Analytics endpoint failed, falling back to RPC:',
+          analyticsError
+        )
 
         // Fallback to RPC function
         const { data, error } = await apiV2.post('rpc/inventory_levels_v1', {
@@ -110,7 +113,12 @@ export function mapLevelsByProduct(items?: InventoryLevel[]): Record<string, Inv
 
   for (const item of items) {
     // Use the most recent entry for each product (in case of duplicates)
-    if (!map[item.product_id] || (item.last_updated && (!map[item.product_id].last_updated || item.last_updated > map[item.product_id].last_updated!))) {
+    if (
+      !map[item.product_id] ||
+      (item.last_updated &&
+        (!map[item.product_id].last_updated ||
+          item.last_updated > map[item.product_id].last_updated!))
+    ) {
       map[item.product_id] = item
     }
   }
@@ -138,7 +146,9 @@ export function mapLevelsByBranch(items?: InventoryLevel[]): Record<string, Inve
 /**
  * Calculate stock status based on levels
  */
-export function getStockStatus(level: InventoryLevel): 'in_stock' | 'low_stock' | 'out_of_stock' | 'overstock' {
+export function getStockStatus(
+  level: InventoryLevel
+): 'in_stock' | 'low_stock' | 'out_of_stock' | 'overstock' {
   const { available, reorder_level = 10 } = level
 
   if (available === 0) return 'out_of_stock'
@@ -163,7 +173,9 @@ export function getStockStatusLabel(status: ReturnType<typeof getStockStatus>): 
 /**
  * Get stock status color (semantic tokens)
  */
-export function getStockStatusVariant(status: ReturnType<typeof getStockStatus>): 'default' | 'destructive' | 'outline' | 'secondary' {
+export function getStockStatusVariant(
+  status: ReturnType<typeof getStockStatus>
+): 'default' | 'destructive' | 'outline' | 'secondary' {
   const variants = {
     in_stock: 'default' as const,
     low_stock: 'secondary' as const,

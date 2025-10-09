@@ -1,0 +1,29 @@
+# HERA Development Documentation Security
+# Password Protection for /docs/dev/ directory
+
+AuthType Basic
+AuthName "HERA Core Development Team Access"
+AuthUserFile /Users/san/Documents/PRD/heraerp-prd/docs/dev/.htpasswd
+Require valid-user
+
+# Additional security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "no-referrer"
+    Header always set Content-Security-Policy "default-src 'self'"
+</IfModule>
+
+# Deny access to sensitive files
+<Files ".htpasswd">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.md">
+    AuthType Basic
+    AuthName "HERA Core Development Access - Finance DNA v2"
+    AuthUserFile /Users/san/Documents/PRD/heraerp-prd/docs/dev/.htpasswd
+    Require valid-user
+</Files>

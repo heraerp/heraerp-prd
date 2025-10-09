@@ -282,8 +282,13 @@ export function UnifiedDashboard() {
                 >
                   Hair Talkz Salon
                 </h1>
-                <p className="text-sm flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
-                  <span className="font-medium">{role.charAt(0).toUpperCase() + role.slice(1)} Dashboard</span>
+                <p
+                  className="text-sm flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.bronze }}
+                >
+                  <span className="font-medium">
+                    {role.charAt(0).toUpperCase() + role.slice(1)} Dashboard
+                  </span>
                   <span>•</span>
                   <span>
                     {new Date().toLocaleDateString('en-US', {

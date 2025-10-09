@@ -333,7 +333,9 @@ export function PaymentDialog({
                 {(totals?.discountAmount || 0) > 0 && (
                   <div className="flex justify-between text-sm" style={{ color: COLORS.emerald }}>
                     <span>Discounts:</span>
-                    <span className="font-medium">-AED {(totals?.discountAmount || 0).toFixed(2)}</span>
+                    <span className="font-medium">
+                      -AED {(totals?.discountAmount || 0).toFixed(2)}
+                    </span>
                   </div>
                 )}
                 {(totals?.tipAmount || 0) > 0 && (
@@ -350,11 +352,16 @@ export function PaymentDialog({
                     </span>
                   </div>
                 )}
-                <Separator style={{ backgroundColor: `${COLORS.gold}30`, height: '1px', margin: '0.5rem 0' }} />
-                <div className="flex justify-between font-bold text-base p-2.5 rounded-lg" style={{
-                  background: `${COLORS.gold}15`,
-                  border: `1px solid ${COLORS.gold}40`
-                }}>
+                <Separator
+                  style={{ backgroundColor: `${COLORS.gold}30`, height: '1px', margin: '0.5rem 0' }}
+                />
+                <div
+                  className="flex justify-between font-bold text-base p-2.5 rounded-lg"
+                  style={{
+                    background: `${COLORS.gold}15`,
+                    border: `1px solid ${COLORS.gold}40`
+                  }}
+                >
                   <span style={{ color: COLORS.champagne }}>Total Due:</span>
                   <span style={{ color: COLORS.gold }}>AED {(totals?.total || 0).toFixed(2)}</span>
                 </div>
@@ -364,7 +371,9 @@ export function PaymentDialog({
 
           {/* Payment Methods */}
           <div>
-            <h3 className="font-semibold mb-3 text-sm" style={{ color: COLORS.champagne }}>Payment Methods</h3>
+            <h3 className="font-semibold mb-3 text-sm" style={{ color: COLORS.champagne }}>
+              Payment Methods
+            </h3>
             <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="card" className="flex items-center gap-2">
@@ -582,10 +591,13 @@ export function PaymentDialog({
                 </>
               )}
               {remainingAmount > 0.01 ? (
-                <div className="flex justify-between text-base p-2.5 rounded-lg" style={{
-                  background: `${COLORS.red}15`,
-                  border: `1px solid ${COLORS.red}40`
-                }}>
+                <div
+                  className="flex justify-between text-base p-2.5 rounded-lg"
+                  style={{
+                    background: `${COLORS.red}15`,
+                    border: `1px solid ${COLORS.red}40`
+                  }}
+                >
                   <span className="font-medium" style={{ color: COLORS.champagne }}>
                     Balance to Pay:
                   </span>

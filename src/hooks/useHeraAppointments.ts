@@ -28,14 +28,14 @@ import {
 
 // 🎯 ENTERPRISE: Appointment Status Workflow
 export type AppointmentStatus =
-  | 'draft'           // Initial state - not confirmed
-  | 'booked'          // Confirmed by customer
-  | 'checked_in'      // Customer arrived
-  | 'in_progress'     // Service started
+  | 'draft' // Initial state - not confirmed
+  | 'booked' // Confirmed by customer
+  | 'checked_in' // Customer arrived
+  | 'in_progress' // Service started
   | 'payment_pending' // Service completed, awaiting payment
-  | 'completed'       // Fully completed and paid
-  | 'cancelled'       // Cancelled by customer or salon
-  | 'no_show'         // Customer didn't show up
+  | 'completed' // Fully completed and paid
+  | 'cancelled' // Cancelled by customer or salon
+  | 'no_show' // Customer didn't show up
 
 // 🎯 ENTERPRISE: Valid status transitions
 export const VALID_STATUS_TRANSITIONS: Record<AppointmentStatus, AppointmentStatus[]> = {
@@ -46,11 +46,14 @@ export const VALID_STATUS_TRANSITIONS: Record<AppointmentStatus, AppointmentStat
   payment_pending: ['completed', 'cancelled'],
   completed: [], // Terminal state
   cancelled: [], // Terminal state
-  no_show: []    // Terminal state
+  no_show: [] // Terminal state
 }
 
 // 🎯 ENTERPRISE: Status display configuration
-export const STATUS_CONFIG: Record<AppointmentStatus, { label: string; color: string; icon: string }> = {
+export const STATUS_CONFIG: Record<
+  AppointmentStatus,
+  { label: string; color: string; icon: string }
+> = {
   draft: { label: 'Draft', color: '#6B7280', icon: 'FileEdit' },
   booked: { label: 'Booked', color: '#3B82F6', icon: 'Calendar' },
   checked_in: { label: 'Checked In', color: '#8B5CF6', icon: 'UserCheck' },
@@ -129,7 +132,10 @@ export interface UseHeraAppointmentsOptions {
 }
 
 // 🎯 ENTERPRISE: Validate status transition
-export function canTransitionTo(currentStatus: AppointmentStatus, newStatus: AppointmentStatus): boolean {
+export function canTransitionTo(
+  currentStatus: AppointmentStatus,
+  newStatus: AppointmentStatus
+): boolean {
   const allowedTransitions = VALID_STATUS_TRANSITIONS[currentStatus]
   return allowedTransitions.includes(newStatus)
 }
@@ -279,11 +285,11 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     return transactions.map((txn: any) => {
       const metadata = txn.metadata || {}
       const customerName = txn.source_entity_id
-        ? (customerMap.get(txn.source_entity_id) || 'Unknown Customer')
+        ? customerMap.get(txn.source_entity_id) || 'Unknown Customer'
         : 'Unknown Customer'
 
       const stylistName = txn.target_entity_id
-        ? (staffMap.get(txn.target_entity_id) || 'Unassigned')
+        ? staffMap.get(txn.target_entity_id) || 'Unassigned'
         : 'Unassigned'
 
       const appointment: Appointment = {
@@ -320,7 +326,16 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
 
     // Status filter - cancelled and no_show are visible by default, archived requires explicit opt-in
     if (!options?.includeArchived) {
-      const validStatuses = ['draft', 'booked', 'checked_in', 'in_progress', 'payment_pending', 'completed', 'cancelled', 'no_show']
+      const validStatuses = [
+        'draft',
+        'booked',
+        'checked_in',
+        'in_progress',
+        'payment_pending',
+        'completed',
+        'cancelled',
+        'no_show'
+      ]
       filtered = filtered.filter(apt => validStatuses.includes(apt.status))
     }
 
@@ -385,7 +400,15 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
 
   // 🎯 ENTERPRISE: Update Appointment Mutation (using RPC wrapper)
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data, skipValidation }: { id: string; data: UpdateAppointmentData; skipValidation?: boolean }) => {
+    mutationFn: async ({
+      id,
+      data,
+      skipValidation
+    }: {
+      id: string
+      data: UpdateAppointmentData
+      skipValidation?: boolean
+    }) => {
       console.log('[useHeraAppointments] Update mutation called:', { id, data, skipValidation })
 
       if (!options?.organizationId) {
@@ -459,7 +482,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       console.log('[useHeraAppointments] Invalidating queries after update')
       queryClient.invalidateQueries({ queryKey: ['appointment-transactions'] })
     },
-    onError: (error) => {
+    onError: error => {
       console.error('[useHeraAppointments] Update mutation error:', error)
     }
   })
@@ -500,7 +523,8 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     }
   })
 
-  const isLoading = transactionsLoading || customersLoading || staffUpperLoading || staffLowerLoading
+  const isLoading =
+    transactionsLoading || customersLoading || staffUpperLoading || staffLowerLoading
 
   return {
     appointments: filteredAppointments,
