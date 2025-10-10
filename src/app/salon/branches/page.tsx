@@ -16,6 +16,8 @@ export default function BranchesPage() {
   const { organization, selectedBranchId } = useSecuredSalonContext()
   const [showForm, setShowForm] = React.useState(false)
   const [selectedBranch, setSelectedBranch] = React.useState<any>(null)
+  const [recreating, setRecreating] = React.useState(false)
+  const [message, setMessage] = React.useState('')
 
   const branches = useUniversalEntity({
     entity_type: 'BRANCH',
@@ -44,6 +46,70 @@ export default function BranchesPage() {
     }
   }
 
+  // Recreate the two missing Hair Talkz branches
+  const recreateMissingBranches = async () => {
+    setRecreating(true)
+    setMessage('')
+
+    const missingBranches = [
+      {
+        entity_name: 'Park Regis Kris Kin Hotel',
+        entity_code: 'PARK-REGIS',
+        location: 'Al Karama, Dubai, U.A.E',
+        description: 'Hair Talkz Salon at Park Regis Kris Kin Hotel'
+      },
+      {
+        entity_name: 'Mercure Gold Hotel',
+        entity_code: 'MERCURE-GOLD',
+        location: 'Al Mina Road, Jumeirah, Dubai, U.A.E',
+        description: 'Hair Talkz Salon at Mercure Gold Hotel'
+      }
+    ]
+
+    try {
+      let created = 0
+
+      for (const branchData of missingBranches) {
+        // Check if already exists
+        const exists = branches.data?.find(
+          b => b.entity_name === branchData.entity_name || b.entity_code === branchData.entity_code
+        )
+
+        if (exists) {
+          console.log(`Branch already exists: ${branchData.entity_name}`)
+          continue
+        }
+
+        // Create branch using the branch creation function
+        await branches.create({
+          entity_name: branchData.entity_name,
+          entity_code: branchData.entity_code,
+          dynamic_fields: {
+            address: branchData.location,
+            description: branchData.description,
+            status: 'active',
+            timezone: 'Asia/Dubai'
+          }
+        })
+
+        created++
+        console.log(`Created branch: ${branchData.entity_name}`)
+      }
+
+      if (created > 0) {
+        setMessage(`Successfully recreated ${created} missing branches!`)
+        await branches.refresh() // Refresh the list
+      } else {
+        setMessage('All branches already exist.')
+      }
+    } catch (error) {
+      console.error('Error recreating branches:', error)
+      setMessage('Error recreating branches. Please try again.')
+    } finally {
+      setRecreating(false)
+    }
+  }
+
   return (
     <div className="container mx-auto p-6">
       {/* Page Header */}
@@ -58,6 +124,19 @@ export default function BranchesPage() {
         <div className="flex items-center gap-4">
           <BranchSelector variant="default" />
           <Button
+            onClick={recreateMissingBranches}
+            disabled={recreating}
+            variant="outline"
+            style={{
+              borderColor: LUXE_COLORS.emerald,
+              color: LUXE_COLORS.emerald
+            }}
+            className="hover:bg-opacity-10"
+          >
+            <Building2 className="h-4 w-4 mr-2" />
+            {recreating ? 'Recreating...' : 'Recreate Missing Branches'}
+          </Button>
+          <Button
             onClick={() => setShowForm(true)}
             style={{
               backgroundColor: LUXE_COLORS.gold,
@@ -70,6 +149,28 @@ export default function BranchesPage() {
           </Button>
         </div>
       </div>
+
+      {/* Message Display */}
+      {message && (
+        <Card
+          className="mb-6 p-4"
+          style={{
+            backgroundColor: message.includes('Error')
+              ? `${LUXE_COLORS.ruby}20`
+              : `${LUXE_COLORS.emerald}20`,
+            border: `1px solid ${message.includes('Error') ? LUXE_COLORS.ruby : LUXE_COLORS.emerald}40`
+          }}
+        >
+          <p
+            style={{
+              color: message.includes('Error') ? LUXE_COLORS.ruby : LUXE_COLORS.emerald,
+              margin: 0
+            }}
+          >
+            {message}
+          </p>
+        </Card>
+      )}
 
       {/* Forms */}
       {showForm && (
