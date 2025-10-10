@@ -4,6 +4,13 @@ providers = ["node"]
 # Use Node 20 channel from nixpkgs
 nixPkgs = ["nodejs_20"]
 
+[phases.build]
+# Avoid cache conflicts by using clean install
+cmd = "npm ci --prefer-offline --no-audit --progress=false && npm run build"
+
 [variables]
 # Also hint desired runtime version
 NODE_VERSION = "20.18.0"
+# Disable cache directory conflicts
+NPM_CONFIG_CACHE = "/tmp/.npm"
+NODE_OPTIONS = "--max-old-space-size=4096"
