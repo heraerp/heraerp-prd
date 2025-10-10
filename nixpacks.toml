@@ -4,16 +4,16 @@ providers = ["node"]
 nixPkgs = ["nodejs_20"]
 
 [phases.install]
-# Use npm ci with temporary cache to avoid mount conflicts
-cmd = "npm ci --no-optional --prefer-offline --no-audit --progress=false --cache /tmp/npm-cache"
+# Disable npm cache entirely to avoid Nixpacks mount conflicts
+cmd = "npm ci --no-optional --prefer-offline --no-audit --progress=false --cache /dev/null"
 
 [phases.build]
 cmd = "npm run build"
 
 [variables]
 NODE_VERSION = "20.18.0"
-# Use temporary cache location to avoid Nixpacks mount conflicts
-NPM_CONFIG_CACHE = "/tmp/npm-cache"
+# Completely disable npm cache to avoid all mount conflicts
+NPM_CONFIG_CACHE = "/dev/null"
 NPM_CONFIG_UPDATE_NOTIFIER = "false"
 NODE_OPTIONS = "--max-old-space-size=4096"
 NEXT_TELEMETRY_DISABLED = "1"
