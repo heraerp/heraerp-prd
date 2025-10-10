@@ -538,13 +538,16 @@ export function useSetPrimaryContact(orgId: string) {
 
   return useMutation({
     mutationFn: async (contactId: string) => {
-      const response = await fetch(`/api/civicflow/organizations/${orgId}/contacts/${contactId}/primary`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Organization-Id': tenantOrgId
+      const response = await fetch(
+        `/api/civicflow/organizations/${orgId}/contacts/${contactId}/primary`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Organization-Id': tenantOrgId
+          }
         }
-      })
+      )
 
       if (!response.ok) throw new Error('Failed to set primary contact')
       return response.json()

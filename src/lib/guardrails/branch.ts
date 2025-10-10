@@ -93,20 +93,28 @@ export async function getOrganizationBranches(
 
     universalApi.setOrganizationId(organization_id)
 
+    console.log('[getOrganizationBranches] Fetching branches for org:', organization_id)
+
     const response = await universalApi.read('core_entities', {
-      organization_id,
       entity_type: 'BRANCH'
     })
 
+    console.log('[getOrganizationBranches] API response:', response)
+
     if (!response.success || !response.data) {
+      console.log('[getOrganizationBranches] No branches found or API error')
       return []
     }
 
-    return response.data.map((branch: any) => ({
+    const branches = response.data.map((branch: any) => ({
       id: branch.id,
       name: branch.entity_name,
       code: branch.entity_code
     }))
+
+    console.log('[getOrganizationBranches] Mapped branches:', branches)
+
+    return branches
   } catch (error) {
     console.error('Error fetching branches:', error)
     return []

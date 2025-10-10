@@ -40,10 +40,10 @@ export async function GET(request: NextRequest) {
       )
 
       // Simple query to check database connection with timeout
-      const { error } = await Promise.race([
+      const { error } = (await Promise.race([
         supabase.from('core_organizations').select('id').limit(1),
         new Promise((_, reject) => setTimeout(() => reject(new Error('Database timeout')), 5000))
-      ]) as any
+      ])) as any
 
       if (error) {
         checks.database = {

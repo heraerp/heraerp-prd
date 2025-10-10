@@ -37,3 +37,70 @@
  ✓ Compiled in 602ms (184 modules)
  ✓ Compiled in 797ms (184 modules)
  ✓ Compiled in 381ms
+ ✓ Compiled in 658ms (184 modules)
+ ✓ Compiled in 1439ms (184 modules)
+ ○ Compiling /api/v2/healthz ...
+ ✓ Compiled /api/v2/healthz in 547ms (328 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json',
+  page: '/api/v2/healthz'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 885ms (664 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json'
+}
+ GET /api/healthz 500 in 3042ms
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json',
+  page: '/api/v2/healthz'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json'
+}
+ GET /api/v2/healthz 500 in 394ms
+ ○ Compiling /api/ping ...
+ ✓ Compiled /api/ping in 3.1s (577 modules)
+ ⨯ Error: Cannot find module './chunks/vendor-chunks/next.js'
+Require stack:
+- /Users/san/Documents/PRD/heraerp-prd/.next/server/webpack-runtime.js
+- /Users/san/Documents/PRD/heraerp-prd/.next/server/app/api/ping/route.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/require.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/load-components.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/utils.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/swc/options.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/swc/index.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/config.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/next.js
+- /Users/san/Documents/PRD/heraerp-prd/node_modules/next/dist/server/lib/start-server.js
+    at <unknown> (.next/server/app/api/ping/route.js:141:47)
+    at Object.<anonymous> (.next/server/app/api/ping/route.js:144:3) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/api/ping'
+}
+ ✓ Compiled /_error in 363ms (664 modules)
+ ⨯ Error: ENOENT: no such file or directory, open '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json'
+    at async S (.next/server/pages/_error.js:12:2355) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/san/Documents/PRD/heraerp-prd/.next/routes-manifest.json'
+}
+ GET /api/ping 500 in 4960ms
+ ✓ Compiled in 3s (442 modules)
+ ✓ Compiled in 1955ms (442 modules)
+ ✓ Compiled in 5.8s (442 modules)
