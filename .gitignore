@@ -51,3 +51,19 @@ color-guard-report.json
 
 # Contentlayer
 .contentlayer
+# package managers
+pnpm-lock.yaml
+yarn.lock
+
+# build outputs
+.next/
+dist/
+build/
+out/
+
+# dependencies
+node_modules/
+
+# logs & local dev
+*.log
+dev-server.log
