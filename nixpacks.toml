@@ -1,20 +1,11 @@
-# nixpacks.toml
+[providers]
+node = true
+deno = false
 
 [phases.setup]
+# Use Node 20 channel from nixpkgs
 nixPkgs = ["nodejs_20"]
 
-[phases.install]
-# Install all dependencies including devDependencies for build
-cmds = ["npm ci --production=false"]
-
-[phases.build]
-# Only run build, don't reinstall dependencies
-cmds = ["npm run build"]
-
-[start]
-cmd = "npm start"
-
 [variables]
-# Set NODE_ENV after build to ensure devDependencies are available during build
-NODE_ENV = "production"
-# Do NOT set PORT here - Railway injects it
+# Also hint desired runtime version
+NODE_VERSION = "20.18.0"

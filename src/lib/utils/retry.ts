@@ -86,3 +86,4 @@ export function retryWithLinearBackoff<T>(
     backoff: 'linear'
   })
 }
+export { withRetry } from "./retry-core";
