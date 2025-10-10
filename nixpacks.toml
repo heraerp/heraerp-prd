@@ -1,6 +1,4 @@
-[providers]
-node = true
-deno = false
+providers = ["node"]
 
 [phases.setup]
 # Use Node 20 channel from nixpkgs
