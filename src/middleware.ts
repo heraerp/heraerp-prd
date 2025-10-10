@@ -65,7 +65,6 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // everything except health endpoints + static/public
-    '/((?!api/health(?:/.*)?$|api/healthz(?:/.*)?$|api/v2/healthz(?:/.*)?$|_next/|favicon\\.ico$|robots\\.txt$|sitemap\\.xml$).*)',
-  ],
+    '/((?!api/health(?:/.*)?$|api/healthz(?:/.*)?$|api/v2/healthz(?:/.*)?$|_next/|favicon\\.ico$|robots\\.txt$|sitemap\\.xml$).*)'
+  ]
 }
-

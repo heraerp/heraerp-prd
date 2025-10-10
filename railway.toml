@@ -12,6 +12,7 @@ NEXT_TELEMETRY_DISABLED = "1"
 NODE_OPTIONS = "--max-old-space-size=8192"
 CI = "true"
 SKIP_ENV_VALIDATION = "true"
+NIXPACKS_NODE_VERSION = "20.12.2"
 
 [deploy]
 healthcheckPath = "/api/v2/healthz"
@@ -19,6 +20,7 @@ healthcheckTimeout = 300
 healthcheckDelay = 120
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 5
+startCommand = "node production-railway.js"
 
 [deploy.env]
 NODE_ENV = "production"

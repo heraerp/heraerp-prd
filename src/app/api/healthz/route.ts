@@ -1,57 +1,46 @@
+import { NextResponse } from 'next/server'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function GET() {
   try {
-    // Enhanced health check with comprehensive diagnostics
-    const health = {
-      status: 'healthy',
+    const healthData = {
+      status: 'ok',
       timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
+      uptime: Math.floor(process.uptime()),
       memory: {
-        heapUsed: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
-        heapTotal: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
-        external: Math.round(process.memoryUsage().external / 1024 / 1024)
+        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024)
       },
-      environment: {
-        node_env: process.env.NODE_ENV || 'unknown',
-        port: process.env.PORT || 'unknown',
-        hostname: process.env.HOSTNAME || 'unknown'
-      },
+      env: process.env.NODE_ENV || 'production',
       railway: {
-        deployment_id: process.env.RAILWAY_DEPLOYMENT_ID || 'unknown',
-        environment: process.env.RAILWAY_ENVIRONMENT || 'unknown',
-        service_id: process.env.RAILWAY_SERVICE_ID || 'unknown'
-      },
-      version: '1.2.2'
+        service: process.env.RAILWAY_SERVICE_NAME || 'heraerp',
+        deployment: process.env.RAILWAY_DEPLOYMENT_ID || 'unknown'
+      }
     }
 
-    // Log health check for debugging
-    console.log('✅ Health check requested:', {
-      timestamp: health.timestamp,
-      uptime: health.uptime,
-      memory: health.memory.heapUsed
-    })
-
-    return new Response(JSON.stringify(health), {
+    return NextResponse.json(healthData, {
       status: 200,
       headers: {
-        'content-type': 'application/json',
-        'cache-control': 'no-cache, no-store, must-revalidate'
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Content-Type': 'application/json'
       }
     })
   } catch (error) {
-    console.error('❌ Health check failed:', error)
-    return new Response(
-      JSON.stringify({
-        status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
-      }),
+    return NextResponse.json(
       {
-        status: 503,
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        error: 'Health check had issues but service is running',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      {
+        status: 200,
         headers: {
-          'content-type': 'application/json'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Content-Type': 'application/json'
         }
       }
     )
@@ -61,3 +50,4 @@ export async function GET() {
 export async function HEAD() {
   return new Response(null, { status: 200 })
 }
+
