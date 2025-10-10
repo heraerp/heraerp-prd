@@ -1,22 +1,22 @@
 providers = ["node"]
 
 [phases.setup]
-# Use Node 20 channel from nixpkgs
 nixPkgs = ["nodejs_20"]
 
 [phases.install]
-# Clear any existing cache and install dependencies
-cmd = "rm -rf node_modules/.cache && npm ci --prefer-offline --no-audit --progress=false"
+# Use npm ci with temporary cache to avoid mount conflicts
+cmd = "npm ci --no-optional --prefer-offline --no-audit --progress=false --cache /tmp/npm-cache"
 
 [phases.build]
-# Build without cache interference
-cmd = "rm -rf node_modules/.cache && npm run build"
+cmd = "npm run build"
 
 [variables]
-# Runtime version
 NODE_VERSION = "20.18.0"
-# Disable npm cache entirely to avoid conflicts
-NPM_CONFIG_CACHE = "false"
+# Use temporary cache location to avoid Nixpacks mount conflicts
+NPM_CONFIG_CACHE = "/tmp/npm-cache"
 NPM_CONFIG_UPDATE_NOTIFIER = "false"
 NODE_OPTIONS = "--max-old-space-size=4096"
 NEXT_TELEMETRY_DISABLED = "1"
+# Railway specific environment variables
+RAILWAY_ENVIRONMENT = "true"
+SKIP_ENV_VALIDATION = "true"
