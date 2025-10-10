@@ -1,6 +1,6 @@
+cat > railway.toml <<'TOML'
 [build]
 builder = "nixpacks"
-# ✅ make the build explicit so both envs behave the same
 buildCommand = "npm ci && npm run build"
 
 [build.env]
@@ -17,16 +17,14 @@ SKIP_ENV_VALIDATION = "true"
 NIXPACKS_NODE_VERSION = "20.12.2"
 
 [deploy]
-# ✅ use the boring, always-200 path
 healthcheckPath = "/healthz"
 healthcheckTimeout = 300
 healthcheckDelay = 120
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 5
 startCommand = "npm run start"
-# ✅ rely on your package.json `start` which runs the standalone server
-startCommand = "npm run start"
 
 [deploy.env]
 NODE_ENV = "production"
 NEXT_TELEMETRY_DISABLED = "1"
+TOML
