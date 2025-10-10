@@ -14,6 +14,7 @@ NODE_OPTIONS = "--max-old-space-size=8192"
 CI = "true"
 SKIP_ENV_VALIDATION = "true"
 NIXPACKS_NODE_VERSION = "20.12.2"
+NPM_CONFIG_PRODUCTION = "false"   # <- add this line
 
 [deploy]
 healthcheckPath = "/healthz"
