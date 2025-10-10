@@ -4,22 +4,20 @@ providers = ["node"]
 nixPkgs = ["nodejs_20"]
 
 [phases.install]
-# Use unique cache directory to avoid Nixpacks mount conflicts
-cmd = "mkdir -p /tmp/npm-cache-$$ && npm ci --no-optional --prefer-offline --no-audit --progress=false --cache /tmp/npm-cache-$$"
+# Skip install phase to avoid cache conflicts
+cmd = "echo 'Skipping install phase - will install in build phase'"
 
 [phases.build]
-# Use same cache location and run both npm ci and build in build phase to avoid cache mount conflicts
-cmd = "mkdir -p /tmp/npm-cache-$$ && npm ci --no-optional --prefer-offline --no-audit --progress=false --cache /tmp/npm-cache-$$ && npm run build"
+# Do everything in build phase with fresh npm cache
+cmd = "rm -rf node_modules/.cache && mkdir -p /tmp/npm-cache-build && npm ci --no-optional --prefer-offline --no-audit --progress=false --cache /tmp/npm-cache-build && npm run build"
 
 [variables]
 NODE_VERSION = "20.18.0"
-# Use process-specific cache directory to avoid mount conflicts
-NPM_CONFIG_CACHE = "/tmp/npm-cache"
+# Disable all npm cache directories that might conflict
+NPM_CONFIG_CACHE = "/tmp/npm-cache-process"
 NPM_CONFIG_UPDATE_NOTIFIER = "false"
 NODE_OPTIONS = "--max-old-space-size=4096"
 NEXT_TELEMETRY_DISABLED = "1"
 # Railway specific environment variables
 RAILWAY_ENVIRONMENT = "true"
 SKIP_ENV_VALIDATION = "true"
-# Disable Nixpacks cache mounts that conflict with npm
-NIXPACKS_NO_CACHE = "1"
