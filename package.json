@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "engines": {
-    "node": ">=20.12.2 <23",
+    "node": "20.18.0",
     "npm": ">=9.0.0"
   },
   "engines-strict": true,
@@ -435,5 +435,6 @@
     "tsx": "^4.19.0",
     "typescript": "^5.9.3",
     "vitest": "^1.6.1"
-  }
+  },
+  "packageManager": "npm@10.9.0"
 }
