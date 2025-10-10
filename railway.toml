@@ -23,6 +23,7 @@ healthcheckTimeout = 300
 healthcheckDelay = 120
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 5
+startCommand = "npm run start"
 # ✅ rely on your package.json `start` which runs the standalone server
 startCommand = "npm run start"
 
