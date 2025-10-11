@@ -61,10 +61,9 @@ export function middleware(req: NextRequest) {
   return NextResponse.next()
 }
 
-// Exclude health paths and static/public assets from the middleware matcher itself
 export const config = {
   matcher: [
-    // everything except health endpoints + static/public
-    '/((?!api/health(?:/.*)?$|api/healthz(?:/.*)?$|api/v2/healthz(?:/.*)?$|_next/|favicon\\.ico$|robots\\.txt$|sitemap\\.xml$).*)'
-  ]
+    // Run middleware for everything EXCEPT these:
+    '/((?!api/health|api/healthz|api/v2/healthz|_next/static|_next/image|favicon.ico).*)',
+  ],
 }
