@@ -27,9 +27,22 @@ const nextConfig = {
   images: { domains: ['localhost'], formats: ['image/avif', 'image/webp'] },
   reactStrictMode: true,
 
-  // No health rewrites; we use plain /healthz
+  // Add health route rewrites as ultimate fallback
   async rewrites() {
-    return { beforeFiles: [], afterFiles: [], fallback: [] }
+    return {
+      beforeFiles: [
+        {
+          source: '/api/health',
+          destination: '/api/health/route'
+        },
+        {
+          source: '/health',
+          destination: '/api/health/route'
+        }
+      ],
+      afterFiles: [],
+      fallback: []
+    }
   },
 
   // 🔧 Force @ to resolve to ./src (works regardless of tsconfig during CI)

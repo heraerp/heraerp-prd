@@ -60,7 +60,7 @@
     "build:verify": "npm run build && node scripts/verify-next-build.js",
     "clean:build": "rm -rf .next || true",
     "build:local": "npm run quality:pre-build && npm run dna:gate && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && next build",
-    "start": "HOSTNAME=0.0.0.0 PORT=${PORT:-3000} node -r ./scripts/debug-startup.cjs -r ./scripts/patch-guard-alias.cjs .next/standalone/server.js",
+    "start": "PORT=${PORT:-3000} HOST=0.0.0.0 node -r ./scripts/debug-startup.cjs -r ./scripts/patch-guard-alias.cjs .next/standalone/server.js",
     "start:custom": "node server-simple.js",
     "lint": "next lint",
     "icons:currentColor": "node scripts/icons-currentColor.cjs",
