@@ -57,6 +57,7 @@ interface PaymentDialogProps {
   ticket: any
   totals: any
   organizationId: string
+  organizationName?: string
   branchId?: string
   branchName?: string
   onComplete: (saleData: any) => void
@@ -68,6 +69,7 @@ export function PaymentDialog({
   ticket,
   totals,
   organizationId,
+  organizationName,
   branchId,
   branchName,
   onComplete
@@ -77,6 +79,7 @@ export function PaymentDialog({
   const [validationWarnings, setValidationWarnings] = useState<string[]>([])
   const [showValidationModal, setShowValidationModal] = useState(false)
   const [validationIssues, setValidationIssues] = useState<Array<{ type: string; message: string; action?: string }>>([])
+  const [branchDetails, setBranchDetails] = useState<{ address?: string; phone?: string }>({})
 
   // ✅ LAYER 2: Use usePosCheckout hook (which uses useUniversalTransaction RPC API v2)
   const { processCheckout, isProcessing, error, clearError } = usePosCheckout()
@@ -124,6 +127,37 @@ export function PaymentDialog({
       setChangeAmount(0)
     }
   }, [cashAmount, payments, totals?.total])
+
+  // Fetch branch address and phone from core_dynamic_data
+  useEffect(() => {
+    const fetchBranchDetails = async () => {
+      if (!branchId || !organizationId) return
+
+      try {
+        const { universalApi } = await import('@/lib/universal-api-v2')
+
+        // Fetch dynamic data for the branch entity
+        const result = await universalApi.getDynamicData({
+          entity_id: branchId,
+          organization_id: organizationId
+        })
+
+        if (result.success && result.data) {
+          const addressField = result.data.find((f: any) => f.field_name === 'address')
+          const phoneField = result.data.find((f: any) => f.field_name === 'phone')
+
+          setBranchDetails({
+            address: addressField?.field_value_text || undefined,
+            phone: phoneField?.field_value_text || undefined
+          })
+        }
+      } catch (err) {
+        console.error('[PaymentDialog] Error fetching branch details:', err)
+      }
+    }
+
+    fetchBranchDetails()
+  }, [branchId, organizationId])
 
   const addPayment = (type: 'cash' | 'card' | 'voucher') => {
     let amount = 0
@@ -290,8 +324,11 @@ export function PaymentDialog({
         timestamp: new Date().toISOString(),
         customer_name: ticket.customer_name,
         appointment_id: ticket.appointment_id,
+        organization_name: organizationName || 'Hair Talkz Salon', // ✅ Organization name
         branch_id: branchId, // ✅ Store branch ID
         branch_name: branchName || 'Main Branch', // ✅ Store branch name
+        ...(branchDetails.address && { branch_address: branchDetails.address }), // ✅ Only include if available
+        ...(branchDetails.phone && { branch_phone: branchDetails.phone }), // ✅ Only include if available
         lineItems: ticket.lineItems,
         discounts: ticket.discounts,
         tips: ticket.tips,

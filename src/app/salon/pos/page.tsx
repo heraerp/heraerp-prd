@@ -588,6 +588,7 @@ function POSContent() {
           ticket={ticket}
           totals={totals}
           organizationId={effectiveOrgId!}
+          organizationName={organization?.name}
           branchId={selectedBranchId}
           branchName={availableBranches?.find(b => b.id === selectedBranchId)?.entity_name}
           onComplete={handlePaymentComplete}

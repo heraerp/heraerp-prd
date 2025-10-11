@@ -28,6 +28,10 @@ interface ReceiptProps {
     timestamp: string
     customer_name?: string
     appointment_id?: string
+    organization_name?: string
+    branch_name: string
+    branch_address?: string
+    branch_phone?: string
     lineItems: Array<{
       id: string
       entity_name: string
@@ -65,7 +69,6 @@ interface ReceiptProps {
       total: number
     }
     changeAmount: number
-    branch_name: string
     commission_lines?: Array<{
       stylist_id: string
       stylist_name: string
@@ -150,9 +153,16 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
   const generateReceiptText = () => {
     const lines = []
     lines.push('='.repeat(40))
+    if (saleData.organization_name) {
+      lines.push(`${saleData.organization_name.toUpperCase()}`)
+    }
     lines.push(`${saleData.branch_name.toUpperCase()}`)
-    lines.push('123 Main Street, City, State 12345')
-    lines.push('(555) 123-4567')
+    if (saleData.branch_address) {
+      lines.push(saleData.branch_address)
+    }
+    if (saleData.branch_phone) {
+      lines.push(saleData.branch_phone)
+    }
     lines.push('='.repeat(40))
     lines.push(`Receipt #: ${saleData.transaction_code}`)
     lines.push(`Date: ${formatDateTime(saleData.timestamp)}`)
@@ -248,17 +258,28 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
         <div ref={receiptRef} className="space-y-4 font-mono text-sm">
           {/* Header */}
           <div className="text-center space-y-2">
-            <h1 className="text-xl font-bold">{saleData.branch_name}</h1>
-            <div className="text-sm text-muted-foreground">
-              <div className="flex items-center justify-center gap-1">
-                <MapPin className="w-3 h-3" />
-                123 Main Street, City, State 12345
+            {saleData.organization_name && (
+              <h1 className="text-xl font-bold">{saleData.organization_name}</h1>
+            )}
+            <h2 className={saleData.organization_name ? "text-lg font-semibold" : "text-xl font-bold"}>
+              {saleData.branch_name}
+            </h2>
+            {(saleData.branch_address || saleData.branch_phone) && (
+              <div className="text-sm text-muted-foreground">
+                {saleData.branch_address && (
+                  <div className="flex items-center justify-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    {saleData.branch_address}
+                  </div>
+                )}
+                {saleData.branch_phone && (
+                  <div className="flex items-center justify-center gap-1">
+                    <Phone className="w-3 h-3" />
+                    {saleData.branch_phone}
+                  </div>
+                )}
               </div>
-              <div className="flex items-center justify-center gap-1">
-                <Phone className="w-3 h-3" />
-                (555) 123-4567
-              </div>
-            </div>
+            )}
           </div>
 
           <Separator />
