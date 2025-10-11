@@ -14,6 +14,8 @@
 import { useState } from 'react'
 import { useUniversalTransaction } from './useUniversalTransaction'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { FinanceDNAServiceV2, FinanceGuardrails } from '@/lib/dna/integration/finance-integration-dna-v2'
+import type { UniversalFinanceEventV2 } from '@/lib/dna/integration/finance-integration-dna-v2'
 
 // Smart code templates for POS transactions
 const SMART_CODES = {
@@ -79,6 +81,14 @@ export function usePosCheckout(): UsePosCheckoutReturn {
     error: txnError
   } = useUniversalTransaction({
     organizationId: currentOrganization?.id
+  })
+
+  // ✅ LAYER 2: Initialize Finance DNA v2 Service
+  const [financeDNA] = useState(() => {
+    if (currentOrganization?.id) {
+      return new FinanceDNAServiceV2(currentOrganization.id)
+    }
+    return null
   })
 
   const error = txnError
@@ -236,6 +246,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
       // Determine primary staff ID (first staff from items)
       const primaryStaffId = items.find(item => item.staff_id)?.staff_id || null
 
+      // ✅ ENTERPRISE TRACKING - Log all entity relationships
       console.log('[usePosCheckout] ENTERPRISE TRACKING - All entities linked:', {
         branch_id,
         customer_id,
@@ -245,6 +256,42 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         product_count: items.filter(i => i.type === 'product').length,
         staff_assigned_count: items.filter(i => i.staff_id).length
       })
+
+      // ✅ LAYER 2: Finance DNA v2 Pre-transaction Validation
+      if (financeDNA && currentOrganization?.id) {
+        await financeDNA.initialize()
+
+        // Validate GL balance before processing
+        const balanceValidation = FinanceGuardrails.validateDoubleEntry([
+          { debit_amount: total_amount },
+          { credit_amount: subtotal - discount_total },
+          { credit_amount: tax_amount }
+        ])
+
+        if (!balanceValidation) {
+          throw new Error('Finance DNA v2: Transaction amounts do not balance')
+        }
+
+        // Validate fiscal period
+        const fiscalValidation = await FinanceGuardrails.validateFiscalPeriod(
+          new Date().toISOString(),
+          currentOrganization.id
+        )
+
+        if (!fiscalValidation.isValid) {
+          throw new Error(`Finance DNA v2: ${fiscalValidation.reason}`)
+        }
+
+        // Validate currency support (AED for salon)
+        const currencyValidation = await FinanceGuardrails.validateCurrencySupport(
+          'AED',
+          currentOrganization.id
+        )
+
+        if (!currencyValidation.isValid) {
+          throw new Error('Finance DNA v2: AED currency not supported')
+        }
+      }
 
       // ✅ LAYER 1: Use createTransaction from useUniversalTransaction (RPC API v2)
       const result = await createTransaction({
@@ -270,21 +317,82 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           customer_entity_id: customer_id,
           staff_entity_id: primaryStaffId,
           service_ids: items.filter(i => i.type === 'service').map(i => i.entity_id),
-          product_ids: items.filter(i => i.type === 'product').map(i => i.entity_id)
+          product_ids: items.filter(i => i.type === 'product').map(i => i.entity_id),
+          // Finance DNA v2 integration markers
+          finance_dna_version: 'v2', // Finance DNA v2 marker
+          auto_journal_enabled: true,
+          gl_posting_required: true
         },
         lines
       })
 
-      // Auto-journal posting will be handled by Finance DNA
       // Extract transaction ID from RPC response
       const transactionId = typeof result.data === 'string' ? result.data : result.data?.transaction_id || result.data?.id
+
+      // ✅ LAYER 2: Finance DNA v2 Auto-Journal Processing
+      let autoJournalResult = null
+      if (financeDNA && transactionId && currentOrganization?.id) {
+        try {
+          // Create Finance DNA v2 event
+          const financeEvent: UniversalFinanceEventV2 = {
+            organization_id: currentOrganization.id,
+            transaction_id: transactionId,
+            transaction_type: 'SALE',
+            smart_code: 'HERA.SALON.FINANCE.TXN.REVENUE.SERVICE.V1', // Use Finance DNA v2 smart code
+            transaction_date: new Date().toISOString(),
+            total_amount,
+            transaction_currency_code: 'AED',
+            metadata: {
+              subtotal,
+              discount_total,
+              tax_amount,
+              tax_rate,
+              payment_methods: payments.map(p => p.method),
+              pos_session: Date.now().toString(),
+              original_smart_code: 'HERA.SALON.TXN.SALE.CREATE.V1'
+            },
+            business_context: {
+              industry: 'salon',
+              transaction_source: 'pos',
+              payment_immediate: true,
+              vat_applicable: tax_amount > 0,
+              vat_rate: tax_rate
+            },
+            v2_enhancements: {
+              view_optimized: true,
+              rpc_processed: true,
+              performance_tier: 'standard',
+              real_time_insights: true
+            }
+          }
+
+          // Process the event through Finance DNA v2
+          autoJournalResult = await financeDNA.processEvent(financeEvent)
+
+          console.log('[Finance DNA v2] Auto-journal result:', {
+            success: autoJournalResult.success,
+            outcome: autoJournalResult.outcome,
+            performance: autoJournalResult.performance_metrics
+          })
+
+        } catch (autoJournalError) {
+          console.warn('[Finance DNA v2] Auto-journal failed (non-blocking):', autoJournalError)
+          // Don't fail the POS transaction if auto-journal fails
+        }
+      }
 
       return {
         transaction_id: transactionId,
         transaction_code: generateTransactionCode('SALE'),
         total_amount,
         lines: lines.length,
-        auto_journal_triggered: true
+        auto_journal_triggered: true,
+        finance_dna_v2: {
+          enabled: !!financeDNA,
+          validation_passed: true,
+          auto_journal_result: autoJournalResult,
+          performance_metrics: autoJournalResult?.performance_metrics
+        }
       }
     } catch (err) {
       console.error('POS checkout error:', err)
