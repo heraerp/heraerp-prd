@@ -1,10 +1,21 @@
+// Absolutely minimal health check - no imports except NextResponse
 import { NextResponse } from 'next/server'
 
-// Keep this route as simple as possible:
-export const runtime = 'nodejs'          // avoid Edge
-export const dynamic = 'force-static'    // don't hit DB or env
+export const runtime = 'nodejs'
+export const dynamic = 'force-static' 
 export const revalidate = 0
 
 export function GET() {
-  return NextResponse.json({ ok: true }, { status: 200 })
+  console.log('Health check hit at', new Date().toISOString())
+  return NextResponse.json({ 
+    ok: true, 
+    timestamp: new Date().toISOString(),
+    pid: process.pid 
+  }, { status: 200 })
+}
+
+// Also support HEAD requests (sometimes used by health checkers)
+export function HEAD() {
+  console.log('Health check HEAD at', new Date().toISOString())
+  return new NextResponse(null, { status: 200 })
 }
