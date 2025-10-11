@@ -1,4 +1,10 @@
 [build]
-builder = "NIXPACKS"
-# Let Nixpacks do install; only build here:
+builder = "nixpacks"
 buildCommand = "npm run build"
+
+[deploy]
+startCommand = "next start -H 0.0.0.0 -p $PORT"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 60
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3

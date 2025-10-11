@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove standalone for Railway healthcheck compatibility
+  output: 'standalone',  // Required for Railway deployment
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 

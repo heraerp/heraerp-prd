@@ -1,8 +1,0 @@
-# Force Node provider
-providers = ["node"]
-
-[phases.setup]
-nixPkgs = ["nodejs_20"]
-
-[variables]
-NODE_VERSION = "20.18.0"
