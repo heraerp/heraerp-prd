@@ -52,7 +52,7 @@
     "packages:build": "npm run build -ws",
     "packages:clean": "npm run clean -ws",
     "build": "NODE_OPTIONS='--max-old-space-size=8192' next build",
-    "postbuild": "node scripts/verify-next-build.js && node scripts/copy-standalone-assets.js",
+    "postbuild": "node scripts/ensure-default-stylesheet.js",
     "build:analyze": "ANALYZE=true npm run build",
     "build:ci": "npm run lint && npm run typecheck && npm run build",
     "build:railway": "NODE_OPTIONS='--max-old-space-size=8192' next build",
