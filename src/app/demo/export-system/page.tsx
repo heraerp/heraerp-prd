@@ -1,5 +1,8 @@
 'use client'
 
+// Skip SSG for this page - client-only hooks being used
+export const dynamic = 'force-dynamic'
+
 import React, { useState, lazy, Suspense } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -23,6 +26,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { formatCurrency } from '@/lib/utils/format'
 
 // Import DNA system metadata and utilities
 import {
@@ -62,6 +66,9 @@ const categoryDescriptions = {
 }
 
 export default function ExportSystemDemoPage() {
+  // Early return for SSG/build - client-only components
+  if (typeof window === 'undefined') return null
+
   const [selectedCategory, setSelectedCategory] = useState<keyof typeof HERA_DNA_CATEGORIES | null>(
     null
   )
@@ -71,7 +78,8 @@ export default function ExportSystemDemoPage() {
   const [loadingDemo, setLoadingDemo] = useState<string | null>(null)
 
   const { toast } = useToast()
-  const bottomSheet = useBottomSheet()
+  const bottomSheet =
+    typeof useBottomSheet === 'function' ? useBottomSheet() : { open: () => {}, close: () => {} }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -501,7 +509,7 @@ const component = await loadDNAComponent('${selectedComponent
                           <p className="text-sm font-medium mb-2">StatCardDNA (Named Import)</p>
                           <StatCardDNA
                             title="Example Metric"
-                            value="$125,000"
+                            value={formatCurrency(125000)}
                             trend="+12%"
                             description="Direct import from DNA system"
                           />

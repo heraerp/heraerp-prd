@@ -1,0 +1,17 @@
+suite: SALON_POS_STEP2
+cases:
+  - name: add service then line-discount
+    steps:
+      - call: HERA.SALON.POS.CART.ADD_LINE.V1
+        with: {organization_id: org_001, cart_id: cart_987, line_type: SERVICE, entity_id: svc_toner_01, quantity: 1, staff_split: [{staff_id: sty_12, pct: 100}]}
+      - call: HERA.SALON.POS.CART.ADD_LINE.V1
+        with: {organization_id: org_001, cart_id: cart_987, line_type: ADJUSTMENT, entity_id: discount_line_pct, quantity: 1, dynamic: {target_line_id: "$last_line_id", kind: "LINE.PCT", value: 10}}
+      - assert: pricing_summary.total == sum(lines)
+  - name: add retail then delete
+    steps:
+      - call: HERA.SALON.POS.CART.ADD_LINE.V1
+        with: {organization_id: org_001, cart_id: cart_987, line_type: RETAIL, entity_id: sku_olaplex_04, quantity: 1}
+      - expect_txn: HERA.SALON.INV.RESERVE.SOFT.V1
+      - call: HERA.SALON.POS.CART.DELETE_LINE.V1
+        with: {organization_id: org_001, cart_id: cart_987, line_id: "$prev_cart_line_id"}
+      - expect_txn: HERA.SALON.INV.RESERVE.RELEASE.V1

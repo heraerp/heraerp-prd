@@ -42,3 +42,4 @@ export const exportService = {
     return new Blob([combined], { type: 'application/zip' })
   }
 }
+export { generatePDFReport } from './export/pdf'

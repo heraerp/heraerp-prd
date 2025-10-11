@@ -1,20 +1,14 @@
 # nixpacks.toml
+providers = ["node"]
 
-[phases.setup]
-nixPkgs = ["nodejs_20"]
+[variables]
+NODE_ENV = "production"
 
 [phases.install]
-# Install all dependencies including devDependencies for build
-cmds = ["npm ci --production=false"]
+cmds = ["npm ci"]
 
 [phases.build]
-# Only run build, don't reinstall dependencies
 cmds = ["npm run build"]
 
 [start]
-cmd = "npm start"
-
-[variables]
-# Set NODE_ENV after build to ensure devDependencies are available during build
-NODE_ENV = "production"
-# Do NOT set PORT here - Railway injects it
+cmd = "next start -H 0.0.0.0 -p $PORT"

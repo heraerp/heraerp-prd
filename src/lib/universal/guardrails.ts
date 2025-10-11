@@ -36,3 +36,11 @@ export const parseSmartCode = (code: string): SmartCodeParts => {
     version: parts[parts.length - 1] // v1, v2, etc.
   }
 }
+// compat re-exports
+export {
+  UuidZ,
+  GuardrailViolation,
+  guardOrganization,
+  normalizeEntityType,
+  validateSmartCodeSegment
+} from './guardrails-core'

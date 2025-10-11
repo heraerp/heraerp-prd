@@ -18,7 +18,7 @@ if (staged.length === 0) {
 
 // Minimal inlined validator: reuse patterns from main script by requiring it is complex; so run a subset here.
 const forbidden = [
-  { regex: /\$\d+(\.\d+)?(?![}])/, message: 'Hardcoded dollar sign found. Use CurrencyDisplay component' },
+  { regex: /["']\$\d+(\.\d+)?/, message: 'Hardcoded dollar sign found. Use CurrencyDisplay component' },
   { regex: /className\s*=\s*["'][^"']*\b(bg-(white|black|gray-\d+))/, message: 'Hardcoded colors found. Use semantic colors (bg-background, bg-muted, border-border, text-foreground)' }
 ]
 

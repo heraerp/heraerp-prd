@@ -1,0 +1,4 @@
+smart_code: HERA.SALON.INV.RESERVE.RELEASE.V1
+intent: Release part/all of reserved qty tied to cart/line.
+inputs: [organization_id, cart_id, product_id, quantity]
+invariants: [no negative reserved balance]

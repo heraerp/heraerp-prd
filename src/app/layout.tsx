@@ -24,6 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL ?? 'https://heraerp.com'),
   title: 'HERA Universal ERP',
   description:
     'Run your entire business in one beautiful platform. From day one to enterprise scale.',

@@ -108,7 +108,7 @@
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Enhanced stat cards with depth and accent variations */
+/* Enhanced stat cards with depth and accent variations - enterprise grade */
 .furniture-stat-card {
   position: relative;
   background: var(--color-surface-raised);
@@ -116,6 +116,7 @@
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
+  border-radius: 12px;
 }
 
 .furniture-stat-card::before {
@@ -132,8 +133,8 @@
 }
 
 .furniture-stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md), 0 0 0 1px var(--color-brand-orange-pale);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--color-brand-orange-pale), var(--glow-orange);
   background: var(--color-surface-raised-hover);
   border-color: var(--color-brand-orange-pale);
 }
@@ -238,11 +239,12 @@
   pointer-events: none;
 }
 
-/* Navigation link depth with icon enhancement */
+/* Navigation link depth with icon enhancement - enterprise grade */
 .furniture-nav-link {
   position: relative;
   transition: all 0.2s ease;
   color: var(--color-text-secondary);
+  border-radius: 8px;
 }
 
 .furniture-nav-link svg {
@@ -253,6 +255,7 @@
 .furniture-nav-link:hover {
   background: var(--color-hover);
   color: var(--color-text-primary);
+  transform: translateX(2px);
 }
 
 .furniture-nav-link:hover svg {
@@ -269,6 +272,7 @@
     inset 3px 0 0 var(--color-brand-orange),
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  border-left: 3px solid var(--color-brand-orange);
 }
 
 .furniture-nav-link.active svg {
@@ -693,6 +697,48 @@
 .furniture-focus-visible:focus-visible {
   outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
+}
+
+/* Enterprise animations and micro-interactions */
+@keyframes furniture-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes furniture-slide-in-right {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes furniture-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.furniture-animate-in {
+  animation: furniture-fade-in 0.3s ease-out;
+}
+
+.furniture-animate-slide {
+  animation: furniture-slide-in-right 0.3s ease-out;
+}
+
+.furniture-animate-scale {
+  animation: furniture-scale-in 0.2s ease-out;
+}
+
+/* Enterprise-grade micro-interactions */
+.furniture-interactive {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.furniture-interactive:hover {
+  transform: translateY(-1px);
+}
+
+.furniture-interactive:active {
+  transform: translateY(0);
+  transition: transform 0.1s ease;
 }
 
 /* Print styles for enterprise reporting */

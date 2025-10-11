@@ -22,7 +22,7 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json(healthData, { 
+    return NextResponse.json(healthData, {
       status: 200,
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -31,7 +31,7 @@ export async function GET() {
     })
   } catch (error) {
     console.error('❌ Health check error:', error)
-    
+
     // Always return 200 for health checks to pass Railway validation
     return NextResponse.json(
       {
@@ -40,7 +40,7 @@ export async function GET() {
         error: 'Health check had issues but service is running',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { 
+      {
         status: 200,
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
