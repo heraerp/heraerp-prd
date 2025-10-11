@@ -324,12 +324,12 @@ function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
               'transform hover:scale-[1.02] active:scale-[0.98]'
             )}
           >
-            <Grid3x3 className="h-5 w-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-secondary)]" />
-            <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-[var(--color-text-secondary)] lg:text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] lg:group-hover:text-[var(--color-text-secondary)]">
+            <Grid3x3 className="h-5 w-5 text-[var(--color-icon-secondary)] group-hover:text-[var(--color-icon-accent)]" />
+            <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">
               More Apps
             </span>
             {/* Tooltip - desktop only */}
-            <div className="hidden lg:block absolute left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 px-3 py-2 bg-[var(--color-body)] text-[var(--color-text-primary)] text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+            <div className="hidden lg:block absolute left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 px-3 py-2 furniture-tooltip-content text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
             </div>
           </button>

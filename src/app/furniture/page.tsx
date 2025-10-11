@@ -161,7 +161,7 @@ function FurnitureDashboard() {
 
         {/* Key Metrics */}
         <div className="space-y-4">
-          <h2 className="bg-[var(--color-body)] text-xl font-semibold">Business Overview</h2>
+          <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">Business Overview</h2>
           <StatCardGrid>
             {stats.map(stat => (
               <FurnitureStatCard key={stat.label} {...stat} />
@@ -170,18 +170,18 @@ function FurnitureDashboard() {
         </div>
 
         {/* AI Manager Card */}
-        <div className="bg-[var(--color-body)] mt-6">
+        <div className="mt-6">
           <Link href="/furniture/ai-manager">
-            <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-gradient-to-br from-[var(--color-accent-teal)]-600/10 to-blue-600/10 border-[var(--color-accent-teal)]/20 hover:from-[var(--color-accent-teal)]-600/20 hover:to-blue-600/20 transition-all duration-300 cursor-pointer backdrop-blur-sm">
+            <Card className="furniture-card p-6 bg-gradient-to-br from-[var(--color-accent-teal)]/10 to-blue-600/10 border-[var(--color-accent-teal)]/20 hover:from-[var(--color-accent-teal)]/20 hover:to-blue-600/20 transition-all duration-300 cursor-pointer backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-accent-teal)]-600 to-blue-600 flex items-center justify-center">
-                    <Brain className="h-8 w-8 text-[var(--color-icon-secondary)]" />
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-accent-teal)] to-blue-600 flex items-center justify-center">
+                    <Brain className="h-8 w-8 text-white" />
                   </div>
                   <div>
-                    <h3 className="bg-[var(--color-body)] text-lg font-semibold flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
                       AI Business Manager{' '}
-                      <Sparkles className="h-4 w-4 text-[var(--color-icon-secondary)]" />
+                      <Sparkles className="h-4 w-4 text-[var(--color-accent-teal)]" />
                     </h3>
                     <p className="text-sm text-[var(--color-text-secondary)]">
                       Get instant insights, recommendations, and strategic analysis for your
@@ -189,8 +189,8 @@ function FurnitureDashboard() {
                     </p>
                   </div>
                 </div>
-                <div className="bg-[var(--color-body)] flex flex-col items-end">
-                  <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                <div className="flex flex-col items-end">
+                  <span className="text-sm font-medium text-[var(--color-text-primary)]">
                     Ask anything
                   </span>
                   <span className="text-xs text-[var(--color-text-secondary)]">Powered by AI</span>
@@ -201,25 +201,25 @@ function FurnitureDashboard() {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="overview" className="bg-[var(--color-body)] space-y-4">
-          <TabsList className="bg-[var(--color-body)]/50 bg-[var(--color-body)]/50 backdrop-blur-sm">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="production">Production</TabsTrigger>
-            <TabsTrigger value="finance">Finance</TabsTrigger>
-            <TabsTrigger value="hr">HR & Compliance</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-4">
+          <TabsList className="furniture-tabs-list">
+            <TabsTrigger value="overview" className="furniture-tab">Overview</TabsTrigger>
+            <TabsTrigger value="production" className="furniture-tab">Production</TabsTrigger>
+            <TabsTrigger value="finance" className="furniture-tab">Finance</TabsTrigger>
+            <TabsTrigger value="hr" className="furniture-tab">HR & Compliance</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="bg-[var(--color-body)] space-y-6">
+          <TabsContent value="overview" className="space-y-6">
             {/* Quick Actions */}
             <div className="space-y-4">
-              <h3 className="bg-[var(--color-body)] text-lg font-semibold">Quick Actions</h3>
+              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Quick Actions</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {quickActions.map(action => (
                   <Link key={action.label} href={action.href}>
-                    <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 hover:scale-105 transition-transform cursor-pointer bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50">
+                    <Card className="furniture-card p-4 hover:scale-105 transition-transform cursor-pointer">
                       <div className="flex flex-col items-center text-center gap-2">
-                        <action.icon className="bg-[var(--color-body)] h-8 w-8 text-primary" />
-                        <span className="text-sm font-medium">{action.label}</span>
+                        <action.icon className="h-8 w-8 text-[var(--color-brand-orange)]" />
+                        <span className="text-sm font-medium text-[var(--color-text-primary)]">{action.label}</span>
                       </div>
                     </Card>
                   </Link>
@@ -229,16 +229,16 @@ function FurnitureDashboard() {
 
             {/* Recent Activities */}
             <div className="space-y-4">
-              <h3 className="bg-[var(--color-body)] text-lg font-semibold">Recent Activities</h3>
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50">
+              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Activities</h3>
+              <Card className="furniture-card p-6">
                 <div className="space-y-4">
                   {recentActivities.map(activity => (
                     <div
                       key={activity.id}
-                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-[var(--color-body)] dark:hover:bg-[var(--color-body)]/50 transition-colors"
+                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-[var(--color-hover)] transition-colors"
                     >
                       <div className="flex-1">
-                        <p className="font-medium">{activity.title}</p>
+                        <p className="font-medium text-[var(--color-text-primary)]">{activity.title}</p>
                         <p className="text-sm text-[var(--color-text-secondary)]">
                           {activity.description}
                         </p>
@@ -246,11 +246,11 @@ function FurnitureDashboard() {
                           {activity.time}
                         </p>
                       </div>
-                      {activity.amount && <p className="font-semibold">{activity.amount}</p>}
+                      {activity.amount && <p className="font-semibold text-[var(--color-text-primary)]">{activity.amount}</p>}
                     </div>
                   ))}
                   <Link href="/furniture/reports">
-                    <Button variant="outline" className="w-full hover:bg-[var(--color-hover)]">
+                    <Button variant="outline" className="w-full furniture-btn-secondary">
                       View All Activities
                     </Button>
                   </Link>
@@ -259,34 +259,34 @@ function FurnitureDashboard() {
             </div>
           </TabsContent>
 
-          <TabsContent value="production" className="bg-[var(--color-body)] space-y-6">
+          <TabsContent value="production" className="space-y-6">
             <div className="space-y-4">
-              <h3 className="bg-[var(--color-body)] text-lg font-semibold">Production KPIs</h3>
+              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Production KPIs</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {productionKPIs.map(kpi => (
                   <Card
                     key={kpi.label}
-                    className="p-4 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm"
+                    className="furniture-card p-4"
                   >
                     <div className="space-y-2">
                       <p className="text-sm text-[var(--color-text-secondary)]">{kpi.label}</p>
-                      <p className="text-2xl font-bold">{kpi.value}%</p>
+                      <p className="text-2xl font-bold text-[var(--color-text-primary)]">{kpi.value}%</p>
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs">
-                          <span>Target: {kpi.target}%</span>
+                          <span className="text-[var(--color-text-secondary)]">Target: {kpi.target}%</span>
                           <span
                             className={
                               kpi.value >= kpi.target
-                                ? 'text-green-600'
-                                : 'text-[var(--color-accent-indigo)]'
+                                ? 'text-[var(--color-status-success)]'
+                                : 'text-[var(--color-status-warning)]'
                             }
                           >
                             {kpi.value >= kpi.target ? '✓' : '↓'}
                           </span>
                         </div>
-                        <div className="h-2 bg-[var(--color-body)] bg-muted-foreground/10 rounded-full overflow-hidden">
+                        <div className="h-2 bg-[var(--color-surface)] rounded-full overflow-hidden">
                           <div
-                            className={`h-full bg-${kpi.color}-500 transition-all`}
+                            className="h-full bg-[var(--color-brand-orange)] transition-all"
                             style={{ width: `${kpi.value}%` }}
                           />
                         </div>
@@ -298,8 +298,8 @@ function FurnitureDashboard() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="bg-[var(--color-body)] text-lg font-semibold">Work Center Status</h3>
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Work Center Status</h3>
+              <Card className="furniture-card p-6">
                 <div className="space-y-4">
                   {[
                     { label: 'Cutting Station', value: 85, icon: Factory },
@@ -307,17 +307,17 @@ function FurnitureDashboard() {
                     { label: 'Finishing Bay', value: 90, icon: Factory },
                     { label: 'Quality Check', value: 65, icon: CheckCircle }
                   ].map(center => (
-                    <div key={center.label} className="bg-[var(--color-body)] space-y-2">
-                      <div className="bg-[var(--color-body)] flex items-center justify-between">
+                    <div key={center.label} className="space-y-2">
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <center.icon className="bg-[var(--color-body)] h-4 w-4 text-[var(--color-text-secondary)]" />
-                          <span className="font-medium">{center.label}</span>
+                          <center.icon className="h-4 w-4 text-[var(--color-accent-teal)]" />
+                          <span className="font-medium text-[var(--color-text-primary)]">{center.label}</span>
                         </div>
-                        <span className="text-sm font-medium">{center.value}%</span>
+                        <span className="text-sm font-medium text-[var(--color-text-primary)]">{center.value}%</span>
                       </div>
-                      <div className="h-2 bg-[var(--color-body)] bg-muted-foreground/10 rounded-full overflow-hidden">
+                      <div className="h-2 bg-[var(--color-surface)] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-[var(--color-body)] transition-all"
+                          className="h-full bg-[var(--color-accent-teal)] transition-all"
                           style={{ width: `${center.value}%` }}
                         />
                       </div>
@@ -328,83 +328,83 @@ function FurnitureDashboard() {
             </div>
           </TabsContent>
 
-          <TabsContent value="finance" className="bg-[var(--color-body)] space-y-6">
+          <TabsContent value="finance" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
-                <div className="bg-[var(--color-body)] flex items-center justify-between">
+              <Card className="furniture-card p-6">
+                <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-[var(--color-text-secondary)]">
                       Outstanding Receivables
                     </p>
-                    <p className="text-2xl font-bold">₹15.2L</p>
-                    <p className="text-sm text-[var(--color-accent-indigo)]">5 overdue</p>
+                    <p className="text-2xl font-bold text-[var(--color-text-primary)]">₹15.2L</p>
+                    <p className="text-sm text-[var(--color-status-warning)]">5 overdue</p>
                   </div>
-                  <AlertCircle className="h-8 w-8 text-[var(--color-icon-secondary)]" />
+                  <AlertCircle className="h-8 w-8 text-[var(--color-status-warning)]" />
                 </div>
               </Card>
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
-                <div className="bg-[var(--color-body)] flex items-center justify-between">
+              <Card className="furniture-card p-6">
+                <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-[var(--color-text-secondary)]">GST Payable</p>
-                    <p className="text-2xl font-bold">₹2.8L</p>
-                    <p className="text-sm text-green-600">Due in 7 days</p>
+                    <p className="text-2xl font-bold text-[var(--color-text-primary)]">₹2.8L</p>
+                    <p className="text-sm text-[var(--color-status-success)]">Due in 7 days</p>
                   </div>
-                  <DollarSign className="h-8 w-8 text-green-500" />
+                  <DollarSign className="h-8 w-8 text-[var(--color-status-success)]" />
                 </div>
               </Card>
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
-                <div className="bg-[var(--color-body)] flex items-center justify-between">
+              <Card className="furniture-card p-6">
+                <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-[var(--color-text-secondary)]">Cash Position</p>
-                    <p className="text-2xl font-bold">₹8.5L</p>
-                    <p className="text-sm text-primary">Healthy</p>
+                    <p className="text-2xl font-bold text-[var(--color-text-primary)]">₹8.5L</p>
+                    <p className="text-sm text-[var(--color-status-success)]">Healthy</p>
                   </div>
-                  <TrendingUp className="h-8 w-8 text-[var(--color-icon-secondary)]" />
+                  <TrendingUp className="h-8 w-8 text-[var(--color-accent-emerald)]" />
                 </div>
               </Card>
             </div>
           </TabsContent>
 
-          <TabsContent value="hr" className="bg-[var(--color-body)] space-y-6">
+          <TabsContent value="hr" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+              <Card className="furniture-card p-6">
                 <div className="space-y-2">
-                  <div className="bg-[var(--color-body)] flex items-center gap-2">
-                    <Users className="h-5 w-5 text-primary" />
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-[var(--color-brand-orange)]" />
                     <p className="text-sm text-[var(--color-text-secondary)]">Total Employees</p>
                   </div>
-                  <p className="text-2xl font-bold">124</p>
-                  <p className="text-sm text-green-600">98% attendance today</p>
+                  <p className="text-2xl font-bold text-[var(--color-text-primary)]">124</p>
+                  <p className="text-sm text-[var(--color-status-success)]">98% attendance today</p>
                 </div>
               </Card>
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
-                <div className="bg-[var(--color-body)] space-y-2">
-                  <div className="bg-[var(--color-body)] flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-primary" />
+              <Card className="furniture-card p-6">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-[var(--color-brand-orange)]" />
                     <p className="text-sm text-[var(--color-text-secondary)]">Payroll Status</p>
                   </div>
-                  <p className="text-lg font-semibold">Processing</p>
-                  <p className="text-sm text-[var(--color-accent-indigo)]">Due: 25th Jan</p>
+                  <p className="text-lg font-semibold text-[var(--color-text-primary)]">Processing</p>
+                  <p className="text-sm text-[var(--color-status-warning)]">Due: 25th Jan</p>
                 </div>
               </Card>
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
-                <div className="bg-[var(--color-body)] space-y-2">
-                  <div className="bg-[var(--color-body)] flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-primary" />
+              <Card className="furniture-card p-6">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-[var(--color-brand-orange)]" />
                     <p className="text-sm text-[var(--color-text-secondary)]">PF Remittance</p>
                   </div>
-                  <p className="text-lg font-semibold">Completed</p>
-                  <p className="text-sm text-green-600">For Dec 2024</p>
+                  <p className="text-lg font-semibold text-[var(--color-text-primary)]">Completed</p>
+                  <p className="text-sm text-[var(--color-status-success)]">For Dec 2024</p>
                 </div>
               </Card>
-              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
-                <div className="bg-[var(--color-body)] space-y-2">
-                  <div className="bg-[var(--color-body)] flex items-center gap-2">
-                    <Truck className="h-5 w-5 text-primary" />
+              <Card className="furniture-card p-6">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Truck className="h-5 w-5 text-[var(--color-brand-orange)]" />
                     <p className="text-sm text-[var(--color-text-secondary)]">ESI Status</p>
                   </div>
-                  <p className="text-lg font-semibold">Pending</p>
-                  <p className="text-sm text-[var(--color-accent-indigo)]">Submit by 31st Jan</p>
+                  <p className="text-lg font-semibold text-[var(--color-text-primary)]">Pending</p>
+                  <p className="text-sm text-[var(--color-status-warning)]">Submit by 31st Jan</p>
                 </div>
               </Card>
             </div>
@@ -412,9 +412,9 @@ function FurnitureDashboard() {
         </Tabs>
 
         {/* Module Navigation */}
-        <div className="bg-[var(--color-body)] space-y-4">
-          <h2 className="bg-[var(--color-body)] text-xl font-semibold">Furniture Modules</h2>
-          <div className="bg-[var(--color-body)] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">Furniture Modules</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <ModuleLink href="/furniture/sales" icon={ShoppingCart} label="Sales" />
             <ModuleLink href="/furniture/production" icon={Factory} label="Production" />
             <ModuleLink href="/furniture/inventory" icon={Package} label="Inventory" />
@@ -442,10 +442,10 @@ const ModuleLink = React.memo(function ModuleLink({
 }) {
   return (
     <Link href={href}>
-      <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 hover:scale-105 transition-transform cursor-pointer bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50">
-        <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">
-          <Icon className="h-8 w-8 text-primary" />
-          <span className="text-sm font-medium">{label}</span>
+      <Card className="furniture-card p-4 hover:scale-105 transition-transform cursor-pointer">
+        <div className="flex flex-col items-center text-center gap-2">
+          <Icon className="h-8 w-8 text-[var(--color-brand-orange)]" />
+          <span className="text-sm font-medium text-[var(--color-text-primary)]">{label}</span>
         </div>
       </Card>
     </Link>

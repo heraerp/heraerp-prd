@@ -96,38 +96,38 @@ function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-16 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
+              className="flex flex-col items-center justify-center h-16 text-[var(--color-icon-secondary)] hover:text-[var(--color-icon-accent)] hover:bg-[var(--color-hover)]"
               onClick={() => (window.location.href = '/furniture')}
             >
               <Home className="h-5 w-5 mb-1" />
-              <span className="text-[10px] font-medium">Home</span>
+              <span className="text-[10px] font-medium text-[var(--color-text-secondary)]">Home</span>
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-16 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
+              className="flex flex-col items-center justify-center h-16 text-[var(--color-icon-secondary)] hover:text-[var(--color-icon-accent)] hover:bg-[var(--color-hover)]"
               onClick={() => (window.location.href = '/furniture/sales')}
             >
               <ShoppingCart className="h-5 w-5 mb-1" />
-              <span className="text-[10px] font-medium">Sales</span>
+              <span className="text-[10px] font-medium text-[var(--color-text-secondary)]">Sales</span>
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-16 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
+              className="flex flex-col items-center justify-center h-16 text-[var(--color-icon-secondary)] hover:text-[var(--color-icon-accent)] hover:bg-[var(--color-hover)]"
               onClick={() => (window.location.href = '/furniture/production')}
             >
               <Factory className="h-5 w-5 mb-1" />
-              <span className="text-[10px] font-medium">Production</span>
+              <span className="text-[10px] font-medium text-[var(--color-text-secondary)]">Production</span>
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-16 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
+              className="flex flex-col items-center justify-center h-16 text-[var(--color-icon-secondary)] hover:text-[var(--color-icon-accent)] hover:bg-[var(--color-hover)]"
               onClick={() => setSidebarOpen(true)}
             >
               <Grid3x3 className="h-5 w-5 mb-1" />
-              <span className="text-[10px] font-medium">More</span>
+              <span className="text-[10px] font-medium text-[var(--color-text-secondary)]">More</span>
             </Button>
           </div>
         </div>

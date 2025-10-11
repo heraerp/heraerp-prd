@@ -24,39 +24,34 @@ export function FurnitureStatCard({
   gradient,
   className
 }: FurnitureStatCardProps) {
-  // Determine change text color based on trend
+  // Determine change text color based on trend - enterprise color palette
   const changeColorClass = {
-    up: 'text-green-400',
-    down: 'text-red-400',
+    up: 'text-[var(--color-status-success)]',
+    down: 'text-[var(--color-status-error)]',
     neutral: 'text-[var(--color-text-secondary)]'
   }[trend]
+  
   return (
     <Card
       className={cn(
-        'backdrop-blur-xl bg-[var(--color-body)]/70',
-        'border-[var(--color-border)]/50',
-        'shadow-lg hover:shadow-xl transition-shadow',
+        'furniture-stat-card',
+        'hover:furniture-glow-orange',
         className
       )}
     >
-      {' '}
       <CardContent className="p-6">
-        {' '}
         <div className="flex items-center justify-between">
-          {' '}
-          <div className="bg-[var(--color-body)] flex-1">
-            {' '}
+          <div className="flex-1">
             <p className="text-sm font-medium text-[var(--color-text-secondary)] uppercase tracking-wide">
               {label}
-            </p>{' '}
-            <p className="text-3xl font-bold mt-2 text-[var(--color-text-primary)]">
-              {' '}
-              {typeof value === 'number' ? value.toLocaleString() : value}{' '}
-            </p>{' '}
+            </p>
+            <p className="text-3xl font-bold mt-2 !text-[var(--color-text-primary)]">
+              {typeof value === 'number' ? value.toLocaleString() : value}
+            </p>
             {change && (
               <p className={cn('text-xs mt-1 font-medium', changeColorClass)}>{change}</p>
-            )}{' '}
-          </div>{' '}
+            )}
+          </div>
           {Icon && (
             <div
               className={cn(
@@ -65,12 +60,11 @@ export function FurnitureStatCard({
                 gradient
               )}
             >
-              {' '}
-              <Icon className="w-7 h-7 text-[var(--color-text-primary)]" />{' '}
+              <Icon className="w-7 h-7 text-white drop-shadow-sm" />
             </div>
-          )}{' '}
-        </div>{' '}
-      </CardContent>{' '}
+          )}
+        </div>
+      </CardContent>
     </Card>
   )
 }

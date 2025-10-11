@@ -18,18 +18,18 @@
   --color-border-subtle: #35334A; /* Subtle borders */
   --color-border-strong: #4A465E; /* Strong emphasis borders */
 
-  /* Text & Icons - Enhanced contrast */
-  --color-text-primary: #FAFAFE;   /* Main text - maximum contrast */
-  --color-text-secondary: #D0CFD8; /* Secondary text - improved readability */
-  --color-text-tertiary: #A5A4B8;  /* Tertiary text */
-  --color-text-disabled: #7A788E;  /* Disabled/placeholder - still readable */
+  /* Text & Icons - Enhanced contrast for enterprise grade */
+  --color-text-primary: #FFFFFF;   /* Main text - pure white for maximum contrast */
+  --color-text-secondary: #E2E1EA; /* Secondary text - improved readability */
+  --color-text-tertiary: #B8B6C8;  /* Tertiary text */
+  --color-text-disabled: #8B89A3;  /* Disabled/placeholder - still readable */
   --color-text-inverse: #1A1820;   /* Text on light backgrounds */
 
-  /* Icon contrast */
-  --color-icon-primary: #FAFAFE;   /* Primary icons - match text */
-  --color-icon-secondary: #B5B3C8; /* Secondary icons */
-  --color-icon-disabled: #65637A;  /* Disabled icons */
-  --color-icon-accent: #FFB366;    /* Accent colored icons */
+  /* Icon contrast - enterprise grade visibility */
+  --color-icon-primary: #FFFFFF;   /* Primary icons - pure white */
+  --color-icon-secondary: #D0CFD8; /* Secondary icons - higher contrast */
+  --color-icon-disabled: #7A788E;  /* Disabled icons */
+  --color-icon-accent: #FF9A4D;    /* Accent colored icons - brand orange */
 
   /* Buttons - Professional depth */
   --color-button-bg: #3A3648;     /* Neutral button background */
@@ -46,33 +46,33 @@
   --color-focus-ring: #FFB366;    /* Focus outline - accent color */
   --color-focus-ring-subtle: rgba(255, 179, 102, 0.3); /* Subtle focus */
 
-  /* Brand Colors - Enterprise palette */
-  --color-brand-orange: #FF9A4D;      /* Primary brand - vibrant orange */
-  --color-brand-orange-dark: #E67A2E;  /* Darker variant */
-  --color-brand-orange-light: #FFB366; /* Lighter variant */
-  --color-brand-orange-pale: rgba(255, 154, 77, 0.1); /* Very subtle */
+  /* Brand Colors - Enterprise palette enhanced */
+  --color-brand-orange: #FF8C42;      /* Primary brand - enterprise orange with better contrast */
+  --color-brand-orange-dark: #E16B2D;  /* Darker variant for depth */
+  --color-brand-orange-light: #FFA366; /* Lighter variant for highlights */
+  --color-brand-orange-pale: rgba(255, 140, 66, 0.15); /* Subtle background tint */
 
-  /* Accent Colors - Professional depth */
-  --color-accent-teal: #14D4C4;        /* Teal - more vibrant */
-  --color-accent-teal-hover: #0FB8A8;  
-  --color-accent-teal-pale: rgba(20, 212, 196, 0.1);
+  /* Accent Colors - Professional enterprise palette */
+  --color-accent-teal: #00E5CC;        /* Enterprise teal - more vibrant and professional */
+  --color-accent-teal-hover: #00C9B7;  
+  --color-accent-teal-pale: rgba(0, 229, 204, 0.15);
   
-  --color-accent-indigo: #7C7FF4;      /* Indigo - softer for dark theme */
-  --color-accent-indigo-hover: #6366E5;
-  --color-accent-indigo-pale: rgba(124, 127, 244, 0.1);
+  --color-accent-indigo: #6366F1;      /* Enterprise indigo - classic professional blue */
+  --color-accent-indigo-hover: #4F46E5;
+  --color-accent-indigo-pale: rgba(99, 102, 241, 0.15);
   
-  --color-accent-purple: #A855F7;      /* Purple accent */
-  --color-accent-purple-hover: #9333EA;
-  --color-accent-purple-pale: rgba(168, 85, 247, 0.1);
+  --color-accent-purple: #8B5CF6;      /* Professional purple accent */
+  --color-accent-purple-hover: #7C3AED;
+  --color-accent-purple-pale: rgba(139, 92, 246, 0.15);
   
-  --color-accent-emerald: #10B981;     /* Success green */
+  --color-accent-emerald: #10B981;     /* Success green - enterprise standard */
   --color-accent-emerald-hover: #059669;
-  --color-accent-emerald-pale: rgba(16, 185, 129, 0.1);
+  --color-accent-emerald-pale: rgba(16, 185, 129, 0.15);
 
-  /* Primary accent */
-  --color-accent: #FF9A4D;             /* Orange as primary */
+  /* Primary accent - enterprise alignment */
+  --color-accent: #FF8C42;             /* Updated to match brand orange */
   --color-accent-text: #FFFFFF;
-  --color-accent-hover: #E67A2E;
+  --color-accent-hover: #E16B2D;
 
   /* Status Colors - Enterprise grade */
   --color-status-success: #10B981;
