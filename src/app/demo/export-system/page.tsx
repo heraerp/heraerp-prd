@@ -77,7 +77,8 @@ export default function ExportSystemDemoPage() {
   const [loadingDemo, setLoadingDemo] = useState<string | null>(null)
 
   const { toast } = useToast()
-  const bottomSheet = typeof useBottomSheet === 'function' ? useBottomSheet() : { open: () => {}, close: () => {} }
+  const bottomSheet =
+    typeof useBottomSheet === 'function' ? useBottomSheet() : { open: () => {}, close: () => {} }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)

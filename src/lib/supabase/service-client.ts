@@ -37,4 +37,4 @@ export async function createEntityWithServiceRole(data: any) {
 
   return entity
 }
-export { createServiceClient as createServiceSupabaseClient } from "./create-service-client";
+export { createServiceClient as createServiceSupabaseClient } from './create-service-client'

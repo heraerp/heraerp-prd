@@ -422,4 +422,13 @@ export const Schemas = {
 
 export default Schemas
 // compat re-exports
-export { DynamicDeleteBody, DynamicGetQuery, DynamicBatchBody, DynamicSetBody, RelationshipQuery, TxnBatchBody, TxnEmitBody, TxnSearchQuery } from "./schemas-core";
+export {
+  DynamicDeleteBody,
+  DynamicGetQuery,
+  DynamicBatchBody,
+  DynamicSetBody,
+  RelationshipQuery,
+  TxnBatchBody,
+  TxnEmitBody,
+  TxnSearchQuery
+} from './schemas-core'

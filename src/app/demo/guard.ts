@@ -1,7 +1,7 @@
 // Canonical demo guard implementation
 export default async function guard() {
-  return true;
+  return true
 }
 
-export const demoGuard = guard;
-export { guard };
+export const demoGuard = guard
+export { guard }

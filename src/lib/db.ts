@@ -71,4 +71,4 @@ export async function selectRow(sql: string, params: any[] = []): Promise<any> {
   const rows = await selectRows(sql, params)
   return rows[0] || null
 }
-export { executeQuery } from "./db/core";
+export { executeQuery } from './db/core'
