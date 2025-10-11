@@ -14,6 +14,8 @@ import { Badge } from '@/components/ui/badge'
 import { LuxeCard } from '@/components/ui/salon/luxe-card'
 import { LuxeButton } from '@/components/ui/salon/luxe-button'
 import { MobileLayout, ResponsiveGrid, MobileContainer } from '@/components/salon/mobile-layout'
+import { useTrialBalance } from '@/lib/dna/integration/financial-reporting-api-v2'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import {
   Download,
   Calendar,
@@ -61,60 +63,38 @@ interface TrialBalanceData {
 }
 
 export default function SalonTrialBalancePage() {
-  const [trialBalance, setTrialBalance] = useState<TrialBalanceData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { organizationId } = useSecuredSalonContext()
   const [selectedPeriod, setSelectedPeriod] = useState('current')
   const [showZeroBalances, setShowZeroBalances] = useState(false)
   const [searchFilter, setSearchFilter] = useState('')
   const [accountTypeFilter, setAccountTypeFilter] = useState('all')
 
-  useEffect(() => {
-    fetchTrialBalance()
-  }, [selectedPeriod, showZeroBalances])
+  // ✅ Finance DNA v2 Real-Time Trial Balance
+  const currentDate = new Date()
+  const asOfDate = selectedPeriod === 'current' 
+    ? currentDate.toISOString()
+    : new Date(currentDate.getFullYear(), currentDate.getMonth() - (selectedPeriod === 'last_month' ? 1 : 0), 0).toISOString()
 
-  const fetchTrialBalance = async () => {
-    setIsLoading(true)
-    try {
-      const organizationId =
-        localStorage.getItem('selectedOrganizationId') || '378f24fb-d496-4ff7-8afa-ea34895a0eb8'
+  const { 
+    report: trialBalance, 
+    isLoading, 
+    isBalanced,
+    performanceMetrics,
+    refresh: refreshTrialBalance 
+  } = useTrialBalance({
+    organizationId,
+    asOfDate,
+    currency: 'AED',
+    includeSubAccounts: true,
+    includeZeroBalances: showZeroBalances,
+    enabled: !!organizationId
+  })
 
-      // Get JWT token
-      const { supabase } = await import('@/lib/supabase/client')
-      const {
-        data: { session }
-      } = await supabase.auth.getSession()
-
-      if (!session?.access_token) {
-        throw new Error('Authentication required')
-      }
-
-      const response = await fetch(
-        `/api/v2/reports/trial-balance?organization_id=${organizationId}&period=${selectedPeriod}&include_zero=${showZeroBalances}`,
-        {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-            'x-hera-api-version': 'v2'
-          }
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch trial balance')
-      }
-
-      const data = await response.json()
-      setTrialBalance(data)
-    } catch (error) {
-      console.error('Error fetching trial balance:', error)
-      // Set mock data for demonstration
-      setTrialBalance(mockTrialBalanceData)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  // Fallback to mock data if real data is not available
+  const displayTrialBalance = trialBalance || mockTrialBalanceData
 
   const filteredAccounts =
-    trialBalance?.accounts.filter(account => {
+    displayTrialBalance?.accounts.filter(account => {
       const matchesSearch =
         account.account_name.toLowerCase().includes(searchFilter.toLowerCase()) ||
         account.account_code.includes(searchFilter)
@@ -194,8 +174,13 @@ export default function SalonTrialBalancePage() {
                   Trial Balance Report
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
-                  IFRS-compliant trial balance for{' '}
-                  {trialBalance?.organization_name || 'Hair Talkz Salon'}
+                  Finance DNA v2 IFRS-compliant trial balance for{' '}
+                  {displayTrialBalance?.organization_name || 'Hair Talkz Salon'}
+                  {performanceMetrics && (
+                    <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                      Generated in {performanceMetrics.processingTime}ms
+                    </span>
+                  )}
                 </p>
               </div>
 
@@ -206,10 +191,11 @@ export default function SalonTrialBalancePage() {
                 <LuxeButton
                   variant="gradient"
                   size="sm"
-                  icon={<RefreshCw />}
-                  onClick={fetchTrialBalance}
+                  icon={<RefreshCw className={isLoading ? 'animate-spin' : ''} />}
+                  onClick={refreshTrialBalance}
+                  disabled={isLoading}
                 >
-                  Refresh
+                  {isLoading ? 'Loading...' : 'Refresh'}
                 </LuxeButton>
               </div>
             </div>
@@ -223,14 +209,19 @@ export default function SalonTrialBalancePage() {
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-rose-50 dark:from-purple-900/20 dark:to-rose-900/20">
                   <div className="text-center">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-                      {trialBalance?.organization_name || 'Hair Talkz Salon'}
+                      {displayTrialBalance?.organization_name || 'Hair Talkz Salon'}
                     </h2>
                     <h3 className="text-lg font-semibold text-purple-600 dark:text-purple-400 mb-2">
                       TRIAL BALANCE
+                      {trialBalance && (
+                        <span className="ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                          Finance DNA v2
+                        </span>
+                      )}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       As at{' '}
-                      {new Date(trialBalance?.period_end || new Date()).toLocaleDateString(
+                      {new Date(displayTrialBalance?.period_end || new Date()).toLocaleDateString(
                         'en-US',
                         {
                           year: 'numeric',
@@ -240,16 +231,23 @@ export default function SalonTrialBalancePage() {
                       )}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      Amounts in {trialBalance?.metadata.report_currency || 'AED'}
+                      Amounts in {displayTrialBalance?.metadata.report_currency || 'AED'}
                     </p>
                   </div>
 
                   {/* Balance Check */}
                   <div className="flex items-center justify-center mt-4">
-                    {trialBalance?.is_balanced ? (
+                    {(isBalanced ?? displayTrialBalance?.is_balanced) ? (
                       <div className="flex items-center space-x-2 text-green-600 dark:text-green-400">
                         <CheckCircle className="h-4 w-4" />
-                        <span className="text-sm font-medium">Trial Balance is in balance</span>
+                        <span className="text-sm font-medium">
+                          Trial Balance is in balance
+                          {performanceMetrics && (
+                            <span className="ml-2 text-xs">
+                              (Validated in {performanceMetrics.validationTime || 'real-time'})
+                            </span>
+                          )}
+                        </span>
                       </div>
                     ) : (
                       <div className="flex items-center space-x-2 text-red-600 dark:text-red-400">
@@ -372,12 +370,19 @@ export default function SalonTrialBalancePage() {
                 {/* Totals */}
                 <div className="p-6 border-t-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800">
                   <div className="grid grid-cols-12 gap-4 text-base font-bold">
-                    <div className="col-span-8 !text-gray-900 dark:!text-white">TOTALS</div>
+                    <div className="col-span-8 !text-gray-900 dark:!text-white">
+                      TOTALS
+                      {trialBalance && (
+                        <span className="ml-2 text-xs font-normal bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                          Real-time from Finance DNA v2
+                        </span>
+                      )}
+                    </div>
                     <div className="col-span-2 text-right text-blue-600 dark:text-blue-400">
-                      {formatCurrency(trialBalance?.total_debits || 0)}
+                      {formatCurrency(displayTrialBalance?.total_debits || 0)}
                     </div>
                     <div className="col-span-2 text-right text-red-600 dark:text-red-400">
-                      {formatCurrency(trialBalance?.total_credits || 0)}
+                      {formatCurrency(displayTrialBalance?.total_credits || 0)}
                     </div>
                   </div>
 
@@ -389,7 +394,7 @@ export default function SalonTrialBalancePage() {
                         <span
                           className={`font-medium ${
                             Math.abs(
-                              (trialBalance?.total_debits || 0) - (trialBalance?.total_credits || 0)
+                              (displayTrialBalance?.total_debits || 0) - (displayTrialBalance?.total_credits || 0)
                             ) < 0.01
                               ? 'text-green-600 dark:text-green-400'
                               : 'text-red-600 dark:text-red-400'
@@ -397,10 +402,15 @@ export default function SalonTrialBalancePage() {
                         >
                           {formatCurrency(
                             Math.abs(
-                              (trialBalance?.total_debits || 0) - (trialBalance?.total_credits || 0)
+                              (displayTrialBalance?.total_debits || 0) - (displayTrialBalance?.total_credits || 0)
                             )
                           )}
                         </span>
+                        {performanceMetrics && (
+                          <span className="ml-2 text-xs text-gray-500">
+                            (Calculated in {performanceMetrics.processingTime}ms)
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -420,22 +430,30 @@ export default function SalonTrialBalancePage() {
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-400">Total Debits</span>
                     <span className="font-semibold text-blue-600 dark:text-blue-400">
-                      {formatCurrency(trialBalance?.total_debits || 0)}
+                      {formatCurrency(displayTrialBalance?.total_debits || 0)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-400">Total Credits</span>
                     <span className="font-semibold text-red-600 dark:text-red-400">
-                      {formatCurrency(trialBalance?.total_credits || 0)}
+                      {formatCurrency(displayTrialBalance?.total_credits || 0)}
                     </span>
                   </div>
                   <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Status</span>
-                      <Badge variant={trialBalance?.is_balanced ? 'default' : 'destructive'}>
-                        {trialBalance?.is_balanced ? 'Balanced' : 'Out of Balance'}
+                      <Badge variant={(isBalanced ?? displayTrialBalance?.is_balanced) ? 'default' : 'destructive'}>
+                        {(isBalanced ?? displayTrialBalance?.is_balanced) ? 'Balanced' : 'Out of Balance'}
                       </Badge>
                     </div>
+                    {trialBalance && performanceMetrics && (
+                      <div className="flex justify-between items-center mt-2">
+                        <span className="text-xs text-gray-500">Finance DNA v2</span>
+                        <span className="text-xs text-green-600">
+                          {performanceMetrics.processingTime}ms
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </LuxeCard>
@@ -469,23 +487,41 @@ export default function SalonTrialBalancePage() {
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">Generated:</span>
                     <div className="font-medium">
-                      {new Date(trialBalance?.metadata.generated_at || new Date()).toLocaleString()}
+                      {new Date(displayTrialBalance?.metadata.generated_at || new Date()).toLocaleString()}
                     </div>
                   </div>
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">Basis:</span>
-                    <div className="font-medium">{trialBalance?.metadata.basis || 'Accrual'}</div>
+                    <div className="font-medium">{displayTrialBalance?.metadata.basis || 'Accrual'}</div>
                   </div>
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">Currency:</span>
                     <div className="font-medium">
-                      {trialBalance?.metadata.report_currency || 'AED'}
+                      {displayTrialBalance?.metadata.report_currency || 'AED'}
                     </div>
                   </div>
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">Standard:</span>
-                    <div className="font-medium">IFRS Compliant</div>
+                    <div className="font-medium">
+                      IFRS Compliant
+                      {trialBalance && (
+                        <span className="ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                          Finance DNA v2
+                        </span>
+                      )}
+                    </div>
                   </div>
+                  {performanceMetrics && (
+                    <div>
+                      <span className="text-gray-600 dark:text-gray-400">Performance:</span>
+                      <div className="font-medium text-green-600">
+                        {performanceMetrics.processingTime}ms
+                        {performanceMetrics.cacheHit && (
+                          <span className="ml-2 text-xs">(cached)</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </LuxeCard>
             </div>
