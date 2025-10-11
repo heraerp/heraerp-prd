@@ -1,3 +1,6 @@
+// Mobile Components
+export * from "./mobile";
+
 export { HERA_SIDEBAR_DNA as HeraSidebarDNA, HeraSidebar } from "./layout/hera-sidebar-dna";
 export { HERA_CHAT_INTERFACE_DNA as ChatInterfaceDNA, HeraChatInterface } from "./chat-interface-dna";
 export {
