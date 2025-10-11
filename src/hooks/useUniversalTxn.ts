@@ -1,45 +1,49 @@
 // ================================================================================
 // UNIVERSAL TRANSACTION HOOK
 // Smart Code: HERA.HOOK.UNIVERSAL.TXN.V1
-// React hook for creating universal transactions with guardrails
+// React hook for creating universal transactions with RPC pattern (like appointments)
+// ✅ UPDATED: Uses universal-api-v2-client RPC functions
 // ================================================================================
 
 'use client'
 
 import { useState } from 'react'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { createTransaction, updateTransaction, deleteTransaction } from '@/lib/universal-api-v2-client'
+import type { Json } from '@/lib/universal-api-v2-client'
 
 interface UniversalTransactionLine {
-  line_number: number
-  line_type: 'service' | 'product' | 'payment' | 'tax' | 'discount' | 'commission' | 'expense'
-  entity_id: string
-  description: string
-  quantity: number
-  unit_amount: number
-  line_amount: number
+  line_type: string
+  entity_id?: string | null
+  description?: string | null
+  quantity?: number | null
+  unit_amount?: number | null
+  line_amount?: number | null
   discount_amount?: number
   tax_amount?: number
-  smart_code: string
+  smart_code?: string
   metadata?: Record<string, any>
 }
 
 interface UniversalTransactionPayload {
   transaction_type: string
   transaction_date?: string
-  source_entity_id: string
-  target_entity_id?: string
-  total_amount: number
+  source_entity_id?: string | null
+  target_entity_id?: string | null
+  total_amount?: number
   smart_code: string
   reference_number?: string
   external_reference?: string
   metadata?: Record<string, any>
-  lines: UniversalTransactionLine[]
+  lines?: UniversalTransactionLine[]
 }
 
 interface UseUniversalTxnReturn {
   isLoading: boolean
   error: string | null
-  createTransaction: (payload: Omit<UniversalTransactionPayload, 'organization_id'>) => Promise<any>
+  createTxn: (payload: UniversalTransactionPayload) => Promise<any>
+  updateTxn: (transactionId: string, payload: Partial<UniversalTransactionPayload>) => Promise<any>
+  deleteTxn: (transactionId: string, force?: boolean) => Promise<any>
   clearError: () => void
 }
 
@@ -48,9 +52,7 @@ export function useUniversalTxn(): UseUniversalTxnReturn {
   const [error, setError] = useState<string | null>(null)
   const { currentOrganization } = useOrganization()
 
-  const createTransaction = async (
-    payload: Omit<UniversalTransactionPayload, 'organization_id'>
-  ) => {
+  const createTxn = async (payload: UniversalTransactionPayload) => {
     if (!currentOrganization?.id) {
       throw new Error('Organization context required - guardrail enforced')
     }
@@ -64,38 +66,74 @@ export function useUniversalTxn(): UseUniversalTxnReturn {
         throw new Error('Invalid smart code format - must start with HERA.')
       }
 
-      // Validate debits = credits for financial transactions
-      const totalLines = payload.lines.reduce((sum, line) => sum + line.line_amount, 0)
-      if (Math.abs(totalLines - payload.total_amount) > 0.01) {
-        throw new Error('Debits must equal credits - line amounts must sum to total amount')
-      }
-
-      // Build complete payload with organization_id
-      const completePayload = {
-        ...payload,
-        organization_id: currentOrganization.id,
-        transaction_date: payload.transaction_date || new Date().toISOString()
-      }
-
-      console.log('Creating universal transaction:', completePayload)
-
-      // Call Universal API
-      const response = await fetch('/api/v1/universal/transactions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(completePayload)
+      console.log('[useUniversalTxn] Creating transaction:', {
+        orgId: currentOrganization.id,
+        type: payload.transaction_type,
+        smartCode: payload.smart_code
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to create transaction')
-      }
+      // Use universal-api-v2-client RPC function (like appointments)
+      const result = await createTransaction(currentOrganization.id, {
+        p_transaction_type: payload.transaction_type, // Already uppercase (e.g., 'SALE', 'APPOINTMENT')
+        p_smart_code: payload.smart_code,
+        p_transaction_date: payload.transaction_date || new Date().toISOString(),
+        p_from_entity_id: payload.source_entity_id || null,
+        p_to_entity_id: payload.target_entity_id || null,
+        p_total_amount: payload.total_amount || 0,
+        p_metadata: payload.metadata || {},
+        p_lines: payload.lines || []
+      })
 
-      const result = await response.json()
-      console.log('Transaction created:', result)
+      console.log('[useUniversalTxn] Transaction created:', result)
 
+      return result
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+      setError(errorMessage)
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const updateTxn = async (transactionId: string, payload: Partial<UniversalTransactionPayload>) => {
+    if (!currentOrganization?.id) {
+      throw new Error('Organization context required')
+    }
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const result = await updateTransaction(transactionId, currentOrganization.id, {
+        p_transaction_date: payload.transaction_date,
+        p_source_entity_id: payload.source_entity_id,
+        p_target_entity_id: payload.target_entity_id,
+        p_total_amount: payload.total_amount,
+        p_metadata: payload.metadata as Json,
+        p_smart_code: payload.smart_code
+      })
+
+      return result
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+      setError(errorMessage)
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const deleteTxn = async (transactionId: string, force: boolean = false) => {
+    if (!currentOrganization?.id) {
+      throw new Error('Organization context required')
+    }
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const result = await deleteTransaction(transactionId, currentOrganization.id, { force })
       return result
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
@@ -113,7 +151,9 @@ export function useUniversalTxn(): UseUniversalTxnReturn {
   return {
     isLoading,
     error,
-    createTransaction,
+    createTxn,
+    updateTxn,
+    deleteTxn,
     clearError
   }
 }
@@ -126,23 +166,24 @@ export function generateTransactionCode(type: string): string {
 }
 
 // Smart code templates for common transactions
+// ✅ UPDATED: Use new TXN pattern - HERA.{INDUSTRY}.TXN.{TYPE}.{OPERATION}.V{VERSION}
 export const SMART_CODES = {
-  // POS Transactions
-  POS_SALE: 'HERA.SALON.POS.SALE.TXN.V1',
-  POS_PAYMENT: 'HERA.SALON.POS.PAYMENT.TXN.V1',
+  // POS Transactions (new pattern)
+  POS_SALE: 'HERA.SALON.TXN.SALE.CREATE.V1',
+  POS_PAYMENT: 'HERA.SALON.TXN.PAYMENT.RECEIVE.V1',
 
   // Services
-  SERVICE_APPOINTMENT: 'HERA.SALON.SVC.APPOINTMENT.TXN.V1',
-  SERVICE_COMPLETE: 'HERA.SALON.SVC.COMPLETE.TXN.V1',
+  SERVICE_APPOINTMENT: 'HERA.SALON.TXN.APPOINTMENT.CREATE.V1',
+  SERVICE_COMPLETE: 'HERA.SALON.TXN.SERVICE.COMPLETE.V1',
 
   // Products
-  PRODUCT_SALE: 'HERA.SALON.PROD.SALE.TXN.V1',
-  INVENTORY_ADJUSTMENT: 'HERA.SALON.INV.ADJUSTMENT.TXN.V1',
+  PRODUCT_SALE: 'HERA.SALON.TXN.PRODUCT.SALE.V1',
+  INVENTORY_ADJUSTMENT: 'HERA.SALON.TXN.INVENTORY.ADJUST.V1',
 
-  // Payments
-  CASH_PAYMENT: 'HERA.SALON.PAY.CASH.TXN.V1',
-  CARD_PAYMENT: 'HERA.SALON.PAY.CARD.TXN.V1',
+  // Payments (line-level smart codes)
+  CASH_PAYMENT: 'HERA.SALON.POS.PAYMENT.CASH.V1',
+  CARD_PAYMENT: 'HERA.SALON.POS.PAYMENT.CARD.V1',
 
-  // Commission and Staff
-  STAFF_COMMISSION: 'HERA.SALON.STAFF.COMMISSION.TXN.V1'
+  // Commission and Staff (line-level smart codes)
+  STAFF_COMMISSION: 'HERA.SALON.POS.LINE.COMMISSION.EXPENSE.V1'
 } as const

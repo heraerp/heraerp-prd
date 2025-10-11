@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     p_source_entity_id: body.source_entity_id ?? null,
     p_target_entity_id: body.target_entity_id ?? null,
     p_total_amount: body.total_amount ?? 0,
-    p_transaction_status: body.transaction_status ?? 'pending',
+    p_transaction_status: body.transaction_status ?? 'draft', // ✅ FIXED: Default to 'draft' instead of 'pending'
     p_reference_number: body.reference_number ?? null,
     p_external_reference: body.external_reference ?? null,
     p_business_context: body.business_context ?? {},

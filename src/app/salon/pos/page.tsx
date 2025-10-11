@@ -17,7 +17,8 @@ import { useAppointmentLookup } from '@/hooks/useAppointmentLookup'
 import { useCustomerLookup } from '@/hooks/useCustomerLookup'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ShoppingCart, CreditCard, Monitor, Sparkles } from 'lucide-react'
+import { ShoppingCart, CreditCard, Monitor, Sparkles, Receipt as ReceiptIcon } from 'lucide-react'
+import Link from 'next/link'
 
 // Luxe salon color palette for enterprise-grade aesthetics
 const COLORS = {
@@ -404,6 +405,23 @@ function POSContent() {
 
               <PosCommissionBadge commissionsEnabled={commissionsEnabled} />
             </div>
+
+            {/* Payment History Link */}
+            <Link href="/salon/pos/payments">
+              <Button
+                variant="outline"
+                className="px-6 py-2.5 font-semibold transition-all duration-300 hover:scale-105"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
+                  border: `1px solid ${COLORS.gold}40`,
+                  color: COLORS.champagne,
+                  boxShadow: `0 2px 12px ${COLORS.gold}15`
+                }}
+              >
+                <ReceiptIcon className="w-4 h-4 mr-2" style={{ color: COLORS.gold }} />
+                Payment History
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -458,7 +476,12 @@ function POSContent() {
                   variant="outline"
                   onClick={clearTicket}
                   disabled={ticket.lineItems.length === 0}
-                  className="px-6 py-6 font-medium"
+                  className="px-6 py-6 font-medium transition-all duration-300 hover:scale-105"
+                  style={{
+                    color: COLORS.champagne,
+                    borderColor: `${COLORS.gold}40`,
+                    background: `${COLORS.charcoalLight}80`
+                  }}
                 >
                   Clear Ticket
                 </Button>
@@ -466,6 +489,12 @@ function POSContent() {
                   onClick={handlePayment}
                   disabled={ticket.lineItems.length === 0}
                   className="flex-1 py-6 font-bold text-base transition-all hover:scale-[1.02]"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                    color: COLORS.charcoal,
+                    boxShadow: `0 4px 20px ${COLORS.gold}40`,
+                    border: `1px solid ${COLORS.gold}60`
+                  }}
                 >
                   <CreditCard className="w-5 h-5 mr-2" />
                   Pay AED {(totals?.total || 0).toFixed(2)}
@@ -527,6 +556,12 @@ function POSContent() {
           <Button
             size="lg"
             className="rounded-full shadow-2xl py-7 px-8 font-bold transition-all hover:scale-110"
+            style={{
+              background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+              color: COLORS.charcoal,
+              boxShadow: `0 8px 32px ${COLORS.gold}50`,
+              border: `1px solid ${COLORS.gold}80`
+            }}
           >
             <ShoppingCart className="w-6 h-6 mr-2" />
             {ticket.lineItems.length}

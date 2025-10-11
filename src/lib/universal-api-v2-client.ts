@@ -197,14 +197,6 @@ export async function upsertEntity(
   // Use PUT for updates, POST for creates
   const method = body.p_entity_id ? 'PUT' : 'POST'
 
-  console.log('[upsertEntity] Request:', {
-    method,
-    url,
-    apiBody,
-    orgId: body.p_organization_id,
-    isUpdate: !!body.p_entity_id
-  })
-
   const res = await fetch(`${url}/api/v2/entities`, {
     method: method,
     headers: {
@@ -361,6 +353,11 @@ export async function createTransaction(
       unit_amount?: number | null
       line_amount?: number | null
       description?: string | null
+      smart_code?: string
+      metadata?: Json
+      discount_amount?: number
+      tax_amount?: number
+      line_number?: number
     }>
   }
 ) {
@@ -374,7 +371,9 @@ export async function createTransaction(
     transaction_date: body.p_transaction_date || new Date().toISOString(),
     source_entity_id: body.p_from_entity_id || null,
     target_entity_id: body.p_to_entity_id || null,
+    total_amount: body.p_total_amount || 0, // ✅ FIX: Include total_amount
     business_context: body.p_metadata || {},
+    metadata: body.p_metadata || {}, // ✅ CRITICAL FIX: txn-emit needs both business_context AND metadata
     // Use provided lines or add placeholder for appointments if no lines provided
     lines:
       body.p_lines && body.p_lines.length > 0
@@ -421,12 +420,6 @@ export async function updateTransaction(
     p_smart_code?: string
   }
 ) {
-  console.log('[updateTransaction] RPC wrapper called:', {
-    transactionId,
-    orgId,
-    body
-  })
-
   const authHeaders = await getAuthHeaders()
 
   const apiBody: any = {
@@ -442,9 +435,6 @@ export async function updateTransaction(
   if (body.p_metadata !== undefined) apiBody.p_metadata = body.p_metadata
   if (body.p_smart_code !== undefined) apiBody.p_smart_code = body.p_smart_code
 
-  console.log('[updateTransaction] Request body:', apiBody)
-  console.log('[updateTransaction] Request URL:', `/api/v2/transactions/${transactionId}`)
-
   const res = await fetch(`/api/v2/transactions/${transactionId}`, {
     method: 'PUT',
     headers: {
@@ -457,8 +447,6 @@ export async function updateTransaction(
     body: JSON.stringify(apiBody)
   })
 
-  console.log('[updateTransaction] Response status:', res.status, res.statusText)
-
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Update failed' }))
     console.error('[updateTransaction] Error response:', error)
@@ -466,8 +454,6 @@ export async function updateTransaction(
   }
 
   const result = await res.json()
-  console.log('[updateTransaction] Success response:', result)
-
   return result
 }
 

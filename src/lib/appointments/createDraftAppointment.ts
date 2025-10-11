@@ -60,6 +60,9 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
   // Calculate total amount from service lines
   const totalAmount = serviceLines.reduce((sum, line) => sum + line.lineAmount, 0)
 
+  // ✅ CRITICAL FIX: Extract service IDs for metadata
+  const serviceIds = serviceLines.map(line => line.entityId)
+
   // Step 1: Create appointment TRANSACTION using Universal API
   // Appointments are transactions, not entities!
   const transactionResult = await createTransaction(organizationId, {
@@ -78,7 +81,8 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
       end_time: endDate.toISOString(),
       duration_minutes: durationMin,
       branch_id: branchId || null,
-      notes: notes || null
+      notes: notes || null,
+      service_ids: serviceIds // ✅ CRITICAL FIX: Store service IDs in metadata for modal display
     },
     // Pass service lines to transaction
     p_lines:

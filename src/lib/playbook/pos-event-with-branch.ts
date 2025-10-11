@@ -84,7 +84,7 @@ export async function postEventWithBranch(
   const existingResponse = await universalApi.getTransactions({
     filters: {
       organization_id: orgId,
-      transaction_type: 'POS_SALE',
+      transaction_type: 'SALE', // ✅ FIXED: Use 'SALE' (UPPERCASE) to match database requirements
       external_reference: extRef
     },
     pageSize: 1
@@ -100,12 +100,13 @@ export async function postEventWithBranch(
 
   const header: any = {
     organization_id: orgId,
-    transaction_type: 'POS_SALE',
+    transaction_type: 'SALE', // ✅ FIXED: Use 'SALE' (UPPERCASE) - matches appointments pattern
     transaction_date: new Date().toISOString(),
     source_entity_id: branchEntityId,
     target_entity_id: ticket.customer_entity_id ?? null,
     total_amount: Number(ticket.total) || 0,
-    smart_code: heraCode('HERA.SALON.POS.SALE.HEADER.V1'),
+    // ✅ FIXED: Use correct smart code format - HERA.{INDUSTRY}.TXN.{TYPE}.{OPERATION}.V{VERSION}
+    smart_code: heraCode('HERA.SALON.TXN.SALE.CREATE.V1'),
     external_reference: extRef,
     business_context: { ticket_id: ticket.id },
     metadata: { ui: 'pos', tax_total: ticket.taxTotal ?? 0 },

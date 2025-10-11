@@ -15,7 +15,13 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { format, addMinutes, parse } from 'date-fns'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from '@/components/ui/luxe-dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -46,6 +52,18 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Appointment } from '@/hooks/useHeraAppointments'
+
+// 🎯 ENTERPRISE: Duration formatter - converts minutes to hrs:min format
+const formatDuration = (minutes: number): string => {
+  if (!minutes || minutes === 0) return '0 min'
+
+  const hours = Math.floor(minutes / 60)
+  const mins = minutes % 60
+
+  if (hours === 0) return `${mins} min`
+  if (mins === 0) return `${hours} ${hours === 1 ? 'hr' : 'hrs'}`
+  return `${hours} ${hours === 1 ? 'hr' : 'hrs'} ${mins} min`
+}
 
 // 🎨 Luxe Theme Colors
 const LUXE_COLORS = {
@@ -352,6 +370,20 @@ export function AppointmentModal({
     }
   }, [selectedServices, services])
 
+  // ✅ FIX: Clear selected time ONLY when stylist or date ACTUALLY changes (not when entering edit mode)
+  useEffect(() => {
+    if (isEditing && appointment) {
+      // Only clear time if stylist or date changed from original
+      const originalStylist = appointment.stylist_id
+      const originalDate = appointment.start_time ? format(new Date(appointment.start_time), 'yyyy-MM-dd') : ''
+
+      if (selectedStylist !== originalStylist || selectedDate !== originalDate) {
+        setSelectedTime('')
+        console.log('[AppointmentModal] ⚡ Time slots reloading due to stylist/date change')
+      }
+    }
+  }, [selectedStylist, selectedDate, isEditing, appointment])
+
   // Handle save
   const handleSave = async () => {
     try {
@@ -390,21 +422,6 @@ export function AppointmentModal({
 
   if (!appointment) return null
 
-  console.log('[AppointmentModal] Full appointment object:', appointment)
-  console.log(
-    '[AppointmentModal] Available services:',
-    services.map(s => ({ id: s.id, name: s.entity_name }))
-  )
-  console.log('[AppointmentModal] Selected service IDs:', selectedServices)
-  console.log(
-    '[AppointmentModal] Branches data:',
-    branches.map(b => ({ id: b.id, entity_name: b.entity_name, name: b.name }))
-  )
-  console.log(
-    '[AppointmentModal] Customers data:',
-    customers.map(c => ({ id: c.id, entity_name: c.entity_name }))
-  )
-
   // ✅ CRITICAL FIX: Handle both entity_name and name fields for branches
   const customerName =
     customers.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown'
@@ -418,7 +435,7 @@ export function AppointmentModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-4xl max-h-[90vh] p-0 border-0 overflow-hidden"
+        className="max-w-4xl p-0 border-0"
         style={{
           background: 'linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%)',
           backdropFilter: 'blur(20px)',
@@ -441,52 +458,9 @@ export function AppointmentModal({
               {appointment.transaction_code}
             </p>
           </div>
-
-          {/* ✅ ENTERPRISE: Action buttons */}
-          <div className="flex items-center gap-2">
-            {!isEditing && (
-              <Button
-                onClick={() => setIsEditing(true)}
-                className="transition-all duration-300"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-                  color: LUXE_COLORS.black,
-                  border: 'none',
-                  fontWeight: '600'
-                }}
-              >
-                <Edit2 className="w-4 h-4 mr-2" />
-                Edit
-              </Button>
-            )}
-
-            {/* ✅ ENTERPRISE: Close button (X icon) - Always visible */}
-            <Button
-              onClick={() => onOpenChange(false)}
-              size="sm"
-              className="transition-all duration-300 w-9 h-9 p-0"
-              style={{
-                background: 'rgba(245,230,200,0.1)',
-                border: `1px solid ${LUXE_COLORS.gold}30`,
-                color: LUXE_COLORS.champagne
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = 'rgba(232,180,184,0.2)'
-                e.currentTarget.style.borderColor = `${LUXE_COLORS.rose}50`
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(245,230,200,0.1)'
-                e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}30`
-              }}
-              title="Close"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[calc(90vh-200px)]">
-          <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6" style={{ maxHeight: '350px', overflowY: 'auto' }}>
             <div className="grid grid-cols-2 gap-6">
               {/* Left Column */}
               <div className="space-y-4">
@@ -685,7 +659,7 @@ export function AppointmentModal({
                           className="text-xs ml-2 font-normal"
                           style={{ color: LUXE_COLORS.bronze }}
                         >
-                          (Duration: {duration} min)
+                          (Duration: {formatDuration(duration)})
                         </span>
                       )}
                     </span>
@@ -832,36 +806,6 @@ export function AppointmentModal({
 
                 <ScrollArea className="h-[400px] pr-4">
                   <div className="space-y-2">
-                    {/* 🔍 ENTERPRISE: Real-time debugging for services not loading issue */}
-                    {console.log('========== ENTERPRISE DEBUG START ==========')}
-                    {console.log('[AppointmentModal] 1. Services prop received:', services)}
-                    {console.log('[AppointmentModal] 2. Services count:', services?.length || 0)}
-                    {console.log('[AppointmentModal] 3. First service structure:', services?.[0])}
-                    {console.log('[AppointmentModal] 4. Selected service IDs:', selectedServices)}
-                    {console.log('[AppointmentModal] 5. isEditing mode:', isEditing)}
-                    {console.log(
-                      '[AppointmentModal] 6. Appointment metadata:',
-                      appointment?.metadata
-                    )}
-                    {(() => {
-                      const filteredServices = services?.filter(service => {
-                        if (isEditing) return true
-                        const isSelected = selectedServices.some(
-                          selectedId => String(selectedId) === String(service.id)
-                        )
-                        console.log(
-                          `[AppointmentModal] 7. Service "${service.entity_name}" (${service.id}): isSelected=${isSelected}`
-                        )
-                        return isSelected
-                      })
-                      console.log(
-                        '[AppointmentModal] 8. Filtered services count:',
-                        filteredServices?.length || 0
-                      )
-                      console.log('[AppointmentModal] 9. Filtered services:', filteredServices)
-                      console.log('========== ENTERPRISE DEBUG END ==========')
-                      return null
-                    })()}
                     {!isEditing && selectedServices.length === 0 ? (
                       <div
                         className="p-6 rounded-lg text-center"
@@ -960,7 +904,7 @@ export function AppointmentModal({
                                   >
                                     <span className="flex items-center gap-1">
                                       <Clock className="w-3 h-3" />
-                                      {serviceDuration} min
+                                      {formatDuration(serviceDuration)}
                                     </span>
                                     <span className="flex items-center gap-1">
                                       <DollarSign className="w-3 h-3" />
@@ -1039,18 +983,17 @@ export function AppointmentModal({
                 </span>
               </div>
               <div className="text-sm mt-1" style={{ color: LUXE_COLORS.bronze }}>
-                Duration: {duration} minutes • {selectedServices.length} service(s)
+                Duration: {formatDuration(duration)} • {selectedServices.length} service(s)
               </div>
             </div>
           </div>
-        </ScrollArea>
 
-        {/* Footer Actions */}
+        {/* ✅ FOOTER WITH SAVE BUTTON - ALWAYS VISIBLE */}
         <div
-          className="p-6 pt-4 flex gap-3"
+          className="p-6 pt-4"
           style={{
-            borderTop: `1px solid ${LUXE_COLORS.gold}15`,
-            background: 'linear-gradient(to top, rgba(212,175,55,0.05) 0%, transparent 100%)'
+            borderTop: `1px solid ${LUXE_COLORS.gold}20`,
+            background: 'linear-gradient(to top, rgba(212,175,55,0.08) 0%, transparent 100%)'
           }}
         >
           {isEditing ? (
@@ -1063,29 +1006,41 @@ export function AppointmentModal({
                 !selectedTime ||
                 selectedServices.length === 0
               }
-              className="w-full transition-all duration-300 hover:shadow-xl"
+              className="w-full transition-all duration-500"
               style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-                color: LUXE_COLORS.black,
-                border: 'none',
-                fontWeight: '600',
-                padding: '1.25rem',
-                fontSize: '1rem',
-                opacity:
-                  isSaving ||
-                  !selectedCustomer ||
-                  !selectedDate ||
-                  !selectedTime ||
-                  selectedServices.length === 0
-                    ? 0.5
-                    : 1,
-                boxShadow: '0 8px 24px rgba(212,175,55,0.3)'
+                background: `linear-gradient(135deg, ${LUXE_COLORS.gold}10 0%, ${LUXE_COLORS.goldDark}15 100%)`,
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: `2px solid ${LUXE_COLORS.gold}60`,
+                borderRadius: '16px',
+                color: LUXE_COLORS.champagne,
+                fontWeight: '700',
+                padding: '1.25rem 2rem',
+                fontSize: '1.05rem',
+                letterSpacing: '0.02em',
+                boxShadow: `0 8px 32px ${LUXE_COLORS.gold}35, inset 0 1px 0 rgba(255,255,255,0.15)`,
+                minHeight: '60px',
+                position: 'relative',
+                overflow: 'hidden',
+                transitionTimingFunction: LUXE_COLORS.spring
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = `linear-gradient(135deg, ${LUXE_COLORS.gold}25 0%, ${LUXE_COLORS.goldDark}30 100%)`
+                e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)'
+                e.currentTarget.style.boxShadow = `0 16px 48px ${LUXE_COLORS.gold}50, inset 0 1px 0 rgba(255,255,255,0.25)`
+                e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}90`
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = `linear-gradient(135deg, ${LUXE_COLORS.gold}10 0%, ${LUXE_COLORS.goldDark}15 100%)`
+                e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                e.currentTarget.style.boxShadow = `0 8px 32px ${LUXE_COLORS.gold}35, inset 0 1px 0 rgba(255,255,255,0.15)`
+                e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}60`
               }}
             >
               {isSaving ? (
                 <>
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Saving...
+                  Saving Changes...
                 </>
               ) : (
                 <>
@@ -1095,36 +1050,36 @@ export function AppointmentModal({
               )}
             </Button>
           ) : (
-            <div className="flex gap-3 w-full">
-              <Button
-                onClick={() => setIsEditing(true)}
-                className="flex-1 transition-all duration-300 hover:shadow-xl"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-                  color: LUXE_COLORS.black,
-                  border: 'none',
-                  fontWeight: '600',
-                  padding: '1rem',
-                  boxShadow: '0 6px 20px rgba(212,175,55,0.3)'
-                }}
-              >
-                <Edit2 className="w-4 h-4 mr-2" />
-                Edit Appointment
-              </Button>
-              <Button
-                onClick={() => onOpenChange(false)}
-                className="flex-1 transition-all duration-300"
-                style={{
-                  background: 'rgba(245,230,200,0.1)',
-                  border: `1px solid ${LUXE_COLORS.gold}30`,
-                  color: LUXE_COLORS.champagne,
-                  fontWeight: '500',
-                  padding: '1rem'
-                }}
-              >
-                Close
-              </Button>
-            </div>
+            <Button
+              onClick={() => setIsEditing(true)}
+              className="w-full transition-all duration-300 font-medium"
+              style={{
+                background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}15 100%)`,
+                color: LUXE_COLORS.gold,
+                border: `1px solid ${LUXE_COLORS.gold}40`,
+                transitionTimingFunction: LUXE_COLORS.spring,
+                fontSize: '1rem',
+                padding: '1rem 1.5rem',
+                boxShadow: `0 2px 8px ${LUXE_COLORS.gold}10`,
+                minHeight: '56px',
+                fontWeight: '600'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = `linear-gradient(135deg, ${LUXE_COLORS.gold}35 0%, ${LUXE_COLORS.gold}25 100%)`
+                e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}70`
+                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
+                e.currentTarget.style.boxShadow = `0 6px 16px ${LUXE_COLORS.gold}25`
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}15 100%)`
+                e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}40`
+                e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                e.currentTarget.style.boxShadow = `0 2px 8px ${LUXE_COLORS.gold}10`
+              }}
+            >
+              <Edit2 className="w-5 h-5 mr-2" />
+              Edit Appointment
+            </Button>
           )}
         </div>
       </DialogContent>

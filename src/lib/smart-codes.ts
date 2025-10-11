@@ -71,13 +71,26 @@ export function parseHeraCode(code: string): {
 
 /**
  * Common HERA Smart Code patterns for quick reference
+ * ✅ Updated to match HERA Transaction Pattern: HERA.{INDUSTRY}.TXN.{TYPE}.{OPERATION}.V{VERSION}
  */
 export const HERA_CODES = {
   // Salon Smart Codes
   SALON: {
+    // ✅ NEW: Transaction-based patterns (following appointments model)
+    TXN: {
+      SALE: {
+        CREATE: heraCode('HERA.SALON.TXN.SALE.CREATE.V1'),
+        UPDATE: heraCode('HERA.SALON.TXN.SALE.UPDATE.V1')
+      },
+      APPOINTMENT: {
+        CREATE: heraCode('HERA.SALON.TXN.APPOINTMENT.CREATE.V1'),
+        UPDATE: heraCode('HERA.SALON.TXN.APPOINTMENT.UPDATE.V1')
+      }
+    },
+    // ✅ Legacy POS patterns (for backward compatibility)
     POS: {
       SALE: {
-        HEADER: heraCode('HERA.SALON.POS.SALE.HEADER.V1'),
+        HEADER: heraCode('HERA.SALON.TXN.SALE.CREATE.V1'), // ✅ Redirected to new pattern
         LINE: {
           SERVICE: heraCode('HERA.SALON.POS.LINE.SERVICE.V1'),
           PRODUCT: heraCode('HERA.SALON.POS.LINE.PRODUCT.V1'),

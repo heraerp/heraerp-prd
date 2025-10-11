@@ -3003,6 +3003,19 @@ input[type="search"]:focus {
   color: rgb(243 244 246) !important;
 }
 
+/* Salon Luxe Modal - Override global dialog input rules */
+.dark [role="dialog"].salon-luxe-modal input,
+.dark [role="dialog"].salon-luxe-modal select,
+.dark [role="dialog"].salon-luxe-modal textarea {
+  background-color: #0F0F0F !important; /* Charcoal dark - Higher priority */
+  color: #F5E6C8 !important; /* Champagne text */
+}
+
+.dark [role="dialog"].salon-luxe-modal input::placeholder,
+.dark [role="dialog"].salon-luxe-modal textarea::placeholder {
+  color: rgba(160, 160, 160, 0.8) !important; /* Muted gray placeholders */
+}
+
 /* Specific overrides for HERA booking modal */
 .dark [role="dialog"] .bg-gray-800\/50 {
   background-color: rgba(31, 41, 55, 0.5) !important;
@@ -3023,6 +3036,12 @@ input[type="search"]:focus {
 
 .dark [role="dialog"] label {
   color: rgb(209 213 219) !important;
+}
+
+/* Salon Luxe Modal - Override global dialog text rules */
+.dark [role="dialog"].salon-luxe-modal label {
+  color: #F5E6C8 !important; /* Champagne - Higher priority */
+  font-weight: 500 !important;
 }
 
 /* HERA Universal Text Contrast Fix - TEXT AND ICONS ONLY */
@@ -3418,6 +3437,17 @@ input[type="search"]:focus {
    END ANALYTICS CHAT ENTERPRISE ANIMATIONS
    =============================================== */
 
+/* ===============================================
+   SALON LUXE MODAL THEME OVERRIDE
+   =============================================== */
+/* Override the global .dark [role="dialog"] background to use Salon Luxe charcoal */
+.dark [role="dialog"].salon-luxe-modal,
+[role="dialog"].salon-luxe-modal,
+.salon-luxe-modal[role="dialog"] {
+  background-color: #1A1A1A !important; /* Salon Luxe charcoal */
+  border-color: rgba(140, 120, 83, 0.25) !important; /* Bronze border */
+}
+
 /* HERA Select Dropdown in Dark Modals - Enhanced Visibility */
 [role="dialog"] [data-radix-ui-select-content] {
   background-color: rgb(31, 41, 55) !important; /* bg-gray-800 */
@@ -3454,6 +3484,295 @@ input[type="search"]:focus {
 [role="dialog"] [data-radix-ui-select-trigger]:hover {
   background-color: rgb(55, 65, 81) !important;
   border-color: rgb(107, 114, 128) !important;
+}
+
+/* ===============================================
+   SALON LUXE MODAL COMPONENTS - CHARCOAL THEME
+   =============================================== */
+/* Select Dropdowns - Charcoal shade with soft edges */
+.salon-luxe-modal [data-radix-ui-select-content],
+.salon-luxe-modal [role="listbox"] {
+  background-color: #0F0F0F !important; /* Salon charcoal dark */
+  border: 1px solid rgba(140, 120, 83, 0.4) !important; /* Bronze border */
+  border-radius: 0.75rem !important; /* Soft edges */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+  z-index: 99999 !important;
+}
+
+.salon-luxe-modal [role="option"],
+.salon-luxe-modal [data-radix-select-item] {
+  color: #F5E6C8 !important; /* Champagne text */
+  cursor: pointer !important;
+  padding: 10px 14px !important;
+  border-radius: 0.5rem !important; /* Soft edges */
+  margin: 4px 8px !important;
+  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+
+.salon-luxe-modal [role="option"]:hover,
+.salon-luxe-modal [role="option"][data-highlighted],
+.salon-luxe-modal [data-radix-select-item][data-highlighted] {
+  background-color: rgba(212, 175, 55, 0.15) !important; /* Gold highlight */
+  color: #D4AF37 !important; /* Gold text */
+  outline: none !important;
+  transform: translateX(4px) !important;
+}
+
+.salon-luxe-modal [role="option"][data-state="checked"],
+.salon-luxe-modal [data-radix-select-item][data-state="checked"] {
+  background-color: rgba(212, 175, 55, 0.2) !important; /* Gold checked */
+  color: #D4AF37 !important; /* Gold text */
+  border-left: 3px solid #D4AF37 !important;
+}
+
+/* Select Trigger - Charcoal with soft edges */
+.salon-luxe-modal [data-radix-ui-select-trigger],
+.salon-luxe-modal select {
+  background-color: #0F0F0F !important; /* Charcoal dark */
+  border-color: rgba(140, 120, 83, 0.6) !important; /* Bronze border */
+  color: #F5E6C8 !important; /* Champagne text */
+  border-radius: 0.5rem !important; /* Soft edges */
+  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+
+.salon-luxe-modal [data-radix-ui-select-trigger]:hover,
+.salon-luxe-modal select:hover {
+  background-color: #1A1A1A !important; /* Lighter charcoal on hover */
+  border-color: rgba(212, 175, 55, 0.6) !important; /* Gold border on hover */
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1) !important;
+}
+
+.salon-luxe-modal [data-radix-ui-select-trigger]:focus,
+.salon-luxe-modal select:focus {
+  border-color: #D4AF37 !important; /* Gold focus */
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+  outline: none !important;
+}
+
+/* ===============================================
+   SALON LUXE MODAL TEXT CONTRAST FIX
+   =============================================== */
+/* Ensure all text on dark backgrounds is light colored */
+
+/* All labels in modal */
+.salon-luxe-modal label,
+.salon-luxe-modal [data-slot="label"] {
+  color: #F5E6C8 !important; /* Champagne text */
+}
+
+/* All inputs in modal */
+.salon-luxe-modal input,
+.salon-luxe-modal textarea,
+.salon-luxe-modal select {
+  color: #F5E6C8 !important; /* Champagne text */
+  background-color: #0F0F0F !important; /* Charcoal dark */
+}
+
+/* Input placeholders */
+.salon-luxe-modal input::placeholder,
+.salon-luxe-modal textarea::placeholder {
+  color: rgba(160, 160, 160, 0.8) !important; /* Muted light gray */
+  opacity: 1 !important;
+}
+
+/* Select value display */
+.salon-luxe-modal [data-radix-ui-select-trigger] span,
+.salon-luxe-modal [data-radix-select-value] {
+  color: #F5E6C8 !important; /* Champagne text */
+}
+
+/* All paragraph text */
+.salon-luxe-modal p,
+.salon-luxe-modal span {
+  color: #E0E0E0 !important; /* Light text */
+}
+
+/* Dialog title and description */
+.salon-luxe-modal [data-slot="title"],
+.salon-luxe-modal h2,
+.salon-luxe-modal h3 {
+  color: #F5E6C8 !important; /* Champagne text */
+}
+
+/* Ensure button text contrast */
+.salon-luxe-modal button {
+  font-weight: 600 !important;
+}
+
+/* ========================================================================== */
+/* SALON LUXE MODAL - BUTTON TEXT COLORS - MAXIMUM SPECIFICITY FIX */
+/* ========================================================================== */
+/* This fixes the dark unreadable button text issue by using nuclear-level */
+/* specificity to override Tailwind's text-primary-foreground classes */
+
+/* PRIMARY BUTTON (Submit/Update Branch) - BLACK TEXT ON GOLD GRADIENT */
+.salon-luxe-modal button[type="submit"]:not(:disabled),
+.dark .salon-luxe-modal button[type="submit"]:not(:disabled),
+html.dark .salon-luxe-modal button[type="submit"]:not(:disabled),
+[data-theme="dark"] .salon-luxe-modal button[type="submit"]:not(:disabled) {
+  color: #0B0B0B !important; /* Black text on gold gradient */
+}
+
+.salon-luxe-modal button[type="submit"]:not(:disabled) *,
+.dark .salon-luxe-modal button[type="submit"]:not(:disabled) *,
+html.dark .salon-luxe-modal button[type="submit"]:not(:disabled) *,
+[data-theme="dark"] .salon-luxe-modal button[type="submit"]:not(:disabled) * {
+  color: #0B0B0B !important; /* Black text for all children */
+}
+
+.salon-luxe-modal button[type="submit"]:not(:disabled) svg,
+.dark .salon-luxe-modal button[type="submit"]:not(:disabled) svg,
+html.dark .salon-luxe-modal button[type="submit"]:not(:disabled) svg {
+  color: #0B0B0B !important;
+  fill: #0B0B0B !important;
+  stroke: #0B0B0B !important;
+}
+
+/* CANCEL BUTTON - LIGHT TEXT ON TRANSPARENT BACKGROUND */
+.salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled),
+.dark .salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled),
+html.dark .salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled),
+[data-theme="dark"] .salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled) {
+  color: #F5E6C8 !important; /* Champagne text */
+}
+
+.salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled) *,
+.dark .salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled) *,
+html.dark .salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled) *,
+[data-theme="dark"] .salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled) * {
+  color: #F5E6C8 !important; /* Champagne text for all children */
+}
+
+.salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled) svg,
+.dark .salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled) svg,
+html.dark .salon-luxe-modal button[type="button"]:not([type="submit"]):not(:disabled) svg {
+  color: #F5E6C8 !important;
+  fill: #F5E6C8 !important;
+  stroke: #F5E6C8 !important;
+}
+
+/* GPS BUTTON - CONDITIONAL COLOR BASED ON DISABLED STATE */
+.salon-luxe-modal button:disabled,
+.dark .salon-luxe-modal button:disabled,
+html.dark .salon-luxe-modal button:disabled {
+  color: rgba(140, 120, 83, 0.8) !important; /* Bronze muted for disabled */
+}
+
+.salon-luxe-modal button:disabled *,
+.dark .salon-luxe-modal button:disabled *,
+html.dark .salon-luxe-modal button:disabled * {
+  color: rgba(140, 120, 83, 0.8) !important; /* Bronze muted for all children */
+}
+
+.salon-luxe-modal button:disabled svg,
+.dark .salon-luxe-modal button:disabled svg,
+html.dark .salon-luxe-modal button:disabled svg {
+  color: rgba(140, 120, 83, 0.8) !important;
+  fill: rgba(140, 120, 83, 0.8) !important;
+  stroke: rgba(140, 120, 83, 0.8) !important;
+}
+
+/* OVERRIDE TAILWIND'S text-primary-foreground and similar classes */
+.salon-luxe-modal button.text-primary-foreground,
+.salon-luxe-modal button .text-primary-foreground,
+.dark .salon-luxe-modal button.text-primary-foreground,
+.dark .salon-luxe-modal button .text-primary-foreground {
+  color: inherit !important;
+}
+
+/* Force all button text elements to inherit color from parent button */
+.salon-luxe-modal button span,
+.salon-luxe-modal button div,
+.salon-luxe-modal button p,
+.dark .salon-luxe-modal button span,
+.dark .salon-luxe-modal button div,
+.dark .salon-luxe-modal button p {
+  color: inherit !important;
+}
+
+/* ADDITIONAL TARGETED FIX FOR SPECIFIC BUTTON CLASSES */
+.salon-submit-button,
+.dark .salon-submit-button,
+html.dark .salon-submit-button {
+  color: #0B0B0B !important; /* Black text */
+}
+
+.salon-submit-button *,
+.dark .salon-submit-button *,
+html.dark .salon-submit-button * {
+  color: #0B0B0B !important; /* Black text for all children */
+}
+
+.salon-cancel-button,
+.dark .salon-cancel-button,
+html.dark .salon-cancel-button {
+  color: #F5E6C8 !important; /* Champagne text */
+}
+
+.salon-cancel-button *,
+.dark .salon-cancel-button *,
+html.dark .salon-cancel-button * {
+  color: #F5E6C8 !important; /* Champagne text for all children */
+}
+
+/* ========================================================================== */
+/* END BUTTON TEXT COLOR FIX */
+/* ========================================================================== */
+
+/* Number inputs (GPS coordinates) */
+.salon-luxe-modal input[type="number"] {
+  color: #D4AF37 !important; /* Gold for GPS */
+}
+
+/* Time inputs */
+.salon-luxe-modal input[type="time"] {
+  color: #F5E6C8 !important; /* Champagne */
+}
+
+/* Ensure icons are visible */
+.salon-luxe-modal svg {
+  opacity: 1 !important;
+}
+
+/* Force light text on all dark elements - Maximum specificity */
+.dark .salon-luxe-modal label,
+.dark .salon-luxe-modal input,
+.dark .salon-luxe-modal textarea,
+.dark .salon-luxe-modal select,
+.dark .salon-luxe-modal p,
+.dark .salon-luxe-modal span:not([data-radix-select-icon]) {
+  color: #F5E6C8 !important;
+}
+
+/* Select trigger text visibility */
+.dark .salon-luxe-modal [data-radix-select-trigger],
+.dark .salon-luxe-modal [data-radix-select-value] {
+  color: #F5E6C8 !important;
+}
+
+/* Headings in dark mode */
+.dark .salon-luxe-modal h1,
+.dark .salon-luxe-modal h2,
+.dark .salon-luxe-modal h3,
+.dark .salon-luxe-modal h4 {
+  color: #F5E6C8 !important;
+}
+
+/* Description text */
+.dark .salon-luxe-modal [data-slot="description"] {
+  color: rgba(140, 120, 83, 0.9) !important;
+}
+
+/* Override any base dialog text colors */
+.dark [role="dialog"].salon-luxe-modal * {
+  color: inherit;
+}
+
+.dark [role="dialog"].salon-luxe-modal label,
+.dark [role="dialog"].salon-luxe-modal input,
+.dark [role="dialog"].salon-luxe-modal textarea {
+  color: #F5E6C8 !important;
 }
 
 /* ===============================================

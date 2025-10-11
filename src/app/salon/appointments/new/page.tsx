@@ -592,9 +592,13 @@ function NewAppointmentContent() {
       })
       console.log('Appointment created with ID:', appointmentId, 'Status:', status)
 
-      // 🎯 CRITICAL FIX: Invalidate React Query cache to auto-refresh appointments list
+      // 🎯 CRITICAL FIX: Invalidate AND refetch React Query cache to auto-refresh appointments list
       // Use predicate to match all appointment-transactions queries regardless of params
       await queryClient.invalidateQueries({
+        predicate: query => query.queryKey[0] === 'appointment-transactions'
+      })
+      // Force immediate refetch to ensure appointments list updates
+      await queryClient.refetchQueries({
         predicate: query => query.queryKey[0] === 'appointment-transactions'
       })
       await queryClient.invalidateQueries({ queryKey: ['entities', 'customer'] })

@@ -50,27 +50,33 @@ export function assertBranchOnEvent(input: {
 /**
  * Validate branch entity exists and is active
  * Optional enhanced validation for critical operations
+ * ✅ Uses RPC API v2 (client-safe, no direct Supabase queries)
  */
 export async function validateBranchExists(
   organization_id: string,
   branch_id: string
 ): Promise<boolean> {
   try {
-    const { universalApi } = await import('@/lib/universal-api-v2')
+    const { getEntities } = await import('@/lib/universal-api-v2-client')
 
-    universalApi.setOrganizationId(organization_id)
-
-    const response = await universalApi.read('core_entities', {
-      organization_id,
-      entity_type: 'BRANCH',
-      id: branch_id
+    const branches = await getEntities('', {
+      p_organization_id: organization_id,
+      p_entity_type: 'BRANCH',
+      p_status: null // Check all branches regardless of status
     })
 
-    if (!response.success || !response.data?.length) {
+    // Check if the specific branch ID exists
+    const branch = branches.find((b: any) => b.id === branch_id)
+
+    if (!branch) {
+      console.log('[validateBranchExists] Branch not found:', branch_id)
       return false
     }
 
-    const branch = response.data[0]
+    console.log('[validateBranchExists] Branch found:', {
+      id: branch.id,
+      name: branch.entity_name
+    })
 
     // Check if branch is active (via relationships or dynamic data)
     // For now, existence is sufficient
@@ -84,37 +90,30 @@ export async function validateBranchExists(
 /**
  * Get list of branches for an organization
  * Useful for UI dropdowns and filters
+ * ✅ Uses RPC API v2 (client-safe, no direct Supabase queries)
  */
 export async function getOrganizationBranches(
   organization_id: string
 ): Promise<Array<{ id: string; name: string; code?: string }>> {
   try {
-    const { universalApi } = await import('@/lib/universal-api-v2')
+    const { getEntities } = await import('@/lib/universal-api-v2-client')
 
-    universalApi.setOrganizationId(organization_id)
-
-    console.log('[getOrganizationBranches] Fetching branches for org:', organization_id)
-
-    const response = await universalApi.read('core_entities', {
-      entity_type: 'BRANCH'
+    const branches = await getEntities('', {
+      p_organization_id: organization_id,
+      p_entity_type: 'BRANCH',
+      p_status: null // Get all branches regardless of status
     })
 
-    console.log('[getOrganizationBranches] API response:', response)
+    console.log('[getOrganizationBranches] Fetched branches:', {
+      count: branches.length,
+      orgId: organization_id
+    })
 
-    if (!response.success || !response.data) {
-      console.log('[getOrganizationBranches] No branches found or API error')
-      return []
-    }
-
-    const branches = response.data.map((branch: any) => ({
+    return branches.map((branch: any) => ({
       id: branch.id,
       name: branch.entity_name,
       code: branch.entity_code
     }))
-
-    console.log('[getOrganizationBranches] Mapped branches:', branches)
-
-    return branches
   } catch (error) {
     console.error('Error fetching branches:', error)
     return []

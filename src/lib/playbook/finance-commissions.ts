@@ -377,9 +377,14 @@ export async function assertCommissionOnPosSale(transactionData: PosTransactionD
 }> {
   const errors: string[] = []
 
-  // Check that it's a POS sale transaction
-  if (!transactionData.smart_code.includes('POS.SALE.')) {
-    errors.push('Transaction must be a POS sale to require commission validation')
+  // ✅ FIXED: Check for SALE transaction (supports both old POS.SALE and new TXN.SALE patterns)
+  const isSaleTransaction =
+    transactionData.smart_code.includes('TXN.SALE.') ||
+    transactionData.smart_code.includes('POS.SALE.') ||
+    transactionData.transaction_type === 'SALE'
+
+  if (!isSaleTransaction) {
+    errors.push('Transaction must be a SALE transaction to require commission validation')
     return { isValid: false, errors }
   }
 

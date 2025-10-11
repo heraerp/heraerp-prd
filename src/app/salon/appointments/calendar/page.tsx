@@ -7,7 +7,6 @@
 'use client'
 
 import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
-import { BranchSelector } from '@/components/salon/BranchSelector'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { Loader2, AlertCircle } from 'lucide-react'
 
@@ -89,10 +88,6 @@ export default function SalonAppointmentsCalendarPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--hera-black)' }}>
-      {/* Branch Selector aligned to the right, consistent with appointments page */}
-      <div className="max-w-7xl mx-auto px-4 pt-6 flex justify-end">
-        <BranchSelector variant="minimal" />
-      </div>
       {/* Main content wrapper with charcoal background for depth */}
       <div className="relative" style={{ minHeight: '100vh' }}>
         {/* Subtle gradient overlay for depth - matching dashboard */}

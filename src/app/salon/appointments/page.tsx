@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import {
@@ -35,7 +35,8 @@ import {
   LayoutGrid,
   LayoutList,
   X,
-  RotateCcw
+  RotateCcw,
+  CreditCard
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -217,6 +218,23 @@ function AppointmentsContent() {
     },
     [appointments]
   )
+
+  // ✅ FIX: Clear selected time when date changes (forces time slot reload in reschedule modal)
+  useEffect(() => {
+    if (postponeDialogOpen && postponeDate) {
+      // Keep existing time if modal just opened with pre-populated date
+      // But clear time if user actively changes the date
+      const appointmentDate = appointmentToPostpone?.start_time
+        ? format(new Date(appointmentToPostpone.start_time), 'yyyy-MM-dd')
+        : null
+
+      // Only clear time if date changed from original appointment date
+      if (appointmentDate && postponeDate !== appointmentDate && postponeTime) {
+        setPostponeTime('')
+        console.log('[Appointments] ⚡ Time slots reloading for new date:', postponeDate)
+      }
+    }
+  }, [postponeDate, postponeDialogOpen, appointmentToPostpone, postponeTime])
 
   // ⚡ PERFORMANCE: Memoize stats calculation
   const stats: AppointmentStats = useMemo(() => {
@@ -413,9 +431,13 @@ function AppointmentsContent() {
         (a.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
         (a.stylist_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
 
-      // Branch filter
+      // Branch filter - Fixed to properly handle empty string and __ALL__
       const matchesBranch =
-        !hasMultipleBranches || !branchId || branchId === '__ALL__' || a.branch_id === branchId
+        !hasMultipleBranches ||
+        !branchId ||
+        branchId === '' ||
+        branchId === '__ALL__' ||
+        a.branch_id === branchId
 
       // Status filter
       const matchesStatus = statusFilter === 'all' || a.status === statusFilter
@@ -1233,48 +1255,111 @@ function AppointmentsContent() {
                     style={{ borderTop: `1px solid ${LUXE_COLORS.gold}10` }}
                     onClick={e => e.stopPropagation()}
                   >
-                    {/* Status Transitions - Available next statuses */}
+                    {/* Status Transitions - Only ONE next status button (one step at a time) */}
                     <div className="flex gap-2 flex-wrap flex-1">
-                      {VALID_STATUS_TRANSITIONS[appointment.status as AppointmentStatus]
-                        ?.filter(nextStatus => nextStatus !== 'cancelled') // 🎯 CRITICAL FIX: Remove duplicate cancel - we have dedicated icon button
-                        ?.map(nextStatus => {
-                          const statusInfo = STATUS_CONFIG[nextStatus]
-                          return (
-                            <Button
-                              key={nextStatus}
-                              size="sm"
-                              onClick={e => {
-                                e.stopPropagation()
-                                handleStatusTransition(appointment, nextStatus)
-                              }}
-                              disabled={isUpdating}
-                              className="transition-all duration-300 font-medium"
-                              style={{
-                                background: `linear-gradient(135deg, ${statusInfo.color}20 0%, ${statusInfo.color}15 100%)`,
-                                color: statusInfo.color,
-                                border: `1px solid ${statusInfo.color}40`,
-                                transitionTimingFunction: LUXE_COLORS.spring,
-                                fontSize: '0.75rem',
-                                padding: '0.5rem 1rem',
-                                boxShadow: `0 2px 8px ${statusInfo.color}10`
-                              }}
-                              onMouseEnter={e => {
-                                e.currentTarget.style.background = `linear-gradient(135deg, ${statusInfo.color}35 0%, ${statusInfo.color}25 100%)`
-                                e.currentTarget.style.borderColor = `${statusInfo.color}70`
-                                e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-                                e.currentTarget.style.boxShadow = `0 6px 16px ${statusInfo.color}25`
-                              }}
-                              onMouseLeave={e => {
-                                e.currentTarget.style.background = `linear-gradient(135deg, ${statusInfo.color}20 0%, ${statusInfo.color}15 100%)`
-                                e.currentTarget.style.borderColor = `${statusInfo.color}40`
-                                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                                e.currentTarget.style.boxShadow = `0 2px 8px ${statusInfo.color}10`
-                              }}
-                            >
-                              {statusInfo.label}
-                            </Button>
-                          )
-                        })}
+                      {(() => {
+                        // Get next logical status (first non-cancelled option)
+                        const nextStatus = VALID_STATUS_TRANSITIONS[
+                          appointment.status as AppointmentStatus
+                        ]?.find(s => s !== 'cancelled' && s !== 'no_show')
+
+                        if (!nextStatus) return null
+
+                        const statusInfo = STATUS_CONFIG[nextStatus]
+                        return (
+                          <Button
+                            key={nextStatus}
+                            size="sm"
+                            onClick={e => {
+                              e.stopPropagation()
+                              handleStatusTransition(appointment, nextStatus)
+                            }}
+                            disabled={isUpdating}
+                            className="transition-all duration-300 font-medium"
+                            style={{
+                              background: `linear-gradient(135deg, ${statusInfo.color}20 0%, ${statusInfo.color}15 100%)`,
+                              color: statusInfo.color,
+                              border: `1px solid ${statusInfo.color}40`,
+                              transitionTimingFunction: LUXE_COLORS.spring,
+                              fontSize: '0.75rem',
+                              padding: '0.5rem 1rem',
+                              boxShadow: `0 2px 8px ${statusInfo.color}10`
+                            }}
+                            onMouseEnter={e => {
+                              e.currentTarget.style.background = `linear-gradient(135deg, ${statusInfo.color}35 0%, ${statusInfo.color}25 100%)`
+                              e.currentTarget.style.borderColor = `${statusInfo.color}70`
+                              e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
+                              e.currentTarget.style.boxShadow = `0 6px 16px ${statusInfo.color}25`
+                            }}
+                            onMouseLeave={e => {
+                              e.currentTarget.style.background = `linear-gradient(135deg, ${statusInfo.color}20 0%, ${statusInfo.color}15 100%)`
+                              e.currentTarget.style.borderColor = `${statusInfo.color}40`
+                              e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                              e.currentTarget.style.boxShadow = `0 2px 8px ${statusInfo.color}10`
+                            }}
+                          >
+                            {statusInfo.label}
+                          </Button>
+                        )
+                      })()}
+
+                      {/* PAY Button - Payment Pending appointments */}
+                      {appointment.status === 'payment_pending' && (
+                        <Button
+                          size="sm"
+                          onClick={e => {
+                            e.stopPropagation()
+                            // 🎯 ENTERPRISE: Build comprehensive appointment data for POS
+                            const appointmentData = {
+                              id: appointment.id,
+                              customer_name: appointment.customer_name,
+                              customer_id: appointment.metadata?.customer_id,
+                              stylist_name: appointment.stylist_name,
+                              stylist_id: appointment.stylist_id,
+                              service_name: appointment.metadata?.service_name,
+                              service_id: appointment.metadata?.service_id,
+                              start: appointment.start_time,
+                              end: appointment.end_time,
+                              price: appointment.price,
+                              duration: appointment.duration_minutes,
+                              status: appointment.status
+                            }
+
+                            // Store appointment details in sessionStorage for POS page
+                            sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))
+
+                            // 🎯 ENTERPRISE: Redirect to POS with appointment ID
+                            router.push(`/salon/pos?appointment=${appointment.id}`)
+                          }}
+                          className="transition-all duration-300 font-medium"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.15) 100%)',
+                            color: '#10B981',
+                            border: '1px solid rgba(16,185,129,0.4)',
+                            borderRadius: '0.5rem',
+                            fontSize: '0.75rem',
+                            padding: '0.5rem 1rem',
+                            boxShadow: '0 2px 8px rgba(16,185,129,0.1)',
+                            cursor: 'pointer',
+                            pointerEvents: 'auto'
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(16,185,129,0.25) 100%)'
+                            e.currentTarget.style.borderColor = 'rgba(16,185,129,0.7)'
+                            e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
+                            e.currentTarget.style.boxShadow = '0 6px 16px rgba(16,185,129,0.25)'
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.15) 100%)'
+                            e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)'
+                            e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(16,185,129,0.1)'
+                          }}
+                        >
+                          <CreditCard className="w-4 h-4 mr-2 inline" />
+                          Pay Now
+                        </Button>
+                      )}
                     </div>
 
                     {/* Quick Action Icons */}
@@ -1293,24 +1378,24 @@ function AppointmentsContent() {
                             className="transition-all duration-300 w-9 h-9 p-0"
                             style={{
                               background:
-                                'linear-gradient(135deg, rgba(140,120,83,0.25) 0%, rgba(140,120,83,0.15) 100%)',
-                              color: LUXE_COLORS.bronze,
-                              border: `1.5px solid ${LUXE_COLORS.bronze}50`,
-                              boxShadow: '0 2px 8px rgba(140,120,83,0.15)'
+                                'linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(239,68,68,0.15) 100%)',
+                              color: '#EF4444',
+                              border: '1.5px solid rgba(239,68,68,0.5)',
+                              boxShadow: '0 2px 8px rgba(239,68,68,0.15)'
                             }}
                             onMouseEnter={e => {
                               e.currentTarget.style.background =
-                                'linear-gradient(135deg, rgba(140,120,83,0.40) 0%, rgba(140,120,83,0.30) 100%)'
+                                'linear-gradient(135deg, rgba(239,68,68,0.40) 0%, rgba(239,68,68,0.30) 100%)'
                               e.currentTarget.style.transform = 'scale(1.15) rotate(-5deg)'
-                              e.currentTarget.style.boxShadow = '0 4px 16px rgba(140,120,83,0.30)'
-                              e.currentTarget.style.borderColor = `${LUXE_COLORS.bronze}80`
+                              e.currentTarget.style.boxShadow = '0 4px 16px rgba(239,68,68,0.30)'
+                              e.currentTarget.style.borderColor = 'rgba(239,68,68,0.8)'
                             }}
                             onMouseLeave={e => {
                               e.currentTarget.style.background =
-                                'linear-gradient(135deg, rgba(140,120,83,0.25) 0%, rgba(140,120,83,0.15) 100%)'
+                                'linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(239,68,68,0.15) 100%)'
                               e.currentTarget.style.transform = 'scale(1) rotate(0deg)'
-                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(140,120,83,0.15)'
-                              e.currentTarget.style.borderColor = `${LUXE_COLORS.bronze}50`
+                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(239,68,68,0.15)'
+                              e.currentTarget.style.borderColor = 'rgba(239,68,68,0.5)'
                             }}
                             title="Cancel Appointment"
                           >
@@ -1374,24 +1459,24 @@ function AppointmentsContent() {
                           className="transition-all duration-300 w-9 h-9 p-0"
                           style={{
                             background:
-                              'linear-gradient(135deg, rgba(232,180,184,0.25) 0%, rgba(232,180,184,0.15) 100%)',
-                            color: LUXE_COLORS.rose,
-                            border: `1.5px solid ${LUXE_COLORS.rose}50`,
-                            boxShadow: '0 2px 8px rgba(232,180,184,0.15)'
+                              'linear-gradient(135deg, rgba(185,28,28,0.25) 0%, rgba(185,28,28,0.15) 100%)',
+                            color: '#B91C1C',
+                            border: '1.5px solid rgba(185,28,28,0.5)',
+                            boxShadow: '0 2px 8px rgba(185,28,28,0.15)'
                           }}
                           onMouseEnter={e => {
                             e.currentTarget.style.background =
-                              'linear-gradient(135deg, rgba(232,180,184,0.40) 0%, rgba(232,180,184,0.30) 100%)'
+                              'linear-gradient(135deg, rgba(185,28,28,0.40) 0%, rgba(185,28,28,0.30) 100%)'
                             e.currentTarget.style.transform = 'scale(1.15) rotate(-5deg)'
-                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(232,180,184,0.30)'
-                            e.currentTarget.style.borderColor = `${LUXE_COLORS.rose}80`
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(185,28,28,0.30)'
+                            e.currentTarget.style.borderColor = 'rgba(185,28,28,0.8)'
                           }}
                           onMouseLeave={e => {
                             e.currentTarget.style.background =
-                              'linear-gradient(135deg, rgba(232,180,184,0.25) 0%, rgba(232,180,184,0.15) 100%)'
+                              'linear-gradient(135deg, rgba(185,28,28,0.25) 0%, rgba(185,28,28,0.15) 100%)'
                             e.currentTarget.style.transform = 'scale(1) rotate(0deg)'
-                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(232,180,184,0.15)'
-                            e.currentTarget.style.borderColor = `${LUXE_COLORS.rose}50`
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(185,28,28,0.15)'
+                            e.currentTarget.style.borderColor = 'rgba(185,28,28,0.5)'
                           }}
                           title="Delete Appointment"
                         >
@@ -1614,14 +1699,14 @@ function AppointmentsContent() {
         </DialogContent>
       </Dialog>
 
-      {/* ✅ ENTERPRISE: Postpone Dialog */}
+      {/* ✅ ENTERPRISE: Postpone/Reschedule Dialog - Luxe Salon Theme */}
       <Dialog open={postponeDialogOpen} onOpenChange={setPostponeDialogOpen}>
         <DialogContent
-          className="sm:max-w-[500px] border-0 p-0 overflow-hidden"
+          className="sm:max-w-[500px] border-0 p-0"
           style={{
             background: 'linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%)',
             backdropFilter: 'blur(20px)',
-            boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(59,130,246,0.2)'
+            boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.2)'
           }}
         >
           <DialogHeader
@@ -1632,11 +1717,11 @@ function AppointmentsContent() {
               className="text-xl flex items-center gap-2"
               style={{ color: LUXE_COLORS.champagne }}
             >
-              <Clock className="w-5 h-5" style={{ color: '#3B82F6' }} />
+              <Clock className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
               Reschedule Appointment
             </DialogTitle>
           </DialogHeader>
-          <div className="p-6 space-y-4">
+          <div className="p-6 space-y-4" style={{ maxHeight: '300px', overflowY: 'auto' }}>
             <p style={{ color: LUXE_COLORS.bronze }}>
               Select a new date and time for this appointment.
             </p>
@@ -1644,8 +1729,10 @@ function AppointmentsContent() {
               <div
                 className="p-4 rounded-lg"
                 style={{
-                  background: 'rgba(59,130,246,0.1)',
-                  border: '1px solid rgba(59,130,246,0.2)'
+                  background:
+                    'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.08) 100%)',
+                  border: `1px solid ${LUXE_COLORS.gold}30`,
+                  boxShadow: '0 2px 8px rgba(212,175,55,0.1)'
                 }}
               >
                 <p className="font-medium mb-1" style={{ color: LUXE_COLORS.champagne }}>
@@ -1665,7 +1752,7 @@ function AppointmentsContent() {
             {/* ✅ ENTERPRISE: Date Selection */}
             <div className="space-y-2">
               <Label style={{ color: LUXE_COLORS.champagne }}>
-                New Date <span style={{ color: '#3B82F6' }}>*</span>
+                New Date <span style={{ color: LUXE_COLORS.gold }}>*</span>
               </Label>
               <input
                 type="date"
@@ -1688,7 +1775,7 @@ function AppointmentsContent() {
                 style={{ color: LUXE_COLORS.champagne }}
               >
                 <span>
-                  New Time <span style={{ color: '#3B82F6' }}>*</span>
+                  New Time <span style={{ color: LUXE_COLORS.gold }}>*</span>
                   {appointmentToPostpone && (
                     <span className="text-xs ml-2" style={{ color: LUXE_COLORS.bronze }}>
                       (Duration: {appointmentToPostpone.duration_minutes || 60} min)
@@ -1809,14 +1896,19 @@ function AppointmentsContent() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  background: 'rgba(16,185,129,0.1)',
-                  border: '1px solid rgba(16,185,129,0.2)'
+                  background:
+                    'linear-gradient(135deg, rgba(15,111,92,0.15) 0%, rgba(15,111,92,0.08) 100%)',
+                  border: `1px solid ${LUXE_COLORS.emerald}30`,
+                  boxShadow: '0 2px 8px rgba(15,111,92,0.1)'
                 }}
               >
                 <p className="text-sm font-medium" style={{ color: LUXE_COLORS.champagne }}>
-                  New Appointment Time:
+                  ✨ New Appointment Time:
                 </p>
-                <p className="text-sm mt-1" style={{ color: '#10B981' }}>
+                <p
+                  className="text-sm mt-1 font-medium"
+                  style={{ color: LUXE_COLORS.emerald, fontSize: '0.95rem' }}
+                >
                   {format(
                     new Date(`${postponeDate}T${postponeTime}`),
                     'EEEE, MMMM d, yyyy • h:mm a'
@@ -1832,9 +1924,13 @@ function AppointmentsContent() {
               </p>
             )}
           </div>
-          <DialogFooter
+          {/* ✅ FOOTER WITH SAVE BUTTON - ALWAYS VISIBLE */}
+          <div
             className="p-6 pt-4 flex gap-3"
-            style={{ borderTop: `1px solid ${LUXE_COLORS.gold}15` }}
+            style={{
+              borderTop: `1px solid ${LUXE_COLORS.gold}20`,
+              background: 'linear-gradient(to top, rgba(212,175,55,0.08) 0%, transparent 100%)'
+            }}
           >
             <Button
               onClick={() => {
@@ -1843,11 +1939,13 @@ function AppointmentsContent() {
                 setPostponeDate('')
                 setPostponeTime('')
               }}
-              className="flex-1"
+              className="flex-1 transition-all duration-300"
               style={{
-                background: 'transparent',
-                border: `1px solid ${LUXE_COLORS.gold}20`,
-                color: LUXE_COLORS.champagne
+                background: 'rgba(245,230,200,0.05)',
+                border: `1px solid ${LUXE_COLORS.gold}30`,
+                color: LUXE_COLORS.champagne,
+                fontWeight: '500',
+                minHeight: '48px'
               }}
             >
               Cancel
@@ -1855,19 +1953,44 @@ function AppointmentsContent() {
             <Button
               onClick={handleConfirmPostponeAppointment}
               disabled={!postponeDate || !postponeTime}
-              className="flex-1"
+              className="flex-1 transition-all duration-500"
               style={{
-                background: `linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)`,
-                color: 'white',
-                border: 'none',
-                fontWeight: '600',
+                background: `linear-gradient(135deg, ${LUXE_COLORS.gold}10 0%, ${LUXE_COLORS.goldDark}15 100%)`,
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: `2px solid ${LUXE_COLORS.gold}60`,
+                borderRadius: '16px',
+                color: LUXE_COLORS.champagne,
+                fontWeight: '700',
+                padding: '1.25rem 2rem',
+                fontSize: '1.05rem',
+                letterSpacing: '0.02em',
+                boxShadow: `0 8px 32px ${LUXE_COLORS.gold}35, inset 0 1px 0 rgba(255,255,255,0.15)`,
+                minHeight: '60px',
+                position: 'relative',
+                overflow: 'hidden',
+                transitionTimingFunction: LUXE_COLORS.spring,
                 opacity: !postponeDate || !postponeTime ? 0.5 : 1
+              }}
+              onMouseEnter={e => {
+                if (postponeDate && postponeTime) {
+                  e.currentTarget.style.background = `linear-gradient(135deg, ${LUXE_COLORS.gold}25 0%, ${LUXE_COLORS.goldDark}30 100%)`
+                  e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)'
+                  e.currentTarget.style.boxShadow = `0 16px 48px ${LUXE_COLORS.gold}50, inset 0 1px 0 rgba(255,255,255,0.25)`
+                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}90`
+                }
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = `linear-gradient(135deg, ${LUXE_COLORS.gold}10 0%, ${LUXE_COLORS.goldDark}15 100%)`
+                e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                e.currentTarget.style.boxShadow = `0 8px 32px ${LUXE_COLORS.gold}35, inset 0 1px 0 rgba(255,255,255,0.15)`
+                e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}60`
               }}
             >
               <Clock className="w-4 h-4 mr-2" />
-              Reschedule
+              💾 Save New Time
             </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
 

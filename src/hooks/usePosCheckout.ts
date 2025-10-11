@@ -2,12 +2,35 @@
 // POS CHECKOUT HOOK
 // Smart Code: HERA.HOOK.POS.CHECKOUT.V1
 // Maps POS cart to universal_transaction payload with auto-journal posting
+//
+// ARCHITECTURE:
+// - Uses UNIVERSAL HOOKS: useUniversalTransaction (RPC API v2)
+// - Layer 2: Business logic for POS checkout
+// - Handles cart calculation, line item building, payment validation
 // ================================================================================
 
 'use client'
 
 import { useState } from 'react'
-import { useUniversalTxn, generateTransactionCode, SMART_CODES } from './useUniversalTxn'
+import { useUniversalTransaction } from './useUniversalTransaction'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+
+// Smart code templates for POS transactions
+const SMART_CODES = {
+  POS_SALE: 'HERA.SALON.TXN.SALE.CREATE.V1',
+  SERVICE_COMPLETE: 'HERA.SALON.TXN.SERVICE.COMPLETE.V1',
+  PRODUCT_SALE: 'HERA.SALON.TXN.PRODUCT.SALE.V1',
+  CASH_PAYMENT: 'HERA.SALON.POS.PAYMENT.CASH.V1',
+  CARD_PAYMENT: 'HERA.SALON.POS.PAYMENT.CARD.V1',
+  STAFF_COMMISSION: 'HERA.SALON.POS.LINE.COMMISSION.EXPENSE.V1'
+} as const
+
+// Generate transaction code
+function generateTransactionCode(type: string): string {
+  const timestamp = Date.now().toString().slice(-8)
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase()
+  return `${type.toUpperCase()}-${timestamp}-${random}`
+}
 
 interface PosCartItem {
   id: string
@@ -45,7 +68,19 @@ interface UsePosCheckoutReturn {
 
 export function usePosCheckout(): UsePosCheckoutReturn {
   const [isProcessing, setIsProcessing] = useState(false)
-  const { createTransaction, isLoading, error, clearError } = useUniversalTxn()
+  const { currentOrganization } = useOrganization()
+
+  // ✅ LAYER 1: Use useUniversalTransaction (RPC API v2)
+  const {
+    create: createTransaction,
+    isCreating,
+    error: txnError
+  } = useUniversalTransaction({
+    organizationId: currentOrganization?.id
+  })
+
+  const error = txnError
+  const clearError = () => {} // Error will be cleared on next mutation
 
   const processCheckout = async (checkoutData: PosCheckoutData) => {
     setIsProcessing(true)
@@ -129,7 +164,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         lines.push({
           line_number: line_number++,
           line_type: 'discount',
-          entity_id: 'DISCOUNT', // Generic discount entity
+          entity_id: null, // ✅ FIX: System line - no entity reference needed
           description: 'Total Discount',
           quantity: 1,
           unit_amount: -discount_total,
@@ -143,7 +178,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         lines.push({
           line_number: line_number++,
           line_type: 'tax',
-          entity_id: 'VAT_5PCT', // Tax entity
+          entity_id: null, // ✅ FIX: System line - no entity reference needed
           description: `VAT (${(tax_rate * 100).toFixed(1)}%)`,
           quantity: 1,
           unit_amount: tax_amount,
@@ -157,7 +192,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         lines.push({
           line_number: line_number++,
           line_type: 'payment',
-          entity_id: payment.method === 'cash' ? 'CASH_ACCOUNT' : 'BANK_ACCOUNT',
+          entity_id: null, // ✅ FIX: System line - no entity reference needed
           description: `Payment - ${payment.method.toUpperCase()}`,
           quantity: 1,
           unit_amount: payment.amount,
@@ -171,15 +206,18 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         })
       }
 
-      // Create the universal transaction
-      const transactionPayload = {
-        transaction_type: 'pos_sale',
-        transaction_code: generateTransactionCode('POS'),
-        source_entity_id: customer_id || 'WALK_IN_CUSTOMER',
-        target_entity_id: 'SALON_LOCATION',
+      // Determine primary staff ID (first staff from items)
+      const primaryStaffId = items.find(item => item.staff_id)?.staff_id || null
+
+      // ✅ LAYER 1: Use createTransaction from useUniversalTransaction (RPC API v2)
+      const result = await createTransaction({
+        transaction_type: 'SALE', // ✅ UPPERCASE - matches HERA DNA standard
+        smart_code: 'HERA.SALON.TXN.SALE.CREATE.V1',
+        transaction_date: new Date().toISOString(),
+        source_entity_id: customer_id || null,
+        target_entity_id: primaryStaffId, // ✅ Set to staff entity ID (like appointments)
         total_amount,
-        smart_code: SMART_CODES.POS_SALE,
-        reference_number: appointment_id,
+        status: 'completed', // POS sales are immediately completed
         metadata: {
           subtotal,
           discount_total,
@@ -187,22 +225,19 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           tax_rate,
           payment_methods: payments.map(p => p.method),
           notes,
-          pos_session: Date.now().toString()
+          pos_session: Date.now().toString(),
+          appointment_id // Store appointment ID in metadata
         },
         lines
-      }
-
-      console.log('POS Checkout payload:', transactionPayload)
-
-      // Process through Universal API
-      const result = await createTransaction(transactionPayload)
+      })
 
       // Auto-journal posting will be handled by Finance DNA
-      console.log('POS transaction created, auto-journal posting triggered')
+      // Extract transaction ID from RPC response
+      const transactionId = typeof result.data === 'string' ? result.data : result.data?.transaction_id || result.data?.id
 
       return {
-        transaction_id: result.id,
-        transaction_code: transactionPayload.transaction_code,
+        transaction_id: transactionId,
+        transaction_code: generateTransactionCode('SALE'),
         total_amount,
         lines: lines.length,
         auto_journal_triggered: true
@@ -216,7 +251,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
   }
 
   return {
-    isProcessing: isProcessing || isLoading,
+    isProcessing: isProcessing || isCreating,
     error,
     processCheckout,
     clearError

@@ -42,48 +42,49 @@ export const STANDARD_ENTITY_TYPES = {
 } as const
 
 // Standard Transaction Types
+// ✅ UPDATED: Use UPPERCASE values to match HERA DNA standard (following appointments pattern)
 export const STANDARD_TRANSACTION_TYPES = {
   // Financial Transactions
-  SALE: 'sale',
-  PURCHASE: 'purchase',
-  PAYMENT: 'payment',
-  RECEIPT: 'receipt',
-  JOURNAL_ENTRY: 'journal_entry',
-  TRANSFER: 'transfer',
-  ADJUSTMENT: 'adjustment',
+  SALE: 'SALE',
+  PURCHASE: 'PURCHASE',
+  PAYMENT: 'PAYMENT',
+  RECEIPT: 'RECEIPT',
+  JOURNAL_ENTRY: 'JOURNAL_ENTRY',
+  TRANSFER: 'TRANSFER',
+  ADJUSTMENT: 'ADJUSTMENT',
 
-  // POS-Specific Transactions
-  POS_SALE: 'pos_sale',
-  POS_REFUND: 'pos_refund',
-  POS_VOID: 'pos_void',
-  CASH_RECONCILIATION: 'cash_reconciliation',
-  TILL_OPEN: 'till_open',
-  TILL_CLOSE: 'till_close',
+  // POS-Specific Transactions (legacy - prefer SALE)
+  POS_SALE: 'POS_SALE',
+  POS_REFUND: 'POS_REFUND',
+  POS_VOID: 'POS_VOID',
+  CASH_RECONCILIATION: 'CASH_RECONCILIATION',
+  TILL_OPEN: 'TILL_OPEN',
+  TILL_CLOSE: 'TILL_CLOSE',
 
   // Budget & Forecast
-  BUDGET_LINE: 'budget_line',
-  FORECAST_LINE: 'forecast_line',
+  BUDGET_LINE: 'BUDGET_LINE',
+  FORECAST_LINE: 'FORECAST_LINE',
 
   // Inventory Transactions
-  GOODS_RECEIPT: 'goods_receipt',
-  GOODS_ISSUE: 'goods_issue',
-  STOCK_TRANSFER: 'stock_transfer',
-  STOCK_ADJUSTMENT: 'stock_adjustment',
+  GOODS_RECEIPT: 'GOODS_RECEIPT',
+  GOODS_ISSUE: 'GOODS_ISSUE',
+  STOCK_TRANSFER: 'STOCK_TRANSFER',
+  STOCK_ADJUSTMENT: 'STOCK_ADJUSTMENT',
 
   // Service Transactions
-  SERVICE_ORDER: 'service_order',
-  SERVICE_DELIVERY: 'service_delivery',
-  TIME_ENTRY: 'time_entry',
-  APPOINTMENT: 'appointment',
+  SERVICE_ORDER: 'SERVICE_ORDER',
+  SERVICE_DELIVERY: 'SERVICE_DELIVERY',
+  TIME_ENTRY: 'TIME_ENTRY',
+  APPOINTMENT: 'APPOINTMENT',
 
   // Auto-Journal Types
-  AUTO_JOURNAL: 'auto_journal',
-  BATCH_JOURNAL: 'batch_journal',
+  AUTO_JOURNAL: 'AUTO_JOURNAL',
+  BATCH_JOURNAL: 'BATCH_JOURNAL',
 
   // System Transactions
-  AUDIT_EVENT: 'audit_event',
-  STATUS_CHANGE: 'status_change',
-  APPROVAL: 'approval'
+  AUDIT_EVENT: 'AUDIT_EVENT',
+  STATUS_CHANGE: 'STATUS_CHANGE',
+  APPROVAL: 'APPROVAL'
 } as const
 
 // Standard Relationship Types

@@ -15,7 +15,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should pass when branch_id is consistent across business_context and lines', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {
@@ -43,7 +43,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should fail when branch_id is missing from business_context', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {
@@ -61,7 +61,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should fail when line has mismatched branch_id', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {
@@ -93,7 +93,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should pass for valid POS sale with service lines and stylists', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 150,
         business_context: {
@@ -126,7 +126,7 @@ describe('POS Posting Wrapper Tests', () => {
       expect(result.errors).toHaveLength(0)
     })
 
-    it('should fail for non-POS sale transaction', () => {
+    it('should fail for non-sale transaction', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
         transaction_type: 'journal_entry',
@@ -142,14 +142,14 @@ describe('POS Posting Wrapper Tests', () => {
       const result = assertCommissionOnPosSale(transactionData)
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain(
-        'Transaction must be a POS sale to require commission validation'
+        'Transaction must be a SALE transaction to require commission validation'
       )
     })
 
     it('should fail when no service lines with stylists', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 50,
         business_context: {
@@ -178,7 +178,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should fail when service line missing stylist_id', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {
@@ -206,7 +206,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should fail when service line has invalid amount', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 0,
         business_context: {
@@ -236,7 +236,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should pass when lines balance to zero', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {
@@ -269,7 +269,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should fail when lines do not balance', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {
@@ -300,7 +300,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should handle multiple currencies', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {
@@ -346,7 +346,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should pass with small rounding differences within tolerance', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {
@@ -379,7 +379,7 @@ describe('POS Posting Wrapper Tests', () => {
     it('should validate a complete POS sale with commissions', () => {
       const transactionData = {
         organization_id: mockOrganizationId,
-        transaction_type: 'sale',
+        transaction_type: 'SALE',
         smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
         total_amount: 100,
         business_context: {

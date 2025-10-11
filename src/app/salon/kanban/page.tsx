@@ -32,10 +32,17 @@ import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { Board } from '@/components/salon/kanban/Board'
 import { ReschedulePanel } from '@/components/salon/kanban/ReschedulePanel'
-import { useKanbanPlaybook } from '@/hooks/useKanbanPlaybook'
-import { KanbanCard } from '@/schemas/kanban'
+import {
+  useHeraAppointments,
+  AppointmentStatus,
+  VALID_STATUS_TRANSITIONS,
+  canTransitionTo,
+  getTransitionErrorMessage
+} from '@/hooks/useHeraAppointments'
+import { KanbanCard, KanbanStatus } from '@/schemas/kanban'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
+import { useMemo } from 'react'
 
 // Luxury color palette
 const LUXE_COLORS = {
@@ -142,32 +149,196 @@ export default function KanbanPage() {
 
   const dateRange = getDateRange()
 
+  // 🎯 ENTERPRISE: Use proper appointment hook like /appointments page
   const {
-    cards,
-    cardsByColumn,
-    loading,
-    isMoving,
-    moveCard,
-    createDraft,
-    cancelAppointment,
-    reload,
-    canTransition
-  } = useKanbanPlaybook({
-    organization_id: organizationId,
-    branch_id: branchId && branchId !== 'all' ? branchId : undefined,
-    date: dateRange.date,
-    dateFrom: dateRange.dateFrom,
-    dateTo: dateRange.dateTo,
-    userId: userId || 'demo-user'
+    appointments,
+    isLoading: loading,
+    isUpdating: isMoving,
+    updateAppointmentStatus,
+    refetch: reload
+  } = useHeraAppointments({
+    organizationId,
+    filters: {
+      branch_id: branchId && branchId !== 'all' ? branchId : undefined,
+      date_from: format(dateRange.dateFrom, 'yyyy-MM-dd'),
+      date_to: format(dateRange.dateTo, 'yyyy-MM-dd')
+    }
   })
+
+  // 🎯 ENTERPRISE: Transform appointments to kanban cards
+  const cards: KanbanCard[] = useMemo(() => {
+    return appointments.map(apt => ({
+      id: apt.id,
+      customer_name: apt.customer_name,
+      service_name: apt.metadata?.service_name || 'Service',
+      stylist_name: apt.stylist_name || null,
+      start: apt.start_time,
+      end: apt.end_time,
+      status: apt.status.toUpperCase() as KanbanStatus,
+      flags: {
+        vip: apt.metadata?.vip || false,
+        new: apt.metadata?.new_customer || false
+      },
+      cancellation_reason: apt.metadata?.cancellation_reason || null
+    }))
+  }, [appointments])
+
+  // 🎯 ENTERPRISE: Group cards by status column
+  const cardsByColumn: Record<KanbanStatus, KanbanCard[]> = useMemo(() => {
+    const columns: Record<KanbanStatus, KanbanCard[]> = {
+      DRAFT: [],
+      BOOKED: [],
+      CHECKED_IN: [],
+      IN_SERVICE: [], // ✅ FIXED: Correct column name from schema
+      TO_PAY: [],
+      DONE: [],
+      CANCELLED: []
+    }
+
+    cards.forEach(card => {
+      // Map appointment statuses to kanban columns
+      const status = card.status
+      if (status === 'PAYMENT_PENDING') {
+        columns.TO_PAY.push(card)
+      } else if (status === 'COMPLETED') {
+        columns.DONE.push(card)
+      } else if (status === 'NO_SHOW') {
+        columns.CANCELLED.push(card)
+      } else if (status === 'IN_PROGRESS') {
+        // Map IN_PROGRESS appointment status to IN_SERVICE kanban column
+        columns.IN_SERVICE.push(card)
+      } else if (columns[status]) {
+        columns[status].push(card)
+      }
+    })
+
+    return columns
+  }, [cards])
+
+  // 🎯 ENTERPRISE: Drag and drop handler with flexible forward flow validation
+  const moveCard = useCallback(
+    async (cardId: string, targetColumn: KanbanStatus, targetIndex: number) => {
+      const card = cards.find(c => c.id === cardId)
+      if (!card) return
+
+      // Map kanban column to appointment status
+      let newStatus: AppointmentStatus
+      switch (targetColumn) {
+        case 'DRAFT':
+          newStatus = 'draft'
+          break
+        case 'BOOKED':
+          newStatus = 'booked'
+          break
+        case 'CHECKED_IN':
+          newStatus = 'checked_in'
+          break
+        case 'IN_SERVICE':
+          newStatus = 'in_progress'
+          break
+        case 'TO_PAY':
+          newStatus = 'payment_pending'
+          break
+        case 'DONE':
+          newStatus = 'completed'
+          break
+        case 'CANCELLED':
+          newStatus = 'cancelled'
+          break
+        default:
+          return
+      }
+
+      // Get current status (normalize uppercase to lowercase)
+      const currentStatus = card.status.toLowerCase() as AppointmentStatus
+
+      // 🎯 ENTERPRISE: Validate transition with detailed error messages
+      if (!canTransitionTo(currentStatus, newStatus)) {
+        const errorMessage = getTransitionErrorMessage(currentStatus, newStatus)
+        toast({
+          title: 'Invalid Status Transition',
+          description: errorMessage,
+          variant: 'destructive'
+        })
+        return
+      }
+
+      try {
+        await updateAppointmentStatus({ id: cardId, status: newStatus })
+        toast({
+          title: '✅ Status Updated',
+          description: `Appointment moved to ${targetColumn.replace('_', ' ').toLowerCase()}`,
+          duration: 2000
+        })
+      } catch (error: any) {
+        toast({
+          title: 'Failed to update status',
+          description: error.message || 'Please try again',
+          variant: 'destructive'
+        })
+      }
+    },
+    [cards, updateAppointmentStatus, toast]
+  )
+
+  // 🎯 ENTERPRISE: Quick action to move card to next logical status
+  const handleMoveToNext = useCallback(
+    async (card: KanbanCard) => {
+      const currentStatus = card.status.toLowerCase() as AppointmentStatus
+      const validTransitions = VALID_STATUS_TRANSITIONS[currentStatus]
+
+      if (validTransitions.length === 0) {
+        toast({
+          title: 'No further transitions',
+          description: 'This appointment is in a terminal state',
+          variant: 'default'
+        })
+        return
+      }
+
+      // Get next logical status (first non-cancelled option)
+      const nextStatus = validTransitions.find(s => s !== 'cancelled' && s !== 'no_show')
+      if (!nextStatus) {
+        toast({
+          title: 'No next status available',
+          description: 'Only cancellation is available for this appointment',
+          variant: 'default'
+        })
+        return
+      }
+
+      // Map status to column
+      let targetColumn: KanbanStatus
+      switch (nextStatus) {
+        case 'booked':
+          targetColumn = 'BOOKED'
+          break
+        case 'checked_in':
+          targetColumn = 'CHECKED_IN'
+          break
+        case 'in_progress':
+          targetColumn = 'IN_SERVICE'
+          break
+        case 'payment_pending':
+          targetColumn = 'TO_PAY'
+          break
+        case 'completed':
+          targetColumn = 'DONE'
+          break
+        default:
+          return
+      }
+
+      await moveCard(card.id, targetColumn, 0)
+    },
+    [moveCard, toast]
+  )
 
   const handleCardAction = useCallback(
     async (card: KanbanCard, action: string) => {
       switch (action) {
         case 'confirm':
-          // Move to BOOKED column
-          const bookedCards = cardsByColumn.BOOKED
-          await moveCard(card.id, 'BOOKED', bookedCards.length)
+          await moveCard(card.id, 'BOOKED', 0)
           break
 
         case 'edit':
@@ -186,53 +357,35 @@ export default function KanbanPage() {
           break
       }
     },
-    [moveCard, cardsByColumn, cancelAppointment]
+    [moveCard]
   )
 
   const handleCreateDraft = async () => {
-    const { customer_name, service_name, staff_name, start_time, duration } = draftForm
-
-    if (!customer_name || !service_name || !start_time) {
-      toast({
-        title: 'Missing information',
-        description: 'Please fill in all required fields',
-        variant: 'destructive'
-      })
-      return
-    }
-
-    const [hours, minutes] = start_time.split(':').map(Number)
-    const start = new Date(dateRange.dateFrom)
-    start.setHours(hours, minutes, 0, 0)
-
-    const end = new Date(start)
-    end.setMinutes(end.getMinutes() + parseInt(duration))
-
-    await createDraft({
-      customer_id: 'draft-' + Date.now(), // Mock ID
-      customer_name,
-      service_id: 'service-' + Date.now(),
-      service_name,
-      staff_id: staff_name ? 'staff-' + Date.now() : undefined,
-      staff_name: staff_name || undefined,
-      start: start.toISOString(),
-      end: end.toISOString()
+    toast({
+      title: 'Create Draft',
+      description: 'Use the main appointments page to create new appointments',
+      variant: 'default'
     })
-
     setDraftModalOpen(false)
-    setDraftForm({
-      customer_name: '',
-      service_name: '',
-      staff_name: '',
-      start_time: '',
-      duration: '60'
-    })
   }
 
   const handleCancelConfirm = async () => {
     if (!cardToCancel) return
 
-    await cancelAppointment(cardToCancel.id, cancelReason || undefined)
+    try {
+      await updateAppointmentStatus({ id: cardToCancel.id, status: 'cancelled' })
+      toast({
+        title: 'Appointment cancelled',
+        description: 'The appointment has been cancelled successfully'
+      })
+    } catch (error: any) {
+      toast({
+        title: 'Failed to cancel',
+        description: error.message || 'Please try again',
+        variant: 'destructive'
+      })
+    }
+
     setCancelModalOpen(false)
     setCardToCancel(null)
     setCancelReason('')
@@ -599,6 +752,7 @@ export default function KanbanPage() {
           cardsByColumn={cardsByColumn}
           onMove={moveCard}
           onCardAction={handleCardAction}
+          onMoveToNext={handleMoveToNext}
           loading={loading}
           isMoving={isMoving}
         />

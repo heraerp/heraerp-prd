@@ -67,6 +67,7 @@ import Link from 'next/link'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { BranchSelector } from '@/components/ui/BranchSelector'
 import { postEventWithBranch } from '@/lib/playbook/finance'
+import { usePosCheckout, type PosCartItem, type PosPayment } from '@/hooks/usePosCheckout'
 
 interface SalonPOSTerminalProps {
   organizationId: string
@@ -267,6 +268,9 @@ export function SalonPOSTerminalGlass({
     setBranchId,
     selectedBranch
   } = useBranchFilter(defaultBranchId, 'pos-terminal')
+
+  // POS Checkout hook (RPC pattern)
+  const { processCheckout, isProcessing, error: checkoutError, clearError } = usePosCheckout()
 
   // Load initial data
   useEffect(() => {
@@ -1226,86 +1230,61 @@ export function SalonPOSTerminalGlass({
         return
       }
 
-      const total = calculateTotal()
-      const discount = calculateDiscount()
+      // Map cart items to PosCartItem format
+      const items: PosCartItem[] = cart.map(item => ({
+        id: item.service.id,
+        entity_id: item.service.id,
+        name: item.service.entity_name,
+        type: 'service',
+        quantity: item.quantity,
+        unit_price: item.service.metadata?.price || 0,
+        discount: 0,
+        staff_id: item.stylist?.id // ✅ Include staff ID from cart item
+      }))
 
-      // Post the financial event with branch context
-      const result = await postEventWithBranch({
-        organization_id: organizationId,
-        transaction_type: 'POS_SALE',
-        smart_code: smartCodes.SALE || 'HERA.SALON.POS.TXN.SALE.V1',
-        business_context: {
-          branch_id: branchId,
-          source: 'POS',
-          customer_id: null, // Add customer ID if available
-          customer_name: customerName,
-          customer_phone: customerPhone,
-          customer_email: customerEmail,
-          payment_method: paymentMethod,
-          discount_percent: discountPercent,
-          discount_amount: discount
-        },
-        lines: [
-          {
-            line_number: 1,
-            line_type: 'REVENUE',
-            line_amount: -total, // Credit revenue
-            smart_code: 'HERA.ACCOUNTING.GL.LINE.REVENUE.V1',
-            line_data: {
-              branch_id: branchId,
-              services: cart.map(item => ({
-                service_id: item.service.id,
-                service_name: item.service.entity_name,
-                quantity: item.quantity,
-                unit_price: item.service.metadata?.price || 0,
-                stylist_id: item.stylist?.id
-              }))
-            }
-          },
-          {
-            line_number: 2,
-            line_type: paymentMethod === 'cash' ? 'CASH' : 'BANK',
-            line_amount: total, // Debit cash/bank
-            smart_code:
-              paymentMethod === 'cash'
-                ? 'HERA.ACCOUNTING.GL.LINE.CASH.V1'
-                : 'HERA.ACCOUNTING.GL.LINE.BANK.V1',
-            line_data: {
-              branch_id: branchId,
-              payment_reference:
-                paymentMethod === 'cash' ? `CASH-${Date.now()}` : `CARD-${Date.now()}`
-            }
-          }
-        ],
-        currency: {
-          transaction_currency_code: 'AED',
-          base_currency_code: 'AED',
-          exchange_rate: 1
-        },
-        transaction_date: new Date().toISOString(),
-        reference_number: `POS-${Date.now()}`,
-        notes: `POS Sale - ${cart.length} items`
+      // Determine primary staff ID (use first stylist from cart or selectedStylist)
+      const primaryStaffId = cart.find(item => item.stylist)?.stylist?.id || selectedStylist?.id
+
+      // Map payment to PosPayment format
+      const payments: PosPayment[] = [
+        {
+          method: paymentMethod === 'online' ? 'card' : paymentMethod,
+          amount: calculateTotal(),
+          reference: paymentMethod === 'cash' ? `CASH-${Date.now()}` : `CARD-${Date.now()}`
+        }
+      ]
+
+      // ✅ Use RPC-based checkout with staff assignment
+      const result = await processCheckout({
+        customer_id: undefined, // TODO: Add customer entity ID when available
+        appointment_id: undefined,
+        items,
+        payments,
+        tax_rate: 0.05, // 5% default tax
+        discount_total: calculateDiscount(),
+        notes: `POS Sale - ${cart.length} items${customerName ? ` - Customer: ${customerName}` : ''}`
       })
 
-      if (result.success) {
-        // Clear cart and reset
-        setCart([])
-        setShowPayment(false)
-        setShowCheckout(false)
-        setCustomerName('')
-        setCustomerPhone('')
-        setCustomerEmail('')
-        setDiscountPercent(0)
-        setCashReceived('')
+      console.log('[POS] Payment processed successfully:', result)
 
-        // Show success message
-        alert('Payment processed successfully!')
-      } else {
-        throw new Error(result.error || 'Payment failed')
-      }
+      // Clear cart and reset
+      setCart([])
+      setShowPayment(false)
+      setShowCheckout(false)
+      setCustomerName('')
+      setCustomerPhone('')
+      setCustomerEmail('')
+      setDiscountPercent(0)
+      setCashReceived('')
+
+      // Show success message
+      alert('Payment processed successfully!')
     } catch (err) {
       console.error('Payment error:', err)
-      alert('Payment failed. Please try again.')
+      alert(`Payment failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
+      if (checkoutError) {
+        console.error('Checkout error details:', checkoutError)
+      }
     } finally {
       setProcessing(false)
     }

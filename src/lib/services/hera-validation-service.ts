@@ -314,7 +314,8 @@ export class HeraValidationService {
     }
 
     // Validate total amount for financial transactions
-    const financialTypes = ['sale', 'purchase', 'payment', 'receipt', 'journal_entry']
+    // ✅ UPDATED: Use uppercase values to match HERA DNA standard
+    const financialTypes = ['SALE', 'PURCHASE', 'PAYMENT', 'RECEIPT', 'JOURNAL_ENTRY']
     if (financialTypes.includes(transactionData.transaction_type)) {
       if (transactionData.total_amount === undefined || transactionData.total_amount === null) {
         errors.push({

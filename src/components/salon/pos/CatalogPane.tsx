@@ -169,30 +169,19 @@ export function CatalogPane({
         boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
       }}
     >
-      {/* Enhanced Header with Gradient */}
+      {/* Enterprise Header - Minimal & Clean */}
       <div
         className="p-6 border-b"
         style={{
-          borderColor: `${COLORS.gold}30`,
-          background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
-          boxShadow: `0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px ${COLORS.gold}10`
+          borderColor: `${COLORS.gold}15`,
+          background: COLORS.charcoal
         }}
       >
-        <div className="flex items-center justify-between mb-5">
-          <h2
-            className="text-2xl font-bold tracking-tight"
-            style={{
-              background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.01em'
-            }}
-          >
-            Catalog
-          </h2>
-          {defaultStylistName && (
+        {/* Bill Stylist Badge - Top Right */}
+        {defaultStylistName && (
+          <div className="flex items-center justify-end mb-4 animate-fadeIn">
             <div
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg animate-fadeIn"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
               style={{
                 background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.goldDark}10 100%)`,
                 border: `1px solid ${COLORS.gold}50`,
@@ -204,10 +193,10 @@ export function CatalogPane({
                 Bill Stylist: {defaultStylistName}
               </span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Enhanced Search with Glow */}
+        {/* Enhanced Search with Glow - No Header Text */}
         <div className="relative mb-5">
           <Search
             className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-5 h-5"
@@ -448,10 +437,34 @@ export function CatalogPane({
                   background: `linear-gradient(135deg, ${COLORS.charcoalLight}E6 0%, ${COLORS.charcoal}E6 100%)`,
                   borderColor: `${COLORS.gold}30`,
                   boxShadow: `0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px ${COLORS.gold}15`,
-                  transition: 'all 0.3s ease',
+                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   animationDelay: `${Math.min(index * 50, 300)}ms`
                 }}
                 onClick={() => handleAddItem(item)}
+                onMouseMove={e => {
+                  const rect = e.currentTarget.getBoundingClientRect()
+                  const x = ((e.clientX - rect.left) / rect.width) * 100
+                  const y = ((e.clientY - rect.top) / rect.height) * 100
+                  e.currentTarget.style.background = `
+                    radial-gradient(circle at ${x}% ${y}%,
+                      rgba(212,175,55,0.18) 0%,
+                      rgba(212,175,55,0.12) 25%,
+                      rgba(35,35,35,0.9) 50%,
+                      rgba(26,26,26,0.9) 100%
+                    )
+                  `
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'scale(1.03) translateY(-4px)'
+                  e.currentTarget.style.boxShadow = `0 12px 32px rgba(212,175,55,0.35), 0 0 0 1px ${COLORS.gold}40`
+                  e.currentTarget.style.borderColor = `${COLORS.gold}60`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'scale(1) translateY(0)'
+                  e.currentTarget.style.boxShadow = `0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px ${COLORS.gold}15`
+                  e.currentTarget.style.borderColor = `${COLORS.gold}30`
+                  e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.charcoalLight}E6 0%, ${COLORS.charcoal}E6 100%)`
+                }}
               >
                 <CardContent className="p-5">
                   <div className="flex items-start gap-4">

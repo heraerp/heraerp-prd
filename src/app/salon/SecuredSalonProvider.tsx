@@ -642,27 +642,28 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
   /**
    * Load branches for organization
+   * ✅ Uses RPC API v2 (client-safe, no direct Supabase queries)
    */
   const loadBranches = async (orgId: string): Promise<Branch[]> => {
     try {
-      const { data: branches, error } = await supabase
-        .from('core_entities')
-        .select('*')
-        .eq('organization_id', orgId)
-        .eq('entity_type', 'BRANCH')
-        .eq('status', 'active')
-        .order('entity_name')
+      const { getEntities } = await import('@/lib/universal-api-v2-client')
 
-      if (error) {
-        console.error('Failed to load branches:', error)
-        return []
-      }
+      const branches = await getEntities('', {
+        p_organization_id: orgId,
+        p_entity_type: 'BRANCH',
+        p_status: 'active'
+      })
+
+      console.log('[loadBranches] Fetched branches via RPC API v2:', {
+        count: branches.length,
+        orgId
+      })
 
       setAvailableBranches(branches || [])
 
       // Set default branch if not already selected
       if (!selectedBranchId && branches && branches.length > 0) {
-        const defaultBranch = branches.find(b => b.entity_code === 'BR-001') || branches[0]
+        const defaultBranch = branches.find((b: any) => b.entity_code === 'BR-001') || branches[0]
         setSelectedBranchIdState(defaultBranch.id)
         localStorage.setItem('selectedBranchId', defaultBranch.id)
       }

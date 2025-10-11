@@ -28,7 +28,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useSalonPosIntegration } from '@/lib/playbook/salon-pos-integration'
+import { usePosCheckout } from '@/hooks/usePosCheckout'
 import { cn } from '@/lib/utils'
 
 // Salon Luxe Color Palette
@@ -74,11 +74,10 @@ export function PaymentDialog({
 }: PaymentDialogProps) {
   const [payments, setPayments] = useState<PaymentMethod[]>([])
   const [activeTab, setActiveTab] = useState<'cash' | 'card' | 'voucher'>('card')
-  const [processing, setProcessing] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [validationWarnings, setValidationWarnings] = useState<string[]>([])
 
-  const { validatePosTicket, processPosTransaction } = useSalonPosIntegration(organizationId)
+  // ✅ LAYER 2: Use usePosCheckout hook (which uses useUniversalTransaction RPC API v2)
+  const { processCheckout, isProcessing, error, clearError } = usePosCheckout()
 
   // Cash specific
   const [cashAmount, setCashAmount] = useState('')
@@ -179,39 +178,42 @@ export function PaymentDialog({
 
   const processPayment = async () => {
     if (!isFullyPaid) {
-      setError('Payment amount does not match total')
-      return
+      return // Don't process if not fully paid
     }
 
-    setProcessing(true)
-    setError(null)
     setValidationWarnings([])
 
     try {
-      // First validate the ticket
-      const validation = await validatePosTicket(ticket)
-
-      if (!validation.isValid) {
-        setError(`Validation failed: ${validation.errors.join(', ')}`)
-        setProcessing(false)
-        return
+      // Transform ticket data to PosCheckoutData format
+      const checkoutData = {
+        customer_id: ticket.customer_id,
+        appointment_id: ticket.appointment_id,
+        items: ticket.lineItems.map((item: any) => ({
+          id: item.id || item.entity_id,
+          entity_id: item.entity_id,
+          name: item.entity_name || item.name,
+          type: item.entity_type === 'service' ? 'service' : 'product',
+          quantity: item.quantity,
+          unit_price: item.unit_price,
+          discount: item.discount || 0,
+          staff_id: item.stylist_entity_id || item.stylist_id || item.performer_entity_id
+        })),
+        payments: payments.map(payment => ({
+          method: payment.type === 'voucher' ? 'bank_transfer' : payment.type, // Map voucher to bank_transfer
+          amount: payment.amount,
+          reference: payment.reference
+        })),
+        tax_rate: 0.05, // 5% VAT
+        discount_total: totals?.discountAmount || 0,
+        notes: ticket.notes
       }
 
-      if (validation.warnings.length > 0) {
-        setValidationWarnings(validation.warnings)
-      }
+      console.log('[PaymentDialog] Processing checkout with data:', checkoutData)
 
-      // Process the transaction using the integrated service
-      const result = await processPosTransaction(ticket, payments, {
-        branch_id: '00000000-0000-0000-0000-000000000001', // Default branch UUID
-        cashier_id: organizationId || 'system', // Use org ID as cashier for now
-        till_id: 'pos-terminal-1' // Should come from POS settings
-      })
+      // ✅ Use processCheckout from usePosCheckout hook (RPC API v2)
+      const result = await processCheckout(checkoutData)
 
-      if (!result.success) {
-        setError(result.error || 'Transaction processing failed')
-        return
-      }
+      console.log('[PaymentDialog] Checkout result:', result)
 
       // Success - prepare sale data for receipt
       const saleData = {
@@ -227,27 +229,25 @@ export function PaymentDialog({
         totals,
         changeAmount,
         branch_name: 'Main Salon',
-        commission_lines: result.commission_lines
+        lines: result.lines
       }
 
       onComplete(saleData)
     } catch (err) {
-      console.error('Payment processing error:', err)
-      setError(err instanceof Error ? err.message : 'Payment processing failed')
-    } finally {
-      setProcessing(false)
+      console.error('[PaymentDialog] Payment processing error:', err)
+      // Error is already set by the hook
     }
   }
 
   const handleClose = () => {
-    if (processing) return
+    if (isProcessing) return
     setPayments([])
     setCashAmount('')
     setCardAmount('')
     setCardReference('')
     setVoucherAmount('')
     setVoucherCode('')
-    setError(null)
+    clearError()
     onClose()
   }
 
@@ -315,11 +315,35 @@ export function PaymentDialog({
         <div className="space-y-5 pt-5">
           {/* Order Summary */}
           <Card
-            className="border transition-all"
+            className="border transition-all duration-500 cursor-pointer group relative overflow-hidden"
             style={{
               backgroundColor: COLORS.charcoalLight,
               borderColor: `${COLORS.gold}20`,
-              boxShadow: `0 1px 3px ${COLORS.black}20`
+              boxShadow: `0 1px 3px ${COLORS.black}20`,
+              backdropFilter: 'blur(12px)',
+              transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }}
+            onMouseMove={e => {
+              const rect = e.currentTarget.getBoundingClientRect()
+              const x = ((e.clientX - rect.left) / rect.width) * 100
+              const y = ((e.clientY - rect.top) / rect.height) * 100
+              e.currentTarget.style.background = `
+                radial-gradient(circle at ${x}% ${y}%,
+                  rgba(212,175,55,0.15) 0%,
+                  rgba(212,175,55,0.08) 30%,
+                  rgba(35,35,35,0.9) 60%,
+                  rgba(26,26,26,0.9) 100%
+                )
+              `
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = `${COLORS.gold}40`
+              e.currentTarget.style.boxShadow = `0 8px 24px ${COLORS.gold}25`
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = COLORS.charcoalLight
+              e.currentTarget.style.borderColor = `${COLORS.gold}20`
+              e.currentTarget.style.boxShadow = `0 1px 3px ${COLORS.black}20`
             }}
           >
             <CardContent className="p-4">
@@ -448,7 +472,9 @@ export function PaymentDialog({
 
                 {/* Quick Cash Buttons */}
                 <div>
-                  <Label className="text-sm text-muted-foreground">Quick amounts:</Label>
+                  <Label className="text-sm" style={{ color: COLORS.bronze }}>
+                    Quick amounts:
+                  </Label>
                   <div className="grid grid-cols-3 gap-2 mt-2">
                     {quickAmounts.map((amount, index) => (
                       <Button
@@ -456,13 +482,25 @@ export function PaymentDialog({
                         variant={index === 0 ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => addQuickCash(amount)}
-                        className={cn(
-                          'text-xs',
-                          index === 0 &&
-                            'bg-green-600 hover:bg-green-700 text-white border-green-600'
-                        )}
+                        className="text-xs transition-all duration-300 hover:scale-105"
+                        style={
+                          index === 0
+                            ? {
+                                background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emerald}DD 100%)`,
+                                color: COLORS.champagne,
+                                border: `1px solid ${COLORS.emerald}`,
+                                boxShadow: `0 2px 12px ${COLORS.emerald}40`
+                              }
+                            : {
+                                background: `${COLORS.charcoalLight}80`,
+                                color: COLORS.champagne,
+                                borderColor: `${COLORS.gold}40`,
+                                boxShadow: `0 1px 4px ${COLORS.black}30`
+                              }
+                        }
                       >
-                        {index === 0 ? 'Exact' : ''} ${amount.toFixed(amount % 1 === 0 ? 0 : 2)}
+                        {index === 0 ? 'Exact' : ''} AED{' '}
+                        {amount.toFixed(amount % 1 === 0 ? 0 : 2)}
                       </Button>
                     ))}
                   </div>
@@ -523,15 +561,47 @@ export function PaymentDialog({
           {/* Added Payments */}
           {payments.length > 0 && (
             <div>
-              <h3 className="font-medium mb-3">Added Payments</h3>
+              <h3
+                className="font-medium mb-3 flex items-center gap-2"
+                style={{ color: COLORS.champagne }}
+              >
+                <Check className="w-4 h-4" style={{ color: COLORS.gold }} />
+                Added Payments
+              </h3>
               <div className="space-y-2">
-                {payments.map(payment => (
+                {payments.map((payment, index) => (
                   <div
                     key={payment.id}
-                    className="flex items-center justify-between p-3 border rounded-lg"
+                    className="flex items-center justify-between p-3 border rounded-lg transition-all duration-300 cursor-pointer group relative overflow-hidden"
                     style={{
                       backgroundColor: COLORS.charcoalLight,
-                      borderColor: `${COLORS.gold}20`
+                      borderColor: `${COLORS.gold}20`,
+                      animation: `fadeIn 0.3s ease-out ${index * 0.05}s backwards`,
+                      transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }}
+                    onMouseMove={e => {
+                      const rect = e.currentTarget.getBoundingClientRect()
+                      const x = ((e.clientX - rect.left) / rect.width) * 100
+                      const y = ((e.clientY - rect.top) / rect.height) * 100
+                      e.currentTarget.style.background = `
+                        radial-gradient(circle at ${x}% ${y}%,
+                          rgba(212,175,55,0.12) 0%,
+                          rgba(212,175,55,0.06) 30%,
+                          rgba(35,35,35,0.9) 60%,
+                          rgba(26,26,26,0.9) 100%
+                        )
+                      `
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.transform = 'translateX(4px)'
+                      e.currentTarget.style.borderColor = `${COLORS.gold}40`
+                      e.currentTarget.style.boxShadow = `0 4px 16px ${COLORS.gold}20`
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'translateX(0)'
+                      e.currentTarget.style.background = COLORS.charcoalLight
+                      e.currentTarget.style.borderColor = `${COLORS.gold}20`
+                      e.currentTarget.style.boxShadow = 'none'
                     }}
                   >
                     <div className="flex items-center gap-3">
@@ -563,11 +633,37 @@ export function PaymentDialog({
 
           {/* Payment Summary */}
           <div
-            className="p-4 rounded-lg border transition-all"
+            className="p-4 rounded-lg border transition-all duration-500 cursor-pointer relative overflow-hidden"
             style={{
               backgroundColor: COLORS.charcoalLight,
               borderColor: `${COLORS.gold}30`,
-              boxShadow: `0 2px 4px ${COLORS.black}20`
+              boxShadow: `0 2px 4px ${COLORS.black}20`,
+              backdropFilter: 'blur(12px)',
+              transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }}
+            onMouseMove={e => {
+              const rect = e.currentTarget.getBoundingClientRect()
+              const x = ((e.clientX - rect.left) / rect.width) * 100
+              const y = ((e.clientY - rect.top) / rect.height) * 100
+              e.currentTarget.style.background = `
+                radial-gradient(circle at ${x}% ${y}%,
+                  rgba(212,175,55,0.20) 0%,
+                  rgba(212,175,55,0.12) 25%,
+                  rgba(35,35,35,0.9) 50%,
+                  rgba(26,26,26,0.9) 100%
+                )
+              `
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = `${COLORS.gold}50`
+              e.currentTarget.style.boxShadow = `0 8px 32px ${COLORS.gold}30`
+              e.currentTarget.style.transform = 'scale(1.02)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = COLORS.charcoalLight
+              e.currentTarget.style.borderColor = `${COLORS.gold}30`
+              e.currentTarget.style.boxShadow = `0 2px 4px ${COLORS.black}20`
+              e.currentTarget.style.transform = 'scale(1)'
             }}
           >
             <div className="space-y-2.5">
@@ -654,37 +750,53 @@ export function PaymentDialog({
             <Button
               variant="outline"
               onClick={handleClose}
-              disabled={processing}
+              disabled={isProcessing}
+              className="transition-all duration-300 hover:scale-105"
               style={{
-                borderColor: '#8C7853',
-                color: '#8C7853',
-                backgroundColor: 'transparent'
+                borderColor: COLORS.bronze,
+                color: COLORS.champagne,
+                backgroundColor: `${COLORS.charcoalLight}80`,
+                boxShadow: `0 2px 8px ${COLORS.black}30`
               }}
-              className="hover:opacity-80"
             >
               Cancel
             </Button>
             <Button
               onClick={processPayment}
-              disabled={!isFullyPaid || processing}
-              className="flex-1"
+              disabled={!isFullyPaid || isProcessing}
+              className="flex-1 transition-all duration-300 hover:scale-105 font-bold"
               style={{
-                background: `linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)`,
-                color: '#0B0B0B',
-                border: 'none'
+                background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                color: COLORS.charcoal,
+                border: `1px solid ${COLORS.gold}60`,
+                boxShadow: `0 4px 20px ${COLORS.gold}40`
               }}
             >
-              {processing ? (
+              {isProcessing ? (
                 <div
                   className="animate-spin rounded-full h-4 w-4 border-b-2 mr-2"
-                  style={{ borderColor: '#0B0B0B' }}
+                  style={{ borderColor: COLORS.charcoal }}
                 ></div>
               ) : (
                 <Check className="w-4 h-4 mr-2" />
               )}
-              {processing ? 'Processing...' : 'Complete Payment'}
+              {isProcessing ? 'Processing...' : 'Complete Payment'}
             </Button>
           </div>
+
+          {/* Add fadeIn keyframe animation */}
+          <style jsx>{`
+            @keyframes fadeIn {
+              from {
+                opacity: 0;
+                transform: translateY(-10px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+          `}</style>
         </div>
       </DialogContent>
     </Dialog>
