@@ -27,7 +27,7 @@ const nextConfig = {
   images: { domains: ['localhost'], formats: ['image/avif', 'image/webp'] },
   reactStrictMode: true,
 
-  // No health rewrites needed - using Pages Router /api/health
+  // No health rewrites needed - using App Router /api/health
   async rewrites() {
     return { beforeFiles: [], afterFiles: [], fallback: [] }
   },

@@ -63,7 +63,7 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Run middleware for everything EXCEPT these:
-    '/((?!api/health|api/healthz|api/v2/healthz|_next/static|_next/image|favicon.ico).*)',
+    // Exclude the health route and other static assets:
+    "/((?!api/health|_next/static|_next/image|favicon.ico).*)",
   ],
 }
