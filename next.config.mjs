@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // Remove standalone for Railway healthcheck compatibility
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 
@@ -27,22 +27,9 @@ const nextConfig = {
   images: { domains: ['localhost'], formats: ['image/avif', 'image/webp'] },
   reactStrictMode: true,
 
-  // Add health route rewrites as ultimate fallback
+  // No health rewrites needed - using Pages Router /api/health
   async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/api/health',
-          destination: '/api/health/route'
-        },
-        {
-          source: '/health',
-          destination: '/api/health/route'
-        }
-      ],
-      afterFiles: [],
-      fallback: []
-    }
+    return { beforeFiles: [], afterFiles: [], fallback: [] }
   },
 
   // 🔧 Force @ to resolve to ./src (works regardless of tsconfig during CI)
