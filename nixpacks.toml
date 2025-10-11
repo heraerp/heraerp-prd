@@ -8,8 +8,8 @@ nixPkgs = ["nodejs_20"]
 cmd = "echo 'Dependencies will be installed in build phase'"
 
 [phases.build]
-# Clean build without any cache conflicts
-cmd = "rm -rf node_modules/.cache /app/.next/cache && npm ci --no-optional --prefer-offline --no-audit --progress=false --no-fund && npm run build"
+# Clean build with npm cache redirected to avoid Nixpacks mount conflicts
+cmd = "mkdir -p /tmp/npm-cache && rm -rf node_modules/.cache /app/.next/cache || true && npm ci --cache /tmp/npm-cache --no-optional --prefer-offline --no-audit --progress=false --no-fund && npm run build"
 
 [variables]
 NODE_VERSION = "20.18.0"
@@ -18,6 +18,5 @@ NODE_OPTIONS = "--max-old-space-size=4096"
 NEXT_TELEMETRY_DISABLED = "1"
 RAILWAY_ENVIRONMENT = "true"
 SKIP_ENV_VALIDATION = "true"
-# Completely disable cache features
-NIXPACKS_NO_CACHE = "true"
-NPM_CONFIG_CACHE = "false"
+# Configure npm cache to avoid Nixpacks mount conflicts
+NPM_CONFIG_CACHE = "/tmp/npm-cache"
