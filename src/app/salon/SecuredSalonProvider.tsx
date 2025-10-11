@@ -312,12 +312,21 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       })
 
       if (event === 'SIGNED_IN' && session) {
-        // Force re-initialization on sign in
-        console.log('🔐 SIGNED_IN event - resetting auth check')
-        authCheckDoneRef.current = false
-        securityStore.clearState()
-        await initializeSecureContext()
-        authCheckDoneRef.current = true
+        // Only re-initialize if user or organization changed
+        const currentUserId = context.userId
+        const sessionUserId = session.user.id
+
+        if (!currentUserId || currentUserId !== sessionUserId) {
+          // New user logged in - full re-initialization needed
+          console.log('🔐 SIGNED_IN event - new user, resetting auth check')
+          authCheckDoneRef.current = false
+          securityStore.clearState()
+          await initializeSecureContext()
+          authCheckDoneRef.current = true
+        } else {
+          // Same user - just verify session is valid, don't clear data
+          console.log('🔐 SIGNED_IN event - same user, keeping existing state')
+        }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔐 SIGNED_OUT event - clearing state')
         authCheckDoneRef.current = false
