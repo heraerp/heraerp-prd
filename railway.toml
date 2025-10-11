@@ -1,3 +1,4 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm ci && npm run build"
+# Let Nixpacks do install; only build here:
+buildCommand = "npm run build"
