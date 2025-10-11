@@ -1,11 +1,16 @@
 /* Dialog Overrides for Better Positioning and Scrolling */
 
-/* Center the dialog properly */
+/* Center the dialog properly - Enterprise-grade positioning */
 [data-radix-dialog-content] {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Prevent layout shift during animation */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  /* Hardware acceleration for smooth animation */
+  transform-style: preserve-3d;
 }
 
 /* Ensure backdrop covers entire screen */
@@ -120,20 +125,43 @@
   background: #9ca3af !important;
 }
 
-/* Add subtle animation */
+/* Enterprise-grade smooth animation - Apple-inspired */
 @keyframes dialogShow {
-  from {
+  0% {
     opacity: 0;
-    transform: translate(-50%, -48%) scale(0.96);
+    transform: translate(-50%, -50%) scale(0.94);
   }
-  to {
+  100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
 }
 
+@keyframes dialogOverlayShow {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Apply smooth animations with enterprise easing */
 [data-state="open"][data-radix-dialog-content] {
-  animation: dialogShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: dialogShow 350ms cubic-bezier(0.32, 0.72, 0, 1);
+  animation-fill-mode: both;
+}
+
+[data-state="open"][data-radix-dialog-overlay] {
+  animation: dialogOverlayShow 300ms cubic-bezier(0.32, 0.72, 0, 1);
+  animation-fill-mode: both;
+}
+
+/* Prevent initial flash - dialog starts hidden */
+[data-state="closed"][data-radix-dialog-content],
+[data-radix-dialog-content]:not([data-state]) {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.94);
 }
 
 /* Improve mobile experience */

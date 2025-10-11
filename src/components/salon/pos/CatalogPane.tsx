@@ -105,21 +105,18 @@ export function CatalogPane({
   }, [items])
 
   const handleAddItem = (item: PosItem) => {
-    // For services: if we have a default stylist, use it directly; otherwise show modal
-    if (item.__kind === 'SERVICE') {
-      if (defaultStylistId && defaultStylistName) {
-        // Use default stylist automatically
-        onAddItem(item, defaultStylistId, defaultStylistName)
-      } else {
-        // Show modal to select first stylist
-        setSelectedItem(item)
-        setShowStylistModal(true)
-      }
+    // ENTERPRISE RULE: First item ALWAYS requires stylist selection (for both services and products)
+    // This ensures every sale is linked with staff from the start
+    if (!defaultStylistId || !defaultStylistName) {
+      // Show modal to select stylist for first item
+      setSelectedItem(item)
+      setShowStylistModal(true)
       return
     }
 
-    // For products, add directly (staff optional)
-    onAddItem(item)
+    // For subsequent items: use default stylist automatically
+    // This applies to both services and products
+    onAddItem(item, defaultStylistId, defaultStylistName)
   }
 
   const handleStylistConfirm = (staffId: string, staffName?: string) => {
@@ -179,7 +176,7 @@ export function CatalogPane({
       >
         {/* Bill Stylist Badge - Top Right */}
         {defaultStylistName && (
-          <div className="flex items-center justify-end mb-4 animate-fadeIn">
+          <div className="flex items-center justify-end mb-3 animate-fadeIn">
             <div
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
               style={{
@@ -196,249 +193,228 @@ export function CatalogPane({
           </div>
         )}
 
-        {/* Enhanced Search with Glow - No Header Text */}
-        <div className="relative mb-5">
-          <Search
-            className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-5 h-5"
-            style={{ color: COLORS.gold }}
-          />
-          <input
-            id="catalog-search"
-            placeholder="Search services and products..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="pl-11 pr-4 py-3 rounded-xl border text-sm w-full focus:outline-none focus:ring-2 transition-all placeholder:text-opacity-60"
-            style={
-              {
-                borderColor: `${COLORS.gold}40`,
-                backgroundColor: COLORS.charcoalDark,
-                color: COLORS.champagne,
-                boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 1px ${COLORS.gold}20`,
-                '--tw-ring-color': `${COLORS.gold}60`,
-                '--tw-ring-offset-color': 'transparent'
-              } as React.CSSProperties
-            }
-          />
-          <style jsx>{`
-            #catalog-search::placeholder {
-              color: ${COLORS.champagne};
-              opacity: 0.5;
-            }
-            #catalog-search:focus {
-              box-shadow:
-                inset 0 2px 4px rgba(0, 0, 0, 0.4),
-                0 0 0 2px ${COLORS.gold}40,
-                0 0 16px ${COLORS.gold}20;
-            }
-          `}</style>
-        </div>
+        {/* Combined Search and Branch Filter Row */}
+        <div className="flex gap-3 mb-3">
+          {/* Enhanced Search */}
+          <div className="relative flex-1">
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4"
+              style={{ color: COLORS.gold }}
+            />
+            <input
+              id="catalog-search"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="pl-10 pr-3 py-2.5 rounded-lg border text-sm w-full focus:outline-none focus:ring-2 transition-all"
+              style={
+                {
+                  borderColor: `${COLORS.gold}40`,
+                  backgroundColor: COLORS.charcoalDark,
+                  color: COLORS.champagne,
+                  boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 1px ${COLORS.gold}20`,
+                  '--tw-ring-color': `${COLORS.gold}60`
+                } as React.CSSProperties
+              }
+            />
+          </div>
 
-        {/* Branch Filter */}
-        {branches.length > 1 && (
-          <div className="mb-4 animate-slideDown">
-            <Select
-              value={branchId === undefined || branchId === 'all' ? 'all' : branchId}
-              onValueChange={value => setBranchId(value === 'all' ? undefined : value)}
-            >
-              <SelectTrigger
-                className="w-full transition-all duration-300 hover:scale-[1.01]"
-                style={{
-                  backgroundColor: `${COLORS.black}CC`,
-                  borderColor: COLORS.bronze,
-                  color: COLORS.champagne
-                }}
+          {/* Branch Filter - Required */}
+          {branches.length > 0 && (
+            <div className="w-56">
+              <Select
+                value={branchId || ''}
+                onValueChange={value => value && setBranchId(value)}
               >
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
-                  <SelectValue placeholder="All Locations" />
-                </div>
-              </SelectTrigger>
-              <SelectContent className="hera-select-content">
-                <SelectItem value="all" className="hera-select-item">
-                  All Locations
-                </SelectItem>
-                {branches.map(branch => (
-                  <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
-                      <div className="flex flex-col">
-                        <span className="font-medium">{branch.name}</span>
-                        {branch.code && <span className="text-xs opacity-60">{branch.code}</span>}
-                      </div>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Active Branch Badge */}
-            {branchId && branchId !== 'all' && (
-              <div className="mt-2 flex items-center gap-2">
-                <span className="text-xs" style={{ color: COLORS.bronze }}>
-                  Filtered by:
-                </span>
-                <div
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-lg transition-all duration-300 hover:scale-105"
+                <SelectTrigger
+                  className="h-[42px] transition-all duration-300"
                   style={{
-                    background: `${COLORS.gold}20`,
-                    border: `1px solid ${COLORS.gold}40`,
-                    boxShadow: `0 2px 8px ${COLORS.gold}20`
+                    backgroundColor: COLORS.charcoalDark,
+                    borderColor: branchId ? `${COLORS.gold}40` : `${COLORS.bronze}60`,
+                    color: COLORS.champagne
                   }}
                 >
-                  <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                  <span className="text-xs font-medium" style={{ color: COLORS.champagne }}>
-                    {branches.find(b => b.id === branchId)?.name || branchId}
-                  </span>
-                  <button
-                    onClick={() => setBranchId(undefined)}
-                    className="ml-1 hover:opacity-70 transition-opacity"
-                    style={{ color: COLORS.gold }}
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              </div>
-            )}
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
+                    <SelectValue placeholder="Select Branch" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  {branches.map(branch => (
+                    <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
+                        <span className="font-medium">{branch.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
+
+        {/* Branch Selection Warning */}
+        {!branchId && branches.length > 0 && (
+          <div
+            className="mb-3 px-3 py-2 rounded-lg flex items-center gap-2 animate-fadeIn"
+            style={{
+              background: `linear-gradient(135deg, ${COLORS.emerald}15 0%, ${COLORS.emerald}10 100%)`,
+              border: `1px solid ${COLORS.emerald}40`
+            }}
+          >
+            <Building2 className="w-4 h-4 flex-shrink-0" style={{ color: COLORS.emerald }} />
+            <span className="text-xs font-medium" style={{ color: COLORS.champagne }}>
+              Please select a branch to view available items
+            </span>
           </div>
         )}
 
-        {/* Tabs */}
+        {/* Compact Tabs */}
         <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
           <TabsList
-            className="grid w-full grid-cols-2 p-0 border-b w-full justify-start h-auto rounded-none"
+            className="grid w-full grid-cols-2 p-1 h-auto rounded-lg mb-3"
             style={{
-              borderColor: COLORS.bronze + '33',
-              backgroundColor: COLORS.charcoalLight,
-              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+              backgroundColor: `${COLORS.charcoalDark}80`,
+              border: `1px solid ${COLORS.gold}20`
             }}
           >
             <TabsTrigger
               value="services"
-              className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
+              className="rounded-md px-4 py-2 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium"
               style={{
-                backgroundColor: activeTab === 'services' ? COLORS.charcoal : 'transparent'
+                backgroundColor: activeTab === 'services' ? `${COLORS.gold}25` : 'transparent',
+                color: activeTab === 'services' ? COLORS.champagne : `${COLORS.gold}90`,
+                border: activeTab === 'services' ? `1px solid ${COLORS.gold}50` : '1px solid transparent',
+                fontWeight: activeTab === 'services' ? '600' : '500'
               }}
             >
-              <Scissors
-                className="w-4 h-4"
-                style={{ color: activeTab === 'services' ? COLORS.gold : COLORS.champagne }}
-              />
-              <span
-                style={{ color: activeTab === 'services' ? COLORS.champagne : COLORS.lightText }}
+              <Scissors className="w-3.5 h-3.5" />
+              <span>Services</span>
+              <Badge
+                className="ml-1 h-5 px-1.5 text-xs font-semibold"
+                style={{
+                  backgroundColor: activeTab === 'services' ? COLORS.gold : `${COLORS.charcoalLight}`,
+                  color: activeTab === 'services' ? COLORS.black : COLORS.bronze,
+                  border: 'none'
+                }}
               >
-                Services ({servicesCount})
-              </span>
-              <div
-                className={cn(
-                  'absolute bottom-0 left-0 right-0 h-0.5 transition-all',
-                  activeTab === 'services' ? 'opacity-100' : 'opacity-0'
-                )}
-                style={{ backgroundColor: COLORS.gold }}
-              />
+                {servicesCount}
+              </Badge>
             </TabsTrigger>
             <TabsTrigger
               value="products"
-              className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
+              className="rounded-md px-4 py-2 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium"
               style={{
-                backgroundColor: activeTab === 'products' ? COLORS.charcoal : 'transparent'
+                backgroundColor: activeTab === 'products' ? `${COLORS.gold}25` : 'transparent',
+                color: activeTab === 'products' ? COLORS.champagne : `${COLORS.gold}90`,
+                border: activeTab === 'products' ? `1px solid ${COLORS.gold}50` : '1px solid transparent',
+                fontWeight: activeTab === 'products' ? '600' : '500'
               }}
             >
-              <Package
-                className="w-4 h-4"
-                style={{ color: activeTab === 'products' ? COLORS.gold : COLORS.champagne }}
-              />
-              <span
-                style={{ color: activeTab === 'products' ? COLORS.champagne : COLORS.lightText }}
+              <Package className="w-3.5 h-3.5" />
+              <span>Products</span>
+              <Badge
+                className="ml-1 h-5 px-1.5 text-xs font-semibold"
+                style={{
+                  backgroundColor: activeTab === 'products' ? COLORS.gold : `${COLORS.charcoalLight}`,
+                  color: activeTab === 'products' ? COLORS.black : COLORS.bronze,
+                  border: 'none'
+                }}
               >
-                Products ({productsCount})
-              </span>
-              <div
-                className={cn(
-                  'absolute bottom-0 left-0 right-0 h-0.5 transition-all',
-                  activeTab === 'products' ? 'opacity-100' : 'opacity-0'
-                )}
-                style={{ backgroundColor: COLORS.gold }}
-              />
+                {productsCount}
+              </Badge>
             </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
-      {/* Enhanced Category Filter with Luxury Styling */}
+      {/* Compact Category Filter */}
       <div
-        className="px-6 py-4 border-b"
+        className="px-4 py-2 border-b"
         style={{
-          borderColor: `${COLORS.gold}20`,
-          background: `linear-gradient(to bottom, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`
+          borderColor: `${COLORS.gold}15`,
+          backgroundColor: COLORS.charcoal
         }}
       >
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-1.5">
           {categories.map(category => {
             const isSelected = selectedCategory === category
             return (
               <Badge
                 key={category}
                 variant="outline"
-                className={cn(
-                  'cursor-pointer transition-all duration-200 hover:scale-105 px-4 py-2 text-sm font-medium border',
-                  isSelected ? 'shadow-lg' : 'hover:shadow-md'
-                )}
+                className="cursor-pointer transition-all duration-300 px-3 py-1.5 text-xs font-semibold border"
                 style={{
                   background: isSelected
-                    ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                    : `${COLORS.charcoalDark}80`,
-                  color: isSelected ? COLORS.black : COLORS.champagne,
-                  borderColor: isSelected ? COLORS.gold : `${COLORS.gold}40`,
-                  boxShadow: isSelected
-                    ? `0 4px 12px ${COLORS.gold}40, 0 0 0 1px ${COLORS.gold}`
-                    : `0 0 0 1px ${COLORS.gold}20`
+                    ? `linear-gradient(135deg, ${COLORS.gold}35 0%, ${COLORS.gold}25 100%)`
+                    : `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}10 100%)`,
+                  color: COLORS.champagne,
+                  borderColor: isSelected ? `${COLORS.gold}70` : `${COLORS.gold}40`,
+                  boxShadow: isSelected ? `0 4px 12px ${COLORS.gold}30` : `0 2px 6px ${COLORS.gold}15`,
+                  fontWeight: isSelected ? '700' : '600',
+                  transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
                 }}
                 onClick={() => setSelectedCategory(category)}
+                onMouseEnter={e => {
+                  if (!isSelected) {
+                    e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.gold}25 0%, ${COLORS.gold}15 100%)`
+                    e.currentTarget.style.borderColor = `${COLORS.gold}60`
+                    e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
+                    e.currentTarget.style.boxShadow = `0 4px 12px ${COLORS.gold}25`
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isSelected) {
+                    e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}10 100%)`
+                    e.currentTarget.style.borderColor = `${COLORS.gold}40`
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                    e.currentTarget.style.boxShadow = `0 2px 6px ${COLORS.gold}15`
+                  }
+                }}
               >
-                <span style={{ color: isSelected ? COLORS.black : COLORS.champagne }}>
-                  {category === 'all' ? 'All Categories' : category}
-                </span>
+                {category === 'all' ? 'All' : category}
               </Badge>
             )
           })}
         </div>
       </div>
 
-      {/* Items List */}
-      <div className="flex-1 overflow-y-auto p-6">
+      {/* Items List - Compact */}
+      <div className="flex-1 overflow-y-auto p-3">
         {filteredItems.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="text-center py-8">
             <div
-              className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+              className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
               style={{ backgroundColor: COLORS.charcoalLight }}
             >
               {activeTab === 'services' ? (
-                <Scissors className="w-8 h-8" style={{ color: COLORS.bronze }} />
+                <Scissors className="w-6 h-6" style={{ color: COLORS.bronze }} />
               ) : (
-                <Package className="w-8 h-8" style={{ color: COLORS.bronze }} />
+                <Package className="w-6 h-6" style={{ color: COLORS.bronze }} />
               )}
             </div>
-            <h3 className="text-lg font-medium mb-2" style={{ color: COLORS.champagne }}>
+            <h3 className="text-sm font-medium mb-1" style={{ color: COLORS.champagne }}>
               No items found
             </h3>
-            <p style={{ color: COLORS.lightText, opacity: 0.7 }}>
+            <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.7 }}>
               {searchQuery
-                ? 'Try adjusting your search terms'
-                : `No ${activeTab} available in this category`}
+                ? 'Try adjusting your search'
+                : !branchId
+                  ? 'Select a branch to view items'
+                  : `No ${activeTab} in this category`}
             </p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-2">
             {filteredItems.map((item, index) => (
               <Card
                 key={item.id}
-                className="group hover:shadow-xl transition-all duration-300 cursor-pointer backdrop-blur-sm hover:scale-[1.02] animate-fadeInUp"
+                className="group hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.01]"
                 style={{
                   background: `linear-gradient(135deg, ${COLORS.charcoalLight}E6 0%, ${COLORS.charcoal}E6 100%)`,
-                  borderColor: `${COLORS.gold}30`,
-                  boxShadow: `0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px ${COLORS.gold}15`,
-                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  animationDelay: `${Math.min(index * 50, 300)}ms`
+                  borderColor: `${COLORS.gold}25`,
+                  boxShadow: `0 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 1px ${COLORS.gold}10`
                 }}
                 onClick={() => handleAddItem(item)}
                 onMouseMove={e => {
@@ -447,64 +423,53 @@ export function CatalogPane({
                   const y = ((e.clientY - rect.top) / rect.height) * 100
                   e.currentTarget.style.background = `
                     radial-gradient(circle at ${x}% ${y}%,
-                      rgba(212,175,55,0.18) 0%,
-                      rgba(212,175,55,0.12) 25%,
+                      rgba(212,175,55,0.15) 0%,
+                      rgba(212,175,55,0.08) 25%,
                       rgba(35,35,35,0.9) 50%,
                       rgba(26,26,26,0.9) 100%
                     )
                   `
                 }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'scale(1.03) translateY(-4px)'
-                  e.currentTarget.style.boxShadow = `0 12px 32px rgba(212,175,55,0.35), 0 0 0 1px ${COLORS.gold}40`
-                  e.currentTarget.style.borderColor = `${COLORS.gold}60`
-                }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'scale(1) translateY(0)'
-                  e.currentTarget.style.boxShadow = `0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px ${COLORS.gold}15`
-                  e.currentTarget.style.borderColor = `${COLORS.gold}30`
                   e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.charcoalLight}E6 0%, ${COLORS.charcoal}E6 100%)`
                 }}
               >
-                <CardContent className="p-5">
-                  <div className="flex items-start gap-4">
-                    {/* Image */}
+                <CardContent className="p-3">
+                  <div className="flex items-center gap-3">
+                    {/* Compact Icon/Image */}
                     {item.imageUrl ? (
                       <img
                         src={item.imageUrl}
                         alt={item.title}
-                        className="w-24 h-24 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform duration-300"
+                        className="w-14 h-14 rounded-lg object-cover shrink-0"
                         style={{
-                          border: `1px solid ${COLORS.gold}30`,
-                          boxShadow: `0 4px 12px ${COLORS.gold}20`
+                          border: `1px solid ${COLORS.gold}25`
                         }}
                         onError={e => {
-                          // Hide broken images
                           e.currentTarget.style.display = 'none'
                         }}
                       />
                     ) : (
                       <div
-                        className="w-24 h-24 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300"
+                        className="w-14 h-14 rounded-lg flex items-center justify-center shrink-0"
                         style={{
-                          background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.bronze}15 100%)`,
-                          border: `1px solid ${COLORS.gold}30`,
-                          boxShadow: `0 4px 12px ${COLORS.gold}15`
+                          background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.bronze}10 100%)`,
+                          border: `1px solid ${COLORS.gold}25`
                         }}
                       >
                         {item.__kind === 'SERVICE' ? (
-                          <Scissors className="w-10 h-10" style={{ color: COLORS.gold }} />
+                          <Scissors className="w-6 h-6" style={{ color: COLORS.gold }} />
                         ) : (
-                          <Package className="w-10 h-10" style={{ color: COLORS.gold }} />
+                          <Package className="w-6 h-6" style={{ color: COLORS.gold }} />
                         )}
                       </div>
                     )}
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-2 mb-1">
                         <h3
-                          className="font-semibold text-base truncate"
+                          className="font-medium text-sm truncate"
                           style={{ color: COLORS.champagne }}
                         >
                           {item.title}
@@ -512,12 +477,11 @@ export function CatalogPane({
                         {item.category && (
                           <Badge
                             variant="secondary"
-                            className="text-xs px-2.5 py-0.5 transition-all duration-200 hover:scale-105"
+                            className="text-[10px] px-1.5 py-0 h-4"
                             style={{
-                              background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                              background: `${COLORS.gold}15`,
                               color: COLORS.gold,
-                              border: `1px solid ${COLORS.gold}40`,
-                              fontWeight: 500
+                              border: `1px solid ${COLORS.gold}30`
                             }}
                           >
                             {item.category}
@@ -525,29 +489,20 @@ export function CatalogPane({
                         )}
                       </div>
 
-                      {item.description && (
-                        <p
-                          className="text-sm line-clamp-2 mb-3"
-                          style={{ color: COLORS.champagne, opacity: 0.7 }}
-                        >
-                          {item.description}
-                        </p>
-                      )}
-
-                      <div className="flex items-center gap-5 text-sm">
+                      <div className="flex items-center gap-3 text-xs">
                         <div
-                          className="flex items-center gap-2 font-bold text-lg transition-all duration-200 hover:scale-105"
+                          className="flex items-center gap-1 font-semibold"
                           style={{ color: COLORS.gold }}
                         >
-                          <Tag className="w-4 h-4" />
+                          <Tag className="w-3 h-3" />
                           AED {item.price?.toFixed(2) || '0.00'}
                         </div>
                         {item.__kind === 'SERVICE' && item.duration && (
                           <div
-                            className="flex items-center gap-1.5 font-medium"
-                            style={{ color: COLORS.champagne, opacity: 0.8 }}
+                            className="flex items-center gap-1 font-medium"
+                            style={{ color: COLORS.champagne, opacity: 0.7 }}
                           >
-                            <Star className="w-4 h-4" style={{ color: COLORS.gold }} />
+                            <Star className="w-3 h-3" style={{ color: COLORS.gold }} />
                             {formatDuration(item.duration)}
                           </div>
                         )}
@@ -558,16 +513,14 @@ export function CatalogPane({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="opacity-60 group-hover:opacity-100 transition-all shrink-0 hover:scale-110"
+                      className="opacity-70 group-hover:opacity-100 transition-all shrink-0 h-8 w-8 p-0"
                       style={{
-                        background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                        background: `${COLORS.gold}15`,
                         color: COLORS.gold,
-                        border: `1px solid ${COLORS.gold}40`,
-                        padding: '0.5rem',
-                        borderRadius: '0.75rem'
+                        border: `1px solid ${COLORS.gold}30`
                       }}
                     >
-                      <Plus className="w-5 h-5" />
+                      <Plus className="w-4 h-4" />
                     </Button>
                   </div>
                 </CardContent>

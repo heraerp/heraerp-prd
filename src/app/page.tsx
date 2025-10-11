@@ -19,7 +19,7 @@ import {
 export const metadata: Metadata = {
   title: 'HERA ERP - Enterprise Business Platform That Scales',
   description:
-    'Deploy enterprise-grade business applications in 30 seconds. Flexible architecture that adapts to any industry without code changes. Launching October 1st - Be first to transform your business.'
+    'Deploy enterprise-grade business applications in 30 seconds. Flexible architecture that adapts to any industry without code changes. Now in beta with invited customers only.'
 }
 
 // Stats Component
@@ -100,11 +100,11 @@ export default function HomePage() {
 
         <div className="relative max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            {/* Launch Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 mb-8">
-              <Sparkles className="w-4 h-4 text-emerald-500" />
-              <span className="text-emerald-600 dark:text-emerald-400 text-sm font-medium">
-                🚀 Launching October 1st - Be First to Transform Your Business
+            {/* Beta Access Badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-indigo-500/15 to-purple-500/15 border border-indigo-500/30 backdrop-blur-sm mb-8 shadow-lg">
+              <Shield className="w-4 h-4 text-indigo-400" />
+              <span className="text-indigo-300 dark:text-indigo-300 text-sm font-semibold tracking-wide">
+                BETA • Invited Customers Only
               </span>
             </div>
 
@@ -413,10 +413,10 @@ export default function HomePage() {
         </div>
 
         <div className="relative max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full card-glass border border-indigo-500/20 mb-6">
-            <Sparkles className="w-4 h-4 text-indigo-400" />
-            <span className="text-indigo-400 text-sm font-medium">
-              Launch Week: October 1st - 7th
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full card-glass border border-indigo-500/30 backdrop-blur-sm shadow-lg mb-6">
+            <Shield className="w-4 h-4 text-indigo-400" />
+            <span className="text-indigo-300 text-sm font-semibold tracking-wide">
+              BETA ACCESS • INVITED CUSTOMERS ONLY
             </span>
           </div>
 
@@ -429,8 +429,7 @@ export default function HomePage() {
           </h2>
 
           <p className="ink-muted text-xl mb-10 max-w-3xl mx-auto">
-            Join innovative companies launching with HERA's enterprise platform. Get exclusive early
-            access and dedicated onboarding support.
+            Join our exclusive beta program with select enterprise customers. Experience HERA's revolutionary platform with dedicated support and priority access to new features.
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">
@@ -438,7 +437,7 @@ export default function HomePage() {
               href="/get-started"
               className="px-5 py-2.5 text-sm font-medium bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 border border-indigo-500/20 shadow-lg hover:shadow-xl transition-all"
             >
-              Request Early Access
+              Apply for Beta Access
             </Link>
             <Link
               href="/book-a-meeting"

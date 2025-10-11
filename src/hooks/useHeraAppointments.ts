@@ -219,17 +219,6 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     refetchOnWindowFocus: true
   })
 
-  console.log('[useHeraAppointments] 🔍 Transactions loaded:', {
-    count: transactions.length,
-    first: transactions[0] ? {
-      id: transactions[0].id?.substring(0, 8),
-      code: transactions[0].transaction_code,
-      status: transactions[0].transaction_status,
-      date: transactions[0].transaction_date,
-      metadata: transactions[0].metadata
-    } : null
-  })
-
   // ✅ LAYER 1: Fetch customers using useUniversalEntity (RPC API v2)
   const {
     entities: customers,
@@ -240,8 +229,6 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       entity_type: 'CUSTOMER' // ✅ UPPERCASE
     }
   })
-
-  console.log('[useHeraAppointments] 🔍 Customers loaded:', { count: customers.length })
 
   // ✅ LAYER 1: Fetch staff (UPPERCASE) using useUniversalEntity (RPC API v2)
   const {
@@ -254,8 +241,6 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     }
   })
 
-  console.log('[useHeraAppointments] 🔍 Staff (UPPER) loaded:', { count: staffUpper.length })
-
   // ✅ LAYER 1: Fetch staff (lowercase) for backward compatibility using useUniversalEntity (RPC API v2)
   const {
     entities: staffLower,
@@ -266,8 +251,6 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       entity_type: 'staff' // lowercase for backward compatibility
     }
   })
-
-  console.log('[useHeraAppointments] 🔍 Staff (lower) loaded:', { count: staffLower.length })
 
   // Merge staff
   const allStaff = useMemo(() => {
@@ -293,14 +276,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
 
   // Transform transactions to appointments
   const enrichedAppointments = useMemo(() => {
-    console.log('[useHeraAppointments] 🔄 Enriching appointments:', {
-      transactionsCount: transactions?.length || 0,
-      customersCount: customers.length,
-      staffCount: allStaff.length
-    })
-
     if (!transactions || transactions.length === 0) {
-      console.log('[useHeraAppointments] ⚠️ No transactions to enrich')
       return []
     }
 
@@ -341,28 +317,11 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       return appointment
     })
 
-    console.log('[useHeraAppointments] ✅ Enrichment complete:', {
-      enrichedCount: enriched.length,
-      sampleAppointment: enriched[0] ? {
-        id: enriched[0].id?.substring(0, 8),
-        customer: enriched[0].customer_name,
-        stylist: enriched[0].stylist_name,
-        status: enriched[0].status,
-        branch: enriched[0].branch_id
-      } : null
-    })
-
     return enriched
   }, [transactions, customerMap, staffMap])
 
   // Filter appointments
   const filteredAppointments = useMemo(() => {
-    console.log('[useHeraAppointments] 🔍 Filtering appointments:', {
-      totalCount: enrichedAppointments.length,
-      includeArchived: options?.includeArchived,
-      branchFilter: options?.filters?.branch_id
-    })
-
     let filtered = enrichedAppointments
 
     // Status filter - cancelled and no_show are visible by default, archived requires explicit opt-in
@@ -377,37 +336,13 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
         'cancelled',
         'no_show'
       ]
-      const beforeFilter = filtered.length
       filtered = filtered.filter(apt => validStatuses.includes(apt.status))
-      console.log('[useHeraAppointments] 🔍 Status filter applied:', {
-        beforeCount: beforeFilter,
-        afterCount: filtered.length,
-        filteredOutStatuses: enrichedAppointments
-          .filter(apt => !validStatuses.includes(apt.status))
-          .map(apt => ({ id: apt.id?.substring(0, 8), status: apt.status }))
-      })
     }
 
     // Branch filter
     if (options?.filters?.branch_id) {
-      const beforeBranchFilter = filtered.length
       filtered = filtered.filter(apt => apt.branch_id === options.filters!.branch_id)
-      console.log('[useHeraAppointments] 🔍 Branch filter applied:', {
-        beforeCount: beforeBranchFilter,
-        afterCount: filtered.length,
-        branchId: options.filters.branch_id
-      })
     }
-
-    console.log('[useHeraAppointments] ✅ Final filtered appointments:', {
-      count: filtered.length,
-      appointments: filtered.map(a => ({
-        id: a.id?.substring(0, 8),
-        customer: a.customer_name,
-        status: a.status,
-        date: a.start_time
-      }))
-    })
 
     return filtered
   }, [enrichedAppointments, options?.includeArchived, options?.filters?.branch_id])

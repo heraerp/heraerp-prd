@@ -411,12 +411,13 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
         if (!stockAtRelationships) return false
 
         // Handle both array and single relationship formats
+        // Check both rel.to_entity?.id (populated) and rel.to_entity_id (raw) for compatibility
         if (Array.isArray(stockAtRelationships)) {
           return stockAtRelationships.some(
-            (rel: any) => rel.to_entity?.id === options.filters?.branch_id
+            (rel: any) => rel.to_entity?.id === options.filters?.branch_id || rel.to_entity_id === options.filters?.branch_id
           )
         } else {
-          return stockAtRelationships.to_entity?.id === options.filters?.branch_id
+          return stockAtRelationships.to_entity?.id === options.filters?.branch_id || stockAtRelationships.to_entity_id === options.filters?.branch_id
         }
       })
 

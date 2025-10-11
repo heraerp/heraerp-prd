@@ -111,9 +111,10 @@ function LoginForm() {
           <div className="w-full max-w-md mx-auto px-4 py-6 sm:py-8">
             {/* Welcome Badge */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 mb-4">
-                <span className="text-indigo-400 text-sm font-medium">
-                  🚀 Launching October 1st
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-indigo-500/15 to-purple-500/15 border border-indigo-500/30 backdrop-blur-sm shadow-lg mb-4">
+                <Lock className="w-4 h-4 text-indigo-400" />
+                <span className="text-indigo-300 dark:text-indigo-300 text-sm font-semibold tracking-wide">
+                  BETA • Invited Customers Only
                 </span>
               </div>
             </div>

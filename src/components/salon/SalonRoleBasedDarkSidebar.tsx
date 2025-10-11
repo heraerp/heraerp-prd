@@ -41,9 +41,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     {
       title: 'Appointments',
       href: '/salon/appointments',
-      icon: Calendar,
-      badge: '3',
-      badgeColor: LUXE_COLORS.emerald
+      icon: Calendar
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Services', href: '/salon/services', icon: Scissors },
@@ -60,9 +58,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     {
       title: 'Appointments',
       href: '/salon/appointments',
-      icon: Calendar,
-      badge: '3',
-      badgeColor: LUXE_COLORS.emerald
+      icon: Calendar
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
@@ -70,9 +66,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     {
       title: 'WhatsApp',
       href: '/salon/whatsapp',
-      icon: MessageCircle,
-      badge: '5',
-      badgeColor: LUXE_COLORS.gold
+      icon: MessageCircle
     }
   ],
 

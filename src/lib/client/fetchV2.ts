@@ -83,7 +83,10 @@ export async function fetchV2(input: string, init: RequestInit = {}): Promise<Re
       ? url // Browser: use relative URL (same origin)
       : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}${url}` // Server: need absolute URL
 
-  console.log(`[fetchV2] Making request to: ${fullUrl}`)
+  // Only log in development mode to reduce noise
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[fetchV2] ${init.method || 'GET'} ${url}`)
+  }
 
   const response = await fetch(fullUrl, {
     ...init,
@@ -91,16 +94,41 @@ export async function fetchV2(input: string, init: RequestInit = {}): Promise<Re
     body
   })
 
-  // Log non-2xx responses
+  // Only log errors, not successful requests
   if (!response.ok) {
-    console.error(`[fetchV2] Request failed: ${init.method || 'GET'} ${url} → ${response.status}`)
+    console.error(`[fetchV2] ${init.method || 'GET'} ${url} → ${response.status}`)
   }
 
   return response
 }
 
 /**
- * Type-safe v2 fetch with JSON parsing
+ * Enterprise-grade authentication error handler
+ * Redirects to login page on 401 errors and preserves return URL
+ */
+function handleAuthError(status: number, url: string): void {
+  if (typeof window === 'undefined') return
+
+  if (status === 401) {
+    console.warn('[fetchV2] Authentication failed - redirecting to login')
+
+    // Store current page URL for post-login redirect
+    const currentPath = window.location.pathname + window.location.search
+    if (currentPath !== '/salon/auth') {
+      sessionStorage.setItem('salon_auth_redirect', currentPath)
+    }
+
+    // Clear any stale tokens
+    sessionStorage.removeItem('supabase.auth.token')
+    localStorage.removeItem('supabase.auth.token')
+
+    // Redirect to salon auth page
+    window.location.href = '/salon/auth'
+  }
+}
+
+/**
+ * Type-safe v2 fetch with JSON parsing and enterprise-grade error handling
  */
 export async function fetchV2Json<T = any>(
   input: string,
@@ -110,6 +138,9 @@ export async function fetchV2Json<T = any>(
     const response = await fetchV2(input, init)
 
     if (!response.ok) {
+      // Handle authentication errors with redirect
+      handleAuthError(response.status, input)
+
       const error = await response.json().catch(() => ({
         message: `HTTP ${response.status}: ${response.statusText}`
       }))

@@ -38,6 +38,7 @@ export interface UseHeraStaffOptions {
   organizationId?: string
   includeArchived?: boolean
   userRole?: string
+  enabled?: boolean // Add enabled flag to control fetching
   filters?: {
     include_dynamic?: boolean
     include_relationships?: boolean
@@ -66,6 +67,7 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
   } = useUniversalEntity({
     entity_type: 'staff',
     organizationId: options?.organizationId,
+    enabled: options?.enabled !== false, // Default to enabled, but allow disabling
     filters: {
       include_dynamic: true,
       include_relationships: true, // Enable relationships for branch filtering

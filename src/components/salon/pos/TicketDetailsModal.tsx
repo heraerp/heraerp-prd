@@ -32,7 +32,7 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
-import { EnhancedCustomerModal } from './EnhancedCustomerModal'
+import { CustomerSearchModal } from './CustomerSearchModal'
 
 // Salon Luxe Color Palette
 const COLORS = {
@@ -923,11 +923,11 @@ export function TicketDetailsModal({
 
       {/* Customer Selection Modal */}
       {organizationId && (
-        <EnhancedCustomerModal
+        <CustomerSearchModal
           open={showCustomerModal}
           onClose={() => setShowCustomerModal(false)}
           organizationId={organizationId}
-          onCustomerSelect={handleCustomerSelectInternal}
+          onSelectCustomer={handleCustomerSelectInternal}
         />
       )}
     </Dialog>

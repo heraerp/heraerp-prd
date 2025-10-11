@@ -1,29 +1,14 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { User, Check, Star, Award, Sparkles, Loader2, CheckCircle2, Search } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { User, Check, Award, Sparkles, CheckCircle2, Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { cn } from '@/lib/utils'
-
-// Luxe Salon Color Palette
-const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323'
-}
+import { SalonLuxeModal, SalonLuxeButton, SalonLuxeBadge, SalonLuxeTile } from '@/components/salon/shared'
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
 interface StylistSelectionModalProps {
   open: boolean
@@ -50,15 +35,19 @@ export function StylistSelectionModal({
   const [showSuccess, setShowSuccess] = useState(false)
   const { toast } = useToast()
 
-  // Use HERA Staff hook with branch filtering
+  // Memoize filters to prevent unnecessary re-fetches
+  const staffFilters = useMemo(() => ({
+    include_dynamic: true,
+    include_relationships: true,
+    branch_id: branchId && branchId !== 'all' ? branchId : undefined,
+    limit: 100
+  }), [branchId])
+
+  // Use HERA Staff hook with memoized filters and only fetch when modal is open
   const { staff, isLoading } = useHeraStaff({
     organizationId,
-    filters: {
-      include_dynamic: true,
-      include_relationships: true,
-      branch_id: branchId && branchId !== 'all' ? branchId : undefined,
-      limit: 100
-    }
+    enabled: open, // Only fetch when modal is open
+    filters: staffFilters
   })
 
   // Filter stylists based on search
@@ -93,47 +82,32 @@ export function StylistSelectionModal({
     if (!selectedStylist) return
 
     try {
-      // Start confirmation process
       setIsConfirming(true)
-
-      // Simulate processing for smooth UX (can be removed if backend is instant)
       await new Promise(resolve => setTimeout(resolve, 400))
-
-      // Call the confirm callback
       onConfirm(selectedStaffId, selectedStylist.entity_name)
-
-      // Show success state
       setShowSuccess(true)
 
-      // Show success toast
       toast({
         title: (
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4" style={{ color: COLORS.gold }} />
-            <span>Stylist Assigned</span>
+            <CheckCircle2 className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+            <span>Staff Assigned Successfully</span>
           </div>
         ),
         description: (
-          <div style={{ color: COLORS.bronze }}>
-            <strong style={{ color: COLORS.champagne }}>{selectedStylist.entity_name}</strong> has
-            been assigned to{' '}
-            <strong style={{ color: COLORS.champagne }}>
-              {service?.entity_name || service?.name}
-            </strong>
+          <div style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+            <strong style={{ color: SALON_LUXE_COLORS.text.primary }}>{selectedStylist.entity_name}</strong> will be credited for{' '}
+            <strong style={{ color: SALON_LUXE_COLORS.text.primary }}>{service?.entity_name || service?.name || service?.title}</strong>
           </div>
         ),
         className: 'border-0 shadow-2xl',
         style: {
-          backgroundColor: COLORS.charcoal,
-          borderColor: `${COLORS.gold}40`,
-          boxShadow: `0 8px 24px ${COLORS.black}, 0 0 0 1px ${COLORS.gold}40`
+          background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.charcoal.base} 0%, ${SALON_LUXE_COLORS.charcoal.dark} 100%)`,
+          border: `1px solid ${SALON_LUXE_COLORS.border.base}`
         }
       })
 
-      // Wait for success animation
       await new Promise(resolve => setTimeout(resolve, 800))
-
-      // Close modal
       handleClose()
     } catch (error) {
       console.error('Error confirming stylist:', error)
@@ -148,8 +122,7 @@ export function StylistSelectionModal({
   }
 
   const handleClose = () => {
-    if (isConfirming) return // Prevent closing during confirmation
-
+    if (isConfirming) return
     setSelectedStaffId(currentStylistId || null)
     setSearchQuery('')
     setIsConfirming(false)
@@ -167,10 +140,6 @@ export function StylistSelectionModal({
       .slice(0, 2)
   }
 
-  const getDisplayRate = (stylist: any) => {
-    return stylist.display_rate || stylist.commission_rate || 30
-  }
-
   const getSkills = (stylist: any) => {
     if (!stylist.skills) return []
     if (Array.isArray(stylist.skills)) return stylist.skills
@@ -182,366 +151,319 @@ export function StylistSelectionModal({
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent
-        className="max-w-2xl max-h-[90vh] border-0 shadow-2xl flex flex-col"
-        style={{
-          backgroundColor: COLORS.charcoal,
-          boxShadow: `0 25px 50px -12px ${COLORS.black}, 0 0 0 1px ${COLORS.gold}20`
-        }}
-        aria-describedby="stylist-selection-description"
+    <>
+      <SalonLuxeModal
+        open={open}
+        onClose={handleClose}
+        title="Select Staff Member"
+        description={
+          <>
+            Required for{' '}
+            <span style={{ fontWeight: 600, color: SALON_LUXE_COLORS.champagne }}>
+              {service?.entity_name || service?.name || service?.title}
+            </span>
+          </>
+        }
+        icon={<Sparkles className="w-6 h-6" />}
+        size="md"
+        footer={
+          <>
+            <SalonLuxeButton variant="danger" onClick={handleClose} disabled={isConfirming} className="flex-1" size="lg">
+              Cancel
+            </SalonLuxeButton>
+            <SalonLuxeButton
+              variant="tile"
+              onClick={handleConfirm}
+              disabled={!selectedStaffId || isConfirming}
+              loading={isConfirming}
+              icon={!isConfirming && <CheckCircle2 className="w-5 h-5" />}
+              className="flex-1"
+              size="lg"
+            >
+              {isConfirming ? 'Assigning Staff...' : !selectedStaffId ? 'Select Staff Member' : '💾 Confirm Selection'}
+            </SalonLuxeButton>
+          </>
+        }
       >
-        {/* Success Overlay */}
+        {/* Success Overlay - Gold with emerald accent for confirmation */}
         {showSuccess && (
-          <div
-            className="absolute inset-0 z-50 flex items-center justify-center animate-fadeIn"
-            style={{
-              backgroundColor: `${COLORS.black}95`,
-              backdropFilter: 'blur(8px)'
-            }}
-          >
+          <div className="absolute inset-0 z-50 flex items-center justify-center animate-fadeIn" style={{ backgroundColor: 'rgba(15, 15, 15, 0.7)', backdropFilter: 'blur(12px)' }}>
             <div className="text-center animate-scaleIn">
               <div
-                className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center animate-successPulse"
+                className="w-28 h-28 mx-auto mb-6 rounded-full flex items-center justify-center animate-successPulse"
                 style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  boxShadow: `0 0 0 0 ${COLORS.gold}60, 0 8px 32px ${COLORS.gold}60`
+                  background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.emerald?.base || '#10B981'} 100%)`,
+                  border: `4px solid ${SALON_LUXE_COLORS.gold.base}`,
+                  boxShadow: `0 8px 32px ${SALON_LUXE_COLORS.emerald?.base || '#10B981'}40`
                 }}
               >
-                <CheckCircle2 className="w-12 h-12" style={{ color: COLORS.black }} />
+                <CheckCircle2 className="w-14 h-14" style={{ color: SALON_LUXE_COLORS.text.onGold }} />
               </div>
-              <h3 className="text-2xl font-bold mb-2" style={{ color: COLORS.champagne }}>
-                Stylist Assigned!
-              </h3>
-              <p className="text-lg" style={{ color: COLORS.bronze }}>
-                Updating bill...
-              </p>
+              <h3 className="text-2xl font-bold mb-2" style={{
+                background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.champagne} 0%, ${SALON_LUXE_COLORS.emerald?.light || '#6EE7B7'} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>Staff Assigned!</h3>
+              <p className="text-base" style={{ color: SALON_LUXE_COLORS.text.secondary }}>Adding to bill...</p>
             </div>
           </div>
         )}
 
-        {/* Animated gradient overlay */}
+        {/* Enterprise Policy Notice - Plum accent for visual balance */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-20 animate-gradient"
+          className="px-4 py-3 rounded-lg mb-4 animate-slideDown"
           style={{
-            background: `
-              radial-gradient(ellipse 80% 60% at 30% 20%, ${COLORS.gold}40 0%, transparent 50%),
-              radial-gradient(ellipse 70% 50% at 70% 80%, ${COLORS.gold}20 0%, transparent 50%)
-            `
+            background: `linear-gradient(to right, ${SALON_LUXE_COLORS.plum?.lighter || 'rgba(183, 148, 244, 0.15)'}, ${SALON_LUXE_COLORS.charcoal.light})`,
+            border: `1px solid ${SALON_LUXE_COLORS.plum?.base || '#B794F4'}40`,
+            boxShadow: `0 2px 8px ${SALON_LUXE_COLORS.plum?.base || '#B794F4'}15`
           }}
-        />
-
-        <DialogHeader
-          className="pb-4 border-b relative z-10 flex-shrink-0"
-          style={{ borderColor: `${COLORS.gold}20` }}
         >
-          <DialogTitle className="flex items-center gap-3">
+          <div className="flex items-start gap-2">
             <div
-              className="p-2.5 rounded-xl shadow-lg"
+              className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 animate-pulse"
+              style={{ backgroundColor: SALON_LUXE_COLORS.plum?.base || '#B794F4' }}
+            />
+            <p className="text-xs leading-relaxed" style={{ color: SALON_LUXE_COLORS.text.primary }}>
+              <span style={{ fontWeight: 600, color: SALON_LUXE_COLORS.plum?.light || '#D8B4FE' }}>Enterprise Policy:</span> Every sale must be linked to a staff member for accurate performance tracking and commission calculation.
+            </p>
+          </div>
+        </div>
+
+        {/* Search - Emerald focus for visual interest */}
+        <div className="relative group mb-4 animate-slideDown">
+          <Search
+            className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4"
+            style={{
+              color: SALON_LUXE_COLORS.text.tertiary,
+              transitionProperty: 'color',
+              transitionDuration: '0.3s',
+              transitionTimingFunction: 'ease'
+            }}
+          />
+          <Input
+            placeholder="Search by name, role, or skills..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="pl-10 h-11 border-2 focus-within:ring-2"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+              color: SALON_LUXE_COLORS.text.primary,
+              borderColor: SALON_LUXE_COLORS.border.muted,
+              transitionProperty: 'border-color, box-shadow',
+              transitionDuration: '0.3s',
+              transitionTimingFunction: 'ease'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = SALON_LUXE_COLORS.emerald?.base || '#10B981'
+              e.currentTarget.style.boxShadow = `0 0 0 3px ${SALON_LUXE_COLORS.emerald?.lighter || 'rgba(16, 185, 129, 0.15)'}`
+              const icon = e.currentTarget.previousElementSibling as HTMLElement
+              if (icon) icon.style.color = SALON_LUXE_COLORS.emerald?.base || '#10B981'
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = SALON_LUXE_COLORS.border.muted
+              e.currentTarget.style.boxShadow = 'none'
+              const icon = e.currentTarget.previousElementSibling as HTMLElement
+              if (icon) icon.style.color = SALON_LUXE_COLORS.text.tertiary
+            }}
+          />
+        </div>
+
+        {/* Loading State - Emerald accent for freshness */}
+        {isLoading && (
+          <div className="text-center py-12 animate-fadeIn">
+            <div
+              className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
               style={{
-                background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100())`,
-                boxShadow: `0 8px 20px ${COLORS.gold}40`
+                background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.emerald?.lighter || 'rgba(16, 185, 129, 0.15)'}, ${SALON_LUXE_COLORS.charcoal.light})`,
+                border: `1px solid ${SALON_LUXE_COLORS.emerald?.base || '#10B981'}40`
               }}
             >
-              <Sparkles className="w-5 h-5" style={{ color: COLORS.black }} />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold" style={{ color: COLORS.champagne }}>
-                Select Your Stylist{' '}
-                <span className="text-xs opacity-50 font-normal">(Updated)</span>
-              </h2>
-              <p className="text-sm font-normal mt-0.5" style={{ color: COLORS.bronze }}>
-                for{' '}
-                <span className="font-semibold" style={{ color: COLORS.gold }}>
-                  {service?.entity_name || service?.name}
-                </span>
-              </p>
-            </div>
-          </DialogTitle>
-          <p id="stylist-selection-description" className="sr-only">
-            Select a stylist to assign to your service. Browse available stylists and choose the one
-            you prefer.
-          </p>
-        </DialogHeader>
-
-        <div className="space-y-4 overflow-y-auto pr-2 pb-4 flex-1 relative z-10 custom-scrollbar min-h-0">
-          {/* Search */}
-          <div className="relative group animate-slideDown">
-            <Search
-              className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 transition-colors"
-              style={{ color: COLORS.bronze }}
-            />
-            <Input
-              placeholder="Search by name, role, or skills..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="pl-10 h-11 border transition-all"
-              style={{
-                backgroundColor: COLORS.charcoalLight,
-                borderColor: `${COLORS.gold}30`,
-                color: COLORS.champagne
-              }}
-            />
-          </div>
-
-          {/* Loading State */}
-          {isLoading && (
-            <div className="text-center py-12 animate-fadeIn">
               <div
-                className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                className="animate-spin rounded-full h-10 w-10 border-2 border-t-transparent"
                 style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold}40 0%, ${COLORS.goldDark}40 100%)`,
-                  boxShadow: `0 8px 32px ${COLORS.gold}20`
+                  borderColor: SALON_LUXE_COLORS.emerald?.base || '#10B981',
+                  borderTopColor: 'transparent'
                 }}
-              >
-                <div
-                  className="animate-spin rounded-full h-10 w-10 border-2"
-                  style={{ borderColor: COLORS.gold, borderTopColor: 'transparent' }}
-                />
-              </div>
-              <p style={{ color: COLORS.bronze }}>Loading stylists...</p>
+              />
             </div>
-          )}
+            <p style={{ color: SALON_LUXE_COLORS.text.secondary }}>Loading stylists...</p>
+          </div>
+        )}
 
-          {/* Stylists List */}
-          {!isLoading && (
-            <div className="space-y-3">
-              {stylists.length === 0 ? (
-                <div className="text-center py-12 animate-fadeIn">
-                  <div
-                    className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      boxShadow: `inset 0 2px 4px ${COLORS.black}60`
-                    }}
-                  >
-                    <User className="w-8 h-8" style={{ color: COLORS.bronze }} />
-                  </div>
-                  <h3 className="font-semibold mb-2" style={{ color: COLORS.champagne }}>
-                    No stylists found
-                  </h3>
-                  <p className="text-sm" style={{ color: COLORS.bronze }}>
-                    {searchQuery
-                      ? 'Try adjusting your search terms'
-                      : branchId && branchId !== 'all'
-                        ? 'No stylists available at this branch'
-                        : 'No stylists available'}
-                  </p>
+        {/* Stylists Grid */}
+        {!isLoading && (
+          <div className="grid grid-cols-2 gap-3">
+            {stylists.length === 0 ? (
+              <div className="col-span-2 text-center py-12 animate-fadeIn">
+                <div
+                  className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.rose?.lighter || 'rgba(232, 180, 184, 0.15)'}, ${SALON_LUXE_COLORS.charcoal.light})`,
+                    border: `2px solid ${SALON_LUXE_COLORS.rose?.base || '#E8B4B8'}40`
+                  }}
+                >
+                  <User className="w-8 h-8" style={{ color: SALON_LUXE_COLORS.rose?.base || '#E8B4B8' }} />
                 </div>
-              ) : (
-                stylists.map((stylist: any, index: number) => {
-                  const isSelected = selectedStaffId === stylist.id
-                  const skills = getSkills(stylist)
-                  const displayRate = getDisplayRate(stylist)
+                <h3 className="font-semibold mb-2" style={{ color: SALON_LUXE_COLORS.text.primary }}>No stylists found</h3>
+                <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+                  {searchQuery
+                    ? 'Try adjusting your search terms'
+                    : branchId && branchId !== 'all'
+                      ? 'No stylists available at this branch'
+                      : 'No stylists available'}
+                </p>
+              </div>
+            ) : (
+              stylists.map((stylist: any, index: number) => {
+                const isSelected = selectedStaffId === stylist.id
+                const skills = getSkills(stylist)
 
-                  return (
-                    <Card
-                      key={stylist.id}
-                      className={cn(
-                        'cursor-pointer transition-all duration-300 hover:shadow-xl border-2 animate-scaleIn',
-                        isConfirming && !isSelected && 'opacity-50 pointer-events-none'
-                      )}
-                      style={{
-                        backgroundColor: isSelected ? `${COLORS.gold}15` : COLORS.charcoalLight,
-                        borderColor: isSelected ? COLORS.gold : `${COLORS.gold}20`,
-                        boxShadow: isSelected
-                          ? `0 8px 24px ${COLORS.gold}40, 0 0 0 1px ${COLORS.gold}`
-                          : `0 2px 8px ${COLORS.black}40`,
-                        animationDelay: `${index * 50}ms`
-                      }}
-                      onClick={() => !isConfirming && setSelectedStaffId(stylist.id)}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start gap-4">
-                          {/* Avatar */}
-                          <div className="relative flex-shrink-0">
-                            <Avatar
-                              className="w-14 h-14 ring-2 transition-all duration-300"
+                return (
+                  <SalonLuxeTile
+                    key={stylist.id}
+                    mode="grid"
+                    enableMouseTracking={!isConfirming}
+                    enableHoverEffects={!isConfirming}
+                    opacity={isConfirming && !isSelected ? 0.5 : 1}
+                    borderColor={isSelected ? SALON_LUXE_COLORS.gold.base : undefined}
+                    background={
+                      isSelected
+                        ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.08) 50%, rgba(184, 134, 11, 0.05) 100%)'
+                        : undefined
+                    }
+                    className={cn(
+                      'p-4 animate-scaleIn',
+                      isConfirming && !isSelected && 'pointer-events-none'
+                    )}
+                    style={{
+                      boxShadow: isSelected ? `0 8px 24px ${SALON_LUXE_COLORS.shadow.gold}` : undefined,
+                      animationDelay: `${index * 50}ms`
+                    }}
+                    onClick={() => !isConfirming && setSelectedStaffId(stylist.id)}
+                  >
+                    <div className="relative">
+                      <div className="flex items-start gap-4">
+                        {/* Avatar */}
+                        <div className="relative flex-shrink-0">
+                          <Avatar
+                            className="w-14 h-14 ring-2"
+                            style={{
+                              ringColor: isSelected ? SALON_LUXE_COLORS.gold.base : SALON_LUXE_COLORS.border.muted,
+                              boxShadow: isSelected ? `0 4px 12px ${SALON_LUXE_COLORS.shadow.goldLight}` : undefined,
+                              transitionProperty: 'ring-color, box-shadow',
+                              transitionDuration: '0.3s',
+                              transitionTimingFunction: 'ease'
+                            }}
+                          >
+                            <AvatarImage src={stylist.avatarUrl || undefined} />
+                            <AvatarFallback
+                              className="flex items-center justify-center"
                               style={{
-                                ringColor: isSelected ? COLORS.gold : `${COLORS.gold}30`,
-                                boxShadow: isSelected ? `0 4px 12px ${COLORS.gold}60` : 'none'
+                                background: isSelected
+                                  ? `linear-gradient(to bottom right, ${SALON_LUXE_COLORS.gold.base}, ${SALON_LUXE_COLORS.gold.dark})`
+                                  : `linear-gradient(to bottom right, ${SALON_LUXE_COLORS.charcoal.lighter}, ${SALON_LUXE_COLORS.charcoal.light})`,
+                                color: isSelected ? SALON_LUXE_COLORS.text.onGold : SALON_LUXE_COLORS.champagne
                               }}
                             >
-                              <AvatarImage src={stylist.avatarUrl || undefined} />
-                              <AvatarFallback
-                                className="text-base font-semibold"
-                                style={{
-                                  background: isSelected
-                                    ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                                    : `linear-gradient(135deg, ${COLORS.bronze} 0%, ${COLORS.bronze}80 100%)`,
-                                  color: isSelected ? COLORS.black : COLORS.champagne
-                                }}
+                              <User className="w-7 h-7" />
+                            </AvatarFallback>
+                          </Avatar>
+                          {isSelected && (
+                            <div
+                              className="absolute -top-1 -right-1 rounded-full p-1 shadow-lg animate-pulse"
+                              style={{
+                                background: `linear-gradient(to bottom right, ${SALON_LUXE_COLORS.gold.base}, ${SALON_LUXE_COLORS.gold.dark})`
+                              }}
+                            >
+                              <Check className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.text.onGold }} />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Stylist Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                              <h3
+                                className="font-semibold text-base mb-0.5"
+                                style={{ color: isSelected ? SALON_LUXE_COLORS.text.primary : SALON_LUXE_COLORS.text.primary }}
                               >
-                                {getInitials(stylist.entity_name || 'Unknown')}
-                              </AvatarFallback>
-                            </Avatar>
-                            {isSelected && (
-                              <div
-                                className="absolute -top-1 -right-1 rounded-full p-1 shadow-lg animate-pulse"
-                                style={{
-                                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                                }}
-                              >
-                                <Check className="w-4 h-4" style={{ color: COLORS.black }} />
-                              </div>
-                            )}
+                                {stylist.entity_name}
+                              </h3>
+                              <p className="text-xs font-medium" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+                                {stylist.role_title || stylist.entity_code || 'Stylist'}
+                              </p>
+                            </div>
+                            <div
+                              className="px-2.5 py-1 rounded-md text-xs font-semibold"
+                              style={{
+                                background: isSelected
+                                  ? `linear-gradient(135deg, ${SALON_LUXE_COLORS.emerald?.base || '#10B981'}, ${SALON_LUXE_COLORS.emerald?.dark || '#0F6F5C'})`
+                                  : `linear-gradient(to right, ${SALON_LUXE_COLORS.emerald?.lighter || 'rgba(16, 185, 129, 0.15)'}, ${SALON_LUXE_COLORS.charcoal.lighter})`,
+                                color: isSelected ? SALON_LUXE_COLORS.charcoal.dark : (SALON_LUXE_COLORS.emerald?.base || '#10B981'),
+                                border: `1px solid ${SALON_LUXE_COLORS.emerald?.base || '#10B981'}${isSelected ? '' : '40'}`,
+                                boxShadow: isSelected ? `0 2px 8px ${SALON_LUXE_COLORS.emerald?.base || '#10B981'}40` : 'none',
+                                transitionProperty: 'background, color, border, box-shadow',
+                                transitionDuration: '0.3s',
+                                transitionTimingFunction: 'ease'
+                              }}
+                            >
+                              Available
+                            </div>
                           </div>
 
-                          {/* Stylist Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2 mb-2">
-                              <div>
-                                <h3
-                                  className="font-semibold text-base mb-0.5"
-                                  style={{
-                                    color: isSelected ? COLORS.champagne : COLORS.lightText
-                                  }}
-                                >
-                                  {stylist.entity_name}
-                                </h3>
-                                <p className="text-xs font-medium" style={{ color: COLORS.bronze }}>
-                                  {stylist.role_title || stylist.entity_code || 'Stylist'}
-                                </p>
-                              </div>
-                              <Badge
-                                className="text-xs font-semibold shadow-sm border"
-                                style={{
-                                  backgroundColor: isSelected ? COLORS.gold : `${COLORS.gold}20`,
-                                  borderColor: COLORS.gold,
-                                  color: isSelected ? COLORS.black : COLORS.gold
-                                }}
-                              >
-                                Available
-                              </Badge>
-                            </div>
-
-                            {/* Skills */}
-                            {skills.length > 0 && (
-                              <div className="flex flex-wrap gap-1.5 mb-3">
-                                {skills.slice(0, 3).map((skill: string, index: number) => (
-                                  <Badge
-                                    key={index}
-                                    variant="outline"
-                                    className="text-xs border"
-                                    style={{
-                                      backgroundColor: `${COLORS.charcoalDark}`,
-                                      borderColor: `${COLORS.bronze}40`,
-                                      color: COLORS.bronze
-                                    }}
-                                  >
-                                    {skill}
-                                  </Badge>
-                                ))}
-                                {skills.length > 3 && (
-                                  <Badge
-                                    variant="outline"
-                                    className="text-xs border"
-                                    style={{
-                                      backgroundColor: `${COLORS.charcoalDark}`,
-                                      borderColor: `${COLORS.bronze}40`,
-                                      color: COLORS.bronze
-                                    }}
-                                  >
-                                    +{skills.length - 3} more
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
-
-                            {/* Stats */}
-                            <div className="flex items-center gap-4 text-xs">
-                              <div
-                                className="flex items-center gap-1.5 font-medium"
-                                style={{
-                                  color: isSelected ? COLORS.gold : COLORS.bronze
-                                }}
-                              >
-                                <Star className="w-3.5 h-3.5 fill-current" />
-                                <span>{displayRate}% commission</span>
-                              </div>
-                              {stylist.hire_date && (
+                          {/* Skills - Plum gradient for visual variety */}
+                          {skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mb-3">
+                              {skills.slice(0, 3).map((skill: string, idx: number) => (
                                 <div
-                                  className="flex items-center gap-1.5 font-medium"
+                                  key={idx}
+                                  className="px-2 py-0.5 rounded text-xs font-medium"
                                   style={{
-                                    color: isSelected ? COLORS.gold : COLORS.bronze
+                                    background: `linear-gradient(to right, ${SALON_LUXE_COLORS.plum?.lighter || 'rgba(183, 148, 244, 0.15)'}, ${SALON_LUXE_COLORS.charcoal.lighter})`,
+                                    color: SALON_LUXE_COLORS.plum?.light || '#D8B4FE',
+                                    border: `1px solid ${SALON_LUXE_COLORS.plum?.base || '#B794F4'}30`
                                   }}
                                 >
-                                  <Award className="w-3.5 h-3.5" />
-                                  <span>Since {new Date(stylist.hire_date).getFullYear()}</span>
+                                  {skill}
+                                </div>
+                              ))}
+                              {skills.length > 3 && (
+                                <div
+                                  className="px-2 py-0.5 rounded text-xs font-medium"
+                                  style={{
+                                    background: `linear-gradient(to right, ${SALON_LUXE_COLORS.plum?.lighter || 'rgba(183, 148, 244, 0.15)'}, ${SALON_LUXE_COLORS.charcoal.lighter})`,
+                                    color: SALON_LUXE_COLORS.plum?.light || '#D8B4FE',
+                                    border: `1px solid ${SALON_LUXE_COLORS.plum?.base || '#B794F4'}30`
+                                  }}
+                                >
+                                  +{skills.length - 3} more
                                 </div>
                               )}
                             </div>
-                          </div>
+                          )}
+
+                          {/* Stats */}
+                          {stylist.hire_date && (
+                            <div className="flex items-center gap-4 text-xs">
+                              <div className="flex items-center gap-1.5 font-medium" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+                                <Award className="w-3.5 h-3.5" />
+                                <span>Since {new Date(stylist.hire_date).getFullYear()}</span>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Action Buttons */}
-        <div
-          className="flex gap-3 pt-4 border-t mt-0 relative z-10 flex-shrink-0"
-          style={{ borderColor: `${COLORS.gold}20` }}
-        >
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            disabled={isConfirming}
-            className="flex-1 h-11 font-medium border hover:opacity-80 transition-all"
-            style={{
-              backgroundColor: COLORS.charcoalLight,
-              borderColor: `${COLORS.bronze}60`,
-              color: COLORS.bronze,
-              opacity: isConfirming ? 0.5 : 1
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirm}
-            disabled={!selectedStaffId || isConfirming}
-            className={cn('flex-1 h-11 font-semibold shadow-lg transition-all duration-300')}
-            style={{
-              background:
-                selectedStaffId && !isConfirming
-                  ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                  : `${COLORS.charcoalLight}`,
-              color: selectedStaffId && !isConfirming ? COLORS.black : COLORS.lightText,
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: selectedStaffId && !isConfirming ? COLORS.gold : `${COLORS.gold}40`,
-              boxShadow: selectedStaffId && !isConfirming ? `0 4px 16px ${COLORS.gold}50` : 'none',
-              opacity: !selectedStaffId || isConfirming ? 0.6 : 1
-            }}
-          >
-            {isConfirming ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Assigning Stylist...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                {!selectedStaffId ? 'Select Stylist First' : 'Assign Stylist'}
-              </>
+                      </div>
+                    </div>
+                  </SalonLuxeTile>
+                )
+              })
             )}
-          </Button>
-        </div>
+          </div>
+        )}
 
+        {/* Animations */}
         <style jsx>{`
-          @keyframes gradient {
-            0%,
-            100% {
-              opacity: 0.2;
-            }
-            50% {
-              opacity: 0.3;
-            }
-          }
           @keyframes slideDown {
             from {
               opacity: 0;
@@ -574,17 +496,14 @@ export function StylistSelectionModal({
             0%,
             100% {
               box-shadow:
-                0 0 0 0 ${COLORS.gold}60,
-                0 8px 32px ${COLORS.gold}60;
+                0 0 0 0 ${SALON_LUXE_COLORS.shadow.gold},
+                0 8px 32px ${SALON_LUXE_COLORS.shadow.gold};
             }
             50% {
               box-shadow:
-                0 0 0 20px ${COLORS.gold}00,
-                0 8px 32px ${COLORS.gold}80;
+                0 0 0 20px rgba(212, 175, 55, 0),
+                0 8px 32px ${SALON_LUXE_COLORS.shadow.gold};
             }
-          }
-          .animate-gradient {
-            animation: gradient 8s ease-in-out infinite;
           }
           .animate-slideDown {
             animation: slideDown 0.4s ease-out;
@@ -598,22 +517,8 @@ export function StylistSelectionModal({
           .animate-successPulse {
             animation: successPulse 1.5s ease-out infinite;
           }
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: ${COLORS.charcoalDark};
-            border-radius: 4px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: ${COLORS.bronze}40;
-            border-radius: 4px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: ${COLORS.bronze}60;
-          }
         `}</style>
-      </DialogContent>
-    </Dialog>
+      </SalonLuxeModal>
+    </>
   )
 }

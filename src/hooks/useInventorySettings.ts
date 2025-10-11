@@ -58,59 +58,96 @@ export function useInventorySettings(organizationId?: string) {
   } = useQuery({
     queryKey: ['inventory-settings', organizationId] as const,
     queryFn: async () => {
-      console.log('[useInventorySettings] Fetching settings for org:', organizationId)
-
       if (!organizationId) {
         throw new Error('Organization ID is required')
       }
 
       try {
-        // Fetch from organization's dynamic data
-        const { data, error } = await apiV2.get('dynamic-data', {
-          p_entity_id: organizationId
-          // Note: Not filtering by field_name so we get all fields for this entity
+        // First, get the organization entity to access its dynamic data
+        // Organizations in HERA are stored in core_organizations table, not core_entities
+        // So we'll use a direct query to core_organizations.metadata or create a settings entity
+
+        // For now, we'll query core_entities with entity_type='organization'
+        // OR fallback to default settings if not found
+        const { data: orgData, error: orgError } = await apiV2.get('entities', {
+          p_organization_id: organizationId,
+          p_entity_type: 'organization',
+          p_limit: 1
         })
 
-        console.log('[useInventorySettings] API response:', {
-          success: !!data,
-          hasError: !!error,
-          fieldCount: data?.data?.length || 0
+        let orgEntityId: string | null = null
+
+        if (!orgError && orgData?.data?.length > 0) {
+          orgEntityId = orgData.data[0].id
+        }
+
+        // If no organization entity exists, return default settings
+        if (!orgEntityId) {
+          return {
+            organizationId,
+            inventoryEnabled: false,
+            inventoryModuleActive: true,
+            defaultRequiresInventory: false,
+            trackByBranch: true,
+            allowNegativeStock: false,
+            autoReorderEnabled: true
+          } as InventorySettings
+        }
+
+        // Fetch dynamic data for the organization entity
+        const { data, error } = await apiV2.get('dynamic-data', {
+          p_entity_id: orgEntityId
         })
 
         if (error) {
-          console.error('[useInventorySettings] API error:', error)
-          throw new Error(`Failed to fetch inventory settings: ${error.message || 'Unknown error'}`)
+          // Return default settings on error instead of throwing
+          console.warn('[useInventorySettings] Failed to fetch settings, using defaults:', error)
+          return {
+            organizationId,
+            inventoryEnabled: false,
+            inventoryModuleActive: true,
+            defaultRequiresInventory: false,
+            trackByBranch: true,
+            allowNegativeStock: false,
+            autoReorderEnabled: true
+          } as InventorySettings
         }
 
         // Map dynamic data to settings object
-        // API returns { success: true, data: [...] }
         const fields = data?.data || []
         const getValue = (fieldName: string, defaultValue: any) => {
           const field = fields.find((f: any) => f.field_name === fieldName)
           return field ? (field.field_value_boolean ?? defaultValue) : defaultValue
         }
 
-        const settings = {
+        return {
           organizationId,
-          // Enterprise-grade: Disabled by default for safety, explicit opt-in required
           inventoryEnabled: getValue('inventory_management_enabled', false),
-          inventoryModuleActive: true, // TODO: Check from organization.metadata.active_modules
+          inventoryModuleActive: true,
           defaultRequiresInventory: getValue('inventory_default_tracking', false),
           trackByBranch: getValue('inventory_track_by_branch', true),
           allowNegativeStock: getValue('inventory_allow_negative', false),
           autoReorderEnabled: getValue('inventory_auto_reorder', true)
         } as InventorySettings
-
-        console.log('[useInventorySettings] Settings loaded successfully')
-        return settings
       } catch (err: any) {
-        console.error('[useInventorySettings] Error:', err)
-        throw err
+        console.warn('[useInventorySettings] Error, returning defaults:', err.message)
+        // Return default settings instead of throwing
+        return {
+          organizationId,
+          inventoryEnabled: false,
+          inventoryModuleActive: true,
+          defaultRequiresInventory: false,
+          trackByBranch: true,
+          allowNegativeStock: false,
+          autoReorderEnabled: true
+        } as InventorySettings
       }
     },
     enabled: !!organizationId,
-    staleTime: 60000, // 1 minute
-    gcTime: 300000 // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes - increased for better caching
+    gcTime: 15 * 60 * 1000, // 15 minutes
+    retry: 1, // Only retry once
+    retryDelay: 1000 // 1 second delay between retries
   })
 
   // Update settings mutation with optimistic updates

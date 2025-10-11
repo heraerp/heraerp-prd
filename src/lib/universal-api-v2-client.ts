@@ -33,11 +33,12 @@ async function getAuthHeaders(): Promise<HeadersInit> {
       return {
         Authorization: `Bearer ${session.access_token}`
       }
-    } else {
-      console.warn('[getAuthHeaders] No access token found in session')
     }
   } catch (error) {
-    console.warn('[getAuthHeaders] Failed to get auth token:', error)
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[getAuthHeaders] Failed to get auth token:', error)
+    }
   }
 
   return {}
@@ -92,7 +93,11 @@ export async function getEntities(
 
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`${url}/api/v2/entities?${qs.toString()}`, {
-    headers: { ...h(params.p_organization_id), ...authHeaders },
+    headers: {
+      ...h(params.p_organization_id),
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
+    },
     credentials: 'include'
   }).then(ok)
 
@@ -104,7 +109,11 @@ export async function getEntities(
 export async function readEntity(orgId: string, entityId: string) {
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/entities/${entityId}?p_organization_id=${orgId}`, {
-    headers: { ...h(orgId), ...authHeaders },
+    headers: {
+      ...h(orgId),
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
+    },
     credentials: 'include'
   }).then(ok)
   return await res.json()
@@ -135,30 +144,18 @@ export async function deleteEntity(
     queryParams.append('reason', params.reason)
   }
 
-  console.log('[deleteEntity] Request:', {
-    url: `${url}/api/v2/entities/${params.p_entity_id}`,
-    organizationId: params.p_organization_id,
-    entityId: params.p_entity_id,
-    mode: params.hard_delete ? 'HARD' : 'SOFT',
-    cascade: params.cascade ?? true
-  })
-
   const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}?${queryParams}`, {
     method: 'DELETE',
     headers: {
       'x-hera-org': params.p_organization_id,
-      ...authHeaders
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
     },
     credentials: 'include'
   })
   if (!res.ok) {
     const err = await res.json().catch(() => null)
-    console.error('[deleteEntity] Error Response:', {
-      status: res.status,
-      statusText: res.statusText,
-      error: err,
-      fullError: JSON.stringify(err, null, 2)
-    })
+    console.error('[deleteEntity] Error:', res.status, err?.error || err)
     throw new Error(`entity delete failed: ${res.status} ${JSON.stringify(err)}`)
   }
   return res.json()
@@ -202,7 +199,8 @@ export async function upsertEntity(
     headers: {
       'content-type': 'application/json',
       'x-hera-org': body.p_organization_id,
-      ...authHeaders
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
     },
     credentials: 'include',
     body: JSON.stringify(apiBody)
@@ -234,7 +232,8 @@ export async function getDynamicData(
   const res = await fetch(`${url}/api/v2/dynamic-data?${qs}`, {
     headers: {
       'x-hera-org': params.p_organization_id,
-      ...authHeaders
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
     },
     credentials: 'include'
   })
@@ -264,7 +263,8 @@ export async function setDynamicData(
     headers: {
       ...h(orgId),
       'Content-Type': 'application/json',
-      ...authHeaders
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
     },
     credentials: 'include',
     body: JSON.stringify({ p_organization_id: orgId, ...body })
@@ -288,7 +288,8 @@ export async function setDynamicDataBatch(
     headers: {
       'content-type': 'application/json',
       'x-hera-org': params.p_organization_id,
-      ...authHeaders
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
     },
     credentials: 'include',
     body: JSON.stringify(params)
@@ -317,12 +318,17 @@ export async function getTransactions(params: {
   if (params.smartCode) qs.set('p_smart_code', params.smartCode)
   if (params.fromEntityId) qs.set('p_from_entity_id', params.fromEntityId)
   if (params.toEntityId) qs.set('p_to_entity_id', params.toEntityId)
-  if (params.startDate) qs.set('p_start_date', params.startDate)
-  if (params.endDate) qs.set('p_end_date', params.endDate)
+  // ✅ FIX: Use correct parameter names that match the API route
+  if (params.startDate) qs.set('p_date_from', params.startDate)
+  if (params.endDate) qs.set('p_date_to', params.endDate)
 
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/transactions?${qs.toString()}`, {
-    headers: { ...h(params.orgId), ...authHeaders },
+    headers: {
+      ...h(params.orgId),
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
+    },
     credentials: 'include'
   }).then(ok)
 
@@ -345,6 +351,7 @@ export async function createTransaction(
     p_to_entity_id?: string | null
     p_reference_entity_id?: string | null
     p_transaction_date?: string
+    p_status?: string // ✅ Add status parameter for transaction_status field
     p_metadata?: Json
     p_lines?: Array<{
       line_type: string
@@ -364,7 +371,7 @@ export async function createTransaction(
   const authHeaders = await getAuthHeaders()
 
   // Map parameters to what the API expects
-  const apiBody = {
+  const apiBody: any = {
     organization_id: orgId,
     transaction_type: body.p_transaction_type,
     smart_code: body.p_smart_code,
@@ -372,6 +379,7 @@ export async function createTransaction(
     source_entity_id: body.p_from_entity_id || null,
     target_entity_id: body.p_to_entity_id || null,
     total_amount: body.p_total_amount || 0, // ✅ FIX: Include total_amount
+    transaction_status: body.p_status || 'draft', // ✅ Add transaction_status field
     business_context: body.p_metadata || {},
     metadata: body.p_metadata || {}, // ✅ CRITICAL FIX: txn-emit needs both business_context AND metadata
     // Use provided lines or add placeholder for appointments if no lines provided
@@ -393,7 +401,12 @@ export async function createTransaction(
 
   const res = await fetch(`/api/v2/transactions`, {
     method: 'POST',
-    headers: { ...h(orgId), ...authHeaders, 'Content-Type': 'application/json' },
+    headers: {
+      ...h(orgId),
+      ...authHeaders,
+      'Content-Type': 'application/json',
+      'x-hera-api-version': 'v2'
+    },
     credentials: 'include',
     body: JSON.stringify(apiBody)
   }).then(ok)
@@ -449,7 +462,7 @@ export async function updateTransaction(
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Update failed' }))
-    console.error('[updateTransaction] Error response:', error)
+    console.error('[updateTransaction] Error:', res.status, error.error || error)
     throw new Error(error.error || 'Failed to update transaction')
   }
 
@@ -507,7 +520,11 @@ export async function getRelationships(params: {
 
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/relationships?${qs.toString()}`, {
-    headers: { ...h(params.orgId), ...authHeaders },
+    headers: {
+      ...h(params.orgId),
+      ...authHeaders,
+      'x-hera-api-version': 'v2'
+    },
     credentials: 'include'
   }).then(ok)
 
@@ -528,7 +545,12 @@ export async function createRelationship(
   const authHeaders = await getAuthHeaders()
   const res = await fetch(`/api/v2/relationships`, {
     method: 'POST',
-    headers: { ...h(orgId), ...authHeaders, 'Content-Type': 'application/json' },
+    headers: {
+      ...h(orgId),
+      ...authHeaders,
+      'Content-Type': 'application/json',
+      'x-hera-api-version': 'v2'
+    },
     credentials: 'include',
     body: JSON.stringify({ p_organization_id: orgId, ...body })
   }).then(ok)

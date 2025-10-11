@@ -113,12 +113,13 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         if (!availableAtRelationships) return false
 
         // Handle both array and single relationship formats
+        // Check both rel.to_entity?.id (populated) and rel.to_entity_id (raw) for compatibility
         if (Array.isArray(availableAtRelationships)) {
           return availableAtRelationships.some(
-            rel => rel.to_entity?.id === options.filters?.branch_id
+            rel => rel.to_entity?.id === options.filters?.branch_id || rel.to_entity_id === options.filters?.branch_id
           )
         } else {
-          return availableAtRelationships.to_entity?.id === options.filters?.branch_id
+          return availableAtRelationships.to_entity?.id === options.filters?.branch_id || availableAtRelationships.to_entity_id === options.filters?.branch_id
         }
       })
     }
@@ -134,12 +135,13 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         if (!categoryRelationship) return false
 
         // Handle both array and single relationship formats
+        // Check both rel.to_entity?.id (populated) and rel.to_entity_id (raw) for compatibility
         if (Array.isArray(categoryRelationship)) {
           return categoryRelationship.some(
-            rel => rel.to_entity?.id === options.filters?.category_id
+            rel => rel.to_entity?.id === options.filters?.category_id || rel.to_entity_id === options.filters?.category_id
           )
         } else {
-          return categoryRelationship.to_entity?.id === options.filters?.category_id
+          return categoryRelationship.to_entity?.id === options.filters?.category_id || categoryRelationship.to_entity_id === options.filters?.category_id
         }
       })
     }

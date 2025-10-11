@@ -64,8 +64,8 @@ export function Card({
       : 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' // 🎨 ENTERPRISE: Spring animation
   }
 
-  const startTime = format(new Date(card.start), 'HH:mm')
-  const endTime = format(new Date(card.end), 'HH:mm')
+  const startTime = format(new Date(card.start), 'h:mm a')
+  const endTime = format(new Date(card.end), 'h:mm a')
 
   // 🎨 ENTERPRISE: Mouse movement animation handler
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -207,15 +207,20 @@ export function Card({
             <Button
               size="sm"
               variant="ghost"
-              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 cursor-pointer"
               onClick={e => {
+                e.preventDefault()
                 e.stopPropagation()
                 onMoveToNext()
+              }}
+              onPointerDown={e => {
+                e.stopPropagation()
               }}
               style={{
                 color: '#D4AF37',
                 borderRadius: '0.5rem', // 🎨 ENTERPRISE: Softer edges
-                transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                pointerEvents: 'auto' // ✅ Ensure button can receive clicks
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.color = '#F5E6C8'

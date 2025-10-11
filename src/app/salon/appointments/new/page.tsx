@@ -593,19 +593,18 @@ function NewAppointmentContent() {
       console.log('Appointment created with ID:', appointmentId, 'Status:', status)
 
       // 🎯 CRITICAL FIX: Invalidate AND refetch React Query cache to auto-refresh appointments list
-      // Use predicate to match all appointment-transactions queries regardless of params
+      // Use predicate to match all transactions queries (used by useUniversalTransaction)
       await queryClient.invalidateQueries({
-        predicate: query => query.queryKey[0] === 'appointment-transactions'
+        predicate: query => query.queryKey[0] === 'transactions'
       })
       // Force immediate refetch to ensure appointments list updates
       await queryClient.refetchQueries({
-        predicate: query => query.queryKey[0] === 'appointment-transactions'
+        predicate: query => query.queryKey[0] === 'transactions'
       })
-      await queryClient.invalidateQueries({ queryKey: ['entities', 'customer'] })
-      await queryClient.invalidateQueries({ queryKey: ['entities', 'CUSTOMER'] })
-      await queryClient.invalidateQueries({ queryKey: ['customers-for-appointments'] })
-      await queryClient.invalidateQueries({ queryKey: ['staff-upper-for-appointments'] })
-      await queryClient.invalidateQueries({ queryKey: ['staff-lower-for-appointments'] })
+      // Invalidate all entity queries for customers and staff
+      await queryClient.invalidateQueries({
+        predicate: query => query.queryKey[0] === 'entities'
+      })
 
       // Show success dialog instead of immediate redirect
       setSavedStatus(status) // 🎯 CRITICAL: Track which status was saved

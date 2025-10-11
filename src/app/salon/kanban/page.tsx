@@ -5,7 +5,7 @@
 'use client'
 
 import React, { useState, useCallback, useEffect } from 'react'
-import { format, startOfToday, addDays } from 'date-fns'
+import { format, startOfToday, addDays, startOfDay, endOfDay } from 'date-fns'
 import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -84,11 +84,12 @@ export default function KanbanPage() {
     hasMultipleBranches
   } = useBranchFilter(undefined, undefined, organizationId)
 
-  // Date filter state - default to "all" (show past year to future year)
+  // Date filter state - default to "today" (show today's appointments)
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'tomorrow' | 'week' | 'custom'>(
-    'all'
+    'today'
   )
   const [customDate, setCustomDate] = useState<Date | undefined>(undefined)
+  const [calendarOpen, setCalendarOpen] = useState(false)
 
   const [selectedCard, setSelectedCard] = useState<KanbanCard | null>(null)
   const [rescheduleOpen, setRescheduleOpen] = useState(false)
@@ -160,8 +161,9 @@ export default function KanbanPage() {
     organizationId,
     filters: {
       branch_id: branchId && branchId !== 'all' ? branchId : undefined,
-      date_from: format(dateRange.dateFrom, 'yyyy-MM-dd'),
-      date_to: format(dateRange.dateTo, 'yyyy-MM-dd')
+      // ✅ FIX: Convert to ISO datetime format (API expects datetime, not date-only)
+      date_from: startOfDay(dateRange.dateFrom).toISOString(),
+      date_to: endOfDay(dateRange.dateTo).toISOString()
     }
   })
 
@@ -181,7 +183,7 @@ export default function KanbanPage() {
       },
       cancellation_reason: apt.metadata?.cancellation_reason || null
     }))
-  }, [appointments])
+  }, [appointments, dateFilter, dateRange])
 
   // 🎯 ENTERPRISE: Group cards by status column
   const cardsByColumn: Record<KanbanStatus, KanbanCard[]> = useMemo(() => {
@@ -331,7 +333,7 @@ export default function KanbanPage() {
 
       await moveCard(card.id, targetColumn, 0)
     },
-    [moveCard, toast]
+    [moveCard, toast, VALID_STATUS_TRANSITIONS]
   )
 
   const handleCardAction = useCallback(
@@ -594,9 +596,9 @@ export default function KanbanPage() {
               </SelectContent>
             </Select>
 
-            {/* Custom Date Picker */}
+            {/* Custom Date Picker - Luxe Theme */}
             {dateFilter === 'custom' && (
-              <Popover>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -619,13 +621,96 @@ export default function KanbanPage() {
                     {customDate ? format(customDate, 'MMM d, yyyy') : 'Select date'}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent
+                  className="w-auto p-0"
+                  align="start"
+                  style={{
+                    backgroundColor: LUXE_COLORS.charcoal,
+                    border: `1px solid ${LUXE_COLORS.gold}40`,
+                    boxShadow: `0 8px 24px ${LUXE_COLORS.gold}20`,
+                    borderRadius: '1rem'
+                  }}
+                >
                   <CalendarComponent
                     mode="single"
                     selected={customDate}
-                    onSelect={d => setCustomDate(d)}
+                    onSelect={d => {
+                      setCustomDate(d)
+                      setCalendarOpen(false) // ✅ Auto-close on selection
+                    }}
                     initialFocus
+                    className="luxe-calendar"
+                    classNames={{
+                      months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
+                      month: 'space-y-4',
+                      caption: 'flex justify-center pt-1 relative items-center px-4 py-3',
+                      caption_label: 'text-base font-semibold',
+                      nav: 'space-x-1 flex items-center',
+                      nav_button: cn(
+                        'h-8 w-8 bg-transparent p-0 opacity-50 hover:opacity-100 transition-all duration-300 rounded-lg'
+                      ),
+                      nav_button_previous: 'absolute left-1',
+                      nav_button_next: 'absolute right-1',
+                      table: 'w-full border-collapse space-y-1',
+                      head_row: 'flex',
+                      head_cell: 'rounded-md w-10 font-medium text-sm opacity-60',
+                      row: 'flex w-full mt-2',
+                      cell: 'relative p-0 text-center focus-within:relative focus-within:z-20',
+                      day: cn(
+                        'h-10 w-10 p-0 font-normal rounded-lg transition-all duration-300 hover:scale-105'
+                      ),
+                      day_range_end: 'day-range-end',
+                      day_selected: 'day-selected font-bold',
+                      day_today: 'day-today font-bold',
+                      day_outside: 'opacity-30',
+                      day_disabled: 'opacity-30',
+                      day_range_middle: 'aria-selected:bg-accent aria-selected:text-accent-foreground',
+                      day_hidden: 'invisible'
+                    }}
+                    style={
+                      {
+                        '--luxe-black': LUXE_COLORS.black,
+                        '--luxe-charcoal': LUXE_COLORS.charcoal,
+                        '--luxe-gold': LUXE_COLORS.gold,
+                        '--luxe-champagne': LUXE_COLORS.champagne,
+                        '--luxe-bronze': LUXE_COLORS.bronze,
+                        '--luxe-emerald': LUXE_COLORS.emerald
+                      } as React.CSSProperties
+                    }
                   />
+                  <style jsx global>{`
+                    .luxe-calendar {
+                      color: ${LUXE_COLORS.champagne};
+                      padding: 1rem;
+                    }
+                    .luxe-calendar button {
+                      color: ${LUXE_COLORS.champagne};
+                    }
+                    .luxe-calendar .day-selected {
+                      background: linear-gradient(
+                        135deg,
+                        ${LUXE_COLORS.gold} 0%,
+                        ${LUXE_COLORS.goldDark} 100%
+                      );
+                      color: ${LUXE_COLORS.black};
+                      box-shadow: 0 4px 12px ${LUXE_COLORS.gold}40;
+                    }
+                    .luxe-calendar .day-today {
+                      background: ${LUXE_COLORS.emerald}30;
+                      color: ${LUXE_COLORS.champagne};
+                      border: 1px solid ${LUXE_COLORS.emerald};
+                    }
+                    .luxe-calendar button:hover:not(.day-selected):not(.day-today) {
+                      background: ${LUXE_COLORS.gold}20;
+                      color: ${LUXE_COLORS.champagne};
+                    }
+                    .luxe-calendar .rdp-caption_label {
+                      color: ${LUXE_COLORS.gold};
+                    }
+                    .luxe-calendar .rdp-head_cell {
+                      color: ${LUXE_COLORS.bronze};
+                    }
+                  `}</style>
                 </PopoverContent>
               </Popover>
             )}

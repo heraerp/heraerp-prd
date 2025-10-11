@@ -1046,37 +1046,38 @@ function AppointmentsContent() {
                   }}
                 >
                   <div
-                    className={viewMode === 'list' ? 'flex-1 flex items-center gap-6' : 'space-y-4'}
+                    className={viewMode === 'list' ? 'flex-1 flex items-center gap-4' : 'space-y-4'}
                   >
-                    {/* Header */}
+                    {/* Header - Customer & Stylist Info */}
                     <div
                       className={
-                        viewMode === 'list' ? 'flex-1' : 'flex items-start justify-between'
+                        viewMode === 'list' ? 'w-[280px] flex-shrink-0' : 'flex items-start justify-between'
                       }
                     >
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <h3
-                          className="font-semibold text-lg mb-1"
+                          className="font-semibold text-base mb-1 truncate"
                           style={{ color: LUXE_COLORS.champagne }}
+                          title={appointment.customer_name || 'Customer'}
                         >
                           {appointment.customer_name || 'Customer'}
                         </h3>
                         <div
-                          className="flex items-center gap-2 text-sm"
+                          className="flex items-center gap-2 text-xs mb-1"
                           style={{ color: LUXE_COLORS.bronze }}
                         >
-                          <User className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">
+                          <User className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate" title={appointment.stylist_name || 'Unassigned'}>
                             {appointment.stylist_name || 'Unassigned'}
                           </span>
                         </div>
                         {branchName && viewMode === 'list' && (
                           <div
-                            className="flex items-center gap-2 text-xs mt-1"
-                            style={{ color: LUXE_COLORS.bronze, opacity: 0.7 }}
+                            className="flex items-center gap-2 text-xs"
+                            style={{ color: LUXE_COLORS.bronze, opacity: 0.6 }}
                           >
                             <Building2 className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate max-w-[200px]" title={branchName}>
+                            <span className="truncate" title={branchName}>
                               {branchName}
                             </span>
                           </div>
@@ -1101,13 +1102,13 @@ function AppointmentsContent() {
                       )}
                     </div>
 
-                    {/* Appointment Details */}
+                    {/* Appointment Details - List View */}
                     {viewMode === 'list' ? (
-                      <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-3 flex-1">
                         {appointmentDate && (
                           <>
                             <div
-                              className="flex items-center gap-2 text-sm min-w-[180px]"
+                              className="flex items-center gap-2 text-sm w-[150px] flex-shrink-0"
                               style={{ color: LUXE_COLORS.bronze }}
                             >
                               <Calendar
@@ -1119,7 +1120,7 @@ function AppointmentsContent() {
                               </span>
                             </div>
                             <div
-                              className="flex items-center gap-2 text-sm min-w-[120px]"
+                              className="flex items-center gap-2 text-sm w-[100px] flex-shrink-0"
                               style={{ color: LUXE_COLORS.bronze }}
                             >
                               <Clock
@@ -1134,7 +1135,7 @@ function AppointmentsContent() {
                         )}
                         {appointment.price !== undefined && appointment.price > 0 && (
                           <div
-                            className="flex items-center gap-2 text-sm font-medium min-w-[100px]"
+                            className="flex items-center gap-2 text-sm font-semibold w-[120px] flex-shrink-0"
                             style={{ color: LUXE_COLORS.champagne }}
                           >
                             <DollarSign
@@ -1147,17 +1148,19 @@ function AppointmentsContent() {
                           </div>
                         )}
                         <Badge
-                          className="transition-all duration-300 flex-shrink-0"
+                          className="transition-all duration-300 flex-shrink-0 ml-auto"
                           style={{
                             background: `${STATUS_CONFIG[appointment.status as AppointmentStatus]?.color}20`,
                             color:
                               STATUS_CONFIG[appointment.status as AppointmentStatus]?.color ||
                               LUXE_COLORS.bronze,
                             border: `1px solid ${STATUS_CONFIG[appointment.status as AppointmentStatus]?.color}40`,
-                            fontWeight: '500',
+                            fontWeight: '600',
                             textTransform: 'capitalize',
-                            minWidth: '90px',
-                            textAlign: 'center'
+                            minWidth: '100px',
+                            textAlign: 'center',
+                            paddingLeft: '12px',
+                            paddingRight: '12px'
                           }}
                         >
                           {STATUS_CONFIG[appointment.status as AppointmentStatus]?.label ||

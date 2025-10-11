@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription
-} from '@/components/ui/dialog'
+} from '@/components/ui/luxe-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -160,7 +160,7 @@ export function SaleDetailsDialog({
       <DialogContent
         className="max-w-4xl max-h-[90vh] overflow-y-auto"
         style={{
-          backgroundColor: LUXE_COLORS.black,
+          backgroundColor: LUXE_COLORS.charcoal,
           border: `1px solid ${LUXE_COLORS.gold}40`,
           boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.2)',
           backgroundImage: `

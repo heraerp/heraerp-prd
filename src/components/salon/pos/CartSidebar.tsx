@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import {
   ShoppingCart,
   Plus,
@@ -15,14 +15,21 @@ import {
   Scissors,
   Package,
   Award,
-  TrendingUp
+  TrendingUp,
+  Percent,
+  DollarSign,
+  Trash2
 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
+import { salonButtonThemes } from '@/styles/salon-button-themes'
+import { CustomerSearchInline } from '@/components/salon/pos/CustomerSearchModal'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -95,8 +102,15 @@ interface CartSidebarProps {
   totals: Totals
   onUpdateItem: (id: string, updates: Partial<LineItem>) => void
   onRemoveItem: (id: string) => void
+  onAddDiscount: (discount: Omit<Discount, 'id'>) => void
+  onRemoveDiscount: (id: string) => void
+  onAddTip: (tip: Omit<Tip, 'id'>) => void
+  onRemoveTip: (id: string) => void
   onPayment: () => void
-  commissionsEnabled?: boolean
+  onClearTicket: () => void
+  organizationId: string
+  selectedCustomer: any | null
+  onCustomerSelect: (customer: any | null) => void
 }
 
 export function CartSidebar({
@@ -104,9 +118,74 @@ export function CartSidebar({
   totals,
   onUpdateItem,
   onRemoveItem,
+  onAddDiscount,
+  onRemoveDiscount,
+  onAddTip,
+  onRemoveTip,
   onPayment,
-  commissionsEnabled = true
+  onClearTicket,
+  organizationId,
+  selectedCustomer,
+  onCustomerSelect
 }: CartSidebarProps) {
+  const [showDiscountSection, setShowDiscountSection] = useState(false)
+  const [showTipSection, setShowTipSection] = useState(false)
+  const [customDiscountPercent, setCustomDiscountPercent] = useState('')
+  const [customTipAmount, setCustomTipAmount] = useState('')
+
+  // Handle discount application
+  const applyQuickDiscount = useCallback(
+    (percent: number) => {
+      onAddDiscount({
+        type: 'percentage',
+        value: percent,
+        description: `${percent}% discount`,
+        applied_to: 'subtotal'
+      })
+      setShowDiscountSection(false)
+    },
+    [onAddDiscount]
+  )
+
+  const applyCustomDiscount = useCallback(() => {
+    const percent = parseFloat(customDiscountPercent)
+    if (percent > 0 && percent <= 100) {
+      onAddDiscount({
+        type: 'percentage',
+        value: percent,
+        description: `${percent}% discount`,
+        applied_to: 'subtotal'
+      })
+      setCustomDiscountPercent('')
+      setShowDiscountSection(false)
+    }
+  }, [customDiscountPercent, onAddDiscount])
+
+  // Handle tip application
+  const applyQuickTip = useCallback(
+    (percent: number) => {
+      const tipAmount = (totals.subtotal * percent) / 100
+      onAddTip({
+        amount: tipAmount,
+        method: 'card'
+      })
+      setShowTipSection(false)
+    },
+    [totals.subtotal, onAddTip]
+  )
+
+  const applyCustomTip = useCallback(() => {
+    const amount = parseFloat(customTipAmount)
+    if (amount > 0) {
+      onAddTip({
+        amount: amount,
+        method: 'card'
+      })
+      setCustomTipAmount('')
+      setShowTipSection(false)
+    }
+  }, [customTipAmount, onAddTip])
+
   const handleQuantityChange = (itemId: string, change: number) => {
     const item = ticket.lineItems.find(i => i.id === itemId)
     if (!item) return
@@ -171,26 +250,28 @@ export function CartSidebar({
             backgroundSize: '200% 100%'
           }}
         />
-        <div className="relative z-10 flex items-center gap-3">
-          <div
-            className="p-2 rounded-lg"
-            style={{
-              backgroundColor: `${COLORS.gold}20`,
-              border: `1px solid ${COLORS.gold}40`
-            }}
-          >
-            <ShoppingCart className="w-5 h-5" style={{ color: COLORS.gold }} />
-          </div>
-          <div>
-            <h2
-              className="text-base font-semibold tracking-wide"
-              style={{ color: COLORS.champagne }}
+        <div className="relative z-10 flex-1">
+          <div className="flex items-center gap-3 mb-2">
+            <div
+              className="p-2 rounded-lg"
+              style={{
+                backgroundColor: `${COLORS.gold}20`,
+                border: `1px solid ${COLORS.gold}40`
+              }}
             >
-              Shopping Cart
-            </h2>
-            <p className="text-xs font-normal" style={{ color: COLORS.bronze }}>
-              {ticket.lineItems.length} {ticket.lineItems.length === 1 ? 'item' : 'items'}
-            </p>
+              <ShoppingCart className="w-5 h-5" style={{ color: COLORS.gold }} />
+            </div>
+            <div>
+              <h2
+                className="text-base font-semibold tracking-wide"
+                style={{ color: COLORS.champagne }}
+              >
+                Shopping Cart
+              </h2>
+              <p className="text-xs font-normal" style={{ color: COLORS.bronze }}>
+                {ticket.lineItems.length} {ticket.lineItems.length === 1 ? 'item' : 'items'}
+              </p>
+            </div>
           </div>
         </div>
         {ticket.lineItems.length > 0 && (
@@ -211,6 +292,18 @@ export function CartSidebar({
             </p>
           </div>
         )}
+      </div>
+
+      {/* Customer Selection - Inline */}
+      <div
+        className="px-6 pb-4 pt-3 border-b"
+        style={{ borderColor: `${COLORS.gold}20`, background: `${COLORS.charcoalDark}40` }}
+      >
+        <CustomerSearchInline
+          selectedCustomer={selectedCustomer}
+          onCustomerSelect={onCustomerSelect}
+          organizationId={organizationId}
+        />
       </div>
 
       <CardContent className="p-0 flex-1 flex flex-col min-h-0 relative z-10">
@@ -253,24 +346,24 @@ export function CartSidebar({
                 {ticket.lineItems.map((item, index) => (
                   <Card
                     key={item.id}
-                    className="group border transition-all duration-200 hover:shadow-lg animate-fadeIn overflow-hidden"
+                    className="group border-2 transition-all duration-200 hover:shadow-xl hover:scale-[1.01] animate-fadeIn overflow-hidden"
                     style={{
-                      background: `${COLORS.charcoalLight}`,
-                      borderColor: `${COLORS.gold}20`,
-                      boxShadow: `0 1px 3px ${COLORS.black}20`,
+                      background: `linear-gradient(135deg, ${COLORS.charcoalLight}DD 0%, ${COLORS.charcoalDark}DD 100%)`,
+                      borderColor: `${COLORS.gold}80`,
+                      boxShadow: `0 6px 16px ${COLORS.black}50, 0 0 0 1px ${COLORS.gold}50, inset 0 1px 3px ${COLORS.gold}15`,
                       animationDelay: `${index * 30}ms`
                     }}
                   >
-                    <CardContent className="p-3.5">
+                    <CardContent className="p-4">
                       {/* Item Header */}
-                      <div className="flex items-start justify-between mb-2.5">
+                      <div className="flex items-start justify-between mb-3">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1.5">
+                          <div className="flex items-center gap-2 mb-2">
                             <div
-                              className="p-1 rounded"
+                              className="p-1.5 rounded-lg"
                               style={{
-                                background: `${COLORS.gold}15`,
-                                border: `1px solid ${COLORS.gold}30`
+                                background: `${COLORS.gold}20`,
+                                border: `1px solid ${COLORS.gold}40`
                               }}
                             >
                               {item.entity_type === 'service' ? (
@@ -281,7 +374,7 @@ export function CartSidebar({
                             </div>
                             <div className="flex-1 min-w-0">
                               <h4
-                                className="font-medium text-sm leading-tight"
+                                className="font-semibold text-base leading-tight"
                                 style={{ color: COLORS.champagne }}
                               >
                                 {truncateText(item.entity_name, 30)}
@@ -291,10 +384,11 @@ export function CartSidebar({
 
                           {item.stylist_name && (
                             <div
-                              className="flex items-center gap-1.5 px-2 py-1 rounded mt-1.5"
+                              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg mt-2"
                               style={{
-                                background: `${COLORS.gold}10`,
-                                border: `1px solid ${COLORS.gold}25`
+                                background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}05 100%)`,
+                                border: `1px solid ${COLORS.gold}40`,
+                                boxShadow: `0 1px 3px ${COLORS.gold}20`
                               }}
                             >
                               <div
@@ -335,8 +429,8 @@ export function CartSidebar({
 
                       {/* Quantity and Price */}
                       <div
-                        className="flex items-center justify-between pt-2.5 border-t"
-                        style={{ borderColor: `${COLORS.gold}10` }}
+                        className="flex items-center justify-between pt-3 mt-3 border-t"
+                        style={{ borderColor: `${COLORS.gold}30` }}
                       >
                         <div
                           className="flex items-center border rounded-lg overflow-hidden"
@@ -384,11 +478,12 @@ export function CartSidebar({
                       {/* Notes Preview */}
                       {item.notes && (
                         <div
-                          className="mt-3 text-xs rounded-lg p-2.5"
+                          className="mt-3 text-xs rounded-lg p-3"
                           style={{
-                            backgroundColor: `${COLORS.charcoalDark}80`,
+                            backgroundColor: `${COLORS.charcoalDark}`,
                             color: COLORS.bronze,
-                            border: `1px solid ${COLORS.gold}20`
+                            border: `1px solid ${COLORS.gold}30`,
+                            boxShadow: `inset 0 1px 2px ${COLORS.black}30`
                           }}
                         >
                           <span className="font-medium" style={{ color: COLORS.champagne }}>
@@ -403,16 +498,197 @@ export function CartSidebar({
               </div>
             </ScrollArea>
 
+            {/* Discount and Tip Section - Side by Side */}
+            <div
+              className="px-4 py-2.5 border-t flex-shrink-0"
+              style={{ borderColor: `${COLORS.gold}20` }}
+            >
+              <div className="grid grid-cols-2 gap-2">
+                {/* Discount */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDiscountSection(!showDiscountSection)}
+                  className="text-xs py-2"
+                  style={{
+                    ...salonButtonThemes.subtleAction.style,
+                    fontSize: '0.75rem',
+                    backgroundColor: showDiscountSection ? `${COLORS.emerald}20` : undefined,
+                    borderColor: showDiscountSection ? COLORS.emerald : undefined
+                  }}
+                >
+                  <Percent className="w-3.5 h-3.5 mr-1.5" />
+                  Discount
+                </Button>
+
+                {/* Tip */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowTipSection(!showTipSection)}
+                  className="text-xs py-2"
+                  style={{
+                    ...salonButtonThemes.subtleAction.style,
+                    borderColor: showTipSection ? COLORS.gold : `${COLORS.gold}40`,
+                    color: COLORS.gold,
+                    fontSize: '0.75rem',
+                    backgroundColor: showTipSection ? `${COLORS.gold}20` : undefined
+                  }}
+                >
+                  <DollarSign className="w-3.5 h-3.5 mr-1.5" />
+                  Tip
+                </Button>
+              </div>
+
+              {/* Discount Section */}
+              {showDiscountSection && (
+                <div
+                  className="mt-3 p-3 rounded-lg animate-fadeIn"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.emerald}15 0%, ${COLORS.charcoalDark} 100%)`,
+                    border: `1px solid ${COLORS.emerald}40`
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-xs font-semibold" style={{ color: COLORS.champagne }}>
+                      Quick Discount
+                    </Label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowDiscountSection(false)}
+                      className="h-5 w-5 p-0"
+                      style={{ color: COLORS.bronze }}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {[5, 10, 15].map(percent => (
+                      <Button
+                        key={percent}
+                        size="sm"
+                        onClick={() => applyQuickDiscount(percent)}
+                        className="text-xs py-1.5"
+                        style={{
+                          background: `${COLORS.emerald}30`,
+                          color: COLORS.champagne,
+                          borderColor: `${COLORS.emerald}60`,
+                          border: '1px solid'
+                        }}
+                      >
+                        {percent}%
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Custom %"
+                      value={customDiscountPercent}
+                      onChange={e => setCustomDiscountPercent(e.target.value)}
+                      className="text-xs h-8"
+                      style={{
+                        backgroundColor: COLORS.charcoalDark,
+                        borderColor: `${COLORS.emerald}40`,
+                        color: COLORS.champagne
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={applyCustomDiscount}
+                      className="text-xs px-3 h-8"
+                      style={{
+                        background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emerald}80 100%)`,
+                        color: COLORS.black
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Tip Section */}
+              {showTipSection && (
+                <div
+                  className="mt-3 p-3 rounded-lg animate-fadeIn"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.charcoalDark} 100%)`,
+                    border: `1px solid ${COLORS.gold}40`
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-xs font-semibold" style={{ color: COLORS.champagne }}>
+                      Add Gratuity
+                    </Label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowTipSection(false)}
+                      className="h-5 w-5 p-0"
+                      style={{ color: COLORS.bronze }}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {[10, 15, 20].map(percent => (
+                      <Button
+                        key={percent}
+                        size="sm"
+                        onClick={() => applyQuickTip(percent)}
+                        className="text-xs py-1.5"
+                        style={{
+                          background: `${COLORS.gold}30`,
+                          color: COLORS.champagne,
+                          borderColor: `${COLORS.gold}60`,
+                          border: '1px solid'
+                        }}
+                      >
+                        {percent}%
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Custom AED"
+                      value={customTipAmount}
+                      onChange={e => setCustomTipAmount(e.target.value)}
+                      className="text-xs h-8"
+                      style={{
+                        backgroundColor: COLORS.charcoalDark,
+                        borderColor: `${COLORS.gold}40`,
+                        color: COLORS.champagne
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={applyCustomTip}
+                      className="text-xs px-3 h-8"
+                      style={{
+                        background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                        color: COLORS.black
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Totals Section */}
             <div
-              className="px-6 py-5 space-y-4 animate-fadeIn flex-shrink-0"
+              className="px-4 py-3 space-y-2 animate-fadeIn flex-shrink-0"
               style={{
                 borderTop: `2px solid ${COLORS.gold}30`,
                 background: `linear-gradient(to bottom, ${COLORS.charcoalDark}E6 0%, ${COLORS.charcoal}E6 100%)`,
                 boxShadow: `inset 0 2px 8px ${COLORS.black}40`
               }}
             >
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex justify-between items-center text-sm">
                   <span className="font-medium" style={{ color: COLORS.lightText }}>
                     Subtotal
@@ -423,24 +699,50 @@ export function CartSidebar({
                 </div>
 
                 {(totals?.discountAmount || 0) > 0 && (
-                  <div className="flex justify-between items-center text-sm">
+                  <div className="flex justify-between items-center text-sm group">
                     <span className="font-medium" style={{ color: COLORS.emerald }}>
                       Discount
                     </span>
-                    <span className="font-semibold text-base" style={{ color: COLORS.emerald }}>
-                      -AED {(totals?.discountAmount || 0).toFixed(2)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-base" style={{ color: COLORS.emerald }}>
+                        -AED {(totals?.discountAmount || 0).toFixed(2)}
+                      </span>
+                      {ticket.discounts.length > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => ticket.discounts.forEach(d => onRemoveDiscount(d.id))}
+                          className="h-6 w-6 p-0 opacity-60 hover:opacity-100 transition-opacity"
+                          style={{ color: COLORS.emerald }}
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 )}
 
                 {(totals?.tipAmount || 0) > 0 && (
-                  <div className="flex justify-between items-center text-sm">
+                  <div className="flex justify-between items-center text-sm group">
                     <span className="font-medium" style={{ color: COLORS.gold }}>
                       Gratuity
                     </span>
-                    <span className="font-semibold text-base" style={{ color: COLORS.gold }}>
-                      +AED {(totals?.tipAmount || 0).toFixed(2)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-base" style={{ color: COLORS.gold }}>
+                        +AED {(totals?.tipAmount || 0).toFixed(2)}
+                      </span>
+                      {ticket.tips.length > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => ticket.tips.forEach(t => onRemoveTip(t.id))}
+                          className="h-6 w-6 p-0 opacity-60 hover:opacity-100 transition-opacity"
+                          style={{ color: COLORS.gold }}
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -459,63 +761,79 @@ export function CartSidebar({
 
                 {/* Total */}
                 <div
-                  className="flex justify-between items-center p-4 rounded-xl mt-2"
+                  className="flex justify-between items-center p-2 rounded-lg mt-1"
                   style={{
                     background: `linear-gradient(135deg, ${COLORS.gold}25 0%, ${COLORS.goldDark}15 100%)`,
-                    border: `2px solid ${COLORS.gold}`,
-                    boxShadow: `0 8px 24px ${COLORS.gold}40, inset 0 2px 4px ${COLORS.gold}20`
+                    border: `1.5px solid ${COLORS.gold}`,
+                    boxShadow: `0 4px 16px ${COLORS.gold}35, inset 0 1px 2px ${COLORS.gold}15`
                   }}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Sparkles className="w-6 h-6" style={{ color: COLORS.gold }} />
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4" style={{ color: COLORS.gold }} />
                     <span
-                      className="text-lg font-bold tracking-wide"
+                      className="text-sm font-bold tracking-wide"
                       style={{ color: COLORS.champagne }}
                     >
                       TOTAL
                     </span>
                   </div>
-                  <span className="text-3xl font-bold" style={{ color: COLORS.gold }}>
+                  <span className="text-xl font-bold" style={{ color: COLORS.gold }}>
                     AED {(totals?.total || 0).toFixed(2)}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Payment Button */}
+            {/* Action Buttons - Side by Side */}
             <div
-              className="p-6 pt-4 flex-shrink-0"
+              className="p-4 flex-shrink-0"
               style={{
                 backgroundColor: COLORS.charcoalLight,
                 borderTop: `1px solid ${COLORS.gold}30`
               }}
             >
-              <Button
-                onClick={onPayment}
-                disabled={(ticket?.lineItems?.length || 0) === 0}
-                className="w-full h-16 font-bold text-lg transition-all transform hover:scale-[1.02] hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black,
-                  boxShadow: `0 12px 32px ${COLORS.gold}60, 0 0 0 2px ${COLORS.gold}`,
-                  border: 'none'
-                }}
-              >
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              <div className="grid grid-cols-2 gap-2">
+                {/* Clear Ticket Button */}
+                <Button
+                  variant="outline"
+                  onClick={onClearTicket}
+                  disabled={ticket.lineItems.length === 0}
+                  className="h-10 px-3 text-sm font-semibold transition-all duration-300 hover:scale-[1.02] disabled:opacity-40"
                   style={{
-                    background: `linear-gradient(90deg, transparent, ${COLORS.champagne}30, transparent)`,
-                    transform: 'translateX(-100%)',
-                    animation: 'shimmer 2s infinite'
+                    color: COLORS.champagne,
+                    borderColor: `${COLORS.gold}40`,
+                    background: `${COLORS.charcoalDark}80`,
+                    boxShadow: `0 2px 12px ${COLORS.black}30`
                   }}
-                />
-                <CreditCard className="w-6 h-6 mr-3 relative z-10" />
-                <span className="relative z-10">COMPLETE PAYMENT</span>
-                <div className="ml-auto flex items-center gap-2 relative z-10">
-                  <span className="text-xl font-black">AED {(totals?.total || 0).toFixed(2)}</span>
-                  <ChevronRight className="w-6 h-6" />
-                </div>
-              </Button>
+                >
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                  Clear
+                </Button>
+
+                {/* Complete Payment Button */}
+                <Button
+                  onClick={onPayment}
+                  disabled={(ticket?.lineItems?.length || 0) === 0}
+                  className="h-10 px-3 text-sm font-bold transition-all duration-300 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                    color: COLORS.black,
+                    boxShadow: `0 8px 24px ${COLORS.gold}50, 0 0 0 2px ${COLORS.gold}`,
+                    border: 'none'
+                  }}
+                >
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{
+                      background: `linear-gradient(90deg, transparent, ${COLORS.champagne}30, transparent)`,
+                      transform: 'translateX(-100%)',
+                      animation: 'shimmer 2s infinite'
+                    }}
+                  />
+                  <CreditCard className="w-4 h-4 mr-1.5 relative z-10" />
+                  <span className="relative z-10">Payment</span>
+                </Button>
+              </div>
             </div>
           </>
         )}

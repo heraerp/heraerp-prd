@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Loader2,
   Eye,
@@ -23,7 +24,8 @@ import {
   User,
   Lock,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  AlertCircle
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
@@ -153,6 +155,17 @@ export function HairTalkzAuthSimple() {
   const [rememberMe, setRememberMe] = useState(false)
   const [selectedRole, setSelectedRole] = useState('')
   const [showDemoUsers, setShowDemoUsers] = useState(false)
+  const [showSessionExpiredMessage, setShowSessionExpiredMessage] = useState(false)
+
+  // Check if user was redirected due to session expiration
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedRedirect = sessionStorage.getItem('salon_auth_redirect')
+      if (savedRedirect) {
+        setShowSessionExpiredMessage(true)
+      }
+    }
+  }, [])
 
   const handleDemoUserSelect = async (demoEmail: string, demoPassword: string) => {
     setEmail(demoEmail)
@@ -226,13 +239,23 @@ export function HairTalkzAuthSimple() {
         localStorage.setItem('salonRole', selectedRole)
         localStorage.setItem('userPermissions', JSON.stringify(getRolePermissions(selectedRole)))
 
-        // Get redirect path based on role
-        const roleConfig = USER_ROLES.find(r => r.value === selectedRole)
-        const redirectPath = roleConfig?.redirectPath || '/salon/dashboard'
+        // ✅ ENTERPRISE: Check for saved redirect URL (from 401 error)
+        const savedRedirect = sessionStorage.getItem('salon_auth_redirect')
+
+        let redirectPath: string
+        if (savedRedirect) {
+          // Redirect back to the page they were trying to access
+          redirectPath = savedRedirect
+          sessionStorage.removeItem('salon_auth_redirect') // Clean up
+        } else {
+          // Get default redirect path based on role
+          const roleConfig = USER_ROLES.find(r => r.value === selectedRole)
+          redirectPath = roleConfig?.redirectPath || '/salon/dashboard'
+        }
 
         toast({
           title: 'Welcome to HairTalkz',
-          description: `Logged in as ${roleConfig?.label}`
+          description: `Logged in as ${USER_ROLES.find(r => r.value === selectedRole)?.label}`
         })
 
         // Use window.location for a clean redirect
@@ -292,6 +315,23 @@ export function HairTalkzAuthSimple() {
             Professional Access Portal
           </p>
         </div>
+
+        {/* Session Expired Alert */}
+        {showSessionExpiredMessage && (
+          <Alert
+            className="mb-6 animate-fadeIn"
+            style={{
+              backgroundColor: `${COLORS.gold}15`,
+              borderColor: `${COLORS.gold}50`,
+              border: '1px solid'
+            }}
+          >
+            <AlertCircle className="h-4 w-4" style={{ color: COLORS.gold }} />
+            <AlertDescription style={{ color: COLORS.champagne }}>
+              <strong>Session Expired</strong> - Please log in again to continue.
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Login Form */}
         <form
@@ -521,6 +561,23 @@ export function HairTalkzAuthSimple() {
           </div>
         </div>
       </div>
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out;
+        }
+      `}</style>
     </div>
   )
 }

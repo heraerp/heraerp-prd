@@ -15,20 +15,16 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription
-} from '@/components/ui/luxe-dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { usePosCheckout } from '@/hooks/usePosCheckout'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
+import { SalonLuxeInput } from '@/components/salon/shared/SalonLuxeInput'
+import { ValidationWarningModal } from './ValidationWarningModal'
 import { cn } from '@/lib/utils'
 
 // Salon Luxe Color Palette
@@ -61,6 +57,8 @@ interface PaymentDialogProps {
   ticket: any
   totals: any
   organizationId: string
+  branchId?: string
+  branchName?: string
   onComplete: (saleData: any) => void
 }
 
@@ -70,11 +68,15 @@ export function PaymentDialog({
   ticket,
   totals,
   organizationId,
+  branchId,
+  branchName,
   onComplete
 }: PaymentDialogProps) {
   const [payments, setPayments] = useState<PaymentMethod[]>([])
   const [activeTab, setActiveTab] = useState<'cash' | 'card' | 'voucher'>('card')
   const [validationWarnings, setValidationWarnings] = useState<string[]>([])
+  const [showValidationModal, setShowValidationModal] = useState(false)
+  const [validationIssues, setValidationIssues] = useState<Array<{ type: string; message: string; action?: string }>>([])
 
   // ✅ LAYER 2: Use usePosCheckout hook (which uses useUniversalTransaction RPC API v2)
   const { processCheckout, isProcessing, error, clearError } = usePosCheckout()
@@ -181,6 +183,56 @@ export function PaymentDialog({
       return // Don't process if not fully paid
     }
 
+    // ✅ ENTERPRISE-GRADE VALIDATION: Check all required entities
+    const issues: Array<{ type: string; message: string; action?: string }> = []
+
+    // 1. Validate branch is selected
+    if (!branchId) {
+      issues.push({
+        type: 'branch',
+        message: 'Branch location not selected',
+        action: 'Select a branch from the header dropdown'
+      })
+    }
+
+    // 2. Validate customer is selected
+    if (!ticket.customer_id) {
+      issues.push({
+        type: 'customer',
+        message: 'Customer not assigned to sale',
+        action: 'Press "/" to search or create a customer'
+      })
+    }
+
+    // 3. Validate at least one item (service or product)
+    if (!ticket.lineItems || ticket.lineItems.length === 0) {
+      issues.push({
+        type: 'items',
+        message: 'No items in cart',
+        action: 'Add at least one service or product'
+      })
+    }
+
+    // 4. Validate all services have staff assigned
+    const servicesWithoutStaff = ticket.lineItems?.filter(
+      (item: any) => item.entity_type === 'service' && !item.stylist_id && !item.stylist_entity_id
+    ) || []
+
+    if (servicesWithoutStaff.length > 0) {
+      issues.push({
+        type: 'staff',
+        message: `${servicesWithoutStaff.length} service(s) missing stylist assignment`,
+        action: 'Click on services to assign a stylist'
+      })
+    }
+
+    // 5. If validation issues exist, show warning modal
+    if (issues.length > 0) {
+      setValidationIssues(issues)
+      setShowValidationModal(true)
+      return
+    }
+
     setValidationWarnings([])
 
     try {
@@ -188,6 +240,7 @@ export function PaymentDialog({
       const checkoutData = {
         customer_id: ticket.customer_id,
         appointment_id: ticket.appointment_id,
+        branch_id: branchId, // ✅ Include branch for enterprise tracking
         items: ticket.lineItems.map((item: any) => ({
           id: item.id || item.entity_id,
           entity_id: item.entity_id,
@@ -205,10 +258,25 @@ export function PaymentDialog({
         })),
         tax_rate: 0.05, // 5% VAT
         discount_total: totals?.discountAmount || 0,
+        tip_total: totals?.tipAmount || 0, // ✅ FIX: Include tips in checkout
         notes: ticket.notes
       }
 
-      console.log('[PaymentDialog] Processing checkout with data:', checkoutData)
+      console.log('[PaymentDialog] Processing checkout with ENTERPRISE TRACKING:', {
+        ...checkoutData,
+        calculated_total: (totals?.subtotal || 0) - (totals?.discountAmount || 0) + (totals?.taxAmount || 0) + (totals?.tipAmount || 0),
+        enterprise_tracking: {
+          branch_id: branchId,
+          branch_name: branchName,
+          customer_id: ticket.customer_id,
+          customer_name: ticket.customer_name,
+          appointment_id: ticket.appointment_id,
+          staff_assigned: checkoutData.items.filter((i: any) => i.staff_id).length,
+          total_items: checkoutData.items.length,
+          services: checkoutData.items.filter((i: any) => i.type === 'service').length,
+          products: checkoutData.items.filter((i: any) => i.type === 'product').length
+        }
+      })
 
       // ✅ Use processCheckout from usePosCheckout hook (RPC API v2)
       const result = await processCheckout(checkoutData)
@@ -222,13 +290,14 @@ export function PaymentDialog({
         timestamp: new Date().toISOString(),
         customer_name: ticket.customer_name,
         appointment_id: ticket.appointment_id,
+        branch_id: branchId, // ✅ Store branch ID
+        branch_name: branchName || 'Main Branch', // ✅ Store branch name
         lineItems: ticket.lineItems,
         discounts: ticket.discounts,
         tips: ticket.tips,
         payments,
         totals,
         changeAmount,
-        branch_name: 'Main Salon',
         lines: result.lines
       }
 
@@ -267,52 +336,65 @@ export function PaymentDialog({
   const getPaymentColor = (type: string) => {
     switch (type) {
       case 'cash':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+        return {
+          background: `${COLORS.emerald}20`,
+          border: `1px solid ${COLORS.emerald}40`,
+          color: COLORS.champagne
+        }
       case 'card':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+        return {
+          background: `${COLORS.gold}20`,
+          border: `1px solid ${COLORS.gold}40`,
+          color: COLORS.champagne
+        }
       case 'voucher':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+        return {
+          background: `${COLORS.bronze}20`,
+          border: `1px solid ${COLORS.bronze}40`,
+          color: COLORS.champagne
+        }
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+        return {
+          background: `${COLORS.charcoalLight}80`,
+          border: `1px solid ${COLORS.gold}30`,
+          color: COLORS.bronze
+        }
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent
-        className="max-w-2xl max-h-[90vh] overflow-y-auto"
-        aria-describedby="payment-desc"
-        style={{
-          backgroundColor: COLORS.charcoal,
-          borderColor: `${COLORS.gold}30`
-        }}
-      >
-        <DialogHeader className="border-b pb-4" style={{ borderColor: `${COLORS.gold}20` }}>
-          <DialogTitle className="flex items-center gap-3">
-            <div
-              className="p-2 rounded-lg"
-              style={{
-                background: `${COLORS.gold}20`,
-                border: `1px solid ${COLORS.gold}40`
-              }}
-            >
-              <Receipt className="w-5 h-5" style={{ color: COLORS.gold }} />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold" style={{ color: COLORS.champagne }}>
-                Process Payment
-              </h3>
-              <p className="text-sm font-normal" style={{ color: COLORS.bronze }}>
-                AED {(totals?.total || 0).toFixed(2)}
-              </p>
-            </div>
-          </DialogTitle>
-          <DialogDescription id="payment-desc" className="sr-only">
-            Select payment methods and confirm the amounts for your transaction.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-5 pt-5">
+    <>
+    <SalonLuxeModal
+      open={open}
+      onClose={handleClose}
+      title="Process Payment"
+      description={`Total amount: AED ${(totals?.total || 0).toFixed(2)}`}
+      icon={<Receipt className="w-6 h-6" />}
+      size="lg"
+      footer={
+        <div className="flex gap-3 w-full">
+          <SalonLuxeButton
+            variant="outline"
+            onClick={handleClose}
+            disabled={isProcessing}
+            className="flex-1"
+          >
+            Cancel
+          </SalonLuxeButton>
+          <SalonLuxeButton
+            variant="primary"
+            onClick={processPayment}
+            disabled={!isFullyPaid || isProcessing}
+            loading={isProcessing}
+            icon={<Check className="w-4 h-4" />}
+            className="flex-[2]"
+          >
+            {isProcessing ? 'Processing...' : 'Complete Payment'}
+          </SalonLuxeButton>
+        </div>
+      }
+    >
+      <div className="space-y-5 py-4">
           {/* Order Summary */}
           <Card
             className="border transition-all duration-500 cursor-pointer group relative overflow-hidden"
@@ -399,16 +481,47 @@ export function PaymentDialog({
               Payment Methods
             </h3>
             <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="card" className="flex items-center gap-2">
+              <TabsList
+                className="grid w-full grid-cols-3 p-1"
+                style={{
+                  backgroundColor: COLORS.charcoalDark,
+                  borderColor: `${COLORS.gold}30`,
+                  border: `1px solid ${COLORS.gold}30`
+                }}
+              >
+                <TabsTrigger
+                  value="card"
+                  className="flex items-center gap-2 transition-all duration-300"
+                  style={{
+                    color: activeTab === 'card' ? COLORS.charcoal : COLORS.bronze,
+                    backgroundColor: activeTab === 'card' ? COLORS.gold : 'transparent',
+                    borderRadius: '6px'
+                  }}
+                >
                   <CreditCard className="w-4 h-4" />
                   Card
                 </TabsTrigger>
-                <TabsTrigger value="cash" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="cash"
+                  className="flex items-center gap-2 transition-all duration-300"
+                  style={{
+                    color: activeTab === 'cash' ? COLORS.charcoal : COLORS.bronze,
+                    backgroundColor: activeTab === 'cash' ? COLORS.gold : 'transparent',
+                    borderRadius: '6px'
+                  }}
+                >
                   <Banknote className="w-4 h-4" />
                   Cash
                 </TabsTrigger>
-                <TabsTrigger value="voucher" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="voucher"
+                  className="flex items-center gap-2 transition-all duration-300"
+                  style={{
+                    color: activeTab === 'voucher' ? COLORS.charcoal : COLORS.bronze,
+                    backgroundColor: activeTab === 'voucher' ? COLORS.gold : 'transparent',
+                    borderRadius: '6px'
+                  }}
+                >
                   <Gift className="w-4 h-4" />
                   Voucher
                 </TabsTrigger>
@@ -416,22 +529,30 @@ export function PaymentDialog({
 
               <TabsContent value="card" className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Amount</Label>
-                    <Input
+                  <div className="space-y-2">
+                    <Label style={{ color: COLORS.champagne }}>Amount</Label>
+                    <SalonLuxeInput
                       type="number"
                       step="0.01"
                       placeholder="0.00"
                       value={cardAmount}
                       onChange={e => setCardAmount(e.target.value)}
+                      leftIcon={<CreditCard className="w-4 h-4" />}
                     />
                   </div>
-                  <div>
-                    <Label>Card Type</Label>
+                  <div className="space-y-2">
+                    <Label style={{ color: COLORS.champagne }}>Card Type</Label>
                     <select
-                      className="w-full p-2 border rounded-md"
+                      className="w-full h-12 px-4 border rounded-xl text-sm font-medium"
                       value={cardType}
                       onChange={e => setCardType(e.target.value)}
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(245,230,200,0.08) 0%, rgba(212,175,55,0.05) 50%, rgba(184,134,11,0.03) 100%)',
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)',
+                        border: '1px solid rgba(212, 175, 55, 0.25)',
+                        color: COLORS.champagne
+                      }}
                     >
                       <option value="visa">Visa</option>
                       <option value="mastercard">Mastercard</option>
@@ -440,42 +561,44 @@ export function PaymentDialog({
                     </select>
                   </div>
                 </div>
-                <div>
-                  <Label>Reference/Last 4 Digits (optional)</Label>
-                  <Input
+                <div className="space-y-2">
+                  <Label style={{ color: COLORS.champagne }}>Reference/Last 4 Digits (optional)</Label>
+                  <SalonLuxeInput
                     placeholder="1234"
                     value={cardReference}
                     onChange={e => setCardReference(e.target.value)}
                   />
                 </div>
-                <Button
+                <SalonLuxeButton
+                  variant="primary"
                   onClick={() => addPayment('card')}
                   disabled={!cardAmount || parseFloat(cardAmount) <= 0}
+                  icon={<Plus className="w-4 h-4" />}
                   className="w-full"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
                   Add Card Payment
-                </Button>
+                </SalonLuxeButton>
               </TabsContent>
 
               <TabsContent value="cash" className="space-y-4">
-                <div>
-                  <Label>Cash Amount</Label>
-                  <Input
+                <div className="space-y-2">
+                  <Label style={{ color: COLORS.champagne }}>Cash Amount</Label>
+                  <SalonLuxeInput
                     type="number"
                     step="0.01"
                     placeholder="0.00"
                     value={cashAmount}
                     onChange={e => setCashAmount(e.target.value)}
+                    leftIcon={<Banknote className="w-4 h-4" />}
                   />
                 </div>
 
                 {/* Quick Cash Buttons */}
-                <div>
-                  <Label className="text-sm" style={{ color: COLORS.bronze }}>
+                <div className="space-y-2">
+                  <Label className="text-sm" style={{ color: COLORS.champagne }}>
                     Quick amounts:
                   </Label>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
+                  <div className="grid grid-cols-3 gap-2">
                     {quickAmounts.map((amount, index) => (
                       <Button
                         key={amount}
@@ -510,50 +633,53 @@ export function PaymentDialog({
                   <Alert>
                     <Calculator className="w-4 h-4" />
                     <AlertDescription>
-                      Change due: <strong>${changeAmount.toFixed(2)}</strong>
+                      Change due: <strong>AED {changeAmount.toFixed(2)}</strong>
                     </AlertDescription>
                   </Alert>
                 )}
 
-                <Button
+                <SalonLuxeButton
+                  variant="primary"
                   onClick={() => addPayment('cash')}
                   disabled={!cashAmount || parseFloat(cashAmount) <= 0}
+                  icon={<Plus className="w-4 h-4" />}
                   className="w-full"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
                   Add Cash Payment
-                </Button>
+                </SalonLuxeButton>
               </TabsContent>
 
               <TabsContent value="voucher" className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Voucher Amount</Label>
-                    <Input
+                  <div className="space-y-2">
+                    <Label style={{ color: COLORS.champagne }}>Voucher Amount</Label>
+                    <SalonLuxeInput
                       type="number"
                       step="0.01"
                       placeholder="0.00"
                       value={voucherAmount}
                       onChange={e => setVoucherAmount(e.target.value)}
+                      leftIcon={<Gift className="w-4 h-4" />}
                     />
                   </div>
-                  <div>
-                    <Label>Voucher Code</Label>
-                    <Input
+                  <div className="space-y-2">
+                    <Label style={{ color: COLORS.champagne }}>Voucher Code</Label>
+                    <SalonLuxeInput
                       placeholder="VOUCHER123"
                       value={voucherCode}
                       onChange={e => setVoucherCode(e.target.value)}
                     />
                   </div>
                 </div>
-                <Button
+                <SalonLuxeButton
+                  variant="primary"
                   onClick={() => addPayment('voucher')}
                   disabled={!voucherAmount || !voucherCode || parseFloat(voucherAmount) <= 0}
+                  icon={<Plus className="w-4 h-4" />}
                   className="w-full"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
                   Add Voucher Payment
-                </Button>
+                </SalonLuxeButton>
               </TabsContent>
             </Tabs>
           </div>
@@ -745,45 +871,6 @@ export function PaymentDialog({
             </Alert>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={handleClose}
-              disabled={isProcessing}
-              className="transition-all duration-300 hover:scale-105"
-              style={{
-                borderColor: COLORS.bronze,
-                color: COLORS.champagne,
-                backgroundColor: `${COLORS.charcoalLight}80`,
-                boxShadow: `0 2px 8px ${COLORS.black}30`
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={processPayment}
-              disabled={!isFullyPaid || isProcessing}
-              className="flex-1 transition-all duration-300 hover:scale-105 font-bold"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                color: COLORS.charcoal,
-                border: `1px solid ${COLORS.gold}60`,
-                boxShadow: `0 4px 20px ${COLORS.gold}40`
-              }}
-            >
-              {isProcessing ? (
-                <div
-                  className="animate-spin rounded-full h-4 w-4 border-b-2 mr-2"
-                  style={{ borderColor: COLORS.charcoal }}
-                ></div>
-              ) : (
-                <Check className="w-4 h-4 mr-2" />
-              )}
-              {isProcessing ? 'Processing...' : 'Complete Payment'}
-            </Button>
-          </div>
-
           {/* Add fadeIn keyframe animation */}
           <style jsx>{`
             @keyframes fadeIn {
@@ -798,7 +885,17 @@ export function PaymentDialog({
             }
           `}</style>
         </div>
-      </DialogContent>
-    </Dialog>
+    </SalonLuxeModal>
+
+      {/* Validation Warning Modal */}
+      <ValidationWarningModal
+        open={showValidationModal}
+        onClose={() => {
+          setShowValidationModal(false)
+          onClose() // Also close payment dialog to allow user to fix issues
+        }}
+        issues={validationIssues}
+      />
+    </>
   )
 }

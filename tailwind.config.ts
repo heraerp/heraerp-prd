@@ -26,7 +26,24 @@ const config: Config = {
         'accent-fg': 'rgb(var(--accent-fg) / <alpha-value>)',
         glow1: 'rgb(var(--glow1) / <alpha-value>)',
         glow2: 'rgb(var(--glow2) / <alpha-value>)',
-        
+
+        // Salon Luxe Theme Tokens (CSS Variable Based)
+        salon: {
+          bg: 'rgb(var(--salon-bg) / <alpha-value>)',
+          surface: 'rgb(var(--salon-surface) / <alpha-value>)',
+          surface2: 'rgb(var(--salon-surface2) / <alpha-value>)',
+          surface3: 'rgb(var(--salon-surface3) / <alpha-value>)',
+          border: 'rgb(var(--salon-border))',
+          text: 'rgb(var(--salon-text) / <alpha-value>)',
+          muted: 'rgb(var(--salon-muted) / <alpha-value>)',
+          accent: 'rgb(var(--salon-accent) / <alpha-value>)',
+          'accent-fg': 'rgb(var(--salon-accent-fg) / <alpha-value>)',
+          ring: 'rgb(var(--salon-ring))',
+          input: 'rgb(var(--salon-input) / <alpha-value>)',
+          success: 'rgb(var(--salon-success) / <alpha-value>)',
+          danger: 'rgb(var(--salon-danger) / <alpha-value>)',
+        },
+
         // Charcoal Gold UI Kit Colors
         charcoal: { 
           900: '#0E0F11', 

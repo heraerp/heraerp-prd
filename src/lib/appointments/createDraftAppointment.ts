@@ -75,6 +75,7 @@ export async function createDraftAppointment(input: DraftInput): Promise<{ id: s
     p_to_entity_id: preferredStylistEntityId || null, // Stylist
     p_transaction_date: startDate.toISOString(),
     p_total_amount: totalAmount,
+    p_status: status, // ✅ Pass status to set transaction_status field
     p_metadata: {
       status,
       start_time: startDate.toISOString(),

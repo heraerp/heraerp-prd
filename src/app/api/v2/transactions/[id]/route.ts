@@ -76,3 +76,61 @@ export async function GET(
     )
   }
 }
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: transactionId } = await params
+    const body = await request.json()
+
+    const organizationId = body.p_organization_id
+    if (!organizationId) {
+      return NextResponse.json(
+        { error: 'organization_id is required' },
+        { status: 400 }
+      )
+    }
+
+    const supabase = createServerClient()
+
+    // Build update object from provided fields
+    const updateData: any = {}
+    if (body.p_transaction_date) updateData.transaction_date = body.p_transaction_date
+    if (body.p_source_entity_id !== undefined) updateData.source_entity_id = body.p_source_entity_id
+    if (body.p_target_entity_id !== undefined) updateData.target_entity_id = body.p_target_entity_id
+    if (body.p_total_amount !== undefined) updateData.total_amount = body.p_total_amount
+    if (body.p_status !== undefined) updateData.transaction_status = body.p_status
+    if (body.p_metadata !== undefined) updateData.business_context = body.p_metadata
+    if (body.p_smart_code !== undefined) updateData.smart_code = body.p_smart_code
+
+    // Update transaction
+    const { data, error } = await supabase
+      .from('universal_transactions')
+      .update(updateData)
+      .eq('id', transactionId)
+      .eq('organization_id', organizationId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[API] Error updating transaction:', error)
+      return NextResponse.json(
+        { error: error.message || 'Failed to update transaction' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      data
+    })
+  } catch (error: any) {
+    console.error('[API] Error updating transaction:', error)
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}

@@ -14,6 +14,7 @@ import {
   UserCheck,
   TrendingUp,
   Users,
+  UserCircle,
   Search,
   Edit,
   Trash2,
@@ -67,6 +68,25 @@ const COLORS = {
   charcoalLight: '#232323',
   emerald: '#0F6F5C',
   rose: '#E8B4B8'
+}
+
+// Avatar color palette - luxe variety for staff avatars
+const AVATAR_COLORS = [
+  { bg: '#D4AF3720', border: '#D4AF37', icon: '#D4AF37' }, // Gold
+  { bg: '#0F6F5C20', border: '#0F6F5C', icon: '#0F6F5C' }, // Emerald
+  { bg: '#E8B4B820', border: '#E8B4B8', icon: '#E8B4B8' }, // Rose
+  { bg: '#8C785320', border: '#8C7853', icon: '#8C7853' }, // Bronze
+  { bg: '#B8860B20', border: '#B8860B', icon: '#B8860B' }, // Gold Dark
+  { bg: '#F5E6C820', border: '#D4AF37', icon: '#D4AF37' }, // Champagne with gold
+]
+
+// Get consistent color for staff member based on their ID
+const getAvatarColor = (id: string, index: number) => {
+  // Use index as fallback if ID is not available
+  const colorIndex = id
+    ? id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % AVATAR_COLORS.length
+    : index % AVATAR_COLORS.length
+  return AVATAR_COLORS[colorIndex]
 }
 
 interface StaffStats {
@@ -649,7 +669,7 @@ function StaffContent() {
                 color: activeTab === 'staff' ? COLORS.black : COLORS.champagne
               }}
             >
-              <Users className="w-4 h-4" />
+              <UserCircle className="w-4 h-4" />
               Staff Members
               <Badge
                 className="ml-2"
@@ -699,7 +719,7 @@ function StaffContent() {
                   title: 'Total Staff',
                   value: stats.totalStaff,
                   desc: 'Team members',
-                  icon: Users,
+                  icon: UserCircle,
                   gradient: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.emerald}15 100%)`
                 },
                 {
@@ -884,6 +904,7 @@ function StaffContent() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredStaff.map((member, index) => {
                   const isArchived = member.status === 'archived'
+                  const avatarColor = getAvatarColor(member.id, index)
                   return (
                     <Card
                       key={member.id}
@@ -924,25 +945,19 @@ function StaffContent() {
                       <CardContent className="p-6 relative z-10">
                         <div className="flex items-start space-x-4">
                           <div className="relative">
-                            <Avatar
-                              className="h-14 w-14 ring-2 transition-all duration-300 group-hover:ring-4 group-hover:scale-110"
+                            <div
+                              className="h-14 w-14 ring-2 transition-all duration-300 group-hover:ring-4 group-hover:scale-110 rounded-full flex items-center justify-center"
                               style={{
-                                backgroundColor: COLORS.gold,
-                                color: COLORS.black,
-                                ringColor: `${COLORS.gold}40`
+                                backgroundColor: avatarColor.bg,
+                                border: `2px solid ${avatarColor.border}`,
+                                ringColor: `${avatarColor.border}40`
                               }}
                             >
-                              <AvatarFallback
-                                className="font-bold text-lg"
-                                style={{ backgroundColor: COLORS.gold, color: COLORS.black }}
-                              >
-                                {member.entity_name
-                                  .split(' ')
-                                  .map(n => n[0])
-                                  .join('')
-                                  .toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
+                              <UserCircle
+                                className="h-10 w-10"
+                                style={{ color: avatarColor.icon }}
+                              />
+                            </div>
                             {/* Active Status Indicator */}
                             {!isArchived && member.status === 'active' && (
                               <div
@@ -1154,7 +1169,7 @@ function StaffContent() {
                     border: `2px solid ${COLORS.gold}40`
                   }}
                 >
-                  <Users className="h-10 w-10" style={{ color: COLORS.gold }} />
+                  <UserCircle className="h-10 w-10" style={{ color: COLORS.gold }} />
                 </div>
                 <h3
                   className="text-2xl font-bold mb-3 tracking-wide"

@@ -52,10 +52,12 @@ interface PosPayment {
 interface PosCheckoutData {
   customer_id?: string
   appointment_id?: string
+  branch_id?: string // Branch where sale occurred
   items: PosCartItem[]
   payments: PosPayment[]
   tax_rate?: number
   discount_total?: number
+  tip_total?: number // Added tip support
   notes?: string
 }
 
@@ -89,10 +91,12 @@ export function usePosCheckout(): UsePosCheckoutReturn {
       const {
         customer_id,
         appointment_id,
+        branch_id,
         items,
         payments,
         tax_rate = 0.05,
         discount_total = 0,
+        tip_total = 0,
         notes
       } = checkoutData
 
@@ -103,11 +107,20 @@ export function usePosCheckout(): UsePosCheckoutReturn {
       )
 
       const tax_amount = (subtotal - discount_total) * tax_rate
-      const total_amount = subtotal - discount_total + tax_amount
+      const total_amount = subtotal - discount_total + tax_amount + tip_total
 
       // Validate payments equal total
       const payment_total = payments.reduce((sum, payment) => sum + payment.amount, 0)
       if (Math.abs(payment_total - total_amount) > 0.01) {
+        console.error('[usePosCheckout] Payment validation failed:', {
+          subtotal: subtotal.toFixed(2),
+          discount_total: discount_total.toFixed(2),
+          tax_amount: tax_amount.toFixed(2),
+          tip_total: tip_total.toFixed(2),
+          total_amount: total_amount.toFixed(2),
+          payment_total: payment_total.toFixed(2),
+          difference: (payment_total - total_amount).toFixed(2)
+        })
         throw new Error('Payment amount must equal transaction total')
       }
 
@@ -173,6 +186,20 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         })
       }
 
+      // Tip line (if applicable)
+      if (tip_total > 0) {
+        lines.push({
+          line_number: line_number++,
+          line_type: 'tip',
+          entity_id: null, // ✅ FIX: System line - no entity reference needed
+          description: 'Gratuity',
+          quantity: 1,
+          unit_amount: tip_total,
+          line_amount: tip_total,
+          smart_code: 'HERA.SALON.TIP.TXN.V1'
+        })
+      }
+
       // Tax line
       if (tax_amount > 0) {
         lines.push({
@@ -209,6 +236,16 @@ export function usePosCheckout(): UsePosCheckoutReturn {
       // Determine primary staff ID (first staff from items)
       const primaryStaffId = items.find(item => item.staff_id)?.staff_id || null
 
+      console.log('[usePosCheckout] ENTERPRISE TRACKING - All entities linked:', {
+        branch_id,
+        customer_id,
+        primary_staff: primaryStaffId,
+        appointment_id,
+        service_count: items.filter(i => i.type === 'service').length,
+        product_count: items.filter(i => i.type === 'product').length,
+        staff_assigned_count: items.filter(i => i.staff_id).length
+      })
+
       // ✅ LAYER 1: Use createTransaction from useUniversalTransaction (RPC API v2)
       const result = await createTransaction({
         transaction_type: 'SALE', // ✅ UPPERCASE - matches HERA DNA standard
@@ -221,12 +258,19 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         metadata: {
           subtotal,
           discount_total,
+          tip_total,
           tax_amount,
           tax_rate,
           payment_methods: payments.map(p => p.method),
           notes,
           pos_session: Date.now().toString(),
-          appointment_id // Store appointment ID in metadata
+          appointment_id, // Store appointment ID in metadata
+          branch_id, // ✅ Store branch ID for location tracking
+          // Enterprise-grade tracking: link to all entities
+          customer_entity_id: customer_id,
+          staff_entity_id: primaryStaffId,
+          service_ids: items.filter(i => i.type === 'service').map(i => i.entity_id),
+          product_ids: items.filter(i => i.type === 'product').map(i => i.entity_id)
         },
         lines
       })
@@ -271,8 +315,8 @@ export const PosUtils = {
     return (subtotal - discountTotal) * taxRate
   },
 
-  calculateTotal: (subtotal: number, discountTotal: number, taxAmount: number) => {
-    return subtotal - discountTotal + taxAmount
+  calculateTotal: (subtotal: number, discountTotal: number, taxAmount: number, tipTotal = 0) => {
+    return subtotal - discountTotal + taxAmount + tipTotal
   },
 
   validatePayments: (payments: PosPayment[], totalAmount: number) => {

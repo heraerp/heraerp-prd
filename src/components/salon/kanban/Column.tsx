@@ -5,6 +5,8 @@
 import React from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { format, isSameDay, startOfDay, isToday, isTomorrow, isYesterday } from 'date-fns'
+import { Calendar } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { KanbanCard } from '@/schemas/kanban'
 import { Card } from './Card'
@@ -43,6 +45,41 @@ export function Column({ id, title, cards, onCardAction, onMoveToNext, isDraft =
     const y = ((e.clientY - rect.top) / rect.height) * 100
     setMousePosition({ x, y })
   }
+
+  // 🎯 ENTERPRISE: Group cards by date for better organization
+  const cardsByDate = React.useMemo(() => {
+    const groups: { date: Date; dateLabel: string; cards: KanbanCard[] }[] = []
+
+    // Sort cards by start time
+    const sortedCards = [...cards].sort((a, b) =>
+      new Date(a.start).getTime() - new Date(b.start).getTime()
+    )
+
+    sortedCards.forEach(card => {
+      const cardDate = startOfDay(new Date(card.start))
+      const existingGroup = groups.find(g => isSameDay(g.date, cardDate))
+
+      if (existingGroup) {
+        existingGroup.cards.push(card)
+      } else {
+        // Format date label with enterprise context
+        let dateLabel: string
+        if (isToday(cardDate)) {
+          dateLabel = `Today, ${format(cardDate, 'MMMM d, yyyy')}`
+        } else if (isTomorrow(cardDate)) {
+          dateLabel = `Tomorrow, ${format(cardDate, 'MMMM d, yyyy')}`
+        } else if (isYesterday(cardDate)) {
+          dateLabel = `Yesterday, ${format(cardDate, 'MMMM d, yyyy')}`
+        } else {
+          dateLabel = format(cardDate, 'EEEE, MMMM d, yyyy')
+        }
+
+        groups.push({ date: cardDate, dateLabel, cards: [card] })
+      }
+    })
+
+    return groups
+  }, [cards, id, title])
 
   return (
     <div className="w-80 flex-shrink-0 flex flex-col h-full" style={{
@@ -117,18 +154,56 @@ export function Column({ id, title, cards, onCardAction, onMoveToNext, isDraft =
         }}
       >
         <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
-          {cards.map(card => (
-            <Card
-              key={card.id}
-              card={card}
-              onConfirm={() => onCardAction(card, 'confirm')}
-              onEdit={() => onCardAction(card, 'edit')}
-              onReschedule={() => onCardAction(card, 'reschedule')}
-              onCancel={() => onCardAction(card, 'cancel')}
-              onProcessPayment={() => onCardAction(card, 'process_payment')}
-              onMoveToNext={onMoveToNext ? () => onMoveToNext(card) : undefined}
-            />
-          ))}
+          {cardsByDate.length > 0 ? (
+            cardsByDate.map((group, groupIndex) => (
+              <div key={group.date.toISOString()} className="space-y-3">
+                {/* 🎯 ENTERPRISE: Luxe Date Header - Always visible with emerald accent */}
+                <div
+                  className="sticky top-0 z-10 flex items-center gap-2 px-3 py-2 mb-1 animate-in fade-in duration-300"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}18 0%, ${LUXE_COLORS.emerald}0A 100%)`,
+                    borderRadius: '0.75rem',
+                    border: `1px solid ${LUXE_COLORS.emerald}50`,
+                    boxShadow: `0 2px 8px ${LUXE_COLORS.emerald}15, inset 0 1px 0 ${LUXE_COLORS.emerald}30`,
+                    backdropFilter: 'blur(10px)',
+                    animation: `slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${groupIndex * 0.1}s both`
+                  }}
+                >
+                  <Calendar className="w-4 h-4" style={{ color: LUXE_COLORS.emerald }} />
+                  <span
+                    className="text-sm font-semibold tracking-wide"
+                    style={{ color: LUXE_COLORS.champagne }}
+                  >
+                    {group.dateLabel}
+                  </span>
+                  <span
+                    className="ml-auto text-xs px-2 py-1 rounded-full font-medium"
+                    style={{
+                      background: `${LUXE_COLORS.emerald}30`,
+                      color: LUXE_COLORS.champagne,
+                      border: `1px solid ${LUXE_COLORS.emerald}60`,
+                      boxShadow: `0 1px 4px ${LUXE_COLORS.emerald}20`
+                    }}
+                  >
+                    {group.cards.length}
+                  </span>
+                </div>
+                {/* Render cards for this date */}
+                {group.cards.map(card => (
+                  <Card
+                    key={card.id}
+                    card={card}
+                    onConfirm={() => onCardAction(card, 'confirm')}
+                    onEdit={() => onCardAction(card, 'edit')}
+                    onReschedule={() => onCardAction(card, 'reschedule')}
+                    onCancel={() => onCardAction(card, 'cancel')}
+                    onProcessPayment={() => onCardAction(card, 'process_payment')}
+                    onMoveToNext={onMoveToNext ? () => onMoveToNext(card) : undefined}
+                  />
+                ))}
+              </div>
+            ))
+          ) : null}
         </SortableContext>
 
         {cards.length === 0 && (
