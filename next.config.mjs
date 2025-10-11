@@ -7,7 +7,8 @@ const __dirname = path.dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',  // Required for Railway deployment
+  // REMOVE standalone - using Next.js built-in server via 'next start'
+  // output: 'standalone',
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 

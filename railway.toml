@@ -1,10 +1,23 @@
+# railway.toml
+
 [build]
 builder = "nixpacks"
 buildCommand = "npm run build"
 
 [deploy]
+# Run the built-in Next.js server, binding to Railway's injected $PORT
 startCommand = "next start -H 0.0.0.0 -p $PORT"
+
+# Production healthcheck
 healthcheckPath = "/api/health"
-healthcheckTimeout = 60
+healthcheckTimeout = 300
+
+# Safer restarts
 restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 3
+restartPolicyMaxRetries = 10
+
+# ---- Environment-specific overrides ----
+# Disable healthcheck ONLY for the 'develop' environment
+[environments.develop.deploy]
+# Empty path disables healthcheck in this env
+healthcheckPath = ""
