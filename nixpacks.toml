@@ -1,9 +1,14 @@
-# Force Node.js provider (prevent Deno detection)
+# nixpacks.toml
 providers = ["node"]
 
-[phases.setup]
-nixPkgs = ["nodejs_20", "npm-9_x"]
-
 [variables]
-NODE_VERSION = "20.18.0"
-NPM_VERSION = "9"
+NODE_ENV = "production"
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "next start -H 0.0.0.0 -p $PORT"
