@@ -51,7 +51,7 @@
     "docs:changelog": "tsx scripts/generate-preset-changelog.ts",
     "packages:build": "npm run build -ws",
     "packages:clean": "npm run clean -ws",
-    "prebuild": "mkdir -p .next/browser && cp -f public/default-stylesheet.css .next/browser/default-stylesheet.css || true",
+    "prebuild": "mkdir -p .next/browser && if [ ! -f .next/browser/default-stylesheet.css ]; then if [ -f public/default-stylesheet.css ]; then cp public/default-stylesheet.css .next/browser/default-stylesheet.css; else printf '/* minimal fallback */\n:root{--hera-docs-bg:#fff;}\n' > .next/browser/default-stylesheet.css; fi; fi && echo 'Pre-build hook - seeded default-stylesheet.css'",
     "build": "NODE_OPTIONS='--max-old-space-size=8192' next build",
     "postbuild": "node scripts/ensure-default-stylesheet.js",
     "build:analyze": "ANALYZE=true npm run build",
