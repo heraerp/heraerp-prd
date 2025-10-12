@@ -241,7 +241,7 @@ export function withDnaEnforcement(
         return NextResponse.json(enforcedData, {
           status: response.status,
           headers: {
-            ...Object.fromEntries(response.headers.entries()),
+            ...Object.fromEntries([...response.headers]),
             'x-hera-dna-trace': context.dnaTrace,
             'x-hera-dna-compliant': 'true'
           }
@@ -263,39 +263,29 @@ export function withDnaEnforcement(
 }
 
 /**
- * DNA Component Wrapper - Enforces DNA patterns in React components
+ * DNA Component Validation - Validates DNA patterns for components
  */
-export function withComponentDna<P extends object>(
-  Component: React.ComponentType<P>,
-  smartCode: string
-) {
-  return function DnaWrappedComponent(props: P) {
-    // Validate smart code on component render
-    const validation = heraDnaStandardization.validateSmartCodeDna(smartCode)
+export function validateComponentDna(smartCode: string): HeraDnaValidationResult {
+  const validation = heraDnaStandardization.validateSmartCodeDna(smartCode)
+  
+  if (!validation.dnaCompliant) {
+    console.error(`🧬 Component DNA Violation: ${smartCode} - ${validation.error}`)
     
-    if (!validation.dnaCompliant) {
-      console.error(`🧬 Component DNA Violation: ${smartCode} - ${validation.error}`)
-      
-      // In development, show DNA violation
-      if (process.env.NODE_ENV === 'development') {
-        return (
-          <div style={{ 
-            border: '2px solid red', 
-            padding: '10px', 
-            margin: '10px',
-            backgroundColor: '#ffe6e6'
-          }}>
-            <strong>🧬 HERA DNA Violation</strong>
-            <br />Smart Code: {smartCode}
-            <br />Error: {validation.error}
-            <br />Fix: {validation.fix}
-          </div>
-        )
-      }
+    // In development, throw error
+    if (process.env.NODE_ENV === 'development') {
+      throw new Error(`🧬 HERA DNA Violation: ${smartCode} - ${validation.error}\nFix: ${validation.fix}`)
     }
-
-    return <Component {...props} />
   }
+
+  return validation
+}
+
+/**
+ * Legacy support for component DNA wrapper
+ */
+export function withComponentDna<T>(component: T, smartCode: string): T {
+  validateComponentDna(smartCode)
+  return component
 }
 
 /**
