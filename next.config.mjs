@@ -5,6 +5,9 @@ import { fileURLToPath } from 'node:url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Disable OTEL during builds to prevent Jaeger exporter errors
+process.env.HERA_OTEL = process.env.HERA_OTEL || 'false'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Build Performance Optimizations

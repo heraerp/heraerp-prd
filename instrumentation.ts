@@ -1,0 +1,68 @@
+// ================================================================================
+// HERA TELEMETRY INSTRUMENTATION
+// Smart Code: HERA.OBSERVABILITY.INSTRUMENTATION.V1
+// Optional OpenTelemetry instrumentation for production monitoring
+// ================================================================================
+
+export async function register() {
+  // Only enable telemetry in production or when explicitly requested
+  const WITH_OTEL = process.env.HERA_OTEL !== 'false' && process.env.NODE_ENV === 'production'
+  
+  if (!WITH_OTEL) {
+    console.log('[HERA] Telemetry disabled (HERA_OTEL=false or not in production)')
+    return
+  }
+
+  try {
+    const { NodeSDK } = await import('@opentelemetry/sdk-node')
+    const { getNodeAutoInstrumentations } = await import('@opentelemetry/auto-instrumentations-node')
+    const { Resource } = await import('@opentelemetry/resources')
+    const { SemanticResourceAttributes } = await import('@opentelemetry/semantic-conventions')
+    
+    // Try to import OTLP exporter, fall back to console if not available
+    let traceExporter
+    try {
+      const { OTLPTraceExporter } = await import('@opentelemetry/exporter-trace-otlp-http')
+      traceExporter = new OTLPTraceExporter({
+        url: process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT || 'http://localhost:4318/v1/traces',
+      })
+    } catch (e) {
+      console.warn('[HERA] OTLP exporter not available, using console exporter')
+      const { ConsoleSpanExporter } = await import('@opentelemetry/sdk-trace-base')
+      traceExporter = new ConsoleSpanExporter()
+    }
+
+    const sdk = new NodeSDK({
+      resource: new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: 'hera-erp',
+        [SemanticResourceAttributes.SERVICE_VERSION]: process.env.npm_package_version || '1.0.0',
+        [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development',
+      }),
+      traceExporter,
+      instrumentations: [
+        getNodeAutoInstrumentations({
+          // Disable specific instrumentations that might cause issues
+          '@opentelemetry/instrumentation-fs': {
+            enabled: false,
+          },
+          '@opentelemetry/instrumentation-express': {
+            enabled: false,
+          },
+        }),
+      ],
+    })
+
+    sdk.start()
+    console.log('[HERA] OpenTelemetry instrumentation started successfully')
+    
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      sdk.shutdown()
+        .then(() => console.log('[HERA] OpenTelemetry terminated'))
+        .catch((error) => console.log('[HERA] Error terminating OpenTelemetry', error))
+        .finally(() => process.exit(0))
+    })
+  } catch (error) {
+    console.warn('[HERA] Failed to initialize OpenTelemetry:', error)
+  }
+}

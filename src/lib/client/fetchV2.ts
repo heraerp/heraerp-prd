@@ -217,3 +217,31 @@ export const apiV2 = {
 export function useApiV2() {
   return apiV2
 }
+
+/**
+ * V2 API helper functions for validation and body processing
+ * Used by API routes to ensure proper v2 request handling
+ */
+
+// Minimal helpers for v2 request validation
+export function assertV2<T>(condition: any, message = 'Invalid v2 request'): asserts condition {
+  if (!condition) {
+    throw new Error(message)
+  }
+}
+
+// V2 body wrapper - ensures apiVersion is included
+export const v2Body = <T>(data: T) => ({
+  apiVersion: 'v2' as const,
+  ...data
+})
+
+// V2 body schema validator (minimal implementation)
+export const v2BodySchema = <T>() => ({
+  parse: (data: T) => {
+    if (typeof data !== 'object' || data === null) {
+      throw new Error('Invalid request body')
+    }
+    return data
+  }
+})
