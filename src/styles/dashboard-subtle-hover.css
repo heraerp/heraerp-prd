@@ -1,0 +1,49 @@
+/**
+ * Subtle Hover Effects for Enterprise Dashboard
+ * Toned down for eye comfort
+ */
+
+/* Reduce all hover glows */
+.dashboard-card-hover {
+  transition: all 0.3s ease;
+}
+
+.dashboard-card-hover:hover {
+  transform: scale(1.01); /* Reduced from 1.02 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Reduced opacity */
+}
+
+/* Subtle glow effect */
+.dashboard-glow-subtle {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.dashboard-glow-subtle:hover {
+  opacity: 0.3; /* Reduced from 1.0 */
+}
+
+/* Reduce shimmer intensity */
+@keyframes shimmer-subtle {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.05; /* Very subtle */
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Subtle scale animation */
+.hover-scale-subtle:hover {
+  transform: scale(1.01);
+}
+
+/* Reduced shadow on hover */
+.hover-shadow-subtle:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

@@ -20,6 +20,15 @@ import {
   type Json
 } from '@/lib/universal-api-v2-client'
 
+/**
+ * ✅ ENTERPRISE PATTERN: Normalize transaction_type to UPPERCASE for consistency
+ * Ensures all transaction types follow HERA DNA standard (SALE, APPOINTMENT, PAYMENT, etc.)
+ */
+function normalizeTransactionType(transactionType?: string | null): string | undefined {
+  if (!transactionType) return undefined
+  return transactionType.toUpperCase()
+}
+
 // Transaction line interface (matches createTransaction RPC signature)
 export interface TransactionLine {
   line_type: string
@@ -80,13 +89,16 @@ export function useUniversalTransaction(config: UseUniversalTransactionConfig = 
   // ✅ ENTERPRISE AUDIT TRAIL: Extract user entity ID for audit tracking
   const userEntityId = user?.entity_id
 
+  // ✅ ENTERPRISE PATTERN: Normalize transaction_type filter to UPPERCASE
+  const normalizedTransactionType = normalizeTransactionType(filters.transaction_type)
+
   // Build query key
   const queryKey = useMemo(
     () => [
       'transactions',
       organizationId,
       {
-        transaction_type: filters.transaction_type || null,
+        transaction_type: normalizedTransactionType || null,
         smart_code: filters.smart_code || null,
         source_entity_id: filters.source_entity_id || null,
         target_entity_id: filters.target_entity_id || null,
@@ -98,7 +110,7 @@ export function useUniversalTransaction(config: UseUniversalTransactionConfig = 
     ],
     [
       organizationId,
-      filters.transaction_type,
+      normalizedTransactionType,
       filters.smart_code,
       filters.source_entity_id,
       filters.target_entity_id,
@@ -127,7 +139,7 @@ export function useUniversalTransaction(config: UseUniversalTransactionConfig = 
 
       const result = await getTransactions({
         orgId: organizationId,
-        transactionType: filters.transaction_type,
+        transactionType: normalizedTransactionType,
         smartCode: filters.smart_code,
         fromEntityId: filters.source_entity_id,
         toEntityId: filters.target_entity_id,
@@ -171,23 +183,27 @@ export function useUniversalTransaction(config: UseUniversalTransactionConfig = 
         throw new Error('Organization ID required')
       }
 
+      // ✅ ENTERPRISE PATTERN: Normalize transaction_type to UPPERCASE
+      const normalizedType = normalizeTransactionType(payload.transaction_type) || payload.transaction_type
+
       console.log('[useUniversalTransaction] Creating transaction:', {
         organizationId,
-        type: payload.transaction_type,
+        type: normalizedType,
         smartCode: payload.smart_code
       })
 
       // Use RPC function from universal-api-v2-client
       const result = await createTransaction(organizationId, {
-        p_transaction_type: payload.transaction_type,
+        p_transaction_type: normalizedType,
         p_smart_code: payload.smart_code,
         p_transaction_date: payload.transaction_date || new Date().toISOString(),
         p_from_entity_id: payload.source_entity_id || null,
         p_to_entity_id: payload.target_entity_id || null,
         p_total_amount: payload.total_amount || 0,
+        p_status: payload.status || 'draft', // ✅ FIX: Pass status to RPC function (sets transaction_status column)
         p_metadata: {
           ...(payload.metadata || {}),
-          ...(payload.status && { status: payload.status }), // ✅ Include status in metadata
+          ...(payload.status && { status: payload.status }), // ✅ Also include status in metadata for consistency
           // ✅ ENTERPRISE AUDIT TRAIL: Include created_by for tracking who created the transaction
           ...(userEntityId && { created_by: userEntityId })
         },

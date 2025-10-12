@@ -180,6 +180,30 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     }
 
     // ✅ SECURITY: Get organization ID from HERAAuth (JWT), not from cache
+    // Build organization object with fallback to user metadata
+    const user = securityStore.user || auth.user
+    const orgNameFromMetadata = user?.user_metadata?.organization_name || 'Salon Dashboard'
+
+    // Check if we have a valid organization object with a proper name
+    const storedOrg = securityStore.organization
+    const authOrg = auth.currentOrganization
+
+    // Prefer stored org if it has a real name, otherwise use metadata
+    let finalOrg
+    if (storedOrg?.name && storedOrg.name !== 'Organization' && storedOrg.name !== '') {
+      finalOrg = storedOrg
+    } else if (authOrg?.name && authOrg.name !== 'Organization' && authOrg.name !== '') {
+      finalOrg = authOrg
+    } else {
+      // Fallback to building from user metadata
+      finalOrg = {
+        id: orgId,
+        name: orgNameFromMetadata,
+        currency: 'AED',
+        currencySymbol: 'AED'
+      }
+    }
+
     setContext(prev => ({
       ...prev,
       orgId,
@@ -187,8 +211,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       userId: securityStore.userId || '',
       salonRole: securityStore.salonRole || 'stylist',
       permissions: securityStore.permissions || [],
-      organization: auth.currentOrganization || { id: orgId, name: '' },
-      user: securityStore.user || auth.user,
+      organization: finalOrg,
+      user,
       isLoading: false, // ✅ CRITICAL: Set loading to false
       isAuthenticated: true,
       selectedBranchId,
@@ -271,6 +295,30 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       console.log('✅ Security context already initialized, updating context with auth org')
 
       // 🎯 CRITICAL FIX: Update context with store data + auth organization
+      // Build organization object with fallback to user metadata
+      const user = securityStore.user || auth.user
+      const orgNameFromMetadata = user?.user_metadata?.organization_name || 'Salon Dashboard'
+
+      // Check if we have a valid organization object with a proper name
+      const storedOrg = securityStore.organization
+      const authOrg = auth.currentOrganization
+
+      // Prefer stored org if it has a real name, otherwise use metadata
+      let finalOrg
+      if (storedOrg?.name && storedOrg.name !== 'Organization' && storedOrg.name !== '') {
+        finalOrg = storedOrg
+      } else if (authOrg?.name && authOrg.name !== 'Organization' && authOrg.name !== '') {
+        finalOrg = authOrg
+      } else {
+        // Fallback to building from user metadata
+        finalOrg = {
+          id: orgId,
+          name: orgNameFromMetadata,
+          currency: 'AED',
+          currencySymbol: 'AED'
+        }
+      }
+
       setContext(prev => ({
         ...prev,
         orgId,
@@ -278,8 +326,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         userId: securityStore.userId || '',
         salonRole: securityStore.salonRole || 'stylist',
         permissions: securityStore.permissions || [],
-        organization: auth.currentOrganization || { id: orgId, name: '' },
-        user: securityStore.user || auth.user,
+        organization: finalOrg,
+        user,
         isLoading: false, // ✅ CRITICAL: Set loading to false
         isAuthenticated: true,
         selectedBranchId,
@@ -663,19 +711,25 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
           const currencySymbol = currencySymbolMap[currency] || currency
 
-          console.log('[SecuredSalonProvider] ✅ Loaded organization currency:', {
-            currency,
-            currencySymbol,
-            source: dynamicData ? 'dynamic_data' : 'metadata'
-          })
-
-          return {
+          const orgData = {
             id: orgId,
             name: org?.organization_name || 'HairTalkz',
             currency,
             currencySymbol,
             settings: org?.metadata || {}
           }
+
+          console.log('[SecuredSalonProvider] ✅ Loaded organization:', {
+            orgId,
+            orgData,
+            hasOrganizationName: !!org?.organization_name,
+            rawOrganizationName: org?.organization_name,
+            currency,
+            currencySymbol,
+            source: dynamicData ? 'dynamic_data' : 'metadata'
+          })
+
+          return orgData
         }
       )
     } catch (error) {

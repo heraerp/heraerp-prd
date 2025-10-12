@@ -3,33 +3,8 @@
  * Enforces HERA DNA principles for API v2
  */
 
-import Ajv from 'ajv'
-import addFormats from 'ajv-formats'
-
-// Import schemas from the starter kit
-import universalEventSchema from '../../hera_claude_cli_starter/schemas/universal_event.schema.json'
-
-// Initialize AJV with formats support
-const ajv = new Ajv({ allErrors: true })
-addFormats(ajv)
-
 // Smart code regex pattern
 export const SMARTCODE_REGEX = /^HERA\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[vV][0-9]+$/
-
-// Compile validators
-const eventValidator = ajv.compile(universalEventSchema)
-
-/**
- * Validate a universal event against schema
- */
-export function validateEvent(data: any): boolean {
-  const valid = eventValidator(data)
-  if (!valid) {
-    // Attach errors to the function for access
-    ;(validateEvent as any).errors = eventValidator.errors
-  }
-  return valid
-}
 
 /**
  * Guardrail preflight checks for universal events

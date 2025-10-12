@@ -37,11 +37,13 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 // Define role-specific sidebar items
 const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
   owner: [
-    { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
+    { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
     {
       title: 'Appointments',
       href: '/salon/appointments',
-      icon: Calendar
+      icon: Calendar,
+      badge: '3',
+      badgeColor: LUXE_COLORS.emerald
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Services', href: '/salon/services', icon: Scissors },
@@ -49,7 +51,6 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Inventory', href: '/salon/inventory', icon: FolderOpen },
     { title: 'Staff', href: '/salon/staff', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users },
-    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
     { title: 'Reports', href: '/salon/reports', icon: BarChart3 }
   ],
@@ -59,16 +60,19 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     {
       title: 'Appointments',
       href: '/salon/appointments',
-      icon: Calendar
+      icon: Calendar,
+      badge: '3',
+      badgeColor: LUXE_COLORS.emerald
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
-    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     {
       title: 'WhatsApp',
       href: '/salon/whatsapp',
-      icon: MessageCircle
+      icon: MessageCircle,
+      badge: '5',
+      badgeColor: LUXE_COLORS.gold
     }
   ],
 

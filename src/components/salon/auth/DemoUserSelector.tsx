@@ -1,156 +1,14 @@
 /**
  * HERA DNA SECURITY: Demo User Selector
- * Quick testing component for HERA DNA SECURITY framework
+ * Luxurious single-user demo access for HairTalkz Salon
  */
 
 'use client'
 
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Crown, User, Calculator, Shield, Users, Scissors, Lock, TestTube } from 'lucide-react'
+import { Crown, Sparkles, Lock, ChevronRight } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
-
-interface DemoUser {
-  email: string
-  password: string
-  role: string
-  fullName: string
-  description: string
-  icon: React.ElementType
-  permissions: string[]
-  testScenarios: string[]
-}
-
-const DEMO_USERS: DemoUser[] = [
-  {
-    email: 'michele@hairtalkz.com',
-    password: 'HairTalkz2024!',
-    role: 'owner',
-    fullName: 'Michele Hair (Owner)',
-    description: 'Complete system access with all financial data',
-    icon: Crown,
-    permissions: [
-      'All financial data',
-      'Staff management',
-      'POS operations',
-      'Export functionality',
-      'System settings'
-    ],
-    testScenarios: [
-      'View all dashboard widgets',
-      'Access complete financial reports',
-      'Export data successfully',
-      'Manage all staff and customers'
-    ]
-  },
-  {
-    email: 'manager@hairtalkz.com',
-    password: 'Manager2024!',
-    role: 'manager',
-    fullName: 'Sarah Manager',
-    description: 'Operational management with limited financial access',
-    icon: Users,
-    permissions: [
-      'Operations dashboard',
-      'Staff scheduling',
-      'Inventory management',
-      'Customer management',
-      'Basic financial reports'
-    ],
-    testScenarios: [
-      'Manage daily operations',
-      'Schedule staff shifts',
-      'View operational metrics',
-      'Limited financial access'
-    ]
-  },
-  {
-    email: 'receptionist@hairtalkz.com',
-    password: 'Reception2024!',
-    role: 'receptionist',
-    fullName: 'Emma Receptionist',
-    description: 'Front desk operations with customer management',
-    icon: User,
-    permissions: [
-      'Appointment management',
-      'Customer check-in',
-      'Basic POS operations',
-      'Service booking',
-      'Customer information'
-    ],
-    testScenarios: [
-      'Financial data should be hidden',
-      'POS access for basic sales',
-      'Customer management only',
-      'No export functionality'
-    ]
-  },
-  {
-    email: 'stylist@hairtalkz.com',
-    password: 'Stylist2024!',
-    role: 'stylist',
-    fullName: 'Jessica Stylist',
-    description: 'Individual stylist with personal appointments only',
-    icon: Scissors,
-    permissions: [
-      'Own appointments only',
-      'Assigned customers',
-      'Personal schedule',
-      'Service completion',
-      'Basic client notes'
-    ],
-    testScenarios: [
-      'See only own appointments',
-      'No financial data access',
-      'No POS access',
-      'Limited navigation menu'
-    ]
-  },
-  {
-    email: 'accountant@hairtalkz.com',
-    password: 'Accounts2024!',
-    role: 'accountant',
-    fullName: 'David Accountant',
-    description: 'Financial specialist with reports and compliance access',
-    icon: Calculator,
-    permissions: [
-      'All financial reports',
-      'VAT compliance',
-      'Export financial data',
-      'Transaction history',
-      'P&L statements'
-    ],
-    testScenarios: [
-      'Full financial data access',
-      'Export capabilities',
-      'No POS access',
-      'VAT and compliance features'
-    ]
-  },
-  {
-    email: 'admin@hairtalkz.com',
-    password: 'Admin2024!',
-    role: 'admin',
-    fullName: 'Alex Admin',
-    description: 'System administrator with user management',
-    icon: Shield,
-    permissions: [
-      'User management',
-      'System settings',
-      'Security controls',
-      'Audit logs',
-      'Integration management'
-    ],
-    testScenarios: [
-      'Manage user accounts',
-      'Configure system settings',
-      'View security logs',
-      'Limited business data access'
-    ]
-  }
-]
 
 interface DemoUserSelectorProps {
   onUserSelect: (email: string, password: string) => void
@@ -158,183 +16,232 @@ interface DemoUserSelectorProps {
 }
 
 export function DemoUserSelector({ onUserSelect, isLoading = false }: DemoUserSelectorProps) {
+  const demoUser = {
+    email: 'michele@hairtalkz.ae',
+    password: 'HairTalkz2024!',
+    fullName: 'Michele Hair',
+    title: 'Salon Owner'
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <Card className="border-0" style={{ backgroundColor: LUXE_COLORS.charcoalLight }}>
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <TestTube className="h-6 w-6" style={{ color: LUXE_COLORS.gold }} />
-            <CardTitle style={{ color: LUXE_COLORS.gold }}>HERA DNA SECURITY Demo</CardTitle>
+    <div className="w-full max-w-md mx-auto">
+      {/* Luxurious Tile Card */}
+      <div
+        className="rounded-2xl p-8 relative overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer group"
+        style={{
+          backgroundColor: LUXE_COLORS.charcoalLight,
+          border: `1px solid ${LUXE_COLORS.gold}40`,
+          boxShadow: `0 10px 40px rgba(212, 175, 55, 0.15), inset 0 1px 0 ${LUXE_COLORS.gold}20`
+        }}
+        onClick={() => !isLoading && onUserSelect(demoUser.email, demoUser.password)}
+      >
+        {/* Ambient Glow Effect */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background: `radial-gradient(circle at 50% 50%, ${LUXE_COLORS.gold}15 0%, transparent 70%)`
+          }}
+        />
+
+        {/* Crown Icon with Glow */}
+        <div className="flex justify-center mb-6 relative">
+          <div
+            className="p-4 rounded-2xl relative"
+            style={{
+              background: `linear-gradient(135deg, ${LUXE_COLORS.gold}30 0%, ${LUXE_COLORS.goldDark}20 100%)`,
+              boxShadow: `0 8px 32px ${LUXE_COLORS.gold}40`
+            }}
+          >
+            <Crown
+              className="h-10 w-10 relative z-10"
+              style={{ color: LUXE_COLORS.gold }}
+            />
+            {/* Sparkle decorations */}
+            <Sparkles
+              className="h-4 w-4 absolute -top-1 -right-1 animate-pulse"
+              style={{ color: LUXE_COLORS.gold }}
+            />
+            <Sparkles
+              className="h-3 w-3 absolute -bottom-1 -left-1 animate-pulse"
+              style={{ color: LUXE_COLORS.champagne, animationDelay: '0.5s' }}
+            />
           </div>
-          <CardDescription style={{ color: LUXE_COLORS.bronze }}>
-            Test the security framework with different user roles and permissions
-          </CardDescription>
-        </CardHeader>
-      </Card>
+        </div>
 
-      {/* Demo Users Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {DEMO_USERS.map(user => {
-          const Icon = user.icon
-          return (
-            <Card
-              key={user.email}
-              className="border-0 hover:scale-[1.02] transition-transform cursor-pointer"
-              style={{
-                backgroundColor: LUXE_COLORS.charcoalLight,
-                borderColor: `${LUXE_COLORS.bronze}30`
-              }}
+        {/* User Info */}
+        <div className="text-center mb-6 relative z-10">
+          <h3
+            className="text-2xl font-light mb-1 tracking-wide"
+            style={{
+              background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            {demoUser.fullName}
+          </h3>
+          <div
+            className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-medium tracking-wider uppercase"
+            style={{
+              backgroundColor: `${LUXE_COLORS.gold}15`,
+              border: `1px solid ${LUXE_COLORS.gold}30`,
+              color: LUXE_COLORS.gold
+            }}
+          >
+            <Crown className="h-3 w-3" />
+            {demoUser.title}
+          </div>
+        </div>
+
+        {/* Credentials Box */}
+        <div
+          className="rounded-xl p-4 mb-6 relative z-10"
+          style={{
+            backgroundColor: LUXE_COLORS.charcoal,
+            border: `1px solid ${LUXE_COLORS.bronze}30`
+          }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Lock className="h-4 w-4" style={{ color: LUXE_COLORS.gold }} />
+            <span
+              className="text-xs font-medium tracking-wider uppercase"
+              style={{ color: LUXE_COLORS.bronze }}
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-3 mb-2">
-                  <div
-                    className="p-2 rounded-lg"
-                    style={{ backgroundColor: `${LUXE_COLORS.gold}20` }}
-                  >
-                    <Icon className="h-5 w-5" style={{ color: LUXE_COLORS.gold }} />
-                  </div>
-                  <div>
-                    <CardTitle className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
-                      {user.fullName}
-                    </CardTitle>
-                    <Badge
-                      variant="outline"
-                      className="text-xs"
-                      style={{
-                        borderColor: LUXE_COLORS.bronze,
-                        color: LUXE_COLORS.bronze
-                      }}
-                    >
-                      {user.role.toUpperCase()}
-                    </Badge>
-                  </div>
-                </div>
-                <CardDescription className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
-                  {user.description}
-                </CardDescription>
-              </CardHeader>
+              Demo Credentials
+            </span>
+          </div>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center justify-between">
+              <span style={{ color: LUXE_COLORS.bronze }}>Email:</span>
+              <span
+                className="font-mono text-xs"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
+                {demoUser.email}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span style={{ color: LUXE_COLORS.bronze }}>Password:</span>
+              <span
+                className="font-mono text-xs"
+                style={{ color: LUXE_COLORS.champagne }}
+              >
+                {demoUser.password}
+              </span>
+            </div>
+          </div>
+        </div>
 
-              <CardContent className="space-y-4">
-                {/* Login Credentials */}
-                <div
-                  className="p-3 rounded-lg text-xs"
-                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
-                >
-                  <div className="flex items-center gap-1 mb-1">
-                    <Lock className="h-3 w-3" style={{ color: LUXE_COLORS.bronze }} />
-                    <span style={{ color: LUXE_COLORS.bronze }}>Credentials</span>
-                  </div>
-                  <div style={{ color: LUXE_COLORS.champagne }}>
-                    <div>Email: {user.email}</div>
-                    <div>Password: {user.password}</div>
-                  </div>
-                </div>
+        {/* Feature Highlights */}
+        <div className="space-y-2 mb-6 relative z-10">
+          {[
+            'Complete system access',
+            'Financial reports & analytics',
+            'Staff & inventory management',
+            'POS operations & exports'
+          ].map((feature, idx) => (
+            <div
+              key={idx}
+              className="flex items-center gap-3 text-sm"
+              style={{ color: LUXE_COLORS.champagne }}
+            >
+              <div
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: LUXE_COLORS.gold }}
+              />
+              {feature}
+            </div>
+          ))}
+        </div>
 
-                {/* Key Permissions */}
-                <div>
-                  <div className="text-xs font-medium mb-2" style={{ color: LUXE_COLORS.bronze }}>
-                    Key Permissions:
-                  </div>
-                  <div className="space-y-1">
-                    {user.permissions.slice(0, 3).map((permission, idx) => (
-                      <div
-                        key={idx}
-                        className="text-xs flex items-center gap-2"
-                        style={{ color: LUXE_COLORS.champagne }}
-                      >
-                        <div
-                          className="w-1 h-1 rounded-full"
-                          style={{ backgroundColor: LUXE_COLORS.gold }}
-                        />
-                        {permission}
-                      </div>
-                    ))}
-                    {user.permissions.length > 3 && (
-                      <div className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
-                        +{user.permissions.length - 3} more...
-                      </div>
-                    )}
-                  </div>
-                </div>
+        {/* Login Button */}
+        <Button
+          onClick={(e) => {
+            e.stopPropagation()
+            if (!isLoading) {
+              onUserSelect(demoUser.email, demoUser.password)
+            }
+          }}
+          disabled={isLoading}
+          className="w-full h-14 text-base font-light tracking-wider uppercase transition-all duration-300 relative z-10"
+          style={{
+            backgroundColor: LUXE_COLORS.gold,
+            color: LUXE_COLORS.charcoal,
+            boxShadow: '0 8px 24px rgba(212, 175, 55, 0.3)',
+            border: 'none'
+          }}
+          onMouseEnter={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.backgroundColor = LUXE_COLORS.goldDark
+              e.currentTarget.style.boxShadow = '0 12px 32px rgba(212, 175, 55, 0.5)'
+              e.currentTarget.style.transform = 'translateY(-2px)'
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.backgroundColor = LUXE_COLORS.gold
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(212, 175, 55, 0.3)'
+              e.currentTarget.style.transform = 'translateY(0)'
+            }
+          }}
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center gap-2">
+              <div
+                className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin"
+                style={{ borderColor: LUXE_COLORS.charcoal }}
+              />
+              <span>Authenticating...</span>
+            </div>
+          ) : (
+            <>
+              <Lock className="mr-2 h-5 w-5" />
+              Quick Demo Access
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </>
+          )}
+        </Button>
 
-                {/* Test Scenarios */}
-                <div>
-                  <div className="text-xs font-medium mb-2" style={{ color: LUXE_COLORS.bronze }}>
-                    Test Scenarios:
-                  </div>
-                  <div className="space-y-1">
-                    {user.testScenarios.slice(0, 2).map((scenario, idx) => (
-                      <div
-                        key={idx}
-                        className="text-xs flex items-center gap-2"
-                        style={{ color: LUXE_COLORS.champagne }}
-                      >
-                        <div
-                          className="w-1 h-1 rounded-full"
-                          style={{ backgroundColor: LUXE_COLORS.emerald }}
-                        />
-                        {scenario}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Login Button */}
-                <Button
-                  onClick={() => onUserSelect(user.email, user.password)}
-                  disabled={isLoading}
-                  className="w-full"
-                  style={{
-                    backgroundColor: LUXE_COLORS.gold,
-                    color: LUXE_COLORS.charcoal
-                  }}
-                >
-                  {isLoading ? 'Logging in...' : `Login as ${user.role}`}
-                </Button>
-              </CardContent>
-            </Card>
-          )
-        })}
+        {/* Decorative corner accents */}
+        <div
+          className="absolute top-0 right-0 w-32 h-32 opacity-10"
+          style={{
+            background: `radial-gradient(circle at top right, ${LUXE_COLORS.gold} 0%, transparent 70%)`
+          }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-32 h-32 opacity-10"
+          style={{
+            background: `radial-gradient(circle at bottom left, ${LUXE_COLORS.gold} 0%, transparent 70%)`
+          }}
+        />
       </div>
 
-      {/* Testing Instructions */}
-      <Card className="border-0" style={{ backgroundColor: LUXE_COLORS.charcoalLight }}>
-        <CardHeader>
-          <CardTitle style={{ color: LUXE_COLORS.gold }}>Testing Instructions</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div style={{ color: LUXE_COLORS.bronze }}>
-            <div className="font-medium mb-2">🧪 How to Test HERA DNA SECURITY:</div>
-            <ol className="list-decimal list-inside space-y-1 text-sm">
-              <li>Login with different roles using the buttons above</li>
-              <li>Navigate to /salon/dashboard - notice role-based widgets</li>
-              <li>Try /salon/finance - see permission-based access</li>
-              <li>Test /salon/pos - verify role restrictions</li>
-              <li>Check financial data masking for unauthorized roles</li>
-              <li>Verify audit logging in browser dev tools</li>
-            </ol>
-          </div>
+      {/* Info Footer */}
+      <div className="mt-4 text-center">
+        <p
+          className="text-xs font-light"
+          style={{ color: `${LUXE_COLORS.bronze}80` }}
+        >
+          Instant access to full salon management system
+        </p>
+      </div>
 
-          <div
-            className="mt-4 p-3 rounded-lg text-sm"
-            style={{ backgroundColor: LUXE_COLORS.charcoal }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <Shield className="h-4 w-4" style={{ color: LUXE_COLORS.emerald }} />
-              <span style={{ color: LUXE_COLORS.emerald }}>Security Features Active</span>
-            </div>
-            <div style={{ color: LUXE_COLORS.champagne }}>
-              • Multi-tenant isolation enforced
-              <br />
-              • Role-based access control active
-              <br />
-              • Audit logging enabled
-              <br />• Real-time permission checking
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* CSS for animations */}
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+        .animate-pulse {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      `}</style>
     </div>
   )
 }

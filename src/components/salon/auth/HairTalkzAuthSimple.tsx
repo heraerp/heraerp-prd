@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Loader2,
   Eye,
@@ -24,8 +23,7 @@ import {
   User,
   Lock,
   ChevronRight,
-  Sparkles,
-  AlertCircle
+  Sparkles
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
@@ -153,42 +151,50 @@ export function HairTalkzAuthSimple() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
+  const [selectedRole, setSelectedRole] = useState('')
   const [showDemoUsers, setShowDemoUsers] = useState(false)
-  const [showSessionExpiredMessage, setShowSessionExpiredMessage] = useState(false)
-
-  // Check if user was redirected due to session expiration
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedRedirect = sessionStorage.getItem('salon_auth_redirect')
-      if (savedRedirect) {
-        setShowSessionExpiredMessage(true)
-      }
-    }
-  }, [])
 
   const handleDemoUserSelect = async (demoEmail: string, demoPassword: string) => {
     setEmail(demoEmail)
     setPassword(demoPassword)
 
-    // ✅ ENTERPRISE: Auto-login - system determines role after authentication
-    await handleLogin(null, demoEmail, demoPassword)
+    // Determine role from email
+    const roleFromEmail = demoEmail.includes('michele')
+      ? 'owner'
+      : demoEmail.includes('manager')
+        ? 'manager'
+        : demoEmail.includes('receptionist')
+          ? 'receptionist'
+          : demoEmail.includes('stylist')
+            ? 'stylist'
+            : demoEmail.includes('accountant')
+              ? 'accountant'
+              : demoEmail.includes('admin')
+                ? 'admin'
+                : 'owner'
+
+    setSelectedRole(roleFromEmail)
+
+    // Auto-login
+    await handleLogin(null, demoEmail, demoPassword, roleFromEmail)
   }
 
   const handleLogin = async (
     e: React.FormEvent | null,
     loginEmail?: string,
-    loginPassword?: string
+    loginPassword?: string,
+    loginRole?: string
   ) => {
     if (e) e.preventDefault()
 
     const currentEmail = loginEmail || email
     const currentPassword = loginPassword || password
+    const currentRole = loginRole || selectedRole
 
-    // ✅ ENTERPRISE: Only validate email and password - system determines role
-    if (!currentEmail || !currentPassword) {
+    if (!currentEmail || !currentPassword || !currentRole) {
       toast({
         title: 'Missing Information',
-        description: 'Please enter your email and password',
+        description: 'Please fill in all fields and select your role',
         variant: 'destructive'
       })
       return
@@ -212,29 +218,24 @@ export function HairTalkzAuthSimple() {
       if (error) throw error
 
       if (data.session) {
-        // ✅ ENTERPRISE: No business logic in auth metadata
-        // Business data is stored in HERA entities and dynamic data
-        // Role is determined by SecuredSalonProvider after authentication
+        // ✅ CORRECT: No business logic in auth metadata
+        // Business data is now stored in HERA entities and dynamic data
 
-        // Set organization context only - role determined by system
+        // Set local storage for organization context and RBAC
         localStorage.setItem('organizationId', HAIRTALKZ_ORG_ID)
+        localStorage.setItem('salonRole', currentRole)
+        localStorage.setItem(
+          'userPermissions',
+          JSON.stringify(getRolePermissions(currentRole))
+        )
 
-        // ✅ ENTERPRISE: Check for saved redirect URL (from 401 error)
-        const savedRedirect = sessionStorage.getItem('salon_auth_redirect')
-
-        let redirectPath: string
-        if (savedRedirect) {
-          // Redirect back to the page they were trying to access
-          redirectPath = savedRedirect
-          sessionStorage.removeItem('salon_auth_redirect') // Clean up
-        } else {
-          // Default to dashboard - SecuredSalonProvider will redirect based on determined role
-          redirectPath = '/salon/dashboard'
-        }
+        // Get redirect path based on role
+        const roleConfig = USER_ROLES.find(r => r.value === currentRole)
+        const redirectPath = roleConfig?.redirectPath || '/salon/dashboard'
 
         toast({
           title: 'Welcome to HairTalkz',
-          description: 'Authentication successful'
+          description: `Logged in as ${roleConfig?.label}`
         })
 
         // Use window.location for a clean redirect
@@ -294,23 +295,6 @@ export function HairTalkzAuthSimple() {
             Professional Access Portal
           </p>
         </div>
-
-        {/* Session Expired Alert */}
-        {showSessionExpiredMessage && (
-          <Alert
-            className="mb-6 animate-fadeIn"
-            style={{
-              backgroundColor: `${COLORS.gold}15`,
-              borderColor: `${COLORS.gold}50`,
-              border: '1px solid'
-            }}
-          >
-            <AlertCircle className="h-4 w-4" style={{ color: COLORS.gold }} />
-            <AlertDescription style={{ color: COLORS.champagne }}>
-              <strong>Session Expired</strong> - Please log in again to continue.
-            </AlertDescription>
-          </Alert>
-        )}
 
         {/* Login Form */}
         <form
@@ -380,6 +364,57 @@ export function HairTalkzAuthSimple() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+          </div>
+
+          {/* Role Selection */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="role"
+              className="text-sm font-light tracking-wider uppercase"
+              style={{ color: COLORS.bronze }}
+            >
+              Access Level
+            </Label>
+            <Select value={selectedRole} onValueChange={setSelectedRole} disabled={loading}>
+              <SelectTrigger
+                className="h-12 font-light"
+                style={{
+                  backgroundColor: COLORS.charcoal,
+                  border: `1px solid ${COLORS.bronze}50`,
+                  color: COLORS.champagne
+                }}
+              >
+                <SelectValue placeholder="Select your role" />
+              </SelectTrigger>
+              <SelectContent
+                className="hera-select-content hairtalkz-select-content"
+                style={{
+                  backgroundColor: COLORS.charcoalLight,
+                  border: `1px solid ${COLORS.bronze}50`
+                }}
+              >
+                {USER_ROLES.map(role => (
+                  <SelectItem
+                    key={role.value}
+                    value={role.value}
+                    className="cursor-pointer hera-select-item"
+                    style={{
+                      color: COLORS.champagne
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <role.icon className="h-4 w-4" style={{ color: COLORS.gold }} />
+                      <div>
+                        <div style={{ color: COLORS.champagne }}>{role.label}</div>
+                        <div className="text-xs" style={{ color: COLORS.bronze }}>
+                          {role.description}
+                        </div>
+                      </div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Remember Me */}
@@ -489,23 +524,6 @@ export function HairTalkzAuthSimple() {
           </div>
         </div>
       </div>
-
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out;
-        }
-      `}</style>
     </div>
   )
 }

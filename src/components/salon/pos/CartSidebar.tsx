@@ -18,7 +18,10 @@ import {
   TrendingUp,
   Percent,
   DollarSign,
-  Trash2
+  Trash2,
+  UserPlus,
+  UserMinus,
+  Users
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -29,6 +32,7 @@ import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { salonButtonThemes } from '@/styles/salon-button-themes'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -53,6 +57,10 @@ interface LineItem {
   quantity: number
   unit_price: number
   line_amount: number
+  // Multiple staff support
+  stylist_ids?: string[]
+  stylist_names?: string[]
+  // Keep old fields for backward compatibility
   stylist_id?: string
   stylist_name?: string
   appointment_id?: string
@@ -131,6 +139,17 @@ export function CartSidebar({
   const [showTipSection, setShowTipSection] = useState(false)
   const [customDiscountPercent, setCustomDiscountPercent] = useState('')
   const [customTipAmount, setCustomTipAmount] = useState('')
+  const [showStaffSelector, setShowStaffSelector] = useState<string | null>(null)
+
+  // Load staff members using proper hook
+  const { staff, isLoading: staffLoading } = useHeraStaff({
+    organizationId,
+    filters: {
+      include_dynamic: true,
+      include_relationships: false,
+      limit: 100
+    }
+  })
 
   // Handle discount application
   const applyQuickDiscount = useCallback(
@@ -198,6 +217,58 @@ export function CartSidebar({
         line_amount: newQuantity * item.unit_price
       })
     }
+  }
+
+  // Helper to get current staff list for an item
+  const getCurrentStaffList = (item: LineItem): { ids: string[]; names: string[] } => {
+    // Check if using new array format
+    if (item.stylist_ids && item.stylist_names) {
+      return { ids: item.stylist_ids, names: item.stylist_names }
+    }
+    // Migrate from old single format to array format
+    if (item.stylist_id && item.stylist_name) {
+      return { ids: [item.stylist_id], names: [item.stylist_name] }
+    }
+    return { ids: [], names: [] }
+  }
+
+  // Add staff to service item
+  const handleAddStaff = (itemId: string, staffId: string, staffName: string) => {
+    const item = ticket.lineItems.find(i => i.id === itemId)
+    if (!item) return
+
+    const current = getCurrentStaffList(item)
+
+    // Don't add if already assigned
+    if (current.ids.includes(staffId)) {
+      setShowStaffSelector(null)
+      return
+    }
+
+    onUpdateItem(itemId, {
+      stylist_ids: [...current.ids, staffId],
+      stylist_names: [...current.names, staffName]
+    })
+    setShowStaffSelector(null)
+  }
+
+  // Remove specific staff from service item
+  const handleRemoveStaff = (itemId: string, staffId: string) => {
+    const item = ticket.lineItems.find(i => i.id === itemId)
+    if (!item) return
+
+    const current = getCurrentStaffList(item)
+    const staffIndex = current.ids.indexOf(staffId)
+
+    if (staffIndex === -1) return
+
+    const newIds = current.ids.filter((_, i) => i !== staffIndex)
+    const newNames = current.names.filter((_, i) => i !== staffIndex)
+
+    onUpdateItem(itemId, {
+      stylist_ids: newIds.length > 0 ? newIds : undefined,
+      stylist_names: newNames.length > 0 ? newNames : undefined
+    })
   }
 
   const truncateText = (text: string | undefined | null, maxLength: number) => {
@@ -400,36 +471,137 @@ export function CartSidebar({
                             </div>
                           </div>
 
-                          {item.stylist_name && (
-                            <div
-                              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg mt-2"
-                              style={{
-                                background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}05 100%)`,
-                                border: `1px solid ${COLORS.gold}40`,
-                                boxShadow: `0 1px 3px ${COLORS.gold}20`
-                              }}
-                            >
-                              <div
-                                className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-semibold"
-                                style={{
-                                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                                  color: COLORS.black
-                                }}
-                              >
-                                {getInitials(item.stylist_name)}
+                          {/* Staff Assignment Section - Only for Services */}
+                          {item.entity_type === 'service' && (() => {
+                            const currentStaff = getCurrentStaffList(item)
+                            const hasStaff = currentStaff.ids.length > 0
+
+                            return (
+                              <div className="mt-2 space-y-2">
+                                {/* Staff Badges - Show all assigned staff */}
+                                {hasStaff && (
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {currentStaff.ids.map((staffId, index) => {
+                                      const staffName = currentStaff.names[index]
+                                      return (
+                                        <div
+                                          key={staffId}
+                                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg group/staff"
+                                          style={{
+                                            background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}05 100%)`,
+                                            border: `1px solid ${COLORS.gold}40`,
+                                            boxShadow: `0 1px 3px ${COLORS.gold}20`
+                                          }}
+                                        >
+                                          <div
+                                            className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-semibold"
+                                            style={{
+                                              background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                                              color: COLORS.black
+                                            }}
+                                          >
+                                            {getInitials(staffName)}
+                                          </div>
+                                          <p
+                                            className="text-[11px] font-medium truncate"
+                                            style={{ color: COLORS.gold, maxWidth: '100px' }}
+                                          >
+                                            {staffName}
+                                          </p>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleRemoveStaff(item.id, staffId)}
+                                            className="h-5 w-5 p-0 opacity-60 hover:opacity-100"
+                                            style={{ color: '#EF4444' }}
+                                          >
+                                            <X className="w-3 h-3" />
+                                          </Button>
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                )}
+
+                                {/* Add Staff Button - Always Visible */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setShowStaffSelector(showStaffSelector === item.id ? null : item.id)}
+                                  className="w-full text-xs py-1.5 h-auto"
+                                  style={{
+                                    background: `${COLORS.charcoalDark}`,
+                                    borderColor: `${COLORS.gold}40`,
+                                    color: COLORS.gold,
+                                    borderStyle: hasStaff ? 'solid' : 'dashed'
+                                  }}
+                                >
+                                  <UserPlus className="w-3 h-3 mr-1.5" />
+                                  {hasStaff ? 'Add Another Staff' : 'Assign Staff'}
+                                </Button>
+
+                                {/* Staff Selector Dropdown */}
+                                {showStaffSelector === item.id && (
+                                  <div
+                                    className="p-2 rounded-lg animate-fadeIn"
+                                    style={{
+                                      background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoalDark} 100%)`,
+                                      border: `1px solid ${COLORS.gold}40`,
+                                      boxShadow: `0 4px 12px ${COLORS.black}50`
+                                    }}
+                                  >
+                                    <div className="max-h-40 overflow-y-auto space-y-1">
+                                      {staffLoading ? (
+                                        <div className="text-center py-3" style={{ color: COLORS.lightText }}>
+                                          <p className="text-xs">Loading staff...</p>
+                                        </div>
+                                      ) : !staff || staff.length === 0 ? (
+                                        <div className="text-center py-3" style={{ color: COLORS.lightText }}>
+                                          <p className="text-xs">No staff found</p>
+                                        </div>
+                                      ) : (
+                                        staff.map(s => {
+                                          const isAssigned = currentStaff.ids.includes(s.id)
+                                          return (
+                                            <Button
+                                              key={s.id}
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() => handleAddStaff(item.id, s.id, s.entity_name)}
+                                              disabled={isAssigned}
+                                              className="w-full justify-start text-xs py-1.5 h-auto disabled:opacity-40"
+                                              style={{
+                                                color: COLORS.champagne,
+                                                background: isAssigned ? `${COLORS.gold}20` : 'transparent'
+                                              }}
+                                            >
+                                              <div
+                                                className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-semibold mr-2"
+                                                style={{
+                                                  background: isAssigned
+                                                    ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                                                    : `${COLORS.gold}30`,
+                                                  color: isAssigned ? COLORS.black : COLORS.gold
+                                                }}
+                                              >
+                                                {getInitials(s.entity_name)}
+                                              </div>
+                                              {s.entity_name}
+                                              {isAssigned && (
+                                                <span className="ml-auto text-[10px]" style={{ color: COLORS.gold }}>
+                                                  ✓ Assigned
+                                                </span>
+                                              )}
+                                            </Button>
+                                          )
+                                        })
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                              <p
-                                className="text-[11px] font-medium truncate flex-1"
-                                style={{ color: COLORS.gold }}
-                              >
-                                {item.stylist_name}
-                              </p>
-                              <Award
-                                className="w-3 h-3 flex-shrink-0"
-                                style={{ color: COLORS.gold }}
-                              />
-                            </div>
-                          )}
+                            )
+                          })()}
                         </div>
 
                         <Button

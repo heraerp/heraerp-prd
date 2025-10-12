@@ -51,6 +51,7 @@ import { KanbanCard, KanbanStatus } from '@/schemas/kanban'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useMemo } from 'react'
+import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 
 // Luxury color palette
 const LUXE_COLORS = {
@@ -175,23 +176,94 @@ export default function KanbanPage() {
     }
   })
 
+  // 🎯 ENTERPRISE: Fetch services with pricing to resolve service names and prices
+  const { entities: services } = useUniversalEntity({
+    organizationId,
+    filters: {
+      entity_type: 'service'
+    },
+    includeDynamicData: true
+  })
+
+  // 🎯 ENTERPRISE: Create service lookup maps
+  const serviceMap = useMemo(() => {
+    const map = new Map<string, { name: string; price: number }>()
+
+    services.forEach(service => {
+      // Find price from dynamic data
+      const dynamicFields = service.dynamic_data || []
+      const priceField = dynamicFields.find((f: any) => f.field_name === 'price' || f.field_name === 'base_price')
+      const price = priceField?.field_value_number || 0
+
+      map.set(service.id, {
+        name: service.entity_name,
+        price
+      })
+    })
+
+    return map
+  }, [services])
+
   // 🎯 ENTERPRISE: Transform appointments to kanban cards
   const cards: KanbanCard[] = useMemo(() => {
-    return appointments.map(apt => ({
-      id: apt.id,
-      customer_name: apt.customer_name,
-      service_name: apt.metadata?.service_name || 'Service',
-      stylist_name: apt.stylist_name || null,
-      start: apt.start_time,
-      end: apt.end_time,
-      status: apt.status.toUpperCase() as KanbanStatus,
-      flags: {
-        vip: apt.metadata?.vip || false,
-        new: apt.metadata?.new_customer || false
-      },
-      cancellation_reason: apt.metadata?.cancellation_reason || null
-    }))
-  }, [appointments, dateFilter, dateRange])
+    return appointments.map(apt => {
+      // Extract service info - check metadata.service_ids array first, then fallback to single fields
+      const serviceIds = apt.metadata?.service_ids || []
+      let serviceNames = apt.metadata?.service_names || []
+      let servicePrices = apt.metadata?.service_prices || []
+
+      // 🎯 ENTERPRISE: Resolve service IDs to names and prices using serviceMap
+      if (Array.isArray(serviceIds) && serviceIds.length > 0) {
+        // Resolve all service IDs
+        serviceNames = serviceIds.map(id => serviceMap.get(id)?.name || 'Service')
+        servicePrices = serviceIds.map(id => serviceMap.get(id)?.price || 0)
+      }
+
+      // Get first service or fallback
+      const service_id = Array.isArray(serviceIds) && serviceIds.length > 0
+        ? serviceIds[0]
+        : apt.metadata?.service_id || undefined
+
+      const service_name = Array.isArray(serviceNames) && serviceNames.length > 0
+        ? serviceNames[0]
+        : apt.metadata?.service_name || 'Service'
+
+      const price = Array.isArray(servicePrices) && servicePrices.length > 0
+        ? servicePrices[0]
+        : apt.price || apt.total_amount || apt.metadata?.price || 0
+
+      return {
+        id: apt.id,
+        organization_id: apt.organization_id || organizationId || '',
+        branch_id: apt.branch_id || '',
+        date: format(new Date(apt.start_time), 'yyyy-MM-dd'),
+        rank: apt.rank || '',
+        customer_name: apt.customer_name,
+        customer_id: apt.customer_id,
+        service_name,
+        service_id,
+        stylist_name: apt.stylist_name || null,
+        stylist_id: apt.stylist_id,
+        start: apt.start_time,
+        end: apt.end_time,
+        duration: apt.duration_minutes,
+        price,
+        status: apt.status.toUpperCase() as KanbanStatus,
+        flags: {
+          vip: apt.metadata?.vip || false,
+          new: apt.metadata?.new_customer || false
+        },
+        cancellation_reason: apt.metadata?.cancellation_reason || null,
+        metadata: {
+          ...apt.metadata,
+          // Preserve all service arrays for POS page
+          service_ids: serviceIds,
+          service_names: serviceNames,
+          service_prices: servicePrices
+        }
+      }
+    })
+  }, [appointments, dateFilter, dateRange, organizationId, serviceMap])
 
   // 🎯 ENTERPRISE: Group cards by status column
   const cardsByColumn: Record<KanbanStatus, KanbanCard[]> = useMemo(() => {

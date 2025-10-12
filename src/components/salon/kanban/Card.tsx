@@ -19,19 +19,12 @@ import {
   AlertCircle,
   CheckCircle,
   Edit,
-  MoreVertical,
   CreditCard,
   ArrowRight,
   ChevronRight
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { KanbanCard as CardType, CANCELLABLE_STATES, RESCHEDULABLE_STATES } from '@/schemas/kanban'
 import { format } from 'date-fns'
@@ -140,24 +133,24 @@ const CardComponent = ({
       onMouseMove={handleMouseMove}
       style={{
         ...style,
-        // Theme-compliant gradient background
+        // Theme-compliant gradient background with softer hover effect
         background: isHovered
           ? `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%,
-               rgba(212, 175, 55, 0.15) 0%,
-               rgba(212, 175, 55, 0.08) 30%,
+               rgba(212, 175, 55, 0.08) 0%,
+               rgba(212, 175, 55, 0.04) 30%,
                rgba(42, 42, 42, 0.95) 60%,
                ${LUXE_COLORS.charcoal} 100%)`
           : `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, #141414 100%)`,
-        borderColor: isHovered ? LUXE_COLORS.gold : `${LUXE_COLORS.gold}80`,
-        borderWidth: isHovered ? '2px' : '1px',
+        borderColor: isHovered ? `${LUXE_COLORS.gold}CC` : `${LUXE_COLORS.gold}66`,
+        borderWidth: isHovered ? '1.5px' : '1px',
         borderRadius: '1rem',
         color: LUXE_COLORS.champagne,
         boxShadow: isHovered
-          ? '0 12px 32px rgba(212, 175, 55, 0.25), 0 0 0 1px rgba(212, 175, 55, 0.15), inset 0 0 20px rgba(212, 175, 55, 0.05)'
+          ? '0 8px 24px rgba(212, 175, 55, 0.12), 0 0 0 1px rgba(212, 175, 55, 0.08), inset 0 0 16px rgba(212, 175, 55, 0.03)'
           : '0 4px 12px rgba(0, 0, 0, 0.3)',
         transform:
           isHovered && !isDragging
-            ? `${CSS.Transform.toString(transform)} translateY(-6px) scale(1.03)`
+            ? `${CSS.Transform.toString(transform)} translateY(-4px) scale(1.02)`
             : CSS.Transform.toString(transform)
       }}
       className={cn(
@@ -202,7 +195,7 @@ const CardComponent = ({
           Current status: {card.status.replace('_', ' ').toLowerCase()}
         </span>
 
-        {/* Header with time and actions */}
+        {/* Header with time */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm">
             <Clock className="w-3 h-3" style={{ color: LUXE_COLORS.gold }} aria-hidden="true" />
@@ -210,53 +203,6 @@ const CardComponent = ({
               {startTime} - {endTime}
             </span>
           </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 transition-all duration-300"
-                style={{
-                  borderRadius: '0.5rem' // 🎨 ENTERPRISE: Softer edges
-                }}
-              >
-                <MoreVertical className="w-3 h-3" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              {card.status === 'DRAFT' && (
-                <>
-                  <DropdownMenuItem onClick={onConfirm}>
-                    <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
-                    Confirm Booking
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={onEdit}>
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit Draft
-                  </DropdownMenuItem>
-                </>
-              )}
-              {RESCHEDULABLE_STATES.includes(card.status) && (
-                <DropdownMenuItem onClick={onReschedule}>
-                  <Clock className="w-4 h-4 mr-2" />
-                  Reschedule
-                </DropdownMenuItem>
-              )}
-              {(card.status === 'TO_PAY' || card.status === 'payment_pending' || card.status === 'PAYMENT_PENDING') && (
-                <DropdownMenuItem onClick={onProcessPayment} className="text-green-600">
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Process Payment
-                </DropdownMenuItem>
-              )}
-              {CANCELLABLE_STATES.includes(card.status) && (
-                <DropdownMenuItem onClick={onCancel} className="text-red-600">
-                  <AlertCircle className="w-4 h-4 mr-2" />
-                  Cancel Appointment
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
 
         {/* Customer name with quick action */}
@@ -286,7 +232,7 @@ const CardComponent = ({
                 pointerEvents: 'auto'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.color = LUXE_COLORS.champagne
+                e.currentTarget.style.color = LUXE_COLORS.bronze
                 e.currentTarget.style.transform = 'scale(1.2)'
               }}
               onMouseLeave={e => {
@@ -295,7 +241,7 @@ const CardComponent = ({
               }}
               aria-label={`Move ${card.customer_name}'s appointment to next status`}
             >
-              <ChevronRight className="w-4 h-4" aria-hidden="true" />
+              <ChevronRight className="w-5 h-5" strokeWidth={3} aria-hidden="true" />
             </Button>
           )}
         </div>

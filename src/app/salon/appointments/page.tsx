@@ -1261,6 +1261,20 @@ function AppointmentsContent() {
                     {/* Status Transitions - Only ONE next status button (one step at a time) */}
                     <div className="flex gap-2 flex-wrap flex-1">
                       {(() => {
+                        // ✨ ENTERPRISE: Action-oriented button labels (user-friendly, clear intent)
+                        // Each label describes the action to TRANSITION TO that status
+                        const STATUS_ACTION_LABELS: Record<AppointmentStatus, string> = {
+                          draft: '📝 Save as Draft',
+                          booked: '📝 Confirm Booking',
+                          checked_in: '✓ Check In Customer',
+                          in_progress: '🎯 Begin Service',
+                          payment_pending: '💰 Ready for Payment',
+                          completed: '✓ Mark as Completed',
+                          cancelled: '🔄 Restore Booking',
+                          no_show: '🔄 Restore Booking',
+                          archived: '🔄 Restore'
+                        }
+
                         // Get next logical status (first non-cancelled option)
                         const nextStatus = VALID_STATUS_TRANSITIONS[
                           appointment.status as AppointmentStatus
@@ -1269,6 +1283,112 @@ function AppointmentsContent() {
                         if (!nextStatus) return null
 
                         const statusInfo = STATUS_CONFIG[nextStatus]
+                        const actionLabel = STATUS_ACTION_LABELS[nextStatus] || statusInfo.label
+
+                        // 🎯 ENTERPRISE: Special handling for "Ready for Payment" button
+                        // Redirect to POS instead of changing status
+                        if (nextStatus === 'payment_pending') {
+                          return (
+                            <Button
+                              key={nextStatus}
+                              size="sm"
+                              onClick={e => {
+                                e.stopPropagation()
+
+                                // 🎯 ENTERPRISE: Load service details from appointment metadata
+                                const serviceIds = appointment.metadata?.service_ids || []
+                                const serviceNames: string[] = []
+                                const servicePrices: number[] = []
+
+                                // Map service IDs to names and prices
+                                if (Array.isArray(serviceIds) && serviceIds.length > 0 && services) {
+                                  serviceIds.forEach((serviceId: string) => {
+                                    const service = services.find(s => s.id === serviceId)
+                                    if (service) {
+                                      serviceNames.push(service.entity_name || service.name || 'Unknown Service')
+                                      servicePrices.push(service.price || 0)
+                                    } else {
+                                      console.warn(`[Appointments] Service not found: ${serviceId}`)
+                                      serviceNames.push('Unknown Service')
+                                      servicePrices.push(0)
+                                    }
+                                  })
+                                }
+
+                                console.log('[Appointments] 🎨 Loaded service details:', {
+                                  serviceIds,
+                                  serviceNames,
+                                  servicePrices,
+                                  totalServices: serviceIds.length
+                                })
+
+                                // Build comprehensive appointment data for POS
+                                const appointmentData = {
+                                  id: appointment.id,
+                                  organization_id: organizationId,
+                                  branch_id: appointment.branch_id,
+                                  customer_name: appointment.customer_name,
+                                  customer_id: appointment.customer_id,
+                                  stylist_name: appointment.stylist_name,
+                                  stylist_id: appointment.stylist_id,
+                                  start: appointment.start_time,
+                                  end: appointment.end_time,
+                                  date: format(new Date(appointment.start_time), 'yyyy-MM-dd'),
+                                  price: appointment.price || appointment.total_amount || 0,
+                                  duration: appointment.duration_minutes,
+                                  status: appointment.status,
+                                  flags: {
+                                    vip: appointment.metadata?.vip || false,
+                                    new: appointment.metadata?.new_customer || false
+                                  },
+                                  metadata: {
+                                    ...appointment.metadata,
+                                    service_ids: serviceIds,
+                                    service_names: serviceNames,
+                                    service_prices: servicePrices
+                                  },
+                                  _source: 'appointments',
+                                  _timestamp: new Date().toISOString()
+                                }
+
+                                console.log('[Appointments] 💾 Storing appointment data for POS:', appointmentData)
+
+                                // Store appointment details in sessionStorage for POS page
+                                sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))
+
+                                // Navigate to POS with appointment ID
+                                router.push(`/salon/pos?appointment=${appointment.id}`)
+                              }}
+                              disabled={isUpdating}
+                              className="transition-all duration-300 font-medium"
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(15,111,92,0.25) 0%, rgba(15,111,92,0.15) 100%)',
+                                color: LUXE_COLORS.emerald,
+                                border: `1px solid ${LUXE_COLORS.emerald}40`,
+                                transitionTimingFunction: LUXE_COLORS.spring,
+                                fontSize: '0.75rem',
+                                padding: '0.5rem 1rem',
+                                boxShadow: '0 2px 8px rgba(15,111,92,0.1)'
+                              }}
+                              onMouseEnter={e => {
+                                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(15,111,92,0.35) 0%, rgba(15,111,92,0.25) 100%)'
+                                e.currentTarget.style.borderColor = `${LUXE_COLORS.emerald}70`
+                                e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
+                                e.currentTarget.style.boxShadow = '0 6px 16px rgba(15,111,92,0.25)'
+                              }}
+                              onMouseLeave={e => {
+                                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(15,111,92,0.25) 0%, rgba(15,111,92,0.15) 100%)'
+                                e.currentTarget.style.borderColor = `${LUXE_COLORS.emerald}40`
+                                e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(15,111,92,0.1)'
+                              }}
+                            >
+                              {actionLabel}
+                            </Button>
+                          )
+                        }
+
+                        // Regular status transition buttons
                         return (
                           <Button
                             key={nextStatus}
@@ -1301,7 +1421,7 @@ function AppointmentsContent() {
                               e.currentTarget.style.boxShadow = `0 2px 8px ${statusInfo.color}10`
                             }}
                           >
-                            {statusInfo.label}
+                            {actionLabel}
                           </Button>
                         )
                       })()}
@@ -1312,21 +1432,64 @@ function AppointmentsContent() {
                           size="sm"
                           onClick={e => {
                             e.stopPropagation()
-                            // 🎯 ENTERPRISE: Build comprehensive appointment data for POS
+
+                            // 🎯 ENTERPRISE: Load service details from appointment metadata
+                            const serviceIds = appointment.metadata?.service_ids || []
+                            const serviceNames: string[] = []
+                            const servicePrices: number[] = []
+
+                            // Map service IDs to names and prices
+                            if (Array.isArray(serviceIds) && serviceIds.length > 0 && services) {
+                              serviceIds.forEach((serviceId: string) => {
+                                const service = services.find(s => s.id === serviceId)
+                                if (service) {
+                                  serviceNames.push(service.entity_name || service.name || 'Unknown Service')
+                                  servicePrices.push(service.price || 0)
+                                } else {
+                                  console.warn(`[Appointments] Service not found: ${serviceId}`)
+                                  serviceNames.push('Unknown Service')
+                                  servicePrices.push(0)
+                                }
+                              })
+                            }
+
+                            console.log('[Appointments] 🎨 Loaded service details for Pay Now:', {
+                              serviceIds,
+                              serviceNames,
+                              servicePrices,
+                              totalServices: serviceIds.length
+                            })
+
+                            // 🎯 ENTERPRISE: Build comprehensive appointment data for POS (matching kanban implementation)
                             const appointmentData = {
                               id: appointment.id,
+                              organization_id: organizationId,
+                              branch_id: appointment.branch_id,
                               customer_name: appointment.customer_name,
-                              customer_id: appointment.metadata?.customer_id,
+                              customer_id: appointment.customer_id,
                               stylist_name: appointment.stylist_name,
                               stylist_id: appointment.stylist_id,
-                              service_name: appointment.metadata?.service_name,
-                              service_id: appointment.metadata?.service_id,
                               start: appointment.start_time,
                               end: appointment.end_time,
-                              price: appointment.price,
+                              date: format(new Date(appointment.start_time), 'yyyy-MM-dd'),
+                              price: appointment.price || appointment.total_amount || 0,
                               duration: appointment.duration_minutes,
-                              status: appointment.status
+                              status: appointment.status,
+                              flags: {
+                                vip: appointment.metadata?.vip || false,
+                                new: appointment.metadata?.new_customer || false
+                              },
+                              metadata: {
+                                ...appointment.metadata,
+                                service_ids: serviceIds,
+                                service_names: serviceNames,
+                                service_prices: servicePrices
+                              },
+                              _source: 'appointments',
+                              _timestamp: new Date().toISOString()
                             }
+
+                            console.log('[Appointments] 💾 Storing appointment data for POS:', appointmentData)
 
                             // Store appointment details in sessionStorage for POS page
                             sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))
