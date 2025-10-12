@@ -235,9 +235,14 @@ export interface UFEProcessingResult {
   gl_lines?: Array<{
     account_code: string
     account_name: string
-    debit_amount?: number
-    credit_amount?: number
+    unit_amount: number // ✅ Use actual database field
+    debit_credit: 'debit' | 'credit' // ✅ Direction flag
     description: string
+    metadata?: {
+      // ✅ Legacy compatibility
+      debit_amount?: number
+      credit_amount?: number
+    }
   }>
   validation_errors?: string[]
   posting_errors?: string[]

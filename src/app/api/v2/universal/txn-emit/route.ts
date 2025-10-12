@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     p_organization_id: adaptedBody.organization_id,
     p_transaction_type: adaptedBody.transaction_type,
     p_smart_code: adaptedBody.smart_code,
-    p_transaction_number: adaptedBody.transaction_number ?? `TXN-${Date.now()}`, // ✅ Match RPC parameter name
+    p_transaction_code: adaptedBody.transaction_number ?? `TXN-${Date.now()}`, // ✅ Match RPC parameter name
     p_transaction_date: adaptedBody.transaction_date,
     p_source_entity_id: adaptedBody.source_entity_id ?? null,
     p_target_entity_id: adaptedBody.target_entity_id ?? null,
