@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA ORGANIZATION PROVIDER
-// Smart Code: HERA.ORGANIZATION.PROVIDER.v1
+// Smart Code: HERA.ORGANIZATION.PROVIDER.V1
 // Global organization context management
 // ================================================================================
 

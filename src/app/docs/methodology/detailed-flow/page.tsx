@@ -396,7 +396,7 @@ sequenceDiagram
                   <pre>{`const requirement = {
   entity_type: 'project_requirement',
   entity_name: 'P2P Approval Workflow',
-  business_context: 'PROJECT.REQ.P2P.APPROVAL.v1',
+  business_context: 'PROJECT.REQ.P2P.APPROVAL.V1',
   status: 'DRAFT',
   dynamic_data: {
     approval_limits: { 
@@ -420,7 +420,7 @@ sequenceDiagram
                   </div>
                   <pre>{`const testPO = {
   transaction_type: 'purchase_order',
-  business_context: 'MANUFACTURING.P2P.PO.TEST.v1',
+  business_context: 'MANUFACTURING.P2P.PO.TEST.V1',
   total_amount: 7500,
   approval_required: true,
   lines: [
@@ -441,7 +441,7 @@ sequenceDiagram
                   </div>
                   <pre>{`const signoff = {
   transaction_type: 'project_milestone',
-  business_context: 'PROJECT.UAT.SIGNOFF.v1',
+  business_context: 'PROJECT.UAT.SIGNOFF.V1',
   approved_by: 'cfo_user_id',
   approval_date: '2025-09-15',
   metadata: {

@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APP LAYOUT WITH SIDEBAR
-// Smart Code: HERA.LAYOUT.APP.v1
+// Smart Code: HERA.LAYOUT.APP.V1
 // App shell with enterprise sidebar
 // ================================================================================
 

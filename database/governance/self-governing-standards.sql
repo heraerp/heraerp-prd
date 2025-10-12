@@ -1,7 +1,7 @@
 -- =====================================================
 -- HERA Self-Governing Standards System
 -- HERA Manages Its Own Standards Using The Sacred 6 Tables
--- Smart Code: HERA.GOVERNANCE.SELF.STANDARDS.v1
+-- Smart Code: HERA.GOVERNANCE.SELF.STANDARDS.V1
 -- =====================================================
 
 -- 🏗️ SACRED PRINCIPLE: Zero New Tables Policy
@@ -111,12 +111,12 @@ INSERT INTO core_entities (
     'Customer Master Standard',
     'STD-CUSTOMER',
     'Universal standard for customer entities across all industries',
-    'HERA.STD.ENTITY.CUSTOMER.v1',
+    'HERA.STD.ENTITY.CUSTOMER.V1',
     '{
         "standard_fields": ["customer_name", "email", "phone", "address", "tax_id"],
         "required_fields": ["customer_name"],
         "industry_variations": ["client", "patient", "guest", "member"],
-        "smart_codes": ["HERA.CRM.CUST.ENT.PROF.v1", "HERA.HC.PATIENT.RECORD.v1"],
+        "smart_codes": ["HERA.CRM.CUST.ENT.PROF.V1", "HERA.HC.PATIENT.RECORD.V1"],
         "compliance_rules": {
             "email_validation": "RFC5322",
             "phone_validation": "E.164",
@@ -136,12 +136,12 @@ INSERT INTO core_entities (
     'Product Master Standard',
     'STD-PRODUCT',
     'Universal standard for product/service entities',
-    'HERA.STD.ENTITY.PRODUCT.v1',
+    'HERA.STD.ENTITY.PRODUCT.V1',
     '{
         "standard_fields": ["product_name", "sku", "price", "cost", "category", "description"],
         "required_fields": ["product_name", "sku"],
         "industry_variations": ["menu_item", "service", "medication", "inventory_item"],
-        "smart_codes": ["HERA.INV.PROD.ITEM.STD.v1", "HERA.REST.MENU.ITEM.v1"],
+        "smart_codes": ["HERA.INV.PROD.ITEM.STD.V1", "HERA.REST.MENU.ITEM.V1"],
         "compliance_rules": {
             "sku_format": "alphanumeric_unique",
             "price_validation": "positive_number",
@@ -161,12 +161,12 @@ INSERT INTO core_entities (
     'Employee Master Standard',
     'STD-EMPLOYEE',
     'Universal standard for employee/staff entities',
-    'HERA.STD.ENTITY.EMPLOYEE.v1',
+    'HERA.STD.ENTITY.EMPLOYEE.V1',
     '{
         "standard_fields": ["employee_name", "employee_id", "email", "phone", "role", "hire_date"],
         "required_fields": ["employee_name", "employee_id", "role"],
         "industry_variations": ["staff", "provider", "technician", "consultant"],
-        "smart_codes": ["HERA.HR.EMP.RECORD.v1", "HERA.HC.PROVIDER.PHYSICIAN.v1"],
+        "smart_codes": ["HERA.HR.EMP.RECORD.V1", "HERA.HC.PROVIDER.PHYSICIAN.V1"],
         "compliance_rules": {
             "employee_id_format": "unique_alphanumeric",
             "email_required": true,
@@ -186,12 +186,12 @@ INSERT INTO core_entities (
     'Transaction Master Standard',
     'STD-TRANSACTION',
     'Universal standard for business transaction entities',
-    'HERA.STD.ENTITY.TRANSACTION.v1',
+    'HERA.STD.ENTITY.TRANSACTION.V1',
     '{
         "standard_fields": ["transaction_number", "date", "amount", "currency", "status", "type"],
         "required_fields": ["transaction_number", "date", "amount", "type"],
         "industry_variations": ["order", "appointment", "payment", "invoice"],
-        "smart_codes": ["HERA.TXN.SALE.ORDER.v1", "HERA.HC.APPOINTMENT.VISIT.v1"],
+        "smart_codes": ["HERA.TXN.SALE.ORDER.V1", "HERA.HC.APPOINTMENT.VISIT.V1"],
         "compliance_rules": {
             "transaction_number_unique": true,
             "amount_validation": "numeric_two_decimal",
@@ -229,7 +229,7 @@ INSERT INTO core_entities (
     'Menu Item Standard',
     'STD-MENU-ITEM',
     'Standard for restaurant menu items',
-    'HERA.STD.REST.MENU.ITEM.v1',
+    'HERA.STD.REST.MENU.ITEM.V1',
     '{
         "inherits_from": "STD-PRODUCT",
         "additional_fields": ["allergens", "prep_time", "spice_level", "dietary_tags"],
@@ -254,7 +254,7 @@ INSERT INTO core_entities (
     'Patient Record Standard',
     'STD-PATIENT',
     'Standard for healthcare patient records',
-    'HERA.STD.HC.PATIENT.RECORD.v1',
+    'HERA.STD.HC.PATIENT.RECORD.V1',
     '{
         "inherits_from": "STD-CUSTOMER",
         "additional_fields": ["medical_record_number", "date_of_birth", "emergency_contact", "insurance_info"],
@@ -279,7 +279,7 @@ INSERT INTO core_entities (
     'Inventory Item Standard',
     'STD-INVENTORY',
     'Standard for retail inventory items',
-    'HERA.STD.RTL.INVENTORY.ITEM.v1',
+    'HERA.STD.RTL.INVENTORY.ITEM.V1',
     '{
         "inherits_from": "STD-PRODUCT",
         "additional_fields": ["barcode", "quantity_on_hand", "reorder_point", "supplier"],
@@ -321,7 +321,7 @@ INSERT INTO core_entities (
     'Standard Field Registry',
     'STD-FIELD-REGISTRY',
     'Central registry of all standard field definitions',
-    'HERA.STD.FIELD.REGISTRY.v1',
+    'HERA.STD.FIELD.REGISTRY.V1',
     '{
         "purpose": "field_standardization",
         "scope": "universal",
@@ -367,28 +367,28 @@ SELECT
 FROM core_entities e,
 (VALUES 
     -- Contact Information Standards
-    ('std_field_email', 'text', 'user@example.com', '{"format": "email", "validation": "RFC5322"}', 'HERA.STD.FIELD.EMAIL.v1', 'contact', false),
-    ('std_field_phone', 'text', '+1-555-123-4567', '{"format": "E.164", "validation": "international"}', 'HERA.STD.FIELD.PHONE.v1', 'contact', false),
-    ('std_field_address', 'json', NULL, '{"street": "", "city": "", "state": "", "zip": "", "country": ""}', 'HERA.STD.FIELD.ADDRESS.v1', 'contact', false),
+    ('std_field_email', 'text', 'user@example.com', '{"format": "email", "validation": "RFC5322"}', 'HERA.STD.FIELD.EMAIL.V1', 'contact', false),
+    ('std_field_phone', 'text', '+1-555-123-4567', '{"format": "E.164", "validation": "international"}', 'HERA.STD.FIELD.PHONE.V1', 'contact', false),
+    ('std_field_address', 'json', NULL, '{"street": "", "city": "", "state": "", "zip": "", "country": ""}', 'HERA.STD.FIELD.ADDRESS.V1', 'contact', false),
     
     -- Financial Standards
-    ('std_field_price', 'number', NULL, '{"format": "currency", "decimal_places": 2, "min_value": 0}', 'HERA.STD.FIELD.PRICE.v1', 'financial', false),
-    ('std_field_cost', 'number', NULL, '{"format": "currency", "decimal_places": 2, "min_value": 0}', 'HERA.STD.FIELD.COST.v1', 'financial', false),
-    ('std_field_tax_rate', 'number', NULL, '{"format": "percentage", "decimal_places": 4, "min_value": 0, "max_value": 1}', 'HERA.STD.FIELD.TAX_RATE.v1', 'financial', false),
+    ('std_field_price', 'number', NULL, '{"format": "currency", "decimal_places": 2, "min_value": 0}', 'HERA.STD.FIELD.PRICE.V1', 'financial', false),
+    ('std_field_cost', 'number', NULL, '{"format": "currency", "decimal_places": 2, "min_value": 0}', 'HERA.STD.FIELD.COST.V1', 'financial', false),
+    ('std_field_tax_rate', 'number', NULL, '{"format": "percentage", "decimal_places": 4, "min_value": 0, "max_value": 1}', 'HERA.STD.FIELD.TAX_RATE.V1', 'financial', false),
     
     -- Identification Standards
-    ('std_field_sku', 'text', 'SKU-000001', '{"format": "alphanumeric", "unique": true, "prefix_optional": true}', 'HERA.STD.FIELD.SKU.v1', 'identification', true),
-    ('std_field_employee_id', 'text', 'EMP-000001', '{"format": "alphanumeric", "unique": true, "prefix": "EMP-"}', 'HERA.STD.FIELD.EMPLOYEE_ID.v1', 'identification', true),
-    ('std_field_customer_id', 'text', 'CUST-000001', '{"format": "alphanumeric", "unique": true, "prefix": "CUST-"}', 'HERA.STD.FIELD.CUSTOMER_ID.v1', 'identification', false),
+    ('std_field_sku', 'text', 'SKU-000001', '{"format": "alphanumeric", "unique": true, "prefix_optional": true}', 'HERA.STD.FIELD.SKU.V1', 'identification', true),
+    ('std_field_employee_id', 'text', 'EMP-000001', '{"format": "alphanumeric", "unique": true, "prefix": "EMP-"}', 'HERA.STD.FIELD.EMPLOYEE_ID.V1', 'identification', true),
+    ('std_field_customer_id', 'text', 'CUST-000001', '{"format": "alphanumeric", "unique": true, "prefix": "CUST-"}', 'HERA.STD.FIELD.CUSTOMER_ID.V1', 'identification', false),
     
     -- Date/Time Standards
-    ('std_field_date_created', 'datetime', NULL, '{"format": "ISO8601", "timezone": "UTC", "auto_populate": true}', 'HERA.STD.FIELD.DATE_CREATED.v1', 'temporal', true),
-    ('std_field_date_modified', 'datetime', NULL, '{"format": "ISO8601", "timezone": "UTC", "auto_update": true}', 'HERA.STD.FIELD.DATE_MODIFIED.v1', 'temporal', true),
+    ('std_field_date_created', 'datetime', NULL, '{"format": "ISO8601", "timezone": "UTC", "auto_populate": true}', 'HERA.STD.FIELD.DATE_CREATED.V1', 'temporal', true),
+    ('std_field_date_modified', 'datetime', NULL, '{"format": "ISO8601", "timezone": "UTC", "auto_update": true}', 'HERA.STD.FIELD.DATE_MODIFIED.V1', 'temporal', true),
     
     -- Industry-Specific Standards
-    ('std_field_allergens', 'json', NULL, '{"type": "array", "enum": ["dairy", "eggs", "fish", "shellfish", "tree_nuts", "peanuts", "wheat", "soybeans"]}', 'HERA.STD.FIELD.ALLERGENS.v1', 'food_safety', false),
-    ('std_field_medical_record_number', 'text', 'MRN-000001', '{"format": "alphanumeric", "unique": true, "prefix": "MRN-", "privacy": "high"}', 'HERA.STD.FIELD.MRN.v1', 'healthcare', true),
-    ('std_field_barcode', 'text', '1234567890123', '{"format": "UPC_EAN", "validation": "checksum", "unique": true}', 'HERA.STD.FIELD.BARCODE.v1', 'retail', false)
+    ('std_field_allergens', 'json', NULL, '{"type": "array", "enum": ["dairy", "eggs", "fish", "shellfish", "tree_nuts", "peanuts", "wheat", "soybeans"]}', 'HERA.STD.FIELD.ALLERGENS.V1', 'food_safety', false),
+    ('std_field_medical_record_number', 'text', 'MRN-000001', '{"format": "alphanumeric", "unique": true, "prefix": "MRN-", "privacy": "high"}', 'HERA.STD.FIELD.MRN.V1', 'healthcare', true),
+    ('std_field_barcode', 'text', '1234567890123', '{"format": "UPC_EAN", "validation": "checksum", "unique": true}', 'HERA.STD.FIELD.BARCODE.V1', 'retail', false)
 ) AS field_def(field_name, field_type, field_value_text, field_value_json, smart_code, field_category, is_required)
 WHERE e.entity_code = 'STD-FIELD-REGISTRY';
 
@@ -416,7 +416,7 @@ INSERT INTO core_entities (
     'Smart Code Master Registry',
     'SMART-CODE-REGISTRY',
     'Central registry of all HERA smart codes and their business logic',
-    'HERA.STD.SMART.CODE.REGISTRY.v1',
+    'HERA.STD.SMART.CODE.REGISTRY.V1',
     '{
         "purpose": "smart_code_standardization",
         "pattern": "HERA.{INDUSTRY}.{MODULE}.{FUNCTION}.{TYPE}.v{VERSION}",
@@ -452,7 +452,7 @@ SELECT
     'json',
     NULL,
     code_def.definition::jsonb,
-    'HERA.STD.SMART.CODE.DEF.v1',
+    'HERA.STD.SMART.CODE.DEF.V1',
     code_def.industry,
     'system_standard',
     '{"pattern_validation": true, "collision_check": true}'::jsonb,
@@ -461,24 +461,24 @@ SELECT
 FROM core_entities e,
 (VALUES 
     -- Universal Business Codes
-    ('HERA.CRM.CUST.ENT.PROF.v1', 'universal', '{"description": "Customer Profile Entity", "triggers": ["gl_posting", "validation"], "applicable_entities": ["customer"], "business_rules": {"required_fields": ["customer_name"], "auto_generate_id": true}}'),
-    ('HERA.INV.PROD.ITEM.STD.v1', 'universal', '{"description": "Product Item Standard", "triggers": ["inventory_tracking", "pricing"], "applicable_entities": ["product"], "business_rules": {"sku_required": true, "price_validation": "positive"}}'),
-    ('HERA.HR.EMP.RECORD.v1', 'universal', '{"description": "Employee Record Standard", "triggers": ["payroll", "access_control"], "applicable_entities": ["employee"], "business_rules": {"employee_id_unique": true, "role_required": true}}'),
+    ('HERA.CRM.CUST.ENT.PROF.V1', 'universal', '{"description": "Customer Profile Entity", "triggers": ["gl_posting", "validation"], "applicable_entities": ["customer"], "business_rules": {"required_fields": ["customer_name"], "auto_generate_id": true}}'),
+    ('HERA.INV.PROD.ITEM.STD.V1', 'universal', '{"description": "Product Item Standard", "triggers": ["inventory_tracking", "pricing"], "applicable_entities": ["product"], "business_rules": {"sku_required": true, "price_validation": "positive"}}'),
+    ('HERA.HR.EMP.RECORD.V1', 'universal', '{"description": "Employee Record Standard", "triggers": ["payroll", "access_control"], "applicable_entities": ["employee"], "business_rules": {"employee_id_unique": true, "role_required": true}}'),
     
     -- Restaurant Industry Codes
-    ('HERA.REST.MENU.ITEM.v1', 'restaurant', '{"description": "Restaurant Menu Item", "triggers": ["allergen_check", "cost_calculation"], "applicable_entities": ["menu_item"], "business_rules": {"allergen_disclosure": true, "prep_time_required": false}}'),
-    ('HERA.REST.ORDER.TXN.v1', 'restaurant', '{"description": "Restaurant Order Transaction", "triggers": ["kitchen_display", "inventory_reduction"], "applicable_entities": ["order"], "business_rules": {"table_assignment": "optional", "payment_required": true}}'),
-    ('HERA.REST.TBL.RESERVATION.v1', 'restaurant', '{"description": "Table Reservation", "triggers": ["capacity_check", "time_slot_validation"], "applicable_entities": ["reservation"], "business_rules": {"advance_booking": "limited", "party_size_validation": true}}'),
+    ('HERA.REST.MENU.ITEM.V1', 'restaurant', '{"description": "Restaurant Menu Item", "triggers": ["allergen_check", "cost_calculation"], "applicable_entities": ["menu_item"], "business_rules": {"allergen_disclosure": true, "prep_time_required": false}}'),
+    ('HERA.REST.ORDER.TXN.V1', 'restaurant', '{"description": "Restaurant Order Transaction", "triggers": ["kitchen_display", "inventory_reduction"], "applicable_entities": ["order"], "business_rules": {"table_assignment": "optional", "payment_required": true}}'),
+    ('HERA.REST.TBL.RESERVATION.V1', 'restaurant', '{"description": "Table Reservation", "triggers": ["capacity_check", "time_slot_validation"], "applicable_entities": ["reservation"], "business_rules": {"advance_booking": "limited", "party_size_validation": true}}'),
     
     -- Healthcare Industry Codes
-    ('HERA.HC.PATIENT.RECORD.v1', 'healthcare', '{"description": "Healthcare Patient Record", "triggers": ["hipaa_compliance", "insurance_verification"], "applicable_entities": ["patient"], "business_rules": {"mrn_unique": true, "phi_protection": "required"}}'),
-    ('HERA.HC.APPOINTMENT.VISIT.v1', 'healthcare', '{"description": "Healthcare Appointment", "triggers": ["provider_scheduling", "insurance_verification"], "applicable_entities": ["appointment"], "business_rules": {"provider_required": true, "insurance_check": true}}'),
-    ('HERA.HC.PRESCRIPTION.MED.v1', 'healthcare', '{"description": "Medical Prescription", "triggers": ["drug_interaction_check", "dosage_validation"], "applicable_entities": ["prescription"], "business_rules": {"provider_license_check": true, "patient_allergy_check": true}}'),
+    ('HERA.HC.PATIENT.RECORD.V1', 'healthcare', '{"description": "Healthcare Patient Record", "triggers": ["hipaa_compliance", "insurance_verification"], "applicable_entities": ["patient"], "business_rules": {"mrn_unique": true, "phi_protection": "required"}}'),
+    ('HERA.HC.APPOINTMENT.VISIT.V1', 'healthcare', '{"description": "Healthcare Appointment", "triggers": ["provider_scheduling", "insurance_verification"], "applicable_entities": ["appointment"], "business_rules": {"provider_required": true, "insurance_check": true}}'),
+    ('HERA.HC.PRESCRIPTION.MED.V1', 'healthcare', '{"description": "Medical Prescription", "triggers": ["drug_interaction_check", "dosage_validation"], "applicable_entities": ["prescription"], "business_rules": {"provider_license_check": true, "patient_allergy_check": true}}'),
     
     -- Retail Industry Codes
-    ('HERA.RTL.PROD.INVENTORY.v1', 'retail', '{"description": "Retail Product Inventory", "triggers": ["stock_tracking", "reorder_automation"], "applicable_entities": ["inventory_item"], "business_rules": {"barcode_required": true, "quantity_tracking": "real_time"}}'),
-    ('HERA.RTL.SALE.POS.v1', 'retail', '{"description": "Retail POS Sale", "triggers": ["inventory_reduction", "loyalty_points"], "applicable_entities": ["sale"], "business_rules": {"payment_verification": true, "discount_validation": true}}'),
-    ('HERA.RTL.CUSTOMER.LOYALTY.v1', 'retail', '{"description": "Customer Loyalty Program", "triggers": ["points_calculation", "tier_upgrade"], "applicable_entities": ["loyalty_member"], "business_rules": {"points_expiry": "12_months", "tier_benefits": "automatic"}}')
+    ('HERA.RTL.PROD.INVENTORY.V1', 'retail', '{"description": "Retail Product Inventory", "triggers": ["stock_tracking", "reorder_automation"], "applicable_entities": ["inventory_item"], "business_rules": {"barcode_required": true, "quantity_tracking": "real_time"}}'),
+    ('HERA.RTL.SALE.POS.V1', 'retail', '{"description": "Retail POS Sale", "triggers": ["inventory_reduction", "loyalty_points"], "applicable_entities": ["sale"], "business_rules": {"payment_verification": true, "discount_validation": true}}'),
+    ('HERA.RTL.CUSTOMER.LOYALTY.V1', 'retail', '{"description": "Customer Loyalty Program", "triggers": ["points_calculation", "tier_upgrade"], "applicable_entities": ["loyalty_member"], "business_rules": {"points_expiry": "12_months", "tier_benefits": "automatic"}}')
 ) AS code_def(smart_code, industry, definition)
 WHERE e.entity_code = 'SMART-CODE-REGISTRY';
 
@@ -508,7 +508,7 @@ SELECT
     field_reg.id,
     'validates_with_standards',
     'Entity type must conform to standard field definitions',
-    'HERA.STD.VALIDATION.RULE.v1',
+    'HERA.STD.VALIDATION.RULE.V1',
     1.0,
     '{"enforcement": "strict", "auto_check": true, "violation_action": "reject"}'::jsonb,
     true,
@@ -542,7 +542,7 @@ SELECT
     std.id,
     'enforces_smart_code_pattern',
     'Smart codes must follow HERA pattern and be unique',
-    'HERA.STD.SMART.CODE.VALIDATION.v1',
+    'HERA.STD.SMART.CODE.VALIDATION.V1',
     1.0,
     '{"pattern": "HERA\\.\\w+\\.\\w+\\.\\w+\\.\\w+\\.v\\d+", "uniqueness": "global", "collision_detection": true}'::jsonb,
     true,
@@ -575,7 +575,7 @@ INSERT INTO core_relationships (
     (SELECT id FROM core_entities WHERE entity_code = 'STD-CUSTOMER'),
     'provides_standard_fields',
     'Standard fields must be used when creating customer entities',
-    'HERA.STD.FIELD.ENFORCEMENT.v1',
+    'HERA.STD.FIELD.ENFORCEMENT.V1',
     1.0,
     '{"required_fields": ["std_field_email", "std_field_phone"], "optional_fields": ["std_field_address"], "custom_fields_allowed": true}'::jsonb,
     true,
@@ -607,7 +607,7 @@ INSERT INTO core_entities (
     'Daily Data Quality Report',
     'DAILY-QUALITY-REPORT',
     'Automated daily assessment of data quality and standards compliance',
-    'HERA.QA.DAILY.REPORT.v1',
+    'HERA.QA.DAILY.REPORT.V1',
     '{
         "frequency": "daily",
         "scope": "all_organizations",
@@ -639,7 +639,7 @@ INSERT INTO core_entities (
     'Standards Violation Tracker',
     'VIOLATION-TRACKER',
     'Tracks and manages standards violations for remediation',
-    'HERA.QA.VIOLATION.TRACKER.v1',
+    'HERA.QA.VIOLATION.TRACKER.V1',
     '{
         "real_time_monitoring": true,
         "auto_remediation": "suggested",

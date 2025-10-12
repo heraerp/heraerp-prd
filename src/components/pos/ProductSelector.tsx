@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS PRODUCT SELECTOR
-// Smart Code: HERA.UI.POS.PRODUCT_SELECTOR.v1
+// Smart Code: HERA.UI.POS.PRODUCT_SELECTOR.V1
 // Product selection with inventory tracking
 // ================================================================================
 

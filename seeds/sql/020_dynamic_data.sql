@@ -26,7 +26,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.DYN.v1',
+    'HERA.SALON.PROD.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -41,7 +41,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.DYN.v1',
+    'HERA.SALON.PROD.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -56,7 +56,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.DYN.v1',
+    'HERA.SALON.PROD.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -71,7 +71,7 @@ VALUES
     ${PRODUCT_1_REQUIRES_INVENTORY},
     NULL,
     NULL,
-    'HERA.SALON.PROD.DYN.v1',
+    'HERA.SALON.PROD.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -86,7 +86,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.DYN.v1',
+    'HERA.SALON.PROD.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -102,7 +102,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -117,7 +117,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -132,7 +132,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -147,7 +147,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -162,7 +162,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -177,7 +177,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -192,7 +192,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -207,7 +207,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -222,7 +222,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -237,7 +237,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -252,7 +252,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -267,7 +267,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -282,7 +282,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -297,7 +297,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   ),
@@ -312,7 +312,7 @@ VALUES
     NULL,
     NULL,
     NULL,
-    'HERA.SALON.PROD.CATEGORY.DYN.v1',
+    'HERA.SALON.PROD.CATEGORY.DYN.V1',
     NOW(),
     NOW()
   );

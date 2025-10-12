@@ -44,7 +44,7 @@ BEGIN
                 'membership',
                 CONCAT('MEMBERSHIP-', membership.user_id::text, '-', membership.organization_id::text),
                 CONCAT('Membership: User ', membership.user_id::text),
-                'HERA.ORG.MEMBERSHIP.v1',
+                'HERA.ORG.MEMBERSHIP.V1',
                 jsonb_build_object(
                     'user_id', membership.user_id,
                     'role', membership.role,
@@ -71,7 +71,7 @@ BEGIN
                 membership.user_id,  -- Assuming user_id references a user entity
                 membership.organization_id,  -- Organization as entity
                 'member_of',
-                'HERA.ORG.MEMBERSHIP.REL.v1',
+                'HERA.ORG.MEMBERSHIP.REL.V1',
                 membership.organization_id,
                 jsonb_build_object(
                     'membership_entity_id', membership_entity_id,
@@ -95,7 +95,7 @@ BEGIN
                     membership_entity_id,
                     'permissions',
                     membership.permissions::text,
-                    'HERA.ORG.PERMISSION.SET.v1',
+                    'HERA.ORG.PERMISSION.SET.V1',
                     membership.organization_id,
                     jsonb_build_object(
                         'permission_type', 'full_set',
@@ -150,7 +150,7 @@ BEGIN
         'membership',
         CONCAT('MEMBERSHIP-', p_user_id::text, '-', p_organization_id::text),
         CONCAT('Membership: ', p_role),
-        'HERA.ORG.MEMBERSHIP.v1',
+        'HERA.ORG.MEMBERSHIP.V1',
         jsonb_build_object(
             'user_id', p_user_id,
             'role', p_role,
@@ -173,7 +173,7 @@ BEGIN
         p_user_id,
         p_organization_id,
         'member_of',
-        'HERA.ORG.MEMBERSHIP.REL.v1',
+        'HERA.ORG.MEMBERSHIP.REL.V1',
         p_organization_id,
         jsonb_build_object(
             'membership_entity_id', v_membership_id,
@@ -198,7 +198,7 @@ SELECT
     COUNT(*) as count
 FROM core_relationships
 WHERE relationship_type = 'member_of'
-AND smart_code = 'HERA.ORG.MEMBERSHIP.REL.v1';
+AND smart_code = 'HERA.ORG.MEMBERSHIP.REL.V1';
 
 -- Step 6: Now safe to drop core_memberships
 -- This will be done by the cleanup script

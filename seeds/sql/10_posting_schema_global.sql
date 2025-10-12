@@ -14,7 +14,7 @@ INSERT INTO core_entities (
     'posting_schema',
     'POSTING_SCHEMA_GLOBAL',
     'Global POS Posting Schema',
-    'HERA.POS.POSTING.SCHEMA.v1',
+    'HERA.POS.POSTING.SCHEMA.V1',
     :dsl_json::jsonb, -- Must match posting schema DSL format
     :org::uuid,
     'active'

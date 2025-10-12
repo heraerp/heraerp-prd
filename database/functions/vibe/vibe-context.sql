@@ -1,5 +1,5 @@
 -- HERA 100% Vibe Coding System - Database Functions
--- Smart Code: HERA.VIBE.FOUNDATION.DATABASE.FUNCTIONS.v1
+-- Smart Code: HERA.VIBE.FOUNDATION.DATABASE.FUNCTIONS.V1
 -- Purpose: PostgreSQL functions for vibe context management and storage
 
 -- Create vibe context preservation function
@@ -69,7 +69,7 @@ BEGIN
         'conversation_state',
         'json',
         p_conversation_state,
-        'HERA.VIBE.CONTEXT.DATA.CONVERSATION.v1',
+        'HERA.VIBE.CONTEXT.DATA.CONVERSATION.V1',
         p_organization_id,
         NOW()
     );
@@ -88,7 +88,7 @@ BEGIN
         'task_lineage',
         'json',
         to_jsonb(p_task_lineage),
-        'HERA.VIBE.CONTEXT.DATA.LINEAGE.v1',
+        'HERA.VIBE.CONTEXT.DATA.LINEAGE.V1',
         p_organization_id,
         NOW()
     );
@@ -107,7 +107,7 @@ BEGIN
         'code_evolution',
         'json',
         p_code_evolution,
-        'HERA.VIBE.CONTEXT.DATA.EVOLUTION.v1',
+        'HERA.VIBE.CONTEXT.DATA.EVOLUTION.V1',
         p_organization_id,
         NOW()
     );
@@ -126,7 +126,7 @@ BEGIN
         'relationship_map',
         'json',
         p_relationship_map,
-        'HERA.VIBE.CONTEXT.DATA.RELATIONSHIPS.v1',
+        'HERA.VIBE.CONTEXT.DATA.RELATIONSHIPS.V1',
         p_organization_id,
         NOW()
     );
@@ -145,7 +145,7 @@ BEGIN
         'business_context',
         'json',
         p_business_context,
-        'HERA.VIBE.CONTEXT.DATA.BUSINESS.v1',
+        'HERA.VIBE.CONTEXT.DATA.BUSINESS.V1',
         p_organization_id,
         NOW()
     );
@@ -161,7 +161,7 @@ BEGIN
         created_at
     ) VALUES (
         'vibe_context_preservation',
-        'HERA.VIBE.TRANSACTION.PRESERVE.CONTEXT.v1',
+        'HERA.VIBE.TRANSACTION.PRESERVE.CONTEXT.V1',
         p_organization_id,
         context_entity_id,
         1.0, -- Count as 1 preserved context
@@ -264,7 +264,7 @@ BEGIN
         created_at
     ) VALUES (
         'vibe_context_restoration',
-        'HERA.VIBE.TRANSACTION.RESTORE.CONTEXT.v1',
+        'HERA.VIBE.TRANSACTION.RESTORE.CONTEXT.V1',
         p_organization_id,
         p_context_entity_id,
         1.0, -- Count as 1 restored context
@@ -386,7 +386,7 @@ BEGIN
         'compatibility_matrix',
         'json',
         p_compatibility_matrix,
-        'HERA.VIBE.INTEGRATION.DATA.COMPATIBILITY.v1',
+        'HERA.VIBE.INTEGRATION.DATA.COMPATIBILITY.V1',
         p_organization_id,
         NOW()
     ),
@@ -395,7 +395,7 @@ BEGIN
         'error_recovery',
         'json',
         p_error_recovery,
-        'HERA.VIBE.INTEGRATION.DATA.RECOVERY.v1',
+        'HERA.VIBE.INTEGRATION.DATA.RECOVERY.V1',
         p_organization_id,
         NOW()
     ),
@@ -404,7 +404,7 @@ BEGIN
         'performance_impact',
         'json',
         p_performance_impact,
-        'HERA.VIBE.INTEGRATION.DATA.PERFORMANCE.v1',
+        'HERA.VIBE.INTEGRATION.DATA.PERFORMANCE.V1',
         p_organization_id,
         NOW()
     ),
@@ -413,7 +413,7 @@ BEGIN
         'rollback_strategy',
         'json',
         p_rollback_strategy,
-        'HERA.VIBE.INTEGRATION.DATA.ROLLBACK.v1',
+        'HERA.VIBE.INTEGRATION.DATA.ROLLBACK.V1',
         p_organization_id,
         NOW()
     );
@@ -429,7 +429,7 @@ BEGIN
         created_at
     ) VALUES (
         'vibe_integration_creation',
-        'HERA.VIBE.TRANSACTION.CREATE.INTEGRATION.v1',
+        'HERA.VIBE.TRANSACTION.CREATE.INTEGRATION.V1',
         p_organization_id,
         integration_entity_id,
         1.0, -- Count as 1 created integration
@@ -547,7 +547,7 @@ BEGIN
         created_at
     ) VALUES (
         'vibe_context_cleanup',
-        'HERA.VIBE.TRANSACTION.CLEANUP.CONTEXTS.v1',
+        'HERA.VIBE.TRANSACTION.CLEANUP.CONTEXTS.V1',
         p_organization_id,
         cleanup_count::NUMERIC,
         jsonb_build_object(

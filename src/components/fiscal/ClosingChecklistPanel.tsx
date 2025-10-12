@@ -1,6 +1,6 @@
 // ================================================================================
 // CLOSING CHECKLIST PANEL - FISCAL COMPONENT
-// Smart Code: HERA.UI.FISCAL.CLOSING_CHECKLIST_PANEL.v1
+// Smart Code: HERA.UI.FISCAL.CLOSING_CHECKLIST_PANEL.V1
 // Production-ready checklist panel with inline toggles and progress tracking
 // ================================================================================
 

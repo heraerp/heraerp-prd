@@ -269,7 +269,7 @@ export function EntityForm({
     const initial: EntityFormData = {
       entity_name: initialData?.entity_name || '',
       entity_code: initialData?.entity_code || '',
-      smart_code: initialData?.smart_code || `HERA.SALON.${preset.entity_type}.ENTITY.v1`,
+      smart_code: initialData?.smart_code || `HERA.SALON.${preset.entity_type}.ENTITY.V1`,
       dynamic_fields: applyDefaultsWithUI(preset, initialData?.dynamic_fields || {}, userRole),
       relationships: initialData?.relationships || {}
     }

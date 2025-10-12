@@ -186,7 +186,7 @@ export default function ExpensesTrackingPage() {
       // Create expense transaction
       await universalApi.createTransaction({
         transaction_type: 'expense',
-        smart_code: 'HERA.SALON.EXPENSE.PAYMENT.v1',
+        smart_code: 'HERA.SALON.EXPENSE.PAYMENT.V1',
         total_amount: parseFloat(expenseForm.amount),
         metadata: {
           vendor_name: expenseForm.vendor_name,

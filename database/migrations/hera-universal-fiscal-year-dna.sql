@@ -18,7 +18,7 @@ INSERT INTO core_entities (
   'dna_pattern',
   'DNA-UNIVERSAL-FISCAL-YEAR',
   'Universal Fiscal Year & Closing DNA Pattern',
-  'HERA.DNA.FISCAL.UNIVERSAL.v1'
+  'HERA.DNA.FISCAL.UNIVERSAL.V1'
 );
 
 -- =====================================================
@@ -58,20 +58,20 @@ BEGIN
     'fiscal_configuration',
     'FISCAL-CONFIG-' || v_current_year,
     'Fiscal Year Configuration ' || v_current_year,
-    'HERA.FISCAL.CONFIG.' || UPPER(v_fiscal_type) || '.v1'
+    'HERA.FISCAL.CONFIG.' || UPPER(v_fiscal_type) || '.V1'
   ) RETURNING id INTO v_fiscal_config_id;
 
   -- Step 2: Add Fiscal Settings as Dynamic Data
   INSERT INTO core_dynamic_data (organization_id, entity_id, field_name, field_value_text, field_value_number, field_value_boolean, smart_code)
   VALUES 
-    (p_organization_id, v_fiscal_config_id, 'fiscal_type', v_fiscal_type, NULL, NULL, 'HERA.FISCAL.TYPE.v1'),
-    (p_organization_id, v_fiscal_config_id, 'start_month', NULL, v_start_month, NULL, 'HERA.FISCAL.START.MONTH.v1'),
-    (p_organization_id, v_fiscal_config_id, 'periods_per_year', NULL, v_periods_per_year, NULL, 'HERA.FISCAL.PERIODS.v1'),
-    (p_organization_id, v_fiscal_config_id, 'current_year', NULL, v_current_year, NULL, 'HERA.FISCAL.YEAR.v1'),
-    (p_organization_id, v_fiscal_config_id, 'retained_earnings_account', v_retained_earnings_code, NULL, NULL, 'HERA.FISCAL.RETAINED.v1'),
-    (p_organization_id, v_fiscal_config_id, 'current_earnings_account', v_current_earnings_code, NULL, NULL, 'HERA.FISCAL.CURRENT.v1'),
-    (p_organization_id, v_fiscal_config_id, 'allow_parallel_years', NULL, NULL, TRUE, 'HERA.FISCAL.PARALLEL.v1'),
-    (p_organization_id, v_fiscal_config_id, 'auto_close_enabled', NULL, NULL, FALSE, 'HERA.FISCAL.AUTOCLOSE.v1');
+    (p_organization_id, v_fiscal_config_id, 'fiscal_type', v_fiscal_type, NULL, NULL, 'HERA.FISCAL.TYPE.V1'),
+    (p_organization_id, v_fiscal_config_id, 'start_month', NULL, v_start_month, NULL, 'HERA.FISCAL.START.MONTH.V1'),
+    (p_organization_id, v_fiscal_config_id, 'periods_per_year', NULL, v_periods_per_year, NULL, 'HERA.FISCAL.PERIODS.V1'),
+    (p_organization_id, v_fiscal_config_id, 'current_year', NULL, v_current_year, NULL, 'HERA.FISCAL.YEAR.V1'),
+    (p_organization_id, v_fiscal_config_id, 'retained_earnings_account', v_retained_earnings_code, NULL, NULL, 'HERA.FISCAL.RETAINED.V1'),
+    (p_organization_id, v_fiscal_config_id, 'current_earnings_account', v_current_earnings_code, NULL, NULL, 'HERA.FISCAL.CURRENT.V1'),
+    (p_organization_id, v_fiscal_config_id, 'allow_parallel_years', NULL, NULL, TRUE, 'HERA.FISCAL.PARALLEL.V1'),
+    (p_organization_id, v_fiscal_config_id, 'auto_close_enabled', NULL, NULL, FALSE, 'HERA.FISCAL.AUTOCLOSE.V1');
 
   -- Step 3: Create Fiscal Periods
   PERFORM hera_create_fiscal_periods(
@@ -168,16 +168,16 @@ BEGIN
       'fiscal_period',
       v_period_code,
       v_period_name,
-      'HERA.FISCAL.PERIOD.' || v_period_counter || '.v1'
+      'HERA.FISCAL.PERIOD.' || v_period_counter || '.V1'
     ) RETURNING id INTO v_period_id;
 
     -- Add period details
     INSERT INTO core_dynamic_data (organization_id, entity_id, field_name, field_value_text, field_value_number, smart_code)
     VALUES 
-      (p_organization_id, v_period_id, 'period_number', NULL, v_period_counter, 'HERA.FISCAL.PERIOD.NUM.v1'),
-      (p_organization_id, v_period_id, 'period_status', CASE WHEN v_period_counter = p_periods_per_year THEN 'current' ELSE 'open' END, NULL, 'HERA.FISCAL.PERIOD.STATUS.v1'),
-      (p_organization_id, v_period_id, 'start_date', v_period_start::TEXT, NULL, 'HERA.FISCAL.PERIOD.START.v1'),
-      (p_organization_id, v_period_id, 'end_date', v_period_end::TEXT, NULL, 'HERA.FISCAL.PERIOD.END.v1');
+      (p_organization_id, v_period_id, 'period_number', NULL, v_period_counter, 'HERA.FISCAL.PERIOD.NUM.V1'),
+      (p_organization_id, v_period_id, 'period_status', CASE WHEN v_period_counter = p_periods_per_year THEN 'current' ELSE 'open' END, NULL, 'HERA.FISCAL.PERIOD.STATUS.V1'),
+      (p_organization_id, v_period_id, 'start_date', v_period_start::TEXT, NULL, 'HERA.FISCAL.PERIOD.START.V1'),
+      (p_organization_id, v_period_id, 'end_date', v_period_end::TEXT, NULL, 'HERA.FISCAL.PERIOD.END.V1');
 
     -- Create relationship to fiscal config
     INSERT INTO core_relationships (
@@ -191,7 +191,7 @@ BEGIN
       p_fiscal_config_id,
       v_period_id,
       'has_period',
-      'HERA.FISCAL.REL.CONFIG.PERIOD.v1'
+      'HERA.FISCAL.REL.CONFIG.PERIOD.V1'
     );
   END LOOP;
 END;
@@ -220,20 +220,20 @@ BEGIN
     'closing_configuration',
     'YEAR-END-CONFIG',
     'Year-End Closing Configuration',
-    'HERA.CLOSING.CONFIG.v1'
+    'HERA.CLOSING.CONFIG.V1'
   ) RETURNING id INTO v_closing_config_id;
 
   -- Add closing configuration steps
   INSERT INTO core_dynamic_data (organization_id, entity_id, field_name, field_value_boolean, field_value_text, smart_code)
   VALUES 
-    (p_organization_id, v_closing_config_id, 'step_1_reconcile', TRUE, NULL, 'HERA.CLOSING.STEP.RECONCILE.v1'),
-    (p_organization_id, v_closing_config_id, 'step_2_adjustments', TRUE, NULL, 'HERA.CLOSING.STEP.ADJUST.v1'),
-    (p_organization_id, v_closing_config_id, 'step_3_close_revenue', TRUE, NULL, 'HERA.CLOSING.STEP.REVENUE.v1'),
-    (p_organization_id, v_closing_config_id, 'step_4_close_expenses', TRUE, NULL, 'HERA.CLOSING.STEP.EXPENSES.v1'),
-    (p_organization_id, v_closing_config_id, 'step_5_calculate_pl', TRUE, NULL, 'HERA.CLOSING.STEP.PL.v1'),
-    (p_organization_id, v_closing_config_id, 'step_6_transfer_retained', TRUE, NULL, 'HERA.CLOSING.STEP.RETAINED.v1'),
-    (p_organization_id, v_closing_config_id, 'retained_earnings_account', NULL, p_retained_earnings_code, 'HERA.CLOSING.RETAINED.v1'),
-    (p_organization_id, v_closing_config_id, 'current_earnings_account', NULL, p_current_earnings_code, 'HERA.CLOSING.CURRENT.v1');
+    (p_organization_id, v_closing_config_id, 'step_1_reconcile', TRUE, NULL, 'HERA.CLOSING.STEP.RECONCILE.V1'),
+    (p_organization_id, v_closing_config_id, 'step_2_adjustments', TRUE, NULL, 'HERA.CLOSING.STEP.ADJUST.V1'),
+    (p_organization_id, v_closing_config_id, 'step_3_close_revenue', TRUE, NULL, 'HERA.CLOSING.STEP.REVENUE.V1'),
+    (p_organization_id, v_closing_config_id, 'step_4_close_expenses', TRUE, NULL, 'HERA.CLOSING.STEP.EXPENSES.V1'),
+    (p_organization_id, v_closing_config_id, 'step_5_calculate_pl', TRUE, NULL, 'HERA.CLOSING.STEP.PL.V1'),
+    (p_organization_id, v_closing_config_id, 'step_6_transfer_retained', TRUE, NULL, 'HERA.CLOSING.STEP.RETAINED.V1'),
+    (p_organization_id, v_closing_config_id, 'retained_earnings_account', NULL, p_retained_earnings_code, 'HERA.CLOSING.RETAINED.V1'),
+    (p_organization_id, v_closing_config_id, 'current_earnings_account', NULL, p_current_earnings_code, 'HERA.CLOSING.CURRENT.V1');
 
   -- Create standard closing checklist template
   PERFORM hera_create_closing_checklist(p_organization_id);
@@ -336,7 +336,7 @@ BEGIN
     p_closing_date,
     'Year-end closing for fiscal year ' || p_fiscal_year,
     ABS(v_net_income),
-    'HERA.CLOSING.JE.YEAREND.v1',
+    'HERA.CLOSING.JE.YEAREND.V1',
     jsonb_build_object(
       'fiscal_year', p_fiscal_year,
       'revenue', v_total_revenue,
@@ -360,10 +360,10 @@ BEGIN
     ) VALUES 
       (v_closing_entry_id, v_current_year_id, 1, v_net_income, 
        jsonb_build_object('line_type', 'debit', 'description', 'Close profit to retained earnings'),
-       'HERA.CLOSING.LINE.DEBIT.v1'),
+       'HERA.CLOSING.LINE.DEBIT.V1'),
       (v_closing_entry_id, v_retained_earnings_id, 2, v_net_income, 
        jsonb_build_object('line_type', 'credit', 'description', 'Transfer profit to retained earnings'),
-       'HERA.CLOSING.LINE.CREDIT.v1');
+       'HERA.CLOSING.LINE.CREDIT.V1');
   ELSE
     -- Loss: Debit Retained Earnings, Credit Current Year
     INSERT INTO universal_transaction_lines (
@@ -376,10 +376,10 @@ BEGIN
     ) VALUES 
       (v_closing_entry_id, v_retained_earnings_id, 1, ABS(v_net_income), 
        jsonb_build_object('line_type', 'debit', 'description', 'Transfer loss from retained earnings'),
-       'HERA.CLOSING.LINE.DEBIT.v1'),
+       'HERA.CLOSING.LINE.DEBIT.V1'),
       (v_closing_entry_id, v_current_year_id, 2, ABS(v_net_income), 
        jsonb_build_object('line_type', 'credit', 'description', 'Close loss from current year'),
-       'HERA.CLOSING.LINE.CREDIT.v1');
+       'HERA.CLOSING.LINE.CREDIT.V1');
   END IF;
 
   -- Mark fiscal periods as closed
@@ -480,7 +480,7 @@ BEGIN
       'closing_checklist_item',
       v_item->>'code',
       v_item->>'name',
-      'HERA.CLOSING.CHECKLIST.' || (v_item->>'code') || '.v1',
+      'HERA.CLOSING.CHECKLIST.' || (v_item->>'code') || '.V1',
       jsonb_build_object(
         'category', v_item->>'category',
         'required', (v_item->>'required')::BOOLEAN,
@@ -539,7 +539,7 @@ BEGIN
     'audit_log',
     'PERIOD-CHANGE-' || TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISS'),
     'Period Status Change: ' || v_period_code,
-    'HERA.AUDIT.PERIOD.STATUS.v1',
+    'HERA.AUDIT.PERIOD.STATUS.V1',
     jsonb_build_object(
       'period_id', p_period_id,
       'old_status', v_current_status,

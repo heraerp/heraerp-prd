@@ -43,7 +43,7 @@ SELECT
     'draft'
   ) as status
 FROM core_entities t
-WHERE t.entity_type = 'HERA.FURNITURE.TENDER.NOTICE.v1';
+WHERE t.entity_type = 'HERA.FURNITURE.TENDER.NOTICE.V1';
 
 -- Grant select on view
 GRANT SELECT ON v_tender_status TO authenticated;
@@ -51,7 +51,7 @@ GRANT SELECT ON v_tender_status TO authenticated;
 -- Index for performance on tender queries
 CREATE INDEX IF NOT EXISTS idx_core_entities_tender_type 
 ON core_entities(entity_type, organization_id) 
-WHERE entity_type = 'HERA.FURNITURE.TENDER.NOTICE.v1';
+WHERE entity_type = 'HERA.FURNITURE.TENDER.NOTICE.V1';
 
 CREATE INDEX IF NOT EXISTS idx_core_dynamic_data_tender_fields 
 ON core_dynamic_data(entity_id, field_name, organization_id);

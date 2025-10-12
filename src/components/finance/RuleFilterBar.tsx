@@ -1,6 +1,6 @@
 // ================================================================================
 // RULE FILTER BAR COMPONENT
-// Smart Code: HERA.UI.FINANCE.RULE_FILTER_BAR.v1
+// Smart Code: HERA.UI.FINANCE.RULE_FILTER_BAR.V1
 // Filter bar for Finance DNA posting rules
 // ================================================================================
 

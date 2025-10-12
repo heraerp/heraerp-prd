@@ -6,7 +6,7 @@ export const revalidate = 0 // no static cache
 export const fetchCache = 'force-no-store'
 /**
  * HERA Admin Provisioning Dashboard
- * Smart Code: HERA.ADMIN.PROVISIONING.v1
+ * Smart Code: HERA.ADMIN.PROVISIONING.V1
  *
  * Manage tenant provisioning, modules, and entitlements
  */

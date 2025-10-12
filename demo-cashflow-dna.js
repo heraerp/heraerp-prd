@@ -11,7 +11,7 @@ console.log('🧬 HERA UNIVERSAL CASHFLOW DNA COMPONENT\n');
 
 // Core DNA Component Definition
 const CASHFLOW_DNA = {
-  component_id: 'HERA.FIN.CASHFLOW.STATEMENT.ENGINE.v1',
+  component_id: 'HERA.FIN.CASHFLOW.STATEMENT.ENGINE.V1',
   component_name: 'Universal Cashflow Statement Engine',
   status: 'PRODUCTION_READY',
   version: '1.0.0',
@@ -31,7 +31,7 @@ const CASHFLOW_DNA = {
   industry_templates: {
     salon: {
       name: 'Hair Salon & Beauty Services',
-      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.SALON.v1',
+      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.SALON.V1',
       operating_margin: 97.8,
       cash_cycle: 0, // Immediate payment
       seasonality_factor: 1.25, // Q4 peak
@@ -40,7 +40,7 @@ const CASHFLOW_DNA = {
     
     restaurant: {
       name: 'Restaurant & Food Service', 
-      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.RESTAURANT.v1',
+      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.RESTAURANT.V1',
       operating_margin: 85.2,
       cash_cycle: 1,
       seasonality_factor: 1.2,
@@ -49,7 +49,7 @@ const CASHFLOW_DNA = {
     
     healthcare: {
       name: 'Healthcare & Medical Services',
-      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.HEALTHCARE.v1',
+      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.HEALTHCARE.V1',
       operating_margin: 78.5,
       cash_cycle: 45, // Insurance delays
       seasonality_factor: 1.1,
@@ -58,7 +58,7 @@ const CASHFLOW_DNA = {
     
     manufacturing: {
       name: 'Manufacturing & Production',
-      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.MANUFACTURING.v1',
+      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.MANUFACTURING.V1',
       operating_margin: 72.8,
       cash_cycle: 60,
       seasonality_factor: 1.15,
@@ -67,7 +67,7 @@ const CASHFLOW_DNA = {
     
     services: {
       name: 'Professional Services',
-      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.SERVICES.v1',
+      dna_config: 'HERA.FIN.CASHFLOW.CONFIG.SERVICES.V1',
       operating_margin: 89.3,
       cash_cycle: 30,
       seasonality_factor: 1.05,

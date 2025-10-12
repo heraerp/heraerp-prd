@@ -96,7 +96,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
   }
 
   const handleCloneTemplate = async (template: any) => {
-    const smartCode = `${template.smart_code.replace('.v1', '')}.CUSTOM.v1`
+    const smartCode = `${template.smart_code.replace('.V1', '')}.CUSTOM.V1`
     try {
       const result = await cloneTemplate(template.template_id, smartCode)
       toast({

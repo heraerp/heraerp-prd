@@ -1,6 +1,6 @@
 /**
  * HERA DNA SECURITY: Salon Security Hooks
- * Industry DNA Component: HERA.DNA.SECURITY.SALON.HOOKS.v1
+ * Industry DNA Component: HERA.DNA.SECURITY.SALON.HOOKS.V1
  *
  * Salon-specific security DNA that provides comprehensive permission management,
  * role-based access control, and audit logging tailored for salon operations.

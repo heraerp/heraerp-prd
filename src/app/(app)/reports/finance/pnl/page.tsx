@@ -331,7 +331,7 @@ export default function ProfitLossStatementPage() {
           transaction_date: filters.from_date || new Date().toISOString().split('T')[0],
           transaction_code: 'JE-2024-001',
           transaction_type: 'journal_entry',
-          smart_code: 'HERA.FIN.GL.AUTO_JOURNAL.v1',
+          smart_code: 'HERA.FIN.GL.AUTO_JOURNAL.V1',
           customer_name: undefined,
           staff_name: 'System Generated',
           total_amount: Math.abs(row.amount),
@@ -378,7 +378,7 @@ export default function ProfitLossStatementPage() {
           transaction_date: filters.from_date || new Date().toISOString().split('T')[0],
           transaction_code: 'JE-2024-001',
           transaction_type: 'journal_entry',
-          smart_code: 'HERA.FIN.GL.AUTO_JOURNAL.v1',
+          smart_code: 'HERA.FIN.GL.AUTO_JOURNAL.V1',
           total_amount: 0, // Journal entries balance to zero
           source_entity_id: undefined,
           target_entity_id: undefined,

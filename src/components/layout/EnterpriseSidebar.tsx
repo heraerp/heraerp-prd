@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA ENTERPRISE SIDEBAR
-// Smart Code: HERA.SIDEBAR.ENTERPRISE.v1
+// Smart Code: HERA.SIDEBAR.ENTERPRISE.V1
 // Modern dark sidebar for multi-app navigation
 // ================================================================================
 

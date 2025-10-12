@@ -392,7 +392,7 @@ export function HeraDnaUniversalCalendar({
           end_time: selectInfo.end.toISOString(),
           resource_id: selectInfo.resource?.id,
           organization_id: orgId,
-          smart_code: `HERA.${industryType.toUpperCase()}.CALENDAR.APPOINTMENT.STANDARD.v1`
+          smart_code: `HERA.${industryType.toUpperCase()}.CALENDAR.APPOINTMENT.STANDARD.V1`
         }
 
         await onEventCreate(eventData)

@@ -1,6 +1,6 @@
 // ================================================================================
 // ROLE TABLE - SETTINGS COMPONENT
-// Smart Code: HERA.UI.SETTINGS.ROLE_TABLE.v1
+// Smart Code: HERA.UI.SETTINGS.ROLE_TABLE.V1
 // Production-ready role grants table with chips and actions
 // ================================================================================
 

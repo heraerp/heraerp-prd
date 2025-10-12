@@ -168,7 +168,7 @@ export default function CALearningPlatform() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'custom_request',
-          smart_code: 'HERA.CA.EDU.AI.LEARNING_MODE.v1',
+          smart_code: 'HERA.CA.EDU.AI.LEARNING_MODE.V1',
           task_type: 'learning',
           prompt: `Generate ${mode} mode learning content for CA Final Indirect Tax. Topic: GST Basics. Include interactive elements and personalized guidance.`,
           max_tokens: 1000,

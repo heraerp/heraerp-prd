@@ -47,7 +47,7 @@ BEGIN
             v_org_id,
             'business_setup_status',
             'pending',
-            'HERA.SALON.SETUP.STATUS.v1',
+            'HERA.SALON.SETUP.STATUS.V1',
             NOW(),
             NOW()
         );

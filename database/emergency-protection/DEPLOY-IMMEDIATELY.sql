@@ -269,7 +269,7 @@ BEGIN
             user_id,
             org_id::text,
             'USER_MEMBER_OF_ORG',
-            'HERA.EMERGENCY.AUTH.RECOVERY.v1',
+            'HERA.EMERGENCY.AUTH.RECOVERY.V1',
             true,
             jsonb_build_object(
                 'role', user_role, 
@@ -304,7 +304,7 @@ BEGIN
         'role',
         'text',
         user_role,
-        'HERA.EMERGENCY.USER.ROLE.v1'
+        'HERA.EMERGENCY.USER.ROLE.V1'
     ) 
     ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET 
@@ -327,7 +327,7 @@ BEGIN
         'permissions',
         'json',
         to_jsonb(permissions),
-        'HERA.EMERGENCY.USER.PERMISSIONS.v1'
+        'HERA.EMERGENCY.USER.PERMISSIONS.V1'
     ) 
     ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET 
@@ -376,16 +376,16 @@ CHECK (
     smart_code ~ '^HERA\.UNIVERSAL\.[A-Z]+(\.[A-Z]+)*\.V1$' OR
     
     -- Legacy business patterns (preserve existing)
-    smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v1$' OR
+    smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' OR
     
     -- Workflow patterns
-    smart_code ~ '^HERA\.WORKFLOW\.[A-Z]+(\.[A-Z]+)*\.v1$' OR
+    smart_code ~ '^HERA\.WORKFLOW\.[A-Z]+(\.[A-Z]+)*\.V1$' OR
     
     -- Auth patterns
-    smart_code ~ '^HERA\.AUTH\.[A-Z]+(\.[A-Z]+)*\.v1$' OR
+    smart_code ~ '^HERA\.AUTH\.[A-Z]+(\.[A-Z]+)*\.V1$' OR
     
     -- Emergency patterns
-    smart_code ~ '^HERA\.EMERGENCY\.[A-Z]+(\.[A-Z]+)*\.v1$' OR
+    smart_code ~ '^HERA\.EMERGENCY\.[A-Z]+(\.[A-Z]+)*\.V1$' OR
     
     -- Migration support (temporary - remove after full migration)
     smart_code IS NULL
@@ -399,10 +399,10 @@ CHECK (
 SELECT 'CONSTRAINT IMPACT TEST:' as test_name, * FROM validate_smart_code_constraint_impact(
     'smart_code ~ ''^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$'' OR ' ||
     'smart_code ~ ''^HERA\.UNIVERSAL\.[A-Z]+(\.[A-Z]+)*\.V1$'' OR ' ||
-    'smart_code ~ ''^HERA\.[A-Z]+(\.[A-Z]+)*\.v1$'' OR ' ||
-    'smart_code ~ ''^HERA\.WORKFLOW\.[A-Z]+(\.[A-Z]+)*\.v1$'' OR ' ||
-    'smart_code ~ ''^HERA\.AUTH\.[A-Z]+(\.[A-Z]+)*\.v1$'' OR ' ||
-    'smart_code ~ ''^HERA\.EMERGENCY\.[A-Z]+(\.[A-Z]+)*\.v1$'' OR ' ||
+    'smart_code ~ ''^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$'' OR ' ||
+    'smart_code ~ ''^HERA\.WORKFLOW\.[A-Z]+(\.[A-Z]+)*\.V1$'' OR ' ||
+    'smart_code ~ ''^HERA\.AUTH\.[A-Z]+(\.[A-Z]+)*\.V1$'' OR ' ||
+    'smart_code ~ ''^HERA\.EMERGENCY\.[A-Z]+(\.[A-Z]+)*\.V1$'' OR ' ||
     'smart_code IS NULL'
 );
 

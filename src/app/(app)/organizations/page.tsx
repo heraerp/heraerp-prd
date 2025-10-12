@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA ORGANIZATIONS PAGE
-// Smart Code: HERA.ORGANIZATIONS.PAGE.v1
+// Smart Code: HERA.ORGANIZATIONS.PAGE.V1
 // Organization management page
 // ================================================================================
 

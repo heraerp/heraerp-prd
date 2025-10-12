@@ -1,5 +1,5 @@
 -- HERA Auto-Journal Database Functions - DNA Component Integration
--- Part of HERA.FIN.AUTO.JOURNAL.ENGINE.v1 - Core DNA Component
+-- Part of HERA.FIN.AUTO.JOURNAL.ENGINE.V1 - Core DNA Component
 -- Database-level functions supporting the AI-powered Auto-Journal Engine
 
 -- =============================================================================
@@ -9,10 +9,10 @@
 -- This system provides database-level support for auto-journal processing:
 -- Used by the Auto-Journal DNA Component for trigger-based processing
 --
--- - HERA.PROC.PO.CREATE.v1    → No GL posting (commitment only)
--- - HERA.REST.SALE.ORDER.v1   → Creates Cash/Revenue entries
--- - HERA.INV.GR.RECEIPT.v1    → Creates Inventory/Payable entries
--- - HERA.FIN.PAY.VENDOR.v1    → Creates Cash/Payable entries
+-- - HERA.PROC.PO.CREATE.V1    → No GL posting (commitment only)
+-- - HERA.REST.SALE.ORDER.V1   → Creates Cash/Revenue entries
+-- - HERA.INV.GR.RECEIPT.V1    → Creates Inventory/Payable entries
+-- - HERA.FIN.PAY.VENDOR.V1    → Creates Cash/Payable entries
 -- 
 -- Zero configuration required - the Smart Code contains the business logic!
 -- =============================================================================
@@ -127,7 +127,7 @@ BEGIN
       gen_random_uuid(),
       v_transaction.organization_id,
       'journal_entry',
-      'HERA.FIN.GL.JE.AUTO.v1',
+      'HERA.FIN.GL.JE.AUTO.V1',
       'JE-' || v_transaction.reference_number,
       'JE-' || COALESCE(v_transaction.transaction_number, floor(random() * 100000)::text),
       v_transaction.total_amount,
@@ -198,10 +198,10 @@ SELECT
   END as result
 FROM (
   VALUES 
-    ('HERA.PROC.PO.CREATE.v1'),      -- Should be false
-    ('HERA.INV.GR.RECEIPT.v1'),      -- Should be true
-    ('HERA.REST.SALE.ORDER.v1'),     -- Should be true
-    ('HERA.FIN.PAY.VENDOR.v1')       -- Should be true
+    ('HERA.PROC.PO.CREATE.V1'),      -- Should be false
+    ('HERA.INV.GR.RECEIPT.V1'),      -- Should be true
+    ('HERA.REST.SALE.ORDER.V1'),     -- Should be true
+    ('HERA.FIN.PAY.VENDOR.V1')       -- Should be true
 ) AS test_codes(smart_code);
 
 -- =============================================================================

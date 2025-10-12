@@ -165,7 +165,7 @@ export default function PayrollManagementPage() {
       for (const payroll of payrollData.filter(p => p.status === 'pending')) {
         await universalApi.createTransaction({
           transaction_type: 'payroll',
-          smart_code: 'HERA.SALON.PAYROLL.PAYMENT.v1',
+          smart_code: 'HERA.SALON.PAYROLL.PAYMENT.V1',
           total_amount: payroll.net_pay,
           from_entity_id: payroll.staff_id,
           metadata: {

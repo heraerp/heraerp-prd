@@ -279,8 +279,8 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
         <div className="mt-4 p-3 border rounded bg-blue-50 dark:bg-blue-950/30">
           <h4 className="font-medium text-sm mb-2">Generated Smart Codes:</h4>
           <div className="text-xs font-mono space-y-1">
-            <div>Organization: HERA.{orgData.industry_classification}.ORG.ENTITY.MAIN.v1</div>
-            <div>Settings: HERA.{orgData.industry_classification}.UCR.CONFIG.ORG_SETTINGS.v1</div>
+            <div>Organization: HERA.{orgData.industry_classification}.ORG.ENTITY.MAIN.V1</div>
+            <div>Settings: HERA.{orgData.industry_classification}.UCR.CONFIG.ORG_SETTINGS.V1</div>
           </div>
         </div>
       )}

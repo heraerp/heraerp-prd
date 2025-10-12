@@ -1,6 +1,6 @@
 // ================================================================================
 // BALANCE SHEET REPORT PAGE
-// Smart Code: HERA.UI.REPORTS.BALANCE_SHEET.v1
+// Smart Code: HERA.UI.REPORTS.BALANCE_SHEET.V1
 // Production-ready balance sheet with equation validation and financial ratios
 // ================================================================================
 

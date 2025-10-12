@@ -356,7 +356,7 @@ export const ReviewAndActivateStep: React.FC<ReviewAndActivateStepProps> = ({
             <div className="text-xs font-mono">
               <div className="text-muted-foreground mb-1">Generated Smart Code:</div>
               <div>
-                HERA.{data.organizationBasics.industry_classification}.ORG.ACTIVATION.COMPLETE.v1
+                HERA.{data.organizationBasics.industry_classification}.ORG.ACTIVATION.COMPLETE.V1
               </div>
             </div>
           </div>

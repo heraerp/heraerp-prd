@@ -1,6 +1,6 @@
 -- ================================================================================
 -- HERA UNIVERSAL TRIAL BALANCE DNA COMPONENT
--- Smart Code: HERA.FIN.TRIAL.BALANCE.ENGINE.v1
+-- Smart Code: HERA.FIN.TRIAL.BALANCE.ENGINE.V1
 -- Status: PRODUCTION READY
 -- Integration: Complete with Auto-Journal DNA and Cashflow DNA
 -- ================================================================================
@@ -23,7 +23,7 @@ INSERT INTO core_entities (
     'dna_component',
     'Universal Trial Balance Engine',
     'HERA-DNA-TRIAL-BALANCE-v1',
-    'HERA.FIN.TRIAL.BALANCE.ENGINE.v1',
+    'HERA.FIN.TRIAL.BALANCE.ENGINE.V1',
     'active',
     '{
         "component_type": "financial_reporting",
@@ -39,10 +39,10 @@ INSERT INTO core_entities (
             "CLI Management Tools"
         ],
         "integration_points": [
-            "HERA.FIN.AUTO.JOURNAL.ENGINE.v1",
-            "HERA.FIN.CASHFLOW.STATEMENT.ENGINE.v1",
-            "HERA.UNIVERSAL.API.v1",
-            "HERA.UNIVERSAL.CLI.TOOLS.v1"
+            "HERA.FIN.AUTO.JOURNAL.ENGINE.V1",
+            "HERA.FIN.CASHFLOW.STATEMENT.ENGINE.V1",
+            "HERA.UNIVERSAL.API.V1",
+            "HERA.UNIVERSAL.CLI.TOOLS.V1"
         ],
         "business_impact": {
             "preparation_time_savings": "95%",
@@ -72,24 +72,24 @@ INSERT INTO core_entities (
     metadata
 ) VALUES 
 -- Asset Account Classifications
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Current Assets', 'TB-ASSETS-CURRENT', 'HERA.FIN.TB.CLASS.ASSETS.CURRENT.v1', 'active', '{"account_type": "Asset", "category": "Current Assets", "normal_balance": "Debit", "sort_order": 1}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Fixed Assets', 'TB-ASSETS-FIXED', 'HERA.FIN.TB.CLASS.ASSETS.FIXED.v1', 'active', '{"account_type": "Asset", "category": "Fixed Assets", "normal_balance": "Debit", "sort_order": 2}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Current Assets', 'TB-ASSETS-CURRENT', 'HERA.FIN.TB.CLASS.ASSETS.CURRENT.V1', 'active', '{"account_type": "Asset", "category": "Current Assets", "normal_balance": "Debit", "sort_order": 1}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Fixed Assets', 'TB-ASSETS-FIXED', 'HERA.FIN.TB.CLASS.ASSETS.FIXED.V1', 'active', '{"account_type": "Asset", "category": "Fixed Assets", "normal_balance": "Debit", "sort_order": 2}'::jsonb),
 
 -- Liability Account Classifications
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Current Liabilities', 'TB-LIAB-CURRENT', 'HERA.FIN.TB.CLASS.LIAB.CURRENT.v1', 'active', '{"account_type": "Liability", "category": "Current Liabilities", "normal_balance": "Credit", "sort_order": 3}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Long-term Liabilities', 'TB-LIAB-LONGTERM', 'HERA.FIN.TB.CLASS.LIAB.LONGTERM.v1', 'active', '{"account_type": "Liability", "category": "Long-term Liabilities", "normal_balance": "Credit", "sort_order": 4}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Current Liabilities', 'TB-LIAB-CURRENT', 'HERA.FIN.TB.CLASS.LIAB.CURRENT.V1', 'active', '{"account_type": "Liability", "category": "Current Liabilities", "normal_balance": "Credit", "sort_order": 3}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Long-term Liabilities', 'TB-LIAB-LONGTERM', 'HERA.FIN.TB.CLASS.LIAB.LONGTERM.V1', 'active', '{"account_type": "Liability", "category": "Long-term Liabilities", "normal_balance": "Credit", "sort_order": 4}'::jsonb),
 
 -- Equity Account Classifications
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Equity', 'TB-EQUITY', 'HERA.FIN.TB.CLASS.EQUITY.v1', 'active', '{"account_type": "Equity", "category": "Equity", "normal_balance": "Credit", "sort_order": 5}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Equity', 'TB-EQUITY', 'HERA.FIN.TB.CLASS.EQUITY.V1', 'active', '{"account_type": "Equity", "category": "Equity", "normal_balance": "Credit", "sort_order": 5}'::jsonb),
 
 -- Revenue Account Classifications
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Operating Revenue', 'TB-REV-OPERATING', 'HERA.FIN.TB.CLASS.REV.OPERATING.v1', 'active', '{"account_type": "Revenue", "category": "Operating Revenue", "normal_balance": "Credit", "sort_order": 6}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Other Revenue', 'TB-REV-OTHER', 'HERA.FIN.TB.CLASS.REV.OTHER.v1', 'active', '{"account_type": "Revenue", "category": "Other Revenue", "normal_balance": "Credit", "sort_order": 7}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Operating Revenue', 'TB-REV-OPERATING', 'HERA.FIN.TB.CLASS.REV.OPERATING.V1', 'active', '{"account_type": "Revenue", "category": "Operating Revenue", "normal_balance": "Credit", "sort_order": 6}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Other Revenue', 'TB-REV-OTHER', 'HERA.FIN.TB.CLASS.REV.OTHER.V1', 'active', '{"account_type": "Revenue", "category": "Other Revenue", "normal_balance": "Credit", "sort_order": 7}'::jsonb),
 
 -- Expense Account Classifications
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Cost of Sales', 'TB-EXP-COGS', 'HERA.FIN.TB.CLASS.EXP.COGS.v1', 'active', '{"account_type": "Expense", "category": "Cost of Sales", "normal_balance": "Debit", "sort_order": 8}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Operating Expenses', 'TB-EXP-OPERATING', 'HERA.FIN.TB.CLASS.EXP.OPERATING.v1', 'active', '{"account_type": "Expense", "category": "Operating Expenses", "normal_balance": "Debit", "sort_order": 9}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Other Expenses', 'TB-EXP-OTHER', 'HERA.FIN.TB.CLASS.EXP.OTHER.v1', 'active', '{"account_type": "Expense", "category": "Other Expenses", "normal_balance": "Debit", "sort_order": 10}'::jsonb);
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Cost of Sales', 'TB-EXP-COGS', 'HERA.FIN.TB.CLASS.EXP.COGS.V1', 'active', '{"account_type": "Expense", "category": "Cost of Sales", "normal_balance": "Debit", "sort_order": 8}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Operating Expenses', 'TB-EXP-OPERATING', 'HERA.FIN.TB.CLASS.EXP.OPERATING.V1', 'active', '{"account_type": "Expense", "category": "Operating Expenses", "normal_balance": "Debit", "sort_order": 9}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'trial_balance_classification', 'Other Expenses', 'TB-EXP-OTHER', 'HERA.FIN.TB.CLASS.EXP.OTHER.V1', 'active', '{"account_type": "Expense", "category": "Other Expenses", "normal_balance": "Debit", "sort_order": 10}'::jsonb);
 
 -- ================================================================================
 -- INDUSTRY-SPECIFIC TRIAL BALANCE CONFIGURATIONS
@@ -112,7 +112,7 @@ INSERT INTO core_entities (
     'trial_balance_config',
     'Restaurant Trial Balance Configuration',
     'TB-CONFIG-RESTAURANT',
-    'HERA.FIN.TB.CONFIG.RESTAURANT.v1',
+    'HERA.FIN.TB.CONFIG.RESTAURANT.V1',
     'active',
     '{
         "industry": "restaurant",
@@ -156,7 +156,7 @@ INSERT INTO core_entities (
     'trial_balance_config',
     'Salon Trial Balance Configuration',
     'TB-CONFIG-SALON',
-    'HERA.FIN.TB.CONFIG.SALON.v1',
+    'HERA.FIN.TB.CONFIG.SALON.V1',
     'active',
     '{
         "industry": "salon",
@@ -202,7 +202,7 @@ INSERT INTO core_entities (
     'trial_balance_config',
     'Healthcare Trial Balance Configuration',
     'TB-CONFIG-HEALTHCARE',
-    'HERA.FIN.TB.CONFIG.HEALTHCARE.v1',
+    'HERA.FIN.TB.CONFIG.HEALTHCARE.V1',
     'active',
     '{
         "industry": "healthcare",
@@ -567,16 +567,16 @@ INSERT INTO core_dynamic_data (
     ce.id,
     'dna_deployment_log',
     'HERA Universal Trial Balance DNA Component deployed successfully with 3 industry configurations and 5 SQL functions',
-    'HERA.FIN.TRIAL.BALANCE.DNA.DEPLOY.LOG.v1',
+    'HERA.FIN.TRIAL.BALANCE.DNA.DEPLOY.LOG.V1',
     '{"deployment_date": "2025-09-02", "version": "1.0.0", "status": "production_ready"}'::jsonb
 FROM core_entities ce 
-WHERE ce.smart_code = 'HERA.FIN.TRIAL.BALANCE.ENGINE.v1' 
+WHERE ce.smart_code = 'HERA.FIN.TRIAL.BALANCE.ENGINE.V1' 
 AND ce.organization_id = 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
 LIMIT 1;
 
 -- ================================================================================
 -- TRIAL BALANCE DNA DEPLOYMENT COMPLETE
--- Smart Code: HERA.FIN.TRIAL.BALANCE.ENGINE.v1
+-- Smart Code: HERA.FIN.TRIAL.BALANCE.ENGINE.V1
 -- Status: ✅ PRODUCTION READY
 -- Integration: Complete with Auto-Journal DNA and Cashflow DNA
 -- ================================================================================

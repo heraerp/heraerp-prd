@@ -238,7 +238,7 @@ export function FAModule({
         entity_code: assetForm.assetCode,
         entity_name: assetForm.assetName!,
         organization_id: organizationId,
-        smart_code: `HERA.FIN.FA.${assetForm.assetType?.toUpperCase()}.v1`,
+        smart_code: `HERA.FIN.FA.${assetForm.assetType?.toUpperCase()}.V1`,
         metadata: {
           asset_type: assetForm.assetType,
           status: assetForm.status,
@@ -1378,7 +1378,7 @@ export const FA_MODULE_DNA = {
   ],
   smartCodes: [
     'HERA.FIN.FA.FREEZER.V1',
-    'HERA.FIN.FA.COLD_ROOM.v1',
+    'HERA.FIN.FA.COLD_ROOM.V1',
     'HERA.FIN.FA.VEHICLE.V1',
     'HERA.FIN.FA.EQUIPMENT.V1',
     'HERA.FIN.FA.TXN.MAINT.V1',

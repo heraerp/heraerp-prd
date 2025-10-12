@@ -1,6 +1,6 @@
 -- ================================================================================
 -- HERA UNIVERSAL BALANCE SHEET DNA COMPONENT
--- Smart Code: HERA.FIN.BALANCE.SHEET.ENGINE.v1
+-- Smart Code: HERA.FIN.BALANCE.SHEET.ENGINE.V1
 -- Status: PRODUCTION READY
 -- Integration: Complete with Trial Balance DNA, Auto-Journal DNA, and Cashflow DNA
 -- ================================================================================
@@ -23,7 +23,7 @@ INSERT INTO core_entities (
     'dna_component',
     'Universal Balance Sheet Engine',
     'HERA-DNA-BALANCE-SHEET-v1',
-    'HERA.FIN.BALANCE.SHEET.ENGINE.v1',
+    'HERA.FIN.BALANCE.SHEET.ENGINE.V1',
     'active',
     '{
         "component_type": "financial_reporting",
@@ -39,10 +39,10 @@ INSERT INTO core_entities (
             "Integration with Trial Balance DNA"
         ],
         "integration_points": [
-            "HERA.FIN.TRIAL.BALANCE.ENGINE.v1",
-            "HERA.FIN.AUTO.JOURNAL.ENGINE.v1",
-            "HERA.FIN.CASHFLOW.STATEMENT.ENGINE.v1",
-            "HERA.UNIVERSAL.API.v1"
+            "HERA.FIN.TRIAL.BALANCE.ENGINE.V1",
+            "HERA.FIN.AUTO.JOURNAL.ENGINE.V1",
+            "HERA.FIN.CASHFLOW.STATEMENT.ENGINE.V1",
+            "HERA.UNIVERSAL.API.V1"
         ],
         "business_impact": {
             "preparation_time_savings": "98%",
@@ -72,16 +72,16 @@ INSERT INTO core_entities (
     metadata
 ) VALUES 
 -- Asset Sections
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Current Assets', 'BS-ASSETS-CURRENT', 'HERA.FIN.BS.SECTION.ASSETS.CURRENT.v1', 'active', '{"section_type": "Assets", "subsection": "Current Assets", "sort_order": 10, "normal_balance": "Debit"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Non-Current Assets', 'BS-ASSETS-NONCURRENT', 'HERA.FIN.BS.SECTION.ASSETS.NONCURRENT.v1', 'active', '{"section_type": "Assets", "subsection": "Non-Current Assets", "sort_order": 20, "normal_balance": "Debit"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Current Assets', 'BS-ASSETS-CURRENT', 'HERA.FIN.BS.SECTION.ASSETS.CURRENT.V1', 'active', '{"section_type": "Assets", "subsection": "Current Assets", "sort_order": 10, "normal_balance": "Debit"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Non-Current Assets', 'BS-ASSETS-NONCURRENT', 'HERA.FIN.BS.SECTION.ASSETS.NONCURRENT.V1', 'active', '{"section_type": "Assets", "subsection": "Non-Current Assets", "sort_order": 20, "normal_balance": "Debit"}'::jsonb),
 
 -- Liability Sections
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Current Liabilities', 'BS-LIAB-CURRENT', 'HERA.FIN.BS.SECTION.LIAB.CURRENT.v1', 'active', '{"section_type": "Liabilities", "subsection": "Current Liabilities", "sort_order": 30, "normal_balance": "Credit"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Non-Current Liabilities', 'BS-LIAB-NONCURRENT', 'HERA.FIN.BS.SECTION.LIAB.NONCURRENT.v1', 'active', '{"section_type": "Liabilities", "subsection": "Non-Current Liabilities", "sort_order": 40, "normal_balance": "Credit"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Current Liabilities', 'BS-LIAB-CURRENT', 'HERA.FIN.BS.SECTION.LIAB.CURRENT.V1', 'active', '{"section_type": "Liabilities", "subsection": "Current Liabilities", "sort_order": 30, "normal_balance": "Credit"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Non-Current Liabilities', 'BS-LIAB-NONCURRENT', 'HERA.FIN.BS.SECTION.LIAB.NONCURRENT.V1', 'active', '{"section_type": "Liabilities", "subsection": "Non-Current Liabilities", "sort_order": 40, "normal_balance": "Credit"}'::jsonb),
 
 -- Equity Sections
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Owners Equity', 'BS-EQUITY-OWNERS', 'HERA.FIN.BS.SECTION.EQUITY.OWNERS.v1', 'active', '{"section_type": "Equity", "subsection": "Owners Equity", "sort_order": 50, "normal_balance": "Credit"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Retained Earnings', 'BS-EQUITY-RETAINED', 'HERA.FIN.BS.SECTION.EQUITY.RETAINED.v1', 'active', '{"section_type": "Equity", "subsection": "Retained Earnings", "sort_order": 60, "normal_balance": "Credit"}'::jsonb);
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Owners Equity', 'BS-EQUITY-OWNERS', 'HERA.FIN.BS.SECTION.EQUITY.OWNERS.V1', 'active', '{"section_type": "Equity", "subsection": "Owners Equity", "sort_order": 50, "normal_balance": "Credit"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'balance_sheet_section', 'Retained Earnings', 'BS-EQUITY-RETAINED', 'HERA.FIN.BS.SECTION.EQUITY.RETAINED.V1', 'active', '{"section_type": "Equity", "subsection": "Retained Earnings", "sort_order": 60, "normal_balance": "Credit"}'::jsonb);
 
 -- ================================================================================
 -- INDUSTRY-SPECIFIC BALANCE SHEET CONFIGURATIONS
@@ -104,7 +104,7 @@ INSERT INTO core_entities (
     'balance_sheet_config',
     'Salon Balance Sheet Configuration',
     'BS-CONFIG-SALON',
-    'HERA.FIN.BS.CONFIG.SALON.v1',
+    'HERA.FIN.BS.CONFIG.SALON.V1',
     'active',
     '{
         "industry": "salon",
@@ -222,7 +222,7 @@ INSERT INTO core_entities (
     'balance_sheet_config',
     'Restaurant Balance Sheet Configuration',
     'BS-CONFIG-RESTAURANT',
-    'HERA.FIN.BS.CONFIG.RESTAURANT.v1',
+    'HERA.FIN.BS.CONFIG.RESTAURANT.V1',
     'active',
     '{
         "industry": "restaurant",
@@ -296,7 +296,7 @@ INSERT INTO core_entities (
     'balance_sheet_config',
     'Universal Balance Sheet Configuration',
     'BS-CONFIG-UNIVERSAL',
-    'HERA.FIN.BS.CONFIG.UNIVERSAL.v1',
+    'HERA.FIN.BS.CONFIG.UNIVERSAL.V1',
     'active',
     '{
         "industry": "universal",
@@ -384,7 +384,7 @@ BEGIN
         FROM core_entities ce
         WHERE ce.organization_id = 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
         AND ce.entity_type = 'balance_sheet_config'
-        AND ce.smart_code = ('HERA.FIN.BS.CONFIG.' || UPPER(p_industry_type) || '.v1')
+        AND ce.smart_code = ('HERA.FIN.BS.CONFIG.' || UPPER(p_industry_type) || '.V1')
         LIMIT 1
     ),
     trial_balance_current AS (
@@ -698,16 +698,16 @@ INSERT INTO core_dynamic_data (
     ce.id,
     'dna_deployment_log',
     'HERA Universal Balance Sheet DNA Component deployed successfully with daily reporting, industry configurations, and multi-organization consolidation',
-    'HERA.FIN.BALANCE.SHEET.DNA.DEPLOY.LOG.v1',
+    'HERA.FIN.BALANCE.SHEET.DNA.DEPLOY.LOG.V1',
     '{"deployment_date": "2025-09-02", "version": "1.0.0", "status": "production_ready", "capabilities": ["daily_balance_sheets", "real_time_ratios", "multi_org_consolidation"]}'::jsonb
 FROM core_entities ce 
-WHERE ce.smart_code = 'HERA.FIN.BALANCE.SHEET.ENGINE.v1' 
+WHERE ce.smart_code = 'HERA.FIN.BALANCE.SHEET.ENGINE.V1' 
 AND ce.organization_id = 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
 LIMIT 1;
 
 -- ================================================================================
 -- BALANCE SHEET DNA DEPLOYMENT COMPLETE
--- Smart Code: HERA.FIN.BALANCE.SHEET.ENGINE.v1
+-- Smart Code: HERA.FIN.BALANCE.SHEET.ENGINE.V1
 -- Status: ✅ PRODUCTION READY
 -- Integration: Complete with Trial Balance DNA, Auto-Journal DNA, and Cashflow DNA
 -- Daily Reporting: Enabled for Hair Talkz Organizations

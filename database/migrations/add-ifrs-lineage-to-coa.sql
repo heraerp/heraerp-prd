@@ -1,7 +1,7 @@
 -- =========================================================================
 -- HERA Universal COA IFRS Lineage Implementation
 -- Adds complete IFRS lineage and hierarchy to all GL accounts
--- Smart Code: HERA.GLOBAL.COA.IFRS.LINEAGE.v1
+-- Smart Code: HERA.GLOBAL.COA.IFRS.LINEAGE.V1
 -- =========================================================================
 
 BEGIN;
@@ -252,7 +252,7 @@ SELECT
   'ifrs_validation_rule',
   'IFRS Lineage Validation Rules',
   'IFRS-VALIDATION-001',
-  'HERA.GLOBAL.IFRS.VALIDATION.RULES.v1',
+  'HERA.GLOBAL.IFRS.VALIDATION.RULES.V1',
   'active'
 WHERE NOT EXISTS (
   SELECT 1 FROM core_entities 
@@ -303,7 +303,7 @@ SELECT
       )
     )
   ),
-  'HERA.GLOBAL.IFRS.VALIDATION.METADATA.v1'
+  'HERA.GLOBAL.IFRS.VALIDATION.METADATA.V1'
 FROM core_entities ce
 WHERE ce.entity_code = 'IFRS-VALIDATION-001'
   AND NOT EXISTS (

@@ -1,6 +1,6 @@
 // ================================================================================
 // JSON VIEW COMPONENT
-// Smart Code: HERA.UI.COMMON.JSON_VIEW.v1
+// Smart Code: HERA.UI.COMMON.JSON_VIEW.V1
 // Read-only JSON viewer with syntax highlighting and collapsible sections
 // ================================================================================
 

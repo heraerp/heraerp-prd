@@ -76,7 +76,7 @@ BEGIN
         'smart_code', NEW.smart_code,
         'edge_url', v_edge_url
       ),
-      'HERA.COSTING.EVENT.TRIGGERED.v1'
+      'HERA.COSTING.EVENT.TRIGGERED.V1'
     );
   END IF;
   
@@ -168,7 +168,7 @@ CREATE CONSTRAINT TRIGGER utx_lines__alloc_balance
 AFTER INSERT OR UPDATE ON universal_transaction_lines
 DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
-WHEN (NEW.smart_code LIKE 'HERA.COSTING.ALLOC.%.LINE.v1')
+WHEN (NEW.smart_code LIKE 'HERA.COSTING.ALLOC.%.LINE.V1')
 EXECUTE FUNCTION hera_alloc__validate_on_commit();
 
 -- =============================================

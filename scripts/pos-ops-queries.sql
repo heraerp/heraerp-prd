@@ -48,7 +48,7 @@ SELECT
   ut.metadata->'business_context'->'new_enabled' as now_enabled,
   ut.metadata->'business_context'->'reason' as reason
 FROM universal_transactions ut
-WHERE ut.smart_code = 'HERA.SALON.ANALYTICS.COMMISSION.TOGGLE.v1'
+WHERE ut.smart_code = 'HERA.SALON.ANALYTICS.COMMISSION.TOGGLE.V1'
   AND ut.organization_id = :org_id
 ORDER BY ut.created_at DESC
 LIMIT 10;

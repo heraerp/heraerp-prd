@@ -1,5 +1,5 @@
 -- Migration: Add unique index for subdomain safety
--- Smart Code: HERA.SYSTEM.MIGRATION.SUBDOMAIN_UNIQUE.v1
+-- Smart Code: HERA.SYSTEM.MIGRATION.SUBDOMAIN_UNIQUE.V1
 -- Purpose: Prevent subdomain conflicts and ensure data integrity
 
 -- Create unique index on subdomain to prevent conflicts
@@ -10,7 +10,7 @@ WHERE settings->>'subdomain' IS NOT NULL;
 
 -- Add comment for documentation
 COMMENT ON INDEX ux_core_orgs_settings_subdomain IS 
-'Unique constraint on subdomain field in settings JSONB - HERA.SYSTEM.INDEX.SUBDOMAIN_UNIQUE.v1';
+'Unique constraint on subdomain field in settings JSONB - HERA.SYSTEM.INDEX.SUBDOMAIN_UNIQUE.V1';
 
 -- Migration complete
 -- This index ensures data integrity for subdomain routing

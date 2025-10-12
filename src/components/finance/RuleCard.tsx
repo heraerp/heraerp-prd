@@ -1,6 +1,6 @@
 // ================================================================================
 // RULE CARD COMPONENT
-// Smart Code: HERA.UI.FINANCE.RULE_CARD.v1
+// Smart Code: HERA.UI.FINANCE.RULE_CARD.V1
 // Card display for individual Finance DNA posting rules
 // ================================================================================
 

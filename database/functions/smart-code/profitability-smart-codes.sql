@@ -7,19 +7,19 @@
 
 -- Profit Center Entity Management
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.PROF.PC.CREATE.v1', 'Create profit center', 'profitability', 'profit_center', 
+('HERA.PROF.PC.CREATE.V1', 'Create profit center', 'profitability', 'profit_center', 
   '{"required_fields": ["center_name", "center_type", "cost_center_code"], "validations": ["unique_code", "valid_hierarchy"]}'),
 
-('HERA.PROF.PC.MFG.v1', 'Manufacturing profit center', 'profitability', 'profit_center',
+('HERA.PROF.PC.MFG.V1', 'Manufacturing profit center', 'profitability', 'profit_center',
   '{"center_type": "manufacturing", "allocation_basis": "machine_hours", "overhead_rates": true}'),
 
-('HERA.PROF.PC.SALES.v1', 'Sales & distribution profit center', 'profitability', 'profit_center',
+('HERA.PROF.PC.SALES.V1', 'Sales & distribution profit center', 'profitability', 'profit_center',
   '{"center_type": "sales", "allocation_basis": "revenue", "commission_tracking": true}'),
 
-('HERA.PROF.PC.SVC.v1', 'Service department profit center', 'profitability', 'profit_center',
+('HERA.PROF.PC.SVC.V1', 'Service department profit center', 'profitability', 'profit_center',
   '{"center_type": "service", "allocation_basis": "service_hours", "utilization_tracking": true}'),
 
-('HERA.PROF.PC.ADMIN.v1', 'Administrative profit center', 'profitability', 'profit_center',
+('HERA.PROF.PC.ADMIN.V1', 'Administrative profit center', 'profitability', 'profit_center',
   '{"center_type": "admin", "allocation_basis": "headcount", "indirect_cost_pool": true}');
 
 -- ================================================
@@ -28,30 +28,30 @@ INSERT INTO smart_code_definitions (smart_code, description, category, entity_ty
 
 -- Product Costing
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.COST.PROD.CALC.v1', 'Calculate product cost with BOM', 'cost_accounting', 'product_cost',
+('HERA.COST.PROD.CALC.V1', 'Calculate product cost with BOM', 'cost_accounting', 'product_cost',
   '{"calculation_method": "standard_costing", "bom_integration": true, "overhead_allocation": "activity_based"}'),
 
-('HERA.COST.PROD.MATERIAL.v1', 'Direct material cost from BOM', 'cost_accounting', 'cost_component',
+('HERA.COST.PROD.MATERIAL.V1', 'Direct material cost from BOM', 'cost_accounting', 'cost_component',
   '{"cost_type": "direct_material", "source": "bom_explosion", "includes_scrap": true}'),
 
-('HERA.COST.PROD.LABOR.v1', 'Direct labor cost calculation', 'cost_accounting', 'cost_component',
+('HERA.COST.PROD.LABOR.V1', 'Direct labor cost calculation', 'cost_accounting', 'cost_component',
   '{"cost_type": "direct_labor", "includes_benefits": true, "efficiency_factor": 0.85}'),
 
-('HERA.COST.PROD.OVERHEAD.v1', 'Manufacturing overhead allocation', 'cost_accounting', 'cost_component',
+('HERA.COST.PROD.OVERHEAD.V1', 'Manufacturing overhead allocation', 'cost_accounting', 'cost_component',
   '{"cost_type": "overhead", "allocation_method": "activity_based", "update_frequency": "monthly"}');
 
 -- Cost Pool Management
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.COST.POOL.CREATE.v1', 'Create cost pool for ABC', 'cost_accounting', 'cost_pool',
+('HERA.COST.POOL.CREATE.V1', 'Create cost pool for ABC', 'cost_accounting', 'cost_pool',
   '{"pool_types": ["activity", "resource", "process"], "driver_required": true}'),
 
-('HERA.COST.POOL.MH.v1', 'Machine hours cost pool', 'cost_accounting', 'cost_pool',
+('HERA.COST.POOL.MH.V1', 'Machine hours cost pool', 'cost_accounting', 'cost_pool',
   '{"driver": "machine_hours", "allocation_basis": "actual_usage", "rate_calculation": "total_cost/total_hours"}'),
 
-('HERA.COST.POOL.SETUP.v1', 'Setup cost pool', 'cost_accounting', 'cost_pool',
+('HERA.COST.POOL.SETUP.V1', 'Setup cost pool', 'cost_accounting', 'cost_pool',
   '{"driver": "number_of_setups", "allocation_basis": "setup_complexity", "batch_costing": true}'),
 
-('HERA.COST.POOL.QC.v1', 'Quality control cost pool', 'cost_accounting', 'cost_pool',
+('HERA.COST.POOL.QC.V1', 'Quality control cost pool', 'cost_accounting', 'cost_pool',
   '{"driver": "inspection_hours", "allocation_basis": "quality_points", "defect_tracking": true}');
 
 -- ================================================
@@ -59,16 +59,16 @@ INSERT INTO smart_code_definitions (smart_code, description, category, entity_ty
 -- ================================================
 
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.COST.ALLOC.ABC.v1', 'Activity-based cost allocation', 'cost_allocation', 'allocation_rule',
+('HERA.COST.ALLOC.ABC.V1', 'Activity-based cost allocation', 'cost_allocation', 'allocation_rule',
   '{"method": "activity_based_costing", "multi_driver": true, "real_time_update": true}'),
 
-('HERA.COST.ALLOC.STEP.v1', 'Step-down cost allocation', 'cost_allocation', 'allocation_rule',
+('HERA.COST.ALLOC.STEP.V1', 'Step-down cost allocation', 'cost_allocation', 'allocation_rule',
   '{"method": "step_down", "service_dept_order": "by_cost", "reciprocal_services": false}'),
 
-('HERA.COST.ALLOC.DIRECT.v1', 'Direct cost allocation', 'cost_allocation', 'allocation_rule',
+('HERA.COST.ALLOC.DIRECT.V1', 'Direct cost allocation', 'cost_allocation', 'allocation_rule',
   '{"method": "direct", "traceability": "full", "documentation_required": true}'),
 
-('HERA.COST.ALLOC.RECIP.v1', 'Reciprocal cost allocation', 'cost_allocation', 'allocation_rule',
+('HERA.COST.ALLOC.RECIP.V1', 'Reciprocal cost allocation', 'cost_allocation', 'allocation_rule',
   '{"method": "reciprocal", "iteration_limit": 100, "convergence_threshold": 0.01}');
 
 -- ================================================
@@ -76,16 +76,16 @@ INSERT INTO smart_code_definitions (smart_code, description, category, entity_ty
 -- ================================================
 
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.PROF.ANAL.PROD.v1', 'Product profitability analysis', 'profitability_analysis', 'analysis',
+('HERA.PROF.ANAL.PROD.V1', 'Product profitability analysis', 'profitability_analysis', 'analysis',
   '{"dimensions": ["product", "customer", "channel"], "margin_levels": ["gross", "contribution", "net"]}'),
 
-('HERA.PROF.ANAL.CUST.v1', 'Customer profitability analysis', 'profitability_analysis', 'analysis',
+('HERA.PROF.ANAL.CUST.V1', 'Customer profitability analysis', 'profitability_analysis', 'analysis',
   '{"includes_service_cost": true, "lifetime_value": true, "segmentation": "auto"}'),
 
-('HERA.PROF.ANAL.SEG.v1', 'Segment profitability analysis', 'profitability_analysis', 'analysis',
+('HERA.PROF.ANAL.SEG.V1', 'Segment profitability analysis', 'profitability_analysis', 'analysis',
   '{"segment_types": ["geographic", "industry", "size"], "comparison_enabled": true}'),
 
-('HERA.PROF.ANAL.CHAN.v1', 'Channel profitability analysis', 'profitability_analysis', 'analysis',
+('HERA.PROF.ANAL.CHAN.V1', 'Channel profitability analysis', 'profitability_analysis', 'analysis',
   '{"channels": ["direct", "distributor", "online"], "includes_marketing_cost": true}');
 
 -- ================================================
@@ -93,16 +93,16 @@ INSERT INTO smart_code_definitions (smart_code, description, category, entity_ty
 -- ================================================
 
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.COST.VAR.PRICE.v1', 'Material price variance', 'variance_analysis', 'variance',
+('HERA.COST.VAR.PRICE.V1', 'Material price variance', 'variance_analysis', 'variance',
   '{"variance_type": "price", "formula": "(actual_price - standard_price) * actual_quantity"}'),
 
-('HERA.COST.VAR.QTY.v1', 'Material quantity variance', 'variance_analysis', 'variance',
+('HERA.COST.VAR.QTY.V1', 'Material quantity variance', 'variance_analysis', 'variance',
   '{"variance_type": "quantity", "formula": "(actual_qty - standard_qty) * standard_price"}'),
 
-('HERA.COST.VAR.LABOR.v1', 'Labor efficiency variance', 'variance_analysis', 'variance',
+('HERA.COST.VAR.LABOR.V1', 'Labor efficiency variance', 'variance_analysis', 'variance',
   '{"variance_type": "labor_efficiency", "formula": "(actual_hours - standard_hours) * standard_rate"}'),
 
-('HERA.COST.VAR.OVERHEAD.v1', 'Overhead volume variance', 'variance_analysis', 'variance',
+('HERA.COST.VAR.OVERHEAD.V1', 'Overhead volume variance', 'variance_analysis', 'variance',
   '{"variance_type": "overhead_volume", "includes": ["fixed_overhead", "variable_overhead"]}');
 
 -- ================================================
@@ -110,16 +110,16 @@ INSERT INTO smart_code_definitions (smart_code, description, category, entity_ty
 -- ================================================
 
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.PROF.REPT.P&L.v1', 'Profit center P&L report', 'reporting', 'report',
+('HERA.PROF.REPT.P&L.V1', 'Profit center P&L report', 'reporting', 'report',
   '{"report_type": "profit_loss", "by_profit_center": true, "consolidation": true}'),
 
-('HERA.PROF.REPT.MARGIN.v1', 'Margin analysis report', 'reporting', 'report',
+('HERA.PROF.REPT.MARGIN.V1', 'Margin analysis report', 'reporting', 'report',
   '{"margin_types": ["gross", "contribution", "operating", "net"], "trend_analysis": true}'),
 
-('HERA.PROF.REPT.COST.v1', 'Cost structure report', 'reporting', 'report',
+('HERA.PROF.REPT.COST.V1', 'Cost structure report', 'reporting', 'report',
   '{"cost_categories": ["direct", "indirect", "fixed", "variable"], "drill_down": true}'),
 
-('HERA.PROF.REPT.EXEC.v1', 'Executive profitability dashboard', 'reporting', 'report',
+('HERA.PROF.REPT.EXEC.V1', 'Executive profitability dashboard', 'reporting', 'report',
   '{"kpis": ["roi", "profit_margin", "cost_ratio", "breakeven"], "real_time": true}');
 
 -- ================================================
@@ -127,16 +127,16 @@ INSERT INTO smart_code_definitions (smart_code, description, category, entity_ty
 -- ================================================
 
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.PROF.INT.BOM.v1', 'BOM cost integration', 'integration', 'interface',
+('HERA.PROF.INT.BOM.V1', 'BOM cost integration', 'integration', 'interface',
   '{"source": "bom_system", "sync_frequency": "real_time", "cost_rollup": true}'),
 
-('HERA.PROF.INT.GL.v1', 'General ledger integration', 'integration', 'interface',
+('HERA.PROF.INT.GL.V1', 'General ledger integration', 'integration', 'interface',
   '{"target": "general_ledger", "posting_rules": "automated", "reconciliation": true}'),
 
-('HERA.PROF.INT.INV.v1', 'Inventory costing integration', 'integration', 'interface',
+('HERA.PROF.INT.INV.V1', 'Inventory costing integration', 'integration', 'interface',
   '{"costing_method": ["standard", "average", "fifo"], "perpetual_update": true}'),
 
-('HERA.PROF.INT.SALES.v1', 'Sales profitability integration', 'integration', 'interface',
+('HERA.PROF.INT.SALES.V1', 'Sales profitability integration', 'integration', 'interface',
   '{"includes": ["revenue", "discounts", "commissions"], "margin_calculation": "auto"}');
 
 -- ================================================
@@ -144,16 +144,16 @@ INSERT INTO smart_code_definitions (smart_code, description, category, entity_ty
 -- ================================================
 
 INSERT INTO smart_code_definitions (smart_code, description, category, entity_type, business_rules) VALUES
-('HERA.PROF.AI.OPT.v1', 'AI cost optimization recommendations', 'ai_optimization', 'ai_analysis',
+('HERA.PROF.AI.OPT.V1', 'AI cost optimization recommendations', 'ai_optimization', 'ai_analysis',
   '{"ml_models": ["cost_prediction", "demand_forecast", "price_optimization"], "confidence_threshold": 0.85}'),
 
-('HERA.PROF.AI.ALLOC.v1', 'AI-driven cost allocation', 'ai_optimization', 'ai_analysis',
+('HERA.PROF.AI.ALLOC.V1', 'AI-driven cost allocation', 'ai_optimization', 'ai_analysis',
   '{"learning_from": "historical_patterns", "adjustment_frequency": "weekly", "human_approval": true}'),
 
-('HERA.PROF.AI.PREDICT.v1', 'Profitability prediction model', 'ai_optimization', 'ai_analysis',
+('HERA.PROF.AI.PREDICT.V1', 'Profitability prediction model', 'ai_optimization', 'ai_analysis',
   '{"prediction_horizon": "12_months", "factors": ["market", "cost", "competition"], "accuracy_target": 0.9}'),
 
-('HERA.PROF.AI.ANOMALY.v1', 'Cost anomaly detection', 'ai_optimization', 'ai_analysis',
+('HERA.PROF.AI.ANOMALY.V1', 'Cost anomaly detection', 'ai_optimization', 'ai_analysis',
   '{"detection_methods": ["statistical", "ml_based"], "alert_threshold": "2_sigma", "auto_investigation": true}');
 
 -- Create indexes for performance
@@ -258,7 +258,7 @@ BEGIN
       ad.driver_quantity,
       v_rate_per_unit,
       ad.driver_quantity * v_rate_per_unit,
-      'HERA.COST.ALLOC.ABC.v1'
+      'HERA.COST.ALLOC.ABC.V1'
     FROM activity_drivers ad
     WHERE ad.cost_pool_id = v_cost_pool.id
       AND ad.period = p_period;

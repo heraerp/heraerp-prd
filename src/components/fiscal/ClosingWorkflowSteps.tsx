@@ -1,6 +1,6 @@
 // ================================================================================
 // CLOSING WORKFLOW STEPS - FISCAL COMPONENT
-// Smart Code: HERA.UI.FISCAL.CLOSING_WORKFLOW_STEPS.v1
+// Smart Code: HERA.UI.FISCAL.CLOSING_WORKFLOW_STEPS.V1
 // Production-ready workflow visualization with step tracking
 // ================================================================================
 

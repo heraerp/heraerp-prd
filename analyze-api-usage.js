@@ -35,7 +35,7 @@ function categorizeRoutes(routes) {
     const routePath = route.replace('src/app/api/', '').replace('/route.ts', '');
     
     if (routePath.startsWith('v1/')) {
-      apiCategories.v1.push(route);
+      apiCategories.V1.push(route);
     } else if (routePath.startsWith('v2/')) {
       apiCategories.v2.push(route);
     } else if (routePath.startsWith('v3/')) {
@@ -129,12 +129,12 @@ function generateRecommendations(analysis) {
   const recommendations = [];
   
   // V1 API recommendations
-  if (analysis.categories.v1.unused.length > 0) {
+  if (analysis.categories.V1.unused.length > 0) {
     recommendations.push({
       priority: 'HIGH',
       action: 'REMOVE_V1_UNUSED',
-      description: `Remove ${analysis.categories.v1.unused.length} unused V1 APIs - they should be migrated to V2`,
-      routes: analysis.categories.v1.unused
+      description: `Remove ${analysis.categories.V1.unused.length} unused V1 APIs - they should be migrated to V2`,
+      routes: analysis.categories.V1.unused
     });
   }
   

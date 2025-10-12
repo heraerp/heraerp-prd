@@ -1,6 +1,6 @@
 // ================================================================================
 // DAILY SALES REPORT PAGE
-// Smart Code: HERA.UI.REPORTS.DAILY_SALES.v1
+// Smart Code: HERA.UI.REPORTS.DAILY_SALES.V1
 // Production-ready daily sales analysis with drill-down capabilities
 // ================================================================================
 

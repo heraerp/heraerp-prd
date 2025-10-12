@@ -1,6 +1,6 @@
 // ================================================================================
 // CLOSING JOURNAL DRILLDOWN - FISCAL COMPONENT
-// Smart Code: HERA.UI.FISCAL.CLOSING_JOURNAL_DRILLDOWN.v1
+// Smart Code: HERA.UI.FISCAL.CLOSING_JOURNAL_DRILLDOWN.V1
 // Production-ready journal entries viewer with transaction line details
 // ================================================================================
 
@@ -408,7 +408,7 @@ export function ClosingJournalDrilldown({
                 Journal Entry Smart Codes
               </div>
               <div className="grid grid-cols-2 gap-2 text-blue-700 dark:text-blue-300">
-                <div>• HERA.FIN.FISCAL.CLOSING.*.CALC.v1</div>
+                <div>• HERA.FIN.FISCAL.CLOSING.*.CALC.V1</div>
                 <div>• HERA.FIN.FISCAL.CLOSE.JE.V1</div>
                 <div>• HERA.FIN.FISCAL.CLOSING.RE.TRANSFER.V1</div>
                 <div>• HERA.FIN.FISCAL.CLOSING.CONSOLIDATE.V1</div>

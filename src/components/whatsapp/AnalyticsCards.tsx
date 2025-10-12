@@ -1,6 +1,6 @@
 // ================================================================================
 // ANALYTICS CARDS - WHATSAPP KEY METRICS
-// Smart Code: HERA.UI.WHATSAPP.ANALYTICS_CARDS.v1
+// Smart Code: HERA.UI.WHATSAPP.ANALYTICS_CARDS.V1
 // Production-ready analytics cards with performance metrics
 // ================================================================================
 

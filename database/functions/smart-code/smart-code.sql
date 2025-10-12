@@ -72,7 +72,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     -- HERA smart code format: HERA.{MODULE}.{SUB}.{FUNCTION}.{TYPE}.{VERSION}
-    -- Example: HERA.REST.CRM.TXN.ORDER.v1
+    -- Example: HERA.REST.CRM.TXN.ORDER.V1
     
     -- Basic format validation
     IF smart_code_input !~ '^HERA\.[A-Z]{2,6}\.[A-Z]{2,6}\.[A-Z]{2,6}\.[A-Z]{2,6}\.v[0-9]+$' THEN
@@ -613,20 +613,20 @@ $$;
 -- Example: Restaurant menu items
 INSERT INTO core_entities (organization_id, entity_type, entity_name, smart_code, smart_code_status)
 VALUES 
-    ('your-mario-restaurant-org-id', 'menu_item', 'Margherita Pizza', 'HERA.REST.CRM.ENT.MENU.v1', 'PROD'),
-    ('your-mario-restaurant-org-id', 'menu_item', 'Caesar Salad', 'HERA.REST.CRM.ENT.MENU.v1', 'PROD');
+    ('your-mario-restaurant-org-id', 'menu_item', 'Margherita Pizza', 'HERA.REST.CRM.ENT.MENU.V1', 'PROD'),
+    ('your-mario-restaurant-org-id', 'menu_item', 'Caesar Salad', 'HERA.REST.CRM.ENT.MENU.V1', 'PROD');
 
 -- Example: Customer orders
 INSERT INTO universal_transactions (organization_id, transaction_type, reference_number, smart_code, total_amount)
 VALUES 
-    ('your-mario-restaurant-org-id', 'customer_order', 'ORD-001', 'HERA.REST.CRM.TXN.ORDER.v1', 42.50),
-    ('your-mario-restaurant-org-id', 'customer_order', 'ORD-002', 'HERA.REST.CRM.TXN.ORDER.v1', 38.75);
+    ('your-mario-restaurant-org-id', 'customer_order', 'ORD-001', 'HERA.REST.CRM.TXN.ORDER.V1', 42.50),
+    ('your-mario-restaurant-org-id', 'customer_order', 'ORD-002', 'HERA.REST.CRM.TXN.ORDER.V1', 38.75);
 
 -- Test the functions
-SELECT validate_smart_code('HERA.REST.CRM.ENT.MENU.v1');
+SELECT validate_smart_code('HERA.REST.CRM.ENT.MENU.V1');
 SELECT generate_smart_code('your-org-id', 'CRM', 'ENT', 'ENT', 'MENU');
-SELECT parse_smart_code('HERA.REST.CRM.ENT.MENU.v1');
-SELECT get_business_rules('HERA.REST.CRM.ENT.MENU.v1');
+SELECT parse_smart_code('HERA.REST.CRM.ENT.MENU.V1');
+SELECT get_business_rules('HERA.REST.CRM.ENT.MENU.V1');
 */
 
 -- ================================================================================

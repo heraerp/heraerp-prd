@@ -1,6 +1,6 @@
 // ================================================================================
 // HISTORY TABLE - WHATSAPP MESSAGE HISTORY TABLE
-// Smart Code: HERA.UI.WHATSAPP.HISTORY_TABLE.v1
+// Smart Code: HERA.UI.WHATSAPP.HISTORY_TABLE.V1
 // Production-ready message history table with filtering and status tracking
 // ================================================================================
 

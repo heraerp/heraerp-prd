@@ -1,5 +1,5 @@
 -- Universal Report Pattern (URP) Materialized Views
--- Smart Code: HERA.URP.VIEWS.v1
+-- Smart Code: HERA.URP.VIEWS.V1
 -- 
 -- Optimized views for common report patterns
 

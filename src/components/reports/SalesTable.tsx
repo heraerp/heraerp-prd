@@ -1,6 +1,6 @@
 // ================================================================================
 // SALES REPORTS TABLE
-// Smart Code: HERA.UI.REPORTS.SALES_TABLE.v1
+// Smart Code: HERA.UI.REPORTS.SALES_TABLE.V1
 // Accessible tables for daily/monthly sales with drill-down capability
 // ================================================================================
 

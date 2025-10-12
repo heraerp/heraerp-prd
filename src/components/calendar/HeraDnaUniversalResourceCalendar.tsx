@@ -429,9 +429,9 @@ export function HeraDnaUniversalResourceCalendar({
   appointments: customAppointments,
   businessHours = DEFAULT_BUSINESS_HOURS,
   smartCodes = {
-    calendar: `HERA.${businessType.toUpperCase()}.CALENDAR.RESOURCE.v1`,
-    appointment: `HERA.${businessType.toUpperCase()}.APPOINTMENT.TXN.v1`,
-    resource: `HERA.${businessType.toUpperCase()}.RESOURCE.ENT.v1`
+    calendar: `HERA.${businessType.toUpperCase()}.CALENDAR.RESOURCE.V1`,
+    appointment: `HERA.${businessType.toUpperCase()}.APPOINTMENT.TXN.V1`,
+    resource: `HERA.${businessType.toUpperCase()}.RESOURCE.ENT.V1`
   }
 }: HeraDnaUniversalResourceCalendarProps) {
   const { currentOrganization } = useHERAAuth()

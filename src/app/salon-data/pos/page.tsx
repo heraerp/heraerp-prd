@@ -555,7 +555,7 @@ export default function DubaiPOSSystem() {
           quantity: 1,
           unit_amount: payment.amount,
           line_amount: payment.amount,
-          smart_code: `HERA.RETAIL.POS.PAYMENT.${payment.method.toUpperCase()}.v1`,
+          smart_code: `HERA.RETAIL.POS.PAYMENT.${payment.method.toUpperCase()}.V1`,
           line_data: {
             payment_method: payment.method,
             reference: payment.reference,

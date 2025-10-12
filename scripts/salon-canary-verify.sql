@@ -33,7 +33,7 @@ WHERE smart_code = 'HERA.SALON.POS.CART.REPRICE.V1'
     AND organization_id != 'hair-talkz-salon-org-uuid'
 GROUP BY organization_id;
 
--- 4. VERIFY SMART CODES ARE NORMALIZED (.V1 not .v1)
+-- 4. VERIFY SMART CODES ARE NORMALIZED (.V1 not .V1)
 SELECT 
     smart_code,
     COUNT(*) as usage_count

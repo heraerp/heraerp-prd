@@ -11,7 +11,7 @@ vi.mock('@/hooks/useHeraProductCategories', () => ({
         entity_name: 'Hair Care',
         entity_code: 'CAT-HAIR',
         status: 'active',
-        smart_code: 'HERA.SALON.PROD.CATEGORY.HAIRCARE.v1',
+        smart_code: 'HERA.SALON.PROD.CATEGORY.HAIRCARE.V1',
         description: 'Retail shampoos and conditioners',
         color: '#D4AF37',
         icon: 'Tag',

@@ -130,7 +130,7 @@ BEGIN
     );
 
     -- For manual entries, require description
-    IF NEW.smart_code = 'HERA.FIN.GL.JOURNAL.MANUAL.v1' AND 
+    IF NEW.smart_code = 'HERA.FIN.GL.JOURNAL.MANUAL.V1' AND 
        (NEW.metadata->>'description' IS NULL OR NEW.metadata->>'description' = '') THEN
         RAISE EXCEPTION 'Manual journal entries require a description';
     END IF;
@@ -300,7 +300,7 @@ BEGIN
                 'last_journal_id', p_journal_id,
                 'last_update', NOW()
             ),
-            'HERA.FIN.GL.BALANCE.PERIOD.v1'
+            'HERA.FIN.GL.BALANCE.PERIOD.V1'
         )
         ON CONFLICT (entity_id, field_name) 
         DO UPDATE SET
@@ -356,21 +356,21 @@ BEGIN
             ]'::jsonb;
             
         -- Payment received
-        WHEN NEW.smart_code = 'HERA.O2C.PAYMENT.RECEIVE.v1' THEN
+        WHEN NEW.smart_code = 'HERA.O2C.PAYMENT.RECEIVE.V1' THEN
             v_gl_entries := '[
                 {"account": "1100", "type": "debit", "amount": "total"},
                 {"account": "1200", "type": "credit", "amount": "total"}
             ]'::jsonb;
             
         -- Payment made
-        WHEN NEW.smart_code = 'HERA.P2P.PAYMENT.SEND.v1' THEN
+        WHEN NEW.smart_code = 'HERA.P2P.PAYMENT.SEND.V1' THEN
             v_gl_entries := '[
                 {"account": "2100", "type": "debit", "amount": "total"},
                 {"account": "1100", "type": "credit", "amount": "total"}
             ]'::jsonb;
             
         -- Payroll
-        WHEN NEW.smart_code = 'HERA.HCM.PAY.RUN.v1' THEN
+        WHEN NEW.smart_code = 'HERA.HCM.PAY.RUN.V1' THEN
             v_gl_entries := '[
                 {"account": "6100", "type": "debit", "amount": "gross"},
                 {"account": "2300", "type": "credit", "amount": "net"},
@@ -395,7 +395,7 @@ BEGIN
         NEW.organization_id,
         'journal_entry',
         'JE-' || NEW.transaction_code,
-        'HERA.FIN.GL.JOURNAL.AUTO.v1',
+        'HERA.FIN.GL.JOURNAL.AUTO.V1',
         NEW.transaction_date,
         NEW.id,
         jsonb_build_object(

@@ -26,7 +26,7 @@ SELECT
     'implementation_framework',
     'HERA-SPEAR Universal Implementation Framework',
     'FRAMEWORK-SPEAR-001',
-    'HERA.SYSTEM.IMPL.ENT.FRAMEWORK.v1',
+    'HERA.SYSTEM.IMPL.ENT.FRAMEWORK.V1',
     'PROD',
     'active',
     '{
@@ -104,7 +104,7 @@ SELECT
     'bom_template',
     'Universal Restaurant BOM Template',
     'TEMPLATE-BOM-REST-001',
-    'HERA.SYSTEM.TEMPLATE.ENT.BOM_REST.v1',
+    'HERA.SYSTEM.TEMPLATE.ENT.BOM_REST.V1',
     'PROD',
     'active',
     '{
@@ -219,7 +219,7 @@ SELECT
     'bom_template',
     'Universal Manufacturing BOM Template',
     'TEMPLATE-BOM-MFG-001',
-    'HERA.SYSTEM.TEMPLATE.ENT.BOM_MFG.v1',
+    'HERA.SYSTEM.TEMPLATE.ENT.BOM_MFG.V1',
     'PROD',
     'active',
     '{
@@ -331,7 +331,7 @@ SELECT
     'bom_template',
     'Universal Healthcare Treatment BOM Template',
     'TEMPLATE-BOM-HEALTH-001',
-    'HERA.SYSTEM.TEMPLATE.ENT.BOM_HEALTH.v1',
+    'HERA.SYSTEM.TEMPLATE.ENT.BOM_HEALTH.V1',
     'PROD',
     'active',
     '{
@@ -450,7 +450,7 @@ SELECT
     'pricing_template',
     'Universal Restaurant Dynamic Pricing Template',
     'TEMPLATE-PRC-REST-001',
-    'HERA.SYSTEM.TEMPLATE.ENT.PRC_REST.v1',
+    'HERA.SYSTEM.TEMPLATE.ENT.PRC_REST.V1',
     'PROD',
     'active',
     '{
@@ -563,7 +563,7 @@ SELECT
     'pricing_template',
     'Universal B2B Manufacturing Pricing Template',
     'TEMPLATE-PRC-MFG-001',
-    'HERA.SYSTEM.TEMPLATE.ENT.PRC_MFG.v1',
+    'HERA.SYSTEM.TEMPLATE.ENT.PRC_MFG.V1',
     'PROD',
     'active',
     '{
@@ -695,7 +695,7 @@ SELECT
     'pricing_template',
     'Universal Healthcare Insurance Billing Template',
     'TEMPLATE-PRC-HEALTH-001',
-    'HERA.SYSTEM.TEMPLATE.ENT.PRC_HEALTH.v1',
+    'HERA.SYSTEM.TEMPLATE.ENT.PRC_HEALTH.V1',
     'PROD',
     'active',
     '{
@@ -826,7 +826,7 @@ SELECT
     'calculation_engine',
     'Universal DAG Calculation Engine',
     'ENGINE-DAG-UNI-001',
-    'HERA.SYSTEM.ENGINE.ENT.DAG_CALC.v1',
+    'HERA.SYSTEM.ENGINE.ENT.DAG_CALC.V1',
     'PROD',
     'active',
     '{
@@ -953,7 +953,7 @@ SELECT
     'validation_engine',
     'HERA Universal 4-Level Validation Engine',
     'ENGINE-VALIDATION-001',
-    'HERA.SYSTEM.ENGINE.ENT.VALIDATION.v1',
+    'HERA.SYSTEM.ENGINE.ENT.VALIDATION.V1',
     'PROD',
     'active',
     '{
@@ -1065,7 +1065,7 @@ SELECT
     'industry_adapter',
     'Restaurant Industry Adapter',
     'ADAPTER-REST-001',
-    'HERA.SYSTEM.ADAPTER.ENT.RESTAURANT.v1',
+    'HERA.SYSTEM.ADAPTER.ENT.RESTAURANT.V1',
     'PROD',
     'active',
     '{
@@ -1144,7 +1144,7 @@ SELECT
     'industry_adapter',
     'Manufacturing Industry Adapter',
     'ADAPTER-MFG-001',
-    'HERA.SYSTEM.ADAPTER.ENT.MANUFACTURING.v1',
+    'HERA.SYSTEM.ADAPTER.ENT.MANUFACTURING.V1',
     'PROD',
     'active',
     '{
@@ -1227,7 +1227,7 @@ SELECT
     'TEMPLATE-SYSTEM-FIX-001',
     CURRENT_TIMESTAMP,
     'completed',
-    'HERA.SYSTEM.VERIFICATION.TXN.TEMPLATE_FIX.v1',
+    'HERA.SYSTEM.VERIFICATION.TXN.TEMPLATE_FIX.V1',
     '{
         "verification_type": "template_system_fix",
         "templates_created": {

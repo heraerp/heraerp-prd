@@ -1292,15 +1292,15 @@ BEGIN
         jsonb_build_object(
             'smart_code', 
             CASE 
-                WHEN entity_code LIKE '1%' THEN 'HERA.SALON.GL.ASSET.' || entity_code || '.v1'
-                WHEN entity_code LIKE '2%' THEN 'HERA.SALON.GL.LIAB.' || entity_code || '.v1'
-                WHEN entity_code LIKE '3%' THEN 'HERA.SALON.GL.EQUITY.' || entity_code || '.v1'
-                WHEN entity_code LIKE '4%' THEN 'HERA.SALON.GL.REV.' || entity_code || '.v1'
-                WHEN entity_code LIKE '5%' THEN 'HERA.SALON.GL.COGS.' || entity_code || '.v1'
-                WHEN entity_code LIKE '6%' THEN 'HERA.SALON.GL.OPEX.' || entity_code || '.v1'
-                WHEN entity_code LIKE '7%' THEN 'HERA.SALON.GL.OTHER.' || entity_code || '.v1'
-                WHEN entity_code LIKE '8%' THEN 'HERA.SALON.GL.TAX.' || entity_code || '.v1'
-                WHEN entity_code LIKE '9%' THEN 'HERA.SALON.GL.CONSOL.' || entity_code || '.v1'
+                WHEN entity_code LIKE '1%' THEN 'HERA.SALON.GL.ASSET.' || entity_code || '.V1'
+                WHEN entity_code LIKE '2%' THEN 'HERA.SALON.GL.LIAB.' || entity_code || '.V1'
+                WHEN entity_code LIKE '3%' THEN 'HERA.SALON.GL.EQUITY.' || entity_code || '.V1'
+                WHEN entity_code LIKE '4%' THEN 'HERA.SALON.GL.REV.' || entity_code || '.V1'
+                WHEN entity_code LIKE '5%' THEN 'HERA.SALON.GL.COGS.' || entity_code || '.V1'
+                WHEN entity_code LIKE '6%' THEN 'HERA.SALON.GL.OPEX.' || entity_code || '.V1'
+                WHEN entity_code LIKE '7%' THEN 'HERA.SALON.GL.OTHER.' || entity_code || '.V1'
+                WHEN entity_code LIKE '8%' THEN 'HERA.SALON.GL.TAX.' || entity_code || '.V1'
+                WHEN entity_code LIKE '9%' THEN 'HERA.SALON.GL.CONSOL.' || entity_code || '.V1'
             END
         )
     WHERE organization_id = p_organization_id
@@ -1423,7 +1423,7 @@ BEGIN
             jsonb_build_object(
                 'hierarchy_type', 'gl_account',
                 'rollup_enabled', true,
-                'smart_code', 'HERA.SALON.GL.REL.PARENT.' || v_child.entity_code || '.v1'
+                'smart_code', 'HERA.SALON.GL.REL.PARENT.' || v_child.entity_code || '.V1'
             )
         );
     END LOOP;
@@ -1498,7 +1498,7 @@ BEGIN
                 'mapping_type', 'branch_to_consolidated',
                 'source_account_code', v_mapping.entity_code,
                 'consolidation_rule', 'sum_branches',
-                'smart_code', 'HERA.SALON.CONSOL.MAP.' || v_mapping.entity_code || '.v1'
+                'smart_code', 'HERA.SALON.CONSOL.MAP.' || v_mapping.entity_code || '.V1'
             )
         );
     END LOOP;
@@ -1522,7 +1522,7 @@ VALUES
      'debit_account', '1128000',  -- Inter-Branch Receivables
      'credit_account', '2180000', -- Inter-Branch Payables
      'requires_elimination', true,
-     'smart_code', 'HERA.SALON.TXN.INTER.TRANSFER.v1'
+     'smart_code', 'HERA.SALON.TXN.INTER.TRANSFER.V1'
  )),
 -- Cash transfer template
 ('849b6efe-2bf0-438f-9c70-01835ac2fe15'::uuid, 'transaction_template', 'TMP_CASH_TRANSFER',
@@ -1532,7 +1532,7 @@ VALUES
      'debit_account', '1128000',  -- Inter-Branch Receivables
      'credit_account', '1112000', -- Bank Account
      'requires_elimination', true,
-     'smart_code', 'HERA.SALON.TXN.INTER.CASH.v1'
+     'smart_code', 'HERA.SALON.TXN.INTER.CASH.V1'
  )),
 -- Service allocation template
 ('849b6efe-2bf0-438f-9c70-01835ac2fe15'::uuid, 'transaction_template', 'TMP_SERVICE_ALLOC',
@@ -1541,7 +1541,7 @@ VALUES
      'transaction_type', 'service_allocation',
      'allocation_basis', 'revenue_percentage',
      'expense_accounts', ['6110000', '6140000', '6150000'],  -- Management costs
-     'smart_code', 'HERA.SALON.TXN.ALLOC.SERVICE.v1'
+     'smart_code', 'HERA.SALON.TXN.ALLOC.SERVICE.V1'
  ));
 
 -- ============================================================================

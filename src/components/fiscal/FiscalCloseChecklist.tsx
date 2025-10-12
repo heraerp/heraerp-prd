@@ -1,6 +1,6 @@
 // ================================================================================
 // FISCAL CLOSE CHECKLIST - FISCAL COMPONENT
-// Smart Code: HERA.UI.FISCAL.CLOSE_CHECKLIST.v1
+// Smart Code: HERA.UI.FISCAL.CLOSE_CHECKLIST.V1
 // Production-ready period close checklist with Sacred Six storage
 // ================================================================================
 

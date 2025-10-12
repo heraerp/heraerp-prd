@@ -285,7 +285,7 @@ BEGIN
             'user',
             user_name,
             user_code,
-            'HERA.USER.PROFILE.v1',
+            'HERA.USER.PROFILE.V1',
             jsonb_build_object(
                 'auth_provider', 'supabase',
                 'email', NEW.email,
@@ -320,10 +320,10 @@ BEGIN
         smart_code,
         created_by
     ) VALUES
-    (NEW.id, 'email', NEW.email, 'text', 'HERA.USER.EMAIL.v1', NEW.id),
-    (NEW.id, 'auth_provider', 'supabase', 'text', 'HERA.USER.AUTH_PROVIDER.v1', NEW.id),
-    (NEW.id, 'signup_date', NOW()::TEXT, 'datetime', 'HERA.USER.SIGNUP_DATE.v1', NEW.id),
-    (NEW.id, 'full_name', user_name, 'text', 'HERA.USER.FULL_NAME.v1', NEW.id);
+    (NEW.id, 'email', NEW.email, 'text', 'HERA.USER.EMAIL.V1', NEW.id),
+    (NEW.id, 'auth_provider', 'supabase', 'text', 'HERA.USER.AUTH_PROVIDER.V1', NEW.id),
+    (NEW.id, 'signup_date', NOW()::TEXT, 'datetime', 'HERA.USER.SIGNUP_DATE.V1', NEW.id),
+    (NEW.id, 'full_name', user_name, 'text', 'HERA.USER.FULL_NAME.V1', NEW.id);
     
     -- Add phone if provided
     IF NEW.phone IS NOT NULL AND NEW.phone != '' THEN
@@ -335,7 +335,7 @@ BEGIN
             smart_code,
             created_by
         ) VALUES
-        (NEW.id, 'phone', NEW.phone, 'text', 'HERA.USER.PHONE.v1', NEW.id);
+        (NEW.id, 'phone', NEW.phone, 'text', 'HERA.USER.PHONE.V1', NEW.id);
     END IF;
     
     -- Create membership (upsert to handle re-registration)

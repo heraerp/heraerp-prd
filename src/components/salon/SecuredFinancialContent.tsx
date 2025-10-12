@@ -1,6 +1,6 @@
 /**
  * HERA DNA SECURITY: Secured Financial Content Components
- * Demo DNA Component: HERA.DNA.SECURITY.SALON.FINANCIAL.DEMO.v1
+ * Demo DNA Component: HERA.DNA.SECURITY.SALON.FINANCIAL.DEMO.V1
  *
  * Demonstrates the power of HERA DNA Security framework with real-world examples
  * of how to protect sensitive financial data using permission-based UI patterns.

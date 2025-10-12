@@ -93,7 +93,7 @@ BEGIN
       999, -- Tax line number
       v_jurisdiction_id,
       v_tax_amount,
-      'HERA.TAX.AUTO.CALC.LINE.v1',
+      'HERA.TAX.AUTO.CALC.LINE.V1',
       jsonb_build_object(
         'tax_code', v_tax_code,
         'tax_rate', v_tax_rate,
@@ -148,7 +148,7 @@ BEGIN
     AND t.organization_id = tl.organization_id
   WHERE t.organization_id = p_org_id
     AND t.transaction_date BETWEEN p_period_start AND p_period_end
-    AND tl.smart_code = 'HERA.TAX.AUTO.CALC.LINE.v1'
+    AND tl.smart_code = 'HERA.TAX.AUTO.CALC.LINE.V1'
     AND (
       (p_tax_type = 'GST' AND tl.metadata->>'tax_code' LIKE 'GST%') OR
       (p_tax_type = 'VAT' AND tl.metadata->>'tax_code' LIKE 'VAT%') OR
@@ -189,7 +189,7 @@ BEGIN
       cd.entity_id as calendar_id
     FROM core_dynamic_data cd
     WHERE cd.field_name = 'tax_filing_due'
-      AND cd.smart_code = 'HERA.TAX.CAL.DUE.v1'
+      AND cd.smart_code = 'HERA.TAX.CAL.DUE.V1'
       AND (cd.metadata->>'due_date')::date >= CURRENT_DATE
   ),
   filing_status AS (
@@ -198,7 +198,7 @@ BEGIN
       t.metadata->>'calendar_id' as calendar_id,
       t.metadata->>'filing_status' as status
     FROM universal_transactions t
-    WHERE t.smart_code IN ('HERA.TAX.GST.RETURN.v1', 'HERA.TAX.VAT.RETURN.v1', 'HERA.TAX.SALES.RETURN.v1')
+    WHERE t.smart_code IN ('HERA.TAX.GST.RETURN.V1', 'HERA.TAX.VAT.RETURN.V1', 'HERA.TAX.SALES.RETURN.V1')
       AND t.created_at >= CURRENT_DATE - INTERVAL '90 days'
   )
   SELECT 
@@ -263,7 +263,7 @@ BEGIN
       'average_credit', avg_credit.avg_amount,
       'variance_percent', ((t.total_amount - avg_credit.avg_amount) / avg_credit.avg_amount * 100)
     ),
-    'HERA.TAX.AI.ANOMALY.v1'
+    'HERA.TAX.AI.ANOMALY.V1'
   FROM universal_transactions t
   CROSS JOIN LATERAL (
     SELECT AVG(total_amount) as avg_amount
@@ -297,7 +297,7 @@ BEGIN
   FROM core_dynamic_data cd
   WHERE cd.organization_id = p_org_id
     AND cd.field_name = 'tax_anomaly'
-    AND cd.smart_code = 'HERA.TAX.AI.ANOMALY.v1'
+    AND cd.smart_code = 'HERA.TAX.AI.ANOMALY.V1'
     AND cd.created_at >= CURRENT_TIMESTAMP - p_check_period * INTERVAL '1 day'
   ORDER BY variance_percent DESC;
 END;
@@ -318,7 +318,7 @@ DECLARE
   v_edge_token TEXT;
 BEGIN
   -- Only process tax return transactions
-  IF NEW.smart_code NOT IN ('HERA.TAX.GST.RETURN.v1', 'HERA.TAX.VAT.RETURN.v1', 'HERA.TAX.WHT.REPORT.v1') THEN
+  IF NEW.smart_code NOT IN ('HERA.TAX.GST.RETURN.V1', 'HERA.TAX.VAT.RETURN.V1', 'HERA.TAX.WHT.REPORT.V1') THEN
     RETURN NEW;
   END IF;
 
@@ -352,7 +352,7 @@ DROP TRIGGER IF EXISTS utx__tax_return_process ON universal_transactions;
 CREATE TRIGGER utx__tax_return_process
 AFTER INSERT ON universal_transactions
 FOR EACH ROW
-WHEN (NEW.smart_code IN ('HERA.TAX.GST.RETURN.v1', 'HERA.TAX.VAT.RETURN.v1', 'HERA.TAX.WHT.REPORT.v1'))
+WHEN (NEW.smart_code IN ('HERA.TAX.GST.RETURN.V1', 'HERA.TAX.VAT.RETURN.V1', 'HERA.TAX.WHT.REPORT.V1'))
 EXECUTE FUNCTION hera_tax__on_return_create();
 
 -- =============================================
@@ -411,7 +411,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
   -- Check if return is filed
-  IF OLD.smart_code IN ('HERA.TAX.GST.RETURN.v1', 'HERA.TAX.VAT.RETURN.v1', 'HERA.TAX.WHT.REPORT.v1')
+  IF OLD.smart_code IN ('HERA.TAX.GST.RETURN.V1', 'HERA.TAX.VAT.RETURN.V1', 'HERA.TAX.WHT.REPORT.V1')
      AND OLD.metadata->>'filing_status' = 'filed'
      AND (OLD.metadata IS DISTINCT FROM NEW.metadata 
           OR OLD.total_amount IS DISTINCT FROM NEW.total_amount) THEN
@@ -443,12 +443,12 @@ WHERE field_name IN ('tax_rate', 'tax_jurisdiction');
 -- Index for tax return queries
 CREATE INDEX IF NOT EXISTS idx_tax_returns
 ON universal_transactions(organization_id, smart_code, transaction_date)
-WHERE smart_code LIKE 'HERA.TAX.%.RETURN.v1';
+WHERE smart_code LIKE 'HERA.TAX.%.RETURN.V1';
 
 -- Index for tax lines
 CREATE INDEX IF NOT EXISTS idx_tax_lines
 ON universal_transaction_lines(organization_id, smart_code, metadata->>'tax_code')
-WHERE smart_code = 'HERA.TAX.AUTO.CALC.LINE.v1';
+WHERE smart_code = 'HERA.TAX.AUTO.CALC.LINE.V1';
 
 -- =============================================
 -- GRANTS

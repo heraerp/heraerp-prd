@@ -1,6 +1,6 @@
 // ================================================================================
 // RULE MAPPINGS TABLE COMPONENT
-// Smart Code: HERA.UI.FINANCE.RULE_MAPPINGS_TABLE.v1
+// Smart Code: HERA.UI.FINANCE.RULE_MAPPINGS_TABLE.V1
 // Table for managing posting rule account mappings
 // ================================================================================
 

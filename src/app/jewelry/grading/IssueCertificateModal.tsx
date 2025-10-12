@@ -52,25 +52,25 @@ export default function IssueCertificateModal({
       const res: any = await certHook.create({
         entity_type: CERTIFICATE_PRESET.entity_type,
         entity_name: `CERT ${v.cert_number}`,
-        smart_code: 'HERA.JEWELRY.CERT.ENTITY.DOCUMENT.v1',
+        smart_code: 'HERA.JEWELRY.CERT.ENTITY.DOCUMENT.V1',
         dynamic_fields: {
           cert_number: {
             value: v.cert_number,
             type: 'text',
-            smart_code: 'HERA.JEWELRY.CERT.DYN.NUMBER.v1'
+            smart_code: 'HERA.JEWELRY.CERT.DYN.NUMBER.V1'
           },
-          issuer: { value: v.issuer, type: 'text', smart_code: 'HERA.JEWELRY.CERT.DYN.ISSUER.v1' },
+          issuer: { value: v.issuer, type: 'text', smart_code: 'HERA.JEWELRY.CERT.DYN.ISSUER.V1' },
           issue_date: {
             value: v.issue_date.toISOString(),
             type: 'date',
-            smart_code: 'HERA.JEWELRY.CERT.DYN.ISSUE_DATE.v1'
+            smart_code: 'HERA.JEWELRY.CERT.DYN.ISSUE_DATE.V1'
           },
           ...(v.pdf_url
             ? {
                 pdf_url: {
                   value: v.pdf_url,
                   type: 'text',
-                  smart_code: 'HERA.JEWELRY.CERT.DYN.PDF_URL.v1'
+                  smart_code: 'HERA.JEWELRY.CERT.DYN.PDF_URL.V1'
                 }
               }
             : {})

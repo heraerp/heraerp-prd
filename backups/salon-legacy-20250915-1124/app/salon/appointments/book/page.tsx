@@ -99,7 +99,7 @@ export default function BookAppointmentPage() {
         transaction_type: 'appointment',
         transaction_date: `${selectedDate}T${selectedTime}:00`,
         transaction_code: `APPT-${Date.now()}`,
-        smart_code: 'HERA.SALON.APPT.BOOK.CREATE.v1',
+        smart_code: 'HERA.SALON.APPT.BOOK.CREATE.V1',
         source_entity_id: selectedCustomer,
         target_entity_id: selectedStylist,
         total_amount: details.base_price || 0,
@@ -124,7 +124,7 @@ export default function BookAppointmentPage() {
           quantity: 1,
           unit_amount: details.base_price || 0,
           line_amount: details.base_price || 0,
-          smart_code: 'HERA.SALON.APPT.LINE.SERVICE.v1',
+          smart_code: 'HERA.SALON.APPT.LINE.SERVICE.V1',
           line_data: {
             duration_minutes: details.duration_minutes || 60
           }

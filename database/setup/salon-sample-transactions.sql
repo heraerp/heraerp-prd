@@ -16,42 +16,42 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 INSERT INTO core_entities (organization_id, entity_type, entity_code, entity_name, entity_category, metadata)
 VALUES 
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'customer', 'CUST-B1-001', 'Sarah Johnson', 'customer',
- jsonb_build_object('vip_status', 'gold', 'preferred_stylist', 'Maya', 'smart_code', 'HERA.SALON.CUST.VIP.v1')),
+ jsonb_build_object('vip_status', 'gold', 'preferred_stylist', 'Maya', 'smart_code', 'HERA.SALON.CUST.VIP.V1')),
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'customer', 'CUST-B1-002', 'Fatima Al Rashid', 'customer',
- jsonb_build_object('vip_status', 'platinum', 'preferred_stylist', 'Anna', 'smart_code', 'HERA.SALON.CUST.VIP.v1')),
+ jsonb_build_object('vip_status', 'platinum', 'preferred_stylist', 'Anna', 'smart_code', 'HERA.SALON.CUST.VIP.V1')),
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'customer', 'CUST-B1-003', 'Emma Wilson', 'customer',
- jsonb_build_object('vip_status', 'silver', 'smart_code', 'HERA.SALON.CUST.REG.v1'));
+ jsonb_build_object('vip_status', 'silver', 'smart_code', 'HERA.SALON.CUST.REG.V1'));
 
 -- Create sample customers for Branch 2
 INSERT INTO core_entities (organization_id, entity_type, entity_code, entity_name, entity_category, metadata)
 VALUES 
 ('0b1b37cd-4096-4718-8cd4-e370f234005b', 'customer', 'CUST-B2-001', 'Aisha Mohammed', 'customer',
- jsonb_build_object('vip_status', 'gold', 'preferred_stylist', 'Sofia', 'smart_code', 'HERA.SALON.CUST.VIP.v1')),
+ jsonb_build_object('vip_status', 'gold', 'preferred_stylist', 'Sofia', 'smart_code', 'HERA.SALON.CUST.VIP.V1')),
 ('0b1b37cd-4096-4718-8cd4-e370f234005b', 'customer', 'CUST-B2-002', 'Maria Garcia', 'customer',
- jsonb_build_object('vip_status', 'silver', 'smart_code', 'HERA.SALON.CUST.REG.v1'));
+ jsonb_build_object('vip_status', 'silver', 'smart_code', 'HERA.SALON.CUST.REG.V1'));
 
 -- Create sample staff for Branch 1
 INSERT INTO core_entities (organization_id, entity_type, entity_code, entity_name, entity_category, metadata)
 VALUES 
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'employee', 'STAFF-B1-001', 'Maya Patel', 'stylist',
  jsonb_build_object('role', 'senior_stylist', 'commission_rate', 0.40, 'specialties', '["coloring", "treatments"]', 
-                    'smart_code', 'HERA.SALON.STAFF.STYLIST.v1')),
+                    'smart_code', 'HERA.SALON.STAFF.STYLIST.V1')),
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'employee', 'STAFF-B1-002', 'Anna Chen', 'stylist',
  jsonb_build_object('role', 'stylist', 'commission_rate', 0.35, 'specialties', '["cutting", "styling"]',
-                    'smart_code', 'HERA.SALON.STAFF.STYLIST.v1')),
+                    'smart_code', 'HERA.SALON.STAFF.STYLIST.V1')),
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'employee', 'STAFF-B1-003', 'Layla Hassan', 'therapist',
  jsonb_build_object('role', 'beauty_therapist', 'commission_rate', 0.35, 'specialties', '["facials", "waxing"]',
-                    'smart_code', 'HERA.SALON.STAFF.THERAPIST.v1'));
+                    'smart_code', 'HERA.SALON.STAFF.THERAPIST.V1'));
 
 -- Create sample staff for Branch 2
 INSERT INTO core_entities (organization_id, entity_type, entity_code, entity_name, entity_category, metadata)
 VALUES 
 ('0b1b37cd-4096-4718-8cd4-e370f234005b', 'employee', 'STAFF-B2-001', 'Sofia Rodriguez', 'stylist',
  jsonb_build_object('role', 'senior_stylist', 'commission_rate', 0.40, 'specialties', '["bridal", "coloring"]',
-                    'smart_code', 'HERA.SALON.STAFF.STYLIST.v1')),
+                    'smart_code', 'HERA.SALON.STAFF.STYLIST.V1')),
 ('0b1b37cd-4096-4718-8cd4-e370f234005b', 'employee', 'STAFF-B2-002', 'Noor Ali', 'therapist',
  jsonb_build_object('role', 'nail_technician', 'commission_rate', 0.35, 'specialties', '["manicure", "pedicure"]',
-                    'smart_code', 'HERA.SALON.STAFF.THERAPIST.v1'));
+                    'smart_code', 'HERA.SALON.STAFF.THERAPIST.V1'));
 
 -- Create sample services
 INSERT INTO core_entities (organization_id, entity_type, entity_code, entity_name, entity_category, metadata)
@@ -59,24 +59,24 @@ VALUES
 -- Branch 1 services
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'service', 'SRV-HC-001', 'Ladies Haircut & Style', 'hair_service',
  jsonb_build_object('duration_minutes', 45, 'base_price', 120.00, 'gl_revenue_account', '4112000',
-                    'smart_code', 'HERA.SALON.SERVICE.HAIRCUT.v1')),
+                    'smart_code', 'HERA.SALON.SERVICE.HAIRCUT.V1')),
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'service', 'SRV-HC-002', 'Hair Coloring - Full', 'hair_service',
  jsonb_build_object('duration_minutes', 120, 'base_price', 350.00, 'gl_revenue_account', '4113000',
-                    'smart_code', 'HERA.SALON.SERVICE.COLOR.v1')),
+                    'smart_code', 'HERA.SALON.SERVICE.COLOR.V1')),
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'service', 'SRV-HT-001', 'Keratin Treatment', 'hair_service',
  jsonb_build_object('duration_minutes', 180, 'base_price', 600.00, 'gl_revenue_account', '4114000',
-                    'smart_code', 'HERA.SALON.SERVICE.TREATMENT.v1')),
+                    'smart_code', 'HERA.SALON.SERVICE.TREATMENT.V1')),
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'service', 'SRV-BT-001', 'Luxury Facial', 'beauty_service',
  jsonb_build_object('duration_minutes', 60, 'base_price', 250.00, 'gl_revenue_account', '4121000',
-                    'smart_code', 'HERA.SALON.SERVICE.FACIAL.v1')),
+                    'smart_code', 'HERA.SALON.SERVICE.FACIAL.V1')),
 
 -- Branch 2 services (same service types, possibly different prices)
 ('0b1b37cd-4096-4718-8cd4-e370f234005b', 'service', 'SRV-HC-001', 'Ladies Haircut & Style', 'hair_service',
  jsonb_build_object('duration_minutes', 45, 'base_price', 130.00, 'gl_revenue_account', '4112000',
-                    'smart_code', 'HERA.SALON.SERVICE.HAIRCUT.v1')),
+                    'smart_code', 'HERA.SALON.SERVICE.HAIRCUT.V1')),
 ('0b1b37cd-4096-4718-8cd4-e370f234005b', 'service', 'SRV-MN-001', 'Gel Manicure', 'beauty_service',
  jsonb_build_object('duration_minutes', 45, 'base_price', 120.00, 'gl_revenue_account', '4122000',
-                    'smart_code', 'HERA.SALON.SERVICE.NAILS.v1'));
+                    'smart_code', 'HERA.SALON.SERVICE.NAILS.V1'));
 
 -- Create sample products
 INSERT INTO core_entities (organization_id, entity_type, entity_code, entity_name, entity_category, metadata)
@@ -85,17 +85,17 @@ VALUES
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'product', 'PROD-HC-001', 'L\'Oreal Professional Shampoo', 'hair_care',
  jsonb_build_object('unit_cost', 45.00, 'selling_price', 120.00, 'stock_quantity', 25, 
                     'gl_revenue_account', '4210000', 'gl_cogs_account', '5310000',
-                    'smart_code', 'HERA.SALON.PRODUCT.HAIRCARE.v1')),
+                    'smart_code', 'HERA.SALON.PRODUCT.HAIRCARE.V1')),
 ('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 'product', 'PROD-HC-002', 'Moroccan Oil Treatment', 'hair_care',
  jsonb_build_object('unit_cost', 60.00, 'selling_price', 150.00, 'stock_quantity', 15,
                     'gl_revenue_account', '4210000', 'gl_cogs_account', '5310000',
-                    'smart_code', 'HERA.SALON.PRODUCT.HAIRCARE.v1')),
+                    'smart_code', 'HERA.SALON.PRODUCT.HAIRCARE.V1')),
 
 -- Products at Branch 2
 ('0b1b37cd-4096-4718-8cd4-e370f234005b', 'product', 'PROD-HC-001', 'L\'Oreal Professional Shampoo', 'hair_care',
  jsonb_build_object('unit_cost', 45.00, 'selling_price', 125.00, 'stock_quantity', 20,
                     'gl_revenue_account', '4210000', 'gl_cogs_account', '5310000',
-                    'smart_code', 'HERA.SALON.PRODUCT.HAIRCARE.v1'));
+                    'smart_code', 'HERA.SALON.PRODUCT.HAIRCARE.V1'));
 
 -- ============================================================================
 -- STEP 2: CREATE SAMPLE TRANSACTIONS
@@ -150,7 +150,7 @@ BEGIN
             'stylist_id', p_stylist_id,
             'payment_method', p_payment_method,
             'commission_amount', v_commission_amount,
-            'smart_code', 'HERA.SALON.TXN.SERVICE.SALE.v1'
+            'smart_code', 'HERA.SALON.TXN.SERVICE.SALE.V1'
         )
     ) RETURNING id INTO v_transaction_id;
     
@@ -392,7 +392,7 @@ BEGIN
         jsonb_build_object(
             'quantity', p_quantity,
             'payment_method', p_payment_method,
-            'smart_code', 'HERA.SALON.TXN.PRODUCT.SALE.v1'
+            'smart_code', 'HERA.SALON.TXN.PRODUCT.SALE.V1'
         )
     ) RETURNING id INTO v_transaction_id;
     
@@ -522,7 +522,7 @@ BEGIN
         jsonb_build_object(
             'transfer_type', p_transfer_type,
             'description', p_description,
-            'smart_code', 'HERA.SALON.TXN.INTER.TRANSFER.v1'
+            'smart_code', 'HERA.SALON.TXN.INTER.TRANSFER.V1'
         )
     ) RETURNING id INTO v_transaction_id;
     
@@ -569,7 +569,7 @@ BEGIN
             'transfer_type', p_transfer_type,
             'description', p_description,
             'source_transaction_id', v_transaction_id,
-            'smart_code', 'HERA.SALON.TXN.INTER.RECEIVE.v1'
+            'smart_code', 'HERA.SALON.TXN.INTER.RECEIVE.V1'
         )
     );
     

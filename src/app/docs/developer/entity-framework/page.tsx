@@ -501,7 +501,7 @@ export default function EntityFrameworkDocs() {
               </div>
               <div className="pl-6 text-green-400">
                 smart_code:{' '}
-                <div className="text-orange-400">'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.v1'</div>,
+                <div className="text-orange-400">'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.V1'</div>,
               </div>
               <div className="pl-6 text-green-400">
                 required: <div className="text-blue-400">true</div>
@@ -516,7 +516,7 @@ export default function EntityFrameworkDocs() {
               </div>
               <div className="pl-6 text-green-400">
                 smart_code:{' '}
-                <div className="text-orange-400">'HERA.SALON.PRODUCT.REL.HAS_CATEGORY.v1'</div>,
+                <div className="text-orange-400">'HERA.SALON.PRODUCT.REL.HAS_CATEGORY.V1'</div>,
               </div>
               <div className="pl-6 text-green-400">
                 cardinality: <div className="text-orange-400">'one'</div>

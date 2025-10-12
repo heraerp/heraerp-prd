@@ -153,7 +153,7 @@ export default function ServicesManagementPage() {
           entity_type: 'service',
           entity_name: serviceForm.name,
           entity_code: `SVC-${Date.now()}`,
-          smart_code: 'HERA.SALON.SERVICE.ENTITY.v1',
+          smart_code: 'HERA.SALON.SERVICE.ENTITY.V1',
           metadata: { 
             category: serviceForm.category,
             description: serviceForm.description 

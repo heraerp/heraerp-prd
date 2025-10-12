@@ -1,6 +1,6 @@
 // ================================================================================
 // TEMPLATE FORM - WHATSAPP MESSAGE TEMPLATES
-// Smart Code: HERA.UI.WHATSAPP.TEMPLATE_FORM.v1
+// Smart Code: HERA.UI.WHATSAPP.TEMPLATE_FORM.V1
 // Production-ready template creation and editing with validation and preview
 // ================================================================================
 

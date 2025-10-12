@@ -183,7 +183,7 @@ BEGIN
       NEW.id,
       auth.jwt()->>'entity_id',
       'approved_by',
-      'HERA.FIN.APPROVAL.WORKFLOW.v1',
+      'HERA.FIN.APPROVAL.WORKFLOW.V1',
       jsonb_build_object(
         'approved_at', NOW(),
         'approver_role', auth.jwt()->>'role',

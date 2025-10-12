@@ -126,7 +126,7 @@ BEGIN
             'normalized_name',
             v_normalized_name,
             p_org_id,
-            'HERA.SYSTEM.NORMALIZATION.NAME.v1'
+            'HERA.SYSTEM.NORMALIZATION.NAME.V1'
         ) ON CONFLICT (entity_id, field_name) DO NOTHING;
         
         RETURN QUERY
