@@ -63,35 +63,36 @@ async function optimizedBuild() {
 }
 
 async function cleanBuildArtifacts() {
-  // In Docker with cache mounts, avoid cleaning mounted cache directories
-  const isDocker = process.env.CI || fs.existsSync('/.dockerenv')
+  // Enhanced Docker detection for cache mount compatibility
+  const isDocker = process.env.CI || 
+                   fs.existsSync('/.dockerenv') || 
+                   process.env.DOCKER_CONTAINER ||
+                   process.env.RAILWAY_ENVIRONMENT ||
+                   process.platform === 'linux' && process.env.NODE_ENV === 'production'
   
-  if (isDocker) {
-    // Only clean non-cache directories in Docker
-    const dirsToClean = ['.next/server', '.next/static', '.next/standalone']
-    
-    for (const dir of dirsToClean) {
-      if (fs.existsSync(dir)) {
-        await execCommand(`rm -rf ${dir}`)
-      }
+  // Always use safe cleaning to avoid cache mount conflicts
+  console.log(`🐳 Docker environment detected: ${isDocker}`)
+  
+  // Only clean non-cache directories and specific files
+  const dirsToClean = ['.next/server', '.next/static', '.next/standalone']
+  
+  for (const dir of dirsToClean) {
+    if (fs.existsSync(dir)) {
+      await execCommand(`rm -rf ${dir}`)
     }
-    
-    // Clean files but preserve cache directories
-    const filesToClean = ['.next/BUILD_ID', '.next/export-marker.json', '.next/prerender-manifest.json']
-    for (const file of filesToClean) {
-      if (fs.existsSync(file)) {
-        await execCommand(`rm -f ${file}`)
-      }
+  }
+  
+  // Clean specific files but preserve cache directories
+  const filesToClean = ['.next/BUILD_ID', '.next/export-marker.json', '.next/prerender-manifest.json']
+  for (const file of filesToClean) {
+    if (fs.existsSync(file)) {
+      await execCommand(`rm -f ${file}`)
     }
-  } else {
-    // Local development - clean everything
-    const dirsToClean = ['.next', 'node_modules/.cache']
-    
-    for (const dir of dirsToClean) {
-      if (fs.existsSync(dir)) {
-        await execCommand(`rm -rf ${dir}`)
-      }
-    }
+  }
+  
+  // For local development only, also clean node_modules cache
+  if (!isDocker && fs.existsSync('node_modules/.cache')) {
+    await execCommand('rm -rf node_modules/.cache')
   }
 }
 
