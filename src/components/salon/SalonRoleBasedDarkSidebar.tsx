@@ -37,7 +37,7 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 // Define role-specific sidebar items
 const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
   owner: [
-    { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
+    { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
     {
       title: 'Appointments',
       href: '/salon/appointments',

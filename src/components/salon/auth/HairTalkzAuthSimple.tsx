@@ -223,11 +223,14 @@ export function HairTalkzAuthSimple() {
 
         // Set local storage for organization context and RBAC
         localStorage.setItem('organizationId', HAIRTALKZ_ORG_ID)
-        localStorage.setItem('salonRole', selectedRole)
-        localStorage.setItem('userPermissions', JSON.stringify(getRolePermissions(selectedRole)))
+        localStorage.setItem('salonRole', currentRole)
+        localStorage.setItem(
+          'userPermissions',
+          JSON.stringify(getRolePermissions(currentRole))
+        )
 
         // Get redirect path based on role
-        const roleConfig = USER_ROLES.find(r => r.value === selectedRole)
+        const roleConfig = USER_ROLES.find(r => r.value === currentRole)
         const redirectPath = roleConfig?.redirectPath || '/salon/dashboard'
 
         toast({

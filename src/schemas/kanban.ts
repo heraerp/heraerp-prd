@@ -38,8 +38,13 @@ export type KanbanCard = {
   start: string // ISO
   end: string // ISO
   customer_name: string
+  customer_id?: string
   service_name: string
+  service_id?: string
   stylist_name?: string
+  stylist_id?: string
+  duration?: number
+  price?: number
   flags?: { vip?: boolean; new?: boolean; late?: boolean }
   cancellation_reason?: CancellationReason // Track why appointment was cancelled
   metadata?: any

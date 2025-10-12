@@ -1,6 +1,6 @@
 /**
  * HERA DNA SECURITY: Secured Salon Provider
- * Industry DNA Component: HERA.DNA.SECURITY.SALON.PROVIDER.v1
+ * Industry DNA Component: HERA.DNA.SECURITY.SALON.PROVIDER.V1
  *
  * Revolutionary salon security DNA that integrates the comprehensive HERA DNA Security
  * framework with salon-specific business logic, providing bulletproof multi-tenant
@@ -45,6 +45,8 @@ interface SalonSecurityContext extends SecurityContext {
   organization: {
     id: string
     name: string
+    currency: string // ✅ ENTERPRISE: Dynamic currency from organization
+    currencySymbol: string // ✅ ENTERPRISE: Currency symbol for display
     settings?: any
   }
   user: any
@@ -147,7 +149,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       salonRole: 'stylist',
       authMode: 'supabase',
       permissions: [],
-      organization: { id: '', name: '' }, // Empty until JWT validation
+      organization: { id: '', name: '', currency: 'AED', currencySymbol: 'AED' }, // Empty until JWT validation
       user: null,
       isLoading: true, // 🔒 ALWAYS start with loading to force JWT validation
       isAuthenticated: false,
@@ -178,6 +180,30 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     }
 
     // ✅ SECURITY: Get organization ID from HERAAuth (JWT), not from cache
+    // Build organization object with fallback to user metadata
+    const user = securityStore.user || auth.user
+    const orgNameFromMetadata = user?.user_metadata?.organization_name || 'Salon Dashboard'
+
+    // Check if we have a valid organization object with a proper name
+    const storedOrg = securityStore.organization
+    const authOrg = auth.currentOrganization
+
+    // Prefer stored org if it has a real name, otherwise use metadata
+    let finalOrg
+    if (storedOrg?.name && storedOrg.name !== 'Organization' && storedOrg.name !== '') {
+      finalOrg = storedOrg
+    } else if (authOrg?.name && authOrg.name !== 'Organization' && authOrg.name !== '') {
+      finalOrg = authOrg
+    } else {
+      // Fallback to building from user metadata
+      finalOrg = {
+        id: orgId,
+        name: orgNameFromMetadata,
+        currency: 'AED',
+        currencySymbol: 'AED'
+      }
+    }
+
     setContext(prev => ({
       ...prev,
       orgId,
@@ -185,8 +211,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       userId: securityStore.userId || '',
       salonRole: securityStore.salonRole || 'stylist',
       permissions: securityStore.permissions || [],
-      organization: auth.currentOrganization || { id: orgId, name: '' },
-      user: securityStore.user || auth.user,
+      organization: finalOrg,
+      user,
       isLoading: false, // ✅ CRITICAL: Set loading to false
       isAuthenticated: true,
       selectedBranchId,
@@ -269,6 +295,30 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       console.log('✅ Security context already initialized, updating context with auth org')
 
       // 🎯 CRITICAL FIX: Update context with store data + auth organization
+      // Build organization object with fallback to user metadata
+      const user = securityStore.user || auth.user
+      const orgNameFromMetadata = user?.user_metadata?.organization_name || 'Salon Dashboard'
+
+      // Check if we have a valid organization object with a proper name
+      const storedOrg = securityStore.organization
+      const authOrg = auth.currentOrganization
+
+      // Prefer stored org if it has a real name, otherwise use metadata
+      let finalOrg
+      if (storedOrg?.name && storedOrg.name !== 'Organization' && storedOrg.name !== '') {
+        finalOrg = storedOrg
+      } else if (authOrg?.name && authOrg.name !== 'Organization' && authOrg.name !== '') {
+        finalOrg = authOrg
+      } else {
+        // Fallback to building from user metadata
+        finalOrg = {
+          id: orgId,
+          name: orgNameFromMetadata,
+          currency: 'AED',
+          currencySymbol: 'AED'
+        }
+      }
+
       setContext(prev => ({
         ...prev,
         orgId,
@@ -276,8 +326,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         userId: securityStore.userId || '',
         salonRole: securityStore.salonRole || 'stylist',
         permissions: securityStore.permissions || [],
-        organization: auth.currentOrganization || { id: orgId, name: '' },
-        user: securityStore.user || auth.user,
+        organization: finalOrg,
+        user,
         isLoading: false, // ✅ CRITICAL: Set loading to false
         isAuthenticated: true,
         selectedBranchId,
@@ -312,12 +362,21 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       })
 
       if (event === 'SIGNED_IN' && session) {
-        // Force re-initialization on sign in
-        console.log('🔐 SIGNED_IN event - resetting auth check')
-        authCheckDoneRef.current = false
-        securityStore.clearState()
-        await initializeSecureContext()
-        authCheckDoneRef.current = true
+        // Only re-initialize if user or organization changed
+        const currentUserId = context.userId
+        const sessionUserId = session.user.id
+
+        if (!currentUserId || currentUserId !== sessionUserId) {
+          // New user logged in - full re-initialization needed
+          console.log('🔐 SIGNED_IN event - new user, resetting auth check')
+          authCheckDoneRef.current = false
+          securityStore.clearState()
+          await initializeSecureContext()
+          authCheckDoneRef.current = true
+        } else {
+          // Same user - just verify session is valid, don't clear data
+          console.log('🔐 SIGNED_IN event - same user, keeping existing state')
+        }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔐 SIGNED_OUT event - clearing state')
         authCheckDoneRef.current = false
@@ -605,6 +664,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
   /**
    * Load organization details securely
+   * ✅ ENTERPRISE: Loads currency from dynamic data for universal currency support
    */
   const loadOrganizationDetails = async (orgId: string) => {
     try {
@@ -623,11 +683,53 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             .eq('id', orgId)
             .single()
 
-          return {
+          // ✅ ENTERPRISE: Fetch currency from dynamic data
+          const { data: dynamicData } = await client
+            .from('core_dynamic_data')
+            .select('*')
+            .eq('organization_id', orgId)
+            .eq('entity_id', orgId) // Organization's own dynamic data
+            .eq('field_name', 'currency')
+            .maybeSingle()
+
+          const currency = dynamicData?.field_value_text || org?.metadata?.currency || 'AED'
+
+          // ✅ ENTERPRISE: Currency symbol mapping
+          const currencySymbolMap: Record<string, string> = {
+            'AED': 'AED',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+            'SAR': 'SAR',
+            'QAR': 'QAR',
+            'KWD': 'KWD',
+            'BHD': 'BHD',
+            'OMR': 'OMR',
+            'INR': '₹',
+            'PKR': 'Rs'
+          }
+
+          const currencySymbol = currencySymbolMap[currency] || currency
+
+          const orgData = {
             id: orgId,
             name: org?.organization_name || 'HairTalkz',
+            currency,
+            currencySymbol,
             settings: org?.metadata || {}
           }
+
+          console.log('[SecuredSalonProvider] ✅ Loaded organization:', {
+            orgId,
+            orgData,
+            hasOrganizationName: !!org?.organization_name,
+            rawOrganizationName: org?.organization_name,
+            currency,
+            currencySymbol,
+            source: dynamicData ? 'dynamic_data' : 'metadata'
+          })
+
+          return orgData
         }
       )
     } catch (error) {
@@ -635,6 +737,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       return {
         id: orgId,
         name: 'HairTalkz',
+        currency: 'AED',
+        currencySymbol: 'AED',
         settings: {}
       }
     }

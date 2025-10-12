@@ -1,7 +1,459 @@
 'use client'
 
-import { UnifiedDashboard } from './unified-dashboard'
+export const dynamic = 'force-dynamic'
 
-export default function SalonDashboardPage() {
-  return <UnifiedDashboard />
+import React, { useState } from 'react'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSalonSecurity } from '@/hooks/useSalonSecurity'
+import { useSalonDashboard } from '@/hooks/useSalonDashboard'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import {
+  Users,
+  Scissors,
+  RefreshCw,
+  Settings,
+  Loader2,
+  AlertCircle,
+  Sparkles,
+  Calendar,
+  TrendingUp
+} from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { LUXE_COLORS } from '@/lib/constants/salon'
+
+// Period type for global filter
+type TimePeriod = 'today' | 'last7Days' | 'last30Days' | 'yearToDate' | 'allTime'
+
+// Import new dashboard sections
+import { HeroMetrics } from '@/components/salon/dashboard/HeroMetrics'
+import { AppointmentAnalytics } from '@/components/salon/dashboard/AppointmentAnalytics'
+import { RevenueTrends } from '@/components/salon/dashboard/RevenueTrends'
+import { StaffPerformance } from '@/components/salon/dashboard/StaffPerformance'
+import { CustomerAndServiceInsights } from '@/components/salon/dashboard/CustomerAndServiceInsights'
+import { FinancialOverview } from '@/components/salon/dashboard/FinancialOverview'
+
+export default function SalonDashboard() {
+  const { organizationId, organization, isLoading: orgLoading } = useSecuredSalonContext()
+  const {
+    role,
+    user,
+    isLoading: securityLoading,
+    isAuthenticated
+  } = useSalonSecurity()
+  const router = useRouter()
+  const [lastRefresh, setLastRefresh] = useState(new Date())
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  // ✅ ENTERPRISE: Global Period Filter State
+  const [globalPeriod, setGlobalPeriod] = useState<TimePeriod>('allTime')
+
+  // Period labels for display
+  const periodLabels: Record<TimePeriod, string> = {
+    today: 'Today',
+    last7Days: 'Last 7 Days',
+    last30Days: 'Last 30 Days',
+    yearToDate: 'Year to Date',
+    allTime: 'All Time'
+  }
+
+  // Debug organization loading
+  React.useEffect(() => {
+    console.log('[Dashboard] Organization loaded:', {
+      organizationId,
+      organization,
+      hasName: !!organization?.name,
+      hasEntityName: !!(organization as any)?.entity_name,
+      orgLoading
+    })
+  }, [organization, organizationId, orgLoading])
+
+  // Use the enhanced dashboard hook with global period filter
+  const {
+    kpis,
+    isLoading: dashboardLoading,
+    refreshAll,
+    formatCurrency
+  } = useSalonDashboard({
+    organizationId: organizationId || '',
+    currency: 'AED',
+    selectedPeriod: globalPeriod
+  })
+
+  const isLoading = orgLoading || securityLoading || dashboardLoading
+
+  // Refresh all data with animation
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    try {
+      await refreshAll()
+      setLastRefresh(new Date())
+    } finally {
+      // Keep spinning for smooth UX
+      setTimeout(() => setIsRefreshing(false), 800)
+    }
+  }
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+      >
+        <div className="text-center">
+          <div className="relative inline-block">
+            <Loader2
+              className="h-12 w-12 animate-spin"
+              style={{ color: LUXE_COLORS.gold }}
+            />
+            <div
+              className="absolute inset-0 blur-xl opacity-50"
+              style={{ background: LUXE_COLORS.gold }}
+            />
+          </div>
+          <p className="mt-4 text-lg font-medium" style={{ color: LUXE_COLORS.bronze }}>
+            Loading dashboard...
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // Auth check
+  if (!isAuthenticated || !role) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+      >
+        <Card
+          className="max-w-md w-full border-0"
+          style={{ backgroundColor: LUXE_COLORS.charcoalLight }}
+        >
+          <CardContent className="p-8 text-center">
+            <AlertCircle className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+            <h3 className="text-xl mb-2" style={{ color: LUXE_COLORS.gold }}>
+              Authentication Required
+            </h3>
+            <p className="mb-6" style={{ color: LUXE_COLORS.bronze }}>
+              {!isAuthenticated
+                ? 'Please log in to access the dashboard.'
+                : 'No role assigned. Please contact your administrator.'}
+            </p>
+            <Button
+              onClick={() => router.push('/salon/auth')}
+              className="w-full"
+              style={{
+                backgroundColor: LUXE_COLORS.gold,
+                color: LUXE_COLORS.charcoal
+              }}
+            >
+              Go to Login
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
+      {/* Elegant gradient background overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(circle at 10% 20%, ${LUXE_COLORS.gold}06 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, ${LUXE_COLORS.plum}04 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, ${LUXE_COLORS.emerald}03 0%, transparent 50%)
+          `,
+          opacity: 0.4
+        }}
+      />
+
+      {/* Premium Header */}
+      <div
+        className="sticky top-0 z-30 mb-8"
+        style={{
+          background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+          border: `1px solid ${LUXE_COLORS.gold}20`,
+          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px ${LUXE_COLORS.gold}10`,
+          backdropFilter: 'blur(20px)'
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-6 flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              {/* Organization Icon */}
+              <div
+                className="p-4 rounded-xl transition-all duration-500 hover:scale-110"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold}25 0%, ${LUXE_COLORS.gold}15 100%)`,
+                  border: `1px solid ${LUXE_COLORS.gold}40`,
+                  boxShadow: `0 0 20px ${LUXE_COLORS.gold}20`
+                }}
+              >
+                <Scissors className="w-8 h-8" style={{ color: LUXE_COLORS.gold }} />
+              </div>
+
+              {/* Title and subtitle */}
+              <div>
+                <h1
+                  className="text-4xl font-bold tracking-tight mb-1 flex items-center gap-3"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    letterSpacing: '-0.02em'
+                  }}
+                >
+                  {organization?.entity_name || organization?.name || 'Salon Dashboard'}
+                  <Sparkles className="w-6 h-6 animate-pulse" style={{ color: LUXE_COLORS.gold }} />
+                </h1>
+                <p
+                  className="text-sm flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.bronze }}
+                >
+                  <span className="font-medium">
+                    {role ? role.charAt(0).toUpperCase() + role.slice(1) : ''} Dashboard
+                  </span>
+                  <span>•</span>
+                  <span>
+                    {new Date().toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* User Info and Actions */}
+            <div className="flex items-center gap-4">
+              {/* User Info Card */}
+              <div
+                className="flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02]"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}CC 0%, ${LUXE_COLORS.charcoal}CC 100%)`,
+                  border: `1px solid ${LUXE_COLORS.bronze}30`,
+                  boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
+                }}
+              >
+                <div
+                  className="p-2 rounded-lg"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}10 100%)`,
+                    border: `1px solid ${LUXE_COLORS.gold}30`
+                  }}
+                >
+                  <Users className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
+                </div>
+                <div>
+                  <div className="font-semibold text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                    {user?.user_metadata?.full_name ||
+                      user?.email?.split('@')[0] ||
+                      localStorage.getItem('salonUserName') ||
+                      'Demo User'}
+                  </div>
+                  <div className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                    {user?.email || localStorage.getItem('salonUserEmail') || 'demo@hairtalkz.com'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Refresh Button */}
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}20 0%, ${LUXE_COLORS.emerald}10 100%)`,
+                  border: `1px solid ${LUXE_COLORS.emerald}30`,
+                  color: LUXE_COLORS.champagne,
+                  boxShadow: isRefreshing ? `0 0 20px ${LUXE_COLORS.emerald}40` : undefined
+                }}
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
+
+              {/* Logout Button */}
+              <Button
+                onClick={async () => {
+                  try {
+                    const { supabase } = await import('@/lib/supabase/client')
+                    await supabase.auth.signOut()
+                    localStorage.removeItem('salonUserName')
+                    localStorage.removeItem('salonUserEmail')
+                    localStorage.removeItem('salonRole')
+                    router.push('/salon/auth')
+                  } catch (error) {
+                    console.error('Logout error:', error)
+                    router.push('/salon/auth')
+                  }
+                }}
+                variant="outline"
+                className="px-4 py-2.5 font-medium transition-all hover:scale-105"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.ruby}20 0%, ${LUXE_COLORS.ruby}10 100%)`,
+                  border: `1px solid ${LUXE_COLORS.ruby}40`,
+                  color: LUXE_COLORS.ruby,
+                  boxShadow: `0 0 0 1px ${LUXE_COLORS.ruby}20`
+                }}
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ✅ ENTERPRISE: Global Period Filter Bar */}
+      <div
+        className="sticky top-[120px] z-20 mb-6"
+        style={{
+          background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}F0 0%, ${LUXE_COLORS.charcoal}F0 100%)`,
+          border: `1px solid ${LUXE_COLORS.gold}15`,
+          boxShadow: `0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px ${LUXE_COLORS.gold}08`,
+          backdropFilter: 'blur(20px)'
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-4 flex items-center justify-between gap-4">
+            {/* Left: Filter Label */}
+            <div className="flex items-center gap-3">
+              <div
+                className="p-2 rounded-lg"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}10 100%)`,
+                  border: `1px solid ${LUXE_COLORS.gold}30`
+                }}
+              >
+                <Calendar className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                  Time Period Filter
+                </h3>
+                <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                  Applies to all dashboard sections
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Period Selector Buttons */}
+            <div className="flex gap-2 flex-wrap">
+              {(Object.keys(periodLabels) as TimePeriod[]).map((period) => (
+                <button
+                  key={period}
+                  onClick={() => setGlobalPeriod(period)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 relative"
+                  style={{
+                    background:
+                      globalPeriod === period
+                        ? `linear-gradient(135deg, ${LUXE_COLORS.gold}50 0%, ${LUXE_COLORS.gold}30 100%)`
+                        : `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}60 0%, ${LUXE_COLORS.charcoal}60 100%)`,
+                    border:
+                      globalPeriod === period
+                        ? `1px solid ${LUXE_COLORS.gold}80`
+                        : `1px solid ${LUXE_COLORS.bronze}20`,
+                    color: globalPeriod === period ? LUXE_COLORS.champagne : LUXE_COLORS.bronze,
+                    boxShadow:
+                      globalPeriod === period
+                        ? `0 0 24px ${LUXE_COLORS.gold}40, inset 0 1px 2px ${LUXE_COLORS.gold}30`
+                        : undefined
+                  }}
+                >
+                  {periodLabels[period]}
+                  {globalPeriod === period && (
+                    <TrendingUp
+                      className="w-3 h-3 absolute -top-1 -right-1"
+                      style={{ color: LUXE_COLORS.gold }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Hero Metrics */}
+        <HeroMetrics kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+
+        {/* Appointment Analytics and Revenue Trends */}
+        <div className="grid grid-cols-1 gap-8">
+          <AppointmentAnalytics kpis={kpis} selectedPeriod={globalPeriod} />
+          <RevenueTrends kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+        </div>
+
+        {/* Staff Performance */}
+        <StaffPerformance kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+
+        {/* Customer and Service Insights */}
+        <CustomerAndServiceInsights kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+
+        {/* Financial Overview */}
+        <FinancialOverview kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+
+        {/* Footer Spacer */}
+        <div className="h-8" />
+      </div>
+
+      {/* Global animations */}
+      <style jsx>{`
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        @keyframes growWidth {
+          from {
+            width: 0%;
+          }
+        }
+
+        @keyframes float {
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
+        @keyframes glow {
+          0%,
+          100% {
+            opacity: 0.5;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+      `}</style>
+    </div>
+  )
 }
