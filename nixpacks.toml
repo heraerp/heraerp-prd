@@ -11,4 +11,4 @@ cmds = ["ls -la /app", "pwd", "npm install"]
 cmds = ["npm run build"]
 
 [start]
-cmd = "next start -H 0.0.0.0 -p $PORT"
+cmd = "npm run start:railway"
