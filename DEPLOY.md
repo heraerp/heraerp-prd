@@ -36,7 +36,7 @@ providers = ["node"]
 NODE_ENV = "production"
 
 [phases.install]
-cmds = ["npm ci"]
+cmds = ["npm install"]
 
 [phases.build]
 cmds = ["npm run build"]
@@ -88,8 +88,25 @@ curl -sfS https://<your-domain>/           && echo "Root OK"
 
 - **"service unavailable" immediately after build**: nothing is listening on `$PORT` → wrong start command / wrong runtime (Docker CMD or Deno detection)
 - **"npm: command not found" in build**: Nixpacks picked Deno → add `providers=["node"]` and remove root-level Deno configs
+- **"npm ci requires package-lock.json"**: use `npm install` instead of `npm ci` in nixpacks.toml
+- **"package.json not found"**: check working directory in build - may need `workingDir` in nixpacks.toml
 - **HC fails but `/` works**: middleware or basePath blocking `/api/health`
 - **Works in dev, fails in prod**: dev HC disabled; prod HC path/middleware mismatch
+
+## Debugging build issues
+
+If package.json is not found or working directory issues occur, add debug commands to nixpacks.toml:
+
+```toml
+[phases.install]
+cmds = ["ls -la", "pwd", "ls -la /app", "npm install"]
+```
+
+This will show:
+1. Current directory files
+2. Current working directory path
+3. Files in /app directory (if different)
+4. Then run npm install
 
 ## One-liner rescue prompt (for future incidents)
 
@@ -97,7 +114,7 @@ Paste into Claude (or adapt anywhere):
 
 ```
 Our Next.js 15 (App Router) on Railway should run with Nixpacks + next start. 
-Give me: railway.toml, nixpacks.toml (force Node, npm ci/build/start), health route 
+Give me: railway.toml, nixpacks.toml (force Node, npm install/build/start), health route 
 (/src/app/api/health/route.ts, Node runtime), middleware exclude for /api/health, and 
 a 5-step deploy checklist (remove Dockerfile, clear custom start, no fixed PORT, 
 basePath-aware HC). Output just the files and steps.
