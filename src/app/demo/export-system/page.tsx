@@ -37,14 +37,14 @@ import {
   getComponentMetadata,
   getComponentsByCategory,
   HERA_DNA_SMART_CODES
-} from '@/lib/dna'
+} from '@/lib/dna/client'
 
 // Import some example components to show they work
-import { StatCardDNA, BottomSheet, useBottomSheet } from '@/lib/dna'
+import { StatCardDNA, BottomSheet, useBottomSheet } from '@/lib/dna/client'
 
 // Example lazy loading
 const LazyStatCard = lazy(() =>
-  import('@/lib/dna').then(module => ({
+  import('@/lib/dna/client').then(module => ({
     default: module.StatCardDNA
   }))
 )
@@ -365,14 +365,14 @@ export default function ExportSystemDemoPage() {
                         <p className="text-sm font-medium mb-2">Named Import (Recommended)</p>
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-                            {`import { ${selectedComponent} } from '@/lib/dna'`}
+                            {`import { ${selectedComponent} } from '@/lib/dna/client'`}
                           </pre>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="absolute top-1 right-1"
                             onClick={() =>
-                              copyToClipboard(`import { ${selectedComponent} } from '@/lib/dna'`)
+                              copyToClipboard(`import { ${selectedComponent} } from '@/lib/dna/client'`)
                             }
                           >
                             <Copy className="w-3 h-3" />
@@ -384,7 +384,7 @@ export default function ExportSystemDemoPage() {
                         <p className="text-sm font-medium mb-2">With Types</p>
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-                            {`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna'`}
+                            {`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna/client'`}
                           </pre>
                           <Button
                             size="sm"
@@ -392,7 +392,7 @@ export default function ExportSystemDemoPage() {
                             className="absolute top-1 right-1"
                             onClick={() =>
                               copyToClipboard(
-                                `import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna'`
+                                `import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna/client'`
                               )
                             }
                           >
@@ -406,7 +406,7 @@ export default function ExportSystemDemoPage() {
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
                             {`const Lazy${selectedComponent} = lazy(() => 
-  import('@/lib/dna').then(module => ({ 
+  import('@/lib/dna/client').then(module => ({ 
     default: module.${selectedComponent} 
   }))
 )`}
@@ -431,7 +431,7 @@ export default function ExportSystemDemoPage() {
                         <div className="space-y-2">
                           <div className="relative">
                             <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-                              {`import { loadDNAComponent } from '@/lib/dna'
+                              {`import { loadDNAComponent } from '@/lib/dna/client'
 
 const component = await loadDNAComponent('${selectedComponent
                                 .toLowerCase()
@@ -444,7 +444,7 @@ const component = await loadDNAComponent('${selectedComponent
                               className="absolute top-1 right-1"
                               onClick={() =>
                                 copyToClipboard(
-                                  `import { loadDNAComponent } from '@/lib/dna'\n\nconst component = await loadDNAComponent('${selectedComponent
+                                  `import { loadDNAComponent } from '@/lib/dna/client'\n\nconst component = await loadDNAComponent('${selectedComponent
                                     .toLowerCase()
                                     .replace(/([A-Z])/g, '-$1')
                                     .substring(1)}')`

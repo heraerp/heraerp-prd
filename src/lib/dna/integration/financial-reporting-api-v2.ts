@@ -877,3 +877,27 @@ export function useBalanceSheet(
  *   includeRatios: true
  * })
  */
+
+'use client';
+import { useEffect, useState } from 'react';
+
+export function useFinancialSummary(orgId: string) {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<unknown>(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`/api/v2/finance/summary?org=${encodeURIComponent(orgId)}`);
+        const json = await res.json();
+        if (alive) setData(json);
+      } catch (e) { if (alive) setError(e); }
+      finally { if (alive) setLoading(false); }
+    })();
+    return () => { alive = false; };
+  }, [orgId]);
+
+  return { data, loading, error };
+}

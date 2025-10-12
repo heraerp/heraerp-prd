@@ -21,4 +21,6 @@ export const TxnBatchBody = makeSchema<any>()
 export const TxnEmitBody = makeSchema<any>()
 export const TxnSearchQuery = makeSchema<any>()
 
-// Add any other schema symbols here if the build later asks for them.
+// Type exports for body types
+export type RelationshipBatchBodyType = unknown;
+export type DynamicDeleteBody = { keys: { entity_id: string; key: string }[] };

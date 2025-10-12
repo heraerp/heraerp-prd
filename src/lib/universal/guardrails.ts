@@ -44,3 +44,7 @@ export {
   normalizeEntityType,
   validateSmartCodeSegment
 } from './guardrails-core'
+
+export * from './guardrails-core';
+// Provide the symbol your route expects:
+export type GuardrailViolation = { code: string; message: string; path?: string[] };

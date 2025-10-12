@@ -7,7 +7,7 @@
 'use client'
 
 import React from 'react'
-import { Calendar, Building2, DollarSign, Sliders3, Filter } from 'lucide-react'
+import { Calendar, Building2, DollarSign, Sliders as Sliders3, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

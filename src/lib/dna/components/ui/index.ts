@@ -39,10 +39,10 @@ export { StatCardDNA } from './stat-card-dna';
 // Entity card
 export { EntityCardGlass } from './EntityCardGlass';
 
-// HERA branded components
-export { default as HeraButtonDNA } from './hera-button-dna';
-export { default as HeraInputDNA } from './hera-input-dna';
-export { default as HeraGradientBackgroundDNA } from './hera-gradient-background-dna';
+// HERA branded components (corrected exports)
+export { HeraButtonDNA } from './hera-button-dna';
+export { HeraInputDNA } from './hera-input-dna';
+export { HeraGradientBackgroundDNA, HeraBlob } from './hera-gradient-background-dna';
 
-// Assessment dashboard
-export { default as AssessmentDashboardDNA } from './assessment-dashboard-dna';
+// Assessment dashboard (corrected exports)
+export { AssessmentDashboardDNA, AssessmentScoreCard, AssessmentStatusBadge, HERA_ASSESSMENT_COLORS } from './assessment-dashboard-dna';

@@ -482,3 +482,5 @@ export function DnaComplianceBadge({ className = '' }: { className?: string }) {
 }
 
 export default DnaComplianceMonitor
+'use client';
+export { DnaComplianceProvider } from '../hooks/use-dna-compliance';

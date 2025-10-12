@@ -89,6 +89,8 @@ const nextConfig = {
     config.resolve.alias = {
       ...(config.resolve.alias ?? {}),
       '@': path.join(__dirname, 'src'),
+      // prevent bundling optional Jaeger exporter
+      '@opentelemetry/exporter-jaeger': false,
     }
 
     // Production optimizations

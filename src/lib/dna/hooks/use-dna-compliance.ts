@@ -450,3 +450,18 @@ export interface DnaComplianceContextType {
   isCompliant: boolean
   checkCompliance: () => Promise<void>
 }
+
+// ============================================================================
+// DNA COMPLIANCE PROVIDER
+// ============================================================================
+
+'use client';
+import { createContext, useContext, PropsWithChildren } from 'react';
+
+const Ctx = createContext<{ enabled: boolean }>({ enabled: true });
+export function DnaComplianceProvider({ children }: PropsWithChildren) { 
+  return <Ctx.Provider value={{ enabled: true }}>{children}</Ctx.Provider>; 
+}
+export function useDnaComplianceContext() { 
+  return useContext(Ctx); 
+}

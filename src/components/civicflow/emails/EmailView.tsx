@@ -32,7 +32,7 @@ import {
   Eye,
   EyeOff,
   Download,
-  Print
+  Printer as Print
 } from 'lucide-react'
 
 interface EmailViewProps {
