@@ -23,7 +23,7 @@
   /* Elegant Gradient */
   --gradient-elegant: linear-gradient(135deg, #472663, #6B3FA0);
   
-  /* shadcn/ui default theme variables (Infrared & Purple semantic tokens) */
+  /* shadcn/ui theme variables - Updated for Salon Luxe */
   --background: 244 244 249;
   --foreground: 30 30 30;
   --primary: 222 53 76;          /* #DE354C */
@@ -32,12 +32,15 @@
   --secondary-foreground: 255 255 255;
   --card: 0 0% 100%;
   --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
+
+  /* Salon Luxe Dropdown Colors */
+  --popover: 14 14% 14%;         /* #232323 Charcoal */
+  --popover-foreground: 44 44% 88%; /* #F5E6C8 Champagne */
   --muted: 108 92 125;
   --muted-foreground: 240 240 245;
-  --accent: 210 40% 98%;
-  --accent-foreground: 222.2 84% 4.9%;
+  --accent: 43 45% 27%;          /* rgba(212,175,55,0.2) Gold accent */
+  --accent-foreground: 44 44% 88%; /* #F5E6C8 Champagne */
+
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
   --border: 230 230 235;
@@ -51,12 +54,15 @@
   --foreground: 210 40% 98%;
   --card: 222.2 84% 4.9%;
   --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
+
+  /* Salon Luxe Dropdown Colors for Dark Mode */
+  --popover: 14 14% 14%;         /* #232323 Charcoal */
+  --popover-foreground: 44 44% 88%; /* #F5E6C8 Champagne */
   --muted: 217.2 32.6% 17.5%;
   --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 43 45% 27%;          /* Gold accent for focus */
+  --accent-foreground: 44 44% 88%; /* #F5E6C8 Champagne */
+
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 210 40% 98%;
   --border: 217.2 32.6% 17.5%;

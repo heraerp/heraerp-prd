@@ -31,45 +31,56 @@ select:hover {
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
-/* Shadcn UI Select components - Global styling */
-.luxe-select-content,
-.hera-select-content,
+/* Shadcn UI Select components - High specificity overrides for Radix UI */
+
+/* SelectContent - Target by data attribute with very high specificity */
 [data-radix-select-content],
-[role="listbox"] {
+div[data-radix-select-content],
+.hera-select-content,
+.luxe-select-content {
   background-color: #232323 !important;
   border: 1px solid rgba(212, 175, 55, 0.3) !important;
   color: #F5E6C8 !important;
   z-index: 100 !important;
 }
 
-.luxe-select-item,
-.hera-select-item,
+/* SelectItem - Target by data attribute */
 [data-radix-select-item],
-[role="option"] {
+div[data-radix-select-item],
+.hera-select-item,
+.luxe-select-item {
   color: #F5E6C8 !important;
   background-color: transparent !important;
   cursor: pointer !important;
   padding: 8px 12px !important;
 }
 
-.luxe-select-item:hover,
-.hera-select-item:hover,
+/* Hover state for SelectItem */
 [data-radix-select-item]:hover,
-[role="option"]:hover {
+div[data-radix-select-item]:hover,
+.hera-select-item:hover,
+.luxe-select-item:hover {
   background-color: rgba(212, 175, 55, 0.1) !important;
 }
 
-.luxe-select-item[data-highlighted],
-.hera-select-item[data-highlighted],
+/* Highlighted/focused state for SelectItem */
+[data-radix-select-item]:focus,
 [data-radix-select-item][data-highlighted],
-[role="option"][data-highlighted] {
+div[data-radix-select-item]:focus,
+div[data-radix-select-item][data-highlighted],
+.hera-select-item:focus,
+.hera-select-item[data-highlighted],
+.luxe-select-item:focus,
+.luxe-select-item[data-highlighted] {
   background-color: rgba(212, 175, 55, 0.2) !important;
   color: #F5E6C8 !important;
 }
 
-.luxe-select-item[data-state="checked"],
+/* Checked/selected state for SelectItem */
+[data-radix-select-item][data-state="checked"],
+div[data-radix-select-item][data-state="checked"],
 .hera-select-item[data-state="checked"],
-[data-radix-select-item][data-state="checked"] {
+.luxe-select-item[data-state="checked"] {
   background-color: rgba(212, 175, 55, 0.15) !important;
   color: #D4AF37 !important;
 }
