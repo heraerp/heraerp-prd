@@ -406,8 +406,12 @@ const CardComponent = ({
                 e.stopPropagation()
 
                 try {
-                  // 🎯 ENTERPRISE: Build comprehensive appointment data for POS
-                  // Include ALL available data from the card
+                  // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as appointments page)
+                  // This ensures POS can access service data directly without nested metadata drilling
+                  const serviceIds = card.metadata?.service_ids || []
+                  const serviceNames = card.metadata?.service_names || []
+                  const servicePrices = card.metadata?.service_prices || []
+
                   const appointmentData = {
                     // Core appointment identifiers
                     id: card.id,
@@ -422,9 +426,10 @@ const CardComponent = ({
                     stylist_name: card.stylist_name,
                     stylist_id: card.stylist_id,
 
-                    // Service information
-                    service_name: card.service_name,
-                    service_id: card.service_id,
+                    // ✅ SERVICE DATA AT TOP LEVEL (same pattern as customer_name/stylist_name)
+                    service_ids: serviceIds,
+                    service_names: serviceNames,
+                    service_prices: servicePrices,
 
                     // Time and pricing
                     start: card.start,
@@ -437,7 +442,7 @@ const CardComponent = ({
                     status: card.status,
                     flags: card.flags,
 
-                    // Additional metadata
+                    // Keep original metadata for reference
                     metadata: card.metadata,
 
                     // Mark as loaded from kanban
@@ -448,7 +453,9 @@ const CardComponent = ({
                   console.log('[Card] 💾 Storing appointment data for POS:', {
                     id: appointmentData.id,
                     customer: appointmentData.customer_name,
-                    service: appointmentData.service_name,
+                    service_ids: appointmentData.service_ids,
+                    service_names: appointmentData.service_names,
+                    service_prices: appointmentData.service_prices,
                     price: appointmentData.price
                   })
 

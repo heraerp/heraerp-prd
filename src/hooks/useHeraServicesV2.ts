@@ -64,7 +64,10 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
-      include_relationships: true,
+      // ⚡ PERFORMANCE: Only fetch relationships when filtering by branch or category
+      // This significantly improves initial page load since relationships require expensive joins
+      // Categories are needed for display, but we can fetch them separately if needed
+      include_relationships: !!(options?.filters?.branch_id || options?.filters?.category_id),
       limit: 100,
       ...options?.filters
     },

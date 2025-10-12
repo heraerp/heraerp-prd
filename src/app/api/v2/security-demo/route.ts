@@ -156,10 +156,10 @@ async function handlePostSecurityDemo(req: NextRequest, context: SecurityContext
       .insert({
         transaction_type: 'demo_creation',
         organization_id: context.orgId,
-        transaction_code: `DEMO-${Date.now()}`,
+        transaction_number: `DEMO-${Date.now()}`,
         smart_code: 'HERA.DEMO.TXN.CREATE.V1',
         total_amount: 0,
-        from_entity_id: entity.id,
+        source_entity_id: entity.id,
         created_by: context.userId,
         metadata: {
           created_via: 'security_demo_api',
@@ -190,7 +190,7 @@ async function handlePostSecurityDemo(req: NextRequest, context: SecurityContext
           transaction: transaction
             ? {
                 id: transaction.id,
-                transaction_code: transaction.transaction_code,
+                transaction_number: transaction.transaction_number,
                 smart_code: transaction.smart_code
               }
             : null
@@ -274,7 +274,7 @@ async function handleDeleteSecurityDemo(req: NextRequest, context: SecurityConte
       .insert({
         transaction_type: 'demo_deletion',
         organization_id: context.orgId,
-        transaction_code: `DELETE-${Date.now()}`,
+        transaction_number: `DELETE-${Date.now()}`,
         smart_code: 'HERA.DEMO.TXN.DELETE.V1',
         total_amount: 0,
         created_by: context.userId,
@@ -301,7 +301,7 @@ async function handleDeleteSecurityDemo(req: NextRequest, context: SecurityConte
       audit_transaction: auditTransaction
         ? {
             id: auditTransaction.id,
-            transaction_code: auditTransaction.transaction_code
+            transaction_number: auditTransaction.transaction_number
           }
         : null,
       context: {

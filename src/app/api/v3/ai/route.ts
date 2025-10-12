@@ -10,7 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { assertV2, v2Body } from '@/lib/client/fetchV2'
-import { callRPC } from '@/lib/supabase/rpc-client'
+import { callRPC } from '@/lib/db/rpc-client'
 import { 
   type AIInsightGenerationRequest,
   type AIInsightQuery,

@@ -65,13 +65,37 @@ export const getSupabase = () => {
       }
     })
 
-    // Add error handling for auth errors
+    // Add comprehensive error handling for auth errors
     client.auth.onAuthStateChange((event, session) => {
+      console.log('🔐 Auth state change:', event, session ? 'Session valid' : 'No session')
+
+      // Handle failed token refresh
       if (event === 'TOKEN_REFRESHED' && !session) {
         console.warn('🚨 Token refresh failed, clearing invalid tokens')
         clearInvalidTokens()
       }
+
+      // Handle sign out
+      if (event === 'SIGNED_OUT') {
+        clearInvalidTokens()
+      }
     })
+
+    // Intercept auth errors to provide better messaging
+    const originalRefreshSession = client.auth.refreshSession.bind(client.auth)
+    client.auth.refreshSession = async (...args) => {
+      try {
+        return await originalRefreshSession(...args)
+      } catch (error: any) {
+        if (error?.message?.includes('Invalid Refresh Token') || error?.message?.includes('Refresh Token Not Found')) {
+          console.warn('🧹 Auto-clearing invalid refresh token')
+          clearInvalidTokens()
+          // Return a failed response instead of throwing
+          return { data: { session: null, user: null }, error }
+        }
+        throw error
+      }
+    }
 
     globalForSupabase.supabaseInstance = client
 

@@ -36,7 +36,9 @@ import {
   LayoutList,
   X,
   RotateCcw,
-  CreditCard
+  CreditCard,
+  Shield,
+  Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -50,7 +52,6 @@ import {
   DialogTitle,
   DialogFooter
 } from '@/components/ui/luxe-dialog'
-import { Loader2 } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -109,6 +110,7 @@ function AppointmentsContent() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [dateFilter, setDateFilter] = useState<string>('all')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
+  const [isNavigating, setIsNavigating] = useState(false)
 
   // ✨ ENTERPRISE: Modal state
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
@@ -143,7 +145,13 @@ function AppointmentsContent() {
 
   // ✨ ENTERPRISE: Load data for modal
   const { customers } = useHeraCustomers({ organizationId: organizationId || '' })
-  const { services } = useHeraServices({ organizationId: organizationId || '' })
+  const { services } = useHeraServices({
+    organizationId: organizationId || '',
+    filters: {
+      include_dynamic: true,
+      include_relationships: true
+    }
+  })
   const { staff } = useHeraStaff({ organizationId: organizationId || '' })
 
   // 🕐 ENTERPRISE: Generate time slots for reschedule (9 AM - 9 PM, 30-min intervals)
@@ -635,71 +643,142 @@ function AppointmentsContent() {
               </button>
             </div>
             <Button
-              onClick={() => router.push('/salon/appointments/calendar')}
+              onClick={() => {
+                // 🎯 ENTERPRISE: Show immediate feedback
+                setIsNavigating(true)
+                showLoading('Loading Calendar View...')
+                router.push('/salon/appointments/calendar')
+              }}
+              disabled={isNavigating}
               className="transition-all duration-300"
               style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.emerald}DD 100%)`,
+                background: isNavigating
+                  ? `linear-gradient(135deg, ${LUXE_COLORS.emerald}80 0%, ${LUXE_COLORS.emerald}60 100%)`
+                  : `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.emerald}DD 100%)`,
                 color: LUXE_COLORS.champagne,
                 border: 'none',
                 boxShadow: '0 4px 12px rgba(15,111,92,0.2)',
-                transitionTimingFunction: LUXE_COLORS.spring
+                transitionTimingFunction: LUXE_COLORS.spring,
+                opacity: isNavigating ? 0.6 : 1,
+                cursor: isNavigating ? 'not-allowed' : 'pointer'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(15,111,92,0.3)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(15,111,92,0.3)'
+                }
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,111,92,0.2)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,111,92,0.2)'
+                }
               }}
             >
-              <Calendar className="w-4 h-4 mr-2" />
-              Calendar View
+              {isNavigating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Calendar View
+                </>
+              )}
             </Button>
             <Button
-              onClick={() => router.push('/salon/kanban')}
+              onClick={() => {
+                // 🎯 ENTERPRISE: Show immediate feedback
+                setIsNavigating(true)
+                showLoading('Loading Kanban Board...')
+
+                // Navigate (this might take time)
+                router.push('/salon/kanban')
+              }}
+              disabled={isNavigating}
               className="transition-all duration-300"
               style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.bronze} 0%, ${LUXE_COLORS.bronze}DD 100%)`,
+                background: isNavigating
+                  ? `linear-gradient(135deg, ${LUXE_COLORS.bronze}80 0%, ${LUXE_COLORS.bronze}60 100%)`
+                  : `linear-gradient(135deg, ${LUXE_COLORS.bronze} 0%, ${LUXE_COLORS.bronze}DD 100%)`,
                 color: LUXE_COLORS.champagne,
                 border: 'none',
                 boxShadow: '0 4px 12px rgba(140,120,83,0.2)',
-                transitionTimingFunction: LUXE_COLORS.spring
+                transitionTimingFunction: LUXE_COLORS.spring,
+                opacity: isNavigating ? 0.6 : 1,
+                cursor: isNavigating ? 'not-allowed' : 'pointer'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(140,120,83,0.3)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(140,120,83,0.3)'
+                }
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(140,120,83,0.2)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(140,120,83,0.2)'
+                }
               }}
             >
-              <LayoutGrid className="w-4 h-4 mr-2" />
-              Kanban Board
+              {isNavigating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <LayoutGrid className="w-4 h-4 mr-2" />
+                  Kanban Board
+                </>
+              )}
             </Button>
             <Button
-              onClick={() => router.push('/salon/appointments/new')}
+              onClick={() => {
+                // 🎯 ENTERPRISE: Show immediate feedback
+                setIsNavigating(true)
+                showLoading('Opening appointment form...')
+                router.push('/salon/appointments/new')
+              }}
+              disabled={isNavigating}
               className="transition-all duration-300"
               style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                background: isNavigating
+                  ? `linear-gradient(135deg, ${LUXE_COLORS.gold}80 0%, ${LUXE_COLORS.goldDark}80 100%)`
+                  : `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
                 color: LUXE_COLORS.black,
                 border: 'none',
                 fontWeight: '600',
                 boxShadow: '0 4px 12px rgba(212,175,55,0.3)',
-                transitionTimingFunction: LUXE_COLORS.spring
+                transitionTimingFunction: LUXE_COLORS.spring,
+                opacity: isNavigating ? 0.6 : 1,
+                cursor: isNavigating ? 'not-allowed' : 'pointer'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(212,175,55,0.4)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(212,175,55,0.4)'
+                }
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(212,175,55,0.3)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(212,175,55,0.3)'
+                }
               }}
             >
-              <Plus className="w-4 h-4 mr-2" />
-              New Appointment
+              {isNavigating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Appointment
+                </>
+              )}
             </Button>
           </div>
         </div>
@@ -1295,34 +1374,54 @@ function AppointmentsContent() {
                               onClick={e => {
                                 e.stopPropagation()
 
-                                // 🎯 ENTERPRISE: Load service details from appointment metadata
+                                // 🎯 ENTERPRISE PATTERN: Enrich service data from already-loaded services (in-memory, no DB call)
                                 const serviceIds = appointment.metadata?.service_ids || []
+
+                                // Services are already loaded in page context - just do in-memory lookup
                                 const serviceNames: string[] = []
                                 const servicePrices: number[] = []
 
-                                // Map service IDs to names and prices
-                                if (Array.isArray(serviceIds) && serviceIds.length > 0 && services) {
-                                  serviceIds.forEach((serviceId: string) => {
-                                    const service = services.find(s => s.id === serviceId)
-                                    if (service) {
-                                      serviceNames.push(service.entity_name || service.name || 'Unknown Service')
-                                      servicePrices.push(service.price || 0)
-                                    } else {
-                                      console.warn(`[Appointments] Service not found: ${serviceId}`)
-                                      serviceNames.push('Unknown Service')
-                                      servicePrices.push(0)
-                                    }
-                                  })
-                                }
+                                serviceIds.forEach((serviceId: string, index: number) => {
+                                  const service = services?.find((s: any) => s.id === serviceId)
+                                  if (service) {
+                                    serviceNames.push(service.entity_name || service.name || 'Unknown Service')
 
-                                console.log('[Appointments] 🎨 Loaded service details:', {
+                                    // 🎯 ENTERPRISE: dynamic_fields is an ARRAY of field objects
+                                    // Find the field with field_name='price_market' and get field_value_number
+                                    let price = 0
+                                    if (Array.isArray(service.dynamic_fields)) {
+                                      const priceField = service.dynamic_fields.find((f: any) => f.field_name === 'price_market')
+                                      price = priceField?.field_value_number || 0
+                                    } else {
+                                      // Fallback for nested object structure (old format)
+                                      price = service.dynamic_fields?.price_market?.value || service.price || 0
+                                    }
+
+                                    servicePrices.push(price)
+
+                                    // Debug first service
+                                    if (index === 0) {
+                                      console.log('[Appointments] 💰 Extracted price:', {
+                                        serviceName: service.entity_name,
+                                        price,
+                                        dynamic_fields_type: Array.isArray(service.dynamic_fields) ? 'array' : 'object'
+                                      })
+                                    }
+                                  } else {
+                                    serviceNames.push('Unknown Service')
+                                    servicePrices.push(0)
+                                  }
+                                })
+
+                                console.log('[Appointments] 📦 Enriched service data from in-memory services:', {
                                   serviceIds,
                                   serviceNames,
                                   servicePrices,
-                                  totalServices: serviceIds.length
+                                  servicesLoaded: services?.length || 0
                                 })
 
-                                // Build comprehensive appointment data for POS
+                                // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as customer_name/stylist_name)
+                                // This ensures POS can access service data directly without nested metadata drilling
                                 const appointmentData = {
                                   id: appointment.id,
                                   organization_id: organizationId,
@@ -1331,6 +1430,10 @@ function AppointmentsContent() {
                                   customer_id: appointment.customer_id,
                                   stylist_name: appointment.stylist_name,
                                   stylist_id: appointment.stylist_id,
+                                  // ✅ SERVICE DATA AT TOP LEVEL (same pattern as customer_name/stylist_name)
+                                  service_ids: serviceIds,
+                                  service_names: serviceNames,
+                                  service_prices: servicePrices,
                                   start: appointment.start_time,
                                   end: appointment.end_time,
                                   date: format(new Date(appointment.start_time), 'yyyy-MM-dd'),
@@ -1341,12 +1444,7 @@ function AppointmentsContent() {
                                     vip: appointment.metadata?.vip || false,
                                     new: appointment.metadata?.new_customer || false
                                   },
-                                  metadata: {
-                                    ...appointment.metadata,
-                                    service_ids: serviceIds,
-                                    service_names: serviceNames,
-                                    service_prices: servicePrices
-                                  },
+                                  metadata: appointment.metadata, // Keep original metadata for reference
                                   _source: 'appointments',
                                   _timestamp: new Date().toISOString()
                                 }
@@ -1362,25 +1460,25 @@ function AppointmentsContent() {
                               disabled={isUpdating}
                               className="transition-all duration-300 font-medium"
                               style={{
-                                background: 'linear-gradient(135deg, rgba(15,111,92,0.25) 0%, rgba(15,111,92,0.15) 100%)',
-                                color: LUXE_COLORS.emerald,
-                                border: `1px solid ${LUXE_COLORS.emerald}40`,
+                                background: 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)',
+                                color: '#A855F7',
+                                border: '1px solid rgba(147,51,234,0.5)',
                                 transitionTimingFunction: LUXE_COLORS.spring,
                                 fontSize: '0.75rem',
                                 padding: '0.5rem 1rem',
-                                boxShadow: '0 2px 8px rgba(15,111,92,0.1)'
+                                boxShadow: '0 2px 12px rgba(147,51,234,0.2)'
                               }}
                               onMouseEnter={e => {
-                                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(15,111,92,0.35) 0%, rgba(15,111,92,0.25) 100%)'
-                                e.currentTarget.style.borderColor = `${LUXE_COLORS.emerald}70`
+                                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.5) 0%, rgba(192,132,252,0.35) 100%)'
+                                e.currentTarget.style.borderColor = 'rgba(147,51,234,0.8)'
                                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-                                e.currentTarget.style.boxShadow = '0 6px 16px rgba(15,111,92,0.25)'
+                                e.currentTarget.style.boxShadow = '0 6px 20px rgba(147,51,234,0.35)'
                               }}
                               onMouseLeave={e => {
-                                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(15,111,92,0.25) 0%, rgba(15,111,92,0.15) 100%)'
-                                e.currentTarget.style.borderColor = `${LUXE_COLORS.emerald}40`
+                                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)'
+                                e.currentTarget.style.borderColor = 'rgba(147,51,234,0.5)'
                                 e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(15,111,92,0.1)'
+                                e.currentTarget.style.boxShadow = '0 2px 12px rgba(147,51,234,0.2)'
                               }}
                             >
                               {actionLabel}
@@ -1433,34 +1531,54 @@ function AppointmentsContent() {
                           onClick={e => {
                             e.stopPropagation()
 
-                            // 🎯 ENTERPRISE: Load service details from appointment metadata
+                            // 🎯 ENTERPRISE PATTERN: Enrich service data from already-loaded services (in-memory, no DB call)
                             const serviceIds = appointment.metadata?.service_ids || []
+
+                            // Services are already loaded in page context - just do in-memory lookup
                             const serviceNames: string[] = []
                             const servicePrices: number[] = []
 
-                            // Map service IDs to names and prices
-                            if (Array.isArray(serviceIds) && serviceIds.length > 0 && services) {
-                              serviceIds.forEach((serviceId: string) => {
-                                const service = services.find(s => s.id === serviceId)
-                                if (service) {
-                                  serviceNames.push(service.entity_name || service.name || 'Unknown Service')
-                                  servicePrices.push(service.price || 0)
-                                } else {
-                                  console.warn(`[Appointments] Service not found: ${serviceId}`)
-                                  serviceNames.push('Unknown Service')
-                                  servicePrices.push(0)
-                                }
-                              })
-                            }
+                            serviceIds.forEach((serviceId: string, index: number) => {
+                              const service = services?.find((s: any) => s.id === serviceId)
+                              if (service) {
+                                serviceNames.push(service.entity_name || service.name || 'Unknown Service')
 
-                            console.log('[Appointments] 🎨 Loaded service details for Pay Now:', {
+                                // 🎯 ENTERPRISE: dynamic_fields is an ARRAY of field objects
+                                // Find the field with field_name='price_market' and get field_value_number
+                                let price = 0
+                                if (Array.isArray(service.dynamic_fields)) {
+                                  const priceField = service.dynamic_fields.find((f: any) => f.field_name === 'price_market')
+                                  price = priceField?.field_value_number || 0
+                                } else {
+                                  // Fallback for nested object structure (old format)
+                                  price = service.dynamic_fields?.price_market?.value || service.price || 0
+                                }
+
+                                servicePrices.push(price)
+
+                                // Debug first service
+                                if (index === 0) {
+                                  console.log('[Appointments PAY NOW] 💰 Extracted price:', {
+                                    serviceName: service.entity_name,
+                                    price,
+                                    dynamic_fields_type: Array.isArray(service.dynamic_fields) ? 'array' : 'object'
+                                  })
+                                }
+                              } else {
+                                serviceNames.push('Unknown Service')
+                                servicePrices.push(0)
+                              }
+                            })
+
+                            console.log('[Appointments PAY NOW] 📦 Enriched service data from in-memory services:', {
                               serviceIds,
                               serviceNames,
                               servicePrices,
-                              totalServices: serviceIds.length
+                              servicesLoaded: services?.length || 0
                             })
 
-                            // 🎯 ENTERPRISE: Build comprehensive appointment data for POS (matching kanban implementation)
+                            // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as customer_name/stylist_name)
+                            // This ensures POS can access service data directly without nested metadata drilling
                             const appointmentData = {
                               id: appointment.id,
                               organization_id: organizationId,
@@ -1469,6 +1587,10 @@ function AppointmentsContent() {
                               customer_id: appointment.customer_id,
                               stylist_name: appointment.stylist_name,
                               stylist_id: appointment.stylist_id,
+                              // ✅ SERVICE DATA AT TOP LEVEL (same pattern as customer_name/stylist_name)
+                              service_ids: serviceIds,
+                              service_names: serviceNames,
+                              service_prices: servicePrices,
                               start: appointment.start_time,
                               end: appointment.end_time,
                               date: format(new Date(appointment.start_time), 'yyyy-MM-dd'),
@@ -1479,12 +1601,7 @@ function AppointmentsContent() {
                                 vip: appointment.metadata?.vip || false,
                                 new: appointment.metadata?.new_customer || false
                               },
-                              metadata: {
-                                ...appointment.metadata,
-                                service_ids: serviceIds,
-                                service_names: serviceNames,
-                                service_prices: servicePrices
-                              },
+                              metadata: appointment.metadata, // Keep original metadata for reference
                               _source: 'appointments',
                               _timestamp: new Date().toISOString()
                             }
@@ -1499,27 +1616,27 @@ function AppointmentsContent() {
                           }}
                           className="transition-all duration-300 font-medium"
                           style={{
-                            background: 'linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.15) 100%)',
-                            color: '#10B981',
-                            border: '1px solid rgba(16,185,129,0.4)',
+                            background: 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)',
+                            color: '#A855F7',
+                            border: '1px solid rgba(147,51,234,0.5)',
                             borderRadius: '0.5rem',
                             fontSize: '0.75rem',
                             padding: '0.5rem 1rem',
-                            boxShadow: '0 2px 8px rgba(16,185,129,0.1)',
+                            boxShadow: '0 2px 12px rgba(147,51,234,0.2)',
                             cursor: 'pointer',
                             pointerEvents: 'auto'
                           }}
                           onMouseEnter={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(16,185,129,0.25) 100%)'
-                            e.currentTarget.style.borderColor = 'rgba(16,185,129,0.7)'
+                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.5) 0%, rgba(192,132,252,0.35) 100%)'
+                            e.currentTarget.style.borderColor = 'rgba(147,51,234,0.8)'
                             e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-                            e.currentTarget.style.boxShadow = '0 6px 16px rgba(16,185,129,0.25)'
+                            e.currentTarget.style.boxShadow = '0 6px 20px rgba(147,51,234,0.35)'
                           }}
                           onMouseLeave={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.15) 100%)'
-                            e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)'
+                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)'
+                            e.currentTarget.style.borderColor = 'rgba(147,51,234,0.5)'
                             e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(16,185,129,0.1)'
+                            e.currentTarget.style.boxShadow = '0 2px 12px rgba(147,51,234,0.2)'
                           }}
                         >
                           <CreditCard className="w-4 h-4 mr-2 inline" />

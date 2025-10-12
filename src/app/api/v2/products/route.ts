@@ -571,7 +571,7 @@ export async function DELETE(request: NextRequest) {
         transaction_date: new Date().toISOString(),
         reference_number: `PROD-ARCHIVE-${product.product_code}`,
         total_amount: 0.00,
-        from_entity_id: context.userEntityId,
+        source_entity_id: context.userEntityId,
         metadata: {
           operation_type: 'ARCHIVE',
           product_id: productId,

@@ -1,18 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
 import {
   Loader2,
   Eye,
@@ -26,6 +19,7 @@ import {
   Sparkles
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
+import { clearInvalidTokens } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { DemoUserSelector } from './DemoUserSelector'
 
@@ -143,6 +137,28 @@ function getRolePermissions(role: string): string[] {
   return permissions[role] || []
 }
 
+// Helper function to determine role from email
+function determineRoleFromEmail(email: string): string {
+  const emailLower = email.toLowerCase()
+
+  if (emailLower.includes('michele') || emailLower.includes('owner')) {
+    return 'owner'
+  } else if (emailLower.includes('manager')) {
+    return 'manager'
+  } else if (emailLower.includes('receptionist')) {
+    return 'receptionist'
+  } else if (emailLower.includes('stylist')) {
+    return 'stylist'
+  } else if (emailLower.includes('accountant')) {
+    return 'accountant'
+  } else if (emailLower.includes('admin')) {
+    return 'admin'
+  }
+
+  // Default to receptionist for unrecognized emails
+  return 'receptionist'
+}
+
 export function HairTalkzAuthSimple() {
   const router = useRouter()
   const { toast } = useToast()
@@ -151,54 +167,59 @@ export function HairTalkzAuthSimple() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const [selectedRole, setSelectedRole] = useState('')
   const [showDemoUsers, setShowDemoUsers] = useState(false)
+
+  // Clear any invalid tokens on mount to prevent refresh errors
+  useEffect(() => {
+    const handleAuthError = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+
+        // If there's an error or no valid session, clear storage
+        if (error || !session) {
+          await supabase.auth.signOut()
+          clearInvalidTokens()
+          console.log('🧹 Cleared invalid auth tokens on mount')
+        }
+      } catch (error) {
+        console.error('Error checking session:', error)
+        // Clear tokens on any error
+        clearInvalidTokens()
+      }
+    }
+
+    handleAuthError()
+  }, [])
 
   const handleDemoUserSelect = async (demoEmail: string, demoPassword: string) => {
     setEmail(demoEmail)
     setPassword(demoPassword)
 
-    // Determine role from email
-    const roleFromEmail = demoEmail.includes('michele')
-      ? 'owner'
-      : demoEmail.includes('manager')
-        ? 'manager'
-        : demoEmail.includes('receptionist')
-          ? 'receptionist'
-          : demoEmail.includes('stylist')
-            ? 'stylist'
-            : demoEmail.includes('accountant')
-              ? 'accountant'
-              : demoEmail.includes('admin')
-                ? 'admin'
-                : 'owner'
-
-    setSelectedRole(roleFromEmail)
-
-    // Auto-login
-    await handleLogin(null, demoEmail, demoPassword, roleFromEmail)
+    // Auto-login with role determined from email
+    await handleLogin(null, demoEmail, demoPassword)
   }
 
   const handleLogin = async (
     e: React.FormEvent | null,
     loginEmail?: string,
-    loginPassword?: string,
-    loginRole?: string
+    loginPassword?: string
   ) => {
     if (e) e.preventDefault()
 
     const currentEmail = loginEmail || email
     const currentPassword = loginPassword || password
-    const currentRole = loginRole || selectedRole
 
-    if (!currentEmail || !currentPassword || !currentRole) {
+    if (!currentEmail || !currentPassword) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in all fields and select your role',
+        description: 'Please fill in email and password',
         variant: 'destructive'
       })
       return
     }
+
+    // Automatically determine role from email
+    const currentRole = determineRoleFromEmail(currentEmail)
 
     setLoading(true)
 
@@ -364,57 +385,12 @@ export function HairTalkzAuthSimple() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-          </div>
-
-          {/* Role Selection */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="role"
-              className="text-sm font-light tracking-wider uppercase"
-              style={{ color: COLORS.bronze }}
+            <p
+              className="text-xs font-light italic mt-1"
+              style={{ color: COLORS.bronze + '80' }}
             >
-              Access Level
-            </Label>
-            <Select value={selectedRole} onValueChange={setSelectedRole} disabled={loading}>
-              <SelectTrigger
-                className="h-12 font-light"
-                style={{
-                  backgroundColor: COLORS.charcoal,
-                  border: `1px solid ${COLORS.bronze}50`,
-                  color: COLORS.champagne
-                }}
-              >
-                <SelectValue placeholder="Select your role" />
-              </SelectTrigger>
-              <SelectContent
-                className="hera-select-content hairtalkz-select-content"
-                style={{
-                  backgroundColor: COLORS.charcoalLight,
-                  border: `1px solid ${COLORS.bronze}50`
-                }}
-              >
-                {USER_ROLES.map(role => (
-                  <SelectItem
-                    key={role.value}
-                    value={role.value}
-                    className="cursor-pointer hera-select-item"
-                    style={{
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <role.icon className="h-4 w-4" style={{ color: COLORS.gold }} />
-                      <div>
-                        <div style={{ color: COLORS.champagne }}>{role.label}</div>
-                        <div className="text-xs" style={{ color: COLORS.bronze }}>
-                          {role.description}
-                        </div>
-                      </div>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              Your access level is automatically determined from your email
+            </p>
           </div>
 
           {/* Remember Me */}

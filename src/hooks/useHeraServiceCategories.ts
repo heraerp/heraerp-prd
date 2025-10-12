@@ -220,11 +220,10 @@ export function useHeraServiceCategories({
 
     // 3. Save dynamic fields
     const dynamicFields = [
-      { field_name: 'color', field_type: 'text', field_value: categoryData.color },
       {
         field_name: 'description',
         field_type: 'text',
-        field_value: categoryData.description || ''
+        field_value_text: categoryData.description || ''
       },
       { field_name: 'service_count', field_type: 'number', field_value_number: 0 }
     ]
@@ -269,8 +268,7 @@ export function useHeraServiceCategories({
 
     // 2. Update dynamic fields
     const dynamicFields = [
-      { field_name: 'color', field_type: 'text', field_value: categoryData.color },
-      { field_name: 'description', field_type: 'text', field_value: categoryData.description || '' }
+      { field_name: 'description', field_type: 'text', field_value_text: categoryData.description || '' }
     ]
 
     await setDynamicDataBatch('', {

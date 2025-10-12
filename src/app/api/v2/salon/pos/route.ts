@@ -40,7 +40,7 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
           .select(
             `
             id,
-            transaction_code,
+            transaction_number,
             total_amount,
             metadata,
             created_at,
@@ -121,7 +121,7 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
           .select(
             `
             id,
-            transaction_code,
+            transaction_number,
             total_amount,
             metadata,
             created_at,
@@ -173,7 +173,7 @@ async function handleGetSalonPOS(req: NextRequest, context: SecurityContext) {
           .select(
             `
             id,
-            transaction_code,
+            transaction_number,
             transaction_type,
             total_amount,
             metadata,
@@ -274,7 +274,7 @@ async function handlePostSalonPOS(req: NextRequest, context: SecurityContext) {
           .insert({
             organization_id: context.orgId,
             transaction_type: 'pos_cart',
-            transaction_code: cartCode,
+            transaction_number: cartCode,
             smart_code: 'HERA.SALON.POS.CART.ACTIVE.V1',
             total_amount: 0,
             created_by: context.userId,
@@ -402,7 +402,7 @@ async function handlePostSalonPOS(req: NextRequest, context: SecurityContext) {
           .insert({
             organization_id: context.orgId,
             transaction_type: 'pos_sale',
-            transaction_code: saleCode,
+            transaction_number: saleCode,
             smart_code: 'HERA.SALON.POS.SALE.COMPLETED.V1',
             total_amount: cart.total_amount,
             created_by: context.userId,

@@ -6,14 +6,76 @@
   opacity: 0.7;
 }
 
-/* Select dropdown styling */
-.luxe-select-content {
-  background-color: #232323;
-  border: 1px solid rgba(212, 175, 55, 0.3);
+/* Select dropdown styling - Global overrides for all salon pages */
+select {
+  background-color: #232323 !important;
+  color: #F5E6C8 !important;
+  border-color: #8C7853 !important;
 }
 
-.luxe-select-item:hover {
-  background-color: rgba(212, 175, 55, 0.1);
+select option {
+  background-color: #232323 !important;
+  color: #F5E6C8 !important;
+  padding: 8px !important;
+}
+
+select:focus {
+  ring-color: #D4AF37 !important;
+  border-color: #D4AF37 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+}
+
+select:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Shadcn UI Select components */
+.luxe-select-content,
+[data-radix-select-content],
+[role="listbox"] {
+  background-color: #232323 !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  color: #F5E6C8 !important;
+}
+
+.luxe-select-item,
+[data-radix-select-item],
+[role="option"] {
+  color: #F5E6C8 !important;
+}
+
+.luxe-select-item:hover,
+[data-radix-select-item]:hover,
+[role="option"]:hover {
+  background-color: rgba(212, 175, 55, 0.1) !important;
+}
+
+.luxe-select-item[data-highlighted],
+[data-radix-select-item][data-highlighted],
+[role="option"][data-highlighted] {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Select trigger (button that opens dropdown) */
+[data-radix-select-trigger],
+.luxe-select-trigger {
+  background-color: #232323 !important;
+  color: #F5E6C8 !important;
+  border-color: #8C7853 !important;
+}
+
+[data-radix-select-trigger]:focus,
+.luxe-select-trigger:focus {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+}
+
+[data-radix-select-trigger]:hover,
+.luxe-select-trigger:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
 /* Scrollbar styling for luxe theme */
@@ -33,6 +95,46 @@
 
 .luxe-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(212, 175, 55, 0.5);
+}
+
+/* Input and textarea styling - Global overrides */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea {
+  background-color: #232323 !important;
+  color: #F5E6C8 !important;
+  border-color: #8C7853 !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+  ring-color: #D4AF37 !important;
+  border-color: #D4AF37 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+input[type="search"]:hover,
+input[type="tel"]:hover,
+input[type="url"]:hover,
+textarea:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
 /* Focus styles */
@@ -90,4 +192,44 @@
 /* Ensure dialog content has proper overflow */
 .luxe-modal .overflow-hidden {
   overflow: visible !important;
+}
+
+/* Global button enhancements for salon pages */
+button:not(.unstyled) {
+  transition: all 0.3s ease !important;
+}
+
+button:not(.unstyled):hover {
+  transform: scale(1.02) !important;
+}
+
+/* Primary gold buttons */
+.primary-button,
+button[type="submit"]:not([variant="outline"]) {
+  background: linear-gradient(90deg, #D4AF37 0%, #B8941F 100%) !important;
+  color: #0F0F0F !important;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4) !important;
+  transition: all 0.3s ease !important;
+}
+
+.primary-button:hover,
+button[type="submit"]:not([variant="outline"]):hover {
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6) !important;
+  transform: scale(1.05) !important;
+}
+
+/* Outline buttons */
+.outline-button,
+button[variant="outline"] {
+  background-color: transparent !important;
+  border-color: #8C7853 !important;
+  color: #F5E6C8 !important;
+  transition: all 0.3s ease !important;
+}
+
+.outline-button:hover,
+button[variant="outline"]:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3) !important;
+  transform: scale(1.05) !important;
 }

@@ -10,6 +10,9 @@ import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { NavigationProvider } from './navigation-provider'
 import { PrefetchLinks } from './prefetch-links'
 
+// Import global salon luxe theme
+import '@/styles/salon-luxe.css'
+
 // Create a client outside component to prevent recreation on every render
 // Optimized for parallel loading and smart caching
 const queryClient = new QueryClient({

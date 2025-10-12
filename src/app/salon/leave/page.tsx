@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -27,32 +27,81 @@ import { LeaveCalendar } from '@/components/salon/leave/LeaveCalendar'
 import { AnnualLeaveReport } from '@/components/salon/leave/AnnualLeaveReport'
 import { PolicyModal } from '@/components/salon/leave/PolicyModal'
 
-// Design tokens (reuse from dashboard)
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
+
+// Design tokens (map to SALON_LUXE_COLORS for consistency)
 const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
+  black: SALON_LUXE_COLORS.charcoal.dark,
+  charcoal: SALON_LUXE_COLORS.charcoal.base,
+  gold: SALON_LUXE_COLORS.gold.base,
+  goldDark: SALON_LUXE_COLORS.gold.dark,
+  champagne: SALON_LUXE_COLORS.champagne.base,
   espresso: '#3E2723',
   bronze: '#8C7853',
-  emerald: '#0F6F5C',
-  plum: '#B794F4',
-  rose: '#E8B4B8',
-  lightText: '#E0E0E0'
+  emerald: SALON_LUXE_COLORS.emerald.base,
+  plum: SALON_LUXE_COLORS.plum.base,
+  rose: SALON_LUXE_COLORS.rose.base,
+  lightText: SALON_LUXE_COLORS.text.primary
 }
 
 const SoftCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
   className = ''
-}) => (
-  <div
-    className={`p-4 md:p-6 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] ${className}`}
-    style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.black}` }}
-  >
-    {children}
-  </div>
-)
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const rotateX = ((y - centerY) / centerY) * -3
+    const rotateY = ((x - centerX) / centerX) * 3
+    cardRef.current.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.005)`
+  }
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return
+    cardRef.current.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)'
+  }
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`p-4 md:p-6 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] group relative overflow-hidden ${className}`}
+      style={{
+        backgroundColor: COLORS.charcoal,
+        border: `1px solid ${COLORS.black}`,
+        transition: 'transform 0.15s ease-out, box-shadow 0.3s ease',
+        willChange: 'transform'
+      }}
+    >
+      {/* Animated gradient overlay */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${COLORS.gold}15 0%, transparent 60%)`,
+          transition: 'opacity 0.5s ease'
+        }}
+      />
+
+      {/* Soft edge glow */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none rounded-2xl"
+        style={{
+          boxShadow: `inset 0 0 40px ${COLORS.gold}20, 0 0 60px ${COLORS.gold}10`,
+          transition: 'opacity 0.5s ease'
+        }}
+      />
+
+      <div className="relative z-10">{children}</div>
+    </div>
+  )
+}
 
 export default function LeaveManagementPage() {
   const { organization, isAuthenticated, contextLoading } = useHERAAuth()
@@ -176,23 +225,44 @@ export default function LeaveManagementPage() {
     >
       {/* Header */}
       <div
-        className="sticky top-0 z-30 border-b ml-20"
-        style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.black }}
+        className="sticky top-0 z-30 border-b ml-20 backdrop-blur-lg"
+        style={{
+          backgroundColor: COLORS.charcoal + 'F0',
+          borderColor: COLORS.black,
+          boxShadow: `0 4px 20px ${COLORS.black}60`
+        }}
       >
         <div className="px-4 md:px-6 py-4">
           <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:justify-between">
             <div className="flex items-center gap-3">
               <div
-                className="h-10 w-10 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: COLORS.charcoal, boxShadow: 'inset 0 0 0 1px #000' }}
+                className="h-10 w-10 rounded-xl flex items-center justify-center relative group"
+                style={{
+                  backgroundColor: COLORS.charcoal,
+                  boxShadow: `inset 0 0 0 1px ${COLORS.gold}30, 0 0 20px ${COLORS.gold}10`,
+                  transition: 'all 0.3s ease'
+                }}
               >
                 <Calendar size={18} color={COLORS.gold} />
+                <div
+                  className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100"
+                  style={{
+                    background: `radial-gradient(circle at center, ${COLORS.gold}20 0%, transparent 70%)`,
+                    transition: 'opacity 0.3s ease'
+                  }}
+                />
               </div>
               <div>
-                <div className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                <div
+                  className="text-xs uppercase tracking-wider transition-colors duration-300"
+                  style={{ color: COLORS.bronze }}
+                >
                   HERA • HR Management
                 </div>
-                <div className="text-lg font-semibold" style={{ color: COLORS.champagne }}>
+                <div
+                  className="text-lg font-semibold transition-colors duration-300"
+                  style={{ color: COLORS.champagne }}
+                >
                   Leave Management
                 </div>
               </div>
@@ -203,8 +273,12 @@ export default function LeaveManagementPage() {
               <Button
                 onClick={() => (window.location.href = '/salon/staff')}
                 variant="outline"
-                className="border text-sm px-3 py-2"
-                style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+                className="border text-sm px-3 py-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                style={{
+                  borderColor: COLORS.bronze,
+                  color: COLORS.champagne,
+                  backgroundColor: 'transparent'
+                }}
               >
                 <ChevronLeft size={14} className="mr-1" />
                 <User size={14} className="mr-1" />
@@ -214,8 +288,13 @@ export default function LeaveManagementPage() {
 
               {/* Branch Selector */}
               <select
-                className="px-3 py-1.5 rounded-lg bg-transparent border text-sm"
-                style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+                className="px-3 py-1.5 rounded-lg border text-sm transition-all duration-300 hover:shadow-lg"
+                style={{
+                  borderColor: COLORS.bronze,
+                  color: COLORS.champagne,
+                  backgroundColor: COLORS.charcoal,
+                  cursor: 'pointer'
+                }}
                 value={selectedBranch || ''}
                 onChange={e => setSelectedBranch(e.target.value || undefined)}
               >
@@ -225,9 +304,9 @@ export default function LeaveManagementPage() {
               </select>
 
               {/* Search */}
-              <div className="relative">
+              <div className="relative group">
                 <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity duration-300"
                   color={COLORS.bronze}
                 />
                 <Input
@@ -235,18 +314,23 @@ export default function LeaveManagementPage() {
                   placeholder="Search staff..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-9 w-48 lg:w-64 bg-transparent border"
-                  style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+                  className="pl-9 w-48 lg:w-64 border transition-all duration-300 hover:shadow-lg"
+                  style={{
+                    borderColor: COLORS.bronze,
+                    color: COLORS.champagne,
+                    backgroundColor: COLORS.charcoal
+                  }}
                 />
               </div>
 
               {/* Actions */}
               <Button
                 onClick={() => setRequestModalOpen(true)}
-                className="border-0 font-semibold text-sm px-3 py-2"
+                className="border-0 font-semibold text-sm px-3 py-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
                 style={{
                   backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black
+                  color: COLORS.black,
+                  boxShadow: `0 4px 15px ${COLORS.gold}40`
                 }}
               >
                 <Plus size={14} className="mr-1" />
@@ -258,8 +342,12 @@ export default function LeaveManagementPage() {
                 <Button
                   variant="outline"
                   onClick={() => setPolicyModalOpen(true)}
-                  className="border text-sm px-3 py-2"
-                  style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+                  className="border text-sm px-3 py-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  style={{
+                    borderColor: COLORS.bronze,
+                    color: COLORS.champagne,
+                    backgroundColor: 'transparent'
+                  }}
                 >
                   <Settings size={14} className="mr-1" />
                   <span className="hidden sm:inline">Policies</span>
@@ -276,62 +364,82 @@ export default function LeaveManagementPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList
             className="bg-transparent p-1 rounded-full border mb-6"
-            style={{ borderColor: COLORS.bronze }}
+            style={{ borderColor: COLORS.bronze, boxShadow: `0 4px 20px ${COLORS.black}80` }}
           >
-            <TabsTrigger value="requests" className="rounded-full data-[state=active]:text-black">
+            <TabsTrigger
+              value="requests"
+              className="rounded-full data-[state=active]:text-black transition-all duration-300 hover:scale-105"
+            >
               <span
-                className="px-3 py-1.5 rounded-full flex items-center gap-2"
+                className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all duration-300"
                 style={{
                   background:
                     activeTab === 'requests'
                       ? `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
                       : 'transparent',
-                  color: activeTab === 'requests' ? COLORS.black : COLORS.champagne
+                  color: activeTab === 'requests' ? COLORS.black : COLORS.champagne,
+                  boxShadow:
+                    activeTab === 'requests' ? `0 4px 15px ${COLORS.gold}40` : 'none'
                 }}
               >
                 <FileText size={16} />
                 Requests
               </span>
             </TabsTrigger>
-            <TabsTrigger value="calendar" className="rounded-full data-[state=active]:text-black">
+            <TabsTrigger
+              value="calendar"
+              className="rounded-full data-[state=active]:text-black transition-all duration-300 hover:scale-105"
+            >
               <span
-                className="px-3 py-1.5 rounded-full flex items-center gap-2"
+                className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all duration-300"
                 style={{
                   background:
                     activeTab === 'calendar'
                       ? `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
                       : 'transparent',
-                  color: activeTab === 'calendar' ? COLORS.black : COLORS.champagne
+                  color: activeTab === 'calendar' ? COLORS.black : COLORS.champagne,
+                  boxShadow:
+                    activeTab === 'calendar' ? `0 4px 15px ${COLORS.gold}40` : 'none'
                 }}
               >
                 <Calendar size={16} />
                 Calendar
               </span>
             </TabsTrigger>
-            <TabsTrigger value="report" className="rounded-full data-[state=active]:text-black">
+            <TabsTrigger
+              value="report"
+              className="rounded-full data-[state=active]:text-black transition-all duration-300 hover:scale-105"
+            >
               <span
-                className="px-3 py-1.5 rounded-full flex items-center gap-2"
+                className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all duration-300"
                 style={{
                   background:
                     activeTab === 'report'
                       ? `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
                       : 'transparent',
-                  color: activeTab === 'report' ? COLORS.black : COLORS.champagne
+                  color: activeTab === 'report' ? COLORS.black : COLORS.champagne,
+                  boxShadow:
+                    activeTab === 'report' ? `0 4px 15px ${COLORS.gold}40` : 'none'
                 }}
               >
                 <FileText size={16} />
                 Report
               </span>
             </TabsTrigger>
-            <TabsTrigger value="policies" className="rounded-full data-[state=active]:text-black">
+            <TabsTrigger
+              value="policies"
+              className="rounded-full data-[state=active]:text-black transition-all duration-300 hover:scale-105"
+            >
               <span
-                className="px-3 py-1.5 rounded-full flex items-center gap-2"
+                className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all duration-300"
                 style={{
                   background:
                     activeTab === 'policies'
                       ? `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
                       : 'transparent',
-                  color: activeTab === 'policies' ? COLORS.black : COLORS.champagne
+                  color: activeTab === 'policies' ? COLORS.black : COLORS.champagne,
+                  boxShadow:
+                    activeTab === 'policies' ? `0 4px 15px ${COLORS.gold}40` : 'none'
                 }}
               >
                 <Settings size={16} />

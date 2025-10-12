@@ -77,7 +77,9 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
-      include_relationships: true, // Enable relationships for branch filtering
+      // ⚡ PERFORMANCE: Only fetch relationships when filtering by branch
+      // This cuts initial page load time significantly since relationships require expensive joins
+      include_relationships: !!(options?.filters?.branch_id && options.filters.branch_id !== 'all'),
       limit: 100,
       // Only filter by 'active' status when not including archived
       ...(options?.includeArchived ? {} : { status: 'active' }),

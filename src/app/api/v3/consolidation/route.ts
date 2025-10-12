@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { ConsolidationClient } from '@/lib/consolidation/consolidation-client-v3'
-import { assertV2, v2Body } from '@/lib/server/route-utils'
+import { assertV2, v2Body } from '@/lib/client/fetchV2'
 
 // ============================================================================
 // POST /api/v3/consolidation - Main consolidation operations

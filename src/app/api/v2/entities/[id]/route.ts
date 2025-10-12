@@ -219,9 +219,9 @@ export async function DELETE(
             organization_id: organizationId,
             transaction_type: 'entity_delete',
             smart_code: smartCode,
-            from_entity_id: entityId,
+            source_entity_id: entityId,
             total_amount: 0,
-            transaction_code: `DEL-${entityId.slice(0, 8)}-${Date.now()}`,
+            transaction_number: `DEL-${entityId.slice(0, 8)}-${Date.now()}`,
             metadata: {
               reason,
               deleted_at: new Date().toISOString(),

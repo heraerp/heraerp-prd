@@ -482,7 +482,7 @@ export async function DELETE(request: NextRequest) {
         transaction_date: new Date().toISOString(),
         reference_number: `COA-ARCHIVE-${account.account_number}`,
         total_amount: 0.00,
-        from_entity_id: context.userEntityId,
+        source_entity_id: context.userEntityId,
         metadata: {
           operation_type: 'ARCHIVE',
           account_id: accountId,

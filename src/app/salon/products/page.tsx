@@ -370,13 +370,31 @@ function SalonProductsPageContent() {
   // Calculate stats
   const activeCount = products.filter(p => p.status === 'active').length
   const archivedCount = products.filter(p => p.status === 'archived').length
-  const totalValue = products.reduce(
-    (sum, product) => sum + (product.price_cost || 0) * (product.stock_quantity || 0),
-    0
-  )
-  const lowStockCount = products.filter(
-    p => (p.stock_quantity || 0) < (p.reorder_level || 10)
-  ).length
+  const categoriesCount = productCategories.length
+  const avgPrice = products.length > 0
+    ? products.reduce((sum, product) => sum + (product.price_market || product.selling_price || 0), 0) / products.length
+    : 0
+
+  // Calculate profit margin: ((selling_price - cost_price) / selling_price) * 100
+  const profitMargin = useMemo(() => {
+    const productsWithPrices = products.filter(p =>
+      (p.price_market || p.selling_price) && (p.price_cost || p.cost_price)
+    )
+
+    if (productsWithPrices.length === 0) return 0
+
+    const totalMargin = productsWithPrices.reduce((sum, product) => {
+      const sellingPrice = product.price_market || product.selling_price || 0
+      const costPrice = product.price_cost || product.cost_price || 0
+
+      if (sellingPrice === 0) return sum
+
+      const margin = ((sellingPrice - costPrice) / sellingPrice) * 100
+      return sum + margin
+    }, 0)
+
+    return totalMargin / productsWithPrices.length
+  }, [products])
 
   return (
     <div className="h-screen overflow-hidden" style={{ backgroundColor: COLORS.black }}>
@@ -453,7 +471,7 @@ function SalonProductsPageContent() {
             </div>
           )}
 
-          {/* Highlight Banner - Coming from Inventory */}
+          {/* Highlight Banner - Product Details */}
           {highlightedProductId && (
             <div className="mx-6 mt-4">
               <div
@@ -467,7 +485,7 @@ function SalonProductsPageContent() {
                   <div className="flex items-center gap-2">
                     <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
                     <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                      Showing product from inventory
+                      Showing highlighted product
                     </span>
                   </div>
                   <Button
@@ -730,7 +748,7 @@ function SalonProductsPageContent() {
             </div>
           )}
 
-          {/* Stats Cards - Enterprise Grade Aesthetic */}
+          {/* Stats Cards - Product Catalog Overview */}
           <div className="mx-6 mt-4 grid grid-cols-4 gap-3">
             {/* Total Products */}
             <div
@@ -850,7 +868,70 @@ function SalonProductsPageContent() {
               </div>
             </div>
 
-            {/* Inventory Value - Premium Gold Gradient */}
+            {/* Profit Margin */}
+            <div
+              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emerald}15 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
+                border: `1.5px solid ${COLORS.emerald}60`,
+                boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(15, 111, 92, 0.2)'
+              }}
+            >
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.emerald}25 0%, transparent 50%)`
+                }}
+              />
+
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-3">
+                  <div
+                    className="p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.emerald}30 0%, ${COLORS.emerald}15 100%)`,
+                      border: `1px solid ${COLORS.emerald}60`,
+                      boxShadow: `0 4px 16px ${COLORS.emerald}20`
+                    }}
+                  >
+                    <TrendingUp className="h-4 w-4" style={{ color: COLORS.emerald }} />
+                  </div>
+                  <div
+                    className="px-2 py-0.5 rounded-lg text-[10px] font-bold"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.emerald}30 0%, ${COLORS.emerald}18 100%)`,
+                      color: COLORS.emerald,
+                      border: `1px solid ${COLORS.emerald}50`
+                    }}
+                  >
+                    AVG
+                  </div>
+                </div>
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
+                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
+                >
+                  Profit Margin
+                </p>
+                <p
+                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  style={{ color: COLORS.emerald }}
+                >
+                  {profitMargin.toFixed(1)}%
+                </p>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <div
+                    className="w-1 h-1 rounded-full"
+                    style={{ backgroundColor: COLORS.emerald + '80' }}
+                  />
+                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                    Average across products
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Average Price */}
             <div
               className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
               style={{
@@ -859,7 +940,6 @@ function SalonProductsPageContent() {
                 boxShadow: `0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(212, 175, 55, 0.25), 0 0 30px ${COLORS.gold}15`
               }}
             >
-              {/* Animated shimmer effect on hover */}
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 style={{
@@ -888,84 +968,18 @@ function SalonProductsPageContent() {
                   className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
                   style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
                 >
-                  Inventory Value
+                  Average Price
                 </p>
                 <p
                   className="text-2xl font-bold mb-0.5 tracking-tight"
                   style={{ color: COLORS.gold }}
                 >
-                  AED {totalValue.toLocaleString()}
+                  AED {avgPrice.toFixed(0)}
                 </p>
                 <div className="flex items-center gap-1.5 mt-1.5">
                   <div className="w-1 h-1 rounded-full" style={{ backgroundColor: COLORS.gold }} />
                   <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                    Total stock value
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Low Stock Alert */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.rose}12 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.rose}55`,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(239, 68, 68, 0.12)'
-              }}
-            >
-              {/* Animated gradient overlay on hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.rose}18 0%, transparent 50%)`
-                }}
-              />
-
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.rose}25 0%, ${COLORS.rose}12 100%)`,
-                      border: `1px solid ${COLORS.rose}50`,
-                      boxShadow: `0 4px 16px ${COLORS.rose}18`
-                    }}
-                  >
-                    <AlertTriangle className="h-4 w-4" style={{ color: COLORS.rose }} />
-                  </div>
-                  {lowStockCount > 0 && (
-                    <div
-                      className="px-2 py-0.5 rounded-lg text-[10px] font-bold animate-pulse"
-                      style={{
-                        background: `linear-gradient(135deg, ${COLORS.rose}35 0%, ${COLORS.rose}22 100%)`,
-                        color: COLORS.rose,
-                        border: `1px solid ${COLORS.rose}60`
-                      }}
-                    >
-                      Alert
-                    </div>
-                  )}
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
-                >
-                  Low Stock Alert
-                </p>
-                <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
-                  style={{ color: COLORS.rose }}
-                >
-                  {lowStockCount}
-                </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <div
-                    className="w-1 h-1 rounded-full animate-pulse"
-                    style={{ backgroundColor: COLORS.rose + '90' }}
-                  />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                    {lowStockCount > 0 ? 'Requires attention' : 'All products stocked'}
+                    Across all products
                   </p>
                 </div>
               </div>
@@ -1111,7 +1125,7 @@ function SalonProductsPageContent() {
                   <p className="text-sm opacity-60 mb-4" style={{ color: COLORS.lightText }}>
                     {searchQuery || categoryFilter
                       ? 'Try adjusting your search or filters'
-                      : 'Create your first product to start managing inventory'}
+                      : 'Create your first product to build your catalog'}
                   </p>
                   {!searchQuery && !categoryFilter && (
                     <button

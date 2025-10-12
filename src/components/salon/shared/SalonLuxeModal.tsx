@@ -142,42 +142,67 @@ export function SalonLuxeModal({
           </button>
         )}
 
-        {/* Header with glassmorphism */}
-        <DialogHeader
-          className="pb-5 px-6 pt-6 border-b relative z-10 flex-shrink-0"
+        {/* Luxe Header with Gradient - Matching ServiceModal Style */}
+        <div
+          className="relative px-8 py-6 border-b flex-shrink-0 z-10"
           style={{
-            borderColor: `rgba(212, 175, 55, 0.25)`,
-            borderWidth: '1px',
-            boxShadow: '0 1px 0 rgba(212, 175, 55, 0.1)',
+            background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.charcoal.base} 0%, ${SALON_LUXE_COLORS.charcoal.dark} 100%)`,
+            borderColor: `${SALON_LUXE_COLORS.border.base}`
           }}
         >
-          <DialogTitle className="flex items-center gap-3">
-            {icon && (
-              <div
-                className="p-3 rounded-xl shadow-lg"
-                style={{
-                  background: `linear-gradient(to bottom right, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%)`,
-                  border: `2px solid rgba(212, 175, 55, 0.4)`,
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
-                  boxShadow: '0 4px 16px rgba(212, 175, 55, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                }}
-              >
-                <div style={{ color: SALON_LUXE_COLORS.gold.base }}>{icon}</div>
+          {/* Decorative Gold Accent Line */}
+          <div
+            className="absolute top-0 left-0 right-0 h-1"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${SALON_LUXE_COLORS.gold.base}, transparent)`
+            }}
+          />
+
+          <DialogHeader>
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-4">
+                {/* Luxe Icon Badge */}
+                {icon && (
+                  <div
+                    className="relative w-14 h-14 rounded-xl flex items-center justify-center"
+                    style={{
+                      background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base}30 0%, ${SALON_LUXE_COLORS.gold.base}10 100%)`,
+                      border: `2px solid ${SALON_LUXE_COLORS.gold.base}50`,
+                      boxShadow: `0 8px 16px ${SALON_LUXE_COLORS.gold.base}20`
+                    }}
+                  >
+                    <div style={{ color: SALON_LUXE_COLORS.gold.base }}>{icon}</div>
+
+                    {/* Sparkle Effect */}
+                    <div
+                      className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
+                      style={{ backgroundColor: SALON_LUXE_COLORS.gold.base }}
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-1.5">
+                  <DialogTitle
+                    className="text-2xl font-bold tracking-tight"
+                    style={{
+                      background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.champagne.base} 0%, ${SALON_LUXE_COLORS.gold.base} 100%)`,
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text'
+                    }}
+                  >
+                    {title}
+                  </DialogTitle>
+                  {description && (
+                    <DialogDescription className="text-sm" style={{ color: SALON_LUXE_COLORS.text.primary, opacity: 0.8 }}>
+                      {description}
+                    </DialogDescription>
+                  )}
+                </div>
               </div>
-            )}
-            <div>
-              <h2 className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.text.primary }}>
-                {title}
-              </h2>
-              {description && (
-                <DialogDescription className="text-sm font-normal mt-1" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
-                  {description}
-                </DialogDescription>
-              )}
             </div>
-          </DialogTitle>
-        </DialogHeader>
+          </DialogHeader>
+        </div>
 
         {/* Content with enhanced styling and text color enforcement */}
         <div
@@ -300,6 +325,325 @@ export function SalonLuxeModal({
             left: 50% !important;
             top: 50% !important;
             margin: 0 !important;
+          }
+
+          /* Dropdown/Select Component Theme - Luxe Styling */
+          .hera-select-content {
+            background-color: ${SALON_LUXE_COLORS.charcoal.darker} !important;
+            border-color: ${SALON_LUXE_COLORS.gold.base}40 !important;
+            border: 1px solid ${SALON_LUXE_COLORS.gold.base}40 !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px ${SALON_LUXE_COLORS.gold.base}20 !important;
+            border-radius: 0.5rem !important;
+            color: ${SALON_LUXE_COLORS.text.primary} !important;
+          }
+
+          .hera-select-item {
+            background-color: transparent !important;
+            color: ${SALON_LUXE_COLORS.champagne.base} !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+          }
+
+          .hera-select-item[data-radix-collection-item]:hover,
+          .hera-select-item[data-highlighted] {
+            background-color: ${SALON_LUXE_COLORS.gold.base}20 !important;
+            color: ${SALON_LUXE_COLORS.champagne.lightest} !important;
+          }
+
+          .hera-select-item[data-state="checked"] {
+            background-color: ${SALON_LUXE_COLORS.gold.base}15 !important;
+            color: ${SALON_LUXE_COLORS.gold.base} !important;
+            font-weight: 600 !important;
+          }
+
+          /* Select Trigger Styling */
+          .salon-luxe-modal .hera-select-trigger {
+            background-color: ${SALON_LUXE_COLORS.charcoal.darker} !important;
+            border: 1px solid ${SALON_LUXE_COLORS.gold.base}30 !important;
+            color: ${SALON_LUXE_COLORS.text.primary} !important;
+            transition: all 0.2s ease !important;
+          }
+
+          .salon-luxe-modal .hera-select-trigger:hover {
+            border-color: ${SALON_LUXE_COLORS.gold.base}50 !important;
+            box-shadow: 0 0 0 1px ${SALON_LUXE_COLORS.gold.base}20 !important;
+          }
+
+          .salon-luxe-modal .hera-select-trigger:focus {
+            border-color: ${SALON_LUXE_COLORS.gold.base} !important;
+            box-shadow: 0 0 0 2px ${SALON_LUXE_COLORS.gold.base}30 !important;
+            outline: none !important;
+          }
+
+          /* Enhanced Primary Button Styling - Luxury Theme */
+          .salon-luxe-modal button[type="submit"],
+          .salon-luxe-modal button.primary-button {
+            position: relative !important;
+            background: linear-gradient(135deg, #F0D06B 0%, #E5C158 50%, ${SALON_LUXE_COLORS.gold.base} 100%) !important;
+            color: #000000 !important;
+            font-weight: 800 !important;
+            border: none !important;
+            box-shadow:
+              0 4px 16px rgba(212, 175, 55, 0.4),
+              0 2px 8px rgba(212, 175, 55, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.4) !important;
+            overflow: hidden !important;
+          }
+
+          /* Shine effect overlay */
+          .salon-luxe-modal button[type="submit"]::before,
+          .salon-luxe-modal button.primary-button::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: -100% !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: linear-gradient(
+              90deg,
+              transparent,
+              rgba(255, 255, 255, 0.3),
+              transparent
+            ) !important;
+            transition: left 0.5s ease !important;
+          }
+
+          .salon-luxe-modal button[type="submit"]:hover:not(:disabled)::before,
+          .salon-luxe-modal button.primary-button:hover:not(:disabled)::before {
+            left: 100% !important;
+          }
+
+          .salon-luxe-modal button[type="submit"]:hover:not(:disabled),
+          .salon-luxe-modal button.primary-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #F5D98F 0%, #F0D06B 50%, #E5C158 100%) !important;
+            box-shadow:
+              0 6px 24px rgba(212, 175, 55, 0.6),
+              0 3px 12px rgba(212, 175, 55, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4),
+              0 0 40px rgba(212, 175, 55, 0.3) !important;
+            transform: translateY(-2px) scale(1.02) !important;
+          }
+
+          .salon-luxe-modal button[type="submit"]:active:not(:disabled),
+          .salon-luxe-modal button.primary-button:active:not(:disabled) {
+            transform: translateY(0px) scale(0.98) !important;
+            box-shadow:
+              0 2px 8px rgba(212, 175, 55, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+            transition: all 0.1s ease !important;
+          }
+
+          .salon-luxe-modal button[type="submit"]:disabled,
+          .salon-luxe-modal button.primary-button:disabled {
+            background: linear-gradient(135deg, rgba(140, 120, 83, 0.5) 0%, rgba(140, 120, 83, 0.4) 100%) !important;
+            color: rgba(15, 15, 15, 0.95) !important;
+            cursor: not-allowed !important;
+            opacity: 0.7 !important;
+            box-shadow: none !important;
+            transform: none !important;
+          }
+
+          .salon-luxe-modal button[type="submit"] *,
+          .salon-luxe-modal button.primary-button * {
+            color: #000000 !important;
+            font-weight: 800 !important;
+            position: relative !important;
+            z-index: 1 !important;
+          }
+
+          .salon-luxe-modal button[type="submit"]:disabled *,
+          .salon-luxe-modal button.primary-button:disabled * {
+            color: rgba(15, 15, 15, 0.95) !important;
+            font-weight: 800 !important;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.15) !important;
+          }
+
+          /* Animate icons on hover */
+          .salon-luxe-modal button[type="submit"]:hover:not(:disabled) svg,
+          .salon-luxe-modal button.primary-button:hover:not(:disabled) svg {
+            transform: scale(1.1) rotate(5deg) !important;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+          }
+
+          /* Enhanced Outline/Secondary Button Styling */
+          .salon-luxe-modal button[variant="outline"],
+          .salon-luxe-modal button.outline-button {
+            position: relative !important;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(35, 35, 35, 0.6) 100%) !important;
+            border: 2px solid rgba(212, 175, 55, 0.3) !important;
+            color: ${SALON_LUXE_COLORS.champagne.base} !important;
+            font-weight: 600 !important;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            backdrop-filter: blur(12px) !important;
+            box-shadow:
+              0 2px 8px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+            overflow: hidden !important;
+          }
+
+          /* Subtle glow effect for outline buttons */
+          .salon-luxe-modal button[variant="outline"]::after,
+          .salon-luxe-modal button.outline-button::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: 0 !important;
+            height: 0 !important;
+            border-radius: 50% !important;
+            background: rgba(212, 175, 55, 0.2) !important;
+            transform: translate(-50%, -50%) !important;
+            transition: width 0.4s ease, height 0.4s ease !important;
+          }
+
+          .salon-luxe-modal button[variant="outline"]:hover:not(:disabled)::after,
+          .salon-luxe-modal button.outline-button:hover:not(:disabled)::after {
+            width: 300px !important;
+            height: 300px !important;
+          }
+
+          .salon-luxe-modal button[variant="outline"]:hover:not(:disabled),
+          .salon-luxe-modal button.outline-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%) !important;
+            border-color: ${SALON_LUXE_COLORS.gold.base} !important;
+            color: ${SALON_LUXE_COLORS.champagne.lightest} !important;
+            box-shadow:
+              0 4px 16px rgba(212, 175, 55, 0.3),
+              0 2px 8px rgba(212, 175, 55, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1),
+              0 0 30px rgba(212, 175, 55, 0.2) !important;
+            transform: translateY(-2px) scale(1.02) !important;
+          }
+
+          .salon-luxe-modal button[variant="outline"]:active:not(:disabled),
+          .salon-luxe-modal button.outline-button:active:not(:disabled) {
+            transform: translateY(0px) scale(0.98) !important;
+            box-shadow:
+              0 1px 4px rgba(212, 175, 55, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+            transition: all 0.1s ease !important;
+          }
+
+          .salon-luxe-modal button[variant="outline"]:disabled,
+          .salon-luxe-modal button.outline-button:disabled {
+            background: rgba(26, 26, 26, 0.3) !important;
+            border-color: rgba(154, 163, 174, 0.2) !important;
+            color: rgba(224, 224, 224, 0.3) !important;
+            cursor: not-allowed !important;
+            opacity: 0.5 !important;
+            box-shadow: none !important;
+            transform: none !important;
+          }
+
+          .salon-luxe-modal button[variant="outline"] *,
+          .salon-luxe-modal button.outline-button * {
+            color: inherit !important;
+            position: relative !important;
+            z-index: 1 !important;
+          }
+
+          /* Animate outline button icons on hover */
+          .salon-luxe-modal button[variant="outline"]:hover:not(:disabled) svg,
+          .salon-luxe-modal button.outline-button:hover:not(:disabled) svg {
+            transform: scale(1.08) !important;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+          }
+
+          /* Input Field Styling - Fix Dark Blue Issue */
+          .salon-luxe-modal input[type="text"],
+          .salon-luxe-modal input[type="email"],
+          .salon-luxe-modal input[type="number"],
+          .salon-luxe-modal input[type="tel"],
+          .salon-luxe-modal input[type="url"],
+          .salon-luxe-modal input[type="password"],
+          .salon-luxe-modal textarea {
+            background-color: ${SALON_LUXE_COLORS.charcoal.darker} !important;
+            border: 1px solid ${SALON_LUXE_COLORS.border.base} !important;
+            color: ${SALON_LUXE_COLORS.text.primary} !important;
+            transition: all 0.2s ease !important;
+          }
+
+          .salon-luxe-modal input[type="text"]:focus,
+          .salon-luxe-modal input[type="email"]:focus,
+          .salon-luxe-modal input[type="number"]:focus,
+          .salon-luxe-modal input[type="tel"]:focus,
+          .salon-luxe-modal input[type="url"]:focus,
+          .salon-luxe-modal input[type="password"]:focus,
+          .salon-luxe-modal textarea:focus {
+            border-color: ${SALON_LUXE_COLORS.gold.base} !important;
+            box-shadow: 0 0 0 2px ${SALON_LUXE_COLORS.gold.base}30 !important;
+            outline: none !important;
+          }
+
+          .salon-luxe-modal input::placeholder,
+          .salon-luxe-modal textarea::placeholder {
+            color: ${SALON_LUXE_COLORS.text.secondary} !important;
+            opacity: 0.6 !important;
+          }
+
+          /* Extra emphasis for footer buttons */
+          .salon-luxe-modal [class*="footer"] button[type="submit"],
+          .salon-luxe-modal [class*="footer"] button.primary-button,
+          .salon-luxe-modal > div > div > div:last-child button[type="submit"],
+          .salon-luxe-modal > div > div > div:last-child button.primary-button {
+            background: linear-gradient(135deg, #F5D98F 0%, #F0D06B 40%, #E5C158 70%, ${SALON_LUXE_COLORS.gold.base} 100%) !important;
+            box-shadow:
+              0 6px 20px rgba(212, 175, 55, 0.5),
+              0 3px 10px rgba(212, 175, 55, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4),
+              0 0 0 1px rgba(212, 175, 55, 0.4) !important;
+          }
+
+          /* Focus states for accessibility */
+          .salon-luxe-modal button[type="submit"]:focus-visible,
+          .salon-luxe-modal button.primary-button:focus-visible {
+            outline: none !important;
+            box-shadow:
+              0 6px 24px rgba(212, 175, 55, 0.6),
+              0 3px 12px rgba(212, 175, 55, 0.4),
+              0 0 0 3px rgba(212, 175, 55, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+          }
+
+          .salon-luxe-modal button[variant="outline"]:focus-visible,
+          .salon-luxe-modal button.outline-button:focus-visible {
+            outline: none !important;
+            box-shadow:
+              0 4px 16px rgba(212, 175, 55, 0.4),
+              0 2px 8px rgba(212, 175, 55, 0.3),
+              0 0 0 3px rgba(212, 175, 55, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+          }
+
+          /* Loading state animation */
+          .salon-luxe-modal button[type="submit"] .animate-spin,
+          .salon-luxe-modal button.primary-button .animate-spin,
+          .salon-luxe-modal button[variant="outline"] .animate-spin,
+          .salon-luxe-modal button.outline-button .animate-spin {
+            animation: spin 1s linear infinite !important;
+          }
+
+          @keyframes spin {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+
+          /* Ripple effect for button clicks */
+          @keyframes buttonRipple {
+            0% {
+              transform: scale(0);
+              opacity: 1;
+            }
+            100% {
+              transform: scale(4);
+              opacity: 0;
+            }
           }
         `}</style>
       </DialogContent>

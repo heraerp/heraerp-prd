@@ -8,7 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { assertV2, v2Body, callRPC } from '@/lib/server/index'
+import { assertV2, v2Body, callRPC } from '@/lib/db/rpc-client'
 import type { 
   PlanGenerationRequest, 
   PlanRefreshRequest, 

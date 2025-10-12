@@ -41,9 +41,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     {
       title: 'Appointments',
       href: '/salon/appointments',
-      icon: Calendar,
-      badge: '3',
-      badgeColor: LUXE_COLORS.emerald
+      icon: Calendar
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Services', href: '/salon/services', icon: Scissors },
@@ -51,6 +49,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Inventory', href: '/salon/inventory', icon: FolderOpen },
     { title: 'Staff', href: '/salon/staff', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users },
+    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
     { title: 'Reports', href: '/salon/reports', icon: BarChart3 }
   ],
@@ -60,12 +59,11 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     {
       title: 'Appointments',
       href: '/salon/appointments',
-      icon: Calendar,
-      badge: '3',
-      badgeColor: LUXE_COLORS.emerald
+      icon: Calendar
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
+    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     {
       title: 'WhatsApp',

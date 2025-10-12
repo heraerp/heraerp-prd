@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { PolicyTuningClient } from '@/lib/policy-tuning/policy-client-v3'
-import { assertV2, v2Body } from '@/lib/server/route-utils'
+import { assertV2, v2Body } from '@/lib/client/fetchV2'
 
 // ============================================================================
 // POST /api/v3/policy - Main policy tuning operations

@@ -529,7 +529,7 @@ export async function DELETE(request: NextRequest) {
         transaction_date: new Date().toISOString(),
         reference_number: `CC-ARCHIVE-${costCenter.cc_code}`,
         total_amount: 0.00,
-        from_entity_id: context.userEntityId,
+        source_entity_id: context.userEntityId,
         metadata: {
           operation_type: 'ARCHIVE',
           cost_center_id: costCenterId,

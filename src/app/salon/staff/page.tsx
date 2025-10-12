@@ -589,7 +589,7 @@ function StaffContent() {
           </div>
           <div className="flex gap-3">
             <Button
-              onClick={() => (window.location.href = '/salon/leave1')}
+              onClick={() => (window.location.href = '/salon/leave')}
               style={{
                 background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emerald}DD 100%)`,
                 color: COLORS.champagne,

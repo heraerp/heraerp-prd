@@ -483,7 +483,7 @@ export default function SalonDarkSidebar({
           {/* More Apps Button */}
           <button
             onClick={() => setShowAppsModal(true)}
-            className="flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative rounded-xl mx-2 hover:scale-[1.02]"
+            className="flex flex-col items-center justify-center py-2 transition-all duration-200 group relative rounded-xl mx-2 hover:scale-[1.02]"
             style={{
               backgroundColor: 'transparent'
             }}
@@ -494,7 +494,9 @@ export default function SalonDarkSidebar({
               e.currentTarget.style.backgroundColor = 'transparent'
             }}
           >
-            <Grid3x3 className="h-5 w-5" style={{ color: COLORS.bronze }} />
+            <div className="relative">
+              <Grid3x3 className="h-5 w-5" style={{ color: COLORS.bronze }} />
+            </div>
             <span
               className="text-[9px] mt-0.5 font-medium text-center leading-tight"
               style={{ color: COLORS.bronze }}
@@ -549,12 +551,14 @@ export default function SalonDarkSidebar({
                   }
                 }}
               >
-                <Icon
-                  className="h-5 w-5"
-                  style={{
-                    color: active ? COLORS.gold : COLORS.bronze
-                  }}
-                />
+                <div className="relative">
+                  <Icon
+                    className="h-5 w-5"
+                    style={{
+                      color: active ? COLORS.gold : COLORS.bronze
+                    }}
+                  />
+                </div>
 
                 {/* Text label */}
                 <span

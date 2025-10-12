@@ -9,7 +9,7 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { callRPC } from '@/lib/server/index'
+import { callRPC } from '@/lib/db/rpc-client'
 
 // ============================================================================
 // Types and Interfaces

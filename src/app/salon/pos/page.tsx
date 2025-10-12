@@ -133,9 +133,12 @@ function POSContent() {
         console.log('[POSPage] 💾 Loading appointment directly from kanban data:', {
           id: appointmentData.id,
           customer: appointmentData.customer_name,
-          service: appointmentData.service_name,
-          price: appointmentData.price,
-          source: appointmentData._source
+          stylist: appointmentData.stylist_name,
+          source: appointmentData._source,
+          // 🔍 DEBUG: Log service data from TOP LEVEL (same as customer/stylist)
+          service_ids: appointmentData.service_ids,
+          service_names: appointmentData.service_names,
+          service_prices: appointmentData.service_prices
         })
 
         // 🛡️ Mark as attempted to prevent re-runs
@@ -176,33 +179,28 @@ function POSContent() {
           setSelectedBranchId(appointmentData.branch_id)
         }
 
-        // 🎯 ENTERPRISE: Build services array from kanban data
-        // Kanban may have single service or multiple services in metadata
+        // 🎯 ENTERPRISE PATTERN: Read service data from TOP LEVEL (same as customer_name/stylist_name)
+        // This matches the pattern: appointmentData.customer_name, appointmentData.stylist_name, appointmentData.service_names
         const services = []
 
-        if (appointmentData.service_id && appointmentData.service_name) {
-          // Single service from card
-          services.push({
-            id: appointmentData.service_id,
-            name: appointmentData.service_name,
-            price: appointmentData.price || 0,
-            ...(appointmentData.stylist_id ? { stylist_id: appointmentData.stylist_id } : {}),
-            ...(appointmentData.stylist_name ? { stylist_name: appointmentData.stylist_name } : {})
-          })
-        }
+        // Read service arrays from top level (not nested in metadata)
+        if (appointmentData.service_ids && appointmentData.service_ids.length > 0) {
+          const serviceIds = Array.isArray(appointmentData.service_ids)
+            ? appointmentData.service_ids
+            : [appointmentData.service_ids]
 
-        // Check metadata for additional services
-        if (appointmentData.metadata?.service_ids) {
-          const serviceIds = Array.isArray(appointmentData.metadata.service_ids)
-            ? appointmentData.metadata.service_ids
-            : [appointmentData.metadata.service_ids]
+          console.log('[POSPage] 🎨 Building services from TOP LEVEL data:', {
+            serviceIds,
+            serviceNames: appointmentData.service_names,
+            servicePrices: appointmentData.service_prices
+          })
 
           serviceIds.forEach((serviceId: string, index: number) => {
-            if (serviceId && !services.find(s => s.id === serviceId)) {
+            if (serviceId) {
               services.push({
                 id: serviceId,
-                name: appointmentData.metadata?.service_names?.[index] || `Service ${index + 1}`,
-                price: appointmentData.metadata?.service_prices?.[index] || 0,
+                name: appointmentData.service_names?.[index] || `Service ${index + 1}`,
+                price: appointmentData.service_prices?.[index] || 0,
                 ...(appointmentData.stylist_id ? { stylist_id: appointmentData.stylist_id } : {}),
                 ...(appointmentData.stylist_name ? { stylist_name: appointmentData.stylist_name } : {})
               })

@@ -558,7 +558,7 @@ export async function DELETE(request: NextRequest) {
         transaction_date: new Date().toISOString(),
         reference_number: `PC-ARCHIVE-${profitCenter.pc_code}`,
         total_amount: 0.00,
-        from_entity_id: context.userEntityId,
+        source_entity_id: context.userEntityId,
         metadata: {
           operation_type: 'ARCHIVE',
           profit_center_id: profitCenterId,

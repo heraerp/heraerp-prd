@@ -176,48 +176,16 @@ export default function KanbanPage() {
     }
   })
 
-  // 🎯 ENTERPRISE: Fetch services with pricing to resolve service names and prices
-  const { entities: services } = useUniversalEntity({
-    organizationId,
-    filters: {
-      entity_type: 'service'
-    },
-    includeDynamicData: true
-  })
-
-  // 🎯 ENTERPRISE: Create service lookup maps
-  const serviceMap = useMemo(() => {
-    const map = new Map<string, { name: string; price: number }>()
-
-    services.forEach(service => {
-      // Find price from dynamic data
-      const dynamicFields = service.dynamic_data || []
-      const priceField = dynamicFields.find((f: any) => f.field_name === 'price' || f.field_name === 'base_price')
-      const price = priceField?.field_value_number || 0
-
-      map.set(service.id, {
-        name: service.entity_name,
-        price
-      })
-    })
-
-    return map
-  }, [services])
+  // ⚡ PERFORMANCE FIX: No need to fetch services - appointments already have service data in metadata
+  // This eliminates a slow database query that was taking 20+ seconds
 
   // 🎯 ENTERPRISE: Transform appointments to kanban cards
   const cards: KanbanCard[] = useMemo(() => {
     return appointments.map(apt => {
-      // Extract service info - check metadata.service_ids array first, then fallback to single fields
+      // ⚡ PERFORMANCE: Service data already in appointment metadata - no need to fetch services
       const serviceIds = apt.metadata?.service_ids || []
-      let serviceNames = apt.metadata?.service_names || []
-      let servicePrices = apt.metadata?.service_prices || []
-
-      // 🎯 ENTERPRISE: Resolve service IDs to names and prices using serviceMap
-      if (Array.isArray(serviceIds) && serviceIds.length > 0) {
-        // Resolve all service IDs
-        serviceNames = serviceIds.map(id => serviceMap.get(id)?.name || 'Service')
-        servicePrices = serviceIds.map(id => serviceMap.get(id)?.price || 0)
-      }
+      const serviceNames = apt.metadata?.service_names || []
+      const servicePrices = apt.metadata?.service_prices || []
 
       // Get first service or fallback
       const service_id = Array.isArray(serviceIds) && serviceIds.length > 0
@@ -263,7 +231,7 @@ export default function KanbanPage() {
         }
       }
     })
-  }, [appointments, dateFilter, dateRange, organizationId, serviceMap])
+  }, [appointments, dateFilter, dateRange, organizationId])
 
   // 🎯 ENTERPRISE: Group cards by status column
   const cardsByColumn: Record<KanbanStatus, KanbanCard[]> = useMemo(() => {

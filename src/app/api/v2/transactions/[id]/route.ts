@@ -60,7 +60,7 @@ export async function GET(
 
     console.log('[API] Transaction detail fetched:', {
       id: transactionId,
-      code: transaction.transaction_code,
+      code: transaction.transaction_number,
       lines_count: lines?.length || 0
     })
 
