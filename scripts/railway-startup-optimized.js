@@ -18,23 +18,35 @@ console.log('📊 Environment:', {
 // Pre-startup optimizations
 console.log('⚡ Running pre-startup optimizations...')
 
-// Set optimized Node.js flags for faster startup
-process.env.NODE_OPTIONS = [
-  '--max-old-space-size=2048',
-  '--max-semi-space-size=128', 
-  '--optimize-for-size',
-  '--max-inlined-source-size=600'
-].join(' ')
+// Remove disallowed V8 flags from NODE_OPTIONS
+const env = { ...process.env }
+if (env.NODE_OPTIONS) {
+  console.log('🔍 Original NODE_OPTIONS:', env.NODE_OPTIONS)
+  const banned = new Set(['--optimize-for-size', '--jitless', '--prof', '--logfile', '--prof-process'])
+  env.NODE_OPTIONS = env.NODE_OPTIONS
+    .split(/\s+/)
+    .filter(tok => tok && !banned.has(tok))
+    .join(' ')
+  if (env.NODE_OPTIONS.trim() === '') delete env.NODE_OPTIONS
+  console.log('🧼 Sanitized NODE_OPTIONS:', env.NODE_OPTIONS || '(unset)')
+} else {
+  // Set valid Node.js flags for optimized startup
+  env.NODE_OPTIONS = [
+    '--max-old-space-size=2048',
+    '--max-semi-space-size=128'
+  ].join(' ')
+  console.log('✅ Set NODE_OPTIONS:', env.NODE_OPTIONS)
+}
 
 // Faster require resolution
-process.env.NODE_PATH = './node_modules'
+env.NODE_PATH = './node_modules'
 
 // Start Next.js with optimizations
 const startCommand = 'next'
 const args = [
   'start',
   '-H', '0.0.0.0',
-  '-p', process.env.PORT || '3000'
+  '-p', process.env.PORT || '8080'
 ]
 
 console.log(`🔧 Starting: ${startCommand} ${args.join(' ')}`)
@@ -42,7 +54,7 @@ console.log(`🔧 Starting: ${startCommand} ${args.join(' ')}`)
 const child = spawn(startCommand, args, {
   stdio: 'inherit',
   env: {
-    ...process.env,
+    ...env,
     // Disable telemetry for faster startup
     NEXT_TELEMETRY_DISABLED: '1',
     // Optimize Next.js runtime
