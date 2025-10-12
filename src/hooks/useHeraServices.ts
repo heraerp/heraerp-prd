@@ -124,7 +124,12 @@ export function useHeraServices({
 
       return servicesWithDynamicData
     },
-    enabled: !!organizationId
+    enabled: !!organizationId,
+    // ✅ PERFORMANCE OPTIMIZATION: Smart caching (30s staleTime)
+    // Services change frequently but not every second - 30s cache is optimal
+    staleTime: 30000, // 30 seconds - data stays fresh, reducing API calls
+    gcTime: 300000, // 5 minutes - keep in cache for 5 min after last use
+    refetchOnWindowFocus: false // No unnecessary refetches on tab switch
   })
 
   // Create mutation

@@ -1,0 +1,376 @@
+/* ============================================================================
+   HERA • Salon Kanban Luxe Theme - CSS Variables & Animations
+   Smart Code: HERA.SALON.KANBAN.THEME.LUXE.V2
+   ✅ Theme-compliant color system with CSS variables
+   ✅ 60 FPS animations with GPU acceleration
+   ✅ Accessibility enhancements (reduced motion support)
+   ✅ Dark mode compatible
+   ============================================================================ */
+
+:root {
+  /* ========================================================================
+     LUXE COLOR PALETTE - Salon Theme Colors
+     ======================================================================== */
+  --luxe-black: #0B0B0B;
+  --luxe-charcoal: #1A1A1A;
+  --luxe-gold: #D4AF37;
+  --luxe-gold-dark: #B8860B;
+  --luxe-champagne: #F5E6C8;
+  --luxe-bronze: #8C7853;
+  --luxe-emerald: #0F6F5C;
+  --luxe-plum: #5A2A40;
+  --luxe-rose: #E8B4B8;
+
+  /* ========================================================================
+     PHYSICS-BASED ANIMATION DURATIONS
+     ======================================================================== */
+  --animation-fast: 200ms;
+  --animation-normal: 300ms;
+  --animation-slow: 400ms;
+  --animation-drag-end: 250ms;
+
+  /* ========================================================================
+     EASING FUNCTIONS - Physics-based motion
+     ======================================================================== */
+  --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);  /* Playful spring */
+  --easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);       /* Material Design */
+  --easing-dramatic: cubic-bezier(0.22, 0.61, 0.36, 1); /* More dramatic */
+}
+
+/* ============================================================================
+   REDUCED MOTION SUPPORT (WCAG 2.1 AA Accessibility)
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   KANBAN BOARD SCROLL BEHAVIOR
+   ============================================================================ */
+.kanban-board-scroll {
+  /* Smooth scrolling with momentum */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar but keep functionality */
+  scrollbar-width: thin;
+  scrollbar-color: var(--luxe-gold) var(--luxe-charcoal);
+}
+
+.kanban-board-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.kanban-board-scroll::-webkit-scrollbar-track {
+  background: var(--luxe-charcoal);
+  border-radius: 4px;
+}
+
+.kanban-board-scroll::-webkit-scrollbar-thumb {
+  background: var(--luxe-gold);
+  border-radius: 4px;
+  transition: background var(--animation-fast) var(--easing-smooth);
+}
+
+.kanban-board-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--luxe-gold-dark);
+}
+
+/* ============================================================================
+   CUSTOM ANIMATIONS
+   ============================================================================ */
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn var(--animation-normal) var(--easing-smooth);
+}
+
+/* Slide up animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp var(--animation-slow) var(--easing-spring);
+}
+
+/* Slide down animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown var(--animation-slow) var(--easing-spring);
+}
+
+/* Slide left animation */
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slideLeft {
+  animation: slideLeft var(--animation-slow) var(--easing-spring);
+}
+
+/* Slide in animation (used by date headers) */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ============================================================================
+   ONE-WAY LIFECYCLE FEEDBACK ANIMATIONS (Theme Tokens Only)
+   ============================================================================ */
+
+/* Success: Forward move allowed - Gold gradient pulse on target column */
+@keyframes luxeForwardPulse {
+  0% {
+    background: transparent;
+    box-shadow: none;
+  }
+  15% {
+    background: linear-gradient(
+      90deg,
+      rgba(212, 175, 55, 0.25),
+      rgba(212, 175, 55, 0.15)
+    );
+    box-shadow:
+      inset 0 0 40px rgba(212, 175, 55, 0.3),
+      0 0 0 3px rgba(212, 175, 55, 0.5);
+  }
+  100% {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+.kanban-column-success {
+  animation: luxeForwardPulse 420ms var(--easing-smooth);
+  will-change: background, box-shadow;
+}
+
+/* Blocked: Backward move denied - Red gradient flash on card */
+@keyframes luxeBlockedFlash {
+  0% {
+    background: var(--luxe-charcoal);
+    border-color: var(--luxe-gold);
+  }
+  20% {
+    background: linear-gradient(
+      135deg,
+      rgba(220, 38, 38, 0.3),
+      rgba(185, 28, 28, 0.2)
+    );
+    border-color: rgb(220, 38, 38);
+  }
+  100% {
+    background: var(--luxe-charcoal);
+    border-color: var(--luxe-gold);
+  }
+}
+
+/* Shake animation for blocked moves */
+@keyframes luxeShakeX {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+  }
+  25% {
+    transform: translateX(-6px) scale(1.02);
+  }
+  75% {
+    transform: translateX(6px) scale(1.02);
+  }
+}
+
+/* Blocked move class applied to card */
+.card-blocked-move {
+  animation:
+    luxeBlockedFlash 360ms var(--easing-smooth),
+    luxeShakeX 220ms var(--easing-smooth);
+  will-change: transform, background, border-color;
+}
+
+/* Pulse animation for drag overlay during blocked move */
+@keyframes luxePulseWarning {
+  0%, 100% {
+    opacity: 0.98;
+    transform: scale(1.08) rotate(2deg);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05) rotate(1deg);
+  }
+}
+
+.drag-overlay-blocked {
+  animation: luxePulseWarning 300ms var(--easing-smooth) infinite;
+}
+
+/* ============================================================================
+   GPU ACCELERATION UTILITIES
+   ============================================================================ */
+.gpu-accelerated {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  transform: translateZ(0);
+}
+
+/* ============================================================================
+   ACCESSIBILITY: Screen Reader Only Content
+   ============================================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================================================
+   TOUCH-FRIENDLY INTERACTION TARGETS (44x44px minimum - WCAG 2.1 AA)
+   ============================================================================ */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================================
+   FOCUS VISIBLE STYLES (Keyboard Navigation)
+   ============================================================================ */
+*:focus-visible {
+  outline: 2px solid var(--luxe-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove focus outline for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================================================
+   DRAGGING STATE STYLES
+   ============================================================================ */
+.kanban-dragging {
+  opacity: 0.5;
+  cursor: grabbing !important;
+  transform: scale(1.05) rotate(2deg);
+  filter: drop-shadow(0 25px 50px rgba(212, 175, 55, 0.6));
+  transition: all var(--animation-fast) var(--easing-spring);
+}
+
+/* ============================================================================
+   DROP ZONE HIGHLIGHT
+   ============================================================================ */
+.kanban-drop-zone-active {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.12) 0%,
+    rgba(212, 175, 55, 0.08) 100%
+  );
+  box-shadow:
+    inset 0 0 40px rgba(212, 175, 55, 0.2),
+    0 0 0 3px rgba(212, 175, 55, 0.4),
+    0 8px 24px rgba(212, 175, 55, 0.3);
+  transition: all var(--animation-normal) var(--easing-spring);
+}
+
+/* ============================================================================
+   CARD HOVER EFFECTS
+   ============================================================================ */
+.kanban-card {
+  transition:
+    transform var(--animation-slow) var(--easing-spring),
+    box-shadow var(--animation-slow) var(--easing-spring),
+    border-color var(--animation-slow) var(--easing-spring);
+}
+
+.kanban-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow:
+    0 12px 32px rgba(212, 175, 55, 0.25),
+    0 0 0 1px rgba(212, 175, 55, 0.15),
+    inset 0 0 20px rgba(212, 175, 55, 0.05);
+  border-color: var(--luxe-gold);
+}
+
+/* ============================================================================
+   MOBILE RESPONSIVENESS
+   ============================================================================ */
+@media (max-width: 768px) {
+  .kanban-board-scroll {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  /* Larger touch targets on mobile */
+  .touch-target {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+@media print {
+  .kanban-board-scroll {
+    overflow: visible;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  /* Remove interactive elements in print */
+  button,
+  [role="button"] {
+    display: none;
+  }
+}

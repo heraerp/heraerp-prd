@@ -1,10 +1,18 @@
 // ============================================================================
-// HERA • Salon Appointments Kanban Page with DRAFT support
+// HERA • Salon Appointments Kanban Page with DRAFT support - Enhanced V2
+// Smart Code: HERA.SALON.KANBAN.PAGE.ENTERPRISE.V2
+// ✅ Ultra-smooth drag & drop with @dnd-kit
+// ✅ 60 FPS performance with GPU acceleration
+// ✅ Touch-friendly with long-press (mobile-first)
+// ✅ Keyboard accessibility (WCAG 2.1 AA)
+// ✅ Auto-scroll while dragging
+// ✅ Theme-compliant with CSS variables
 // ============================================================================
 
 'use client'
 
 import React, { useState, useCallback, useEffect } from 'react'
+import './kanban-luxe-theme.css'
 import { format, startOfToday, addDays, startOfDay, endOfDay } from 'date-fns'
 import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays } from 'lucide-react'
 import { useRouter } from 'next/navigation'

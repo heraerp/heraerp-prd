@@ -66,11 +66,44 @@ export function SalonLuxeModal({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
-        className={cn('salon-luxe-modal max-h-[90vh] border-0 shadow-2xl flex flex-col', sizeClasses[size], className)}
+        className={cn('salon-luxe-modal max-h-[90vh] border-0 shadow-2xl flex flex-col [&>button]:hidden rounded-2xl animate-modalSlideIn', sizeClasses[size], className)}
         style={{
           ...SALON_LUXE_STYLES.modalBackground,
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
+          color: SALON_LUXE_COLORS.text.primary,
+          border: `2px solid ${SALON_LUXE_COLORS.gold.base}40`,
+          boxShadow: `0 0 0 1px ${SALON_LUXE_COLORS.gold.base}25, 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 60px ${SALON_LUXE_COLORS.gold.base}15`,
+          borderRadius: '1rem',
+          transformStyle: 'preserve-3d',
+          transformOrigin: 'center center',
+        }}
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect()
+          const x = e.clientX - rect.left
+          const y = e.clientY - rect.top
+          const centerX = rect.width / 2
+          const centerY = rect.height / 2
+          const rotateX = ((y - centerY) / centerY) * -1
+          const rotateY = ((x - centerX) / centerX) * 1
+
+          e.currentTarget.style.transform = `translate(-50%, -50%) perspective(2000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.00) translateZ(0)`
+
+          // Update border glow position based on mouse
+          const glowX = (x / rect.width) * 100
+          const glowY = (y / rect.height) * 100
+          e.currentTarget.style.boxShadow = `
+            0 0 0 1px ${SALON_LUXE_COLORS.gold.base}25,
+            0 8px 32px rgba(0, 0, 0, 0.5),
+            0 0 60px ${SALON_LUXE_COLORS.gold.base}15,
+            inset 0 0 80px rgba(212, 175, 55, 0.08)
+          `
+          e.currentTarget.style.borderImage = `radial-gradient(circle at ${glowX}% ${glowY}%, ${SALON_LUXE_COLORS.gold.base}80, ${SALON_LUXE_COLORS.gold.base}20) 1`
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translate(-50%, -50%) perspective(2000px) rotateX(0deg) rotateY(0deg) scale(1) translateZ(0)'
+          e.currentTarget.style.boxShadow = `0 0 0 1px ${SALON_LUXE_COLORS.gold.base}25, 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 60px ${SALON_LUXE_COLORS.gold.base}15`
+          e.currentTarget.style.borderImage = 'none'
         }}
       >
         {/* Enhanced animated gradient overlay with softer glow */}
@@ -111,7 +144,7 @@ export function SalonLuxeModal({
 
         {/* Header with glassmorphism */}
         <DialogHeader
-          className="pb-5 border-b relative z-10 flex-shrink-0"
+          className="pb-5 px-6 pt-6 border-b relative z-10 flex-shrink-0"
           style={{
             borderColor: `rgba(212, 175, 55, 0.25)`,
             borderWidth: '1px',
@@ -146,20 +179,23 @@ export function SalonLuxeModal({
           </DialogTitle>
         </DialogHeader>
 
-        {/* Content with enhanced styling */}
+        {/* Content with enhanced styling and text color enforcement */}
         <div
-          className="overflow-y-auto pr-2 pb-4 flex-1 relative z-10 custom-scrollbar min-h-0"
+          className="overflow-y-auto px-6 pb-4 flex-1 relative z-10 custom-scrollbar min-h-0"
           style={{
             background: 'linear-gradient(to bottom, rgba(212, 175, 55, 0.02) 0%, transparent 20%)',
+            color: SALON_LUXE_COLORS.text.primary,
           }}
         >
-          {children}
+          <div style={{ color: SALON_LUXE_COLORS.text.primary }}>
+            {children}
+          </div>
         </div>
 
-        {/* Footer with golden border and glassmorphism */}
+        {/* Footer with golden border, glassmorphism, and proper button alignment */}
         {footer && (
           <div
-            className="flex gap-3 pt-5 border-t mt-0 relative z-10 flex-shrink-0"
+            className="flex items-center justify-end gap-3 pt-5 border-t mt-0 relative z-10 flex-shrink-0 px-6 pb-6"
             style={{
               borderColor: 'rgba(212, 175, 55, 0.25)',
               borderWidth: '1px',
@@ -173,22 +209,56 @@ export function SalonLuxeModal({
           </div>
         )}
 
-        {/* Custom Scrollbar Styles */}
-        <style jsx>{`
-          .custom-scrollbar::-webkit-scrollbar {
+        {/* Custom Scrollbar Styles & Enterprise Text Color Enforcement */}
+        <style jsx global>{`
+          /* Scrollbar Styling */
+          .salon-luxe-modal .custom-scrollbar::-webkit-scrollbar {
             width: 8px;
           }
-          .custom-scrollbar::-webkit-scrollbar-track {
+          .salon-luxe-modal .custom-scrollbar::-webkit-scrollbar-track {
             background: ${SALON_LUXE_COLORS.charcoal.lighter};
             border-radius: 4px;
           }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
+          .salon-luxe-modal .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(154, 163, 174, 0.4);
             border-radius: 4px;
           }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          .salon-luxe-modal .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: rgba(154, 163, 174, 0.6);
           }
+
+          /* Enterprise Text Color Enforcement - Critical for Dark Theme */
+          .salon-luxe-modal p,
+          .salon-luxe-modal span,
+          .salon-luxe-modal div,
+          .salon-luxe-modal label,
+          .salon-luxe-modal li {
+            color: ${SALON_LUXE_COLORS.text.primary} !important;
+          }
+
+          /* Preserve explicit color overrides */
+          .salon-luxe-modal [style*="color:"] {
+            color: inherit !important;
+          }
+
+          /* Headings should be even brighter */
+          .salon-luxe-modal h1,
+          .salon-luxe-modal h2,
+          .salon-luxe-modal h3,
+          .salon-luxe-modal h4,
+          .salon-luxe-modal h5,
+          .salon-luxe-modal h6 {
+            color: ${SALON_LUXE_COLORS.champagne.lightest} !important;
+          }
+
+          /* Input text should be bright */
+          .salon-luxe-modal input,
+          .salon-luxe-modal textarea,
+          .salon-luxe-modal select {
+            color: ${SALON_LUXE_COLORS.text.primary} !important;
+          }
+
+          /* Animations */
           @keyframes gradient {
             0%,
             100% {
@@ -206,6 +276,30 @@ export function SalonLuxeModal({
           }
           .animate-gradient {
             animation: gradient 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          }
+
+          /* Modal slide-in animation with soft entrance */
+          @keyframes modalSlideIn {
+            0% {
+              opacity: 0;
+              transform: translate(-50%, -50%) perspective(2000px) scale(0.95) translateY(-20px) translateZ(0) rotateX(10deg);
+            }
+            100% {
+              opacity: 1;
+              transform: translate(-50%, -50%) perspective(2000px) scale(1) translateY(0) translateZ(0) rotateX(0deg);
+            }
+          }
+          .animate-modalSlideIn {
+            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: transform 0.15s ease-out, box-shadow 0.2s ease-out, border-image 0.2s ease-out;
+          }
+
+          /* Ensure modal is properly centered */
+          .salon-luxe-modal {
+            position: fixed !important;
+            left: 50% !important;
+            top: 50% !important;
+            margin: 0 !important;
           }
         `}</style>
       </DialogContent>

@@ -70,12 +70,15 @@ export interface UseUniversalTransactionConfig {
  * Follows the same pattern as useUniversalEntity
  */
 export function useUniversalTransaction(config: UseUniversalTransactionConfig = {}) {
-  const { organization } = useHERAAuth()
+  const { organization, user } = useHERAAuth()
   const queryClient = useQueryClient()
 
   // Use passed organizationId if provided, otherwise fall back to useHERAAuth
   const organizationId = config.organizationId || organization?.id
   const { filters = {} } = config
+
+  // ✅ ENTERPRISE AUDIT TRAIL: Extract user entity ID for audit tracking
+  const userEntityId = user?.entity_id
 
   // Build query key
   const queryKey = useMemo(
@@ -184,7 +187,9 @@ export function useUniversalTransaction(config: UseUniversalTransactionConfig = 
         p_total_amount: payload.total_amount || 0,
         p_metadata: {
           ...(payload.metadata || {}),
-          ...(payload.status && { status: payload.status }) // ✅ Include status in metadata
+          ...(payload.status && { status: payload.status }), // ✅ Include status in metadata
+          // ✅ ENTERPRISE AUDIT TRAIL: Include created_by for tracking who created the transaction
+          ...(userEntityId && { created_by: userEntityId })
         },
         p_lines: payload.lines || []
       })
@@ -238,10 +243,12 @@ export function useUniversalTransaction(config: UseUniversalTransactionConfig = 
       }
 
       // ✅ Handle metadata update (preserve existing metadata, update status if needed)
-      if (updates.metadata || updates.status) {
+      if (updates.metadata || updates.status || userEntityId) {
         const mergedMetadata = {
           ...(updates.metadata || {}),
-          ...(updates.status && { status: updates.status })
+          ...(updates.status && { status: updates.status }),
+          // ✅ ENTERPRISE AUDIT TRAIL: Include updated_by for tracking who modified the transaction
+          ...(userEntityId && { updated_by: userEntityId })
         }
         updatePayload.p_metadata = mergedMetadata as Json
       }
@@ -277,10 +284,17 @@ export function useUniversalTransaction(config: UseUniversalTransactionConfig = 
 
       console.log('[useUniversalTransaction] Deleting transaction:', {
         transaction_id,
-        force
+        force,
+        updated_by: userEntityId // ✅ Log for audit visibility
       })
 
-      const result = await deleteTransaction(transaction_id, organizationId, { force })
+      // ✅ ENTERPRISE AUDIT TRAIL: Include updated_by in the delete options
+      // Note: Soft deletes update the status, so we use updated_by (not deleted_by)
+      const result = await deleteTransaction(transaction_id, organizationId, {
+        force,
+        // Pass updated_by for audit trail (soft deletes are updates)
+        ...(userEntityId && { updated_by: userEntityId })
+      })
 
       return result
     },

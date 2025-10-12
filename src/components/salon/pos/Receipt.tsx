@@ -4,7 +4,6 @@ import { useRef } from 'react'
 import {
   Printer,
   Download,
-  Mail,
   X,
   Receipt as ReceiptIcon,
   Calendar,
@@ -29,6 +28,7 @@ interface ReceiptProps {
     customer_name?: string
     appointment_id?: string
     organization_name?: string
+    currency?: string // ✅ Dynamic currency support
     branch_name: string
     branch_address?: string
     branch_phone?: string
@@ -84,6 +84,9 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
 
   if (!saleData) return null
 
+  // ✅ ENTERPRISE: Use dynamic currency from organization (default to AED)
+  const currency = saleData.currency || 'AED'
+
   const handlePrint = () => {
     const printWindow = window.open('', '_blank')
     if (!printWindow) return
@@ -137,17 +140,93 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
   }
 
   const handleDownload = () => {
-    // Generate a more detailed text version for download
-    const receiptText = generateReceiptText()
-    const blob = new Blob([receiptText], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `receipt_${saleData.transaction_code}.txt`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+    // ✅ ENTERPRISE FIX: Generate proper PDF instead of text file
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const receiptContent = receiptRef.current?.innerHTML || ''
+
+    // Create a properly formatted HTML document for PDF generation
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Receipt - ${saleData.transaction_code}</title>
+          <meta charset="UTF-8">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+              line-height: 1.6;
+              font-size: 14px;
+              color: #000;
+            }
+            .receipt {
+              max-width: 400px;
+              margin: 0 auto;
+              padding: 20px;
+              border: 1px solid #ddd;
+            }
+            .center { text-align: center; margin-bottom: 15px; }
+            .bold { font-weight: bold; }
+            .line {
+              border-top: 1px solid #333;
+              margin: 15px 0;
+            }
+            .flex {
+              display: flex;
+              justify-content: space-between;
+              margin: 8px 0;
+            }
+            .small { font-size: 12px; color: #666; }
+            h1 { font-size: 20px; margin-bottom: 5px; }
+            h2 { font-size: 16px; margin-bottom: 10px; }
+            .stylist-info {
+              background-color: #f8f9fa;
+              padding: 4px 8px;
+              border-radius: 4px;
+              margin: 4px 0;
+              font-size: 12px;
+            }
+            .section-title {
+              font-weight: bold;
+              margin: 15px 0 8px 0;
+              font-size: 14px;
+            }
+            .item { margin: 10px 0; }
+            .payment-summary {
+              background-color: #f5f5f5;
+              padding: 15px;
+              margin: 15px 0;
+              border-radius: 4px;
+            }
+            @media print {
+              body { margin: 0; padding: 10px; }
+              .no-print { display: none !important; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="receipt">
+            ${receiptContent}
+          </div>
+          <script>
+            // Auto-print and close
+            window.onload = function() {
+              window.print();
+              // Close window after printing (user can cancel)
+              setTimeout(function() {
+                window.close();
+              }, 100);
+            };
+          </script>
+        </body>
+      </html>
+    `
+
+    printWindow.document.write(htmlContent)
+    printWindow.document.close()
   }
 
   const generateReceiptText = () => {
@@ -175,7 +254,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
       if (item.stylist_name) lines.push(`  Stylist: ${item.stylist_name}`)
       if (item.notes) lines.push(`  Note: ${item.notes}`)
       lines.push(
-        `  ${item.quantity} x $${item.unit_price.toFixed(2)} = $${item.line_amount.toFixed(2)}`
+        `  ${item.quantity} x ${currency} ${item.unit_price.toFixed(2)} = ${currency} ${item.line_amount.toFixed(2)}`
       )
       lines.push('')
     })
@@ -184,7 +263,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
       lines.push('DISCOUNTS:')
       saleData.discounts.forEach(discount => {
         lines.push(
-          `${discount.description}: -${discount.type === 'percentage' ? `${discount.value}%` : `$${discount.value.toFixed(2)}`}`
+          `${discount.description}: -${discount.type === 'percentage' ? `${discount.value}%` : `${currency} ${discount.value.toFixed(2)}`}`
         )
       })
       lines.push('')
@@ -194,37 +273,32 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
       lines.push('TIPS:')
       saleData.tips.forEach(tip => {
         lines.push(
-          `${tip.stylist_name ? `Tip for ${tip.stylist_name}` : 'General Tip'} (${tip.method}): +$${tip.amount.toFixed(2)}`
+          `${tip.stylist_name ? `Tip for ${tip.stylist_name}` : 'General Tip'} (${tip.method}): +${currency} ${tip.amount.toFixed(2)}`
         )
       })
       lines.push('')
     }
 
     lines.push('-'.repeat(40))
-    lines.push(`Subtotal: $${saleData.totals.subtotal.toFixed(2)}`)
+    lines.push(`Subtotal: ${currency} ${saleData.totals.subtotal.toFixed(2)}`)
     if (saleData.totals.discountAmount > 0)
-      lines.push(`Discounts: -$${saleData.totals.discountAmount.toFixed(2)}`)
-    if (saleData.totals.tipAmount > 0) lines.push(`Tips: +$${saleData.totals.tipAmount.toFixed(2)}`)
-    if (saleData.totals.taxAmount > 0) lines.push(`Tax: $${saleData.totals.taxAmount.toFixed(2)}`)
-    lines.push(`TOTAL: $${saleData.totals.total.toFixed(2)}`)
+      lines.push(`Discounts: -${currency} ${saleData.totals.discountAmount.toFixed(2)}`)
+    if (saleData.totals.tipAmount > 0) lines.push(`Tips: +${currency} ${saleData.totals.tipAmount.toFixed(2)}`)
+    if (saleData.totals.taxAmount > 0) lines.push(`Tax: ${currency} ${saleData.totals.taxAmount.toFixed(2)}`)
+    lines.push(`TOTAL: ${currency} ${saleData.totals.total.toFixed(2)}`)
     lines.push('')
 
     lines.push('PAYMENT:')
     saleData.payments.forEach(payment => {
-      lines.push(`${getPaymentMethodDisplay(payment)}: $${payment.amount.toFixed(2)}`)
+      lines.push(`${getPaymentMethodDisplay(payment)}: ${currency} ${payment.amount.toFixed(2)}`)
     })
-    if (saleData.changeAmount > 0) lines.push(`CHANGE: $${saleData.changeAmount.toFixed(2)}`)
+    if (saleData.changeAmount > 0) lines.push(`CHANGE: ${currency} ${saleData.changeAmount.toFixed(2)}`)
 
     lines.push('='.repeat(40))
     lines.push('Thank you for your business!')
     lines.push(`Transaction ID: ${saleData.transaction_id}`)
 
     return lines.join('\n')
-  }
-
-  const handleEmail = () => {
-    // In a real implementation, you'd send the receipt via email
-    console.log('Email receipt')
   }
 
   const formatDateTime = (timestamp: string) => {
@@ -338,9 +412,9 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>
-                    {item.quantity} × ${item.unit_price.toFixed(2)}
+                    {item.quantity} × {currency} {item.unit_price.toFixed(2)}
                   </span>
-                  <span className="font-bold">${item.line_amount.toFixed(2)}</span>
+                  <span className="font-bold">{currency} {item.line_amount.toFixed(2)}</span>
                 </div>
               </div>
             ))}
@@ -362,7 +436,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
                       -
                       {discount.type === 'percentage'
                         ? `${discount.value}%`
-                        : `$${discount.value.toFixed(2)}`}
+                        : `${currency} ${discount.value.toFixed(2)}`}
                     </span>
                   </div>
                 ))}
@@ -382,7 +456,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
                       💰 {tip.stylist_name ? `Tip for ${tip.stylist_name}` : 'General Tip'} (
                       {tip.method})
                     </span>
-                    <span>+${tip.amount.toFixed(2)}</span>
+                    <span>+{currency} {tip.amount.toFixed(2)}</span>
                   </div>
                 ))}
               </div>
@@ -395,27 +469,27 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
           <div className="space-y-1">
             <div className="flex justify-between">
               <span>Subtotal:</span>
-              <span>${saleData.totals.subtotal.toFixed(2)}</span>
+              <span>{currency} {saleData.totals.subtotal.toFixed(2)}</span>
             </div>
 
             {saleData.totals.discountAmount > 0 && (
               <div className="flex justify-between text-green-600">
                 <span>Total Discounts:</span>
-                <span>-${saleData.totals.discountAmount.toFixed(2)}</span>
+                <span>-{currency} {saleData.totals.discountAmount.toFixed(2)}</span>
               </div>
             )}
 
             {saleData.totals.tipAmount > 0 && (
               <div className="flex justify-between text-blue-600">
                 <span>Total Tips:</span>
-                <span>+${saleData.totals.tipAmount.toFixed(2)}</span>
+                <span>+{currency} {saleData.totals.tipAmount.toFixed(2)}</span>
               </div>
             )}
 
             {saleData.totals.taxAmount > 0 && (
               <div className="flex justify-between">
                 <span>Tax:</span>
-                <span>${saleData.totals.taxAmount.toFixed(2)}</span>
+                <span>{currency} {saleData.totals.taxAmount.toFixed(2)}</span>
               </div>
             )}
 
@@ -423,7 +497,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
 
             <div className="flex justify-between font-bold text-lg">
               <span>TOTAL:</span>
-              <span>${saleData.totals.total.toFixed(2)}</span>
+              <span>{currency} {saleData.totals.total.toFixed(2)}</span>
             </div>
           </div>
 
@@ -435,14 +509,14 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
             {saleData.payments.map(payment => (
               <div key={payment.id} className="flex justify-between text-sm">
                 <span>{getPaymentMethodDisplay(payment)}</span>
-                <span>${payment.amount.toFixed(2)}</span>
+                <span>{currency} {payment.amount.toFixed(2)}</span>
               </div>
             ))}
 
             {saleData.changeAmount > 0 && (
               <div className="flex justify-between font-bold text-sm">
                 <span>CHANGE DUE:</span>
-                <span>${saleData.changeAmount.toFixed(2)}</span>
+                <span>{currency} {saleData.changeAmount.toFixed(2)}</span>
               </div>
             )}
           </div>
@@ -479,7 +553,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
                       <div key={index} className="space-y-1 text-xs commission-info">
                         <div className="flex justify-between font-medium">
                           <span>👤 {stylist.name}</span>
-                          <span>${stylist.total.toFixed(2)}</span>
+                          <span>{currency} {stylist.total.toFixed(2)}</span>
                         </div>
                         <div className="text-muted-foreground">
                           Services: {stylist.services.join(', ')}
@@ -502,10 +576,10 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
                   <div key={commission.stylist_id} className="space-y-1 text-xs commission-info">
                     <div className="flex justify-between font-medium">
                       <span>💰 {commission.stylist_name}</span>
-                      <span>${commission.commission_amount.toFixed(2)}</span>
+                      <span>{currency} {commission.commission_amount.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
-                      <span>Services: ${commission.service_amount.toFixed(2)}</span>
+                      <span>Services: {currency} {commission.service_amount.toFixed(2)}</span>
                       <span>Rate: {(commission.commission_rate * 100).toFixed(0)}%</span>
                     </div>
                   </div>
@@ -532,11 +606,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
           </Button>
           <Button variant="outline" onClick={handleDownload} className="flex-1">
             <Download className="w-4 h-4 mr-2" />
-            PDF
-          </Button>
-          <Button variant="outline" onClick={handleEmail} className="flex-1">
-            <Mail className="w-4 h-4 mr-2" />
-            Email
+            Save PDF
           </Button>
           <Button onClick={onClose} className="flex-1">
             <X className="w-4 h-4 mr-2" />

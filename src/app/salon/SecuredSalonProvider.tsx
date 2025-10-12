@@ -45,6 +45,8 @@ interface SalonSecurityContext extends SecurityContext {
   organization: {
     id: string
     name: string
+    currency: string // ✅ ENTERPRISE: Dynamic currency from organization
+    currencySymbol: string // ✅ ENTERPRISE: Currency symbol for display
     settings?: any
   }
   user: any
@@ -147,7 +149,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       salonRole: 'stylist',
       authMode: 'supabase',
       permissions: [],
-      organization: { id: '', name: '' }, // Empty until JWT validation
+      organization: { id: '', name: '', currency: 'AED', currencySymbol: 'AED' }, // Empty until JWT validation
       user: null,
       isLoading: true, // 🔒 ALWAYS start with loading to force JWT validation
       isAuthenticated: false,
@@ -614,6 +616,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
   /**
    * Load organization details securely
+   * ✅ ENTERPRISE: Loads currency from dynamic data for universal currency support
    */
   const loadOrganizationDetails = async (orgId: string) => {
     try {
@@ -632,9 +635,45 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             .eq('id', orgId)
             .single()
 
+          // ✅ ENTERPRISE: Fetch currency from dynamic data
+          const { data: dynamicData } = await client
+            .from('core_dynamic_data')
+            .select('*')
+            .eq('organization_id', orgId)
+            .eq('entity_id', orgId) // Organization's own dynamic data
+            .eq('field_name', 'currency')
+            .maybeSingle()
+
+          const currency = dynamicData?.field_value_text || org?.metadata?.currency || 'AED'
+
+          // ✅ ENTERPRISE: Currency symbol mapping
+          const currencySymbolMap: Record<string, string> = {
+            'AED': 'AED',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+            'SAR': 'SAR',
+            'QAR': 'QAR',
+            'KWD': 'KWD',
+            'BHD': 'BHD',
+            'OMR': 'OMR',
+            'INR': '₹',
+            'PKR': 'Rs'
+          }
+
+          const currencySymbol = currencySymbolMap[currency] || currency
+
+          console.log('[SecuredSalonProvider] ✅ Loaded organization currency:', {
+            currency,
+            currencySymbol,
+            source: dynamicData ? 'dynamic_data' : 'metadata'
+          })
+
           return {
             id: orgId,
             name: org?.organization_name || 'HairTalkz',
+            currency,
+            currencySymbol,
             settings: org?.metadata || {}
           }
         }
@@ -644,6 +683,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       return {
         id: orgId,
         name: 'HairTalkz',
+        currency: 'AED',
+        currencySymbol: 'AED',
         settings: {}
       }
     }

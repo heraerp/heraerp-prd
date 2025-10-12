@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
 import { flags } from '@/config/flags'
@@ -10,12 +10,15 @@ import { CartSidebar } from '@/components/salon/pos/CartSidebar'
 import { PaymentDialog } from '@/components/salon/pos/PaymentDialog'
 import { Receipt } from '@/components/salon/pos/Receipt'
 import { TicketDetailsModal } from '@/components/salon/pos/TicketDetailsModal'
+import { BillSetupModal } from '@/components/salon/pos/BillSetupModal'
 import { usePosTicket } from '@/hooks/usePosTicket'
 import { useAppointmentLookup } from '@/hooks/useAppointmentLookup'
 import { useCustomerLookup } from '@/hooks/useCustomerLookup'
-import { useToast } from '@/hooks/use-toast'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/hooks/use-toast'
 import { ShoppingCart, CreditCard, Monitor, Sparkles, Receipt as ReceiptIcon, AlertCircle, Building2, UserX, Users } from 'lucide-react'
 import Link from 'next/link'
 
@@ -45,7 +48,10 @@ const COLORS = {
 function POSContent() {
   const { user, organization, selectedBranchId, availableBranches, setSelectedBranchId } =
     useSecuredSalonContext()
+  const { toast } = useToast()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
+  const [isLoadingAppointment, setIsLoadingAppointment] = useState(false)
+  const appointmentLoadAttempted = useRef(false) // 🛡️ Prevent duplicate loads
   const organizationId = organization?.id
 
   // Get organization ID from localStorage for demo mode
@@ -65,7 +71,16 @@ function POSContent() {
   const [defaultStylistId, setDefaultStylistId] = useState<string | undefined>(undefined)
   const [defaultStylistName, setDefaultStylistName] = useState<string | undefined>(undefined)
   const [selectedCustomer, setSelectedCustomer] = useState<any | null>(null)
-  const { toast } = useToast()
+  const [validationError, setValidationError] = useState<{
+    type: 'branch' | 'customer' | 'stylist'
+    message: string
+  } | null>(null)
+  const [isBillSetupOpen, setIsBillSetupOpen] = useState(false)
+  const [pendingItem, setPendingItem] = useState<{
+    item: any
+    staffId?: string
+    staffName?: string
+  } | null>(null)
 
   // Always call hooks - pass empty string if no org ID to satisfy hooks rules
   const posTicketResult = usePosTicket(effectiveOrgId || 'demo-org')
@@ -88,6 +103,305 @@ function POSContent() {
   const { loadAppointment } = appointmentLookupResult
 
   useCustomerLookup(effectiveOrgId || 'demo-org')
+
+  // 🎯 ENTERPRISE: Auto-load appointment from URL parameter
+  useEffect(() => {
+    // 🛡️ CRITICAL: Prevent infinite loops - only attempt load once
+    if (appointmentLoadAttempted.current) {
+      console.log('[POSPage] ⏭️ Skipping - already attempted to load appointment')
+      return
+    }
+
+    // Only run if we have organization ID
+    if (!effectiveOrgId) {
+      console.log('[POSPage] ⏭️ Skipping - no organization ID yet')
+      return
+    }
+
+    // Don't load if ticket already has items
+    if (ticket.lineItems.length > 0) {
+      console.log('[POSPage] ⏭️ Skipping - ticket already has items')
+      appointmentLoadAttempted.current = true
+      return
+    }
+
+    // 🎯 ENTERPRISE: Check sessionStorage FIRST for kanban-passed data
+    const storedAppointment = sessionStorage.getItem('pos_appointment')
+    if (storedAppointment) {
+      try {
+        const appointmentData = JSON.parse(storedAppointment)
+        console.log('[POSPage] 💾 Loading appointment directly from kanban data:', {
+          id: appointmentData.id,
+          customer: appointmentData.customer_name,
+          service: appointmentData.service_name,
+          price: appointmentData.price,
+          source: appointmentData._source
+        })
+
+        // 🛡️ Mark as attempted to prevent re-runs
+        appointmentLoadAttempted.current = true
+        setIsLoadingAppointment(true)
+
+        // Show loading toast
+        toast({
+          title: '📋 Loading Appointment',
+          description: `Loading appointment for ${appointmentData.customer_name}...`,
+          duration: 1500
+        })
+
+        // 🎯 ENTERPRISE: Use data directly from kanban - NO DATABASE CALL NEEDED!
+        // Add customer info
+        if (appointmentData.customer_id && appointmentData.customer_name) {
+          console.log('[POSPage] 👤 Adding customer:', appointmentData.customer_name)
+          addCustomerToTicket({
+            customer_id: appointmentData.customer_id,
+            customer_name: appointmentData.customer_name
+          })
+          setSelectedCustomer({
+            id: appointmentData.customer_id,
+            entity_name: appointmentData.customer_name
+          })
+        }
+
+        // Add stylist as default
+        if (appointmentData.stylist_id && appointmentData.stylist_name) {
+          console.log('[POSPage] 💇 Setting default stylist:', appointmentData.stylist_name)
+          setDefaultStylistId(appointmentData.stylist_id)
+          setDefaultStylistName(appointmentData.stylist_name)
+        }
+
+        // Set branch if available
+        if (appointmentData.branch_id) {
+          console.log('[POSPage] 🏢 Setting branch:', appointmentData.branch_id)
+          setSelectedBranchId(appointmentData.branch_id)
+        }
+
+        // 🎯 ENTERPRISE: Build services array from kanban data
+        // Kanban may have single service or multiple services in metadata
+        const services = []
+
+        if (appointmentData.service_id && appointmentData.service_name) {
+          // Single service from card
+          services.push({
+            id: appointmentData.service_id,
+            name: appointmentData.service_name,
+            price: appointmentData.price || 0,
+            ...(appointmentData.stylist_id ? { stylist_id: appointmentData.stylist_id } : {}),
+            ...(appointmentData.stylist_name ? { stylist_name: appointmentData.stylist_name } : {})
+          })
+        }
+
+        // Check metadata for additional services
+        if (appointmentData.metadata?.service_ids) {
+          const serviceIds = Array.isArray(appointmentData.metadata.service_ids)
+            ? appointmentData.metadata.service_ids
+            : [appointmentData.metadata.service_ids]
+
+          serviceIds.forEach((serviceId: string, index: number) => {
+            if (serviceId && !services.find(s => s.id === serviceId)) {
+              services.push({
+                id: serviceId,
+                name: appointmentData.metadata?.service_names?.[index] || `Service ${index + 1}`,
+                price: appointmentData.metadata?.service_prices?.[index] || 0,
+                ...(appointmentData.stylist_id ? { stylist_id: appointmentData.stylist_id } : {}),
+                ...(appointmentData.stylist_name ? { stylist_name: appointmentData.stylist_name } : {})
+              })
+            }
+          })
+        }
+
+        console.log('[POSPage] 🎨 Adding services to cart:', services)
+
+        // Add services to appointment
+        if (services.length > 0) {
+          addItemsFromAppointment({
+            appointment_id: appointmentData.id,
+            customer_id: appointmentData.customer_id || '',
+            customer_name: appointmentData.customer_name || 'Walk-in',
+            services
+          })
+        }
+
+        // Clear sessionStorage after successful load to prevent stale data
+        sessionStorage.removeItem('pos_appointment')
+
+        // Remove appointment param from URL for clean state
+        const url = new URL(window.location.href)
+        url.searchParams.delete('appointment')
+        window.history.replaceState({}, '', url.pathname + url.search)
+
+        // Show success toast
+        toast({
+          title: '✅ Appointment Loaded',
+          description: `Ready to process payment for ${appointmentData.customer_name}`,
+          duration: 3000
+        })
+
+        console.log('[POSPage] ✅ Appointment loaded successfully from kanban data!')
+        setIsLoadingAppointment(false)
+      } catch (error) {
+        console.error('[POSPage] ❌ Failed to parse appointment data from sessionStorage:', error)
+        setIsLoadingAppointment(false)
+        toast({
+          title: '❌ Loading Failed',
+          description: 'Failed to load appointment data. Please try again from kanban.',
+          variant: 'destructive',
+          duration: 5000
+        })
+      }
+      return
+    }
+
+    // Check for appointment parameter in URL (fallback method)
+    const urlParams = new URLSearchParams(window.location.search)
+    const appointmentId = urlParams.get('appointment')
+
+    if (!appointmentId) {
+      return
+    }
+
+    // Load appointment from URL parameter
+    console.log('[POSPage] 🚀 Loading appointment from URL:', appointmentId)
+    console.log('[POSPage] 📋 Organization ID:', effectiveOrgId)
+
+    // 🛡️ Mark as attempted to prevent re-runs
+    appointmentLoadAttempted.current = true
+    setIsLoadingAppointment(true)
+
+    // Show loading toast
+    toast({
+      title: '📋 Loading Appointment',
+      description: 'Fetching appointment details...',
+      duration: 2000
+    })
+
+    // 🔍 DEBUG: Query database directly to see what's there
+    universalApi.read({
+      table: 'core_entities',
+      filters: [
+        { field: 'organization_id', operator: 'eq', value: effectiveOrgId },
+        { field: 'id', operator: 'eq', value: appointmentId }
+      ]
+    }).then(directResult => {
+      console.log('[POSPage] 🔍 Direct DB query result:', {
+        found: directResult?.data?.length || 0,
+        entity_type: directResult?.data?.[0]?.entity_type,
+        entity_name: directResult?.data?.[0]?.entity_name,
+        full_data: directResult?.data?.[0]
+      })
+    }).catch(err => {
+      console.error('[POSPage] ❌ Direct DB query failed:', err)
+    })
+
+    loadAppointment(appointmentId).then(fullAppointment => {
+      if (fullAppointment) {
+        console.log('[POSPage] ✅ Appointment loaded successfully:', fullAppointment)
+
+        // Add customer info
+        if (fullAppointment.customer_id && fullAppointment.customer_name) {
+          addCustomerToTicket({
+            customer_id: fullAppointment.customer_id,
+            customer_name: fullAppointment.customer_name
+          })
+          setSelectedCustomer({
+            id: fullAppointment.customer_id,
+            entity_name: fullAppointment.customer_name
+          })
+        }
+
+        // Add stylist as default
+        if (fullAppointment.stylist_id && fullAppointment.stylist_name) {
+          setDefaultStylistId(fullAppointment.stylist_id)
+          setDefaultStylistName(fullAppointment.stylist_name)
+        }
+
+        // Add services from appointment
+        addItemsFromAppointment({
+          appointment_id: fullAppointment.id,
+          customer_id: fullAppointment.customer_id || '',
+          customer_name: fullAppointment.customer_name || 'Walk-in',
+          services: fullAppointment.service_ids?.map((serviceId: string, index: number) => ({
+            id: serviceId,
+            name: fullAppointment.service_names?.[index] || `Service ${index + 1}`,
+            price: fullAppointment.service_prices?.[index] || 0,
+            ...(fullAppointment.stylist_id ? { stylist_id: fullAppointment.stylist_id } : {}),
+            ...(fullAppointment.stylist_name ? { stylist_name: fullAppointment.stylist_name } : {})
+          })) || []
+        })
+
+        // Remove appointment param from URL for clean state
+        const url = new URL(window.location.href)
+        url.searchParams.delete('appointment')
+        window.history.replaceState({}, '', url.pathname + url.search)
+
+        // Show success toast
+        toast({
+          title: '✅ Appointment Loaded',
+          description: `Appointment for ${fullAppointment.customer_name} is ready for payment`,
+          duration: 3000
+        })
+
+        setIsLoadingAppointment(false)
+      } else {
+        console.error('[POSPage] ❌ Appointment not found:', appointmentId)
+        setIsLoadingAppointment(false)
+        toast({
+          title: '❌ Appointment Not Found',
+          description: 'The appointment could not be loaded. Please check the appointment ID.',
+          variant: 'destructive',
+          duration: 5000
+        })
+      }
+    }).catch(error => {
+      console.error('[POSPage] ❌ Failed to load appointment:', error)
+      setIsLoadingAppointment(false)
+      toast({
+        title: '❌ Loading Failed',
+        description: `Failed to load appointment: ${error.message}`,
+        variant: 'destructive',
+        duration: 5000
+      })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [effectiveOrgId]) // 🛡️ CRITICAL: Only run when org ID changes, ref + guard prevents duplicates
+
+  // Enterprise-grade validation: Auto-clear errors when conditions are met
+  useEffect(() => {
+    if (!validationError) return
+
+    // Check if the validation error condition has been resolved
+    let shouldClear = false
+
+    switch (validationError.type) {
+      case 'branch':
+        // Clear error when branch is selected
+        if (selectedBranchId) {
+          shouldClear = true
+        }
+        break
+
+      case 'customer':
+        // Clear error when customer is selected
+        if (ticket.customer_id) {
+          shouldClear = true
+        }
+        break
+
+      case 'stylist':
+        // Clear error when all services have stylists assigned
+        const servicesWithoutStylist = ticket.lineItems.filter(
+          item => item.entity_type === 'service' && !item.stylist_id
+        )
+        if (servicesWithoutStylist.length === 0) {
+          shouldClear = true
+        }
+        break
+    }
+
+    if (shouldClear) {
+      setValidationError(null)
+    }
+  }, [validationError, selectedBranchId, ticket.customer_id, ticket.lineItems])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -155,11 +469,24 @@ function POSContent() {
 
   const handleAddItem = useCallback(
     (item: any, staffId?: string, staffName?: string) => {
+      // Check if we need to show setup modal for first item or missing required data
+      const isFirstItem = !ticket.lineItems || ticket.lineItems.length === 0
+      const needsBranch = !selectedBranchId
+      const isService = item.__kind === 'SERVICE'
+      const needsStylist = isService && !staffId && !defaultStylistId
+
+      // Show setup modal if it's first item OR missing required info
+      if (isFirstItem || needsBranch || needsStylist) {
+        setPendingItem({ item, staffId, staffName })
+        setIsBillSetupOpen(true)
+        return
+      }
+
       // For services: use provided stylist OR default stylist
       let finalStylistId = staffId
       let finalStylistName = staffName
 
-      if (item.__kind === 'SERVICE') {
+      if (isService) {
         // If stylist provided, set as default for the bill
         if (staffId && staffName) {
           setDefaultStylistId(staffId)
@@ -175,7 +502,7 @@ function POSContent() {
       // Transform PosItem to LineItem format
       addLineItem({
         entity_id: item.id || item.entity_id || item.raw?.id,
-        entity_type: item.__kind === 'SERVICE' ? 'service' : 'product',
+        entity_type: isService ? 'service' : 'product',
         entity_name: item.title || item.entity_name || item.raw?.entity_name || 'Unknown Item',
         quantity: 1,
         unit_price: Number(item.price || item.unit_price || item.raw?.price || 0),
@@ -183,80 +510,71 @@ function POSContent() {
         ...(finalStylistName ? { stylist_name: finalStylistName } : {})
       })
     },
-    [defaultStylistId, defaultStylistName, addLineItem]
+    [ticket.lineItems, selectedBranchId, defaultStylistId, defaultStylistName, addLineItem]
   )
 
   const handlePayment = useCallback(() => {
     if (!ticket?.lineItems || ticket.lineItems.length === 0) return
 
-    // Validate branch is selected
-    if (!selectedBranchId) {
-      toast({
-        variant: 'destructive',
-        title: (
-          <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4" style={{ color: COLORS.roseDark }} />
-            <span>Branch Required</span>
-          </div>
-        ),
-        description: 'Please select a branch to continue with payment',
-        className: 'border-0',
-        style: {
-          background: `linear-gradient(135deg, ${COLORS.rose}25 0%, ${COLORS.roseDark}15 50%, ${COLORS.charcoal} 100%)`,
-          borderLeft: `4px solid ${COLORS.roseDark}`,
-          boxShadow: `0 4px 16px ${COLORS.rose}20`
-        }
-      })
-      return
-    }
-
-    // Validate customer is selected
-    if (!ticket.customer_id) {
-      toast({
-        variant: 'destructive',
-        title: (
-          <div className="flex items-center gap-2">
-            <UserX className="w-4 h-4" style={{ color: COLORS.roseDark }} />
-            <span>Customer Required</span>
-          </div>
-        ),
-        description: 'Press "/" to search or create a walk-in customer',
-        className: 'border-0',
-        style: {
-          background: `linear-gradient(135deg, ${COLORS.rose}25 0%, ${COLORS.roseDark}15 50%, ${COLORS.charcoal} 100%)`,
-          borderLeft: `4px solid ${COLORS.roseDark}`,
-          boxShadow: `0 4px 16px ${COLORS.rose}20`
-        }
-      })
-      return
-    }
-
-    // Validate at least one service has a stylist assigned
+    // Check if any validation is needed
+    const needsBranch = !selectedBranchId
+    const needsCustomer = !ticket.customer_id
     const servicesWithoutStylist = ticket.lineItems.filter(
       item => item.entity_type === 'service' && !item.stylist_id
     )
-    if (servicesWithoutStylist.length > 0) {
-      toast({
-        variant: 'destructive',
-        title: (
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4" style={{ color: COLORS.roseDark }} />
-            <span>Stylist Required</span>
-          </div>
-        ),
-        description: 'All services must have a stylist assigned',
-        className: 'border-0',
-        style: {
-          background: `linear-gradient(135deg, ${COLORS.rose}25 0%, ${COLORS.roseDark}15 50%, ${COLORS.charcoal} 100%)`,
-          borderLeft: `4px solid ${COLORS.roseDark}`,
-          boxShadow: `0 4px 16px ${COLORS.rose}20`
-        }
-      })
+    const needsStylist = servicesWithoutStylist.length > 0
+
+    // If any validation needed, show the setup modal
+    if (needsBranch || needsCustomer || needsStylist) {
+      setIsBillSetupOpen(true)
       return
     }
 
     setIsPaymentOpen(true)
-  }, [ticket, selectedBranchId, toast])
+  }, [ticket, selectedBranchId])
+
+  const handleBillSetupComplete = useCallback(
+    (data: {
+      branchId: string
+      branchName: string
+      customerId: string
+      customerName: string
+      stylistId: string
+      stylistName: string
+    }) => {
+      // Update branch
+      setSelectedBranchId(data.branchId)
+
+      // Update customer (always provided now)
+      addCustomerToTicket({
+        customer_id: data.customerId,
+        customer_name: data.customerName
+      })
+      setSelectedCustomer({ id: data.customerId, entity_name: data.customerName })
+
+      // Update default stylist (always provided now)
+      setDefaultStylistId(data.stylistId)
+      setDefaultStylistName(data.stylistName)
+
+      // If there's a pending item, add it now
+      if (pendingItem) {
+        const { item } = pendingItem
+
+        addLineItem({
+          entity_id: item.id || item.entity_id || item.raw?.id,
+          entity_type: item.__kind === 'SERVICE' ? 'service' : 'product',
+          entity_name: item.title || item.entity_name || item.raw?.entity_name || 'Unknown Item',
+          quantity: 1,
+          unit_price: Number(item.price || item.unit_price || item.raw?.price || 0),
+          stylist_id: data.stylistId,
+          stylist_name: data.stylistName
+        })
+
+        setPendingItem(null)
+      }
+    },
+    [pendingItem, setSelectedBranchId, addCustomerToTicket, addLineItem]
+  )
 
   const handleClearAll = useCallback(() => {
     clearTicket()
@@ -264,7 +582,15 @@ function POSContent() {
     setDefaultStylistName(undefined)
     setSelectedBranchId(undefined)
     setSelectedCustomer(null)
+    // 🛡️ Reset appointment load flag so user can load another appointment
+    appointmentLoadAttempted.current = false
   }, [clearTicket, setSelectedBranchId])
+
+  // Memoized branch change handler to prevent infinite loops
+  const handleBranchChange = useCallback((branchId: string) => {
+    console.log('[POSPage] ✅ Branch changed from catalog:', branchId)
+    setSelectedBranchId(branchId)
+  }, [setSelectedBranchId])
 
   const handlePaymentComplete = useCallback(
     (saleData: any) => {
@@ -428,82 +754,84 @@ function POSContent() {
 
       {/* Main content wrapper */}
       <div className="relative" style={{ minHeight: '100vh' }}>
-        {/* Enhanced Header */}
+        {/* Compact Enterprise Header */}
         <div
-          className="sticky top-0 z-40 px-8 py-5 backdrop-blur-xl transition-all duration-500 ease-out animate-slideDown"
+          className="sticky top-0 z-40 px-6 py-3 backdrop-blur-xl transition-all duration-500 ease-out animate-slideDown"
           style={{
-            backgroundColor: `${COLORS.charcoal}E6`,
-            borderBottom: `1px solid ${COLORS.gold}20`,
-            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(212, 175, 55, 0.1)'
+            backgroundColor: `${COLORS.charcoal}F0`,
+            borderBottom: `1px solid ${COLORS.gold}25`,
+            boxShadow: '0 2px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(212, 175, 55, 0.08)'
           }}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-4">
-                <div
-                  className="p-3 rounded-xl"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
-                    border: `1px solid ${COLORS.gold}30`,
-                    boxShadow: `0 0 20px ${COLORS.gold}15`
-                  }}
-                >
-                  <Monitor className="w-7 h-7" style={{ color: COLORS.gold }} />
-                </div>
+            <div className="flex items-center space-x-4">
+              <div
+                className="p-2 rounded-lg"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                  border: `1px solid ${COLORS.gold}30`,
+                  boxShadow: `0 0 12px ${COLORS.gold}12`
+                }}
+              >
+                <Monitor className="w-5 h-5" style={{ color: COLORS.gold }} />
+              </div>
+              <div>
                 <h1
-                  className="text-4xl font-bold tracking-tight"
+                  className="text-2xl font-bold tracking-tight"
                   style={{
                     background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 60%, ${COLORS.plumLight} 100%)`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    letterSpacing: '-0.02em'
+                    letterSpacing: '-0.01em'
                   }}
                 >
                   Point of Sale
                 </h1>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <Badge
+                    className="px-2 py-0.5 text-[10px] font-semibold"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.emeraldDark}20 0%, ${COLORS.emerald}15 100%)`,
+                      color: COLORS.emerald,
+                      border: `1px solid ${COLORS.emerald}50`,
+                      boxShadow: `0 0 12px ${COLORS.emerald}20`
+                    }}
+                  >
+                    <div
+                      className="w-1.5 h-1.5 rounded-full mr-1.5 animate-pulse"
+                      style={{
+                        backgroundColor: COLORS.emerald,
+                        boxShadow: `0 0 6px ${COLORS.emerald}80`
+                      }}
+                    />
+                    Live
+                  </Badge>
+                </div>
               </div>
-
-              <Badge
-                className="px-4 py-1.5 font-semibold"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.emeraldDark}20 0%, ${COLORS.emerald}15 100%)`,
-                  color: COLORS.emerald,
-                  border: `1px solid ${COLORS.emerald}60`,
-                  boxShadow: `0 0 20px ${COLORS.emerald}30, 0 4px 12px ${COLORS.emerald}20`
-                }}
-              >
-                <div
-                  className="w-2 h-2 rounded-full mr-2.5 animate-pulse"
-                  style={{
-                    backgroundColor: COLORS.emerald,
-                    boxShadow: `0 0 8px ${COLORS.emerald}80`
-                  }}
-                />
-                Live
-              </Badge>
             </div>
 
-            {/* Payment History Link - Plum accent for secondary action */}
+            {/* Payment History Link - Compact */}
             <Link href="/salon/pos/payments">
               <Button
                 variant="outline"
-                className="px-6 py-2.5 font-semibold transition-all duration-300 hover:scale-105 group"
+                size="sm"
+                className="px-4 py-2 text-xs font-semibold transition-all duration-300 hover:scale-105"
                 style={{
                   background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
-                  border: `1px solid ${COLORS.plum}40`,
+                  border: `1.5px solid ${COLORS.plum}70`,
                   color: COLORS.champagne,
-                  boxShadow: `0 2px 12px ${COLORS.plum}15`
+                  boxShadow: `0 2px 12px ${COLORS.plum}25, 0 0 0 1px ${COLORS.plum}30`
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = `${COLORS.plum}80`
-                  e.currentTarget.style.boxShadow = `0 4px 20px ${COLORS.plum}30`
+                  e.currentTarget.style.borderColor = COLORS.plum
+                  e.currentTarget.style.boxShadow = `0 4px 20px ${COLORS.plum}40, 0 0 0 1px ${COLORS.plum}50`
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = `${COLORS.plum}40`
-                  e.currentTarget.style.boxShadow = `0 2px 12px ${COLORS.plum}15`
+                  e.currentTarget.style.borderColor = `${COLORS.plum}70`
+                  e.currentTarget.style.boxShadow = `0 2px 12px ${COLORS.plum}25, 0 0 0 1px ${COLORS.plum}30`
                 }}
               >
-                <ReceiptIcon className="w-4 h-4 mr-2 transition-colors" style={{ color: COLORS.plum }} />
+                <ReceiptIcon className="w-3.5 h-3.5 mr-1.5" style={{ color: COLORS.plum }} />
                 Payment History
               </Button>
             </Link>
@@ -511,7 +839,7 @@ function POSContent() {
         </div>
 
         {/* Main Content - Two Pane Layout */}
-        <div className="flex h-[calc(100vh-92px)]">
+        <div className="flex h-[calc(100vh-62px)]">
           {/* Left Pane - Catalog */}
           <div
             className="flex-1 min-w-0 animate-fadeIn"
@@ -529,6 +857,8 @@ function POSContent() {
               {...(ticket.appointment_id ? { currentAppointmentId: ticket.appointment_id } : {})}
               {...(defaultStylistId ? { defaultStylistId } : {})}
               {...(defaultStylistName ? { defaultStylistName } : {})}
+              onBranchChange={handleBranchChange}
+              contextBranchId={selectedBranchId}
             />
           </div>
 
@@ -599,6 +929,110 @@ function POSContent() {
           onClose={() => setIsReceiptOpen(false)}
           saleData={completedSale}
         />
+
+        {/* Bill Setup Modal - Unified Branch, Customer, Stylist Selection */}
+        <BillSetupModal
+          open={isBillSetupOpen}
+          onClose={() => {
+            setIsBillSetupOpen(false)
+            setPendingItem(null)
+          }}
+          onComplete={handleBillSetupComplete}
+          organizationId={effectiveOrgId!}
+          currentBranchId={selectedBranchId}
+          currentCustomerId={ticket.customer_id}
+          currentStylistId={defaultStylistId}
+          title="Bill Setup"
+          description="All three fields are required for every sale"
+        />
+
+        {/* Validation Error Modal */}
+        <SalonLuxeModal
+          open={!!validationError}
+          onClose={() => setValidationError(null)}
+          title={
+            validationError?.type === 'branch'
+              ? 'Branch Required'
+              : validationError?.type === 'customer'
+                ? 'Customer Required'
+                : 'Stylist Required'
+          }
+          description={validationError?.message}
+          icon={
+            validationError?.type === 'branch' ? (
+              <Building2 className="w-6 h-6" />
+            ) : validationError?.type === 'customer' ? (
+              <UserX className="w-6 h-6" />
+            ) : (
+              <Users className="w-6 h-6" />
+            )
+          }
+          size="sm"
+          footer={
+            <div className="flex justify-end w-full">
+              <SalonLuxeButton variant="primary" onClick={() => setValidationError(null)}>
+                Got it
+              </SalonLuxeButton>
+            </div>
+          }
+        >
+          <div className="py-4">
+            <div
+              className="p-4 rounded-lg"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.rose}15 0%, ${COLORS.roseDark}10 100%)`,
+                border: `1px solid ${COLORS.rose}40`
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: COLORS.roseDark }} />
+                <div>
+                  <p className="text-sm font-medium mb-2" style={{ color: COLORS.champagne }}>
+                    Action Required:
+                  </p>
+                  <ul className="text-sm space-y-1.5" style={{ color: COLORS.lightText }}>
+                    {validationError?.type === 'branch' && (
+                      <>
+                        <li className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                          Select a branch from the catalog section
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                          All items must be from a specific location
+                        </li>
+                      </>
+                    )}
+                    {validationError?.type === 'customer' && (
+                      <>
+                        <li className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                          Use the customer search in the cart
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                          Or press "/" to quickly search customers
+                        </li>
+                      </>
+                    )}
+                    {validationError?.type === 'stylist' && (
+                      <>
+                        <li className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                          Each service needs a stylist assigned
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                          First item selection will prompt for stylist
+                        </li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </SalonLuxeModal>
 
         {/* Mobile Cart Floating Button */}
         <div className="lg:hidden fixed bottom-6 right-6 z-50">

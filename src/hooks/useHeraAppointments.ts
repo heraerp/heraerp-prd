@@ -196,6 +196,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
   const queryClient = useQueryClient()
 
   // ✅ LAYER 1: Fetch appointment transactions using useUniversalTransaction (RPC API v2)
+  // 🚀 OPTIMIZED: Smart caching - appointments change frequently so 30s stale time
   const {
     transactions,
     isLoading: transactionsLoading,
@@ -215,8 +216,8 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       date_to: options?.filters?.date_to,
       status: options?.filters?.status
     },
-    staleTime: 0, // ✅ Set to 0 for immediate updates across all pages
-    refetchOnWindowFocus: true
+    staleTime: 30000, // 🚀 OPTIMIZED: 30 seconds cache for appointments
+    refetchOnWindowFocus: false // 🚀 OPTIMIZED: Don't refetch on every tab switch
   })
 
   // ✅ LAYER 1: Fetch customers using useUniversalEntity (RPC API v2)

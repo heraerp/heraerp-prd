@@ -26,6 +26,9 @@ const entitySchema = z.object({
   status: z.string().optional().nullable(),
   metadata: z.record(z.any()).optional(),
 
+  // ✅ ENTERPRISE AUDIT TRAIL: Accept created_by for tracking entity creation
+  created_by: z.string().uuid().optional(),
+
   // Dynamic fields - can be anything!
   dynamic_fields: z
     .record(
@@ -40,7 +43,9 @@ const entitySchema = z.object({
 
 // Update schema
 const updateSchema = entitySchema.partial().extend({
-  entity_id: z.string().uuid()
+  entity_id: z.string().uuid(),
+  // ✅ ENTERPRISE AUDIT TRAIL: Accept updated_by for tracking entity updates
+  updated_by: z.string().uuid().optional()
 })
 
 export async function POST(request: NextRequest) {
@@ -90,8 +95,12 @@ export async function POST(request: NextRequest) {
       smart_code: data.smart_code,
       entity_code: data.entity_code || `${data.entity_type.toUpperCase()}-${Date.now()}`,
       metadata: data.metadata || {},
-      status: data.status || 'active' // Default to 'active' if not provided
-      // created_by and updated_by are set by database triggers (handle_audit_trail)
+      status: data.status || 'active', // Default to 'active' if not provided
+      // ✅ ENTERPRISE AUDIT TRAIL: Explicitly set created_by and updated_by
+      created_by: data.created_by || userId, // Use provided created_by or default to current user
+      updated_by: data.created_by || userId,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }
 
     // Add optional fields if provided
@@ -122,8 +131,12 @@ export async function POST(request: NextRequest) {
           entity_id: entityId,
           field_name: fieldName,
           field_type: fieldConfig.type,
-          smart_code: fieldConfig.smart_code
-          // created_by and updated_by are set by database triggers
+          smart_code: fieldConfig.smart_code,
+          // ✅ ENTERPRISE AUDIT TRAIL: Explicitly set created_by and updated_by for dynamic fields
+          created_by: data.created_by || userId,
+          updated_by: data.created_by || userId,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }
 
         // Set the appropriate value field based on type
@@ -317,7 +330,8 @@ export async function PUT(request: NextRequest) {
       data.smart_code
     ) {
       const updateData: any = {
-        updated_by: userId,
+        // ✅ ENTERPRISE AUDIT TRAIL: Use provided updated_by or default to current user
+        updated_by: data.updated_by || userId,
         updated_at: new Date().toISOString()
       }
 
@@ -358,7 +372,8 @@ export async function PUT(request: NextRequest) {
           field_name: fieldName,
           field_type: fieldConfig.type,
           smart_code: fieldConfig.smart_code,
-          updated_by: userId,
+          // ✅ ENTERPRISE AUDIT TRAIL: Use provided updated_by or default to current user
+          updated_by: data.updated_by || userId,
           updated_at: new Date().toISOString()
         }
 

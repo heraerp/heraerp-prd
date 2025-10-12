@@ -476,6 +476,7 @@ export async function deleteTransaction(
   orgId: string,
   options?: {
     force?: boolean
+    updated_by?: string // ✅ ENTERPRISE AUDIT TRAIL: Support updated_by for tracking (soft deletes are updates)
   }
 ) {
   const authHeaders = await getAuthHeaders()
@@ -483,6 +484,11 @@ export async function deleteTransaction(
   const queryParams = new URLSearchParams()
   if (options?.force) {
     queryParams.append('force', 'true')
+  }
+  // ✅ ENTERPRISE AUDIT TRAIL: Include updated_by in query params
+  // Note: Soft deletes update the status, so we use updated_by (not deleted_by)
+  if (options?.updated_by) {
+    queryParams.append('updated_by', options.updated_by)
   }
 
   const res = await fetch(`/api/v2/transactions/${transactionId}?${queryParams}`, {
@@ -555,4 +561,39 @@ export async function createRelationship(
     body: JSON.stringify({ p_organization_id: orgId, ...body })
   }).then(ok)
   return await res.json()
+}
+
+// 🎯 ENTERPRISE: Generic RPC call wrapper
+// Allows calling any Postgres RPC function through the universal API client
+export async function callRPC<T = any>(
+  functionName: string,
+  params: Record<string, any>,
+  orgId?: string
+): Promise<{ data: T | null; error: any }> {
+  try {
+    const authHeaders = await getAuthHeaders()
+
+    const res = await fetch(`/api/v2/rpc/${functionName}`, {
+      method: 'POST',
+      headers: {
+        ...(orgId ? h(orgId) : {}),
+        ...authHeaders,
+        'Content-Type': 'application/json',
+        'x-hera-api-version': 'v2'
+      },
+      credentials: 'include',
+      body: JSON.stringify(params)
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ error: res.statusText }))
+      return { data: null, error: errorData.error || `RPC call failed: ${res.status}` }
+    }
+
+    const data = await res.json()
+    return { data, error: null }
+  } catch (error: any) {
+    console.error(`[callRPC] Error calling ${functionName}:`, error)
+    return { data: null, error: error.message || 'RPC call failed' }
+  }
 }

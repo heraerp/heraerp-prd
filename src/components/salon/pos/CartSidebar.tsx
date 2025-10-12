@@ -29,7 +29,6 @@ import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { salonButtonThemes } from '@/styles/salon-button-themes'
-import { CustomerSearchInline } from '@/components/salon/pos/CustomerSearchModal'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -235,9 +234,9 @@ export function CartSidebar({
         }}
       />
 
-      {/* Refined gradient header */}
+      {/* Compact Cart Header */}
       <div
-        className="relative h-20 flex items-center justify-between px-6 overflow-hidden flex-shrink-0"
+        className="relative h-14 flex items-center justify-between px-4 overflow-hidden flex-shrink-0"
         style={{
           background: `linear-gradient(to right, ${COLORS.charcoalDark} 0%, ${COLORS.charcoal} 100%)`,
           borderBottom: `1px solid ${COLORS.gold}30`
@@ -250,41 +249,31 @@ export function CartSidebar({
             backgroundSize: '200% 100%'
           }}
         />
-        <div className="relative z-10 flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <div
-              className="p-2 rounded-lg"
-              style={{
-                backgroundColor: `${COLORS.gold}20`,
-                border: `1px solid ${COLORS.gold}40`
-              }}
+        <div className="relative z-10 flex items-center gap-2">
+          <div
+            className="p-1.5 rounded-lg"
+            style={{
+              backgroundColor: `${COLORS.gold}20`,
+              border: `1px solid ${COLORS.gold}40`
+            }}
+          >
+            <ShoppingCart className="w-4 h-4" style={{ color: COLORS.gold }} />
+          </div>
+          <div>
+            <h2
+              className="text-sm font-semibold"
+              style={{ color: COLORS.champagne }}
             >
-              <ShoppingCart className="w-5 h-5" style={{ color: COLORS.gold }} />
-            </div>
-            <div>
-              <h2
-                className="text-base font-semibold tracking-wide"
-                style={{ color: COLORS.champagne }}
-              >
-                Shopping Cart
-              </h2>
-              <p className="text-xs font-normal" style={{ color: COLORS.bronze }}>
-                {ticket.lineItems.length} {ticket.lineItems.length === 1 ? 'item' : 'items'}
-              </p>
-            </div>
+              Cart
+            </h2>
+            <p className="text-[10px]" style={{ color: COLORS.bronze }}>
+              {ticket.lineItems.length} {ticket.lineItems.length === 1 ? 'item' : 'items'}
+            </p>
           </div>
         </div>
         {ticket.lineItems.length > 0 && (
-          <div
-            className="text-right"
-            style={{
-              padding: '0.5rem 0.75rem',
-              borderRadius: '0.5rem',
-              background: `${COLORS.gold}10`,
-              border: `1px solid ${COLORS.gold}30`
-            }}
-          >
-            <p className="text-xs" style={{ color: COLORS.bronze }}>
+          <div className="text-right">
+            <p className="text-[10px]" style={{ color: COLORS.bronze }}>
               Subtotal
             </p>
             <p className="text-sm font-semibold" style={{ color: COLORS.gold }}>
@@ -294,16 +283,45 @@ export function CartSidebar({
         )}
       </div>
 
-      {/* Customer Selection - Inline */}
+      {/* Customer Info - Display Only */}
       <div
-        className="px-6 pb-4 pt-3 border-b"
+        className="px-4 py-2.5 border-b flex-shrink-0"
         style={{ borderColor: `${COLORS.gold}20`, background: `${COLORS.charcoalDark}40` }}
       >
-        <CustomerSearchInline
-          selectedCustomer={selectedCustomer}
-          onCustomerSelect={onCustomerSelect}
-          organizationId={organizationId}
-        />
+        {ticket.customer_name ? (
+          <div className="flex items-center gap-2">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{
+                background: `${COLORS.gold}20`,
+                border: `1px solid ${COLORS.gold}40`
+              }}
+            >
+              <User className="w-4 h-4" style={{ color: COLORS.gold }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium truncate" style={{ color: COLORS.champagne }}>
+                {ticket.customer_name}
+              </p>
+              <p className="text-[10px]" style={{ color: COLORS.bronze }}>
+                Customer
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div
+            className="flex items-center gap-2 p-2 rounded-lg"
+            style={{
+              background: `${COLORS.charcoalLight}`,
+              border: `1px dashed ${COLORS.gold}40`
+            }}
+          >
+            <User className="w-4 h-4 flex-shrink-0" style={{ color: COLORS.gold }} />
+            <p className="text-[10px] flex-1" style={{ color: COLORS.champagne }}>
+              Customer will be selected in Bill Setup
+            </p>
+          </div>
+        )}
       </div>
 
       <CardContent className="p-0 flex-1 flex flex-col min-h-0 relative z-10">
@@ -509,12 +527,26 @@ export function CartSidebar({
                   variant="outline"
                   size="sm"
                   onClick={() => setShowDiscountSection(!showDiscountSection)}
-                  className="text-xs py-2"
+                  className="text-xs py-2 hover:scale-[1.02] transition-all duration-200"
                   style={{
-                    ...salonButtonThemes.subtleAction.style,
-                    fontSize: '0.75rem',
-                    backgroundColor: showDiscountSection ? `${COLORS.emerald}20` : undefined,
-                    borderColor: showDiscountSection ? COLORS.emerald : undefined
+                    background: showDiscountSection
+                      ? `${COLORS.emerald}20`
+                      : `${COLORS.charcoalDark}80`,
+                    borderColor: showDiscountSection ? COLORS.emerald : `${COLORS.emerald}40`,
+                    color: COLORS.emerald,
+                    fontSize: '0.75rem'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${COLORS.emerald}25`
+                    e.currentTarget.style.borderColor = `${COLORS.emerald}60`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = showDiscountSection
+                      ? `${COLORS.emerald}20`
+                      : `${COLORS.charcoalDark}80`
+                    e.currentTarget.style.borderColor = showDiscountSection
+                      ? COLORS.emerald
+                      : `${COLORS.emerald}40`
                   }}
                 >
                   <Percent className="w-3.5 h-3.5 mr-1.5" />
@@ -526,13 +558,26 @@ export function CartSidebar({
                   variant="outline"
                   size="sm"
                   onClick={() => setShowTipSection(!showTipSection)}
-                  className="text-xs py-2"
+                  className="text-xs py-2 hover:scale-[1.02] transition-all duration-200"
                   style={{
-                    ...salonButtonThemes.subtleAction.style,
+                    background: showTipSection
+                      ? `${COLORS.gold}20`
+                      : `${COLORS.charcoalDark}80`,
                     borderColor: showTipSection ? COLORS.gold : `${COLORS.gold}40`,
                     color: COLORS.gold,
-                    fontSize: '0.75rem',
-                    backgroundColor: showTipSection ? `${COLORS.gold}20` : undefined
+                    fontSize: '0.75rem'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${COLORS.gold}25`
+                    e.currentTarget.style.borderColor = `${COLORS.gold}60`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = showTipSection
+                      ? `${COLORS.gold}20`
+                      : `${COLORS.charcoalDark}80`
+                    e.currentTarget.style.borderColor = showTipSection
+                      ? COLORS.gold
+                      : `${COLORS.gold}40`
                   }}
                 >
                   <DollarSign className="w-3.5 h-3.5 mr-1.5" />

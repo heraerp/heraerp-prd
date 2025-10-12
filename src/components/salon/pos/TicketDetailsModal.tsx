@@ -13,8 +13,7 @@ import {
   Building2,
   AlertCircle,
   Save,
-  XCircle,
-  UserPlus
+  XCircle
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -32,7 +31,6 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
-import { CustomerSearchModal } from './CustomerSearchModal'
 
 // Salon Luxe Color Palette
 const COLORS = {
@@ -148,14 +146,12 @@ export function TicketDetailsModal({
   const [editPrice, setEditPrice] = useState<number>(0)
   const [selectedBranchForBill, setSelectedBranchForBill] = useState<string>(branchId || '')
   const [showBranchWarning, setShowBranchWarning] = useState(false)
-  const [showCustomerModal, setShowCustomerModal] = useState(false)
   const [addingStaffToItem, setAddingStaffToItem] = useState<string | null>(null)
 
-  // Update selected branch when prop changes
+  // Update selected branch when prop changes - ALWAYS sync with prop
   useEffect(() => {
-    if (branchId) {
-      setSelectedBranchForBill(branchId)
-    }
+    console.log('[TicketDetailsModal] Branch prop changed:', branchId)
+    setSelectedBranchForBill(branchId || '')
   }, [branchId])
 
   // Load staff for the selected branch
@@ -239,13 +235,6 @@ export function TicketDetailsModal({
     onUpdateItem(itemId, {
       staff_assignments: updatedAssignments
     })
-  }
-
-  const handleCustomerSelectInternal = (customer: any) => {
-    if (onCustomerSelect) {
-      onCustomerSelect(customer)
-    }
-    setShowCustomerModal(false)
   }
 
   const handleBranchSelection = (newBranchId: string) => {
@@ -337,7 +326,7 @@ export function TicketDetailsModal({
                 {(!branchId || branchId === 'all') && <span style={{ color: COLORS.red }}>*</span>}
               </Label>
               <Select
-                value={selectedBranchForBill || branchId || ''}
+                value={selectedBranchForBill || ''}
                 onValueChange={handleBranchSelection}
               >
                 <SelectTrigger
@@ -353,12 +342,11 @@ export function TicketDetailsModal({
                   }}
                 >
                   <SelectValue placeholder="Choose a branch...">
-                    {selectedBranchForBill && (
+                    {selectedBranchForBill && availableBranches.find(b => b.id === selectedBranchForBill) && (
                       <div className="flex items-center gap-2">
                         <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
                         <span style={{ color: COLORS.champagne }}>
-                          {availableBranches.find(b => b.id === selectedBranchForBill)
-                            ?.entity_name || branchName}
+                          {availableBranches.find(b => b.id === selectedBranchForBill)?.entity_name}
                         </span>
                       </div>
                     )}
@@ -406,7 +394,7 @@ export function TicketDetailsModal({
             className="flex-1 flex flex-col border-r min-h-0"
             style={{ borderColor: `${COLORS.gold}20` }}
           >
-            {/* Customer Info */}
+            {/* Customer Info - Display Only (Selection happens in Bill Setup Modal) */}
             <div className="p-4 border-b flex-shrink-0" style={{ borderColor: `${COLORS.gold}20` }}>
               {ticket?.customer_name ? (
                 <div className="flex items-center gap-3">
@@ -428,33 +416,21 @@ export function TicketDetailsModal({
                       {ticket.customer_phone}
                     </div>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setShowCustomerModal(true)}
-                    style={{
-                      borderColor: `${COLORS.gold}40`,
-                      color: COLORS.gold
-                    }}
-                  >
-                    <Edit3 className="w-3.5 h-3.5 mr-1.5" />
-                    Change
-                  </Button>
                 </div>
               ) : (
-                <Button
-                  variant="outline"
-                  onClick={() => setShowCustomerModal(true)}
-                  className="w-full"
+                <div
+                  className="flex items-center gap-2 p-3 rounded-lg text-xs"
                   style={{
-                    borderColor: `${COLORS.gold}40`,
-                    color: COLORS.gold,
-                    borderStyle: 'dashed'
+                    background: `${COLORS.charcoalLight}`,
+                    border: `1px dashed ${COLORS.gold}40`,
+                    color: COLORS.bronze
                   }}
                 >
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Add Customer (Walk-in or Search)
-                </Button>
+                  <AlertCircle className="w-4 h-4" style={{ color: COLORS.gold }} />
+                  <span style={{ color: COLORS.champagne }}>
+                    Customer will be selected in Bill Setup
+                  </span>
+                </div>
               )}
             </div>
 
@@ -920,16 +896,6 @@ export function TicketDetailsModal({
           </div>
         </div>
       </DialogContent>
-
-      {/* Customer Selection Modal */}
-      {organizationId && (
-        <CustomerSearchModal
-          open={showCustomerModal}
-          onClose={() => setShowCustomerModal(false)}
-          organizationId={organizationId}
-          onSelectCustomer={handleCustomerSelectInternal}
-        />
-      )}
     </Dialog>
   )
 }

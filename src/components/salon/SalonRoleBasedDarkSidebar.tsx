@@ -49,6 +49,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Inventory', href: '/salon/inventory', icon: FolderOpen },
     { title: 'Staff', href: '/salon/staff', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users },
+    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
     { title: 'Reports', href: '/salon/reports', icon: BarChart3 }
   ],
@@ -62,6 +63,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
+    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     {
       title: 'WhatsApp',

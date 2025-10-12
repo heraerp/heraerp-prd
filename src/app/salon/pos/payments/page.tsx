@@ -55,6 +55,7 @@ function PaymentsContent() {
   const router = useRouter()
   const { organization } = useSecuredSalonContext()
   const organizationId = organization?.id
+  const currency = organization?.currencySymbol || 'AED' // ✅ ENTERPRISE: Dynamic currency
 
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -311,7 +312,7 @@ function PaymentsContent() {
             },
             {
               title: 'Total Revenue',
-              value: `AED ${stats.totalRevenue.toFixed(2)}`,
+              value: `${currency} ${stats.totalRevenue.toFixed(2)}`,
               desc: 'All transactions',
               icon: DollarSign,
               color: LUXE_COLORS.emerald
@@ -325,14 +326,14 @@ function PaymentsContent() {
             },
             {
               title: 'Today Revenue',
-              value: `AED ${stats.todayRevenue.toFixed(2)}`,
+              value: `${currency} ${stats.todayRevenue.toFixed(2)}`,
               desc: 'Daily earnings',
               icon: CreditCard,
               color: LUXE_COLORS.bronze
             },
             {
               title: 'Avg Transaction',
-              value: `AED ${stats.avgTransaction.toFixed(2)}`,
+              value: `${currency} ${stats.avgTransaction.toFixed(2)}`,
               desc: 'Per sale',
               icon: Sparkles,
               color: LUXE_COLORS.champagne
@@ -552,7 +553,7 @@ function PaymentsContent() {
                       {/* Amount */}
                       <div className="flex items-center gap-2 font-bold text-lg" style={{ color: LUXE_COLORS.gold }}>
                         <DollarSign className="w-5 h-5" />
-                        <span>AED {sale.total_amount.toFixed(2)}</span>
+                        <span>{currency} {sale.total_amount.toFixed(2)}</span>
                       </div>
 
                       {/* Status */}
@@ -609,6 +610,7 @@ function PaymentsContent() {
           onClose={() => setSelectedSaleId(null)}
           saleId={selectedSaleId}
           organizationId={organizationId}
+          currency={currency}
         />
       )}
     </div>

@@ -153,7 +153,6 @@ export function HairTalkzAuthSimple() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const [selectedRole, setSelectedRole] = useState('')
   const [showDemoUsers, setShowDemoUsers] = useState(false)
   const [showSessionExpiredMessage, setShowSessionExpiredMessage] = useState(false)
 
@@ -171,43 +170,25 @@ export function HairTalkzAuthSimple() {
     setEmail(demoEmail)
     setPassword(demoPassword)
 
-    // Determine role from email
-    const roleFromEmail = demoEmail.includes('michele')
-      ? 'owner'
-      : demoEmail.includes('manager')
-        ? 'manager'
-        : demoEmail.includes('receptionist')
-          ? 'receptionist'
-          : demoEmail.includes('stylist')
-            ? 'stylist'
-            : demoEmail.includes('accountant')
-              ? 'accountant'
-              : demoEmail.includes('admin')
-                ? 'admin'
-                : 'owner'
-
-    setSelectedRole(roleFromEmail)
-
-    // Auto-login
-    await handleLogin(null, demoEmail, demoPassword, roleFromEmail)
+    // ✅ ENTERPRISE: Auto-login - system determines role after authentication
+    await handleLogin(null, demoEmail, demoPassword)
   }
 
   const handleLogin = async (
     e: React.FormEvent | null,
     loginEmail?: string,
-    loginPassword?: string,
-    loginRole?: string
+    loginPassword?: string
   ) => {
     if (e) e.preventDefault()
 
     const currentEmail = loginEmail || email
     const currentPassword = loginPassword || password
-    const currentRole = loginRole || selectedRole
 
-    if (!currentEmail || !currentPassword || !currentRole) {
+    // ✅ ENTERPRISE: Only validate email and password - system determines role
+    if (!currentEmail || !currentPassword) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in all fields and select your role',
+        description: 'Please enter your email and password',
         variant: 'destructive'
       })
       return
@@ -231,13 +212,12 @@ export function HairTalkzAuthSimple() {
       if (error) throw error
 
       if (data.session) {
-        // ✅ CORRECT: No business logic in auth metadata
-        // Business data is now stored in HERA entities and dynamic data
+        // ✅ ENTERPRISE: No business logic in auth metadata
+        // Business data is stored in HERA entities and dynamic data
+        // Role is determined by SecuredSalonProvider after authentication
 
-        // Set local storage for organization context and RBAC
+        // Set organization context only - role determined by system
         localStorage.setItem('organizationId', HAIRTALKZ_ORG_ID)
-        localStorage.setItem('salonRole', selectedRole)
-        localStorage.setItem('userPermissions', JSON.stringify(getRolePermissions(selectedRole)))
 
         // ✅ ENTERPRISE: Check for saved redirect URL (from 401 error)
         const savedRedirect = sessionStorage.getItem('salon_auth_redirect')
@@ -248,14 +228,13 @@ export function HairTalkzAuthSimple() {
           redirectPath = savedRedirect
           sessionStorage.removeItem('salon_auth_redirect') // Clean up
         } else {
-          // Get default redirect path based on role
-          const roleConfig = USER_ROLES.find(r => r.value === selectedRole)
-          redirectPath = roleConfig?.redirectPath || '/salon/dashboard'
+          // Default to dashboard - SecuredSalonProvider will redirect based on determined role
+          redirectPath = '/salon/dashboard'
         }
 
         toast({
           title: 'Welcome to HairTalkz',
-          description: `Logged in as ${USER_ROLES.find(r => r.value === selectedRole)?.label}`
+          description: 'Authentication successful'
         })
 
         // Use window.location for a clean redirect
@@ -401,57 +380,6 @@ export function HairTalkzAuthSimple() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-          </div>
-
-          {/* Role Selection */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="role"
-              className="text-sm font-light tracking-wider uppercase"
-              style={{ color: COLORS.bronze }}
-            >
-              Access Level
-            </Label>
-            <Select value={selectedRole} onValueChange={setSelectedRole} disabled={loading}>
-              <SelectTrigger
-                className="h-12 font-light"
-                style={{
-                  backgroundColor: COLORS.charcoal,
-                  border: `1px solid ${COLORS.bronze}50`,
-                  color: COLORS.champagne
-                }}
-              >
-                <SelectValue placeholder="Select your role" />
-              </SelectTrigger>
-              <SelectContent
-                className="hera-select-content hairtalkz-select-content"
-                style={{
-                  backgroundColor: COLORS.charcoalLight,
-                  border: `1px solid ${COLORS.bronze}50`
-                }}
-              >
-                {USER_ROLES.map(role => (
-                  <SelectItem
-                    key={role.value}
-                    value={role.value}
-                    className="cursor-pointer hera-select-item"
-                    style={{
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <role.icon className="h-4 w-4" style={{ color: COLORS.gold }} />
-                      <div>
-                        <div style={{ color: COLORS.champagne }}>{role.label}</div>
-                        <div className="text-xs" style={{ color: COLORS.bronze }}>
-                          {role.description}
-                        </div>
-                      </div>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           {/* Remember Me */}

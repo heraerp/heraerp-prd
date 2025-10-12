@@ -7,7 +7,6 @@ import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraServices } from '@/hooks/useHeraServicesV2'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
 import { ServiceList } from '@/components/salon/services/ServiceList'
-import { BranchSelector } from '@/components/salon/BranchSelector'
 import { ServiceModal } from '@/components/salon/services/ServiceModal'
 import { ServiceCategoryModal } from '@/components/salon/services/ServiceCategoryModal'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
@@ -90,6 +89,8 @@ function SalonServicesPageContent() {
   const [categoryFilter, setCategoryFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState('name_asc')
+  // Local branch filter state (separate from global context)
+  const [localBranchFilter, setLocalBranchFilter] = useState<string | null>(null)
 
   // Category modal state
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
@@ -98,21 +99,11 @@ function SalonServicesPageContent() {
   const [isDeletingCategory, setIsDeletingCategory] = useState(false)
   const [editingCategory, setEditingCategory] = useState<ServiceCategory | null>(null)
 
-  // 🎯 ENTERPRISE PATTERN: Fetch ALL services for global KPIs (dashboard metrics)
-  // This provides the "big picture" regardless of tab/filter selection
-  // NO filters applied to KPIs - always show complete organization data
-  const { services: allServicesForKPIs, isLoading: isLoadingKPIs } = useHeraServices({
-    organizationId,
-    filters: {
-      branch_id: undefined, // No branch filter for KPIs
-      category_id: undefined, // No category filter for KPIs
-      status: undefined // Get ALL services (active + archived) for accurate KPIs
-    }
-  })
-
-  // Fetch filtered services for display list (controlled by tab + user filters)
+  // ✅ PERFORMANCE FIX: Fetch services ONCE (not twice!) with NO filters
+  // Then derive both KPIs and filtered list from this single dataset
+  // This cuts API calls in HALF and makes initial load much faster
   const {
-    services,
+    services: allServices,
     isLoading,
     error,
     createService,
@@ -123,12 +114,47 @@ function SalonServicesPageContent() {
   } = useHeraServices({
     organizationId,
     filters: {
-      // 🎯 CRITICAL: Only apply branch filter if explicitly selected (not on initial load)
-      branch_id: selectedBranchId && selectedBranchId !== null ? selectedBranchId : undefined,
-      category_id: categoryFilter || undefined,
-      status: includeArchived ? undefined : 'active' // Tab controls list, not KPIs
+      // Fetch ALL services (no filters) - we'll filter in memory
+      branch_id: undefined,
+      category_id: undefined,
+      status: undefined // Get everything - filtering happens client-side
     }
   })
+
+  // Derive filtered services for display (client-side filtering is fast)
+  const services = useMemo(() => {
+    if (!allServices) return []
+
+    return allServices.filter(service => {
+      // Apply tab filter (active vs all)
+      if (!includeArchived && service.status === 'archived') return false
+
+      // Apply branch filter (if selected)
+      if (localBranchFilter) {
+        const availableAt = service.relationships?.available_at || service.relationships?.AVAILABLE_AT
+        if (!availableAt) return false
+
+        if (Array.isArray(availableAt)) {
+          const hasMatch = availableAt.some(
+            rel => rel.to_entity?.id === localBranchFilter || rel.to_entity_id === localBranchFilter
+          )
+          if (!hasMatch) return false
+        } else {
+          if (availableAt.to_entity?.id !== localBranchFilter && availableAt.to_entity_id !== localBranchFilter) {
+            return false
+          }
+        }
+      }
+
+      // Apply category filter (if selected)
+      if (categoryFilter && service.category !== categoryFilter) return false
+
+      return true
+    })
+  }, [allServices, includeArchived, localBranchFilter, categoryFilter])
+
+  // KPIs always use ALL services (unfiltered) for accurate totals
+  const allServicesForKPIs = allServices
 
   // Fetch categories using Universal API v2
   const {
@@ -425,15 +451,15 @@ function SalonServicesPageContent() {
     () =>
       allServicesForKPIs
         ?.filter(s => s && s.status === 'active')
-        .reduce((sum, service) => sum + (service.price || 0), 0) || 0,
+        .reduce((sum, service) => sum + (service.price_market || service.price || 0), 0) || 0,
     [allServicesForKPIs]
   )
 
   const avgDuration = useMemo(() => {
     const validServices =
-      allServicesForKPIs?.filter(s => s && s.duration_minutes !== undefined) || []
+      allServicesForKPIs?.filter(s => s && (s.duration_min !== undefined || s.duration_minutes !== undefined)) || []
     return validServices.length > 0
-      ? validServices.reduce((sum, service) => sum + (service.duration_minutes || 0), 0) /
+      ? validServices.reduce((sum, service) => sum + (service.duration_min || service.duration_minutes || 0), 0) /
           validServices.length
       : 0
   }, [allServicesForKPIs])
@@ -683,7 +709,7 @@ function SalonServicesPageContent() {
               </Button>
 
               <div className="flex items-center gap-2">
-                {selectedBranchId && (
+                {localBranchFilter && (
                   <div
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-left-2"
                     style={{
@@ -694,11 +720,11 @@ function SalonServicesPageContent() {
                   >
                     <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
                     <span>
-                      {availableBranches.find(b => b.id === selectedBranchId)?.entity_name ||
+                      {availableBranches.find(b => b.id === localBranchFilter)?.entity_name ||
                         'Branch'}
                     </span>
                     <button
-                      onClick={() => setSelectedBranchId(null)}
+                      onClick={() => setLocalBranchFilter(null)}
                       className="ml-1 hover:scale-110 active:scale-95 transition-all duration-200 rounded-full p-0.5 hover:bg-gold/20"
                       aria-label="Clear branch filter"
                     >
@@ -803,7 +829,31 @@ function SalonServicesPageContent() {
                   >
                     Location
                   </span>
-                  <BranchSelector variant="minimal" showIcon={false} />
+                  <Select
+                    value={localBranchFilter || '__ALL__'}
+                    onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
+                  >
+                    <SelectTrigger
+                      className="w-[180px] h-9 text-sm transition-all duration-200 hover:border-gold/50"
+                      style={{
+                        backgroundColor: COLORS.charcoalLight + '80',
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <SelectValue placeholder="All branches" />
+                    </SelectTrigger>
+                    <SelectContent className="hera-select-content">
+                      <SelectItem value="__ALL__" className="hera-select-item">
+                        All branches
+                      </SelectItem>
+                      {availableBranches.map(branch => (
+                        <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
+                          {branch.entity_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Category Filter - Compact & Enterprise-Grade */}
@@ -864,16 +914,16 @@ function SalonServicesPageContent() {
                     style={{ color: COLORS.gold }}
                   />
                   <p className="text-lg mb-1" style={{ color: COLORS.champagne }}>
-                    {searchQuery || categoryFilter || selectedBranchId
+                    {searchQuery || categoryFilter || localBranchFilter
                       ? 'No services found'
                       : 'No services yet'}
                   </p>
                   <p className="text-sm opacity-60 mb-4" style={{ color: COLORS.lightText }}>
-                    {searchQuery || categoryFilter || selectedBranchId
+                    {searchQuery || categoryFilter || localBranchFilter
                       ? 'Try adjusting your search or filters'
                       : 'Create your first service to start building your catalog'}
                   </p>
-                  {!searchQuery && !categoryFilter && !selectedBranchId && (
+                  {!searchQuery && !categoryFilter && !localBranchFilter && (
                     <button
                       onClick={() => setModalOpen(true)}
                       className="px-4 py-2 rounded-lg font-medium transition-all hover:scale-105 active:scale-95"
@@ -889,7 +939,7 @@ function SalonServicesPageContent() {
               </div>
             ) : (
               <div
-                key={`${selectedBranchId}-${categoryFilter}-${searchQuery}`}
+                key={`${localBranchFilter}-${categoryFilter}-${searchQuery}`}
                 className="animate-in fade-in duration-300"
               >
                 <ServiceList

@@ -109,19 +109,35 @@ export function usePosCheckout(): UsePosCheckoutReturn {
       const tax_amount = (subtotal - discount_total) * tax_rate
       const total_amount = subtotal - discount_total + tax_amount + tip_total
 
-      // Validate payments equal total
+      // ✅ FIX: Validate payments cover total (allow overpayment for cash change)
       const payment_total = payments.reduce((sum, payment) => sum + payment.amount, 0)
-      if (Math.abs(payment_total - total_amount) > 0.01) {
-        console.error('[usePosCheckout] Payment validation failed:', {
+
+      // Allow overpayment (for cash change), but not underpayment
+      if (payment_total < total_amount - 0.01) {
+        console.error('[usePosCheckout] Payment validation failed - UNDERPAID:', {
           subtotal: subtotal.toFixed(2),
           discount_total: discount_total.toFixed(2),
           tax_amount: tax_amount.toFixed(2),
           tip_total: tip_total.toFixed(2),
           total_amount: total_amount.toFixed(2),
           payment_total: payment_total.toFixed(2),
-          difference: (payment_total - total_amount).toFixed(2)
+          shortfall: (total_amount - payment_total).toFixed(2)
         })
-        throw new Error('Payment amount must equal transaction total')
+        throw new Error(`Payment amount (${payment_total.toFixed(2)}) is less than total (${total_amount.toFixed(2)})`)
+      }
+
+      // Log successful validation
+      if (payment_total > total_amount + 0.01) {
+        console.log('[usePosCheckout] ✅ Overpayment detected (change due):', {
+          total_amount: total_amount.toFixed(2),
+          payment_total: payment_total.toFixed(2),
+          change_due: (payment_total - total_amount).toFixed(2)
+        })
+      } else {
+        console.log('[usePosCheckout] ✅ Exact payment:', {
+          total_amount: total_amount.toFixed(2),
+          payment_total: payment_total.toFixed(2)
+        })
       }
 
       // Build transaction lines
@@ -214,23 +230,48 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         })
       }
 
-      // Payment lines
+      // ✅ ENTERPRISE FIX: Record NET cash received, not overpayment
+      // Calculate net payment per method (excluding change)
+      // payment_total already calculated above for validation
+      const change_amount = Math.max(0, payment_total - total_amount)
+
+      // Payment lines - record only NET amount received per method
       for (const payment of payments) {
-        lines.push({
-          line_number: line_number++,
-          line_type: 'payment',
-          entity_id: null, // ✅ FIX: System line - no entity reference needed
-          description: `Payment - ${payment.method.toUpperCase()}`,
-          quantity: 1,
-          unit_amount: payment.amount,
-          line_amount: payment.amount,
-          smart_code:
-            payment.method === 'cash' ? SMART_CODES.CASH_PAYMENT : SMART_CODES.CARD_PAYMENT,
-          metadata: {
-            payment_method: payment.method,
-            reference: payment.reference
-          }
-        })
+        // For cash payments with change, reduce the recorded amount by the change
+        let net_payment_amount = payment.amount
+
+        if (payment.method === 'cash' && change_amount > 0) {
+          // If this is a cash payment and there's change, subtract change from this payment
+          // (assumes single cash payment; if multiple payments, this logic may need adjustment)
+          net_payment_amount = payment.amount - change_amount
+        }
+
+        // Only record payment line if there's a net amount
+        if (net_payment_amount > 0.01) {
+          lines.push({
+            line_number: line_number++,
+            line_type: 'payment',
+            entity_id: null, // ✅ System line - no entity reference needed
+            description: `Payment - ${payment.method.toUpperCase()}`,
+            quantity: 1,
+            unit_amount: net_payment_amount,
+            line_amount: net_payment_amount,
+            smart_code:
+              payment.method === 'cash' ? SMART_CODES.CASH_PAYMENT : SMART_CODES.CARD_PAYMENT,
+            metadata: {
+              payment_method: payment.method,
+              reference: payment.reference,
+              // ✅ ENTERPRISE AUDIT TRAIL: Store physical cash details in metadata
+              ...(payment.method === 'cash' && change_amount > 0
+                ? {
+                    cash_received: payment.amount,
+                    change_given: change_amount,
+                    net_cash: net_payment_amount
+                  }
+                : {})
+            }
+          })
+        }
       }
 
       // Determine primary staff ID (first staff from items)

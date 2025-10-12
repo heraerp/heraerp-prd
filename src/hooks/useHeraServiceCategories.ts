@@ -46,66 +46,87 @@ export function useHeraServiceCategories({
         categories: entities.map(e => e.entity_name)
       })
 
-      // Fetch dynamic data for each category
-      const categoriesWithDynamicData = await Promise.all(
-        entities.map(async (entity: any) => {
-          try {
-            const response = await getDynamicData('', {
-              p_organization_id: organizationId,
-              p_entity_id: entity.id
-            })
+      // ✅ PERFORMANCE OPTIMIZATION: Batch fetch dynamic data (NOT N+1)
+      // Fetch ALL dynamic data in ONE API call instead of N separate calls
+      const entityIds = entities.map(e => e.id)
+      let allDynamicData: any[] = []
 
-            const dynamicData = Array.isArray(response?.data)
-              ? response.data
-              : Array.isArray(response)
-                ? response
-                : []
-
-            const mergedMetadata = { ...entity.metadata }
-            dynamicData.forEach((field: any) => {
-              if (field.field_type === 'number') {
-                mergedMetadata[field.field_name] = field.field_value_number
-              } else if (field.field_type === 'boolean') {
-                mergedMetadata[field.field_name] = field.field_value_boolean
-              } else if (field.field_type === 'text') {
-                mergedMetadata[field.field_name] = field.field_value_text
-              } else if (field.field_type === 'json') {
-                mergedMetadata[field.field_name] = field.field_value_json
-              } else if (field.field_type === 'date') {
-                mergedMetadata[field.field_name] = field.field_value_date
-              } else {
-                // Fallback for unknown types
-                mergedMetadata[field.field_name] =
-                  field.field_value_text ||
-                  field.field_value_number ||
-                  field.field_value_boolean ||
-                  field.field_value_json ||
-                  field.field_value_date
-              }
-            })
-
-            return {
-              ...entity,
-              metadata: mergedMetadata,
-              color: mergedMetadata.color || '#D4AF37',
-              description: mergedMetadata.description || '',
-              service_count: mergedMetadata.service_count || 0
+      if (entityIds.length > 0) {
+        try {
+          // Batch endpoint: /api/v2/dynamic-data?p_entity_ids=id1,id2,id3
+          const response = await fetch(`/api/v2/dynamic-data?p_entity_ids=${entityIds.join(',')}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-hera-api-version': 'v2'
             }
-          } catch (error) {
-            console.error('[useHeraServiceCategories] Failed to fetch dynamic data:', error)
-            return {
-              ...entity,
-              color: '#D4AF37',
-              description: '',
-              service_count: 0
-            }
+          })
+
+          if (response.ok) {
+            const result = await response.json()
+            allDynamicData = result.data || []
+            console.log('[useHeraServiceCategories] Batch fetched dynamic data:', {
+              entities: entityIds.length,
+              fields: allDynamicData.length
+            })
+          }
+        } catch (error) {
+          console.error('[useHeraServiceCategories] Failed to batch fetch dynamic data:', error)
+        }
+      }
+
+      // Group dynamic data by entity_id
+      const dynamicDataByEntity = new Map<string, any[]>()
+      allDynamicData.forEach((field: any) => {
+        if (!dynamicDataByEntity.has(field.entity_id)) {
+          dynamicDataByEntity.set(field.entity_id, [])
+        }
+        dynamicDataByEntity.get(field.entity_id)!.push(field)
+      })
+
+      // Merge dynamic data into categories
+      const categoriesWithDynamicData = entities.map((entity: any) => {
+        const dynamicData = dynamicDataByEntity.get(entity.id) || []
+        const mergedMetadata = { ...entity.metadata }
+
+        dynamicData.forEach((field: any) => {
+          if (field.field_type === 'number') {
+            mergedMetadata[field.field_name] = field.field_value_number
+          } else if (field.field_type === 'boolean') {
+            mergedMetadata[field.field_name] = field.field_value_boolean
+          } else if (field.field_type === 'text') {
+            mergedMetadata[field.field_name] = field.field_value_text
+          } else if (field.field_type === 'json') {
+            mergedMetadata[field.field_name] = field.field_value_json
+          } else if (field.field_type === 'date') {
+            mergedMetadata[field.field_name] = field.field_value_date
+          } else {
+            // Fallback for unknown types
+            mergedMetadata[field.field_name] =
+              field.field_value_text ||
+              field.field_value_number ||
+              field.field_value_boolean ||
+              field.field_value_json ||
+              field.field_value_date
           }
         })
-      )
+
+        return {
+          ...entity,
+          metadata: mergedMetadata,
+          color: mergedMetadata.color || '#D4AF37',
+          description: mergedMetadata.description || '',
+          service_count: mergedMetadata.service_count || 0
+        }
+      })
 
       return categoriesWithDynamicData
     },
-    enabled: !!organizationId
+    enabled: !!organizationId,
+    // ✅ PERFORMANCE OPTIMIZATION: Smart caching (30s staleTime)
+    // Categories rarely change - 30s cache provides excellent balance
+    staleTime: 30000, // 30 seconds - reduces API calls significantly
+    gcTime: 300000, // 5 minutes - keep in cache for 5 min after last use
+    refetchOnWindowFocus: false // No unnecessary refetches on tab switch
   })
 
   // Create mutation
