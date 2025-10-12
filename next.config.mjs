@@ -8,27 +8,14 @@ const __dirname = path.dirname(__filename)
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Build Performance Optimizations
-  swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn']
     } : false,
   },
   
-  // Experimental optimizations
+  // Experimental optimizations  
   experimental: {
-    turbo: {
-      rules: {
-        '*.ts': {
-          loaders: ['swc-loader'],
-          as: '*.js',
-        },
-        '*.tsx': {
-          loaders: ['swc-loader'],
-          as: '*.js',
-        },
-      },
-    },
     optimizePackageImports: [
       'lucide-react',
       '@tanstack/react-query',
@@ -66,6 +53,8 @@ const nextConfig = {
     optimizeCss: true,
     scrollRestoration: true
   },
+  
+  // Production build optimizations for Docker
   
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
