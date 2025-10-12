@@ -63,11 +63,34 @@ async function optimizedBuild() {
 }
 
 async function cleanBuildArtifacts() {
-  const dirsToClean = ['.next', '.next/cache', 'node_modules/.cache']
+  // In Docker with cache mounts, avoid cleaning mounted cache directories
+  const isDocker = process.env.CI || fs.existsSync('/.dockerenv')
   
-  for (const dir of dirsToClean) {
-    if (fs.existsSync(dir)) {
-      await execCommand(`rm -rf ${dir}`)
+  if (isDocker) {
+    // Only clean non-cache directories in Docker
+    const dirsToClean = ['.next/server', '.next/static', '.next/standalone']
+    
+    for (const dir of dirsToClean) {
+      if (fs.existsSync(dir)) {
+        await execCommand(`rm -rf ${dir}`)
+      }
+    }
+    
+    // Clean files but preserve cache directories
+    const filesToClean = ['.next/BUILD_ID', '.next/export-marker.json', '.next/prerender-manifest.json']
+    for (const file of filesToClean) {
+      if (fs.existsSync(file)) {
+        await execCommand(`rm -f ${file}`)
+      }
+    }
+  } else {
+    // Local development - clean everything
+    const dirsToClean = ['.next', 'node_modules/.cache']
+    
+    for (const dir of dirsToClean) {
+      if (fs.existsSync(dir)) {
+        await execCommand(`rm -rf ${dir}`)
+      }
     }
   }
 }
