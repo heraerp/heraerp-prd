@@ -6,10 +6,25 @@
 
 export async function register() {
   // Only enable telemetry in production or when explicitly requested
-  const WITH_OTEL = process.env.HERA_OTEL !== 'false' && process.env.NODE_ENV === 'production'
+  const WITH_OTEL = process.env.HERA_OTEL === 'true' && process.env.NODE_ENV === 'production'
   
   if (!WITH_OTEL) {
-    console.log('[HERA] Telemetry disabled (HERA_OTEL=false or not in production)')
+    console.log('[HERA] Telemetry disabled (HERA_OTEL not explicitly enabled in production)')
+    return
+  }
+
+  // Skip if running in browser context (Edge Runtime)
+  if (typeof window !== 'undefined' || typeof EdgeRuntime !== 'undefined') {
+    console.log('[HERA] Telemetry skipped (browser/edge context)')
+    return
+  }
+
+  // Skip if Node.js streams not available (prevents GRPC issues)
+  try {
+    require('stream')
+    require('events')
+  } catch (e) {
+    console.log('[HERA] Telemetry skipped (Node.js modules not available)')
     return
   }
 
@@ -19,15 +34,17 @@ export async function register() {
     const { Resource } = await import('@opentelemetry/resources')
     const { SemanticResourceAttributes } = await import('@opentelemetry/semantic-conventions')
     
-    // Try to import OTLP exporter, fall back to console if not available
+    // Use HTTP-only OTLP exporter to avoid GRPC dependencies
     let traceExporter
     try {
       const { OTLPTraceExporter } = await import('@opentelemetry/exporter-trace-otlp-http')
       traceExporter = new OTLPTraceExporter({
         url: process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT || 'http://localhost:4318/v1/traces',
+        headers: {},
       })
+      console.log('[HERA] Using HTTP OTLP trace exporter')
     } catch (e) {
-      console.warn('[HERA] OTLP exporter not available, using console exporter')
+      console.warn('[HERA] OTLP HTTP exporter not available, using console exporter:', e.message)
       const { ConsoleSpanExporter } = await import('@opentelemetry/sdk-trace-base')
       traceExporter = new ConsoleSpanExporter()
     }
