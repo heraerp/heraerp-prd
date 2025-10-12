@@ -1,23 +1,30 @@
-# railway.toml
+# railway.toml - Railway deployment configuration per comprehensive healthcheck docs
 
 [build]
 builder = "nixpacks"
 buildCommand = "npm run build"
 
 [deploy]
-# Run the built-in Next.js server, binding to Railway's injected $PORT
-startCommand = "next start -H 0.0.0.0 -p $PORT"
+# Optimized Next.js server with faster startup (Golden Rule #1)
+startCommand = "npm run start:railway"
 
-# Production healthcheck
+# Robust healthcheck configuration (Golden Rule #4)
 healthcheckPath = "/api/health"
-healthcheckTimeout = 300
+healthcheckTimeout = 600
+healthcheckInterval = 30
+gracePeriod = 60
 
-# Safer restarts
+# Enhanced restart policy for large applications
 restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10
+restartPolicyMaxRetries = 3
 
 # ---- Environment-specific overrides ----
-# Disable healthcheck ONLY for the 'develop' environment
+# Production environment gets full healthcheck
+[environments.production.deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 600
+healthcheckInterval = 30
+
+# Development environment disables healthcheck for faster iteration
 [environments.develop.deploy]
-# Empty path disables healthcheck in this env
 healthcheckPath = ""
