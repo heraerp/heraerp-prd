@@ -1,4 +1,63 @@
-/* Salon Luxe Theme Styles */
+/* Salon Luxe Theme Styles - HIGHEST PRIORITY OVERRIDES */
+
+/*
+ * CRITICAL: Override globals-dna-safe.css dark mode styles
+ * These need !important and high specificity to override .dark selectors
+ */
+
+/* Override dark mode dropdown styling from globals-dna-safe.css */
+.dark [role="listbox"],
+.dark [data-radix-select-content],
+html.dark [role="listbox"],
+html.dark [data-radix-select-content],
+body.dark [role="listbox"],
+body.dark [data-radix-select-content] {
+  background-color: #232323 !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  color: #F5E6C8 !important;
+}
+
+/* Override dark mode dropdown item hover from globals-dna-safe.css */
+.dark [role="option"]:hover,
+.dark [role="option"]:focus,
+.dark [role="option"][data-highlighted],
+.dark [data-radix-select-item]:hover,
+.dark [data-radix-select-item]:focus,
+.dark [data-radix-select-item][data-highlighted],
+html.dark [role="option"]:hover,
+html.dark [role="option"]:focus,
+html.dark [role="option"][data-highlighted],
+html.dark [data-radix-select-item]:hover,
+html.dark [data-radix-select-item]:focus,
+html.dark [data-radix-select-item][data-highlighted],
+body.dark [role="option"]:hover,
+body.dark [role="option"]:focus,
+body.dark [role="option"][data-highlighted],
+body.dark [data-radix-select-item]:hover,
+body.dark [data-radix-select-item]:focus,
+body.dark [data-radix-select-item][data-highlighted] {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  color: #F5E6C8 !important;
+}
+
+/* Override dark mode input/select styling */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #232323 !important;
+  border: 1px solid #8C7853 !important;
+  color: #F5E6C8 !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  background-color: #232323 !important;
+  border-color: #D4AF37 !important;
+  outline: 2px solid rgba(212, 175, 55, 0.3) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+}
 
 /* Input placeholder styling */
 .luxe-input::placeholder {
@@ -31,28 +90,62 @@ select:hover {
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
-/* Shadcn UI Select components - High specificity overrides for Radix UI */
+/* Shadcn UI Select components - Maximum specificity overrides */
 
-/* SelectContent - Target by data attribute with very high specificity */
+/* SelectContent - Override ALL possible classes including Tailwind compiled classes */
 [data-radix-select-content],
 div[data-radix-select-content],
 .hera-select-content,
-.luxe-select-content {
+.luxe-select-content,
+/* Override Tailwind bg-popover class */
+[data-radix-select-content].bg-popover,
+div[data-radix-select-content].bg-popover,
+[data-radix-select-content].text-popover-foreground,
+div[data-radix-select-content].text-popover-foreground {
   background-color: #232323 !important;
   border: 1px solid rgba(212, 175, 55, 0.3) !important;
   color: #F5E6C8 !important;
   z-index: 100 !important;
 }
 
-/* SelectItem - Target by data attribute */
+/* Force override any Tailwind background utilities */
+[data-radix-select-content][class*="bg-"],
+div[data-radix-select-content][class*="bg-"] {
+  background-color: #232323 !important;
+}
+
+/* Force override any Tailwind text color utilities */
+[data-radix-select-content][class*="text-"],
+div[data-radix-select-content][class*="text-"] {
+  color: #F5E6C8 !important;
+}
+
+/* SelectItem - Override ALL possible states and Tailwind classes */
 [data-radix-select-item],
 div[data-radix-select-item],
 .hera-select-item,
-.luxe-select-item {
+.luxe-select-item,
+/* Override Tailwind utility classes */
+[data-radix-select-item].focus\:bg-accent,
+div[data-radix-select-item].focus\:bg-accent,
+[data-radix-select-item].focus\:text-accent-foreground,
+div[data-radix-select-item].focus\:text-accent-foreground {
   color: #F5E6C8 !important;
   background-color: transparent !important;
   cursor: pointer !important;
   padding: 8px 12px !important;
+}
+
+/* Force override any background on items */
+[data-radix-select-item][class*="bg-"],
+div[data-radix-select-item][class*="bg-"] {
+  background-color: transparent !important;
+}
+
+/* Force override any text color on items */
+[data-radix-select-item][class*="text-"],
+div[data-radix-select-item][class*="text-"] {
+  color: #F5E6C8 !important;
 }
 
 /* Hover state for SelectItem */
@@ -61,9 +154,10 @@ div[data-radix-select-item]:hover,
 .hera-select-item:hover,
 .luxe-select-item:hover {
   background-color: rgba(212, 175, 55, 0.1) !important;
+  color: #F5E6C8 !important;
 }
 
-/* Highlighted/focused state for SelectItem */
+/* Highlighted/focused state for SelectItem - Override Tailwind focus:bg-accent */
 [data-radix-select-item]:focus,
 [data-radix-select-item][data-highlighted],
 div[data-radix-select-item]:focus,
@@ -71,7 +165,12 @@ div[data-radix-select-item][data-highlighted],
 .hera-select-item:focus,
 .hera-select-item[data-highlighted],
 .luxe-select-item:focus,
-.luxe-select-item[data-highlighted] {
+.luxe-select-item[data-highlighted],
+/* Override compiled Tailwind classes */
+[data-radix-select-item]:focus[class*="focus:bg-"],
+div[data-radix-select-item]:focus[class*="focus:bg-"],
+[data-radix-select-item][data-highlighted][class*="bg-"],
+div[data-radix-select-item][data-highlighted][class*="bg-"] {
   background-color: rgba(212, 175, 55, 0.2) !important;
   color: #F5E6C8 !important;
 }

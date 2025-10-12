@@ -16,6 +16,7 @@ import {
   User
 } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import { useLeavePlaybook } from '@/hooks/useLeavePlaybook'
@@ -111,6 +112,9 @@ export default function LeaveManagementPage() {
   const [selectedBranch, setSelectedBranch] = useState<string>()
   const [requestModalOpen, setRequestModalOpen] = useState(false)
   const [policyModalOpen, setPolicyModalOpen] = useState(false)
+
+  // Get branches from secured salon context
+  const { availableBranches, isLoadingBranches } = useSecuredSalonContext()
 
   // Get organization ID from localStorage for demo mode
   useEffect(() => {
@@ -297,10 +301,14 @@ export default function LeaveManagementPage() {
                 }}
                 value={selectedBranch || ''}
                 onChange={e => setSelectedBranch(e.target.value || undefined)}
+                disabled={isLoadingBranches}
               >
                 <option value="">All Branches</option>
-                <option value="branch-1">Main Branch</option>
-                <option value="branch-2">Downtown</option>
+                {availableBranches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.entity_name}
+                  </option>
+                ))}
               </select>
 
               {/* Search */}
