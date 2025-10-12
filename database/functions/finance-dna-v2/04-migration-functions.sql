@@ -7,6 +7,9 @@
 -- MIGRATION ASSESSMENT FUNCTION
 -- =============================================================================
 
+-- Drop existing type if it exists
+DROP TYPE IF EXISTS migration_assessment_result CASCADE;
+
 CREATE TYPE migration_assessment_result AS (
     assessment_category TEXT,
     entity_count BIGINT,
@@ -109,6 +112,9 @@ $$;
 -- =============================================================================
 -- MIGRATION PHASE RESULT TYPE
 -- =============================================================================
+
+-- Drop existing type if it exists
+DROP TYPE IF EXISTS migration_phase_result CASCADE;
 
 CREATE TYPE migration_phase_result AS (
     phase_name TEXT,

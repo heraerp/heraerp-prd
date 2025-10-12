@@ -355,20 +355,20 @@ BEGIN
   
   -- Effective From
   INSERT INTO core_dynamic_data (
-    organization_id, entity_id, field_name, field_type, field_value_timestamp, smart_code
+    organization_id, entity_id, field_name, field_type, field_value_text, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'effective_from', 'timestamp', p_effective_from, 'HERA.FIN.COA.DYN.EFFECTIVE_FROM.v2'
+    p_organization_id, v_entity_id, 'effective_from', 'text', p_effective_from::TEXT, 'HERA.FIN.COA.DYN.EFFECTIVE_FROM.v2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
-  DO UPDATE SET field_value_timestamp = EXCLUDED.field_value_timestamp, updated_at = CURRENT_TIMESTAMP;
+  DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   
   -- Effective To (if provided)
   IF p_effective_to IS NOT NULL THEN
     INSERT INTO core_dynamic_data (
-      organization_id, entity_id, field_name, field_type, field_value_timestamp, smart_code
+      organization_id, entity_id, field_name, field_type, field_value_text, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'effective_to', 'timestamp', p_effective_to, 'HERA.FIN.COA.DYN.EFFECTIVE_TO.v2'
+      p_organization_id, v_entity_id, 'effective_to', 'text', p_effective_to::TEXT, 'HERA.FIN.COA.DYN.EFFECTIVE_TO.v2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
-    DO UPDATE SET field_value_timestamp = EXCLUDED.field_value_timestamp, updated_at = CURRENT_TIMESTAMP;
+    DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   END IF;
   
   -- ==========================================================================

@@ -20,6 +20,9 @@ SET shared_preload_libraries = 'pg_stat_statements';
 -- ============================================================================
 
 -- AI-Enhanced Smart Code with multi-dimensional intelligence
+-- Drop existing type if it exists
+DROP TYPE IF EXISTS ai_enhanced_smart_code CASCADE;
+
 CREATE TYPE ai_enhanced_smart_code AS (
     base_module TEXT,                    -- SALES, PROC, HR, etc.
     business_process TEXT,               -- INV, GR, PAYROLL, etc.

@@ -446,7 +446,7 @@ BEGIN
     -- Look up exchange rate configuration
     SELECT 
         er_rate.field_value_number,
-        er_updated.field_value_timestamptz
+        er_updated.field_value_text::TIMESTAMPTZ
     INTO v_exchange_rate, v_last_updated
     FROM core_entities er
     LEFT JOIN core_dynamic_data er_from ON er.id = er_from.entity_id 
