@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { validateEvent, preflight } from '@/lib/guardrail'
 import { callFunction } from '@/lib/db'
+import { adaptTransactionData } from '@/lib/utils/transaction-field-adapter'
 
 export const runtime = 'nodejs'
 
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
     p_organization_id: body.organization_id,
     p_transaction_type: body.transaction_type,
     p_smart_code: body.smart_code,
-    p_transaction_number: body.transaction_number ?? `TXN-${Date.now()}`,
+    p_transaction_number: body.transaction_number ?? `TXN-${Date.now()}`, // ✅ Match RPC parameter name
     p_transaction_date: body.transaction_date,
     p_source_entity_id: body.source_entity_id ?? null,
     p_target_entity_id: body.target_entity_id ?? null,

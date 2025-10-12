@@ -583,14 +583,12 @@ BEGIN
             organization_id,
             transaction_id,
             line_number,
-            account_code,
-            account_name,
-            debit_amount,
-            credit_amount,
+            entity_id,
+            unit_amount,
+            line_amount,
             description,
             line_type,
-            ai_generated,
-            ai_confidence_score,
+            ai_confidence,
             created_at,
             created_by
         ) VALUES (
@@ -600,16 +598,14 @@ BEGIN
             (SELECT COALESCE(MAX(line_number), 0) + 10 
              FROM universal_transaction_lines 
              WHERE transaction_id = transaction_id),
-            entry->>'account_code',
-            entry->>'account_name',
-            COALESCE((entry->>'debit_amount')::NUMERIC, 0),
-            COALESCE((entry->>'credit_amount')::NUMERIC, 0),
+            NULL, -- entity_id for account reference (would need GL account entity lookup)
+            COALESCE((entry->>'debit_amount')::NUMERIC, (entry->>'credit_amount')::NUMERIC, 0),
+            COALESCE((entry->>'debit_amount')::NUMERIC, (entry->>'credit_amount')::NUMERIC, 0),
             entry->>'description',
             'ai_generated',
-            true,
-            confidence_score,
+            confidence_score::TEXT,
             NOW(),
-            'ai-system'::UUID -- System user ID
+            'ai-system' -- System user identifier
         );
         
         total_debits := total_debits + COALESCE((entry->>'debit_amount')::NUMERIC, 0);
@@ -625,10 +621,9 @@ BEGIN
     -- Update transaction with posting details
     UPDATE universal_transactions 
     SET 
-        total_debit_amount = total_debits,
-        total_credit_amount = total_credits,
-        ai_confidence_score = confidence_score,
-        ai_generated_at = NOW()
+        total_amount = total_debits,
+        ai_confidence = confidence_score::TEXT,
+        updated_at = NOW()
     WHERE id = transaction_id;
     
     RETURN TRUE;
