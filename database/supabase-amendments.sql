@@ -193,7 +193,7 @@ BEGIN
         'user',
         COALESCE(NEW.raw_user_meta_data->>'name', SPLIT_PART(NEW.email, '@', 1)),
         CONCAT('USER-', EXTRACT(EPOCH FROM NOW())::TEXT),
-        'HERA.USER.PROFILE.v1',
+        'HERA.USER.PROFILE.V1',
         'active',
         NEW.id
     ) ON CONFLICT (id) DO NOTHING;
@@ -333,7 +333,7 @@ BEGIN
             'user',
             'santhoshlal',
             'USER-SANTHOS-001',
-            'HERA.USER.PROFILE.v1',
+            'HERA.USER.PROFILE.V1',
             'active',
             existing_user_id
         ) ON CONFLICT (id) DO NOTHING;

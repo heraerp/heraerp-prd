@@ -141,9 +141,9 @@ BEGIN
             created_at,
             updated_at
         ) VALUES
-        (gen_random_uuid(), v_org_id, v_org_id, 'subdomain', p_subdomain, 'HERA.ORG.FIELD.SUBDOMAIN.v1', NOW(), NOW()),
-        (gen_random_uuid(), v_org_id, v_org_id, 'owner_email', p_owner_email, 'HERA.ORG.FIELD.OWNER_EMAIL.v1', NOW(), NOW()),
-        (gen_random_uuid(), v_org_id, v_org_id, 'created_date', NOW()::TEXT, 'HERA.ORG.FIELD.CREATED_DATE.v1', NOW(), NOW());
+        (gen_random_uuid(), v_org_id, v_org_id, 'subdomain', p_subdomain, 'HERA.ORG.FIELD.SUBDOMAIN.V1', NOW(), NOW()),
+        (gen_random_uuid(), v_org_id, v_org_id, 'owner_email', p_owner_email, 'HERA.ORG.FIELD.OWNER_EMAIL.V1', NOW(), NOW()),
+        (gen_random_uuid(), v_org_id, v_org_id, 'created_date', NOW()::TEXT, 'HERA.ORG.FIELD.CREATED_DATE.V1', NOW(), NOW());
 
         -- Build result
         v_result := jsonb_build_object(

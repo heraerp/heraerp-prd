@@ -122,7 +122,7 @@ export default function StaffManagementPage() {
         entity_type: 'staff',
         entity_name: newStaff.name,
         entity_code: `STAFF-${Date.now()}`,
-        smart_code: 'HERA.SALON.STAFF.ENTITY.v1',
+        smart_code: 'HERA.SALON.STAFF.ENTITY.V1',
         metadata: { role: newStaff.role }
       });
 

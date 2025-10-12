@@ -1,0 +1,425 @@
+# ============================================================================
+# HERA Finance DNA v3: AI Insights Engine Alerting Rules
+# 
+# Production alerting configuration for Prometheus, Grafana, or similar
+# monitoring systems. Covers SLOs, security, performance, and business alerts.
+# 
+# Smart Code: HERA.AI.INSIGHT.ALERTING.RULES.V3
+# ============================================================================
+
+# ============================================================================
+# SLO-Based Alerts (Service Level Objectives)
+# ============================================================================
+
+groups:
+  - name: hera_ai_insights_slo_alerts
+    interval: 60s
+    rules:
+      
+      # Critical: Insight generation latency SLA breach
+      - alert: AIInsightGenerationSlow
+        expr: avg_over_time(hera_ai_insight_processing_duration_ms[5m]) > 5000
+        for: 2m
+        labels:
+          severity: critical
+          service: ai-insights-v3
+          slo: latency
+        annotations:
+          summary: "AI Insight generation exceeding 5s SLA"
+          description: "Average insight generation time is {{ $value }}ms over the last 5 minutes, exceeding the 5000ms SLA for organization {{ $labels.organization_id }}"
+          runbook_url: "https://docs.hera.ai/runbooks/ai-insights-latency"
+          smart_code: "HERA.AI.INSIGHT.ALERT.LATENCY.BREACH.V3"
+
+      # Critical: Success rate below SLA
+      - alert: AIInsightGenerationFailureRate
+        expr: (rate(hera_ai_insight_runs_failed_total[24h]) / rate(hera_ai_insight_runs_total[24h])) * 100 > 1
+        for: 5m
+        labels:
+          severity: critical
+          service: ai-insights-v3
+          slo: availability
+        annotations:
+          summary: "AI Insight generation failure rate above 1%"
+          description: "Insight generation failure rate is {{ $value | humanizePercentage }} over the last 24 hours, exceeding the 99% success rate SLA"
+          runbook_url: "https://docs.hera.ai/runbooks/ai-insights-failures"
+          smart_code: "HERA.AI.INSIGHT.ALERT.FAILURE.RATE.V3"
+
+      # Warning: No insights generated recently
+      - alert: AIInsightGenerationStale
+        expr: time() - hera_ai_insight_last_successful_run_timestamp > 86400
+        for: 5m
+        labels:
+          severity: warning
+          service: ai-insights-v3
+          slo: freshness
+        annotations:
+          summary: "No AI insights generated in last 24 hours"
+          description: "Last successful insight generation was {{ $value | humanizeDuration }} ago for organization {{ $labels.organization_id }}"
+          runbook_url: "https://docs.hera.ai/runbooks/ai-insights-stale"
+          smart_code: "HERA.AI.INSIGHT.ALERT.STALE.GENERATION.V3"
+
+# ============================================================================
+# Security & Compliance Alerts
+# ============================================================================
+
+  - name: hera_ai_insights_security_alerts
+    interval: 30s
+    rules:
+      
+      # Critical: RLS breach attempt detected
+      - alert: AIInsightRLSBreachAttempt
+        expr: increase(hera_ai_insight_unauthorized_access_attempts_total[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: ai-insights-v3
+          category: security
+        annotations:
+          summary: "Unauthorized AI Insights access attempt detected"
+          description: "{{ $value }} unauthorized access attempts detected in the last 5 minutes from IP {{ $labels.source_ip }}"
+          runbook_url: "https://docs.hera.ai/runbooks/security-incident-response"
+          smart_code: "HERA.AI.INSIGHT.ALERT.RLS.BREACH.V3"
+
+      # Critical: Cross-tenant data access detected
+      - alert: AIInsightCrossTenantAccess
+        expr: hera_ai_insight_cross_tenant_violations_total > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: ai-insights-v3
+          category: security
+        annotations:
+          summary: "Cross-tenant data access violation in AI Insights"
+          description: "Cross-tenant data access detected: {{ $labels.attempted_org }} tried to access data from {{ $labels.target_org }}"
+          runbook_url: "https://docs.hera.ai/runbooks/multi-tenant-isolation"
+          smart_code: "HERA.AI.INSIGHT.ALERT.CROSS.TENANT.V3"
+
+      # Warning: Missing organization header
+      - alert: AIInsightMissingOrgHeader
+        expr: rate(hera_ai_insight_missing_org_header_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: ai-insights-v3
+          category: security
+        annotations:
+          summary: "High rate of missing X-HERA-ORG headers"
+          description: "{{ $value }} requests per second missing required organization headers"
+          runbook_url: "https://docs.hera.ai/runbooks/api-headers"
+          smart_code: "HERA.AI.INSIGHT.ALERT.MISSING.HEADER.V3"
+
+# ============================================================================
+# Performance & Resource Alerts
+# ============================================================================
+
+  - name: hera_ai_insights_performance_alerts
+    interval: 60s
+    rules:
+      
+      # Warning: High memory usage during insight generation
+      - alert: AIInsightHighMemoryUsage
+        expr: hera_ai_insight_memory_usage_bytes > 2000000000  # 2GB
+        for: 5m
+        labels:
+          severity: warning
+          service: ai-insights-v3
+          category: performance
+        annotations:
+          summary: "High memory usage during AI insight generation"
+          description: "Memory usage is {{ $value | humanizeBytes }} during insight generation for organization {{ $labels.organization_id }}"
+          runbook_url: "https://docs.hera.ai/runbooks/memory-optimization"
+          smart_code: "HERA.AI.INSIGHT.ALERT.MEMORY.HIGH.V3"
+
+      # Warning: Database connection pool exhaustion
+      - alert: AIInsightDBConnectionPoolHigh
+        expr: hera_ai_insight_db_connections_active / hera_ai_insight_db_connections_max > 0.8
+        for: 3m
+        labels:
+          severity: warning
+          service: ai-insights-v3
+          category: performance
+        annotations:
+          summary: "Database connection pool usage high for AI Insights"
+          description: "Database connection pool is {{ $value | humanizePercentage }} full"
+          runbook_url: "https://docs.hera.ai/runbooks/database-connections"
+          smart_code: "HERA.AI.INSIGHT.ALERT.DB.POOL.HIGH.V3"
+
+      # Critical: Concurrent insight generation limit exceeded
+      - alert: AIInsightConcurrencyLimitExceeded
+        expr: hera_ai_insight_concurrent_generations_active > 10
+        for: 1m
+        labels:
+          severity: critical
+          service: ai-insights-v3
+          category: performance
+        annotations:
+          summary: "AI Insight concurrent generation limit exceeded"
+          description: "{{ $value }} concurrent insight generations active, exceeding limit of 10"
+          runbook_url: "https://docs.hera.ai/runbooks/concurrency-limits"
+          smart_code: "HERA.AI.INSIGHT.ALERT.CONCURRENCY.LIMIT.V3"
+
+# ============================================================================
+# Business Logic & Data Quality Alerts
+# ============================================================================
+
+  - name: hera_ai_insights_business_alerts
+    interval: 300s  # 5 minutes
+    rules:
+      
+      # Warning: High percentage of low-confidence insights
+      - alert: AIInsightLowConfidenceSpike
+        expr: (hera_ai_insight_low_confidence_total / hera_ai_insight_total_generated) * 100 > 20
+        for: 10m
+        labels:
+          severity: warning
+          service: ai-insights-v3
+          category: quality
+        annotations:
+          summary: "High percentage of low-confidence AI insights"
+          description: "{{ $value | humanizePercentage }} of insights have confidence score below 0.6 for organization {{ $labels.organization_id }}"
+          runbook_url: "https://docs.hera.ai/runbooks/insight-quality"
+          smart_code: "HERA.AI.INSIGHT.ALERT.LOW.CONFIDENCE.V3"
+
+      # Critical: Negative margin alerts spike
+      - alert: AIInsightHighSeveritySpike
+        expr: increase(hera_ai_insight_high_severity_total[1h]) > 5
+        for: 5m
+        labels:
+          severity: critical
+          service: ai-insights-v3
+          category: business
+        annotations:
+          summary: "Spike in high-severity business alerts"
+          description: "{{ $value }} high-severity insights (negative margins, losses) generated in the last hour for organization {{ $labels.organization_id }}"
+          runbook_url: "https://docs.hera.ai/runbooks/business-alerts"
+          smart_code: "HERA.AI.INSIGHT.ALERT.HIGH.SEVERITY.V3"
+
+      # Warning: Insufficient data for insight generation
+      - alert: AIInsightInsufficientData
+        expr: hera_ai_insight_data_foundation_facts < 10
+        for: 15m
+        labels:
+          severity: warning
+          service: ai-insights-v3
+          category: data_quality
+        annotations:
+          summary: "Insufficient data for reliable AI insight generation"
+          description: "Only {{ $value }} facts available for insight generation in period {{ $labels.period }} for organization {{ $labels.organization_id }}"
+          runbook_url: "https://docs.hera.ai/runbooks/data-quality"
+          smart_code: "HERA.AI.INSIGHT.ALERT.INSUFFICIENT.DATA.V3"
+
+# ============================================================================
+# Autonomous Safety Alerts
+# ============================================================================
+
+  - name: hera_ai_insights_autonomous_safety_alerts
+    interval: 60s
+    rules:
+      
+      # Critical: Autonomous policy change proposed
+      - alert: AIInsightAutonomousPolicyProposed
+        expr: increase(hera_ai_autonomous_policy_changes_proposed_total[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: ai-insights-v3
+          category: autonomous_safety
+        annotations:
+          summary: "Autonomous AI policy change proposed and requires approval"
+          description: "AI system proposed {{ $value }} policy changes for organization {{ $labels.organization_id }}. Manual review required."
+          runbook_url: "https://docs.hera.ai/runbooks/autonomous-safety"
+          smart_code: "HERA.AI.INSIGHT.ALERT.AUTONOMOUS.PROPOSAL.V3"
+
+      # Warning: Autonomous confidence threshold breach
+      - alert: AIInsightAutonomousLowConfidence
+        expr: hera_ai_autonomous_insights_confidence_avg < 0.9
+        for: 10m
+        labels:
+          severity: warning
+          service: ai-insights-v3
+          category: autonomous_safety
+        annotations:
+          summary: "Autonomous AI insights below confidence threshold"
+          description: "Average autonomous insight confidence is {{ $value }}, below required 0.9 threshold"
+          runbook_url: "https://docs.hera.ai/runbooks/autonomous-confidence"
+          smart_code: "HERA.AI.INSIGHT.ALERT.AUTONOMOUS.CONFIDENCE.V3"
+
+      # Info: Autonomous cooldown period active
+      - alert: AIInsightAutonomousCooldown
+        expr: hera_ai_autonomous_cooldown_remaining_hours > 0
+        for: 1m
+        labels:
+          severity: info
+          service: ai-insights-v3
+          category: autonomous_safety
+        annotations:
+          summary: "Autonomous AI changes in cooldown period"
+          description: "{{ $value }} hours remaining in autonomous change cooldown for organization {{ $labels.organization_id }}"
+          runbook_url: "https://docs.hera.ai/runbooks/autonomous-cooldown"
+          smart_code: "HERA.AI.INSIGHT.ALERT.AUTONOMOUS.COOLDOWN.V3"
+
+# ============================================================================
+# External Dependencies & Integration Alerts
+# ============================================================================
+
+  - name: hera_ai_insights_dependency_alerts
+    interval: 120s
+    rules:
+      
+      # Critical: Profitability v2 data unavailable
+      - alert: AIInsightProfitabilityDataUnavailable
+        expr: hera_ai_insight_profitability_data_last_update_hours > 25
+        for: 5m
+        labels:
+          severity: critical
+          service: ai-insights-v3
+          category: dependencies
+        annotations:
+          summary: "Profitability v2 data stale for AI Insights"
+          description: "Profitability data last updated {{ $value }} hours ago, exceeding 24-hour freshness requirement"
+          runbook_url: "https://docs.hera.ai/runbooks/profitability-integration"
+          smart_code: "HERA.AI.INSIGHT.ALERT.PROFITABILITY.STALE.V3"
+
+      # Warning: AI provider API rate limiting
+      - alert: AIInsightProviderRateLimit
+        expr: rate(hera_ai_insight_provider_rate_limit_errors_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+          service: ai-insights-v3
+          category: dependencies
+        annotations:
+          summary: "AI provider rate limiting detected"
+          description: "{{ $value }} rate limit errors per second from AI provider {{ $labels.provider }}"
+          runbook_url: "https://docs.hera.ai/runbooks/ai-provider-limits"
+          smart_code: "HERA.AI.INSIGHT.ALERT.PROVIDER.RATE.LIMIT.V3"
+
+# ============================================================================
+# Alert Routing Configuration
+# ============================================================================
+
+# Severity-based routing
+route:
+  group_by: ['alertname', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'hera-ai-insights-default'
+  
+  routes:
+    # Critical alerts to PagerDuty
+    - match:
+        severity: critical
+      receiver: 'hera-ai-insights-critical'
+      group_wait: 5s
+      repeat_interval: 5m
+      
+    # Security alerts to security team
+    - match:
+        category: security
+      receiver: 'hera-ai-insights-security'
+      group_wait: 0s
+      repeat_interval: 1m
+      
+    # Business alerts to business team
+    - match:
+        category: business
+      receiver: 'hera-ai-insights-business'
+      repeat_interval: 30m
+      
+    # Autonomous safety alerts to AI governance team
+    - match:
+        category: autonomous_safety
+      receiver: 'hera-ai-insights-governance'
+      repeat_interval: 15m
+
+# ============================================================================
+# Notification Receivers (Configure with your actual endpoints)
+# ============================================================================
+
+receivers:
+  - name: 'hera-ai-insights-default'
+    slack_configs:
+      - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+        channel: '#hera-ai-insights'
+        title: 'HERA AI Insights Alert'
+        text: '{{ range .Alerts }}{{ .Annotations.summary }} - {{ .Annotations.description }}{{ end }}'
+        
+  - name: 'hera-ai-insights-critical'
+    pagerduty_configs:
+      - routing_key: 'YOUR_PAGERDUTY_INTEGRATION_KEY'
+        description: '{{ .GroupLabels.alertname }}: {{ .CommonAnnotations.summary }}'
+        
+  - name: 'hera-ai-insights-security'
+    email_configs:
+      - to: 'security@yourcompany.com'
+        subject: 'SECURITY ALERT: HERA AI Insights'
+        body: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ .Annotations.description }}{{ end }}'
+        
+  - name: 'hera-ai-insights-business'
+    slack_configs:
+      - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+        channel: '#business-intelligence'
+        title: 'Business Alert: AI Insights'
+        text: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        
+  - name: 'hera-ai-insights-governance'
+    email_configs:
+      - to: 'ai-governance@yourcompany.com'
+        subject: 'AI Governance Alert: Autonomous Safety'
+        body: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ .Annotations.description }}{{ end }}'
+
+# ============================================================================
+# Metric Collection Requirements
+# ============================================================================
+
+# Required metrics to be exposed by the application:
+# - hera_ai_insight_processing_duration_ms (histogram)
+# - hera_ai_insight_runs_total (counter)
+# - hera_ai_insight_runs_failed_total (counter)
+# - hera_ai_insight_last_successful_run_timestamp (gauge)
+# - hera_ai_insight_unauthorized_access_attempts_total (counter)
+# - hera_ai_insight_cross_tenant_violations_total (counter)
+# - hera_ai_insight_missing_org_header_total (counter)
+# - hera_ai_insight_memory_usage_bytes (gauge)
+# - hera_ai_insight_db_connections_active (gauge)
+# - hera_ai_insight_db_connections_max (gauge)
+# - hera_ai_insight_concurrent_generations_active (gauge)
+# - hera_ai_insight_low_confidence_total (counter)
+# - hera_ai_insight_high_severity_total (counter)
+# - hera_ai_insight_data_foundation_facts (gauge)
+# - hera_ai_autonomous_policy_changes_proposed_total (counter)
+# - hera_ai_autonomous_insights_confidence_avg (gauge)
+# - hera_ai_autonomous_cooldown_remaining_hours (gauge)
+# - hera_ai_insight_profitability_data_last_update_hours (gauge)
+# - hera_ai_insight_provider_rate_limit_errors_total (counter)
+
+# ============================================================================
+# Configuration Notes
+# ============================================================================
+
+# 1. Replace placeholder values (YOUR_SLACK_WEBHOOK_URL, etc.) with actual values
+# 2. Adjust thresholds based on your SLA requirements
+# 3. Configure metric exporters in your application to expose required metrics
+# 4. Test alert routing with mock alerts before production deployment
+# 5. Set up alert escalation policies in your incident management system
+# 6. Review and tune alert thresholds after initial deployment based on baseline metrics
+
+# Smart Code Registry for Alerts:
+# HERA.AI.INSIGHT.ALERT.LATENCY.BREACH.V3 - Processing time SLA breach
+# HERA.AI.INSIGHT.ALERT.FAILURE.RATE.V3 - Success rate SLA breach  
+# HERA.AI.INSIGHT.ALERT.STALE.GENERATION.V3 - No recent insight generation
+# HERA.AI.INSIGHT.ALERT.RLS.BREACH.V3 - Row-level security violation
+# HERA.AI.INSIGHT.ALERT.CROSS.TENANT.V3 - Cross-tenant access attempt
+# HERA.AI.INSIGHT.ALERT.MISSING.HEADER.V3 - Missing organization header
+# HERA.AI.INSIGHT.ALERT.MEMORY.HIGH.V3 - High memory usage
+# HERA.AI.INSIGHT.ALERT.DB.POOL.HIGH.V3 - Database connection pool high
+# HERA.AI.INSIGHT.ALERT.CONCURRENCY.LIMIT.V3 - Concurrency limit exceeded
+# HERA.AI.INSIGHT.ALERT.LOW.CONFIDENCE.V3 - Low confidence insights spike
+# HERA.AI.INSIGHT.ALERT.HIGH.SEVERITY.V3 - High severity business alerts
+# HERA.AI.INSIGHT.ALERT.INSUFFICIENT.DATA.V3 - Insufficient data quality
+# HERA.AI.INSIGHT.ALERT.AUTONOMOUS.PROPOSAL.V3 - Autonomous policy proposal
+# HERA.AI.INSIGHT.ALERT.AUTONOMOUS.CONFIDENCE.V3 - Autonomous confidence low
+# HERA.AI.INSIGHT.ALERT.AUTONOMOUS.COOLDOWN.V3 - Autonomous cooldown active
+# HERA.AI.INSIGHT.ALERT.PROFITABILITY.STALE.V3 - Profitability data stale
+# HERA.AI.INSIGHT.ALERT.PROVIDER.RATE.LIMIT.V3 - AI provider rate limiting

@@ -1,5 +1,5 @@
 -- HERA DNA Universal Calendar - SQL Patterns
--- Smart Code: HERA.SQL.CALENDAR.PATTERNS.v1
+-- Smart Code: HERA.SQL.CALENDAR.PATTERNS.V1
 -- 
 -- Complete SQL implementation using Sacred Six Tables for universal calendar functionality
 
@@ -30,7 +30,7 @@ INSERT INTO universal_transactions (
     'appointment',         -- appointment, block, holiday, shift, maintenance
     '2024-12-15 14:30:00+00'::timestamptz,
     $organization_id,
-    'HERA.SALON.CALENDAR.APPOINTMENT.PREMIUM.v1',
+    'HERA.SALON.CALENDAR.APPOINTMENT.PREMIUM.V1',
     $customer_entity_id,   -- From core_entities where entity_type='customer'  
     $stylist_entity_id,    -- From core_entities where entity_type='staff'
     'APT-' || to_char(NOW(), 'YYYYMMDD') || '-' || LPAD((EXTRACT(EPOCH FROM NOW())::bigint % 100000)::text, 5, '0'),
@@ -86,7 +86,7 @@ INSERT INTO core_entities (
     'Rocky - Celebrity Stylist',
     'STAFF-ROCKY-001',
     $organization_id,
-    'HERA.SALON.STAFF.CELEBRITY.STYLIST.v1',
+    'HERA.SALON.STAFF.CELEBRITY.STYLIST.V1',
     'active',
     jsonb_build_object(
         'calendar_resource', true,
@@ -129,7 +129,7 @@ INSERT INTO core_entities (
     'VIP Suite 1',
     'ROOM-VIP-001',
     $organization_id,
-    'HERA.SALON.RESOURCE.ROOM.VIP.v1',
+    'HERA.SALON.RESOURCE.ROOM.VIP.V1',
     'active',
     jsonb_build_object(
         'calendar_resource', true,
@@ -199,7 +199,7 @@ INSERT INTO core_dynamic_data (
         'weekend_premium', 1.5,
         'holiday_premium', 2.0
     ),
-    'HERA.SALON.STAFF.AVAILABILITY.WEEKLY.v1',
+    'HERA.SALON.STAFF.AVAILABILITY.WEEKLY.V1',
     NOW(),
     NOW()
 );
@@ -246,7 +246,7 @@ INSERT INTO core_dynamic_data (
             jsonb_build_object('equipment', 'styling_chair', 'last_service', '2024-10-01', 'next_service', '2025-01-01')
         )
     ),
-    'HERA.SALON.RESOURCE.ROOM.SCHEDULE.v1',
+    'HERA.SALON.RESOURCE.ROOM.SCHEDULE.V1',
     NOW(),
     NOW()
 );
@@ -272,7 +272,7 @@ INSERT INTO core_relationships (
     $stylist_entity_id,
     'assigned_to',
     $organization_id,
-    'HERA.SALON.CALENDAR.ASSIGNMENT.STAFF.v1',
+    'HERA.SALON.CALENDAR.ASSIGNMENT.STAFF.V1',
     jsonb_build_object(
         'assignment_type', 'primary_stylist',
         'role', 'lead_stylist',
@@ -308,7 +308,7 @@ INSERT INTO core_relationships (
     $room_entity_id,
     'uses_resource',
     $organization_id,
-    'HERA.SALON.CALENDAR.ASSIGNMENT.ROOM.v1',
+    'HERA.SALON.CALENDAR.ASSIGNMENT.ROOM.V1',
     jsonb_build_object(
         'assignment_type', 'primary_location',
         'room_rate', 50.00,
@@ -352,7 +352,7 @@ INSERT INTO universal_transaction_lines (
     150.00,
     150.00,
     $organization_id,
-    'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
+    'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.V1',
     jsonb_build_object(
         'service_category', 'chemical_treatment',
         'duration_minutes', 240,
@@ -400,7 +400,7 @@ INSERT INTO universal_transaction_lines (
     45.00,
     45.00,
     $organization_id,
-    'HERA.SALON.SERVICE.CONDITIONING.PREMIUM.v1',
+    'HERA.SALON.SERVICE.CONDITIONING.PREMIUM.V1',
     jsonb_build_object(
         'service_category', 'conditioning',
         'duration_minutes', 30,
@@ -628,26 +628,26 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Sample services
 INSERT INTO core_entities (id, entity_type, entity_name, entity_code, organization_id, smart_code, metadata, status, created_at, updated_at) VALUES
-('223e4567-e89b-12d3-a456-426614174001', 'service', 'Brazilian Blowout', 'SRV-BRAZILIAN-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1', 
+('223e4567-e89b-12d3-a456-426614174001', 'service', 'Brazilian Blowout', 'SRV-BRAZILIAN-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.V1', 
  '{"duration_minutes": 240, "price": 150.00, "category": "chemical_treatment", "skill_level": "advanced"}', 'active', NOW(), NOW()),
-('223e4567-e89b-12d3-a456-426614174002', 'service', 'Keratin Treatment', 'SRV-KERATIN-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.v1',
+('223e4567-e89b-12d3-a456-426614174002', 'service', 'Keratin Treatment', 'SRV-KERATIN-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.V1',
  '{"duration_minutes": 180, "price": 120.00, "category": "chemical_treatment", "skill_level": "intermediate"}', 'active', NOW(), NOW()),
-('223e4567-e89b-12d3-a456-426614174003', 'service', 'Premium Cut & Style', 'SRV-CUT-PREMIUM-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.SERVICE.CUT.PREMIUM.v1',
+('223e4567-e89b-12d3-a456-426614174003', 'service', 'Premium Cut & Style', 'SRV-CUT-PREMIUM-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.SERVICE.CUT.PREMIUM.V1',
  '{"duration_minutes": 90, "price": 80.00, "category": "cutting", "skill_level": "senior"}', 'active', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 -- Sample staff
 INSERT INTO core_entities (id, entity_type, entity_name, entity_code, organization_id, smart_code, metadata, status, created_at, updated_at) VALUES
-('323e4567-e89b-12d3-a456-426614174001', 'staff', 'Rocky - Celebrity Stylist', 'STAFF-ROCKY-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.STAFF.CELEBRITY.STYLIST.v1',
+('323e4567-e89b-12d3-a456-426614174001', 'staff', 'Rocky - Celebrity Stylist', 'STAFF-ROCKY-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.STAFF.CELEBRITY.STYLIST.V1',
  '{"specializations": ["brazilian_blowout", "keratin_treatment", "color_specialist"], "hourly_rate": 200.00, "commission_rate": 0.40}', 'active', NOW(), NOW()),
-('323e4567-e89b-12d3-a456-426614174002', 'staff', 'Vinay - Senior Stylist', 'STAFF-VINAY-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.STAFF.SENIOR.STYLIST.v1',
+('323e4567-e89b-12d3-a456-426614174002', 'staff', 'Vinay - Senior Stylist', 'STAFF-VINAY-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.STAFF.SENIOR.STYLIST.V1',
  '{"specializations": ["cutting", "styling", "color"], "hourly_rate": 150.00, "commission_rate": 0.35}', 'active', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 -- Sample customers
 INSERT INTO core_entities (id, entity_type, entity_name, entity_code, organization_id, smart_code, metadata, status, created_at, updated_at) VALUES
-('423e4567-e89b-12d3-a456-426614174001', 'customer', 'Sarah Johnson', 'CUST-SARAH-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.CUSTOMER.VIP.v1',
+('423e4567-e89b-12d3-a456-426614174001', 'customer', 'Sarah Johnson', 'CUST-SARAH-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.CUSTOMER.VIP.V1',
  '{"vip_level": "platinum", "hair_type": "thick_curly", "allergies": ["ammonia"], "preferred_stylist": "323e4567-e89b-12d3-a456-426614174001"}', 'active', NOW(), NOW()),
-('423e4567-e89b-12d3-a456-426614174002', 'customer', 'Emma Davis', 'CUST-EMMA-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.CUSTOMER.REGULAR.v1',
+('423e4567-e89b-12d3-a456-426614174002', 'customer', 'Emma Davis', 'CUST-EMMA-001', '123e4567-e89b-12d3-a456-426614174000', 'HERA.SALON.CUSTOMER.REGULAR.V1',
  '{"hair_type": "fine_straight", "visit_frequency": "monthly", "average_spend": 120.00}', 'active', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;

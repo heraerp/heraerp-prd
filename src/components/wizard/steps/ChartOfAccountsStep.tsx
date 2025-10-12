@@ -176,7 +176,7 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
         ...account,
         allow_posting: account.allow_posting ?? true,
         smart_code:
-          account.smart_code || `HERA.${industryCode}.COA.ACCOUNT.GL.${account.account_type}.v1`
+          account.smart_code || `HERA.${industryCode}.COA.ACCOUNT.GL.${account.account_type}.V1`
       }))
 
       setPreviewAccounts(validatedAccounts)

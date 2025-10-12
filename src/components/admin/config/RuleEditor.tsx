@@ -139,7 +139,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
         .replace(/[^A-Z0-9\s]/g, '')
         .replace(/\s+/g, '.')
 
-      const smartCode = `HERA.${categoryCode}.${typeCode}.${nameCode}.v1`
+      const smartCode = `HERA.${categoryCode}.${typeCode}.${nameCode}.V1`
 
       if (smartCode !== formData.smart_code) {
         setFormData(prev => ({ ...prev, smart_code: smartCode }))

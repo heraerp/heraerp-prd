@@ -26,7 +26,7 @@ SELECT
     'cost_accounting_framework',
     'HERA Universal Cost Accounting Framework',
     'FRAMEWORK-CO-001',
-    'HERA.SYSTEM.FIN.ENT.COST_ACCOUNTING.v1',
+    'HERA.SYSTEM.FIN.ENT.COST_ACCOUNTING.V1',
     'PROD',
     'active',
     '{
@@ -37,25 +37,25 @@ SELECT
         "cost_object_types": {
             "cost_centers": {
                 "entity_type": "cost_center",
-                "smart_code_pattern": "HERA.{INDUSTRY}.CO.ENT.COST_CENTER.v1",
+                "smart_code_pattern": "HERA.{INDUSTRY}.CO.ENT.COST_CENTER.V1",
                 "functionality": ["cost_capture", "budget_control", "variance_analysis", "allocation_to_profit_centers"],
                 "sap_equivalent": "CSKS_cost_center_master"
             },
             "internal_orders": {
                 "entity_type": "internal_order",
-                "smart_code_pattern": "HERA.{INDUSTRY}.CO.ENT.INTERNAL_ORDER.v1", 
+                "smart_code_pattern": "HERA.{INDUSTRY}.CO.ENT.INTERNAL_ORDER.V1", 
                 "functionality": ["project_costing", "marketing_campaigns", "maintenance_orders", "temporary_cost_collection"],
                 "sap_equivalent": "AUFK_order_master"
             },
             "projects": {
                 "entity_type": "project",
-                "smart_code_pattern": "HERA.{INDUSTRY}.CO.ENT.PROJECT.v1",
+                "smart_code_pattern": "HERA.{INDUSTRY}.CO.ENT.PROJECT.V1",
                 "functionality": ["wbs_elements", "network_activities", "milestone_billing", "investment_tracking"],
                 "sap_equivalent": "PRPS_wbs_master"
             },
             "activity_types": {
                 "entity_type": "activity_type", 
-                "smart_code_pattern": "HERA.{INDUSTRY}.CO.ENT.ACTIVITY.v1",
+                "smart_code_pattern": "HERA.{INDUSTRY}.CO.ENT.ACTIVITY.V1",
                 "functionality": ["resource_planning", "capacity_costing", "allocation_base", "performance_measurement"],
                 "sap_equivalent": "CSA_activity_type_master"
             }
@@ -128,7 +128,7 @@ SELECT
     'product_costing_framework',
     'HERA Universal Product Costing Framework',
     'FRAMEWORK-PC-001',
-    'HERA.SYSTEM.PC.ENT.PRODUCT_COSTING.v1',
+    'HERA.SYSTEM.PC.ENT.PRODUCT_COSTING.V1',
     'PROD',
     'active',
     '{
@@ -140,19 +140,19 @@ SELECT
                 "description": "Fixed standard costs for planning and variance analysis",
                 "implementation": "standard_cost_in_dynamic_data_with_variance_calculation",
                 "transaction_type": "standard_cost_transaction",
-                "smart_code": "HERA.{INDUSTRY}.PC.TXN.STANDARD_COST.v1"
+                "smart_code": "HERA.{INDUSTRY}.PC.TXN.STANDARD_COST.V1"
             },
             "actual_costing": {
                 "description": "Real-time actual costs based on actual transactions",
                 "implementation": "real_time_cost_accumulation_via_universal_transactions",
                 "transaction_type": "actual_cost_transaction", 
-                "smart_code": "HERA.{INDUSTRY}.PC.TXN.ACTUAL_COST.v1"
+                "smart_code": "HERA.{INDUSTRY}.PC.TXN.ACTUAL_COST.V1"
             },
             "planned_costing": {
                 "description": "Future cost planning and simulation",
                 "implementation": "planned_cost_scenarios_in_dynamic_data",
                 "transaction_type": "planned_cost_transaction",
-                "smart_code": "HERA.{INDUSTRY}.PC.TXN.PLANNED_COST.v1"
+                "smart_code": "HERA.{INDUSTRY}.PC.TXN.PLANNED_COST.V1"
             }
         },
         "bom_integration": {
@@ -219,7 +219,7 @@ SELECT
     'copa_framework',
     'HERA Universal Profitability Analysis Framework',
     'FRAMEWORK-COPA-001',
-    'HERA.SYSTEM.COPA.ENT.PROFITABILITY.v1',
+    'HERA.SYSTEM.COPA.ENT.PROFITABILITY.V1',
     'PROD',
     'active',
     '{
@@ -306,7 +306,7 @@ SELECT
     'material_ledger_framework',
     'HERA Universal Material Ledger Framework',
     'FRAMEWORK-ML-001',
-    'HERA.SYSTEM.ML.ENT.MATERIAL_LEDGER.v1',
+    'HERA.SYSTEM.ML.ENT.MATERIAL_LEDGER.V1',
     'PROD',
     'active',
     '{
@@ -397,7 +397,7 @@ SELECT
     'overhead_costing_framework',
     'HERA Universal Overhead Costing Framework',
     'FRAMEWORK-OH-001',
-    'HERA.SYSTEM.OH.ENT.OVERHEAD_COSTING.v1',
+    'HERA.SYSTEM.OH.ENT.OVERHEAD_COSTING.V1',
     'PROD',
     'active',
     '{
@@ -501,7 +501,7 @@ SELECT
     'transfer_pricing_framework',
     'HERA Universal Transfer Pricing Framework',
     'FRAMEWORK-TP-001',
-    'HERA.SYSTEM.TP.ENT.TRANSFER_PRICING.v1',
+    'HERA.SYSTEM.TP.ENT.TRANSFER_PRICING.V1',
     'PROD',
     'active',
     '{
@@ -569,7 +569,7 @@ SELECT
     'revenue_recognition_framework',
     'HERA Universal Revenue Recognition Framework',
     'FRAMEWORK-REV-001',
-    'HERA.SYSTEM.REV.ENT.REVENUE_RECOGNITION.v1',
+    'HERA.SYSTEM.REV.ENT.REVENUE_RECOGNITION.V1',
     'PROD',
     'active',
     '{
@@ -644,7 +644,7 @@ SELECT
     'sap_comparison_summary',
     'HERA vs SAP S/4HANA Costing Features Comparison',
     'COMPARISON-SAP-001',
-    'HERA.SYSTEM.COMP.ENT.SAP_COMPARISON.v1',
+    'HERA.SYSTEM.COMP.ENT.SAP_COMPARISON.V1',
     'PROD',
     'active',
     '{

@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 /**
  * HERA How It Works - Zero-Friction Demo to Signup Journey
- * Smart Code: HERA.MARKETING.HOW_IT_WORKS.v1
+ * Smart Code: HERA.MARKETING.HOW_IT_WORKS.V1
  *
  * Don't Make Me Think approach:
  * 1. Show live demos immediately

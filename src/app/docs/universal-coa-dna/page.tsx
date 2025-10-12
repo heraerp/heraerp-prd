@@ -139,7 +139,7 @@ const UniversalCOADNA = {
   
   // Smart Code Integration
   smart_codes: {
-    pattern: 'HERA.FIN.GL.{COUNTRY}.{INDUSTRY}.{ACCOUNT_TYPE}.v1',
+    pattern: 'HERA.FIN.GL.{COUNTRY}.{INDUSTRY}.{ACCOUNT_TYPE}.V1',
     ai_learning: true,
     auto_evolution: true
   }

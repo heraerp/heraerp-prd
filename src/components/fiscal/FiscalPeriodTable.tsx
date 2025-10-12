@@ -1,6 +1,6 @@
 // ================================================================================
 // FISCAL PERIOD TABLE - FISCAL COMPONENT
-// Smart Code: HERA.UI.FISCAL.PERIOD_TABLE.v1
+// Smart Code: HERA.UI.FISCAL.PERIOD_TABLE.V1
 // Production-ready fiscal period display with lock/close actions
 // ================================================================================
 

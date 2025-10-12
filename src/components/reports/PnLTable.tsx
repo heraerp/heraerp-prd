@@ -1,6 +1,6 @@
 // ================================================================================
 // PROFIT & LOSS TABLE
-// Smart Code: HERA.UI.REPORTS.PNL_TABLE.v1
+// Smart Code: HERA.UI.REPORTS.PNL_TABLE.V1
 // Hierarchical P&L statement with drill-down and accessibility features
 // ================================================================================
 

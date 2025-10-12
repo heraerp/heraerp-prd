@@ -9,7 +9,7 @@ INSERT INTO core_entities (
   'inventory_item',
   'MacBook Pro 16-inch',
   'LAPTOP-001',
-  'HERA.INV.ITM.ENT.PROD.v1',
+  'HERA.INV.ITM.ENT.PROD.V1',
   'active',
   '2025-07-31T08:41:22.867Z',
   '2025-07-31T08:41:22.867Z'
@@ -151,7 +151,7 @@ INSERT INTO core_entities (
   'inventory_item',
   'Office Chair Ergonomic',
   'CHAIR-001',
-  'HERA.INV.ITM.ENT.PROD.v1',
+  'HERA.INV.ITM.ENT.PROD.V1',
   'active',
   '2025-07-31T08:41:22.867Z',
   '2025-07-31T08:41:22.867Z'

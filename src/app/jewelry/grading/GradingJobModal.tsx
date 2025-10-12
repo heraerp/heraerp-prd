@@ -88,24 +88,24 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
       await create({
         entity_type: 'GRADING_JOB',
         entity_name: values.entity_name,
-        smart_code: 'HERA.JEWELRY.GRADING.ENTITY.JOB.v1',
+        smart_code: 'HERA.JEWELRY.GRADING.ENTITY.JOB.V1',
         dynamic_fields: {
           status: {
             value: values.status,
             type: 'text',
-            smart_code: 'HERA.JEWELRY.GRADING.DYN.STATUS.v1'
+            smart_code: 'HERA.JEWELRY.GRADING.DYN.STATUS.V1'
           },
           priority: {
             value: values.priority,
             type: 'text',
-            smart_code: 'HERA.JEWELRY.GRADING.DYN.PRIORITY.v1'
+            smart_code: 'HERA.JEWELRY.GRADING.DYN.PRIORITY.V1'
           },
           ...(values.carat != null
             ? {
                 carat: {
                   value: values.carat,
                   type: 'number',
-                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CARAT.v1'
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CARAT.V1'
                 }
               }
             : {}),
@@ -114,7 +114,7 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
                 cut: {
                   value: values.cut,
                   type: 'text',
-                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CUT.v1'
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CUT.V1'
                 }
               }
             : {}),
@@ -123,7 +123,7 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
                 color: {
                   value: values.color,
                   type: 'text',
-                  smart_code: 'HERA.JEWELRY.GRADING.DYN.COLOR.v1'
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.COLOR.V1'
                 }
               }
             : {}),
@@ -132,7 +132,7 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
                 clarity: {
                   value: values.clarity,
                   type: 'text',
-                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CLARITY.v1'
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CLARITY.V1'
                 }
               }
             : {}),
@@ -141,7 +141,7 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
                 measurements: {
                   value: values.measurements,
                   type: 'text',
-                  smart_code: 'HERA.JEWELRY.GRADING.DYN.MEASUREMENTS.v1'
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.MEASUREMENTS.V1'
                 }
               }
             : {})

@@ -657,7 +657,7 @@ export function SalonLuxeCRUDPage({
                           smart_code:
                             editingItem.smart_code ||
                             preset.smart_code ||
-                            `HERA.SALON.${entityType}.ENTITY.v1`,
+                            `HERA.SALON.${entityType}.ENTITY.V1`,
                           dynamic_fields: (() => {
                             const fields: Record<string, any> = {}
                             preset.dynamicFields.forEach((field: any) => {

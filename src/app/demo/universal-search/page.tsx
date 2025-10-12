@@ -184,7 +184,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Keyboard shortcuts',
     subtitle: 'List of all shortcuts',
     url: '/help/shortcuts',
-    smartCode: 'HERA.HELP.SHORTCUTS.v1'
+    smartCode: 'HERA.HELP.SHORTCUTS.V1'
   }
 ]
 

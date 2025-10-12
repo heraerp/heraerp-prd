@@ -1,6 +1,6 @@
 // ================================================================================
 // ROLE GRANT FORM - SETTINGS COMPONENT
-// Smart Code: HERA.UI.SETTINGS.ROLE_GRANT_FORM.v1
+// Smart Code: HERA.UI.SETTINGS.ROLE_GRANT_FORM.V1
 // Production-ready role grant creation/editing form with validation
 // ================================================================================
 
@@ -392,7 +392,7 @@ export function RoleGrantForm({
                   Smart Code (for audit trail):
                 </span>
                 <Badge variant="outline" className="font-mono text-xs">
-                  HERA.ORG.SETTINGS.ROLE_GRANTS.v1
+                  HERA.ORG.SETTINGS.ROLE_GRANTS.V1
                 </Badge>
               </div>
             </AlertDescription>

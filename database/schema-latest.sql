@@ -1,7 +1,7 @@
 -- ================================================================================
 -- HERA VIBE CODING FOUNDATION - UNIVERSAL 6-TABLE DEPLOYMENT
 -- Execute this SQL in Supabase SQL Editor for complete database setup
--- Smart Code: HERA.VIBE.FOUNDATION.DATABASE.UNIVERSAL.v1
+-- Smart Code: HERA.VIBE.FOUNDATION.DATABASE.UNIVERSAL.V1
 -- 
 -- SACRED PRINCIPLE: NO NEW TABLES - USE ONLY THE 6 UNIVERSAL TABLES!
 -- ================================================================================
@@ -47,7 +47,7 @@ CREATE TABLE core_entities (
   entity_code TEXT,
   entity_description TEXT,
   parent_entity_id UUID REFERENCES core_entities(id),
-  smart_code VARCHAR(100) NOT NULL, -- HERA.VIBE.FOUNDATION.CORE.ENGINE.v1, HERA.VIBE.CONTEXT.SESSION.v1, etc.
+  smart_code VARCHAR(100) NOT NULL, -- HERA.VIBE.FOUNDATION.CORE.ENGINE.V1, HERA.VIBE.CONTEXT.SESSION.V1, etc.
   smart_code_status TEXT DEFAULT 'DRAFT' CHECK (smart_code_status IN ('DRAFT', 'AI', 'HR', 'PROD', 'AUTO')),
   ai_confidence DECIMAL(5,4) DEFAULT 0.0000,
   ai_classification TEXT,
@@ -74,7 +74,7 @@ CREATE TABLE core_dynamic_data (
   field_value_date DATE,
   field_value_datetime TIMESTAMPTZ,
   field_value_json JSONB, -- Primary storage for vibe context data, configurations, etc.
-  smart_code VARCHAR(100), -- HERA.VIBE.CONTEXT.DATA.SESSION.v1, HERA.VIBE.CONFIG.COMPONENT.v1
+  smart_code VARCHAR(100), -- HERA.VIBE.CONTEXT.DATA.SESSION.V1, HERA.VIBE.CONFIG.COMPONENT.V1
   ai_enhanced_value TEXT,
   ai_confidence DECIMAL(5,4) DEFAULT 0.0000,
   validation_status TEXT DEFAULT 'valid' CHECK (validation_status IN ('valid', 'invalid', 'pending', 'error')),
@@ -93,7 +93,7 @@ CREATE TABLE core_relationships (
   target_entity_id UUID NOT NULL REFERENCES core_entities(id) ON DELETE CASCADE,
   relationship_type TEXT NOT NULL, -- 'vibe_integration', 'vibe_dependency', 'context_preservation', 'hierarchy', 'workflow'
   relationship_name TEXT,
-  smart_code VARCHAR(100), -- HERA.VIBE.INTEGRATION.SEAMLESS.v1, HERA.VIBE.WEAVE.BIDIRECTIONAL.v1
+  smart_code VARCHAR(100), -- HERA.VIBE.INTEGRATION.SEAMLESS.V1, HERA.VIBE.WEAVE.BIDIRECTIONAL.V1
   strength DECIMAL(3,2) DEFAULT 1.0,
   properties JSONB DEFAULT '{}', -- Integration config, compatibility scores, performance metrics
   ai_insights JSONB DEFAULT '{}',
@@ -114,7 +114,7 @@ CREATE TABLE universal_transactions (
   reference_number TEXT,
   source_entity_id UUID REFERENCES core_entities(id), -- Vibe component or business entity
   target_entity_id UUID REFERENCES core_entities(id), -- Target component or business entity
-  smart_code VARCHAR(100), -- HERA.VIBE.SESSION.CONTEXT.PRESERVATION.v1, HERA.VIBE.INTEGRATION.WEAVE.v1
+  smart_code VARCHAR(100), -- HERA.VIBE.SESSION.CONTEXT.PRESERVATION.V1, HERA.VIBE.INTEGRATION.WEAVE.V1
   status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'pending', 'approved', 'completed', 'cancelled', 'error')),
   total_amount DECIMAL(15,4) DEFAULT 0.0000,
   currency TEXT DEFAULT 'USD',
@@ -139,7 +139,7 @@ CREATE TABLE universal_transaction_lines (
   unit_price DECIMAL(15,4) DEFAULT 0.0000, -- Performance score, compatibility score, price
   line_amount DECIMAL(15,4) NOT NULL DEFAULT 0.0000, -- Calculated metrics, totals
   unit_of_measure TEXT, -- 'context_items', 'integration_points', 'pieces', 'hours'
-  smart_code VARCHAR(100), -- HERA.VIBE.CONTEXT.ITEM.v1, HERA.VIBE.INTEGRATION.POINT.v1
+  smart_code VARCHAR(100), -- HERA.VIBE.CONTEXT.ITEM.V1, HERA.VIBE.INTEGRATION.POINT.V1
   line_context JSONB DEFAULT '{}', -- Vibe line details: component state, integration config
   ai_insights JSONB DEFAULT '{}',
   metadata JSONB DEFAULT '{}',
@@ -245,7 +245,7 @@ BEGIN
     metadata, status
   ) VALUES (
     vibe_org_id, 'vibe_component', 'HERA Vibe Core Engine', 'VIBE-ENGINE-001',
-    'HERA.VIBE.FOUNDATION.CORE.ENGINE.v1', 'PROD', 1.0000, 'core_system_component',
+    'HERA.VIBE.FOUNDATION.CORE.ENGINE.V1', 'PROD', 1.0000, 'core_system_component',
     '{
       "component_type": "engine",
       "version": "v1",
@@ -266,7 +266,7 @@ BEGIN
     metadata, status
   ) VALUES (
     vibe_org_id, 'vibe_component', 'HERA Context Manager', 'VIBE-CTX-001',
-    'HERA.VIBE.FOUNDATION.CONTEXT.MANAGER.v1', 'PROD', 1.0000, 'context_preservation_system',
+    'HERA.VIBE.FOUNDATION.CONTEXT.MANAGER.V1', 'PROD', 1.0000, 'context_preservation_system',
     '{
       "component_type": "context_manager",
       "auto_save_enabled": true,
@@ -283,7 +283,7 @@ BEGIN
     metadata, status
   ) VALUES (
     vibe_org_id, 'vibe_component', 'HERA Integration Weaver', 'VIBE-INT-001',
-    'HERA.VIBE.FOUNDATION.INTEGRATION.WEAVER.v1', 'PROD', 1.0000, 'seamless_integration_system',
+    'HERA.VIBE.FOUNDATION.INTEGRATION.WEAVER.V1', 'PROD', 1.0000, 'seamless_integration_system',
     '{
       "component_type": "integration_weaver",
       "weaving_pattern": "seamless",
@@ -300,7 +300,7 @@ BEGIN
     metadata, status
   ) VALUES (
     vibe_org_id, 'vibe_component', 'HERA Quality Monitor', 'VIBE-QM-001',
-    'HERA.VIBE.FOUNDATION.QUALITY.MONITOR.v1', 'PROD', 1.0000, 'manufacturing_grade_quality',
+    'HERA.VIBE.FOUNDATION.QUALITY.MONITOR.V1', 'PROD', 1.0000, 'manufacturing_grade_quality',
     '{
       "component_type": "quality_monitor",
       "quality_standard": "manufacturing_grade",
@@ -317,7 +317,7 @@ BEGIN
     metadata, status
   ) VALUES (
     vibe_org_id, 'vibe_component', 'HERA Smart Code Registry', 'VIBE-REG-001',
-    'HERA.VIBE.FOUNDATION.SMART.REGISTRY.v1', 'PROD', 1.0000, 'universal_pattern_registry',
+    'HERA.VIBE.FOUNDATION.SMART.REGISTRY.V1', 'PROD', 1.0000, 'universal_pattern_registry',
     '{
       "component_type": "smart_registry",
       "pattern_validation": true,
@@ -333,19 +333,19 @@ BEGIN
     relationship_name, smart_code, strength, properties
   ) VALUES 
     (vibe_org_id, core_engine_id, context_manager_id, 'vibe_integration', 
-     'Core Engine → Context Manager', 'HERA.VIBE.INTEGRATION.SEAMLESS.v1', 1.0,
+     'Core Engine → Context Manager', 'HERA.VIBE.INTEGRATION.SEAMLESS.V1', 1.0,
      '{"integration_type": "seamless", "data_flow": "bidirectional", "latency": "near_zero"}'::jsonb),
     
     (vibe_org_id, core_engine_id, integration_weaver_id, 'vibe_integration',
-     'Core Engine → Integration Weaver', 'HERA.VIBE.INTEGRATION.SEAMLESS.v1', 1.0,
+     'Core Engine → Integration Weaver', 'HERA.VIBE.INTEGRATION.SEAMLESS.V1', 1.0,
      '{"integration_type": "seamless", "weaving_capability": "automatic", "conflict_resolution": "intelligent"}'::jsonb),
      
     (vibe_org_id, context_manager_id, integration_weaver_id, 'vibe_dependency',
-     'Context Manager ⟷ Integration Weaver', 'HERA.VIBE.WEAVE.BIDIRECTIONAL.v1', 0.95,
+     'Context Manager ⟷ Integration Weaver', 'HERA.VIBE.WEAVE.BIDIRECTIONAL.V1', 0.95,
      '{"dependency_type": "mutual", "coordination": "synchronized", "state_sharing": true}'::jsonb),
      
     (vibe_org_id, quality_monitor_id, core_engine_id, 'vibe_monitoring',
-     'Quality Monitor → Core Engine', 'HERA.VIBE.MONITORING.CONTINUOUS.v1', 1.0,
+     'Quality Monitor → Core Engine', 'HERA.VIBE.MONITORING.CONTINUOUS.V1', 1.0,
      '{"monitoring_type": "continuous", "metrics_collection": "real_time", "alerting": "proactive"}'::jsonb);
 
   -- Store Vibe Configuration in Dynamic Data
@@ -360,7 +360,7 @@ BEGIN
        "quality_assurance": "manufacturing_grade",
        "amnesia_elimination": true
      }'::jsonb,
-     'HERA.VIBE.CONFIG.CORE.ENGINE.v1'),
+     'HERA.VIBE.CONFIG.CORE.ENGINE.V1'),
      
     (vibe_org_id, context_manager_id, 'context_config', 'json',
      '{
@@ -370,7 +370,7 @@ BEGIN
        "restoration_speed": "instant",
        "relationship_preservation": true
      }'::jsonb,
-     'HERA.VIBE.CONFIG.CONTEXT.MANAGER.v1'),
+     'HERA.VIBE.CONFIG.CONTEXT.MANAGER.V1'),
      
     (vibe_org_id, integration_weaver_id, 'weaver_config', 'json',
      '{
@@ -380,7 +380,7 @@ BEGIN
        "rollback_strategy": "automatic",
        "health_monitoring": "continuous"
      }'::jsonb,
-     'HERA.VIBE.CONFIG.INTEGRATION.WEAVER.v1');
+     'HERA.VIBE.CONFIG.INTEGRATION.WEAVER.V1');
 
 END $$;
 
@@ -406,7 +406,7 @@ BEGIN
   ) VALUES (
     p_organization_id, 'vibe_context', 
     'Context Session: ' || p_session_token,
-    'HERA.VIBE.CONTEXT.SESSION.PRESERVATION.v1',
+    'HERA.VIBE.CONTEXT.SESSION.PRESERVATION.V1',
     jsonb_build_object('session_token', p_session_token, 'preservation_time', NOW()),
     p_user_id
   ) ON CONFLICT DO NOTHING
@@ -427,7 +427,7 @@ BEGIN
   ) VALUES (
     p_organization_id, 'vibe_context_preservation',
     'VIBE-CTX-' || EXTRACT(EPOCH FROM NOW())::TEXT,
-    v_context_entity_id, 'HERA.VIBE.TRANSACTION.CONTEXT.PRESERVATION.v1',
+    v_context_entity_id, 'HERA.VIBE.TRANSACTION.CONTEXT.PRESERVATION.V1',
     'completed', p_context_data, p_user_id
   ) RETURNING id INTO v_transaction_id;
   
@@ -437,7 +437,7 @@ BEGIN
     smart_code, created_by
   ) VALUES (
     p_organization_id, v_context_entity_id, 'session_context', 'json', p_context_data,
-    'HERA.VIBE.DATA.CONTEXT.SESSION.v1', p_user_id
+    'HERA.VIBE.DATA.CONTEXT.SESSION.V1', p_user_id
   ) ON CONFLICT (entity_id, field_name) DO UPDATE SET
     field_value_json = p_context_data,
     updated_at = NOW();

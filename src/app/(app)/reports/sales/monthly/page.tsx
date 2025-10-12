@@ -1,6 +1,6 @@
 // ================================================================================
 // MONTHLY SALES REPORT PAGE
-// Smart Code: HERA.UI.REPORTS.MONTHLY_SALES.v1
+// Smart Code: HERA.UI.REPORTS.MONTHLY_SALES.V1
 // Production-ready monthly sales trends with growth analysis
 // ================================================================================
 

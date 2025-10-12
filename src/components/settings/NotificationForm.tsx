@@ -1,6 +1,6 @@
 // ================================================================================
 // NOTIFICATION FORM - SETTINGS COMPONENT
-// Smart Code: HERA.UI.SETTINGS.NOTIFICATION_FORM.v1
+// Smart Code: HERA.UI.SETTINGS.NOTIFICATION_FORM.V1
 // Production-ready notification policy configuration form with validation
 // ================================================================================
 

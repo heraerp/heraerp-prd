@@ -1,7 +1,7 @@
 -- ================================================================================
 -- HERA UNIVERSAL CASHFLOW DNA COMPONENT
 -- Database implementation for the Universal Cashflow Statement Engine
--- Smart Code: HERA.FIN.CASHFLOW.STATEMENT.ENGINE.v1
+-- Smart Code: HERA.FIN.CASHFLOW.STATEMENT.ENGINE.V1
 -- ================================================================================
 
 -- Create the Universal Cashflow DNA Component entry
@@ -21,7 +21,7 @@ INSERT INTO core_entities (
     'Universal Cashflow Statement Engine',
     'DNA-CASHFLOW-ENGINE-V1',
     'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', -- HERA System Organization
-    'HERA.FIN.CASHFLOW.STATEMENT.ENGINE.v1',
+    'HERA.FIN.CASHFLOW.STATEMENT.ENGINE.V1',
     jsonb_build_object(
         'component_type', 'financial_engine',
         'version', '1.0.0',
@@ -95,11 +95,11 @@ INSERT INTO core_dynamic_data (
             ]
         ),
         'smart_code_mappings', jsonb_build_object(
-            'sales', 'HERA.REST.POS.TXN.SALE.v1',
-            'food_purchases', 'HERA.REST.PUR.INGREDIENTS.v1',
-            'labor', 'HERA.REST.HR.PAY.STAFF.v1',
-            'equipment', 'HERA.REST.EQP.PUR.KITCHEN.v1',
-            'rent', 'HERA.REST.EXP.RENT.v1'
+            'sales', 'HERA.REST.POS.TXN.SALE.V1',
+            'food_purchases', 'HERA.REST.PUR.INGREDIENTS.V1',
+            'labor', 'HERA.REST.HR.PAY.STAFF.V1',
+            'equipment', 'HERA.REST.EQP.PUR.KITCHEN.V1',
+            'rent', 'HERA.REST.EXP.RENT.V1'
         ),
         'benchmarks', jsonb_build_object(
             'excellent_margin', 90.0,
@@ -108,7 +108,7 @@ INSERT INTO core_dynamic_data (
             'poor_margin', 75.0
         )
     ),
-    'HERA.FIN.CASHFLOW.CONFIG.RESTAURANT.v1',
+    'HERA.FIN.CASHFLOW.CONFIG.RESTAURANT.V1',
     'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944',
     jsonb_build_object('industry_type', 'restaurant'),
     NOW()
@@ -146,11 +146,11 @@ INSERT INTO core_dynamic_data (
             ]
         ),
         'smart_code_mappings', jsonb_build_object(
-            'services', 'HERA.SALON.SVC.TXN.SERVICE.v1',
-            'products', 'HERA.SALON.SVC.TXN.PRODUCT.v1',
-            'staff', 'HERA.SALON.HR.PAY.STYLIST.v1',
-            'equipment', 'HERA.SALON.EQP.PUR.CHAIR.v1',
-            'supplies', 'HERA.SALON.STK.PUR.SUPPLIES.v1'
+            'services', 'HERA.SALON.SVC.TXN.SERVICE.V1',
+            'products', 'HERA.SALON.SVC.TXN.PRODUCT.V1',
+            'staff', 'HERA.SALON.HR.PAY.STYLIST.V1',
+            'equipment', 'HERA.SALON.EQP.PUR.CHAIR.V1',
+            'supplies', 'HERA.SALON.STK.PUR.SUPPLIES.V1'
         ),
         'benchmarks', jsonb_build_object(
             'excellent_margin', 98.0,
@@ -159,7 +159,7 @@ INSERT INTO core_dynamic_data (
             'poor_margin', 85.0
         )
     ),
-    'HERA.FIN.CASHFLOW.CONFIG.SALON.v1',
+    'HERA.FIN.CASHFLOW.CONFIG.SALON.V1',
     'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944',
     jsonb_build_object('industry_type', 'salon'),
     NOW()
@@ -197,11 +197,11 @@ INSERT INTO core_dynamic_data (
             ]
         ),
         'smart_code_mappings', jsonb_build_object(
-            'patient_payments', 'HERA.HLTH.PAT.PAYMENT.v1',
-            'insurance', 'HERA.HLTH.INS.REIMBURSEMENT.v1',
-            'staff', 'HERA.HLTH.HR.PAY.DOCTOR.v1',
-            'equipment', 'HERA.HLTH.EQP.PUR.MEDICAL.v1',
-            'supplies', 'HERA.HLTH.STK.PUR.MEDICAL.v1'
+            'patient_payments', 'HERA.HLTH.PAT.PAYMENT.V1',
+            'insurance', 'HERA.HLTH.INS.REIMBURSEMENT.V1',
+            'staff', 'HERA.HLTH.HR.PAY.DOCTOR.V1',
+            'equipment', 'HERA.HLTH.EQP.PUR.MEDICAL.V1',
+            'supplies', 'HERA.HLTH.STK.PUR.MEDICAL.V1'
         ),
         'benchmarks', jsonb_build_object(
             'excellent_margin', 85.0,
@@ -210,7 +210,7 @@ INSERT INTO core_dynamic_data (
             'poor_margin', 70.0
         )
     ),
-    'HERA.FIN.CASHFLOW.CONFIG.HEALTHCARE.v1',
+    'HERA.FIN.CASHFLOW.CONFIG.HEALTHCARE.V1',
     'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944',
     jsonb_build_object('industry_type', 'healthcare'),
     NOW()
@@ -248,11 +248,11 @@ INSERT INTO core_dynamic_data (
             ]
         ),
         'smart_code_mappings', jsonb_build_object(
-            'sales', 'HERA.MFG.SALE.FINISHED.v1',
-            'materials', 'HERA.MFG.PUR.RAW.MATERIALS.v1',
-            'labor', 'HERA.MFG.HR.PAY.PRODUCTION.v1',
-            'equipment', 'HERA.MFG.EQP.PUR.MACHINE.v1',
-            'overhead', 'HERA.MFG.EXP.FACTORY.v1'
+            'sales', 'HERA.MFG.SALE.FINISHED.V1',
+            'materials', 'HERA.MFG.PUR.RAW.MATERIALS.V1',
+            'labor', 'HERA.MFG.HR.PAY.PRODUCTION.V1',
+            'equipment', 'HERA.MFG.EQP.PUR.MACHINE.V1',
+            'overhead', 'HERA.MFG.EXP.FACTORY.V1'
         ),
         'benchmarks', jsonb_build_object(
             'excellent_margin', 80.0,
@@ -261,7 +261,7 @@ INSERT INTO core_dynamic_data (
             'poor_margin', 65.0
         )
     ),
-    'HERA.FIN.CASHFLOW.CONFIG.MANUFACTURING.v1',
+    'HERA.FIN.CASHFLOW.CONFIG.MANUFACTURING.V1',
     'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944',
     jsonb_build_object('industry_type', 'manufacturing'),
     NOW()
@@ -299,11 +299,11 @@ INSERT INTO core_dynamic_data (
             ]
         ),
         'smart_code_mappings', jsonb_build_object(
-            'sales', 'HERA.ICECREAM.SALE.FINISHED.v1',
-            'materials', 'HERA.ICECREAM.PUR.RAW.MATERIALS.v1',
-            'labor', 'HERA.ICECREAM.HR.PAY.PRODUCTION.v1',
-            'equipment', 'HERA.ICECREAM.EQP.PUR.MACHINE.v1',
-            'storage', 'HERA.ICECREAM.EXP.COLD.STORAGE.v1'
+            'sales', 'HERA.ICECREAM.SALE.FINISHED.V1',
+            'materials', 'HERA.ICECREAM.PUR.RAW.MATERIALS.V1',
+            'labor', 'HERA.ICECREAM.HR.PAY.PRODUCTION.V1',
+            'equipment', 'HERA.ICECREAM.EQP.PUR.MACHINE.V1',
+            'storage', 'HERA.ICECREAM.EXP.COLD.STORAGE.V1'
         ),
         'benchmarks', jsonb_build_object(
             'excellent_margin', 85.0,
@@ -318,7 +318,7 @@ INSERT INTO core_dynamic_data (
             'Holiday spikes: Easter, Summer holidays'
         ]
     ),
-    'HERA.FIN.CASHFLOW.CONFIG.ICECREAM.v1',
+    'HERA.FIN.CASHFLOW.CONFIG.ICECREAM.V1',
     'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944',
     jsonb_build_object('industry_type', 'icecream'),
     NOW()
@@ -355,10 +355,10 @@ INSERT INTO core_dynamic_data (
             ]
         ),
         'smart_code_mappings', jsonb_build_object(
-            'revenue', 'HERA.UNIVERSAL.REVENUE.v1',
-            'expenses', 'HERA.UNIVERSAL.EXPENSES.v1',
-            'staff', 'HERA.UNIVERSAL.HR.PAY.v1',
-            'equipment', 'HERA.UNIVERSAL.EQP.PUR.v1'
+            'revenue', 'HERA.UNIVERSAL.REVENUE.V1',
+            'expenses', 'HERA.UNIVERSAL.EXPENSES.V1',
+            'staff', 'HERA.UNIVERSAL.HR.PAY.V1',
+            'equipment', 'HERA.UNIVERSAL.EQP.PUR.V1'
         ),
         'benchmarks', jsonb_build_object(
             'excellent_margin', 85.0,
@@ -367,7 +367,7 @@ INSERT INTO core_dynamic_data (
             'poor_margin', 70.0
         )
     ),
-    'HERA.FIN.CASHFLOW.CONFIG.UNIVERSAL.v1',
+    'HERA.FIN.CASHFLOW.CONFIG.UNIVERSAL.V1',
     'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944',
     jsonb_build_object('industry_type', 'universal'),
     NOW()
@@ -591,7 +591,7 @@ BEGIN
             'currency', p_currency,
             'industry_type', v_industry_type,
             'generated_at', NOW(),
-            'smart_code', 'HERA.FIN.CASHFLOW.STATEMENT.' || UPPER(p_method) || '.v1'
+            'smart_code', 'HERA.FIN.CASHFLOW.STATEMENT.' || UPPER(p_method) || '.V1'
         ),
         'summary', jsonb_build_object(
             'operating_cash_flow', v_operating_total,
@@ -665,7 +665,7 @@ BEGIN
         v_auto_journal_dna_id,
         'integrates_with',
         'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944',
-        'HERA.DNA.INTEGRATION.CASHFLOW.AUTO_JOURNAL.v1',
+        'HERA.DNA.INTEGRATION.CASHFLOW.AUTO_JOURNAL.V1',
         jsonb_build_object(
             'integration_type', 'real_time_updates',
             'data_sync', true,
@@ -730,7 +730,7 @@ BEGIN
     RETURN jsonb_build_object(
         'industries', v_industries,
         'total_count', jsonb_array_length(v_industries),
-        'dna_component', 'HERA.FIN.CASHFLOW.STATEMENT.ENGINE.v1'
+        'dna_component', 'HERA.FIN.CASHFLOW.STATEMENT.ENGINE.V1'
     );
 END;
 $$;
@@ -782,7 +782,7 @@ DO $$
 BEGIN
     RAISE NOTICE '✅ HERA Universal Cashflow DNA Component Successfully Deployed';
     RAISE NOTICE '';
-    RAISE NOTICE '🧬 Component: HERA.FIN.CASHFLOW.STATEMENT.ENGINE.v1';
+    RAISE NOTICE '🧬 Component: HERA.FIN.CASHFLOW.STATEMENT.ENGINE.V1';
     RAISE NOTICE '📊 Industries: 8 supported (restaurant, salon, healthcare, manufacturing, professional_services, retail, icecream, universal)';
     RAISE NOTICE '⚡ Integration: Auto-Journal DNA, Universal API, Real-time updates';
     RAISE NOTICE '🛠️  CLI Tools: cashflow-dna-cli.js for complete management';

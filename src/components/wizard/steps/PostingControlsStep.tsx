@@ -314,23 +314,23 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
           <div className="text-xs font-mono space-y-1">
             <div>
               Period Controls: HERA.{data.organizationBasics.industry_classification}
-              .UCR.CONFIG.POSTING_PERIODS.v1
+              .UCR.CONFIG.POSTING_PERIODS.V1
             </div>
             <div>
               GL Controls: HERA.{data.organizationBasics.industry_classification}
-              .UCR.CONTROL.GL_POSTING.v1
+              .UCR.CONTROL.GL_POSTING.V1
             </div>
             <div>
               AP Controls: HERA.{data.organizationBasics.industry_classification}
-              .UCR.CONTROL.AP_POSTING.v1
+              .UCR.CONTROL.AP_POSTING.V1
             </div>
             <div>
               AR Controls: HERA.{data.organizationBasics.industry_classification}
-              .UCR.CONTROL.AR_POSTING.v1
+              .UCR.CONTROL.AR_POSTING.V1
             </div>
             <div>
               Inventory Controls: HERA.{data.organizationBasics.industry_classification}
-              .UCR.CONTROL.INV_POSTING.v1
+              .UCR.CONTROL.INV_POSTING.V1
             </div>
           </div>
         </CardContent>

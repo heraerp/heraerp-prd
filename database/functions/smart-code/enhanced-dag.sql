@@ -508,7 +508,7 @@ SELECT
     'algorithm_implementation',
     'DAG Execution Algorithms Suite',
     'ALGO-DAG-SUITE-001',
-    'HERA.SYSTEM.ALGO.ENT.DAG_SUITE.v1',
+    'HERA.SYSTEM.ALGO.ENT.DAG_SUITE.V1',
     'PROD',
     'active',
     '{
@@ -614,7 +614,7 @@ SELECT
     'testing_framework',
     'DAG Engine Testing Framework',
     'TEST-DAG-FRAMEWORK-001',
-    'HERA.SYSTEM.TEST.ENT.DAG_FRAMEWORK.v1',
+    'HERA.SYSTEM.TEST.ENT.DAG_FRAMEWORK.V1',
     'PROD',
     'active',
     '{
@@ -771,7 +771,7 @@ SELECT
     'DAG-ENGINE-ENHANCEMENT-001',
     CURRENT_TIMESTAMP,
     'completed',
-    'HERA.SYSTEM.ENHANCEMENT.TXN.DAG_ENGINE.v1',
+    'HERA.SYSTEM.ENHANCEMENT.TXN.DAG_ENGINE.V1',
     '{
         "enhancement_type": "core_dag_engine_enhancement",
         "priority": "Priority_1_Critical",

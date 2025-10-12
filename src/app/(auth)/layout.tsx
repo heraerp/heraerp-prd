@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA AUTH LAYOUT
-// Smart Code: HERA.LAYOUT.AUTH.v1
+// Smart Code: HERA.LAYOUT.AUTH.V1
 // Auth pages layout without navigation
 // ================================================================================
 

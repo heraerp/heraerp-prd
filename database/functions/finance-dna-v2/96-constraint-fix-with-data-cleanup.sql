@@ -77,14 +77,14 @@ END$$;
 -- Fix common patterns that can be automatically corrected
 UPDATE core_entities 
 SET smart_code = CASE 
-    -- Fix .v1 instead of .V1
-    WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v1$' THEN smart_code
-    -- Fix .V1 to .v1
+    -- Fix .V1 instead of .V1
+    WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' THEN smart_code
+    -- Fix .V1 to .V1
     WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' THEN 
-        regexp_replace(smart_code, '\.V1$', '.v1')
-    -- Fix missing version - add .v1
+        regexp_replace(smart_code, '\.V1$', '.V1')
+    -- Fix missing version - add .V1
     WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*$' AND smart_code NOT LIKE '%.v%' THEN 
-        smart_code || '.v1'
+        smart_code || '.V1'
     -- Fix other common patterns
     ELSE smart_code
 END
@@ -94,7 +94,7 @@ AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
 
 -- For any remaining non-compliant codes, set them to a generic v1 format
 UPDATE core_entities 
-SET smart_code = 'HERA.LEGACY.ENTITY.MIGRATED.v1'
+SET smart_code = 'HERA.LEGACY.ENTITY.MIGRATED.V1'
 WHERE smart_code IS NOT NULL 
 AND NOT (smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v[12]$')
 AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
@@ -106,11 +106,11 @@ AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
 -- Fix universal_transactions smart codes
 UPDATE universal_transactions 
 SET smart_code = CASE 
-    WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v1$' THEN smart_code
+    WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' THEN smart_code
     WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' THEN 
-        regexp_replace(smart_code, '\.V1$', '.v1')
+        regexp_replace(smart_code, '\.V1$', '.V1')
     WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*$' AND smart_code NOT LIKE '%.v%' THEN 
-        smart_code || '.v1'
+        smart_code || '.V1'
     ELSE smart_code
 END
 WHERE smart_code IS NOT NULL 
@@ -119,7 +119,7 @@ AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
 
 -- Set remaining non-compliant to generic
 UPDATE universal_transactions 
-SET smart_code = 'HERA.LEGACY.TRANSACTION.MIGRATED.v1'
+SET smart_code = 'HERA.LEGACY.TRANSACTION.MIGRATED.V1'
 WHERE smart_code IS NOT NULL 
 AND NOT (smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v[12]$')
 AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
@@ -127,11 +127,11 @@ AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
 -- Fix universal_transaction_lines smart codes
 UPDATE universal_transaction_lines 
 SET smart_code = CASE 
-    WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v1$' THEN smart_code
+    WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' THEN smart_code
     WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' THEN 
-        regexp_replace(smart_code, '\.V1$', '.v1')
+        regexp_replace(smart_code, '\.V1$', '.V1')
     WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*$' AND smart_code NOT LIKE '%.v%' THEN 
-        smart_code || '.v1'
+        smart_code || '.V1'
     ELSE smart_code
 END
 WHERE smart_code IS NOT NULL 
@@ -140,7 +140,7 @@ AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
 
 -- Set remaining non-compliant to generic
 UPDATE universal_transaction_lines 
-SET smart_code = 'HERA.LEGACY.LINE.MIGRATED.v1'
+SET smart_code = 'HERA.LEGACY.LINE.MIGRATED.V1'
 WHERE smart_code IS NOT NULL 
 AND NOT (smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v[12]$')
 AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
@@ -148,11 +148,11 @@ AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
 -- Fix core_dynamic_data smart codes
 UPDATE core_dynamic_data 
 SET smart_code = CASE 
-    WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v1$' THEN smart_code
+    WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' THEN smart_code
     WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.V1$' THEN 
-        regexp_replace(smart_code, '\.V1$', '.v1')
+        regexp_replace(smart_code, '\.V1$', '.V1')
     WHEN smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*$' AND smart_code NOT LIKE '%.v%' THEN 
-        smart_code || '.v1'
+        smart_code || '.V1'
     ELSE smart_code
 END
 WHERE smart_code IS NOT NULL 
@@ -161,7 +161,7 @@ AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');
 
 -- Set remaining non-compliant to generic
 UPDATE core_dynamic_data 
-SET smart_code = 'HERA.LEGACY.FIELD.MIGRATED.v1'
+SET smart_code = 'HERA.LEGACY.FIELD.MIGRATED.V1'
 WHERE smart_code IS NOT NULL 
 AND NOT (smart_code ~ '^HERA\.[A-Z]+(\.[A-Z]+)*\.v[12]$')
 AND NOT (smart_code ~ '^HERA\.ACCOUNTING\.[A-Z]+(\.[A-Z]+)*\.v2$');

@@ -144,7 +144,7 @@ begin
   values (gen_random_uuid(), v_org_id, v_user_entity, 'MEMBER_OF', v_org_id, now());
 
   -- audit
-  perform hera.audit_emit_v1(v_org_id, 'HERA.SEC.AUTH.SIGNUP.v1',
+  perform hera.audit_emit_v1(v_org_id, 'HERA.SEC.AUTH.SIGNUP.V1',
     jsonb_build_object('user_entity', v_user_entity, 'email', p_email));
 
   return jsonb_build_object('created', true, 'organization_id', v_org_id);
@@ -210,7 +210,7 @@ BEGIN
     RAISE EXCEPTION 'Entity % not found in core_entities', p_entity_id;
   END IF;
 
-  v_smart_code := COALESCE(p_smart_code, v_series_code, 'HERA.DYN.FIELD.v1');
+  v_smart_code := COALESCE(p_smart_code, v_series_code, 'HERA.DYN.FIELD.V1');
 
   -- Try UPDATE first (covers multiple existing rows as well)
   EXECUTE format(
@@ -401,7 +401,7 @@ BEGIN
   SELECT organization_id INTO v_organization_id
   FROM core_entities WHERE id = p_entity_id;
   
-  v_smart_code := 'HERA.FIELD.' || UPPER(REPLACE(p_field_name, ' ', '.')) || '.v1';
+  v_smart_code := 'HERA.FIELD.' || UPPER(REPLACE(p_field_name, ' ', '.')) || '.V1';
   
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type,
@@ -637,7 +637,7 @@ DECLARE
   v_smart_code TEXT;
 BEGIN
   v_smart_code := 'HERA.' || UPPER(REPLACE(p_entity_type, '_', '.')) || '.' || 
-                  UPPER(REPLACE(SPLIT_PART(p_entity_name, ' ', 1), ' ', '')) || '.v1';
+                  UPPER(REPLACE(SPLIT_PART(p_entity_name, ' ', 1), ' ', '')) || '.V1';
   
   INSERT INTO core_entities (
     organization_id, entity_type, entity_name, entity_description, 
@@ -664,7 +664,7 @@ DECLARE
   v_smart_code TEXT;
 BEGIN
   v_transaction_code := 'TXN-' || EXTRACT(EPOCH FROM NOW())::TEXT;
-  v_smart_code := 'HERA.TRANSACTION.' || UPPER(REPLACE(p_transaction_type, '_', '.')) || '.v1';
+  v_smart_code := 'HERA.TRANSACTION.' || UPPER(REPLACE(p_transaction_type, '_', '.')) || '.V1';
   
   INSERT INTO universal_transactions (
     organization_id, transaction_type, transaction_code,
@@ -927,7 +927,7 @@ BEGIN
         'organization',
         p_org_name,
         'ORG-' || UPPER(p_subdomain),
-        'HERA.ORG.ENTITY.' || UPPER(p_org_type) || '.v1',
+        'HERA.ORG.ENTITY.' || UPPER(p_org_type) || '.V1',
         jsonb_build_object(
             'subdomain', p_subdomain,
             'organization_type', p_org_type,
@@ -968,7 +968,7 @@ BEGIN
             'user',
             p_owner_name,
             'USER-' || UPPER(SPLIT_PART(p_owner_email, '@', 1)),
-            'HERA.ORG.USER.OWNER.v1',
+            'HERA.ORG.USER.OWNER.V1',
             jsonb_build_object(
                 'auth_user_id', p_owner_id,
                 'email', p_owner_email,
@@ -1008,7 +1008,7 @@ BEGIN
             'permissions', jsonb_build_array('*'),
             'joined_at', NOW()
         ),
-        'HERA.ORG.REL.MEMBER.OWNER.v1',
+        'HERA.ORG.REL.MEMBER.OWNER.V1',
         true,
         NOW(),
         NOW()
@@ -1025,9 +1025,9 @@ BEGIN
         created_at, 
         updated_at
     ) VALUES
-        (gen_random_uuid(), v_org_id, v_org_id, 'subdomain',    p_subdomain,   'HERA.ORG.FIELD.SUBDOMAIN.v1',     NOW(), NOW()),
-        (gen_random_uuid(), v_org_id, v_org_id, 'owner_email',  p_owner_email, 'HERA.ORG.FIELD.OWNER_EMAIL.v1',   NOW(), NOW()),
-        (gen_random_uuid(), v_org_id, v_org_id, 'created_date', NOW()::TEXT,   'HERA.ORG.FIELD.CREATED_DATE.v1',  NOW(), NOW());
+        (gen_random_uuid(), v_org_id, v_org_id, 'subdomain',    p_subdomain,   'HERA.ORG.FIELD.SUBDOMAIN.V1',     NOW(), NOW()),
+        (gen_random_uuid(), v_org_id, v_org_id, 'owner_email',  p_owner_email, 'HERA.ORG.FIELD.OWNER_EMAIL.V1',   NOW(), NOW()),
+        (gen_random_uuid(), v_org_id, v_org_id, 'created_date', NOW()::TEXT,   'HERA.ORG.FIELD.CREATED_DATE.V1',  NOW(), NOW());
 
     -- 6. Result
     v_result := jsonb_build_object(
@@ -1112,7 +1112,7 @@ BEGIN
             'PROD' || LPAD(i::text, 3, '0'),
             'product',
             'active',
-            'HERA.HLTH.INV.PROD.HC' || LPAD(i::text, 2, '0') || '.v1'
+            'HERA.HLTH.INV.PROD.HC' || LPAD(i::text, 2, '0') || '.V1'
         ) RETURNING id INTO product_id;
 
         -- Add inventory dynamic data
@@ -1124,9 +1124,9 @@ BEGIN
             field_value_number,
             smart_code
         ) VALUES 
-            (p_org_id, product_id, 'current_stock', 'number', current_stocks[i], 'HERA.HLTH.INV.FIELD.STOCK.v1'),
-            (p_org_id, product_id, 'min_stock_level', 'number', min_stocks[i], 'HERA.HLTH.INV.FIELD.MIN.v1'),
-            (p_org_id, product_id, 'unit_cost', 'number', unit_costs[i], 'HERA.HLTH.INV.FIELD.COST.v1');
+            (p_org_id, product_id, 'current_stock', 'number', current_stocks[i], 'HERA.HLTH.INV.FIELD.STOCK.V1'),
+            (p_org_id, product_id, 'min_stock_level', 'number', min_stocks[i], 'HERA.HLTH.INV.FIELD.MIN.V1'),
+            (p_org_id, product_id, 'unit_cost', 'number', unit_costs[i], 'HERA.HLTH.INV.FIELD.COST.V1');
 
         -- Add category
         INSERT INTO core_dynamic_data (
@@ -1137,7 +1137,7 @@ BEGIN
             field_value_text,
             smart_code
         ) VALUES 
-            (p_org_id, product_id, 'category', 'text', categories[i], 'HERA.HLTH.INV.FIELD.CAT.v1');
+            (p_org_id, product_id, 'category', 'text', categories[i], 'HERA.HLTH.INV.FIELD.CAT.V1');
 
     END LOOP;
 
@@ -1353,7 +1353,7 @@ BEGIN
     transaction_date, source_entity_id, metadata
   ) VALUES (
     v_appt_id, p_org_id, 'APPOINTMENT', 
-    'HERA.SALON.TRANSACTION.APPOINTMENT.BOOKING.v1',
+    'HERA.SALON.TRANSACTION.APPOINTMENT.BOOKING.V1',
     (p_start_at AT TIME ZONE 'UTC')::date,
     v_branch,
     jsonb_build_object(
@@ -1426,7 +1426,7 @@ BEGIN
     ) VALUES (
       v_line_id, p_org_id, v_appt_id, v_line_num,
       'SERVICE', v_service,
-      'HERA.SALON.TRANSACTION.APPOINTMENT.LINE.SERVICE.v1'
+      'HERA.SALON.TRANSACTION.APPOINTMENT.LINE.SERVICE.V1'
     );
 
     -- Store line-level economics in core_dynamic_data
@@ -1448,7 +1448,7 @@ BEGIN
         'duration_minutes', v_duration,
         'booked_at',        NOW()
       ),
-      'HERA.SALON.APPOINTMENT.LINE.ECONOMICS.v1'
+      'HERA.SALON.APPOINTMENT.LINE.ECONOMICS.V1'
     );
   END LOOP;
 
@@ -1542,7 +1542,7 @@ BEGIN
     transaction_date, source_entity_id, metadata
   ) VALUES (
     v_invoice_id, v_org_id, 'INVOICE',
-    'HERA.SALON.TRANSACTION.INVOICE.COMPLETION.v1',
+    'HERA.SALON.TRANSACTION.INVOICE.COMPLETION.V1',
     CURRENT_DATE,
     v_branch_id,
     jsonb_build_object(
@@ -1586,7 +1586,7 @@ BEGIN
     ) VALUES (
       v_line_id, v_org_id, v_invoice_id, v_line_num,
       'SERVICE', v_line_record.entity_id,
-      'HERA.SALON.TRANSACTION.INVOICE.LINE.SERVICE.v1'
+      'HERA.SALON.TRANSACTION.INVOICE.LINE.SERVICE.V1'
     );
 
     -- Store invoice line economics
@@ -1604,7 +1604,7 @@ BEGIN
         'original_appointment_id', p_appointment_id,
         'original_line_id', v_line_record.id
       ),
-      'HERA.SALON.INVOICE.LINE.ECONOMICS.v1'
+      'HERA.SALON.INVOICE.LINE.ECONOMICS.V1'
     );
   END LOOP;
 
@@ -1614,7 +1614,7 @@ BEGIN
     transaction_date, source_entity_id, metadata
   ) VALUES (
     v_payment_id, v_org_id, 'PAYMENT',
-    'HERA.SALON.TRANSACTION.PAYMENT.COMPLETION.v1',
+    'HERA.SALON.TRANSACTION.PAYMENT.COMPLETION.V1',
     CURRENT_DATE,
     v_customer_id,
     jsonb_build_object(
@@ -1635,7 +1635,7 @@ BEGIN
   ) VALUES (
     gen_random_uuid(), v_org_id, v_payment_id, 1,
     'PAYMENT', v_customer_id,
-    'HERA.SALON.TRANSACTION.PAYMENT.LINE.v1'
+    'HERA.SALON.TRANSACTION.PAYMENT.LINE.V1'
   );
 
   -- Update appointment status to completed
@@ -1689,25 +1689,25 @@ BEGIN
   FOR i IN 1..350 LOOP
     v_customer_id := gen_random_uuid();
     INSERT INTO core_entities (id, organization_id, entity_type, entity_name, entity_code, smart_code)
-    VALUES (v_customer_id, p_org_id, 'customer', 'Customer ' || i, 'CUST_' || LPAD(i::text, 4, '0'), 'HERA.SALON.CRM.CUSTOMER.v1');
+    VALUES (v_customer_id, p_org_id, 'customer', 'Customer ' || i, 'CUST_' || LPAD(i::text, 4, '0'), 'HERA.SALON.CRM.CUSTOMER.V1');
   END LOOP;
 
   -- Create sample products with stock levels
   FOR i IN 1..20 LOOP
     v_product_id := gen_random_uuid();
     INSERT INTO core_entities (id, organization_id, entity_type, entity_name, entity_code, smart_code)
-    VALUES (v_product_id, p_org_id, 'product', 'Product ' || i, 'PROD_' || LPAD(i::text, 3, '0'), 'HERA.SALON.INV.PRODUCT.v1');
+    VALUES (v_product_id, p_org_id, 'product', 'Product ' || i, 'PROD_' || LPAD(i::text, 3, '0'), 'HERA.SALON.INV.PRODUCT.V1');
     
     -- Add stock level (some low stock)
     INSERT INTO core_dynamic_data (id, organization_id, entity_id, field_name, field_type, field_value_number, smart_code)
     VALUES (gen_random_uuid(), p_org_id, v_product_id, 'stock_level', 'number', 
             CASE WHEN i <= 7 THEN (RANDOM() * 9)::int ELSE (RANDOM() * 100 + 20)::int END,
-            'HERA.SALON.INV.STOCK.v1');
+            'HERA.SALON.INV.STOCK.V1');
     
     -- Add unit cost
     INSERT INTO core_dynamic_data (id, organization_id, entity_id, field_name, field_type, field_value_number, smart_code)
     VALUES (gen_random_uuid(), p_org_id, v_product_id, 'unit_cost', 'number', (RANDOM() * 50 + 10)::numeric(10,2),
-            'HERA.SALON.INV.COST.v1');
+            'HERA.SALON.INV.COST.V1');
   END LOOP;
 
   -- Create sample monthly expenses
@@ -1716,11 +1716,11 @@ BEGIN
     INSERT INTO universal_transactions (id, organization_id, transaction_type, transaction_date, smart_code)
     VALUES (v_expense_id, p_org_id, 'EXPENSE', 
             date_trunc('month', CURRENT_DATE)::date + (RANDOM() * 28)::int,
-            'HERA.SALON.FIN.EXPENSE.v1');
+            'HERA.SALON.FIN.EXPENSE.V1');
     
     INSERT INTO core_dynamic_data (id, organization_id, entity_id, field_name, field_type, field_value_number, smart_code)
     VALUES (gen_random_uuid(), p_org_id, v_expense_id, 'expense_amount', 'number', 
-            (RANDOM() * 10000 + 1000)::numeric(10,2), 'HERA.SALON.FIN.EXPENSE.AMOUNT.v1');
+            (RANDOM() * 10000 + 1000)::numeric(10,2), 'HERA.SALON.FIN.EXPENSE.AMOUNT.V1');
   END LOOP;
 
   RETURN jsonb_build_object('success', true, 'message', 'Sample dashboard data created');
@@ -2358,7 +2358,7 @@ BEGIN
       id, organization_id, entity_type, entity_code, entity_name, smart_code
     ) VALUES (
       v_branch_id, p_org_id, 'branch', 'DEFAULT_BRANCH', 'Main Branch',
-      'HERA.SALON.ORG.BRANCH.MAIN.v1'
+      'HERA.SALON.ORG.BRANCH.MAIN.V1'
     );
   END IF;
   
@@ -2390,7 +2390,7 @@ BEGIN
       id, organization_id, entity_type, entity_code, entity_name, smart_code
     ) VALUES (
       v_customer_id, p_org_id, 'customer', 'WALK_IN_CUSTOMER', 'Walk-in Customer',
-      'HERA.SALON.CRM.CUSTOMER.WALKIN.v1'
+      'HERA.SALON.CRM.CUSTOMER.WALKIN.V1'
     );
   END IF;
   
@@ -2811,7 +2811,7 @@ BEGIN
   IF NOT FOUND THEN
     -- seed then bump to 1
     INSERT INTO core_dynamic_data (id, organization_id, entity_id, field_name, field_type, field_value_number, smart_code)
-    VALUES (gen_random_uuid(), p_org_id, v_scheme_id, v_counter_field, 'number', 1, 'HERA.CORE.NUMBERING.SCHEME.COUNTER.v1')
+    VALUES (gen_random_uuid(), p_org_id, v_scheme_id, v_counter_field, 'number', 1, 'HERA.CORE.NUMBERING.SCHEME.COUNTER.V1')
     RETURNING field_value_number INTO v_counter;
   END IF;
 
@@ -3822,7 +3822,7 @@ BEGIN
             'user',
             user_name,
             user_code,
-            'HERA.USER.PROFILE.v1',
+            'HERA.USER.PROFILE.V1',
             jsonb_build_object(
                 'auth_provider', 'supabase',
                 'email', NEW.email,
@@ -3857,10 +3857,10 @@ BEGIN
         smart_code,
         created_by
     ) VALUES
-    (NEW.id, 'email', NEW.email, 'text', 'HERA.USER.EMAIL.v1', NEW.id),
-    (NEW.id, 'auth_provider', 'supabase', 'text', 'HERA.USER.AUTH_PROVIDER.v1', NEW.id),
-    (NEW.id, 'signup_date', NOW()::TEXT, 'datetime', 'HERA.USER.SIGNUP_DATE.v1', NEW.id),
-    (NEW.id, 'full_name', user_name, 'text', 'HERA.USER.FULL_NAME.v1', NEW.id);
+    (NEW.id, 'email', NEW.email, 'text', 'HERA.USER.EMAIL.V1', NEW.id),
+    (NEW.id, 'auth_provider', 'supabase', 'text', 'HERA.USER.AUTH_PROVIDER.V1', NEW.id),
+    (NEW.id, 'signup_date', NOW()::TEXT, 'datetime', 'HERA.USER.SIGNUP_DATE.V1', NEW.id),
+    (NEW.id, 'full_name', user_name, 'text', 'HERA.USER.FULL_NAME.V1', NEW.id);
     
     -- Add phone if provided
     IF NEW.phone IS NOT NULL AND NEW.phone != '' THEN
@@ -3872,7 +3872,7 @@ BEGIN
             smart_code,
             created_by
         ) VALUES
-        (NEW.id, 'phone', NEW.phone, 'text', 'HERA.USER.PHONE.v1', NEW.id);
+        (NEW.id, 'phone', NEW.phone, 'text', 'HERA.USER.PHONE.V1', NEW.id);
     END IF;
     
     -- Create membership (upsert to handle re-registration)
@@ -5268,10 +5268,10 @@ BEGIN
     -- Ensure EMPLOYEE concept exists
     SELECT id INTO v_emp_id FROM core_entities
      WHERE organization_id=v_org AND entity_type='CONCEPT'
-       AND smart_code='HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.v1';
+       AND smart_code='HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.V1';
     IF v_emp_id IS NULL THEN
       INSERT INTO core_entities(organization_id,entity_type,entity_name,smart_code,metadata)
-      VALUES (v_org,'CONCEPT','EMPLOYEE','HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.v1',
+      VALUES (v_org,'CONCEPT','EMPLOYEE','HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.V1',
               jsonb_build_object('industry',v_industry))
       RETURNING id INTO v_emp_id;
     END IF;
@@ -5280,10 +5280,10 @@ BEGIN
     IF is_role THEN
       SELECT id INTO v_role_id FROM core_entities
        WHERE organization_id=v_org AND entity_type='CONCEPT'
-         AND smart_code='HERA.HCM.EMPLOYMENT.ROLE.STYLIST.v1';
+         AND smart_code='HERA.HCM.EMPLOYMENT.ROLE.STYLIST.V1';
       IF v_role_id IS NULL THEN
         INSERT INTO core_entities(organization_id,entity_type,entity_name,smart_code,metadata)
-        VALUES (v_org,'CONCEPT','ROLE/STYLIST','HERA.HCM.EMPLOYMENT.ROLE.STYLIST.v1',
+        VALUES (v_org,'CONCEPT','ROLE/STYLIST','HERA.HCM.EMPLOYMENT.ROLE.STYLIST.V1',
                 jsonb_build_object('industry',v_industry))
         RETURNING id INTO v_role_id;
       END IF;
@@ -5299,7 +5299,7 @@ BEGIN
       -- Ensure ALIAS_OF link
       INSERT INTO core_relationships(organization_id,from_entity_id,to_entity_id,relationship_type,smart_code,ai_confidence)
       VALUES (v_org, v_alias_id, v_emp_id,
-              'ALIAS_OF','HERA.GENERIC.ALIAS.REL.ALIAS_OF.v1', v_conf)
+              'ALIAS_OF','HERA.GENERIC.ALIAS.REL.ALIAS_OF.V1', v_conf)
       ON CONFLICT DO NOTHING;
 
     ELSE
@@ -5316,7 +5316,7 @@ BEGIN
         IF v_conf >= v_review THEN
           -- Create the alias we saw and link it to EMPLOYEE
           INSERT INTO core_entities(organization_id,entity_type,entity_name,smart_code,metadata)
-          VALUES (v_org,'ALIAS',v_label,'HERA.GENERIC.ALIAS.ENTITY.LABEL.v1',
+          VALUES (v_org,'ALIAS',v_label,'HERA.GENERIC.ALIAS.ENTITY.LABEL.V1',
                   jsonb_build_object('locale',v_locale,'industry',v_industry))
           ON CONFLICT DO NOTHING;
 
@@ -5325,7 +5325,7 @@ BEGIN
 
           INSERT INTO core_relationships(organization_id,from_entity_id,to_entity_id,relationship_type,smart_code,ai_confidence)
           VALUES (v_org, v_alias_id, v_emp_id,
-                  'ALIAS_OF','HERA.GENERIC.ALIAS.REL.ALIAS_OF.v1', v_conf)
+                  'ALIAS_OF','HERA.GENERIC.ALIAS.REL.ALIAS_OF.V1', v_conf)
           ON CONFLICT DO NOTHING;
         END IF;
       ELSE
@@ -5338,13 +5338,13 @@ BEGIN
       -- Commit canonical mapping
       INSERT INTO core_relationships(organization_id,from_entity_id,to_entity_id,relationship_type,smart_code,ai_confidence)
       VALUES (v_org, NEW.id, v_emp_id,
-              'HAS_CANONICAL_TYPE','HERA.HCM.EMPLOYMENT.REL.HAS_CANONICAL_TYPE.v1', v_conf)
+              'HAS_CANONICAL_TYPE','HERA.HCM.EMPLOYMENT.REL.HAS_CANONICAL_TYPE.V1', v_conf)
       ON CONFLICT DO NOTHING;
 
       IF is_role AND v_role_id IS NOT NULL THEN
         INSERT INTO core_relationships(organization_id,from_entity_id,to_entity_id,relationship_type,smart_code,ai_confidence)
         VALUES (v_org, NEW.id, v_role_id,
-                'HAS_ROLE','HERA.HCM.EMPLOYMENT.REL.HAS_ROLE.v1', v_conf)
+                'HAS_ROLE','HERA.HCM.EMPLOYMENT.REL.HAS_ROLE.V1', v_conf)
         ON CONFLICT DO NOTHING;
       END IF;
 
@@ -5352,7 +5352,7 @@ BEGIN
       -- Commit mapping + queue review
       INSERT INTO core_relationships(organization_id,from_entity_id,to_entity_id,relationship_type,smart_code,ai_confidence)
       VALUES (v_org, NEW.id, v_emp_id,
-              'HAS_CANONICAL_TYPE','HERA.HCM.EMPLOYMENT.REL.HAS_CANONICAL_TYPE.v1', v_conf)
+              'HAS_CANONICAL_TYPE','HERA.HCM.EMPLOYMENT.REL.HAS_CANONICAL_TYPE.V1', v_conf)
       ON CONFLICT DO NOTHING;
 
       PERFORM hera_open_review_txn(v_org, NEW.id, v_label, v_conf, 'needs_review');
@@ -5364,7 +5364,7 @@ BEGIN
 
     -- Ensure a smart_code on the entity itself (safe default)
     IF NEW.smart_code IS NULL OR NEW.smart_code !~ '^HERA\\.' THEN
-      NEW.smart_code := 'HERA.GENERIC.IDENTITY.ENTITY.PERSON.v1';
+      NEW.smart_code := 'HERA.GENERIC.IDENTITY.ENTITY.PERSON.V1';
     END IF;
 
     -- Persist AI fields
@@ -5424,7 +5424,7 @@ BEGIN
   ) VALUES (
     p_org, 'CURATION_REVIEW', 'ENTITY_NORM', now(),
     p_entity_id, 0, 'pending',
-    'HERA.GOVERNANCE.CURATION.REVIEW.REQUEST.v1',
+    'HERA.GOVERNANCE.CURATION.REVIEW.REQUEST.V1',
     jsonb_build_object('label',p_label,'confidence',p_conf,'reason',p_reason)
   ) RETURNING id INTO v_txn_id;
 
@@ -5434,7 +5434,7 @@ BEGIN
   ) VALUES (
     p_org, v_txn_id, 1, 'REVIEW_ITEM', p_entity_id,
     'Entity normalization review',
-    'HERA.GOVERNANCE.CURATION.REVIEW.LINE.v1',
+    'HERA.GOVERNANCE.CURATION.REVIEW.LINE.V1',
     jsonb_build_object('suggested','EMPLOYEE','label',p_label,'confidence',p_conf)
   );
 
@@ -5533,7 +5533,7 @@ begin
     'organization_deleted',
     null,
     v_now,
-    'HERA.AUDIT.ORG.DELETED.v1',
+    'HERA.AUDIT.ORG.DELETED.V1',
     jsonb_build_object(
       'user_id', p_actor_user_id,
       'active_user_count', v_user_count
@@ -7389,9 +7389,9 @@ begin
      and r.relationship_type = 'USER_MEMBER_OF_ORG';
 
   insert into public.core_dynamic_data (organization_id, entity_id, field_name, field_type, field_value_text, smart_code, created_at, updated_at)
-  values (p_organization_id, p_user_id, 'status', 'text', 'inactive', 'HERA.USER.STATUS.v1', now(), now())
+  values (p_organization_id, p_user_id, 'status', 'text', 'inactive', 'HERA.USER.STATUS.V1', now(), now())
   on conflict (organization_id, entity_id, field_name)
-  do update set field_type='text', field_value_text='inactive', field_value_json=null, smart_code='HERA.USER.STATUS.v1', updated_at=now();
+  do update set field_type='text', field_value_text='inactive', field_value_json=null, smart_code='HERA.USER.STATUS.V1', updated_at=now();
 
   return jsonb_build_object('ok', true, 'removed_user_id', p_user_id);
 end;
@@ -7425,30 +7425,30 @@ CREATE OR REPLACE FUNCTION "public"."hera_user_update_v1"("p_organization_id" "u
 begin
   if p_role is not null then
     insert into public.core_dynamic_data (organization_id, entity_id, field_name, field_type, field_value_text, smart_code, created_at, updated_at)
-    values (p_organization_id, p_user_id, 'role', 'text', p_role, 'HERA.RBAC.USER.ROLE.v1', now(), now())
+    values (p_organization_id, p_user_id, 'role', 'text', p_role, 'HERA.RBAC.USER.ROLE.V1', now(), now())
     on conflict (organization_id, entity_id, field_name)
-    do update set field_type='text', field_value_text=excluded.field_value_text, field_value_json=null, smart_code='HERA.RBAC.USER.ROLE.v1', updated_at=now();
+    do update set field_type='text', field_value_text=excluded.field_value_text, field_value_json=null, smart_code='HERA.RBAC.USER.ROLE.V1', updated_at=now();
   end if;
 
   if p_permissions is not null then
     insert into public.core_dynamic_data (organization_id, entity_id, field_name, field_type, field_value_json, smart_code, created_at, updated_at)
-    values (p_organization_id, p_user_id, 'permissions', 'json', p_permissions, 'HERA.RBAC.USER.PERMISSIONS.v1', now(), now())
+    values (p_organization_id, p_user_id, 'permissions', 'json', p_permissions, 'HERA.RBAC.USER.PERMISSIONS.V1', now(), now())
     on conflict (organization_id, entity_id, field_name)
-    do update set field_type='json', field_value_text=null, field_value_json=excluded.field_value_json, smart_code='HERA.RBAC.USER.PERMISSIONS.v1', updated_at=now();
+    do update set field_type='json', field_value_text=null, field_value_json=excluded.field_value_json, smart_code='HERA.RBAC.USER.PERMISSIONS.V1', updated_at=now();
   end if;
 
   if p_department is not null then
     insert into public.core_dynamic_data (organization_id, entity_id, field_name, field_type, field_value_text, smart_code, created_at, updated_at)
-    values (p_organization_id, p_user_id, 'department', 'text', p_department, 'HERA.USER.DEPARTMENT.v1', now(), now())
+    values (p_organization_id, p_user_id, 'department', 'text', p_department, 'HERA.USER.DEPARTMENT.V1', now(), now())
     on conflict (organization_id, entity_id, field_name)
-    do update set field_type='text', field_value_text=excluded.field_value_text, field_value_json=null, smart_code='HERA.USER.DEPARTMENT.v1', updated_at=now();
+    do update set field_type='text', field_value_text=excluded.field_value_text, field_value_json=null, smart_code='HERA.USER.DEPARTMENT.V1', updated_at=now();
   end if;
 
   if p_status is not null then
     insert into public.core_dynamic_data (organization_id, entity_id, field_name, field_type, field_value_text, smart_code, created_at, updated_at)
-    values (p_organization_id, p_user_id, 'status', 'text', p_status, 'HERA.USER.STATUS.v1', now(), now())
+    values (p_organization_id, p_user_id, 'status', 'text', p_status, 'HERA.USER.STATUS.V1', now(), now())
     on conflict (organization_id, entity_id, field_name)
-    do update set field_type='text', field_value_text=excluded.field_value_text, field_value_json=null, smart_code='HERA.USER.STATUS.v1', updated_at=now();
+    do update set field_type='text', field_value_text=excluded.field_value_text, field_value_json=null, smart_code='HERA.USER.STATUS.V1', updated_at=now();
   end if;
 
   -- (Optional) reports_to could be modeled as a REPORTS_TO relationship later
@@ -7724,7 +7724,7 @@ BEGIN
   ) VALUES (
     p_organization_id, 'vibe_context', 
     'Context Session: ' || p_session_token,
-    'HERA.VIBE.CONTEXT.SESSION.PRESERVATION.v1',
+    'HERA.VIBE.CONTEXT.SESSION.PRESERVATION.V1',
     jsonb_build_object('session_token', p_session_token, 'preservation_time', NOW()),
     p_user_id
   ) ON CONFLICT DO NOTHING
@@ -7745,7 +7745,7 @@ BEGIN
   ) VALUES (
     p_organization_id, 'vibe_context_preservation',
     'VIBE-CTX-' || EXTRACT(EPOCH FROM NOW())::TEXT,
-    v_context_entity_id, 'HERA.VIBE.TRANSACTION.CONTEXT.PRESERVATION.v1',
+    v_context_entity_id, 'HERA.VIBE.TRANSACTION.CONTEXT.PRESERVATION.V1',
     'completed', p_context_data, p_user_id
   ) RETURNING id INTO v_transaction_id;
   
@@ -7755,7 +7755,7 @@ BEGIN
     smart_code, created_by
   ) VALUES (
     p_organization_id, v_context_entity_id, 'session_context', 'json', p_context_data,
-    'HERA.VIBE.DATA.CONTEXT.SESSION.v1', p_user_id
+    'HERA.VIBE.DATA.CONTEXT.SESSION.V1', p_user_id
   ) ON CONFLICT (entity_id, field_name) DO UPDATE SET
     field_value_json = p_context_data,
     updated_at = NOW();
@@ -7933,7 +7933,7 @@ BEGIN
             'normalized_name',
             v_normalized_name,
             p_org_id,
-            'HERA.SYSTEM.NORMALIZATION.NAME.v1'
+            'HERA.SYSTEM.NORMALIZATION.NAME.V1'
         ) ON CONFLICT (entity_id, field_name) DO NOTHING;
         
         RETURN QUERY
@@ -7967,10 +7967,10 @@ BEGIN
   -- Ensure EMPLOYEE concept
   SELECT id INTO v_concept_id FROM core_entities
    WHERE organization_id=p_org AND entity_type='CONCEPT'
-     AND smart_code='HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.v1';
+     AND smart_code='HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.V1';
   IF v_concept_id IS NULL THEN
     INSERT INTO core_entities(organization_id,entity_type,entity_name,smart_code,metadata)
-    VALUES (p_org,'CONCEPT','EMPLOYEE','HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.v1',
+    VALUES (p_org,'CONCEPT','EMPLOYEE','HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.V1',
             jsonb_build_object('industry',p_industry))
     RETURNING id INTO v_concept_id;
   END IF;
@@ -7978,10 +7978,10 @@ BEGIN
   -- Ensure ROLE/STYLIST concept
   PERFORM 1 FROM core_entities
    WHERE organization_id=p_org AND entity_type='CONCEPT'
-     AND smart_code='HERA.HCM.EMPLOYMENT.ROLE.STYLIST.v1';
+     AND smart_code='HERA.HCM.EMPLOYMENT.ROLE.STYLIST.V1';
   IF NOT FOUND THEN
     INSERT INTO core_entities(organization_id,entity_type,entity_name,smart_code,metadata)
-    VALUES (p_org,'CONCEPT','ROLE/STYLIST','HERA.HCM.EMPLOYMENT.ROLE.STYLIST.v1',
+    VALUES (p_org,'CONCEPT','ROLE/STYLIST','HERA.HCM.EMPLOYMENT.ROLE.STYLIST.V1',
             jsonb_build_object('industry',p_industry));
   END IF;
 
@@ -7993,26 +7993,26 @@ BEGIN
     LOOP
       -- alias entity
       INSERT INTO core_entities(organization_id,entity_type,entity_name,smart_code,metadata)
-      VALUES (p_org,'ALIAS',label,'HERA.GENERIC.ALIAS.ENTITY.LABEL.v1',
+      VALUES (p_org,'ALIAS',label,'HERA.GENERIC.ALIAS.ENTITY.LABEL.V1',
               jsonb_build_object('locale',p_locale,'industry',p_industry))
       ON CONFLICT DO NOTHING;
 
       -- dynamic data
       INSERT INTO core_dynamic_data(organization_id,entity_id,field_name,field_type,field_value_text,smart_code)
-      SELECT p_org, id, 'alias_label','text',label,'HERA.GENERIC.ALIAS.DATA.LABEL.v1'
+      SELECT p_org, id, 'alias_label','text',label,'HERA.GENERIC.ALIAS.DATA.LABEL.V1'
       FROM core_entities
       WHERE organization_id=p_org AND entity_type='ALIAS' AND entity_name=label
       ON CONFLICT DO NOTHING;
 
       -- link ALIAS_OF → concept
       INSERT INTO core_relationships(organization_id,from_entity_id,to_entity_id,relationship_type,smart_code,ai_confidence)
-      SELECT p_org, a.id, c.id, 'ALIAS_OF','HERA.GENERIC.ALIAS.REL.ALIAS_OF.v1', 0.99
+      SELECT p_org, a.id, c.id, 'ALIAS_OF','HERA.GENERIC.ALIAS.REL.ALIAS_OF.V1', 0.99
       FROM core_entities a
       JOIN core_entities c
         ON c.organization_id=p_org AND c.entity_type='CONCEPT'
        AND c.smart_code = CASE k
-            WHEN 'EMPLOYEE' THEN 'HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.v1'
-            WHEN 'ROLE/STYLIST' THEN 'HERA.HCM.EMPLOYMENT.ROLE.STYLIST.v1'
+            WHEN 'EMPLOYEE' THEN 'HERA.HCM.EMPLOYMENT.ENTITY.EMPLOYEE.V1'
+            WHEN 'ROLE/STYLIST' THEN 'HERA.HCM.EMPLOYMENT.ROLE.STYLIST.V1'
           END
       WHERE a.organization_id=p_org AND a.entity_type='ALIAS' AND a.entity_name=label
       ON CONFLICT DO NOTHING;

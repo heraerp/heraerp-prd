@@ -197,7 +197,7 @@ export default function CommissionsPage() {
         entity_type: 'commission_rule',
         entity_name: ruleForm.name,
         entity_code: `RULE-${Date.now()}`,
-        smart_code: 'HERA.SALON.COMMISSION.RULE.v1',
+        smart_code: 'HERA.SALON.COMMISSION.RULE.V1',
         metadata: {
           type: ruleForm.type,
           base_rate: parseFloat(ruleForm.base_rate)

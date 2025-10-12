@@ -524,7 +524,7 @@ export default function NewSalesOrderModal({
                 quantity: '1',
                 unit_price: totals.total,
                 line_amount: totals.total,
-                smart_code: 'HERA.FURNITURE.GL.ACCOUNTS_RECEIVABLE.v1',
+                smart_code: 'HERA.FURNITURE.GL.ACCOUNTS_RECEIVABLE.V1',
                 metadata: {
                   account_code: '120000',
                   account_name: 'Accounts Receivable - Trade',
@@ -538,7 +538,7 @@ export default function NewSalesOrderModal({
                 quantity: '1',
                 unit_price: totals.subtotal,
                 line_amount: totals.subtotal,
-                smart_code: 'HERA.FURNITURE.GL.SALES_REVENUE.v1',
+                smart_code: 'HERA.FURNITURE.GL.SALES_REVENUE.V1',
                 metadata: {
                   account_code: '410000',
                   account_name: 'Furniture Sales Revenue',
@@ -552,7 +552,7 @@ export default function NewSalesOrderModal({
                 quantity: '1',
                 unit_price: totals.taxAmount,
                 line_amount: totals.taxAmount,
-                smart_code: 'HERA.FURNITURE.GL.SALES_TAX.v1',
+                smart_code: 'HERA.FURNITURE.GL.SALES_TAX.V1',
                 metadata: {
                   account_code: '220000',
                   account_name: 'GST/VAT Payable',

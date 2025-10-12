@@ -20,7 +20,7 @@ INSERT INTO core_entities (
     'ui_pattern',
     'High Contrast Dark Theme Pattern',
     'UI-PATTERN-DARK-CONTRAST',
-    'HERA.UI.PATTERN.DARK.CONTRAST.v1',
+    'HERA.UI.PATTERN.DARK.CONTRAST.V1',
     jsonb_build_object(
         'pattern_type', 'theme',
         'description', 'High contrast dark theme with excellent readability',
@@ -78,7 +78,7 @@ INSERT INTO core_entities (
     'ui_component',
     'High Contrast Stats Card',
     'UI-COMP-STATS-CARD-HC',
-    'HERA.UI.COMPONENT.STATS.CARD.HC.v1',
+    'HERA.UI.COMPONENT.STATS.CARD.HC.V1',
     jsonb_build_object(
         'component_type', 'stats_card',
         'template', '
@@ -130,7 +130,7 @@ INSERT INTO core_entities (
     'ui_component',
     'High Contrast Sidebar Navigation',
     'UI-COMP-SIDEBAR-NAV-HC',
-    'HERA.UI.COMPONENT.SIDEBAR.NAV.HC.v1',
+    'HERA.UI.COMPONENT.SIDEBAR.NAV.HC.V1',
     jsonb_build_object(
         'component_type', 'sidebar',
         'template', '
@@ -191,7 +191,7 @@ INSERT INTO core_entities (
     'ui_pattern',
     'High Contrast Dashboard Layout',
     'UI-PATTERN-DASHBOARD-HC',
-    'HERA.UI.PATTERN.DASHBOARD.HC.v1',
+    'HERA.UI.PATTERN.DASHBOARD.HC.V1',
     jsonb_build_object(
         'pattern_type', 'layout',
         'description', 'Dashboard layout with proper contrast for all elements',
@@ -238,7 +238,7 @@ INSERT INTO core_entities (
     'guideline',
     'HERA UI Contrast Guidelines',
     'GUIDELINE-UI-CONTRAST',
-    'HERA.GUIDELINE.UI.CONTRAST.v1',
+    'HERA.GUIDELINE.UI.CONTRAST.V1',
     jsonb_build_object(
         'version', '1.0',
         'principles', ARRAY[
@@ -285,7 +285,7 @@ SELECT
     theme.id,
     component.id,
     'implements_pattern',
-    'HERA.REL.PATTERN.IMPLEMENTATION.v1',
+    'HERA.REL.PATTERN.IMPLEMENTATION.V1',
     jsonb_build_object('implementation_type', 'theme_application')
 FROM core_entities theme
 CROSS JOIN core_entities component

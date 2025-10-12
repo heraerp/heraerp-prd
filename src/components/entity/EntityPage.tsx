@@ -64,7 +64,7 @@ export function EntityPage({
       await create({
         entity_type: preset.entityType,
         entity_name: payload.entity_name || 'Untitled',
-        smart_code: preset.smartCode || `HERA.SALON.${preset.entityType}.ENTITY.ITEM.v1`,
+        smart_code: preset.smartCode || `HERA.SALON.${preset.entityType}.ENTITY.ITEM.V1`,
         dynamic_fields: Object.fromEntries(
           (preset.dynamicFields || []).map(df => [
             df.name,

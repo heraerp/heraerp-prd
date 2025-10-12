@@ -261,7 +261,7 @@ export default function UniversalUIDemo() {
       return selectedConfig.smartCode
     }
     // For industry examples, use the metadata's smart code
-    return viewMetadata?.smart_code || 'HERA.UI.UNIVERSAL.v1'
+    return viewMetadata?.smart_code || 'HERA.UI.UNIVERSAL.V1'
   }
 
   return (

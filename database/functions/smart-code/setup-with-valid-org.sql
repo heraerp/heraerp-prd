@@ -143,7 +143,7 @@ BEGIN
       gen_random_uuid(),  -- Generate new ID
       v_transaction.organization_id,
       'journal_entry',
-      'HERA.FIN.GL.JE.AUTO.v1',
+      'HERA.FIN.GL.JE.AUTO.V1',
       'JE-' || v_transaction.reference_number,
       'JE-' || COALESCE(v_transaction.transaction_number, floor(random() * 100000)::text),
       v_transaction.total_amount,
@@ -214,7 +214,7 @@ BEGIN
     'sale',
     'TXN-' || floor(random() * 100000)::text,
     v_test_ref,
-    'HERA.REST.SALE.ORDER.v1',
+    'HERA.REST.SALE.ORDER.V1',
     125.50,
     'USD',
     'completed',

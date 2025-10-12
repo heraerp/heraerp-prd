@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA UNIVERSAL PAGE HEADER
-// Smart Code: HERA.UI.COMPONENTS.PAGE_HEADER.v1
+// Smart Code: HERA.UI.COMPONENTS.PAGE_HEADER.V1
 // Luxury themed page header with consistent typography
 // ================================================================================
 

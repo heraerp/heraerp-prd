@@ -1,6 +1,6 @@
 -- ================================================================================
 -- HERA UNIVERSAL PROFIT & LOSS (INCOME STATEMENT) DNA COMPONENT
--- Smart Code: HERA.FIN.PL.ENGINE.v1
+-- Smart Code: HERA.FIN.PL.ENGINE.V1
 -- Status: PRODUCTION READY
 -- Integration: Complete with Trial Balance DNA, Balance Sheet DNA, and Auto-Journal DNA
 -- ================================================================================
@@ -23,7 +23,7 @@ INSERT INTO core_entities (
     'dna_component',
     'Universal Profit & Loss Engine',
     'HERA-DNA-PROFIT-LOSS-v1',
-    'HERA.FIN.PL.ENGINE.v1',
+    'HERA.FIN.PL.ENGINE.V1',
     'active',
     '{
         "component_type": "financial_reporting",
@@ -42,10 +42,10 @@ INSERT INTO core_entities (
             "Integration with Trial Balance DNA"
         ],
         "integration_points": [
-            "HERA.FIN.TRIAL.BALANCE.ENGINE.v1",
-            "HERA.FIN.AUTO.JOURNAL.ENGINE.v1",
-            "HERA.FIN.BALANCE.SHEET.ENGINE.v1",
-            "HERA.UNIVERSAL.API.v1"
+            "HERA.FIN.TRIAL.BALANCE.ENGINE.V1",
+            "HERA.FIN.AUTO.JOURNAL.ENGINE.V1",
+            "HERA.FIN.BALANCE.SHEET.ENGINE.V1",
+            "HERA.UNIVERSAL.API.V1"
         ],
         "business_impact": {
             "preparation_time_savings": "97%",
@@ -75,22 +75,22 @@ INSERT INTO core_entities (
     metadata
 ) VALUES 
 -- Revenue Sections
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Service Revenue', 'PL-REV-SERVICE', 'HERA.FIN.PL.SECTION.REV.SERVICE.v1', 'active', '{"section_type": "Revenue", "subsection": "Service Revenue", "sort_order": 10, "calculation_type": "sum"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Product Revenue', 'PL-REV-PRODUCT', 'HERA.FIN.PL.SECTION.REV.PRODUCT.v1', 'active', '{"section_type": "Revenue", "subsection": "Product Revenue", "sort_order": 20, "calculation_type": "sum"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Other Revenue', 'PL-REV-OTHER', 'HERA.FIN.PL.SECTION.REV.OTHER.v1', 'active', '{"section_type": "Revenue", "subsection": "Other Revenue", "sort_order": 30, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Service Revenue', 'PL-REV-SERVICE', 'HERA.FIN.PL.SECTION.REV.SERVICE.V1', 'active', '{"section_type": "Revenue", "subsection": "Service Revenue", "sort_order": 10, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Product Revenue', 'PL-REV-PRODUCT', 'HERA.FIN.PL.SECTION.REV.PRODUCT.V1', 'active', '{"section_type": "Revenue", "subsection": "Product Revenue", "sort_order": 20, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Other Revenue', 'PL-REV-OTHER', 'HERA.FIN.PL.SECTION.REV.OTHER.V1', 'active', '{"section_type": "Revenue", "subsection": "Other Revenue", "sort_order": 30, "calculation_type": "sum"}'::jsonb),
 
 -- COGS Sections
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Cost of Goods Sold', 'PL-COGS', 'HERA.FIN.PL.SECTION.COGS.v1', 'active', '{"section_type": "COGS", "subsection": "Cost of Goods Sold", "sort_order": 40, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Cost of Goods Sold', 'PL-COGS', 'HERA.FIN.PL.SECTION.COGS.V1', 'active', '{"section_type": "COGS", "subsection": "Cost of Goods Sold", "sort_order": 40, "calculation_type": "sum"}'::jsonb),
 
 -- Operating Expense Sections
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Payroll & Benefits', 'PL-EXP-PAYROLL', 'HERA.FIN.PL.SECTION.EXP.PAYROLL.v1', 'active', '{"section_type": "Operating Expenses", "subsection": "Payroll & Benefits", "sort_order": 50, "calculation_type": "sum"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Facility Expenses', 'PL-EXP-FACILITY', 'HERA.FIN.PL.SECTION.EXP.FACILITY.v1', 'active', '{"section_type": "Operating Expenses", "subsection": "Facility Expenses", "sort_order": 60, "calculation_type": "sum"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Marketing & Advertising', 'PL-EXP-MARKETING', 'HERA.FIN.PL.SECTION.EXP.MARKETING.v1', 'active', '{"section_type": "Operating Expenses", "subsection": "Marketing & Advertising", "sort_order": 70, "calculation_type": "sum"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'General & Administrative', 'PL-EXP-GENERAL', 'HERA.FIN.PL.SECTION.EXP.GENERAL.v1', 'active', '{"section_type": "Operating Expenses", "subsection": "General & Administrative", "sort_order": 80, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Payroll & Benefits', 'PL-EXP-PAYROLL', 'HERA.FIN.PL.SECTION.EXP.PAYROLL.V1', 'active', '{"section_type": "Operating Expenses", "subsection": "Payroll & Benefits", "sort_order": 50, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Facility Expenses', 'PL-EXP-FACILITY', 'HERA.FIN.PL.SECTION.EXP.FACILITY.V1', 'active', '{"section_type": "Operating Expenses", "subsection": "Facility Expenses", "sort_order": 60, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Marketing & Advertising', 'PL-EXP-MARKETING', 'HERA.FIN.PL.SECTION.EXP.MARKETING.V1', 'active', '{"section_type": "Operating Expenses", "subsection": "Marketing & Advertising", "sort_order": 70, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'General & Administrative', 'PL-EXP-GENERAL', 'HERA.FIN.PL.SECTION.EXP.GENERAL.V1', 'active', '{"section_type": "Operating Expenses", "subsection": "General & Administrative", "sort_order": 80, "calculation_type": "sum"}'::jsonb),
 
 -- Other Expense Sections
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Interest & Finance Charges', 'PL-EXP-INTEREST', 'HERA.FIN.PL.SECTION.EXP.INTEREST.v1', 'active', '{"section_type": "Other Expenses", "subsection": "Interest & Finance Charges", "sort_order": 90, "calculation_type": "sum"}'::jsonb),
-(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Income Tax', 'PL-EXP-TAX', 'HERA.FIN.PL.SECTION.EXP.TAX.v1', 'active', '{"section_type": "Other Expenses", "subsection": "Income Tax", "sort_order": 100, "calculation_type": "sum"}'::jsonb);
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Interest & Finance Charges', 'PL-EXP-INTEREST', 'HERA.FIN.PL.SECTION.EXP.INTEREST.V1', 'active', '{"section_type": "Other Expenses", "subsection": "Interest & Finance Charges", "sort_order": 90, "calculation_type": "sum"}'::jsonb),
+(gen_random_uuid(), 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944', 'pl_section', 'Income Tax', 'PL-EXP-TAX', 'HERA.FIN.PL.SECTION.EXP.TAX.V1', 'active', '{"section_type": "Other Expenses", "subsection": "Income Tax", "sort_order": 100, "calculation_type": "sum"}'::jsonb);
 
 -- ================================================================================
 -- INDUSTRY-SPECIFIC P&L CONFIGURATIONS
@@ -113,7 +113,7 @@ INSERT INTO core_entities (
     'pl_config',
     'Salon P&L Configuration',
     'PL-CONFIG-SALON',
-    'HERA.FIN.PL.CONFIG.SALON.v1',
+    'HERA.FIN.PL.CONFIG.SALON.V1',
     'active',
     '{
         "industry": "salon",
@@ -217,7 +217,7 @@ INSERT INTO core_entities (
     'pl_config',
     'Restaurant P&L Configuration',
     'PL-CONFIG-RESTAURANT',
-    'HERA.FIN.PL.CONFIG.RESTAURANT.v1',
+    'HERA.FIN.PL.CONFIG.RESTAURANT.V1',
     'active',
     '{
         "industry": "restaurant",
@@ -278,7 +278,7 @@ INSERT INTO core_entities (
     'pl_config',
     'Healthcare P&L Configuration',
     'PL-CONFIG-HEALTHCARE',
-    'HERA.FIN.PL.CONFIG.HEALTHCARE.v1',
+    'HERA.FIN.PL.CONFIG.HEALTHCARE.V1',
     'active',
     '{
         "industry": "healthcare",

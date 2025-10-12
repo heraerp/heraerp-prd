@@ -190,7 +190,7 @@ export function BookAppointmentModalGlass({
             id: staff.id,
             entity_name: staff.entity_name,
             entity_code: staff.entity_code || staff.id,
-            smart_code: staff.smart_code || 'HERA.SALON.STAFF.v1',
+            smart_code: staff.smart_code || 'HERA.SALON.STAFF.V1',
             avatar: staff.entity_name?.charAt(0) || 'S',
             skills: (staff.metadata as any)?.skills || [],
             level: (staff.metadata as any)?.level || 'senior',
@@ -206,7 +206,7 @@ export function BookAppointmentModalGlass({
           id: service.id,
           entity_name: service.entity_name,
           entity_code: service.entity_code || service.id,
-          smart_code: service.smart_code || 'HERA.SALON.SERVICE.v1',
+          smart_code: service.smart_code || 'HERA.SALON.SERVICE.V1',
           duration: (service.metadata as any)?.duration || 60,
           price: (service.metadata as any)?.price || 0,
           buffer_before: (service.metadata as any)?.buffer_before || 5,
@@ -298,7 +298,7 @@ export function BookAppointmentModalGlass({
       organization_id: organizationId,
       transaction_type: 'appointment',
       transaction_date: format(selectedDate, 'yyyy-MM-dd'),
-      smart_code: 'HERA.SALON.APPOINTMENT.v1',
+      smart_code: 'HERA.SALON.APPOINTMENT.V1',
       transaction_code: `APT-${Date.now()}`, // Unique appointment code
       metadata: {
         title: title || `${selectedServices[0].entity_name} for ${selectedCustomer.entity_name}`,

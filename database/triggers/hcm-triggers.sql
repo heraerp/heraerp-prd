@@ -77,7 +77,7 @@ BEGIN
             NEW.organization_id,
             'employee_onboarding',
             'ONBOARD-' || NEW.entity_code,
-            'HERA.HCM.EMP.ONBOARD.v1',
+            'HERA.HCM.EMP.ONBOARD.V1',
             NOW(),
             NEW.id,
             jsonb_build_object(
@@ -115,7 +115,7 @@ DECLARE
     v_country_code TEXT;
 BEGIN
     -- Only process payroll transactions
-    IF NEW.transaction_type = 'payroll_run' AND NEW.smart_code = 'HERA.HCM.PAY.RUN.v1' THEN
+    IF NEW.transaction_type = 'payroll_run' AND NEW.smart_code = 'HERA.HCM.PAY.RUN.V1' THEN
         
         -- Get employee data
         SELECT metadata INTO v_employee_data
@@ -175,7 +175,7 @@ BEGIN
             NEW.organization_id,
             'payslip',
             'PAYSLIP-' || NEW.from_entity_id || '-' || TO_CHAR(NOW(), 'YYYYMM'),
-            'HERA.HCM.PAY.SLIP.v1',
+            'HERA.HCM.PAY.SLIP.V1',
             NOW(),
             NEW.from_entity_id,
             NEW.id,
@@ -217,7 +217,7 @@ DECLARE
     v_overtime_rate NUMERIC := 1.5;
 BEGIN
     -- Process time clock entries
-    IF NEW.transaction_type = 'time_clock' AND NEW.smart_code = 'HERA.HCM.TIME.CLOCK.v1' THEN
+    IF NEW.transaction_type = 'time_clock' AND NEW.smart_code = 'HERA.HCM.TIME.CLOCK.V1' THEN
         
         v_clock_in := (NEW.metadata->>'clock_in')::TIMESTAMP;
         v_clock_out := (NEW.metadata->>'clock_out')::TIMESTAMP;
@@ -253,7 +253,7 @@ BEGIN
                     NEW.organization_id,
                     'overtime_request',
                     'OT-' || NEW.from_entity_id || '-' || TO_CHAR(v_clock_in, 'YYYYMMDD'),
-                    'HERA.HCM.TIME.OVERTIME.REQ.v1',
+                    'HERA.HCM.TIME.OVERTIME.REQ.V1',
                     v_clock_in::DATE,
                     NEW.from_entity_id,
                     NEW.id,
@@ -347,7 +347,7 @@ DECLARE
     v_completed_goals INTEGER;
 BEGIN
     -- Process performance reviews
-    IF NEW.transaction_type = 'performance_review' AND NEW.smart_code = 'HERA.HCM.PERF.REVIEW.v1' THEN
+    IF NEW.transaction_type = 'performance_review' AND NEW.smart_code = 'HERA.HCM.PERF.REVIEW.V1' THEN
         
         -- Count completed goals
         SELECT 
@@ -395,7 +395,7 @@ BEGIN
                 NEW.organization_id,
                 'compensation_review',
                 'COMP-REVIEW-' || NEW.from_entity_id || '-' || TO_CHAR(NOW(), 'YYYYMM'),
-                'HERA.HCM.COMP.REVIEW.v1',
+                'HERA.HCM.COMP.REVIEW.V1',
                 NOW(),
                 NEW.from_entity_id,
                 NEW.id,
@@ -449,7 +449,7 @@ BEGIN
                 NEW.organization_id,
                 'compliance_alert',
                 'VISA-ALERT-' || NEW.id || '-' || TO_CHAR(NOW(), 'YYYYMMDD'),
-                'HERA.HCM.COMP.ALERT.v1',
+                'HERA.HCM.COMP.ALERT.V1',
                 NOW(),
                 NEW.id,
                 jsonb_build_object(
@@ -485,7 +485,7 @@ BEGIN
                 NEW.organization_id,
                 'compliance_alert',
                 'CONTRACT-ALERT-' || NEW.id || '-' || TO_CHAR(NOW(), 'YYYYMMDD'),
-                'HERA.HCM.COMP.ALERT.v1',
+                'HERA.HCM.COMP.ALERT.V1',
                 NOW(),
                 NEW.id,
                 jsonb_build_object(
@@ -610,7 +610,7 @@ BEGIN
                     NEW.organization_id,
                     'hr_alert',
                     'ATTRITION-RISK-' || NEW.id || '-' || TO_CHAR(NOW(), 'YYYYMMDD'),
-                    'HERA.HCM.AI.ATTRITION.v1',
+                    'HERA.HCM.AI.ATTRITION.V1',
                     NOW(),
                     NEW.id,
                     jsonb_build_object(

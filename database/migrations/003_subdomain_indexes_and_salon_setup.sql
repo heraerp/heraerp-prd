@@ -1,5 +1,5 @@
 -- Migration: Add subdomain support and setup salon organizations
--- Smart Code: HERA.SYSTEM.MIGRATION.SUBDOMAIN.v1
+-- Smart Code: HERA.SYSTEM.MIGRATION.SUBDOMAIN.V1
 -- Purpose: Enable fast subdomain lookups and configure salon organizations
 
 -- Step 1: Create indexes for subdomain lookups using existing settings JSONB field
@@ -127,9 +127,9 @@ WHERE id = '849b6efe-2bf0-438f-9c70-01835ac2fe15'
   AND organization_code = 'SALON-GROUP';
 
 -- Step 4: Add helpful comments for future reference
-COMMENT ON INDEX idx_organizations_subdomain IS 'Unique index on subdomain for fast organization lookups - HERA.SYSTEM.INDEX.SUBDOMAIN.v1';
-COMMENT ON INDEX idx_organizations_domains IS 'GIN index on domains array for multi-domain support - HERA.SYSTEM.INDEX.DOMAINS.v1';
-COMMENT ON FUNCTION get_organization_by_subdomain IS 'Resolver function for subdomain-based organization lookups - HERA.SYSTEM.FUNCTION.SUBDOMAIN_RESOLVER.v1';
+COMMENT ON INDEX idx_organizations_subdomain IS 'Unique index on subdomain for fast organization lookups - HERA.SYSTEM.INDEX.SUBDOMAIN.V1';
+COMMENT ON INDEX idx_organizations_domains IS 'GIN index on domains array for multi-domain support - HERA.SYSTEM.INDEX.DOMAINS.V1';
+COMMENT ON FUNCTION get_organization_by_subdomain IS 'Resolver function for subdomain-based organization lookups - HERA.SYSTEM.FUNCTION.SUBDOMAIN_RESOLVER.V1';
 
 -- Step 5: Create a helper view for subdomain management
 CREATE OR REPLACE VIEW v_organization_subdomains AS
@@ -147,7 +147,7 @@ WHERE settings->>'subdomain' IS NOT NULL
    OR settings->'domains' IS NOT NULL
 ORDER BY organization_name;
 
-COMMENT ON VIEW v_organization_subdomains IS 'View for managing organization subdomains and custom domains - HERA.SYSTEM.VIEW.SUBDOMAINS.v1';
+COMMENT ON VIEW v_organization_subdomains IS 'View for managing organization subdomains and custom domains - HERA.SYSTEM.VIEW.SUBDOMAINS.V1';
 
 -- Migration complete
 -- To verify:

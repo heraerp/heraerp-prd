@@ -131,7 +131,7 @@ export default function MCPSQLConverter() {
             email: match[2],
             phone: match[3]
           },
-          smartCode: `HERA.${businessType.toUpperCase()}.CUST.${match[1].split(' ')[1]?.toUpperCase() || 'DEMO'}.v1`
+          smartCode: `HERA.${businessType.toUpperCase()}.CUST.${match[1].split(' ')[1]?.toUpperCase() || 'DEMO'}.V1`
         })
       }
 
@@ -144,7 +144,7 @@ export default function MCPSQLConverter() {
           fields: {
             price: parseFloat(match[2])
           },
-          smartCode: `HERA.${businessType.toUpperCase()}.SVC.${match[1].replace(/\s+/g, '_').toUpperCase()}.v1`
+          smartCode: `HERA.${businessType.toUpperCase()}.SVC.${match[1].replace(/\s+/g, '_').toUpperCase()}.V1`
         })
       }
 
@@ -205,7 +205,7 @@ BEGIN
   ) 
   SELECT org_id, e.id, '${fieldName}', 
     ${typeof fieldValue === 'number' ? fieldValue : `'${fieldValue}'`},
-    'HERA.DYN.${fieldName.toUpperCase()}.v1'
+    'HERA.DYN.${fieldName.toUpperCase()}.V1'
   FROM core_entities e
   WHERE e.organization_id = org_id 
     AND e.entity_name = '${entity.name}';

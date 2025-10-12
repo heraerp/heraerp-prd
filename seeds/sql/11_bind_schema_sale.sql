@@ -14,7 +14,7 @@ INSERT INTO core_relationships (
     :schema_id::uuid,  -- posting_schema entity
     NULL,              -- No specific target entity
     'applies_to',
-    'HERA.CONFIG.BINDING.EVENT.v1',
+    'HERA.CONFIG.BINDING.EVENT.V1',
     :org::uuid,
     jsonb_build_object(
         'event_smart_code', 'HERA.POS.SALE.V1',

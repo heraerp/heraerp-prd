@@ -309,7 +309,7 @@ SELECT
   last_24h_transactions,
   total_pos_lines,
   CASE 
-    WHEN invalid_header_codes = 0 THEN '✓ All headers use lowercase .v1'
+    WHEN invalid_header_codes = 0 THEN '✓ All headers use lowercase .V1'
     ELSE '✗ ' || invalid_header_codes || ' headers use uppercase .V1'
   END as header_validation,
   ROUND(100.0 * balanced_transactions / NULLIF(total_pos_transactions, 0), 2) || '%' as balance_rate,

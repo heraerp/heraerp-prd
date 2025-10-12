@@ -168,7 +168,7 @@ BEGIN
         'normalized_name',
         v_normalized_name,
         NEW.organization_id,
-        'HERA.SYSTEM.NORMALIZATION.NAME.v1',
+        'HERA.SYSTEM.NORMALIZATION.NAME.V1',
         NEW.created_by,
         NEW.updated_by
     )
@@ -204,7 +204,7 @@ BEGIN
             'potential_duplicate_of',
             v_existing_id::text,
             NEW.organization_id,
-            'HERA.SYSTEM.DUPLICATE.REVIEW.v1',
+            'HERA.SYSTEM.DUPLICATE.REVIEW.V1',
             jsonb_build_object(
                 'similarity_score', similarity(
                     (SELECT entity_name FROM core_entities WHERE id = v_existing_id),
@@ -249,7 +249,7 @@ FROM core_dynamic_data dd
 JOIN core_entities e1 ON dd.entity_id = e1.id
 JOIN core_entities e2 ON dd.field_value_text::uuid = e2.id
 WHERE dd.field_name = 'potential_duplicate_of'
-  AND dd.smart_code = 'HERA.SYSTEM.DUPLICATE.REVIEW.v1'
+  AND dd.smart_code = 'HERA.SYSTEM.DUPLICATE.REVIEW.V1'
   AND e1.status != 'deleted'
   AND e2.status != 'deleted'
 ORDER BY dd.created_at DESC;
@@ -305,7 +305,7 @@ BEGIN
     -- Generate smart_code if not provided
     v_smart_code := COALESCE(
         p_smart_code,
-        'HERA.UNIVERSAL.' || UPPER(p_entity_type) || '.ENTITY.MASTER.v1'
+        'HERA.UNIVERSAL.' || UPPER(p_entity_type) || '.ENTITY.MASTER.V1'
     );
     
     -- Try exact match on entity_code first (highest confidence)
@@ -511,7 +511,7 @@ BEGIN
         organization_id, smart_code, metadata
     ) VALUES (
         p_duplicate_id, p_master_id, 'merged_into',
-        p_org_id, 'HERA.SYSTEM.MERGE.RELATIONSHIP.v1',
+        p_org_id, 'HERA.SYSTEM.MERGE.RELATIONSHIP.V1',
         jsonb_build_object(
             'merge_date', NOW(),
             'relationships_moved', v_relationships_moved,
@@ -567,7 +567,7 @@ BEGIN
             organization_id, smart_code
         ) VALUES (
             v_entity.id, 'normalized_name', v_normalized_name,
-            v_entity.organization_id, 'HERA.SYSTEM.NORMALIZATION.NAME.v1'
+            v_entity.organization_id, 'HERA.SYSTEM.NORMALIZATION.NAME.V1'
         ) ON CONFLICT (entity_id, field_name) DO NOTHING;
     END LOOP;
 END $$;

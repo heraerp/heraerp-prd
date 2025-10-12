@@ -1,6 +1,6 @@
 // ================================================================================
 // POSTING RULES VIEWER PAGE
-// Smart Code: HERA.UI.FINANCE.POSTING_RULES_VIEWER.v1
+// Smart Code: HERA.UI.FINANCE.POSTING_RULES_VIEWER.V1
 // Finance DNA Rules management interface
 // ================================================================================
 
@@ -81,7 +81,7 @@ export default function PostingRulesViewerPage() {
 
   const handleCreate = () => {
     const newRule: PostingRule = {
-      key: 'FIN_DNA.RULES.NEW.v1',
+      key: 'FIN_DNA.RULES.NEW.V1',
       title: '',
       description: undefined,
       category: 'other',

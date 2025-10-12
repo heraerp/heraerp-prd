@@ -91,7 +91,7 @@ export function ProductModal({
     if (mode === 'create') {
       return {
         entity_name: '',
-        smart_code: 'HERA.SALON.PRODUCT.ENTITY.ITEM.v1',
+        smart_code: 'HERA.SALON.PRODUCT.ENTITY.ITEM.V1',
         dynamic_fields: {
           price_market: 0,
           price_cost: 0,

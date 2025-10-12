@@ -156,7 +156,7 @@ export default function POSCheckoutPage() {
         transaction_type: 'pos_sale',
         transaction_date: new Date().toISOString(),
         transaction_code: `POS-${Date.now()}`,
-        smart_code: 'HERA.SALON.POS.SALE.CREATE.v1',
+        smart_code: 'HERA.SALON.POS.SALE.CREATE.V1',
         source_entity_id: selectedCustomer,
         target_entity_id: selectedCustomer, // Could be staff ID if tracking who made the sale
         total_amount: total,
@@ -187,7 +187,7 @@ export default function POSCheckoutPage() {
             quantity: item.quantity,
             unit_amount: item.unit_price,
             line_amount: item.total_price,
-            smart_code: `HERA.SALON.POS.LINE.${item.entity_type.toUpperCase()}.v1`,
+            smart_code: `HERA.SALON.POS.LINE.${item.entity_type.toUpperCase()}.V1`,
             line_data: {
               item_name: item.entity_name
             }
@@ -205,7 +205,7 @@ export default function POSCheckoutPage() {
             quantity: 1,
             unit_amount: taxAmount,
             line_amount: taxAmount,
-            smart_code: 'HERA.SALON.POS.LINE.TAX.v1',
+            smart_code: 'HERA.SALON.POS.LINE.TAX.V1',
             line_data: {
               tax_base: calculateSubtotal(),
               tax_rate: 0.05
@@ -222,7 +222,7 @@ export default function POSCheckoutPage() {
           quantity: 1,
           unit_amount: -total,
           line_amount: -total,
-          smart_code: `HERA.SALON.POS.LINE.PAYMENT.${paymentMethod.toUpperCase()}.v1`,
+          smart_code: `HERA.SALON.POS.LINE.PAYMENT.${paymentMethod.toUpperCase()}.V1`,
           line_data: {
             payment_method: paymentMethod
           }

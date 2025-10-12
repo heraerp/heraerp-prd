@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS PAYMENT METHOD SELECTOR
-// Smart Code: HERA.UI.POS.PAYMENT_METHOD.v1
+// Smart Code: HERA.UI.POS.PAYMENT_METHOD.V1
 // Payment method selection with validation
 // ================================================================================
 

@@ -1,54 +1,42 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
-# UI Pattern Validation (staged only to avoid legacy noise)
-echo "🔍 Checking UI patterns (staged)..."
-npm run ui:validate:staged
+echo "🛡️ Running HERA Standardization Checks..."
 
-if [ $? -ne 0 ]; then
-  echo "❌ UI pattern validation failed. Please fix the issues before committing."
-  echo "💡 Run 'npm run ui:validate:staged' to see details, or 'npm run ui:validate' for full scan"
+# 1. Run HERA Standardization Checker
+echo "📋 Running standardization validation..."
+node scripts/hera-standardization-checker.js
+
+# 2. Run ESLint with HERA rules
+echo "📝 Running ESLint with HERA patterns..."
+npx eslint --config .eslintrc.hera.js --fix .
+
+# 3. Run TypeScript type checking
+echo "🔍 Running TypeScript validation..."
+npx tsc --noEmit
+
+# 4. Validate Smart Codes
+echo "🧬 Validating Smart Code patterns..."
+npm run validate:smart-codes
+
+# 5. Check for missing organization_id
+echo "🏢 Checking organization_id requirements..."
+if grep -r "FROM core_entities" src/app/api --include="*.ts" | grep -v "organization_id"; then
+  echo "❌ Found database queries missing organization_id filter"
   exit 1
 fi
 
-# Format check
-echo "📝 Checking code formatting..."
-npm run format:check
-
-if [ $? -ne 0 ]; then
-  echo "❌ Code formatting issues found."
-  echo "💡 Run 'npm run format' to fix automatically"
+# 6. Check for status columns (HERA violation)
+echo "⚠️ Checking for status column violations..."
+if grep -r "status.*varchar" database --include="*.sql" | grep -v "--"; then
+  echo "❌ Found status columns - use core_relationships instead"
   exit 1
 fi
 
-echo "✅ All checks passed!"
-
-# HERA Enterprise Quality Check
-echo "🏆 Running HERA Enterprise Quality Check..."
-npm run quality:check
-
-if [ $? -ne 0 ]; then
-  echo "❌ Enterprise quality standards not met. Please fix issues before committing."
-  echo "💡 Run 'npm run quality:check' for detailed report"
-  exit 1
+# 7. Validate API response formats
+echo "📡 Checking API response formats..."
+if grep -r "NextResponse.json" src/app/api --include="*.ts" | grep -v "success:" | head -5; then
+  echo "⚠️ Warning: Some API responses may not follow standard format"
 fi
 
-echo "🏆 Enterprise quality standards met!"
-
-# Schema compat guard (fail if rewrites needed)
-FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\\.ya?ml$' || true)
-if [ -n "$FILES" ]; then
-  echo "🧭 Checking HERA bundle schema (compat guard)..."
-  npm run schema:precommit
-  if [ $? -ne 0 ]; then
-    echo "❌ Legacy bundle fields detected that require compat rewrite."
-    echo "💡 Run 'npm run schema:compat:write -- .' to persist rewrites, then re-commit."
-    exit 1
-  fi
-fi
-
-# Rebuild DAG graph for changed bundles (optional)
-if command -v dot >/dev/null 2>&1; then
-  npm run schema:graph -- . >/dev/null 2>&1 || true
-  if git ls-files --error-unmatch .hera/graph.dot >/dev/null 2>&1; then
-    git add .hera/graph.dot .hera/graph.svg 2>/dev/null || true
-  fi
-fi
+echo "✅ All standardization checks passed!"

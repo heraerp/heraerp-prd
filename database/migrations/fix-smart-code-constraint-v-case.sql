@@ -1,5 +1,5 @@
 -- Fix smart code constraint to allow both uppercase V and lowercase v
--- This allows both .v1 and .V1 formats
+-- This allows both .V1 and .V1 formats
 
 -- Update constraint for core_entities
 ALTER TABLE core_entities 

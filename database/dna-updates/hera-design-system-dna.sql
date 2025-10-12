@@ -17,7 +17,7 @@ INSERT INTO core_entities (
   'HERA Design System',
   'HERA-DESIGN-SYSTEM-v1',
   (SELECT id FROM core_organizations WHERE organization_code = 'HERA-DNA-SYS'),
-  'HERA.DESIGN.GRADIENT.ENTERPRISE.v1',
+  'HERA.DESIGN.GRADIENT.ENTERPRISE.V1',
   jsonb_build_object(
     'version', '1.0.0',
     'created_date', CURRENT_TIMESTAMP,
@@ -362,7 +362,7 @@ INSERT INTO core_entities (
   'HERA Gradient Background',
   'HERA-GRADIENT-BG-v1',
   (SELECT id FROM core_organizations WHERE organization_code = 'HERA-DNA-SYS'),
-  'HERA.UI.GRADIENT.BACKGROUND.v1',
+  'HERA.UI.GRADIENT.BACKGROUND.V1',
   jsonb_build_object(
     'component_type', 'background',
     'design_system', 'HERA-DESIGN-SYSTEM-v1'
@@ -384,7 +384,7 @@ INSERT INTO core_entities (
   'HERA Primary Button',
   'HERA-BUTTON-PRIMARY-v1',
   (SELECT id FROM core_organizations WHERE organization_code = 'HERA-DNA-SYS'),
-  'HERA.UI.BUTTON.PRIMARY.v1',
+  'HERA.UI.BUTTON.PRIMARY.V1',
   jsonb_build_object(
     'component_type', 'button',
     'design_system', 'HERA-DESIGN-SYSTEM-v1'
@@ -406,7 +406,7 @@ INSERT INTO core_entities (
   'HERA Input Field',
   'HERA-INPUT-FIELD-v1',
   (SELECT id FROM core_organizations WHERE organization_code = 'HERA-DNA-SYS'),
-  'HERA.UI.INPUT.FIELD.v1',
+  'HERA.UI.INPUT.FIELD.V1',
   jsonb_build_object(
     'component_type', 'input',
     'design_system', 'HERA-DESIGN-SYSTEM-v1'

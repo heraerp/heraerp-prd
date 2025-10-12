@@ -1,0 +1,1170 @@
+# HERA Sacred Six Tables - CORRECTED Field Documentation
+# Smart Code: HERA.DNA.SCHEMA.DOCUMENTATION.SACRED.SIX.CORRECTED.V1
+#
+# ✅ UPDATED TO MATCH ACTUAL SUPABASE DATABASE SCHEMA
+# This documentation is now 100% accurate to the real database structure.
+
+schema_version: "2.0.0"
+last_updated: "2024-01-15"
+documentation_type: "Sacred Six Tables Reference - CORRECTED"
+smart_code: "HERA.DNA.SCHEMA.DOCUMENTATION.SACRED.SIX.CORRECTED.V1"
+correction_note: "Updated to match actual Supabase database schema - all field names and types verified"
+
+# ============================================================================
+# TABLE 1: CORE_ORGANIZATIONS - Multi-Tenant Business Isolation
+# ============================================================================
+core_organizations:
+  description: "Multi-tenant business isolation with perfect data security"
+  table_purpose: "Sacred boundary for multi-tenancy - prevents ALL data leakage"
+  actual_schema_verified: true
+
+  fields:
+    id:
+      type: "UUID"
+      purpose: "Primary key and sacred boundary identifier"
+      usage: "Used as organization_id in ALL other tables"
+      required: true
+      default: "uuid_generate_v4()"
+
+    organization_name:
+      type: "VARCHAR"
+      purpose: "Human-readable business name"
+      required: true
+
+    organization_code:
+      type: "VARCHAR"
+      purpose: "Short code for organization identification"
+      required: true
+      unique: true
+
+    organization_type:
+      type: "VARCHAR"
+      purpose: "Type/classification of the organization"
+      required: true
+
+    industry:
+      type: "VARCHAR"
+      purpose: "Industry classification"
+      required: false
+
+    business_size:
+      type: "VARCHAR"
+      purpose: "Size classification of the business"
+      required: false
+
+    tax_id:
+      type: "VARCHAR"
+      purpose: "Tax identification number"
+      required: false
+
+    registration_number:
+      type: "VARCHAR"
+      purpose: "Business registration number"
+      required: false
+
+    email:
+      type: "VARCHAR"
+      purpose: "Primary contact email"
+      required: false
+
+    phone:
+      type: "VARCHAR"
+      purpose: "Primary contact phone"
+      required: false
+
+    website:
+      type: "VARCHAR"
+      purpose: "Organization website URL"
+      required: false
+
+    address:
+      type: "JSONB"
+      purpose: "Physical address details"
+      required: false
+
+    status:
+      type: "VARCHAR"
+      purpose: "Current status of the organization"
+      required: false
+      default: "active"
+      allowed_values: ["active", "inactive", "suspended", "trial"]
+      check_constraint: true
+
+    subscription_tier:
+      type: "VARCHAR"
+      purpose: "Subscription level for feature access"
+      required: false
+      default: "starter"
+
+    settings:
+      type: "JSONB"
+      purpose: "Organization-specific configuration settings"
+      required: false
+      default: "{}"
+
+    ai_insights:
+      type: "JSONB"
+      purpose: "AI-generated insights about the organization"
+      required: false
+      default: "{}"
+
+    ai_classification:
+      type: "VARCHAR"
+      purpose: "AI-determined business classification"
+      required: false
+
+    ai_confidence:
+      type: "NUMERIC"
+      purpose: "Confidence score for AI classifications"
+      required: false
+      default: "0.0000"
+
+    created_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Organization creation timestamp"
+      required: true
+      auto_generated: true
+      default: "now()"
+
+    updated_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Last modification timestamp"
+      required: true
+      auto_updated: true
+      default: "now()"
+
+    created_by:
+      type: "UUID"
+      purpose: "User who created the organization"
+      required: false
+
+    updated_by:
+      type: "UUID"
+      purpose: "User who last updated the organization"
+      required: false
+
+    version:
+      type: "INTEGER"
+      purpose: "Version number for optimistic locking"
+      required: false
+      default: "1"
+
+    client_id:
+      type: "UUID"
+      purpose: "Reference to parent client"
+      required: true
+      foreign_key: "core_clients.id"
+
+    legal_entity_name:
+      type: "VARCHAR"
+      purpose: "Legal name of the entity"
+      required: false
+
+    subsidiary_type:
+      type: "VARCHAR"
+      purpose: "Type of subsidiary relationship"
+      required: false
+
+    country_code:
+      type: "VARCHAR"
+      purpose: "ISO country code"
+      required: false
+
+    region:
+      type: "VARCHAR"
+      purpose: "Geographic region"
+      required: false
+
+    regulatory_requirements:
+      type: "JSONB"
+      purpose: "Applicable regulatory requirements"
+      required: false
+      default: "{}"
+
+    intercompany_code:
+      type: "VARCHAR"
+      purpose: "Code for intercompany transactions"
+      required: false
+
+    consolidation_method:
+      type: "VARCHAR"
+      purpose: "Method for financial consolidation"
+      required: false
+      default: "full"
+
+    functional_currency:
+      type: "VARCHAR"
+      purpose: "Primary operating currency"
+      required: false
+      default: "USD"
+
+    reporting_currency:
+      type: "VARCHAR"
+      purpose: "Currency for external reporting"
+      required: false
+      default: "USD"
+
+# ============================================================================
+# TABLE 2: CORE_ENTITIES - Universal Business Objects
+# ============================================================================
+core_entities:
+  description: "Universal storage for ALL business entities"
+  table_purpose: "Central hub for any business object without schema changes"
+  actual_schema_verified: true
+
+  fields:
+    id:
+      type: "UUID"
+      purpose: "Primary key for the entity"
+      required: true
+      default: "uuid_generate_v4()"
+
+    organization_id:
+      type: "UUID"
+      purpose: "Sacred multi-tenant boundary"
+      required: true
+      foreign_key: "core_organizations.id"
+      guardrail_rule: "NEVER query without organization_id filter"
+
+    entity_type:
+      type: "VARCHAR"
+      purpose: "Business classification of the entity"
+      required: true
+      examples: ["customer", "vendor", "product", "employee", "gl_account"]
+
+    entity_name:
+      type: "VARCHAR"
+      purpose: "Primary display name for the entity"
+      required: true
+
+    entity_code:
+      type: "VARCHAR"
+      purpose: "Short code for system and user reference"
+      required: false
+
+    entity_category:
+      type: "VARCHAR"
+      purpose: "Category classification within entity type"
+      required: false
+
+    entity_subcategory:
+      type: "VARCHAR"
+      purpose: "Subcategory for further classification"
+      required: false
+
+    description:
+      type: "TEXT"
+      purpose: "Detailed description of the entity"
+      required: false
+
+    tags:
+      type: "ARRAY"
+      purpose: "Searchable tags for the entity"
+      required: false
+
+    status:
+      type: "VARCHAR"
+      purpose: "Current status of the entity"
+      required: false
+      default: "active"
+      allowed_values: ["active", "inactive", "archived", "draft"]
+      check_constraint: true
+
+    effective_date:
+      type: "DATE"
+      purpose: "Date when entity becomes effective"
+      required: false
+      default: "CURRENT_DATE"
+
+    expiry_date:
+      type: "DATE"
+      purpose: "Date when entity expires"
+      required: false
+
+    metadata:
+      type: "JSONB"
+      purpose: "System metadata and additional data"
+      required: false
+      default: "{}"
+
+    ai_confidence:
+      type: "NUMERIC"
+      purpose: "AI confidence score for entity classification"
+      required: false
+      default: "0.0000"
+
+    ai_classification:
+      type: "VARCHAR"
+      purpose: "AI-determined classification"
+      required: false
+
+    ai_tags:
+      type: "ARRAY"
+      purpose: "AI-generated tags"
+      required: false
+
+    parent_entity_id:
+      type: "UUID"
+      purpose: "Reference to parent entity for hierarchies"
+      required: false
+      foreign_key: "core_entities.id"
+      note: "Creates entity hierarchies without separate tables"
+
+    hierarchy_level:
+      type: "INTEGER"
+      purpose: "Level in the entity hierarchy"
+      required: false
+      default: "0"
+
+    sort_order:
+      type: "INTEGER"
+      purpose: "Sort order for display"
+      required: false
+      default: "0"
+
+    created_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Entity creation timestamp"
+      required: true
+      auto_generated: true
+      default: "now()"
+
+    updated_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Last modification timestamp"
+      required: true
+      auto_updated: true
+      default: "now()"
+
+    created_by:
+      type: "UUID"
+      purpose: "User who created the entity"
+      required: false
+
+    updated_by:
+      type: "UUID"
+      purpose: "User who last updated the entity"
+      required: false
+
+    version:
+      type: "INTEGER"
+      purpose: "Version number for optimistic locking"
+      required: false
+      default: "1"
+
+# ============================================================================
+# TABLE 3: CORE_DYNAMIC_DATA - Unlimited Custom Fields
+# ============================================================================
+core_dynamic_data:
+  description: "Unlimited custom fields for any entity without schema changes"
+  table_purpose: "Store ALL business data that extends entities"
+  actual_schema_verified: true
+
+  fields:
+    id:
+      type: "UUID"
+      purpose: "Primary key for the dynamic field record"
+      required: true
+      default: "uuid_generate_v4()"
+
+    organization_id:
+      type: "UUID"
+      purpose: "Sacred multi-tenant boundary"
+      required: true
+      foreign_key: "core_organizations.id"
+
+    entity_id:
+      type: "UUID"
+      purpose: "Links field to specific entity"
+      required: true
+      foreign_key: "core_entities.id"
+
+    field_name:
+      type: "VARCHAR"
+      purpose: "Name of the dynamic field"
+      required: true
+      examples: ["price", "description", "credit_limit", "phone"]
+
+    field_label:
+      type: "VARCHAR"
+      purpose: "Human-readable label for the field"
+      required: false
+      usage: "UI display and forms"
+
+    field_description:
+      type: "TEXT"
+      purpose: "Detailed description of the field"
+      required: false
+      usage: "Help text and documentation"
+
+    field_type:
+      type: "VARCHAR"
+      purpose: "Data type for proper storage and validation"
+      required: true
+      allowed_values:
+        ["text", "number", "boolean", "date", "datetime", "json", "file"]
+      check_constraint: true
+
+    field_category:
+      type: "VARCHAR"
+      purpose: "Category for grouping fields"
+      required: false
+      usage: "UI organization and reporting"
+
+    field_value:
+      type: "TEXT"
+      purpose: "Primary text value storage"
+      required: false
+      note: "Legacy field, use typed fields below"
+
+    field_value_number:
+      type: "NUMERIC"
+      purpose: "Storage for numerical values"
+      required: false
+      usage: "Used when field_type = 'number'"
+
+    field_value_boolean:
+      type: "BOOLEAN"
+      purpose: "Storage for true/false values"
+      required: false
+      usage: "Used when field_type = 'boolean'"
+
+    field_value_date:
+      type: "DATE"
+      purpose: "Storage for date values"
+      required: false
+      usage: "Used when field_type = 'date'"
+
+    field_value_datetime:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Storage for datetime values"
+      required: false
+      usage: "Used when field_type = 'datetime'"
+
+    field_value_json:
+      type: "JSONB"
+      purpose: "Storage for complex structured data"
+      required: false
+      usage: "Used when field_type = 'json'"
+
+    display_order:
+      type: "INTEGER"
+      purpose: "Order for field display in UI"
+      required: false
+      default: "0"
+
+    is_required:
+      type: "BOOLEAN"
+      purpose: "Whether field is required"
+      required: false
+      default: "false"
+
+    is_searchable:
+      type: "BOOLEAN"
+      purpose: "Whether field should be searchable"
+      required: false
+      default: "false"
+
+    validation_rules:
+      type: "JSONB"
+      purpose: "Validation rules for the field"
+      required: false
+      default: "{}"
+      examples: ['{"min_length": 5, "max_length": 100}']
+
+    ai_enhanced_value:
+      type: "TEXT"
+      purpose: "AI-enhanced or processed field value"
+      required: false
+      usage: "AI improvements to original data"
+
+    ai_confidence:
+      type: "NUMERIC"
+      purpose: "AI confidence score for enhancements"
+      required: false
+      default: "0.0000"
+
+    validation_status:
+      type: "VARCHAR"
+      purpose: "Status of field validation"
+      required: false
+      default: "pending"
+      allowed_values: ["valid", "invalid", "pending", "ai_enhanced"]
+      check_constraint: true
+
+    created_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Field creation timestamp"
+      required: true
+      auto_generated: true
+      default: "now()"
+
+    updated_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Last field modification timestamp"
+      required: true
+      auto_updated: true
+      default: "now()"
+
+    created_by:
+      type: "UUID"
+      purpose: "User who created the field"
+      required: false
+
+    updated_by:
+      type: "UUID"
+      purpose: "User who last updated the field"
+      required: false
+
+# ============================================================================
+# TABLE 4: CORE_RELATIONSHIPS - Universal Entity Connections
+# ============================================================================
+core_relationships:
+  description: "Universal connections between entities"
+  table_purpose: "Handle ALL entity relationships without separate tables"
+  actual_schema_verified: true
+
+  fields:
+    id:
+      type: "UUID"
+      purpose: "Primary key for the relationship record"
+      required: true
+      default: "uuid_generate_v4()"
+
+    organization_id:
+      type: "UUID"
+      purpose: "Sacred multi-tenant boundary"
+      required: true
+      foreign_key: "core_organizations.id"
+
+    source_entity_id:
+      type: "UUID"
+      purpose: "Source entity in the relationship"
+      required: true
+      foreign_key: "core_entities.id"
+      note: "ACTUAL FIELD NAME - not from_entity_id"
+
+    target_entity_id:
+      type: "UUID"
+      purpose: "Target entity in the relationship"
+      required: true
+      foreign_key: "core_entities.id"
+      note: "ACTUAL FIELD NAME - not to_entity_id"
+
+    relationship_type:
+      type: "VARCHAR"
+      purpose: "Type of relationship"
+      required: true
+      examples: ["HAS_STATUS", "PARENT_OF", "MEMBER_OF", "CUSTOMER_OF"]
+
+    relationship_label:
+      type: "VARCHAR"
+      purpose: "Human-readable relationship label"
+      required: false
+      usage: "UI display"
+
+    relationship_strength:
+      type: "NUMERIC"
+      purpose: "Strength of the relationship (0.0-1.0)"
+      required: false
+      default: "1.0000"
+
+    is_bidirectional:
+      type: "BOOLEAN"
+      purpose: "Whether relationship works both ways"
+      required: false
+      default: "false"
+
+    is_active:
+      type: "BOOLEAN"
+      purpose: "Whether relationship is currently active"
+      required: false
+      default: "true"
+
+    hierarchy_level:
+      type: "INTEGER"
+      purpose: "Level in hierarchy relationships"
+      required: false
+      default: "0"
+
+    workflow_state:
+      type: "VARCHAR"
+      purpose: "Current workflow state"
+      required: false
+      usage: "Workflow management"
+
+    workflow_step:
+      type: "INTEGER"
+      purpose: "Current workflow step number"
+      required: false
+      default: "0"
+
+    relationship_data:
+      type: "JSONB"
+      purpose: "Additional relationship data"
+      required: false
+      default: "{}"
+      note: "ACTUAL FIELD NAME - not relationship_metadata"
+
+    business_rules:
+      type: "JSONB"
+      purpose: "Business rules for the relationship"
+      required: false
+      default: "{}"
+
+    effective_date:
+      type: "DATE"
+      purpose: "When relationship becomes effective"
+      required: false
+      default: "CURRENT_DATE"
+
+    expiry_date:
+      type: "DATE"
+      purpose: "When relationship expires"
+      required: false
+
+    ai_discovered:
+      type: "BOOLEAN"
+      purpose: "Whether relationship was discovered by AI"
+      required: false
+      default: "false"
+
+    ai_confidence:
+      type: "NUMERIC"
+      purpose: "AI confidence score for the relationship"
+      required: false
+      default: "0.0000"
+
+    created_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Relationship creation timestamp"
+      required: true
+      auto_generated: true
+      default: "now()"
+
+    updated_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Last relationship modification timestamp"
+      required: true
+      auto_updated: true
+      default: "now()"
+
+    created_by:
+      type: "UUID"
+      purpose: "User who created the relationship"
+      required: false
+
+    updated_by:
+      type: "UUID"
+      purpose: "User who last updated the relationship"
+      required: false
+
+# ============================================================================
+# TABLE 5: UNIVERSAL_TRANSACTIONS - All Business Activities
+# ============================================================================
+universal_transactions:
+  description: "All business activities stored universally"
+  table_purpose: "Handle ANY business transaction without schema changes"
+  actual_schema_verified: true
+
+  fields:
+    id:
+      type: "UUID"
+      purpose: "Primary key for the transaction"
+      required: true
+      default: "uuid_generate_v4()"
+
+    organization_id:
+      type: "UUID"
+      purpose: "Sacred multi-tenant boundary"
+      required: true
+      foreign_key: "core_organizations.id"
+
+    transaction_type:
+      type: "VARCHAR"
+      purpose: "Business classification of the transaction"
+      required: true
+      examples: ["sale", "purchase", "payment", "receipt", "journal_entry"]
+
+    transaction_number:
+      type: "VARCHAR"
+      purpose: "Human-readable transaction identifier"
+      required: true
+      note: "ACTUAL FIELD NAME - not transaction_code!"
+      important: "Use transaction_number in code, not transaction_code"
+
+    transaction_date:
+      type: "DATE"
+      purpose: "When the business transaction occurred"
+      required: true
+      default: "CURRENT_DATE"
+
+    reference_number:
+      type: "VARCHAR"
+      purpose: "External reference number"
+      required: false
+      usage: "Customer PO, invoice number, etc."
+
+    external_reference:
+      type: "VARCHAR"
+      purpose: "Reference to external systems"
+      required: false
+      usage: "Integration tracking"
+
+    source_entity_id:
+      type: "UUID"
+      purpose: "Source entity for the transaction"
+      required: false
+      foreign_key: "core_entities.id"
+      note: "ACTUAL FIELD NAME - not from_entity_id"
+
+    target_entity_id:
+      type: "UUID"
+      purpose: "Target entity for the transaction"
+      required: false
+      foreign_key: "core_entities.id"
+      note: "ACTUAL FIELD NAME - not to_entity_id"
+
+    total_amount:
+      type: "NUMERIC"
+      purpose: "Total gross amount of the transaction"
+      required: false
+      default: "0.0000"
+
+    tax_amount:
+      type: "NUMERIC"
+      purpose: "Total tax amount"
+      required: false
+      default: "0.0000"
+
+    discount_amount:
+      type: "NUMERIC"
+      purpose: "Total discount amount"
+      required: false
+      default: "0.0000"
+
+    net_amount:
+      type: "NUMERIC"
+      purpose: "Net amount after tax and discounts"
+      required: false
+      default: "((total_amount - discount_amount) + tax_amount)"
+      calculated: true
+
+    currency:
+      type: "VARCHAR"
+      purpose: "Transaction currency code"
+      required: false
+      default: "USD"
+      note: "ACTUAL FIELD NAME - not currency_code"
+
+    status:
+      type: "VARCHAR"
+      purpose: "Current transaction status"
+      required: false
+      default: "draft"
+      allowed_values:
+        [
+          "draft",
+          "pending",
+          "approved",
+          "processing",
+          "completed",
+          "cancelled",
+          "reversed",
+        ]
+      check_constraint: true
+
+    workflow_state:
+      type: "VARCHAR"
+      purpose: "Current workflow state"
+      required: false
+      usage: "Custom workflow management"
+
+    priority:
+      type: "VARCHAR"
+      purpose: "Transaction priority level"
+      required: false
+      default: "normal"
+      allowed_values: ["low", "normal", "high", "urgent"]
+      check_constraint: true
+
+    department:
+      type: "VARCHAR"
+      purpose: "Department that initiated transaction"
+      required: false
+      usage: "Cost center reporting"
+
+    project_code:
+      type: "VARCHAR"
+      purpose: "Project code for project accounting"
+      required: false
+      usage: "Project cost tracking"
+
+    cost_center:
+      type: "VARCHAR"
+      purpose: "Cost center code"
+      required: false
+      usage: "Management accounting"
+
+    due_date:
+      type: "DATE"
+      purpose: "When transaction is due"
+      required: false
+      usage: "Payment terms and scheduling"
+
+    completed_date:
+      type: "DATE"
+      purpose: "When transaction was completed"
+      required: false
+      usage: "Performance tracking"
+
+    description:
+      type: "TEXT"
+      purpose: "Detailed transaction description"
+      required: false
+
+    notes:
+      type: "TEXT"
+      purpose: "Additional notes and comments"
+      required: false
+
+    metadata:
+      type: "JSONB"
+      purpose: "Transaction-specific metadata"
+      required: false
+      default: "{}"
+
+    attachments:
+      type: "JSONB"
+      purpose: "File attachments and documents"
+      required: false
+      default: "[]"
+
+    ai_insights:
+      type: "JSONB"
+      purpose: "AI-generated insights"
+      required: false
+      default: "{}"
+
+    ai_risk_score:
+      type: "NUMERIC"
+      purpose: "AI-calculated risk score"
+      required: false
+      default: "0.0000"
+
+    ai_anomaly_score:
+      type: "NUMERIC"
+      purpose: "AI anomaly detection score"
+      required: false
+      default: "0.0000"
+
+    created_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Transaction creation timestamp"
+      required: true
+      auto_generated: true
+      default: "now()"
+
+    updated_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Last transaction modification timestamp"
+      required: true
+      auto_updated: true
+      default: "now()"
+
+    created_by:
+      type: "UUID"
+      purpose: "User who created the transaction"
+      required: false
+
+    updated_by:
+      type: "UUID"
+      purpose: "User who last updated the transaction"
+      required: false
+
+    version:
+      type: "INTEGER"
+      purpose: "Version number for optimistic locking"
+      required: false
+      default: "1"
+
+    is_intercompany:
+      type: "BOOLEAN"
+      purpose: "Whether transaction is intercompany"
+      required: false
+      default: "false"
+
+    intercompany_source_org:
+      type: "UUID"
+      purpose: "Source organization for intercompany"
+      required: false
+      foreign_key: "core_organizations.id"
+
+    intercompany_target_org:
+      type: "UUID"
+      purpose: "Target organization for intercompany"
+      required: false
+      foreign_key: "core_organizations.id"
+
+    intercompany_reference:
+      type: "VARCHAR"
+      purpose: "Intercompany reference number"
+      required: false
+
+    elimination_required:
+      type: "BOOLEAN"
+      purpose: "Whether elimination is required for consolidation"
+      required: false
+      default: "false"
+
+# ============================================================================
+# TABLE 6: UNIVERSAL_TRANSACTION_LINES - Transaction Details
+# ============================================================================
+universal_transaction_lines:
+  description: "Detailed line items for any transaction"
+  table_purpose: "Store detailed breakdown of transactions"
+  actual_schema_verified: true
+
+  fields:
+    id:
+      type: "UUID"
+      purpose: "Primary key for the transaction line"
+      required: true
+      default: "uuid_generate_v4()"
+
+    transaction_id:
+      type: "UUID"
+      purpose: "Links line to parent transaction"
+      required: true
+      foreign_key: "universal_transactions.id"
+
+    organization_id:
+      type: "UUID"
+      purpose: "Sacred multi-tenant boundary"
+      required: true
+      foreign_key: "core_organizations.id"
+
+    entity_id:
+      type: "UUID"
+      purpose: "Entity this line refers to"
+      required: false
+      foreign_key: "core_entities.id"
+      note: "ACTUAL FIELD NAME - not line_entity_id!"
+
+    line_description:
+      type: "TEXT"
+      purpose: "Description of the line item"
+      required: true
+      usage: "What this line represents"
+
+    line_order:
+      type: "INTEGER"
+      purpose: "Order of line in transaction"
+      required: true
+      default: "1"
+      note: "ACTUAL FIELD NAME - not line_number!"
+
+    quantity:
+      type: "NUMERIC"
+      purpose: "Quantity of items/services"
+      required: false
+      default: "1.000000"
+
+    unit_of_measure:
+      type: "VARCHAR"
+      purpose: "Unit of measure for quantity"
+      required: false
+      examples: ["each", "hours", "kg", "meters"]
+
+    unit_price:
+      type: "NUMERIC"
+      purpose: "Price per unit"
+      required: false
+      default: "0.0000"
+
+    line_amount:
+      type: "NUMERIC"
+      purpose: "Gross line amount (quantity × unit_price)"
+      required: false
+      default: "0.0000"
+
+    discount_percentage:
+      type: "NUMERIC"
+      purpose: "Discount percentage for line"
+      required: false
+      default: "0.0000"
+
+    discount_amount:
+      type: "NUMERIC"
+      purpose: "Discount amount for line"
+      required: false
+      default: "0.0000"
+
+    tax_code:
+      type: "VARCHAR"
+      purpose: "Tax code for tax calculation"
+      required: false
+      usage: "VAT, sales tax classification"
+
+    tax_percentage:
+      type: "NUMERIC"
+      purpose: "Tax percentage for line"
+      required: false
+      default: "0.0000"
+
+    tax_amount:
+      type: "NUMERIC"
+      purpose: "Tax amount for line"
+      required: false
+      default: "0.0000"
+
+    net_line_amount:
+      type: "NUMERIC"
+      purpose: "Net amount after discounts and tax"
+      required: false
+      default: "((line_amount - discount_amount) + tax_amount)"
+      calculated: true
+
+    gl_account_code:
+      type: "VARCHAR"
+      purpose: "GL account for posting"
+      required: false
+      usage: "Financial accounting integration"
+
+    cost_center:
+      type: "VARCHAR"
+      purpose: "Cost center for line"
+      required: false
+      usage: "Management accounting"
+
+    department:
+      type: "VARCHAR"
+      purpose: "Department for line"
+      required: false
+
+    project_code:
+      type: "VARCHAR"
+      purpose: "Project code for line"
+      required: false
+      usage: "Project accounting"
+
+    delivery_date:
+      type: "DATE"
+      purpose: "Expected delivery date"
+      required: false
+
+    service_period_start:
+      type: "DATE"
+      purpose: "Service period start date"
+      required: false
+
+    service_period_end:
+      type: "DATE"
+      purpose: "Service period end date"
+      required: false
+
+    notes:
+      type: "TEXT"
+      purpose: "Line-specific notes"
+      required: false
+
+    metadata:
+      type: "JSONB"
+      purpose: "Line-specific metadata"
+      required: false
+      default: "{}"
+
+    ai_gl_suggestion:
+      type: "VARCHAR"
+      purpose: "AI-suggested GL account"
+      required: false
+      usage: "AI-powered accounting automation"
+
+    ai_confidence:
+      type: "NUMERIC"
+      purpose: "AI confidence for suggestions"
+      required: false
+      default: "0.0000"
+
+    ai_cost_prediction:
+      type: "NUMERIC"
+      purpose: "AI-predicted cost for line"
+      required: false
+
+    ai_margin_analysis:
+      type: "JSONB"
+      purpose: "AI margin analysis data"
+      required: false
+      default: "{}"
+
+    created_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Line creation timestamp"
+      required: true
+      auto_generated: true
+      default: "now()"
+
+    updated_at:
+      type: "TIMESTAMP WITH TIME ZONE"
+      purpose: "Last line modification timestamp"
+      required: true
+      auto_updated: true
+      default: "now()"
+
+    created_by:
+      type: "UUID"
+      purpose: "User who created the line"
+      required: false
+
+    updated_by:
+      type: "UUID"
+      purpose: "User who last updated the line"
+      required: false
+
+# ============================================================================
+# CRITICAL FIELD NAME CORRECTIONS
+# ============================================================================
+field_name_corrections:
+  description: "CRITICAL corrections to prevent coding errors"
+
+  universal_transactions:
+    CORRECT: "transaction_number"
+    WRONG: "transaction_code"
+    note: "The actual database field is transaction_number, NOT transaction_code"
+
+  universal_transaction_lines:
+    CORRECT:
+      - "entity_id (not line_entity_id)"
+      - "line_order (not line_number)"
+    WRONG:
+      - "line_entity_id"
+      - "line_number"
+    note: "Field names differ from some documentation"
+
+  core_relationships:
+    CORRECT:
+      - "source_entity_id"
+      - "target_entity_id"
+      - "relationship_data"
+    WRONG:
+      - "from_entity_id"
+      - "to_entity_id"
+      - "relationship_metadata"
+    note: "Relationship table uses source/target, not from/to"
+
+# ============================================================================
+# GUARDRAIL ENFORCEMENT RULES (UPDATED)
+# ============================================================================
+guardrail_rules:
+  critical_corrections:
+    - "ALWAYS use transaction_number, NEVER transaction_code"
+    - "ALWAYS use source_entity_id/target_entity_id in relationships"
+    - "ALWAYS use entity_id (not line_entity_id) in transaction lines"
+    - "ALWAYS use line_order (not line_number) in transaction lines"
+    - "Status fields DO exist in entities and transactions - they are allowed"
+    - "Parent entity relationships CAN use parent_entity_id in core_entities"
+
+  schema_verification:
+    note: "This YAML is now verified against actual Supabase database schema"
+    last_verified: "2024-01-15"
+    verification_method: "Direct schema.sql analysis"

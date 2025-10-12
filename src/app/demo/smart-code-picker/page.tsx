@@ -568,13 +568,13 @@ const MyForm = () => {
                       <>
                         <div>
                           <code className="text-xs">
-                            HERA.{industry.id.toUpperCase()}.SALE.TXN.ORDER.v1
+                            HERA.{industry.id.toUpperCase()}.SALE.TXN.ORDER.V1
                           </code>
                           <p className="text-xs text-muted-foreground">Sales order transaction</p>
                         </div>
                         <div>
                           <code className="text-xs">
-                            HERA.{industry.id.toUpperCase()}.INV.ENT.PROD.v1
+                            HERA.{industry.id.toUpperCase()}.INV.ENT.PROD.V1
                           </code>
                           <p className="text-xs text-muted-foreground">Product entity</p>
                         </div>

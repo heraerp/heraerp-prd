@@ -14,7 +14,7 @@ INSERT INTO core_relationships (
     :schema_id::uuid,        -- posting_schema entity
     :tax_profile_id::uuid,   -- tax_profile entity
     'uses_tax_profile',
-    'HERA.CONFIG.BINDING.TAX.v1',
+    'HERA.CONFIG.BINDING.TAX.V1',
     :org::uuid,
     jsonb_build_object(
         'binding_type', 'posting_schema_tax',

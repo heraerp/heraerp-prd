@@ -26,7 +26,7 @@ SELECT
   'client',
   client_name,
   client_code,
-  COALESCE('HERA.CRM.CLIENT.ENT.' || UPPER(client_type) || '.v1', 'HERA.CRM.CLIENT.ENT.GENERAL.v1'),
+  COALESCE('HERA.CRM.CLIENT.ENT.' || UPPER(client_type) || '.V1', 'HERA.CRM.CLIENT.ENT.GENERAL.V1'),
   status,
   jsonb_build_object(
     'ledger_type', 'client_consolidation',
@@ -84,7 +84,7 @@ SELECT
   parent_client_id,
   id,
   'parent_of',
-  'HERA.CRM.REL.CLIENT.PARENT.v1',
+  'HERA.CRM.REL.CLIENT.PARENT.V1',
   jsonb_build_object('hierarchy_type', 'corporate_structure'),
   true,
   now()
@@ -121,8 +121,8 @@ SELECT
   account_name,
   account_code,
   COALESCE(
-    'HERA.ACCOUNTING.COA.ACCOUNT.' || UPPER(account_type) || '.v1',
-    'HERA.ACCOUNTING.COA.ACCOUNT.GL.UNCAT.v1'
+    'HERA.ACCOUNTING.COA.ACCOUNT.' || UPPER(account_type) || '.V1',
+    'HERA.ACCOUNTING.COA.ACCOUNT.GL.UNCAT.V1'
   ),
   COALESCE(status, 'active'),
   jsonb_build_object(
@@ -174,7 +174,7 @@ SELECT
   p.id, -- parent account entity
   c.id, -- child account entity
   'parent_account',
-  'HERA.ACCOUNTING.REL.ACCOUNT.PARENT.v1',
+  'HERA.ACCOUNTING.REL.ACCOUNT.PARENT.V1',
   jsonb_build_object('hierarchy_type', 'account_structure'),
   true,
   now()

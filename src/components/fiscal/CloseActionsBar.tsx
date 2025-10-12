@@ -1,6 +1,6 @@
 // ================================================================================
 // CLOSE ACTIONS BAR - FISCAL COMPONENT
-// Smart Code: HERA.UI.FISCAL.CLOSE_ACTIONS_BAR.v1
+// Smart Code: HERA.UI.FISCAL.CLOSE_ACTIONS_BAR.V1
 // Production-ready fiscal close actions with Sacred Six storage
 // ================================================================================
 

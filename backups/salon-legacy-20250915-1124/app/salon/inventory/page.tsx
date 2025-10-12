@@ -181,7 +181,7 @@ export default function InventoryManagementPage() {
         entity_type: 'inventory_item',
         entity_name: itemForm.name,
         entity_code: itemForm.sku || `SKU-${Date.now()}`,
-        smart_code: 'HERA.SALON.INVENTORY.ITEM.v1',
+        smart_code: 'HERA.SALON.INVENTORY.ITEM.V1',
         metadata: { category: itemForm.category }
       });
 
@@ -243,7 +243,7 @@ export default function InventoryManagementPage() {
       // Create stock movement transaction
       const movement = await universalApi.createTransaction({
         transaction_type: 'stock_movement',
-        smart_code: `HERA.SALON.INVENTORY.${movementForm.movement_type.toUpperCase()}.v1`,
+        smart_code: `HERA.SALON.INVENTORY.${movementForm.movement_type.toUpperCase()}.V1`,
         total_amount: totalAmount,
         from_entity_id: movementForm.item_id,
         metadata: {

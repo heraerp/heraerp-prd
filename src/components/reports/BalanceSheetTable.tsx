@@ -1,6 +1,6 @@
 // ================================================================================
 // BALANCE SHEET TABLE
-// Smart Code: HERA.UI.REPORTS.BALANCE_SHEET_TABLE.v1
+// Smart Code: HERA.UI.REPORTS.BALANCE_SHEET_TABLE.V1
 // Hierarchical balance sheet with balance equation validation
 // ================================================================================
 

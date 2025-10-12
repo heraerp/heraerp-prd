@@ -74,7 +74,7 @@ const handleSubmit = async (e: React.FormEvent) => { e.preventDefault() setError
   { field_name: 'reorder_point', field_value_number: formData.reorder_point },
   { field_name: 'description', field_value_text: formData.description }
 ] // Set each dynamic field for (const field of dynamicFields) {
-  await universalApi.setDynamicField( product.id, field.field_name, field.field_value_text || field.field_value_number, `HERA.FURNITURE.PRODUCT.DYN.${field.field_name.toUpperCase()}.v1`   ) // Success - close modal and refresh onSuccess?.() onClose()   } catch (err) {
+  await universalApi.setDynamicField( product.id, field.field_name, field.field_value_text || field.field_value_number, `HERA.FURNITURE.PRODUCT.DYN.${field.field_name.toUpperCase()}.V1`   ) // Success - close modal and refresh onSuccess?.() onClose()   } catch (err) {
   console.error('Error updating product:', err) setError('Failed to update product. Please try again.')   } finally {
     setLoading(false)
   }

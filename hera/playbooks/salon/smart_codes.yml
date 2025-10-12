@@ -11,3 +11,14 @@ allocations:
   - { code: HERA.SALON.POS.TXN.SALE.INCL_TIP.V1,        status: active,   owner: salon@yourco }
   - { code: HERA.SALON.POS.TXN.SALE.EXCL_TIP.V1,        status: active,   owner: salon@yourco }
   - { code: HERA.SALON.POS.PAYMENT.RECEIVED.V1,         status: active,   owner: salon@yourco }
+  
+  # Finance DNA v2 Integration Smart Codes
+  - { code: HERA.SALON.FINANCE.DNA.V2.VALIDATION.V1,    status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.FINANCE.DNA.V2.AUTO_JOURNAL.V1,  status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.FINANCE.DNA.V2.TRIAL_BALANCE.V1, status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.FINANCE.DNA.V2.PROFIT_LOSS.V1,   status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.FINANCE.DNA.V2.COMMISSION_CALC.V1, status: active, owner: salon@yourco }
+  - { code: HERA.SALON.FINANCE.TXN.REVENUE.SERVICE.V1,   status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.FINANCE.TXN.EXPENSE.SALARY.V1,    status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.FINANCE.TXN.POS.DAILY_SUMMARY.V1, status: active,  owner: salon@yourco }
+  - { code: HERA.SALON.FINANCE.TXN.BANK.FEE.V1,          status: active,   owner: salon@yourco }

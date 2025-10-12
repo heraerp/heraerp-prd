@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA UNIVERSAL PAGE LAYOUT
-// Smart Code: HERA.UI.COMPONENTS.PAGE_LAYOUT.v1
+// Smart Code: HERA.UI.COMPONENTS.PAGE_LAYOUT.V1
 // Consistent page layout with luxury theme
 // ================================================================================
 

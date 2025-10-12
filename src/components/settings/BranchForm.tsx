@@ -1,6 +1,6 @@
 // ================================================================================
 // BRANCH FORM - SETTINGS COMPONENT
-// Smart Code: HERA.UI.SETTINGS.BRANCH_FORM.v1
+// Smart Code: HERA.UI.SETTINGS.BRANCH_FORM.V1
 // Production-ready branch creation/editing form with validation
 // ================================================================================
 

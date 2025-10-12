@@ -12,7 +12,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.HEALTHCARE.APPOINTMENTS.PROGRESSIVE.v1',
+  'HERA.HEALTHCARE.APPOINTMENTS.PROGRESSIVE.V1',
   'Healthcare Practice appointments operations with progressive authentication',
   'healthcare',
   'appointments',
@@ -29,7 +29,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.HEALTHCARE.PATIENTS.PROGRESSIVE.v1',
+  'HERA.HEALTHCARE.PATIENTS.PROGRESSIVE.V1',
   'Healthcare Practice patients operations with progressive authentication',
   'healthcare',
   'patients',
@@ -46,7 +46,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.HEALTHCARE.BILLING.PROGRESSIVE.v1',
+  'HERA.HEALTHCARE.BILLING.PROGRESSIVE.V1',
   'Healthcare Practice billing operations with progressive authentication',
   'healthcare',
   'billing',
@@ -63,7 +63,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.HEALTHCARE.PRESCRIPTIONS.PROGRESSIVE.v1',
+  'HERA.HEALTHCARE.PRESCRIPTIONS.PROGRESSIVE.V1',
   'Healthcare Practice prescriptions operations with progressive authentication',
   'healthcare',
   'prescriptions',
@@ -80,7 +80,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.HEALTHCARE.REPORTS.PROGRESSIVE.v1',
+  'HERA.HEALTHCARE.REPORTS.PROGRESSIVE.V1',
   'Healthcare Practice reports operations with progressive authentication',
   'healthcare',
   'reports',

@@ -1,6 +1,6 @@
 /**
  * 🔐 HERA Transaction Enforcement Database Triggers
- * Smart Code: HERA.DB.TRIGGERS.ENFORCEMENT.v1
+ * Smart Code: HERA.DB.TRIGGERS.ENFORCEMENT.V1
  * 
  * Database-level enforcement of COA and Document Number requirements
  * SACRED: These triggers ensure data integrity at the lowest level
@@ -59,7 +59,7 @@ BEGIN
                 'auto_generated_reference', NEW.reference_number,
                 'reason', 'Missing reference number',
                 'timestamp', CURRENT_TIMESTAMP,
-                'smart_code', 'HERA.AUDIT.AUTO.REFERENCE.v1'
+                'smart_code', 'HERA.AUDIT.AUTO.REFERENCE.V1'
             )
         );
     END IF;
@@ -169,7 +169,7 @@ BEGIN
                  WHEN NEW.gl_account_code ~ '^4' THEN 'REVENUE'
                  WHEN NEW.gl_account_code ~ '^5' THEN 'EXPENSE'
                  ELSE 'UNKNOWN'
-            END || '.' || NEW.gl_account_code || '.v1'
+            END || '.' || NEW.gl_account_code || '.V1'
         );
     END IF;
 
@@ -208,7 +208,7 @@ BEGIN
                      WHEN NEW.entity_code ~ '^4' THEN 'REVENUE'
                      WHEN NEW.entity_code ~ '^5' THEN 'EXPENSE'
                      ELSE 'UNKNOWN'
-                END || '.' || NEW.entity_code || '.v1'
+                END || '.' || NEW.entity_code || '.V1'
             );
         END IF;
     END IF;
@@ -264,7 +264,7 @@ BEGIN
             'details', p_details,
             'severity', p_severity,
             'timestamp', CURRENT_TIMESTAMP,
-            'smart_code', 'HERA.ENFORCEMENT.LOG.' || UPPER(p_severity) || '.v1'
+            'smart_code', 'HERA.ENFORCEMENT.LOG.' || UPPER(p_severity) || '.V1'
         )
     );
 END;
@@ -314,7 +314,7 @@ BEGIN
         'enforcement_ready', coa_count > 0 AND array_length(missing_accounts, 1) IS NULL,
         'missing_required_accounts', missing_accounts,
         'last_checked', CURRENT_TIMESTAMP,
-        'smart_code', 'HERA.ENFORCEMENT.STATUS.CHECK.v1'
+        'smart_code', 'HERA.ENFORCEMENT.STATUS.CHECK.V1'
     );
     
     RETURN result;

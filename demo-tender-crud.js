@@ -32,11 +32,11 @@ async function createMultipleTenders() {
     {
       id: crypto.randomUUID(),
       organization_id: organizationId,
-      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.v1',
+      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.V1',
       entity_code: 'KFD/2025/TEAK/001',
       entity_name: 'Premium Teak Wood Supply - Nilambur Forest',
       entity_description: 'Supply of Grade A teak wood logs from Nilambur forest division. Minimum girth 150cm, length 3-4 meters.',
-      smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.v1',
+      smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.V1',
       status: 'active',
       metadata: {
         department: 'Kerala Forest Department',
@@ -71,11 +71,11 @@ async function createMultipleTenders() {
     {
       id: crypto.randomUUID(),
       organization_id: organizationId,
-      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.v1',
+      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.V1',
       entity_code: 'KFD/2025/ROSE/002',
       entity_name: 'Rosewood Logs Auction - Wayanad Division',
       entity_description: 'Auction of seized rosewood logs. Total 25 logs, various sizes. Court permission obtained.',
-      smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.v1',
+      smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.V1',
       status: 'active',
       metadata: {
         department: 'Kerala Forest Department',
@@ -110,11 +110,11 @@ async function createMultipleTenders() {
     {
       id: crypto.randomUUID(),
       organization_id: organizationId,
-      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.v1',
+      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.V1',
       entity_code: 'KSBC/2025/BAMBOO/003',
       entity_name: 'Bamboo Supply Contract - Annual Rate Contract',
       entity_description: 'Annual rate contract for bamboo supply. Multiple species, delivery as per requirement.',
-      smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.v1',
+      smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.V1',
       status: 'active',
       metadata: {
         department: 'Kerala State Bamboo Corporation',
@@ -195,7 +195,7 @@ async function createTransactions(tenderIds) {
         transaction_code: `BID/${tender.entity_code}/${Date.now()}-${i}`,
         transaction_date: new Date().toISOString(),
         target_entity_id: tender.id,
-        smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.v1',
+        smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1',
         smart_code_status: 'ACTIVE',
         transaction_status: i === 0 ? 'submitted' : 'draft',
         total_amount: bidAmount,
@@ -267,7 +267,7 @@ async function readAndDisplayData() {
     .from('core_entities')
     .select('*')
     .eq('organization_id', organizationId)
-    .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.v1')
+    .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.V1')
     .order('created_at', { ascending: false })
   
   if (tenderError) {
@@ -425,7 +425,7 @@ async function performAnalytics() {
     .from('core_entities')
     .select('*')
     .eq('organization_id', organizationId)
-    .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.v1')
+    .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.V1')
   
   if (tenders && tenders.length > 0) {
     const totalValue = tenders.reduce((sum, t) => sum + (t.metadata.estimated_value || 0), 0)

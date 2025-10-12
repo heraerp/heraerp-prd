@@ -35,7 +35,7 @@ VALUES
     'CUST-001',
     'Seed customer record for POS flows',
     NULL,
-    'HERA.RETAIL.CRM.CUSTOMER.CONSUMER.v1',
+    'HERA.RETAIL.CRM.CUSTOMER.CONSUMER.V1',
     'active',
     '{}'::jsonb,
     NOW(),

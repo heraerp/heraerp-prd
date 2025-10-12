@@ -20,7 +20,7 @@ WHERE smart_code LIKE 'HERA.P2P.PO.%';
 -- Prevent duplicate invoices per supplier
 CREATE UNIQUE INDEX idx_unique_supplier_invoice
 ON universal_transactions (organization_id, from_entity_id, metadata->>'invoice_number')
-WHERE smart_code = 'HERA.P2P.INVOICE.POST.v1';
+WHERE smart_code = 'HERA.P2P.INVOICE.POST.V1';
 
 -- =============================================
 -- PO APPROVAL WORKFLOW
@@ -37,7 +37,7 @@ DECLARE
   v_approval_level TEXT;
 BEGIN
   -- Only process PO creation
-  IF NEW.smart_code != 'HERA.P2P.PO.CREATE.v1' THEN
+  IF NEW.smart_code != 'HERA.P2P.PO.CREATE.V1' THEN
     RETURN NEW;
   END IF;
 
@@ -85,7 +85,7 @@ DROP TRIGGER IF EXISTS utx__po_approval_check ON universal_transactions;
 CREATE TRIGGER utx__po_approval_check
 BEFORE INSERT OR UPDATE ON universal_transactions
 FOR EACH ROW
-WHEN (NEW.smart_code = 'HERA.P2P.PO.CREATE.v1')
+WHEN (NEW.smart_code = 'HERA.P2P.PO.CREATE.V1')
 EXECUTE FUNCTION hera_p2p__check_po_approval();
 
 -- =============================================
@@ -105,7 +105,7 @@ DECLARE
   v_tolerance_pct NUMERIC;
 BEGIN
   -- Only process goods receipts
-  IF NEW.smart_code NOT IN ('HERA.P2P.GRN.POST.v1', 'HERA.P2P.GRN.PARTIAL.v1') THEN
+  IF NEW.smart_code NOT IN ('HERA.P2P.GRN.POST.V1', 'HERA.P2P.GRN.PARTIAL.V1') THEN
     RETURN NEW;
   END IF;
 
@@ -142,7 +142,7 @@ BEGIN
   INTO v_received_qty
   FROM universal_transactions
   WHERE organization_id = NEW.organization_id
-    AND smart_code IN ('HERA.P2P.GRN.POST.v1', 'HERA.P2P.GRN.PARTIAL.v1')
+    AND smart_code IN ('HERA.P2P.GRN.POST.V1', 'HERA.P2P.GRN.PARTIAL.V1')
     AND metadata->>'po_id' = v_po_id::text
     AND id != NEW.id;
 
@@ -175,7 +175,7 @@ DROP TRIGGER IF EXISTS utx__grn_validation ON universal_transactions;
 CREATE TRIGGER utx__grn_validation
 BEFORE INSERT ON universal_transactions
 FOR EACH ROW
-WHEN (NEW.smart_code IN ('HERA.P2P.GRN.POST.v1', 'HERA.P2P.GRN.PARTIAL.v1'))
+WHEN (NEW.smart_code IN ('HERA.P2P.GRN.POST.V1', 'HERA.P2P.GRN.PARTIAL.V1'))
 EXECUTE FUNCTION hera_p2p__validate_goods_receipt();
 
 -- =============================================
@@ -199,7 +199,7 @@ DECLARE
   v_has_variance BOOLEAN := false;
 BEGIN
   -- Only process invoice matching
-  IF NEW.smart_code NOT IN ('HERA.P2P.INVOICE.POST.v1', 'HERA.P2P.INVOICE.MATCH.v1') THEN
+  IF NEW.smart_code NOT IN ('HERA.P2P.INVOICE.POST.V1', 'HERA.P2P.INVOICE.MATCH.V1') THEN
     RETURN NEW;
   END IF;
 
@@ -258,7 +258,7 @@ BEGIN
     INTO v_grn_data
     FROM universal_transactions
     WHERE organization_id = NEW.organization_id
-      AND smart_code IN ('HERA.P2P.GRN.POST.v1', 'HERA.P2P.GRN.PARTIAL.v1')
+      AND smart_code IN ('HERA.P2P.GRN.POST.V1', 'HERA.P2P.GRN.PARTIAL.V1')
       AND metadata->>'po_id' = v_po_id::text;
 
     IF v_grn_data.total_received IS NULL THEN
@@ -311,7 +311,7 @@ DROP TRIGGER IF EXISTS utx__invoice_match ON universal_transactions;
 CREATE TRIGGER utx__invoice_match
 BEFORE INSERT OR UPDATE ON universal_transactions
 FOR EACH ROW
-WHEN (NEW.smart_code IN ('HERA.P2P.INVOICE.POST.v1', 'HERA.P2P.INVOICE.MATCH.v1'))
+WHEN (NEW.smart_code IN ('HERA.P2P.INVOICE.POST.V1', 'HERA.P2P.INVOICE.MATCH.V1'))
 EXECUTE FUNCTION hera_p2p__match_invoice();
 
 -- =============================================
@@ -330,7 +330,7 @@ DECLARE
   v_supplier_id UUID;
 BEGIN
   -- Only process invoice posting
-  IF NEW.smart_code != 'HERA.P2P.INVOICE.POST.v1' THEN
+  IF NEW.smart_code != 'HERA.P2P.INVOICE.POST.V1' THEN
     RETURN NEW;
   END IF;
 
@@ -346,7 +346,7 @@ BEGIN
   INTO v_duplicate_count
   FROM universal_transactions
   WHERE organization_id = NEW.organization_id
-    AND smart_code = 'HERA.P2P.INVOICE.POST.v1'
+    AND smart_code = 'HERA.P2P.INVOICE.POST.V1'
     AND from_entity_id = v_supplier_id
     AND metadata->>'invoice_number' = v_invoice_number
     AND id != NEW.id;
@@ -382,7 +382,7 @@ BEGIN
         'existing_count', v_duplicate_count,
         'ai_confidence', 0.95
       ),
-      'HERA.P2P.EXCEPTION.DUPLICATE.v1'
+      'HERA.P2P.EXCEPTION.DUPLICATE.V1'
     );
   END IF;
 
@@ -395,7 +395,7 @@ DROP TRIGGER IF EXISTS utx__duplicate_invoice_check ON universal_transactions;
 CREATE TRIGGER utx__duplicate_invoice_check
 BEFORE INSERT ON universal_transactions
 FOR EACH ROW
-WHEN (NEW.smart_code = 'HERA.P2P.INVOICE.POST.v1')
+WHEN (NEW.smart_code = 'HERA.P2P.INVOICE.POST.V1')
 EXECUTE FUNCTION hera_p2p__detect_duplicate_invoice();
 
 -- =============================================
@@ -413,7 +413,7 @@ DECLARE
   v_invoice_data RECORD;
 BEGIN
   -- Only process payment execution
-  IF NEW.smart_code != 'HERA.P2P.PAYMENT.EXECUTE.v1' THEN
+  IF NEW.smart_code != 'HERA.P2P.PAYMENT.EXECUTE.V1' THEN
     RETURN NEW;
   END IF;
 
@@ -430,7 +430,7 @@ BEGIN
   FROM universal_transactions
   WHERE id = v_invoice_id
     AND organization_id = NEW.organization_id
-    AND smart_code = 'HERA.P2P.INVOICE.POST.v1';
+    AND smart_code = 'HERA.P2P.INVOICE.POST.V1';
 
   IF NOT FOUND THEN
     RAISE EXCEPTION 'Referenced invoice not found: %', v_invoice_id
@@ -456,7 +456,7 @@ BEGIN
     SELECT 1
     FROM universal_transactions
     WHERE organization_id = NEW.organization_id
-      AND smart_code = 'HERA.P2P.PAYMENT.EXECUTE.v1'
+      AND smart_code = 'HERA.P2P.PAYMENT.EXECUTE.V1'
       AND metadata->>'invoice_id' = v_invoice_id::text
       AND metadata->>'payment_status' = 'completed'
       AND id != NEW.id
@@ -497,7 +497,7 @@ DROP TRIGGER IF EXISTS utx__payment_validation ON universal_transactions;
 CREATE TRIGGER utx__payment_validation
 BEFORE INSERT ON universal_transactions
 FOR EACH ROW
-WHEN (NEW.smart_code = 'HERA.P2P.PAYMENT.EXECUTE.v1')
+WHEN (NEW.smart_code = 'HERA.P2P.PAYMENT.EXECUTE.V1')
 EXECUTE FUNCTION hera_p2p__validate_payment();
 
 -- =============================================
@@ -536,7 +536,7 @@ BEGIN
   INTO v_received_quantity
   FROM universal_transactions
   WHERE organization_id = NEW.organization_id
-    AND smart_code IN ('HERA.P2P.GRN.POST.v1', 'HERA.P2P.GRN.PARTIAL.v1')
+    AND smart_code IN ('HERA.P2P.GRN.POST.V1', 'HERA.P2P.GRN.PARTIAL.V1')
     AND metadata->>'po_id' = v_po_id::text;
 
   -- Calculate total invoiced
@@ -544,7 +544,7 @@ BEGIN
   INTO v_invoiced_amount
   FROM universal_transactions
   WHERE organization_id = NEW.organization_id
-    AND smart_code = 'HERA.P2P.INVOICE.POST.v1'
+    AND smart_code = 'HERA.P2P.INVOICE.POST.V1'
     AND metadata->>'po_id' = v_po_id::text;
 
   -- Determine PO status
@@ -578,7 +578,7 @@ DROP TRIGGER IF EXISTS utx__update_po_status ON universal_transactions;
 CREATE TRIGGER utx__update_po_status
 AFTER INSERT OR UPDATE ON universal_transactions
 FOR EACH ROW
-WHEN (NEW.smart_code IN ('HERA.P2P.GRN.POST.v1', 'HERA.P2P.GRN.PARTIAL.v1', 'HERA.P2P.INVOICE.POST.v1', 'HERA.P2P.PAYMENT.EXECUTE.v1'))
+WHEN (NEW.smart_code IN ('HERA.P2P.GRN.POST.V1', 'HERA.P2P.GRN.PARTIAL.V1', 'HERA.P2P.INVOICE.POST.V1', 'HERA.P2P.PAYMENT.EXECUTE.V1'))
 EXECUTE FUNCTION hera_p2p__update_po_status();
 
 -- =============================================
@@ -598,10 +598,10 @@ DECLARE
 BEGIN
   -- Determine action based on smart code
   v_action := CASE
-    WHEN NEW.smart_code = 'HERA.P2P.PO.CREATE.v1' THEN 'process_po'
-    WHEN NEW.smart_code = 'HERA.P2P.GRN.POST.v1' THEN 'process_grn'
-    WHEN NEW.smart_code = 'HERA.P2P.INVOICE.POST.v1' THEN 'process_invoice'
-    WHEN NEW.smart_code = 'HERA.P2P.PAYMENT.EXECUTE.v1' THEN 'process_payment'
+    WHEN NEW.smart_code = 'HERA.P2P.PO.CREATE.V1' THEN 'process_po'
+    WHEN NEW.smart_code = 'HERA.P2P.GRN.POST.V1' THEN 'process_grn'
+    WHEN NEW.smart_code = 'HERA.P2P.INVOICE.POST.V1' THEN 'process_invoice'
+    WHEN NEW.smart_code = 'HERA.P2P.PAYMENT.EXECUTE.V1' THEN 'process_payment'
     ELSE NULL
   END;
 
@@ -654,12 +654,12 @@ WHERE smart_code LIKE 'HERA.P2P.PO.%';
 -- Index for invoice matching
 CREATE INDEX IF NOT EXISTS idx_p2p_invoice_po
 ON universal_transactions(organization_id, metadata->>'po_id')
-WHERE smart_code IN ('HERA.P2P.INVOICE.POST.v1', 'HERA.P2P.GRN.POST.v1');
+WHERE smart_code IN ('HERA.P2P.INVOICE.POST.V1', 'HERA.P2P.GRN.POST.V1');
 
 -- Index for payment processing
 CREATE INDEX IF NOT EXISTS idx_p2p_payment_invoice
 ON universal_transactions(organization_id, metadata->>'invoice_id')
-WHERE smart_code = 'HERA.P2P.PAYMENT.EXECUTE.v1';
+WHERE smart_code = 'HERA.P2P.PAYMENT.EXECUTE.V1';
 
 -- Index for supplier transactions
 CREATE INDEX IF NOT EXISTS idx_p2p_supplier_tx

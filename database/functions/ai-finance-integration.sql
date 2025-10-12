@@ -176,7 +176,7 @@ BEGIN
     FROM core_organizations 
     WHERE id = organization_id;
     
-    -- Parse Smart Code: HERA.MODULE.SUB.TRANSACTION.TYPE.v1
+    -- Parse Smart Code: HERA.MODULE.SUB.TRANSACTION.TYPE.V1
     code_parts := string_to_array(smart_code, '.');
     
     IF array_length(code_parts, 1) >= 4 THEN
@@ -876,15 +876,15 @@ BEGIN
     INSERT INTO ai_transaction_patterns (
         organization_id, smart_code, transaction_pattern, gl_mapping, confidence_score
     ) VALUES
-    (p_organization_id, 'HERA.PROC.GR.AUTO.v1', 
+    (p_organization_id, 'HERA.PROC.GR.AUTO.V1', 
      '{"type": "goods_receipt"}'::JSONB,
      '{"journal_entries": [{"account_code": "1330000", "debit_amount": 0}, {"account_code": "2100000", "credit_amount": 0}]}'::JSONB,
      0.80),
-    (p_organization_id, 'HERA.SALES.INV.AUTO.v1',
+    (p_organization_id, 'HERA.SALES.INV.AUTO.V1',
      '{"type": "sales_invoice"}'::JSONB,
      '{"journal_entries": [{"account_code": "1200000", "debit_amount": 0}, {"account_code": "4110000", "credit_amount": 0}]}'::JSONB,
      0.80),
-    (p_organization_id, 'HERA.HR.PAYROLL.AUTO.v1',
+    (p_organization_id, 'HERA.HR.PAYROLL.AUTO.V1',
      '{"type": "payroll"}'::JSONB,
      '{"journal_entries": [{"account_code": "5200000", "debit_amount": 0}, {"account_code": "2100000", "credit_amount": 0}]}'::JSONB,
      0.75)

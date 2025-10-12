@@ -1,7 +1,7 @@
 -- =====================================================
 -- HERA Production Schema (Supabase PostgreSQL)
 -- Enterprise-Grade Multi-Tenant ERP Platform
--- Smart Code: HERA.PRODUCTION.SCHEMA.ENTERPRISE.v1
+-- Smart Code: HERA.PRODUCTION.SCHEMA.ENTERPRISE.V1
 -- =====================================================
 
 -- Enable necessary PostgreSQL extensions

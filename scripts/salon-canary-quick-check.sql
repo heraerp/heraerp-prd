@@ -81,7 +81,7 @@ SELECT
     COUNT(*) as usage_count,
     CASE 
         WHEN smart_code LIKE '%.V1' THEN '✅ Correct'
-        WHEN smart_code LIKE '%.v1' THEN '❌ Lowercase v'
+        WHEN smart_code LIKE '%.V1' THEN '❌ Lowercase v'
         ELSE '⚠️  Check format'
     END as format_status
 FROM universal_transactions

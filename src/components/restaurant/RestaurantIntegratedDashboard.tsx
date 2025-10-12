@@ -67,7 +67,7 @@ export function RestaurantIntegratedDashboard() {
       status: 'active',
       description: 'Single endpoint for all data operations',
       icon: <Database className="w-5 h-5" />,
-      smartCode: 'HERA.API.UNIVERSAL.v1'
+      smartCode: 'HERA.API.UNIVERSAL.V1'
     }
   ]
 

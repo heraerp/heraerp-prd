@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS QUICK ACTIONS
-// Smart Code: HERA.UI.POS.QUICK_ACTIONS.v1
+// Smart Code: HERA.UI.POS.QUICK_ACTIONS.V1
 // Quick discount and tip actions
 // ================================================================================
 

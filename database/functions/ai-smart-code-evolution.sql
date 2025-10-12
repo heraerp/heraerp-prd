@@ -470,7 +470,7 @@ BEGIN
     END IF;
     
     -- Add AI metadata
-    enhanced_code := enhanced_code || '.ai2024.v1.conf' || 
+    enhanced_code := enhanced_code || '.ai2024.V1.conf' || 
         CASE 
             WHEN customer_context != '' AND temporal_context != '' AND risk_context != '' THEN '95'
             WHEN customer_context != '' AND (temporal_context != '' OR risk_context != '') THEN '85'

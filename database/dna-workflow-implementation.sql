@@ -2,7 +2,7 @@
 -- HERA DNA WORKFLOW SYSTEM IMPLEMENTATION
 -- ================================================================================
 -- Adds Universal Workflow DNA to the HERA DNA Component Library
--- Smart Code: HERA.DNA.WORKFLOW.SYSTEM.IMPLEMENTATION.v1
+-- Smart Code: HERA.DNA.WORKFLOW.SYSTEM.IMPLEMENTATION.V1
 -- ================================================================================
 
 -- ================================================================================
@@ -47,7 +47,7 @@ BEGIN
     'Universal Workflow Engine',
     'DNA-WORKFLOW-ENGINE',
     'Complete workflow management engine using only relationships table for status tracking',
-    'HERA.DNA.WORKFLOW.ENGINE.v1',
+    'HERA.DNA.WORKFLOW.ENGINE.V1',
     '{
       "component_type": "business_module",
       "category": "workflow_management",
@@ -101,7 +101,7 @@ BEGIN
     'Universal Workflow Tracker UI',
     'DNA-WORKFLOW-TRACKER',
     'React component for displaying and managing workflow status with full UI',
-    'HERA.DNA.WORKFLOW.TRACKER.UI.v1',
+    'HERA.DNA.WORKFLOW.TRACKER.UI.V1',
     '{
       "component_type": "ui_component",
       "category": "workflow_management",
@@ -155,7 +155,7 @@ BEGIN
     'Workflow Analytics Engine',
     'DNA-WORKFLOW-ANALYTICS',
     'Analytics engine for workflow performance and bottleneck detection',
-    'HERA.DNA.WORKFLOW.ANALYTICS.v1',
+    'HERA.DNA.WORKFLOW.ANALYTICS.V1',
     '{
       "component_type": "analytics_module",
       "category": "workflow_management",
@@ -208,7 +208,7 @@ BEGIN
     'Workflow Template Library',
     'DNA-WORKFLOW-TEMPLATES',
     'Pre-built workflow templates for common business processes',
-    'HERA.DNA.WORKFLOW.TEMPLATES.v1',
+    'HERA.DNA.WORKFLOW.TEMPLATES.V1',
     '{
       "component_type": "configuration_library",
       "category": "workflow_management",
@@ -273,7 +273,7 @@ export class UniversalWorkflow {
       entity_type: ''workflow_template'',
       entity_name: config.name,
       entity_code: config.code,
-      smart_code: `HERA.WORKFLOW.TEMPLATE.${config.code}.v1`,
+      smart_code: `HERA.WORKFLOW.TEMPLATE.${config.code}.V1`,
       organization_id: this.organizationId,
       metadata: config
     })
@@ -303,7 +303,7 @@ export class UniversalWorkflow {
     return initialStatus
   }
 }',
-  'HERA.DNA.WORKFLOW.ENGINE.CODE.v1', 1),
+  'HERA.DNA.WORKFLOW.ENGINE.CODE.V1', 1),
   
   -- Workflow Tracker UI code
   (dna_org_id, workflow_tracker_id, 'component_code', 'code',
@@ -352,7 +352,7 @@ export class UniversalWorkflow {
     </Card>
   )
 }',
-  'HERA.DNA.WORKFLOW.TRACKER.CODE.v1', 1),
+  'HERA.DNA.WORKFLOW.TRACKER.CODE.V1', 1),
   
   -- Workflow integration patterns
   (dna_org_id, workflow_engine_id, 'integration_pattern', 'text',
@@ -370,7 +370,7 @@ universalApi.on(''transaction:created'', async (transaction) => {
   organizationId={organizationId}
   userId={userId}
 />',
-  'HERA.DNA.WORKFLOW.INTEGRATION.v1', 2);
+  'HERA.DNA.WORKFLOW.INTEGRATION.V1', 2);
   
   -- ================================================================================
   -- STEP 3: CREATE WORKFLOW RELATIONSHIPS IN DNA
@@ -387,17 +387,17 @@ universalApi.on(''transaction:created'', async (transaction) => {
   ) VALUES
   -- Engine uses Templates
   (dna_org_id, workflow_engine_id, workflow_templates_id, 'uses', 
-   'HERA.DNA.WORKFLOW.ENGINE.USES.TEMPLATES.v1',
+   'HERA.DNA.WORKFLOW.ENGINE.USES.TEMPLATES.V1',
    '{"dependency_type": "configuration", "required": true}'),
   
   -- Tracker uses Engine
   (dna_org_id, workflow_tracker_id, workflow_engine_id, 'uses',
-   'HERA.DNA.WORKFLOW.TRACKER.USES.ENGINE.v1',
+   'HERA.DNA.WORKFLOW.TRACKER.USES.ENGINE.V1',
    '{"dependency_type": "core", "required": true}'),
   
   -- Analytics uses Engine
   (dna_org_id, workflow_analytics_id, workflow_engine_id, 'uses',
-   'HERA.DNA.WORKFLOW.ANALYTICS.USES.ENGINE.v1',
+   'HERA.DNA.WORKFLOW.ANALYTICS.USES.ENGINE.V1',
    '{"dependency_type": "data_source", "required": true}');
   
   RAISE NOTICE 'Universal Workflow DNA components created successfully!';
@@ -424,7 +424,7 @@ INSERT INTO core_entities (
   'Salon Appointment Workflow Integration',
   'EXAMPLE-SALON-WORKFLOW',
   'Complete example of workflow integration in salon appointment system',
-  'HERA.DNA.EXAMPLE.SALON.WORKFLOW.v1',
+  'HERA.DNA.EXAMPLE.SALON.WORKFLOW.V1',
   '{
     "example_type": "implementation",
     "industry": "salon",

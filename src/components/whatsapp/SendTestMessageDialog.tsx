@@ -1,6 +1,6 @@
 // ================================================================================
 // SEND TEST MESSAGE DIALOG - WHATSAPP
-// Smart Code: HERA.UI.WHATSAPP.TEST_MESSAGE.v1
+// Smart Code: HERA.UI.WHATSAPP.TEST_MESSAGE.V1
 // Production-ready test message dialog with template preview and validation
 // ================================================================================
 

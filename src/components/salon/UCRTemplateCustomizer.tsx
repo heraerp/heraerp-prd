@@ -61,8 +61,8 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
   useEffect(() => {
     if (template) {
       const customSmartCode = template.smart_code.replace(
-        '.v1',
-        `.${organization?.name.toUpperCase().replace(/\s+/g, '_') || 'CUSTOM'}.v1`
+        '.V1',
+        `.${organization?.name.toUpperCase().replace(/\s+/g, '_') || 'CUSTOM'}.V1`
       )
 
       setCustomizedRule({

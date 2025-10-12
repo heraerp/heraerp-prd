@@ -318,7 +318,7 @@ export default function RolesManagementPage() {
             <div className="text-sm text-blue-700 dark:text-blue-300">
               • Role grants are stored as configuration data in Sacred Six tables • Actual
               authentication remains with your identity provider (IdP) • Changes are logged for
-              audit purposes with Smart Code: HERA.ORG.SETTINGS.ROLE_GRANTS.v1 • Use this to define
+              audit purposes with Smart Code: HERA.ORG.SETTINGS.ROLE_GRANTS.V1 • Use this to define
               who can access what within your organization
             </div>
           </div>

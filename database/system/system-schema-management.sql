@@ -1,7 +1,7 @@
 -- =====================================================
 -- HERA DNA System Schema Management
 -- Separates System Schema (Metadata) from User Data
--- Smart Code: HERA.DNA.SYSTEM.SCHEMA.MANAGEMENT.v1
+-- Smart Code: HERA.DNA.SYSTEM.SCHEMA.MANAGEMENT.V1
 -- =====================================================
 
 -- This schema handles the metadata that defines how the app works

@@ -1,6 +1,6 @@
 // ================================================================================
 // RULE EDITOR DIALOG COMPONENT
-// Smart Code: HERA.UI.FINANCE.RULE_EDITOR_DIALOG.v1
+// Smart Code: HERA.UI.FINANCE.RULE_EDITOR_DIALOG.V1
 // Modal dialog for editing Finance DNA posting rules
 // ================================================================================
 
@@ -165,7 +165,7 @@ export function RuleEditorDialog({
                   onChange={e => updateField('key', e.target.value)}
                   disabled={mode === 'edit'}
                   className="font-mono"
-                  placeholder="FIN_DNA.RULES.EXAMPLE.v1"
+                  placeholder="FIN_DNA.RULES.EXAMPLE.V1"
                 />
                 <Badge variant="outline">{formData.version}</Badge>
               </div>
@@ -258,7 +258,7 @@ export function RuleEditorDialog({
                 id="rule-applies-to"
                 value={formData.applies_to.join(', ')}
                 onChange={e => updateAppliesTo(e.target.value)}
-                placeholder="HERA.POS.SALE.v1, HERA.POS.SALE.LINE.V1"
+                placeholder="HERA.POS.SALE.V1, HERA.POS.SALE.LINE.V1"
                 rows={2}
                 className="font-mono text-sm"
               />

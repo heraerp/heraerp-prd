@@ -368,15 +368,15 @@ export const FiscalYearStep: React.FC<FiscalYearStepProps> = ({
         <div className="text-xs font-mono space-y-1">
           <div>
             Fiscal Config: HERA.{data.organizationBasics.industry_classification}
-            .UCR.CONFIG.FISCAL_YEAR.v1
+            .UCR.CONFIG.FISCAL_YEAR.V1
           </div>
           <div>
             Fiscal Periods: HERA.{data.organizationBasics.industry_classification}
-            .UCR.CONFIG.FISCAL_PERIODS.v1
+            .UCR.CONFIG.FISCAL_PERIODS.V1
           </div>
           <div>
             Year-End Close: HERA.{data.organizationBasics.industry_classification}
-            .UCR.CONFIG.YEAR_END_CLOSE.v1
+            .UCR.CONFIG.YEAR_END_CLOSE.V1
           </div>
         </div>
       </div>

@@ -67,7 +67,7 @@ export function JewelryEntityPage({
       await create({
         entity_type: preset.entity_type,
         entity_name: payload.entity_name || 'Untitled',
-        smart_code: `HERA.JEWELRY.${preset.entity_type}.ENTITY.ITEM.v1`,
+        smart_code: `HERA.JEWELRY.${preset.entity_type}.ENTITY.ITEM.V1`,
         dynamic_fields: Object.fromEntries(
           (preset.dynamicFields || []).map(df => [
             df.name,

@@ -161,7 +161,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
             params.id,
             field.field_name,
             field.field_type === 'number' ? field.field_value_number! : field.field_value_text!,
-            `HERA.FURNITURE.CUSTOMER.${field.field_name.toUpperCase()}.v1`
+            `HERA.FURNITURE.CUSTOMER.${field.field_name.toUpperCase()}.V1`
           )
         }
       }

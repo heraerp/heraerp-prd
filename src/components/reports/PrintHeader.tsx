@@ -1,6 +1,6 @@
 // ================================================================================
 // REPORTS PRINT HEADER
-// Smart Code: HERA.UI.REPORTS.PRINT_HEADER.v1
+// Smart Code: HERA.UI.REPORTS.PRINT_HEADER.V1
 // Professional print header with logo, title, and metadata
 // ================================================================================
 

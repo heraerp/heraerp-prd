@@ -1,6 +1,6 @@
 // ================================================================================
 // SALES POLICY FORM - SETTINGS COMPONENT
-// Smart Code: HERA.UI.SETTINGS.SALES_POLICY_FORM.v1
+// Smart Code: HERA.UI.SETTINGS.SALES_POLICY_FORM.V1
 // Production-ready sales policy configuration form with validation
 // ================================================================================
 

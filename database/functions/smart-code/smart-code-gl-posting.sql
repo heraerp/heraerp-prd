@@ -1,4 +1,4 @@
--- HERA Auto-Journal Trigger Function - Part of DNA Component HERA.FIN.AUTO.JOURNAL.ENGINE.v1
+-- HERA Auto-Journal Trigger Function - Part of DNA Component HERA.FIN.AUTO.JOURNAL.ENGINE.V1
 -- This runs AUTOMATICALLY when any transaction is created
 CREATE OR REPLACE FUNCTION process_smart_code_posting()
   RETURNS TRIGGER AS $$
@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION process_smart_code_posting()
     v_module TEXT;
   BEGIN
     -- Parse the Smart Code
-    -- HERA.PROC.GR.RECEIPT.v1 → ['HERA', 'PROC', 'GR', 'RECEIPT', 'v1']
+    -- HERA.PROC.GR.RECEIPT.V1 → ['HERA', 'PROC', 'GR', 'RECEIPT', 'v1']
     v_action_type := split_part(NEW.smart_code, '.', 4);
     v_module := split_part(NEW.smart_code, '.', 2);
 

@@ -1,6 +1,6 @@
 /**
  * HERA DNA SECURITY: Secured Salon Provider
- * Industry DNA Component: HERA.DNA.SECURITY.SALON.PROVIDER.v1
+ * Industry DNA Component: HERA.DNA.SECURITY.SALON.PROVIDER.V1
  *
  * Revolutionary salon security DNA that integrates the comprehensive HERA DNA Security
  * framework with salon-specific business logic, providing bulletproof multi-tenant

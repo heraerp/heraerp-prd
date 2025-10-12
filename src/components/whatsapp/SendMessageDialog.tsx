@@ -1,6 +1,6 @@
 // ================================================================================
 // SEND MESSAGE DIALOG - WHATSAPP MESSAGE SENDER
-// Smart Code: HERA.UI.WHATSAPP.SEND_MESSAGE.v1
+// Smart Code: HERA.UI.WHATSAPP.SEND_MESSAGE.V1
 // Production-ready message sending with consent checking and template validation
 // ================================================================================
 

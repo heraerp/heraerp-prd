@@ -12,7 +12,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.RESTAURANT.POS.PROGRESSIVE.v1',
+  'HERA.RESTAURANT.POS.PROGRESSIVE.V1',
   'Restaurant Management Point of Sale operations with progressive authentication',
   'restaurant',
   'pos',
@@ -29,7 +29,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.RESTAURANT.MENU.PROGRESSIVE.v1',
+  'HERA.RESTAURANT.MENU.PROGRESSIVE.V1',
   'Restaurant Management Menu Management operations with progressive authentication',
   'restaurant',
   'menu',
@@ -46,7 +46,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.RESTAURANT.KITCHEN.PROGRESSIVE.v1',
+  'HERA.RESTAURANT.KITCHEN.PROGRESSIVE.V1',
   'Restaurant Management Kitchen Display operations with progressive authentication',
   'restaurant',
   'kitchen',
@@ -63,7 +63,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.RESTAURANT.DELIVERY.PROGRESSIVE.v1',
+  'HERA.RESTAURANT.DELIVERY.PROGRESSIVE.V1',
   'Restaurant Management Delivery Orders operations with progressive authentication',
   'restaurant',
   'delivery',
@@ -80,7 +80,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.RESTAURANT.INVENTORY.PROGRESSIVE.v1',
+  'HERA.RESTAURANT.INVENTORY.PROGRESSIVE.V1',
   'Restaurant Management Inventory operations with progressive authentication',
   'restaurant',
   'inventory',

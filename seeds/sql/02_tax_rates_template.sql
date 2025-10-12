@@ -16,7 +16,7 @@ INSERT INTO core_dynamic_data (
     'rate.standard',
     5.0,  -- Placeholder rate - adjust for jurisdiction
     'Standard Tax Rate',
-    'HERA.TAX.RATE.STANDARD.v1',
+    'HERA.TAX.RATE.STANDARD.V1',
     :org::uuid,
     jsonb_build_object(
         'effective_from', CURRENT_DATE,
@@ -39,7 +39,7 @@ INSERT INTO core_dynamic_data (
     'rate.zero',
     0.0,
     'Zero Rate',
-    'HERA.TAX.RATE.ZERO.v1',
+    'HERA.TAX.RATE.ZERO.V1',
     :org::uuid,
     jsonb_build_object(
         'categories', jsonb_build_array(
@@ -62,7 +62,7 @@ INSERT INTO core_dynamic_data (
     :tax_profile_id::uuid,
     'rate.exempt',
     'Exempt from Tax',
-    'HERA.TAX.RATE.EXEMPT.v1',
+    'HERA.TAX.RATE.EXEMPT.V1',
     :org::uuid,
     jsonb_build_object(
         'categories', jsonb_build_array(
@@ -85,7 +85,7 @@ INSERT INTO core_dynamic_data (
     :tax_profile_id::uuid,
     'rates',
     '{}',  -- Will be populated by trigger/function
-    'HERA.TAX.RATES.CONSOLIDATED.v1',
+    'HERA.TAX.RATES.CONSOLIDATED.V1',
     :org::uuid,
     jsonb_build_object(
         'standard', 5.0,

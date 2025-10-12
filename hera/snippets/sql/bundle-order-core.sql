@@ -1,4 +1,4 @@
--- HERA.RESTAURANT.BUNDLE.ORDER.v1 - Core SQL Pattern
+-- HERA.RESTAURANT.BUNDLE.ORDER.V1 - Core SQL Pattern
 
 -- Step 1: Resolve bundle_code → entity_id
 WITH bundle_lookup AS (
@@ -41,7 +41,7 @@ transaction_header AS (
     'pos_order',
     'ORD-' || gen_random_uuid()::text,
     NOW(),
-    'HERA.REST.POS.TXN.ORDER.v1',
+    'HERA.REST.POS.TXN.ORDER.V1',
     $3, -- calculated total
     jsonb_build_object(
       'bundle_code', $2,
@@ -84,7 +84,7 @@ CROSS JOIN (
     1 as quantity,
     price as unit_price,
     price as line_amount,
-    'HERA.REST.POS.LINE.ITEM.v1' as smart_code,
+    'HERA.REST.POS.LINE.ITEM.V1' as smart_code,
     jsonb_build_object('component', component) as metadata
   FROM bundle_items bi
   JOIN selected_items si ON bi.component = si.component
@@ -98,7 +98,7 @@ CROSS JOIN (
     1 as quantity,
     tax_amount as unit_price,
     tax_amount as line_amount,
-    'HERA.REST.POS.LINE.TAX.v1' as smart_code,
+    'HERA.REST.POS.LINE.TAX.V1' as smart_code,
     jsonb_build_object('tax_rate', tax_rate) as metadata
   FROM tax_calculation
   
@@ -111,7 +111,7 @@ CROSS JOIN (
     -1 * consumption_qty as quantity,
     0 as unit_price,
     0 as line_amount,
-    'HERA.INV.MOVE.LINE.CONSUME.v1' as smart_code,
+    'HERA.INV.MOVE.LINE.CONSUME.V1' as smart_code,
     jsonb_build_object('movement_type', 'consumption') as metadata
   FROM inventory_consumption
 ) lines;

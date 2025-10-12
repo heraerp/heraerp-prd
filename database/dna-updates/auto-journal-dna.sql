@@ -1,7 +1,7 @@
 -- ================================================================================
 -- HERA AUTO-JOURNAL ENGINE DNA COMPONENT
 -- Universal auto-journal posting engine for any business type
--- Smart Code: HERA.FIN.AUTO.JOURNAL.ENGINE.v1
+-- Smart Code: HERA.FIN.AUTO.JOURNAL.ENGINE.V1
 -- ================================================================================
 
 -- This script adds the Auto-Journal Engine as a core DNA component to HERA
@@ -39,7 +39,7 @@ BEGIN
   ) VALUES (
     dna_org_id, 'business_module_dna', 'Auto-Journal Engine',
     'Intelligent journal entry automation with AI integration for any business type',
-    'HERA.FIN.AUTO.JOURNAL.ENGINE.v1',
+    'HERA.FIN.AUTO.JOURNAL.ENGINE.V1',
     jsonb_build_object(
       'module_type', 'financial_automation',
       'universal', true,
@@ -99,7 +99,7 @@ BEGIN
         'input_tax', '1450000'
       )
     )
-  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.RESTAURANT.v1'),
+  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.RESTAURANT.V1'),
   
   -- Healthcare Industry Configuration
   (dna_org_id, auto_journal_engine_id, 'healthcare_config', 'json', jsonb_build_object(
@@ -135,7 +135,7 @@ BEGIN
       'hipaa_compliant', true,
       'audit_retention_years', 7
     )
-  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.HEALTHCARE.v1'),
+  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.HEALTHCARE.V1'),
   
   -- Manufacturing Industry Configuration
   (dna_org_id, auto_journal_engine_id, 'manufacturing_config', 'json', jsonb_build_object(
@@ -175,7 +175,7 @@ BEGIN
         'overhead_variance', '5350000'
       )
     )
-  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.MANUFACTURING.v1'),
+  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.MANUFACTURING.V1'),
   
   -- Professional Services Configuration
   (dna_org_id, auto_journal_engine_id, 'professional_services_config', 'json', jsonb_build_object(
@@ -212,7 +212,7 @@ BEGIN
       'wip_account', '1240000',
       'deferred_revenue', '2300000'
     )
-  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.PROFESSIONAL.v1'),
+  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.PROFESSIONAL.V1'),
   
   -- Universal Configuration (Default)
   (dna_org_id, auto_journal_engine_id, 'universal_config', 'json', jsonb_build_object(
@@ -257,7 +257,7 @@ BEGIN
       'enabled', true,
       'gain_loss_account', '4900000'
     )
-  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.UNIVERSAL.v1');
+  ), 'HERA.DNA.AUTO.JOURNAL.CONFIG.UNIVERSAL.V1');
   
   -- ================================================================================
   -- STORE AI CLASSIFICATION PATTERNS
@@ -299,7 +299,7 @@ BEGIN
       )
     ),
     'ai_prompt_template', 'Analyze this transaction and determine if it requires a journal entry. Consider: 1) Does it have financial impact? 2) Does it affect asset/liability/equity/revenue/expense accounts? 3) Is it a commitment vs actual transaction? 4) What is the accounting principle involved?'
-  ), 'HERA.DNA.AUTO.JOURNAL.AI.PATTERNS.v1');
+  ), 'HERA.DNA.AUTO.JOURNAL.AI.PATTERNS.V1');
   
   -- ================================================================================
   -- STORE BATCHING STRATEGIES
@@ -337,7 +337,7 @@ BEGIN
     ),
     'batch_naming_pattern', 'BATCH-{date}-{type}-{sequence}',
     'summary_description_template', 'Batch journal for {count} {type} transactions on {date}'
-  ), 'HERA.DNA.AUTO.JOURNAL.BATCH.STRATEGIES.v1');
+  ), 'HERA.DNA.AUTO.JOURNAL.BATCH.STRATEGIES.V1');
   
   -- ================================================================================
   -- STORE UI COMPONENTS FOR AUTO-JOURNAL
@@ -347,13 +347,13 @@ BEGIN
     organization_id, entity_id, field_name, field_type, field_value_json, smart_code
   ) VALUES
   (dna_org_id, auto_journal_engine_id, 'ui_components', 'json', jsonb_build_object(
-    'dashboard', 'HERA.UI.GLASS.DASHBOARD.AUTO.JOURNAL.v1',
-    'configuration_panel', 'HERA.UI.GLASS.CONFIG.AUTO.JOURNAL.v1',
-    'processing_monitor', 'HERA.UI.FIORI.MONITOR.JOURNAL.PROCESSING.v1',
-    'batch_queue_viewer', 'HERA.UI.GLASS.TABLE.BATCH.QUEUE.v1',
-    'statistics_charts', 'HERA.UI.FIORI.CHARTS.JOURNAL.STATS.v1',
-    'audit_trail_viewer', 'HERA.UI.GLASS.TABLE.AUDIT.TRAIL.v1'
-  ), 'HERA.DNA.AUTO.JOURNAL.UI.COMPONENTS.v1');
+    'dashboard', 'HERA.UI.GLASS.DASHBOARD.AUTO.JOURNAL.V1',
+    'configuration_panel', 'HERA.UI.GLASS.CONFIG.AUTO.JOURNAL.V1',
+    'processing_monitor', 'HERA.UI.FIORI.MONITOR.JOURNAL.PROCESSING.V1',
+    'batch_queue_viewer', 'HERA.UI.GLASS.TABLE.BATCH.QUEUE.V1',
+    'statistics_charts', 'HERA.UI.FIORI.CHARTS.JOURNAL.STATS.V1',
+    'audit_trail_viewer', 'HERA.UI.GLASS.TABLE.AUDIT.TRAIL.V1'
+  ), 'HERA.DNA.AUTO.JOURNAL.UI.COMPONENTS.V1');
   
   -- ================================================================================
   -- STORE IMPLEMENTATION CODE PATTERNS
@@ -369,7 +369,7 @@ BEGIN
     'batch_processor', 'const batches = groupTransactionsByStrategy(transactions, config.batch_strategies);',
     'ai_classifier', 'const relevance = await aiClassifier.analyze(transaction, config.ai_classification_patterns);',
     'audit_logger', 'await auditLog.record({ action: "auto_journal_created", transaction_id, journal_id, confidence });'
-  ), 'HERA.DNA.AUTO.JOURNAL.CODE.PATTERNS.v1');
+  ), 'HERA.DNA.AUTO.JOURNAL.CODE.PATTERNS.V1');
   
   -- ================================================================================
   -- STORE INTEGRATION POINTS
@@ -405,7 +405,7 @@ BEGIN
         'action', 'processSmallBatches'
       )
     )
-  ), 'HERA.DNA.AUTO.JOURNAL.INTEGRATIONS.v1');
+  ), 'HERA.DNA.AUTO.JOURNAL.INTEGRATIONS.V1');
   
   -- ================================================================================
   -- CREATE DNA FUNCTIONS FOR AUTO-JOURNAL CONFIGURATION
@@ -436,7 +436,7 @@ BEGIN
     SELECT dd.field_value_json INTO v_config
     FROM core_dynamic_data dd
     JOIN core_entities e ON dd.entity_id = e.id
-    WHERE e.smart_code = 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1'
+    WHERE e.smart_code = 'HERA.FIN.AUTO.JOURNAL.ENGINE.V1'
       AND dd.field_name = v_field_name
     LIMIT 1;
     
@@ -472,7 +472,7 @@ BEGIN
     SELECT dd.field_value_json INTO v_patterns
     FROM core_dynamic_data dd
     JOIN core_entities e ON dd.entity_id = e.id
-    WHERE e.smart_code = 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1'
+    WHERE e.smart_code = 'HERA.FIN.AUTO.JOURNAL.ENGINE.V1'
       AND dd.field_name = 'ai_classification_patterns'
     LIMIT 1;
     
@@ -540,7 +540,7 @@ SELECT
   metadata->>'automation_rate' as automation_rate,
   status
 FROM core_entities 
-WHERE smart_code = 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1';
+WHERE smart_code = 'HERA.FIN.AUTO.JOURNAL.ENGINE.V1';
 
 -- Show all auto-journal configurations
 SELECT 
@@ -549,7 +549,7 @@ SELECT
   jsonb_pretty(field_value_json->'thresholds') as thresholds
 FROM core_dynamic_data dd
 JOIN core_entities e ON dd.entity_id = e.id
-WHERE e.smart_code = 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1'
+WHERE e.smart_code = 'HERA.FIN.AUTO.JOURNAL.ENGINE.V1'
   AND field_name LIKE '%_config'
 ORDER BY field_name;
 

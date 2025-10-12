@@ -1,6 +1,6 @@
 // ================================================================================
 // TEMPLATE PREVIEW - WHATSAPP MESSAGE PREVIEW
-// Smart Code: HERA.UI.WHATSAPP.TEMPLATE_PREVIEW.v1
+// Smart Code: HERA.UI.WHATSAPP.TEMPLATE_PREVIEW.V1
 // Production-ready template preview with variable substitution
 // ================================================================================
 

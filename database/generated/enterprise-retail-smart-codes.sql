@@ -12,7 +12,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.ENTERPRISERETAIL.MERCHANDISING.PROGRESSIVE.v1',
+  'HERA.ENTERPRISERETAIL.MERCHANDISING.PROGRESSIVE.V1',
   'Enterprise Retail Solution merchandising operations with progressive authentication',
   'enterprise-retail',
   'merchandising',
@@ -29,7 +29,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.ENTERPRISERETAIL.PLANNING.PROGRESSIVE.v1',
+  'HERA.ENTERPRISERETAIL.PLANNING.PROGRESSIVE.V1',
   'Enterprise Retail Solution planning operations with progressive authentication',
   'enterprise-retail',
   'planning',
@@ -46,7 +46,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.ENTERPRISERETAIL.PROCUREMENT.PROGRESSIVE.v1',
+  'HERA.ENTERPRISERETAIL.PROCUREMENT.PROGRESSIVE.V1',
   'Enterprise Retail Solution procurement operations with progressive authentication',
   'enterprise-retail',
   'procurement',
@@ -63,7 +63,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.ENTERPRISERETAIL.POS.PROGRESSIVE.v1',
+  'HERA.ENTERPRISERETAIL.POS.PROGRESSIVE.V1',
   'Enterprise Retail Solution pos operations with progressive authentication',
   'enterprise-retail',
   'pos',
@@ -80,7 +80,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.ENTERPRISERETAIL.INVENTORY.PROGRESSIVE.v1',
+  'HERA.ENTERPRISERETAIL.INVENTORY.PROGRESSIVE.V1',
   'Enterprise Retail Solution inventory operations with progressive authentication',
   'enterprise-retail',
   'inventory',
@@ -97,7 +97,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.ENTERPRISERETAIL.ANALYTICS.PROGRESSIVE.v1',
+  'HERA.ENTERPRISERETAIL.ANALYTICS.PROGRESSIVE.V1',
   'Enterprise Retail Solution analytics operations with progressive authentication',
   'enterprise-retail',
   'analytics',
@@ -114,7 +114,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.ENTERPRISERETAIL.PROMOTIONS.PROGRESSIVE.v1',
+  'HERA.ENTERPRISERETAIL.PROMOTIONS.PROGRESSIVE.V1',
   'Enterprise Retail Solution promotions operations with progressive authentication',
   'enterprise-retail',
   'promotions',
@@ -131,7 +131,7 @@ INSERT INTO smart_codes (
   version,
   metadata
 ) VALUES (
-  'HERA.ENTERPRISERETAIL.CUSTOMERS.PROGRESSIVE.v1',
+  'HERA.ENTERPRISERETAIL.CUSTOMERS.PROGRESSIVE.V1',
   'Enterprise Retail Solution customers operations with progressive authentication',
   'enterprise-retail',
   'customers',

@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS SERVICE SELECTOR
-// Smart Code: HERA.UI.POS.SERVICE_SELECTOR.v1
+// Smart Code: HERA.UI.POS.SERVICE_SELECTOR.V1
 // Service selection with categories and search
 // ================================================================================
 
