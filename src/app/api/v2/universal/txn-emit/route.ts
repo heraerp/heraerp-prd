@@ -46,7 +46,17 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    console.log('[txn-emit] Calling hera_txn_emit_v1 with params:', {
+      organization_id: rpcParams.p_organization_id,
+      transaction_type: rpcParams.p_transaction_type,
+      smart_code: rpcParams.p_smart_code,
+      total_amount: rpcParams.p_total_amount,
+      lines_count: rpcParams.p_lines?.length || 0
+    })
+
     const transaction_id = await callFunction('hera_txn_emit_v1', rpcParams)
+
+    console.log('[txn-emit] Transaction created successfully:', transaction_id)
 
     return NextResponse.json(
       {
@@ -56,7 +66,23 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     )
   } catch (error: any) {
-    console.error('Error in txn-emit:', error)
-    return NextResponse.json({ error: 'database_error', message: error.message }, { status: 500 })
+    console.error('[txn-emit] Database error:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+      params: {
+        org_id: rpcParams.p_organization_id?.substring(0, 8),
+        txn_type: rpcParams.p_transaction_type,
+        smart_code: rpcParams.p_smart_code
+      }
+    })
+    return NextResponse.json({
+      error: 'database_error',
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint
+    }, { status: 500 })
   }
 }
