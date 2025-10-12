@@ -1,5 +1,5 @@
 -- HERA Finance DNA v2 Migration Functions
--- Smart Code: HERA.ACCOUNTING.MIGRATION.DATABASE.v2
+-- Smart Code: HERA.ACCOUNTING.MIGRATION.DATABASE.V2
 -- 
 -- Comprehensive PostgreSQL functions for safe v1 to v2 migration
 -- with zero data loss, complete validation, and rollback capabilities
@@ -277,7 +277,7 @@ BEGIN
             SET 
                 field_value_json = v_v2_rule_data,
                 field_key = REPLACE(field_key, 'v1', 'v2'),
-                smart_code = REPLACE(smart_code, '.v1', '.v2'),
+                smart_code = REPLACE(smart_code, '.V1', '.V2'),
                 updated_at = NOW()
             WHERE id = v_posting_rule.id;
 
@@ -430,7 +430,7 @@ BEGIN
             UPDATE core_entities
             SET 
                 metadata = v_enhanced_metadata,
-                smart_code = REPLACE(smart_code, '.v1', '.v2'),
+                smart_code = REPLACE(smart_code, '.V1', '.V2'),
                 updated_at = NOW()
             WHERE id = v_fiscal_period.id;
 
@@ -458,7 +458,7 @@ BEGIN
                         'alert_threshold', 85
                     )
                 ),
-                'HERA.ACCOUNTING.FISCAL.PERIOD.ENHANCED.v2'
+                'HERA.ACCOUNTING.FISCAL.PERIOD.ENHANCED.V2'
             );
 
             v_records_successful := v_records_successful + 1;
@@ -601,7 +601,7 @@ BEGIN
                 'intelligent_workflows', true
             )
         ),
-        'HERA.ACCOUNTING.ORG.CONFIG.v2'
+        'HERA.ACCOUNTING.ORG.CONFIG.V2'
     ) ON CONFLICT DO NOTHING;
 
     -- Track migration

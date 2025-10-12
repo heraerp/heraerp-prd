@@ -1,84 +1,36 @@
 {
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "deno.enablePaths": [
-    "supabase/functions"
-  ],
-  "deno.lint": true,
-  "deno.unstable": [
-    "bare-node-builtins",
-    "byonm",
-    "sloppy-imports",
-    "unsafe-proto",
-    "webgpu",
-    "broadcast-channel",
-    "worker-options",
-    "cron",
-    "kv",
-    "ffi",
-    "fs",
-    "http",
-    "net"
-  ],
+  "typescript.preferences.quoteStyle": "single",
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.addMissingImports": "explicit",
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
-  "eslint.workingDirectories": [
-    "./"
-  ],
-  "files.exclude": {
-    "**/.DS_Store": true,
-    "**/.git": true,
-    "**/.hg": true,
-    "**/.next": true,
-    "**/.svn": true,
-    "**/CVS": true,
-    "**/Thumbs.db": true,
-    "**/node_modules": true
+  "eslint.workingDirectories": ["."],
+  "eslint.options": {
+    "configFile": ".eslintrc.hera.js"
   },
-  "javascript.suggest.autoImports": true,
-  "javascript.validate.enable": false,
-  "search.exclude": {
-    "**/*.code-search": true,
-    "**/.next": true,
-    "**/bower_components": true,
-    "**/build": true,
-    "**/dist": true,
-    "**/node_modules": true
-  },
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.preferences.includeInlayEnumMemberValueHints": true,
-  "typescript.preferences.includeInlayFunctionLikeReturnTypeHints": true,
-  "typescript.preferences.includeInlayFunctionParameterTypeHints": true,
-  "typescript.preferences.includeInlayParameterNameHints": "all",
-  "typescript.preferences.includeInlayParameterNameHintsWhenArgumentMatchesName": false,
-  "typescript.preferences.includeInlayPropertyDeclarationTypeHints": false,
-  "typescript.preferences.includeInlayVariableTypeHints": false,
-  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "editor.rulers": [80, 120],
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 120,
+  
+  "editor.snippetSuggestions": "top",
   "typescript.suggest.autoImports": true,
-  "typescript.surveys.enabled": false,
-  "typescript.tsc.autoDetect": "on",
-  "typescript.tsdk": "./node_modules/typescript/lib",
-  "typescript.validate.enable": true
+  "typescript.suggest.includeCompletionsForModuleExports": true,
+  
+  "files.associations": {
+    "*.hera": "typescript",
+    "*.dna": "typescript"
+  },
+  
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.next": true,
+    "**/coverage": true
+  }
 }
