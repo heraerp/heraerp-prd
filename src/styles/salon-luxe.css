@@ -31,49 +31,68 @@ select:hover {
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
-/* Shadcn UI Select components */
+/* Shadcn UI Select components - Global styling */
 .luxe-select-content,
+.hera-select-content,
 [data-radix-select-content],
 [role="listbox"] {
   background-color: #232323 !important;
   border: 1px solid rgba(212, 175, 55, 0.3) !important;
   color: #F5E6C8 !important;
+  z-index: 100 !important;
 }
 
 .luxe-select-item,
+.hera-select-item,
 [data-radix-select-item],
 [role="option"] {
   color: #F5E6C8 !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  padding: 8px 12px !important;
 }
 
 .luxe-select-item:hover,
+.hera-select-item:hover,
 [data-radix-select-item]:hover,
 [role="option"]:hover {
   background-color: rgba(212, 175, 55, 0.1) !important;
 }
 
 .luxe-select-item[data-highlighted],
+.hera-select-item[data-highlighted],
 [data-radix-select-item][data-highlighted],
 [role="option"][data-highlighted] {
   background-color: rgba(212, 175, 55, 0.2) !important;
+  color: #F5E6C8 !important;
+}
+
+.luxe-select-item[data-state="checked"],
+.hera-select-item[data-state="checked"],
+[data-radix-select-item][data-state="checked"] {
+  background-color: rgba(212, 175, 55, 0.15) !important;
+  color: #D4AF37 !important;
 }
 
 /* Select trigger (button that opens dropdown) */
 [data-radix-select-trigger],
-.luxe-select-trigger {
+.luxe-select-trigger,
+.hera-select-trigger {
   background-color: #232323 !important;
   color: #F5E6C8 !important;
   border-color: #8C7853 !important;
 }
 
 [data-radix-select-trigger]:focus,
-.luxe-select-trigger:focus {
+.luxe-select-trigger:focus,
+.hera-select-trigger:focus {
   border-color: #D4AF37 !important;
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
 }
 
 [data-radix-select-trigger]:hover,
-.luxe-select-trigger:hover {
+.luxe-select-trigger:hover,
+.hera-select-trigger:hover {
   border-color: #D4AF37 !important;
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
@@ -105,6 +124,7 @@ input[type="number"],
 input[type="search"],
 input[type="tel"],
 input[type="url"],
+input[type="date"],
 textarea {
   background-color: #232323 !important;
   color: #F5E6C8 !important;
@@ -118,11 +138,13 @@ input[type="number"]:focus,
 input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="url"]:focus,
+input[type="date"]:focus,
 textarea:focus {
   ring-color: #D4AF37 !important;
   border-color: #D4AF37 !important;
   outline: none !important;
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+  --tw-ring-color: rgba(212, 175, 55, 0.3) !important;
 }
 
 input[type="text"]:hover,
@@ -132,6 +154,7 @@ input[type="number"]:hover,
 input[type="search"]:hover,
 input[type="tel"]:hover,
 input[type="url"]:hover,
+input[type="date"]:hover,
 textarea:hover {
   border-color: #D4AF37 !important;
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;

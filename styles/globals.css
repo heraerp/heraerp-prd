@@ -145,13 +145,16 @@ body {
   transform: translateY(-2px);
 }
 
-/* Input Focus Styles */
+/* Input Focus Styles - Updated for Salon Luxe Theme */
 input:focus,
 textarea:focus,
 select:focus {
   @apply ring-2 ring-offset-2;
-  ring-color: var(--color-secondary) !important;
-  border-color: var(--color-primary) !important;
+  ring-color: #D4AF37 !important; /* Salon Luxe Gold */
+  border-color: #8C7853 !important; /* Salon Luxe Bronze */
+  background-color: #232323 !important; /* Charcoal */
+  color: #F5E6C8 !important; /* Champagne */
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
 }
 
 /* Active Navigation Link */
@@ -187,15 +190,17 @@ select:focus {
   @apply nav-link-active;
 }
 
-/* Form Styles */
+/* Form Styles - Updated for Salon Luxe Theme */
 .form-salon input,
 .form-salon textarea,
 .form-salon select {
   @apply w-full rounded-md border px-3 py-2 text-sm transition-colors;
   @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
-  border-color: var(--color-light);
-  focus:ring-color: var(--color-secondary);
-  focus:border-color: var(--color-primary);
+  background-color: #232323 !important; /* Charcoal */
+  color: #F5E6C8 !important; /* Champagne */
+  border-color: #8C7853 !important; /* Bronze */
+  focus:ring-color: #D4AF37 !important; /* Gold */
+  focus:border-color: #D4AF37 !important; /* Gold */
 }
 
 .form-salon label {
