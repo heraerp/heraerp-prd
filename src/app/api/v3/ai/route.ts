@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { assertV2, v2Body } from '@/lib/client/fetchV2'
+import { assertV2, v2Body } from '@/lib/server/route-utils'
 import { callRPC } from '@/lib/supabase/rpc-client'
 import { 
   type AIInsightGenerationRequest,
@@ -30,9 +30,8 @@ import {
 // ============================================================================
 
 export async function POST(request: NextRequest) {
-  const headers = assertV2(request)
-  
   try {
+    assertV2(request)
     const body = await v2Body(request)
     const aiRequest = body as AIInsightGenerationRequest
     
