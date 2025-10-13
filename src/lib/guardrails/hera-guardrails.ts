@@ -16,12 +16,8 @@ export type SacredTable = (typeof SACRED_TABLES)[number]
 
 export const SMART_CODE_PATTERN = /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.[vV][0-9]+$/
 
-export interface GuardrailViolation {
-  code: string
-  message: string
-  severity: 'ERROR' | 'WARNING'
-  context?: any
-}
+// Import from canonical location
+export type { GuardrailViolation, GuardrailSeverity } from '@/lib/universal/guardrails'
 
 export interface GuardrailResult {
   passed: boolean
@@ -38,15 +34,15 @@ export class HERAGuardrails {
 
     if (!code) {
       violations.push({
-        code: 'SMART_CODE_REQUIRED',
+        id: 'HERA.GUARDRAILS.SMART_CODE_REQUIRED.V1',
         message: 'Smart code is required for all HERA entities',
-        severity: 'ERROR'
+        severity: 'error'
       })
     } else if (!SMART_CODE_PATTERN.test(code)) {
       violations.push({
-        code: 'SMART_CODE_INVALID_FORMAT',
+        id: 'HERA.GUARDRAILS.SMART_CODE_INVALID_FORMAT.V1',
         message: `Smart code '${code}' does not match required pattern: HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v{N}`,
-        severity: 'ERROR'
+        severity: 'error'
       })
     }
 
@@ -64,9 +60,9 @@ export class HERAGuardrails {
 
     if (!organizationId) {
       violations.push({
-        code: 'ORG_ID_REQUIRED',
+        id: 'HERA.GUARDRAILS.ORG_ID_REQUIRED.V1',
         message: 'organization_id is required for multi-tenant isolation',
-        severity: 'ERROR'
+        severity: 'error'
       })
     }
 
@@ -75,15 +71,15 @@ export class HERAGuardrails {
         // Auto-fix: add organization_id
         data.organization_id = organizationId
         violations.push({
-          code: 'ORG_ID_AUTO_ADDED',
+          id: 'HERA.GUARDRAILS.ORG_ID_AUTO_ADDED.V1',
           message: 'organization_id automatically added to maintain isolation',
-          severity: 'WARNING'
+          severity: 'warn'
         })
       } else if (data.organization_id && data.organization_id !== organizationId) {
         violations.push({
-          code: 'ORG_ID_MISMATCH',
+          id: 'HERA.GUARDRAILS.ORG_ID_MISMATCH.V1',
           message: 'Data organization_id does not match context organization_id',
-          severity: 'ERROR'
+          severity: 'error'
         })
       }
     }
@@ -103,9 +99,9 @@ export class HERAGuardrails {
 
     if (!SACRED_TABLES.includes(tableName as SacredTable)) {
       violations.push({
-        code: 'SACRED_TABLE_VIOLATION',
+        id: 'HERA.GUARDRAILS.SACRED_TABLE_VIOLATION.V1',
         message: `Table '${tableName}' is not one of the Sacred Six. Use only: ${SACRED_TABLES.join(', ')}`,
-        severity: 'ERROR'
+        severity: 'error'
       })
     }
 
@@ -142,9 +138,9 @@ export class HERAGuardrails {
       if (Math.abs(balance) >= 0.01) {
         // Allow for rounding errors
         violations.push({
-          code: 'GL_UNBALANCED',
+          id: 'HERA.GUARDRAILS.GL_UNBALANCED.V1',
           message: `GL entries not balanced for ${currency}: ${balance.toFixed(2)} difference`,
-          severity: 'ERROR',
+          severity: 'error',
           context: { currency, balance }
         })
       }
@@ -167,9 +163,9 @@ export class HERAGuardrails {
     requiredFields.forEach(field => {
       if (!transaction[field]) {
         violations.push({
-          code: 'REQUIRED_FIELD_MISSING',
+          id: 'HERA.GUARDRAILS.REQUIRED_FIELD_MISSING.V1',
           message: `Required field '${field}' is missing`,
-          severity: 'ERROR'
+          severity: 'error'
         })
       }
     })
@@ -185,9 +181,9 @@ export class HERAGuardrails {
       transaction.lines.forEach((line: any, index: number) => {
         if (!line.smart_code) {
           violations.push({
-            code: 'LINE_SMART_CODE_MISSING',
+            id: 'HERA.GUARDRAILS.LINE_SMART_CODE_MISSING.V1',
             message: `Transaction line ${index + 1} missing smart_code`,
-            severity: 'ERROR'
+            severity: 'error'
           })
         } else {
           const lineSmartCodeResult = this.validateSmartCode(line.smart_code)
@@ -201,9 +197,9 @@ export class HERAGuardrails {
 
         if (typeof line.line_amount !== 'number') {
           violations.push({
-            code: 'LINE_AMOUNT_INVALID',
+            id: 'HERA.GUARDRAILS.LINE_AMOUNT_INVALID.V1',
             message: `Transaction line ${index + 1} has invalid line_amount`,
-            severity: 'ERROR'
+            severity: 'error'
           })
         }
       })
