@@ -4,13 +4,14 @@
 
 import { z, ZodSchema } from 'zod'
 import { serverSupabase } from './supabase'
+import type { GuardrailViolation } from './guardrails'
 import {
   guardSmartCode,
   guardOrganization,
   normalizeEntityType,
   validateSmartCodeSegment,
   parseSmartCode,
-  GuardrailViolation,
+  gv,
   UUID
 } from './guardrails'
 
@@ -409,8 +410,11 @@ export class EntityBuilder {
       // 1. Validate against UCR rules
       const validation = await this.validateAgainstRules(smartCode, orgId, data)
       if (!validation.valid) {
-        throw new GuardrailViolation('VALIDATION_FAILED', 'Entity validation failed', {
-          errors: validation.errors
+        throw gv({
+          code: 'VALIDATION_FAILED',
+          message: 'Entity validation failed',
+          severity: 'error',
+          context: { errors: validation.errors }
         })
       }
 
@@ -542,8 +546,11 @@ export class EntityBuilder {
     // 2. Validate updates against UCR rules
     const validation = await this.validateAgainstRules(smartCode, orgId, data)
     if (!validation.valid) {
-      throw new GuardrailViolation('VALIDATION_FAILED', 'Entity update validation failed', {
-        errors: validation.errors
+      throw gv({
+        code: 'VALIDATION_FAILED',
+        message: 'Entity update validation failed',
+        severity: 'error',
+        context: { errors: validation.errors }
       })
     }
 
