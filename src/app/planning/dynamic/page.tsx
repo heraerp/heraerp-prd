@@ -9,7 +9,7 @@
  * Smart Code: HERA.PLAN.DEMO.PAGE.V3
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -70,7 +70,7 @@ import {
 // Demo organization for planning testing
 const DEMO_ORG_ID = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
 
-export default function DynamicPlanningDemoPage() {
+function DynamicPlanningContent() {
   const searchParams = useSearchParams()
   
   // State management
@@ -833,5 +833,30 @@ export default function DynamicPlanningDemoPage() {
         </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+export default function DynamicPlanningDemoPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Brain className="w-8 h-8 text-purple-500" />
+              Dynamic Planning & Forecasting v3.3
+            </h1>
+            <p className="text-muted-foreground mt-2">Loading...</p>
+          </div>
+        </div>
+        <div className="animate-pulse space-y-4">
+          <div className="h-32 bg-muted rounded-lg"></div>
+          <div className="h-64 bg-muted rounded-lg"></div>
+          <div className="h-96 bg-muted rounded-lg"></div>
+        </div>
+      </div>
+    }>
+      <DynamicPlanningContent />
+    </Suspense>
   )
 }
