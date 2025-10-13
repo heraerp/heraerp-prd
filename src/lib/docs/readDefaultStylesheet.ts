@@ -2,29 +2,14 @@ import fs from 'fs'
 import path from 'path'
 
 export function readDefaultStylesheet(): string {
-  // Build-safe CSS reader with comprehensive fallbacks
+  // Read stable project asset, not build artifact
   try {
-    const roots = [process.cwd()]
-    const candidates = [
-      ['.next', 'browser', 'default-stylesheet.css'], // legacy path your code expects
-      ['public', 'default-stylesheet.css'], // our portable fallback
-      ['node_modules', '@next', 'docs', 'default-stylesheet.css'], // next.js docs fallback
-      ['styles', 'globals.css'], // common location
-      ['src', 'styles', 'globals.css'] // src-based styles
-    ].flatMap(parts => roots.map(r => path.join(r, ...parts)))
-
-    for (const p of candidates) {
-      try {
-        if (fs.existsSync(p)) {
-          return fs.readFileSync(p, 'utf8')
-        }
-      } catch (readError) {
-        console.warn(`[readDefaultStylesheet] Failed to read ${p}:`, readError)
-        continue
-      }
+    const staticCssPath = path.join(process.cwd(), 'public', 'docs', 'default-stylesheet.css')
+    if (fs.existsSync(staticCssPath)) {
+      return fs.readFileSync(staticCssPath, 'utf8')
     }
   } catch (error) {
-    console.warn('[readDefaultStylesheet] Error accessing filesystem:', error)
+    console.warn('[readDefaultStylesheet] Error reading static CSS:', error)
   }
   
   // Comprehensive fallback CSS for build safety

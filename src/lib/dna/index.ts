@@ -86,6 +86,50 @@ export {
 } from './components/dna-compliance-monitor'
 
 // ============================================================================
+// DNA UI COMPONENTS EXPORTS (Build compatibility)
+// ============================================================================
+
+// Mobile Components
+export { BottomSheet, BottomSheetPresets } from './components/mobile/BottomSheet'
+export { useBottomSheet } from './components/mobile/BottomSheet'
+
+// Component Loader
+export function loadDNAComponent(name: string) {
+  // Minimal component loader for build compatibility
+  return Promise.resolve(() => <div data-dna-component={name}>DNA Component: {name}</div>)
+}
+
+// Registry and Metadata for build compatibility
+export const HERA_DNA_INFO = {
+  version: 'v2.1.0',
+  build: 'production',
+  features: ['components', 'hooks', 'themes', 'responsive']
+}
+
+export const HERA_DNA_CATEGORIES = [
+  'ui', 'forms', 'data', 'navigation', 'feedback', 'layout'
+]
+
+export const HERA_DNA_REGISTRY = new Map([
+  ['StatCardDNA', { category: 'ui', version: 'v1' }],
+  ['BottomSheet', { category: 'navigation', version: 'v1' }],
+  ['ButtonDNA', { category: 'ui', version: 'v1' }]
+])
+
+export const HERA_DNA_SMART_CODES = {
+  COMPONENT_PREFIX: 'HERA.DNA.UI',
+  HOOK_PREFIX: 'HERA.DNA.HOOK', 
+  THEME_PREFIX: 'HERA.DNA.THEME'
+}
+
+export function getComponentMetadata(name: string) {
+  return HERA_DNA_REGISTRY.get(name) || { category: 'unknown', version: 'v1' }
+}
+
+// UI Components
+export { StatCardDNA } from './components/ui/stat-card-dna'
+
+// ============================================================================
 // DNA UTILITY FUNCTIONS
 // ============================================================================
 

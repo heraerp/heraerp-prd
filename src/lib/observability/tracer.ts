@@ -33,44 +33,56 @@ export class HeraTracer {
    * Initialize OpenTelemetry
    */
   async initialize() {
-    // Configure resource
-    const resource = new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: 'hera-enterprise',
-      [SemanticResourceAttributes.SERVICE_VERSION]: process.env.HERA_VERSION || '1.0.0',
-      [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development'
-    })
+    // Skip telemetry if disabled for build
+    if (process.env.OTEL_DISABLED === '1') {
+      console.log('[HERA Tracer] OpenTelemetry disabled for build')
+      return
+    }
 
-    // Configure trace provider
-    this.provider = new BasicTracerProvider({ resource })
-
-    // Configure exporters
-    if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
-      const otlpExporter = new OTLPTraceExporter({
-        url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
+    try {
+      // Configure resource
+      const resource = new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: 'hera-enterprise',
+        [SemanticResourceAttributes.SERVICE_VERSION]: process.env.HERA_VERSION || '1.0.0',
+        [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development'
       })
-      this.provider.addSpanProcessor(new SimpleSpanProcessor(otlpExporter))
-    }
 
-    // Add console exporter in development
-    if (process.env.NODE_ENV === 'development') {
-      this.provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()))
-    }
+      // Configure trace provider
+      this.provider = new BasicTracerProvider({ resource })
 
-    // Register provider
-    this.provider.register()
-
-    // Configure SDK
-    this.sdk = new NodeSDK({
-      traceProvider: this.provider,
-      instrumentations: [
-        getNodeAutoInstrumentations({
-          '@opentelemetry/instrumentation-fs': { enabled: false }
+      // Configure exporters - only use OTLP, no Jaeger
+      if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+        const otlpExporter = new OTLPTraceExporter({
+          url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
         })
-      ]
-    })
+        this.provider.addSpanProcessor(new SimpleSpanProcessor(otlpExporter))
+      }
 
-    // Start SDK
-    await this.sdk.start()
+      // Add console exporter in development
+      if (process.env.NODE_ENV === 'development') {
+        this.provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()))
+      }
+
+      // Register provider
+      this.provider.register()
+
+      // Configure SDK
+      this.sdk = new NodeSDK({
+        traceProvider: this.provider,
+        instrumentations: [
+          getNodeAutoInstrumentations({
+            '@opentelemetry/instrumentation-fs': { enabled: false }
+          })
+        ]
+      })
+
+      // Start SDK
+      await this.sdk.start()
+      console.log('[HERA Tracer] OpenTelemetry initialized successfully')
+    } catch (error) {
+      console.warn('[HERA Tracer] Failed to initialize OpenTelemetry:', error)
+      // Don't throw - tracing failures shouldn't break the app
+    }
   }
 
   /**

@@ -26,3 +26,8 @@ export const supabaseServerHelper = {
   createClient: createServerClient,
   createServerClient
 }
+
+// Export for API routes expecting this name
+export function createServerSupabaseClient() {
+  return createServerClient()
+}
