@@ -35,4 +35,4 @@ export function demoGuard(orgId?: string | null): {
       : ''
   }
 }
-export { guardDemoOperation } from './demo/guard'
+// Note: guardDemoOperation removed with demo directory cleanup

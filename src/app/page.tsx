@@ -210,7 +210,7 @@ export default function HomePage() {
                 name: 'Salon & Beauty',
                 icon: '💇',
                 desc: 'Appointments, inventory & POS',
-                href: '/demo/salon',
+                href: '/salon',
                 available: true
               },
               {
