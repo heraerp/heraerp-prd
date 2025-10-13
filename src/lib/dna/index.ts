@@ -7,6 +7,8 @@
  * automatic enforcement of HERA architectural patterns.
  */
 
+import React from "react";
+
 // ============================================================================
 // CORE DNA STANDARDIZATION EXPORTS
 // ============================================================================
@@ -95,8 +97,13 @@ export { useBottomSheet } from './components/mobile/BottomSheet'
 
 // Component Loader
 export function loadDNAComponent(name: string) {
-  // Minimal component loader for build compatibility
-  return Promise.resolve(() => <div data-dna-component={name}>DNA Component: {name}</div>)
+  const Component: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) =>
+    React.createElement(
+      "div",
+      { ...props, "data-dna-component": name },
+      `DNA Component: ${name}`
+    );
+  return Promise.resolve(Component);
 }
 
 // Registry and Metadata for build compatibility
