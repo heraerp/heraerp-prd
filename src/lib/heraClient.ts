@@ -153,6 +153,21 @@ export class HeraClient {
     return this.req(`/universal/txn-read?${q}`, { method: 'GET' })
   }
 
+  txnQuery(p: {
+    organization_id: string
+    source_entity_id?: string
+    target_entity_id?: string
+    transaction_type?: string
+    smart_code_like?: string
+    date_from?: string
+    date_to?: string
+    limit?: number
+    offset?: number
+    include_lines?: boolean
+  }) {
+    return this.req('/universal/txn-query', { method: 'POST', body: JSON.stringify(p) })
+  }
+
   // Reports/Analytics
   ledgerReport(p: {
     organization_id: string
@@ -182,5 +197,14 @@ export class HeraClient {
     }
     return this.req('/universal/analytics-tiles', { method: 'POST', body: JSON.stringify(body) })
   }
-}
 
+  // Inventory Analytics
+  stockByBranch(p: { organization_id: string; branch_id?: string; search?: string }) {
+    const body = {
+      organization_id: p.organization_id,
+      branch_id: p.branch_id,
+      search: p.search
+    }
+    return this.req('/universal/stock-by-branch', { method: 'POST', body: JSON.stringify(body) })
+  }
+}

@@ -134,6 +134,34 @@ export class HeraClientMock {
     return t
   }
 
+  async txnQuery(p: {
+    organization_id: string
+    source_entity_id?: string
+    target_entity_id?: string
+    transaction_type?: string
+    smart_code_like?: string
+    date_from?: string
+    date_to?: string
+    limit?: number
+    offset?: number
+    include_lines?: boolean
+  }) {
+    const all = txStore().filter(t => t.organization_id === p.organization_id)
+    const filtered = all.filter(t => {
+      if (p.transaction_type && t.transaction_type !== p.transaction_type) return false
+      if (p.smart_code_like && !(t.smart_code || '').includes(p.smart_code_like)) return false
+      return true
+    })
+    const off = p.offset || 0
+    const lim = p.limit || 50
+    return {
+      transactions: filtered.slice(off, off + lim),
+      total: filtered.length,
+      limit: lim,
+      offset: off
+    }
+  }
+
   async ledgerReport(p: {
     organization_id: string
     report: 'TB' | 'PL' | 'BS'
@@ -166,5 +194,15 @@ export class HeraClientMock {
       ]
     }
   }
-}
 
+  async stockByBranch(p: { organization_id: string; branch_id?: string; search?: string }) {
+    // Simple mock aggregation by branch
+    return {
+      items: [
+        { branch_id: p.branch_id || 'BR-001', product_code: 'PROD-1', qty: 12 },
+        { branch_id: p.branch_id || 'BR-001', product_code: 'PROD-2', qty: 5 },
+        { branch_id: 'BR-002', product_code: 'PROD-1', qty: 7 }
+      ]
+    }
+  }
+}

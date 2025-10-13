@@ -3,11 +3,11 @@ import { z } from 'zod'
 // Single source of truth for guardrail contracts used across API & builders
 export type GuardrailSeverity = 'error' | 'warn' | 'info'
 
-export interface GuardrailViolation {
-  id: string                 // e.g. HERA.GUARDRAIL.ENTITY.MISSING_SMART_CODE.V1
-  severity: GuardrailSeverity
+export type GuardrailViolation = {
+  code: string
   message: string
-  hint?: string
+  severity?: 'info' | 'warn' | 'error'
+  field?: string
   context?: Record<string, unknown>
 }
 

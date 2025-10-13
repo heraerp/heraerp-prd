@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { PropsWithChildren, useMemo } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useRoles } from '@/lib/hooks/roles'
 import { filterNavByRole, type NavItem } from '@/lib/roles'
 
 export default function MatrixLayout({ children }: PropsWithChildren) {
-  const { roles = [], userRoles = [] } = useHERAAuth() || ({} as any)
-  const allRoles = (roles || userRoles || []) as string[]
+  const allRoles = useRoles()
   const pathname = usePathname()
 
   const nav = useMemo<NavItem[]>(() => {
@@ -56,4 +56,3 @@ export default function MatrixLayout({ children }: PropsWithChildren) {
     </div>
   )
 }
-

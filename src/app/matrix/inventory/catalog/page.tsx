@@ -42,6 +42,7 @@ export default function InventoryCatalogPage() {
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
+        <button className="px-3 py-2 rounded bg-secondary text-secondary-foreground" onClick={() => window.print()}>Print barcodes</button>
       </div>
       {isLoading ? (
         <div className="text-sm text-muted-foreground">Loading…</div>
@@ -134,4 +135,3 @@ function EditableRow({ row, onSave }: { row: any; onSave: (r: any) => Promise<vo
     </tr>
   )
 }
-
