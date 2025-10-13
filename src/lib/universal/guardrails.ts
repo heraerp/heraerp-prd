@@ -1,5 +1,22 @@
 import { z } from 'zod'
 
+// Single source of truth for guardrail contracts used across API & builders
+export type GuardrailSeverity = 'error' | 'warn' | 'info'
+
+export interface GuardrailViolation {
+  id: string  // e.g., 'HERA.GUARDRAIL.ENTITY.MISSING_SMART_CODE.V1'
+  severity: GuardrailSeverity
+  message: string
+  hint?: string
+  context?: Record<string, unknown>
+}
+
+// Helper function for creating violations
+export const gv = (init: Omit<GuardrailViolation, 'severity'> & { severity?: GuardrailSeverity }): GuardrailViolation => ({
+  severity: 'error',
+  ...init,
+})
+
 export const UUID = z.string().uuid()
 export const SmartCode = z
   .string()

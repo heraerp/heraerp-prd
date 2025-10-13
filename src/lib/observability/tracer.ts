@@ -3,19 +3,13 @@
  * Distributed tracing for all HERA operations
  */
 
-import { NodeSDK } from '@opentelemetry/sdk-node'
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
-import {
-  BasicTracerProvider,
-  ConsoleSpanExporter,
-  SimpleSpanProcessor,
-  SpanContext
-} from '@opentelemetry/sdk-trace-base'
-import { Resource } from '@opentelemetry/resources'
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import { trace, context, SpanStatusCode, SpanKind } from '@opentelemetry/api'
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { v4 as uuidv4 } from 'uuid'
+
+// Type imports for better TypeScript support
+type SpanContext = import('@opentelemetry/api').SpanContext
+type NodeSDK = import('@opentelemetry/sdk-node').NodeSDK
+type BasicTracerProvider = import('@opentelemetry/sdk-trace-base').BasicTracerProvider
 
 export class HeraTracer {
   private static instance: HeraTracer
@@ -30,20 +24,38 @@ export class HeraTracer {
   }
 
   /**
-   * Initialize OpenTelemetry
+   * Initialize OpenTelemetry with dynamic imports to avoid build-time resolution
    */
   async initialize() {
     // Gate tracing so it never initializes in Next build workers or edge runtimes
     const isNodeRuntime = process.env.NEXT_RUNTIME === 'nodejs'
     const isProdBuild = !!process.env.NEXT_PHASE?.includes('phase-production-build')
+    const exportersDisabled = process.env.OTEL_TRACES_EXPORTER === 'none'
     
     // Skip telemetry if disabled, not in Node runtime, or during build
-    if (!isNodeRuntime || isProdBuild || process.env.OTEL_TRACES_EXPORTER === 'none') {
+    if (!isNodeRuntime || isProdBuild || exportersDisabled) {
       console.log('[HERA Tracer] OpenTelemetry disabled for build/SSR')
       return
     }
 
     try {
+      // Dynamic imports to prevent webpack from resolving at build time
+      const [
+        { NodeSDK },
+        { getNodeAutoInstrumentations },
+        { BasicTracerProvider, ConsoleSpanExporter, SimpleSpanProcessor },
+        { Resource },
+        { SemanticResourceAttributes },
+        { OTLPTraceExporter }
+      ] = await Promise.all([
+        import('@opentelemetry/sdk-node'),
+        import('@opentelemetry/auto-instrumentations-node'),
+        import('@opentelemetry/sdk-trace-base'),
+        import('@opentelemetry/resources'),
+        import('@opentelemetry/semantic-conventions'),
+        import('@opentelemetry/exporter-trace-otlp-http')
+      ])
+
       // Configure resource
       const resource = new Resource({
         [SemanticResourceAttributes.SERVICE_NAME]: 'hera-enterprise',
@@ -444,7 +456,24 @@ export class HeraTracer {
   }
 }
 
+// Initialize if conditions are met
+const isNodeRuntime = process.env.NEXT_RUNTIME === 'nodejs'
+const isProdBuild = !!process.env.NEXT_PHASE?.includes('phase-production-build')
+const exportersDisabled = process.env.OTEL_TRACES_EXPORTER === 'none'
+
+if (isNodeRuntime && !isProdBuild && !exportersDisabled) {
+  // Do dynamic import here so webpack never tries in build/edge:
+  ;(async () => {
+    try {
+      const tracer = HeraTracer.getInstance()
+      await tracer.initialize()
+    } catch (error) {
+      console.error('[HERA Tracer] Auto-initialization failed:', error)
+    }
+  })()
+}
+
 export const heraTracer = HeraTracer.getInstance()
 
-// Ensure module side-effects don't run during build
+// Make this a side-effect-only module
 export {}
