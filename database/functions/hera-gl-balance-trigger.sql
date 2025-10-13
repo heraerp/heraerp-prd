@@ -9,10 +9,25 @@ AS $$
 DECLARE
   v_txn_id uuid := COALESCE(NEW.transaction_id, OLD.transaction_id);
   v_org_id uuid := COALESCE(NEW.organization_id, OLD.organization_id);
+  v_gl_line_count integer;
   v_total_debits  numeric(15,2);
   v_total_credits numeric(15,2);
   v_diff          numeric(15,2);
 BEGIN
+  -- Skip trigger entirely if no GL lines exist
+  -- Only check GL transactions (accounting entries), not operational transactions
+  SELECT COUNT(*)
+  INTO v_gl_line_count
+  FROM universal_transaction_lines
+  WHERE transaction_id = v_txn_id
+    AND organization_id = v_org_id
+    AND smart_code ~* '\.GL\.';      -- Only GL (General Ledger) lines
+    
+  -- If no GL lines, skip balance validation entirely
+  IF v_gl_line_count = 0 THEN
+    RETURN COALESCE(NEW, OLD);
+  END IF;
+
   -- Sum only GL lines (by smart_code containing ".GL.")
   SELECT
     COALESCE(SUM(CASE WHEN line_amount >= 0 THEN line_amount ELSE 0 END), 0),
@@ -61,11 +76,17 @@ BEGIN
   RETURN COALESCE(NEW, OLD);
 END$$;
 
--- Drop and recreate trigger
+-- Drop and recreate trigger with WHEN condition for performance
 DROP TRIGGER IF EXISTS trg_gl_balance_biu ON universal_transaction_lines;
 CREATE TRIGGER trg_gl_balance_biu
 AFTER INSERT OR UPDATE OR DELETE ON universal_transaction_lines
-FOR EACH ROW EXECUTE FUNCTION hera_gl_balance_check_biu();
+FOR EACH ROW 
+WHEN (
+  -- Only fire for GL lines (smart_code contains '.GL.')
+  (NEW.smart_code IS NOT NULL AND NEW.smart_code ~* '\.GL\.') OR
+  (OLD.smart_code IS NOT NULL AND OLD.smart_code ~* '\.GL\.')
+)
+EXECUTE FUNCTION hera_gl_balance_check_biu();
 
 -- Backwards-compatibility view for legacy code
 CREATE OR REPLACE VIEW v_universal_gl_lines AS
