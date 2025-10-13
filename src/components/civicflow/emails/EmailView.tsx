@@ -32,7 +32,7 @@ import {
   Eye,
   EyeOff,
   Download,
-  Print
+  Printer
 } from 'lucide-react'
 
 interface EmailViewProps {
@@ -171,7 +171,7 @@ export function EmailView({
             </Button>
 
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <Print className="h-4 w-4 ink-muted" />
+              <Printer className="h-4 w-4 ink-muted" />
             </Button>
 
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">

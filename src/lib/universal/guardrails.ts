@@ -44,12 +44,5 @@ export {
   validateSmartCodeSegment
 } from './guardrails-core'
 
-// Direct export of GuardrailViolation type
+// Direct export of GuardrailViolation type  
 export type { GuardrailViolation } from './guardrails-core'
-
-// TEMP shim type re-export to satisfy imports
-export type GuardrailViolation = {
-  code: string;
-  message: string;
-  path?: string[];
-}
