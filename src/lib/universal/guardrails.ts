@@ -4,18 +4,16 @@ import { z } from 'zod'
 export type GuardrailSeverity = 'error' | 'warn' | 'info'
 
 export interface GuardrailViolation {
-  id: string  // e.g., 'HERA.GUARDRAIL.ENTITY.MISSING_SMART_CODE.V1'
+  id: string                 // e.g. HERA.GUARDRAIL.ENTITY.MISSING_SMART_CODE.V1
   severity: GuardrailSeverity
   message: string
   hint?: string
   context?: Record<string, unknown>
 }
 
-// Helper function for creating violations
-export const gv = (init: Omit<GuardrailViolation, 'severity'> & { severity?: GuardrailSeverity }): GuardrailViolation => ({
-  severity: 'error',
-  ...init,
-})
+export const gv = (
+  init: Omit<GuardrailViolation, 'severity'> & { severity?: GuardrailSeverity }
+): GuardrailViolation => ({ severity: 'error', ...init })
 
 export const UUID = z.string().uuid()
 export const SmartCode = z
@@ -53,6 +51,7 @@ export const parseSmartCode = (code: string): SmartCodeParts => {
     version: parts[parts.length - 1] // v1, v2, etc.
   }
 }
+
 // compat re-exports
 export {
   UuidZ,
@@ -60,6 +59,3 @@ export {
   normalizeEntityType,
   validateSmartCodeSegment
 } from './guardrails-core'
-
-// Direct export of GuardrailViolation type  
-export type { GuardrailViolation } from './guardrails-core'
