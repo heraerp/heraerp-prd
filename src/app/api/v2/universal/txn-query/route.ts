@@ -16,8 +16,8 @@ const txnQuerySchema = z.object({
   target_entity_id: z.string().uuid().optional(),
   transaction_type: z.string().optional(),
   smart_code_like: z.string().optional(),
-  date_from: z.string().datetime().optional(),
-  date_to: z.string().datetime().optional(),
+  date_from: z.string().optional(),
+  date_to: z.string().optional(),
   limit: z.number().min(1).max(1000).optional().default(100),
   offset: z.number().min(0).optional().default(0),
   include_lines: z.boolean().optional().default(false)
