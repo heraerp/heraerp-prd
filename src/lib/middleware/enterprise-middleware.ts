@@ -31,9 +31,12 @@ export async function enterpriseMiddleware(
   request: NextRequest,
   handler: (req: NextRequest, ctx: MiddlewareContext) => Promise<Response>
 ): Promise<Response> {
+  const isNode = process.env.NEXT_RUNTIME === 'nodejs'
+  const tracer = isNode ? heraTracer() : undefined
+
   const ctx: MiddlewareContext = {
     requestId: request.headers.get('x-request-id') || uuidv4(),
-    traceId: request.headers.get('x-trace-id') || heraTracer.generateTraceId(),
+    traceId: request.headers.get('x-trace-id') || uuidv4().replace(/-/g, ''),
     startTime: Date.now(),
     roles: ['USER'] // Default role
   }
@@ -89,14 +92,11 @@ export async function enterpriseMiddleware(
     }
 
     // 4. Execute handler with tracing
-    const response = await heraTracer.traceAPI(
-      request.method,
-      request.nextUrl.pathname,
-      ctx.organizationId!,
-      async () => {
+    const response = tracer ? 
+      await tracer.startActiveSpan(`${request.method} ${request.nextUrl.pathname}`, async () => {
         return handler(request, ctx)
-      }
-    )
+      }) :
+      await handler(request, ctx)
 
     // 5. Store idempotency result
     if (idempotencyKey && response.ok) {
