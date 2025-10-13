@@ -22,6 +22,7 @@ export class IceCreamCOAGenerator {
    */
   async generateCOA() {
     const accounts = []
+<<<<<<< HEAD
 
     // Assets - 1000 series
     accounts.push(...this.generateAssetAccounts())
@@ -44,6 +45,30 @@ export class IceCreamCOAGenerator {
     // Other Income/Expenses - 8000 series
     accounts.push(...this.generateOtherAccounts())
 
+=======
+    
+    // Assets - 1000 series
+    accounts.push(...this.generateAssetAccounts())
+    
+    // Liabilities - 2000 series
+    accounts.push(...this.generateLiabilityAccounts())
+    
+    // Equity - 3000 series
+    accounts.push(...this.generateEquityAccounts())
+    
+    // Revenue - 4000 series
+    accounts.push(...this.generateRevenueAccounts())
+    
+    // Cost of Goods Sold - 5000 series
+    accounts.push(...this.generateCOGSAccounts())
+    
+    // Operating Expenses - 6000 series
+    accounts.push(...this.generateExpenseAccounts())
+    
+    // Other Income/Expenses - 8000 series
+    accounts.push(...this.generateOtherAccounts())
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Create all accounts in the database
     const createdAccounts = []
     for (const account of accounts) {
@@ -64,7 +89,11 @@ export class IceCreamCOAGenerator {
             normal_balance: account.normal_balance
           }
         })
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
         // Add dynamic fields for COA properties
         if (account.ifrs_fields) {
           for (const [field, value] of Object.entries(account.ifrs_fields)) {
@@ -76,12 +105,17 @@ export class IceCreamCOAGenerator {
             )
           }
         }
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
         createdAccounts.push(entity)
       } catch (error) {
         console.error(`Failed to create account ${account.account_code}:`, error)
       }
     }
+<<<<<<< HEAD
 
     // Create relationships for parent-child hierarchy
     await this.createAccountHierarchy(createdAccounts)
@@ -89,6 +123,15 @@ export class IceCreamCOAGenerator {
     // Setup auto-journal rules
     await this.setupAutoJournalRules()
 
+=======
+    
+    // Create relationships for parent-child hierarchy
+    await this.createAccountHierarchy(createdAccounts)
+    
+    // Setup auto-journal rules
+    await this.setupAutoJournalRules()
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     return {
       success: true,
       accountsCreated: createdAccounts.length,
@@ -98,7 +141,11 @@ export class IceCreamCOAGenerator {
 
   private generateAssetAccounts() {
     const accounts = []
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Current Assets
     accounts.push({
       account_code: '1000',
@@ -109,7 +156,11 @@ export class IceCreamCOAGenerator {
       smart_code: `HERA.${this.config.country}.ICECREAM.GL.ASSET.HEADER.v2`,
       normal_balance: 'debit'
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Cash accounts
     accounts.push({
       account_code: '1111',
@@ -125,6 +176,7 @@ export class IceCreamCOAGenerator {
         cash_flow_category: 'Operating'
       }
     })
+<<<<<<< HEAD
 
     // Inventory - Raw Materials
     const rawMaterials = [
@@ -156,6 +208,19 @@ export class IceCreamCOAGenerator {
       { code: '1316', name: 'Packaging Materials', desc: 'Cups, cones, sticks, wrappers' }
     ]
 
+=======
+    
+    // Inventory - Raw Materials
+    const rawMaterials = [
+      { code: '1311', name: 'Raw Materials - Dairy Products', desc: 'Milk, cream, butter, milk powder' },
+      { code: '1312', name: 'Raw Materials - Sugar & Sweeteners', desc: 'Sugar, corn syrup, honey' },
+      { code: '1313', name: 'Raw Materials - Flavoring & Colors', desc: 'Vanilla, chocolate, fruit extracts' },
+      { code: '1314', name: 'Raw Materials - Stabilizers & Emulsifiers', desc: 'Guar gum, lecithin' },
+      { code: '1315', name: 'Raw Materials - Inclusions', desc: 'Nuts, chocolate chips, fruit pieces' },
+      { code: '1316', name: 'Packaging Materials', desc: 'Cups, cones, sticks, wrappers' }
+    ]
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     rawMaterials.forEach(rm => {
       accounts.push({
         account_code: rm.code,
@@ -173,7 +238,11 @@ export class IceCreamCOAGenerator {
         }
       })
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Finished Goods
     const finishedGoods = [
       { code: '1331', name: 'FG - Ice Cream Cups/Tubs', type: 'CUPS' },
@@ -181,11 +250,19 @@ export class IceCreamCOAGenerator {
       { code: '1333', name: 'FG - Ice Cream Cones', type: 'CONES' },
       { code: '1334', name: 'FG - Bulk Ice Cream', type: 'BULK' }
     ]
+<<<<<<< HEAD
 
     if (this.config.includeKulfi) {
       finishedGoods.push({ code: '1335', name: 'FG - Kulfi Products', type: 'KULFI' })
     }
 
+=======
+    
+    if (this.config.includeKulfi) {
+      finishedGoods.push({ code: '1335', name: 'FG - Kulfi Products', type: 'KULFI' })
+    }
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     finishedGoods.forEach(fg => {
       accounts.push({
         account_code: fg.code,
@@ -202,7 +279,11 @@ export class IceCreamCOAGenerator {
         }
       })
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Fixed Assets - Production Equipment
     accounts.push({
       account_code: '1610',
@@ -220,7 +301,11 @@ export class IceCreamCOAGenerator {
         useful_life_years: 10
       }
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     accounts.push({
       account_code: '1620',
       account_name: 'Freezing & Cold Storage Equipment',
@@ -237,13 +322,21 @@ export class IceCreamCOAGenerator {
         useful_life_years: 15
       }
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     return accounts
   }
 
   private generateRevenueAccounts() {
     const accounts = []
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Revenue header
     accounts.push({
       account_code: '4000',
@@ -254,7 +347,11 @@ export class IceCreamCOAGenerator {
       smart_code: `HERA.${this.config.country}.ICECREAM.GL.REVENUE.HEADER.v2`,
       normal_balance: 'credit'
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Sales channels
     const salesChannels = [
       { code: '4110', name: 'Ice Cream Sales - Retail Stores', type: 'RETAIL', gst: '18%' },
@@ -262,7 +359,11 @@ export class IceCreamCOAGenerator {
       { code: '4112', name: 'Ice Cream Sales - Food Service', type: 'FOODSERVICE', gst: '18%' },
       { code: '4113', name: 'Ice Cream Sales - Online/Delivery', type: 'ONLINE', gst: '18%' }
     ]
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     if (this.config.includeKulfi) {
       salesChannels.push({
         code: '4114',
@@ -271,7 +372,11 @@ export class IceCreamCOAGenerator {
         gst: '12%' // Lower GST rate for traditional products
       })
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     salesChannels.forEach(channel => {
       accounts.push({
         account_code: channel.code,
@@ -289,13 +394,21 @@ export class IceCreamCOAGenerator {
         }
       })
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     return accounts
   }
 
   private generateCOGSAccounts() {
     const accounts = []
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // COGS header
     accounts.push({
       account_code: '5000',
@@ -306,7 +419,11 @@ export class IceCreamCOAGenerator {
       smart_code: `HERA.${this.config.country}.ICECREAM.GL.COGS.HEADER.v2`,
       normal_balance: 'debit'
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Direct material costs
     const materials = [
       { code: '5110', name: 'Dairy Products Cost', type: 'DAIRY' },
@@ -315,7 +432,11 @@ export class IceCreamCOAGenerator {
       { code: '5113', name: 'Inclusions Cost', type: 'INCLUSION' },
       { code: '5114', name: 'Packaging Materials Cost', type: 'PACKAGING' }
     ]
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     materials.forEach(material => {
       accounts.push({
         account_code: material.code,
@@ -331,7 +452,11 @@ export class IceCreamCOAGenerator {
         }
       })
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Manufacturing overhead - Cold chain specific
     accounts.push({
       account_code: '5310',
@@ -342,7 +467,11 @@ export class IceCreamCOAGenerator {
       smart_code: `HERA.${this.config.country}.ICECREAM.GL.COGS.ELECTRICITY.v2`,
       normal_balance: 'debit'
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     accounts.push({
       account_code: '5313',
       account_name: 'Cold Chain Maintenance',
@@ -351,7 +480,11 @@ export class IceCreamCOAGenerator {
       smart_code: `HERA.${this.config.country}.ICECREAM.GL.COGS.COLDCHAIN.v2`,
       normal_balance: 'debit'
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Variances - Critical for ice cream
     accounts.push({
       account_code: '5412',
@@ -362,16 +495,27 @@ export class IceCreamCOAGenerator {
       smart_code: `HERA.${this.config.country}.ICECREAM.GL.COGS.VARIANCE.WASTAGE.v2`,
       normal_balance: 'debit'
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     return accounts
   }
 
   private async createAccountHierarchy(accounts: any[]) {
     // Create parent-child relationships between accounts
+<<<<<<< HEAD
     const accountMap = new Map(accounts.map(acc => [(acc.metadata as any)?.account_code, acc]))
 
     for (const account of accounts) {
       if ((account.metadata as any)?.parent_account) {
+=======
+    const accountMap = new Map(accounts.map(acc => [acc.metadata?.account_code, acc]))
+    
+    for (const account of accounts) {
+      if (account.metadata?.parent_account) {
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
         const parent = accountMap.get(account.metadata.parent_account)
         if (parent) {
           await universalApi.createRelationship({
@@ -391,7 +535,11 @@ export class IceCreamCOAGenerator {
     const rules = [
       {
         name: 'Ice Cream Retail Sale',
+<<<<<<< HEAD
         trigger: 'HERA.REST.POS.TXN.SALE.V1',
+=======
+        trigger: 'HERA.REST.POS.TXN.SALE.v1',
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
         journal_entries: [
           { account: '1112', type: 'debit', amount: 'total_amount' },
           { account: '4110', type: 'credit', amount: 'base_amount' },
@@ -400,7 +548,11 @@ export class IceCreamCOAGenerator {
       },
       {
         name: 'Raw Material Purchase',
+<<<<<<< HEAD
         trigger: 'HERA.SCM.PUR.TXN.GOODS_RECEIPT.V1',
+=======
+        trigger: 'HERA.SCM.PUR.TXN.GOODS_RECEIPT.v1',
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
         journal_entries: [
           { account: '1311', type: 'debit', amount: 'base_amount' },
           { account: '1410', type: 'debit', amount: 'gst_amount' },
@@ -409,7 +561,11 @@ export class IceCreamCOAGenerator {
       },
       {
         name: 'Production Completion',
+<<<<<<< HEAD
         trigger: 'HERA.MFG.PROD.TXN.COMPLETION.V1',
+=======
+        trigger: 'HERA.MFG.PROD.TXN.COMPLETION.v1',
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
         journal_entries: [
           { account: '1331', type: 'debit', amount: 'total_cost' },
           { account: '1321', type: 'credit', amount: 'wip_cost' },
@@ -419,14 +575,22 @@ export class IceCreamCOAGenerator {
       },
       {
         name: 'Cold Chain Wastage',
+<<<<<<< HEAD
         trigger: 'HERA.INV.ADJ.TXN.WASTAGE.V1',
+=======
+        trigger: 'HERA.INV.ADJ.TXN.WASTAGE.v1',
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
         journal_entries: [
           { account: '5412', type: 'debit', amount: 'wastage_cost' },
           { account: '1331', type: 'credit', amount: 'wastage_cost' }
         ]
       }
     ]
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Store rules as entities with smart codes
     for (const rule of rules) {
       await universalApi.createEntity({
@@ -441,7 +605,11 @@ export class IceCreamCOAGenerator {
 
   private generateLiabilityAccounts() {
     const accounts = []
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // GST accounts for India
     if (this.config.country === 'IN') {
       accounts.push({
@@ -450,10 +618,17 @@ export class IceCreamCOAGenerator {
         account_type: 'liability',
         parent_account: '2200',
         gst_rate: '18%',
+<<<<<<< HEAD
         smart_code: `HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT18.V2`,
         normal_balance: 'credit'
       })
 
+=======
+        smart_code: `HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT18.v2`,
+        normal_balance: 'credit'
+      })
+      
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
       accounts.push({
         account_code: '2211',
         account_name: 'GST Output - 12%',
@@ -461,11 +636,19 @@ export class IceCreamCOAGenerator {
         parent_account: '2200',
         gst_rate: '12%',
         description: 'For Kulfi and traditional products',
+<<<<<<< HEAD
         smart_code: `HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT12.V2`,
         normal_balance: 'credit'
       })
     }
 
+=======
+        smart_code: `HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT12.v2`,
+        normal_balance: 'credit'
+      })
+    }
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     return accounts
   }
 
@@ -493,7 +676,11 @@ export class IceCreamCOAGenerator {
 
   private generateExpenseAccounts() {
     const accounts = []
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     // Ice cream specific expenses
     accounts.push({
       account_code: '6114',
@@ -504,7 +691,11 @@ export class IceCreamCOAGenerator {
       smart_code: `HERA.${this.config.country}.ICECREAM.GL.EXPENSE.FREEZER.PLACEMENT.v2`,
       normal_balance: 'debit'
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     accounts.push({
       account_code: '6213',
       account_name: 'Food License & Certifications',
@@ -514,7 +705,11 @@ export class IceCreamCOAGenerator {
       smart_code: `HERA.${this.config.country}.ICECREAM.GL.EXPENSE.LICENSE.v2`,
       normal_balance: 'debit'
     })
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
     return accounts
   }
 
@@ -544,9 +739,18 @@ export async function setupIceCreamCOA(organizationId: string) {
     multiLocation: true,
     exportBusiness: false
   })
+<<<<<<< HEAD
 
   const result = await generator.generateCOA()
   console.log(`Created ${result.accountsCreated} accounts for ice cream business`)
 
   return result
 }
+=======
+  
+  const result = await generator.generateCOA()
+  console.log(`Created ${result.accountsCreated} accounts for ice cream business`)
+  
+  return result
+}
+>>>>>>> c2daac740 (fix: Add missing files for ice cream COA generator)
