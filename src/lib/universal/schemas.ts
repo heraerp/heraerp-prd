@@ -432,3 +432,6 @@ export {
   TxnEmitBody,
   TxnSearchQuery
 } from './schemas-core'
+
+// TEMP shim so imports keep working
+export type DynamicDeleteBody = { ids: string[] }
