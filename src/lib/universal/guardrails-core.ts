@@ -1,4 +1,9 @@
-export type GuardrailViolation = { code: string; message: string }
+export type GuardrailViolation = {
+  code: string;
+  message: string;
+  severity?: "info" | "warn" | "error";
+  field?: string;
+}
 export type Org = { id?: string; slug?: string }
 export const UuidZ = {
   parse: (v: any) => String(v),

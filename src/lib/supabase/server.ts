@@ -20,3 +20,9 @@ export const createServerClient = () => {
 
 // Alias for backwards compatibility
 export const createClient = createServerClient
+
+// Build-safe helper export
+export const supabaseServerHelper = {
+  createClient: createServerClient,
+  createServerClient
+}
