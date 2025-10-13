@@ -127,6 +127,7 @@ export class IceCreamCOAGenerator {
       }
     })
 
+    
     // Inventory - Raw Materials
     const rawMaterials = [
       { code: '1311', name: 'Raw Materials - Dairy Products', desc: 'Milk, cream, butter, milk powder' },
