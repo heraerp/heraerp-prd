@@ -2,6 +2,7 @@
 
 // Skip SSG for this page - client-only hooks being used
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 import React, { useState, lazy, Suspense } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -68,6 +69,9 @@ const categoryDescriptions = {
 export default function ExportSystemDemoPage() {
   // Early return for SSG/build - client-only components
   if (typeof window === 'undefined') return null
+
+  // Ensure we don't explode during SSG/SSR if global is missing
+  const std = (globalThis as any).heraDnaStandardization ?? ((v: unknown) => v)
 
   const [selectedCategory, setSelectedCategory] = useState<keyof typeof HERA_DNA_CATEGORIES | null>(
     null

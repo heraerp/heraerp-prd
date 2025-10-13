@@ -33,9 +33,13 @@ export class HeraTracer {
    * Initialize OpenTelemetry
    */
   async initialize() {
-    // Skip telemetry if disabled for build
-    if (process.env.OTEL_DISABLED === '1') {
-      console.log('[HERA Tracer] OpenTelemetry disabled for build')
+    // Only initialize on Node runtime and never during the build worker
+    const isNode = process.env.NEXT_RUNTIME === 'nodejs'
+    const isBuild = !!process.env.NEXT_PHASE?.includes('phase-production-build')
+    
+    // Skip telemetry if disabled for build or not in Node runtime
+    if (process.env.OTEL_DISABLED === '1' || !isNode || isBuild) {
+      console.log('[HERA Tracer] OpenTelemetry disabled for build/SSR')
       return
     }
 
@@ -441,3 +445,6 @@ export class HeraTracer {
 }
 
 export const heraTracer = HeraTracer.getInstance()
+
+// Ensure module side-effects don't run during build
+export {}

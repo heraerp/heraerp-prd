@@ -1,5 +1,9 @@
 'use client'
 
+// Skip SSG for this page - uses useSearchParams
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 /**
  * HERA Finance DNA v3.4: Cross-Org Consolidation Demo Page
  * 
@@ -9,7 +13,7 @@
  * Smart Code: HERA.CONSOL.DEMO.PAGE.V3
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -70,7 +74,7 @@ import {
 const DEMO_ORG_ID = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
 const DEMO_GROUP_ID = 'group-multinational-corp-demo'
 
-export default function ConsolidationDemoPage() {
+function ConsolidationDemoClient() {
   const searchParams = useSearchParams()
   
   // State management
@@ -912,5 +916,13 @@ export default function ConsolidationDemoPage() {
         </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+export default function ConsolidationDemoPage() {
+  return (
+    <Suspense fallback={null}>
+      <ConsolidationDemoClient />
+    </Suspense>
   )
 }

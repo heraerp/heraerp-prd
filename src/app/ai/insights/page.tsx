@@ -1,5 +1,9 @@
 'use client'
 
+// Skip SSG for this page - uses useSearchParams
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 /**
  * HERA Finance DNA v3: AI Insights Engine Demo Page
  * 
@@ -10,7 +14,7 @@
  * Smart Code: HERA.AI.INSIGHT.DEMO.PAGE.V3
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -57,7 +61,7 @@ import {
 // Demo organization for insights testing
 const DEMO_ORG_ID = 'f47ac10b-58cc-4372-a567-0e02b2c3d479' // Would be from auth context in real app
 
-export default function AIInsightsDemoPage() {
+function AIInsightsDemoClient() {
   const searchParams = useSearchParams()
   
   // State management
@@ -648,5 +652,13 @@ export default function AIInsightsDemoPage() {
         </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+export default function AIInsightsDemoPage() {
+  return (
+    <Suspense fallback={null}>
+      <AIInsightsDemoClient />
+    </Suspense>
   )
 }

@@ -433,5 +433,11 @@ export {
   TxnSearchQuery
 } from './schemas-core'
 
-// TEMP shim so imports keep working
-export type DynamicDeleteBody = { ids: string[] }
+// Dynamic Delete Body Schema - for batch deletion of dynamic data fields
+export const DynamicDeleteBody = z.object({
+  organization_id: UUID,
+  entity_id: UUID,
+  field_name: z.string().min(1).optional() // if provided, delete specific field; if not, delete all fields for entity
+})
+
+export type DynamicDeleteBody = z.infer<typeof DynamicDeleteBody>
