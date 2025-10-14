@@ -138,6 +138,7 @@ export function Column({ id, title, cards, onCardAction, onMoveToNext, isDraft =
       <div
         ref={setNodeRef}
         data-column-id={id}
+        data-column-content="true"
         className="flex-1 p-3 space-y-3 overflow-y-auto"
         style={{
           borderRadius: '0 0 1rem 1rem', // 🎨 ENTERPRISE: Soft edges (bottom corners only)

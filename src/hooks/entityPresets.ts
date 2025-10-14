@@ -536,13 +536,24 @@ export const SERVICE_CATEGORY_PRESET = {
   },
   dynamicFields: [
     {
+      name: 'description',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.DESCRIPTION.v1',
+      ui: {
+        label: 'Description',
+        placeholder: 'Category description',
+        helpText: 'Brief description of this service category',
+        widget: 'textarea'
+      }
+    },
+    {
       name: 'color',
       type: 'text' as const,
       smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.COLOR.v1',
-      defaultValue: '#8B5CF6',
+      defaultValue: '#D4AF37',
       ui: {
         label: 'Color',
-        placeholder: '#8B5CF6',
+        placeholder: '#D4AF37',
         helpText: 'Hex color for category display'
       }
     },
@@ -566,6 +577,17 @@ export const SERVICE_CATEGORY_PRESET = {
         label: 'Display Order',
         placeholder: '0',
         helpText: 'Sort order for display'
+      }
+    },
+    {
+      name: 'service_count',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.SERVICE_COUNT.v1',
+      defaultValue: 0,
+      ui: {
+        label: 'Service Count',
+        helpText: 'Number of services in this category',
+        roles: ['owner', 'manager'] // Read-only computed field
       }
     },
     {

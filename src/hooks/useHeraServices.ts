@@ -1,393 +1,361 @@
-'use client'
+/**
+ * HERA Services Hook V2
+ *
+ * Thin wrapper over useUniversalEntity for service management
+ * Provides service-specific helpers and relationship management
+ */
 
 import { useMemo } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  getEntities,
-  getDynamicData,
-  setDynamicDataBatch,
-  upsertEntity,
-  deleteEntity,
-  DynamicFieldInput
-} from '@/lib/universal-api-v2-client'
-import { Service, ServiceFormValues } from '@/types/salon-service'
+import { useUniversalEntity } from './useUniversalEntity'
+import { SERVICE_PRESET } from './entityPresets'
+import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
 
-export function useHeraServices({
-  includeArchived = false,
-  searchQuery = '',
-  categoryFilter = '',
-  organizationId
-}: {
-  includeArchived?: boolean
-  searchQuery?: string
-  categoryFilter?: string
+export interface ServiceEntity {
+  id: string
+  entity_name: string
+  entity_code?: string
+  smart_code: string
+  dynamic_fields?: {
+    price_market?: { value: number }
+    duration_min?: { value: number }
+    commission_rate?: { value: number }
+    description?: { value: string }
+    active?: { value: boolean }
+  }
+  relationships?: {
+    category?: { to_entity: any }
+    performed_by_roles?: { to_entity: any }[]
+    required_products?: { to_entity: any }[]
+  }
+  created_at: string
+  updated_at: string
+}
+
+export interface UseHeraServicesOptions {
   organizationId?: string
-}) {
-  const queryClient = useQueryClient()
+  filters?: {
+    include_dynamic?: boolean
+    include_relationships?: boolean
+    limit?: number
+    offset?: number
+    status?: string
+    search?: string
+    branch_id?: string // Add branch filtering
+    category_id?: string // Add category filtering
+  }
+}
 
-  // Fetch services with dynamic data
+export function useHeraServices(options?: UseHeraServicesOptions) {
   const {
-    data: entities,
+    entities: services,
     isLoading,
     error,
-    refetch
-  } = useQuery({
-    queryKey: ['services', organizationId, { includeArchived }],
-    queryFn: async () => {
-      if (!organizationId) throw new Error('Organization ID required')
-
-      console.log('[useHeraServices] Fetching services for org:', organizationId)
-
-      const result = await getEntities('', {
-        p_organization_id: organizationId,
-        p_entity_type: 'service',
-        p_status: includeArchived ? null : 'active'
-      })
-
-      const entities = Array.isArray(result) ? result : []
-
-      console.log('[useHeraServices] Fetched services:', {
-        count: entities.length,
-        isArray: Array.isArray(result)
-      })
-
-      // Fetch dynamic data for each service
-      const servicesWithDynamicData = await Promise.all(
-        entities.map(async (entity: any, index: number) => {
-          try {
-            const response = await getDynamicData('', {
-              p_organization_id: organizationId,
-              p_entity_id: entity.id
-            })
-
-            const dynamicData = Array.isArray(response?.data)
-              ? response.data
-              : Array.isArray(response)
-                ? response
-                : []
-
-            // Log first service dynamic data
-            if (index === 0) {
-              console.log('[useHeraServices] First service dynamic data:', {
-                entityId: entity.id,
-                entityName: entity.entity_name,
-                dynamicDataCount: dynamicData.length,
-                fields: dynamicData.map((f: any) => ({
-                  name: f.field_name,
-                  type: f.field_type,
-                  value: f.field_value_text || f.field_value_number || f.field_value_boolean
-                }))
-              })
-            }
-
-            // Merge dynamic data into metadata
-            const mergedMetadata = { ...entity.metadata }
-            dynamicData.forEach((field: any) => {
-              if (field.field_type === 'number') {
-                mergedMetadata[field.field_name] = field.field_value_number
-              } else if (field.field_type === 'boolean') {
-                mergedMetadata[field.field_name] = field.field_value_boolean
-              } else {
-                // Try both field_value and field_value_text for text fields
-                mergedMetadata[field.field_name] = field.field_value || field.field_value_text || ''
-              }
-            })
-
-            // Extract to top level for easy access
-            const service = {
-              ...entity,
-              metadata: mergedMetadata,
-              category: mergedMetadata.category || '',
-              price: parseFloat(mergedMetadata.price || '0'),
-              cost: parseFloat(mergedMetadata.cost || '0'),
-              duration_minutes: parseInt(mergedMetadata.duration_minutes || '0'),
-              commission_amount: parseFloat(mergedMetadata.commission_amount || '0'),
-              commission_type: mergedMetadata.commission_type || 'fixed',
-              requires_booking: mergedMetadata.requires_booking === true,
-              color: mergedMetadata.color || '#D4AF37',
-              currency: mergedMetadata.currency || 'AED'
-            }
-
-            // Calculate margin
-            if (service.price && service.cost) {
-              service.margin = service.price - service.cost
-              service.margin_percent = (service.margin / service.price) * 100
-            }
-
-            return service
-          } catch (error) {
-            console.error('[useHeraServices] Failed to fetch dynamic data:', error)
-            return entity
-          }
-        })
-      )
-
-      return servicesWithDynamicData
+    refetch,
+    create: baseCreate,
+    update: baseUpdate,
+    delete: baseDelete,
+    archive: baseArchive,
+    restore: baseRestore,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useUniversalEntity({
+    entity_type: 'service',
+    organizationId: options?.organizationId,
+    filters: {
+      include_dynamic: true,
+      // ✅ ALWAYS fetch relationships for category display
+      // useUniversalEntity handles this efficiently with bulk loading
+      include_relationships: true,
+      limit: 100,
+      ...options?.filters
     },
-    enabled: !!organizationId,
-    // ✅ PERFORMANCE OPTIMIZATION: Smart caching (30s staleTime)
-    // Services change frequently but not every second - 30s cache is optimal
-    staleTime: 30000, // 30 seconds - data stays fresh, reducing API calls
-    gcTime: 300000, // 5 minutes - keep in cache for 5 min after last use
-    refetchOnWindowFocus: false // No unnecessary refetches on tab switch
+    dynamicFields: SERVICE_PRESET.dynamicFields as DynamicFieldDef[],
+    relationships: SERVICE_PRESET.relationships as RelationshipDef[]
   })
 
-  // Create mutation
-  const createEntity = useMutation({
-    mutationFn: async (data: any) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      return await upsertEntity('', {
-        p_organization_id: organizationId,
-        ...data
-      })
-    }
-  })
+  // Map services to include category name from relationships
+  const servicesWithCategory = useMemo(() => {
+    if (!services) return services as ServiceEntity[]
 
-  // Update mutation
-  const updateEntity = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      return await upsertEntity('', {
-        p_organization_id: organizationId,
-        p_entity_id: id,
-        ...updates
-      })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        predicate: query => query.queryKey[0] === 'services' && query.queryKey[1] === organizationId
-      })
-    }
-  })
+    return (services as ServiceEntity[]).map(service => {
+      // Extract category name from has_category relationship
+      const categoryRels =
+        service.relationships?.has_category ||
+        service.relationships?.HAS_CATEGORY ||
+        service.relationships?.category
 
-  // Delete mutation
-  const deleteEntityMutation = useMutation({
-    mutationFn: async (id: string) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      return await deleteEntity('', {
-        p_organization_id: organizationId,
-        p_entity_id: id
-      })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        predicate: query => query.queryKey[0] === 'services' && query.queryKey[1] === organizationId
-      })
-    }
-  })
-
-  // Transform and filter services
-  const services = useMemo(() => {
-    if (!entities) return []
-
-    return entities.filter(entity => {
-      // Status filter
-      if (!includeArchived && entity.status === 'archived') return false
-
-      // Search filter
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase()
-        return (
-          entity.entity_name?.toLowerCase().includes(query) ||
-          entity.entity_code?.toLowerCase().includes(query) ||
-          entity.category?.toLowerCase().includes(query)
-        )
+      let categoryName = null
+      if (Array.isArray(categoryRels) && categoryRels.length > 0) {
+        categoryName = categoryRels[0].to_entity?.entity_name || null
+      } else if (categoryRels?.to_entity?.entity_name) {
+        categoryName = categoryRels.to_entity.entity_name
       }
 
-      // Category filter
-      if (categoryFilter && entity.category !== categoryFilter) return false
-
-      return true
-    })
-  }, [entities, includeArchived, searchQuery, categoryFilter])
-
-  // Create service
-  const createService = async (serviceData: ServiceFormValues) => {
-    if (!organizationId) throw new Error('Organization ID required')
-
-    console.log('[useHeraServices] Creating service:', serviceData)
-
-    // 1. Create entity
-    await createEntity.mutateAsync({
-      p_entity_type: 'service',
-      p_entity_name: serviceData.name,
-      p_entity_code: serviceData.code || serviceData.name.toUpperCase().replace(/\s+/g, '_'),
-      p_smart_code: 'HERA.SALON.SVC.ENT.STANDARD.V1',
-      p_entity_description: serviceData.description || null,
-      p_status: 'active'
-    })
-
-    // 2. Get the newly created service
-    const allServices = await getEntities('', {
-      p_organization_id: organizationId,
-      p_entity_type: 'service'
-    })
-
-    const newService = Array.isArray(allServices)
-      ? allServices.find(s => s.entity_name === serviceData.name)
-      : null
-
-    if (!newService) throw new Error('Failed to create service')
-
-    // 3. Save dynamic fields
-    const fields = [
-      { name: 'category', value: serviceData.category, type: 'text' },
-      { name: 'price', value: serviceData.price, type: 'number' },
-      { name: 'duration_minutes', value: serviceData.duration_minutes, type: 'number' },
-      { name: 'requires_booking', value: serviceData.requires_booking, type: 'boolean' },
-      { name: 'currency', value: serviceData.currency || 'AED', type: 'text' }
-    ]
-
-    const dynamicFields = fields
-      .filter(f => {
-        // For booleans, always include (even if false)
-        if (f.type === 'boolean') return true
-        // For numbers and text, exclude only if truly null/undefined
-        // Allow empty strings for text fields (e.g., clearing a category)
-        return f.value !== undefined && f.value !== null
-      })
-      .map(f => {
-        if (f.type === 'number') {
-          return { field_name: f.name, field_type: 'number', field_value_number: Number(f.value) }
-        } else if (f.type === 'boolean') {
-          return {
-            field_name: f.name,
-            field_type: 'boolean',
-            field_value_boolean: Boolean(f.value)
-          }
-        } else {
-          return { field_name: f.name, field_type: 'text', field_value: String(f.value) }
-        }
-      })
-
-    if (dynamicFields.length > 0) {
-      await setDynamicDataBatch('', {
-        p_organization_id: organizationId,
-        p_entity_id: newService.id,
-        p_smart_code: 'HERA.SALON.SVC.FIELD.DATA.V1',
-        p_fields: dynamicFields as any
-      })
-    }
-
-    // 4. Invalidate cache
-    queryClient.invalidateQueries({
-      predicate: query => query.queryKey[0] === 'services' && query.queryKey[1] === organizationId
-    })
-
-    console.log('[useHeraServices] Service created successfully')
-  }
-
-  // Update service
-  const updateService = async (serviceId: string, serviceData: ServiceFormValues) => {
-    if (!organizationId) throw new Error('Organization ID required')
-
-    console.log('[useHeraServices] Updating service:', { serviceId, serviceData })
-
-    // 1. Update entity
-    await updateEntity.mutateAsync({
-      id: serviceId,
-      updates: {
-        p_entity_type: 'service',
-        p_entity_name: serviceData.name,
-        p_entity_code: serviceData.code || serviceData.name.toUpperCase().replace(/\s+/g, '_'),
-        p_smart_code: 'HERA.SALON.SVC.ENT.STANDARD.V1',
-        p_entity_description: serviceData.description || null,
-        p_status: serviceData.status || 'active'
+      return {
+        ...service,
+        category: categoryName // Add category name for easy display
       }
     })
+  }, [services])
 
-    // 2. Update dynamic fields
-    const fields = [
-      { name: 'category', value: serviceData.category, type: 'text' },
-      { name: 'price', value: serviceData.price, type: 'number' },
-      { name: 'duration_minutes', value: serviceData.duration_minutes, type: 'number' },
-      { name: 'requires_booking', value: serviceData.requires_booking, type: 'boolean' },
-      { name: 'currency', value: serviceData.currency || 'AED', type: 'text' }
-    ]
+  // Filter services by branch and category using HERA relationship patterns
+  const filteredServices = useMemo(() => {
+    if (!servicesWithCategory) return servicesWithCategory
 
-    const dynamicFields = fields
-      .filter(f => {
-        // For booleans, always include (even if false)
-        if (f.type === 'boolean') return true
-        // For numbers and text, exclude only if truly null/undefined
-        // Allow empty strings for text fields (e.g., clearing a category)
-        return f.value !== undefined && f.value !== null
-      })
-      .map(f => {
-        if (f.type === 'number') {
-          return { field_name: f.name, field_type: 'number', field_value_number: Number(f.value) }
-        } else if (f.type === 'boolean') {
-          return {
-            field_name: f.name,
-            field_type: 'boolean',
-            field_value_boolean: Boolean(f.value)
-          }
+    let filtered = servicesWithCategory
+
+    // Filter by AVAILABLE_AT branch relationship (when branch is selected, not "All Locations")
+    // When branch_id is null/undefined, no branch filter applied = show all services
+    if (options?.filters?.branch_id) {
+      filtered = filtered.filter(s => {
+        // Check if service has AVAILABLE_AT relationship with the specified branch
+        // Smart Code: HERA.SALON.SERVICE.REL.AVAILABLE_AT.V1
+        const availableAtRelationships = s.relationships?.available_at
+        if (!availableAtRelationships) return false
+
+        // Handle both array and single relationship formats
+        // Check both rel.to_entity?.id (populated) and rel.to_entity_id (raw) for compatibility
+        if (Array.isArray(availableAtRelationships)) {
+          return availableAtRelationships.some(
+            rel => rel.to_entity?.id === options.filters?.branch_id || rel.to_entity_id === options.filters?.branch_id
+          )
         } else {
-          return { field_name: f.name, field_type: 'text', field_value: String(f.value) }
+          return availableAtRelationships.to_entity?.id === options.filters?.branch_id || availableAtRelationships.to_entity_id === options.filters?.branch_id
         }
       })
+    }
+    // When branch_id is null/undefined: no filtering, return all organization services
 
-    if (dynamicFields.length > 0) {
-      await setDynamicDataBatch('', {
-        p_organization_id: organizationId,
-        p_entity_id: serviceId,
-        p_smart_code: 'HERA.SALON.SVC.FIELD.DATA.V1',
-        p_fields: dynamicFields as any
-      })
+    // Filter by HAS_CATEGORY relationship if category filter provided
+    if (options?.filters?.category_id) {
+      filtered = filtered.filter(s => {
+        const categoryRelationship =
+          s.relationships?.has_category ||
+          s.relationships?.HAS_CATEGORY ||
+          s.relationships?.category
+        if (!categoryRelationship) return false
 
-      // CRITICAL: Invalidate cache after dynamic data update
-      queryClient.invalidateQueries({
-        predicate: query => query.queryKey[0] === 'services' && query.queryKey[1] === organizationId
+        // Handle both array and single relationship formats
+        // Check both rel.to_entity?.id (populated) and rel.to_entity_id (raw) for compatibility
+        if (Array.isArray(categoryRelationship)) {
+          return categoryRelationship.some(
+            rel => rel.to_entity?.id === options.filters?.category_id || rel.to_entity_id === options.filters?.category_id
+          )
+        } else {
+          return categoryRelationship.to_entity?.id === options.filters?.category_id || categoryRelationship.to_entity_id === options.filters?.category_id
+        }
       })
     }
 
-    console.log('[useHeraServices] Service updated successfully')
+    return filtered
+  }, [servicesWithCategory, options?.filters?.branch_id, options?.filters?.category_id])
+
+  // Helper to create service with proper smart codes and relationships
+  const createService = async (data: {
+    name: string
+    price_market: number
+    duration_min: number
+    commission_rate?: number
+    description?: string
+    active?: boolean
+    requires_booking?: boolean
+    category_id?: string
+    performed_by_role_ids?: string[]
+    required_product_ids?: string[]
+    branch_ids?: string[] // Support multiple branches via AVAILABLE_AT relationships
+  }) => {
+    // Map provided primitives to dynamic_fields payload using preset definitions
+    const dynamic_fields: Record<string, any> = {}
+    for (const def of SERVICE_PRESET.dynamicFields) {
+      const key = def.name as keyof typeof data
+      if (key in data && (data as any)[key] !== undefined) {
+        dynamic_fields[def.name] = {
+          value: (data as any)[key],
+          type: def.type,
+          smart_code: def.smart_code
+        }
+      }
+    }
+
+    // Relationships map according to preset relationship types
+    const relationships: Record<string, string[] | undefined> = {
+      ...(data.category_id ? { HAS_CATEGORY: [data.category_id] } : {}),
+      ...(data.performed_by_role_ids ? { PERFORMED_BY_ROLE: data.performed_by_role_ids } : {}),
+      ...(data.required_product_ids ? { REQUIRES_PRODUCT: data.required_product_ids } : {}),
+      // Add branch relationships - use AVAILABLE_AT for service availability at branches
+      ...(data.branch_ids && data.branch_ids.length > 0 ? { AVAILABLE_AT: data.branch_ids } : {})
+    }
+
+    return baseCreate({
+      entity_type: 'service',
+      entity_name: data.name,
+      smart_code: 'HERA.SALON.SERVICE.ENTITY.SERVICE.V1',
+      dynamic_fields,
+      metadata: { relationships }
+    } as any)
   }
 
-  // Delete service
-  const deleteService = async (serviceId: string) => {
-    if (!organizationId) throw new Error('Organization ID required')
-
-    console.log('[useHeraServices] Deleting service:', serviceId)
-
-    await deleteEntityMutation.mutateAsync(serviceId)
-
-    console.log('[useHeraServices] Service deleted successfully')
-  }
-
-  // Archive service
-  const archiveService = async (serviceId: string, archive: boolean = true) => {
-    if (!organizationId) throw new Error('Organization ID required')
-
-    const service = entities?.find(s => s.id === serviceId)
+  // Helper to update service
+  const updateService = async (
+    id: string,
+    data: Partial<Parameters<typeof createService>[0]> & { status?: string }
+  ) => {
+    // 🎯 ENTERPRISE PATTERN: Get entity to ensure entity_name is always passed (same as archive/restore)
+    const service = (services as ServiceEntity[])?.find(s => s.id === id)
     if (!service) throw new Error('Service not found')
 
-    console.log('[useHeraServices] Archiving service:', { serviceId, archive })
-
-    await updateEntity.mutateAsync({
-      id: serviceId,
-      updates: {
-        p_entity_type: 'service',
-        p_entity_name: service.entity_name,
-        p_entity_code: service.entity_code,
-        p_smart_code: service.smart_code,
-        p_entity_description: service.entity_description || null,
-        p_status: archive ? 'archived' : 'active'
+    // Build dynamic patch from provided fields
+    const dynamic_patch: Record<string, any> = {}
+    for (const def of SERVICE_PRESET.dynamicFields) {
+      const key = def.name as keyof typeof data
+      if (key in data && (data as any)[key] !== undefined) {
+        dynamic_patch[def.name] = (data as any)[key]
       }
-    })
+    }
+
+    // Relationships patch
+    const relationships_patch: Record<string, string[]> = {}
+    if (data.category_id) relationships_patch['HAS_CATEGORY'] = [data.category_id]
+    if (data.performed_by_role_ids)
+      relationships_patch['PERFORMED_BY_ROLE'] = data.performed_by_role_ids
+    if (data.required_product_ids)
+      relationships_patch['REQUIRES_PRODUCT'] = data.required_product_ids
+    if (data.branch_ids !== undefined) {
+      // Support multiple branches - if array is empty, it removes all AVAILABLE_AT relationships
+      relationships_patch['AVAILABLE_AT'] = data.branch_ids
+    }
+
+    // 🎯 ENTERPRISE PATTERN: Build payload like archive/restore (entity_name always required)
+    const payload: any = {
+      entity_id: id,
+      entity_name: data.name || service.entity_name, // Always include entity_name
+      ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
+      ...(Object.keys(relationships_patch).length ? { relationships_patch } : {}),
+      // 🎯 CRITICAL: Status at entity level (NOT dynamic field) - same as archive/restore
+      ...(data.status !== undefined && { status: data.status })
+    }
+
+    return baseUpdate(payload)
+  }
+
+  // Helper to archive service (soft delete)
+  const archiveService = async (id: string) => {
+    return baseArchive(id)
+  }
+
+  // Helper to restore service (set status to active)
+  const restoreService = async (id: string) => {
+    return baseRestore(id)
+  }
+
+  // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
+  // Try hard delete first, but if service is referenced in transactions, archive instead
+  const deleteService = async (
+    id: string,
+    reason?: string
+  ): Promise<{
+    success: boolean
+    archived: boolean
+    message?: string
+  }> => {
+    const service = (services as ServiceEntity[])?.find(s => s.id === id)
+    if (!service) throw new Error('Service not found')
+
+    try {
+      // Attempt hard delete with cascade
+      await baseDelete({
+        entity_id: id,
+        hard_delete: true,
+        cascade: true,
+        reason: reason || 'Permanently delete service',
+        smart_code: 'HERA.SALON.SERVICE.DELETE.V1'
+      })
+
+      // If we reach here, hard delete succeeded
+      return {
+        success: true,
+        archived: false
+      }
+    } catch (error: any) {
+      // Check if error is due to foreign key constraint (referenced in transactions)
+      const is409Conflict =
+        error.message?.includes('409') ||
+        error.message?.includes('Conflict') ||
+        error.message?.includes('referenced') ||
+        error.message?.includes('foreign key')
+
+      if (is409Conflict) {
+        // Service is referenced - fallback to archive with warning
+        await baseUpdate({
+          entity_id: id,
+          entity_name: service.entity_name,
+          status: 'archived'
+        })
+
+        return {
+          success: true,
+          archived: true,
+          message:
+            'Service is used in appointments or transactions and cannot be deleted. It has been archived instead.'
+        }
+      }
+
+      // If it's a different error, re-throw it
+      throw error
+    }
+  }
+
+  // Helper to link category
+  const linkCategory = async (serviceId: string, categoryId: string) => {
+    const service = (services as ServiceEntity[])?.find(s => s.id === serviceId)
+    if (service) {
+      return updateService(serviceId, {
+        category_id: categoryId
+      })
+    }
+    throw new Error('Service not found')
+  }
+
+  // Helper to link performed by roles
+  const linkPerformedByRoles = async (serviceId: string, roleIds: string[]) => {
+    const service = (services as ServiceEntity[])?.find(s => s.id === serviceId)
+    if (service) {
+      return updateService(serviceId, {
+        performed_by_role_ids: roleIds
+      })
+    }
+    throw new Error('Service not found')
+  }
+
+  // Helper to calculate service price with commission
+  const calculateServicePrice = (service: ServiceEntity) => {
+    const price = service.dynamic_fields?.price_market?.value || 0
+    const commission = service.dynamic_fields?.commission_rate?.value || 0.5
+
+    return {
+      price,
+      commission: price * commission,
+      net: price * (1 - commission),
+      commission_rate: commission
+    }
   }
 
   return {
-    services,
+    services: filteredServices,
     isLoading,
     error,
     refetch,
     createService,
     updateService,
-    deleteService,
     archiveService,
-    isCreating: createEntity.isPending,
-    isUpdating: updateEntity.isPending,
-    isDeleting: deleteEntityMutation.isPending
+    restoreService,
+    deleteService,
+    linkCategory,
+    linkPerformedByRoles,
+    calculateServicePrice,
+    isCreating,
+    isUpdating,
+    isDeleting
   }
 }

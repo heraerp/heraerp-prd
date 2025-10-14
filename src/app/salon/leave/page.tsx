@@ -469,7 +469,7 @@ export default function LeaveManagementPage() {
 
           <TabsContent value="calendar">
             <LeaveCalendar
-              requests={requests.filter(r => r.status === 'approved')}
+              requests={requests.filter(r => r.current_status === 'APPROVED')}
               staff={staff}
               branchId={selectedBranch}
             />

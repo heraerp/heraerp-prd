@@ -306,12 +306,6 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
     queryFn: async () => {
       if (!organizationId) throw new Error('Organization ID required')
 
-      console.log('[useUniversalEntity] Fetching entities:', {
-        entity_type,
-        organizationId,
-        status: filters.status
-      })
-
       // Fetch entities using RPC
       const result = await getEntities('', {
         p_organization_id: organizationId,
@@ -323,20 +317,8 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
       const entitiesArray = Array.isArray(result) ? result : []
 
-      console.log('[useUniversalEntity] Fetched entities:', {
-        count: entitiesArray.length,
-        isArray: Array.isArray(result),
-        first_entity: entitiesArray[0],
-        first_entity_has_relationships: entitiesArray[0] ? !!entitiesArray[0].relationships : false,
-        first_entity_relationships: entitiesArray[0]?.relationships
-      })
-
       // Check if entities already have dynamic_fields from RPC
       const hasDynamicFieldsInRpc = entitiesArray[0]?.dynamic_fields
-      console.log('[useUniversalEntity] Dynamic fields check:', {
-        hasDynamicFieldsInRpc: !!hasDynamicFieldsInRpc,
-        firstEntityDynamicFields: entitiesArray[0]?.dynamic_fields
-      })
 
       // Fetch dynamic data for ALL entities in ONE batch call (only if not already in RPC response)
       const headers = await getAuthHeaders(organizationId)
@@ -356,7 +338,6 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
             })
           }
         })
-        console.log('[useUniversalEntity] Using dynamic fields from RPC:', allDynamicData.length)
       } else if (entityIds.length > 0) {
         try {
           const response = await fetch(`/api/v2/dynamic-data?p_entity_ids=${entityIds.join(',')}`, {
@@ -365,13 +346,9 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
           if (response.ok) {
             const result = await response.json()
             allDynamicData = result.data || []
-            console.log(
-              '[useUniversalEntity] Fetched dynamic data from API:',
-              allDynamicData.length
-            )
           }
         } catch (error) {
-          console.error('[useUniversalEntity] Failed to fetch dynamic data batch:', error)
+          // Silently handle dynamic data fetch errors
         }
       }
 
@@ -414,12 +391,6 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         return mergedData
       })
 
-      console.log('[useUniversalEntity] Entities with dynamic data:', {
-        count: entitiesWithDynamicData.length,
-        first_entity_merged: entitiesWithDynamicData[0],
-        dynamicDataCount: allDynamicData.length
-      })
-
       // Fetch relationships for all entities if requested
       if (filters.include_relationships && entitiesWithDynamicData.length > 0) {
         // Reuse headers from above to avoid extra auth calls
@@ -449,18 +420,12 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
                 .then(response => (response.ok ? response.json() : { items: [] }))
                 .then(data => ({ relType, items: data.items || [] }))
                 .catch(error => {
-                  console.error(`[useUniversalEntity] Failed to fetch ${relType} relationships:`, error)
                   return { relType, items: [] }
                 })
             )
 
             // Wait for all relationship fetches to complete
             const allRelationshipResults = await Promise.all(relationshipPromises)
-
-            console.log('[useUniversalEntity] Fetched relationships in parallel:', {
-              types: relationshipTypes.length,
-              totalRelationships: allRelationshipResults.reduce((sum, r) => sum + r.items.length, 0)
-            })
 
             // Process each relationship type
             allRelationshipResults.forEach(({ relType, items }) => {
@@ -489,7 +454,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
               })
             })
           } catch (error) {
-            console.error('[useUniversalEntity] Failed to fetch relationships in parallel:', error)
+            // Silently handle relationship fetch errors
           }
         }
       }
@@ -567,29 +532,12 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       // 3) Relationships (optional)
       // Accept either metadata.relationships or a top-level relationships map
       const relPayload = (entity as any)?.metadata?.relationships || (entity as any)?.relationships
-      if (relPayload) {
-        console.log('[useUniversalEntity] Relationship payload received:', {
-          types: Object.keys(relPayload),
-          values: relPayload
-        })
-      }
       if (relPayload && config.relationships?.length) {
         // Process each relationship type separately using bulk_upsert
         for (const def of config.relationships) {
           const toIds: string[] = relPayload[def.type] ?? []
-          console.log(`[useUniversalEntity] Processing ${def.type}:`, {
-            expectedType: def.type,
-            receivedIds: toIds,
-            isValid: toIds.length > 0 && toIds.every(id => id)
-          })
           // Only create relationships if we have valid IDs
           if (toIds.length > 0 && toIds.every(id => id)) {
-            console.log(`[useUniversalEntity] Creating ${def.type} relationships:`, {
-              count: toIds.length,
-              from: entity_id,
-              to: toIds
-            })
-
             const response = await fetch('/api/v2/relationships/bulk_upsert', {
               method: 'POST',
               headers,
@@ -795,14 +743,6 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         params.append('updated_by', userEntityId)
       }
 
-      console.log('[useUniversalEntity] Delete request:', {
-        entity_id,
-        mode: hard_delete ? 'HARD' : 'SOFT',
-        cascade,
-        entity_type,
-        updated_by: userEntityId // Log for audit visibility
-      })
-
       const response = await fetch(`/api/v2/entities/${entity_id}?${params}`, {
         method: 'DELETE',
         headers
@@ -823,35 +763,11 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
           errorCode === 'TRANSACTION_INTEGRITY_VIOLATION' ||
           errorCode === 'FOREIGN_KEY_CONSTRAINT'
 
-        if (is409Conflict) {
-          console.log('[useUniversalEntity] Delete blocked (will fallback to archive):', {
-            status: response.status,
-            code: errorCode,
-            details: errorDetails
-          })
-        } else {
-          console.error('[useUniversalEntity] Delete error:', {
-            status: response.status,
-            code: errorCode,
-            message: errorMessage,
-            details: errorDetails
-          })
-        }
-
         // 🎯 ENTERPRISE ERROR HANDLING: Throw enhanced error with full context
         throw new EnhancedError(errorMessage, response.status, errorCode, errorDetails)
       }
 
       const result = await response.json()
-
-      // Log delete result
-      console.log('[useUniversalEntity] Delete completed:', {
-        entity_id: result.entity_id,
-        mode: result.mode,
-        cascade_applied: result.cascade_applied,
-        affected_relationships: result.affected_relationships,
-        tombstone_id: result.tombstone_id
-      })
 
       return result
     },
@@ -871,10 +787,8 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         error.code === 'TRANSACTION_INTEGRITY_VIOLATION' ||
         error.code === 'FOREIGN_KEY_CONSTRAINT'
 
-      if (is409Conflict) {
-        console.log('[useUniversalEntity] Delete blocked by references (will fallback to archive)')
-      } else {
-        console.error('[useUniversalEntity] Delete failed:', error.message)
+      if (!is409Conflict) {
+        console.error(`❌ Delete ${entity_type} failed:`, error)
       }
     }
   })

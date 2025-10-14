@@ -1,16 +1,24 @@
 /**
  * Revenue Trends Section
  * Enterprise-grade revenue analytics with line/bar charts
+ *
+ * 🎯 FILTER STRATEGY:
+ * - Uses DashboardFilterContext for intelligent filter management
+ * - Respects global filter by default
+ * - Allows local override with clear UI indication
+ * - Provides 7-day and 30-day view modes
  */
 
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { DollarSign, TrendingUp, Calendar, BarChart3 } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import { SalonDashboardKPIs } from '@/hooks/useSalonDashboard'
 import { LuxeLineChart } from './charts/LuxeLineChart'
 import { LuxeBarChart } from './charts/LuxeBarChart'
+import { FilterOverrideControl, FilterStatusBadge } from './FilterOverrideControl'
+import { useDashboardFilter, getPeriodLabel } from '@/contexts/DashboardFilterContext'
 
 interface RevenueTrendsProps {
   kpis: SalonDashboardKPIs
@@ -18,11 +26,32 @@ interface RevenueTrendsProps {
   selectedPeriod: 'today' | 'last7Days' | 'last30Days' | 'yearToDate' | 'allTime'
 }
 
+const COMPONENT_ID = 'revenue-trends'
+
 export function RevenueTrends({ kpis, formatCurrency, selectedPeriod }: RevenueTrendsProps) {
-  const [viewMode, setViewMode] = useState<'7days' | '30days'>('7days')
+  // ✅ ENTERPRISE: Use filter context for intelligent override management
+  const { getComponentPeriod } = useDashboardFilter()
+  const effectivePeriod = getComponentPeriod(COMPONENT_ID)
+
   const [chartType, setChartType] = useState<'line' | 'bar'>('line')
 
-  const data = viewMode === '7days' ? kpis.last7DaysRevenue : kpis.last30DaysRevenue
+  // ✅ ENTERPRISE: Smart data selection based on effective period
+  const data = useMemo(() => {
+    switch (effectivePeriod) {
+      case 'today':
+        return kpis.last7DaysRevenue.slice(-1) // Show only today
+      case 'last7Days':
+        return kpis.last7DaysRevenue
+      case 'last30Days':
+        return kpis.last30DaysRevenue
+      case 'yearToDate':
+      case 'allTime':
+        // For longer periods, show 30-day aggregated view
+        return kpis.last30DaysRevenue
+      default:
+        return kpis.last7DaysRevenue
+    }
+  }, [effectivePeriod, kpis.last7DaysRevenue, kpis.last30DaysRevenue])
 
   return (
     <div
@@ -47,27 +76,31 @@ export function RevenueTrends({ kpis, formatCurrency, selectedPeriod }: RevenueT
             <TrendingUp className="w-6 h-6" style={{ color: LUXE_COLORS.gold }} />
           </div>
           <div>
-            <h2
-              className="text-2xl font-bold"
-              style={{
-                backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}
-            >
-              Revenue Trends
-            </h2>
+            <div className="flex items-center gap-2 mb-1">
+              <h2
+                className="text-2xl font-bold"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                Revenue Trends
+              </h2>
+              {/* ✅ ENTERPRISE: Filter status badge */}
+              <FilterStatusBadge componentId={COMPONENT_ID} />
+            </div>
             <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-              Daily revenue performance • Filtered by:{' '}
+              Daily revenue performance • Currently showing:{' '}
               <span style={{ color: LUXE_COLORS.gold }}>
-                {selectedPeriod === 'today' ? 'Today' : selectedPeriod === 'last7Days' ? 'Last 7 Days' : selectedPeriod === 'last30Days' ? 'Last 30 Days' : selectedPeriod === 'yearToDate' ? 'Year to Date' : 'All Time'}
+                {getPeriodLabel(effectivePeriod)}
               </span>
             </p>
           </div>
         </div>
 
-        {/* View Mode Toggle */}
+        {/* ✅ ENTERPRISE: Controls */}
         <div className="flex items-center gap-2">
           {/* Chart Type Toggle */}
           <div
@@ -104,45 +137,13 @@ export function RevenueTrends({ kpis, formatCurrency, selectedPeriod }: RevenueT
             </button>
           </div>
 
-          {/* Period Toggle */}
-          <div
-            className="flex items-center p-1 rounded-lg"
-            style={{
-              background: LUXE_COLORS.charcoalDark,
-              border: `1px solid ${LUXE_COLORS.bronze}30`
-            }}
-          >
-            <button
-              onClick={() => setViewMode('7days')}
-              className="px-4 py-1.5 rounded-md text-xs font-semibold transition-all duration-300"
-              style={{
-                backgroundColor:
-                  viewMode === '7days' ? `${LUXE_COLORS.emerald}30` : 'transparent',
-                color: viewMode === '7days' ? LUXE_COLORS.emerald : LUXE_COLORS.bronze,
-                border:
-                  viewMode === '7days'
-                    ? `1px solid ${LUXE_COLORS.emerald}40`
-                    : '1px solid transparent'
-              }}
-            >
-              7 Days
-            </button>
-            <button
-              onClick={() => setViewMode('30days')}
-              className="px-4 py-1.5 rounded-md text-xs font-semibold transition-all duration-300"
-              style={{
-                backgroundColor:
-                  viewMode === '30days' ? `${LUXE_COLORS.emerald}30` : 'transparent',
-                color: viewMode === '30days' ? LUXE_COLORS.emerald : LUXE_COLORS.bronze,
-                border:
-                  viewMode === '30days'
-                    ? `1px solid ${LUXE_COLORS.emerald}40`
-                    : '1px solid transparent'
-              }}
-            >
-              30 Days
-            </button>
-          </div>
+          {/* ✅ ENTERPRISE: Filter Override Control */}
+          <FilterOverrideControl
+            componentId={COMPONENT_ID}
+            availablePeriods={['today', 'last7Days', 'last30Days']}
+            label="Revenue Period"
+            showGlobalIndicator={true}
+          />
         </div>
       </div>
 

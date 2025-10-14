@@ -1,14 +1,15 @@
 // ============================================================================
 // HERA • Kanban Board Component - Enterprise Edition with 60 FPS DnD
-// Smart Code: HERA.SALON.KANBAN.BOARD.ENTERPRISE.V2
+// Smart Code: HERA.SALON.KANBAN.BOARD.ENTERPRISE.V3
 // ✅ @dnd-kit with physics-based animations
 // ✅ Touch support with long-press (mobile-first)
 // ✅ Keyboard accessibility (WCAG 2.1 AA)
 // ✅ Auto-scroll while dragging
+// ✅ Horizontal mouse drag-to-scroll with momentum
 // ✅ Theme-compliant (no hard-coded colors)
 // ============================================================================
 
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { flushSync } from 'react-dom'
 import {
   DndContext,
@@ -80,6 +81,263 @@ const ANIMATION_CONFIG = {
   }
 }
 
+// ============================================================================
+// CUSTOM HOOK: useDragScroll - Enterprise-grade horizontal scrolling
+// ============================================================================
+/**
+ * 🎯 ENTERPRISE: Multi-method horizontal scrolling with momentum
+ *
+ * Scroll Methods:
+ * 1. 🖱️ Mouse Wheel - Regular scroll automatically goes horizontal
+ * 2. ⬆️ Shift + Mouse Wheel - Traditional horizontal scroll
+ * 3. 📱 Trackpad Gestures - Native horizontal swipe (uses deltaX)
+ * 4. ✋ Click & Drag - Click anywhere and drag left/right (10px threshold)
+ * 5. ⌨️ Keyboard Shortcuts:
+ *    - Arrow Left/Right: Scroll left/right by 300px
+ *    - Page Up/Down: Scroll left/right by page width
+ *    - Home/End: Jump to beginning/end
+ *
+ * Features:
+ * - Visual cursor feedback (grab/grabbing)
+ * - Smooth momentum scrolling on drag release
+ * - 10px activation threshold (prevents conflict with card drag-and-drop)
+ * - Prevents text selection during drag
+ * - Works on column backgrounds, card containers, empty spaces
+ * - Doesn't interfere with buttons, links, or text inputs
+ * - Keyboard navigation respects input focus
+ */
+function useDragScroll(containerRef: React.RefObject<HTMLElement>) {
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStateRef = useRef({
+    startX: 0,
+    scrollLeft: 0,
+    isDragging: false,
+    hasStartedDrag: false, // Track if we've moved enough to start drag
+    lastX: 0,
+    velocity: 0
+  })
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    let animationFrameId: number | null = null
+
+    // ✅ ENTERPRISE: Handle keyboard navigation for scrolling
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't interfere with text input
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return
+      }
+
+      // Scroll amounts
+      const scrollStep = 300 // px per arrow key press
+      const pageWidth = container.clientWidth * 0.8 // 80% of visible width
+
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault()
+          container.scrollLeft -= scrollStep
+          break
+        case 'ArrowRight':
+          e.preventDefault()
+          container.scrollLeft += scrollStep
+          break
+        case 'Home':
+          e.preventDefault()
+          container.scrollLeft = 0
+          break
+        case 'End':
+          e.preventDefault()
+          container.scrollLeft = container.scrollWidth
+          break
+        case 'PageUp':
+          e.preventDefault()
+          container.scrollLeft -= pageWidth
+          break
+        case 'PageDown':
+          e.preventDefault()
+          container.scrollLeft += pageWidth
+          break
+      }
+    }
+
+    // ✅ ENTERPRISE: Handle wheel scroll for horizontal scrolling (works everywhere, even over cards)
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement
+
+      // Check if we're scrolling within a column's scrollable content area
+      const columnContent = target.closest('[data-column-content]') as HTMLElement
+
+      // If scrolling within a column, check if the column can still scroll vertically
+      if (columnContent) {
+        const { scrollTop, scrollHeight, clientHeight } = columnContent
+        const canScrollDown = scrollTop + clientHeight < scrollHeight - 1
+        const canScrollUp = scrollTop > 1
+        const isScrollingDown = e.deltaY > 0
+        const isScrollingUp = e.deltaY < 0
+
+        // Allow vertical scrolling if the column has room to scroll
+        if ((isScrollingDown && canScrollDown) || (isScrollingUp && canScrollUp)) {
+          // Let the default vertical scroll happen within the column
+          return
+        }
+      }
+
+      // At this point, either:
+      // 1. We're not in a column, OR
+      // 2. We're in a column but it can't scroll vertically anymore
+      // So we convert to horizontal scroll
+
+      // Horizontal scroll with Shift+Wheel (most explicit)
+      if (e.shiftKey && Math.abs(e.deltaY) > 0) {
+        e.preventDefault()
+        container.scrollLeft += e.deltaY
+      }
+      // Native trackpad horizontal scroll (deltaX)
+      else if (Math.abs(e.deltaX) > 0) {
+        e.preventDefault()
+        container.scrollLeft += e.deltaX
+      }
+      // Convert vertical scroll to horizontal
+      else if (Math.abs(e.deltaY) > 0) {
+        e.preventDefault()
+        container.scrollLeft += e.deltaY
+      }
+    }
+
+    // Handle mouse down - Start drag
+    const handleMouseDown = (e: MouseEvent) => {
+      // ✅ ENTERPRISE: Allow scroll drag everywhere except actual interactive elements
+      const target = e.target as HTMLElement
+
+      // Only block on specific interactive elements (buttons, links, inputs)
+      // Everything else (including cards) should allow scroll drag
+      if (
+        target.tagName === 'BUTTON' ||
+        target.tagName === 'A' ||
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.closest('button') ||
+        target.closest('a') ||
+        target.closest('input') ||
+        target.closest('textarea') ||
+        target.closest('select')
+      ) {
+        return
+      }
+
+      // Initialize drag state (but don't start scrolling yet)
+      dragStateRef.current.isDragging = true
+      dragStateRef.current.hasStartedDrag = false // Reset
+      dragStateRef.current.startX = e.pageX - container.offsetLeft
+      dragStateRef.current.scrollLeft = container.scrollLeft
+      dragStateRef.current.lastX = e.pageX
+      dragStateRef.current.velocity = 0
+
+      // Don't set isDragging state yet - wait for 10px threshold
+      // This gives priority to card drag-and-drop (8px threshold)
+    }
+
+    // Handle mouse move - Perform drag scroll
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!dragStateRef.current.isDragging) return
+
+      const x = e.pageX - container.offsetLeft
+      const distance = Math.abs(x - dragStateRef.current.startX)
+
+      // ✅ THRESHOLD: Only start drag-to-scroll after moving 10px
+      // This gives priority to dnd-kit card dragging (8px threshold)
+      if (!dragStateRef.current.hasStartedDrag && distance < 10) {
+        return // Not enough movement yet
+      }
+
+      // First time crossing threshold - activate scroll drag
+      if (!dragStateRef.current.hasStartedDrag) {
+        dragStateRef.current.hasStartedDrag = true
+        setIsDragging(true)
+        e.preventDefault()
+      }
+
+      e.preventDefault()
+
+      const walk = (x - dragStateRef.current.startX) * 1.5 // 1.5x multiplier for smoother feel
+
+      // Calculate velocity for momentum
+      dragStateRef.current.velocity = e.pageX - dragStateRef.current.lastX
+      dragStateRef.current.lastX = e.pageX
+
+      container.scrollLeft = dragStateRef.current.scrollLeft - walk
+    }
+
+    // Handle mouse up - End drag with momentum
+    const handleMouseUp = () => {
+      if (!dragStateRef.current.isDragging) return
+
+      const hadStartedDrag = dragStateRef.current.hasStartedDrag
+
+      dragStateRef.current.isDragging = false
+      dragStateRef.current.hasStartedDrag = false
+      setIsDragging(false)
+
+      // Only apply momentum if we actually started scrolling
+      if (hadStartedDrag) {
+        // Apply momentum scrolling
+        const applyMomentum = () => {
+          if (Math.abs(dragStateRef.current.velocity) < 0.5) {
+            animationFrameId = null
+            return
+          }
+
+          container.scrollLeft -= dragStateRef.current.velocity
+          dragStateRef.current.velocity *= 0.95 // Friction factor
+
+          animationFrameId = requestAnimationFrame(applyMomentum)
+        }
+
+        if (Math.abs(dragStateRef.current.velocity) > 1) {
+          applyMomentum()
+        }
+      }
+    }
+
+    // Handle mouse leave - Cancel drag
+    const handleMouseLeave = () => {
+      if (dragStateRef.current.isDragging) {
+        dragStateRef.current.isDragging = false
+        dragStateRef.current.hasStartedDrag = false
+        setIsDragging(false)
+      }
+    }
+
+    // Add event listeners
+    window.addEventListener('keydown', handleKeyDown)
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    container.addEventListener('mousedown', handleMouseDown)
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+    container.addEventListener('mouseleave', handleMouseLeave)
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      container.removeEventListener('wheel', handleWheel)
+      container.removeEventListener('mousedown', handleMouseDown)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+      container.removeEventListener('mouseleave', handleMouseLeave)
+
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
+  }, [containerRef])
+
+  return { isDragging }
+}
+
 interface BoardProps {
   cardsByColumn: Record<KanbanStatus, KanbanCard[]>
   onMove: (cardId: string, targetColumn: KanbanStatus, targetIndex: number) => Promise<void>
@@ -87,6 +345,7 @@ interface BoardProps {
   onMoveToNext?: (card: KanbanCard) => void
   loading?: boolean
   isMoving?: boolean
+  onScrollStateChange?: (state: { atStart: boolean; atEnd: boolean; scrollLeft: () => void; scrollRight: () => void }) => void
 }
 
 // 🎯 ENTERPRISE: Optimistic state type
@@ -103,12 +362,74 @@ export function Board({
   onCardAction,
   onMoveToNext,
   loading = false,
-  isMoving = false
+  isMoving = false,
+  onScrollStateChange
 }: BoardProps) {
   const [activeCard, setActiveCard] = useState<KanbanCard | null>(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(false)
   const [isBlocked, setIsBlocked] = useState(false) // For drag overlay blocked animation
   const { toast } = useToast()
+
+  // 🎯 ENTERPRISE: Horizontal drag-to-scroll functionality
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const { isDragging } = useDragScroll(scrollContainerRef)
+
+  // 🎯 ENTERPRISE: Scroll position tracking for arrow visibility
+  const [scrollPosition, setScrollPosition] = useState({ atStart: true, atEnd: false })
+
+  // 🎯 ENTERPRISE: Smooth scroll navigation functions (MUST be defined before useEffect)
+  const scrollLeft = useCallback(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -400, behavior: 'smooth' })
+    }
+  }, [])
+
+  const scrollRight = useCallback(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 400, behavior: 'smooth' })
+    }
+  }, [])
+
+  // Track scroll position to show/hide arrows
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    const updateScrollPosition = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = container
+      const atStart = scrollLeft <= 5  // More sensitive threshold
+      const atEnd = scrollLeft + clientWidth >= scrollWidth - 5
+
+      setScrollPosition({ atStart, atEnd })
+    }
+
+    // Initial update after a slight delay to ensure layout is ready
+    const initialTimer = setTimeout(updateScrollPosition, 100)
+
+    // Update on scroll
+    container.addEventListener('scroll', updateScrollPosition, { passive: true })
+
+    // Also update on window resize
+    window.addEventListener('resize', updateScrollPosition)
+
+    return () => {
+      clearTimeout(initialTimer)
+      container.removeEventListener('scroll', updateScrollPosition)
+      window.removeEventListener('resize', updateScrollPosition)
+    }
+  }, [cardsByColumn]) // Re-run when cards change
+
+  // Notify parent component about scroll state changes
+  useEffect(() => {
+    if (onScrollStateChange) {
+      onScrollStateChange({
+        atStart: scrollPosition.atStart,
+        atEnd: scrollPosition.atEnd,
+        scrollLeft,
+        scrollRight
+      })
+    }
+  }, [scrollPosition, scrollLeft, scrollRight, onScrollStateChange])
 
   // ============================================================================
   // OPTIMISTIC STATE - Instant UI updates before backend confirmation
@@ -140,7 +461,6 @@ export function Board({
     optimisticMoves.forEach(move => {
       // Ensure columns exist
       if (!result[move.fromColumn] || !result[move.toColumn]) {
-        console.warn(`[Board] Invalid optimistic move: ${move.fromColumn} → ${move.toColumn}`)
         return
       }
 
@@ -151,8 +471,6 @@ export function Board({
         result[move.fromColumn] = result[move.fromColumn].filter(c => c.id !== move.cardId)
         // Add to target column with updated status
         result[move.toColumn] = [...result[move.toColumn], { ...card, status: move.toColumn }]
-      } else {
-        console.warn(`[Board] Card not found for optimistic move: ${move.cardId}`)
       }
     })
 
@@ -371,7 +689,6 @@ export function Board({
       targetColumn = over.id as KanbanStatus
       // 🎯 ENTERPRISE: Safe array access with optional chaining
       targetIndex = cardsByColumn[targetColumn]?.length ?? 0
-      console.log(`[Board] ✅ Dropped on column: ${targetColumn}, index: ${targetIndex}`)
     } else {
       // Priority 2: Dropped on a card - find which column that card belongs to
       for (const [column, cards] of Object.entries(cardsByColumn)) {
@@ -380,7 +697,6 @@ export function Board({
           targetColumn = column as KanbanStatus
           // 🎨 ENTERPRISE: Insert at the same position as target card (not after)
           targetIndex = index
-          console.log(`[Board] ✅ Dropped on card in column: ${targetColumn}, index: ${targetIndex}`)
           break
         }
       }
@@ -394,13 +710,9 @@ export function Board({
       const normalizedFromStatus = normalizeStatus(activeCard.status)
       const normalizedToStatus = normalizeStatus(targetColumn)
 
-      console.log(`[Board] 🔍 Checking transition: ${activeCard.status} (normalized: ${normalizedFromStatus}) → ${targetColumn} (normalized: ${normalizedToStatus})`)
-
       // Check if transition is allowed using lifecycle rules
       if (!canTransition(normalizedFromStatus, normalizedToStatus)) {
         // ❌ BLOCKED: Show immediate visual feedback
-        console.log(`[Board] 🚫 Move blocked: ${activeCard.status} (${normalizedFromStatus}) → ${targetColumn} (${normalizedToStatus})`)
-
         // Show red gradient flash + shake animation
         showBlockedFeedback(activeCard.id, activeCard.status, targetColumn)
 
@@ -425,7 +737,6 @@ export function Board({
       }
 
       // ✅ ALLOWED: Instant drop with optimistic UI update
-      console.log(`[Board] 🚀 Moving card from ${activeCard.status} to ${targetColumn}`)
 
       // 🎯 ENTERPRISE: Add optimistic move IMMEDIATELY for zero perceived lag
       const optimisticMoveId = `${activeCard.id}-${Date.now()}`
@@ -448,13 +759,10 @@ export function Board({
       queueMicrotask(async () => {
         try {
           await onMove(activeCard.id, targetColumn, targetIndex)
-          console.log(`[Board] ✅ Move persisted successfully`)
 
           // Clear optimistic state after backend confirms
           setOptimisticMoves(prev => prev.filter(m => m.cardId !== activeCard.id))
         } catch (error) {
-          console.error(`[Board] ❌ Failed to persist move:`, error)
-
           // Revert optimistic update on failure
           flushSync(() => {
             setOptimisticMoves(prev => prev.filter(m => m.cardId !== activeCard.id))
@@ -470,18 +778,15 @@ export function Board({
         }
       })
     } else if (targetColumn === activeCard.status) {
-      console.log(`[Board] ℹ️ Card reordered within same column: ${targetColumn}`)
       // Reordering within same column - always allowed, no lifecycle check needed
       // Fire-and-forget for instant reordering
       queueMicrotask(async () => {
         try {
           await onMove(activeCard.id, targetColumn, targetIndex)
         } catch (error) {
-          console.error(`[Board] ❌ Failed to persist reorder:`, error)
+          // Silent fail for reordering
         }
       })
-    } else {
-      console.log(`[Board] ⚠️ No valid target column found`)
     }
   }
 
@@ -563,22 +868,29 @@ export function Board({
         announcements: screenReaderAnnouncement
       }}
     >
-      <div
-        className="flex h-full gap-4 p-6 overflow-x-auto animate-fadeIn kanban-board-scroll"
-        style={{
-          background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 50%, ${LUXE_COLORS.black} 100%)`,
-          backgroundImage: `
-            linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 50%, ${LUXE_COLORS.black} 100%),
-            repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(212, 175, 55, 0.02) 10px, rgba(212, 175, 55, 0.02) 20px)
-          `,
-          backdropFilter: 'blur(5px)',
-          // Enhanced transition using physics-based spring
-          transition: `all ${ANIMATION_CONFIG.duration.normal}ms ${ANIMATION_CONFIG.easing.spring}`,
-          scrollBehavior: isAutoScrolling ? 'smooth' : 'auto'
-        }}
-        role="region"
-        aria-label="Appointment Kanban Board"
-      >
+      <div className="relative h-full">
+        <div
+          ref={scrollContainerRef}
+          tabIndex={0}
+          className="flex h-full gap-4 p-6 overflow-x-auto animate-fadeIn kanban-board-scroll"
+          style={{
+            background: `linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 50%, ${LUXE_COLORS.black} 100%)`,
+            backgroundImage: `
+              linear-gradient(135deg, ${LUXE_COLORS.black} 0%, ${LUXE_COLORS.charcoal} 50%, ${LUXE_COLORS.black} 100%),
+              repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(212, 175, 55, 0.02) 10px, rgba(212, 175, 55, 0.02) 20px)
+            `,
+            backdropFilter: 'blur(5px)',
+            // Enhanced transition using physics-based spring
+            transition: `all ${ANIMATION_CONFIG.duration.normal}ms ${ANIMATION_CONFIG.easing.spring}`,
+            scrollBehavior: isAutoScrolling ? 'smooth' : 'auto',
+            // 🎯 ENTERPRISE: Cursor feedback for drag-to-scroll
+            cursor: isDragging ? 'grabbing' : 'grab',
+            userSelect: isDragging ? 'none' : 'auto',
+            position: 'relative' // For arrow positioning
+          }}
+          role="region"
+          aria-label="Appointment Kanban Board - Use arrow keys to scroll horizontally"
+        >
         {KANBAN_COLUMNS.map((column, index) => (
           <div
             key={column.key}
@@ -599,13 +911,14 @@ export function Board({
             />
           </div>
         ))}
+        </div>
       </div>
 
       {/* ========================================================================
-          DRAG OVERLAY - Instant drop with blocked state feedback
+          DRAG OVERLAY - Instant drop with no delay
           ======================================================================== */}
       <DragOverlay
-        dropAnimation={null} // Disable built-in animation for instant drop
+        dropAnimation={null}
         className={isBlocked ? 'drag-overlay-blocked' : ''}
       >
         {activeCard && (

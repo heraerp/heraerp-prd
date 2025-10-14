@@ -29,6 +29,37 @@ import {
 } from 'date-fns'
 
 /**
+ * 🔧 ENTERPRISE FIX: Calculate actual revenue from service/product lines only
+ * CRITICAL: Excludes tax and payment lines to prevent double-counting
+ *
+ * SALE transactions have:
+ * - Service lines (line_type: 'service') ← COUNT THIS
+ * - Product lines (line_type: 'product') ← COUNT THIS
+ * - Tax lines (line_type: 'tax') ← EXCLUDE
+ * - Payment lines (line_type: 'payment') ← EXCLUDE
+ *
+ * Revenue = Sum of service + product lines ONLY
+ */
+function calculateTransactionRevenue(transaction: any): number {
+  // If transaction has lines, calculate from service/product lines only
+  if (transaction.lines && Array.isArray(transaction.lines) && transaction.lines.length > 0) {
+    const revenueLines = transaction.lines.filter((line: any) =>
+      line.line_type === 'service' ||
+      line.line_type === 'product' ||
+      line.line_type === 'item' // Legacy line type
+    )
+
+    // Sum line amounts (includes quantity * unit_amount)
+    return revenueLines.reduce((sum: number, line: any) => {
+      return sum + (line.line_amount || 0)
+    }, 0)
+  }
+
+  // Fallback: Use transaction total_amount for transactions without proper line structure
+  return transaction.total_amount || 0
+}
+
+/**
  * ✅ ENTERPRISE HELPER: Calculate payment method breakdown for any date range
  * Load data once, calculate instantly based on filter - no reloading needed
  */
@@ -45,6 +76,19 @@ function calculatePaymentBreakdown(
       })
     : transactions
 
+  // ✅ DEBUG: Log first transaction structure to verify lines are included
+  if (filteredTransactions.length > 0) {
+    const firstTxn = filteredTransactions[0]
+    console.log('[calculatePaymentBreakdown] 🔍 DEBUG - First transaction structure:', {
+      id: firstTxn.id?.substring(0, 8),
+      has_lines: !!firstTxn.lines,
+      lines_count: firstTxn.lines?.length || 0,
+      payment_lines_count: firstTxn.lines?.filter((l: any) => l.line_type === 'payment').length || 0,
+      first_payment_line: firstTxn.lines?.find((l: any) => l.line_type === 'payment'),
+      transaction_metadata: firstTxn.metadata
+    })
+  }
+
   return filteredTransactions.reduce(
     (acc, t) => {
       // ✅ ENTERPRISE FIX: Handle split payments by reading from transaction lines
@@ -53,12 +97,26 @@ function calculatePaymentBreakdown(
       if (paymentLines.length > 0) {
         // Process each payment line separately (handles split payments correctly)
         paymentLines.forEach((line: any) => {
+          // ✅ FIX: Check both metadata and line_data (API returns line_data)
+          const paymentMethodData = line.metadata || line.line_data || {}
           const method = (
-            line.metadata?.payment_method ||
+            paymentMethodData.payment_method ||
             line.payment_method ||
             ''
           ).toLowerCase()
           const amount = Math.abs(line.line_amount || 0)
+
+          // ✅ DEBUG: Log payment line details
+          console.log('[calculatePaymentBreakdown] 💳 Payment line:', {
+            line_type: line.line_type,
+            method_found: method || 'NONE',
+            amount,
+            has_metadata: !!line.metadata,
+            has_line_data: !!line.line_data,
+            raw_metadata: line.metadata,
+            raw_line_data: line.line_data,
+            description: line.description
+          })
 
           if (!method || method === 'cash' || method.includes('cash')) {
             acc.cash += amount
@@ -73,26 +131,59 @@ function calculatePaymentBreakdown(
           }
         })
       } else {
-        // Fallback: Check transaction-level metadata (legacy/old transactions)
-        const method = (
-          t.metadata?.payment_method ||
-          t.payment_method ||
-          t.metadata?.paymentMethod ||
-          t.paymentMethod ||
-          ''
-        ).toLowerCase()
-        const amount = t.total_amount || 0
+        // Fallback: Check transaction-level metadata (current implementation)
+        // ✅ FIX: Handle payment_methods array from transaction metadata
+        const paymentMethods = t.metadata?.payment_methods || []
+        const amount = calculateTransactionRevenue(t)
 
-        if (!method || method === 'cash' || method.includes('cash')) {
-          acc.cash += amount
-        } else if (method === 'card' || method === 'credit_card' || method === 'debit_card' || method.includes('card')) {
-          acc.card += amount
-        } else if (method === 'bank_transfer' || method === 'transfer' || method.includes('bank')) {
-          acc.bank_transfer += amount
-        } else if (method === 'voucher' || method === 'gift_card' || method.includes('voucher')) {
-          acc.voucher += amount
+        if (Array.isArray(paymentMethods) && paymentMethods.length > 0) {
+          // If payment_methods is an array, use the first method
+          // (For split payments, we'd need line-level data which isn't available)
+          const method = paymentMethods[0]?.toLowerCase() || ''
+
+          console.log('[calculatePaymentBreakdown] 💰 Fallback - Using metadata payment_methods:', {
+            payment_methods_array: paymentMethods,
+            selected_method: method,
+            amount
+          })
+
+          if (!method || method === 'cash' || method.includes('cash')) {
+            acc.cash += amount
+          } else if (method === 'card' || method === 'credit_card' || method === 'debit_card' || method.includes('card')) {
+            acc.card += amount
+          } else if (method === 'bank_transfer' || method === 'transfer' || method.includes('bank')) {
+            acc.bank_transfer += amount
+          } else if (method === 'voucher' || method === 'gift_card' || method.includes('voucher')) {
+            acc.voucher += amount
+          } else {
+            acc.cash += amount // Default to cash
+          }
         } else {
-          acc.cash += amount // Default to cash
+          // Legacy: Single payment_method field
+          const method = (
+            t.metadata?.payment_method ||
+            t.payment_method ||
+            t.metadata?.paymentMethod ||
+            t.paymentMethod ||
+            ''
+          ).toLowerCase()
+
+          console.log('[calculatePaymentBreakdown] 💰 Fallback - Using legacy payment_method:', {
+            method_found: method || 'NONE',
+            amount
+          })
+
+          if (!method || method === 'cash' || method.includes('cash')) {
+            acc.cash += amount
+          } else if (method === 'card' || method === 'credit_card' || method === 'debit_card' || method.includes('card')) {
+            acc.card += amount
+          } else if (method === 'bank_transfer' || method === 'transfer' || method.includes('bank')) {
+            acc.bank_transfer += amount
+          } else if (method === 'voucher' || method === 'gift_card' || method.includes('voucher')) {
+            acc.voucher += amount
+          } else {
+            acc.cash += amount // Default to cash
+          }
         }
       }
 
@@ -121,7 +212,8 @@ function calculateFinancialMetrics(
       })
     : transactions
 
-  const revenue = filteredTransactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+  // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+  const revenue = filteredTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
   const transactionCount = filteredTransactions.length
   const grossProfit = revenue * profitMarginRate
   const profitMargin = profitMarginRate * 100
@@ -335,6 +427,7 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
   })
 
   // Fetch transactions (tickets/sales) using Universal Transaction hook with caching
+  // ✅ ENTERPRISE FIX: Include lines to get payment method details
   const {
     transactions: tickets,
     isLoading: ticketsLoading,
@@ -343,7 +436,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     organizationId,
     filters: {
       transaction_type: 'SALE',
-      limit: 1000
+      limit: 1000,
+      include_lines: true // ✅ CRITICAL: Include lines for payment method breakdown
     },
     staleTime: 30000, // 30 seconds cache for dashboard
     refetchOnWindowFocus: false
@@ -502,8 +596,9 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     ).length
 
     // Total revenue from completed tickets
+    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
     const totalRevenue = completedTickets.reduce((sum, ticket) => {
-      return sum + (ticket.total_amount || 0)
+      return sum + calculateTransactionRevenue(ticket)
     }, 0)
 
     // Low stock products
@@ -535,8 +630,9 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       return txDate >= yesterdayStart && txDate <= yesterdayEnd
     })
 
-    const todayRevenue = todayTransactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
-    const yesterdayRevenue = yesterdayTransactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+    const todayRevenue = todayTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+    const yesterdayRevenue = yesterdayTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
 
     const todayAppointments = todayTransactions.length
     const yesterdayAppointments = yesterdayTransactions.length
@@ -592,7 +688,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       const status = apt.transaction_status?.toLowerCase() || apt.metadata?.status?.toLowerCase()
       return status === 'completed'
     })
-    const appointmentRevenue = completedAppointments.reduce((sum, apt) => sum + (apt.total_amount || 0), 0)
+    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+    const appointmentRevenue = completedAppointments.reduce((sum, apt) => sum + calculateTransactionRevenue(apt), 0)
     const averageAppointmentValue =
       completedAppointments.length > 0 ? appointmentRevenue / completedAppointments.length : 0
 
@@ -615,7 +712,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
         return txDate >= dayStart && txDate <= dayEnd
       })
 
-      const revenue = dayTransactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+      // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+      const revenue = dayTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
 
       return {
         date: format(date, 'MMM dd'),
@@ -636,7 +734,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
         return txDate >= dayStart && txDate <= dayEnd
       })
 
-      const revenue = dayTransactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+      // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+      const revenue = dayTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
 
       return {
         date: format(date, 'MMM dd'),
@@ -652,15 +751,17 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       return txDate >= monthStart
     })
 
-    const monthToDateRevenue = monthTransactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+    const monthToDateRevenue = monthTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
 
     // Revenue vs last month (simplified)
     const revenueVsLastMonth = 0
 
     // Average transaction value
+    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
     const averageTransactionValue =
       completedTickets.length > 0
-        ? completedTickets.reduce((sum, t) => sum + (t.total_amount || 0), 0) / completedTickets.length
+        ? completedTickets.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0) / completedTickets.length
         : 0
 
     // ═══════════════════════════════════════════════════════════════
@@ -686,7 +787,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
           t.target_entity_id === s.id    // Staff as target entity
       )
 
-      const revenue = staffTransactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+      // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+      const revenue = staffTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
       const servicesCompleted = staffTransactions.length
 
       // Get staff rating
@@ -811,7 +913,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       )
 
       const bookings = serviceTransactions.length
-      const revenue = serviceTransactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+      // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+      const revenue = serviceTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
       const averagePrice = bookings > 0 ? revenue / bookings : 0
 
       return {

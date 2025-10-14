@@ -14,6 +14,7 @@ import { BillSetupModal } from '@/components/salon/pos/BillSetupModal'
 import { usePosTicket } from '@/hooks/usePosTicket'
 import { useAppointmentLookup } from '@/hooks/useAppointmentLookup'
 import { useCustomerLookup } from '@/hooks/useCustomerLookup'
+import { useHeraAppointments } from '@/hooks/useHeraAppointments'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { Button } from '@/components/ui/button'
@@ -103,6 +104,9 @@ function POSContent() {
   const { loadAppointment } = appointmentLookupResult
 
   useCustomerLookup(effectiveOrgId || 'demo-org')
+
+  // Get appointment update function for status updates after payment
+  const { updateAppointmentStatus } = useHeraAppointments({ organizationId: effectiveOrgId || 'demo-org' })
 
   // 🎯 ENTERPRISE: Auto-load appointment from URL parameter
   useEffect(() => {
@@ -591,17 +595,48 @@ function POSContent() {
   }, [setSelectedBranchId])
 
   const handlePaymentComplete = useCallback(
-    (saleData: any) => {
+    async (saleData: any) => {
       setCompletedSale(saleData)
       setIsPaymentOpen(false)
       setIsReceiptOpen(true)
+
+      // Update appointment status to completed if payment was for an appointment
+      if (ticket.appointment_id) {
+        try {
+          console.log('[POSPage] 📝 Updating appointment status to completed:', ticket.appointment_id)
+
+          await updateAppointmentStatus({
+            id: ticket.appointment_id,
+            status: 'completed'
+          })
+
+          console.log('[POSPage] ✅ Appointment status updated successfully')
+
+          toast({
+            title: '✅ Appointment Completed',
+            description: 'Appointment status has been updated to completed.',
+            duration: 2000
+          })
+        } catch (error) {
+          console.error('[POSPage] ❌ Failed to update appointment status:', error)
+
+          // Don't block the payment flow, just show a warning
+          toast({
+            title: '⚠️ Status Update Failed',
+            description: 'Payment was successful but appointment status could not be updated.',
+            variant: 'destructive',
+            duration: 5000
+          })
+        }
+      }
+
       clearTicket()
       // Clear default stylist and customer for next bill
       setDefaultStylistId(undefined)
       setDefaultStylistName(undefined)
       setSelectedCustomer(null)
     },
-    [clearTicket]
+    [clearTicket, ticket.appointment_id, updateAppointmentStatus, toast]
   )
 
   // Memoize totals calculation for performance

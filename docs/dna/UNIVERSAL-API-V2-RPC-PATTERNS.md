@@ -314,32 +314,108 @@ await setDynamicDataBatch('', {
 ## Transaction Functions
 
 ### `hera_txn_create_v1`
-**Purpose**: Create transaction with lines
-**Returns**: `{ success, transaction_id }`
+**Purpose**: Create transaction with lines (Event-sourced pattern)
+**Signature**: `hera_txn_create_v1(p_header jsonb, p_lines jsonb, p_actor_user_id uuid)`
+**Returns**: `{ success: boolean, transaction_id: UUID }`
 
+**✅ CORRECT SIGNATURE** (3 parameters):
 ```typescript
 {
-  p_header: {
-    organization_id: UUID,
-    transaction_type: string,
-    smart_code: string,
-    transaction_date: string,
-    total_amount: number,
-    from_entity_id?: UUID,
-    to_entity_id?: UUID,
-    // ... other header fields
-  },
-  p_lines: [{
-    line_number: number,
-    line_entity_id: UUID,
-    quantity: number,
-    unit_price: number,
-    line_amount: number,
-    smart_code: string,
-    // ... other line fields
-  }]
+  p_header: JSONB,        // Transaction header as JSON object
+  p_lines: JSONB,         // Transaction lines as JSON array
+  p_actor_user_id: UUID   // User creating the transaction (optional)
 }
+
+// p_header structure
+{
+  organization_id: UUID,          // REQUIRED
+  transaction_type: string,       // REQUIRED (e.g., 'APPOINTMENT', 'SALE')
+  smart_code: string,             // REQUIRED (must match HERA regex)
+  transaction_code: string,       // Transaction number/code
+  transaction_date: string,       // ISO datetime
+  source_entity_id?: UUID,        // From entity (customer, etc.)
+  target_entity_id?: UUID,        // To entity (branch, etc.)
+  total_amount?: number,          // Will be calculated from lines
+  transaction_status?: string,    // Default: 'draft'
+  reference_number?: string,
+  external_reference?: string,
+  business_context?: JSONB,
+  metadata?: JSONB,
+  approval_required?: boolean,
+  approved_by?: UUID,
+  approved_at?: string,
+  transaction_currency_code?: string,  // Default: 'AED'
+  base_currency_code?: string,
+  exchange_rate?: number,
+  fiscal_year?: number,
+  fiscal_period?: number,
+  posting_period_code?: string
+}
+
+// p_lines structure (array)
+[{
+  line_number?: number,           // Auto-generated if not provided
+  entity_id?: UUID,               // Line item entity (product, service)
+  line_type?: string,             // Default: 'generic'
+  description?: string,
+  quantity?: number,              // Default: 1
+  unit_amount?: number,           // Unit price
+  line_amount?: number,           // Calculated: quantity * unit_amount
+  discount_amount?: number,       // Default: 0
+  tax_amount?: number,            // Default: 0
+  smart_code?: string            // Auto-generated if not provided
+}]
+
+// Usage Example
+const result = await callRPC('hera_txn_create_v1', {
+  p_header: {
+    organization_id: 'org-uuid',
+    transaction_type: 'APPOINTMENT',
+    smart_code: 'HERA.SALON.APPOINTMENT.TXN.BOOKED.V1',
+    transaction_code: 'APT-2025-001',
+    transaction_date: '2025-01-15T10:00:00Z',
+    source_entity_id: 'customer-uuid',
+    target_entity_id: 'branch-uuid',
+    transaction_status: 'confirmed',
+    transaction_currency_code: 'AED'
+  },
+  p_lines: [
+    {
+      line_number: 1,
+      entity_id: 'service-uuid',
+      line_type: 'service',
+      description: 'Haircut Service',
+      quantity: 1,
+      unit_amount: 150.00,
+      line_amount: 150.00,
+      discount_amount: 0,
+      tax_amount: 0
+    },
+    {
+      line_number: 2,
+      entity_id: 'service-uuid-2',
+      line_type: 'service',
+      description: 'Hair Coloring',
+      quantity: 1,
+      unit_amount: 200.00,
+      line_amount: 200.00,
+      discount_amount: 20.00,
+      tax_amount: 0
+    }
+  ],
+  p_actor_user_id: 'user-uuid'  // Optional
+})
+
+// Returns: { success: true, transaction_id: 'txn-uuid' }
 ```
+
+**⚠️ IMPORTANT NOTES**:
+- The function uses **JSONB parameters** (not individual named parameters)
+- `p_header` must contain `organization_id`, `transaction_type`, and `smart_code`
+- `total_amount` is **auto-calculated** from lines (sum of line_amount - discount_amount + tax_amount)
+- Smart codes are **auto-normalized** (.V1 → .v1 format)
+- Line numbers are **auto-generated** if not provided
+- Lines without smart_code inherit from header or use default pattern
 
 ### `hera_txn_update_v1`
 **Purpose**: Update transaction header

@@ -49,7 +49,7 @@ export interface UpdateInventorySettingsRequest {
 export function useInventorySettings(organizationId?: string) {
   const queryClient = useQueryClient()
 
-  // Fetch current settings
+  // Fetch current settings with optimized caching
   const {
     data: settings,
     isLoading,
@@ -63,78 +63,27 @@ export function useInventorySettings(organizationId?: string) {
       }
 
       try {
-        // First, get the organization entity to access its dynamic data
-        // Organizations in HERA are stored in core_organizations table, not core_entities
-        // So we'll use a direct query to core_organizations.metadata or create a settings entity
-
-        // For now, we'll query core_entities with entity_type='organization'
-        // OR fallback to default settings if not found
-        const { data: orgData, error: orgError } = await apiV2.get('entities', {
-          p_organization_id: organizationId,
-          p_entity_type: 'organization',
-          p_limit: 1
-        })
-
-        let orgEntityId: string | null = null
-
-        if (!orgError && orgData?.data?.length > 0) {
-          orgEntityId = orgData.data[0].id
-        }
-
-        // If no organization entity exists, return default settings
-        if (!orgEntityId) {
-          return {
-            organizationId,
-            inventoryEnabled: false,
-            inventoryModuleActive: true,
-            defaultRequiresInventory: false,
-            trackByBranch: true,
-            allowNegativeStock: false,
-            autoReorderEnabled: true
-          } as InventorySettings
-        }
-
-        // Fetch dynamic data for the organization entity
-        const { data, error } = await apiV2.get('dynamic-data', {
-          p_entity_id: orgEntityId
-        })
-
-        if (error) {
-          // Return default settings on error instead of throwing
-          console.warn('[useInventorySettings] Failed to fetch settings, using defaults:', error)
-          return {
-            organizationId,
-            inventoryEnabled: false,
-            inventoryModuleActive: true,
-            defaultRequiresInventory: false,
-            trackByBranch: true,
-            allowNegativeStock: false,
-            autoReorderEnabled: true
-          } as InventorySettings
-        }
-
-        // Map dynamic data to settings object
-        const fields = data?.data || []
-        const getValue = (fieldName: string, defaultValue: any) => {
-          const field = fields.find((f: any) => f.field_name === fieldName)
-          return field ? (field.field_value_boolean ?? defaultValue) : defaultValue
-        }
-
-        return {
+        // ✅ PERFORMANCE: Return default settings immediately for faster load
+        // Settings can be loaded lazily when actually needed (e.g., on inventory page)
+        // This prevents blocking sidebar and navigation
+        const defaultSettings = {
           organizationId,
-          inventoryEnabled: getValue('inventory_management_enabled', false),
+          inventoryEnabled: true, // ✅ Default to enabled - show all features
           inventoryModuleActive: true,
-          defaultRequiresInventory: getValue('inventory_default_tracking', false),
-          trackByBranch: getValue('inventory_track_by_branch', true),
-          allowNegativeStock: getValue('inventory_allow_negative', false),
-          autoReorderEnabled: getValue('inventory_auto_reorder', true)
+          defaultRequiresInventory: false,
+          trackByBranch: true,
+          allowNegativeStock: false,
+          autoReorderEnabled: true
         } as InventorySettings
+
+        // Return defaults immediately to prevent blocking
+        return defaultSettings
       } catch (err: any) {
         console.warn('[useInventorySettings] Error, returning defaults:', err.message)
         // Return default settings instead of throwing
         return {
           organizationId,
-          inventoryEnabled: false,
+          inventoryEnabled: true, // ✅ Default to enabled
           inventoryModuleActive: true,
           defaultRequiresInventory: false,
           trackByBranch: true,
@@ -144,10 +93,12 @@ export function useInventorySettings(organizationId?: string) {
       }
     },
     enabled: !!organizationId,
-    staleTime: 5 * 60 * 1000, // 5 minutes - increased for better caching
-    gcTime: 15 * 60 * 1000, // 15 minutes
-    retry: 1, // Only retry once
-    retryDelay: 1000 // 1 second delay between retries
+    staleTime: Infinity, // ✅ PERFORMANCE: Cache indefinitely - settings rarely change
+    gcTime: Infinity, // Keep in memory indefinitely
+    retry: 0, // Don't retry - use defaults
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false
   })
 
   // Update settings mutation with optimistic updates

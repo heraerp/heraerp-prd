@@ -14,7 +14,7 @@ interface SalonLuxeModalProps {
   icon?: ReactNode
   children: ReactNode
   footer?: ReactNode
-  size?: 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
   showCloseButton?: boolean
   className?: string
 }
@@ -59,14 +59,15 @@ export function SalonLuxeModal({
   const sizeClasses = {
     sm: 'max-w-md',
     md: 'max-w-2xl',
-    lg: 'max-w-4xl',
+    lg: 'max-w-3xl',
     xl: 'max-w-6xl',
+    '2xl': 'max-w-7xl',
   }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
-        className={cn('salon-luxe-modal max-h-[90vh] border-0 shadow-2xl flex flex-col [&>button]:hidden rounded-2xl animate-modalSlideIn', sizeClasses[size], className)}
+        className={cn('salon-luxe-modal max-h-[98vh] border-0 shadow-2xl flex flex-col [&>button]:hidden rounded-2xl animate-modalSlideIn', sizeClasses[size], className)}
         style={{
           ...SALON_LUXE_STYLES.modalBackground,
           backdropFilter: 'blur(24px)',

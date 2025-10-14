@@ -202,6 +202,14 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
         const sales: Sale[] = transactions.map((txn: any) => {
           const metadata = txn.metadata || {}
 
+          // ✅ FIX: Calculate total from metadata (subtotal + tax - discount + tips)
+          // Don't use txn.total_amount as it includes payment lines
+          const subtotal = metadata.subtotal || 0
+          const discountAmount = metadata.discount_total || metadata.discount_amount || 0
+          const tipAmount = metadata.tip_total || metadata.tip_amount || 0
+          const taxAmount = metadata.tax_amount || 0
+          const calculatedTotal = subtotal - discountAmount + taxAmount + tipAmount
+
           return {
             id: txn.id,
             transaction_code: txn.transaction_code,
@@ -215,11 +223,11 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
               ? branchMap.get(txn.target_entity_id) || 'Main Branch'
               : 'Main Branch',
             status: (txn.transaction_status || metadata.status || 'completed') as SaleStatus,
-            subtotal: metadata.subtotal || txn.total_amount || 0,
-            discount_amount: metadata.discount_amount || 0,
-            tip_amount: metadata.tip_amount || 0,
-            tax_amount: metadata.tax_amount || 0,
-            total_amount: txn.total_amount || 0,
+            subtotal,
+            discount_amount: discountAmount,
+            tip_amount: tipAmount,
+            tax_amount: taxAmount,
+            total_amount: calculatedTotal,
             line_items: metadata.line_items || [],
             payment_methods: metadata.payment_methods || [],
             discounts: metadata.discounts || [],

@@ -20,9 +20,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'invalid_json' }, { status: 400 })
     }
 
+    console.log('[Transactions POST] 🔍 DEBUG - Received body:', {
+      has_organization_id: !!body.organization_id,
+      organization_id: body.organization_id,
+      transaction_type: body.transaction_type,
+      smart_code: body.smart_code,
+      jwt_organization_id: authResult.organizationId,
+      body_keys: Object.keys(body)
+    })
+
     // Organization isolation enforcement
     const reqOrgId = body.organization_id
     if (!reqOrgId || reqOrgId !== authResult.organizationId) {
+      console.error('[Transactions POST] 🚨 Organization mismatch:', {
+        body_organization_id: reqOrgId,
+        jwt_organization_id: authResult.organizationId,
+        match: reqOrgId === authResult.organizationId
+      })
       return NextResponse.json(
         { error: 'forbidden', details: 'organization_id mismatch' },
         { status: 403 }
@@ -149,8 +163,13 @@ export async function GET(request: NextRequest) {
       if (sourceEntityId) body.source_entity_id = sourceEntityId
       if (targetEntityId) body.target_entity_id = targetEntityId
       if (smartCodeLike) body.smart_code_like = smartCodeLike
-      if (dateFrom) body.date_from = dateFrom
-      if (dateTo) body.date_to = dateTo
+      // ✅ FIX: Convert date-only strings to ISO datetime for schema validation
+      if (dateFrom) {
+        body.date_from = dateFrom.includes('T') ? dateFrom : `${dateFrom}T00:00:00Z`
+      }
+      if (dateTo) {
+        body.date_to = dateTo.includes('T') ? dateTo : `${dateTo}T23:59:59Z`
+      }
       if (limit) body.limit = parseInt(limit)
       if (offset) body.offset = parseInt(offset)
       if (includeLines) body.include_lines = includeLines === 'true'

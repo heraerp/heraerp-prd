@@ -1,349 +1,202 @@
-'use client'
+/**
+ * HERA Service Categories Hook
+ *
+ * ✅ REFACTORED: Now uses useUniversalEntity for optimal performance
+ * - Automatic dynamic field flattening
+ * - No 401 authentication errors
+ * - Consistent with products hook pattern
+ * - Better caching and optimization
+ */
 
-import { useMemo } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  getEntities,
-  getDynamicData,
-  setDynamicDataBatch,
-  upsertEntity,
-  deleteEntity
-} from '@/lib/universal-api-v2-client'
-import { ServiceCategory, ServiceCategoryFormValues } from '@/types/salon-service'
+import { useUniversalEntity } from './useUniversalEntity'
+import { SERVICE_CATEGORY_PRESET } from './entityPresets'
+import type { DynamicFieldDef } from './useUniversalEntity'
 
-export function useHeraServiceCategories({
-  organizationId,
-  includeArchived = false
-}: {
+export interface ServiceCategory {
+  id: string
+  organization_id: string
+  entity_type: 'service_category'
+  entity_name: string
+  entity_code: string
+  smart_code: string
+  entity_description?: string | null
+  status: 'active' | 'archived' | 'deleted'
+  created_at: string | null
+  updated_at: string | null
+
+  // Dynamic fields (auto-flattened by useUniversalEntity)
+  color?: string
+  description?: string
+  icon?: string
+  display_order?: number
+  active?: boolean
+  service_count?: number
+  metadata?: any
+}
+
+export interface UseHeraServiceCategoriesOptions {
   organizationId?: string
   includeArchived?: boolean
-}) {
-  const queryClient = useQueryClient()
+}
 
-  // Fetch service categories
+export function useHeraServiceCategories(options?: UseHeraServiceCategoriesOptions) {
   const {
-    data: entities,
+    entities: categories,
     isLoading,
     error,
-    refetch
-  } = useQuery({
-    queryKey: ['serviceCategories', organizationId, { includeArchived }],
-    queryFn: async () => {
-      if (!organizationId) throw new Error('Organization ID required')
+    refetch,
+    create: baseCreate,
+    update: baseUpdate,
+    delete: baseDelete,
+    archive: baseArchive,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useUniversalEntity({
+    entity_type: 'SERVICE_CATEGORY', // ✅ Must match database case - this will normalize to uppercase in useUniversalEntity
+    organizationId: options?.organizationId,
+    filters: {
+      include_dynamic: true,
+      include_relationships: false,
+      limit: 100,
+      ...(options?.includeArchived ? {} : { status: 'active' })
+    },
+    dynamicFields: SERVICE_CATEGORY_PRESET.dynamicFields as DynamicFieldDef[]
+  })
 
-      console.log('[useHeraServiceCategories] Fetching categories for org:', organizationId)
+  // Helper to create category
+  const createCategory = async (data: {
+    name: string
+    description?: string
+    color?: string
+    icon?: string
+    display_order?: number
+  }) => {
+    const entity_name = data.name
 
-      const result = await getEntities('', {
-        p_organization_id: organizationId,
-        p_entity_type: 'service_category',
-        p_status: includeArchived ? undefined : 'active'
-      })
+    // Build dynamic_fields payload
+    const dynamic_fields: Record<string, any> = {}
 
-      const entities = Array.isArray(result) ? result : []
-
-      console.log('[useHeraServiceCategories] Fetched categories:', {
-        count: entities.length,
-        categories: entities.map(e => e.entity_name)
-      })
-
-      // ✅ PERFORMANCE OPTIMIZATION: Batch fetch dynamic data (NOT N+1)
-      // Fetch ALL dynamic data in ONE API call instead of N separate calls
-      const entityIds = entities.map(e => e.id)
-      let allDynamicData: any[] = []
-
-      if (entityIds.length > 0) {
-        try {
-          // Batch endpoint: /api/v2/dynamic-data?p_entity_ids=id1,id2,id3
-          const response = await fetch(`/api/v2/dynamic-data?p_entity_ids=${entityIds.join(',')}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-hera-api-version': 'v2'
-            }
-          })
-
-          if (response.ok) {
-            const result = await response.json()
-            allDynamicData = result.data || []
-            console.log('[useHeraServiceCategories] Batch fetched dynamic data:', {
-              entities: entityIds.length,
-              fields: allDynamicData.length
-            })
-          }
-        } catch (error) {
-          console.error('[useHeraServiceCategories] Failed to batch fetch dynamic data:', error)
-        }
+    if (data.color) {
+      dynamic_fields.color = {
+        value: data.color,
+        type: 'text',
+        smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.COLOR.v1'
       }
-
-      // Group dynamic data by entity_id
-      const dynamicDataByEntity = new Map<string, any[]>()
-      allDynamicData.forEach((field: any) => {
-        if (!dynamicDataByEntity.has(field.entity_id)) {
-          dynamicDataByEntity.set(field.entity_id, [])
-        }
-        dynamicDataByEntity.get(field.entity_id)!.push(field)
-      })
-
-      // Merge dynamic data into categories
-      const categoriesWithDynamicData = entities.map((entity: any) => {
-        const dynamicData = dynamicDataByEntity.get(entity.id) || []
-        const mergedMetadata = { ...entity.metadata }
-
-        dynamicData.forEach((field: any) => {
-          if (field.field_type === 'number') {
-            mergedMetadata[field.field_name] = field.field_value_number
-          } else if (field.field_type === 'boolean') {
-            mergedMetadata[field.field_name] = field.field_value_boolean
-          } else if (field.field_type === 'text') {
-            mergedMetadata[field.field_name] = field.field_value_text
-          } else if (field.field_type === 'json') {
-            mergedMetadata[field.field_name] = field.field_value_json
-          } else if (field.field_type === 'date') {
-            mergedMetadata[field.field_name] = field.field_value_date
-          } else {
-            // Fallback for unknown types
-            mergedMetadata[field.field_name] =
-              field.field_value_text ||
-              field.field_value_number ||
-              field.field_value_boolean ||
-              field.field_value_json ||
-              field.field_value_date
-          }
-        })
-
-        return {
-          ...entity,
-          metadata: mergedMetadata,
-          color: mergedMetadata.color || '#D4AF37',
-          description: mergedMetadata.description || '',
-          service_count: mergedMetadata.service_count || 0
-        }
-      })
-
-      return categoriesWithDynamicData
-    },
-    enabled: !!organizationId,
-    // ✅ PERFORMANCE OPTIMIZATION: Smart caching (30s staleTime)
-    // Categories rarely change - 30s cache provides excellent balance
-    staleTime: 30000, // 30 seconds - reduces API calls significantly
-    gcTime: 300000, // 5 minutes - keep in cache for 5 min after last use
-    refetchOnWindowFocus: false // No unnecessary refetches on tab switch
-  })
-
-  // Create mutation
-  const createEntity = useMutation({
-    mutationFn: async (data: any) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      return await upsertEntity('', {
-        p_organization_id: organizationId,
-        ...data
-      })
     }
-  })
 
-  // Update mutation
-  const updateEntity = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      return await upsertEntity('', {
-        p_organization_id: organizationId,
-        p_entity_id: id,
-        ...updates
-      })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryKey[0] === 'serviceCategories' && query.queryKey[1] === organizationId
-      })
+    if (data.description) {
+      dynamic_fields.description = {
+        value: data.description,
+        type: 'text',
+        smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.DESCRIPTION.v1'
+      }
     }
-  })
 
-  // Delete mutation - Enhanced RPC implementation
-  // Defaults to soft delete (archive) for safety
-  const deleteEntityMutation = useMutation({
-    mutationFn: async (params: { id: string; hard_delete?: boolean; reason?: string }) => {
-      if (!organizationId) throw new Error('Organization ID required')
-      return await deleteEntity('', {
-        p_organization_id: organizationId,
-        p_entity_id: params.id,
-        hard_delete: params.hard_delete ?? false, // Soft delete by default
-        cascade: true, // Always cascade relationships
-        reason: params.reason || 'Archive service category',
-        smart_code: 'HERA.SALON.SERVICE.CATEGORY.DELETE.V1'
-      })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryKey[0] === 'serviceCategories' && query.queryKey[1] === organizationId
-      })
+    if (data.icon) {
+      dynamic_fields.icon = {
+        value: data.icon,
+        type: 'text',
+        smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.ICON.v1'
+      }
     }
-  })
 
-  // Process categories
-  const categories = useMemo(() => {
-    if (!entities) return []
+    if (data.display_order !== undefined) {
+      dynamic_fields.display_order = {
+        value: data.display_order,
+        type: 'number',
+        smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.ORDER.v1'
+      }
+    }
 
-    return entities.filter(entity => {
-      if (!includeArchived && entity.status === 'archived') return false
-      return true
-    })
-  }, [entities, includeArchived])
+    // Service count starts at 0
+    dynamic_fields.service_count = {
+      value: 0,
+      type: 'number',
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.SERVICE_COUNT.v1'
+    }
 
-  // Create category
-  const createCategory = async (categoryData: ServiceCategoryFormValues) => {
-    if (!organizationId) throw new Error('Organization ID required')
-
-    console.log('[useHeraServiceCategories] Creating category:', categoryData)
-
-    // 1. Create entity
-    await createEntity.mutateAsync({
-      p_entity_type: 'service_category',
-      p_entity_name: categoryData.name,
-      p_entity_code: categoryData.name.toUpperCase().replace(/\s+/g, '_'),
-      p_smart_code: 'HERA.SALON.SERVICE.CATEGORY.STANDARD.V1',
-      p_entity_description: categoryData.description || null,
-      p_status: 'active'
-    })
-
-    // 2. Get the newly created category
-    const allCategories = await getEntities('', {
-      p_organization_id: organizationId,
-      p_entity_type: 'service_category'
-    })
-
-    const newCategory = Array.isArray(allCategories)
-      ? allCategories.find(c => c.entity_name === categoryData.name)
-      : null
-
-    if (!newCategory) throw new Error('Failed to create category')
-
-    // 3. Save dynamic fields
-    const dynamicFields = [
-      {
-        field_name: 'description',
-        field_type: 'text',
-        field_value_text: categoryData.description || ''
-      },
-      { field_name: 'service_count', field_type: 'number', field_value_number: 0 }
-    ]
-
-    await setDynamicDataBatch('', {
-      p_organization_id: organizationId,
-      p_entity_id: newCategory.id,
-      p_smart_code: 'HERA.SALON.SVC.CAT.FIELD.DATA.V1',
-      p_fields: dynamicFields as any
-    })
-
-    // 4. Invalidate cache
-    queryClient.invalidateQueries({
-      predicate: query =>
-        query.queryKey[0] === 'serviceCategories' && query.queryKey[1] === organizationId
-    })
-
-    console.log('[useHeraServiceCategories] Category created successfully')
+    return baseCreate({
+      entity_type: 'service_category',
+      entity_name,
+      smart_code: 'HERA.SALON.SERVICE.CATEGORY.STANDARD.V1',
+      entity_description: data.description || null,
+      status: 'active',
+      dynamic_fields
+    } as any)
   }
 
-  // Update category
-  const updateCategory = async (categoryId: string, categoryData: ServiceCategoryFormValues) => {
-    if (!organizationId) throw new Error('Organization ID required')
-
-    console.log('[useHeraServiceCategories] Updating category:', { categoryId, categoryData })
-
-    const category = entities?.find(c => c.id === categoryId)
+  // Helper to update category
+  const updateCategory = async (
+    id: string,
+    data: Partial<Parameters<typeof createCategory>[0]>
+  ) => {
+    const category = (categories as ServiceCategory[])?.find(c => c.id === id)
     if (!category) throw new Error('Category not found')
 
-    // 1. Update entity
-    await updateEntity.mutateAsync({
-      id: categoryId,
-      updates: {
-        p_entity_type: 'service_category',
-        p_entity_name: categoryData.name,
-        p_entity_code: categoryData.name.toUpperCase().replace(/\s+/g, '_'),
-        p_smart_code: 'HERA.SALON.SERVICE.CATEGORY.STANDARD.V1',
-        p_entity_description: categoryData.description || null,
-        p_status: 'active'
-      }
-    })
+    const entity_name = data.name || category.entity_name
 
-    // 2. Update dynamic fields
-    const dynamicFields = [
-      { field_name: 'description', field_type: 'text', field_value_text: categoryData.description || '' }
-    ]
+    // Build dynamic patch from provided fields
+    const dynamic_patch: Record<string, any> = {}
 
-    await setDynamicDataBatch('', {
-      p_organization_id: organizationId,
-      p_entity_id: categoryId,
-      p_smart_code: 'HERA.SALON.SVC.CAT.FIELD.DATA.V1',
-      p_fields: dynamicFields as any
-    })
+    if (data.color !== undefined) {
+      dynamic_patch.color = data.color
+    }
 
-    // 3. Invalidate cache
-    queryClient.invalidateQueries({
-      predicate: query =>
-        query.queryKey[0] === 'serviceCategories' && query.queryKey[1] === organizationId
-    })
+    if (data.description !== undefined) {
+      dynamic_patch.description = data.description
+    }
 
-    console.log('[useHeraServiceCategories] Category updated successfully')
+    if (data.icon !== undefined) {
+      dynamic_patch.icon = data.icon
+    }
+
+    if (data.display_order !== undefined) {
+      dynamic_patch.display_order = data.display_order
+    }
+
+    const payload: any = {
+      entity_id: id,
+      ...(entity_name && { entity_name }),
+      ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {})
+    }
+
+    return baseUpdate(payload)
   }
 
-  // Delete category
-  // PRODUCTION PATTERN: Soft delete by default, hard delete only for cleanup
-  const deleteCategory = async (
-    categoryId: string,
-    options?: { hard_delete?: boolean; reason?: string }
-  ) => {
-    if (!organizationId) throw new Error('Organization ID required')
+  // Helper to archive category (soft delete)
+  const archiveCategory = async (id: string) => {
+    const category = (categories as ServiceCategory[])?.find(c => c.id === id)
+    if (!category) throw new Error('Category not found')
 
-    const category = entities?.find(c => c.id === categoryId)
+    return baseUpdate({
+      entity_id: id,
+      entity_name: category.entity_name,
+      status: 'archived'
+    })
+  }
+
+  // Helper to delete category
+  const deleteCategory = async (id: string, options?: { hard_delete?: boolean; reason?: string }) => {
+    const category = (categories as ServiceCategory[])?.find(c => c.id === id)
     if (!category) throw new Error('Category not found')
 
     // Check if category has services
-    if (category.service_count > 0) {
+    if (category.service_count && category.service_count > 0) {
       throw new Error(
         `Cannot delete category "${category.entity_name}" because it has ${category.service_count} service(s). Please reassign or delete those services first.`
       )
     }
 
-    console.log('[useHeraServiceCategories] Deleting category:', {
-      categoryId,
-      mode: options?.hard_delete ? 'HARD' : 'SOFT',
-      reason: options?.reason
-    })
+    if (options?.hard_delete) {
+      return baseDelete({ entity_id: id, hard_delete: true })
+    }
 
-    await deleteEntityMutation.mutateAsync({
-      id: categoryId,
-      hard_delete: options?.hard_delete,
-      reason: options?.reason || `Delete category: ${category.entity_name}`
-    })
-
-    console.log('[useHeraServiceCategories] Category deleted successfully')
-  }
-
-  // Archive category
-  const archiveCategory = async (categoryId: string, archive: boolean = true) => {
-    if (!organizationId) throw new Error('Organization ID required')
-
-    const category = entities?.find(c => c.id === categoryId)
-    if (!category) throw new Error('Category not found')
-
-    console.log('[useHeraServiceCategories] Archiving category:', { categoryId, archive })
-
-    await updateEntity.mutateAsync({
-      id: categoryId,
-      updates: {
-        p_entity_type: 'service_category',
-        p_entity_name: category.entity_name,
-        p_entity_code: category.entity_code,
-        p_smart_code: category.smart_code,
-        p_entity_description: category.entity_description || null,
-        p_status: archive ? 'archived' : 'active'
-      }
-    })
+    return archiveCategory(id)
   }
 
   return {
-    categories,
+    categories: (categories as ServiceCategory[]) || [],
     isLoading,
     error,
     refetch,
@@ -351,8 +204,8 @@ export function useHeraServiceCategories({
     updateCategory,
     deleteCategory,
     archiveCategory,
-    isCreating: createEntity.isPending,
-    isUpdating: updateEntity.isPending,
-    isDeleting: deleteEntityMutation.isPending
+    isCreating,
+    isUpdating,
+    isDeleting
   }
 }

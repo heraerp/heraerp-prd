@@ -14,7 +14,7 @@ import {
 } from '@/hooks/useHeraAppointments'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
-import { useHeraServices } from '@/hooks/useHeraServicesV2'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { AppointmentModal } from '@/components/salon/appointments/AppointmentModal'

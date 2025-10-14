@@ -159,13 +159,17 @@ export function SaleDetailsDialog({
   const serviceLines = lines.filter((l: any) => l.line_type === 'service' || l.line_type === 'product')
   const taxLines = lines.filter((l: any) => l.line_type === 'tax')
   const discountLines = lines.filter((l: any) => l.line_type === 'discount')
+  const tipLines = lines.filter((l: any) => l.line_type === 'tip')
   const paymentLines = lines.filter((l: any) => l.line_type === 'payment')
 
   const subtotal = serviceLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
   const taxAmount = taxLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
   const discountAmount = Math.abs(discountLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0))
-  const tipAmount = metadata.tip_amount || 0
-  const totalAmount = transaction?.total_amount || 0
+  const tipAmount = tipLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
+
+  // ✅ FIX: Calculate total from customer-facing lines (exclude payment lines)
+  // Payment lines show how customer paid, not what they owe
+  const totalAmount = subtotal - discountAmount + taxAmount + tipAmount
 
   return (
     <SalonLuxeModal

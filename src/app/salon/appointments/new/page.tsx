@@ -14,10 +14,10 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
-import { createDraftAppointment } from '@/lib/appointments/createDraftAppointment'
+import { useUniversalTransaction } from '@/hooks/useUniversalTransaction'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
-import { useHeraServices } from '@/hooks/useHeraServicesV2'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { useHeraAppointments } from '@/hooks/useHeraAppointments'
 import {
@@ -210,6 +210,12 @@ function NewAppointmentContent() {
       date_from: selectedDate,
       date_to: selectedDate
     }
+  })
+
+  // ✅ Use Universal Transaction Hook for RPC-based appointment creation
+  const { create: createAppointmentTransaction } = useUniversalTransaction({
+    organizationId,
+    filters: { transaction_type: 'APPOINTMENT' }
   })
 
   // Additional form state
@@ -570,26 +576,44 @@ function NewAppointmentContent() {
 
     try {
       const startAt = new Date(`${selectedDate}T${selectedTime}:00`).toISOString()
+      const endAt = addMinutes(new Date(startAt), totalDuration).toISOString()
 
-      // Create appointment with specified status and service lines
+      // Extract service IDs for metadata
+      const serviceIds = cart.map(item => item.service.id)
+
+      // Create appointment using Universal Transaction Hook (RPC-based)
       console.log('Creating appointment with status:', status)
-      const { id: appointmentId } = await createDraftAppointment({
-        organizationId,
-        startAt,
-        durationMin: totalDuration,
-        customerEntityId: selectedCustomer.id,
-        preferredStylistEntityId: selectedStylist.id,
-        notes: notes || undefined,
-        branchId: branchId || undefined,
-        status, // Pass the status
-        serviceLines: cart.map(item => ({
-          entityId: item.service.id,
+      const result = await createAppointmentTransaction({
+        transaction_type: 'APPOINTMENT',
+        smart_code:
+          status === 'draft'
+            ? 'HERA.SALON.APPOINTMENT.TXN.DRAFT.V1'
+            : 'HERA.SALON.APPOINTMENT.TXN.BOOKED.V1',
+        source_entity_id: selectedCustomer.id, // Customer
+        target_entity_id: selectedStylist.id, // Stylist
+        transaction_date: startAt,
+        total_amount: totalAmount,
+        status, // Sets transaction_status field
+        metadata: {
+          status, // Also in metadata for compatibility
+          start_time: startAt,
+          end_time: endAt,
+          duration_minutes: totalDuration,
+          branch_id: branchId || null,
+          notes: notes || null,
+          service_ids: serviceIds // Store service IDs for modal display
+        },
+        lines: cart.map(item => ({
+          line_type: 'service',
+          entity_id: item.service.id,
           quantity: item.quantity,
-          unitAmount: item.price,
-          lineAmount: item.price * item.quantity,
+          unit_amount: item.price,
+          line_amount: item.price * item.quantity,
           description: item.service.entity_name
         }))
       })
+
+      const appointmentId = result.id
       console.log('Appointment created with ID:', appointmentId, 'Status:', status)
 
       // 🎯 CRITICAL FIX: Invalidate AND refetch React Query cache to auto-refresh appointments list

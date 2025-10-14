@@ -14,47 +14,56 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'guardrail_failed', details: checks }, { status: 400 })
   }
 
-  // DB call: hera_txn_emit_v1 using direct RPC
+  // ✅ DB call: hera_txn_create_v1 for regular transactions (appointments, sales, etc.)
+  // Function signature: hera_txn_create_v1(p_header jsonb, p_lines jsonb, p_actor_user_id uuid)
+  const p_header = {
+    organization_id: body.organization_id,
+    transaction_type: body.transaction_type,
+    smart_code: body.smart_code,
+    transaction_code: body.transaction_number ?? `TXN-${Date.now()}`,
+    transaction_date: body.transaction_date ?? new Date().toISOString(),
+    source_entity_id: body.source_entity_id ?? null,
+    target_entity_id: body.target_entity_id ?? null,
+    total_amount: body.total_amount ?? 0,
+    transaction_status: body.transaction_status ?? 'draft',
+    reference_number: body.reference_number ?? null,
+    external_reference: body.external_reference ?? null,
+    business_context: body.business_context ?? {},
+    metadata: body.metadata ?? {},
+    approval_required: body.approval_required ?? false,
+    approved_by: body.approved_by ?? null,
+    approved_at: body.approved_at ?? null,
+    transaction_currency_code: body.transaction_currency_code ?? 'AED',
+    base_currency_code: body.base_currency_code ?? 'AED',
+    exchange_rate: body.exchange_rate ?? 1.0,
+    exchange_rate_date: body.exchange_rate_date ?? null,
+    exchange_rate_type: body.exchange_rate_type ?? null,
+    fiscal_period_entity_id: body.fiscal_period_entity_id ?? null,
+    fiscal_year: body.fiscal_year ?? new Date().getFullYear(),
+    fiscal_period: body.fiscal_period ?? new Date().getMonth() + 1,
+    posting_period_code: body.posting_period_code ?? null
+  }
+
+  const p_lines = body.lines ?? []
+  const p_actor_user_id = body.actor_user_id ?? null
+
   const rpcParams = {
-    p_organization_id: body.organization_id,
-    p_transaction_type: body.transaction_type,
-    p_smart_code: body.smart_code,
-    p_transaction_code: body.transaction_number ?? `TXN-${Date.now()}`,
-    p_transaction_date: body.transaction_date,
-    p_source_entity_id: body.source_entity_id ?? null,
-    p_target_entity_id: body.target_entity_id ?? null,
-    p_total_amount: body.total_amount ?? 0,
-    p_transaction_status: body.transaction_status ?? 'draft', // ✅ FIXED: Default to 'draft' instead of 'pending'
-    p_reference_number: body.reference_number ?? null,
-    p_external_reference: body.external_reference ?? null,
-    p_business_context: body.business_context ?? {},
-    p_metadata: body.metadata ?? {},
-    p_approval_required: body.approval_required ?? false,
-    p_approved_by: body.approved_by ?? null,
-    p_approved_at: body.approved_at ?? null,
-    p_transaction_currency_code: body.transaction_currency_code ?? 'AED',
-    p_base_currency_code: body.base_currency_code ?? 'AED',
-    p_exchange_rate: body.exchange_rate ?? 1.0,
-    p_exchange_rate_date: body.exchange_rate_date ?? null,
-    p_exchange_rate_type: body.exchange_rate_type ?? null,
-    p_fiscal_period_entity_id: body.fiscal_period_entity_id ?? null,
-    p_fiscal_year: body.fiscal_year ?? new Date().getFullYear(),
-    p_fiscal_period: body.fiscal_period ?? new Date().getMonth() + 1,
-    p_posting_period_code: body.posting_period_code ?? null,
-    p_lines: body.lines ?? [],
-    p_actor_user_id: body.actor_user_id ?? null
+    p_header,
+    p_lines,
+    p_actor_user_id
   }
 
   try {
-    console.log('[txn-emit] Calling hera_txn_emit_v1 with params:', {
-      organization_id: rpcParams.p_organization_id,
-      transaction_type: rpcParams.p_transaction_type,
-      smart_code: rpcParams.p_smart_code,
-      total_amount: rpcParams.p_total_amount,
-      lines_count: rpcParams.p_lines?.length || 0
+    console.log('[txn-emit] Calling hera_txn_create_v1 with params:', {
+      organization_id: p_header.organization_id,
+      transaction_type: p_header.transaction_type,
+      smart_code: p_header.smart_code,
+      total_amount: p_header.total_amount,
+      lines_count: p_lines?.length || 0
     })
 
-    const transaction_id = await callFunction('hera_txn_emit_v1', rpcParams)
+    const result = await callFunction('hera_txn_create_v1', rpcParams)
+    const transaction_id = result?.transaction_id || result
 
     console.log('[txn-emit] Transaction created successfully:', transaction_id)
 
@@ -66,15 +75,16 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     )
   } catch (error: any) {
-    console.error('[txn-emit] Database error:', {
+    console.error('[txn-emit] Database error calling hera_txn_create_v1:', {
       message: error.message,
       code: error.code,
       details: error.details,
       hint: error.hint,
       params: {
-        org_id: rpcParams.p_organization_id?.substring(0, 8),
-        txn_type: rpcParams.p_transaction_type,
-        smart_code: rpcParams.p_smart_code
+        org_id: p_header.organization_id?.substring(0, 8),
+        txn_type: p_header.transaction_type,
+        smart_code: p_header.smart_code,
+        lines_count: p_lines?.length || 0
       }
     })
     return NextResponse.json({

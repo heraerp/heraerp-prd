@@ -86,19 +86,6 @@ const CardComponent = ({
   const [isHovered, setIsHovered] = React.useState(false)
   const [mousePosition, setMousePosition] = React.useState({ x: 50, y: 50 })
 
-  // 🔍 DEBUG: Log card status to see what we're actually getting
-  React.useEffect(() => {
-    console.log('[Card] Card status:', {
-      id: card.id,
-      customer: card.customer_name,
-      status: card.status,
-      statusType: typeof card.status,
-      isTO_PAY: card.status === 'TO_PAY',
-      isPaymentPending: card.status === 'payment_pending',
-      shouldShowPayButton: card.status === 'TO_PAY' || card.status === 'payment_pending'
-    })
-  }, [card.status, card.id, card.customer_name])
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition: isDragging
@@ -290,7 +277,22 @@ const CardComponent = ({
         {/* Status indicator */}
         {card.status !== 'DRAFT' && (
           <div className="text-xs mt-2" style={{ color: LUXE_COLORS.bronze }}>
-            Status: {card.status.replace('_', ' ').toLowerCase()}
+            Status: {(() => {
+              // Map status to user-friendly display text that matches column headers
+              switch (card.status) {
+                case 'BOOKED': return 'booked'
+                case 'CHECKED_IN': return 'checked-in'
+                case 'IN_SERVICE': return 'in service'
+                case 'IN_PROGRESS': return 'in service'
+                case 'TO_PAY': return 'to pay'
+                case 'PAYMENT_PENDING': return 'to pay'
+                case 'DONE': return 'done'
+                case 'COMPLETED': return 'done'
+                case 'CANCELLED': return 'cancelled'
+                case 'NO_SHOW': return 'no show'
+                default: return card.status.replace('_', ' ').toLowerCase()
+              }
+            })()}
             {(card.status === 'TO_PAY' || card.status === 'payment_pending' || card.status === 'PAYMENT_PENDING') && (
               <span className="ml-2" style={{ color: LUXE_COLORS.gold }}>
                 💳 POS Ready
@@ -406,8 +408,8 @@ const CardComponent = ({
                 e.stopPropagation()
 
                 try {
-                  // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as appointments page)
-                  // This ensures POS can access service data directly without nested metadata drilling
+                  // 🎯 ENTERPRISE PATTERN: Use enriched service arrays from metadata
+                  // useHeraAppointments hook now enriches service names and prices automatically
                   const serviceIds = card.metadata?.service_ids || []
                   const serviceNames = card.metadata?.service_names || []
                   const servicePrices = card.metadata?.service_prices || []
@@ -426,7 +428,8 @@ const CardComponent = ({
                     stylist_name: card.stylist_name,
                     stylist_id: card.stylist_id,
 
-                    // ✅ SERVICE DATA AT TOP LEVEL (same pattern as customer_name/stylist_name)
+                    // ✅ SERVICE DATA AT TOP LEVEL (FULL ARRAYS from metadata)
+                    // Same pattern as appointments page - uses complete service arrays
                     service_ids: serviceIds,
                     service_names: serviceNames,
                     service_prices: servicePrices,
@@ -435,7 +438,7 @@ const CardComponent = ({
                     start: card.start,
                     end: card.end,
                     date: card.date,
-                    price: card.price,
+                    price: card.price, // Keep for reference
                     duration: card.duration,
 
                     // Status and flags
@@ -450,30 +453,20 @@ const CardComponent = ({
                     _timestamp: new Date().toISOString()
                   }
 
-                  console.log('[Card] 💾 Storing appointment data for POS:', {
-                    id: appointmentData.id,
-                    customer: appointmentData.customer_name,
-                    service_ids: appointmentData.service_ids,
-                    service_names: appointmentData.service_names,
-                    service_prices: appointmentData.service_prices,
-                    price: appointmentData.price
-                  })
+                  // Validate that we have service data
+                  if (serviceIds.length === 0 || serviceNames.length === 0) {
+                    alert('⚠️ Service data is missing for this appointment. Please edit the appointment to add service details.')
+                    return
+                  }
 
                   // Store appointment details in sessionStorage for POS page
                   sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))
 
                   // 🎯 ENTERPRISE: Navigate to POS with error handling
-                  const posUrl = `/salon/pos?appointment=${card.id}`
-
-                  console.log('[Card] 🚀 Navigating to POS:', posUrl)
-
-                  // Use router.push with prefetch for better performance
-                  await router.push(posUrl)
+                  await router.push(`/salon/pos?appointment=${card.id}`)
                 } catch (error) {
-                  console.error('[Card] ❌ Failed to navigate to POS:', error)
-
+                  console.error('[Card] Failed to navigate to POS:', error)
                   // Fallback: Hard navigation to ensure page loads
-                  console.log('[Card] 🔄 Falling back to hard navigation')
                   window.location.href = `/salon/pos?appointment=${card.id}`
                 }
               }}

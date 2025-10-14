@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useMemo, useCallback } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
-import { useHeraServices } from '@/hooks/useHeraServicesV2'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
 import { ServiceList } from '@/components/salon/services/ServiceList'
 import { ServiceModal } from '@/components/salon/services/ServiceModal'
@@ -610,15 +610,15 @@ function SalonServicesPageContent() {
             </div>
           )}
 
-          {/* Stats Cards - Enterprise Grade Aesthetic */}
-          <div className="mx-6 mt-6 grid grid-cols-4 gap-3">
+          {/* Stats Cards - Enterprise Grade Aesthetic with Enhanced Visibility */}
+          <div className="mx-6 mt-6 grid grid-cols-4 gap-4">
             {/* Total Services */}
             <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
+              className="group relative p-5 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
               style={{
-                background: `linear-gradient(135deg, ${COLORS.bronze}15 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.bronze}60`,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(140, 120, 83, 0.2)'
+                background: `linear-gradient(135deg, ${COLORS.bronze}25 0%, ${COLORS.bronze}15 20%, ${COLORS.charcoal}dd 60%, ${COLORS.charcoal}cc 100%)`,
+                border: `2px solid ${COLORS.bronze}70`,
+                boxShadow: '0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(140, 120, 83, 0.3)'
               }}
             >
               {/* Animated gradient overlay on hover */}
@@ -643,23 +643,23 @@ function SalonServicesPageContent() {
                   </div>
                 </div>
                 <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
+                  className="text-xs font-bold uppercase tracking-wider mb-2"
+                  style={{ color: COLORS.champagne, letterSpacing: '0.12em', opacity: 0.95 }}
                 >
                   Total Services
                 </p>
                 <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  className="text-3xl font-bold mb-1 tracking-tight"
                   style={{ color: COLORS.champagne }}
                 >
                   {totalServicesCount}
                 </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
+                <div className="flex items-center gap-1.5 mt-2">
                   <div
-                    className="w-1 h-1 rounded-full"
-                    style={{ backgroundColor: COLORS.bronze + '80' }}
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: COLORS.bronze }}
                   />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                  <p className="text-xs font-medium" style={{ color: COLORS.champagne, opacity: 0.8 }}>
                     Across all categories
                   </p>
                 </div>
@@ -668,11 +668,11 @@ function SalonServicesPageContent() {
 
             {/* Active Services */}
             <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
+              className="group relative p-5 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
               style={{
-                background: `linear-gradient(135deg, ${COLORS.emerald}12 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.emerald}50`,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(15, 111, 92, 0.15)'
+                background: `linear-gradient(135deg, ${COLORS.emerald}20 0%, ${COLORS.emerald}12 20%, ${COLORS.charcoal}dd 60%, ${COLORS.charcoal}cc 100%)`,
+                border: `2px solid ${COLORS.emerald}65`,
+                boxShadow: '0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(15, 111, 92, 0.25)'
               }}
             >
               {/* Animated gradient overlay on hover */}
@@ -707,23 +707,23 @@ function SalonServicesPageContent() {
                   </div>
                 </div>
                 <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
+                  className="text-xs font-bold uppercase tracking-wider mb-2"
+                  style={{ color: COLORS.champagne, letterSpacing: '0.12em', opacity: 0.95 }}
                 >
                   Active Services
                 </p>
                 <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  className="text-3xl font-bold mb-1 tracking-tight"
                   style={{ color: COLORS.champagne }}
                 >
                   {activeCount}
                 </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
+                <div className="flex items-center gap-1.5 mt-2">
                   <div
-                    className="w-1 h-1 rounded-full"
-                    style={{ backgroundColor: COLORS.emerald + '80' }}
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: COLORS.emerald }}
                   />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                  <p className="text-xs font-medium" style={{ color: COLORS.champagne, opacity: 0.8 }}>
                     Ready to book
                   </p>
                 </div>
@@ -732,11 +732,11 @@ function SalonServicesPageContent() {
 
             {/* Revenue Potential - Premium Gold Gradient */}
             <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
+              className="group relative p-5 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
               style={{
-                background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 25%, ${COLORS.charcoal}f5 60%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.gold}80`,
-                boxShadow: `0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(212, 175, 55, 0.25), 0 0 30px ${COLORS.gold}15`
+                background: `linear-gradient(135deg, ${COLORS.gold}30 0%, ${COLORS.gold}20 20%, ${COLORS.charcoal}dd 60%, ${COLORS.charcoal}cc 100%)`,
+                border: `2px solid ${COLORS.gold}90`,
+                boxShadow: `0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(212, 175, 55, 0.35), 0 0 40px ${COLORS.gold}20`
               }}
             >
               {/* Animated shimmer effect on hover */}
@@ -761,20 +761,20 @@ function SalonServicesPageContent() {
                   </div>
                 </div>
                 <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
+                  className="text-xs font-bold uppercase tracking-wider mb-2"
+                  style={{ color: COLORS.champagne, letterSpacing: '0.12em', opacity: 0.95 }}
                 >
                   Revenue Potential
                 </p>
                 <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  className="text-3xl font-bold mb-1 tracking-tight"
                   style={{ color: COLORS.gold }}
                 >
                   {currency} {totalRevenue.toLocaleString()}
                 </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <div className="w-1 h-1 rounded-full" style={{ backgroundColor: COLORS.gold }} />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                <div className="flex items-center gap-1.5 mt-2">
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                  <p className="text-xs font-medium" style={{ color: COLORS.champagne, opacity: 0.8 }}>
                     Total catalog value
                   </p>
                 </div>
@@ -783,11 +783,11 @@ function SalonServicesPageContent() {
 
             {/* Average Duration */}
             <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
+              className="group relative p-5 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
               style={{
-                background: `linear-gradient(135deg, ${COLORS.plum}12 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.plum}55`,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(183, 148, 244, 0.12)'
+                background: `linear-gradient(135deg, ${COLORS.plum}20 0%, ${COLORS.plum}12 20%, ${COLORS.charcoal}dd 60%, ${COLORS.charcoal}cc 100%)`,
+                border: `2px solid ${COLORS.plum}70`,
+                boxShadow: '0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(183, 148, 244, 0.22)'
               }}
             >
               {/* Animated gradient overlay on hover */}
@@ -812,23 +812,23 @@ function SalonServicesPageContent() {
                   </div>
                 </div>
                 <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
+                  className="text-xs font-bold uppercase tracking-wider mb-2"
+                  style={{ color: COLORS.champagne, letterSpacing: '0.12em', opacity: 0.95 }}
                 >
                   Avg Duration
                 </p>
                 <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
+                  className="text-3xl font-bold mb-1 tracking-tight"
                   style={{ color: COLORS.plum }}
                 >
                   {formatDuration(avgDuration)}
                 </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
+                <div className="flex items-center gap-1.5 mt-2">
                   <div
-                    className="w-1 h-1 rounded-full"
-                    style={{ backgroundColor: COLORS.plum + '90' }}
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: COLORS.plum }}
                   />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
+                  <p className="text-xs font-medium" style={{ color: COLORS.champagne, opacity: 0.8 }}>
                     Per service
                   </p>
                 </div>

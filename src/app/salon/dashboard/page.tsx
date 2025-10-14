@@ -17,13 +17,19 @@ import {
   AlertCircle,
   Sparkles,
   Calendar,
-  TrendingUp
+  TrendingUp,
+  Filter
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 
-// Period type for global filter
-type TimePeriod = 'today' | 'last7Days' | 'last30Days' | 'yearToDate' | 'allTime'
+// ✅ ENTERPRISE: Filter Context
+import {
+  DashboardFilterProvider,
+  useDashboardFilter,
+  TimePeriod,
+  getPeriodLabel
+} from '@/contexts/DashboardFilterContext'
 
 // Import new dashboard sections
 import { HeroMetrics } from '@/components/salon/dashboard/HeroMetrics'
@@ -33,7 +39,11 @@ import { StaffPerformance } from '@/components/salon/dashboard/StaffPerformance'
 import { CustomerAndServiceInsights } from '@/components/salon/dashboard/CustomerAndServiceInsights'
 import { FinancialOverview } from '@/components/salon/dashboard/FinancialOverview'
 
-export default function SalonDashboard() {
+// ============================================================================
+// INNER DASHBOARD COMPONENT (Uses Filter Context)
+// ============================================================================
+
+function DashboardContent() {
   const { organizationId, organization, isLoading: orgLoading } = useSecuredSalonContext()
   const {
     role,
@@ -45,17 +55,13 @@ export default function SalonDashboard() {
   const [lastRefresh, setLastRefresh] = useState(new Date())
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  // ✅ ENTERPRISE: Global Period Filter State
-  const [globalPeriod, setGlobalPeriod] = useState<TimePeriod>('allTime')
-
-  // Period labels for display
-  const periodLabels: Record<TimePeriod, string> = {
-    today: 'Today',
-    last7Days: 'Last 7 Days',
-    last30Days: 'Last 30 Days',
-    yearToDate: 'Year to Date',
-    allTime: 'All Time'
-  }
+  // ✅ ENTERPRISE: Use Filter Context
+  const {
+    globalPeriod,
+    setGlobalPeriod,
+    getOverrideCount,
+    clearAllOverrides
+  } = useDashboardFilter()
 
   // Debug organization loading
   React.useEffect(() => {
@@ -336,47 +342,82 @@ export default function SalonDashboard() {
                 <Calendar className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
               </div>
               <div>
-                <h3 className="text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
-                  Time Period Filter
-                </h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                    Global Time Period Filter
+                  </h3>
+                  {getOverrideCount() > 0 && (
+                    <div
+                      className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                      style={{
+                        background: `${LUXE_COLORS.gold}30`,
+                        border: `1px solid ${LUXE_COLORS.gold}50`,
+                        color: LUXE_COLORS.gold
+                      }}
+                    >
+                      {getOverrideCount()} Override{getOverrideCount() !== 1 ? 's' : ''}
+                    </div>
+                  )}
+                </div>
                 <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
-                  Applies to all dashboard sections
+                  {getOverrideCount() > 0
+                    ? 'Some sections have custom filters'
+                    : 'Applies to all dashboard sections'}
                 </p>
               </div>
             </div>
 
-            {/* Right: Period Selector Buttons */}
-            <div className="flex gap-2 flex-wrap">
-              {(Object.keys(periodLabels) as TimePeriod[]).map((period) => (
+            {/* Right: Controls */}
+            <div className="flex items-center gap-3">
+              {/* Clear All Overrides Button */}
+              {getOverrideCount() > 0 && (
                 <button
-                  key={period}
-                  onClick={() => setGlobalPeriod(period)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 relative"
+                  onClick={clearAllOverrides}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:scale-105"
                   style={{
-                    background:
-                      globalPeriod === period
-                        ? `linear-gradient(135deg, ${LUXE_COLORS.gold}50 0%, ${LUXE_COLORS.gold}30 100%)`
-                        : `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}60 0%, ${LUXE_COLORS.charcoal}60 100%)`,
-                    border:
-                      globalPeriod === period
-                        ? `1px solid ${LUXE_COLORS.gold}80`
-                        : `1px solid ${LUXE_COLORS.bronze}20`,
-                    color: globalPeriod === period ? LUXE_COLORS.champagne : LUXE_COLORS.bronze,
-                    boxShadow:
-                      globalPeriod === period
-                        ? `0 0 24px ${LUXE_COLORS.gold}40, inset 0 1px 2px ${LUXE_COLORS.gold}30`
-                        : undefined
+                    background: `${LUXE_COLORS.ruby}20`,
+                    border: `1px solid ${LUXE_COLORS.ruby}40`,
+                    color: LUXE_COLORS.ruby
                   }}
                 >
-                  {periodLabels[period]}
-                  {globalPeriod === period && (
-                    <TrendingUp
-                      className="w-3 h-3 absolute -top-1 -right-1"
-                      style={{ color: LUXE_COLORS.gold }}
-                    />
-                  )}
+                  <Filter className="w-3.5 h-3.5" />
+                  Clear All Custom Filters
                 </button>
-              ))}
+              )}
+
+              {/* Period Selector Buttons */}
+              <div className="flex gap-2 flex-wrap">
+                {(['today', 'last7Days', 'last30Days', 'yearToDate', 'allTime'] as TimePeriod[]).map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => setGlobalPeriod(period)}
+                    className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 relative"
+                    style={{
+                      background:
+                        globalPeriod === period
+                          ? `linear-gradient(135deg, ${LUXE_COLORS.gold}50 0%, ${LUXE_COLORS.gold}30 100%)`
+                          : `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}60 0%, ${LUXE_COLORS.charcoal}60 100%)`,
+                      border:
+                        globalPeriod === period
+                          ? `1px solid ${LUXE_COLORS.gold}80`
+                          : `1px solid ${LUXE_COLORS.bronze}20`,
+                      color: globalPeriod === period ? LUXE_COLORS.champagne : LUXE_COLORS.bronze,
+                      boxShadow:
+                        globalPeriod === period
+                          ? `0 0 24px ${LUXE_COLORS.gold}40, inset 0 1px 2px ${LUXE_COLORS.gold}30`
+                          : undefined
+                    }}
+                  >
+                    {getPeriodLabel(period)}
+                    {globalPeriod === period && (
+                      <TrendingUp
+                        className="w-3 h-3 absolute -top-1 -right-1"
+                        style={{ color: LUXE_COLORS.gold }}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -455,5 +496,22 @@ export default function SalonDashboard() {
         }
       `}</style>
     </div>
+  )
+}
+
+// ============================================================================
+// PROVIDER WRAPPER (Main Export)
+// ============================================================================
+
+/**
+ * Main Dashboard Export with Filter Context Provider
+ * Wraps the entire dashboard with DashboardFilterProvider for
+ * enterprise-grade filter management
+ */
+export default function SalonDashboard() {
+  return (
+    <DashboardFilterProvider defaultPeriod="allTime">
+      <DashboardContent />
+    </DashboardFilterProvider>
   )
 }

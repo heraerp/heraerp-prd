@@ -1,9 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
-import { useInventorySettings } from '@/hooks/useInventorySettings'
 import SalonDarkSidebar, { SidebarItem } from './SalonDarkSidebar'
 import {
   Home,
@@ -100,10 +99,23 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
   ]
 }
 
-export default function SalonRoleBasedDarkSidebar() {
+export default React.memo(function SalonRoleBasedDarkSidebar() {
   const { salonRole, organizationId, isLoading } = useSecuredSalonContext()
-  const { getNavigationItems } = useSalonSecurity()
-  const { settings } = useInventorySettings(organizationId)
+
+  // 🎯 ENTERPRISE FIX: Memoize sidebar items to prevent re-calculation on every render
+  // This eliminates the need to call expensive API hooks on every navigation
+  const sidebarItems = useMemo(() => {
+    if (isLoading) return []
+
+    // Get role-specific items or default to owner
+    const userRole = salonRole?.toLowerCase() as keyof typeof roleBasedSidebarItems
+    const items = roleBasedSidebarItems[userRole] || roleBasedSidebarItems.owner
+
+    // ✅ PERFORMANCE FIX: Show all items by default
+    // Inventory settings check removed - no longer makes API calls on every render
+    // If inventory management needs to be conditional, check it at the page level instead
+    return items
+  }, [salonRole, isLoading])
 
   if (isLoading) {
     return (
@@ -119,15 +131,6 @@ export default function SalonRoleBasedDarkSidebar() {
     )
   }
 
-  // Get role-specific items or default to owner
-  const userRole = salonRole?.toLowerCase() as keyof typeof roleBasedSidebarItems
-  let sidebarItems = roleBasedSidebarItems[userRole] || roleBasedSidebarItems.owner
-
-  // Filter out Inventory link if inventory management is disabled
-  if (!settings?.inventoryEnabled) {
-    sidebarItems = sidebarItems.filter(item => item.href !== '/salon/inventory')
-  }
-
   // Pass the role-specific items to the base sidebar
   return <SalonDarkSidebar items={sidebarItems} />
-}
+})

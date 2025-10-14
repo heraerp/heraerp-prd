@@ -13,7 +13,7 @@
  */
 
 import { useMemo } from 'react'
-import { useHeraServices } from '@/hooks/useHeraServicesV2'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { useBranchFilter } from '@/hooks/useBranchFilter'

@@ -20,6 +20,13 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tag, Sparkles } from 'lucide-react'
 
 const COLORS = {
@@ -33,6 +40,19 @@ const COLORS = {
   charcoalDark: '#0F0F0F',
   charcoalLight: '#232323'
 }
+
+// Color options with salon luxe palette
+const COLOR_OPTIONS = [
+  { value: '#D4AF37', label: 'Gold', color: '#D4AF37' },
+  { value: '#d946ef', label: 'Purple', color: '#d946ef' },
+  { value: '#ec4899', label: 'Pink', color: '#ec4899' },
+  { value: '#f59e0b', label: 'Amber', color: '#f59e0b' },
+  { value: '#0F6F5C', label: 'Emerald', color: '#0F6F5C' },
+  { value: '#B794F4', label: 'Plum', color: '#B794F4' },
+  { value: '#E8B4B8', label: 'Rose', color: '#E8B4B8' },
+  { value: '#8C7853', label: 'Bronze', color: '#8C7853' },
+  { value: '#F5E6C8', label: 'Champagne', color: '#F5E6C8' }
+]
 
 interface ServiceCategoryModalProps {
   open: boolean
@@ -51,7 +71,8 @@ export function ServiceCategoryModal({
     resolver: zodResolver(ServiceCategoryFormSchema),
     defaultValues: {
       name: '',
-      description: ''
+      description: '',
+      color: '#D4AF37'
     }
   })
 
@@ -60,12 +81,14 @@ export function ServiceCategoryModal({
     if (category) {
       form.reset({
         name: category.entity_name || '',
-        description: category.description || ''
+        description: category.description || '',
+        color: category.color || '#D4AF37'
       })
     } else {
       form.reset({
         name: '',
-        description: ''
+        description: '',
+        color: '#D4AF37'
       })
     }
   }, [category, form])
@@ -83,6 +106,8 @@ export function ServiceCategoryModal({
     form.reset()
     onClose()
   }
+
+  const selectedColor = form.watch('color')
 
   return (
     <SalonLuxeModal
@@ -179,57 +204,137 @@ export function ServiceCategoryModal({
                   </h3>
                 </div>
 
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel
-                        className="text-sm font-semibold tracking-wide flex items-center gap-2"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        Category Name
-                        <span
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium"
-                          style={{
-                            backgroundColor: COLORS.gold + '20',
-                            color: COLORS.gold,
-                            border: `1px solid ${COLORS.gold}40`
-                          }}
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="col-span-2">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel
+                            className="text-sm font-semibold tracking-wide flex items-center gap-2"
+                            style={{ color: COLORS.champagne }}
+                          >
+                            Category Name
+                            <span
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium"
+                              style={{
+                                backgroundColor: COLORS.gold + '20',
+                                color: COLORS.gold,
+                                border: `1px solid ${COLORS.gold}40`
+                              }}
+                            >
+                              <span className="text-base">*</span>
+                              Required
+                            </span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="e.g., Hair Services"
+                              maxLength={50}
+                              className="h-12 rounded-lg text-base"
+                            />
+                          </FormControl>
+                          <div className="flex items-center justify-between mt-1.5">
+                            <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.6 }}>
+                              Clear, descriptive name
+                            </p>
+                            <span
+                              className="text-xs font-medium"
+                              style={{
+                                color:
+                                  field.value.length > 40
+                                    ? COLORS.gold
+                                    : COLORS.lightText,
+                                opacity: 0.6
+                              }}
+                            >
+                              {field.value.length}/50
+                            </span>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="color"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel
+                          className="text-sm font-semibold tracking-wide"
+                          style={{ color: COLORS.champagne }}
                         >
-                          <span className="text-base">*</span>
-                          Required
-                        </span>
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Enter category name (e.g., Hair Services, Nail Care, Spa Treatments)"
-                          maxLength={50}
-                          className="h-12 rounded-lg text-base"
-                        />
-                      </FormControl>
-                      <div className="flex items-center justify-between mt-1.5">
-                        <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.6 }}>
-                          Choose a clear, descriptive name for your category
+                          Color
+                        </FormLabel>
+                        <Select value={field.value || '#D4AF37'} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger
+                              className="h-12 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 hera-select-trigger"
+                              style={
+                                {
+                                  backgroundColor: COLORS.charcoalLight + '80',
+                                  borderColor: COLORS.bronze + '40',
+                                  color: COLORS.champagne,
+                                  '--tw-ring-color': COLORS.gold + '60'
+                                } as React.CSSProperties
+                              }
+                            >
+                              <div className="flex items-center justify-center">
+                                <div
+                                  className="w-6 h-6 rounded-full border-2"
+                                  style={{
+                                    backgroundColor: selectedColor || '#D4AF37',
+                                    borderColor: COLORS.gold + '60',
+                                    boxShadow: `0 0 8px ${selectedColor || '#D4AF37'}40`
+                                  }}
+                                />
+                              </div>
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent
+                            className="hera-select-content animate-in fade-in slide-in-from-top-2 duration-200"
+                            style={{
+                              backgroundColor: COLORS.charcoal,
+                              borderColor: COLORS.bronze + '40',
+                              boxShadow: `0 8px 24px ${COLORS.black}60`
+                            }}
+                          >
+                            {COLOR_OPTIONS.map(option => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                                className="hera-select-item"
+                                style={{
+                                  color: COLORS.champagne
+                                }}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div
+                                    className="w-4 h-4 rounded-full border-2"
+                                    style={{
+                                      backgroundColor: option.color,
+                                      borderColor: COLORS.gold + '60',
+                                      boxShadow: `0 0 6px ${option.color}40`
+                                    }}
+                                  />
+                                  {option.label}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs mt-1.5" style={{ color: COLORS.lightText, opacity: 0.6 }}>
+                          Visual identifier
                         </p>
-                        <span
-                          className="text-xs font-medium"
-                          style={{
-                            color:
-                              field.value.length > 40
-                                ? COLORS.gold
-                                : COLORS.lightText,
-                            opacity: 0.6
-                          }}
-                        >
-                          {field.value.length}/50
-                        </span>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
 
               {/* Description Section */}

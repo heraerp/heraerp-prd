@@ -14,7 +14,7 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import './kanban-luxe-theme.css'
 import { format, startOfToday, addDays, startOfDay, endOfDay } from 'date-fns'
-import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays } from 'lucide-react'
+import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -45,9 +45,11 @@ import {
   AppointmentStatus,
   VALID_STATUS_TRANSITIONS,
   canTransitionTo,
+  isForwardTransition,
   getTransitionErrorMessage
 } from '@/hooks/useHeraAppointments'
 import { KanbanCard, KanbanStatus } from '@/schemas/kanban'
+import { getNextAllowedStates } from '@/lib/salon/kanbanLifecycleRules'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useMemo } from 'react'
@@ -124,6 +126,19 @@ export default function KanbanPage() {
     staff_name: '',
     start_time: '',
     duration: '60'
+  })
+
+  // Navigation state for scroll arrows
+  const [scrollState, setScrollState] = useState<{
+    atStart: boolean
+    atEnd: boolean
+    scrollLeft: () => void
+    scrollRight: () => void
+  }>({
+    atStart: true,
+    atEnd: false,
+    scrollLeft: () => {},
+    scrollRight: () => {}
   })
 
   // Calculate date range based on filter
@@ -303,6 +318,7 @@ export default function KanbanPage() {
       const currentStatus = card.status.toLowerCase() as AppointmentStatus
 
       // 🎯 ENTERPRISE: Validate transition with detailed error messages
+      // Check 1: Is this transition allowed at all?
       if (!canTransitionTo(currentStatus, newStatus)) {
         const errorMessage = getTransitionErrorMessage(currentStatus, newStatus)
         toast({
@@ -313,12 +329,35 @@ export default function KanbanPage() {
         return
       }
 
-      try {
-        await updateAppointmentStatus({ id: cardId, status: newStatus })
+      // Check 2: Is this a FORWARD move only? (Extra safety - prevent backward moves)
+      if (!isForwardTransition(currentStatus, newStatus)) {
+        const errorMessage = `Cannot move backward from ${currentStatus} to ${newStatus}. Appointments can only move forward in the workflow.`
         toast({
-          title: '✅ Status Updated',
-          description: `Appointment moved to ${targetColumn.replace('_', ' ').toLowerCase()}`,
-          duration: 2000
+          title: '🚫 Backward Move Blocked',
+          description: errorMessage,
+          variant: 'destructive',
+          duration: 4000
+        })
+        return
+      }
+
+      // ⚡ PERFORMANCE: Show success toast immediately (don't wait for API)
+      toast({
+        title: '✅ Moving...',
+        description: `Updating appointment status to ${targetColumn.replace('_', ' ').toLowerCase()}`,
+        duration: 1500
+      })
+
+      try {
+        // Fire-and-forget for faster perceived speed (Board component handles optimistic updates)
+        updateAppointmentStatus({ id: cardId, status: newStatus }).catch((error: any) => {
+          // Only show toast on error
+          toast({
+            title: 'Update failed',
+            description: error.message || 'Please try again',
+            variant: 'destructive',
+            duration: 4000
+          })
         })
       } catch (error: any) {
         toast({
@@ -331,13 +370,26 @@ export default function KanbanPage() {
     [cards, updateAppointmentStatus, toast]
   )
 
-  // 🎯 ENTERPRISE: Quick action to move card to next logical status
+  // 🎯 ENTERPRISE: Quick action to move card to next logical status (FORWARD ONLY)
   const handleMoveToNext = useCallback(
     async (card: KanbanCard) => {
-      const currentStatus = card.status.toLowerCase() as AppointmentStatus
-      const validTransitions = VALID_STATUS_TRANSITIONS[currentStatus]
+      // 🔧 FIX: Normalize database statuses to Kanban column statuses before using lifecycle rules
+      // The lifecycle rules expect KanbanStatus (IN_SERVICE, TO_PAY, DONE, etc.)
+      // But cards may have database statuses (IN_PROGRESS, PAYMENT_PENDING, COMPLETED)
+      let normalizedStatus: KanbanStatus = card.status
 
-      if (validTransitions.length === 0) {
+      if (card.status === 'IN_PROGRESS') {
+        normalizedStatus = 'IN_SERVICE'
+      } else if (card.status === 'PAYMENT_PENDING') {
+        normalizedStatus = 'TO_PAY'
+      } else if (card.status === 'COMPLETED') {
+        normalizedStatus = 'DONE'
+      }
+
+      // Use lifecycle rules to get allowed next states (forward-only)
+      const nextAllowedStates = getNextAllowedStates(normalizedStatus)
+
+      if (nextAllowedStates.length === 0) {
         toast({
           title: 'No further transitions',
           description: 'This appointment is in a terminal state',
@@ -346,8 +398,10 @@ export default function KanbanPage() {
         return
       }
 
-      // Get next logical status (first non-cancelled option)
-      const nextStatus = validTransitions.find(s => s !== 'cancelled' && s !== 'no_show')
+      // Get the IMMEDIATE next status (first non-cancelled option in pipeline)
+      // This ensures we move to the very next column, not skip ahead
+      const nextStatus = nextAllowedStates.find(s => s !== 'CANCELLED')
+
       if (!nextStatus) {
         toast({
           title: 'No next status available',
@@ -357,31 +411,10 @@ export default function KanbanPage() {
         return
       }
 
-      // Map status to column
-      let targetColumn: KanbanStatus
-      switch (nextStatus) {
-        case 'booked':
-          targetColumn = 'BOOKED'
-          break
-        case 'checked_in':
-          targetColumn = 'CHECKED_IN'
-          break
-        case 'in_progress':
-          targetColumn = 'IN_SERVICE'
-          break
-        case 'payment_pending':
-          targetColumn = 'TO_PAY'
-          break
-        case 'completed':
-          targetColumn = 'DONE'
-          break
-        default:
-          return
-      }
-
-      await moveCard(card.id, targetColumn, 0)
+      // Move to next column (nextStatus is already a KanbanStatus)
+      await moveCard(card.id, nextStatus, 0)
     },
-    [moveCard, toast, VALID_STATUS_TRANSITIONS]
+    [moveCard, toast]
   )
 
   const handleCardAction = useCallback(
@@ -879,6 +912,143 @@ export default function KanbanPage() {
         </div>
       )}
 
+      {/* ========================================================================
+          DEDICATED NAVIGATION BAR - Enterprise-grade arrow controls
+          ======================================================================== */}
+      <div
+        className="px-6 py-3 flex items-center justify-center gap-4 animate-slideDown"
+        style={{
+          backgroundColor: `${LUXE_COLORS.charcoal}F0`,
+          borderBottom: `1px solid ${LUXE_COLORS.gold}30`,
+          backdropFilter: 'blur(10px)'
+        }}
+      >
+        <button
+          onClick={scrollState.scrollLeft}
+          disabled={scrollState.atStart}
+          className="group"
+          style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: scrollState.atStart
+              ? `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`
+              : `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+            border: scrollState.atStart
+              ? `2px solid ${LUXE_COLORS.bronze}60`
+              : `2px solid ${LUXE_COLORS.champagne}`,
+            boxShadow: scrollState.atStart
+              ? `0 2px 8px rgba(140, 120, 83, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.3)`
+              : `0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 3px rgba(212, 175, 55, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2)`,
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            cursor: scrollState.atStart ? 'not-allowed' : 'pointer',
+            opacity: scrollState.atStart ? 0.6 : 1
+          }}
+          onMouseEnter={(e) => {
+            if (!scrollState.atStart) {
+              e.currentTarget.style.transform = 'scale(1.1)'
+              e.currentTarget.style.boxShadow = `0 6px 24px rgba(212, 175, 55, 0.6), 0 0 0 4px rgba(212, 175, 55, 0.2), inset 0 2px 6px rgba(255, 255, 255, 0.3)`
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            if (!scrollState.atStart) {
+              e.currentTarget.style.boxShadow = `0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 3px rgba(212, 175, 55, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2)`
+            }
+          }}
+          aria-label="Scroll to previous columns"
+          aria-disabled={scrollState.atStart}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            style={{
+              margin: '0 auto',
+              display: 'block',
+              filter: scrollState.atStart
+                ? 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'
+                : 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+            }}
+          >
+            <path
+              d="M15 18L9 12L15 6"
+              stroke={scrollState.atStart ? LUXE_COLORS.bronze : LUXE_COLORS.black}
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        <div
+          className="text-sm font-medium tracking-wide"
+          style={{ color: LUXE_COLORS.champagne }}
+        >
+          Navigate Board
+        </div>
+
+        <button
+          onClick={scrollState.scrollRight}
+          disabled={scrollState.atEnd}
+          className="group"
+          style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: scrollState.atEnd
+              ? `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`
+              : `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+            border: scrollState.atEnd
+              ? `2px solid ${LUXE_COLORS.bronze}60`
+              : `2px solid ${LUXE_COLORS.champagne}`,
+            boxShadow: scrollState.atEnd
+              ? `0 2px 8px rgba(140, 120, 83, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.3)`
+              : `0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 3px rgba(212, 175, 55, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2)`,
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            cursor: scrollState.atEnd ? 'not-allowed' : 'pointer',
+            opacity: scrollState.atEnd ? 0.6 : 1
+          }}
+          onMouseEnter={(e) => {
+            if (!scrollState.atEnd) {
+              e.currentTarget.style.transform = 'scale(1.1)'
+              e.currentTarget.style.boxShadow = `0 6px 24px rgba(212, 175, 55, 0.6), 0 0 0 4px rgba(212, 175, 55, 0.2), inset 0 2px 6px rgba(255, 255, 255, 0.3)`
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            if (!scrollState.atEnd) {
+              e.currentTarget.style.boxShadow = `0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 3px rgba(212, 175, 55, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2)`
+            }
+          }}
+          aria-label="Scroll to next columns"
+          aria-disabled={scrollState.atEnd}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            style={{
+              margin: '0 auto',
+              display: 'block',
+              filter: scrollState.atEnd
+                ? 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'
+                : 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+            }}
+          >
+            <path
+              d="M9 18L15 12L9 6"
+              stroke={scrollState.atEnd ? LUXE_COLORS.bronze : LUXE_COLORS.black}
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+
       {/* Kanban board */}
       <div className="flex-1 overflow-hidden">
         <Board
@@ -888,6 +1058,7 @@ export default function KanbanPage() {
           onMoveToNext={handleMoveToNext}
           loading={loading}
           isMoving={isMoving}
+          onScrollStateChange={setScrollState}
         />
       </div>
 

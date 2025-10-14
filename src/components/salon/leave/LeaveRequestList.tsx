@@ -47,7 +47,8 @@ export function LeaveRequestList({
 
   // Filter requests
   const filteredRequests = requests.filter(request => {
-    if (statusFilter !== 'all' && request.status !== statusFilter) return false
+    const status = request.current_status?.toLowerCase() || 'submitted'
+    if (statusFilter !== 'all' && status !== statusFilter) return false
     // Add date filtering logic here if needed
     return true
   })
@@ -201,9 +202,10 @@ export function LeaveRequestList({
                 </tr>
               ) : (
                 filteredRequests.map(request => {
-                  const fromDate = request.metadata?.from ? new Date(request.metadata.from) : null
-                  const toDate = request.metadata?.to ? new Date(request.metadata.to) : null
-                  const statusColors = getStatusColor(request.status)
+                  const fromDate = request.start_date ? new Date(request.start_date) : null
+                  const toDate = request.end_date ? new Date(request.end_date) : null
+                  const status = request.current_status?.toLowerCase() || 'submitted'
+                  const statusColors = getStatusColor(status)
 
                   return (
                     <tr
@@ -215,7 +217,7 @@ export function LeaveRequestList({
                         <div className="flex items-center gap-2">
                           <Calendar size={16} className="opacity-50" />
                           <span style={{ color: COLORS.champagne }}>
-                            {fromDate && toDate && (
+                            {fromDate && toDate ? (
                               <>
                                 {format(fromDate, 'MMM d')} - {format(toDate, 'MMM d, yyyy')}
                                 {request.metadata?.half_day_start && (
@@ -237,23 +239,23 @@ export function LeaveRequestList({
                                   </Badge>
                                 )}
                               </>
-                            )}
+                            ) : '-'}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4" style={{ color: COLORS.champagne }}>
-                        {getStaffName(request.source_entity_id)}
+                        {request.staff_name || getStaffName(request.source_entity_id)}
                       </td>
                       <td className="px-6 py-4">
                         <Badge
                           variant="outline"
                           style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
                         >
-                          {request.metadata?.type || 'ANNUAL'}
+                          {request.leave_type || 'ANNUAL'}
                         </Badge>
                       </td>
                       <td className="px-6 py-4" style={{ color: COLORS.champagne }}>
-                        {request.metadata?.days || 0} days
+                        {request.total_days || 0} days
                       </td>
                       <td className="px-6 py-4">
                         <Badge
@@ -263,11 +265,11 @@ export function LeaveRequestList({
                             border: 'none'
                           }}
                         >
-                          {request.status}
+                          {request.status_name || status}
                         </Badge>
                       </td>
                       <td className="px-6 py-4 max-w-xs">
-                        <p className="text-sm truncate">{request.metadata?.notes || '-'}</p>
+                        <p className="text-sm truncate">{request.notes || '-'}</p>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
@@ -279,7 +281,7 @@ export function LeaveRequestList({
                           >
                             <Eye size={16} />
                           </Button>
-                          {request.status === 'pending' && (
+                          {status === 'submitted' && (
                             <>
                               <Button
                                 variant="ghost"

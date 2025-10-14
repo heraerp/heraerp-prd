@@ -175,27 +175,9 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           }
         })
 
-        // Add commission line if staff assigned
-        if (item.staff_id && item.type === 'service') {
-          const commission_rate = 0.4 // 40% commission
-          const commission_amount = line_amount * commission_rate
-
-          lines.push({
-            line_number: line_number++,
-            line_type: 'commission',
-            entity_id: item.staff_id,
-            description: `Commission - ${item.name}`,
-            quantity: 1,
-            unit_amount: commission_amount,
-            line_amount: commission_amount,
-            smart_code: SMART_CODES.STAFF_COMMISSION,
-            metadata: {
-              commission_rate,
-              base_amount: line_amount,
-              service_entity_id: item.entity_id
-            }
-          })
-        }
+        // ❌ COMMISSION DISABLED - Commission tracking moved to separate system
+        // Commission lines were incorrectly included in customer-facing totals
+        // causing the transaction total to be inflated by commission amounts
       }
 
       // Discount line (if applicable)

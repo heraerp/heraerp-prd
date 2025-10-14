@@ -1,8 +1,11 @@
 /* ============================================================================
    HERA • Salon Kanban Luxe Theme - CSS Variables & Animations
-   Smart Code: HERA.SALON.KANBAN.THEME.LUXE.V2
+   Smart Code: HERA.SALON.KANBAN.THEME.LUXE.V3
    ✅ Theme-compliant color system with CSS variables
    ✅ 60 FPS animations with GPU acceleration
+   ✅ Multi-method horizontal scrolling (wheel, keyboard, trackpad, drag)
+   ✅ Keyboard shortcuts (Arrow keys, Page Up/Down, Home/End)
+   ✅ Momentum scrolling with visual feedback
    ✅ Accessibility enhancements (reduced motion support)
    ✅ Dark mode compatible
    ============================================================================ */
@@ -52,13 +55,27 @@
    KANBAN BOARD SCROLL BEHAVIOR
    ============================================================================ */
 .kanban-board-scroll {
-  /* Smooth scrolling with momentum */
+  /* Smooth scrolling with momentum - enhanced for keyboard navigation */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 
   /* Hide scrollbar but keep functionality */
   scrollbar-width: thin;
   scrollbar-color: var(--luxe-gold) var(--luxe-charcoal);
+
+  /* Smooth cursor transitions */
+  transition:
+    cursor var(--animation-fast) var(--easing-smooth),
+    box-shadow var(--animation-normal) var(--easing-smooth);
+
+  /* Focus outline for keyboard navigation */
+  outline: none;
+}
+
+/* Keyboard navigation focus state */
+.kanban-board-scroll:focus-visible {
+  outline: 2px solid var(--luxe-gold);
+  outline-offset: -2px;
 }
 
 .kanban-board-scroll::-webkit-scrollbar {
@@ -78,6 +95,28 @@
 
 .kanban-board-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--luxe-gold-dark);
+}
+
+/* ============================================================================
+   DRAG-TO-SCROLL VISUAL FEEDBACK
+   ============================================================================ */
+
+/* Subtle visual feedback when actively dragging to scroll */
+.kanban-board-scroll:active {
+  box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.15);
+}
+
+/* Prevent text selection during drag-to-scroll */
+.kanban-board-scroll[style*="cursor: grabbing"] {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Smooth scroll container on hover - subtle gold glow */
+.kanban-board-scroll:hover {
+  box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.08);
 }
 
 /* ============================================================================

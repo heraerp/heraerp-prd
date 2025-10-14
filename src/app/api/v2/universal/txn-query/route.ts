@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
           tax_amount,
           smart_code,
           line_data,
+          metadata,
           ai_confidence,
           created_at,
           updated_at
@@ -119,6 +120,20 @@ export async function POST(request: NextRequest) {
         .order('line_number')
 
       if (!linesError && linesData) {
+        // ✅ DEBUG: Log first payment line structure
+        const firstPaymentLine = linesData.find((l: any) => l.line_type === 'payment')
+        if (firstPaymentLine) {
+          console.log('[txn-query] 🔍 DEBUG - First payment line structure:', {
+            line_type: firstPaymentLine.line_type,
+            has_metadata: !!firstPaymentLine.metadata,
+            has_line_data: !!firstPaymentLine.line_data,
+            metadata_keys: firstPaymentLine.metadata ? Object.keys(firstPaymentLine.metadata) : [],
+            line_data_keys: firstPaymentLine.line_data ? Object.keys(firstPaymentLine.line_data) : [],
+            payment_method_in_metadata: firstPaymentLine.metadata?.payment_method,
+            payment_method_in_line_data: firstPaymentLine.line_data?.payment_method
+          })
+        }
+
         // Group lines by transaction_id (optimized grouping)
         const linesByTxn = linesData.reduce((acc: Record<string, any[]>, line: any) => {
           if (!acc[line.transaction_id]) {

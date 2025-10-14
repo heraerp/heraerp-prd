@@ -337,47 +337,8 @@ export function PaymentDialog({
         notes: ticket.notes
       }
 
-      // ✅ ENTERPRISE DEBUG: Detailed breakdown of totals and payments
-      const paymentTotal = checkoutData.payments.reduce((sum: number, p: any) => sum + p.amount, 0)
-      const calculatedTotal = (totals?.subtotal || 0) - (totals?.discountAmount || 0) + (totals?.taxAmount || 0) + (totals?.tipAmount || 0)
-
-      console.log('[PaymentDialog] 💰 PAYMENT VALIDATION CHECK:', {
-        // Totals breakdown
-        subtotal: (totals?.subtotal || 0).toFixed(2),
-        discount: (totals?.discountAmount || 0).toFixed(2),
-        tax: (totals?.taxAmount || 0).toFixed(2),
-        tips: (totals?.tipAmount || 0).toFixed(2),
-        calculated_total: calculatedTotal.toFixed(2),
-        totals_object_total: (totals?.total || 0).toFixed(2),
-        // Payments breakdown
-        payment_total: paymentTotal.toFixed(2),
-        payment_methods: checkoutData.payments.map((p: any) => `${p.method}: ${p.amount.toFixed(2)}`),
-        // Validation
-        difference: (paymentTotal - calculatedTotal).toFixed(2),
-        matches_totals: Math.abs(paymentTotal - (totals?.total || 0)) <= 0.01,
-        matches_calculated: Math.abs(paymentTotal - calculatedTotal) <= 0.01
-      })
-
-      console.log('[PaymentDialog] Processing checkout with ENTERPRISE TRACKING:', {
-        ...checkoutData,
-        calculated_total: calculatedTotal,
-        enterprise_tracking: {
-          branch_id: branchId,
-          branch_name: branchName,
-          customer_id: ticket.customer_id,
-          customer_name: ticket.customer_name,
-          appointment_id: ticket.appointment_id,
-          staff_assigned: checkoutData.items.filter((i: any) => i.staff_id).length,
-          total_items: checkoutData.items.length,
-          services: checkoutData.items.filter((i: any) => i.type === 'service').length,
-          products: checkoutData.items.filter((i: any) => i.type === 'product').length
-        }
-      })
-
       // ✅ Use processCheckout from usePosCheckout hook (RPC API v2)
       const result = await processCheckout(checkoutData)
-
-      console.log('[PaymentDialog] Checkout result:', result)
 
       // Success - prepare sale data for receipt
       const saleData = {

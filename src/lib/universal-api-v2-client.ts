@@ -1,6 +1,11 @@
 // Universal API v2 Client - RPC-first architecture with Smart Code Engine
 // All calls go through Next routes that already invoke SmartCodeEngine/guardrails.
 
+import {
+  handleAuthenticationError,
+  checkAndHandleAuthError
+} from '@/lib/auth/authentication-error-handler'
+
 /**
  * Get the base URL for API calls
  * - In browser: uses window.location.origin (works on any port)
@@ -53,8 +58,38 @@ export type DynamicFieldInput =
   | { field_name: string; field_type: 'boolean'; field_value_boolean: boolean | null }
   | { field_name: string; field_type: 'json'; field_value_json: Json | null }
 
-function ok(res: Response) {
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+/**
+ * 🔐 ENTERPRISE: Check response status and handle authentication errors
+ * If 401, redirects to login page instead of throwing error
+ * For other errors, throws descriptive error message
+ *
+ * @param res - Fetch Response object
+ * @param endpoint - API endpoint (for error context)
+ * @returns Response if OK, never returns if 401 (redirects), throws for other errors
+ */
+function ok(res: Response, endpoint?: string): Response {
+  if (!res.ok) {
+    // ✅ ENTERPRISE: Handle 401 Unauthorized with redirect to login
+    if (res.status === 401) {
+      handleAuthenticationError(
+        {
+          endpoint: endpoint || res.url,
+          status: 401,
+          message: res.statusText || 'Session expired'
+        },
+        {
+          message: 'Your session has expired. Please log in again to continue.',
+          severity: 'warning'
+        }
+      )
+      // Return a never-resolving promise to prevent further processing
+      // The redirect is already happening
+      throw new Error('REDIRECTING_TO_LOGIN')
+    }
+
+    // For other errors, throw descriptive error
+    throw new Error(`${res.status} ${res.statusText}`)
+  }
   return res
 }
 
@@ -92,14 +127,15 @@ export async function getEntities(
   }
 
   const authHeaders = await getAuthHeaders()
-  const res = await fetch(`${url}/api/v2/entities?${qs.toString()}`, {
+  const endpoint = `${url}/api/v2/entities?${qs.toString()}`
+  const res = await fetch(endpoint, {
     headers: {
       ...h(params.p_organization_id),
       ...authHeaders,
       'x-hera-api-version': 'v2'
     },
     credentials: 'include'
-  }).then(ok)
+  }).then((res) => ok(res, endpoint))
 
   // Your entities route returns either array or {data:[]}; support both.
   const body = await res.json()
@@ -108,14 +144,15 @@ export async function getEntities(
 
 export async function readEntity(orgId: string, entityId: string) {
   const authHeaders = await getAuthHeaders()
-  const res = await fetch(`/api/v2/entities/${entityId}?p_organization_id=${orgId}`, {
+  const endpoint = `/api/v2/entities/${entityId}?p_organization_id=${orgId}`
+  const res = await fetch(endpoint, {
     headers: {
       ...h(orgId),
       ...authHeaders,
       'x-hera-api-version': 'v2'
     },
     credentials: 'include'
-  }).then(ok)
+  }).then((res) => ok(res, endpoint))
   return await res.json()
 }
 
@@ -144,7 +181,8 @@ export async function deleteEntity(
     queryParams.append('reason', params.reason)
   }
 
-  const res = await fetch(`${url}/api/v2/entities/${params.p_entity_id}?${queryParams}`, {
+  const endpoint = `${url}/api/v2/entities/${params.p_entity_id}?${queryParams}`
+  const res = await fetch(endpoint, {
     method: 'DELETE',
     headers: {
       'x-hera-org': params.p_organization_id,
@@ -153,6 +191,23 @@ export async function deleteEntity(
     },
     credentials: 'include'
   })
+
+  // ✅ ENTERPRISE: Check for 401 authentication error
+  if (res.status === 401) {
+    handleAuthenticationError(
+      {
+        endpoint,
+        status: 401,
+        message: 'Session expired'
+      },
+      {
+        message: 'Your session has expired. Please log in again to continue.',
+        severity: 'warning'
+      }
+    )
+    throw new Error('REDIRECTING_TO_LOGIN')
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => null)
     console.error('[deleteEntity] Error:', res.status, err?.error || err)
@@ -194,7 +249,8 @@ export async function upsertEntity(
   // Use PUT for updates, POST for creates
   const method = body.p_entity_id ? 'PUT' : 'POST'
 
-  const res = await fetch(`${url}/api/v2/entities`, {
+  const endpoint = `${url}/api/v2/entities`
+  const res = await fetch(endpoint, {
     method: method,
     headers: {
       'content-type': 'application/json',
@@ -205,6 +261,23 @@ export async function upsertEntity(
     credentials: 'include',
     body: JSON.stringify(apiBody)
   })
+
+  // ✅ ENTERPRISE: Check for 401 authentication error
+  if (res.status === 401) {
+    handleAuthenticationError(
+      {
+        endpoint,
+        status: 401,
+        message: 'Session expired'
+      },
+      {
+        message: 'Your session has expired. Please log in again to continue.',
+        severity: 'warning'
+      }
+    )
+    throw new Error('REDIRECTING_TO_LOGIN')
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => null)
     throw new Error(`entity upsert failed: ${res.status} ${JSON.stringify(err)}`)
@@ -229,7 +302,8 @@ export async function getDynamicData(
     )
   ).toString()
 
-  const res = await fetch(`${url}/api/v2/dynamic-data?${qs}`, {
+  const endpoint = `${url}/api/v2/dynamic-data?${qs}`
+  const res = await fetch(endpoint, {
     headers: {
       'x-hera-org': params.p_organization_id,
       ...authHeaders,
@@ -237,6 +311,23 @@ export async function getDynamicData(
     },
     credentials: 'include'
   })
+
+  // ✅ ENTERPRISE: Check for 401 authentication error
+  if (res.status === 401) {
+    handleAuthenticationError(
+      {
+        endpoint,
+        status: 401,
+        message: 'Session expired'
+      },
+      {
+        message: 'Your session has expired. Please log in again to continue.',
+        severity: 'warning'
+      }
+    )
+    throw new Error('REDIRECTING_TO_LOGIN')
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => null)
     throw new Error(`dynamic-data get failed: ${res.status} ${JSON.stringify(err)}`)
@@ -258,7 +349,8 @@ export async function setDynamicData(
   }
 ) {
   const authHeaders = await getAuthHeaders()
-  const res = await fetch(`/api/v2/dynamic-data`, {
+  const endpoint = `/api/v2/dynamic-data`
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       ...h(orgId),
@@ -268,7 +360,7 @@ export async function setDynamicData(
     },
     credentials: 'include',
     body: JSON.stringify({ p_organization_id: orgId, ...body })
-  }).then(ok)
+  }).then((res) => ok(res, endpoint))
   return await res.json()
 }
 
@@ -283,7 +375,8 @@ export async function setDynamicDataBatch(
 ) {
   const url = baseUrl || getBaseUrl()
   const authHeaders = await getAuthHeaders()
-  const res = await fetch(`${url}/api/v2/dynamic-data/batch`, {
+  const endpoint = `${url}/api/v2/dynamic-data/batch`
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -294,6 +387,23 @@ export async function setDynamicDataBatch(
     credentials: 'include',
     body: JSON.stringify(params)
   })
+
+  // ✅ ENTERPRISE: Check for 401 authentication error
+  if (res.status === 401) {
+    handleAuthenticationError(
+      {
+        endpoint,
+        status: 401,
+        message: 'Session expired'
+      },
+      {
+        message: 'Your session has expired. Please log in again to continue.',
+        severity: 'warning'
+      }
+    )
+    throw new Error('REDIRECTING_TO_LOGIN')
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => null)
     throw new Error(`dynamic-data batch set failed: ${res.status} ${JSON.stringify(err)}`)
@@ -310,6 +420,7 @@ export async function getTransactions(params: {
   toEntityId?: string
   startDate?: string
   endDate?: string
+  includeLines?: boolean // ✅ FIX: Add parameter to include transaction lines
 }) {
   const qs = new URLSearchParams({
     p_organization_id: params.orgId
@@ -321,16 +432,28 @@ export async function getTransactions(params: {
   // ✅ FIX: Use correct parameter names that match the API route
   if (params.startDate) qs.set('p_date_from', params.startDate)
   if (params.endDate) qs.set('p_date_to', params.endDate)
+  // ✅ FIX: Include lines parameter for payment method breakdown
+  if (params.includeLines !== undefined) qs.set('p_include_lines', String(params.includeLines))
 
   const authHeaders = await getAuthHeaders()
-  const res = await fetch(`/api/v2/transactions?${qs.toString()}`, {
+  const endpoint = `/api/v2/transactions?${qs.toString()}`
+
+  // ✅ DEBUG: Log the actual request being made
+  console.log('[getTransactions] 🌐 API Request:', {
+    endpoint,
+    includeLines_param: params.includeLines,
+    has_p_include_lines_in_url: endpoint.includes('p_include_lines'),
+    full_querystring: qs.toString()
+  })
+
+  const res = await fetch(endpoint, {
     headers: {
       ...h(params.orgId),
       ...authHeaders,
       'x-hera-api-version': 'v2'
     },
     credentials: 'include'
-  }).then(ok)
+  }).then((res) => ok(res, endpoint))
 
   const body = await res.json()
 
@@ -399,7 +522,23 @@ export async function createTransaction(
           : []
   }
 
-  const res = await fetch(`/api/v2/transactions`, {
+  console.log('[createTransaction] 🔍 DEBUG - Request body:', {
+    organization_id: orgId,
+    has_organization_id: !!apiBody.organization_id,
+    organization_id_value: apiBody.organization_id,
+    transaction_type: apiBody.transaction_type,
+    smart_code: apiBody.smart_code,
+    lines_count: apiBody.lines?.length || 0,
+    lines: apiBody.lines,
+    full_body_keys: Object.keys(apiBody),
+    full_body: apiBody
+  })
+
+  const endpoint = `/api/v2/transactions`
+  console.log('[createTransaction] 🌐 Sending POST to:', endpoint)
+  console.log('[createTransaction] 📦 Full body being sent:', JSON.stringify(apiBody, null, 2))
+
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       ...h(orgId),
@@ -409,7 +548,7 @@ export async function createTransaction(
     },
     credentials: 'include',
     body: JSON.stringify(apiBody)
-  }).then(ok)
+  }).then((res) => ok(res, endpoint))
 
   const result = await res.json()
 
@@ -448,7 +587,8 @@ export async function updateTransaction(
   if (body.p_metadata !== undefined) apiBody.p_metadata = body.p_metadata
   if (body.p_smart_code !== undefined) apiBody.p_smart_code = body.p_smart_code
 
-  const res = await fetch(`/api/v2/transactions/${transactionId}`, {
+  const endpoint = `/api/v2/transactions/${transactionId}`
+  const res = await fetch(endpoint, {
     method: 'PUT',
     headers: {
       ...h(orgId),
@@ -459,6 +599,22 @@ export async function updateTransaction(
     credentials: 'include',
     body: JSON.stringify(apiBody)
   })
+
+  // ✅ ENTERPRISE: Check for 401 authentication error
+  if (res.status === 401) {
+    handleAuthenticationError(
+      {
+        endpoint,
+        status: 401,
+        message: 'Session expired'
+      },
+      {
+        message: 'Your session has expired. Please log in again to continue.',
+        severity: 'warning'
+      }
+    )
+    throw new Error('REDIRECTING_TO_LOGIN')
+  }
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Update failed' }))
@@ -491,7 +647,8 @@ export async function deleteTransaction(
     queryParams.append('updated_by', options.updated_by)
   }
 
-  const res = await fetch(`/api/v2/transactions/${transactionId}?${queryParams}`, {
+  const endpoint = `/api/v2/transactions/${transactionId}?${queryParams}`
+  const res = await fetch(endpoint, {
     method: 'DELETE',
     headers: {
       ...h(orgId),
@@ -501,6 +658,22 @@ export async function deleteTransaction(
     },
     credentials: 'include'
   })
+
+  // ✅ ENTERPRISE: Check for 401 authentication error
+  if (res.status === 401) {
+    handleAuthenticationError(
+      {
+        endpoint,
+        status: 401,
+        message: 'Session expired'
+      },
+      {
+        message: 'Your session has expired. Please log in again to continue.',
+        severity: 'warning'
+      }
+    )
+    throw new Error('REDIRECTING_TO_LOGIN')
+  }
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Delete failed' }))
@@ -525,14 +698,15 @@ export async function getRelationships(params: {
   if (params.relationshipType) qs.set('p_relationship_type', params.relationshipType)
 
   const authHeaders = await getAuthHeaders()
-  const res = await fetch(`/api/v2/relationships?${qs.toString()}`, {
+  const endpoint = `/api/v2/relationships?${qs.toString()}`
+  const res = await fetch(endpoint, {
     headers: {
       ...h(params.orgId),
       ...authHeaders,
       'x-hera-api-version': 'v2'
     },
     credentials: 'include'
-  }).then(ok)
+  }).then((res) => ok(res, endpoint))
 
   const body = await res.json()
   return Array.isArray(body) ? body : (body.data ?? [])
@@ -549,7 +723,8 @@ export async function createRelationship(
   }
 ) {
   const authHeaders = await getAuthHeaders()
-  const res = await fetch(`/api/v2/relationships`, {
+  const endpoint = `/api/v2/relationships`
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       ...h(orgId),
@@ -559,7 +734,7 @@ export async function createRelationship(
     },
     credentials: 'include',
     body: JSON.stringify({ p_organization_id: orgId, ...body })
-  }).then(ok)
+  }).then((res) => ok(res, endpoint))
   return await res.json()
 }
 
@@ -572,8 +747,9 @@ export async function callRPC<T = any>(
 ): Promise<{ data: T | null; error: any }> {
   try {
     const authHeaders = await getAuthHeaders()
+    const endpoint = `/api/v2/rpc/${functionName}`
 
-    const res = await fetch(`/api/v2/rpc/${functionName}`, {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         ...(orgId ? h(orgId) : {}),
@@ -584,6 +760,22 @@ export async function callRPC<T = any>(
       credentials: 'include',
       body: JSON.stringify(params)
     })
+
+    // ✅ ENTERPRISE: Check for 401 authentication error
+    if (res.status === 401) {
+      handleAuthenticationError(
+        {
+          endpoint,
+          status: 401,
+          message: 'Session expired'
+        },
+        {
+          message: 'Your session has expired. Please log in again to continue.',
+          severity: 'warning'
+        }
+      )
+      throw new Error('REDIRECTING_TO_LOGIN')
+    }
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({ error: res.statusText }))
