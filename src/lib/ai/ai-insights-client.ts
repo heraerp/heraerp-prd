@@ -597,6 +597,7 @@ export {
   AI_ERROR_CODES,
   AI_INSIGHT_SMART_CODES,
   AI_INSIGHT_DEFAULTS,
+  getCurrentPeriod,
   getConfidenceLevel
 }
 

@@ -7,7 +7,7 @@
 'use client'
 
 import React from 'react'
-import { Calendar, Building2, DollarSign, Sliders3, Filter } from 'lucide-react'
+import { Calendar, Building2, DollarSign, SlidersHorizontal, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -337,7 +337,7 @@ export function FiltersBar({
                   htmlFor="consolidated"
                   className="text-sm ink dark:text-gray-300 cursor-pointer"
                 >
-                  <Sliders3 className="inline h-3 w-3 mr-1" />
+                  <SlidersHorizontal className="inline h-3 w-3 mr-1" />
                   Consolidated View
                 </Label>
               </div>

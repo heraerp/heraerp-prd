@@ -67,4 +67,8 @@ export async function batchRPC(
   }))
 }
 
+// TEMP shims (make these wrap your real validators/body builders if you have them)
+export const assertV2 = <T>(x: T) => x
+export const v2Body = <T extends object>(x: T) => x
+
 export default { callRPC, batchRPC }

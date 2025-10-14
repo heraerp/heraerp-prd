@@ -69,4 +69,5 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
     persistSession: false
   }
 })
+
 export { createServerClient as createClient } from './supabase/create-server-client'

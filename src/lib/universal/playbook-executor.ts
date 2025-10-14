@@ -2,7 +2,8 @@
 // Playbook execution engine with signature registry integration
 
 import { serverSupabase } from './supabase'
-import { guardSmartCode, guardOrganization, GuardrailViolation } from './guardrails'
+import { guardSmartCode, guardOrganization } from './guardrails'
+import type { GuardrailViolation } from './guardrails'
 import { getFnSignatures } from './signature-registry'
 import { expr, boolExpr } from './expr'
 

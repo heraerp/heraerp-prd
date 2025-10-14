@@ -127,7 +127,7 @@ export function generateDemoPage(industry: keyof typeof INDUSTRY_DEMO_CONFIGS) {
 
     const handleDemo = () => {
       setIsLoading(true)
-      window.location.href = `/demo/${industry}`
+      window.location.href = `/${industry}`
     }
 
     return (
@@ -268,7 +268,7 @@ export function UniversalDemoSelectionPage() {
               </div>
 
               <a
-                href={`/demo/${key}`}
+                href={`/${key}`}
                 className="block w-full py-2 px-4 bg-blue-600 text-white text-center rounded hover:bg-blue-700 transition-colors text-sm"
               >
                 Try Demo

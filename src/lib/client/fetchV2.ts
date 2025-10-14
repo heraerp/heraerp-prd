@@ -1,6 +1,18 @@
 // HERA API v2 Client Utilities
 // Ensures all client requests use v2 endpoints with proper headers
 
+// Type exports for build compatibility
+export type V2Body<T = unknown> = T;
+export type V2Params<T = Record<string, string>> = T;
+export type V2Query<T = Record<string, string | number | boolean>> = T;
+export type V2Headers<T = Record<string, string>> = T;
+export type V2BodySchema<T = unknown> = T;
+export type V2Response<T = unknown> = T;
+
+// Function shims for build compatibility
+export function assertV2<T>(x: T): T { return x; }
+export function v2Body<T>(x: T): T { return x; }
+
 /**
  * Get auth headers with Supabase token (browser only)
  */
