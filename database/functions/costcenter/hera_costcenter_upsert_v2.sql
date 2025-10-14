@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION hera_costcenter_upsert_v2(
   p_segment TEXT DEFAULT NULL,
   p_tags TEXT[] DEFAULT NULL,
   p_metadata JSONB DEFAULT NULL,
-  p_smart_code TEXT DEFAULT 'HERA.COSTCENTER.TXN.CREATE.v2',
+  p_smart_code TEXT DEFAULT 'HERA.COSTCENTER.TXN.CREATE.V2',
   p_actor_entity_id UUID DEFAULT NULL -- User performing the operation
 )
 RETURNS TABLE(
@@ -272,7 +272,7 @@ BEGIN
       'COST_CENTER',
       p_entity_name,
       p_cc_code,  -- Use cc_code as entity_code
-      'HERA.COSTCENTER.ENTITY.COST_CENTER.v2',
+      'HERA.COSTCENTER.ENTITY.COST_CENTER.V2',
       'ACTIVE',
       COALESCE(p_metadata, '{}'::jsonb),
       CURRENT_TIMESTAMP,
@@ -299,7 +299,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_text, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'cc_code', 'text', p_cc_code, 'HERA.COSTCENTER.DYN.CODE.v2'
+    p_organization_id, v_entity_id, 'cc_code', 'text', p_cc_code, 'HERA.COSTCENTER.DYN.CODE.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   
@@ -307,7 +307,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_number, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'depth', 'number', v_computed_depth, 'HERA.COSTCENTER.DYN.DEPTH.v2'
+    p_organization_id, v_entity_id, 'depth', 'number', v_computed_depth, 'HERA.COSTCENTER.DYN.DEPTH.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_number = EXCLUDED.field_value_number, updated_at = CURRENT_TIMESTAMP;
   
@@ -315,7 +315,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_text, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'cost_center_type', 'text', p_cost_center_type, 'HERA.COSTCENTER.DYN.TYPE.v2'
+    p_organization_id, v_entity_id, 'cost_center_type', 'text', p_cost_center_type, 'HERA.COSTCENTER.DYN.TYPE.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   
@@ -323,7 +323,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_date, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'valid_from', 'date', p_valid_from, 'HERA.COSTCENTER.DYN.VALID_FROM.v2'
+    p_organization_id, v_entity_id, 'valid_from', 'date', p_valid_from, 'HERA.COSTCENTER.DYN.VALID_FROM.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_date = EXCLUDED.field_value_date, updated_at = CURRENT_TIMESTAMP;
   
@@ -336,7 +336,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_date, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'valid_to', 'date', p_valid_to, 'HERA.COSTCENTER.DYN.VALID_TO.v2'
+      p_organization_id, v_entity_id, 'valid_to', 'date', p_valid_to, 'HERA.COSTCENTER.DYN.VALID_TO.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_date = EXCLUDED.field_value_date, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -346,7 +346,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_text, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'responsible_person', 'text', p_responsible_person, 'HERA.COSTCENTER.DYN.RESPONSIBLE_PERSON.v2'
+      p_organization_id, v_entity_id, 'responsible_person', 'text', p_responsible_person, 'HERA.COSTCENTER.DYN.RESPONSIBLE_PERSON.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -356,7 +356,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_text, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'segment', 'text', p_segment, 'HERA.COSTCENTER.DYN.SEGMENT.v2'
+      p_organization_id, v_entity_id, 'segment', 'text', p_segment, 'HERA.COSTCENTER.DYN.SEGMENT.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -366,7 +366,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_json, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'tags', 'json', to_jsonb(p_tags), 'HERA.COSTCENTER.DYN.TAGS.v2'
+      p_organization_id, v_entity_id, 'tags', 'json', to_jsonb(p_tags), 'HERA.COSTCENTER.DYN.TAGS.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_json = EXCLUDED.field_value_json, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -397,7 +397,7 @@ BEGIN
       p_parent_id,      -- Parent is the "from" entity
       v_entity_id,      -- Child is the "to" entity
       'COST_CENTER_PARENT_OF',
-      'HERA.COSTCENTER.REL.PARENT_OF.v2',
+      'HERA.COSTCENTER.REL.PARENT_OF.V2',
       jsonb_build_object(
         'hierarchy_depth', v_computed_depth,
         'created_by_txn', v_audit_txn_id,
@@ -424,7 +424,7 @@ BEGIN
     1,
     v_entity_id,
     0.00,  -- No monetary amount
-    'HERA.COSTCENTER.TXN.FIELD_SET.v2',
+    'HERA.COSTCENTER.TXN.FIELD_SET.V2',
     jsonb_build_object(
       'operation_type', v_operation_type,
       'cc_code', p_cc_code,

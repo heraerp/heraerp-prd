@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION hera_product_upsert_v2(
   p_effective_to DATE DEFAULT NULL,
   p_gl_mapping JSONB DEFAULT NULL,
   p_metadata JSONB DEFAULT NULL,
-  p_smart_code TEXT DEFAULT 'HERA.COST.PRODUCT.TXN.CREATE.v2',
+  p_smart_code TEXT DEFAULT 'HERA.COST.PRODUCT.TXN.CREATE.V2',
   p_actor_entity_id UUID DEFAULT NULL -- User performing the operation
 )
 RETURNS TABLE(
@@ -233,7 +233,7 @@ BEGIN
       'PRODUCT',
       p_entity_name,
       p_product_code,  -- Use product_code as entity_code
-      'HERA.COST.PRODUCT.ENTITY.PRODUCT.v2',
+      'HERA.COST.PRODUCT.ENTITY.PRODUCT.V2',
       'ACTIVE',
       COALESCE(p_metadata, '{}'::jsonb),
       CURRENT_TIMESTAMP,
@@ -260,7 +260,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_text, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'product_code', 'text', p_product_code, 'HERA.COST.PRODUCT.DYN.CODE.v2'
+    p_organization_id, v_entity_id, 'product_code', 'text', p_product_code, 'HERA.COST.PRODUCT.DYN.CODE.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   
@@ -268,7 +268,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_text, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'product_type', 'text', p_product_type, 'HERA.COST.PRODUCT.DYN.TYPE.v2'
+    p_organization_id, v_entity_id, 'product_type', 'text', p_product_type, 'HERA.COST.PRODUCT.DYN.TYPE.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   
@@ -276,7 +276,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_text, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'uom', 'text', p_uom, 'HERA.COST.PRODUCT.DYN.UOM.v2'
+    p_organization_id, v_entity_id, 'uom', 'text', p_uom, 'HERA.COST.PRODUCT.DYN.UOM.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   
@@ -284,7 +284,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_date, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'effective_from', 'date', p_effective_from, 'HERA.COST.PRODUCT.DYN.EFFECTIVE_FROM.v2'
+    p_organization_id, v_entity_id, 'effective_from', 'date', p_effective_from, 'HERA.COST.PRODUCT.DYN.EFFECTIVE_FROM.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_date = EXCLUDED.field_value_date, updated_at = CURRENT_TIMESTAMP;
   
@@ -297,7 +297,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_text, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'std_cost_version', 'text', p_std_cost_version, 'HERA.COST.PRODUCT.DYN.STDCOST_VERSION.v2'
+      p_organization_id, v_entity_id, 'std_cost_version', 'text', p_std_cost_version, 'HERA.COST.PRODUCT.DYN.STDCOST_VERSION.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -307,7 +307,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_json, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'std_cost_components', 'json', p_std_cost_components, 'HERA.COST.PRODUCT.DYN.STDCOST_COMPONENTS.v2'
+      p_organization_id, v_entity_id, 'std_cost_components', 'json', p_std_cost_components, 'HERA.COST.PRODUCT.DYN.STDCOST_COMPONENTS.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_json = EXCLUDED.field_value_json, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -317,7 +317,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_date, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'effective_to', 'date', p_effective_to, 'HERA.COST.PRODUCT.DYN.EFFECTIVE_TO.v2'
+      p_organization_id, v_entity_id, 'effective_to', 'date', p_effective_to, 'HERA.COST.PRODUCT.DYN.EFFECTIVE_TO.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_date = EXCLUDED.field_value_date, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -327,7 +327,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_json, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'gl_mapping', 'json', p_gl_mapping, 'HERA.COST.PRODUCT.DYN.GL_MAPPING.v2'
+      p_organization_id, v_entity_id, 'gl_mapping', 'json', p_gl_mapping, 'HERA.COST.PRODUCT.DYN.GL_MAPPING.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_json = EXCLUDED.field_value_json, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -350,7 +350,7 @@ BEGIN
     1,
     v_entity_id,
     v_total_std_cost,
-    'HERA.COST.PRODUCT.TXN.FIELD_SET.v2',
+    'HERA.COST.PRODUCT.TXN.FIELD_SET.V2',
     jsonb_build_object(
       'operation_type', v_operation_type,
       'product_code', p_product_code,
@@ -406,7 +406,7 @@ CREATE OR REPLACE FUNCTION hera_bom_upsert_v2(
   p_organization_id UUID,
   p_product_id UUID,
   p_components JSONB,  -- Array of {component_id, qty_per, scrap_pct, sequence, effective_from, effective_to}
-  p_smart_code TEXT DEFAULT 'HERA.COST.PRODUCT.TXN.REL_UPSERT.v2',
+  p_smart_code TEXT DEFAULT 'HERA.COST.PRODUCT.TXN.REL_UPSERT.V2',
   p_actor_entity_id UUID DEFAULT NULL
 )
 RETURNS TABLE(
@@ -518,7 +518,7 @@ BEGIN
       p_product_id,      -- Product that consumes
       (v_component->>'component_id')::UUID,  -- Component being consumed
       'PRODUCT_CONSUMES_PRODUCT',
-      'HERA.COST.PRODUCT.REL.BOM.v2',
+      'HERA.COST.PRODUCT.REL.BOM.V2',
       jsonb_build_object(
         'qty_per', (v_component->>'qty_per')::DECIMAL,
         'scrap_pct', COALESCE((v_component->>'scrap_pct')::DECIMAL, 0),
@@ -550,7 +550,7 @@ BEGIN
     1,
     p_product_id,
     0.00,
-    'HERA.COST.PRODUCT.TXN.REL_UPSERT.v2',
+    'HERA.COST.PRODUCT.TXN.REL_UPSERT.V2',
     jsonb_build_object(
       'operation_type', 'BOM_UPDATE',
       'product_id', p_product_id,
@@ -580,7 +580,7 @@ CREATE OR REPLACE FUNCTION hera_routing_upsert_v2(
   p_organization_id UUID,
   p_product_id UUID,
   p_activities JSONB,  -- Array of {activity_id, std_hours, work_center_id, sequence, effective_from, effective_to}
-  p_smart_code TEXT DEFAULT 'HERA.COST.PRODUCT.TXN.REL_UPSERT.v2',
+  p_smart_code TEXT DEFAULT 'HERA.COST.PRODUCT.TXN.REL_UPSERT.V2',
   p_actor_entity_id UUID DEFAULT NULL
 )
 RETURNS TABLE(
@@ -687,7 +687,7 @@ BEGIN
       p_product_id,      -- Product being processed
       (v_activity->>'activity_id')::UUID,  -- Activity that processes it
       'PRODUCT_PROCESSED_BY_ACTIVITY',
-      'HERA.COST.PRODUCT.REL.ROUTING.v2',
+      'HERA.COST.PRODUCT.REL.ROUTING.V2',
       jsonb_build_object(
         'std_hours', (v_activity->>'std_hours')::DECIMAL,
         'work_center_id', v_activity->>'work_center_id',
@@ -719,7 +719,7 @@ BEGIN
     1,
     p_product_id,
     0.00,
-    'HERA.COST.PRODUCT.TXN.REL_UPSERT.v2',
+    'HERA.COST.PRODUCT.TXN.REL_UPSERT.V2',
     jsonb_build_object(
       'operation_type', 'ROUTING_UPDATE',
       'product_id', p_product_id,

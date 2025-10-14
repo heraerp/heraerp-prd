@@ -33,7 +33,7 @@ INSERT INTO universal_transactions (
     '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
     'SYSTEM_TEST',
     'TEST-CONSTRAINT-' || extract(epoch from now()),
-    'HERA.ACCOUNTING.AUDIT.OPERATION.v2',
+    'HERA.ACCOUNTING.AUDIT.OPERATION.V2',
     0
 ) RETURNING id, smart_code;
 

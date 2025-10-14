@@ -77,7 +77,7 @@ BEGIN
       AND ce.entity_type = 'SYSTEM'
       AND ce.entity_name = 'FINANCE_DNA_V2'
       AND cdd.field_value::jsonb->>'smart_code' = v_smart_code
-      AND cdd.smart_code LIKE 'HERA.ACCOUNTING.SEED.POLICY.%.v2';
+      AND cdd.smart_code LIKE 'HERA.ACCOUNTING.SEED.POLICY.%.V2';
 
     IF v_posting_rule IS NULL THEN
         v_validation_errors := array_append(v_validation_errors, 
@@ -584,7 +584,7 @@ $$;
 -- Optimize posting rule lookups
 CREATE INDEX IF NOT EXISTS idx_core_dynamic_data_finance_dna_v2 
     ON core_dynamic_data (organization_id, smart_code) 
-    WHERE smart_code LIKE 'HERA.ACCOUNTING.SEED.%.v2';
+    WHERE smart_code LIKE 'HERA.ACCOUNTING.SEED.%.V2';
 
 -- Optimize account lookups
 CREATE INDEX IF NOT EXISTS idx_core_entities_gl_accounts 
@@ -594,7 +594,7 @@ CREATE INDEX IF NOT EXISTS idx_core_entities_gl_accounts
 -- Optimize transaction queries
 CREATE INDEX IF NOT EXISTS idx_universal_transactions_finance_dna_v2 
     ON universal_transactions (organization_id, smart_code, transaction_date) 
-    WHERE smart_code LIKE 'HERA.ACCOUNTING.%.v2';
+    WHERE smart_code LIKE 'HERA.ACCOUNTING.%.V2';
 
 -- ============================================================================
 -- Function Documentation

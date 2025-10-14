@@ -323,7 +323,7 @@ BEGIN
                 'gl_account',
                 v_account.name,
                 v_account.code,
-                'HERA.ACCOUNTING.CHART.ACCOUNT.v2',
+                'HERA.ACCOUNTING.CHART.ACCOUNT.V2',
                 jsonb_build_object('account_type', v_account.type)
             ) RETURNING id INTO v_entity_id;
             
@@ -339,7 +339,7 @@ BEGIN
                 p_organization_id,
                 'account_type',
                 v_account.type,
-                'HERA.ACCOUNTING.ACCOUNT.TYPE.v2'
+                'HERA.ACCOUNTING.ACCOUNT.TYPE.V2'
             );
             
             v_created_count := v_created_count + 1;
@@ -361,9 +361,9 @@ $$;
 DO $$
 DECLARE
     test_codes TEXT[] := ARRAY[
-        'HERA.ACCOUNTING.JOURNAL.ENTRY.v2',
-        'HERA.ACCOUNTING.CHART.ACCOUNT.v2',
-        'HERA.ACCOUNTING.AUDIT.OPERATION.v2'
+        'HERA.ACCOUNTING.JOURNAL.ENTRY.V2',
+        'HERA.ACCOUNTING.CHART.ACCOUNT.V2',
+        'HERA.ACCOUNTING.AUDIT.OPERATION.V2'
     ];
     test_code TEXT;
     is_valid BOOLEAN;
@@ -385,7 +385,7 @@ INSERT INTO universal_transactions (
 ) VALUES (
     '00000000-0000-0000-0000-000000000000'::uuid,
     'SYSTEM_UPDATE',
-    'HERA.ACCOUNTING.FIXES.CONSTRAINTS.DATA.CLEANUP.v2',
+    'HERA.ACCOUNTING.FIXES.CONSTRAINTS.DATA.CLEANUP.V2',
     jsonb_build_object(
         'fix_type', 'constraint_update_with_data_cleanup',
         'constraints_updated', ARRAY['core_entities', 'universal_transactions', 'universal_transaction_lines', 'core_dynamic_data'],

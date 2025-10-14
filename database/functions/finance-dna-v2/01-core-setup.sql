@@ -69,7 +69,7 @@ BEGIN
     ) VALUES (
         p_organization_id,
         'SECURITY_CONTEXT_SWITCH',
-        'HERA.ACCOUNTING.SECURITY.RLS.ENFORCEMENT.v2',
+        'HERA.ACCOUNTING.SECURITY.RLS.ENFORCEMENT.V2',
         jsonb_build_object(
             'user_id', current_setting('app.current_user_id', true),
             'context_switch_time', NOW(),
@@ -148,7 +148,7 @@ BEGIN
     ) VALUES (
         COALESCE(NEW.organization_id, OLD.organization_id),
         'GL_BALANCE_VALIDATION',
-        'HERA.ACCOUNTING.GUARDRAIL.GL.BALANCED.v2',
+        'HERA.ACCOUNTING.GUARDRAIL.GL.BALANCED.V2',
         jsonb_build_object(
             'transaction_id', COALESCE(NEW.transaction_id, OLD.transaction_id),
             'total_debits', v_total_debits,
@@ -177,7 +177,7 @@ CREATE OR REPLACE FUNCTION hera_audit_operation_v2(
     p_organization_id UUID,
     p_operation_type TEXT,
     p_operation_details JSONB,
-    p_smart_code TEXT DEFAULT 'HERA.ACCOUNTING.AUDIT.OPERATION.v2'
+    p_smart_code TEXT DEFAULT 'HERA.ACCOUNTING.AUDIT.OPERATION.V2'
 ) RETURNS UUID
 LANGUAGE plpgsql
 SECURITY DEFINER

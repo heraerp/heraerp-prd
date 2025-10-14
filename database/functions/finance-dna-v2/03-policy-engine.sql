@@ -45,7 +45,7 @@ BEGIN
             upper(replace(p_policy_type, '_', '')), 
             to_char(NOW(), 'YYYYMMDDHH24MISS')
         ),
-        'HERA.ACCOUNTING.POLICY.RULE.ENTITY.v2',
+        'HERA.ACCOUNTING.POLICY.RULE.ENTITY.V2',
         jsonb_build_object(
             'policy_type', p_policy_type,
             'priority', p_priority,
@@ -77,7 +77,7 @@ BEGIN
         v_config_field_name,
         'json',
         p_policy_config,
-        format('HERA.ACCOUNTING.POLICY.CONFIG.%s.v2', upper(p_policy_type))
+        format('HERA.ACCOUNTING.POLICY.CONFIG.%s.V2', upper(p_policy_type))
     );
     
     -- Log policy creation
@@ -90,7 +90,7 @@ BEGIN
             'policy_name', p_policy_name,
             'created_by', current_setting('app.current_user', true)
         ),
-        'HERA.ACCOUNTING.AUDIT.POLICY.CREATE.v2'
+        'HERA.ACCOUNTING.AUDIT.POLICY.CREATE.V2'
     );
     
     RETURN v_policy_id;
@@ -308,7 +308,7 @@ BEGIN
             'execution_success', v_result.success,
             'execution_log', v_execution_log
         ),
-        'HERA.ACCOUNTING.POLICY.EVENT.EXECUTED.v2'
+        'HERA.ACCOUNTING.POLICY.EVENT.EXECUTED.V2'
     );
     
     RETURN v_result;
@@ -372,8 +372,8 @@ BEGIN
             CASE WHEN v_posting_rule->'account_mapping'->>'posting_side' = 'CREDIT' 
                  THEN v_amount ELSE 0.00 END,
             CASE WHEN v_posting_rule->'account_mapping'->>'posting_side' = 'DEBIT'
-                 THEN 'HERA.ACCOUNTING.GL.LINE.DEBIT.v2'
-                 ELSE 'HERA.ACCOUNTING.GL.LINE.CREDIT.v2' END
+                 THEN 'HERA.ACCOUNTING.GL.LINE.DEBIT.V2'
+                 ELSE 'HERA.ACCOUNTING.GL.LINE.CREDIT.V2' END
         );
         
         v_line_number := v_line_number + 1;
@@ -453,7 +453,7 @@ BEGIN
             'test_errors', v_test_errors,
             'test_data', p_test_transaction_data
         ),
-        'HERA.ACCOUNTING.POLICY.EVENT.TESTED.v2'
+        'HERA.ACCOUNTING.POLICY.EVENT.TESTED.V2'
     );
     
     RETURN v_result;
