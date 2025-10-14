@@ -462,8 +462,11 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       return entitiesWithDynamicData
     },
     enabled: !!organizationId,
-    staleTime: 10_000,
-    refetchOnWindowFocus: false
+    staleTime: 5 * 60 * 1000, // 5 minutes - keep data fresh longer
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch if data is already cached
+    refetchOnReconnect: false // Don't refetch on network reconnection
   })
 
   // Create entity mutation with dynamic fields and relationships
@@ -1024,8 +1027,11 @@ export function useUniversalEntityDetail(
       })
     },
     enabled: !!entityId && !!organizationId,
-    staleTime: 10_000,
-    refetchOnWindowFocus: false
+    staleTime: 5 * 60 * 1000, // 5 minutes - keep data fresh longer
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch if data is already cached
+    refetchOnReconnect: false // Don't refetch on network reconnection
   })
 
   return {
