@@ -78,6 +78,19 @@ export function CatalogPane({
   // Use composition hook for POS data
   const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS(posOptions)
 
+  // ✅ CRITICAL FIX: Initialize branch from context (e.g., from appointment)
+  // This ensures the correct branch is selected when redirecting from appointments
+  useEffect(() => {
+    if (contextBranchId && contextBranchId !== branchId && branches.length > 0) {
+      // Verify the contextBranchId exists in the branches list
+      const branchExists = branches.some(b => b.id === contextBranchId)
+      if (branchExists) {
+        console.log('[CatalogPane] 🏢 Setting branch from context (appointment):', contextBranchId)
+        setBranchId(contextBranchId)
+      }
+    }
+  }, [contextBranchId, branchId, branches, setBranchId])
+
   // ✅ FIX: Sync branch changes to parent context (only if different)
   useEffect(() => {
     if (branchId && onBranchChange && branchId !== contextBranchId) {
