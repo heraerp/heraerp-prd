@@ -167,7 +167,8 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       // Check for HERA demo session cookie
       const sessionCookie = getCookie('hera-demo-session')
 
-      if (process.env.NODE_ENV === 'development') {
+      // Only log once to avoid spam
+      if (process.env.NODE_ENV === 'development' && !memoryCacheRef.current) {
         console.log('🍪 HERA Auth: Checking session cookie:', {
           hasSessionCookie: !!sessionCookie,
           timestamp: new Date().toISOString()

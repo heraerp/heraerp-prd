@@ -69,15 +69,19 @@ export const getSupabase = () => {
     client.auth.onAuthStateChange((event, session) => {
       console.log('🔐 Auth state change:', event, session ? 'Session valid' : 'No session')
 
-      // Handle failed token refresh
-      if (event === 'TOKEN_REFRESHED' && !session) {
-        console.warn('🚨 Token refresh failed, clearing invalid tokens')
+      // Handle failed token refresh or sign out - clear all tokens
+      if ((event === 'TOKEN_REFRESHED' && !session) || event === 'SIGNED_OUT') {
         clearInvalidTokens()
       }
+    })
 
-      // Handle sign out
-      if (event === 'SIGNED_OUT') {
+    // Proactively validate stored session on initialization
+    client.auth.getSession().then(({ data, error }) => {
+      if (error && error.message.includes('Invalid Refresh Token')) {
+        console.warn('🧹 Found invalid refresh token on init, clearing')
         clearInvalidTokens()
+        // Force sign out to clean state
+        client.auth.signOut({ scope: 'local' })
       }
     })
 
