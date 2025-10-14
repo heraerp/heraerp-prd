@@ -42,7 +42,12 @@ export const ProductFormSchema = z.object({
   description: z.string().max(1000, 'Description too long').optional(),
   requires_inventory: z.boolean().default(false),
   status: z.enum(['active', 'archived']).default('active'),
-  branch_ids: z.array(z.string()).optional() // Branch relationships via STOCK_AT
+  branch_ids: z.array(z.string()).optional(), // Branch relationships via STOCK_AT
+  // ✅ ENTERPRISE BARCODE FIELDS
+  barcode_primary: z.string().max(128, 'Barcode too long').optional(),
+  barcode_type: z.enum(['EAN13', 'UPC', 'CODE128', 'QR']).default('EAN13').optional(),
+  barcodes_alt: z.array(z.string()).optional(),
+  gtin: z.string().regex(/^\d{8,14}$/, 'GTIN must be 8-14 digits').optional().or(z.literal(''))
 })
 
 export type ProductForm = z.infer<typeof ProductFormSchema>

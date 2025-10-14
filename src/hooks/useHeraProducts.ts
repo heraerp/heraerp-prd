@@ -32,7 +32,13 @@ export interface Product {
   stock_quantity?: number // ✅ Matches PRODUCT_PRESET
   reorder_level?: number
   brand?: string
+  // Legacy barcode field
   barcode?: string
+  // ✅ ENTERPRISE BARCODE FIELDS
+  barcode_primary?: string
+  barcode_type?: string
+  barcodes_alt?: string[]
+  gtin?: string
   sku?: string
   size?: string
   // Backward compatibility aliases
@@ -101,6 +107,11 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     reorder_level?: number
     brand?: string
     barcode?: string
+    // ✅ ENTERPRISE BARCODE FIELDS
+    barcode_primary?: string
+    barcode_type?: string
+    barcodes_alt?: string[]
+    gtin?: string
     sku?: string
     size?: string
     status?: string
@@ -184,6 +195,39 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       }
     }
 
+    // ✅ ENTERPRISE BARCODE FIELDS
+    if (data.barcode_primary) {
+      dynamic_fields.barcode_primary = {
+        value: data.barcode_primary,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.PRIMARY.V1'
+      }
+    }
+
+    if (data.barcode_type) {
+      dynamic_fields.barcode_type = {
+        value: data.barcode_type,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.TYPE.V1'
+      }
+    }
+
+    if (data.barcodes_alt && data.barcodes_alt.length > 0) {
+      dynamic_fields.barcodes_alt = {
+        value: data.barcodes_alt,
+        type: 'json',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODES.ALT.V1'
+      }
+    }
+
+    if (data.gtin) {
+      dynamic_fields.gtin = {
+        value: data.gtin,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.GTIN.V1'
+      }
+    }
+
     const result = await baseCreate({
       entity_type: 'product',
       entity_name,
@@ -251,6 +295,23 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
 
     if (data.size !== undefined) {
       dynamic_patch.size = data.size
+    }
+
+    // ✅ ENTERPRISE BARCODE FIELDS
+    if (data.barcode_primary !== undefined) {
+      dynamic_patch.barcode_primary = data.barcode_primary
+    }
+
+    if (data.barcode_type !== undefined) {
+      dynamic_patch.barcode_type = data.barcode_type
+    }
+
+    if (data.barcodes_alt !== undefined) {
+      dynamic_patch.barcodes_alt = data.barcodes_alt
+    }
+
+    if (data.gtin !== undefined) {
+      dynamic_patch.gtin = data.gtin
     }
 
     // Build relationships patch if branch_ids provided
@@ -435,7 +496,10 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
           product.entity_code?.toLowerCase().includes(query) ||
           product.category?.toLowerCase().includes(query) ||
           product.brand?.toLowerCase().includes(query) ||
-          product.barcode?.toLowerCase().includes(query)
+          product.barcode?.toLowerCase().includes(query) ||
+          product.barcode_primary?.toLowerCase().includes(query) ||
+          product.gtin?.toLowerCase().includes(query) ||
+          product.sku?.toLowerCase().includes(query)
       )
     }
 

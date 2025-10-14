@@ -91,6 +91,53 @@ export const PRODUCT_PRESET = {
       defaultValue: 10
     },
     { name: 'size', type: 'text' as const, smart_code: 'HERA.SALON.PRODUCT.DYN.SIZE.v1' },
+    // ✅ ENTERPRISE BARCODE FIELDS - Multi-format support with alternates
+    {
+      name: 'barcode_primary',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.PRIMARY.V1',
+      required: false,
+      ui: {
+        label: 'Primary Barcode',
+        placeholder: 'Scan or enter barcode',
+        helpText: 'Main barcode for product identification (EAN13, UPC, CODE128, QR)',
+        widget: 'text'
+      }
+    },
+    {
+      name: 'barcode_type',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.TYPE.V1',
+      defaultValue: 'EAN13',
+      ui: {
+        label: 'Barcode Type',
+        helpText: 'Format of the primary barcode',
+        widget: 'select'
+      }
+    },
+    {
+      name: 'barcodes_alt',
+      type: 'json' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODES.ALT.V1',
+      defaultValue: [],
+      ui: {
+        label: 'Alternate Barcodes',
+        helpText: 'Additional barcodes (e.g., pack sizes, legacy labels)',
+        widget: 'json'
+      }
+    },
+    {
+      name: 'gtin',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.GTIN.V1',
+      required: false,
+      ui: {
+        label: 'GTIN (Optional)',
+        placeholder: '8-14 digits',
+        helpText: 'Global Trade Item Number for international tracking'
+      }
+    },
+    // Legacy barcode field (kept for backward compatibility)
     { name: 'barcode', type: 'text' as const, smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.v1' }
   ],
   relationships: [

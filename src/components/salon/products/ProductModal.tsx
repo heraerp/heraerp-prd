@@ -38,7 +38,8 @@ import {
   BarChart3,
   Building2,
   MapPin,
-  Check
+  Check,
+  Barcode
 } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
@@ -89,7 +90,11 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
       cost_price: undefined,
       selling_price: undefined,
       description: '',
-      branch_ids: [] // Branch selection support
+      branch_ids: [], // Branch selection support
+      barcode_primary: '',
+      barcode_type: 'EAN13',
+      barcodes_alt: [],
+      gtin: ''
     }
   })
 
@@ -117,7 +122,11 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
         cost_price: product.price_cost || product.cost_price || undefined,
         selling_price: product.price_market || product.selling_price || product.price || undefined,
         description: product.description || '',
-        branch_ids: branchIds // Set branch IDs from relationships
+        branch_ids: branchIds, // Set branch IDs from relationships
+        barcode_primary: (product as any).barcode_primary || '',
+        barcode_type: (product as any).barcode_type || 'EAN13',
+        barcodes_alt: (product as any).barcodes_alt || [],
+        gtin: (product as any).gtin || ''
       })
     } else {
       form.reset({
@@ -127,7 +136,11 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
         cost_price: undefined,
         selling_price: undefined,
         description: '',
-        branch_ids: [] // Empty array for new products
+        branch_ids: [], // Empty array for new products
+        barcode_primary: '',
+        barcode_type: 'EAN13',
+        barcodes_alt: [],
+        gtin: ''
       })
     }
   }, [product, form])
@@ -311,6 +324,104 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                             )}
                           </SelectContent>
                         </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Barcode Information Section */}
+              <div
+                className="relative p-6 rounded-xl border backdrop-blur-sm"
+                style={{
+                  backgroundColor: SALON_LUXE_COLORS.charcoal.dark + 'E6',
+                  borderColor: '#8C7853' + '30',
+                  boxShadow: `0 4px 12px rgba(0,0,0,0.4)`
+                }}
+              >
+                {/* Section Header with Icon */}
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: SALON_LUXE_COLORS.gold.base }} />
+                  <h3 className="text-lg font-semibold tracking-wide">
+                    Barcode Information
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <FormField
+                    control={form.control}
+                    name="barcode_primary"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium tracking-wide flex items-center gap-2">
+                          <Barcode className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+                          Primary Barcode
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Scan or enter barcode"
+                            className="h-11 rounded-lg"
+                          />
+                        </FormControl>
+                        <FormDescription className="text-xs" style={{ color: '#8C7853', opacity: 0.7 }}>
+                          Main barcode for product identification
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="barcode_type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium tracking-wide">
+                          Barcode Type
+                        </FormLabel>
+                        <Select value={field.value || 'EAN13'} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger className="h-11 rounded-lg hera-select-trigger" aria-describedby={undefined}>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="hera-select-content">
+                            <SelectItem value="EAN13" className="hera-select-item">EAN-13</SelectItem>
+                            <SelectItem value="UPC" className="hera-select-item">UPC</SelectItem>
+                            <SelectItem value="CODE128" className="hera-select-item">CODE-128</SelectItem>
+                            <SelectItem value="QR" className="hera-select-item">QR Code</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription className="text-xs" style={{ color: '#8C7853', opacity: 0.7 }}>
+                          Format of the primary barcode
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="mt-5">
+                  <FormField
+                    control={form.control}
+                    name="gtin"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium tracking-wide">
+                          GTIN (Optional)
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="8-14 digits"
+                            className="h-11 rounded-lg"
+                          />
+                        </FormControl>
+                        <FormDescription className="text-xs" style={{ color: '#8C7853', opacity: 0.7 }}>
+                          Global Trade Item Number for international tracking
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
