@@ -1,14 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react' // Force dynamic rendering to avoid build issues
-
-export const dynamic = 'force-dynamic'
-// Removed HeraGradientBackgroundDNA import as we're using the dark theme layout
-import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
-import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
-import { Button } from '@/components/ui/button'
+import React from 'react'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
 import {
   Package,
   ShoppingCart,
@@ -24,432 +19,396 @@ import {
   Settings,
   FileText,
   Brain,
-  Sparkles
+  Sparkles,
+  Armchair,
+  Hammer,
+  TreePine,
+  Sofa,
+  Calculator,
+  Target,
+  PenTool
 } from 'lucide-react'
 import Link from 'next/link'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
-import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 
-function FurnitureDashboard() {
-  const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
+export default function Furniture1Dashboard() {
+  // Dashboard stats for furniture business
+  const stats = [
+    {
+      label: 'Active Orders',
+      value: '47',
+      change: '+12%',
+      trend: 'up' as const,
+      icon: ShoppingCart,
+      gradient: 'from-blue-500 to-cyan-500'
+    },
+    {
+      label: 'Production Queue',
+      value: '23',
+      change: '5 urgent',
+      trend: 'neutral' as const,
+      icon: Factory,
+      gradient: 'from-purple-500 to-indigo-500'
+    },
+    {
+      label: 'Monthly Revenue',
+      value: '₹28.5L',
+      change: '+18%',
+      trend: 'up' as const,
+      icon: TrendingUp,
+      gradient: 'from-green-500 to-emerald-500'
+    },
+    {
+      label: 'Inventory Value',
+      value: '₹45.2L',
+      change: 'Well stocked',
+      trend: 'neutral' as const,
+      icon: Package,
+      gradient: 'from-amber-500 to-orange-500'
+    }
+  ]
 
-  // Dashboard stats - in production these would come from Universal API
-  // Memoized to prevent re-creation
-  const stats = React.useMemo(
-    () => [
-      {
-        label: 'Active Orders',
-        value: '47',
-        change: '+12%',
-        trend: 'up' as const,
-        icon: ShoppingCart,
-        gradient: 'from-blue-500 to-cyan-500'
-      },
-      {
-        label: 'Production Queue',
-        value: '23',
-        change: '5 urgent',
-        trend: 'neutral' as const,
-        icon: Factory,
-        gradient: 'from-[var(--color-accent-teal)] to-[var(--color-accent-teal)]'
-      },
-      {
-        label: 'Monthly Revenue',
-        value: '₹28.5L',
-        change: '+18%',
-        trend: 'up' as const,
-        icon: TrendingUp,
-        gradient: 'from-green-500 to-emerald-500'
-      },
-      {
-        label: 'Inventory Value',
-        value: '₹45.2L',
-        change: 'Well stocked',
-        trend: 'neutral' as const,
-        icon: Package,
-        gradient: 'from-[var(--color-accent-teal)] to-[var(--color-accent-teal)]'
-      }
-    ],
-    []
-  )
+  const recentActivities = [
+    {
+      id: '1',
+      type: 'order' as const,
+      title: 'New order from Marriott Hotels',
+      description: '150 Executive Room Chairs',
+      time: '2 hours ago',
+      amount: '₹12,50,000'
+    },
+    {
+      id: '2',
+      type: 'production' as const,
+      title: 'Production completed',
+      description: 'Order #FRN-2025-0234 ready for dispatch',
+      time: '4 hours ago'
+    },
+    {
+      id: '3',
+      type: 'payment' as const,
+      title: 'Payment received',
+      description: 'ITC Hotels - ₹8,50,000',
+      time: '6 hours ago',
+      amount: '₹8,50,000'
+    }
+  ]
 
-  const recentActivities = React.useMemo(
-    () => [
-      {
-        id: '1',
-        type: 'order' as const,
-        title: 'New order from Marriott Hotels',
-        description: '150 Executive Room Chairs',
-        time: '2 hours ago',
-        amount: '₹12,50,000'
-      },
-      {
-        id: '2',
-        type: 'production' as const,
-        title: 'Production completed',
-        description: 'Order #FRN-2025-0234 ready for dispatch',
-        time: '4 hours ago'
-      },
-      {
-        id: '3',
-        type: 'payment' as const,
-        title: 'Payment received',
-        description: 'ITC Hotels - ₹8,50,000',
-        time: '6 hours ago',
-        amount: '₹8,50,000'
-      }
-    ],
-    []
-  )
+  const productionKPIs = [
+    { label: 'Capacity Utilization', value: 78, target: 85, color: 'blue' },
+    { label: 'On-Time Delivery', value: 92, target: 95, color: 'green' },
+    { label: 'Quality Pass Rate', value: 96.5, target: 98, color: 'purple' },
+    { label: 'Machine Efficiency', value: 84, target: 90, color: 'amber' }
+  ]
 
-  const productionKPIs = React.useMemo(
-    () => [
-      { label: 'Capacity Utilization', value: 78, target: 85, color: 'blue' },
-      { label: 'On-Time Delivery', value: 92, target: 95, color: 'green' },
-      { label: 'Quality Pass Rate', value: 96.5, target: 98, color: 'purple' },
-      { label: 'Machine Efficiency', value: 84, target: 90, color: 'amber' }
-    ],
-    []
-  )
-
-  const quickActions = React.useMemo(
-    () => [
-      { label: 'Create Order', href: '/furniture/sales/orders/new', icon: ShoppingCart },
-      { label: 'Production Planning', href: '/furniture/production/planning', icon: Factory },
-      { label: 'View Inventory', href: '/furniture/inventory', icon: Package },
-      { label: 'Payroll Processing', href: '/furniture/hr/payroll', icon: Users }
-    ],
-    []
-  )
-
-  // Show loading state while organization is loading
-  if (orgLoading) {
-    return <FurnitureOrgLoading />
-  }
+  const quickActions = [
+    { label: 'Create Order', href: '/furniture/orders', icon: ShoppingCart },
+    { label: 'Production Planning', href: '/furniture/production', icon: Factory },
+    { label: 'View Inventory', href: '/furniture/inventory', icon: Package },
+    { label: 'Payroll Processing', href: '/furniture/hr', icon: Users }
+  ]
 
   return (
-    <div className="min-h-screen bg-[var(--color-body)]">
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <FurniturePageHeader
-          title={organizationName || 'Kerala Furniture Works'}
-          subtitle="Complete furniture business management"
-          actions={
-            <>
-              <Link href="/furniture/settings">
-                <Button variant="outline" size="sm" className="gap-2 hover:bg-[var(--color-hover)]">
-                  <Settings className="h-4 w-4" />
+    <div className="min-h-screen">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="space-y-6">
+          {/* Header with Furniture Branding */}
+          <div className="jewelry-glass-card p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="jewelry-crown-glow p-3 rounded-xl">
+                  <Armchair className="h-8 w-8 jewelry-text-gold" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold jewelry-text-luxury">Kerala Furniture Works</h1>
+                  <p className="text-lg text-gray-300">Complete furniture business management</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button variant="outline" size="sm" className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold">
+                  <Settings className="h-4 w-4 jewelry-text-luxury" />
                   Settings
                 </Button>
-              </Link>
-              <Link href="/furniture/reports">
-                <Button variant="outline" size="sm" className="gap-2 hover:bg-[var(--color-hover)]">
-                  <BarChart3 className="h-4 w-4" />
+                <Button variant="outline" size="sm" className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold">
+                  <BarChart3 className="h-4 w-4 jewelry-text-luxury" />
                   Reports
                 </Button>
-              </Link>
-            </>
-          }
-        />
-
-        {/* Debug info - temporary */}
-        <div className="furniture-card rounded-lg p-4 text-sm text-[var(--color-text-secondary)]">
-          <p>Organization ID: {organizationId || 'Not loaded'}</p>
-          <p>Organization Name: {organizationName || 'Not loaded'}</p>
-          <p>Loading: {orgLoading ? 'Yes' : 'No'}</p>
-        </div>
-
-        {/* Key Metrics */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">Business Overview</h2>
-          <StatCardGrid>
-            {stats.map(stat => (
-              <FurnitureStatCard key={stat.label} {...stat} />
-            ))}
-          </StatCardGrid>
-        </div>
-
-        {/* AI Manager Card */}
-        <div className="mt-6">
-          <Link href="/furniture/ai-manager">
-            <Card className="furniture-card p-6 bg-gradient-to-br from-[var(--color-accent-teal)]/10 to-blue-600/10 border-[var(--color-accent-teal)]/20 hover:from-[var(--color-accent-teal)]/20 hover:to-blue-600/20 transition-all duration-300 cursor-pointer backdrop-blur-sm">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-accent-teal)] to-blue-600 flex items-center justify-center">
-                    <Brain className="h-8 w-8 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
-                      AI Business Manager{' '}
-                      <Sparkles className="h-4 w-4 text-[var(--color-accent-teal)]" />
-                    </h3>
-                    <p className="text-sm text-[var(--color-text-secondary)]">
-                      Get instant insights, recommendations, and strategic analysis for your
-                      furniture business
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-sm font-medium text-[var(--color-text-primary)]">
-                    Ask anything
-                  </span>
-                  <span className="text-xs text-[var(--color-text-secondary)]">Powered by AI</span>
-                </div>
-              </div>
-            </Card>
-          </Link>
-        </div>
-
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="furniture-tabs-list">
-            <TabsTrigger value="overview" className="furniture-tab">Overview</TabsTrigger>
-            <TabsTrigger value="production" className="furniture-tab">Production</TabsTrigger>
-            <TabsTrigger value="finance" className="furniture-tab">Finance</TabsTrigger>
-            <TabsTrigger value="hr" className="furniture-tab">HR & Compliance</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            {/* Quick Actions */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Quick Actions</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {quickActions.map(action => (
-                  <Link key={action.label} href={action.href}>
-                    <Card className="furniture-card p-4 hover:scale-105 transition-transform cursor-pointer">
-                      <div className="flex flex-col items-center text-center gap-2">
-                        <action.icon className="h-8 w-8 text-[var(--color-brand-orange)]" />
-                        <span className="text-sm font-medium text-[var(--color-text-primary)]">{action.label}</span>
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
               </div>
             </div>
+          </div>
 
-            {/* Recent Activities */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Activities</h3>
-              <Card className="furniture-card p-6">
-                <div className="space-y-4">
-                  {recentActivities.map(activity => (
-                    <div
-                      key={activity.id}
-                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-[var(--color-hover)] transition-colors"
-                    >
-                      <div className="flex-1">
-                        <p className="font-medium text-[var(--color-text-primary)]">{activity.title}</p>
-                        <p className="text-sm text-[var(--color-text-secondary)]">
-                          {activity.description}
-                        </p>
-                        <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-                          {activity.time}
-                        </p>
+          {/* Key Metrics */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold jewelry-text-luxury">Business Overview</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {stats.map(stat => (
+                <div key={stat.label} className="jewelry-glass-card p-6 jewelry-scale-hover">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-300">{stat.label}</p>
+                      <p className="text-2xl font-bold jewelry-text-luxury">{stat.value}</p>
+                      <p className={`text-sm ${stat.trend === 'up' ? 'jewelry-text-gold' : 'text-gray-300'}`}>
+                        {stat.change}
+                      </p>
+                    </div>
+                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${stat.gradient} flex items-center justify-center`}>
+                      <stat.icon className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AI Manager Card */}
+          <div className="jewelry-glass-card p-6 bg-gradient-to-br from-blue-500/10 to-purple-600/10 border-blue-500/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <Brain className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold jewelry-text-luxury flex items-center gap-2">
+                    AI Business Manager{' '}
+                    <Sparkles className="h-4 w-4 jewelry-text-gold" />
+                  </h3>
+                  <p className="text-sm text-gray-300">
+                    Get instant insights, recommendations, and strategic analysis for your furniture business
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-sm font-medium jewelry-text-luxury">Ask anything</span>
+                <span className="text-xs text-gray-300">Powered by AI</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Tabs */}
+          <Tabs defaultValue="overview" className="space-y-4">
+            <TabsList className="jewelry-glass-panel">
+              <TabsTrigger value="overview" className="jewelry-glass-btn jewelry-text-luxury">Overview</TabsTrigger>
+              <TabsTrigger value="production" className="jewelry-glass-btn jewelry-text-luxury">Production</TabsTrigger>
+              <TabsTrigger value="finance" className="jewelry-glass-btn jewelry-text-luxury">Finance</TabsTrigger>
+              <TabsTrigger value="hr" className="jewelry-glass-btn jewelry-text-luxury">HR & Compliance</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="space-y-6">
+              {/* Quick Actions */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold jewelry-text-luxury">Quick Actions</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  {quickActions.map(action => (
+                    <div key={action.label} className="jewelry-glass-card p-4 jewelry-scale-hover cursor-pointer">
+                      <div className="flex flex-col items-center text-center gap-2">
+                        <action.icon className="h-8 w-8 jewelry-text-gold" />
+                        <span className="text-sm font-medium jewelry-text-luxury">{action.label}</span>
                       </div>
-                      {activity.amount && <p className="font-semibold text-[var(--color-text-primary)]">{activity.amount}</p>}
                     </div>
                   ))}
-                  <Link href="/furniture/reports">
-                    <Button variant="outline" className="w-full furniture-btn-secondary">
+                </div>
+              </div>
+
+              {/* Recent Activities */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold jewelry-text-luxury">Recent Activities</h3>
+                <div className="jewelry-glass-card p-6">
+                  <div className="space-y-4">
+                    {recentActivities.map(activity => (
+                      <div
+                        key={activity.id}
+                        className="flex items-start gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium jewelry-text-luxury">{activity.title}</p>
+                          <p className="text-sm text-gray-300">{activity.description}</p>
+                          <p className="text-xs text-gray-300 mt-1">{activity.time}</p>
+                        </div>
+                        {activity.amount && (
+                          <p className="font-semibold jewelry-text-gold">{activity.amount}</p>
+                        )}
+                      </div>
+                    ))}
+                    <Button variant="outline" className="w-full jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold">
                       View All Activities
                     </Button>
-                  </Link>
+                  </div>
                 </div>
-              </Card>
-            </div>
-          </TabsContent>
+              </div>
+            </TabsContent>
 
-          <TabsContent value="production" className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Production KPIs</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {productionKPIs.map(kpi => (
-                  <Card
-                    key={kpi.label}
-                    className="furniture-card p-4"
-                  >
-                    <div className="space-y-2">
-                      <p className="text-sm text-[var(--color-text-secondary)]">{kpi.label}</p>
-                      <p className="text-2xl font-bold text-[var(--color-text-primary)]">{kpi.value}%</p>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-[var(--color-text-secondary)]">Target: {kpi.target}%</span>
-                          <span
-                            className={
-                              kpi.value >= kpi.target
-                                ? 'text-[var(--color-status-success)]'
-                                : 'text-[var(--color-status-warning)]'
-                            }
-                          >
-                            {kpi.value >= kpi.target ? '✓' : '↓'}
-                          </span>
+            <TabsContent value="production" className="space-y-6">
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold jewelry-text-luxury">Production KPIs</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {productionKPIs.map(kpi => (
+                    <div key={kpi.label} className="jewelry-glass-card p-4">
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-300">{kpi.label}</p>
+                        <p className="text-2xl font-bold jewelry-text-luxury">{kpi.value}%</p>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-gray-300">Target: {kpi.target}%</span>
+                            <span className={kpi.value >= kpi.target ? 'jewelry-text-gold' : 'text-amber-500'}>
+                              {kpi.value >= kpi.target ? '✓' : '↓'}
+                            </span>
+                          </div>
+                          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all"
+                              style={{ width: `${kpi.value}%` }}
+                            />
+                          </div>
                         </div>
-                        <div className="h-2 bg-[var(--color-surface)] rounded-full overflow-hidden">
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold jewelry-text-luxury">Work Center Status</h3>
+                <div className="jewelry-glass-card p-6">
+                  <div className="space-y-4">
+                    {[
+                      { label: 'Cutting Station', value: 85, icon: TreePine },
+                      { label: 'Assembly Line 1', value: 72, icon: Hammer },
+                      { label: 'Finishing Bay', value: 90, icon: Sparkles },
+                      { label: 'Quality Check', value: 65, icon: CheckCircle }
+                    ].map(center => (
+                      <div key={center.label} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <center.icon className="h-4 w-4 jewelry-text-gold" />
+                            <span className="font-medium jewelry-text-luxury">{center.label}</span>
+                          </div>
+                          <span className="text-sm font-medium jewelry-text-luxury">{center.value}%</span>
+                        </div>
+                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-[var(--color-brand-orange)] transition-all"
-                            style={{ width: `${kpi.value}%` }}
+                            className="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all"
+                            style={{ width: `${center.value}%` }}
                           />
                         </div>
                       </div>
-                    </div>
-                  </Card>
-                ))}
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            </TabsContent>
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Work Center Status</h3>
-              <Card className="furniture-card p-6">
-                <div className="space-y-4">
-                  {[
-                    { label: 'Cutting Station', value: 85, icon: Factory },
-                    { label: 'Assembly Line 1', value: 72, icon: Factory },
-                    { label: 'Finishing Bay', value: 90, icon: Factory },
-                    { label: 'Quality Check', value: 65, icon: CheckCircle }
-                  ].map(center => (
-                    <div key={center.label} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <center.icon className="h-4 w-4 text-[var(--color-accent-teal)]" />
-                          <span className="font-medium text-[var(--color-text-primary)]">{center.label}</span>
-                        </div>
-                        <span className="text-sm font-medium text-[var(--color-text-primary)]">{center.value}%</span>
-                      </div>
-                      <div className="h-2 bg-[var(--color-surface)] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[var(--color-accent-teal)] transition-all"
-                          style={{ width: `${center.value}%` }}
-                        />
-                      </div>
+            <TabsContent value="finance" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="jewelry-glass-card p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-300">Outstanding Receivables</p>
+                      <p className="text-2xl font-bold jewelry-text-luxury">₹15.2L</p>
+                      <p className="text-sm text-amber-500">5 overdue</p>
                     </div>
-                  ))}
+                    <AlertCircle className="h-8 w-8 text-amber-500" />
+                  </div>
                 </div>
-              </Card>
-            </div>
-          </TabsContent>
+                <div className="jewelry-glass-card p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-300">GST Payable</p>
+                      <p className="text-2xl font-bold jewelry-text-luxury">₹2.8L</p>
+                      <p className="text-sm text-green-500">Due in 7 days</p>
+                    </div>
+                    <DollarSign className="h-8 w-8 text-green-500" />
+                  </div>
+                </div>
+                <div className="jewelry-glass-card p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-300">Cash Position</p>
+                      <p className="text-2xl font-bold jewelry-text-luxury">₹8.5L</p>
+                      <p className="text-sm text-green-500">Healthy</p>
+                    </div>
+                    <TrendingUp className="h-8 w-8 text-green-500" />
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
 
-          <TabsContent value="finance" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="furniture-card p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">
-                      Outstanding Receivables
-                    </p>
-                    <p className="text-2xl font-bold text-[var(--color-text-primary)]">₹15.2L</p>
-                    <p className="text-sm text-[var(--color-status-warning)]">5 overdue</p>
+            <TabsContent value="hr" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="jewelry-glass-card p-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-5 w-5 jewelry-text-gold" />
+                      <p className="text-sm text-gray-300">Total Employees</p>
+                    </div>
+                    <p className="text-2xl font-bold jewelry-text-luxury">124</p>
+                    <p className="text-sm text-green-500">98% attendance today</p>
                   </div>
-                  <AlertCircle className="h-8 w-8 text-[var(--color-status-warning)]" />
                 </div>
-              </Card>
-              <Card className="furniture-card p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">GST Payable</p>
-                    <p className="text-2xl font-bold text-[var(--color-text-primary)]">₹2.8L</p>
-                    <p className="text-sm text-[var(--color-status-success)]">Due in 7 days</p>
+                <div className="jewelry-glass-card p-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-5 w-5 jewelry-text-gold" />
+                      <p className="text-sm text-gray-300">Payroll Status</p>
+                    </div>
+                    <p className="text-lg font-semibold jewelry-text-luxury">Processing</p>
+                    <p className="text-sm text-amber-500">Due: 25th Jan</p>
                   </div>
-                  <DollarSign className="h-8 w-8 text-[var(--color-status-success)]" />
                 </div>
-              </Card>
-              <Card className="furniture-card p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">Cash Position</p>
-                    <p className="text-2xl font-bold text-[var(--color-text-primary)]">₹8.5L</p>
-                    <p className="text-sm text-[var(--color-status-success)]">Healthy</p>
+                <div className="jewelry-glass-card p-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5 jewelry-text-gold" />
+                      <p className="text-sm text-gray-300">PF Remittance</p>
+                    </div>
+                    <p className="text-lg font-semibold jewelry-text-luxury">Completed</p>
+                    <p className="text-sm text-green-500">For Dec 2024</p>
                   </div>
-                  <TrendingUp className="h-8 w-8 text-[var(--color-accent-emerald)]" />
                 </div>
-              </Card>
-            </div>
-          </TabsContent>
+                <div className="jewelry-glass-card p-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Truck className="h-5 w-5 jewelry-text-gold" />
+                      <p className="text-sm text-gray-300">ESI Status</p>
+                    </div>
+                    <p className="text-lg font-semibold jewelry-text-luxury">Pending</p>
+                    <p className="text-sm text-amber-500">Submit by 31st Jan</p>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
 
-          <TabsContent value="hr" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="furniture-card p-6">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-[var(--color-brand-orange)]" />
-                    <p className="text-sm text-[var(--color-text-secondary)]">Total Employees</p>
+          {/* Module Navigation */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold jewelry-text-luxury">Kerala Furniture Business Modules</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[
+                { href: '/furniture/design-studio', icon: PenTool, label: 'Design Studio' },
+                { href: '/furniture/ai-manager', icon: Brain, label: 'AI Business Manager' },
+                { href: '/furniture/digital-accountant', icon: Calculator, label: 'Digital Accountant' },
+                { href: '/furniture/leads', icon: Target, label: 'Lead Management' },
+                { href: '/furniture/production', icon: Factory, label: 'Production Planning' },
+                { href: '/furniture/inventory', icon: Package, label: 'Inventory Management' },
+                { href: '/furniture/customers', icon: Users, label: 'Customer Management' },
+                { href: '/furniture/sales', icon: ShoppingCart, label: 'Sales Dashboard' },
+                { href: '/furniture/financial', icon: DollarSign, label: 'Financial Reports' },
+                { href: '/furniture/suppliers', icon: Truck, label: 'Supplier Management' },
+                { href: '/furniture/quality', icon: CheckCircle, label: 'Quality Control' },
+                { href: '/furniture/analytics', icon: BarChart3, label: 'Analytics' },
+                { href: '/furniture/settings', icon: Settings, label: 'Settings' }
+              ].map(module => (
+                <Link key={module.label} href={module.href}>
+                  <div className="jewelry-glass-card p-4 jewelry-scale-hover cursor-pointer">
+                    <div className="flex flex-col items-center text-center gap-2">
+                      <module.icon className="h-8 w-8 jewelry-text-gold" />
+                      <span className="text-sm font-medium jewelry-text-luxury">{module.label}</span>
+                    </div>
                   </div>
-                  <p className="text-2xl font-bold text-[var(--color-text-primary)]">124</p>
-                  <p className="text-sm text-[var(--color-status-success)]">98% attendance today</p>
-                </div>
-              </Card>
-              <Card className="furniture-card p-6">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-[var(--color-brand-orange)]" />
-                    <p className="text-sm text-[var(--color-text-secondary)]">Payroll Status</p>
-                  </div>
-                  <p className="text-lg font-semibold text-[var(--color-text-primary)]">Processing</p>
-                  <p className="text-sm text-[var(--color-status-warning)]">Due: 25th Jan</p>
-                </div>
-              </Card>
-              <Card className="furniture-card p-6">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-[var(--color-brand-orange)]" />
-                    <p className="text-sm text-[var(--color-text-secondary)]">PF Remittance</p>
-                  </div>
-                  <p className="text-lg font-semibold text-[var(--color-text-primary)]">Completed</p>
-                  <p className="text-sm text-[var(--color-status-success)]">For Dec 2024</p>
-                </div>
-              </Card>
-              <Card className="furniture-card p-6">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Truck className="h-5 w-5 text-[var(--color-brand-orange)]" />
-                    <p className="text-sm text-[var(--color-text-secondary)]">ESI Status</p>
-                  </div>
-                  <p className="text-lg font-semibold text-[var(--color-text-primary)]">Pending</p>
-                  <p className="text-sm text-[var(--color-status-warning)]">Submit by 31st Jan</p>
-                </div>
-              </Card>
+                </Link>
+              ))}
             </div>
-          </TabsContent>
-        </Tabs>
-
-        {/* Module Navigation */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">Furniture Modules</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <ModuleLink href="/furniture/sales" icon={ShoppingCart} label="Sales" />
-            <ModuleLink href="/furniture/production" icon={Factory} label="Production" />
-            <ModuleLink href="/furniture/inventory" icon={Package} label="Inventory" />
-            <ModuleLink href="/furniture/products" icon={BarChart3} label="Products & BOM" />
-            <ModuleLink href="/furniture/tender" icon={FileText} label="Tender Mgmt" />
-            <ModuleLink href="/furniture/finance" icon={DollarSign} label="Finance" />
-            <ModuleLink href="/furniture/hr" icon={Users} label="HR & Payroll" />
-            <ModuleLink href="/furniture/quality" icon={CheckCircle} label="Quality" />
-            <ModuleLink href="/furniture/reports" icon={BarChart3} label="Reports" />
           </div>
         </div>
       </div>
     </div>
   )
 }
-
-const ModuleLink = React.memo(function ModuleLink({
-  href,
-  icon: Icon,
-  label
-}: {
-  href: string
-  icon: React.ElementType
-  label: string
-}) {
-  return (
-    <Link href={href}>
-      <Card className="furniture-card p-4 hover:scale-105 transition-transform cursor-pointer">
-        <div className="flex flex-col items-center text-center gap-2">
-          <Icon className="h-8 w-8 text-[var(--color-brand-orange)]" />
-          <span className="text-sm font-medium text-[var(--color-text-primary)]">{label}</span>
-        </div>
-      </Card>
-    </Link>
-  )
-})
-
-export default React.memo(FurnitureDashboard)
