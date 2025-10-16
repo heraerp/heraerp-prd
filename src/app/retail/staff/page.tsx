@@ -1,13 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Users, Mail, Phone, MapPin, Calendar, Briefcase, Eye, Edit, Trash2 } from 'lucide-react'
 import { HeraListPage } from '@/components/hera/HeraListPage'
 import { FilterFieldConfig } from '@/components/hera/HeraFilterPanel'
 import { TableColumn, TableAction } from '@/components/hera/HeraEntityTable'
 import { CardField, CardAction } from '@/components/hera/HeraCardGrid'
 
-export default function StaffPage() {
+function StaffPageInner() {
   // Define filter fields that will appear in the left panel
   const filters: FilterFieldConfig[] = [
     {
@@ -224,3 +224,14 @@ export default function StaffPage() {
     />
   )
 }
+
+export default function StaffPage() {
+  return (
+    <Suspense fallback={<div className="p-4">Loading staff…</div>}>
+      <StaffPageInner />
+    </Suspense>
+  )
+}
+
+// Prevent SSG from trying to prerender with empty auth/session
+export const dynamic = 'force-dynamic'

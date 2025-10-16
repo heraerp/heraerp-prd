@@ -8,7 +8,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { CRMClient, type CRMEntityInput, type CRMRelationshipInput } from '@/lib/crm/api'
 import type { UniversalEntity } from '@/hooks/useUniversalEntity'
 import { CRM_ENTITY_CODES } from '@/lib/crm/smart-codes'
@@ -33,7 +33,7 @@ export const crmQueryKeys = {
  * Base hook for CRM client
  */
 export function useCRMClient() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization } = useHERAAuth()
   
   if (!currentOrganization?.id) {
     throw new Error('CRM operations require organization context')
