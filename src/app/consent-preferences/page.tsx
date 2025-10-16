@@ -41,7 +41,7 @@ import {
  * Consent Preference Entity Interface
  * Extends TableRecord for HERA compliance
  */
-interface Consent Preference extends TableRecord {
+interface ConsentPreference extends TableRecord {
   id: string
   entity_id?: string
   entity_name: string
@@ -507,7 +507,7 @@ export default function Consent PreferencesPage() {
  * Enterprise Consent Preference Modal Component
  * Enhanced with business rules and validation
  */
-interface Consent PreferenceModalProps {
+interface ConsentPreferenceModalProps {
   title: string
   isOpen: boolean
   onClose: () => void

@@ -109,30 +109,30 @@ export function HeraListPage({
   return (
     <div className={`space-y-6 hera-animate-fade-in ${className}`}>
       {/* Header */}
-      <div className=\"hera-card hera-card-elevated\">
-        <div className=\"flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4\">
-          <div className=\"flex items-center gap-4\">
+      <div className="hera-card hera-card-elevated">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             {IconComponent && (
-              <div className=\"p-3 rounded-xl bg-gradient-to-br from-[var(--hera-primary-start)]/20 to-[var(--hera-primary-end)]/10\">
-                <IconComponent className=\"w-7 h-7 text-[var(--hera-primary-start)]\" />
+              <div className="p-3 rounded-xl bg-gradient-to-br from-[var(--hera-primary-start)]/20 to-[var(--hera-primary-end)]/10">
+                <IconComponent className="w-7 h-7 text-[var(--hera-primary-start)]" />
               </div>
             )}
             <div>
-              <h1 className=\"text-2xl font-bold text-[var(--hera-text-dark)] hera-font-primary mb-1\">
+              <h1 className="text-2xl font-bold text-[var(--hera-text-dark)] hera-font-primary mb-1">
                 {title}
               </h1>
               {subtitle && (
-                <p className=\"text-[var(--hera-text-medium)] hera-font-primary\">
+                <p className="text-[var(--hera-text-medium)] hera-font-primary">
                   {subtitle}
                 </p>
               )}
             </div>
           </div>
           
-          <div className=\"flex items-center gap-3\">
+          <div className="flex items-center gap-3">
             {/* View Toggle */}
             {allowViewToggle && (
-              <div className=\"hera-surface rounded-lg p-1 flex\">
+              <div className="hera-surface rounded-lg p-1 flex">
                 <button
                   onClick={() => setViewMode('table')}
                   className={`px-3 py-2 rounded text-sm hera-font-primary transition-all ${
@@ -160,12 +160,12 @@ export function HeraListPage({
             {filters.length > 0 && (
               <button
                 onClick={() => store.setFilterPanelOpen(!store.isFilterPanelOpen)}
-                className=\"hera-btn-surface flex items-center gap-2\"
+                className="hera-btn-surface flex items-center gap-2"
               >
-                <Filter className=\"w-4 h-4\" />
+                <Filter className="w-4 h-4" />
                 Filters
                 {store.activeFilters.length > 0 && (
-                  <span className=\"hera-chip-active text-xs px-2 py-1\">
+                  <span className="hera-chip-active text-xs px-2 py-1">
                     {store.activeFilters.length}
                   </span>
                 )}
@@ -176,9 +176,9 @@ export function HeraListPage({
             {createAction && (
               <button
                 onClick={handleCreateClick}
-                className=\"hera-btn-primary flex items-center gap-2\"
+                className="hera-btn-primary flex items-center gap-2"
               >
-                <Plus className=\"w-4 h-4\" />
+                <Plus className="w-4 h-4" />
                 {createAction.label}
               </button>
             )}
@@ -188,8 +188,8 @@ export function HeraListPage({
       
       {/* Active Filters Chips */}
       {store.activeFilters.length > 0 && (
-        <div className=\"flex flex-wrap items-center gap-2\">
-          <span className=\"text-sm text-[var(--hera-text-medium)] hera-font-primary font-medium\">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-[var(--hera-text-medium)] hera-font-primary font-medium\">
             Active filters:
           </span>
           {store.activeFilters.map(fieldKey => {
@@ -200,26 +200,26 @@ export function HeraListPage({
               <button
                 key={fieldKey}
                 onClick={() => store.removeFilter(fieldKey)}
-                className=\"hera-chip-active flex items-center gap-2 hover:opacity-80 transition-opacity\"
+                className="hera-chip-active flex items-center gap-2 hover:opacity-80 transition-opacity\"
               >
                 <span>{filter.value.label || filter.value.value}</span>
-                <span className=\"text-white/80\">\u00d7</span>
+                <span className="text-white/80\">\u00d7</span>
               </button>
             )
           })}
           <button
             onClick={store.clearAllFilters}
-            className=\"text-sm text-[var(--hera-text-medium)] hover:text-[var(--hera-error)] transition-colors hera-font-primary\"
+            className="text-sm text-[var(--hera-text-medium)] hover:text-[var(--hera-error)] transition-colors hera-font-primary\"
           >
             Clear all
           </button>
         </div>
       )}
       
-      <div className=\"grid lg:grid-cols-4 gap-6\">
+      <div className="grid lg:grid-cols-4 gap-6\">
         {/* Filter Panel */}
         {filters.length > 0 && store.isFilterPanelOpen && (
-          <div className=\"lg:col-span-1\">
+          <div className="lg:col-span-1">
             <HeraFilterPanel
               entityType={entityType}
               fields={filters}
@@ -232,13 +232,13 @@ export function HeraListPage({
         {/* Main Content */}
         <div className={`${filters.length > 0 && store.isFilterPanelOpen ? 'lg:col-span-3' : 'lg:col-span-4'}`}>
           {error && (
-            <div className=\"hera-card border border-red-200 bg-red-50\">
-              <div className=\"text-red-800 hera-font-primary\">
+            <div className="hera-card border border-red-200 bg-red-50">
+              <div className="text-red-800 hera-font-primary">
                 <strong>Error loading data:</strong> {error}
               </div>
               <button 
                 onClick={() => refetch()}
-                className=\"hera-btn-surface mt-2 text-red-600 border-red-200\"
+                className="hera-btn-surface mt-2 text-red-600 border-red-200"
               >
                 Try Again
               </button>
@@ -277,17 +277,17 @@ export function HeraListPage({
       
       {/* Selection Actions */}
       {selectable && selectedRows.length > 0 && (
-        <div className=\"fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50\">
-          <div className=\"hera-card hera-card-float px-6 py-4 flex items-center gap-4 min-w-64\">
-            <span className=\"text-sm hera-font-primary text-[var(--hera-text-dark)] font-medium\">
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="hera-card hera-card-float px-6 py-4 flex items-center gap-4 min-w-64">
+            <span className="text-sm hera-font-primary text-[var(--hera-text-dark)] font-medium">
               {selectedRows.length} selected
             </span>
-            <div className=\"flex items-center gap-2\">
-              <button className=\"hera-btn-surface text-sm\">
+            <div className="flex items-center gap-2">
+              <button className="hera-btn-surface text-sm">
                 Export
               </button>
               <button 
-                className=\"hera-btn-surface text-sm text-red-600 border-red-200\"
+                className="hera-btn-surface text-sm text-red-600 border-red-200"
                 onClick={() => {
                   // Handle bulk delete
                   setSelectedRows([])

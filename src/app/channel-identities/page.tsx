@@ -41,7 +41,7 @@ import {
  * Channel Identity Entity Interface
  * Extends TableRecord for HERA compliance
  */
-interface Channel Identity extends TableRecord {
+interface ChannelIdentity extends TableRecord {
   id: string
   entity_id?: string
   entity_name: string
@@ -90,14 +90,14 @@ const CHANNEL_IDENTITY_SMART_CODES = {
  * Channel Identities Main Page Component
  * Enterprise-grade CRUD with quality gates and business rules
  */
-export default function Channel IdentitiesPage() {
+export default function ChannelIdentitiesPage() {
   const { currentOrganization, isAuthenticated, user } = useHERAAuth()
-  const [selectedChannel Identities, setSelectedChannel Identities] = useState<(string | number)[]>([])
+  const [selectedChannelIdentities, setSelectedChannelIdentities] = useState<(string | number)[]>([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [currentChannel Identity, setCurrentChannel Identity] = useState<Channel Identity | null>(null)
-  const [channel_identityToDelete, setChannel IdentityToDelete] = useState<Channel Identity | null>(null)
+  const [currentChannelIdentity, setCurrentChannelIdentity] = useState<ChannelIdentity | null>(null)
+  const [channelIdentityToDelete, setChannelIdentityToDelete] = useState<ChannelIdentity | null>(null)
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -127,7 +127,7 @@ export default function Channel IdentitiesPage() {
   })
 
   // Transform entities with business rule extensions
-  const channel_identitys: Channel Identity[] = channel_identityData.entities?.map((entity: any) => {
+  const channelIdentities: ChannelIdentity[] = channel_identityData.entities?.map((entity: any) => {
     return {
       id: entity.id,
       entity_id: entity.id,
@@ -157,21 +157,21 @@ export default function Channel IdentitiesPage() {
   const kpis = [
     {
       title: 'Total Channel Identities',
-      value: channel_identitys.length.toString(),
+      value: channelIdentities.length.toString(),
       change: '+5.2%',
       trend: 'up' as const,
       icon: Mail
     },
     {
       title: 'Active Channel Identities',
-      value: channel_identitys.filter(item => item.status === 'active').length.toString(),
+      value: channelIdentities.filter(item => item.status === 'active').length.toString(),
       change: '+2.1%',
       trend: 'up' as const,
       icon: CheckCircle
     },
     {
       title: 'This Month',
-      value: channel_identitys.filter(item => {
+      value: channelIdentities.filter(item => {
         if (!item.created_at) return false
         const created = new Date(item.created_at)
         const now = new Date()
@@ -205,16 +205,16 @@ export default function Channel IdentitiesPage() {
     ]},
     { key: 'contact_id', label: 'Contact Id', type: 'select', options: [
         { value: '', label: 'All Contact Ids' },
-        ...Array.from(new Set(channel_identitys.map(item => item.contact_id).filter(Boolean))).map(val => ({ value: val!, label: val! }))
+        ...Array.from(new Set(channelIdentities.map(item => item.contact_id).filter(Boolean))).map(val => ({ value: val!, label: val! }))
       ]},
     { key: 'channel_type', label: 'Channel Type', type: 'select', options: [
         { value: '', label: 'All Channel Types' },
-        ...Array.from(new Set(channel_identitys.map(item => item.channel_type).filter(Boolean))).map(val => ({ value: val!, label: val! }))
+        ...Array.from(new Set(channelIdentities.map(item => item.channel_type).filter(Boolean))).map(val => ({ value: val!, label: val! }))
       ]}
   ]
 
   // Enterprise CRUD Operations with Events
-  const handleAddChannel Identity = async (channel_identityData: any) => {
+  const handleAddChannelIdentity = async (channelIdentityData: any) => {
     try {
       const result = await channel_identityData.create({
         entity_type: 'CHANNEL_IDENTITY',
@@ -238,11 +238,11 @@ export default function Channel IdentitiesPage() {
     }
   }
 
-  const handleEditChannel Identity = async (channel_identityData: any) => {
-    if (!currentChannel Identity) return
+  const handleEditChannelIdentity = async (channelIdentityData: any) => {
+    if (!currentChannelIdentity) return
     
     try {
-      await channel_identityData.update(currentChannel Identity.entity_id!, {
+      await channelIdentityData.update(currentChannelIdentity.entity_id!, {
         entity_name: channel_identityData.entity_name
       }, channel_identityData)
 
