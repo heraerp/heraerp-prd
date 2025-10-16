@@ -1,0 +1,280 @@
+tables:
+  - name: core_relationships
+    rls_enabled: true
+    primary_key: [id]
+    columns:
+      - name: id
+        type: uuid
+        not_null: true
+        default: gen_random_uuid()
+        purpose: Primary key for the relationship record
+        usage: Unique identifier for each directed relationship row
+        pii: false
+        mutable: false
+        constraints: Must be unique
+        example: "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+        owner: kernel
+
+      - name: organization_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: Tenant boundary for perfect multi-tenancy
+        usage: Enforced by RLS for all queries and mutations
+        pii: false
+        mutable: false
+        constraints: FK → core_organizations.id
+        example: "378f24fb-d496-4ff7-8afa-ea34895a0eb8"
+        owner: security
+
+      - name: from_entity_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: Source entity in the relationship
+        usage: Defines the direction of the relationship (FROM → TO)
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id
+        example: "f21b3f73-0c5a-4f77-bb8d-0f7b9d3d0af0"
+        owner: kernel
+
+      - name: to_entity_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: Target entity in the relationship
+        usage: Paired with from_entity_id to form a directed connection
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id
+        example: "c7a5d13b-8469-4419-a1cb-9d3212be78e4"
+        owner: kernel
+
+      - name: relationship_type
+        type: text
+        not_null: true
+        default: null
+        purpose: Categorical type of relationship
+        usage: Defines business meaning (e.g., MEMBER_OF, OWNS, REPORTS_TO)
+        pii: false
+        mutable: false
+        constraints: Canonical uppercase identifier
+        example: "MEMBER_OF"
+        owner: kernel
+
+      - name: relationship_direction
+        type: text
+        not_null: false
+        default: "'forward'::text"
+        purpose: Direction semantics for traversal
+        usage: Indicates how the relation should be interpreted in queries
+        pii: false
+        mutable: false
+        constraints: Enum [forward, reverse, bidirectional]
+        example: "forward"
+        owner: kernel
+
+      - name: relationship_strength
+        type: numeric
+        not_null: false
+        default: "1.0000"
+        purpose: Optional weighting factor for ranking or graph analytics
+        usage: Used in scoring, recommendations, or AI-based similarity
+        pii: false
+        mutable: true
+        constraints: Positive numeric value
+        example: 1.0
+        owner: ai
+
+      - name: relationship_data
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Stores metadata or extended attributes for the relationship
+        usage: Holds contextual data for business logic or UI
+        pii: maybe
+        mutable: true
+        constraints: Valid JSON object
+        example: { "role": "manager", "duration": "6m" }
+        owner: app
+
+      - name: smart_code
+        type: character varying
+        not_null: false
+        default: null
+        purpose: Smart Code DNA identifying the relationship type/version
+        usage: Enforced by Guardrails for consistent rule mapping
+        pii: false
+        mutable: versioned
+        constraints: Must match ^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$
+        example: "HERA.SALON.STAFF.REL.HAS_ROLE.v1"
+        owner: kernel
+
+      - name: smart_code_status
+        type: text
+        not_null: false
+        default: "'DRAFT'::text"
+        purpose: Lifecycle state of the smart code
+        usage: Tracks deployment version (draft/live/deprecated)
+        pii: false
+        mutable: true
+        constraints: Enum [DRAFT, LIVE, DEPRECATED]
+        example: "LIVE"
+        owner: kernel
+
+      - name: ai_confidence
+        type: numeric
+        not_null: false
+        default: "0.0000"
+        purpose: Confidence score of AI-inferred relationship strength or type
+        usage: Produced by AI-based analytics
+        pii: false
+        mutable: true
+        constraints: 0–1 range
+        example: 0.84
+        owner: ai
+
+      - name: ai_classification
+        type: text
+        not_null: false
+        default: null
+        purpose: AI-assigned label for the relationship category
+        usage: Used for auto-tagging and prediction analytics
+        pii: false
+        mutable: true
+        constraints: Free text
+        example: "high-value-relationship"
+        owner: ai
+
+      - name: ai_insights
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: JSON trace explaining AI inference
+        usage: Captures reasoning logs for explainability
+        pii: false
+        mutable: true
+        constraints: Valid JSON
+        example: { "reason": "Shared owner ID and same org pattern detected" }
+        owner: ai
+
+      - name: business_logic
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Stores rule-based logic specific to this relationship
+        usage: Used by Rules Engine for validation and routing
+        pii: false
+        mutable: true
+        constraints: JSON structure validated by CI
+        example: { "approval_required": true }
+        owner: kernel
+
+      - name: validation_rules
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Defines schema validation or constraints for this relationship
+        usage: Used by Playbooks or Rules Engine validation
+        pii: false
+        mutable: true
+        constraints: Valid JSON object
+        example: { "required_fields": ["from_entity_id", "to_entity_id"] }
+        owner: kernel
+
+      - name: is_active
+        type: boolean
+        not_null: false
+        default: "true"
+        purpose: Active state flag
+        usage: Determines whether relationship is currently effective
+        pii: false
+        mutable: true
+        constraints: true or false
+        example: true
+        owner: kernel
+
+      - name: effective_date
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Start date when relationship becomes active
+        usage: Used in lifecycle and reporting logic
+        pii: false
+        mutable: true
+        constraints: Valid timestamp
+        example: "2025-10-15T08:00:00Z"
+        owner: kernel
+
+      - name: expiration_date
+        type: timestamp with time zone
+        not_null: false
+        default: null
+        purpose: Date when relationship expires or is no longer valid
+        usage: Used to mark relationship as inactive after this timestamp
+        pii: false
+        mutable: true
+        constraints: Valid timestamp or null
+        example: "2026-10-15T08:00:00Z"
+        owner: kernel
+
+      - name: created_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Creation timestamp
+        usage: Used for auditing
+        pii: false
+        mutable: false
+        constraints: Auto-generated by DB
+        example: "2025-10-15T09:00:00Z"
+        owner: kernel
+
+      - name: updated_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Last updated timestamp
+        usage: Tracks last modification time
+        pii: false
+        mutable: false
+        constraints: Auto-updated by triggers
+        example: "2025-10-15T10:15:00Z"
+        owner: kernel
+
+      - name: created_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity ID of the actor who created this relationship
+        usage: Used for audit and change attribution
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: updated_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity ID of the actor who last updated this relationship
+        usage: Maintains complete modification audit trail
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: version
+        type: integer
+        not_null: false
+        default: "1"
+        purpose: Version number for optimistic concurrency control
+        usage: Incremented automatically on updates
+        pii: false
+        mutable: false
+        constraints: Integer ≥ 1
+        example: 3
+        owner: kernel

@@ -23,7 +23,7 @@ const SalonDataPage = dynamic(() => import('@/app/salon-data/page'), {
 })
 
 export default function OrgSalonDataPage() {
-  // The MultiOrgAuthProvider will handle getting the organization from the subdomain
+  // The HERAAuthProvider will handle getting the organization from the subdomain
   // We just need to render the salon-data page component
   return <SalonDataPage />
 }

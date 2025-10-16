@@ -29,11 +29,16 @@ export default function MatrixLayout({ children }: PropsWithChildren) {
   const items = filterNavByRole(nav, allRoles)
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-3 flex items-center gap-4">
-          <div className="font-semibold tracking-tight">Matrix IT World</div>
-          <nav className="flex items-center gap-3 text-sm">
+    <div className="min-h-screen flex flex-col" style={{background: 'linear-gradient(135deg, #F9F6EE 0%, #D8CBB3 100%)'}}>
+      <header className="glass-nav fixed top-0 left-0 right-0 z-50">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#BB8D3F] to-[#8B4729] flex items-center justify-center">
+              <span className="text-white font-bold text-lg">M</span>
+            </div>
+            <div className="font-bold tracking-tight text-[#45492D] text-xl">Matrix IT World</div>
+          </div>
+          <nav className="flex items-center gap-2">
             {items.map(it => {
               const active = pathname?.startsWith(it.href)
               return (
@@ -41,8 +46,9 @@ export default function MatrixLayout({ children }: PropsWithChildren) {
                   key={it.href}
                   href={it.href}
                   className={
-                    'px-2 py-1 rounded hover:bg-muted transition-colors ' +
-                    (active ? 'bg-muted font-medium' : 'text-muted-foreground')
+                    active 
+                      ? 'glass-btn-primary text-white font-medium'
+                      : 'glass-btn-secondary hover:glass-warm transition-all duration-300'
                   }
                 >
                   {it.label}
@@ -52,7 +58,7 @@ export default function MatrixLayout({ children }: PropsWithChildren) {
           </nav>
         </div>
       </header>
-      <main className="container mx-auto px-4 py-6 flex-1">{children}</main>
+      <main className="pt-20 container mx-auto px-6 py-8 flex-1">{children}</main>
     </div>
   )
 }

@@ -1,0 +1,307 @@
+tables:
+  - name: universal_transaction_lines
+    rls_enabled: true
+    primary_key: [id]
+    columns:
+      - name: id
+        type: uuid
+        not_null: true
+        default: "gen_random_uuid()"
+        purpose: "Primary key for the transaction line"
+        usage: "Joined from header via transaction_id; unique per line row"
+        pii: false
+        mutable: false
+        constraints:
+          unique: true
+        example: "7f2a9b44-1d3e-4b9c-9e1c-6b0d4b2a8f12"
+        owner: kernel
+
+      - name: organization_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: "Tenant boundary for multi-tenancy"
+        usage: "RLS-enforced; filters all line queries by organization"
+        pii: false
+        mutable: false
+        constraints:
+          fk: "core_organizations.id"
+        example: "378f24fb-d496-4ff7-8afa-ea34895a0eb8"
+        owner: security
+
+      - name: transaction_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: "Header foreign key"
+        usage: "Links the line to its universal_transactions header"
+        pii: false
+        mutable: false
+        constraints:
+          fk: "universal_transactions.id"
+        example: "51b1f803-3c84-4497-8c7e-bd1f2b6868b5"
+        owner: kernel
+
+      - name: line_number
+        type: integer
+        not_null: true
+        default: null
+        purpose: "Deterministic ordering of lines within a transaction"
+        usage: "Unique with transaction_id; drives stable rendering and posting"
+        pii: false
+        mutable: false
+        constraints:
+          composite_unique_with: transaction_id
+          min: 1
+        example: 10
+        owner: kernel
+
+      - name: entity_id
+        type: uuid
+        not_null: false
+        default: null
+        purpose: "Optional reference entity related to the line"
+        usage: "Product, account, cost center, or any entity link"
+        pii: maybe
+        mutable: true
+        constraints:
+          fk: "core_entities.id"
+        example: "a12b34cd-56ef-7890-ab12-34cd56ef7890"
+        owner: app
+
+      - name: line_type
+        type: text
+        not_null: true
+        default: null
+        purpose: "Semantic classification of the line"
+        usage: "Reporting and rule routing (e.g., GL, REVENUE, TAX, CASH)"
+        pii: false
+        mutable: false
+        constraints:
+          pattern: "UPPER_SNAKE_CASE"
+        example: "GL"
+        owner: finance
+
+      - name: description
+        type: text
+        not_null: false
+        default: null
+        purpose: "Human-readable line description"
+        usage: "UX and exports"
+        pii: maybe
+        mutable: true
+        constraints: {}
+        example: "Cash receipt"
+        owner: app
+
+      - name: quantity
+        type: numeric
+        not_null: false
+        default: "1"
+        purpose: "Quantity for itemized lines"
+        usage: "Used in POS/inventory contexts; optional in GL lines"
+        pii: false
+        mutable: true
+        constraints:
+          min: 0
+        example: 1
+        owner: app
+
+      - name: unit_amount
+        type: numeric
+        not_null: false
+        default: "0"
+        purpose: "Unit price/amount"
+        usage: "Extended price = quantity × unit_amount (if applicable)"
+        pii: false
+        mutable: true
+        constraints:
+          min: 0
+        example: 450.00
+        owner: finance
+
+      - name: line_amount
+        type: numeric
+        not_null: false
+        default: "0"
+        purpose: "Extended amount for the line in header currency"
+        usage: "UX/reports; GL balance uses line_data.side (DR/CR) + amount semantics"
+        pii: false
+        mutable: true
+        constraints:
+          min: 0
+        example: 450.00
+        owner: finance
+
+      - name: discount_amount
+        type: numeric
+        not_null: false
+        default: "0"
+        purpose: "Discount applied to this line"
+        usage: "Pricing and revenue analytics"
+        pii: false
+        mutable: true
+        constraints:
+          min: 0
+        example: 0
+        owner: finance
+
+      - name: tax_amount
+        type: numeric
+        not_null: false
+        default: "0"
+        purpose: "Tax amount for this line"
+        usage: "Tax reporting and settlement"
+        pii: false
+        mutable: true
+        constraints:
+          min: 0
+        example: 22.50
+        owner: finance
+
+      - name: smart_code
+        type: character varying
+        not_null: true
+        default: null
+        purpose: "Smart Code DNA for this line"
+        usage: "Guardrails validation and rule routing (e.g., .GL.LINE.)"
+        pii: false
+        mutable: "versioned"
+        constraints:
+          pattern: "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$"
+        example: "HERA.FINANCE.GL.LINE.v1"
+        owner: kernel
+
+      - name: smart_code_status
+        type: text
+        not_null: false
+        default: "'DRAFT'::text"
+        purpose: "Lifecycle state of the line smart code"
+        usage: "Tracks deployment status (draft/live/deprecated)"
+        pii: false
+        mutable: true
+        constraints:
+          enum: [DRAFT, LIVE, DEPRECATED]
+        example: "LIVE"
+        owner: kernel
+
+      - name: ai_confidence
+        type: numeric
+        not_null: false
+        default: "0.0000"
+        purpose: "AI confidence for inferences on this line"
+        usage: "Anomaly detection and auto-post suggestions"
+        pii: false
+        mutable: true
+        constraints:
+          min: 0
+          max: 1
+        example: 0.89
+        owner: ai
+
+      - name: ai_classification
+        type: text
+        not_null: false
+        default: null
+        purpose: "AI-generated line category"
+        usage: "Grouping and automation"
+        pii: false
+        mutable: true
+        constraints: {}
+        example: "cash-in"
+        owner: ai
+
+      - name: ai_insights
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: "AI/Rules explanation trace"
+        usage: "Explainability for automated line decisions"
+        pii: false
+        mutable: true
+        constraints: {}
+        example:
+          reason: "Mapped to cash account via posting map"
+        owner: ai
+
+      - name: line_data
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: "Line semantics and computed attributes"
+        usage: "For GL lines MUST include side='DR'|'CR' to enforce per-currency balancing"
+        pii: false
+        mutable: true
+        constraints:
+          requires:
+            when_smart_code_contains: ".GL."
+            keys: ["side"]
+            allowed_values:
+              side: ["DR", "CR"]
+        example:
+          side: "DR"
+          account: "110000"
+        owner: finance
+
+      - name: created_at
+        type: timestamp with time zone
+        not_null: false
+        default: "now()"
+        purpose: "Creation timestamp"
+        usage: "Audit and synchronization"
+        pii: false
+        mutable: false
+        constraints: {}
+        example: "2025-10-15T09:30:00Z"
+        owner: kernel
+
+      - name: updated_at
+        type: timestamp with time zone
+        not_null: false
+        default: "now()"
+        purpose: "Last modified timestamp"
+        usage: "Audit and synchronization"
+        pii: false
+        mutable: false
+        constraints: {}
+        example: "2025-10-15T09:31:00Z"
+        owner: kernel
+
+      - name: created_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: "USER entity ID who created this line"
+        usage: "Audit attribution; resolved from session actor"
+        pii: false
+        mutable: false
+        constraints:
+          fk: "core_entities.id (entity_type='USER')"
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: updated_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: "USER entity ID who last updated this line"
+        usage: "Audit attribution; maintained on updates"
+        pii: false
+        mutable: false
+        constraints:
+          fk: "core_entities.id (entity_type='USER')"
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: version
+        type: integer
+        not_null: false
+        default: "1"
+        purpose: "Version for optimistic concurrency"
+        usage: "Incremented on each update"
+        pii: false
+        mutable: false
+        constraints:
+          min: 1
+        example: 2
+        owner: kernel

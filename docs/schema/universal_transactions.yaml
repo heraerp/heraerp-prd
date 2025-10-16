@@ -1,0 +1,424 @@
+tables:
+  - name: universal_transactions
+    rls_enabled: true
+    primary_key: [id]
+    columns:
+      - name: id
+        type: uuid
+        not_null: true
+        default: gen_random_uuid()
+        purpose: Primary key for the transaction header
+        usage: Joined by universal_transaction_lines.transaction_id
+        pii: false
+        mutable: false
+        constraints: Must be unique
+        example: "51b1f803-3c84-4497-8c7e-bd1f2b6868b5"
+        owner: kernel
+
+      - name: organization_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: Tenant boundary for multi-tenancy
+        usage: RLS-enforced; filters all header and line queries
+        pii: false
+        mutable: false
+        constraints: FK → core_organizations.id
+        example: "378f24fb-d496-4ff7-8afa-ea34895a0eb8"
+        owner: security
+
+      - name: transaction_type
+        type: text
+        not_null: true
+        default: null
+        purpose: Business document type
+        usage: Drives Rules Engine bundle selection and validations
+        pii: false
+        mutable: false
+        constraints: Upper snake case (e.g., SALE, AP_INVOICE, GL_JOURNAL)
+        example: "SALE"
+        owner: finance
+
+      - name: transaction_code
+        type: text
+        not_null: false
+        default: null
+        purpose: External reference code for the document
+        usage: Used by integrations, imports, or human reference
+        pii: false
+        mutable: true
+        constraints: Unique if used as a natural key
+        example: "INV-2025-000123"
+        owner: finance
+
+      - name: transaction_date
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Document date
+        usage: Used for fiscal period checks and reporting
+        pii: false
+        mutable: true
+        constraints: Must be within an open fiscal period for posting
+        example: "2025-10-15T09:30:00Z"
+        owner: finance
+
+      - name: source_entity_id
+        type: uuid
+        not_null: false
+        default: null
+        purpose: Source party/entity (e.g., customer, vendor)
+        usage: For party-based analysis and audit
+        pii: maybe
+        mutable: true
+        constraints: FK → core_entities.id
+        example: "4a4b1e8f-2e64-4e6c-bfb3-efc6a6e7d71b"
+        owner: app
+
+      - name: target_entity_id
+        type: uuid
+        not_null: false
+        default: null
+        purpose: Target party/entity (e.g., company, branch)
+        usage: For party-based analysis and audit
+        pii: maybe
+        mutable: true
+        constraints: FK → core_entities.id
+        example: "a2b0b6d9-839a-4d1e-9d6e-fd51e0a0afd5"
+        owner: app
+
+      - name: total_amount
+        type: numeric
+        not_null: true
+        default: "0"
+        purpose: Monetary total in document currency
+        usage: UX and reconciliation; not the GL balancing driver
+        pii: false
+        mutable: true
+        constraints: ">= 0"
+        example: 450.00
+        owner: finance
+
+      - name: transaction_status
+        type: text
+        not_null: false
+        default: "'pending'::text"
+        purpose: Workflow state
+        usage: State machine (pending → approved → posted)
+        pii: false
+        mutable: true
+        constraints: Enum [pending, approved, posted, voided]
+        example: "approved"
+        owner: finance
+
+      - name: reference_number
+        type: text
+        not_null: false
+        default: null
+        purpose: Human or external reference ID
+        usage: For reconciliation and search
+        pii: maybe
+        mutable: true
+        constraints: Free text
+        example: "PO-44321"
+        owner: app
+
+      - name: external_reference
+        type: text
+        not_null: false
+        default: null
+        purpose: Integration correlation identifier
+        usage: Idempotency and cross-system matching
+        pii: maybe
+        mutable: true
+        constraints: Free text
+        example: "SAP:001-2025-88427"
+        owner: integration
+
+      - name: smart_code
+        type: character varying
+        not_null: true
+        default: null
+        purpose: Smart Code DNA for the transaction
+        usage: Guardrails validation and rule routing
+        pii: false
+        mutable: versioned
+        constraints: ^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$
+        example: "HERA.FINANCE.TXN.SALE.v1"
+        owner: kernel
+
+      - name: smart_code_status
+        type: text
+        not_null: false
+        default: "'DRAFT'::text"
+        purpose: Lifecycle state of the smart code
+        usage: Tracks deployment status (draft/live/deprecated)
+        pii: false
+        mutable: true
+        constraints: Enum [DRAFT, LIVE, DEPRECATED]
+        example: "LIVE"
+        owner: kernel
+
+      - name: ai_confidence
+        type: numeric
+        not_null: false
+        default: "0.0000"
+        purpose: AI confidence for inferences on this transaction
+        usage: Used by anomaly detection / auto-approval
+        pii: false
+        mutable: true
+        constraints: 0–1
+        example: 0.93
+        owner: ai
+
+      - name: ai_classification
+        type: text
+        not_null: false
+        default: null
+        purpose: AI-generated document category
+        usage: Clustering and prioritization
+        pii: false
+        mutable: true
+        constraints: Free text
+        example: "retail-sale"
+        owner: ai
+
+      - name: ai_insights
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: AI/Rules explanation trace
+        usage: Explainability for automated decisions
+        pii: false
+        mutable: true
+        constraints: Valid JSON object
+        example: { "reason": "Matched retail rule set; confidence 0.93" }
+        owner: ai
+
+      - name: business_context
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Event payload snapshot and idempotency data
+        usage: Used for replays and outbox envelopes
+        pii: maybe
+        mutable: true
+        constraints: Valid JSON object, avoid secrets
+        example: { "source": "pos", "channel": "in-store" }
+        owner: kernel
+
+      - name: metadata
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Non-authoritative annotations and UI hints
+        usage: Display-only or integration hints
+        pii: maybe
+        mutable: true
+        constraints: Should not contain credentials
+        example: { "batch": "EOD-2025-10-15" }
+        owner: app
+
+      - name: approval_required
+        type: boolean
+        not_null: false
+        default: "false"
+        purpose: Whether approval is needed before posting
+        usage: Checked by playbooks/state guards
+        pii: false
+        mutable: true
+        constraints: true or false
+        example: true
+        owner: finance
+
+      - name: approved_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity who approved the document
+        usage: Approval audit trail
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: approved_at
+        type: timestamp with time zone
+        not_null: false
+        default: null
+        purpose: Timestamp when document was approved
+        usage: Compliance and reporting
+        pii: false
+        mutable: false
+        constraints: Valid timestamp or null
+        example: "2025-10-15T09:45:00Z"
+        owner: finance
+
+      - name: created_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Creation timestamp
+        usage: Audit and synchronization
+        pii: false
+        mutable: false
+        constraints: Auto-generated by DB
+        example: "2025-10-15T09:30:00Z"
+        owner: kernel
+
+      - name: updated_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Last modified timestamp
+        usage: Audit and synchronization
+        pii: false
+        mutable: false
+        constraints: Auto-updated by triggers/RPC
+        example: "2025-10-15T09:40:00Z"
+        owner: kernel
+
+      - name: created_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity ID who created the header
+        usage: Audit attribution; resolved from session actor
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: updated_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity ID who last updated the header
+        usage: Audit attribution; maintained on updates
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: version
+        type: integer
+        not_null: false
+        default: "1"
+        purpose: Version for optimistic concurrency
+        usage: Incremented on each update
+        pii: false
+        mutable: false
+        constraints: Integer ≥ 1
+        example: 4
+        owner: kernel
+
+      - name: transaction_currency_code
+        type: character
+        not_null: false
+        default: null
+        purpose: Document currency (ISO 4217 alpha-3)
+        usage: Used for per-currency GL balancing and FX conversion
+        pii: false
+        mutable: true
+        constraints: 3-letter currency code
+        example: "AED"
+        owner: finance
+
+      - name: base_currency_code
+        type: character
+        not_null: false
+        default: null
+        purpose: Ledger/reporting currency
+        usage: Used for reporting and consolidation
+        pii: false
+        mutable: true
+        constraints: 3-letter currency code
+        example: "USD"
+        owner: finance
+
+      - name: exchange_rate
+        type: numeric
+        not_null: false
+        default: null
+        purpose: Rate to convert document currency to base currency
+        usage: Set by Rules Engine transform; used in postings
+        pii: false
+        mutable: true
+        constraints: ">= 0"
+        example: 3.673
+        owner: finance
+
+      - name: exchange_rate_date
+        type: date
+        not_null: false
+        default: null
+        purpose: Date the exchange rate applies
+        usage: For FX auditing and revaluation
+        pii: false
+        mutable: true
+        constraints: Valid date or null
+        example: "2025-10-15"
+        owner: finance
+
+      - name: exchange_rate_type
+        type: text
+        not_null: false
+        default: null
+        purpose: Rate source/type identifier
+        usage: Controls how FX is derived (e.g., spot, average)
+        pii: false
+        mutable: true
+        constraints: Free text
+        example: "spot"
+        owner: finance
+
+      - name: fiscal_period_entity_id
+        type: uuid
+        not_null: false
+        default: null
+        purpose: Fiscal period entity
+        usage: Posting and period controls; used by Fiscal DNA
+        pii: false
+        mutable: true
+        constraints: FK → core_entities.id (entity_type='fiscal_period')
+        example: "8d8845f4-7d3a-4f8a-a4e7-b0b1f3e4c1a2"
+        owner: finance
+
+      - name: fiscal_year
+        type: integer
+        not_null: false
+        default: null
+        purpose: Fiscal year number
+        usage: Reporting and closing processes
+        pii: false
+        mutable: true
+        constraints: Integer (e.g., 2025)
+        example: 2025
+        owner: finance
+
+      - name: fiscal_period
+        type: integer
+        not_null: false
+        default: null
+        purpose: Fiscal period number within the fiscal year
+        usage: Reporting and posting windows
+        pii: false
+        mutable: true
+        constraints: Integer 1–12 (or 13 if applicable)
+        example: 10
+        owner: finance
+
+      - name: posting_period_code
+        type: text
+        not_null: false
+        default: null
+        purpose: Human-friendly posting period label
+        usage: UI displays and exports
+        pii: false
+        mutable: true
+        constraints: Free text
+        example: "2025-10"
+        owner: finance

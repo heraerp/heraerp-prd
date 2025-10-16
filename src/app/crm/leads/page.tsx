@@ -1,417 +1,537 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
-import { useSupabaseClient } from '@/hooks/useSupabaseWithOrg'
-import {
-  UserPlus,
-  Plus,
-  Search,
-  Filter,
-  Building2,
+import React, { useState, useEffect } from 'react'
+import { MobilePageLayout } from '@/components/mobile/MobilePageLayout'
+import { MobileFilters, type FilterField } from '@/components/mobile/MobileFilters'
+import { MobileDataTable, type TableColumn, type TableRecord } from '@/components/mobile/MobileDataTable'
+import { MobileCard } from '@/components/mobile/MobileCard'
+import { MobileChart } from '@/components/mobile/MobileCharts'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { 
+  UserPlus, 
+  TrendingUp, 
+  Target, 
+  Plus, 
+  Phone, 
   Mail,
-  Phone,
-  Calendar,
-  MoreVertical,
-  TrendingUp,
-  Clock,
-  AlertCircle,
-  CheckCircle,
+  Building2,
+  Star,
   ArrowRight,
-  User,
   Globe,
-  DollarSign,
-  Tag,
-  FileText,
-  Download,
-  Star
+  Users,
+  Calendar
 } from 'lucide-react'
 
-// India Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
-
-interface Lead {
+interface Lead extends TableRecord {
   id: string
-  entity_name: string
-  entity_code: string
-  metadata?: {
-    source?: string
-    status?: string
-    company?: string
-    title?: string
-    budget?: number
-    timeline?: string
-  }
-  created_at: string
-  updated_at: string
-}
-
-interface DynamicData {
-  field_name: string
-  field_value_text?: string
-  field_value_number?: number
-}
-
-function LeadsPageContent() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState('all')
-  const [selectedSource, setSelectedSource] = useState('all')
-  const [isCreating, setIsCreating] = useState(false)
-  const [leads, setLeads] = useState<Lead[]>([])
-  const [leadDynamicData, setLeadDynamicData] = useState<Record<string, DynamicData[]>>({})
-  const [isLoading, setIsLoading] = useState(true)
-
-  const supabase = useSupabaseClient()
-
-  useEffect(() => {
-    loadLeads()
-  }, [])
-
-  const loadLeads = async () => {
-    try {
-      // Load leads
-      const { data: leadsData, error: leadsError } = await supabase
-        .from('core_entities')
-        .select('*')
-        .eq('organization_id', KERALA_VISION_ORG_ID)
-        .eq('entity_type', 'lead')
-        .order('created_at', { ascending: false })
-
-      if (leadsError) throw leadsError
-
-      // Load dynamic data for leads
-      const leadIds = leadsData?.map(lead => lead.id) || []
-      const { data: dynamicData, error: dynamicError } = await supabase
-        .from('core_dynamic_data')
-        .select('*')
-        .in('entity_id', leadIds)
-
-      if (dynamicError) throw dynamicError
-
-      // Group dynamic data by entity
-      const dynamicDataByEntity: Record<string, DynamicData[]> = {}
-      dynamicData?.forEach(item => {
-        if (!dynamicDataByEntity[item.entity_id]) {
-          dynamicDataByEntity[item.entity_id] = []
-        }
-        dynamicDataByEntity[item.entity_id].push(item)
-      })
-
-      setLeads(leadsData || [])
-      setLeadDynamicData(dynamicDataByEntity)
-    } catch (error) {
-      console.error('Error loading leads:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const getDynamicValue = (leadId: string, fieldName: string) => {
-    const fields = leadDynamicData[leadId] || []
-    const field = fields.find(f => f.field_name === fieldName)
-    return field?.field_value_text || field?.field_value_number || ''
-  }
-
-  const getRatingColor = (status: string) => {
-    const rating = status === 'qualified' ? 'hot' : status === 'new' ? 'warm' : 'cold'
-    switch (rating) {
-      case 'hot':
-        return 'from-red-500 to-orange-600'
-      case 'warm':
-        return 'from-[#FF5A09] to-[#ec7f37]'
-      case 'cold':
-        return 'from-blue-500 to-cyan-600'
-      default:
-        return 'from-gray-9000 to-gray-600'
-    }
-  }
-
-  const getRatingBadgeColor = (status: string) => {
-    const rating = status === 'qualified' ? 'hot' : status === 'new' ? 'warm' : 'cold'
-    switch (rating) {
-      case 'hot':
-        return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'warm':
-        return 'bg-[#FF5A09]/20 text-[#FF5A09] border-[#FF5A09]/30'
-      case 'cold':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      default:
-        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
-    }
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'new':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      case 'contacted':
-        return 'bg-[#ec7f37]/20 text-[#ec7f37] border-[#ec7f37]/30'
-      case 'qualified':
-        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-      case 'unqualified':
-        return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'converted':
-        return 'bg-purple-500/20 text-purple-400 border-purple-500/30'
-      default:
-        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
-    }
-  }
-
-  const filteredLeads = leads.filter(lead => {
-    const matchesSearch =
-      lead.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.metadata?.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.metadata?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = selectedStatus === 'all' || lead.metadata?.status === selectedStatus
-    const matchesSource = selectedSource === 'all' || lead.metadata?.source === selectedSource
-    return matchesSearch && matchesStatus && matchesSource
-  })
-
-  const sources = [...new Set(leads.map(l => l.metadata?.source).filter(Boolean))]
-
-  const stats = [
-    {
-      label: 'Total Leads',
-      value: leads.length,
-      icon: UserPlus,
-      color: 'from-[#FF5A09] to-[#ec7f37]'
-    },
-    {
-      label: 'Qualified Leads',
-      value: leads.filter(l => l.metadata?.status === 'qualified').length,
-      icon: CheckCircle,
-      color: 'from-emerald-500 to-green-600'
-    },
-    {
-      label: 'Hot Leads',
-      value: leads.filter(l => l.metadata?.status === 'qualified').length,
-      icon: TrendingUp,
-      color: 'from-red-500 to-orange-600'
-    },
-    {
-      label: 'Conversion Rate',
-      value: '32%',
-      icon: ArrowRight,
-      color: 'from-[#be4f0c] to-[#FF5A09]'
-    }
-  ]
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-foreground">Loading leads...</div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Leads</h1>
-          <p className="text-foreground/60 mt-1">Track and manage your sales leads</p>
-        </div>
-        <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button className="flex items-center space-x-2 px-4 py-2 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-all duration-300">
-            <Download className="h-5 w-5" />
-            <span>Export</span>
-          </button>
-          <button
-            onClick={() => setIsCreating(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
-          >
-            <Plus className="h-5 w-5" />
-            <span>New Lead</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon
-          return (
-            <div key={index} className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                    <Icon className="h-5 w-5 text-foreground" />
-                  </div>
-                  <span className="text-xs text-emerald-400 font-medium">+15%</span>
-                </div>
-                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs text-foreground/60 mt-1">{stat.label}</p>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
-          <input
-            type="text"
-            placeholder="Search leads..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
-          />
-        </div>
-
-        <select
-          value={selectedStatus}
-          onChange={e => setSelectedStatus(e.target.value)}
-          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
-        >
-          <option value="all">All Status</option>
-          <option value="new">New</option>
-          <option value="contacted">Contacted</option>
-          <option value="qualified">Qualified</option>
-          <option value="unqualified">Unqualified</option>
-          <option value="converted">Converted</option>
-        </select>
-
-        <select
-          value={selectedSource}
-          onChange={e => setSelectedSource(e.target.value)}
-          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
-        >
-          <option value="all">All Sources</option>
-          {sources.map(source => (
-            <option key={source} value={source}>
-              {source}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Leads Grid */}
-      <div className="grid grid-cols-1 gap-4">
-        {filteredLeads.map(lead => {
-          const status = lead.metadata?.status || 'new'
-          const rating = status === 'qualified' ? 'hot' : status === 'new' ? 'warm' : 'cold'
-
-          return (
-            <div key={lead.id} className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    {/* Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-lg font-semibold text-foreground">
-                          {lead.entity_name}
-                        </h3>
-                        <div className="flex items-center space-x-4 mt-1">
-                          <div className="flex items-center space-x-1 text-sm text-foreground/60">
-                            <Building2 className="h-4 w-4" />
-                            <span>{lead.metadata?.company || 'N/A'}</span>
-                          </div>
-                          <div className="flex items-center space-x-1 text-sm text-foreground/60">
-                            <Tag className="h-4 w-4" />
-                            <span>{lead.metadata?.source || 'Unknown'}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium border ${getRatingBadgeColor(status)}`}
-                        >
-                          {rating}
-                        </span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(status)}`}
-                        >
-                          {status}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Details Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <p className="text-xs text-foreground/60 mb-1">Title</p>
-                        <p className="text-sm text-foreground">{lead.metadata?.title || 'N/A'}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-foreground/60 mb-1">Budget</p>
-                        <p className="text-sm font-semibold text-[#FF5A09]">
-                          {lead.metadata?.budget
-                            ? `₹${(lead.metadata.budget / 100000).toFixed(1)}L`
-                            : 'N/A'}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-foreground/60 mb-1">Timeline</p>
-                        <p className="text-sm text-foreground">
-                          {lead.metadata?.timeline || 'N/A'}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Contact Info */}
-                    <div className="flex items-center space-x-6 mb-4 text-sm">
-                      <div className="flex items-center space-x-2 text-foreground/60">
-                        <Mail className="h-4 w-4" />
-                        <span>{getDynamicValue(lead.id, 'email') || 'No email'}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-foreground/60">
-                        <Phone className="h-4 w-4" />
-                        <span>{getDynamicValue(lead.id, 'phone') || 'No phone'}</span>
-                      </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-border/10">
-                      <div className="flex items-center space-x-4 text-xs text-foreground/60">
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="h-3 w-3" />
-                          <span>Created: {new Date(lead.created_at).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Clock className="h-3 w-3" />
-                          <span>Updated: {new Date(lead.updated_at).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <button className="px-3 py-1 text-sm text-foreground/60 hover:text-foreground transition-colors">
-                          View Details
-                        </button>
-                        <button className="px-3 py-1 text-sm bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] text-foreground rounded-lg hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300">
-                          Convert to Opportunity
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Empty State */}
-      {filteredLeads.length === 0 && (
-        <div className="text-center py-12">
-          <UserPlus className="h-12 w-12 text-foreground/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-2">No leads found</h3>
-          <p className="text-foreground/60">Try adjusting your search or filters</p>
-        </div>
-      )}
-    </div>
-  )
+  name: string
+  company: string
+  email: string
+  phone: string
+  source: string
+  status: 'New' | 'Qualified' | 'Converted' | 'Lost'
+  score: number
+  owner: string
+  createdDate: string
+  lastActivity: string
+  industry: string
+  estimatedValue: number
+  notes?: string
 }
 
 export default function LeadsPage() {
+  const { currentOrganization, isAuthenticated } = useHERAAuth()
+  const [loading, setLoading] = useState(false)
+  const [leads, setLeads] = useState<Lead[]>([])
+  const [selectedLeads, setSelectedLeads] = useState<(string | number)[]>([])
+  const [filters, setFilters] = useState({
+    source: '',
+    owner: '',
+    status: '',
+    scoreRange: '',
+    search: ''
+  })
+
+  // Sample leads data
+  const sampleLeads: Lead[] = [
+    {
+      id: 'LEAD-001',
+      name: 'Jennifer Williams',
+      company: 'TechVision Corp',
+      email: 'j.williams@techvision.com',
+      phone: '+1-555-0111',
+      source: 'Website',
+      status: 'Qualified',
+      score: 85,
+      owner: 'Sarah Wilson',
+      createdDate: '2024-01-18',
+      lastActivity: '2024-01-20',
+      industry: 'Technology',
+      estimatedValue: 125000
+    },
+    {
+      id: 'LEAD-002',
+      name: 'Michael Brown',
+      company: 'Future Industries',
+      email: 'michael.b@futureindustries.com',
+      phone: '+1-555-0222',
+      source: 'LinkedIn',
+      status: 'New',
+      score: 72,
+      owner: 'Mike Johnson',
+      createdDate: '2024-01-17',
+      lastActivity: '2024-01-19',
+      industry: 'Manufacturing',
+      estimatedValue: 95000
+    },
+    {
+      id: 'LEAD-003',
+      name: 'Sarah Davis',
+      company: 'MedTech Solutions',
+      email: 'sarah.davis@medtech.com',
+      phone: '+1-555-0333',
+      source: 'Referral',
+      status: 'Qualified',
+      score: 91,
+      owner: 'Alex Chen',
+      createdDate: '2024-01-15',
+      lastActivity: '2024-01-18',
+      industry: 'Healthcare',
+      estimatedValue: 180000
+    },
+    {
+      id: 'LEAD-004',
+      name: 'Robert Garcia',
+      company: 'Retail Dynamics',
+      email: 'r.garcia@retaildynamics.com',
+      phone: '+1-555-0444',
+      source: 'Trade Show',
+      status: 'Converted',
+      score: 95,
+      owner: 'Sarah Wilson',
+      createdDate: '2024-01-10',
+      lastActivity: '2024-01-16',
+      industry: 'Retail',
+      estimatedValue: 220000
+    },
+    {
+      id: 'LEAD-005',
+      name: 'Emily Taylor',
+      company: 'StartupLab Inc',
+      email: 'emily@startuplab.io',
+      phone: '+1-555-0555',
+      source: 'Cold Call',
+      status: 'New',
+      score: 58,
+      owner: 'Mike Johnson',
+      createdDate: '2024-01-12',
+      lastActivity: '2024-01-15',
+      industry: 'Technology',
+      estimatedValue: 75000
+    }
+  ]
+
+  // Filter fields
+  const filterFields: FilterField[] = [
+    {
+      key: 'source',
+      label: 'Lead Source',
+      type: 'select',
+      placeholder: 'All Sources',
+      options: [
+        { value: 'website', label: 'Website' },
+        { value: 'linkedin', label: 'LinkedIn' },
+        { value: 'referral', label: 'Referral' },
+        { value: 'trade-show', label: 'Trade Show' },
+        { value: 'cold-call', label: 'Cold Call' }
+      ],
+      value: filters.source,
+      onChange: (value) => setFilters(prev => ({ ...prev, source: value }))
+    },
+    {
+      key: 'owner',
+      label: 'Owner',
+      type: 'select',
+      placeholder: 'All Owners',
+      options: [
+        { value: 'sarah', label: 'Sarah Wilson' },
+        { value: 'mike', label: 'Mike Johnson' },
+        { value: 'alex', label: 'Alex Chen' }
+      ],
+      value: filters.owner,
+      onChange: (value) => setFilters(prev => ({ ...prev, owner: value }))
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      placeholder: 'All Status',
+      options: [
+        { value: 'new', label: 'New' },
+        { value: 'qualified', label: 'Qualified' },
+        { value: 'converted', label: 'Converted' },
+        { value: 'lost', label: 'Lost' }
+      ],
+      value: filters.status,
+      onChange: (value) => setFilters(prev => ({ ...prev, status: value }))
+    },
+    {
+      key: 'search',
+      label: 'Search',
+      type: 'search',
+      placeholder: 'Search leads...',
+      value: filters.search,
+      onChange: (value) => setFilters(prev => ({ ...prev, search: value }))
+    }
+  ]
+
+  // Table columns
+  const columns: TableColumn[] = [
+    {
+      key: 'name',
+      label: 'Lead',
+      render: (value, record) => (
+        <div>
+          <div className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
+            {value}
+          </div>
+          <div className="text-xs text-gray-500 flex items-center gap-1">
+            <Building2 className="w-3 h-3" />
+            {record.company}
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'email',
+      label: 'Contact',
+      render: (value, record) => (
+        <div>
+          <div className="flex items-center gap-1 text-sm">
+            <Mail className="w-3 h-3 text-gray-400" />
+            <a href={`mailto:${value}`} className="text-blue-600 hover:text-blue-800 truncate">
+              {value}
+            </a>
+          </div>
+          <div className="flex items-center gap-1 text-sm mt-1">
+            <Phone className="w-3 h-3 text-gray-400" />
+            <a href={`tel:${record.phone}`} className="text-blue-600 hover:text-blue-800">
+              {record.phone}
+            </a>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'source',
+      label: 'Source',
+      render: (value) => (
+        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+          value === 'Website' ? 'bg-blue-100 text-blue-800' :
+          value === 'LinkedIn' ? 'bg-blue-100 text-blue-800' :
+          value === 'Referral' ? 'bg-green-100 text-green-800' :
+          value === 'Trade Show' ? 'bg-purple-100 text-purple-800' :
+          'bg-gray-100 text-gray-800'
+        }`}>
+          {value === 'Website' && <Globe className="w-3 h-3 mr-1" />}
+          {value === 'LinkedIn' && <Users className="w-3 h-3 mr-1" />}
+          {value === 'Referral' && <UserPlus className="w-3 h-3 mr-1" />}
+          {value}
+        </span>
+      )
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      align: 'center',
+      render: (value) => (
+        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+          value === 'Converted' ? 'bg-green-100 text-green-800' :
+          value === 'Qualified' ? 'bg-blue-100 text-blue-800' :
+          value === 'New' ? 'bg-yellow-100 text-yellow-800' :
+          'bg-red-100 text-red-800'
+        }`}>
+          {value}
+        </span>
+      )
+    },
+    {
+      key: 'score',
+      label: 'Score',
+      align: 'center',
+      render: (value) => (
+        <div className="flex items-center justify-center">
+          <div className="flex items-center gap-1">
+            <div className={`w-2 h-2 rounded-full ${
+              value >= 80 ? 'bg-green-500' :
+              value >= 60 ? 'bg-yellow-500' :
+              'bg-red-500'
+            }`} />
+            <span className="font-medium">{value}</span>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'estimatedValue',
+      label: 'Est. Value',
+      align: 'right',
+      render: (value) => `$${(value / 1000).toFixed(0)}K`
+    },
+    {
+      key: 'owner',
+      label: 'Owner',
+      render: (value) => (
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs text-white font-medium">
+            {value.split(' ').map((n: string) => n[0]).join('')}
+          </div>
+          <span className="text-sm">{value}</span>
+        </div>
+      )
+    }
+  ]
+
+  // Mobile card renderer
+  const mobileCardRender = (record: Lead) => (
+    <div className="p-4 space-y-3">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h3 className="font-medium text-blue-600 cursor-pointer hover:text-blue-800">
+            {record.name}
+          </h3>
+          <p className="text-sm text-gray-600 flex items-center gap-1">
+            <Building2 className="w-3 h-3" />
+            {record.company}
+          </p>
+          <p className="text-xs text-gray-500">{record.industry}</p>
+        </div>
+        <div className="flex flex-col items-end gap-1">
+          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+            record.status === 'Converted' ? 'bg-green-100 text-green-800' :
+            record.status === 'Qualified' ? 'bg-blue-100 text-blue-800' :
+            record.status === 'New' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'
+          }`}>
+            {record.status}
+          </span>
+          <div className="flex items-center gap-1">
+            <div className={`w-2 h-2 rounded-full ${
+              record.score >= 80 ? 'bg-green-500' :
+              record.score >= 60 ? 'bg-yellow-500' :
+              'bg-red-500'
+            }`} />
+            <span className="text-sm font-medium">{record.score}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide">Email</div>
+          <a href={`mailto:${record.email}`} className="text-blue-600 hover:text-blue-800 truncate block">
+            {record.email}
+          </a>
+        </div>
+        <div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide">Phone</div>
+          <a href={`tel:${record.phone}`} className="text-blue-600 hover:text-blue-800">
+            {record.phone}
+          </a>
+        </div>
+        <div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide">Source</div>
+          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+            record.source === 'Website' ? 'bg-blue-100 text-blue-800' :
+            record.source === 'LinkedIn' ? 'bg-blue-100 text-blue-800' :
+            record.source === 'Referral' ? 'bg-green-100 text-green-800' :
+            record.source === 'Trade Show' ? 'bg-purple-100 text-purple-800' :
+            'bg-gray-100 text-gray-800'
+          }`}>
+            {record.source}
+          </span>
+        </div>
+        <div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide">Est. Value</div>
+          <div className="font-medium">${(record.estimatedValue / 1000).toFixed(0)}K</div>
+        </div>
+      </div>
+
+      <div className="flex gap-2 pt-2 border-t border-gray-100">
+        <button className="flex-1 text-sm text-blue-600 hover:text-blue-800 py-2 px-3 border border-blue-200 rounded hover:bg-blue-50 transition-colors flex items-center justify-center gap-1">
+          <Phone className="w-4 h-4" />
+          Call
+        </button>
+        <button className="flex-1 text-sm text-green-600 hover:text-green-800 py-2 px-3 border border-green-200 rounded hover:bg-green-50 transition-colors flex items-center justify-center gap-1">
+          <Mail className="w-4 h-4" />
+          Email
+        </button>
+        <button className="flex-1 text-sm text-purple-600 hover:text-purple-800 py-2 px-3 border border-purple-200 rounded hover:bg-purple-50 transition-colors flex items-center justify-center gap-1">
+          <ArrowRight className="w-4 h-4" />
+          Convert
+        </button>
+      </div>
+    </div>
+  )
+
+  // KPI data
+  const kpiData = {
+    totalLeads: sampleLeads.length,
+    conversionRate: Math.round((sampleLeads.filter(l => l.status === 'Converted').length / sampleLeads.length) * 100),
+    averageScore: Math.round(sampleLeads.reduce((sum, lead) => sum + lead.score, 0) / sampleLeads.length),
+    topSource: 'Website'
+  }
+
+  // Chart data
+  const sourceChartData = [
+    { name: 'Website', value: 30, color: '#3b82f6' },
+    { name: 'LinkedIn', value: 25, color: '#10b981' },
+    { name: 'Referral', value: 20, color: '#f59e0b' },
+    { name: 'Trade Show', value: 15, color: '#8b5cf6' },
+    { name: 'Cold Call', value: 10, color: '#ef4444' }
+  ]
+
+  const conversionData = [
+    { month: 'Oct', conversions: 15 },
+    { month: 'Nov', conversions: 22 },
+    { month: 'Dec', conversions: 18 },
+    { month: 'Jan', conversions: 28 }
+  ]
+
+  useEffect(() => {
+    if (isAuthenticated && currentOrganization) {
+      setLeads(sampleLeads)
+    }
+  }, [isAuthenticated, currentOrganization])
+
+  const handleApplyFilters = () => {
+    setLoading(true)
+    // Simulate API call
+    setTimeout(() => {
+      setLeads(sampleLeads)
+      setLoading(false)
+    }, 1000)
+  }
+
   return (
-    <Suspense
-      fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}
-    >
-      <LeadsPageContent />
-    </Suspense>
+    <MobilePageLayout title="HERA" breadcrumb="CRM / Lead Management">
+      <MobileFilters 
+        title="Lead Filters"
+        fields={filterFields}
+        onApply={handleApplyFilters}
+        onAdaptFilters={() => console.log('Adapt filters')}
+      />
+
+      <div className="px-3 sm:px-6 py-4 sm:py-6 space-y-6">
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <MobileCard 
+            title="Total Leads"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{kpiData.totalLeads}</div>
+                <div className="text-sm text-gray-600">All leads</div>
+              </div>
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <UserPlus className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </MobileCard>
+
+          <MobileCard 
+            title="Conversion Rate"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{kpiData.conversionRate}%</div>
+                <div className="text-sm text-gray-600">Converted leads</div>
+              </div>
+              <div className="p-2 bg-green-100 rounded-lg">
+                <Target className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </MobileCard>
+
+          <MobileCard 
+            title="Average Score"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{kpiData.averageScore}</div>
+                <div className="text-sm text-gray-600">Lead quality</div>
+              </div>
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <Star className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+          </MobileCard>
+
+          <MobileCard 
+            title="Top Source"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-lg font-bold text-gray-900">{kpiData.topSource}</div>
+                <div className="text-sm text-gray-600">Best performing</div>
+              </div>
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </MobileCard>
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MobileChart 
+            title="Leads by Source"
+            type="pie"
+            data={sourceChartData}
+            height="300"
+          />
+          <MobileChart 
+            title="Lead Conversions Over Time"
+            type="line"
+            data={conversionData}
+            height="300"
+          />
+        </div>
+
+        {/* Leads Table */}
+        <MobileDataTable
+          title={`Leads (${leads.length})`}
+          subtitle="Manage your sales leads and conversion pipeline"
+          columns={columns}
+          data={leads}
+          loading={loading}
+          selectable={true}
+          selectedRows={selectedLeads}
+          onRowSelect={setSelectedLeads}
+          mobileCardRender={mobileCardRender}
+          actions={
+            <div className="flex gap-2">
+              <button className="text-sm text-blue-600 hover:text-blue-800 px-3 py-2 border border-blue-200 rounded hover:bg-blue-50 transition-colors">
+                Export
+              </button>
+              <button className="text-sm text-green-600 hover:text-green-800 px-3 py-2 border border-green-200 rounded hover:bg-green-50 transition-colors">
+                Bulk Convert
+              </button>
+            </div>
+          }
+        />
+      </div>
+
+      {/* Floating Action Button */}
+      <div className="fixed bottom-6 right-6">
+        <button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center min-w-[56px] min-h-[56px]">
+          <Plus className="w-6 h-6" />
+        </button>
+      </div>
+    </MobilePageLayout>
   )
 }

@@ -24,7 +24,7 @@ BEGIN
         IF NOT EXISTS (
             SELECT 1 FROM core_organizations 
             WHERE id = p_organization_id 
-            AND is_active = true
+            AND status = 'active'
         ) THEN
             RETURN jsonb_build_object(
                 'success', false,
@@ -52,15 +52,15 @@ BEGIN
         -- 3. Check if relationship already exists
         SELECT id INTO v_existing_relationship
         FROM core_relationships
-        WHERE from_entity_id = v_user_entity_id
-        AND to_entity_id = p_organization_id
+        WHERE source_entity_id = v_user_entity_id
+        AND target_entity_id = p_organization_id
         AND relationship_type = 'USER_MEMBER_OF_ORG';
 
         IF v_existing_relationship IS NOT NULL THEN
             -- Update existing relationship
             UPDATE core_relationships
             SET 
-                metadata = jsonb_build_object(
+                relationship_data = jsonb_build_object(
                     'role', p_role,
                     'permissions', p_permissions,
                     'assigned_at', NOW(),
@@ -76,10 +76,10 @@ BEGIN
             INSERT INTO core_relationships (
                 id,
                 organization_id,
-                from_entity_id,
-                to_entity_id,
+                source_entity_id,
+                target_entity_id,
                 relationship_type,
-                metadata,
+                relationship_data,
                 created_at,
                 updated_at
             ) VALUES (
@@ -105,10 +105,9 @@ BEGIN
             id,
             organization_id,
             transaction_type,
-            transaction_code,
-            smart_code,
-            from_entity_id,
-            to_entity_id,
+            transaction_number,
+            source_entity_id,
+            target_entity_id,
             total_amount,
             metadata,
             created_at,
@@ -118,7 +117,6 @@ BEGIN
             p_organization_id,
             'user_assignment',
             'USER-ASSIGN-' || EXTRACT(EPOCH FROM NOW())::TEXT,
-            'HERA.AUTH.USER.ASSIGNMENT.ORG.V1',
             v_user_entity_id,
             p_organization_id,
             0,
@@ -190,8 +188,8 @@ BEGIN
 
         -- 2. Find and delete the USER_MEMBER_OF_ORG relationship
         DELETE FROM core_relationships
-        WHERE from_entity_id = v_user_entity_id
-        AND to_entity_id = p_organization_id
+        WHERE source_entity_id = v_user_entity_id
+        AND target_entity_id = p_organization_id
         AND relationship_type = 'USER_MEMBER_OF_ORG'
         RETURNING id INTO v_relationship_id;
 
@@ -208,10 +206,9 @@ BEGIN
             id,
             organization_id,
             transaction_type,
-            transaction_code,
-            smart_code,
-            from_entity_id,
-            to_entity_id,
+            transaction_number,
+            source_entity_id,
+            target_entity_id,
             total_amount,
             metadata,
             created_at,
@@ -221,7 +218,6 @@ BEGIN
             p_organization_id,
             'user_removal',
             'USER-REMOVE-' || EXTRACT(EPOCH FROM NOW())::TEXT,
-            'HERA.AUTH.USER.REMOVAL.ORG.V1',
             v_user_entity_id,
             p_organization_id,
             0,
@@ -288,18 +284,18 @@ BEGIN
             o.id as org_id,
             o.organization_name,
             o.organization_type,
-            o.subscription_plan,
-            o.is_active,
+            o.subscription_tier,
+            o.status,
             oe.metadata->>'subdomain' as subdomain,
-            r.metadata->>'role' as role,
-            r.metadata->'permissions' as permissions,
-            r.metadata->>'assigned_at' as assigned_at,
+            r.relationship_data->>'role' as role,
+            r.relationship_data->'permissions' as permissions,
+            r.relationship_data->>'assigned_at' as assigned_at,
             r.created_at as relationship_created_at,
             r.id as relationship_id
         FROM core_relationships r
-        JOIN core_organizations o ON r.to_entity_id = o.id
+        JOIN core_organizations o ON r.target_entity_id = o.id
         LEFT JOIN core_entities oe ON o.id = oe.id AND oe.entity_type = 'organization'
-        WHERE r.from_entity_id = v_user_entity_id
+        WHERE r.source_entity_id = v_user_entity_id
         AND r.relationship_type = 'USER_MEMBER_OF_ORG'
         ORDER BY r.created_at DESC
     )
@@ -313,8 +309,8 @@ BEGIN
                 'organization_name', organization_name,
                 'organization_type', organization_type,
                 'subdomain', subdomain,
-                'subscription_plan', subscription_plan,
-                'is_active', is_active,
+                'subscription_plan', subscription_tier,
+                'is_active', status = 'active',
                 'role', role,
                 'permissions', permissions,
                 'assigned_at', assigned_at,
@@ -364,10 +360,10 @@ BEGIN
         END IF;
 
         -- 2. Find the existing relationship and get current metadata
-        SELECT id, metadata INTO v_relationship_id, v_old_metadata
+        SELECT id, relationship_data INTO v_relationship_id, v_old_metadata
         FROM core_relationships
-        WHERE from_entity_id = v_user_entity_id
-        AND to_entity_id = p_organization_id
+        WHERE source_entity_id = v_user_entity_id
+        AND target_entity_id = p_organization_id
         AND relationship_type = 'USER_MEMBER_OF_ORG';
 
         IF v_relationship_id IS NULL THEN
@@ -389,7 +385,7 @@ BEGIN
         -- 4. Update the relationship with new role and permissions
         UPDATE core_relationships
         SET 
-            metadata = v_new_metadata,
+            relationship_data = v_new_metadata,
             updated_at = NOW()
         WHERE id = v_relationship_id;
 
@@ -398,10 +394,9 @@ BEGIN
             id,
             organization_id,
             transaction_type,
-            transaction_code,
-            smart_code,
-            from_entity_id,
-            to_entity_id,
+            transaction_number,
+            source_entity_id,
+            target_entity_id,
             total_amount,
             metadata,
             created_at,
@@ -411,7 +406,6 @@ BEGIN
             p_organization_id,
             'user_role_update',
             'USER-ROLE-UPDATE-' || EXTRACT(EPOCH FROM NOW())::TEXT,
-            'HERA.AUTH.USER.ROLE.UPDATE.V1',
             v_user_entity_id,
             p_organization_id,
             0,
@@ -463,7 +457,7 @@ GRANT EXECUTE ON FUNCTION update_user_role_in_organization TO authenticated;
 
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_relationships_user_member_of_org 
-ON core_relationships(from_entity_id, to_entity_id, relationship_type) 
+ON core_relationships(source_entity_id, target_entity_id, relationship_type) 
 WHERE relationship_type = 'USER_MEMBER_OF_ORG';
 
 CREATE INDEX IF NOT EXISTS idx_entities_user_auth_mapping 
