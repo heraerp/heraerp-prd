@@ -288,4 +288,23 @@ export function HeraListPage({
               </button>
               <button 
                 className=\"hera-btn-surface text-sm text-red-600 border-red-200\"
-                onClick={() => {\n                  // Handle bulk delete\n                  setSelectedRows([])\n                }}\n              >\n                Delete\n              </button>\n              <button \n                onClick={() => setSelectedRows([])}\n                className=\"p-2 text-[var(--hera-text-medium)] hover:text-[var(--hera-text-dark)] transition-colors\"\n              >\n                \u00d7\n              </button>\n            </div>\n          </div>\n        </div>\n      )}\n    </div>\n  )\n}"
+                onClick={() => {
+                  // Handle bulk delete
+                  setSelectedRows([])
+                }}
+              >
+                Delete
+              </button>
+              <button 
+                onClick={() => setSelectedRows([])}
+                className="p-2 text-[var(--hera-text-medium)] hover:text-[var(--hera-text-dark)] transition-colors"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}"
