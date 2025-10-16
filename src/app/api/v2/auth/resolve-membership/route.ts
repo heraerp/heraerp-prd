@@ -9,7 +9,7 @@ import { verifyAuth } from '@/lib/auth/verify-auth'
  * This bypasses RLS issues while maintaining security through JWT validation
  */
 export async function GET(request: NextRequest) {
-  // Verify JWT first
+  // Verify JWT first (no org required since we're resolving membership)
   const auth = await verifyAuth(request)
   if (!auth || !auth.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
