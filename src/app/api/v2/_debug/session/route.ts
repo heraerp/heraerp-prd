@@ -23,6 +23,7 @@ export async function GET() {
     cookieKeys: c.getAll().map(k => k.name).sort(),
     projectUrlPrefix: url?.slice(0, 40),
     anonKeyPrefix: key?.slice(0, 12),
-    error: error?.message ?? null
+    error: error?.message ?? null,
+    timestamp: new Date().toISOString()
   });
 }
