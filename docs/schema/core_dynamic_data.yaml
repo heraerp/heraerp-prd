@@ -1,0 +1,344 @@
+tables:
+  - name: core_dynamic_data
+    rls_enabled: true
+    primary_key: [id]
+    columns:
+      - name: id
+        type: uuid
+        not_null: true
+        default: gen_random_uuid()
+        purpose: Primary key (UUID) for each dynamic field record
+        usage: Uniquely identifies the dynamic field row
+        pii: false
+        mutable: false
+        constraints: Must be unique
+        example: "5e7d34a0-96c2-4b5f-a03c-6821df2f5e8b"
+        owner: kernel
+
+      - name: organization_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: Tenant boundary for multi-tenancy
+        usage: RLS-enforced; filters all data by organization scope
+        pii: false
+        mutable: false
+        constraints: FK → core_organizations.id
+        example: "378f24fb-d496-4ff7-8afa-ea34895a0eb8"
+        owner: security
+
+      - name: entity_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: Links dynamic field to an entity record
+        usage: FK reference to core_entities.id
+        pii: false
+        mutable: false
+        constraints: Must reference an existing entity row
+        example: "8fd23ba1-9934-4f92-b5d3-6e2b8b39ad98"
+        owner: kernel
+
+      - name: field_name
+        type: text
+        not_null: true
+        default: null
+        purpose: Logical identifier of the dynamic field
+        usage: Used in presets, APIs, and Rule Engine field mappings
+        pii: false
+        mutable: false
+        constraints: Unique per entity_id; lowercase with underscores
+        example: "price_cost"
+        owner: kernel
+
+      - name: field_type
+        type: text
+        not_null: false
+        default: "'text'::text"
+        purpose: Declares the data type of this dynamic field
+        usage: Determines which field_value_* column holds the actual value
+        pii: false
+        mutable: false
+        constraints: Enum [text, number, boolean, date, json, file_url]
+        example: "number"
+        owner: kernel
+
+      - name: field_value_text
+        type: text
+        not_null: false
+        default: null
+        purpose: Holds the text value when field_type = text
+        usage: Used for string or textual dynamic fields
+        pii: maybe
+        mutable: true
+        constraints: Nullable; max length 2000
+        example: "Salon Premium Package"
+        owner: app
+
+      - name: field_value_number
+        type: numeric
+        not_null: false
+        default: null
+        purpose: Holds numeric value when field_type = number
+        usage: Used in finance, price, or score fields
+        pii: false
+        mutable: true
+        constraints: Must be a valid numeric value
+        example: 450.00
+        owner: finance
+
+      - name: field_value_boolean
+        type: boolean
+        not_null: false
+        default: null
+        purpose: Holds boolean value when field_type = boolean
+        usage: Used for flags, toggles, or on/off settings
+        pii: false
+        mutable: true
+        constraints: true or false
+        example: true
+        owner: kernel
+
+      - name: field_value_date
+        type: timestamp with time zone
+        not_null: false
+        default: null
+        purpose: Holds timestamp/date value when field_type = date
+        usage: Used in scheduling or audit-based fields
+        pii: false
+        mutable: true
+        constraints: Valid timestamp
+        example: "2025-10-15T09:00:00Z"
+        owner: kernel
+
+      - name: field_value_json
+        type: jsonb
+        not_null: false
+        default: null
+        purpose: Holds structured data when field_type = json
+        usage: Used for complex dynamic data like preferences or metrics
+        pii: maybe
+        mutable: true
+        constraints: Must be valid JSON object
+        example: { "currency": "AED", "region": "DXB" }
+        owner: app
+
+      - name: field_value_file_url
+        type: text
+        not_null: false
+        default: null
+        purpose: Holds file path or URL when field_type = file_url
+        usage: Stores image or document URLs in Supabase Storage
+        pii: maybe
+        mutable: true
+        constraints: Must be valid URL if not null
+        example: "https://storage.supabase.io/public/salon/logo.png"
+        owner: app
+
+      - name: calculated_value
+        type: jsonb
+        not_null: false
+        default: null
+        purpose: Holds automatically computed or derived values
+        usage: Populated by Rules Engine or AI pipelines
+        pii: false
+        mutable: true
+        constraints: JSON structure validated by CI
+        example: { "discount": 15, "final_price": 382.5 }
+        owner: ai
+
+      - name: smart_code
+        type: character varying
+        not_null: true
+        default: null
+        purpose: Smart Code DNA for the dynamic field definition
+        usage: Used by Guardrails and Rules Engine for business context
+        pii: false
+        mutable: versioned
+        constraints: Must follow ^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$
+        example: "HERA.SALON.STAFF.DYN.PRICE.COST.v1"
+        owner: kernel
+
+      - name: smart_code_status
+        type: text
+        not_null: false
+        default: "'DRAFT'::text"
+        purpose: Lifecycle status of the smart code
+        usage: Used for versioning and deployment state
+        pii: false
+        mutable: true
+        constraints: Enum [DRAFT, LIVE, DEPRECATED]
+        example: "LIVE"
+        owner: kernel
+
+      - name: ai_confidence
+        type: numeric
+        not_null: false
+        default: "0.0000"
+        purpose: Confidence score from AI prediction or enrichment
+        usage: Indicates certainty of AI-generated field values
+        pii: false
+        mutable: true
+        constraints: Value between 0 and 1
+        example: 0.97
+        owner: ai
+
+      - name: ai_enhanced_value
+        type: text
+        not_null: false
+        default: null
+        purpose: AI-suggested or normalized version of the field value
+        usage: Provides enriched or corrected text values
+        pii: maybe
+        mutable: true
+        constraints: Free text
+        example: "AED 450.00"
+        owner: ai
+
+      - name: ai_insights
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: JSON trace of AI or Rule Engine reasoning
+        usage: Captures decision logs for explainability
+        pii: false
+        mutable: true
+        constraints: Valid JSON object
+        example:
+          {
+            "source": "FinanceDNA",
+            "explanation": "Normalized price from text",
+          }
+        owner: ai
+
+      - name: validation_rules
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: JSON definition of validation logic
+        usage: Defines allowed values, patterns, or ranges
+        pii: false
+        mutable: true
+        constraints: Valid JSON object
+        example: { "regex": "^[A-Z0-9_-]{3,10}$", "required": true }
+        owner: kernel
+
+      - name: validation_status
+        type: text
+        not_null: false
+        default: "'valid'::text"
+        purpose: Current validation outcome of this dynamic field
+        usage: Updated by the validator or Rules Engine
+        pii: false
+        mutable: true
+        constraints: Enum [valid, invalid, warning]
+        example: "valid"
+        owner: kernel
+
+      - name: field_order
+        type: integer
+        not_null: false
+        default: "1"
+        purpose: Controls the display order of fields
+        usage: Determines field placement in forms and UIs
+        pii: false
+        mutable: true
+        constraints: Positive integer
+        example: 1
+        owner: app
+
+      - name: is_searchable
+        type: boolean
+        not_null: false
+        default: "true"
+        purpose: Flag indicating if field participates in search or filters
+        usage: Used by UI and indexing services
+        pii: false
+        mutable: true
+        constraints: true or false
+        example: true
+        owner: app
+
+      - name: is_required
+        type: boolean
+        not_null: false
+        default: "false"
+        purpose: Flag indicating whether field must have a value
+        usage: Used in validation routines and Playbooks
+        pii: false
+        mutable: true
+        constraints: true or false
+        example: false
+        owner: kernel
+
+      - name: is_system_field
+        type: boolean
+        not_null: false
+        default: "false"
+        purpose: Marks internal system-managed fields
+        usage: Hidden from user-facing interfaces
+        pii: false
+        mutable: false
+        constraints: true or false
+        example: false
+        owner: kernel
+
+      - name: created_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Timestamp when this row was created
+        usage: Used for audit and history
+        pii: false
+        mutable: false
+        constraints: Auto-filled by database default
+        example: "2025-10-15T08:00:00Z"
+        owner: kernel
+
+      - name: updated_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Timestamp when this row was last updated
+        usage: Used for synchronization and audit trail
+        pii: false
+        mutable: false
+        constraints: Auto-updated by triggers or RPC
+        example: "2025-10-15T08:45:00Z"
+        owner: kernel
+
+      - name: created_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity ID of the actor who created this record
+        usage: For audit and traceability; set automatically by RPC
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: updated_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity ID of the actor who last updated this record
+        usage: For audit and compliance tracking
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: version
+        type: integer
+        not_null: false
+        default: "1"
+        purpose: Version number for optimistic concurrency and audit
+        usage: Incremented automatically on updates
+        pii: false
+        mutable: false
+        constraints: Integer ≥ 1
+        example: 3
+        owner: kernel

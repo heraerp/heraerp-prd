@@ -1,464 +1,632 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import {
-  Calendar,
-  Plus,
-  Search,
-  Filter,
-  Phone,
+import React, { useState, useEffect } from 'react'
+import { MobilePageLayout } from '@/components/mobile/MobilePageLayout'
+import { MobileFilters, type FilterField } from '@/components/mobile/MobileFilters'
+import { MobileDataTable, type TableColumn, type TableRecord } from '@/components/mobile/MobileDataTable'
+import { MobileCard } from '@/components/mobile/MobileCard'
+import { MobileChart } from '@/components/mobile/MobileCharts'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { 
+  Activity, 
+  CheckSquare, 
+  Clock, 
+  Plus, 
+  Phone, 
   Mail,
-  MessageSquare,
-  Users,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  ChevronRight,
-  Building2,
+  MessageCircle,
+  Calendar,
   User,
-  FileText,
-  Link2,
-  Activity,
+  Building2,
   Target,
+  AlertCircle,
   TrendingUp,
-  Briefcase
+  Users,
+  FileText
 } from 'lucide-react'
 
-// India Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
-
-interface ActivityTransaction {
+interface ActivityRecord extends TableRecord {
   id: string
-  transaction_type: string
-  transaction_code: string
-  source_entity_id?: string
-  target_entity_id?: string
-  business_context?: {
-    activity_type?: string
-    title?: string
-    duration_minutes?: number
-    outcome?: string
-    next_action?: string
-    subject?: string
-    attachments?: string[]
-    scheduled_date?: string
-    location?: string
-    attendees?: string[]
-  }
-  created_at: string
-  updated_at: string
-}
-
-interface RelatedEntity {
-  id: string
-  entity_name: string
-  entity_type: string
+  title: string
+  type: 'Call' | 'Email' | 'Meeting' | 'Task' | 'Note'
+  description: string
+  status: 'Completed' | 'Pending' | 'Overdue' | 'In Progress'
+  priority: 'High' | 'Medium' | 'Low'
+  assignee: string
+  account?: string
+  contact?: string
+  dueDate: string
+  createdDate: string
+  completedDate?: string
+  duration?: number
+  outcome?: string
+  nextAction?: string
 }
 
 export default function ActivitiesPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedType, setSelectedType] = useState('all')
-  const [selectedDateRange, setSelectedDateRange] = useState('all')
-  const [isCreating, setIsCreating] = useState(false)
-  const [activities, setActivities] = useState<ActivityTransaction[]>([])
-  const [relatedEntities, setRelatedEntities] = useState<Record<string, RelatedEntity>>({})
-  const [isLoading, setIsLoading] = useState(true)
-
-  const supabase = createClientComponentClient()
-
-  useEffect(() => {
-    loadActivities()
-  }, [])
-
-  const loadActivities = async () => {
-    try {
-      // Load CRM activities
-      const { data: activitiesData, error: activitiesError } = await supabase
-        .from('universal_transactions')
-        .select('*')
-        .eq('organization_id', KERALA_VISION_ORG_ID)
-        .eq('transaction_type', 'crm_activity')
-        .order('created_at', { ascending: false })
-
-      if (activitiesError) throw activitiesError
-
-      // Get all entity IDs to load
-      const entityIds = new Set<string>()
-      activitiesData?.forEach(activity => {
-        if (activity.source_entity_id) entityIds.add(activity.source_entity_id)
-        if (activity.target_entity_id) entityIds.add(activity.target_entity_id)
-      })
-
-      // Load related entities
-      const { data: entitiesData, error: entitiesError } = await supabase
-        .from('core_entities')
-        .select('id, entity_name, entity_type')
-        .in('id', Array.from(entityIds))
-
-      if (entitiesError) throw entitiesError
-
-      // Build entity lookup
-      const entityLookup: Record<string, RelatedEntity> = {}
-      entitiesData?.forEach(entity => {
-        entityLookup[entity.id] = entity
-      })
-
-      setActivities(activitiesData || [])
-      setRelatedEntities(entityLookup)
-    } catch (error) {
-      console.error('Error loading activities:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const getActivityIcon = (type: string) => {
-    switch (type?.toLowerCase()) {
-      case 'call':
-        return Phone
-      case 'email':
-        return Mail
-      case 'meeting':
-        return Users
-      case 'task':
-        return CheckCircle
-      case 'note':
-        return FileText
-      default:
-        return Activity
-    }
-  }
-
-  const getActivityColor = (type: string) => {
-    switch (type?.toLowerCase()) {
-      case 'call':
-        return 'from-[#FF5A09] to-[#ec7f37]'
-      case 'email':
-        return 'from-[#ec7f37] to-[#be4f0c]'
-      case 'meeting':
-        return 'from-purple-500 to-purple-600'
-      case 'task':
-        return 'from-emerald-500 to-green-600'
-      case 'note':
-        return 'from-blue-500 to-blue-600'
-      default:
-        return 'from-gray-9000 to-gray-600'
-    }
-  }
-
-  const getStatusFromContext = (activity: ActivityTransaction) => {
-    if (activity.business_context?.scheduled_date) {
-      const scheduled = new Date(activity.business_context.scheduled_date)
-      return scheduled > new Date() ? 'scheduled' : 'completed'
-    }
-    return 'completed'
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-      case 'scheduled':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      case 'overdue':
-        return 'bg-red-500/20 text-red-400 border-red-500/30'
-      default:
-        return 'bg-gray-9000/20 text-muted-foreground border-gray-500/30'
-    }
-  }
-
-  const filteredActivities = activities.filter(activity => {
-    const matchesSearch =
-      activity.business_context?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      activity.transaction_code.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesType =
-      selectedType === 'all' || activity.business_context?.activity_type === selectedType
-
-    // Date range filtering
-    let matchesDate = true
-    if (selectedDateRange !== 'all') {
-      const activityDate = new Date(activity.created_at)
-      const now = new Date()
-      switch (selectedDateRange) {
-        case 'today':
-          matchesDate = activityDate.toDateString() === now.toDateString()
-          break
-        case 'week':
-          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-          matchesDate = activityDate >= weekAgo
-          break
-        case 'month':
-          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-          matchesDate = activityDate >= monthAgo
-          break
-      }
-    }
-
-    return matchesSearch && matchesType && matchesDate
+  const { currentOrganization, isAuthenticated } = useHERAAuth()
+  const [loading, setLoading] = useState(false)
+  const [activities, setActivities] = useState<ActivityRecord[]>([])
+  const [selectedActivities, setSelectedActivities] = useState<(string | number)[]>([])
+  const [filters, setFilters] = useState({
+    type: '',
+    status: '',
+    assignee: '',
+    priority: '',
+    dateRange: '',
+    search: ''
   })
 
-  // Group activities by date
-  const groupedActivities = filteredActivities.reduce(
-    (groups, activity) => {
-      const date = new Date(activity.created_at).toDateString()
-      if (!groups[date]) {
-        groups[date] = []
-      }
-      groups[date].push(activity)
-      return groups
-    },
-    {} as Record<string, ActivityTransaction[]>
-  )
-
-  const stats = [
+  // Sample activities data
+  const sampleActivities: ActivityRecord[] = [
     {
-      label: 'Total Activities',
-      value: activities.length,
-      icon: Activity,
-      color: 'from-[#FF5A09] to-[#ec7f37]'
+      id: 'ACT-001',
+      title: 'Follow-up call with Acme Corp',
+      type: 'Call',
+      description: 'Discuss proposal feedback and next steps for enterprise license',
+      status: 'Pending',
+      priority: 'High',
+      assignee: 'Sarah Wilson',
+      account: 'Acme Corporation',
+      contact: 'John Smith',
+      dueDate: '2024-01-21',
+      createdDate: '2024-01-20',
+      duration: 30,
+      nextAction: 'Send revised proposal'
     },
     {
-      label: 'Calls Today',
-      value: activities.filter(
-        a =>
-          a.business_context?.activity_type === 'call' &&
-          new Date(a.created_at).toDateString() === new Date().toDateString()
-      ).length,
-      icon: Phone,
-      color: 'from-[#ec7f37] to-[#be4f0c]'
+      id: 'ACT-002',
+      title: 'Product demo for Healthcare Solutions',
+      type: 'Meeting',
+      description: 'Demonstrate ERP capabilities for healthcare industry requirements',
+      status: 'Completed',
+      priority: 'High',
+      assignee: 'Mike Johnson',
+      account: 'Healthcare Solutions LLC',
+      contact: 'David Chen',
+      dueDate: '2024-01-19',
+      createdDate: '2024-01-18',
+      completedDate: '2024-01-19',
+      duration: 60,
+      outcome: 'Positive feedback, requested technical documentation',
+      nextAction: 'Send technical specs'
     },
     {
-      label: 'Meetings This Week',
-      value: activities.filter(a => {
-        const ismeeting = a.business_context?.activity_type === 'meeting'
-        const activityDate = new Date(a.created_at)
-        const weekAgo = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
-        return ismeeting && activityDate >= weekAgo
-      }).length,
-      icon: Users,
-      color: 'from-purple-500 to-purple-600'
+      id: 'ACT-003',
+      title: 'Send pricing proposal to Global Manufacturing',
+      type: 'Email',
+      description: 'Email customized pricing for manufacturing equipment integration',
+      status: 'In Progress',
+      priority: 'Medium',
+      assignee: 'Alex Chen',
+      account: 'Global Manufacturing Inc',
+      contact: 'Maria Rodriguez',
+      dueDate: '2024-01-20',
+      createdDate: '2024-01-19'
     },
     {
-      label: 'Conversion Rate',
-      value: '24%',
-      icon: TrendingUp,
-      color: 'from-[#be4f0c] to-[#FF5A09]'
+      id: 'ACT-004',
+      title: 'Quarterly business review preparation',
+      type: 'Task',
+      description: 'Prepare slides and reports for Q1 review with Retail Chain Co',
+      status: 'Overdue',
+      priority: 'High',
+      assignee: 'Sarah Wilson',
+      account: 'Retail Chain Co',
+      contact: 'Lisa Park',
+      dueDate: '2024-01-18',
+      createdDate: '2024-01-15'
+    },
+    {
+      id: 'ACT-005',
+      title: 'Market research for TechStartup proposal',
+      type: 'Task',
+      description: 'Research competitive landscape for cloud infrastructure proposal',
+      status: 'Completed',
+      priority: 'Low',
+      assignee: 'Mike Johnson',
+      account: 'TechStartup Inc',
+      contact: 'Robert Johnson',
+      dueDate: '2024-01-17',
+      createdDate: '2024-01-15',
+      completedDate: '2024-01-16',
+      outcome: 'Identified 3 key differentiators'
+    },
+    {
+      id: 'ACT-006',
+      title: 'Contract negotiation meeting notes',
+      type: 'Note',
+      description: 'Document key points from contract discussion with Acme legal team',
+      status: 'Completed',
+      priority: 'Medium',
+      assignee: 'Alex Chen',
+      account: 'Acme Corporation',
+      contact: 'John Smith',
+      dueDate: '2024-01-19',
+      createdDate: '2024-01-19',
+      completedDate: '2024-01-19',
+      outcome: 'All terms agreed, awaiting final signature'
     }
   ]
 
-  if (isLoading) {
+  // Filter fields
+  const filterFields: FilterField[] = [
+    {
+      key: 'type',
+      label: 'Activity Type',
+      type: 'select',
+      placeholder: 'All Types',
+      options: [
+        { value: 'call', label: 'Call' },
+        { value: 'email', label: 'Email' },
+        { value: 'meeting', label: 'Meeting' },
+        { value: 'task', label: 'Task' },
+        { value: 'note', label: 'Note' }
+      ],
+      value: filters.type,
+      onChange: (value) => setFilters(prev => ({ ...prev, type: value }))
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      placeholder: 'All Status',
+      options: [
+        { value: 'pending', label: 'Pending' },
+        { value: 'in-progress', label: 'In Progress' },
+        { value: 'completed', label: 'Completed' },
+        { value: 'overdue', label: 'Overdue' }
+      ],
+      value: filters.status,
+      onChange: (value) => setFilters(prev => ({ ...prev, status: value }))
+    },
+    {
+      key: 'assignee',
+      label: 'Assignee',
+      type: 'select',
+      placeholder: 'All Assignees',
+      options: [
+        { value: 'sarah', label: 'Sarah Wilson' },
+        { value: 'mike', label: 'Mike Johnson' },
+        { value: 'alex', label: 'Alex Chen' }
+      ],
+      value: filters.assignee,
+      onChange: (value) => setFilters(prev => ({ ...prev, assignee: value }))
+    },
+    {
+      key: 'priority',
+      label: 'Priority',
+      type: 'select',
+      placeholder: 'All Priorities',
+      options: [
+        { value: 'high', label: 'High Priority' },
+        { value: 'medium', label: 'Medium Priority' },
+        { value: 'low', label: 'Low Priority' }
+      ],
+      value: filters.priority,
+      onChange: (value) => setFilters(prev => ({ ...prev, priority: value }))
+    },
+    {
+      key: 'search',
+      label: 'Search',
+      type: 'search',
+      placeholder: 'Search activities...',
+      value: filters.search,
+      onChange: (value) => setFilters(prev => ({ ...prev, search: value }))
+    }
+  ]
+
+  // Table columns
+  const columns: TableColumn[] = [
+    {
+      key: 'title',
+      label: 'Activity',
+      render: (value, record) => (
+        <div>
+          <div className="flex items-center gap-2">
+            {record.type === 'Call' && <Phone className="w-4 h-4 text-blue-500" />}
+            {record.type === 'Email' && <Mail className="w-4 h-4 text-green-500" />}
+            {record.type === 'Meeting' && <Users className="w-4 h-4 text-purple-500" />}
+            {record.type === 'Task' && <CheckSquare className="w-4 h-4 text-orange-500" />}
+            {record.type === 'Note' && <FileText className="w-4 h-4 text-gray-500" />}
+            <span className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
+              {value}
+            </span>
+          </div>
+          <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+            {record.account && (
+              <>
+                <Building2 className="w-3 h-3" />
+                {record.account}
+                {record.contact && ` • ${record.contact}`}
+              </>
+            )}
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      align: 'center',
+      render: (value) => (
+        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+          value === 'Completed' ? 'bg-green-100 text-green-800' :
+          value === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+          value === 'Overdue' ? 'bg-red-100 text-red-800' :
+          'bg-yellow-100 text-yellow-800'
+        }`}>
+          {value}
+        </span>
+      )
+    },
+    {
+      key: 'priority',
+      label: 'Priority',
+      align: 'center',
+      render: (value) => (
+        <div className="flex items-center justify-center gap-1">
+          <div className={`w-2 h-2 rounded-full ${
+            value === 'High' ? 'bg-red-500' :
+            value === 'Medium' ? 'bg-yellow-500' :
+            'bg-green-500'
+          }`} />
+          <span className="text-sm">{value}</span>
+        </div>
+      )
+    },
+    {
+      key: 'assignee',
+      label: 'Assignee',
+      render: (value) => (
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs text-white font-medium">
+            {value.split(' ').map((n: string) => n[0]).join('')}
+          </div>
+          <span className="text-sm">{value}</span>
+        </div>
+      )
+    },
+    {
+      key: 'dueDate',
+      label: 'Due Date',
+      render: (value, record) => {
+        const isOverdue = new Date(value) < new Date() && record.status !== 'Completed'
+        return (
+          <div className={`flex items-center gap-1 text-sm ${
+            isOverdue ? 'text-red-600' : 'text-gray-600'
+          }`}>
+            <Calendar className="w-3 h-3" />
+            {new Date(value).toLocaleDateString()}
+            {isOverdue && <AlertCircle className="w-3 h-3 text-red-500" />}
+          </div>
+        )
+      }
+    }
+  ]
+
+  // Mobile card renderer
+  const mobileCardRender = (record: ActivityRecord) => {
+    const isOverdue = new Date(record.dueDate) < new Date() && record.status !== 'Completed'
+    
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-foreground">Loading activities...</div>
+      <div className="p-4 space-y-3">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              {record.type === 'Call' && <Phone className="w-4 h-4 text-blue-500" />}
+              {record.type === 'Email' && <Mail className="w-4 h-4 text-green-500" />}
+              {record.type === 'Meeting' && <Users className="w-4 h-4 text-purple-500" />}
+              {record.type === 'Task' && <CheckSquare className="w-4 h-4 text-orange-500" />}
+              {record.type === 'Note' && <FileText className="w-4 h-4 text-gray-500" />}
+              <h3 className="font-medium text-blue-600 cursor-pointer hover:text-blue-800">
+                {record.title}
+              </h3>
+            </div>
+            <p className="text-sm text-gray-600 line-clamp-2">{record.description}</p>
+            {record.account && (
+              <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                <Building2 className="w-3 h-3" />
+                {record.account}
+                {record.contact && ` • ${record.contact}`}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col items-end gap-1">
+            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+              record.status === 'Completed' ? 'bg-green-100 text-green-800' :
+              record.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+              record.status === 'Overdue' ? 'bg-red-100 text-red-800' :
+              'bg-yellow-100 text-yellow-800'
+            }`}>
+              {record.status}
+            </span>
+            <div className="flex items-center gap-1">
+              <div className={`w-2 h-2 rounded-full ${
+                record.priority === 'High' ? 'bg-red-500' :
+                record.priority === 'Medium' ? 'bg-yellow-500' :
+                'bg-green-500'
+              }`} />
+              <span className="text-xs font-medium">{record.priority}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Assignee</div>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center text-xs text-white font-medium">
+                {record.assignee.split(' ').map(n => n[0]).join('')}
+              </div>
+              {record.assignee}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Due Date</div>
+            <div className={`flex items-center gap-1 ${isOverdue ? 'text-red-600' : 'text-gray-900'}`}>
+              <Calendar className="w-3 h-3" />
+              <span className="font-medium">{new Date(record.dueDate).toLocaleDateString()}</span>
+              {isOverdue && <AlertCircle className="w-3 h-3 text-red-500" />}
+            </div>
+          </div>
+        </div>
+
+        {record.outcome && (
+          <div className="text-sm">
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Outcome</div>
+            <div className="text-gray-700">{record.outcome}</div>
+          </div>
+        )}
+
+        {record.nextAction && (
+          <div className="text-sm">
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Next Action</div>
+            <div className="text-blue-600 font-medium">{record.nextAction}</div>
+          </div>
+        )}
+
+        <div className="flex gap-2 pt-2 border-t border-gray-100">
+          <button className="flex-1 text-sm text-blue-600 hover:text-blue-800 py-2 px-3 border border-blue-200 rounded hover:bg-blue-50 transition-colors flex items-center justify-center gap-1">
+            <Activity className="w-4 h-4" />
+            View
+          </button>
+          {record.status !== 'Completed' && (
+            <button className="flex-1 text-sm text-green-600 hover:text-green-800 py-2 px-3 border border-green-200 rounded hover:bg-green-50 transition-colors flex items-center justify-center gap-1">
+              <CheckSquare className="w-4 h-4" />
+              Complete
+            </button>
+          )}
+        </div>
       </div>
     )
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Activities</h1>
-          <p className="text-foreground/60 mt-1">Track all your sales activities and engagements</p>
-        </div>
-        <button
-          onClick={() => setIsCreating(true)}
-          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
-        >
-          <Plus className="h-5 w-5" />
-          <span>Log Activity</span>
-        </button>
-      </div>
+  // KPI data
+  const kpiData = {
+    totalActivities: sampleActivities.length,
+    overdueTasks: sampleActivities.filter(a => new Date(a.dueDate) < new Date() && a.status !== 'Completed').length,
+    completedToday: sampleActivities.filter(a => a.completedDate === '2024-01-20').length,
+    avgResponseTime: 4.2 // hours
+  }
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon
-          return (
-            <div key={index} className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                    <Icon className="h-5 w-5 text-foreground" />
-                  </div>
-                  <span className="text-xs text-emerald-400 font-medium">+5%</span>
-                </div>
-                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs text-foreground/60 mt-1">{stat.label}</p>
+  // Chart data
+  const activityTypeData = [
+    { name: 'Calls', value: 35, color: '#3b82f6' },
+    { name: 'Emails', value: 40, color: '#10b981' },
+    { name: 'Meetings', value: 15, color: '#8b5cf6' },
+    { name: 'Tasks', value: 8, color: '#f59e0b' },
+    { name: 'Notes', value: 2, color: '#6b7280' }
+  ]
+
+  const weeklyActivityData = [
+    { day: 'Mon', calls: 8, emails: 12, meetings: 3 },
+    { day: 'Tue', calls: 10, emails: 15, meetings: 2 },
+    { day: 'Wed', calls: 6, emails: 18, meetings: 4 },
+    { day: 'Thu', calls: 12, emails: 14, meetings: 5 },
+    { day: 'Fri', calls: 9, emails: 16, meetings: 1 }
+  ]
+
+  // Group activities by date for timeline view
+  const groupedActivities = sampleActivities.reduce((acc, activity) => {
+    const date = activity.dueDate
+    if (!acc[date]) {
+      acc[date] = []
+    }
+    acc[date].push(activity)
+    return acc
+  }, {} as Record<string, ActivityRecord[]>)
+
+  const sortedDates = Object.keys(groupedActivities).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+
+  useEffect(() => {
+    if (isAuthenticated && currentOrganization) {
+      setActivities(sampleActivities)
+    }
+  }, [isAuthenticated, currentOrganization])
+
+  const handleApplyFilters = () => {
+    setLoading(true)
+    setTimeout(() => {
+      setActivities(sampleActivities)
+      setLoading(false)
+    }, 1000)
+  }
+
+  return (
+    <MobilePageLayout title="HERA" breadcrumb="CRM / Activities & Tasks">
+      <MobileFilters 
+        title="Activity Filters"
+        fields={filterFields}
+        onApply={handleApplyFilters}
+        onAdaptFilters={() => console.log('Adapt filters')}
+      />
+
+      <div className="px-3 sm:px-6 py-4 sm:py-6 space-y-6">
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <MobileCard 
+            title="Total Activities"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{kpiData.totalActivities}</div>
+                <div className="text-sm text-gray-600">All activities</div>
+              </div>
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Activity className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-          )
-        })}
-      </div>
+          </MobileCard>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
-          <input
-            type="text"
-            placeholder="Search activities..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
+          <MobileCard 
+            title="Overdue Tasks"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-red-600">{kpiData.overdueTasks}</div>
+                <div className="text-sm text-gray-600">Need attention</div>
+              </div>
+              <div className="p-2 bg-red-100 rounded-lg">
+                <AlertCircle className="w-6 h-6 text-red-600" />
+              </div>
+            </div>
+          </MobileCard>
+
+          <MobileCard 
+            title="Completed Today"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-green-600">{kpiData.completedToday}</div>
+                <div className="text-sm text-gray-600">Today's progress</div>
+              </div>
+              <div className="p-2 bg-green-100 rounded-lg">
+                <CheckSquare className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </MobileCard>
+
+          <MobileCard 
+            title="Avg Response Time"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{kpiData.avgResponseTime}h</div>
+                <div className="text-sm text-gray-600">Response time</div>
+              </div>
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Clock className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </MobileCard>
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MobileChart 
+            title="Activities by Type"
+            type="pie"
+            data={activityTypeData}
+            height="300"
+          />
+          <MobileChart 
+            title="Weekly Activity Breakdown"
+            type="bar"
+            data={weeklyActivityData}
+            height="300"
           />
         </div>
 
-        <select
-          value={selectedType}
-          onChange={e => setSelectedType(e.target.value)}
-          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
+        {/* Activity Timeline */}
+        <MobileCard 
+          title="Activity Timeline"
+          className="bg-white rounded-lg shadow-sm border border-gray-200"
         >
-          <option value="all">All Types</option>
-          <option value="call">Calls</option>
-          <option value="email">Emails</option>
-          <option value="meeting">Meetings</option>
-          <option value="task">Tasks</option>
-          <option value="note">Notes</option>
-        </select>
-
-        <select
-          value={selectedDateRange}
-          onChange={e => setSelectedDateRange(e.target.value)}
-          className="px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-[#FF5A09] transition-colors"
-        >
-          <option value="all">All Time</option>
-          <option value="today">Today</option>
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
-        </select>
-
-        <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
-          <Filter className="h-5 w-5" />
-          <span>More Filters</span>
-        </button>
-      </div>
-
-      {/* Activities Timeline */}
-      <div className="space-y-6">
-        {Object.entries(groupedActivities).map(([date, dateActivities]) => (
-          <div key={date}>
-            <h3 className="text-sm font-medium text-foreground/60 mb-4">{date}</h3>
-            <div className="space-y-4">
-              {dateActivities.map(activity => {
-                const activityType = activity.business_context?.activity_type || 'activity'
-                const ActivityIcon = getActivityIcon(activityType)
-                const status = getStatusFromContext(activity)
-                const sourceEntity = activity.source_entity_id
-                  ? relatedEntities[activity.source_entity_id]
-                  : null
-                const targetEntity = activity.target_entity_id
-                  ? relatedEntities[activity.target_entity_id]
-                  : null
-
-                return (
-                  <div key={activity.id} className="relative group">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-                    <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-4">
-                          <div
-                            className={`p-3 rounded-xl bg-gradient-to-br ${getActivityColor(activityType)}`}
-                          >
-                            <ActivityIcon className="h-5 w-5 text-foreground" />
+          <div className="p-4 space-y-4">
+            {sortedDates.slice(0, 3).map((date) => (
+              <div key={date}>
+                <div className="flex items-center gap-2 mb-3">
+                  <Calendar className="w-4 h-4 text-blue-500" />
+                  <h3 className="font-medium text-gray-900">
+                    {new Date(date).toLocaleDateString('en-US', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </h3>
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                    {groupedActivities[date].length} activities
+                  </span>
+                </div>
+                <div className="space-y-2 ml-6 border-l-2 border-gray-200 pl-4">
+                  {groupedActivities[date].map((activity) => (
+                    <div key={activity.id} className="flex items-start gap-3 py-2">
+                      <div className="flex-shrink-0 mt-1">
+                        {activity.type === 'Call' && <Phone className="w-4 h-4 text-blue-500" />}
+                        {activity.type === 'Email' && <Mail className="w-4 h-4 text-green-500" />}
+                        {activity.type === 'Meeting' && <Users className="w-4 h-4 text-purple-500" />}
+                        {activity.type === 'Task' && <CheckSquare className="w-4 h-4 text-orange-500" />}
+                        {activity.type === 'Note' && <FileText className="w-4 h-4 text-gray-500" />}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{activity.title}</p>
+                            <p className="text-xs text-gray-500">{activity.assignee}</p>
                           </div>
-                          <div className="flex-1">
-                            <h4 className="text-base font-semibold text-foreground">
-                              {activity.business_context?.title || 'Activity'}
-                            </h4>
-
-                            {/* Related Entities */}
-                            <div className="flex items-center space-x-4 mt-2 text-sm">
-                              {sourceEntity && (
-                                <div className="flex items-center space-x-1 text-foreground/60">
-                                  <User className="h-4 w-4" />
-                                  <span>{sourceEntity.entity_name}</span>
-                                </div>
-                              )}
-                              {targetEntity && (
-                                <>
-                                  <ChevronRight className="h-4 w-4 text-foreground/40" />
-                                  <div className="flex items-center space-x-1 text-foreground/60">
-                                    {targetEntity.entity_type === 'opportunity' ? (
-                                      <Target className="h-4 w-4" />
-                                    ) : targetEntity.entity_type === 'account' ? (
-                                      <Building2 className="h-4 w-4" />
-                                    ) : (
-                                      <Briefcase className="h-4 w-4" />
-                                    )}
-                                    <span>{targetEntity.entity_name}</span>
-                                  </div>
-                                </>
-                              )}
-                            </div>
-
-                            {/* Activity Details */}
-                            <div className="mt-3 space-y-2">
-                              {activity.business_context?.outcome && (
-                                <p className="text-sm text-foreground/80">
-                                  <span className="text-foreground/60">Outcome:</span>{' '}
-                                  {activity.business_context.outcome}
-                                </p>
-                              )}
-                              {activity.business_context?.next_action && (
-                                <p className="text-sm text-foreground/80">
-                                  <span className="text-foreground/60">Next Action:</span>{' '}
-                                  {activity.business_context.next_action}
-                                </p>
-                              )}
-                              {activity.business_context?.duration_minutes && (
-                                <div className="flex items-center space-x-1 text-sm text-foreground/60">
-                                  <Clock className="h-3 w-3" />
-                                  <span>{activity.business_context.duration_minutes} minutes</span>
-                                </div>
-                              )}
-                              {activity.business_context?.attachments &&
-                                activity.business_context.attachments.length > 0 && (
-                                  <div className="flex items-center space-x-1 text-sm text-foreground/60">
-                                    <Link2 className="h-3 w-3" />
-                                    <span>
-                                      {activity.business_context.attachments.length} attachments
-                                    </span>
-                                  </div>
-                                )}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center space-x-3">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(status)}`}
-                          >
-                            {status}
-                          </span>
-                          <span className="text-xs text-foreground/40">
-                            {new Date(activity.created_at).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            activity.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                            activity.status === 'Overdue' ? 'bg-red-100 text-red-700' :
+                            'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {activity.status}
                           </span>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </MobileCard>
+
+        {/* Activities Table */}
+        <MobileDataTable
+          title={`Activities (${activities.length})`}
+          subtitle="Track and manage all customer interactions and tasks"
+          columns={columns}
+          data={activities}
+          loading={loading}
+          selectable={true}
+          selectedRows={selectedActivities}
+          onRowSelect={setSelectedActivities}
+          mobileCardRender={mobileCardRender}
+          actions={
+            <div className="flex gap-2">
+              <button className="text-sm text-blue-600 hover:text-blue-800 px-3 py-2 border border-blue-200 rounded hover:bg-blue-50 transition-colors">
+                Export
+              </button>
+              <button className="text-sm text-green-600 hover:text-green-800 px-3 py-2 border border-green-200 rounded hover:bg-green-50 transition-colors">
+                Bulk Complete
+              </button>
+            </div>
+          }
+        />
       </div>
 
-      {/* Empty State */}
-      {filteredActivities.length === 0 && (
-        <div className="text-center py-12">
-          <Calendar className="h-12 w-12 text-foreground/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-2">No activities found</h3>
-          <p className="text-foreground/60">Try adjusting your search or filters</p>
-        </div>
-      )}
-    </div>
+      {/* Floating Action Button */}
+      <div className="fixed bottom-6 right-6">
+        <button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center min-w-[56px] min-h-[56px]">
+          <Plus className="w-6 h-6" />
+        </button>
+      </div>
+    </MobilePageLayout>
   )
 }

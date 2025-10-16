@@ -1,0 +1,565 @@
+/* 🎯 SAP Fiori Exact Recreation - Enterprise Asset Management Style */
+:root {
+  /* SAP Fiori Official Colors */
+  --sap-brand-blue: #0070F2;
+  --sap-brand-blue-dark: #0064D9;
+  --sap-neutral-100: #FFFFFF;
+  --sap-neutral-200: #F7F7F7;
+  --sap-neutral-300: #EDEDED;
+  --sap-neutral-400: #D9D9D9;
+  --sap-neutral-500: #BFBFBF;
+  --sap-neutral-600: #8C8C8C;
+  --sap-neutral-700: #666666;
+  --sap-neutral-800: #333333;
+  --sap-neutral-900: #1D1D1D;
+  
+  /* SAP Semantic Colors */
+  --sap-success: #30914C;
+  --sap-warning: #E76500;
+  --sap-error: #BB0000;
+  --sap-information: #0070F2;
+  
+  /* SAP Layout */
+  --sap-header-height: 56px;
+  --sap-tab-height: 48px;
+  --sap-content-padding: 24px;
+  --sap-card-padding: 16px;
+  
+  /* SAP Typography */
+  --sap-font-family: "SAP 72", "72", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --sap-font-size-small: 12px;
+  --sap-font-size-normal: 14px;
+  --sap-font-size-medium: 16px;
+  --sap-font-size-large: 18px;
+  --sap-font-size-xlarge: 20px;
+  
+  /* SAP Shadows */
+  --sap-shadow-level-1: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --sap-shadow-level-2: 0 2px 6px rgba(0, 0, 0, 0.16);
+  --sap-shadow-level-3: 0 4px 12px rgba(0, 0, 0, 0.20);
+}
+
+/* SAP Typography System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+.sap-font {
+  font-family: var(--sap-font-family);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* SAP Header - Exact Recreation */
+.sap-header {
+  background: linear-gradient(180deg, #4A90E2 0%, #357ABD 100%);
+  height: var(--sap-header-height);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.sap-header-content {
+  width: 100%;
+  max-width: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sap-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  text-decoration: none;
+}
+
+.sap-logo-icon {
+  width: 32px;
+  height: 20px;
+  background: white;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  color: var(--sap-brand-blue);
+}
+
+.sap-breadcrumb {
+  color: white;
+  font-size: var(--sap-font-size-medium);
+  font-weight: 400;
+  margin-left: 24px;
+}
+
+.sap-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sap-header-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sap-header-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* SAP Main Layout */
+.sap-main {
+  margin-top: var(--sap-header-height);
+  background: var(--sap-neutral-200);
+  min-height: calc(100vh - var(--sap-header-height));
+}
+
+/* SAP Object Header - Asset Details */
+.sap-object-header {
+  background: var(--sap-neutral-100);
+  border-bottom: 1px solid var(--sap-neutral-300);
+  padding: var(--sap-content-padding);
+}
+
+.sap-object-title {
+  font-size: var(--sap-font-size-xlarge);
+  font-weight: 600;
+  color: var(--sap-neutral-900);
+  margin: 0 0 8px 0;
+}
+
+.sap-object-subtitle {
+  font-size: var(--sap-font-size-small);
+  color: var(--sap-neutral-600);
+  margin: 0 0 16px 0;
+}
+
+.sap-object-attributes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.sap-object-attribute {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sap-object-attribute-label {
+  font-size: var(--sap-font-size-small);
+  color: var(--sap-neutral-600);
+  font-weight: 400;
+}
+
+.sap-object-attribute-value {
+  font-size: var(--sap-font-size-normal);
+  color: var(--sap-neutral-900);
+  font-weight: 500;
+}
+
+.sap-object-key-figure {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  background: var(--sap-neutral-200);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-right: 16px;
+}
+
+.sap-key-figure-value {
+  font-size: var(--sap-font-size-large);
+  font-weight: 600;
+  color: var(--sap-neutral-900);
+}
+
+.sap-key-figure-currency {
+  font-size: var(--sap-font-size-small);
+  color: var(--sap-neutral-600);
+  font-weight: 400;
+}
+
+/* SAP Tab Strip - Exact Recreation */
+.sap-tab-container {
+  background: var(--sap-neutral-100);
+  border-bottom: 1px solid var(--sap-neutral-300);
+  overflow-x: auto;
+}
+
+.sap-tab-strip {
+  display: flex;
+  height: var(--sap-tab-height);
+  align-items: stretch;
+  padding: 0 var(--sap-content-padding);
+  min-width: max-content;
+}
+
+.sap-tab {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: var(--sap-font-size-normal);
+  font-weight: 400;
+  color: var(--sap-neutral-700);
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.sap-tab:hover {
+  color: var(--sap-brand-blue);
+}
+
+.sap-tab.active {
+  color: var(--sap-brand-blue);
+  font-weight: 500;
+  border-bottom-color: var(--sap-brand-blue);
+}
+
+.sap-tab.disabled {
+  color: var(--sap-neutral-500);
+  cursor: not-allowed;
+}
+
+/* SAP Content Area */
+.sap-content {
+  background: var(--sap-neutral-200);
+  padding: var(--sap-content-padding);
+}
+
+.sap-content-section {
+  background: var(--sap-neutral-100);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid var(--sap-neutral-300);
+  overflow: hidden;
+}
+
+.sap-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px var(--sap-card-padding);
+  border-bottom: 1px solid var(--sap-neutral-300);
+  background: var(--sap-neutral-100);
+}
+
+.sap-section-title {
+  font-size: var(--sap-font-size-medium);
+  font-weight: 500;
+  color: var(--sap-neutral-900);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sap-section-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.sap-icon-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--sap-neutral-600);
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.sap-icon-btn:hover {
+  background: var(--sap-neutral-300);
+  color: var(--sap-neutral-900);
+}
+
+/* SAP Table - Exact Recreation */
+.sap-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--sap-neutral-100);
+}
+
+.sap-table-header {
+  background: var(--sap-neutral-200);
+  border-bottom: 1px solid var(--sap-neutral-300);
+}
+
+.sap-table-header th {
+  padding: 12px var(--sap-card-padding);
+  text-align: left;
+  font-size: var(--sap-font-size-small);
+  font-weight: 600;
+  color: var(--sap-neutral-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sap-table-body tr {
+  border-bottom: 1px solid var(--sap-neutral-300);
+  transition: background-color 0.2s ease;
+}
+
+.sap-table-body tr:hover {
+  background: var(--sap-neutral-200);
+}
+
+.sap-table-body td {
+  padding: 12px var(--sap-card-padding);
+  font-size: var(--sap-font-size-normal);
+  color: var(--sap-neutral-900);
+  vertical-align: top;
+}
+
+.sap-table-expandable {
+  cursor: pointer;
+}
+
+.sap-table-indent-1 {
+  padding-left: 32px;
+}
+
+.sap-table-indent-2 {
+  padding-left: 48px;
+}
+
+/* SAP Form Elements */
+.sap-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.sap-form-label {
+  font-size: var(--sap-font-size-small);
+  font-weight: 500;
+  color: var(--sap-neutral-700);
+}
+
+.sap-form-input {
+  padding: 8px 12px;
+  border: 1px solid var(--sap-neutral-400);
+  border-radius: 4px;
+  font-size: var(--sap-font-size-normal);
+  font-family: var(--sap-font-family);
+  background: var(--sap-neutral-100);
+  transition: border-color 0.2s ease;
+}
+
+.sap-form-input:focus {
+  outline: none;
+  border-color: var(--sap-brand-blue);
+}
+
+.sap-form-input:disabled {
+  background: var(--sap-neutral-200);
+  color: var(--sap-neutral-600);
+}
+
+/* SAP Buttons */
+.sap-btn {
+  padding: 8px 16px;
+  font-size: var(--sap-font-size-normal);
+  font-weight: 500;
+  font-family: var(--sap-font-family);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  min-height: 32px;
+}
+
+.sap-btn-primary {
+  background: var(--sap-brand-blue);
+  color: white;
+  border-color: var(--sap-brand-blue);
+}
+
+.sap-btn-primary:hover {
+  background: var(--sap-brand-blue-dark);
+  border-color: var(--sap-brand-blue-dark);
+}
+
+.sap-btn-secondary {
+  background: var(--sap-neutral-100);
+  color: var(--sap-brand-blue);
+  border-color: var(--sap-brand-blue);
+}
+
+.sap-btn-secondary:hover {
+  background: var(--sap-neutral-200);
+}
+
+.sap-btn-ghost {
+  background: transparent;
+  color: var(--sap-neutral-700);
+  border-color: var(--sap-neutral-400);
+}
+
+.sap-btn-ghost:hover {
+  background: var(--sap-neutral-200);
+  color: var(--sap-neutral-900);
+}
+
+/* SAP Status Indicators */
+.sap-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: var(--sap-font-size-small);
+  font-weight: 500;
+}
+
+.sap-status-success {
+  background: rgba(48, 145, 76, 0.1);
+  color: var(--sap-success);
+}
+
+.sap-status-warning {
+  background: rgba(231, 101, 0, 0.1);
+  color: var(--sap-warning);
+}
+
+.sap-status-error {
+  background: rgba(187, 0, 0, 0.1);
+  color: var(--sap-error);
+}
+
+.sap-status-info {
+  background: rgba(0, 112, 242, 0.1);
+  color: var(--sap-information);
+}
+
+/* SAP Chart Container */
+.sap-chart-container {
+  background: var(--sap-neutral-100);
+  border-radius: 8px;
+  padding: var(--sap-card-padding);
+  border: 1px solid var(--sap-neutral-300);
+}
+
+.sap-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.sap-chart-title {
+  font-size: var(--sap-font-size-medium);
+  font-weight: 500;
+  color: var(--sap-neutral-900);
+}
+
+.sap-chart-toolbar {
+  display: flex;
+  gap: 4px;
+}
+
+/* SAP Loading States */
+.sap-skeleton {
+  background: linear-gradient(90deg, var(--sap-neutral-300) 25%, var(--sap-neutral-200) 50%, var(--sap-neutral-300) 75%);
+  background-size: 200% 100%;
+  animation: sap-shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes sap-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* SAP Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .sap-content {
+    padding: 16px;
+  }
+  
+  .sap-object-header {
+    padding: 16px;
+  }
+  
+  .sap-tab-strip {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sap-header {
+    padding: 0 12px;
+  }
+  
+  .sap-content {
+    padding: 12px;
+  }
+  
+  .sap-object-attributes {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .sap-tab {
+    padding: 0 12px;
+    font-size: var(--sap-font-size-small);
+  }
+}
+
+/* SAP Focus States for Accessibility */
+.sap-tab:focus-visible,
+.sap-btn:focus-visible,
+.sap-form-input:focus-visible {
+  outline: 2px solid var(--sap-brand-blue);
+  outline-offset: 2px;
+}
+
+/* SAP Animation Classes */
+.sap-fade-in {
+  animation: sap-fade-in 0.3s ease-out;
+}
+
+@keyframes sap-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

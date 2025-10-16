@@ -1,0 +1,748 @@
+'use client'
+
+/**
+ * MCA Channel Identities - Communication Address Manager
+ * Mobile-First Enterprise Page for ChannelIdentity Management
+ * 
+ * Module: MCA
+ * Entity: CHANNEL_IDENTITY
+ * Smart Code: HERA.CRM.MCA.ENTITY.CHANNEL_IDENTITY.V1
+ * Path: /crm/mca/channel-identities
+ * Description: Communication addresses and handles per contact with verification status
+ */
+
+import React, { useState, useCallback, useEffect } from 'react'
+import { MobilePageLayout } from '@/components/mobile/MobilePageLayout'
+import { MobileFilters, type FilterField } from '@/components/mobile/MobileFilters'
+import { MobileDataTable, type TableColumn, type TableRecord } from '@/components/mobile/MobileDataTable'
+import { MobileCard } from '@/components/mobile/MobileCard'
+import { MobileChart } from '@/components/mobile/MobileCharts'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useUniversalEntity } from '@/hooks/useUniversalEntity'
+import { 
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Download,
+  Edit,
+  Eye,
+  Filter,
+  Mail,
+  MoreVertical,
+  Plus,
+  Save,
+  Search,
+  Trash2,
+  TrendingUp,
+  Upload,
+  X
+} from 'lucide-react'
+
+/**
+ * ChannelIdentity Entity Interface
+ * Extends TableRecord for HERA compliance
+ */
+interface ChannelIdentity extends TableRecord {
+  id: string
+  entity_id?: string
+  entity_name: string
+  smart_code: string
+  status?: string
+  
+  // Dynamic fields (stored in core_dynamic_data)
+  contact_id?: string
+  channel_type?: string
+  address?: string
+  verified?: string
+  preferred?: string
+  status?: string
+  
+  // System fields
+  created_at?: string
+  updated_at?: string
+  created_by?: string
+  updated_by?: string
+  
+  // Business rule fields
+  
+  
+}
+
+/**
+ * HERA ChannelIdentity Smart Codes
+ * Auto-generated from preset configuration
+ */
+const CHANNEL_IDENTITY_SMART_CODES = {
+  ENTITY: 'HERA.CRM.MCA.ENTITY.CHANNEL_IDENTITY.V1',
+  FIELD_CONTACT_ID: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.CONTACT_ID.V1',
+  FIELD_CHANNEL_TYPE: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.CHANNEL_TYPE.V1',
+  FIELD_ADDRESS: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.ADDRESS.V1',
+  FIELD_VERIFIED: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.VERIFIED.V1',
+  FIELD_PREFERRED: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.PREFERRED.V1',
+  FIELD_STATUS: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.STATUS.V1',
+  
+  // Event smart codes for audit trail
+  EVENT_CREATED: 'HERA.CRM.MCA.EVENT.CHANNEL_IDENTITY.V1.CREATED.V1',
+  EVENT_UPDATED: 'HERA.CRM.MCA.EVENT.CHANNEL_IDENTITY.V1.UPDATED.V1',
+  EVENT_DELETED: 'HERA.CRM.MCA.EVENT.CHANNEL_IDENTITY.V1.DELETED.V1'
+} as const
+
+/**
+ * Channel Identities Main Page Component
+ * Enterprise-grade CRUD with quality gates and business rules
+ */
+export default function ChannelIdentitiesPage() {
+  const { currentOrganization, isAuthenticated, user } = useHERAAuth()
+  const [selectedChannelIdentities, setSelectedChannelIdentities] = useState<(string | number)[]>([])
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [currentChannelIdentity, setCurrentChannelIdentity] = useState<ChannelIdentity | null>(null)
+  const [channel_identityToDelete, setChannelIdentityToDelete] = useState<ChannelIdentity | null>(null)
+  const [filters, setFilters] = useState({
+    search: '',
+    status: '',
+    // Dynamic filter fields
+    contact_id: '',
+    channel_type: '',
+    address: ''
+  })
+
+  // HERA Universal Entity Integration
+  const channel_identityData = useUniversalEntity({
+    entity_type: 'CHANNEL_IDENTITY',
+    organizationId: currentOrganization?.id,
+    filters: {
+      include_dynamic: true,
+      include_relationships: undefined,
+      status: 'active'
+    },
+    dynamicFields: [
+      { name: 'contact_id', type: 'text', smart_code: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.CONTACT_ID.V1', required: false },
+      { name: 'channel_type', type: 'text', smart_code: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.CHANNEL_TYPE.V1', required: false },
+      { name: 'address', type: 'text', smart_code: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.ADDRESS.V1', required: false },
+      { name: 'verified', type: 'text', smart_code: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.VERIFIED.V1', required: false },
+      { name: 'preferred', type: 'text', smart_code: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.PREFERRED.V1', required: false },
+      { name: 'status', type: 'text', smart_code: 'HERA.CRM.MCA.DYN.CHANNEL_IDENTITY.V1.STATUS.V1', required: false }
+    ]
+  })
+
+  // Transform entities with business rule extensions
+  const channel_identitys: ChannelIdentity[] = channel_identityData.entities?.map((entity: any) => {
+    return {
+      id: entity.id,
+      entity_id: entity.id,
+      entity_name: entity.entity_name || '',
+      smart_code: entity.smart_code || '',
+      status: entity.status || 'active',
+      
+      // Map dynamic fields with type safety
+      contact_id: entity.dynamic_data?.find((d: any) => d.field_name === 'contact_id')?.field_value_text || '',
+      channel_type: entity.dynamic_data?.find((d: any) => d.field_name === 'channel_type')?.field_value_text || '',
+      address: entity.dynamic_data?.find((d: any) => d.field_name === 'address')?.field_value_text || '',
+      verified: entity.dynamic_data?.find((d: any) => d.field_name === 'verified')?.field_value_text || '',
+      preferred: entity.dynamic_data?.find((d: any) => d.field_name === 'preferred')?.field_value_text || '',
+      status: entity.dynamic_data?.find((d: any) => d.field_name === 'status')?.field_value_text || '',
+      
+      // System fields
+      created_at: entity.created_at,
+      updated_at: entity.updated_at,
+      created_by: entity.created_by,
+      updated_by: entity.updated_by
+      
+      
+    }
+  }) || []
+
+  // Enhanced KPI calculations with preset metrics
+  const kpis = [
+    {
+      title: 'Total Channel Identities',
+      value: channel_identitys.length.toString(),
+      change: '+5.2%',
+      trend: 'up' as const,
+      icon: Mail
+    },
+    {
+      title: 'Active Channel Identities',
+      value: channel_identitys.filter(item => item.status === 'active').length.toString(),
+      change: '+2.1%',
+      trend: 'up' as const,
+      icon: CheckCircle
+    },
+    {
+      title: 'This Month',
+      value: channel_identitys.filter(item => {
+        if (!item.created_at) return false
+        const created = new Date(item.created_at)
+        const now = new Date()
+        return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear()
+      }).length.toString(),
+      change: '+8.3%',
+      trend: 'up' as const,
+      icon: TrendingUp
+    }
+  ]
+
+  // Enhanced table columns with business rule columns
+  const columns: TableColumn[] = [
+    { key: 'entity_name', label: 'ChannelIdentity Name', sortable: true },
+    { key: 'contact_id', label: 'Contact id', sortable: true },
+    { key: 'channel_type', label: 'Channel type', sortable: true },
+    { key: 'address', label: 'Address', sortable: true },
+    { key: 'verified', label: 'Verified', sortable: true },
+    { key: 'preferred', label: 'Preferred', sortable: true },
+    { key: 'created_at', label: 'Created', sortable: true },
+    { key: 'actions', label: 'Actions', sortable: false }
+  ]
+
+  // Enhanced filter fields with business rule filters
+  const filterFields: FilterField[] = [
+    { key: 'search', label: 'Search Channel Identities', type: 'search' },
+    { key: 'status', label: 'Status', type: 'select', options: [
+      { value: '', label: 'All Status' },
+      { value: 'active', label: 'Active' },
+      { value: 'inactive', label: 'Inactive' }
+    ]},
+    { key: 'contact_id', label: 'Contact Id', type: 'select', options: [
+        { value: '', label: 'All Contact Ids' },
+        ...Array.from(new Set(channel_identitys.map(item => item.contact_id).filter(Boolean))).map(val => ({ value: val!, label: val! }))
+      ]},
+    { key: 'channel_type', label: 'Channel Type', type: 'select', options: [
+        { value: '', label: 'All Channel Types' },
+        ...Array.from(new Set(channel_identitys.map(item => item.channel_type).filter(Boolean))).map(val => ({ value: val!, label: val! }))
+      ]}
+  ]
+
+  // Enterprise CRUD Operations with Events
+  const handleAddChannelIdentity = async (channel_identityData: any) => {
+    try {
+      const result = await channel_identityData.create({
+        entity_type: 'CHANNEL_IDENTITY',
+        entity_name: channel_identityData.entity_name,
+        smart_code: CHANNEL_IDENTITY_SMART_CODES.ENTITY,
+        organization_id: currentOrganization?.id
+      }, channel_identityData)
+
+      // Emit creation event for audit trail
+      await channel_identityData.emitEvent(CHANNEL_IDENTITY_SMART_CODES.EVENT_CREATED, {
+        entity_id: result.id,
+        user_id: user?.id,
+        timestamp: new Date().toISOString(),
+        data: channel_identityData
+      })
+
+      setShowAddModal(false)
+      console.log('✅ ChannelIdentity created successfully')
+    } catch (error) {
+      console.error('❌ Error adding channel_identity:', error)
+    }
+  }
+
+  const handleEditChannelIdentity = async (channel_identityData: any) => {
+    if (!currentChannelIdentity) return
+    
+    try {
+      await channel_identityData.update(currentChannelIdentity.entity_id!, {
+        entity_name: channel_identityData.entity_name
+      }, channel_identityData)
+
+      // Emit update event
+      await channel_identityData.emitEvent(CHANNEL_IDENTITY_SMART_CODES.EVENT_UPDATED, {
+        entity_id: currentChannelIdentity.entity_id!,
+        user_id: user?.id,
+        timestamp: new Date().toISOString(),
+        changes: channel_identityData
+      })
+
+      setShowEditModal(false)
+      setCurrentChannelIdentity(null)
+      console.log('✅ ChannelIdentity updated successfully')
+    } catch (error) {
+      console.error('❌ Error updating channel_identity:', error)
+    }
+  }
+
+  const handleDeleteChannelIdentity = async () => {
+    if (!channel_identityToDelete) return
+    
+    try {
+      await channel_identityData.delete(channel_identityToDelete.entity_id!)
+
+      // Emit deletion event
+      await channel_identityData.emitEvent(CHANNEL_IDENTITY_SMART_CODES.EVENT_DELETED, {
+        entity_id: channel_identityToDelete.entity_id!,
+        user_id: user?.id,
+        timestamp: new Date().toISOString(),
+        entity_name: channel_identityToDelete.entity_name
+      })
+
+      setShowDeleteModal(false)
+      setChannelIdentityToDelete(null)
+      console.log('✅ ChannelIdentity deleted successfully')
+    } catch (error) {
+      console.error('❌ Error deleting channel_identity:', error)
+    }
+  }
+
+  
+  
+
+  // Enterprise security checks
+  if (!isAuthenticated) {
+    return (
+      <div className="p-4 text-center">
+        <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
+        <p>Please log in to access Channel Identities.</p>
+      </div>
+    )
+  }
+
+  if (channel_identityData.contextLoading) {
+    return (
+      <div className="p-4 text-center">
+        <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+        <p>Loading Channel Identities...</p>
+      </div>
+    )
+  }
+
+  if (!currentOrganization) {
+    return (
+      <div className="p-4 text-center">
+        <AlertCircle className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
+        <p>No organization context found. Please select an organization.</p>
+      </div>
+    )
+  }
+
+  return (
+    <MobilePageLayout
+      title="Channel Identities"
+      subtitle={`${channel_identitys.length} total channel_identitys`}
+      primaryColor="#8764b8"
+      accentColor="#5a4476"
+      showBackButton={false}
+    >
+      {/* Enterprise KPI Dashboard */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {kpis.map((kpi, index) => (
+          <MobileCard key={index} className="p-4 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">{kpi.title}</p>
+                <p className="text-2xl font-bold" style={{ color: '#8764b8' }}>{kpi.value}</p>
+                <p className={`text-xs font-medium ${kpi.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+                  {kpi.change}
+                </p>
+              </div>
+              <kpi.icon className="h-8 w-8 text-gray-400" />
+            </div>
+          </MobileCard>
+        ))}
+      </div>
+
+      {/* Enhanced Filters */}
+      <MobileFilters
+        fields={filterFields}
+        values={filters}
+        onChange={setFilters}
+        className="mb-6"
+      />
+
+      {/* Enterprise Data Table */}
+      <MobileDataTable
+        data={channel_identitys}
+        columns={columns}
+        selectedRows={selectedChannelIdentities}
+        onRowSelect={setSelectedChannelIdentities}
+        onRowClick={(channel_identity) => {
+          setCurrentChannelIdentity(channel_identity)
+          setShowEditModal(true)
+        }}
+        showBulkActions={selectedChannelIdentities.length > 0}
+        bulkActions={[
+          {
+            label: 'Delete Selected',
+            action: async () => {
+              // Bulk delete with events
+              for (const id of selectedChannelIdentities) {
+                await channel_identityData.delete(id.toString())
+              }
+              setSelectedChannelIdentities([])
+            },
+            variant: 'destructive'
+          }
+        ]}
+        mobileCardRender={(channel_identity) => (
+          <MobileCard key={channel_identity.id} className="p-4 hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h3 className="font-semibold text-lg">{channel_identity.entity_name}</h3>
+                
+                
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => {
+                    setCurrentChannelIdentity(channel_identity)
+                    setShowEditModal(true)
+                  }}
+                  className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                >
+                  <Edit className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => {
+                    setChannelIdentityToDelete(channel_identity)
+                    setShowDeleteModal(true)
+                  }}
+                  className="p-1 text-red-600 hover:bg-red-50 rounded"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Dynamic fields display */}
+            <div className="text-sm text-gray-600 mb-1">
+              <span className="font-medium">Contact Id:</span>{' '}
+              {channel_identity.contact_id || 'N/A'}
+            </div>
+            <div className="text-sm text-gray-600 mb-1">
+              <span className="font-medium">Channel Type:</span>{' '}
+              {channel_identity.channel_type || 'N/A'}
+            </div>
+            <div className="text-sm text-gray-600 mb-1">
+              <span className="font-medium">Address:</span>{' '}
+              {channel_identity.address || 'N/A'}
+            </div>
+            <div className="text-sm text-gray-600 mb-1">
+              <span className="font-medium">Verified:</span>{' '}
+              {channel_identity.verified || 'N/A'}
+            </div>
+            
+            <div className="text-xs text-gray-400 mt-2 pt-2 border-t">
+              Created: {channel_identity.created_at ? new Date(channel_identity.created_at).toLocaleDateString() : 'N/A'}
+            </div>
+          </MobileCard>
+        )}
+      />
+
+      {/* Floating Action Button */}
+      <button
+        onClick={() => setShowAddModal(true)}
+        className="fixed bottom-6 right-6 text-white rounded-full p-4 shadow-lg transition-colors z-50 hover:shadow-xl"
+        style={{ backgroundColor: '#8764b8' }}
+      >
+        <Plus className="h-6 w-6" />
+      </button>
+
+      {/* Enterprise Modals */}
+      {showAddModal && (
+        <ChannelIdentityModal
+          title="Add New ChannelIdentity"
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onSave={handleAddChannelIdentity}
+          dynamicFields={channel_identityData.dynamicFieldsConfig || []}
+          businessRules={{"duplicate_detection":true,"audit_trail":true,"requires_verification":true}}
+        />
+      )}
+
+      {showEditModal && currentChannelIdentity && (
+        <ChannelIdentityModal
+          title="Edit ChannelIdentity"
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false)
+            setCurrentChannelIdentity(null)
+          }}
+          onSave={handleEditChannelIdentity}
+          initialData={currentChannelIdentity}
+          dynamicFields={channel_identityData.dynamicFieldsConfig || []}
+          businessRules={{"duplicate_detection":true,"audit_trail":true,"requires_verification":true}}
+        />
+      )}
+
+      {showDeleteModal && channel_identityToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex items-center mb-4">
+              <AlertCircle className="h-6 w-6 text-red-500 mr-2" />
+              <h3 className="text-lg font-semibold">Delete ChannelIdentity</h3>
+            </div>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete "{channel_identityToDelete.entity_name}"? This action cannot be undone.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false)
+                  setChannelIdentityToDelete(null)
+                }}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteChannelIdentity}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </MobilePageLayout>
+  )
+}
+
+/**
+ * Enterprise ChannelIdentity Modal Component
+ * Enhanced with business rules and validation
+ */
+interface ChannelIdentityModalProps {
+  title: string
+  isOpen: boolean
+  onClose: () => void
+  onSave: (data: any) => void
+  initialData?: ChannelIdentity
+  dynamicFields: any[]
+  businessRules: any
+}
+
+function ChannelIdentityModal({ 
+  title, 
+  isOpen, 
+  onClose, 
+  onSave, 
+  initialData, 
+  dynamicFields,
+  businessRules 
+}: ChannelIdentityModalProps) {
+  const [formData, setFormData] = useState(() => {
+    const initial: any = { 
+      entity_name: initialData?.entity_name || '' 
+    }
+    
+    dynamicFields.forEach(field => {
+      initial[field.name] = initialData?.[field.name as keyof ChannelIdentity] || (field.type === 'number' ? 0 : '')
+    })
+    
+    return initial
+  })
+
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    // Validate required fields
+    dynamicFields.forEach(field => {
+      if (field.required && !formData[field.name]) {
+        newErrors[field.name] = `${field.label || field.name} is required`
+      }
+    })
+    
+    // Entity name validation
+    if (!formData.entity_name?.trim()) {
+      newErrors.entity_name = 'ChannelIdentity name is required'
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!validateForm()) return
+    
+    setIsSubmitting(true)
+    try {
+      await onSave(formData)
+    } catch (error) {
+      console.error('Form submission error:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-semibold">{title}</h3>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Entity Name Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                ChannelIdentity Name *
+              </label>
+              <input
+                type="text"
+                value={formData.entity_name}
+                onChange={(e) => setFormData({ ...formData, entity_name: e.target.value })}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.entity_name ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+                required
+                disabled={isSubmitting}
+              />
+              {errors.entity_name && (
+                <p className="mt-1 text-sm text-red-600">{errors.entity_name}</p>
+              )}
+            </div>
+
+            {/* Dynamic Fields with Enhanced Validation */}
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contact Id 
+              </label>
+              <input
+                type="text"
+                value={formData.contact_id}
+                onChange={(e) => setFormData({ ...formData, contact_id: e.target.value })}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.contact_id ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+                
+                disabled={isSubmitting}
+              />
+              {errors.contact_id && (
+                <p className="mt-1 text-sm text-red-600">{errors.contact_id}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Channel Type 
+              </label>
+              <input
+                type="text"
+                value={formData.channel_type}
+                onChange={(e) => setFormData({ ...formData, channel_type: e.target.value })}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.channel_type ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+                
+                disabled={isSubmitting}
+              />
+              {errors.channel_type && (
+                <p className="mt-1 text-sm text-red-600">{errors.channel_type}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address 
+              </label>
+              <input
+                type="text"
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.address ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+                
+                disabled={isSubmitting}
+              />
+              {errors.address && (
+                <p className="mt-1 text-sm text-red-600">{errors.address}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Verified 
+              </label>
+              <input
+                type="text"
+                value={formData.verified}
+                onChange={(e) => setFormData({ ...formData, verified: e.target.value })}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.verified ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+                
+                disabled={isSubmitting}
+              />
+              {errors.verified && (
+                <p className="mt-1 text-sm text-red-600">{errors.verified}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Preferred 
+              </label>
+              <input
+                type="text"
+                value={formData.preferred}
+                onChange={(e) => setFormData({ ...formData, preferred: e.target.value })}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.preferred ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+                
+                disabled={isSubmitting}
+              />
+              {errors.preferred && (
+                <p className="mt-1 text-sm text-red-600">{errors.preferred}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status 
+              </label>
+              <input
+                type="text"
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.status ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+                
+                disabled={isSubmitting}
+              />
+              {errors.status && (
+                <p className="mt-1 text-sm text-red-600">{errors.status}</p>
+              )}
+            </div>
+
+            {/* Business Rules Info */}
+            
+
+            {/* Form Actions */}
+            <div className="flex justify-end space-x-3 pt-4 border-t">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isSubmitting}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-4 py-2 text-white rounded-md hover:opacity-90 flex items-center disabled:opacity-50"
+                style={{ backgroundColor: '#8764b8' }}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}

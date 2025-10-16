@@ -1,0 +1,1471 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Entity Presets Validation > should match snapshot 1`] = `
+{
+  "APPOINTMENT": {
+    "dynamicFields": [
+      {
+        "name": "customer_id",
+        "required": true,
+        "smart_code": "HERA.SALON.APPT.FIELD.CUSTOMER_ID.V1",
+        "type": "text",
+        "ui": {
+          "label": "Customer ID",
+          "required": true,
+        },
+      },
+      {
+        "name": "customer_name",
+        "smart_code": "HERA.SALON.APPT.FIELD.CUSTOMER_NAME.V1",
+        "type": "text",
+        "ui": {
+          "label": "Customer Name",
+          "placeholder": "Customer name",
+        },
+      },
+      {
+        "name": "stylist_id",
+        "smart_code": "HERA.SALON.APPT.FIELD.STYLIST_ID.V1",
+        "type": "text",
+        "ui": {
+          "label": "Stylist ID",
+        },
+      },
+      {
+        "name": "stylist_name",
+        "smart_code": "HERA.SALON.APPT.FIELD.STYLIST_NAME.V1",
+        "type": "text",
+        "ui": {
+          "label": "Stylist Name",
+          "placeholder": "Stylist name",
+        },
+      },
+      {
+        "defaultValue": [],
+        "name": "service_ids",
+        "smart_code": "HERA.SALON.APPT.FIELD.SERVICE_IDS.V1",
+        "type": "json",
+        "ui": {
+          "helpText": "Array of service IDs",
+          "label": "Services",
+          "widget": "json",
+        },
+      },
+      {
+        "name": "start_time",
+        "required": true,
+        "smart_code": "HERA.SALON.APPT.FIELD.START_TIME.V1",
+        "type": "datetime",
+        "ui": {
+          "label": "Start Time",
+          "required": true,
+          "widget": "date",
+        },
+      },
+      {
+        "name": "end_time",
+        "smart_code": "HERA.SALON.APPT.FIELD.END_TIME.V1",
+        "type": "datetime",
+        "ui": {
+          "label": "End Time",
+          "widget": "date",
+        },
+      },
+      {
+        "defaultValue": 60,
+        "name": "duration_minutes",
+        "smart_code": "HERA.SALON.APPT.FIELD.DURATION.V1",
+        "type": "number",
+        "ui": {
+          "label": "Duration (minutes)",
+          "max": 480,
+          "min": 15,
+          "placeholder": "60",
+        },
+      },
+      {
+        "defaultValue": 0,
+        "name": "price",
+        "smart_code": "HERA.SALON.APPT.FIELD.PRICE.V1",
+        "type": "number",
+        "ui": {
+          "decimals": 2,
+          "label": "Price (AED)",
+          "min": 0,
+          "placeholder": "0.00",
+        },
+      },
+      {
+        "defaultValue": "AED",
+        "name": "currency_code",
+        "smart_code": "HERA.SALON.APPT.FIELD.CURRENCY.V1",
+        "type": "text",
+        "ui": {
+          "label": "Currency",
+          "placeholder": "AED",
+        },
+      },
+      {
+        "name": "notes",
+        "smart_code": "HERA.SALON.APPT.FIELD.NOTES.V1",
+        "type": "text",
+        "ui": {
+          "label": "Notes",
+          "placeholder": "Special requests or notes",
+          "widget": "textarea",
+        },
+      },
+      {
+        "name": "branch_id",
+        "smart_code": "HERA.SALON.APPT.FIELD.BRANCH_ID.V1",
+        "type": "text",
+        "ui": {
+          "label": "Branch ID",
+        },
+      },
+      {
+        "defaultValue": "booked",
+        "name": "status",
+        "smart_code": "HERA.SALON.APPT.DYN.STATUS.v1",
+        "type": "text",
+        "ui": {
+          "label": "Status",
+          "widget": "select",
+        },
+      },
+      {
+        "defaultValue": false,
+        "name": "reminder_sent",
+        "smart_code": "HERA.SALON.APPT.DYN.REMINDER.v1",
+        "type": "boolean",
+      },
+    ],
+    "entity_type": "APPOINTMENT",
+    "labels": {
+      "plural": "Appointments",
+      "singular": "Appointment",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.APPT.REL.FOR_CUSTOMER.v1",
+        "type": "FOR_CUSTOMER",
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.APPT.REL.WITH_EMPLOYEE.v1",
+        "type": "WITH_EMPLOYEE",
+      },
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.APPT.REL.INCLUDES_SERVICE.v1",
+        "type": "INCLUDES_SERVICE",
+      },
+    ],
+  },
+  "BRANCH": {
+    "dynamicFields": [
+      {
+        "name": "code",
+        "required": true,
+        "smart_code": "HERA.SALON.LOCATION.DYN.CODE.V1",
+        "type": "text",
+        "ui": {
+          "helpText": "Unique identifier for this branch",
+          "label": "Branch Code",
+          "placeholder": "BR-001",
+        },
+      },
+      {
+        "name": "address",
+        "smart_code": "HERA.SALON.LOCATION.DYN.ADDRESS.V1",
+        "type": "text",
+        "ui": {
+          "label": "Address",
+          "placeholder": "123 Main St, City, State ZIP",
+          "widget": "textarea",
+        },
+      },
+      {
+        "name": "phone",
+        "smart_code": "HERA.SALON.LOCATION.DYN.PHONE.V1",
+        "type": "text",
+        "ui": {
+          "label": "Phone",
+          "placeholder": "+1 (555) 123-4567",
+        },
+      },
+      {
+        "defaultValue": "America/New_York",
+        "name": "timezone",
+        "smart_code": "HERA.SALON.LOCATION.DYN.TIMEZONE.V1",
+        "type": "text",
+        "ui": {
+          "helpText": "Timezone for scheduling and reporting",
+          "label": "Timezone",
+          "placeholder": "America/New_York",
+        },
+      },
+      {
+        "defaultValue": "active",
+        "name": "status",
+        "smart_code": "HERA.SALON.LOCATION.DYN.STATUS.V1",
+        "type": "text",
+        "ui": {
+          "helpText": "Active branches can receive bookings",
+          "label": "Status",
+          "options": [
+            {
+              "label": "Active",
+              "value": "active",
+            },
+            {
+              "label": "Inactive",
+              "value": "inactive",
+            },
+          ],
+          "widget": "select",
+        },
+      },
+    ],
+    "entity_type": "BRANCH",
+    "formGroups": [
+      {
+        "fields": [
+          "entity_name",
+          "code",
+          "status",
+        ],
+        "name": "basic",
+        "title": "Basic Information",
+      },
+      {
+        "fields": [
+          "address",
+          "phone",
+          "timezone",
+        ],
+        "name": "location",
+        "title": "Location Details",
+      },
+    ],
+    "labels": {
+      "plural": "Branches",
+      "singular": "Branch",
+    },
+    "permissions": {
+      "create": [
+        "owner",
+        "manager",
+      ],
+      "delete": [
+        "owner",
+      ],
+      "update": [
+        "owner",
+        "manager",
+      ],
+      "view": [
+        "owner",
+        "manager",
+        "receptionist",
+        "staff",
+      ],
+    },
+    "relationships": [
+      {
+        "cardinality": "1:1",
+        "from": "STAFF",
+        "smart_code": "HERA.SALON.STAFF.REL.MEMBER_OF.V1",
+        "to": "BRANCH",
+        "type": "STAFF_MEMBER_OF",
+        "ui": {
+          "label": "Staff Members",
+          "optionsQueryKey": "staff",
+          "widget": "multiselect",
+        },
+      },
+      {
+        "cardinality": "M:N",
+        "from": "SERVICE",
+        "smart_code": "HERA.SALON.SERVICE.REL.AVAILABLE_AT.V1",
+        "to": "BRANCH",
+        "type": "SERVICE_AVAILABLE_AT",
+        "ui": {
+          "label": "Available Services",
+          "optionsQueryKey": "services",
+          "widget": "multiselect",
+        },
+      },
+    ],
+    "smart_code": "HERA.SALON.LOCATION.ENTITY.BRANCH.V1",
+    "ui": {
+      "description": "Manage your salon locations and branches",
+      "displayName": "Branch",
+      "icon": "Building2",
+      "listFields": [
+        "entity_name",
+        "code",
+        "address",
+        "phone",
+        "status",
+      ],
+      "pluralName": "Branches",
+      "searchFields": [
+        "entity_name",
+        "code",
+        "address",
+      ],
+    },
+  },
+  "BRAND": {
+    "dynamicFields": [
+      {
+        "name": "website",
+        "smart_code": "HERA.SALON.BRAND.DYN.WEBSITE.v1",
+        "type": "text",
+      },
+      {
+        "name": "logo_url",
+        "smart_code": "HERA.SALON.BRAND.DYN.LOGO.v1",
+        "type": "text",
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.SALON.BRAND.DYN.ACTIVE.v1",
+        "type": "boolean",
+      },
+    ],
+    "entity_type": "BRAND",
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.BRAND.REL.OWNED_BY.v1",
+        "type": "OWNED_BY_VENDOR",
+      },
+    ],
+  },
+  "CATEGORY": {
+    "dynamicFields": [
+      {
+        "defaultValue": 0,
+        "name": "display_order",
+        "smart_code": "HERA.SALON.CATEGORY.DYN.ORDER.v1",
+        "type": "number",
+      },
+      {
+        "name": "icon",
+        "smart_code": "HERA.SALON.CATEGORY.DYN.ICON.v1",
+        "type": "text",
+      },
+      {
+        "name": "color",
+        "smart_code": "HERA.SALON.CATEGORY.DYN.COLOR.v1",
+        "type": "text",
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.SALON.CATEGORY.DYN.ACTIVE.v1",
+        "type": "boolean",
+      },
+    ],
+    "entity_type": "CATEGORY",
+    "labels": {
+      "plural": "Categories",
+      "singular": "Category",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.CATEGORY.REL.PARENT.v1",
+        "type": "PARENT_CATEGORY",
+      },
+    ],
+  },
+  "CERTIFICATE": {
+    "dynamicFields": [
+      {
+        "name": "cert_number",
+        "smart_code": "HERA.JEWELRY.CERT.DYN.NUMBER.v1",
+        "type": "text",
+      },
+      {
+        "name": "issuer",
+        "smart_code": "HERA.JEWELRY.CERT.DYN.ISSUER.v1",
+        "type": "text",
+      },
+      {
+        "name": "issue_date",
+        "smart_code": "HERA.JEWELRY.CERT.DYN.ISSUE_DATE.v1",
+        "type": "date",
+      },
+      {
+        "name": "pdf_url",
+        "smart_code": "HERA.JEWELRY.CERT.DYN.PDF_URL.v1",
+        "type": "text",
+      },
+    ],
+    "entity_type": "CERTIFICATE",
+    "labels": {
+      "plural": "Certificates",
+      "singular": "Certificate",
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.JEWELRY.CERT.REL.FOR_JOB.v1",
+        "type": "FOR_JOB",
+      },
+    ],
+  },
+  "CUSTOMER": {
+    "dynamicFields": [
+      {
+        "name": "phone",
+        "required": true,
+        "smart_code": "HERA.SALON.CUSTOMER.DYN.PHONE.v1",
+        "type": "text",
+      },
+      {
+        "name": "email",
+        "smart_code": "HERA.SALON.CUSTOMER.DYN.EMAIL.v1",
+        "type": "text",
+      },
+      {
+        "defaultValue": false,
+        "name": "vip",
+        "smart_code": "HERA.SALON.CUSTOMER.DYN.VIP.v1",
+        "type": "boolean",
+      },
+      {
+        "name": "notes",
+        "smart_code": "HERA.SALON.CUSTOMER.DYN.NOTES.v1",
+        "type": "text",
+      },
+      {
+        "name": "birthday",
+        "smart_code": "HERA.SALON.CUSTOMER.DYN.BIRTHDAY.v1",
+        "type": "date",
+      },
+      {
+        "defaultValue": 0,
+        "name": "loyalty_points",
+        "smart_code": "HERA.SALON.CUSTOMER.DYN.LOYALTY.POINTS.v1",
+        "type": "number",
+      },
+      {
+        "defaultValue": 0,
+        "name": "lifetime_value",
+        "smart_code": "HERA.SALON.CUSTOMER.DYN.LIFETIME.VALUE.v1",
+        "type": "number",
+      },
+    ],
+    "entity_type": "CUSTOMER",
+    "labels": {
+      "plural": "Customers",
+      "singular": "Customer",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.CUSTOMER.REL.REFERRED_BY.v1",
+        "type": "REFERRED_BY",
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.CUSTOMER.REL.PREFERRED_STYLIST.v1",
+        "type": "PREFERRED_STYLIST",
+      },
+    ],
+  },
+  "EMPLOYEE": {
+    "dynamicFields": [
+      {
+        "name": "phone",
+        "required": true,
+        "smart_code": "HERA.SALON.EMPLOYEE.DYN.PHONE.v1",
+        "type": "text",
+      },
+      {
+        "name": "email",
+        "required": true,
+        "smart_code": "HERA.SALON.EMPLOYEE.DYN.EMAIL.v1",
+        "type": "text",
+      },
+      {
+        "defaultValue": 0,
+        "name": "hour_rate",
+        "smart_code": "HERA.SALON.EMPLOYEE.DYN.RATE.HOUR.v1",
+        "type": "number",
+      },
+      {
+        "defaultValue": 0.5,
+        "name": "commission_rate",
+        "smart_code": "HERA.SALON.EMPLOYEE.DYN.COMMISSION.v1",
+        "type": "number",
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.SALON.EMPLOYEE.DYN.ACTIVE.v1",
+        "type": "boolean",
+      },
+      {
+        "name": "hire_date",
+        "smart_code": "HERA.SALON.EMPLOYEE.DYN.HIRE_DATE.v1",
+        "type": "date",
+      },
+    ],
+    "entity_type": "EMPLOYEE",
+    "labels": {
+      "plural": "Employees",
+      "singular": "Employee",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.HCM.EMPLOYMENT.REL.HAS_ROLE.v1",
+        "type": "HAS_ROLE",
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.HCM.EMPLOYMENT.REL.REPORTS_TO.v1",
+        "type": "REPORTS_TO",
+      },
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.EMPLOYEE.REL.CAN_PERFORM.v1",
+        "type": "CAN_PERFORM",
+      },
+    ],
+  },
+  "GRADING_JOB": {
+    "dynamicFields": [
+      {
+        "name": "status",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.STATUS.v1",
+        "type": "text",
+        "ui": {
+          "label": "Status",
+          "optionsQueryKey": "GRADING_STATUS",
+          "widget": "select",
+        },
+      },
+      {
+        "name": "priority",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.PRIORITY.v1",
+        "type": "text",
+        "ui": {
+          "optionsQueryKey": "PRIORITY_SIMPLE",
+          "widget": "select",
+        },
+      },
+      {
+        "name": "carat",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.CARAT.v1",
+        "type": "number",
+      },
+      {
+        "name": "cut",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.CUT.v1",
+        "type": "text",
+        "ui": {
+          "optionsQueryKey": "CUT_BANDS",
+          "widget": "select",
+        },
+      },
+      {
+        "name": "color",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.COLOR.v1",
+        "type": "text",
+        "ui": {
+          "optionsQueryKey": "COLOR_BANDS",
+          "widget": "select",
+        },
+      },
+      {
+        "name": "clarity",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.CLARITY.v1",
+        "type": "text",
+        "ui": {
+          "optionsQueryKey": "CLARITY_BANDS",
+          "widget": "select",
+        },
+      },
+      {
+        "name": "measurements",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.MEASUREMENTS.v1",
+        "type": "text",
+      },
+      {
+        "name": "certificate_number",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.CERT_NO.v1",
+        "type": "text",
+      },
+      {
+        "name": "pass",
+        "smart_code": "HERA.JEWELRY.GRADING.DYN.PASS.v1",
+        "type": "boolean",
+      },
+    ],
+    "entity_type": "GRADING_JOB",
+    "labels": {
+      "plural": "Grading Jobs",
+      "singular": "Grading Job",
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.JEWELRY.GRADING.REL.OF_ITEM.v1",
+        "type": "OF_ITEM",
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.JEWELRY.GRADING.REL.ASSIGNED_TO.v1",
+        "type": "ASSIGNED_TO",
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.JEWELRY.GRADING.REL.ISSUES_CERT.v1",
+        "type": "ISSUES_CERT",
+      },
+    ],
+  },
+  "JEWELRY_CATEGORY": {
+    "dynamicFields": [
+      {
+        "defaultValue": 0,
+        "name": "display_order",
+        "smart_code": "HERA.JEWELRY.CATEGORY.DYN.ORDER.v1",
+        "type": "number",
+        "ui": {
+          "helpText": "Sort order for display",
+          "label": "Display Order",
+          "placeholder": "1",
+        },
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.JEWELRY.CATEGORY.DYN.ACTIVE.v1",
+        "type": "boolean",
+        "ui": {
+          "label": "Active",
+          "widget": "checkbox",
+        },
+      },
+    ],
+    "entity_type": "JEWELRY_CATEGORY",
+    "labels": {
+      "plural": "Categories",
+      "singular": "Category",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [],
+  },
+  "JEWELRY_ITEM": {
+    "dynamicFields": [
+      {
+        "name": "sku",
+        "required": true,
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.SKU.v1",
+        "type": "text",
+        "ui": {
+          "helpText": "Unique stock keeping unit identifier",
+          "label": "SKU",
+          "placeholder": "e.g., DSR-001",
+        },
+      },
+      {
+        "name": "purity",
+        "required": true,
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.PURITY.v1",
+        "type": "number",
+        "ui": {
+          "helpText": "Gold purity in karats (10, 14, 18, 22, 24)",
+          "label": "Purity (Karat)",
+          "max": 24,
+          "min": 10,
+          "placeholder": "18",
+        },
+      },
+      {
+        "name": "gross_weight",
+        "required": true,
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.GROSS_WEIGHT.v1",
+        "type": "number",
+        "ui": {
+          "decimals": 3,
+          "helpText": "Total weight including stones",
+          "label": "Gross Weight (g)",
+          "placeholder": "5.2",
+        },
+      },
+      {
+        "name": "net_weight",
+        "required": true,
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.NET_WEIGHT.v1",
+        "type": "number",
+        "ui": {
+          "decimals": 3,
+          "helpText": "Metal weight only (gross - stone)",
+          "label": "Net Weight (g)",
+          "placeholder": "4.8",
+        },
+      },
+      {
+        "defaultValue": 0,
+        "name": "stone_weight",
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.STONE_WEIGHT.v1",
+        "type": "number",
+        "ui": {
+          "decimals": 3,
+          "helpText": "Weight of stones only",
+          "label": "Stone Weight (g)",
+          "placeholder": "0.4",
+        },
+      },
+      {
+        "defaultValue": 1,
+        "name": "quantity",
+        "required": true,
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.QUANTITY.v1",
+        "type": "number",
+        "ui": {
+          "helpText": "Items in stock",
+          "label": "Quantity",
+          "min": 0,
+          "placeholder": "1",
+        },
+      },
+      {
+        "name": "unit_price",
+        "required": true,
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.UNIT_PRICE.v1",
+        "type": "number",
+        "ui": {
+          "decimals": 2,
+          "helpText": "Selling price per item",
+          "label": "Unit Price ($)",
+          "placeholder": "12500",
+        },
+      },
+      {
+        "name": "location",
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.LOCATION.v1",
+        "type": "text",
+        "ui": {
+          "helpText": "Storage location in store",
+          "label": "Location",
+          "placeholder": "Vault A-1",
+        },
+      },
+      {
+        "defaultValue": "in_stock",
+        "name": "status",
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.STATUS.v1",
+        "type": "text",
+        "ui": {
+          "label": "Status",
+          "optionsQueryKey": "jewelry-status-options",
+          "widget": "select",
+        },
+      },
+      {
+        "name": "description",
+        "smart_code": "HERA.JEWELRY.ITEM.DYN.DESCRIPTION.v1",
+        "type": "text",
+        "ui": {
+          "label": "Description",
+          "placeholder": "Detailed item description...",
+          "widget": "textarea",
+        },
+      },
+    ],
+    "entity_type": "JEWELRY_ITEM",
+    "labels": {
+      "plural": "Jewelry Items",
+      "singular": "Jewelry Item",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.JEWELRY.ITEM.REL.HAS_CATEGORY.v1",
+        "type": "HAS_CATEGORY",
+        "ui": {
+          "label": "Category",
+          "optionsQueryKey": "jewelry-categories",
+          "widget": "select",
+        },
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.JEWELRY.ITEM.REL.SUPPLIED_BY.v1",
+        "type": "SUPPLIED_BY",
+        "ui": {
+          "label": "Supplier",
+          "optionsQueryKey": "jewelry-suppliers",
+          "widget": "select",
+        },
+      },
+    ],
+  },
+  "JEWELRY_SUPPLIER": {
+    "dynamicFields": [
+      {
+        "name": "phone",
+        "required": true,
+        "smart_code": "HERA.JEWELRY.SUPPLIER.DYN.PHONE.v1",
+        "type": "text",
+        "ui": {
+          "helpText": "Primary contact number",
+          "label": "Phone",
+          "placeholder": "+1-555-0123",
+        },
+      },
+      {
+        "name": "email",
+        "smart_code": "HERA.JEWELRY.SUPPLIER.DYN.EMAIL.v1",
+        "type": "text",
+        "ui": {
+          "label": "Email",
+          "placeholder": "supplier@example.com",
+        },
+      },
+      {
+        "defaultValue": "NET30",
+        "name": "payment_terms",
+        "smart_code": "HERA.JEWELRY.SUPPLIER.DYN.PAYMENT_TERMS.v1",
+        "type": "text",
+        "ui": {
+          "label": "Payment Terms",
+          "placeholder": "NET30",
+        },
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.JEWELRY.SUPPLIER.DYN.ACTIVE.v1",
+        "type": "boolean",
+        "ui": {
+          "label": "Active",
+          "widget": "checkbox",
+        },
+      },
+    ],
+    "entity_type": "JEWELRY_SUPPLIER",
+    "labels": {
+      "plural": "Suppliers",
+      "singular": "Supplier",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [],
+  },
+  "PRODUCT": {
+    "dynamicFields": [
+      {
+        "name": "price_market",
+        "required": true,
+        "smart_code": "HERA.SALON.PRODUCT.DYN.PRICE.MARKET.v1",
+        "type": "number",
+        "ui": {
+          "helpText": "Selling price for customers",
+          "label": "Market Price (AED)",
+          "placeholder": "0.00",
+        },
+      },
+      {
+        "name": "price_cost",
+        "required": true,
+        "smart_code": "HERA.SALON.PRODUCT.DYN.PRICE.COST.v1",
+        "type": "number",
+        "ui": {
+          "helpText": "Purchase cost from supplier",
+          "label": "Cost Price (AED)",
+          "placeholder": "0.00",
+          "roles": [
+            "owner",
+            "manager",
+          ],
+        },
+      },
+      {
+        "name": "sku",
+        "smart_code": "HERA.SALON.PRODUCT.DYN.SKU.v1",
+        "type": "text",
+      },
+      {
+        "defaultValue": 0,
+        "name": "stock_quantity",
+        "smart_code": "HERA.SALON.PRODUCT.DYN.STOCK.QTY.v1",
+        "type": "number",
+      },
+      {
+        "defaultValue": 10,
+        "name": "reorder_level",
+        "smart_code": "HERA.SALON.PRODUCT.DYN.REORDER.LEVEL.v1",
+        "type": "number",
+      },
+      {
+        "name": "size",
+        "smart_code": "HERA.SALON.PRODUCT.DYN.SIZE.v1",
+        "type": "text",
+      },
+      {
+        "name": "barcode",
+        "smart_code": "HERA.SALON.PRODUCT.DYN.BARCODE.v1",
+        "type": "text",
+      },
+    ],
+    "entity_type": "PRODUCT",
+    "labels": {
+      "plural": "Products",
+      "singular": "Product",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.PRODUCT.REL.HAS_CATEGORY.v1",
+        "type": "HAS_CATEGORY",
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.PRODUCT.REL.HAS_BRAND.v1",
+        "type": "HAS_BRAND",
+      },
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.PRODUCT.REL.SUPPLIED_BY.v1",
+        "type": "SUPPLIED_BY",
+      },
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.PRODUCT.REL.STOCK_AT.v1",
+        "type": "STOCK_AT",
+      },
+    ],
+  },
+  "ROLE": {
+    "dynamicFields": [
+      {
+        "name": "title",
+        "required": true,
+        "smart_code": "HERA.SALON.ROLE.DYN.TITLE.V1",
+        "type": "text",
+        "ui": {
+          "label": "Title",
+          "placeholder": "Enter role title",
+          "required": true,
+        },
+      },
+      {
+        "name": "description",
+        "smart_code": "HERA.SALON.ROLE.DYN.DESCRIPTION.V1",
+        "type": "text",
+        "ui": {
+          "label": "Description",
+          "placeholder": "Role description",
+          "widget": "textarea",
+        },
+      },
+      {
+        "defaultValue": [],
+        "name": "permissions",
+        "smart_code": "HERA.SALON.ROLE.DYN.PERMISSIONS.V1",
+        "type": "json",
+        "ui": {
+          "helpText": "Array of permission strings",
+          "label": "Permissions",
+          "roles": [
+            "owner",
+            "manager",
+          ],
+          "widget": "json",
+        },
+      },
+      {
+        "defaultValue": "active",
+        "name": "status",
+        "smart_code": "HERA.SALON.ROLE.DYN.STATUS.V1",
+        "type": "text",
+        "ui": {
+          "label": "Status",
+          "options": [
+            {
+              "label": "Active",
+              "value": "active",
+            },
+            {
+              "label": "Inactive",
+              "value": "inactive",
+            },
+          ],
+          "widget": "select",
+        },
+      },
+      {
+        "name": "rank",
+        "smart_code": "HERA.SALON.ROLE.DYN.RANK.V1",
+        "type": "number",
+        "ui": {
+          "label": "Rank",
+          "max": 10,
+          "min": 1,
+          "placeholder": "Role hierarchy rank (higher = more senior)",
+        },
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.SALON.ROLE.DYN.ACTIVE.V1",
+        "type": "boolean",
+        "ui": {
+          "label": "Active",
+          "widget": "checkbox",
+        },
+      },
+    ],
+    "entity_type": "ROLE",
+    "labels": {
+      "plural": "Roles",
+      "singular": "Role",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [],
+  },
+  "SERVICE": {
+    "dynamicFields": [
+      {
+        "name": "price_market",
+        "required": true,
+        "smart_code": "HERA.SALON.SERVICE.DYN.PRICE.MARKET.v1",
+        "type": "number",
+      },
+      {
+        "name": "duration_min",
+        "required": true,
+        "smart_code": "HERA.SALON.SERVICE.DYN.DURATION.MIN.v1",
+        "type": "number",
+      },
+      {
+        "defaultValue": 0.5,
+        "name": "commission_rate",
+        "smart_code": "HERA.SALON.SERVICE.DYN.COMMISSION.v1",
+        "type": "number",
+      },
+      {
+        "name": "description",
+        "smart_code": "HERA.SALON.SERVICE.DYN.DESCRIPTION.v1",
+        "type": "text",
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.SALON.SERVICE.DYN.ACTIVE.v1",
+        "type": "boolean",
+      },
+      {
+        "defaultValue": false,
+        "name": "requires_booking",
+        "smart_code": "HERA.SALON.SERVICE.DYN.REQUIRES_BOOKING.v1",
+        "type": "boolean",
+      },
+    ],
+    "entity_type": "SERVICE",
+    "labels": {
+      "plural": "Services",
+      "singular": "Service",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.SERVICE.REL.HAS_CATEGORY.v1",
+        "type": "HAS_CATEGORY",
+      },
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.SERVICE.REL.PERFORMED_BY_ROLE.v1",
+        "type": "PERFORMED_BY_ROLE",
+      },
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.SERVICE.REL.REQUIRES_PRODUCT.v1",
+        "type": "REQUIRES_PRODUCT",
+      },
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.SERVICE.REL.AVAILABLE_AT.v1",
+        "type": "AVAILABLE_AT",
+      },
+    ],
+  },
+  "SERVICE_CATEGORY": {
+    "dynamicFields": [
+      {
+        "defaultValue": "#8B5CF6",
+        "name": "color",
+        "smart_code": "HERA.SALON.SVC.CATEGORY.DYN.COLOR.v1",
+        "type": "text",
+        "ui": {
+          "helpText": "Hex color for category display",
+          "label": "Color",
+          "placeholder": "#8B5CF6",
+        },
+      },
+      {
+        "defaultValue": "Sparkles",
+        "name": "icon",
+        "smart_code": "HERA.SALON.SVC.CATEGORY.DYN.ICON.v1",
+        "type": "text",
+        "ui": {
+          "helpText": "Lucide icon name",
+          "label": "Icon",
+          "placeholder": "Sparkles",
+        },
+      },
+      {
+        "defaultValue": 0,
+        "name": "display_order",
+        "smart_code": "HERA.SALON.SVC.CATEGORY.DYN.ORDER.v1",
+        "type": "number",
+        "ui": {
+          "helpText": "Sort order for display",
+          "label": "Display Order",
+          "placeholder": "0",
+        },
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.SALON.SVC.CATEGORY.DYN.ACTIVE.v1",
+        "type": "boolean",
+        "ui": {
+          "label": "Active",
+          "widget": "checkbox",
+        },
+      },
+    ],
+    "entity_type": "SERVICE_CATEGORY",
+    "labels": {
+      "plural": "Service Categories",
+      "singular": "Service Category",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.SVC.CATEGORY.REL.PARENT.v1",
+        "type": "PARENT_CATEGORY",
+        "ui": {
+          "label": "Parent Category",
+          "optionsQueryKey": "service-categories",
+          "widget": "select",
+        },
+      },
+    ],
+  },
+  "STAFF": {
+    "dynamicFields": [
+      {
+        "name": "first_name",
+        "required": true,
+        "smart_code": "HERA.SALON.STAFF.DYN.FIRST_NAME.V1",
+        "type": "text",
+        "ui": {
+          "label": "First Name",
+          "placeholder": "Enter first name",
+          "required": true,
+        },
+      },
+      {
+        "name": "last_name",
+        "required": true,
+        "smart_code": "HERA.SALON.STAFF.DYN.LAST_NAME.V1",
+        "type": "text",
+        "ui": {
+          "label": "Last Name",
+          "placeholder": "Enter last name",
+          "required": true,
+        },
+      },
+      {
+        "name": "email",
+        "required": true,
+        "smart_code": "HERA.SALON.STAFF.DYN.EMAIL.V1",
+        "type": "text",
+        "ui": {
+          "helpText": "Valid email address required",
+          "label": "Email",
+          "placeholder": "staff@salon.com",
+          "required": true,
+        },
+      },
+      {
+        "name": "phone",
+        "smart_code": "HERA.SALON.STAFF.DYN.PHONE.V1",
+        "type": "text",
+        "ui": {
+          "label": "Phone Number",
+          "placeholder": "+971 50 123 4567",
+        },
+      },
+      {
+        "name": "role_title",
+        "smart_code": "HERA.SALON.STAFF.DYN.ROLE_TITLE.V1",
+        "type": "text",
+        "ui": {
+          "helpText": "Job title or designation",
+          "label": "Role Title",
+          "placeholder": "e.g., Senior Stylist, Receptionist",
+        },
+      },
+      {
+        "defaultValue": "active",
+        "name": "status",
+        "smart_code": "HERA.SALON.STAFF.DYN.STATUS.V1",
+        "type": "text",
+        "ui": {
+          "helpText": "Current employment status",
+          "label": "Status",
+          "widget": "select",
+        },
+      },
+      {
+        "name": "hire_date",
+        "smart_code": "HERA.SALON.STAFF.DYN.HIRE_DATE.V1",
+        "type": "date",
+        "ui": {
+          "label": "Hire Date",
+          "widget": "date",
+        },
+      },
+      {
+        "defaultValue": 0,
+        "name": "hourly_cost",
+        "smart_code": "HERA.SALON.STAFF.DYN.PRICE.COST.V1",
+        "type": "number",
+        "ui": {
+          "decimals": 2,
+          "helpText": "Internal cost per hour (visible to managers only)",
+          "label": "Hourly Cost (AED)",
+          "min": 0,
+          "placeholder": "0.00",
+          "roles": [
+            "owner",
+            "manager",
+          ],
+        },
+      },
+      {
+        "defaultValue": 0,
+        "name": "display_rate",
+        "smart_code": "HERA.SALON.STAFF.DYN.RATE.DISPLAY.V1",
+        "type": "number",
+        "ui": {
+          "decimals": 2,
+          "helpText": "Customer-facing hourly rate",
+          "label": "Display Rate (AED)",
+          "min": 0,
+          "placeholder": "0.00",
+        },
+      },
+      {
+        "defaultValue": [],
+        "name": "skills",
+        "smart_code": "HERA.SALON.STAFF.DYN.SKILLS.V1",
+        "type": "json",
+        "ui": {
+          "helpText": "Array of skill tags (e.g., ["color", "keratin", "extensions"])",
+          "label": "Skills",
+          "widget": "json",
+        },
+      },
+      {
+        "name": "bio",
+        "smart_code": "HERA.SALON.STAFF.DYN.BIO.V1",
+        "type": "text",
+        "ui": {
+          "label": "Biography",
+          "placeholder": "Professional bio for client-facing profiles",
+          "widget": "textarea",
+        },
+      },
+      {
+        "name": "avatar_url",
+        "smart_code": "HERA.SALON.STAFF.DYN.AVATAR_URL.V1",
+        "type": "text",
+        "ui": {
+          "helpText": "Profile picture URL",
+          "label": "Avatar URL",
+          "placeholder": "https://example.com/avatar.jpg",
+        },
+      },
+    ],
+    "entity_type": "STAFF",
+    "labels": {
+      "plural": "Staff",
+      "singular": "Staff Member",
+    },
+    "permissions": {
+      "create": [Function],
+      "delete": [Function],
+      "edit": [Function],
+      "view": [Function],
+    },
+    "relationships": [
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.STAFF.REL.HAS_ROLE.V1",
+        "type": "STAFF_HAS_ROLE",
+        "ui": {
+          "label": "Role",
+          "optionsQueryKey": "roles",
+          "widget": "select",
+        },
+      },
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.STAFF.REL.CAN_SERVICE.V1",
+        "type": "STAFF_CAN_SERVICE",
+        "ui": {
+          "helpText": "Services this staff member is qualified to perform",
+          "label": "Can Perform Services",
+          "optionsQueryKey": "services",
+          "widget": "multiselect",
+        },
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.STAFF.REL.MEMBER_OF.V1",
+        "type": "STAFF_MEMBER_OF",
+        "ui": {
+          "label": "Salon Location",
+          "optionsQueryKey": "locations",
+          "widget": "select",
+        },
+      },
+      {
+        "cardinality": "one",
+        "smart_code": "HERA.SALON.STAFF.REL.REPORTS_TO.V1",
+        "type": "STAFF_REPORTS_TO",
+        "ui": {
+          "helpText": "Direct manager (optional)",
+          "label": "Reports To",
+          "optionsQueryKey": "staff",
+          "widget": "select",
+        },
+      },
+    ],
+  },
+  "VENDOR": {
+    "dynamicFields": [
+      {
+        "name": "phone",
+        "required": true,
+        "smart_code": "HERA.SALON.VENDOR.DYN.PHONE.v1",
+        "type": "text",
+      },
+      {
+        "name": "email",
+        "smart_code": "HERA.SALON.VENDOR.DYN.EMAIL.v1",
+        "type": "text",
+      },
+      {
+        "name": "website",
+        "smart_code": "HERA.SALON.VENDOR.DYN.WEBSITE.v1",
+        "type": "text",
+      },
+      {
+        "defaultValue": "NET30",
+        "name": "payment_terms",
+        "smart_code": "HERA.SALON.VENDOR.DYN.PAYMENT_TERMS.v1",
+        "type": "text",
+      },
+      {
+        "defaultValue": 0,
+        "name": "credit_limit",
+        "smart_code": "HERA.SALON.VENDOR.DYN.CREDIT_LIMIT.v1",
+        "type": "number",
+      },
+      {
+        "defaultValue": true,
+        "name": "active",
+        "smart_code": "HERA.SALON.VENDOR.DYN.ACTIVE.v1",
+        "type": "boolean",
+      },
+    ],
+    "entity_type": "VENDOR",
+    "relationships": [
+      {
+        "cardinality": "many",
+        "smart_code": "HERA.SALON.VENDOR.REL.SUPPLIES_CATEGORY.v1",
+        "type": "SUPPLIES_CATEGORY",
+      },
+    ],
+  },
+}
+`;

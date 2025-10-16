@@ -4,7 +4,7 @@ import { QueryProvider } from '@/components/providers/QueryProvider'
 import { HeraThemeProvider } from '@/components/universal/ui/HeraThemeProvider'
 import { ThemeProviderDNA } from '@/lib/dna/theme/theme-provider-dna'
 import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
-import { DemoAuthHandler } from '@/components/auth/DemoAuthHandler'
+// Demo authentication removed - using proper HERA v2.2 authentication
 import { ToastProvider } from '@/components/ui/use-toast'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
@@ -54,9 +54,7 @@ export default function RootLayout({
           <ThemeProviderDNA defaultTheme="ice-cream-enterprise" defaultMode="system">
             <QueryProvider>
               <HERAAuthProvider>
-                <DemoAuthHandler>
-                  <ToastProvider>{children}</ToastProvider>
-                </DemoAuthHandler>
+                <ToastProvider>{children}</ToastProvider>
               </HERAAuthProvider>
             </QueryProvider>
           </ThemeProviderDNA>

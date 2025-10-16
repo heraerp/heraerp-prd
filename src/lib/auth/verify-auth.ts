@@ -18,6 +18,13 @@ export interface AuthUser {
   permissions?: string[]
 }
 
+export interface ActorContext {
+  actor_user_id: string
+  organization_id: string
+  user_email?: string
+  roles?: string[]
+}
+
 const ROLE_PERMS: Record<string, string[]> = {
   OWNER: [
     'entities:read',
@@ -137,7 +144,30 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
       const { data: roleArr } = await withTimeout(
         sb.rpc('resolve_user_roles_in_org', { p_org: organizationId })
       )
-      roles = (roleArr || []).map((r: string) => r?.toUpperCase()).filter(Boolean)
+      // Handle different possible return formats from RPC
+      if (Array.isArray(roleArr) && roleArr.length > 0) {
+        roles = roleArr
+          .map((r: any) => {
+            if (typeof r === 'string') return r.toUpperCase()
+            if (r && typeof r.role_name === 'string') return r.role_name.toUpperCase()
+            return null
+          })
+          .filter(Boolean)
+      } else {
+        // Fallback: get role directly from relationship data
+        const { data: relationship } = await sb
+          .from('core_relationships')
+          .select('relationship_data')
+          .eq('from_entity_id', payload.sub)
+          .eq('to_entity_id', organizationId)
+          .eq('relationship_type', 'MEMBER_OF')
+          .eq('is_active', true)
+          .maybeSingle()
+        
+        if (relationship?.relationship_data?.role) {
+          roles = [relationship.relationship_data.role.toUpperCase()]
+        }
+      }
     } catch (e) {
       console.warn('[verifyAuth] resolve_user_roles_in_org failed:', e)
       roles = []
@@ -176,5 +206,51 @@ export function requireAuth(handler: (req: NextRequest, user: AuthUser) => Promi
     const user = await verifyAuth(req)
     if (!user) return new Response('Unauthorized', { status: 401 })
     return handler(req, user)
+  }
+}
+
+/**
+ * Build actor context for HERA v2.2 actor stamping
+ * Ensures USER entity exists and returns actor_user_id for stamping
+ */
+export async function buildActorContext(
+  supabase: any, 
+  supabaseUserId: string, 
+  organizationId?: string
+): Promise<ActorContext> {
+  try {
+    // Try to resolve user identity via RPC first
+    const { data: ident } = await withTimeout(supabase.rpc('resolve_user_identity_v1'))
+    const userContext = ident?.[0]
+    
+    if (userContext?.user_entity_id) {
+      return {
+        actor_user_id: userContext.user_entity_id,
+        organization_id: organizationId || userContext.organization_ids?.[0],
+        user_email: userContext.email,
+        roles: userContext.roles || []
+      }
+    }
+    
+    // Fallback: Use Supabase user ID as actor_user_id
+    // This handles cases where USER entity might not exist yet
+    console.warn('[buildActorContext] No USER entity found, using Supabase ID as fallback')
+    
+    return {
+      actor_user_id: supabaseUserId,
+      organization_id: organizationId || '',
+      user_email: undefined,
+      roles: []
+    }
+  } catch (error) {
+    console.error('[buildActorContext] Error building actor context:', error)
+    
+    // Ultimate fallback
+    return {
+      actor_user_id: supabaseUserId,
+      organization_id: organizationId || '',
+      user_email: undefined,
+      roles: []
+    }
   }
 }

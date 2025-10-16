@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Enterprise Glassmorphism Jewelery Design System */
+@import '../styles/glassmorphism.css';
+
+/* Modern Retail 2024-2025 Design System */
+@import '../styles/retail-modern.css';
+
+/* HERA Fiori Enterprise Design System */
+@import '../styles/fiori-hera.css';
+
 /* HERA Financial Reports - Force High Contrast Text */
 .hera-financial-text {
   @apply !text-gray-900 dark:!text-gray-100;

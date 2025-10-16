@@ -21,7 +21,7 @@ import {
 import { supabase } from '@/lib/supabase/client'
 import { clearInvalidTokens } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
-import { DemoUserSelector } from './DemoUserSelector'
+// Demo authentication removed - using proper HERA v2.2 authentication
 
 // Luxe color palette
 const COLORS = {
@@ -167,7 +167,7 @@ export function HairTalkzAuthSimple() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const [showDemoUsers, setShowDemoUsers] = useState(false)
+  // Demo users removed - using proper Supabase authentication
 
   // Clear any invalid tokens on mount to prevent refresh errors
   useEffect(() => {
@@ -191,13 +191,7 @@ export function HairTalkzAuthSimple() {
     handleAuthError()
   }, [])
 
-  const handleDemoUserSelect = async (demoEmail: string, demoPassword: string) => {
-    setEmail(demoEmail)
-    setPassword(demoPassword)
-
-    // Auto-login with role determined from email
-    await handleLogin(null, demoEmail, demoPassword)
-  }
+  // Demo user selection removed - using proper authentication flow
 
   const handleLogin = async (
     e: React.FormEvent | null,
@@ -259,8 +253,49 @@ export function HairTalkzAuthSimple() {
           description: `Logged in as ${roleConfig?.label}`
         })
 
-        // Use window.location for a clean redirect
-        window.location.href = redirectPath
+        // Wait for auth/attach endpoint to complete before redirecting
+        console.log('🔗 Calling auth/attach endpoint...')
+        try {
+          const attachResponse = await fetch('/api/v2/auth/attach', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${data.session.access_token}`,
+              'x-hera-org-id': HAIRTALKZ_ORG_ID,
+              'Content-Type': 'application/json'
+            }
+          })
+
+          if (attachResponse.ok) {
+            console.log('✅ Auth attach completed successfully')
+            
+            // Give a moment for the auth provider to update state
+            setTimeout(() => {
+              window.location.href = redirectPath
+            }, 500)
+          } else {
+            console.error('❌ Auth attach failed:', await attachResponse.text())
+            // Still redirect but show warning
+            toast({
+              title: 'Warning',
+              description: 'Authentication completed but user setup had issues',
+              variant: 'destructive'
+            })
+            setTimeout(() => {
+              window.location.href = redirectPath
+            }, 1000)
+          }
+        } catch (error) {
+          console.error('❌ Auth attach error:', error)
+          // Still redirect but show warning
+          toast({
+            title: 'Warning', 
+            description: 'Authentication completed but user setup had issues',
+            variant: 'destructive'
+          })
+          setTimeout(() => {
+            window.location.href = redirectPath
+          }, 1000)
+        }
       }
     } catch (error: any) {
       console.error('Login error:', error)
@@ -462,29 +497,12 @@ export function HairTalkzAuthSimple() {
           </div>
         </form>
 
-        {/* Demo Users Toggle */}
+        {/* Authentication Notice */}
         <div className="mt-6 text-center">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setShowDemoUsers(!showDemoUsers)}
-            className="text-sm"
-            style={{
-              borderColor: COLORS.bronze,
-              color: COLORS.bronze,
-              backgroundColor: 'transparent'
-            }}
-          >
-            {showDemoUsers ? 'Hide Demo Users' : 'Show Demo Users'} 🧪
-          </Button>
+          <p className="text-sm font-light tracking-wider" style={{ color: COLORS.bronze + '80' }}>
+            Using secure HERA v2.2 authentication
+          </p>
         </div>
-
-        {/* Demo User Selector */}
-        {showDemoUsers && (
-          <div className="mt-6">
-            <DemoUserSelector onUserSelect={handleDemoUserSelect} isLoading={loading} />
-          </div>
-        )}
 
         {/* Footer */}
         <div className="mt-8 text-center">
