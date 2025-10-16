@@ -189,7 +189,7 @@ export function HeraListPage({
       {/* Active Filters Chips */}
       {store.activeFilters.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-[var(--hera-text-medium)] hera-font-primary font-medium\">
+          <span className="text-sm text-[var(--hera-text-medium)] hera-font-primary font-medium">
             Active filters:
           </span>
           {store.activeFilters.map(fieldKey => {
@@ -200,23 +200,23 @@ export function HeraListPage({
               <button
                 key={fieldKey}
                 onClick={() => store.removeFilter(fieldKey)}
-                className="hera-chip-active flex items-center gap-2 hover:opacity-80 transition-opacity\"
+                className="hera-chip-active flex items-center gap-2 hover:opacity-80 transition-opacity"
               >
                 <span>{filter.value.label || filter.value.value}</span>
-                <span className="text-white/80\">\u00d7</span>
+                <span className="text-white/80">\u00d7</span>
               </button>
             )
           })}
           <button
             onClick={store.clearAllFilters}
-            className="text-sm text-[var(--hera-text-medium)] hover:text-[var(--hera-error)] transition-colors hera-font-primary\"
+            className="text-sm text-[var(--hera-text-medium)] hover:text-[var(--hera-error)] transition-colors hera-font-primary"
           >
             Clear all
           </button>
         </div>
       )}
       
-      <div className="grid lg:grid-cols-4 gap-6\">
+      <div className="grid lg:grid-cols-4 gap-6">
         {/* Filter Panel */}
         {filters.length > 0 && store.isFilterPanelOpen && (
           <div className="lg:col-span-1">
@@ -307,4 +307,4 @@ export function HeraListPage({
       )}
     </div>
   )
-}"
+}
