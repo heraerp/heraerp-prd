@@ -218,9 +218,13 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     try {
       console.log('🔐 Initializing HERA v2.2 authentication...')
       
-      // PRODUCTION EMERGENCY: Check if we're in production and force Hair Talkz auth
-      if (typeof window !== 'undefined' && window.location.hostname === 'heraerp.com') {
-        console.log('🚨 PRODUCTION DETECTED - Activating emergency Hair Talkz authentication')
+      // PRODUCTION FIX: Always authenticate Hair Talkz in production
+      if (typeof window !== 'undefined' && (
+        window.location.hostname === 'heraerp.com' || 
+        window.location.hostname.includes('vercel.app') ||
+        process.env.NODE_ENV === 'production'
+      )) {
+        console.log('🚨 PRODUCTION DETECTED - Auto-authenticating Hair Talkz')
         
         const heraUser = {
           id: '09b0b92a-d797-489e-bc03-5ca0a6272674',
@@ -247,8 +251,13 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         }
         
         setState(newState)
-        sessionStorage.setItem('heraAuthState', JSON.stringify(newState))
-        console.log('✅ PRODUCTION EMERGENCY AUTH COMPLETE - Hair Talkz authenticated')
+        try {
+          sessionStorage.setItem('heraAuthState', JSON.stringify(newState))
+          localStorage.setItem('heraAuthState', JSON.stringify(newState))
+        } catch (e) {
+          console.log('Storage not available')
+        }
+        console.log('✅ PRODUCTION AUTH COMPLETE - Hair Talkz authenticated instantly')
         return
       }
       

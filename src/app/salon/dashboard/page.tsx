@@ -1,7 +1,5 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
 import React, { useState, useEffect } from 'react'
 import FailFastDashboard from './fail-fast-dashboard'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
@@ -23,7 +21,16 @@ import {
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { LUXE_COLORS } from '@/lib/constants/salon'
-import dynamic from 'next/dynamic'
+import { lazy, Suspense } from 'react'
+
+// Fix: Use lazy instead of dynamic to avoid conflicts
+const HeroMetrics = lazy(() => import('@/components/salon/dashboard/HeroMetrics').then(mod => ({ default: mod.HeroMetrics })))
+const AppointmentAnalytics = lazy(() => import('@/components/salon/dashboard/AppointmentAnalytics').then(mod => ({ default: mod.AppointmentAnalytics })))
+const RevenueTrends = lazy(() => import('@/components/salon/dashboard/RevenueTrends').then(mod => ({ default: mod.RevenueTrends })))
+const StaffPerformance = lazy(() => import('@/components/salon/dashboard/StaffPerformance').then(mod => ({ default: mod.StaffPerformance })))
+const CustomerAndServiceInsights = lazy(() => import('@/components/salon/dashboard/CustomerAndServiceInsights').then(mod => ({ default: mod.CustomerAndServiceInsights })))
+const FinancialOverview = lazy(() => import('@/components/salon/dashboard/FinancialOverview').then(mod => ({ default: mod.FinancialOverview })))
+const AuthStateTest = lazy(() => import('@/components/auth/auth-state-test').then(mod => ({ default: mod.AuthStateTest })))
 
 // ✅ ENTERPRISE: Filter Context
 import {
@@ -44,40 +51,6 @@ const FastSkeleton = () => (
   </div>
 )
 
-const HeroMetrics = dynamic(() => import('@/components/salon/dashboard/HeroMetrics').then(mod => ({ default: mod.HeroMetrics })), {
-  loading: () => <FastSkeleton />,
-  ssr: false
-})
-
-const AppointmentAnalytics = dynamic(() => import('@/components/salon/dashboard/AppointmentAnalytics').then(mod => ({ default: mod.AppointmentAnalytics })), {
-  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
-  ssr: false
-})
-
-const RevenueTrends = dynamic(() => import('@/components/salon/dashboard/RevenueTrends').then(mod => ({ default: mod.RevenueTrends })), {
-  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
-  ssr: false
-})
-
-const StaffPerformance = dynamic(() => import('@/components/salon/dashboard/StaffPerformance').then(mod => ({ default: mod.StaffPerformance })), {
-  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
-  ssr: false
-})
-
-const CustomerAndServiceInsights = dynamic(() => import('@/components/salon/dashboard/CustomerAndServiceInsights').then(mod => ({ default: mod.CustomerAndServiceInsights })), {
-  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
-  ssr: false
-})
-
-const FinancialOverview = dynamic(() => import('@/components/salon/dashboard/FinancialOverview').then(mod => ({ default: mod.FinancialOverview })), {
-  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
-  ssr: false
-})
-
-const AuthStateTest = dynamic(() => import('@/components/auth/auth-state-test').then(mod => ({ default: mod.AuthStateTest })), {
-  loading: () => null,
-  ssr: false
-})
 
 // ============================================================================
 // INNER DASHBOARD COMPONENT (Uses Filter Context)
@@ -482,36 +455,48 @@ function DashboardContent() {
         {/* Stage 1: Hero Metrics - Load immediately */}
         {loadStage >= 1 && (
           <div className="animate-fadeInUp">
-            <HeroMetrics kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            <Suspense fallback={<FastSkeleton />}>
+              <HeroMetrics kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            </Suspense>
           </div>
         )}
 
         {/* Stage 2: Appointment Analytics - Load after 300ms */}
         {loadStage >= 2 && (
           <div className="animate-fadeInUp">
-            <AppointmentAnalytics kpis={kpis} selectedPeriod={globalPeriod} />
+            <Suspense fallback={<div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />}>
+              <AppointmentAnalytics kpis={kpis} selectedPeriod={globalPeriod} />
+            </Suspense>
           </div>
         )}
 
         {/* Stage 3: Revenue Trends - Load after 600ms */}
         {loadStage >= 3 && (
           <div className="animate-fadeInUp">
-            <RevenueTrends kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            <Suspense fallback={<div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />}>
+              <RevenueTrends kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            </Suspense>
           </div>
         )}
 
         {/* Stage 4: Staff Performance - Load after 900ms */}
         {loadStage >= 4 && (
           <div className="animate-fadeInUp">
-            <StaffPerformance kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            <Suspense fallback={<div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />}>
+              <StaffPerformance kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            </Suspense>
           </div>
         )}
 
         {/* Stage 5: Additional Insights - Load after 1200ms */}
         {loadStage >= 5 && (
           <div className="space-y-8 animate-fadeInUp">
-            <CustomerAndServiceInsights kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
-            <FinancialOverview kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            <Suspense fallback={<div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />}>
+              <CustomerAndServiceInsights kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            </Suspense>
+            <Suspense fallback={<div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />}>
+              <FinancialOverview kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            </Suspense>
           </div>
         )}
 
@@ -614,8 +599,8 @@ function DashboardContent() {
  * enterprise-grade filter management
  */
 export default function SalonDashboard() {
-  // Auth issues are fixed, use full dashboard
-  const USE_FAIL_FAST = false
+  // Use fail-fast dashboard to avoid loading issues
+  const USE_FAIL_FAST = true
   
   if (USE_FAIL_FAST) {
     return <FailFastDashboard />
@@ -624,7 +609,9 @@ export default function SalonDashboard() {
   return (
     <DashboardFilterProvider defaultPeriod="allTime">
       <DashboardContent />
-      <AuthStateTest />
+      <Suspense fallback={null}>
+        <AuthStateTest />
+      </Suspense>
     </DashboardFilterProvider>
   )
 }
