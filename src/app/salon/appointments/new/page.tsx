@@ -2218,7 +2218,7 @@ function NewAppointmentContent() {
                   // Small delay to ensure cache propagation
                   await new Promise(resolve => setTimeout(resolve, 100))
                   router.push('/salon/appointments')
-                  router.refresh() // Force page refresh to load latest data
+                  // Removed router.refresh() for better client-side navigation
                 }}
                 className="flex-1 transition-all duration-240"
                 style={{

@@ -29,8 +29,7 @@ export default function ProductionAuthPage() {
 
       // Supabase configuration check
       setStatus('Checking Supabase configuration...')
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
+      const { supabase } = await import('@/lib/supabase/client')
 
       if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
         throw new Error('Supabase URL not configured for production')

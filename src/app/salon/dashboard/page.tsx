@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import FailFastDashboard from './fail-fast-dashboard'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useSalonDashboard } from '@/hooks/useSalonDashboard'
@@ -30,7 +29,6 @@ const RevenueTrends = lazy(() => import('@/components/salon/dashboard/RevenueTre
 const StaffPerformance = lazy(() => import('@/components/salon/dashboard/StaffPerformance').then(mod => ({ default: mod.StaffPerformance })))
 const CustomerAndServiceInsights = lazy(() => import('@/components/salon/dashboard/CustomerAndServiceInsights').then(mod => ({ default: mod.CustomerAndServiceInsights })))
 const FinancialOverview = lazy(() => import('@/components/salon/dashboard/FinancialOverview').then(mod => ({ default: mod.FinancialOverview })))
-const AuthStateTest = lazy(() => import('@/components/auth/auth-state-test').then(mod => ({ default: mod.AuthStateTest })))
 
 // ✅ ENTERPRISE: Filter Context
 import {
@@ -599,19 +597,9 @@ function DashboardContent() {
  * enterprise-grade filter management
  */
 export default function SalonDashboard() {
-  // Use fail-fast dashboard to avoid loading issues
-  const USE_FAIL_FAST = true
-  
-  if (USE_FAIL_FAST) {
-    return <FailFastDashboard />
-  }
-  
   return (
     <DashboardFilterProvider defaultPeriod="allTime">
       <DashboardContent />
-      <Suspense fallback={null}>
-        <AuthStateTest />
-      </Suspense>
     </DashboardFilterProvider>
   )
 }

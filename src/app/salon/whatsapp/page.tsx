@@ -1,7 +1,7 @@
 'use client'
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic'
+// Removed force-dynamic for better client-side navigation performance
 
 import React, { useState, useEffect, useRef } from 'react'
 import { Card } from '@/components/ui/card'

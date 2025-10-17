@@ -80,10 +80,10 @@ export class HERAApiClient {
   }
 
   /**
-   * Debug and introspection
+   * Session health check
    */
   async debugSession() {
-    return bearerApi.get('/api/v2/debug/session')
+    return bearerApi.get('/api/v2/auth/resolve-membership')
   }
 
   async getCurrentUser() {

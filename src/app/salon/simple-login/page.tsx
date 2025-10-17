@@ -47,8 +47,8 @@ export default function SimpleLoginPage() {
     // Small delay for feedback
     await new Promise(resolve => setTimeout(resolve, 1000))
     
-    // Direct redirect
-    window.location.href = '/salon/dashboard'
+    // Direct redirect using Next.js router
+    router.push('/salon/dashboard')
   }
 
   return (

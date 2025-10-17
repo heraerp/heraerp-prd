@@ -164,6 +164,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const [retryCount, setRetryCount] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false)
   const authCheckDoneRef = React.useRef(false) // 🎯 Track if initial auth check is complete
+  const initializedForUser = React.useRef<string | null>(null) // 🎯 Track user-specific initialization
 
   // 🎯 ENTERPRISE FIX: Sync context with security store AND HERAAuth
   // SECURITY: organizationId comes from HERAAuth (JWT), not from store cache
@@ -384,6 +385,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔐 SIGNED_OUT event - clearing state')
         authCheckDoneRef.current = false
+        initializedForUser.current = null // ✅ reset user initialization marker
         securityStore.clearState()
         clearContext()
         redirectToAuth()
@@ -399,7 +401,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     })
 
     return () => subscription.unsubscribe()
-  }, [auth.isLoading, auth.isAuthenticated, auth.currentOrganization?.id, auth.user]) // ✅ Include org and user
+  }, []) // ✅ Empty deps - use refs to prevent re-initialization
 
   /**
    * Initialize secure authentication context
@@ -407,6 +409,31 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const initializeSecureContext = async () => {
     try {
       setAuthError(null)
+      
+      // Get current session first to check user
+      const {
+        data: { session },
+        error: sessionError
+      } = await supabase.auth.getSession()
+
+      if (sessionError) {
+        throw new Error(`Session error: ${sessionError.message}`)
+      }
+
+      const uid = session?.user?.id
+      if (!uid) {
+        console.log('🚪 No session user, redirecting to auth')
+        return
+      }
+
+      // Already initialized for this user? bail.
+      if (initializedForUser.current === uid && hasInitialized) {
+        console.log(`✅ Already initialized for user ${uid}, skipping`)
+        return
+      }
+
+      console.log(`🔄 Initializing secure context for user: ${uid}`)
+      
       // Only show loading if we don't have cached data (prevent page from disappearing on revalidation)
       if (!securityStore.isInitialized || !hasInitialized) {
         setContext(prev => ({ ...prev, isLoading: true }))
@@ -416,16 +443,6 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       if (isPublicPage()) {
         setContext(prev => ({ ...prev, isLoading: false }))
         return
-      }
-
-      // Get current session
-      const {
-        data: { session },
-        error: sessionError
-      } = await supabase.auth.getSession()
-
-      if (sessionError) {
-        throw new Error(`Session error: ${sessionError.message}`)
       }
 
       if (!session?.user) {
@@ -549,7 +566,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       setRetryCount(0) // Reset retry count on success
       setHasInitialized(true)
-      console.log('✅ Salon security context initialized successfully')
+      initializedForUser.current = uid // ✅ mark initialization complete for this user
+      console.log(`✅ Salon security context initialized successfully for user: ${uid}`)
     } catch (error: any) {
       console.error('🚨 Salon auth initialization failed:', error)
 

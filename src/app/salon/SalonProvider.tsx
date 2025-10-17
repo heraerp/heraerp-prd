@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
 import { HAIRTALKZ_ORG_ID, getSalonOrgId, LUXE_COLORS } from '@/lib/constants/salon'
 import { Loader2 } from 'lucide-react'
@@ -20,6 +21,7 @@ interface SalonContextType {
 const SalonContext = createContext<SalonContextType | undefined>(undefined)
 
 export function SalonProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
   // Maintain session across navigations
   useSalonSession()
 
@@ -94,7 +96,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
 
         // Only redirect if not already on auth page
         if (window.location.pathname !== '/salon/auth') {
-          window.location.href = '/salon/auth'
+          router.push('/salon/auth')
         }
       } else if (event === 'TOKEN_REFRESHED') {
         // Token was refreshed, reload context to ensure everything is up to date
@@ -161,7 +163,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
             if (!recoveredSession?.user) {
               console.log('Session recovery failed, redirecting to auth...')
               // Now redirect if session still not recovered
-              window.location.href = '/salon/auth'
+              router.push('/salon/auth')
             } else {
               console.log('Session recovered after delay!')
               // Session recovered, reload context
@@ -172,7 +174,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
         } else {
           console.log('No stored auth data, redirecting to auth...')
           // No stored auth data, redirect immediately
-          window.location.href = '/salon/auth'
+          router.push('/salon/auth')
           return
         }
       }
@@ -236,7 +238,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
       console.error('Error loading salon context:', error)
       // Only redirect if not already on auth page
       if (window.location.pathname !== '/salon/auth') {
-        window.location.href = '/salon/auth'
+        router.push('/salon/auth')
       } else {
         setContext(prev => ({ ...prev, isLoading: false }))
       }

@@ -3,44 +3,37 @@
  * Replaces all cookie-dependent API calls
  */
 
-import { createClient } from '@supabase/supabase-js'
-
-// Single Supabase client instance
-export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  { 
-    auth: { 
-      persistSession: true, 
-      autoRefreshToken: true, 
-      flowType: 'pkce' 
-    } 
-  }
-)
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'https://heraerp.com'
+import { supabase } from '@/lib/supabase'
 
 /**
- * Cookieless API wrapper with automatic Bearer token injection
+ * Bearer fetch utility - always includes Bearer token for internal API calls
  */
-export async function api(path: string, init: RequestInit = {}) {
-  const { data } = await supabase.auth.getSession()
-  const token = data.session?.access_token
-  
+export async function bearerFetch(path: string, init: RequestInit = {}) {
+  const { data: { session } } = await supabase.auth.getSession()
   const headers = new Headers(init.headers || {})
-  headers.set('Content-Type', 'application/json')
   
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`)
+  // Always set Content-Type for API calls
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json')
+  }
+  
+  // Add Bearer token if available
+  if (session?.access_token) {
+    headers.set('Authorization', `Bearer ${session.access_token}`)
   }
 
-  const res = await fetch(`${API_BASE}${path}`, { 
+  return fetch(path, { 
     ...init, 
     headers,
-    // Add CORS support for cookieless requests
-    mode: 'cors',
     credentials: 'omit' // Don't send cookies
   })
+}
+
+/**
+ * API wrapper with automatic Bearer token injection
+ */
+export async function api(path: string, init: RequestInit = {}) {
+  const res = await bearerFetch(path, init)
   
   if (!res.ok) {
     const text = await res.text().catch(() => '')
@@ -83,7 +76,7 @@ export const apiClient = {
  */
 export const heraApi = {
   // Health check
-  health: () => api('/api/v2/debug/session'),
+  health: () => api('/api/v2/auth/resolve-membership'),
   
   // Entity operations
   entities: (params: { entity_type?: string; organization_id?: string; limit?: number }) =>
@@ -103,9 +96,6 @@ export const heraApi = {
   resolveUser: () => 
     api('/api/v2/auth/resolve-membership'),
     
-  // Test endpoints
-  bearerTest: () => 
-    api('/api/v2/bearer-test')
 }
 
 export default api

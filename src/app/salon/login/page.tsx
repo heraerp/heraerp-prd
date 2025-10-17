@@ -26,12 +26,8 @@ export default function SalonLoginPage() {
     setError('')
 
     try {
-      // Direct Supabase authentication
-      const { createClient } = await import('@supabase/supabase-js')
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      )
+      // Use singleton Supabase client
+      const { supabase } = await import('@/lib/supabase/client')
 
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
@@ -80,7 +76,7 @@ export default function SalonLoginPage() {
           }
 
           // Direct redirect to dashboard
-          window.location.href = '/salon/dashboard'
+          router.push('/salon/dashboard')
           
         } else {
           setError('This email domain is not authorized for Hair Talkz Salon')
