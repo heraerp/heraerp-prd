@@ -350,8 +350,8 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       }
       
       // SKIP CACHE FOR HAIR TALKZ USERS - ALWAYS USE FAST TRACK
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
+      const { createClient: createSupabaseClient2 } = await import('@/lib/supabase/client')
+      const supabase = createSupabaseClient2()
       
       const { data: { session }, error } = await supabase.auth.getSession()
       
@@ -686,8 +686,8 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const logout = async () => {
     try {
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
+      const { createClient: createSupabaseClient3 } = await import('@/lib/supabase/client')
+      const supabase = createSupabaseClient3()
       
       await supabase.auth.signOut()
       handleSignOut()
