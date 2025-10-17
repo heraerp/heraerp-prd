@@ -50,3 +50,39 @@ export async function rpc<T = unknown>({ procedure, payload, organizationId, ide
   const data = (await res.json()) as T;
   return { ok: true, data };
 }
+
+/**
+ * Simplified callRPC function compatible with existing HERA code
+ * Wraps the RPC response in a consistent format
+ */
+export async function callRPC(
+  functionName: string,
+  params: Record<string, any> = {}
+): Promise<{ data?: any; error?: string; success: boolean }> {
+  try {
+    // Use direct Supabase RPC call for compatibility with existing patterns
+    const { getSupabase } = await import('@/lib/supabase');
+    const supabase = getSupabase();
+
+    const { data, error } = await supabase.rpc(functionName, params);
+
+    if (error) {
+      console.error(`RPC call failed for ${functionName}:`, error);
+      return {
+        success: false,
+        error: error.message || 'RPC call failed'
+      };
+    }
+
+    return {
+      success: true,
+      data
+    };
+  } catch (error) {
+    console.error(`RPC client error for ${functionName}:`, error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown RPC error'
+    };
+  }
+}
