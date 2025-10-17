@@ -63,7 +63,7 @@ export function withBearerAuth<T = any>(
     try {
       // Add CORS headers
       const corsHeaders = {
-        'Access-Control-Allow-Origin': 'https://heraerp.com',
+        'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? 'https://heraerp.com' : '*',
         'Access-Control-Allow-Headers': 'content-type, authorization, x-organization-id, x-orgid',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Credentials': 'false', // No cookies needed
@@ -90,7 +90,7 @@ export function withBearerAuth<T = any>(
 
     } catch (error: any) {
       const corsHeaders = {
-        'Access-Control-Allow-Origin': 'https://heraerp.com',
+        'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? 'https://heraerp.com' : '*',
         'Access-Control-Allow-Headers': 'content-type, authorization, x-organization-id',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Credentials': 'false',

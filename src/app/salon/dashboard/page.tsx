@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState } from 'react'
+import FailFastDashboard from './fail-fast-dashboard'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useSalonDashboard } from '@/hooks/useSalonDashboard'
@@ -509,6 +510,13 @@ function DashboardContent() {
  * enterprise-grade filter management
  */
 export default function SalonDashboard() {
+  // Auth issues are fixed, use full dashboard
+  const USE_FAIL_FAST = false
+  
+  if (USE_FAIL_FAST) {
+    return <FailFastDashboard />
+  }
+  
   return (
     <DashboardFilterProvider defaultPeriod="allTime">
       <DashboardContent />
