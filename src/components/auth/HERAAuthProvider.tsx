@@ -373,18 +373,18 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       const { createClient: createSupabaseClient2 } = await import('@/lib/supabase/client')
       const supabaseClient2 = createSupabaseClient2()
       
-      const { data: { session }, error } = await supabaseClient2.auth.getSession()
+      const { data: { session: session2 }, error: error2 } = await supabaseClient2.auth.getSession()
       
       console.log('🔍 DEBUG - Session in initializeAuth:', {
-        hasSession: !!session,
-        userId: session?.user?.id,
-        email: session?.user?.email,
-        error: error
+        hasSession: !!session2,
+        userId: session2?.user?.id,
+        email: session2?.user?.email,
+        error: error2
       })
       
-      if (session?.user) {
-        const userId = session.user.id
-        const userEmail = session.user.email || ''
+      if (session2?.user) {
+        const userId = session2.user.id
+        const userEmail = session2.user.email || ''
         
         console.log('🔍 DEBUG - Checking fast track conditions:', {
           userId,
@@ -415,7 +415,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
           console.log('🔍 DEBUG - Not a HairTalkz user, checking for cached auth...')
           // For non-HairTalkz users, use cache if available
           const hasCachedAuth = state.isAuthenticated && state.user && state.organization
-          if (hasCachedAuth && session.user.id === state.user?.id) {
+          if (hasCachedAuth && session2.user.id === state.user?.id) {
             console.log('✅ Using cached auth state for non-HairTalkz user - SKIPPING FULL AUTH')
             setState(prev => ({ ...prev, isLoading: false }))
             return
@@ -425,16 +425,16 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         }
       }
       
-      if (error) {
-        console.error('❌ Session error:', error)
+      if (error2) {
+        console.error('❌ Session error:', error2)
         setState(prev => ({ ...prev, isLoading: false }))
         return
       }
 
-      if (session?.user) {
+      if (session2?.user) {
         // ENTERPRISE CRITICAL: Fast track for HairTalkz users in initializeAuth
-        const userId = session.user.id
-        const userEmail = session.user.email || ''
+        const userId = session2.user.id
+        const userEmail = session2.user.email || ''
         
         console.log('🔍 DEBUG - Second fast track check in initializeAuth:', {
           userId,
@@ -490,7 +490,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
           return
         }
         
-        await handleSignIn(session.user.id, session.access_token)
+        await handleSignIn(session2.user.id, session2.access_token)
       } else {
         console.log('📭 No active session found')
         setState(prev => ({ ...prev, isLoading: false }))
