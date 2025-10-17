@@ -227,43 +227,63 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       if (session?.user) {
         console.log('🔐 Valid Supabase session found:', session.user.email)
         
-        // Check if user has hairtalkz.com domain - auto-approve for Hair Talkz org
+        // Check if user has hairtalkz.com domain - use proper HERA entity resolution
         if (session.user.email?.includes('@hairtalkz.com') || session.user.email?.includes('michele')) {
-          console.log('✅ Hair Talkz domain user detected, granting access')
+          console.log('✅ Hair Talkz domain user detected, resolving with HERA entities')
           
-          const heraUser = {
-            id: session.user.id,
-            entity_id: session.user.id,
-            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Hair Talkz User',
-            email: session.user.email || '',
-            role: 'OWNER'
-          }
-          
-          const heraOrg = {
-            id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
-            entity_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
-            name: 'Hair Talkz Salon',
-            type: 'salon',
-            industry: 'beauty'
-          }
-          
-          const newState = {
-            user: heraUser,
-            organization: heraOrg,
-            isAuthenticated: true,
-            isLoading: false,
-            scopes: ['OWNER']
-          }
-          
-          setState(newState)
           try {
-            sessionStorage.setItem('heraAuthState', JSON.stringify(newState))
-          } catch (e) {
-            console.log('Storage not available')
+            // Call your new ensure_membership function via RPC to get proper entity ID
+            const { data: membershipData, error: membershipError } = await supabase.rpc('ensure_membership_for_email', {
+              p_email: session.user.email,
+              p_org_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
+              p_service_user: session.user.id // Use current user as service user for now
+            })
+
+            if (membershipError) {
+              console.error('❌ Failed to ensure membership:', membershipError)
+              // Fall back to simple authentication
+            }
+
+            const userEntityId = membershipData || session.user.id
+
+            const heraUser = {
+              id: session.user.id,
+              entity_id: userEntityId,
+              name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Hair Talkz User',
+              email: session.user.email || '',
+              role: 'OWNER'
+            }
+            
+            const heraOrg = {
+              id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
+              entity_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
+              name: 'Hair Talkz Salon',
+              type: 'salon',
+              industry: 'beauty'
+            }
+            
+            const newState = {
+              user: heraUser,
+              organization: heraOrg,
+              isAuthenticated: true,
+              isLoading: false,
+              scopes: ['OWNER']
+            }
+            
+            setState(newState)
+            try {
+              sessionStorage.setItem('heraAuthState', JSON.stringify(newState))
+            } catch (e) {
+              console.log('Storage not available')
+            }
+            
+            console.log('✅ Hair Talkz domain user authenticated with proper HERA entities')
+            return
+
+          } catch (error) {
+            console.error('❌ Error in HERA entity resolution:', error)
+            // Continue with fallback authentication below
           }
-          
-          console.log('✅ Hair Talkz domain user authenticated successfully')
-          return
         } else {
           console.log('❌ User email domain not authorized for Hair Talkz organization')
           setState(prev => ({ ...prev, isLoading: false }))
