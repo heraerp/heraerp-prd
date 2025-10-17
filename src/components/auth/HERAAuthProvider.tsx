@@ -109,7 +109,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             }
             await handleSignIn(session.user.id, session.access_token)
           } else if (event === 'SIGNED_OUT') {
-            handleSignOut()
+            // Only process sign out if we're actually authenticated
+            if (state.isAuthenticated) {
+              handleSignOut()
+            }
           } else if (event === 'TOKEN_REFRESHED' && session) {
             // Don't trigger full auth refresh on token refresh to prevent loops
             console.log('🔄 Token refreshed, maintaining current auth state')
@@ -184,22 +187,29 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const handleSignIn = async (userId: string, accessToken?: string) => {
     try {
+      // CRITICAL: Prevent duplicate processing during loops
+      if (state.isAuthenticated && state.user?.id === userId) {
+        console.log('⚠️ User already authenticated, skipping duplicate sign-in processing')
+        return
+      }
+      
       setState(prev => ({ ...prev, isLoading: true }))
       
       console.log('🔍 Resolving HERA v2.2 user context for:', userId)
       
-      // FAST TRACK: For known users, skip complex resolution
+      // CRITICAL FAST TRACK: Must be first check to avoid slow resolution
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
       const { data: { user: supabaseUser } } = await supabase.auth.getUser()
       
-      if (supabaseUser && (
-        userId === '2300a665-6650-4f4c-8e85-c1a7e8f2973d' || // live@hairtalkz.com
-        userId === '09b0b92a-d797-489e-bc03-5ca0a6272674' ||   // michele@hairtalkz.com (production)
-        userId === '3ced4979-4c09-4e1e-8667-6707cfe6ec77' ||   // michele@hairtalkz.ae (backup)
-        supabaseUser.email?.includes('michele') ||              // Any Michele email
-        supabaseUser.email?.includes('hairtalkz')               // Any HairTalkz email
-      )) {
+      // PRODUCTION CRITICAL: Check for Michele's production ID first
+      if (userId === '09b0b92a-d797-489e-bc03-5ca0a6272674' || 
+          userId === '3ced4979-4c09-4e1e-8667-6707cfe6ec77' ||
+          userId === '2300a665-6650-4f4c-8e85-c1a7e8f2973d' ||
+          (supabaseUser && (
+            supabaseUser.email?.includes('michele') ||
+            supabaseUser.email?.includes('hairtalkz')
+          ))) {
         console.log('⚡ Fast track authentication for Hair Talkz user:', supabaseUser.email)
         
         const heraUser = {
