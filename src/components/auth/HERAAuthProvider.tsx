@@ -202,6 +202,8 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       const supabase = createClient()
       const { data: { user: supabaseUser } } = await supabase.auth.getUser()
       
+      console.log('🔍 Fast track check - User ID:', userId, 'Email:', supabaseUser?.email)
+      
       // PRODUCTION CRITICAL: Check for Michele's production ID first
       if (userId === '09b0b92a-d797-489e-bc03-5ca0a6272674' || 
           userId === '3ced4979-4c09-4e1e-8667-6707cfe6ec77' ||
@@ -210,7 +212,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             supabaseUser.email?.includes('michele') ||
             supabaseUser.email?.includes('hairtalkz')
           ))) {
-        console.log('⚡ Fast track authentication for Hair Talkz user:', supabaseUser.email)
+        console.log('🚨 FAST TRACK TRIGGERED for Hair Talkz user:', supabaseUser?.email)
         
         const heraUser = {
           id: userId,
@@ -247,6 +249,8 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         console.log('✅ Fast track authentication complete for Hair Talkz')
         return
       }
+      
+      console.log('⚠️ Non-HairTalkz user, using standard resolution for:', supabaseUser?.email)
       
       // Use HERA v2.2 canonical entity resolution for other users
       const result = await createSecurityContextFromAuth(userId, { 
