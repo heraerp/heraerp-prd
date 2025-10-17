@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -105,6 +106,7 @@ const SoftCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
 }
 
 export default function LeaveManagementPage() {
+  const router = useRouter()
   const { organization, isAuthenticated, contextLoading } = useHERAAuth()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('requests')
@@ -275,7 +277,7 @@ export default function LeaveManagementPage() {
             <div className="flex items-center gap-2 flex-wrap">
               {/* Back to Staff */}
               <Button
-                onClick={() => (window.location.href = '/salon/staff')}
+                onClick={() => router.push('/salon/staff')}
                 variant="outline"
                 className="border text-sm px-3 py-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 style={{

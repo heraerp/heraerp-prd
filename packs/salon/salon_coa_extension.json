@@ -1,0 +1,159 @@
+{
+  "version": "1.1",
+  "description": "Salon-specific Chart of Accounts extension",
+  "updated_at": "2025-10-17",
+  "additional_accounts": [
+    {
+      "code": "4100",
+      "name": "Product Sales Revenue",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.v1",
+      "category": "REVENUE",
+      "salon_usage": "Revenue from hair product sales"
+    },
+    {
+      "code": "1300", 
+      "name": "Inventory - Hair Products",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1",
+      "category": "CURRENT_ASSET",
+      "salon_usage": "Hair products, tools, and supplies inventory"
+    },
+    {
+      "code": "5100",
+      "name": "Cost of Goods Sold - Products",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1", 
+      "category": "COGS",
+      "salon_usage": "Cost of hair products sold to customers"
+    },
+    {
+      "code": "6200",
+      "name": "Rent Expense",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1",
+      "category": "OPERATING_EXPENSE",
+      "salon_usage": "Monthly salon space rental"
+    },
+    {
+      "code": "6201",
+      "name": "Utilities Expense",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1",
+      "category": "OPERATING_EXPENSE", 
+      "salon_usage": "Electricity, water, internet for salon"
+    },
+    {
+      "code": "6300",
+      "name": "Salary Expense",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1",
+      "category": "PAYROLL_EXPENSE",
+      "salon_usage": "Base salaries for stylists and staff"
+    },
+    {
+      "code": "6301",
+      "name": "Commission Expense",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1",
+      "category": "PAYROLL_EXPENSE",
+      "salon_usage": "Variable commissions paid to stylists"
+    },
+    {
+      "code": "6302",
+      "name": "Payroll Tax Expense",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1",
+      "category": "PAYROLL_EXPENSE",
+      "salon_usage": "Employer payroll taxes and benefits"
+    },
+    {
+      "code": "2200",
+      "name": "Salaries Payable",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.v1",
+      "category": "CURRENT_LIABILITY",
+      "salon_usage": "Unpaid salaries and commissions"
+    },
+    {
+      "code": "2201",
+      "name": "Payroll Tax Payable",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.v1",
+      "category": "CURRENT_LIABILITY",
+      "salon_usage": "Unpaid payroll taxes to government"
+    },
+    {
+      "code": "1200",
+      "name": "Accounts Receivable",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1",
+      "category": "CURRENT_ASSET",
+      "salon_usage": "Outstanding customer receivables"
+    },
+    {
+      "code": "1400",
+      "name": "Equipment - Salon",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1",
+      "category": "FIXED_ASSET",
+      "salon_usage": "Salon chairs, dryers, styling equipment"
+    },
+    {
+      "code": "6400",
+      "name": "Marketing & Advertising",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1",
+      "category": "OPERATING_EXPENSE",
+      "salon_usage": "Social media, local advertising, promotions"
+    },
+    {
+      "code": "6500",
+      "name": "Professional Services",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1",
+      "category": "OPERATING_EXPENSE", 
+      "salon_usage": "Accounting, legal, consulting fees"
+    },
+    {
+      "code": "6600",
+      "name": "Insurance Expense",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1",
+      "category": "OPERATING_EXPENSE",
+      "salon_usage": "Business liability and property insurance"
+    }
+  ],
+  "posting_mappings": {
+    "service_revenue_accounts": {
+      "HAIRCUT": "4000",
+      "COLORING": "4000", 
+      "STYLING": "4000",
+      "TREATMENT": "4000",
+      "SPA_SERVICE": "4000"
+    },
+    "product_revenue_account": "4100",
+    "inventory_account": "1300",
+    "cogs_account": "5100",
+    "commission_account": "5000",
+    "vat_payable_account": "2100",
+    "cash_account": "1000",
+    "receivable_account": "1200",
+    "payroll_accounts": {
+      "salary_expense": "6300",
+      "commission_expense": "6301", 
+      "payroll_tax_expense": "6302",
+      "salary_payable": "2200",
+      "payroll_tax_payable": "2201"
+    },
+    "expense_accounts": {
+      "RENT": "6200",
+      "UTILITIES": "6201",
+      "MARKETING": "6400",
+      "PROFESSIONAL_SERVICES": "6500",
+      "INSURANCE": "6600",
+      "SUPPLIES": "6100"
+    }
+  },
+  "financial_ratios": {
+    "commission_rates": {
+      "senior_stylist": 0.35,
+      "stylist": 0.30,
+      "junior_stylist": 0.25
+    },
+    "markup_rates": {
+      "hair_products": 2.5,
+      "styling_tools": 2.0,
+      "treatments": 3.0
+    },
+    "tax_rates": {
+      "vat_rate": 0.05,
+      "service_tax_rate": 0.0
+    }
+  }
+}

@@ -205,7 +205,7 @@ async function generateSchemaReport() {
   console.log(`   Total Warnings: ${report.summary.totalWarnings > 0 ? colors.yellow : colors.green}${report.summary.totalWarnings}${colors.reset}`)
 
   // Save report to file
-  const reportPath = path.join(__dirname, 'schema-report.json')
+  const reportPath = join(__dirname, 'schema-report.json')
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2))
   console.log(`\n📄 Full report saved to: ${reportPath}`)
 

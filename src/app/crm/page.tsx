@@ -1,653 +1,583 @@
 'use client'
 
-import { useEffect, useMemo, useState, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import React from 'react'
+import { SapNavbar } from '@/components/sap/SapNavbar'
+import { Search, Filter, Eye, Sliders, Grid, BarChart, Table, ExternalLink, ChevronDown, Plus, Users, Target, Phone, Mail, Calendar, TrendingUp } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Card } from '@/components/ui/card'
-import { LoadingSpinner } from '@/components/ui/loading-states'
-import { Button } from '@/components/ui/button'
-import {
-  Plus,
-  Users,
-  Briefcase,
-  Target,
-  Activity,
-  TrendingUp,
-  Phone,
-  Mail,
-  Calendar,
-  DollarSign
-} from 'lucide-react'
-import { StatCardDNA } from '@/lib/dna/components/ui/stat-card-dna'
 import { playbookCrmApi } from '@/lib/api/playbook-crm'
 import { legacyCrmApi } from '@/lib/api/legacy-crm'
 import { flags } from '@/lib/flags'
-import { listOwners, listStages } from '@/lib/playbook/crm/lookups'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip as ReTooltip,
-  ResponsiveContainer,
-  CartesianGrid
-} from 'recharts'
 
-function CRMDashboard() {
-  const { user, currentOrganization, isAuthenticated, isLoading: authLoading } = useHERAAuth()
-  const [stats, setStats] = useState<any>(null)
-  const [recentActivities, setRecentActivities] = useState<any[]>([])
-  const [topOpportunities, setTopOpportunities] = useState<any[]>([])
-  const [pipeline, setPipeline] = useState<{
-    byStage: { stage: string; count: number; amount: number }[]
-    totals: { count: number; amount: number }
-  } | null>(null)
-  const [funnel, setFunnel] = useState<{
-    stages: { name: string; count: number; rate?: number }[]
-    conversionRate: number
-  } | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export default function CRMDashboardPage() {
+  const { currentOrganization, isAuthenticated } = useHERAAuth()
+  const [selectedItems, setSelectedItems] = React.useState<string[]>([])
+  const [showAdvancedView, setShowAdvancedView] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [stats, setStats] = React.useState<any>(null)
 
-  // Filters
-  const [from, setFrom] = useState<string>('')
-  const [to, setTo] = useState<string>('')
-  const [stage, setStage] = useState<string[]>([])
-  const [owner, setOwner] = useState<string[]>([])
-  const [q, setQ] = useState<string>('')
-  const [page, setPage] = useState<number>(1)
-  const [pageSize, setPageSize] = useState<number>(10)
-  const [oppsPage, setOppsPage] = useState<{
-    items: any[]
-    page: number
-    pageSize: number
-    total: number
-  } | null>(null)
-  const [ownerOpts, setOwnerOpts] = useState<{ id: string; name: string }[]>([])
-  const [stageOpts, setStageOpts] = useState<{ id: string; name: string }[]>([])
-  const searchParams = useSearchParams()
-  const router = useRouter()
+  // Sample CRM data - to be replaced with real HERA API calls
+  const leadsData = [
+    {
+      id: 'LEAD-001',
+      name: 'Acme Corp',
+      contact: 'John Smith',
+      email: 'john@acme.com',
+      phone: '+1-555-0123',
+      value: 150000,
+      stage: 'Qualification',
+      probability: 75,
+      source: 'Website',
+      assignedTo: 'Sarah Wilson',
+      lastActivity: '2024-01-15',
+      status: 'Hot'
+    },
+    {
+      id: 'LEAD-002', 
+      name: 'TechStart Inc',
+      contact: 'Maria Rodriguez',
+      email: 'maria@techstart.com',
+      phone: '+1-555-0456',
+      value: 85000,
+      stage: 'Prospecting',
+      probability: 25,
+      source: 'Referral',
+      assignedTo: 'Mike Johnson',
+      lastActivity: '2024-01-14',
+      status: 'Warm'
+    },
+    {
+      id: 'LEAD-003',
+      name: 'Global Solutions',
+      contact: 'David Chen',
+      email: 'david@globalsol.com', 
+      phone: '+1-555-0789',
+      value: 220000,
+      stage: 'Proposal',
+      probability: 60,
+      source: 'Cold Call',
+      assignedTo: 'Sarah Wilson',
+      lastActivity: '2024-01-13',
+      status: 'Hot'
+    },
+    {
+      id: 'LEAD-004',
+      name: 'Startup Labs',
+      contact: 'Lisa Park',
+      email: 'lisa@startuplabs.io',
+      phone: '+1-555-0321',
+      value: 45000,
+      stage: 'Negotiation',
+      probability: 90,
+      source: 'Trade Show',
+      assignedTo: 'Mike Johnson',
+      lastActivity: '2024-01-12',
+      status: 'Hot'
+    }
+  ]
 
-  // initialize filters from URL once
-  useEffect(() => {
-    const spFrom = searchParams.get('from') || ''
-    const spTo = searchParams.get('to') || ''
-    const spStage = searchParams.get('stage') || ''
-    const ownerAll = searchParams.getAll('owner')
-    const spQ = searchParams.get('q') || ''
-    setFrom(spFrom)
-    setTo(spTo)
-    setStage(spStage ? [spStage] : [])
-    setOwner(ownerAll.length ? ownerAll : [])
-    setQ(spQ)
-    const spPage = Number(searchParams.get('page') || '1')
-    const spPageSize = Number(searchParams.get('pageSize') || '10')
-    setPage(Number.isFinite(spPage) && spPage > 0 ? spPage : 1)
-    setPageSize(Number.isFinite(spPageSize) && spPageSize > 0 ? spPageSize : 10)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // KPI data for scatter plot visualization
+  const generateKPIData = () => {
+    const data = []
+    
+    // Hot Leads (red)
+    for (let i = 0; i < 12; i++) {
+      data.push({
+        x: Math.random() * 100,
+        y: Math.random() * 120 + 30,
+        status: 'hot',
+        value: Math.random() * 200000 + 50000
+      })
+    }
+    
+    // Warm Leads (orange)
+    for (let i = 0; i < 18; i++) {
+      data.push({
+        x: Math.random() * 100,
+        y: Math.random() * 80 + 10,
+        status: 'warm',
+        value: Math.random() * 150000 + 20000
+      })
+    }
+    
+    // Cold Leads (blue)
+    for (let i = 0; i < 25; i++) {
+      data.push({
+        x: Math.random() * 100,
+        y: Math.random() * 60,
+        status: 'cold',
+        value: Math.random() * 100000
+      })
+    }
+    
+    return data
+  }
 
-  useEffect(() => {
-    if (currentOrganization && isAuthenticated) {
+  const kpiData = generateKPIData()
+
+  const handleItemSelect = (itemId: string) => {
+    setSelectedItems(prev => 
+      prev.includes(itemId) 
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
+    )
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Hot':
+        return 'bg-red-100 text-red-800 border-red-200'
+      case 'Warm':
+        return 'bg-orange-100 text-orange-800 border-orange-200'
+      case 'Cold':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+    }
+  }
+
+  const getStageColor = (stage: string) => {
+    switch (stage) {
+      case 'Prospecting':
+        return 'bg-gray-500'
+      case 'Qualification':
+        return 'bg-blue-500'
+      case 'Proposal':
+        return 'bg-yellow-500'
+      case 'Negotiation':
+        return 'bg-orange-500'
+      case 'Closed Won':
+        return 'bg-green-500'
+      default:
+        return 'bg-gray-400'
+    }
+  }
+
+  // Load real CRM data when component mounts
+  React.useEffect(() => {
+    const loadCRMData = async () => {
+      if (!currentOrganization?.id) return
+      
+      try {
+        setIsLoading(true)
+        const orgId = currentOrganization.id
+        const api = flags['crm.playbook.enabled'] ? playbookCrmApi : legacyCrmApi
+        
+        // Load basic stats
+        const [leads, opportunities] = await Promise.all([
+          (api as any).leads?.({ orgId, page: 1, pageSize: 50 }) ?? { items: [], total: 0 },
+          api.opportunities({ orgId, page: 1, pageSize: 50 })
+        ])
+        
+        setStats({
+          totalLeads: leads.total,
+          totalOpportunities: opportunities.total,
+          pipelineValue: opportunities.items.reduce((sum: number, opp: any) => sum + (opp.amount || 0), 0)
+        })
+      } catch (error) {
+        console.error('Error loading CRM data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (isAuthenticated && currentOrganization) {
       loadCRMData()
     }
   }, [currentOrganization, isAuthenticated])
 
-  useEffect(() => {
-    if (!currentOrganization?.id) return
-    ;(async () => {
-      const [owners, stages] = await Promise.all([
-        listOwners(currentOrganization.id!),
-        listStages(currentOrganization.id!)
-      ])
-      setOwnerOpts(owners)
-      setStageOpts(stages)
-    })()
-  }, [currentOrganization?.id])
-
-  const loadCRMData = async () => {
-    if (!currentOrganization?.id) return
-    setIsLoading(true)
-    setError(null)
-    try {
-      const orgId = currentOrganization.id
-      const common = {
-        orgId,
-        from: from || undefined,
-        to: to || undefined,
-        owner: owner || undefined,
-        q: q || undefined,
-        stage
-      }
-      const api = flags['crm.playbook.enabled'] ? playbookCrmApi : legacyCrmApi
-      const [leads, opps, acts, pipe, fnl] = await Promise.all([
-        (api as any).leads?.({ ...common, page: 1, pageSize: 5 }) ?? {
-          items: [],
-          page: 1,
-          pageSize: 5,
-          total: 0
-        },
-        api.opportunities({ ...common, page, pageSize }),
-        (api as any).activities?.({ ...common, page: 1, pageSize: 5 }) ?? {
-          items: [],
-          page: 1,
-          pageSize: 5,
-          total: 0
-        },
-        playbookCrmApi.pipeline({ ...common }),
-        playbookCrmApi.funnel({ ...common })
-      ])
-
-      if (flags['crm.playbook.shadow']) {
-        ;(async () => {
-          try {
-            const [legacyOpps, pbOpps] = await Promise.allSettled([
-              legacyCrmApi.opportunities({ ...common }),
-              playbookCrmApi.opportunities({ ...common })
-            ])
-            console.debug('[CRM shadow] opps', {
-              legacy: legacyOpps.status === 'fulfilled' ? legacyOpps.value.total : 'err',
-              playbook: pbOpps.status === 'fulfilled' ? pbOpps.value.total : 'err'
-            })
-          } catch {}
-        })()
-      }
-      setPipeline(pipe)
-      setFunnel(fnl)
-      setStats({
-        totalLeads: leads.total,
-        totalOpportunities: opps.total,
-        totalActivities: acts.total,
-        pipelineValue: pipe?.totals?.amount || 0,
-        conversionRate: fnl?.conversionRate || 0
-      })
-      setRecentActivities(
-        acts.items.map((a: any) => ({
-          id: a.id,
-          type: a.activity_type,
-          subject: a.subject,
-          date: new Date(a.created_at).toLocaleDateString(),
-          assignedTo: a.assigned_to || 'Unassigned'
-        }))
-      )
-      setOppsPage(opps)
-      setTopOpportunities(
-        (opps.items || [])
-          .filter((o: any) => (o.amount || 0) > 0)
-          .sort((a: any, b: any) => (b.amount || 0) - (a.amount || 0))
-          .slice(0, 5)
-          .map((o: any) => ({
-            id: o.id,
-            name: o.entity_name,
-            amount: o.amount || 0,
-            stage: o.stage || 'qualification',
-            probability: o.probability || 0,
-            closeDate: o.close_date ? new Date(o.close_date).toLocaleDateString() : 'TBD',
-            owner_id: o.owner_id || o.ownerId
-          }))
-      )
-    } catch (error: any) {
-      console.error('Error loading CRM data:', error)
-      setError(error.message || 'Failed to load CRM data')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Handle loading states
-  if (authLoading || !isAuthenticated) {
-    return <LoadingSpinner />
-  }
-
-  if (!currentOrganization) {
-    return (
-      <Alert className="m-8">
-        <AlertDescription>Please select an organization to continue.</AlertDescription>
-      </Alert>
-    )
-  }
-
   return (
-    <div className="p-8">
-      {/* Filters */}
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-7 gap-3">
-        <input
-          type="date"
-          className="border rounded px-3 py-2 bg-background/5"
-          value={from}
-          onChange={e => setFrom(e.target.value)}
-        />
-        <input
-          type="date"
-          className="border rounded px-3 py-2 bg-background/5"
-          value={to}
-          onChange={e => setTo(e.target.value)}
-        />
-        <Select
-          value={''}
-          onValueChange={v => {
-            if (!v) return
-            setStage(prev => (prev.includes(v) ? prev : [...prev, v]))
-          }}
-        >
-          <SelectTrigger className="bg-background/5">
-            <SelectValue placeholder="All stages" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All</SelectItem>
-            {stageOpts.map(s => (
-              <SelectItem key={s.id} value={s.id}>
-                {s.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {/* Selected Stage Chips */}
-        <div className="col-span-1 md:col-span-6 flex flex-wrap gap-2 -mt-2">
-          {stage.map(s => {
-            const name = stageOpts.find(opt => opt.id === s)?.name || s
-            return (
-              <button
-                key={s}
-                onClick={() => setStage(prev => prev.filter(x => x !== s))}
-                className="px-2 py-0.5 text-xs rounded-full border border-border/40 bg-background/10"
-                title={`Remove stage ${name}`}
-              >
-                {name} ×
-              </button>
-            )
-          })}
-        </div>
-        <Select
-          value={''}
-          onValueChange={v => {
-            if (v) setOwner(prev => (prev.includes(v) ? prev : [...prev, v]))
-          }}
-        >
-          <SelectTrigger className="bg-background/5">
-            <SelectValue placeholder="Any owner" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">Any</SelectItem>
-            {ownerOpts.map(o => (
-              <SelectItem key={o.id} value={o.id}>
-                {o.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {/* Owner Chips */}
-        <div className="col-span-1 md:col-span-6 flex flex-wrap gap-2 -mt-2">
-          {owner.map(o => {
-            const name = ownerOpts.find(opt => opt.id === o)?.name || o
-            return (
-              <button
-                key={o}
-                onClick={() => setOwner(prev => prev.filter(x => x !== o))}
-                className="px-2 py-0.5 text-xs rounded-full border border-border/40 bg-background/10"
-                aria-label={`Remove owner ${name}`}
-                title={`Remove owner ${name}`}
-              >
-                {name} ×
-              </button>
-            )
-          })}
-        </div>
-        <input
-          type="text"
-          placeholder="Search"
-          className="border rounded px-3 py-2 bg-background/5"
-          value={q}
-          onChange={e => setQ(e.target.value)}
-        />
-
-        {/* Page Size */}
-        <Select value={String(pageSize)} onValueChange={v => setPageSize(Number(v))}>
-          <SelectTrigger className="bg-background/5">
-            <SelectValue placeholder="Page Size" />
-          </SelectTrigger>
-          <SelectContent>
-            {[10, 20, 50].map(sz => (
-              <SelectItem key={sz} value={String(sz)}>
-                {sz} / page
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <div className="flex gap-2">
-          <Button
-            onClick={() => {
-              const params = new URLSearchParams()
-              if (from) params.set('from', from)
-              if (to) params.set('to', to)
-              stage.forEach(s => params.append('stage', s))
-              owner.forEach(o => params.append('owner', o))
-              if (q) params.set('q', q)
-              params.set('page', String(page))
-              params.set('pageSize', String(pageSize))
-              const qs = params.toString()
-              router.replace(qs ? `/crm?${qs}` : '/crm')
-              loadCRMData()
-            }}
-          >
-            Apply
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setFrom('')
-              setTo('')
-              setStage([])
-              setOwner([])
-              setQ('')
-              setPage(1)
-              setPageSize(10)
-              router.replace('/crm')
-              setTimeout(() => loadCRMData(), 0)
-            }}
-          >
-            Clear
-          </Button>
-        </div>
-      </div>
-      {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-100 dark:text-foreground">CRM Dashboard</h1>
-          <p className="text-muted-foreground dark:text-muted-foreground">
-            Manage your customer relationships and sales pipeline
-          </p>
-        </div>
-        <div className="flex gap-2 items-center">
-          {flags['crm.playbook.shadow'] && (
-            <span
-              className="px-2 py-1 text-xs rounded-full border bg-amber-50 text-amber-800"
-              title="Shadow mode: comparing Playbook vs legacy reads"
-            >
-              Shadow Mode
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="mb-8 flex gap-4">
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="w-4 h-4 mr-2" />
-          New Lead
-        </Button>
-        <Button variant="outline">
-          <Briefcase className="w-4 h-4 mr-2" />
-          New Opportunity
-        </Button>
-        <Button variant="outline">
-          <Users className="w-4 h-4 mr-2" />
-          New Contact
-        </Button>
-        <Button variant="outline">
-          <Activity className="w-4 h-4 mr-2" />
-          New Activity
-        </Button>
-      </div>
-
-      {/* Stats Cards */}
-      {isLoading ? (
-        <LoadingSpinner />
-      ) : error ? (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatCardDNA
-              title="Total Leads"
-              value={stats?.totalLeads || 0}
-              icon={Users}
-              change="filtered"
-              changeType="positive"
-              iconGradient="from-blue-500 to-purple-500"
-            />
-            <StatCardDNA
-              title="Opportunities"
-              value={stats?.totalOpportunities || 0}
-              icon={Target}
-              change="filtered"
-              changeType="positive"
-              iconGradient="from-green-500 to-emerald-500"
-            />
-            <StatCardDNA
-              title="Pipeline Value"
-              value={`${(stats?.pipelineValue || 0).toLocaleString()}`}
-              icon={DollarSign}
-              change="sum"
-              changeType="neutral"
-              iconGradient="from-amber-500 to-orange-500"
-            />
-            <StatCardDNA
-              title="Conversion Rate"
-              value={`${stats?.conversionRate || 0}%`}
-              icon={TrendingUp}
-              change="funnel"
-              changeType="positive"
-              iconGradient="from-purple-500 to-pink-500"
-            />
+    <div className="sap-font min-h-screen bg-gray-50">
+      {/* SAP Fiori Navbar */}
+      <SapNavbar 
+        title="HERA" 
+        breadcrumb="CRM Dashboard"
+        showBack={true}
+        userInitials="EG"
+        showSearch={true}
+      />
+      
+      <main className="mt-12 min-h-[calc(100vh-48px)] bg-gray-50">
+        {/* Page Header */}
+        <div className="bg-white px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-medium text-gray-900">Sales Pipeline</span>
+              <ChevronDown className="w-4 h-4 text-gray-500" />
+            </div>
+            <ExternalLink className="w-4 h-4 text-gray-400" />
           </div>
-
-          {pipeline && (
-            <Card className="p-4 mb-8">
-              <h3 className="text-lg font-semibold mb-2">Pipeline by Stage</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={pipeline.byStage}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="stage" />
-                    <YAxis />
-                    <ReTooltip />
-                    <Bar dataKey="amount" fill="#8B5CF6" />
-                  </BarChart>
-                </ResponsiveContainer>
+          
+          {/* Filter Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-600 font-medium">Lead Status:</label>
+              <div className="relative">
+                <select className="w-full border border-gray-300 rounded px-3 py-3 text-sm bg-white touch-manipulation">
+                  <option value="">All Status</option>
+                  <option value="hot">Hot</option>
+                  <option value="warm">Warm</option>
+                  <option value="cold">Cold</option>
+                </select>
               </div>
-            </Card>
-          )}
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-600 font-medium">Sales Stage:</label>
+              <div className="relative">
+                <select className="w-full border border-gray-300 rounded px-3 py-3 text-sm bg-white touch-manipulation">
+                  <option value="">All Stages</option>
+                  <option value="prospecting">Prospecting</option>
+                  <option value="qualification">Qualification</option>
+                  <option value="proposal">Proposal</option>
+                  <option value="negotiation">Negotiation</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-600 font-medium">Assigned To:</label>
+              <div className="relative">
+                <select className="w-full border border-gray-300 rounded px-3 py-3 text-sm bg-white touch-manipulation">
+                  <option value="">All Team Members</option>
+                  <option value="sarah">Sarah Wilson</option>
+                  <option value="mike">Mike Johnson</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-600 font-medium">Lead Source:</label>
+              <div className="relative">
+                <select className="w-full border border-gray-300 rounded px-3 py-3 text-sm bg-white touch-manipulation">
+                  <option value="">All Sources</option>
+                  <option value="website">Website</option>
+                  <option value="referral">Referral</option>
+                  <option value="cold-call">Cold Call</option>
+                  <option value="trade-show">Trade Show</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4">
+            <button className="text-blue-600 text-sm flex items-center justify-center gap-1 hover:text-blue-800 py-2 px-3 rounded border border-blue-200 hover:bg-blue-50 transition-colors">
+              <Filter className="w-4 h-4" />
+              Adapt Filters
+            </button>
+            <button className="bg-blue-600 text-white px-6 py-3 rounded text-sm hover:bg-blue-700 transition-colors font-medium">
+              Go
+            </button>
+            <button className="bg-green-600 text-white px-6 py-3 rounded text-sm hover:bg-green-700 transition-colors font-medium flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              New Lead
+            </button>
+          </div>
+        </div>
 
-          {/* Opportunities List with Pagination */}
-          {oppsPage && (
-            <Card className="p-6 mb-8">
-              <h2 className="text-xl font-semibold mb-4 !text-gray-100 dark:!text-gray-100">
-                Opportunities
-              </h2>
-              {/* Active owner filters (quick remove) */}
-              {owner.length > 0 && (
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {owner.map(o => {
-                    const name = ownerOpts.find(opt => opt.id === o)?.name || o
-
-                    return (
-                      <button
-                        key={o}
-                        onClick={() => {
-                          const next = owner.filter(x => x !== o)
-                          setOwner(next)
-                          const params = new URLSearchParams(searchParams.toString())
-                          params.delete('owner')
-                          next.forEach(v => params.append('owner', v))
-                          router.replace(`/crm?${params.toString()}`)
-                          loadCRMData()
-                        }}
-                        className="px-2 py-0.5 text-xs rounded-full border border-border/40 bg-background/10"
-                        title={`Remove owner ${name}`}
-                      >
-                        {name} ×
-                      </button>
-                    )
-                  })}
+        {/* CRM Analytics Chart Section */}
+        <div className="px-3 sm:px-6 py-4 sm:py-6">
+          <div className="bg-white rounded-lg border border-gray-200 mb-6 shadow-sm">
+            <div className="p-4 border-b border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h3 className="font-medium text-gray-900 text-lg">Sales Performance Analytics</h3>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <button 
+                    onClick={() => setShowAdvancedView(!showAdvancedView)}
+                    className={`text-sm px-3 py-2 rounded transition-colors ${
+                      showAdvancedView 
+                        ? 'bg-blue-100 text-blue-700' 
+                        : 'text-blue-600 hover:bg-blue-50 border border-blue-200'
+                    }`}
+                  >
+                    Advanced Analytics
+                  </button>
+                  <span className="text-sm text-gray-500 hidden sm:block">Pipeline View</span>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <Grid className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <Search className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <Sliders className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 bg-blue-600 text-white rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <BarChart className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <Table className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              )}
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-left">
-                      <th className="py-2">Name</th>
-                      <th>Stage</th>
-                      <th>Owner</th>
-                      <th className="text-right">Amount</th>
-                      <th>Close Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {oppsPage.items.map((o: any) => (
-                      <tr key={o.id} className="border-t">
-                        <td className="py-2">{o.entity_name}</td>
-                        <td>{o.stage || '-'}</td>
-                        <td>
-                          {ownerOpts.find(opt => opt.id === (o.owner_id || o.ownerId))?.name || '-'}
-                        </td>
-                        <td className="text-right">${(o.amount || 0).toLocaleString()}</td>
-                        <td>{o.close_date ? new Date(o.close_date).toLocaleDateString() : '-'}</td>
-                      </tr>
+              </div>
+            </div>
+            
+            {/* Pipeline Analytics Chart */}
+            <div className="p-3 sm:p-6">
+              <div className="relative">
+                <div className="hidden sm:block">
+                  <svg width="100%" height="300" className="border border-gray-200 bg-gray-50 rounded">
+                    {/* Grid lines */}
+                    <defs>
+                      <pattern id="grid" width="40" height="30" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 30" fill="none" stroke="#e5e7eb" strokeWidth="1"/>
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                    
+                    {/* Y-axis labels */}
+                    <text x="10" y="25" className="text-xs fill-gray-600">$250K</text>
+                    <text x="10" y="85" className="text-xs fill-gray-600">$150K</text>
+                    <text x="10" y="145" className="text-xs fill-gray-600">$100K</text>
+                    <text x="10" y="205" className="text-xs fill-gray-600">$50K</text>
+                    
+                    {/* X-axis label */}
+                    <text x="45" y="290" className="text-xs fill-gray-600">Lead Quality Score</text>
+                    
+                    {/* Center label */}
+                    <text x="50%" y="160" className="text-sm fill-gray-400 text-anchor-middle">Deal Value vs Lead Score</text>
+                    
+                    {/* Scatter points for CRM data */}
+                    {kpiData.map((point, index) => (
+                      <circle
+                        key={index}
+                        cx={60 + point.x * 8}
+                        cy={260 - point.y * 2}
+                        r={point.value > 100000 ? 6 : 4}
+                        fill={
+                          point.status === 'hot' ? '#dc2626' :
+                          point.status === 'warm' ? '#ea580c' :
+                          '#2563eb'
+                        }
+                        opacity={0.7}
+                        className="hover:opacity-100 cursor-pointer"
+                      />
                     ))}
-                  </tbody>
-                </table>
+                  </svg>
+                </div>
+                
+                {/* Mobile Chart Placeholder */}
+                <div className="sm:hidden bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+                  <BarChart className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <p className="text-sm text-gray-600 mb-2">Sales Analytics</p>
+                  <p className="text-xs text-gray-500">Tap to view interactive pipeline chart</p>
+                </div>
+                
+                {/* Legend */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 mt-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-red-600 rounded-full"></div>
+                    <span className="text-sm text-gray-600">Hot Leads</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-orange-600 rounded-full"></div>
+                    <span className="text-sm text-gray-600">Warm Leads</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                    <span className="text-sm text-gray-600">Cold Leads</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-end gap-2 pt-3">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const next = Math.max(1, page - 1)
-                    setPage(next)
-                    const params = new URLSearchParams(searchParams.toString())
-                    params.set('page', String(next))
-                    params.set('pageSize', String(pageSize))
-                    router.replace(`/crm?${params.toString()}`)
-                    loadCRMData()
-                  }}
-                >
-                  Prev
-                </Button>
-                <span className="text-xs">
-                  Page {page} of {Math.max(1, Math.ceil((oppsPage.total || 0) / pageSize))}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const totalPages = Math.max(1, Math.ceil((oppsPage.total || 0) / pageSize))
-                    const next = Math.min(totalPages, page + 1)
-                    setPage(next)
-                    const params = new URLSearchParams(searchParams.toString())
-                    params.set('page', String(next))
-                    params.set('pageSize', String(pageSize))
-                    router.replace(`/crm?${params.toString()}`)
-                    loadCRMData()
-                  }}
-                >
-                  Next
-                </Button>
-              </div>
-            </Card>
-          )}
-
-          {/* Recent Activities and Top Opportunities */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Recent Activities */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 !text-gray-100 dark:!text-gray-100">
-                Recent Activities
-              </h2>
-              <div className="space-y-4">
-                {recentActivities.length === 0 ? (
-                  <p className="text-muted-foreground">No recent activities</p>
-                ) : (
-                  recentActivities.map(activity => (
-                    <div
-                      key={activity.id}
-                      className="flex items-start space-x-3 pb-3 border-b last:border-0"
-                    >
-                      {activity.type === 'call' ? (
-                        <Phone className="w-5 h-5 text-primary mt-0.5" />
-                      ) : activity.type === 'email' ? (
-                        <Mail className="w-5 h-5 text-green-600 mt-0.5" />
-                      ) : (
-                        <Calendar className="w-5 h-5 text-purple-600 mt-0.5" />
-                      )}
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-100 dark:text-foreground">
-                          {activity.subject}
-                        </p>
-                        <p className="text-sm text-muted-foreground dark:text-muted-foreground">
-                          {activity.date} • {activity.assignedTo}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </Card>
-
-            {/* Top Opportunities */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 !text-gray-100 dark:!text-gray-100">
-                Top Opportunities
-              </h2>
-              <div className="space-y-4">
-                {topOpportunities.length === 0 ? (
-                  <p className="text-muted-foreground">No opportunities yet</p>
-                ) : (
-                  topOpportunities.map(opp => (
-                    <div key={opp.id} className="pb-3 border-b last:border-0">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium text-gray-100 dark:text-foreground">
-                            {opp.name}
-                          </p>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
-                            {opp.stage} • {opp.probability}% • Close: {opp.closeDate}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Owner:{' '}
-                            {ownerOpts.find(o => o.id === (opp as any).owner_id)?.name || '-'}
-                          </p>
-                        </div>
-                        <p className="font-semibold text-green-600">
-                          ${opp.amount.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </Card>
+            </div>
           </div>
-        </>
-      )}
-    </div>
-  )
-}
 
-export default function CRMPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-8 h-8 mx-auto">Loading...</div>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+          {/* CRM Leads Table */}
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+            <div className="p-4 border-b border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h3 className="font-medium text-gray-900 text-lg">Active Leads ({leadsData.length})</h3>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <button className="text-sm text-blue-600 hover:text-blue-800 px-3 py-2 border border-blue-200 rounded hover:bg-blue-50 transition-colors">
+                    Export Pipeline
+                  </button>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 bg-blue-600 text-white rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <Table className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded min-w-[36px] min-h-[36px] flex items-center justify-center">
+                      <Sliders className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Desktop Table */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="w-8 px-4 py-3 text-left">
+                      <input 
+                        type="checkbox" 
+                        className="rounded"
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedItems(leadsData.map(lead => lead.id))
+                          } else {
+                            setSelectedItems([])
+                          }
+                        }}
+                      />
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Lead
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Stage
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Contact Info
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Value
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Probability
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Assigned To
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {leadsData.map((lead) => (
+                    <tr key={lead.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-4">
+                        <input 
+                          type="checkbox" 
+                          className="rounded"
+                          checked={selectedItems.includes(lead.id)}
+                          onChange={() => handleItemSelect(lead.id)}
+                        />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div>
+                          <div className="text-sm font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
+                            {lead.name}
+                          </div>
+                          <div className="text-xs text-gray-500 font-mono">{lead.id}</div>
+                          <div className="text-xs text-gray-500">Source: {lead.source}</div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium text-white ${getStageColor(lead.stage)}`}>
+                          {lead.stage}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="text-sm text-gray-900">{lead.contact}</div>
+                        <div className="text-xs text-gray-500 flex items-center gap-1">
+                          <Mail className="w-3 h-3" />
+                          {lead.email}
+                        </div>
+                        <div className="text-xs text-gray-500 flex items-center gap-1">
+                          <Phone className="w-3 h-3" />
+                          {lead.phone}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-right">
+                        <div className="text-sm font-medium text-gray-900">
+                          ${lead.value.toLocaleString('en-US')}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <div className="flex items-center justify-center">
+                          <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-blue-600 rounded-full transition-all duration-500"
+                              style={{ width: `${lead.probability}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-gray-600 ml-2">{lead.probability}%</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <span className={`inline-flex items-center px-3 py-1 border text-xs font-medium rounded ${getStatusColor(lead.status)}`}>
+                          {lead.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-900">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs text-white font-medium">
+                            {lead.assignedTo.split(' ').map(n => n[0]).join('')}
+                          </div>
+                          {lead.assignedTo}
+                        </div>
+                        <div className="text-xs text-gray-500">Last: {lead.lastActivity}</div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden divide-y divide-gray-200">
+              {leadsData.map((lead) => (
+                <div key={lead.id} className="p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start gap-3">
+                      <input 
+                        type="checkbox" 
+                        className="rounded mt-1"
+                        checked={selectedItems.includes(lead.id)}
+                        onChange={() => handleItemSelect(lead.id)}
+                      />
+                      <div className="flex-1">
+                        <div className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer text-sm">
+                          {lead.name}
+                        </div>
+                        <div className="text-xs text-gray-500 font-mono mt-1">{lead.id}</div>
+                        <div className="text-xs text-gray-500">Contact: {lead.contact}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium text-white ${getStageColor(lead.stage)}`}>
+                        {lead.stage}
+                      </span>
+                      <span className={`inline-flex items-center px-2 py-1 border text-xs font-medium rounded ${getStatusColor(lead.status)}`}>
+                        {lead.status}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">Value</div>
+                      <div className="text-gray-900 font-medium mt-1">${lead.value.toLocaleString('en-US')}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">Probability</div>
+                      <div className="text-gray-900 mt-1">{lead.probability}%</div>
+                    </div>
+                    <div className="col-span-2">
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">Assigned To</div>
+                      <div className="text-gray-900 mt-1 flex items-center gap-2">
+                        <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center text-xs text-white font-medium">
+                          {lead.assignedTo.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        {lead.assignedTo}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      }
-    >
-      <CRMDashboard />
-    </Suspense>
+      </main>
+    </div>
   )
 }

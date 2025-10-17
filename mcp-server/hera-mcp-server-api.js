@@ -4,12 +4,12 @@
  * Comprehensive business operations testing through natural language
  */
 
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
-const OpenAI = require('openai');
-const Anthropic = require('@anthropic-ai/sdk');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import { createClient } from '@supabase/supabase-js';
+import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 
 // Initialize services
 const app = express();

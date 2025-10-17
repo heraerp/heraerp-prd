@@ -1,8 +1,4 @@
-# HERA Sacred Six Tables - CORRECTED Field Documentation
-# Smart Code: HERA.DNA.SCHEMA.DOCUMENTATION.SACRED.SIX.CORRECTED.V1
-#
-# ✅ UPDATED TO MATCH ACTUAL SUPABASE DATABASE SCHEMA
-# This documentation is now 100% accurate to the real database structure.
+# DO NOT USE OLD DATA TO BE DELETED SAFELY LATER
 
 schema_version: "2.0.0"
 last_updated: "2024-01-15"

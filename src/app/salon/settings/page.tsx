@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -26,6 +27,7 @@ import {
 import { LUXE_COLORS } from '@/lib/constants/salon'
 
 export default function SalonSettingsPage() {
+  const router = useRouter()
   const { organizationId, role, user } = useSecuredSalonContext()
   const [activeTab, setActiveTab] = useState('general')
 
@@ -185,7 +187,7 @@ export default function SalonSettingsPage() {
                       </p>
                     </div>
                     <Button
-                      onClick={() => (window.location.href = '/salon/settings/inventory')}
+                      onClick={() => router.push('/salon/settings/inventory')}
                       style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}
                     >
                       Configure

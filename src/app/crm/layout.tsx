@@ -1,12 +1,12 @@
 'use client'
 
-import { CRMLayout } from '@/components/layout/crm-layout'
-import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
+import { PropsWithChildren } from 'react'
 
-export default function CRMRootLayout({ children }: { children: React.ReactNode }) {
+export default function CRMLayout({ children }: PropsWithChildren) {
+  // Use the same enterprise layout pattern as retail - clean full-screen
   return (
-    <HERAAuthProvider>
-      <CRMLayout>{children}</CRMLayout>
-    </HERAAuthProvider>
+    <div className="min-h-screen bg-gray-50">
+      {children}
+    </div>
   )
 }

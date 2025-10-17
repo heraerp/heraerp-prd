@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/select'
 import { useSalonPOS, type PosItem } from '@/hooks/useSalonPOS'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
+import { ScanToCart } from '@/components/salon/pos/ScanToCart'
 import { cn } from '@/lib/utils'
 
 const COLORS = {
@@ -77,6 +78,19 @@ export function CatalogPane({
 
   // Use composition hook for POS data
   const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS(posOptions)
+
+  // ✅ CRITICAL FIX: Initialize branch from context (e.g., from appointment)
+  // This ensures the correct branch is selected when redirecting from appointments
+  useEffect(() => {
+    if (contextBranchId && contextBranchId !== branchId && branches.length > 0) {
+      // Verify the contextBranchId exists in the branches list
+      const branchExists = branches.some(b => b.id === contextBranchId)
+      if (branchExists) {
+        console.log('[CatalogPane] 🏢 Setting branch from context (appointment):', contextBranchId)
+        setBranchId(contextBranchId)
+      }
+    }
+  }, [contextBranchId, branchId, branches, setBranchId])
 
   // ✅ FIX: Sync branch changes to parent context (only if different)
   useEffect(() => {
@@ -263,6 +277,28 @@ export function CatalogPane({
             <span className="text-xs font-medium" style={{ color: COLORS.champagne }}>
               Please select a branch to view available items
             </span>
+          </div>
+        )}
+
+        {/* Barcode Scanner */}
+        {branchId && (
+          <div className="mb-3">
+            <ScanToCart
+              organizationId={organizationId}
+              onProductFound={product => {
+                // Transform product to PosItem format and add to cart
+                const posItem: PosItem = {
+                  id: product.id,
+                  entity_id: product.id,
+                  title: product.entity_name,
+                  price: product.price_market || product.selling_price || 0,
+                  __kind: 'PRODUCT',
+                  category: product.category || 'General',
+                  raw: product
+                }
+                handleAddItem(posItem)
+              }}
+            />
           </div>
         )}
 

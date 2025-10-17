@@ -1,0 +1,40 @@
+{
+  "name": "hera-finance-dna-v2.2",
+  "version": "2.2.0", 
+  "description": "HERA Finance DNA v2.2 - Org-agnostic finance management",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "finance:seed": "node tools/seed/seed_post_transactions.js",
+    "finance:test": "npx hera-test-runner tests/finance/finance_dna_v2_2.yml",
+    "finance:setup": "npm run db:apply && npm run finance:seed",
+    "db:apply": "psql -f db/triggers/enforce_actor_stamp.sql && psql -f db/views/v_core_entities_accounts.sql",
+    "env:check": "node -e \"import {getEnvironmentInfo} from './tools/org_runtime/resolve_org_and_accounts.js'; console.log(JSON.stringify(getEnvironmentInfo(), null, 2));\""
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "jwt-decode": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "typescript": "^5.2.0"
+  },
+  "files": [
+    "guardrails/",
+    "packs/", 
+    "db/",
+    "tools/",
+    "seeds/",
+    "tests/",
+    "README.finance-dna-v2.2.md"
+  ],
+  "keywords": [
+    "hera",
+    "finance",
+    "accounting",
+    "dna",
+    "salon",
+    "multi-tenant",
+    "org-agnostic"
+  ]
+}

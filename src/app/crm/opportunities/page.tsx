@@ -1,490 +1,603 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import {
-  Target,
-  Plus,
-  Search,
-  Filter,
-  Calendar,
-  DollarSign,
+import React, { useState, useEffect } from 'react'
+import { MobilePageLayout } from '@/components/mobile/MobilePageLayout'
+import { MobileFilters, type FilterField } from '@/components/mobile/MobileFilters'
+import { MobileDataTable, type TableColumn, type TableRecord } from '@/components/mobile/MobileDataTable'
+import { MobileCard } from '@/components/mobile/MobileCard'
+import { MobileChart } from '@/components/mobile/MobileCharts'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { 
+  Target, 
+  TrendingUp, 
+  DollarSign, 
+  Plus, 
   Building2,
   User,
-  Clock,
-  MoreVertical,
+  Calendar,
+  Percent,
+  BarChart3,
+  Eye,
   Edit,
-  Trash2,
-  ArrowRight,
-  TrendingUp,
-  AlertCircle,
-  ChevronLeft,
-  ChevronRight,
-  GripVertical
+  Clock
 } from 'lucide-react'
 
-// India Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
-
-interface Opportunity {
+interface Opportunity extends TableRecord {
   id: string
   name: string
   account: string
-  contact: string
-  value: number
-  stage: string
-  closeDate: string
+  amount: number
+  stage: 'Prospecting' | 'Qualification' | 'Proposal' | 'Negotiation' | 'Closed Won' | 'Closed Lost'
   probability: number
   owner: string
-  description?: string
-  nextStep?: string
-  createdAt: string
-}
-
-interface Stage {
-  name: string
-  opportunities: Opportunity[]
-  value: number
-  count: number
-  color: string
+  closeDate: string
+  createdDate: string
+  lastActivity: string
+  source: string
+  industry: string
+  contactName: string
 }
 
 export default function OpportunitiesPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedStage, setSelectedStage] = useState('all')
-  const [draggedOpportunity, setDraggedOpportunity] = useState<Opportunity | null>(null)
-  const [draggedOverStage, setDraggedOverStage] = useState<string | null>(null)
-  const [isCreating, setIsCreating] = useState(false)
+  const { currentOrganization, isAuthenticated } = useHERAAuth()
+  const [loading, setLoading] = useState(false)
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([])
+  const [selectedOpportunities, setSelectedOpportunities] = useState<(string | number)[]>([])
+  const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table')
+  const [filters, setFilters] = useState({
+    stage: '',
+    owner: '',
+    probability: '',
+    closeDate: '',
+    search: ''
+  })
 
   // Sample opportunities data
-  const [opportunities, setOpportunities] = useState<Opportunity[]>([
+  const sampleOpportunities: Opportunity[] = [
     {
-      id: '1',
-      name: 'Enterprise Broadband - Infosys',
-      account: 'Infosys Ltd',
-      contact: 'Rajesh Kumar',
-      value: 8500000,
+      id: 'OPP-001',
+      name: 'Enterprise Software License',
+      account: 'Acme Corporation',
+      amount: 250000,
       stage: 'Negotiation',
-      closeDate: '2024-06-30',
       probability: 80,
-      owner: 'Amit Sharma',
-      description: 'Large enterprise broadband deployment across 5 locations',
-      nextStep: 'Final pricing approval',
-      createdAt: '2024-05-15'
+      owner: 'Sarah Wilson',
+      closeDate: '2024-02-15',
+      createdDate: '2024-01-10',
+      lastActivity: '2024-01-20',
+      source: 'Inbound',
+      industry: 'Technology',
+      contactName: 'John Smith'
     },
     {
-      id: '2',
-      name: 'Cloud Connect - TCS',
-      account: 'Tata Consultancy Services',
-      contact: 'Priya Sharma',
-      value: 6200000,
+      id: 'OPP-002',
+      name: 'Manufacturing Equipment',
+      account: 'Global Manufacturing Inc',
+      amount: 450000,
       stage: 'Proposal',
-      closeDate: '2024-07-15',
-      probability: 60,
-      owner: 'Neha Patel',
-      description: 'Direct cloud connectivity for their data centers',
-      nextStep: 'Technical review meeting',
-      createdAt: '2024-05-20'
+      probability: 65,
+      owner: 'Mike Johnson',
+      closeDate: '2024-03-01',
+      createdDate: '2024-01-05',
+      lastActivity: '2024-01-19',
+      source: 'Referral',
+      industry: 'Manufacturing',
+      contactName: 'Maria Rodriguez'
     },
     {
-      id: '3',
-      name: 'SD-WAN Solution - Wipro',
-      account: 'Wipro Limited',
-      contact: 'Vikram Singh',
-      value: 5400000,
+      id: 'OPP-003',
+      name: 'Healthcare System Upgrade',
+      account: 'Healthcare Solutions LLC',
+      amount: 180000,
       stage: 'Qualification',
-      closeDate: '2024-07-31',
-      probability: 40,
-      owner: 'Rahul Verma',
-      description: 'Complete SD-WAN transformation project',
-      nextStep: 'Requirements gathering',
-      createdAt: '2024-05-25'
+      probability: 45,
+      owner: 'Alex Chen',
+      closeDate: '2024-02-28',
+      createdDate: '2024-01-08',
+      lastActivity: '2024-01-18',
+      source: 'Trade Show',
+      industry: 'Healthcare',
+      contactName: 'David Chen'
     },
     {
-      id: '4',
-      name: 'Managed Services - HCL',
-      account: 'HCL Technologies',
-      contact: 'Anjali Gupta',
-      value: 4800000,
-      stage: 'Negotiation',
-      closeDate: '2024-06-25',
-      probability: 75,
-      owner: 'Amit Sharma',
-      description: '24x7 managed network services',
-      nextStep: 'Contract finalization',
-      createdAt: '2024-05-10'
-    },
-    {
-      id: '5',
-      name: 'MPLS Network - Cognizant',
-      account: 'Cognizant',
-      contact: 'Suresh Reddy',
-      value: 7200000,
-      stage: 'Prospecting',
-      closeDate: '2024-08-30',
-      probability: 20,
-      owner: 'Neha Patel',
-      description: 'Pan-India MPLS network upgrade',
-      nextStep: 'Initial discovery call',
-      createdAt: '2024-06-01'
-    },
-    {
-      id: '6',
-      name: 'Internet Leased Line - Mindtree',
-      account: 'Mindtree',
-      contact: 'Deepak Joshi',
-      value: 3200000,
-      stage: 'Proposal',
-      closeDate: '2024-07-20',
-      probability: 55,
-      owner: 'Rahul Verma',
-      description: 'High-speed internet connectivity',
-      nextStep: 'Proposal presentation',
-      createdAt: '2024-05-28'
-    },
-    {
-      id: '7',
-      name: 'Data Center Connect - Tech Mahindra',
-      account: 'Tech Mahindra',
-      contact: 'Ravi Krishnan',
-      value: 3600000,
+      id: 'OPP-004',
+      name: 'Retail POS System',
+      account: 'Retail Chain Co',
+      amount: 320000,
       stage: 'Closed Won',
-      closeDate: '2024-06-10',
       probability: 100,
-      owner: 'Amit Sharma',
-      description: 'DC connectivity project completed',
-      createdAt: '2024-04-15'
+      owner: 'Sarah Wilson',
+      closeDate: '2024-01-15',
+      createdDate: '2023-12-01',
+      lastActivity: '2024-01-15',
+      source: 'Cold Call',
+      industry: 'Retail',
+      contactName: 'Lisa Park'
     },
     {
-      id: '8',
-      name: 'Voice Solutions - Mphasis',
-      account: 'Mphasis',
-      contact: 'Kavita Nair',
-      value: 2800000,
-      stage: 'Closed Lost',
-      closeDate: '2024-06-05',
-      probability: 0,
-      owner: 'Neha Patel',
-      description: 'Lost to competitor',
-      createdAt: '2024-04-20'
+      id: 'OPP-005',
+      name: 'Cloud Infrastructure',
+      account: 'TechStartup Inc',
+      amount: 95000,
+      stage: 'Prospecting',
+      probability: 25,
+      owner: 'Mike Johnson',
+      closeDate: '2024-04-01',
+      createdDate: '2024-01-15',
+      lastActivity: '2024-01-17',
+      source: 'Website',
+      industry: 'Technology',
+      contactName: 'Robert Johnson'
     }
-  ])
-
-  const stageConfig = [
-    { name: 'Prospecting', color: 'from-gray-9000 to-gray-600' },
-    { name: 'Qualification', color: 'from-blue-500 to-blue-600' },
-    { name: 'Proposal', color: 'from-[#ec7f37] to-[#be4f0c]' },
-    { name: 'Negotiation', color: 'from-[#FF5A09] to-[#ec7f37]' },
-    { name: 'Closed Won', color: 'from-emerald-500 to-green-600' },
-    { name: 'Closed Lost', color: 'from-red-500 to-rose-600' }
   ]
 
-  const supabase = createClientComponentClient()
-
-  // Group opportunities by stage
-  const getStages = (): Stage[] => {
-    return stageConfig.map(config => {
-      const stageOpps = opportunities.filter(opp => opp.stage === config.name)
-      return {
-        name: config.name,
-        opportunities: stageOpps,
-        value: stageOpps.reduce((sum, opp) => sum + opp.value, 0),
-        count: stageOpps.length,
-        color: config.color
-      }
-    })
-  }
-
-  const handleDragStart = (e: React.DragEvent, opportunity: Opportunity) => {
-    setDraggedOpportunity(opportunity)
-    e.dataTransfer.effectAllowed = 'move'
-  }
-
-  const handleDragEnd = () => {
-    setDraggedOpportunity(null)
-    setDraggedOverStage(null)
-  }
-
-  const handleDragOver = (e: React.DragEvent, stageName: string) => {
-    e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
-    setDraggedOverStage(stageName)
-  }
-
-  const handleDragLeave = () => {
-    setDraggedOverStage(null)
-  }
-
-  const handleDrop = (e: React.DragEvent, stageName: string) => {
-    e.preventDefault()
-    if (draggedOpportunity && draggedOpportunity.stage !== stageName) {
-      // Update opportunity stage
-      const updatedOpportunities = opportunities.map(opp => {
-        if (opp.id === draggedOpportunity.id) {
-          // Update probability based on stage
-          let probability = opp.probability
-          switch (stageName) {
-            case 'Prospecting':
-              probability = 20
-              break
-            case 'Qualification':
-              probability = 40
-              break
-            case 'Proposal':
-              probability = 60
-              break
-            case 'Negotiation':
-              probability = 80
-              break
-            case 'Closed Won':
-              probability = 100
-              break
-            case 'Closed Lost':
-              probability = 0
-              break
-          }
-          return { ...opp, stage: stageName, probability }
-        }
-        return opp
-      })
-      setOpportunities(updatedOpportunities)
+  // Filter fields
+  const filterFields: FilterField[] = [
+    {
+      key: 'stage',
+      label: 'Stage',
+      type: 'select',
+      placeholder: 'All Stages',
+      options: [
+        { value: 'prospecting', label: 'Prospecting' },
+        { value: 'qualification', label: 'Qualification' },
+        { value: 'proposal', label: 'Proposal' },
+        { value: 'negotiation', label: 'Negotiation' },
+        { value: 'closed-won', label: 'Closed Won' },
+        { value: 'closed-lost', label: 'Closed Lost' }
+      ],
+      value: filters.stage,
+      onChange: (value) => setFilters(prev => ({ ...prev, stage: value }))
+    },
+    {
+      key: 'owner',
+      label: 'Owner',
+      type: 'select',
+      placeholder: 'All Owners',
+      options: [
+        { value: 'sarah', label: 'Sarah Wilson' },
+        { value: 'mike', label: 'Mike Johnson' },
+        { value: 'alex', label: 'Alex Chen' }
+      ],
+      value: filters.owner,
+      onChange: (value) => setFilters(prev => ({ ...prev, owner: value }))
+    },
+    {
+      key: 'probability',
+      label: 'Probability',
+      type: 'select',
+      placeholder: 'All Probabilities',
+      options: [
+        { value: 'high', label: 'High (70%+)' },
+        { value: 'medium', label: 'Medium (30-70%)' },
+        { value: 'low', label: 'Low (<30%)' }
+      ],
+      value: filters.probability,
+      onChange: (value) => setFilters(prev => ({ ...prev, probability: value }))
+    },
+    {
+      key: 'search',
+      label: 'Search',
+      type: 'search',
+      placeholder: 'Search opportunities...',
+      value: filters.search,
+      onChange: (value) => setFilters(prev => ({ ...prev, search: value }))
     }
-    setDraggedOverStage(null)
-  }
+  ]
 
-  const stages = getStages()
-  const totalPipeline = stages.reduce((sum, stage) => {
-    if (stage.name !== 'Closed Won' && stage.name !== 'Closed Lost') {
-      return sum + stage.value
-    }
-    return sum
-  }, 0)
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+  // Table columns
+  const columns: TableColumn[] = [
+    {
+      key: 'name',
+      label: 'Opportunity',
+      render: (value, record) => (
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Opportunities</h1>
-          <p className="text-foreground/60 mt-1">Manage your sales pipeline and track deals</p>
-        </div>
-        <button
-          onClick={() => setIsCreating(true)}
-          className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
-        >
-          <Plus className="h-5 w-5" />
-          <span>New Opportunity</span>
-        </button>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
-          <input
-            type="text"
-            placeholder="Search opportunities..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
-          />
-        </div>
-        <button className="flex items-center space-x-2 px-4 py-3 bg-background/5 backdrop-blur-xl border border-border/10 rounded-lg text-foreground hover:bg-background/10 transition-colors">
-          <Filter className="h-5 w-5" />
-          <span>Filter</span>
-        </button>
-      </div>
-
-      {/* Pipeline Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <Target className="h-5 w-5 text-[#FF5A09]" />
-              <span className="text-xs text-emerald-400 font-medium">+15.2%</span>
-            </div>
-            <p className="text-2xl font-bold text-foreground">
-              ₹{(totalPipeline / 10000000).toFixed(2)} Cr
-            </p>
-            <p className="text-xs text-foreground/60 mt-1">Total Pipeline Value</p>
+          <div className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
+            {value}
+          </div>
+          <div className="text-xs text-gray-500 flex items-center gap-1">
+            <Building2 className="w-3 h-3" />
+            {record.account}
           </div>
         </div>
-
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ec7f37]/50 to-[#be4f0c]/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <DollarSign className="h-5 w-5 text-[#ec7f37]" />
-              <span className="text-xs text-emerald-400 font-medium">+8.3%</span>
-            </div>
-            <p className="text-2xl font-bold text-foreground">₹9.4L</p>
-            <p className="text-xs text-foreground/60 mt-1">Average Deal Size</p>
-          </div>
+      )
+    },
+    {
+      key: 'amount',
+      label: 'Amount',
+      align: 'right',
+      render: (value) => (
+        <div className="text-right">
+          <div className="font-medium">${(value / 1000).toFixed(0)}K</div>
         </div>
-
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/50 to-green-600/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <TrendingUp className="h-5 w-5 text-emerald-500" />
-              <span className="text-xs text-emerald-400 font-medium">68%</span>
-            </div>
-            <p className="text-2xl font-bold text-foreground">
-              {stages.find(s => s.name === 'Closed Won')?.count || 0}
-            </p>
-            <p className="text-xs text-foreground/60 mt-1">Won Deals (MTD)</p>
-          </div>
-        </div>
-
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500/50 to-rose-600/50 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-          <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <AlertCircle className="h-5 w-5 text-red-500" />
-              <span className="text-xs text-red-400 font-medium">32%</span>
-            </div>
-            <p className="text-2xl font-bold text-foreground">
-              {stages.find(s => s.name === 'Closed Lost')?.count || 0}
-            </p>
-            <p className="text-xs text-foreground/60 mt-1">Lost Deals (MTD)</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Kanban Board */}
-      <div className="overflow-x-auto pb-4">
-        <div className="flex space-x-4 min-w-max">
-          {stages.map(stage => (
+      )
+    },
+    {
+      key: 'stage',
+      label: 'Stage',
+      align: 'center',
+      render: (value) => (
+        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+          value === 'Closed Won' ? 'bg-green-100 text-green-800' :
+          value === 'Closed Lost' ? 'bg-red-100 text-red-800' :
+          value === 'Negotiation' ? 'bg-orange-100 text-orange-800' :
+          value === 'Proposal' ? 'bg-yellow-100 text-yellow-800' :
+          value === 'Qualification' ? 'bg-blue-100 text-blue-800' :
+          'bg-gray-100 text-gray-800'
+        }`}>
+          {value}
+        </span>
+      )
+    },
+    {
+      key: 'probability',
+      label: 'Probability',
+      align: 'center',
+      render: (value) => (
+        <div className="flex items-center justify-center">
+          <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
-              key={stage.name}
-              className="w-80 flex-shrink-0"
-              onDragOver={e => handleDragOver(e, stage.name)}
-              onDragLeave={handleDragLeave}
-              onDrop={e => handleDrop(e, stage.name)}
-            >
-              {/* Stage Header */}
-              <div className="relative group mb-4">
-                <div
-                  className={`absolute -inset-0.5 bg-gradient-to-r ${stage.color} rounded-xl blur opacity-20`}
-                />
-                <div className="relative bg-background/10 backdrop-blur-xl border border-border/20 rounded-xl p-4">
-                  <h3 className="text-lg font-semibold text-foreground mb-1">{stage.name}</h3>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-foreground/60">{stage.count} deals</span>
-                    <span className="text-sm font-medium text-foreground">
-                      ₹{(stage.value / 10000000).toFixed(2)} Cr
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Opportunities */}
-              <div
-                className={`space-y-3 min-h-[400px] p-2 rounded-xl transition-all duration-300 ${
-                  draggedOverStage === stage.name
-                    ? 'bg-background/5 border-2 border-dashed border-[#FF5A09]/50'
-                    : ''
-                }`}
-              >
-                {stage.opportunities.map(opportunity => (
-                  <div
-                    key={opportunity.id}
-                    draggable
-                    onDragStart={e => handleDragStart(e, opportunity)}
-                    onDragEnd={handleDragEnd}
-                    className={`relative group cursor-move transition-all duration-300 ${
-                      draggedOpportunity?.id === opportunity.id ? 'opacity-50' : ''
-                    }`}
-                  >
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-                    <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4 hover:bg-background/10">
-                      {/* Drag Handle */}
-                      <div className="absolute left-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <GripVertical className="h-4 w-4 text-foreground/40" />
-                      </div>
-
-                      <div className="pl-6">
-                        <div className="flex items-start justify-between mb-2">
-                          <h4 className="text-sm font-medium text-foreground line-clamp-2">
-                            {opportunity.name}
-                          </h4>
-                          <button className="opacity-0 group-hover:opacity-100 transition-opacity text-foreground/40 hover:text-foreground">
-                            <MoreVertical className="h-4 w-4" />
-                          </button>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-2 text-xs text-foreground/60">
-                            <Building2 className="h-3 w-3" />
-                            <span className="line-clamp-1">{opportunity.account}</span>
-                          </div>
-                          <div className="flex items-center space-x-2 text-xs text-foreground/60">
-                            <User className="h-3 w-3" />
-                            <span>{opportunity.contact}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-lg font-semibold text-[#FF5A09]">
-                              ₹{(opportunity.value / 100000).toFixed(1)}L
-                            </span>
-                            <div className="flex items-center space-x-1">
-                              <div className="w-12 h-1.5 bg-background/10 rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-full"
-                                  style={{ width: `${opportunity.probability}%` }}
-                                />
-                              </div>
-                              <span className="text-xs text-foreground/60">
-                                {opportunity.probability}%
-                              </span>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between text-xs">
-                            <div className="flex items-center space-x-1 text-foreground/60">
-                              <Calendar className="h-3 w-3" />
-                              <span>{new Date(opportunity.closeDate).toLocaleDateString()}</span>
-                            </div>
-                            <div className="flex items-center space-x-1 text-foreground/60">
-                              <Clock className="h-3 w-3" />
-                              <span>
-                                {Math.ceil(
-                                  (new Date(opportunity.closeDate).getTime() -
-                                    new Date().getTime()) /
-                                    (1000 * 60 * 60 * 24)
-                                )}
-                                d
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+              className={`h-full rounded-full transition-all duration-500 ${
+                value >= 70 ? 'bg-green-500' :
+                value >= 30 ? 'bg-yellow-500' :
+                'bg-red-500'
+              }`}
+              style={{ width: `${value}%` }}
+            />
+          </div>
+          <span className="text-xs text-gray-600 ml-2">{value}%</span>
         </div>
-      </div>
+      )
+    },
+    {
+      key: 'closeDate',
+      label: 'Close Date',
+      render: (value) => (
+        <div className="flex items-center gap-1 text-sm">
+          <Calendar className="w-3 h-3 text-gray-400" />
+          {new Date(value).toLocaleDateString()}
+        </div>
+      )
+    },
+    {
+      key: 'owner',
+      label: 'Owner',
+      render: (value) => (
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs text-white font-medium">
+            {value.split(' ').map((n: string) => n[0]).join('')}
+          </div>
+          <span className="text-sm">{value}</span>
+        </div>
+      )
+    }
+  ]
 
-      {/* Quick Stats */}
-      <div className="flex items-center justify-center space-x-8 text-sm text-foreground/60">
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-[#FF5A09] to-[#ec7f37]" />
-          <span>
-            Active Deals:{' '}
-            {opportunities.filter(o => !['Closed Won', 'Closed Lost'].includes(o.stage)).length}
+  // Mobile card renderer
+  const mobileCardRender = (record: Opportunity) => (
+    <div className="p-4 space-y-3">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h3 className="font-medium text-blue-600 cursor-pointer hover:text-blue-800">
+            {record.name}
+          </h3>
+          <p className="text-sm text-gray-600 flex items-center gap-1">
+            <Building2 className="w-3 h-3" />
+            {record.account}
+          </p>
+          <p className="text-xs text-gray-500">Contact: {record.contactName}</p>
+        </div>
+        <div className="text-right">
+          <div className="font-bold text-lg text-gray-900">${(record.amount / 1000).toFixed(0)}K</div>
+          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+            record.stage === 'Closed Won' ? 'bg-green-100 text-green-800' :
+            record.stage === 'Closed Lost' ? 'bg-red-100 text-red-800' :
+            record.stage === 'Negotiation' ? 'bg-orange-100 text-orange-800' :
+            record.stage === 'Proposal' ? 'bg-yellow-100 text-yellow-800' :
+            record.stage === 'Qualification' ? 'bg-blue-100 text-blue-800' :
+            'bg-gray-100 text-gray-800'
+          }`}>
+            {record.stage}
           </span>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-emerald-500" />
-          <span>Won Rate: 68%</span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide">Probability</div>
+          <div className="flex items-center gap-2">
+            <div className="w-12 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full ${
+                  record.probability >= 70 ? 'bg-green-500' :
+                  record.probability >= 30 ? 'bg-yellow-500' :
+                  'bg-red-500'
+                }`}
+                style={{ width: `${record.probability}%` }}
+              />
+            </div>
+            <span className="text-sm font-medium">{record.probability}%</span>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <span>Avg Sales Cycle: 45 days</span>
+        <div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide">Close Date</div>
+          <div className="font-medium">{new Date(record.closeDate).toLocaleDateString()}</div>
+        </div>
+        <div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide">Owner</div>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center text-xs text-white font-medium">
+              {record.owner.split(' ').map(n => n[0]).join('')}
+            </div>
+            {record.owner}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide">Source</div>
+          <div className="font-medium">{record.source}</div>
+        </div>
+      </div>
+
+      <div className="flex gap-2 pt-2 border-t border-gray-100">
+        <button className="flex-1 text-sm text-blue-600 hover:text-blue-800 py-2 px-3 border border-blue-200 rounded hover:bg-blue-50 transition-colors flex items-center justify-center gap-1">
+          <Eye className="w-4 h-4" />
+          View
+        </button>
+        <button className="flex-1 text-sm text-gray-600 hover:text-gray-800 py-2 px-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors flex items-center justify-center gap-1">
+          <Edit className="w-4 h-4" />
+          Edit
+        </button>
+        <button className="flex-1 text-sm text-green-600 hover:text-green-800 py-2 px-3 border border-green-200 rounded hover:bg-green-50 transition-colors flex items-center justify-center gap-1">
+          <TrendingUp className="w-4 h-4" />
+          Move Stage
+        </button>
+      </div>
+    </div>
+  )
+
+  // Kanban columns
+  const kanbanStages = [
+    { id: 'prospecting', name: 'Prospecting', color: 'border-gray-300' },
+    { id: 'qualification', name: 'Qualification', color: 'border-blue-300' },
+    { id: 'proposal', name: 'Proposal', color: 'border-yellow-300' },
+    { id: 'negotiation', name: 'Negotiation', color: 'border-orange-300' },
+    { id: 'closed-won', name: 'Closed Won', color: 'border-green-300' },
+    { id: 'closed-lost', name: 'Closed Lost', color: 'border-red-300' }
+  ]
+
+  // KPI data
+  const kpiData = {
+    totalPipelineValue: sampleOpportunities.filter(o => !o.stage.includes('Closed')).reduce((sum, opp) => sum + opp.amount, 0),
+    openDeals: sampleOpportunities.filter(o => !o.stage.includes('Closed')).length,
+    winRate: Math.round((sampleOpportunities.filter(o => o.stage === 'Closed Won').length / sampleOpportunities.filter(o => o.stage.includes('Closed')).length) * 100) || 0,
+    avgDealCycle: 45 // days
+  }
+
+  // Chart data
+  const pipelineChartData = [
+    { name: 'Prospecting', value: 95000, color: '#6b7280' },
+    { name: 'Qualification', value: 180000, color: '#3b82f6' },
+    { name: 'Proposal', value: 450000, color: '#f59e0b' },
+    { name: 'Negotiation', value: 250000, color: '#ea580c' }
+  ]
+
+  const forecastData = [
+    { month: 'Feb', forecast: 320000, target: 400000 },
+    { month: 'Mar', forecast: 450000, target: 500000 },
+    { month: 'Apr', forecast: 380000, target: 450000 },
+    { month: 'May', forecast: 520000, target: 600000 }
+  ]
+
+  useEffect(() => {
+    if (isAuthenticated && currentOrganization) {
+      setOpportunities(sampleOpportunities)
+    }
+  }, [isAuthenticated, currentOrganization])
+
+  const handleApplyFilters = () => {
+    setLoading(true)
+    // Simulate API call
+    setTimeout(() => {
+      setOpportunities(sampleOpportunities)
+      setLoading(false)
+    }, 1000)
+  }
+
+  const renderKanbanView = () => (
+    <div className="px-3 sm:px-6">
+      <div className="overflow-x-auto">
+        <div className="flex gap-4 pb-4" style={{ minWidth: '1200px' }}>
+          {kanbanStages.map((stage) => {
+            const stageOpps = opportunities.filter(opp => 
+              opp.stage.toLowerCase().replace(' ', '-') === stage.id
+            )
+            const stageValue = stageOpps.reduce((sum, opp) => sum + opp.amount, 0)
+
+            return (
+              <div key={stage.id} className={`flex-1 min-w-[280px] bg-white rounded-lg border-2 ${stage.color} shadow-sm`}>
+                <div className="p-4 border-b border-gray-200">
+                  <h3 className="font-medium text-gray-900">{stage.name}</h3>
+                  <p className="text-sm text-gray-500">
+                    {stageOpps.length} deals • ${(stageValue / 1000).toFixed(0)}K
+                  </p>
+                </div>
+                <div className="p-2 space-y-3 max-h-96 overflow-y-auto">
+                  {stageOpps.map((opp) => (
+                    <div key={opp.id} className="bg-gray-50 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow">
+                      <h4 className="font-medium text-sm text-blue-600 mb-1">{opp.name}</h4>
+                      <p className="text-xs text-gray-600 mb-2">{opp.account}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-green-600">${(opp.amount / 1000).toFixed(0)}K</span>
+                        <span className="text-xs text-gray-500">{opp.probability}%</span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center text-xs text-white font-medium">
+                          {opp.owner.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <span className="text-xs text-gray-600">{opp.owner}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>
+  )
+
+  return (
+    <MobilePageLayout title="HERA" breadcrumb="CRM / Opportunities Pipeline">
+      <MobileFilters 
+        title="Opportunity Filters"
+        fields={filterFields}
+        onApply={handleApplyFilters}
+        onAdaptFilters={() => console.log('Adapt filters')}
+      />
+
+      <div className="px-3 sm:px-6 py-4 sm:py-6 space-y-6">
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <MobileCard 
+            title="Pipeline Value"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">${(kpiData.totalPipelineValue / 1000000).toFixed(1)}M</div>
+                <div className="text-sm text-gray-600">Total pipeline</div>
+              </div>
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <DollarSign className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </MobileCard>
+
+          <MobileCard 
+            title="Open Deals"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{kpiData.openDeals}</div>
+                <div className="text-sm text-gray-600">Active opportunities</div>
+              </div>
+              <div className="p-2 bg-green-100 rounded-lg">
+                <Target className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </MobileCard>
+
+          <MobileCard 
+            title="Win Rate"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{kpiData.winRate}%</div>
+                <div className="text-sm text-gray-600">Success rate</div>
+              </div>
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <Percent className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+          </MobileCard>
+
+          <MobileCard 
+            title="Avg Deal Cycle"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{kpiData.avgDealCycle}</div>
+                <div className="text-sm text-gray-600">Days to close</div>
+              </div>
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Clock className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </MobileCard>
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MobileChart 
+            title="Pipeline by Stage"
+            type="bar"
+            data={pipelineChartData}
+            height="300"
+          />
+          <MobileChart 
+            title="Forecast by Month"
+            type="line"
+            data={forecastData}
+            height="300"
+          />
+        </div>
+      </div>
+
+      {/* View Toggle */}
+      <div className="px-3 sm:px-6 pb-4">
+        <div className="flex items-center gap-2 mb-4">
+          <button
+            onClick={() => setViewMode('table')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              viewMode === 'table' 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Table View
+          </button>
+          <button
+            onClick={() => setViewMode('kanban')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              viewMode === 'kanban' 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Kanban View
+          </button>
+        </div>
+      </div>
+
+      {/* Table or Kanban View */}
+      {viewMode === 'kanban' ? (
+        renderKanbanView()
+      ) : (
+        <div className="px-3 sm:px-6 pb-6">
+          <MobileDataTable
+            title={`Opportunities (${opportunities.length})`}
+            subtitle="Manage your sales opportunities and pipeline"
+            columns={columns}
+            data={opportunities}
+            loading={loading}
+            selectable={true}
+            selectedRows={selectedOpportunities}
+            onRowSelect={setSelectedOpportunities}
+            mobileCardRender={mobileCardRender}
+            actions={
+              <div className="flex gap-2">
+                <button className="text-sm text-blue-600 hover:text-blue-800 px-3 py-2 border border-blue-200 rounded hover:bg-blue-50 transition-colors">
+                  Export
+                </button>
+                <button className="text-sm text-green-600 hover:text-green-800 px-3 py-2 border border-green-200 rounded hover:bg-green-50 transition-colors">
+                  Bulk Update
+                </button>
+              </div>
+            }
+          />
+        </div>
+      )}
+
+      {/* Floating Action Button */}
+      <div className="fixed bottom-6 right-6">
+        <button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center min-w-[56px] min-h-[56px]">
+          <Plus className="w-6 h-6" />
+        </button>
+      </div>
+    </MobilePageLayout>
   )
 }

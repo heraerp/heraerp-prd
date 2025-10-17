@@ -479,10 +479,9 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
-                          className="text-sm font-medium tracking-wide flex items-center gap-2"
+                          className="text-sm font-medium tracking-wide"
                           style={{ color: SALON_LUXE_COLORS.champagne.base }}
                         >
-                          <DollarSign className="w-4 h-4" style={{ color: '#8C7853' }} />
                           Cost Price
                         </FormLabel>
                         <FormControl>
@@ -532,10 +531,9 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
-                          className="text-sm font-medium tracking-wide flex items-center gap-2"
+                          className="text-sm font-medium tracking-wide"
                           style={{ color: SALON_LUXE_COLORS.champagne.base }}
                         >
-                          <DollarSign className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.gold.base }} />
                           Selling Price
                         </FormLabel>
                         <FormControl>
