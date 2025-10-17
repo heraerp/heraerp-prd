@@ -291,11 +291,18 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         }
       }
       
-      // If no session, redirect to login
+      // If no session, only redirect if not already on a login page
       if (typeof window !== 'undefined') {
-        console.log('❌ No valid session found, redirecting to login')
-        window.location.href = '/auth/login'
-        return
+        const currentPath = window.location.pathname
+        if (!currentPath.includes('/auth') && !currentPath.includes('/salon/auth')) {
+          console.log('❌ No valid session found, redirecting to login')
+          window.location.href = '/auth/login'
+          return
+        } else {
+          console.log('📍 Already on auth page, not redirecting')
+          setState(prev => ({ ...prev, isLoading: false }))
+          return
+        }
       }
       
       // PRIORITY 1: Check for cached HairTalkz authentication (fastest path)
