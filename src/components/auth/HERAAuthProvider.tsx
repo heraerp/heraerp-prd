@@ -371,9 +371,9 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       
       // SKIP CACHE FOR HAIR TALKZ USERS - ALWAYS USE FAST TRACK
       const { createClient: createSupabaseClient2 } = await import('@/lib/supabase/client')
-      const supabase = createSupabaseClient2()
+      const supabaseClient2 = createSupabaseClient2()
       
-      const { data: { session }, error } = await supabase.auth.getSession()
+      const { data: { session }, error } = await supabaseClient2.auth.getSession()
       
       console.log('🔍 DEBUG - Session in initializeAuth:', {
         hasSession: !!session,
