@@ -40,38 +40,19 @@ export async function GET(request: NextRequest) {
       }, { status: 404 })
     }
 
-    // Get the USER entity ID from the tenant organization (not platform)
+    // Get the USER entity from the PLATFORM organization (HERA architecture)
     const tenantOrgId = relationship.organization_id
-    console.log(`[resolve-membership] Looking for USER entity in tenant org: ${tenantOrgId}`)
+    const platformOrgId = '00000000-0000-0000-0000-000000000000'
+    console.log(`[resolve-membership] Looking for USER entity in platform org: ${platformOrgId}`)
     
-    // Try ID match first (most direct), then metadata match as fallback
-    let userEntity = null
-    let userEntityError = null
-    
-    // First try: direct ID match
-    const { data: userByIdData, error: userByIdError } = await supabase
+    // USER entities exist in platform organization only
+    const { data: userEntity, error: userEntityError } = await supabase
       .from('core_entities')
       .select('id, entity_name, entity_code, metadata')
       .eq('entity_type', 'USER')
-      .eq('organization_id', tenantOrgId)
+      .eq('organization_id', platformOrgId)
       .eq('id', userId)
       .maybeSingle()
-    
-    if (userByIdData) {
-      userEntity = userByIdData
-    } else {
-      // Fallback: metadata match
-      const { data: userByMetadataData, error: userByMetadataError } = await supabase
-        .from('core_entities')
-        .select('id, entity_name, entity_code, metadata')
-        .eq('entity_type', 'USER')
-        .eq('organization_id', tenantOrgId)
-        .eq('metadata->>supabase_uid', userId)
-        .maybeSingle()
-      
-      userEntity = userByMetadataData
-      userEntityError = userByMetadataError
-    }
       
     console.log(`[resolve-membership] USER entity lookup result:`, { userEntity, userEntityError })
 
