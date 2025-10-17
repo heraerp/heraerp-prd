@@ -3,8 +3,8 @@ import { cookies, headers } from 'next/headers';
 
 export async function GET() {
   try {
-    const c = cookies();
-    const h = headers();
+    const c = await cookies();
+    const h = await headers();
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
