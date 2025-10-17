@@ -1,0 +1,190 @@
+{
+  "bundle_id": "finance_dna_v2_2",
+  "version": "2.2.0",
+  "updated_at": "2025-10-17",
+  "contracts": {
+    "smart_code_pattern": "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$",
+    "requires_actor_everywhere": true,
+    "sacred_six_audit_columns": ["created_by", "updated_by", "created_at", "updated_at"]
+  },
+  "guardrails": {
+    "smart_code": {
+      "required_on": ["core_entities", "core_dynamic_data", "core_relationships", "universal_transactions", "universal_transaction_lines"],
+      "pattern": "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$"
+    },
+    "multi_tenancy": {
+      "org_filter_required": true
+    },
+    "entities": {
+      "normalize": [
+        {
+          "id": "ENTITY-TYPE-ALIAS-GL-ACCOUNT",
+          "match": {
+            "entity_type_equals": "gl_account"
+          },
+          "rewrite": {
+            "entity_type": "account",
+            "business_rules": {
+              "ledger_type": "GL"
+            }
+          }
+        }
+      ],
+      "enforce": [
+        {
+          "id": "ACCOUNT-LEDGER-SEMANTICS",
+          "match": {
+            "entity_type_equals": "account"
+          },
+          "validators": [
+            {
+              "or": [
+                {
+                  "regex_on": "smart_code",
+                  "value": "\\.ACCOUNT\\."
+                },
+                {
+                  "json_equals": ["business_rules.ledger_type", "GL"]
+                },
+                {
+                  "json_equals": ["business_rules.ledger_type", "STAT"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ACCOUNT-HIERARCHY",
+          "match": {
+            "entity_type_equals": "account"
+          },
+          "invariants": [
+            "if parent_entity_id is null then allow_posting=false",
+            "if has_children(entity) then allow_posting=false"
+          ]
+        }
+      ]
+    },
+    "transactions": {
+      "header_rules": [
+        {
+          "id": "TXN-HEADER-REQUIRED-FIELDS",
+          "validators": [
+            {
+              "column_required": "organization_id"
+            },
+            {
+              "column_required": "transaction_type"
+            },
+            {
+              "column_required": "smart_code"
+            }
+          ]
+        }
+      ],
+      "line_rules": [
+        {
+          "id": "TXN-LINE-REQUIRED",
+          "validators": [
+            {
+              "column_required": "organization_id"
+            },
+            {
+              "column_required": "transaction_id"
+            },
+            {
+              "column_required": "line_number"
+            },
+            {
+              "column_required": "line_type"
+            },
+            {
+              "column_required": "smart_code"
+            }
+          ]
+        },
+        {
+          "id": "GL-BALANCED",
+          "when": {
+            "smart_code_contains_any": [".GL.", ".GL.LINE."]
+          },
+          "validators": [
+            {
+              "balanced_debits_credits": true
+            }
+          ]
+        }
+      ]
+    },
+    "amendment_policy": {
+      "no_business_columns_on_sacred_tables": true,
+      "route_business_fields_to_dynamic": true
+    }
+  },
+  "posting_rules": [
+    {
+      "id": "SALE-POS-POSTING-v1",
+      "smart_code_match": "HERA.FINANCE.TXN.SALE.v1",
+      "lines": [
+        {
+          "side": "DR",
+          "account_code": "1000",
+          "account_smart": "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1",
+          "amount_expr": "gross_total"
+        },
+        {
+          "side": "CR",
+          "account_code": "4000",
+          "account_smart": "HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.v1",
+          "amount_expr": "net_of_tax"
+        },
+        {
+          "side": "CR",
+          "account_code": "2100",
+          "account_smart": "HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.v1",
+          "amount_expr": "tax_total"
+        }
+      ]
+    }
+  ],
+  "fiscal_dna": {
+    "period_entity_type": "fiscal_period",
+    "closing": {
+      "smart_code": "HERA.FINANCE.TXN.CLOSE.YE.v1",
+      "actions": [
+        "sum_pl",
+        "post_close_entries",
+        "transfer_to_retained",
+        "mark_period_closed",
+        "allow_reverse"
+      ]
+    }
+  },
+  "fx_contract": {
+    "header_fields": [
+      "transaction_currency_code",
+      "base_currency_code",
+      "exchange_rate",
+      "exchange_rate_date",
+      "exchange_rate_type"
+    ],
+    "derive": "rules_engine"
+  },
+  "ci": {
+    "checks": [
+      {
+        "name": "Verify Actor Stamping",
+        "tables": [
+          "core_entities",
+          "core_dynamic_data",
+          "core_relationships",
+          "universal_transactions",
+          "universal_transaction_lines"
+        ],
+        "columns_not_null": ["created_by", "updated_by"],
+        "failure_policy": "block_on_error"
+      }
+    ],
+    "metrics": ["actor_coverage_percent", "audit_trace_completeness"]
+  }
+}

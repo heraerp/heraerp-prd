@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "accounts": [
+    {
+      "code": "1000",
+      "name": "Cash on Hand",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1"
+    },
+    {
+      "code": "1100",
+      "name": "Bank",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1"
+    },
+    {
+      "code": "2100",
+      "name": "VAT Payable",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.v1"
+    },
+    {
+      "code": "2101",
+      "name": "AP Trade",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.v1"
+    },
+    {
+      "code": "4000",
+      "name": "Service Revenue",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.v1"
+    },
+    {
+      "code": "5000",
+      "name": "COGS",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1"
+    },
+    {
+      "code": "6100",
+      "name": "Office Supplies",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1"
+    },
+    {
+      "code": "3200",
+      "name": "Retained Earnings",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.GL.EQUITY.v1"
+    },
+    {
+      "code": "9999",
+      "name": "P&L Total (Control)",
+      "smart_code": "HERA.ACCOUNTING.COA.ACCOUNT.STAT.TOTAL.v1"
+    }
+  ]
+}
