@@ -232,16 +232,20 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
           console.log('✅ Hair Talkz domain user detected, resolving with HERA entities')
           
           try {
+            console.log('🔧 Calling ensure_membership_for_email RPC function...')
             // Call your new ensure_membership function via RPC to get proper entity ID
             const { data: membershipData, error: membershipError } = await supabase.rpc('ensure_membership_for_email', {
               p_email: session.user.email,
               p_org_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
-              p_service_user: session.user.id // Use current user as service user for now
+              p_service_user: session.user.id
             })
 
             if (membershipError) {
               console.error('❌ Failed to ensure membership:', membershipError)
-              // Fall back to simple authentication
+              console.log('📋 Falling back to simple entity creation...')
+              // Continue with fallback authentication
+            } else {
+              console.log('✅ ensure_membership_for_email successful:', membershipData)
             }
 
             const userEntityId = membershipData || session.user.id
