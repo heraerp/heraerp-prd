@@ -6,7 +6,7 @@
 
 'use client'
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { createSecurityContextFromAuth } from '@/lib/security/user-entity-resolver'
 import type { SecurityContext } from '@/lib/security/database-context'
@@ -67,7 +67,11 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         const saved = sessionStorage.getItem('heraAuthState')
         if (saved) {
           const parsed = JSON.parse(saved)
-          console.log('🔄 Restoring auth state from session storage')
+          console.log('🔄 Restoring auth state from session storage:', {
+            isAuthenticated: parsed.isAuthenticated,
+            userEmail: parsed.user?.email,
+            organizationName: parsed.organization?.name
+          })
           return {
             ...parsed,
             isLoading: false // Don't show loading if we have cached state
@@ -87,10 +91,12 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     }
   })
 
+  // Track if auth has been initialized to prevent re-initialization on navigation
+  const isInitializedRef = useRef(false)
+  
   // Initialize authentication once and persist state
   useEffect(() => {
     let unsubscribe: (() => void) | undefined
-    let hasInitialized = false
     
     const setupAuth = async () => {
       try {
@@ -168,10 +174,19 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         
         unsubscribe = data.subscription.unsubscribe
         
-        // Only initialize if we haven't done so yet
-        if (!hasInitialized) {
-          hasInitialized = true
-          await initializeAuth()
+        // Only initialize if we haven't done so yet AND don't have valid cached state
+        if (!isInitializedRef.current) {
+          isInitializedRef.current = true
+          
+          // Skip initialization if we already have valid authenticated state from cache
+          if (state.isAuthenticated && state.user && state.organization) {
+            console.log('✅ Using cached authentication state, skipping initialization - NO LOADING DELAY')
+            setState(prev => ({ ...prev, isLoading: false }))
+            return // Exit early, don't even set up auth listeners
+          } else {
+            console.log('🔄 No valid cached state, initializing authentication...')
+            await initializeAuth()
+          }
         }
       } catch (error) {
         console.error('❌ Failed to set up auth state listener:', error)
@@ -189,7 +204,27 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     try {
       console.log('🔐 Initializing HERA v2.2 authentication...')
       
-      // EMERGENCY FAST TRACK: Check URL params for force mode
+      // PRIORITY 1: Check for cached HairTalkz authentication (fastest path)
+      if (typeof window !== 'undefined') {
+        const cachedHairTalkz = sessionStorage.getItem('heraAuthState')
+        if (cachedHairTalkz) {
+          try {
+            const parsed = JSON.parse(cachedHairTalkz)
+            if (parsed.isAuthenticated && parsed.user?.email?.includes('hairtalkz')) {
+              console.log('🚀 CACHED HAIRTALKZ USER - INSTANT AUTH:', parsed.user.email)
+              setState({
+                ...parsed,
+                isLoading: false
+              })
+              return
+            }
+          } catch (e) {
+            // ignore
+          }
+        }
+      }
+
+      // PRIORITY 2: Emergency fast track via URL params
       if (typeof window !== 'undefined') {
         const urlParams = new URLSearchParams(window.location.search)
         const forceHairTalkz = urlParams.get('forcehair') === 'true'
@@ -287,9 +322,11 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
           // For non-HairTalkz users, use cache if available
           const hasCachedAuth = state.isAuthenticated && state.user && state.organization
           if (hasCachedAuth && session.user.id === state.user?.id) {
-            console.log('✅ Using cached auth state for non-HairTalkz user')
+            console.log('✅ Using cached auth state for non-HairTalkz user - SKIPPING FULL AUTH')
             setState(prev => ({ ...prev, isLoading: false }))
             return
+          } else {
+            console.log('🔍 Cache invalid or missing, proceeding with full authentication...')
           }
         }
       }

@@ -52,25 +52,45 @@ export default function TestAuthPage() {
         </div>
 
         <div>
-          <h3 className="font-semibold mb-2">Salon Dashboard:</h3>
+          <h3 className="font-semibold mb-2">Navigation Speed Test:</h3>
           <div className="space-y-2 text-sm">
             <div>
               <a 
                 href="/salon/dashboard" 
                 className="text-green-600 hover:underline"
               >
-                Normal Salon Dashboard
+                Salon Dashboard
               </a>
             </div>
             <div>
               <a 
-                href="/salon/dashboard?forcehair=true" 
-                className="text-green-600 hover:underline"
+                href="/salon/appointments" 
+                className="text-blue-600 hover:underline"
               >
-                Salon Dashboard (Force Auth)
+                Salon Appointments
+              </a>
+            </div>
+            <div>
+              <a 
+                href="/salon/customers" 
+                className="text-purple-600 hover:underline"
+              >
+                Salon Customers
+              </a>
+            </div>
+            <div>
+              <a 
+                href="/test-auth" 
+                className="text-orange-600 hover:underline"
+              >
+                Back to Test Auth
               </a>
             </div>
           </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Click between these links rapidly to test navigation speed. 
+            Should be instant with no loading delays.
+          </p>
         </div>
       </div>
 
