@@ -59,25 +59,45 @@ interface HERAAuthProviderProps {
 export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const router = useRouter()
 
-  const [state, setState] = useState({
-    user: null as HERAUser | null,
-    organization: null as HERAOrganization | null,
-    isAuthenticated: false,
-    isLoading: true,
-    scopes: [] as string[]
+  // Initialize state with persisted data if available
+  const [state, setState] = useState(() => {
+    // Try to restore from sessionStorage to persist across navigation
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = sessionStorage.getItem('heraAuthState')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          console.log('🔄 Restoring auth state from session storage')
+          return {
+            ...parsed,
+            isLoading: false // Don't show loading if we have cached state
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to restore auth state:', error)
+      }
+    }
+    
+    return {
+      user: null as HERAUser | null,
+      organization: null as HERAOrganization | null,
+      isAuthenticated: false,
+      isLoading: true,
+      scopes: [] as string[]
+    }
   })
 
-  // Initialize authentication on mount
+  // Initialize authentication once and persist state
   useEffect(() => {
-    initializeAuth()
-    
-    // Subscribe to auth state changes
     let unsubscribe: (() => void) | undefined
-    ;(async () => {
+    let hasInitialized = false
+    
+    const setupAuth = async () => {
       try {
         const { createClient } = await import('@/lib/supabase/client')
         const supabase = createClient()
         
+        // Subscribe to auth state changes first
         const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
           console.log('🔐 HERA Auth state change:', event, { hasSession: !!session })
           
@@ -92,19 +112,47 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         })
         
         unsubscribe = data.subscription.unsubscribe
+        
+        // Only initialize if we haven't done so yet
+        if (!hasInitialized) {
+          hasInitialized = true
+          await initializeAuth()
+        }
       } catch (error) {
         console.error('❌ Failed to set up auth state listener:', error)
       }
-    })()
+    }
+
+    setupAuth()
 
     return () => {
       unsubscribe?.()
     }
-  }, [])
+  }, []) // Empty dependency array - only run once
 
   const initializeAuth = async () => {
     try {
       console.log('🔐 Initializing HERA v2.2 authentication...')
+      
+      // If we have cached auth state and it's authenticated, validate session quietly
+      const hasCachedAuth = state.isAuthenticated && state.user && state.organization
+      if (hasCachedAuth) {
+        console.log('🔄 Validating cached auth state...')
+        
+        const { createClient } = await import('@/lib/supabase/client')
+        const supabase = createClient()
+        
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (session?.user && session.user.id === state.user?.id) {
+          console.log('✅ Cached auth state is valid, keeping current state')
+          setState(prev => ({ ...prev, isLoading: false }))
+          return
+        } else {
+          console.log('❌ Cached auth state is invalid, clearing and re-authenticating')
+          handleSignOut()
+        }
+      }
       
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
@@ -209,13 +257,22 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         role: heraUser.role
       })
 
-      setState({
+      const newState = {
         user: heraUser,
         organization: heraOrg,
         isAuthenticated: true,
         isLoading: false,
         scopes: membershipData.membership.roles
-      })
+      }
+      
+      setState(newState)
+      
+      // Persist to sessionStorage for navigation persistence
+      try {
+        sessionStorage.setItem('heraAuthState', JSON.stringify(newState))
+      } catch (error) {
+        console.warn('Failed to persist auth state:', error)
+      }
 
     } catch (error) {
       console.error('💥 Sign in handling error:', error)
@@ -229,13 +286,22 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const handleSignOut = () => {
     console.log('👋 User signed out')
-    setState({
+    const newState = {
       user: null,
       organization: null,
       isAuthenticated: false,
       isLoading: false,
       scopes: []
-    })
+    }
+    
+    setState(newState)
+    
+    // Clear persisted state
+    try {
+      sessionStorage.removeItem('heraAuthState')
+    } catch (error) {
+      console.warn('Failed to clear persisted auth state:', error)
+    }
   }
 
   const logout = async () => {

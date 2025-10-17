@@ -250,8 +250,12 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     if (
       authCheckDoneRef.current &&
       securityStore.isInitialized &&
-      !securityStore.shouldReinitialize()
+      !securityStore.shouldReinitialize() &&
+      hasInitialized &&
+      context.isAuthenticated &&
+      context.organization?.id
     ) {
+      console.log('✅ Auth already initialized and valid, skipping re-initialization')
       return
     }
 
