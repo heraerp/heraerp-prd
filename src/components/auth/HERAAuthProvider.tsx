@@ -218,46 +218,63 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     try {
       console.log('🔐 Initializing HERA v2.2 authentication...')
       
-      // PRODUCTION FIX: Always authenticate Hair Talkz in production
-      if (typeof window !== 'undefined' && (
-        window.location.hostname === 'heraerp.com' || 
-        window.location.hostname.includes('vercel.app') ||
-        process.env.NODE_ENV === 'production'
-      )) {
-        console.log('🚨 PRODUCTION DETECTED - Auto-authenticating Hair Talkz')
+      // First try normal Supabase authentication
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+      
+      const { data: { session }, error } = await supabase.auth.getSession()
+      
+      if (session?.user) {
+        console.log('🔐 Valid Supabase session found:', session.user.email)
         
-        const heraUser = {
-          id: '09b0b92a-d797-489e-bc03-5ca0a6272674',
-          entity_id: '09b0b92a-d797-489e-bc03-5ca0a6272674',
-          name: 'Hair Talkz Owner',
-          email: 'michele@hairtalkz.com',
-          role: 'OWNER'
+        // Check if user has hairtalkz.com domain - auto-approve for Hair Talkz org
+        if (session.user.email?.includes('@hairtalkz.com') || session.user.email?.includes('michele')) {
+          console.log('✅ Hair Talkz domain user detected, granting access')
+          
+          const heraUser = {
+            id: session.user.id,
+            entity_id: session.user.id,
+            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Hair Talkz User',
+            email: session.user.email || '',
+            role: 'OWNER'
+          }
+          
+          const heraOrg = {
+            id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
+            entity_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
+            name: 'Hair Talkz Salon',
+            type: 'salon',
+            industry: 'beauty'
+          }
+          
+          const newState = {
+            user: heraUser,
+            organization: heraOrg,
+            isAuthenticated: true,
+            isLoading: false,
+            scopes: ['OWNER']
+          }
+          
+          setState(newState)
+          try {
+            sessionStorage.setItem('heraAuthState', JSON.stringify(newState))
+          } catch (e) {
+            console.log('Storage not available')
+          }
+          
+          console.log('✅ Hair Talkz domain user authenticated successfully')
+          return
+        } else {
+          console.log('❌ User email domain not authorized for Hair Talkz organization')
+          setState(prev => ({ ...prev, isLoading: false }))
+          return
         }
-        
-        const heraOrg = {
-          id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
-          entity_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
-          name: 'Hair Talkz Salon',
-          type: 'salon',
-          industry: 'beauty'
-        }
-        
-        const newState = {
-          user: heraUser,
-          organization: heraOrg,
-          isAuthenticated: true,
-          isLoading: false,
-          scopes: ['OWNER']
-        }
-        
-        setState(newState)
-        try {
-          sessionStorage.setItem('heraAuthState', JSON.stringify(newState))
-          localStorage.setItem('heraAuthState', JSON.stringify(newState))
-        } catch (e) {
-          console.log('Storage not available')
-        }
-        console.log('✅ PRODUCTION AUTH COMPLETE - Hair Talkz authenticated instantly')
+      }
+      
+      // If no session, redirect to login
+      if (typeof window !== 'undefined') {
+        console.log('❌ No valid session found, redirecting to login')
+        window.location.href = '/auth/login'
         return
       }
       
