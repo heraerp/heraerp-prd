@@ -5,7 +5,8 @@
  * ✅ ENTERPRISE FEATURES:
  * - Camera scanning (BarcodeDetector API for modern browsers)
  * - USB/Bluetooth scanner support (keyboard-wedge mode)
- * - Instant product lookup via indexed barcode search
+ * - Instant product lookup via RPC-based barcode search
+ * - Quick-add modal for products not found
  * - Visual feedback and error handling
  * - Supports EAN13, UPC, CODE128, QR codes
  *
@@ -16,10 +17,13 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Scan, Camera, Keyboard, Loader2, CheckCircle2, XCircle } from 'lucide-react'
+import { Scan, Camera, Keyboard, Loader2, CheckCircle2, XCircle, Plus, Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { useHeraProducts } from '@/hooks/useHeraProducts'
 
 const COLORS = {
   gold: '#D4AF37',
@@ -43,10 +47,22 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
   const [feedbackMessage, setFeedbackMessage] = useState<string>('')
   const [feedbackType, setFeedbackType] = useState<'success' | 'error' | null>(null)
 
+  // Quick-add modal state
+  const [showQuickAddModal, setShowQuickAddModal] = useState(false)
+  const [scannedBarcode, setScannedBarcode] = useState<string>('')
+  const [quickAddForm, setQuickAddForm] = useState({
+    name: '',
+    selling_price: '',
+    cost_price: ''
+  })
+
   const inputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const scanningRef = useRef<boolean>(false)
+
+  // Get product creation hook
+  const { createProduct, isCreating } = useHeraProducts({ organizationId })
 
   // Auto-focus keyboard input when in keyboard mode
   useEffect(() => {
@@ -103,19 +119,15 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
           setMode('idle')
         }, 2000)
       } else {
-        // Barcode not found
-        setFeedbackMessage(`✗ No product found with barcode: ${barcode}`)
-        setFeedbackType('error')
-
-        if (onError) {
-          onError(`No product found with barcode: ${barcode}`)
-        }
-
-        setTimeout(() => {
-          setFeedbackMessage('')
-          setFeedbackType(null)
-          setMode('idle')
-        }, 3000)
+        // Barcode not found - show quick-add modal
+        setScannedBarcode(barcode)
+        setQuickAddForm({
+          name: '',
+          selling_price: '',
+          cost_price: ''
+        })
+        setShowQuickAddModal(true)
+        setMode('idle')
       }
     } catch (error: any) {
       console.error('[ScanToCart] Lookup error:', error)
@@ -131,6 +143,49 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
         setFeedbackType(null)
         setMode('idle')
       }, 3000)
+    }
+  }
+
+  // Handle quick-add product creation
+  async function handleQuickAddProduct() {
+    if (!quickAddForm.name || !quickAddForm.selling_price) {
+      alert('Please enter product name and selling price')
+      return
+    }
+
+    try {
+      const newProduct = await createProduct({
+        name: quickAddForm.name,
+        selling_price: parseFloat(quickAddForm.selling_price) || 0,
+        cost_price: parseFloat(quickAddForm.cost_price) || 0,
+        barcode_primary: scannedBarcode,
+        barcode_type: 'EAN13',
+        status: 'active'
+      })
+
+      if (newProduct) {
+        // Close modal
+        setShowQuickAddModal(false)
+
+        // Add to cart
+        onProductFound({
+          ...newProduct,
+          price_market: parseFloat(quickAddForm.selling_price) || 0
+        })
+
+        setFeedbackMessage(`✓ Created and added: ${quickAddForm.name}`)
+        setFeedbackType('success')
+        setLastScanned(scannedBarcode)
+
+        // Clear feedback after 2 seconds
+        setTimeout(() => {
+          setFeedbackMessage('')
+          setFeedbackType(null)
+        }, 2000)
+      }
+    } catch (error: any) {
+      console.error('[ScanToCart] Quick-add error:', error)
+      alert(`Failed to create product: ${error.message}`)
     }
   }
 
@@ -382,6 +437,153 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
           Last scanned: {lastScanned}
         </div>
       )}
+
+      {/* Quick-Add Product Modal */}
+      <Dialog open={showQuickAddModal} onOpenChange={setShowQuickAddModal}>
+        <DialogContent
+          className="sm:max-w-[500px]"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            borderColor: COLORS.gold + '40',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)'
+          }}
+        >
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div
+                className="p-2 rounded-lg"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                  border: `1px solid ${COLORS.gold}30`
+                }}
+              >
+                <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
+              </div>
+              <DialogTitle style={{ color: COLORS.champagne }}>Quick-Add Product</DialogTitle>
+            </div>
+            <DialogDescription style={{ color: COLORS.champagne, opacity: 0.7 }}>
+              Product not found. Create it now and add to cart.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {/* Scanned Barcode (Read-only) */}
+            <div>
+              <Label htmlFor="barcode" style={{ color: COLORS.champagne }}>
+                Scanned Barcode
+              </Label>
+              <Input
+                id="barcode"
+                value={scannedBarcode}
+                readOnly
+                className="mt-1.5"
+                style={{
+                  backgroundColor: COLORS.charcoal + 'CC',
+                  borderColor: COLORS.gold + '40',
+                  color: COLORS.gold,
+                  opacity: 0.8
+                }}
+              />
+            </div>
+
+            {/* Product Name */}
+            <div>
+              <Label htmlFor="name" style={{ color: COLORS.champagne }}>
+                Product Name <span style={{ color: COLORS.gold }}>*</span>
+              </Label>
+              <Input
+                id="name"
+                placeholder="Enter product name"
+                value={quickAddForm.name}
+                onChange={e => setQuickAddForm({ ...quickAddForm, name: e.target.value })}
+                className="mt-1.5"
+                style={{
+                  backgroundColor: COLORS.charcoal + 'CC',
+                  borderColor: COLORS.gold + '40',
+                  color: COLORS.champagne
+                }}
+                autoFocus
+              />
+            </div>
+
+            {/* Selling Price */}
+            <div>
+              <Label htmlFor="selling_price" style={{ color: COLORS.champagne }}>
+                Selling Price (AED) <span style={{ color: COLORS.gold }}>*</span>
+              </Label>
+              <Input
+                id="selling_price"
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                value={quickAddForm.selling_price}
+                onChange={e => setQuickAddForm({ ...quickAddForm, selling_price: e.target.value })}
+                className="mt-1.5"
+                style={{
+                  backgroundColor: COLORS.charcoal + 'CC',
+                  borderColor: COLORS.gold + '40',
+                  color: COLORS.champagne
+                }}
+              />
+            </div>
+
+            {/* Cost Price (Optional) */}
+            <div>
+              <Label htmlFor="cost_price" style={{ color: COLORS.champagne }}>
+                Cost Price (AED) <span className="text-xs opacity-60">Optional</span>
+              </Label>
+              <Input
+                id="cost_price"
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                value={quickAddForm.cost_price}
+                onChange={e => setQuickAddForm({ ...quickAddForm, cost_price: e.target.value })}
+                className="mt-1.5"
+                style={{
+                  backgroundColor: COLORS.charcoal + 'CC',
+                  borderColor: COLORS.gold + '40',
+                  color: COLORS.champagne
+                }}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowQuickAddModal(false)}
+              disabled={isCreating}
+              style={{
+                borderColor: COLORS.gold + '60',
+                color: COLORS.champagne
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleQuickAddProduct}
+              disabled={isCreating || !quickAddForm.name || !quickAddForm.selling_price}
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.gold} 0%, #B8860B 100%)`,
+                color: COLORS.charcoal
+              }}
+            >
+              {isCreating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create & Add to Cart
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

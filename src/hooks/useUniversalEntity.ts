@@ -10,6 +10,8 @@ import {
   setDynamicDataBatch,
   upsertEntity,
   deleteEntity,
+  readEntity,
+  createRelationship,
   DynamicFieldInput
 } from '@/lib/universal-api-v2-client'
 
@@ -472,41 +474,30 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
   // Create entity mutation with dynamic fields and relationships
   const createMutation = useMutation({
     mutationFn: async (entity: UniversalEntity & Record<string, any>) => {
-      const headers = await getAuthHeaders(organizationId)
-
-      // Prepare request body with organization context and entity type
-      const baseBody: any = {
-        p_organization_id: organizationId,
-        entity_type,
-        entity_name: entity.entity_name,
-        smart_code: entity.smart_code,
-        ...(entity.entity_code ? { entity_code: entity.entity_code } : {}),
-        ...(entity.status ? { status: entity.status } : {}),
-        ...(entity.metadata ? { metadata: entity.metadata } : {}),
-        ...(entity.dynamic_fields ? { dynamic_fields: entity.dynamic_fields } : {}),
-        // ✅ ENTERPRISE AUDIT TRAIL: Include created_by for tracking who created the entity
-        ...(userEntityId ? { created_by: userEntityId } : {})
-      }
-
-      // 1) Create entity
-      const r = await fetch('/api/v2/entities', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(baseBody)
+      // ✅ USE RPC CLIENT: Use upsertEntity from universal-api-v2-client for proper auth handling
+      const result = await upsertEntity('', {
+        p_organization_id: organizationId!,
+        p_entity_type: entity_type,
+        p_entity_name: entity.entity_name,
+        p_smart_code: entity.smart_code,
+        p_entity_code: entity.entity_code || null,
+        p_entity_description: null,
+        p_parent_entity_id: null,
+        p_entity_id: null, // Create mode
+        p_status: entity.status || null
       })
-      if (!r.ok) {
-        const errorData = await r.json().catch(() => ({ error: 'Create entity failed' }))
-        throw new Error(errorData?.error || 'Create entity failed')
-      }
-      const created = await r.json()
-      const entity_id = created?.data?.id || created?.data?.entity_id || created?.id
+
+      console.log('[useUniversalEntity] ✅ Entity created via RPC client:', result)
+
+      const entity_id = result?.data?.id || result?.id
 
       if (!entity_id) {
-        console.error('Unexpected response format:', created)
+        console.error('Unexpected response format:', result)
         throw new Error('Failed to get entity ID from creation response')
       }
 
       // 2) Dynamic fields batch (support both inline dynamic_fields and top-level values)
+      // ✅ USE RPC CLIENT: Use setDynamicDataBatch from universal-api-v2-client
       const inline = (entity.dynamic_fields ?? {}) as Record<string, any>
       const inlineValues = Object.fromEntries(
         Object.entries(inline).map(([k, v]: any) => [k, v?.value])
@@ -520,49 +511,35 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       const mergedValues = { ...topLevelValues, ...inlineValues }
       const batchItems = toBatchItems(config.dynamicFields, mergedValues)
       if (batchItems.length) {
-        await fetch('/api/v2/dynamic-data/batch', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({
-            p_organization_id: organizationId,
-            p_entity_id: entity_id,
-            p_smart_code: entity.smart_code || 'HERA.ENTITY.DYNAMIC.FIELD.V1',
-            p_fields: batchItems
-          })
+        await setDynamicDataBatch('', {
+          p_organization_id: organizationId!,
+          p_entity_id: entity_id,
+          p_smart_code: entity.smart_code || 'HERA.ENTITY.DYNAMIC.FIELD.V1',
+          p_fields: batchItems
         })
+        console.log('[useUniversalEntity] ✅ Dynamic fields set via RPC client')
       }
 
       // 3) Relationships (optional)
       // Accept either metadata.relationships or a top-level relationships map
       const relPayload = (entity as any)?.metadata?.relationships || (entity as any)?.relationships
       if (relPayload && config.relationships?.length) {
-        // Process each relationship type separately using bulk_upsert
+        // Process each relationship type separately using RPC client
         for (const def of config.relationships) {
           const toIds: string[] = relPayload[def.type] ?? []
           // Only create relationships if we have valid IDs
           if (toIds.length > 0 && toIds.every(id => id)) {
-            const response = await fetch('/api/v2/relationships/bulk_upsert', {
-              method: 'POST',
-              headers,
-              body: JSON.stringify({
-                relationship_type: def.type,
-                smart_code: def.smart_code,
-                pairs: toIds.map(to => ({
-                  from_entity_id: entity_id,
-                  to_entity_id: to
-                })),
-                status: 'ACTIVE'
+            // ✅ USE RPC CLIENT: Use createRelationship for each relationship
+            for (const toId of toIds) {
+              await createRelationship(organizationId!, {
+                p_from_entity_id: entity_id,
+                p_to_entity_id: toId,
+                p_relationship_type: def.type,
+                p_smart_code: def.smart_code,
+                p_relationship_data: null
               })
-            })
-
-            if (!response.ok) {
-              const error = await response.json().catch(() => ({}))
-              console.error(
-                `[useUniversalEntity] Failed to create ${def.type} relationships:`,
-                error
-              )
-              throw new Error(error.error || `Failed to create ${def.type} relationships`)
             }
+            console.log(`[useUniversalEntity] ✅ Created ${toIds.length} ${def.type} relationships via RPC client`)
           } else if (toIds.length > 0) {
             console.warn(`[useUniversalEntity] Skipping ${def.type} - contains invalid IDs:`, toIds)
           }
@@ -591,68 +568,56 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       dynamic_patch?: Record<string, any>
       relationships_patch?: Record<string, string[]> // TYPE -> [toIds]
     }) => {
-      const headers = await getAuthHeaders(organizationId)
+      // ✅ USE RPC CLIENT: Use upsertEntity for updates
+      if (updates.entity_name || updates.smart_code || updates.status) {
+        await upsertEntity('', {
+          p_organization_id: organizationId!,
+          p_entity_type: entity_type,
+          p_entity_name: updates.entity_name || '',
+          p_smart_code: updates.smart_code || '',
+          p_entity_code: (updates as any).entity_code || null,
+          p_entity_description: null,
+          p_parent_entity_id: null,
+          p_entity_id: entity_id, // Update mode
+          p_status: updates.status || null
+        })
+        console.log('[useUniversalEntity] ✅ Entity updated via RPC client')
+      }
 
-      // Convert dynamic_patch to the dynamic_fields format if provided
-      let dynamic_fields_formatted: Record<string, any> | undefined
-      if (dynamic_patch) {
-        dynamic_fields_formatted = {}
-        for (const [key, value] of Object.entries(dynamic_patch)) {
-          // Find the field definition to get the type and smart_code
-          const fieldDef = config.dynamicFields?.find(f => f.name === key)
-          if (fieldDef) {
-            dynamic_fields_formatted[key] = {
-              value: value,
-              type: fieldDef.type,
-              smart_code: fieldDef.smart_code
-            }
-          }
+      // Handle dynamic_patch using RPC client
+      if (dynamic_patch && Object.keys(dynamic_patch).length > 0) {
+        const batchItems = toBatchItems(config.dynamicFields, dynamic_patch)
+        if (batchItems.length) {
+          await setDynamicDataBatch('', {
+            p_organization_id: organizationId!,
+            p_entity_id: entity_id,
+            p_smart_code: updates.smart_code || 'HERA.ENTITY.DYNAMIC.FIELD.V1',
+            p_fields: batchItems
+          })
+          console.log('[useUniversalEntity] ✅ Dynamic fields updated via RPC client')
         }
       }
 
-      // Use the main PUT endpoint with dynamic_fields included
-      const r = await fetch('/api/v2/entities', {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          p_organization_id: organizationId,
-          entity_id,
-          ...updates,
-          ...(dynamic_fields_formatted && { dynamic_fields: dynamic_fields_formatted }),
-          // ✅ ENTERPRISE AUDIT TRAIL: Include updated_by for tracking who modified the entity
-          ...(userEntityId ? { updated_by: userEntityId } : {})
-        })
-      })
-
-      if (!r.ok) {
-        const error = await r.json().catch(() => ({}))
-        throw new Error(error?.error || 'Update entity failed')
-      }
-
-      // Handle relationships if needed
+      // Handle relationships using RPC client
       if (relationships_patch && config.relationships?.length) {
-        // Process each relationship type separately using bulk_upsert
         for (const def of config.relationships) {
           const toIds = relationships_patch[def.type]
           if (!toIds) continue
 
           if (toIds.length > 0) {
-            await fetch('/api/v2/relationships/bulk_upsert', {
-              method: 'POST',
-              headers,
-              body: JSON.stringify({
-                relationship_type: def.type,
-                smart_code: def.smart_code,
-                pairs: toIds.map(to => ({
-                  from_entity_id: entity_id,
-                  to_entity_id: to
-                })),
-                status: 'ACTIVE'
+            // ✅ USE RPC CLIENT: Create new relationships
+            for (const toId of toIds) {
+              await createRelationship(organizationId!, {
+                p_from_entity_id: entity_id,
+                p_to_entity_id: toId,
+                p_relationship_type: def.type,
+                p_smart_code: def.smart_code,
+                p_relationship_data: null
               })
-            })
+            }
+            console.log(`[useUniversalEntity] ✅ Updated ${toIds.length} ${def.type} relationships via RPC client`)
           } else {
             // Empty array means remove all relationships of this type
-            // We could call a delete endpoint here if needed
             console.log(`Removing all ${def.type} relationships for entity ${entity_id}`)
           }
         }
@@ -668,28 +633,25 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
   // Get entity by ID with dynamic fields and relationships
   const getById = async (entity_id: string) => {
-    const headers = await getAuthHeaders(organizationId)
+    // ✅ USE RPC CLIENT: Use readEntity for fetching entity
+    const base = await readEntity(organizationId!, entity_id)
 
-    const res = await fetch(`/api/v2/entities/${entity_id}`, { headers })
-    if (!res.ok) throw new Error('Failed to fetch entity')
-    const base = await res.json() // {data:{...}}
-
-    // Fetch dynamic fields (optional)
+    // Fetch dynamic fields (optional) using RPC client
     let dynamic: Record<string, any> = {}
     if (filters.include_dynamic !== false) {
-      const q = new URLSearchParams({
-        p_organization_id: organizationId ?? '',
-        p_entity_id: entity_id,
-        p_limit: '500'
+      const dynamicData = await getDynamicData('', {
+        p_organization_id: organizationId!,
+        p_entity_id: entity_id
       })
-      const dd = await fetch(`/api/v2/dynamic/get?${q}`, { headers })
-      const dj = await dd.json()
-      dynamic = mergeDynamic(Array.isArray(dj?.data) ? dj.data : [])
+      dynamic = mergeDynamic(Array.isArray(dynamicData) ? dynamicData : [])
     }
 
     // Fetch relationships (optional, only if config provided)
     let rels: any[] = []
     if (filters.include_relationships && config.relationships?.length) {
+      // Note: We don't have a getRelationships function yet, so we'll keep using fetch for now
+      // This can be updated later when we add relationship query to the RPC client
+      const headers = await getAuthHeaders(organizationId)
       const body = {
         p_organization_id: organizationId,
         p_entity_id: entity_id,
@@ -727,52 +689,39 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       reason?: string
       smart_code?: string
     }) => {
-      const headers = await getAuthHeaders(organizationId)
+      // ✅ USE RPC CLIENT: Use deleteEntity for proper auth handling
+      try {
+        const result = await deleteEntity('', {
+          p_organization_id: organizationId!,
+          p_entity_id: entity_id,
+          hard_delete,
+          cascade,
+          reason,
+          smart_code
+        })
+        console.log('[useUniversalEntity] ✅ Entity deleted via RPC client')
+        return result
+      } catch (error: any) {
+        // Parse error to extract status and code for enhanced error handling
+        const errorMessage = error.message || 'Failed to delete entity'
 
-      // Build query params following RPC contract
-      const params = new URLSearchParams({
-        hard_delete: hard_delete.toString(),
-        cascade: cascade.toString(),
-        smart_code
-      })
+        // Check if it's a 409 conflict (expected for entities with relationships)
+        const is409Conflict = errorMessage.includes('409') ||
+                              errorMessage.includes('TRANSACTION_INTEGRITY_VIOLATION') ||
+                              errorMessage.includes('FOREIGN_KEY_CONSTRAINT')
 
-      if (reason) {
-        params.append('reason', reason)
+        if (is409Conflict) {
+          throw new EnhancedError(
+            errorMessage,
+            409,
+            'TRANSACTION_INTEGRITY_VIOLATION',
+            'Entity has related records'
+          )
+        }
+
+        // Re-throw other errors
+        throw error
       }
-
-      // ✅ ENTERPRISE AUDIT TRAIL: Include updated_by for tracking who deleted/archived the entity
-      // Note: Soft deletes update the status, so we use updated_by (not deleted_by)
-      if (userEntityId) {
-        params.append('updated_by', userEntityId)
-      }
-
-      const response = await fetch(`/api/v2/entities/${entity_id}?${params}`, {
-        method: 'DELETE',
-        headers
-      })
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({
-          error: { code: 'UNKNOWN_ERROR', message: `HTTP ${response.status}` }
-        }))
-
-        const errorCode = error.error?.code || 'UNKNOWN_ERROR'
-        const errorMessage = error.error?.message || error.error || 'Failed to delete entity'
-        const errorDetails = error.error?.details
-
-        // 🎯 ENTERPRISE PATTERN: Log 409 conflicts as info, not errors (expected behavior)
-        const is409Conflict =
-          response.status === 409 ||
-          errorCode === 'TRANSACTION_INTEGRITY_VIOLATION' ||
-          errorCode === 'FOREIGN_KEY_CONSTRAINT'
-
-        // 🎯 ENTERPRISE ERROR HANDLING: Throw enhanced error with full context
-        throw new EnhancedError(errorMessage, response.status, errorCode, errorDetails)
-      }
-
-      const result = await response.json()
-
-      return result
     },
     onSuccess: result => {
       queryClient.invalidateQueries({ queryKey: ['entities', entity_type] })
@@ -838,39 +787,35 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
     // Direct helpers (optional external use)
     setDynamicFields: async (entity_id: string, values: Record<string, any>) => {
-      const headers = await getAuthHeaders(organizationId)
+      // ✅ USE RPC CLIENT: Use setDynamicDataBatch
       const items = toBatchItems(config.dynamicFields, values)
       if (!items.length) return
-      await fetch('/api/v2/dynamic/batch', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          p_organization_id: organizationId,
-          p_entity_id: entity_id,
-          p_items: items
-        })
+      await setDynamicDataBatch('', {
+        p_organization_id: organizationId!,
+        p_entity_id: entity_id,
+        p_smart_code: 'HERA.ENTITY.DYNAMIC.FIELD.V1',
+        p_fields: items
       })
       queryClient.invalidateQueries({ queryKey })
+      console.log('[useUniversalEntity] ✅ setDynamicFields completed via RPC client')
     },
 
     link: async (entity_id: string, type: string, toIds: string[]) => {
-      const headers = await getAuthHeaders(organizationId)
+      // ✅ USE RPC CLIENT: Use createRelationship for each relationship
       const def = config.relationships?.find(r => r.type === type)
       if (!def) throw new Error(`Unknown relationship type: ${type}`)
-      const rows = toIds.map(to => ({
-        from_entity_id: entity_id,
-        to_entity_id: to,
-        relationship_type: def.type,
-        smart_code: def.smart_code,
-        relationship_direction: 'forward',
-        is_active: true
-      }))
-      await fetch('/api/v2/relationships/upsert-batch', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ p_organization_id: organizationId, p_rows: rows })
-      })
+
+      for (const toId of toIds) {
+        await createRelationship(organizationId!, {
+          p_from_entity_id: entity_id,
+          p_to_entity_id: toId,
+          p_relationship_type: def.type,
+          p_smart_code: def.smart_code,
+          p_relationship_data: null
+        })
+      }
       queryClient.invalidateQueries({ queryKey })
+      console.log(`[useUniversalEntity] ✅ link completed - created ${toIds.length} relationships via RPC client`)
     },
 
     // Loading states

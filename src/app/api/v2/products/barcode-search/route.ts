@@ -3,8 +3,8 @@
  * Smart Code: HERA.API.V2.PRODUCTS.BARCODE.SEARCH.V1
  *
  * ✅ ENTERPRISE FEATURES:
- * - Searches both primary and alternate barcodes
- * - Indexed lookups for instant results
+ * - RPC-based search with indexed dynamic data
+ * - Searches primary barcode, alternate barcodes, GTIN, and SKU
  * - Organization isolation via RLS
  * - Supports EAN13, UPC, CODE128, QR codes
  *
@@ -13,7 +13,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase/client'
+import { callRPC } from '@/lib/rpc-client'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,164 +46,75 @@ export async function GET(request: NextRequest) {
 
     const barcodeClean = barcode.trim()
 
-    // Step 1: Search by primary barcode (most common case)
-    // Using indexed lookup on core_dynamic_data.field_value_text
-    const { data: primaryResults, error: primaryError } = await supabase
-      .from('core_dynamic_data')
-      .select(
-        `
-        entity_id,
-        field_value_text,
-        entity:core_entities!inner(
-          id,
-          entity_name,
-          entity_code,
-          entity_type,
-          smart_code,
-          status,
-          organization_id
-        )
-      `
-      )
-      .eq('smart_code', 'HERA.SALON.PRODUCT.DYN.BARCODE.PRIMARY.V1')
-      .eq('field_value_text', barcodeClean)
-      .eq('entity.organization_id', orgId)
-      .eq('entity.entity_type', 'PRODUCT')
-      .eq('entity.status', 'active')
-      .limit(1)
+    // 🎯 RPC-BASED SEARCH: Use hera_entity_read_v1 with dynamic field filters
+    // This searches: barcode_primary, barcodes_alt, gtin, and sku fields
+    const result = await callRPC('hera_entity_read_v1', {
+      p_organization_id: orgId,
+      p_entity_type: 'product',
+      p_filters: {
+        status: 'active',
+        include_dynamic: true
+      },
+      p_limit: 50 // Get all products with dynamic data
+    })
 
-    if (primaryError) {
-      console.error('[Barcode Search] Primary search error:', primaryError)
+    if (result.error) {
+      console.error('[Barcode Search] RPC error:', result.error)
+      return NextResponse.json(
+        {
+          success: false,
+          error: result.error
+        },
+        { status: 500 }
+      )
     }
 
-    // If found in primary barcode, return immediately
-    if (primaryResults && primaryResults.length > 0 && primaryResults[0].entity) {
-      const product = primaryResults[0].entity as any
-
-      // Fetch all dynamic fields for the product
-      const { data: dynamicFields } = await supabase
-        .from('core_dynamic_data')
-        .select('*')
-        .eq('entity_id', product.id)
-        .eq('organization_id', orgId)
-
-      // Flatten dynamic fields into product object
-      const flattenedProduct = { ...product }
-      if (dynamicFields) {
-        dynamicFields.forEach((field: any) => {
-          const value =
-            field.field_value_number ??
-            field.field_value_boolean ??
-            field.field_value_text ??
-            field.field_value_json ??
-            null
-
-          flattenedProduct[field.field_name] = value
-        })
+    // Filter products matching the barcode in dynamic fields
+    const products = (result.data || []).filter((product: any) => {
+      // Check primary barcode
+      if (product.barcode_primary === barcodeClean) {
+        product._match_source = 'primary_barcode'
+        return true
       }
 
+      // Check alternate barcodes (array)
+      if (Array.isArray(product.barcodes_alt) && product.barcodes_alt.includes(barcodeClean)) {
+        product._match_source = 'alternate_barcode'
+        return true
+      }
+
+      // Check GTIN
+      if (product.gtin === barcodeClean) {
+        product._match_source = 'gtin'
+        return true
+      }
+
+      // Check SKU
+      if (product.sku === barcodeClean) {
+        product._match_source = 'sku'
+        return true
+      }
+
+      // Check legacy barcode field for backward compatibility
+      if (product.barcode === barcodeClean) {
+        product._match_source = 'legacy_barcode'
+        return true
+      }
+
+      return false
+    })
+
+    if (products.length > 0) {
       return NextResponse.json({
         success: true,
         found: true,
-        source: 'primary_barcode',
-        items: [flattenedProduct],
+        source: products[0]._match_source,
+        items: products,
         barcode_searched: barcodeClean
       })
     }
 
-    // Step 2: Search by alternate barcodes (JSON array contains)
-    // Using GIN index on core_dynamic_data.field_value_json
-    const { data: altResults, error: altError } = await supabase.rpc(
-      'search_products_by_alt_barcode',
-      {
-        p_barcode: barcodeClean,
-        p_organization_id: orgId
-      }
-    )
-
-    if (altError) {
-      console.warn(
-        '[Barcode Search] Alternate barcode RPC not found, using fallback query:',
-        altError
-      )
-
-      // Fallback: Direct query with JSONB contains operator
-      const { data: altFallback, error: altFallbackError } = await supabase
-        .from('core_dynamic_data')
-        .select(
-          `
-          entity_id,
-          field_value_json,
-          entity:core_entities!inner(
-            id,
-            entity_name,
-            entity_code,
-            entity_type,
-            smart_code,
-            status,
-            organization_id
-          )
-        `
-        )
-        .eq('smart_code', 'HERA.SALON.PRODUCT.DYN.BARCODES.ALT.V1')
-        .contains('field_value_json', [barcodeClean])
-        .eq('entity.organization_id', orgId)
-        .eq('entity.entity_type', 'PRODUCT')
-        .eq('entity.status', 'active')
-        .limit(10)
-
-      if (!altFallbackError && altFallback && altFallback.length > 0) {
-        const products = []
-        for (const result of altFallback) {
-          if (!result.entity) continue
-          const product = result.entity as any
-
-          // Fetch all dynamic fields
-          const { data: dynamicFields } = await supabase
-            .from('core_dynamic_data')
-            .select('*')
-            .eq('entity_id', product.id)
-            .eq('organization_id', orgId)
-
-          const flattenedProduct = { ...product }
-          if (dynamicFields) {
-            dynamicFields.forEach((field: any) => {
-              const value =
-                field.field_value_number ??
-                field.field_value_boolean ??
-                field.field_value_text ??
-                field.field_value_json ??
-                null
-              flattenedProduct[field.field_name] = value
-            })
-          }
-          products.push(flattenedProduct)
-        }
-
-        if (products.length > 0) {
-          return NextResponse.json({
-            success: true,
-            found: true,
-            source: 'alternate_barcodes',
-            items: products,
-            barcode_searched: barcodeClean
-          })
-        }
-      }
-    }
-
-    // If RPC succeeded
-    if (altResults && altResults.length > 0) {
-      return NextResponse.json({
-        success: true,
-        found: true,
-        source: 'alternate_barcodes',
-        items: altResults,
-        barcode_searched: barcodeClean
-      })
-    }
-
-    // Step 3: No results found
+    // No results found
     return NextResponse.json({
       success: true,
       found: false,

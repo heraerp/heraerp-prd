@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/select'
 import { useSalonPOS, type PosItem } from '@/hooks/useSalonPOS'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
+import { ScanToCart } from '@/components/salon/pos/ScanToCart'
 import { cn } from '@/lib/utils'
 
 const COLORS = {
@@ -276,6 +277,28 @@ export function CatalogPane({
             <span className="text-xs font-medium" style={{ color: COLORS.champagne }}>
               Please select a branch to view available items
             </span>
+          </div>
+        )}
+
+        {/* Barcode Scanner */}
+        {branchId && (
+          <div className="mb-3">
+            <ScanToCart
+              organizationId={organizationId}
+              onProductFound={product => {
+                // Transform product to PosItem format and add to cart
+                const posItem: PosItem = {
+                  id: product.id,
+                  entity_id: product.id,
+                  title: product.entity_name,
+                  price: product.price_market || product.selling_price || 0,
+                  __kind: 'PRODUCT',
+                  category: product.category || 'General',
+                  raw: product
+                }
+                handleAddItem(posItem)
+              }}
+            />
           </div>
         )}
 
