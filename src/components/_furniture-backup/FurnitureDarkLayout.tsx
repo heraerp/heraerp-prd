@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import FurnitureDarkSidebar from './FurnitureDarkSidebar'
+import FurnitureNavbar from './FurnitureNavbar'
 import { cn } from '@/lib/utils'
 import { Menu, X, Armchair, Home, ShoppingCart, Factory, Grid3x3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -20,8 +21,8 @@ function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 1024
       setIsMobile(mobile)
-      // Always open sidebar on desktop
-      setSidebarOpen(!mobile)
+      // Don't auto-open sidebar anymore since we have top navbar
+      setSidebarOpen(false)
     }
 
     checkScreenSize()
@@ -40,51 +41,33 @@ function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
   return (
     <NavigationLoadingProvider>
       <div className="relative min-h-screen bg-[var(--color-body)]">
-        {/* Mobile Header */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[var(--color-body)]/95 backdrop-blur-xl border-b border-[var(--color-border)]/50 z-40 flex items-center px-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
-          <div className="ml-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[var(--color-accent-teal)] to-[var(--color-accent-indigo)] flex items-center justify-center">
-              <Armchair className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-[var(--color-text-primary)] font-semibold">Kerala Furniture</span>
-          </div>
-        </div>
+        {/* Top Navbar - Full Width */}
+        <FurnitureNavbar />
 
-        {/* Sidebar - Mobile Drawer */}
+        {/* Sidebar - Mobile Drawer (Hidden by default since we have navbar) */}
         <div
           className={cn(
             'fixed left-0 top-0 h-full z-50 transition-transform duration-300 lg:transition-none overflow-hidden',
-            isMobile ? (sidebarOpen ? 'translate-x-0' : '-translate-x-full') : 'translate-x-0'
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
           <FurnitureDarkSidebar onNavigate={handleSidebarClose} />
         </div>
 
-        {/* Main Content */}
-        <div
-          className={cn(
-            'transition-all duration-300 min-h-screen',
-            // Mobile: top padding for header, bottom padding for nav
-            'pt-16 pb-20 lg:pt-0 lg:pb-0',
-            // Desktop: add left margin for sidebar
-            !isMobile && 'lg:ml-20'
-          )}
-        >
-          <div className="furniture-main-bg min-h-screen furniture-grid-pattern">{children}</div>
+        {/* Main Content - Reduced margins */}
+        <div className="min-h-screen">
+          <div className="furniture-main-bg min-h-screen furniture-grid-pattern">
+            {/* Reduced padding for tighter layout */}
+            <div className="px-4 py-4 lg:px-6 lg:py-6">
+              {children}
+            </div>
+          </div>
         </div>
 
         {/* Mobile Overlay */}
-        {sidebarOpen && isMobile && (
+        {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40"
             onClick={() => setSidebarOpen(false)}
             aria-label="Close sidebar"
           />

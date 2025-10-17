@@ -10,6 +10,7 @@ interface FurnitureAppsSearchProps {
 
 const furnitureApps = [
   { name: 'Dashboard', href: '/furniture/dashboard', icon: Armchair, category: 'Core' },
+  { name: 'Products', href: '/furniture/products', icon: Package, category: 'Core' },
   { name: 'Production Planning', href: '/furniture/production', icon: Factory, category: 'Manufacturing' },
   { name: 'Inventory', href: '/furniture/inventory', icon: Package, category: 'Operations' },
   { name: 'Customers', href: '/furniture/customers', icon: Users, category: 'Sales' },

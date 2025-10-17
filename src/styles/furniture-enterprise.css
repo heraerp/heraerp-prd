@@ -2,6 +2,16 @@
 
 /* Furniture Module Enterprise-Grade Styles */
 
+/* Scrollbar utilities */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+
 /* Enhanced depth and layering for dark theme */
 .furniture-sidebar {
   background: var(--color-sidebar) !important;

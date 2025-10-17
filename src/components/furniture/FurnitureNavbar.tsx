@@ -10,6 +10,7 @@ import { Armchair, Search, Menu, X } from 'lucide-react'
 // Navigation items organized by category for furniture business
 const coreOperations = [
   { label: 'Dashboard', href: '/furniture' },
+  { label: 'Products', href: '/furniture/products' },
   { label: 'Design Studio', href: '/furniture/design-studio' },
   { label: 'AI Business Manager', href: '/furniture/ai-manager' },
   { label: 'Digital Accountant', href: '/furniture/digital-accountant' },
