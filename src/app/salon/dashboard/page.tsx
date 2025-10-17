@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import FailFastDashboard from './fail-fast-dashboard'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { LUXE_COLORS } from '@/lib/constants/salon'
+import dynamic from 'next/dynamic'
 
 // ✅ ENTERPRISE: Filter Context
 import {
@@ -32,14 +33,51 @@ import {
   getPeriodLabel
 } from '@/contexts/DashboardFilterContext'
 
-// Import new dashboard sections
-import { HeroMetrics } from '@/components/salon/dashboard/HeroMetrics'
-import { AppointmentAnalytics } from '@/components/salon/dashboard/AppointmentAnalytics'
-import { RevenueTrends } from '@/components/salon/dashboard/RevenueTrends'
-import { StaffPerformance } from '@/components/salon/dashboard/StaffPerformance'
-import { CustomerAndServiceInsights } from '@/components/salon/dashboard/CustomerAndServiceInsights'
-import { FinancialOverview } from '@/components/salon/dashboard/FinancialOverview'
-import { AuthStateTest } from '@/components/auth/auth-state-test'
+// ✅ PERFORMANCE: Lazy load dashboard sections with fast skeletons
+const FastSkeleton = () => (
+  <div className="space-y-4 animate-pulse">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="h-32 rounded-lg" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />
+      ))}
+    </div>
+  </div>
+)
+
+const HeroMetrics = dynamic(() => import('@/components/salon/dashboard/HeroMetrics').then(mod => ({ default: mod.HeroMetrics })), {
+  loading: () => <FastSkeleton />,
+  ssr: false
+})
+
+const AppointmentAnalytics = dynamic(() => import('@/components/salon/dashboard/AppointmentAnalytics').then(mod => ({ default: mod.AppointmentAnalytics })), {
+  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
+  ssr: false
+})
+
+const RevenueTrends = dynamic(() => import('@/components/salon/dashboard/RevenueTrends').then(mod => ({ default: mod.RevenueTrends })), {
+  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
+  ssr: false
+})
+
+const StaffPerformance = dynamic(() => import('@/components/salon/dashboard/StaffPerformance').then(mod => ({ default: mod.StaffPerformance })), {
+  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
+  ssr: false
+})
+
+const CustomerAndServiceInsights = dynamic(() => import('@/components/salon/dashboard/CustomerAndServiceInsights').then(mod => ({ default: mod.CustomerAndServiceInsights })), {
+  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
+  ssr: false
+})
+
+const FinancialOverview = dynamic(() => import('@/components/salon/dashboard/FinancialOverview').then(mod => ({ default: mod.FinancialOverview })), {
+  loading: () => <div className="h-64 rounded-lg animate-pulse" style={{ backgroundColor: `${LUXE_COLORS.charcoalLight}80` }} />,
+  ssr: false
+})
+
+const AuthStateTest = dynamic(() => import('@/components/auth/auth-state-test').then(mod => ({ default: mod.AuthStateTest })), {
+  loading: () => null,
+  ssr: false
+})
 
 // ============================================================================
 // INNER DASHBOARD COMPONENT (Uses Filter Context)
@@ -56,6 +94,20 @@ function DashboardContent() {
   const router = useRouter()
   const [lastRefresh, setLastRefresh] = useState(new Date())
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [loadStage, setLoadStage] = useState(1) // Progressive loading stages
+
+  // ✅ PERFORMANCE: Progressive component loading
+  useEffect(() => {
+    if (isAuthenticated && !orgLoading && !securityLoading) {
+      // Load components progressively for better perceived performance
+      const stages = [2, 3, 4, 5]
+      stages.forEach((stage, index) => {
+        setTimeout(() => {
+          setLoadStage(stage)
+        }, index * 300) // Load each stage 300ms apart
+      })
+    }
+  }, [isAuthenticated, orgLoading, securityLoading])
 
   // ✅ ENTERPRISE: Use Filter Context
   const {
@@ -427,23 +479,59 @@ function DashboardContent() {
 
       {/* Main Content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Hero Metrics */}
-        <HeroMetrics kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+        {/* Stage 1: Hero Metrics - Load immediately */}
+        {loadStage >= 1 && (
+          <div className="animate-fadeInUp">
+            <HeroMetrics kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+          </div>
+        )}
 
-        {/* Appointment Analytics and Revenue Trends */}
-        <div className="grid grid-cols-1 gap-8">
-          <AppointmentAnalytics kpis={kpis} selectedPeriod={globalPeriod} />
-          <RevenueTrends kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
-        </div>
+        {/* Stage 2: Appointment Analytics - Load after 300ms */}
+        {loadStage >= 2 && (
+          <div className="animate-fadeInUp">
+            <AppointmentAnalytics kpis={kpis} selectedPeriod={globalPeriod} />
+          </div>
+        )}
 
-        {/* Staff Performance */}
-        <StaffPerformance kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+        {/* Stage 3: Revenue Trends - Load after 600ms */}
+        {loadStage >= 3 && (
+          <div className="animate-fadeInUp">
+            <RevenueTrends kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+          </div>
+        )}
 
-        {/* Customer and Service Insights */}
-        <CustomerAndServiceInsights kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+        {/* Stage 4: Staff Performance - Load after 900ms */}
+        {loadStage >= 4 && (
+          <div className="animate-fadeInUp">
+            <StaffPerformance kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+          </div>
+        )}
 
-        {/* Financial Overview */}
-        <FinancialOverview kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+        {/* Stage 5: Additional Insights - Load after 1200ms */}
+        {loadStage >= 5 && (
+          <div className="space-y-8 animate-fadeInUp">
+            <CustomerAndServiceInsights kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+            <FinancialOverview kpis={kpis} formatCurrency={formatCurrency} selectedPeriod={globalPeriod} />
+          </div>
+        )}
+
+        {/* Loading progress indicator */}
+        {loadStage < 5 && (
+          <div className="text-center py-8">
+            <div 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg"
+              style={{ 
+                background: `${LUXE_COLORS.gold}10`, 
+                border: `1px solid ${LUXE_COLORS.gold}20` 
+              }}
+            >
+              <Loader2 className="w-4 h-4 animate-spin" style={{ color: LUXE_COLORS.gold }} />
+              <span className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                Loading dashboard components... ({loadStage}/5)
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Footer Spacer */}
         <div className="h-8" />
@@ -451,6 +539,21 @@ function DashboardContent() {
 
       {/* Global animations */}
       <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fadeInUp {
+          animation: fadeInUp 0.5s ease-out forwards;
+        }
+
         @keyframes slideInUp {
           from {
             opacity: 0;
