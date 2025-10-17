@@ -39,6 +39,7 @@ import { RevenueTrends } from '@/components/salon/dashboard/RevenueTrends'
 import { StaffPerformance } from '@/components/salon/dashboard/StaffPerformance'
 import { CustomerAndServiceInsights } from '@/components/salon/dashboard/CustomerAndServiceInsights'
 import { FinancialOverview } from '@/components/salon/dashboard/FinancialOverview'
+import { AuthStateTest } from '@/components/auth/auth-state-test'
 
 // ============================================================================
 // INNER DASHBOARD COMPONENT (Uses Filter Context)
@@ -520,6 +521,7 @@ export default function SalonDashboard() {
   return (
     <DashboardFilterProvider defaultPeriod="allTime">
       <DashboardContent />
+      <AuthStateTest />
     </DashboardFilterProvider>
   )
 }
