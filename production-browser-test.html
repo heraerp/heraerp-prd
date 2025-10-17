@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HERA Production Authentication Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #00ff00; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #333; background: #2a2a2a; }
+        .success { color: #00ff00; }
+        .error { color: #ff4444; }
+        .warning { color: #ffaa00; }
+        button { background: #333; color: #fff; border: 1px solid #555; padding: 10px; margin: 5px; cursor: pointer; }
+        button:hover { background: #555; }
+        pre { background: #000; padding: 10px; overflow-x: auto; }
+        .result { margin: 10px 0; padding: 10px; background: #111; border-left: 3px solid #00ff00; }
+    </style>
+</head>
+<body>
+    <h1>🔍 HERA v2.2 Production Authentication Diagnostic</h1>
+    
+    <div class="section">
+        <h2>Environment Info</h2>
+        <div id="envInfo"></div>
+    </div>
+
+    <div class="section">
+        <h2>Cookie Analysis</h2>
+        <button onclick="checkCookies()">Check Cookies</button>
+        <div id="cookieResults"></div>
+    </div>
+
+    <div class="section">
+        <h2>LocalStorage Check</h2>
+        <button onclick="checkLocalStorage()">Check Auth Storage</button>
+        <div id="localStorageResults"></div>
+    </div>
+
+    <div class="section">
+        <h2>Session Debug Test</h2>
+        <button onclick="testSessionEndpoint()">Test /api/v2/debug/session</button>
+        <div id="sessionResults"></div>
+    </div>
+
+    <div class="section">
+        <h2>Supabase Auth Test</h2>
+        <button onclick="testSupabaseAuth()">Test Supabase Client</button>
+        <div id="supabaseResults"></div>
+    </div>
+
+    <div class="section">
+        <h2>Clear & Reset</h2>
+        <button onclick="clearAllAuth()">Clear All Auth Data</button>
+        <button onclick="refreshPage()">Refresh Page</button>
+        <div id="clearResults"></div>
+    </div>
+
+    <script>
+        // Initialize environment info
+        document.getElementById('envInfo').innerHTML = `
+            <div class="result">
+                <strong>URL:</strong> ${window.location.href}<br>
+                <strong>Host:</strong> ${window.location.host}<br>
+                <strong>Protocol:</strong> ${window.location.protocol}<br>
+                <strong>User Agent:</strong> ${navigator.userAgent.substring(0, 80)}...
+            </div>
+        `;
+
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'success';
+            element.innerHTML += `<div class="result ${className}">${message}</div>`;
+        }
+
+        function checkCookies() {
+            const results = document.getElementById('cookieResults');
+            results.innerHTML = '';
+            
+            const cookies = document.cookie;
+            log('cookieResults', `<strong>All Cookies:</strong><br><pre>${cookies || 'No cookies found'}</pre>`);
+            
+            // Check for Supabase auth cookies specifically
+            const authCookies = cookies.split(';').filter(cookie => 
+                cookie.includes('supabase') || cookie.includes('auth') || cookie.includes('sb-')
+            );
+            
+            if (authCookies.length > 0) {
+                log('cookieResults', `<strong>Auth Cookies Found:</strong><br><pre>${authCookies.join('\\n')}</pre>`, 'success');
+            } else {
+                log('cookieResults', '<strong>No Auth Cookies Found</strong>', 'warning');
+            }
+        }
+
+        function checkLocalStorage() {
+            const results = document.getElementById('localStorageResults');
+            results.innerHTML = '';
+            
+            try {
+                const heraAuth = localStorage.getItem('hera-supabase-auth');
+                const supabaseAuth = localStorage.getItem('sb-awfcrncxngqwbhqapffb-auth-token');
+                
+                log('localStorageResults', `<strong>HERA Auth:</strong><br><pre>${heraAuth ? JSON.stringify(JSON.parse(heraAuth), null, 2) : 'Not found'}</pre>`);
+                log('localStorageResults', `<strong>Supabase Auth:</strong><br><pre>${supabaseAuth ? JSON.stringify(JSON.parse(supabaseAuth), null, 2) : 'Not found'}</pre>`);
+                
+                // List all localStorage items
+                const allItems = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    allItems.push(key);
+                }
+                log('localStorageResults', `<strong>All Storage Keys:</strong><br><pre>${allItems.join('\\n')}</pre>`);
+                
+            } catch (error) {
+                log('localStorageResults', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSessionEndpoint() {
+            const results = document.getElementById('sessionResults');
+            results.innerHTML = '';
+            
+            try {
+                log('sessionResults', 'Testing /api/v2/debug/session...');
+                
+                const response = await fetch('/api/v2/debug/session', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log('sessionResults', `<strong>✅ Session Endpoint Response:</strong><br><pre>${JSON.stringify(data, null, 2)}</pre>`, 'success');
+                    
+                    if (data.session && data.session.session_present) {
+                        log('sessionResults', '🎉 Session is present!', 'success');
+                    } else {
+                        log('sessionResults', '⚠️ No session found - this is the issue!', 'warning');
+                    }
+                } else {
+                    log('sessionResults', `❌ Error ${response.status}: ${JSON.stringify(data)}`, 'error');
+                }
+            } catch (error) {
+                log('sessionResults', `💥 Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSupabaseAuth() {
+            const results = document.getElementById('supabaseResults');
+            results.innerHTML = '';
+            
+            log('supabaseResults', 'Loading Supabase client...');
+            
+            // Try to load Supabase from CDN if not available
+            if (typeof window.supabase === 'undefined') {
+                try {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+                    document.head.appendChild(script);
+                    
+                    await new Promise((resolve, reject) => {
+                        script.onload = resolve;
+                        script.onerror = reject;
+                    });
+                    
+                    log('supabaseResults', '✅ Supabase library loaded', 'success');
+                } catch (error) {
+                    log('supabaseResults', `❌ Failed to load Supabase: ${error.message}`, 'error');
+                    return;
+                }
+            }
+            
+            try {
+                // Test if we can access Supabase client (this might be available in production)
+                if (typeof window.supabase !== 'undefined') {
+                    const session = await window.supabase.auth.getSession();
+                    log('supabaseResults', `<strong>Supabase Session:</strong><br><pre>${JSON.stringify(session, null, 2)}</pre>`);
+                } else {
+                    log('supabaseResults', '⚠️ Supabase client not available in window', 'warning');
+                }
+            } catch (error) {
+                log('supabaseResults', `💥 Supabase test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function clearAllAuth() {
+            const results = document.getElementById('clearResults');
+            results.innerHTML = '';
+            
+            try {
+                // Clear localStorage
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.includes('supabase') || key.includes('auth') || key.includes('hera')) {
+                        keysToRemove.push(key);
+                    }
+                }
+                
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+                log('clearResults', `Cleared ${keysToRemove.length} localStorage items: ${keysToRemove.join(', ')}`, 'success');
+                
+                // Clear sessionStorage
+                sessionStorage.clear();
+                log('clearResults', 'Cleared sessionStorage', 'success');
+                
+                // Note about cookies
+                log('clearResults', '⚠️ Cookies cannot be cleared from JavaScript due to security. Use browser dev tools.', 'warning');
+                
+            } catch (error) {
+                log('clearResults', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        // Auto-run basic checks
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                checkCookies();
+                checkLocalStorage();
+                testSessionEndpoint();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

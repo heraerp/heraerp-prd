@@ -1,0 +1,35 @@
+{
+  "transaction": {
+    "smart_code": "HERA.FINANCE.TXN.EXPENSE.v1",
+    "transaction_type": "AP_INVOICE",
+    "transaction_date": "2025-10-17T08:30:00Z",
+    "transaction_currency_code": "USD",
+    "base_currency_code": "AED",
+    "exchange_rate": 3.673,
+    "exchange_rate_date": "2025-10-17",
+    "exchange_rate_type": "spot",
+    "fiscal_year": 2025,
+    "fiscal_period": 10,
+    "business_context": {
+      "memo": "Office supplies USD"
+    }
+  },
+  "lines": [
+    {
+      "line_number": 10,
+      "line_type": "GL",
+      "smart_code": "HERA.FINANCE.GL.LINE.v1",
+      "account_code": "6100",
+      "fixed_amount": 100.00,
+      "side": "DR"
+    },
+    {
+      "line_number": 20,
+      "line_type": "GL",
+      "smart_code": "HERA.FINANCE.GL.LINE.v1",
+      "account_code": "2101",
+      "fixed_amount": 100.00,
+      "side": "CR"
+    }
+  ]
+}

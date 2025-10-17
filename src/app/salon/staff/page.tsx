@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useMemo, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useHeraStaff, type StaffFormValues } from '@/hooks/useHeraStaff'
 import { useHeraRoles, type RoleFormValues, type Role } from '@/hooks/useHeraRoles'
@@ -97,6 +98,7 @@ interface StaffStats {
 }
 
 function StaffContent() {
+  const router = useRouter()
   const {
     user,
     organization,
@@ -589,7 +591,7 @@ function StaffContent() {
           </div>
           <div className="flex gap-3">
             <Button
-              onClick={() => (window.location.href = '/salon/leave')}
+              onClick={() => router.push('/salon/leave')}
               style={{
                 background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emerald}DD 100%)`,
                 color: COLORS.champagne,

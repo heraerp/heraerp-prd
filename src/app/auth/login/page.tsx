@@ -72,6 +72,32 @@ function LoginForm() {
     setIsLoading(true)
 
     try {
+      // For Hair Talkz domain users, handle special routing
+      if (email.includes('@hairtalkz.com') || email.includes('michele')) {
+        const { createClient } = await import('@supabase/supabase-js')
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        )
+
+        const { data, error: authError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        })
+
+        if (authError) {
+          setError(authError.message)
+          return
+        }
+
+        if (data.user) {
+          console.log('✅ Hair Talkz user authenticated, redirecting to salon dashboard')
+          router.push('/salon/dashboard')
+          return
+        }
+      }
+
+      // For other users, use normal auth flow
       await login(email, password)
       // Redirect will be handled by useEffect
     } catch (err) {

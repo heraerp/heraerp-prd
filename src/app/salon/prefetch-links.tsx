@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation'
 // Common routes to prefetch for better performance
 const PREFETCH_ROUTES = [
   '/salon/dashboard',
-  '/salon/service-categories',
+  '/salon/appointments',
+  '/salon/customers', 
   '/salon/services',
-  '/salon/appointments1',
-  '/salon/customers',
-  '/salon/pos2',
-  '/salon/finance',
-  '/salon/owner'
+  '/salon/pos',
+  '/salon/staff',
+  '/salon/inventory',
+  '/salon/finance'
 ]
 
 export function PrefetchLinks() {

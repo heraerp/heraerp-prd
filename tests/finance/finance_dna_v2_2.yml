@@ -1,0 +1,171 @@
+# HERA Finance DNA v2.2 Test Suite
+# Org-agnostic tests for policy enforcement
+
+name: "Finance DNA v2.2 Policy Tests"
+version: "2.2.0"
+updated_at: "2025-10-17"
+
+tests:
+  - name: smartcode_regex_enforced
+    description: "Verify smart code pattern enforcement"
+    input:
+      smart_code: "HERA.FINANCE.TXN.SALE.v1"
+    expect:
+      regex_match: "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$"
+    
+  - name: invalid_smartcode_rejected
+    description: "Verify invalid smart codes are rejected"
+    input:
+      smart_code: "invalid-smart-code"
+    expect:
+      regex_match: false
+      
+  - name: gl_balances_per_currency_aed
+    description: "Verify GL balancing for AED transactions"
+    input:
+      currency: "AED"
+      lines:
+        - side: "DR"
+          amount: 100
+          currency: "AED"
+        - side: "CR" 
+          amount: 100
+          currency: "AED"
+    expect:
+      balanced: true
+      
+  - name: gl_balances_per_currency_usd
+    description: "Verify GL balancing for USD transactions"
+    input:
+      currency: "USD"
+      lines:
+        - side: "DR"
+          amount: 100
+          currency: "USD"
+        - side: "CR"
+          amount: 100 
+          currency: "USD"
+    expect:
+      balanced: true
+      
+  - name: gl_unbalanced_rejected
+    description: "Verify unbalanced GL transactions are rejected"
+    input:
+      lines:
+        - side: "DR"
+          amount: 100
+        - side: "CR"
+          amount: 90
+    expect:
+      balanced: false
+      error_contains: "unbalanced"
+      
+  - name: account_semantics_gl_required
+    description: "Verify GL account semantics enforcement"
+    entity:
+      entity_type: "account"
+      smart_code: "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1"
+      business_rules:
+        ledger_type: "GL"
+    expect:
+      valid: true
+      
+  - name: account_semantics_stat_required
+    description: "Verify STAT account semantics enforcement"
+    entity:
+      entity_type: "account"
+      smart_code: "HERA.ACCOUNTING.COA.ACCOUNT.STAT.TOTAL.v1"
+      business_rules:
+        ledger_type: "STAT"
+    expect:
+      valid: true
+      
+  - name: account_without_ledger_type_rejected
+    description: "Verify account must have ledger_type"
+    entity:
+      entity_type: "account"
+      smart_code: "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1"
+      business_rules: {}
+    expect:
+      valid: false
+      error_contains: "ledger_type"
+      
+  - name: actor_is_mandatory_on_write
+    description: "Verify actor stamping is enforced on all writes"
+    call: "hera_transactions_crud_v2"
+    payload_without_actor: true
+    expect:
+      error_contains: "HERA_AUDIT_VIOLATION"
+      
+  - name: organization_filter_required
+    description: "Verify organization filter is mandatory"
+    call: "hera_transactions_crud_v2"
+    payload:
+      p_action: "READ"
+      # Missing p_organization_id
+    expect:
+      error_contains: "ORGANIZATION_ID_REQUIRED"
+      
+  - name: transaction_header_required_fields
+    description: "Verify transaction header required fields"
+    transaction:
+      # Missing smart_code, transaction_type
+      organization_id: "test-org-id"
+    expect:
+      error_contains: "required"
+      
+  - name: transaction_line_required_fields
+    description: "Verify transaction line required fields"
+    transaction_line:
+      # Missing line_number, line_type, smart_code
+      organization_id: "test-org-id"
+      transaction_id: "test-txn-id"
+    expect:
+      error_contains: "required"
+      
+  - name: multi_currency_fx_handling
+    description: "Verify multi-currency FX rate handling"
+    input:
+      transaction_currency_code: "USD"
+      base_currency_code: "AED"
+      exchange_rate: 3.673
+      exchange_rate_date: "2025-10-17"
+      exchange_rate_type: "spot"
+    expect:
+      valid: true
+      fx_fields_present: true
+      
+  - name: salon_service_mapping
+    description: "Verify salon service account mapping"
+    salon_override:
+      service_category: "SERVICE:HAIRCUT"
+      expected_account_code: "4000"
+    expect:
+      mapping_found: true
+      account_code: "4000"
+      
+  - name: salon_commission_mapping  
+    description: "Verify salon commission account mapping"
+    salon_override:
+      mapping_type: "commission_account_code"
+      expected_account_code: "5000"
+    expect:
+      mapping_found: true
+      account_code: "5000"
+      
+  - name: salon_vat_mapping
+    description: "Verify salon VAT account mapping"  
+    salon_override:
+      mapping_type: "vat_payable_account_code"
+      expected_account_code: "2100"
+    expect:
+      mapping_found: true
+      account_code: "2100"
+
+# Test execution configuration
+config:
+  test_org_isolation: true
+  require_actor_stamping: true
+  enforce_smart_code_patterns: true
+  validate_gl_balancing: true
+  check_account_semantics: true

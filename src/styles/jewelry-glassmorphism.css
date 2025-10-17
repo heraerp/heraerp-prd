@@ -3,6 +3,16 @@
  * Regal luxury palette with sophisticated blue and gold elegance
  */
 
+/* Scrollbar utilities */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+
 /* CSS Custom Properties - Royal Blue & Gold Accent (WCAG AA Compliant) */
 :root {
   /* Royal Blue Palette - Based on #2B3A67 with enhanced contrast */
@@ -897,6 +907,17 @@
 .dark .jewelry-glass-card-subtle:hover {
   background: rgba(43, 58, 103, 0.3);
   border-color: rgba(255, 215, 0, 0.2);
+}
+
+/* Badge text override for furniture1 pages */
+.jewelry-badge-text {
+  color: var(--jewelry-royal) !important;
+  border-color: var(--jewelry-blue-300) !important;
+}
+
+.dark .jewelry-badge-text {
+  color: var(--jewelry-blue-200) !important;
+  border-color: var(--jewelry-gold-500) !important;
 }
 
 /* Enhanced status icons */

@@ -1,693 +1,785 @@
 'use client'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
-/** * HERA Furniture Digital Accountant Integration * Smart Code: HERA.FURNITURE.DIGITAL.ACCOUNTANT.V1 * * Simplified accounting interface for furniture manufacturers * Natural language processing for non-accountants */
-import React, { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import React, { useState, useEffect } from 'react'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Progress } from '@/components/ui/progress'
-import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import {
-  Brain,
-  Send,
-  Loader2,
-  DollarSign,
-  ShoppingBag,
-  Users,
-  Receipt,
-  CreditCard,
-  Banknote,
-  TrendingUp,
-  TrendingDown,
-  Calendar,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  MessageSquare,
-  Camera,
-  Mic,
-  HelpCircle,
-  Sparkles,
   Calculator,
+  Mic,
   FileText,
-  ChevronRight,
-  Package,
-  Home,
-  Zap,
-  Coins,
-  BarChart3,
-  Target,
-  History,
-  Settings,
-  Download,
-  Moon,
-  Sun,
-  ArrowDown,
-  ChevronDown,
+  Plus,
+  TrendingUp,
+  DollarSign,
+  Receipt,
   Truck,
-  Wrench,
-  Factory,
-  Sofa,
-  Hammer
+  TreePine,
+  Hammer,
+  Building2,
+  Calendar,
+  AlertCircle,
+  CheckCircle,
+  Send,
+  Upload,
+  Download,
+  Globe,
+  MapPin,
+  Percent,
+  Users,
+  Package,
+  Edit,
+  Save,
+  X
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { FurnitureDocumentUpload } from '@/components/furniture/FurnitureDocumentUpload'
 
-interface FurnitureMessage {
+interface Transaction {
   id: string
-  type: 'user' | 'assistant' | 'system'
-  content: string
-  timestamp: Date
-  category?: 'revenue' | 'expense' | 'payment' | 'production' | 'inventory' | 'summary'
-  amount?: number
-  status?: 'success' | 'pending' | 'error'
-  actions?: QuickAction[]
-  journalEntry?: {
-    debits: Array<{ account: string; amount: number }>
-    credits: Array<{ account: string; amount: number }>
-  }
-}
-
-interface QuickAction {
-  icon: React.ElementType
-  label: string
-  action: string
-  variant?: 'default' | 'secondary' | 'outline'
-  data?: any
-}
-
-interface QuickPrompt {
-  icon: React.ElementType
-  label: string
-  prompt: string
-  color: string
+  type: 'income' | 'expense'
   category: string
+  description: string
+  amount: number
+  gstRate?: number
+  gstAmount?: number
+  date: string
+  vendor?: string
+  invoiceNumber?: string
+  isExport?: boolean
 }
 
-// Furniture-specific quick prompts
-const FURNITURE_QUICK_PROMPTS: QuickPrompt[] = [
-  {
-    icon: DollarSign,
-    label: 'Cash Sale',
-    prompt: 'Customer paid cash',
-    color: 'text-green-600',
-    category: 'revenue'
-  },
-  {
-    icon: CreditCard,
-    label: 'Card Sale',
-    prompt: 'Customer paid by card',
-    color: 'text-primary',
-    category: 'revenue'
-  },
-  {
-    icon: Hammer,
-    label: 'Buy Materials',
-    prompt: 'Bought wood/materials',
-    color: 'text-[var(--color-text-primary)]',
-    category: 'expense'
-  },
-  {
-    icon: Factory,
-    label: 'Production Cost',
-    prompt: 'Record production cost',
-    color: 'text-[var(--color-accent-indigo)]',
-    category: 'production'
-  },
-  {
-    icon: Truck,
-    label: 'Delivery',
-    prompt: 'Delivered furniture',
-    color: 'text-indigo-600',
-    category: 'revenue'
-  },
-  {
-    icon: Calculator,
-    label: "Today's Summary",
-    prompt: "Show today's summary",
-    color: 'text-[var(--color-text-primary)]',
-    category: 'summary'
-  }
-] // Furniture-specific quick expenses
-const FURNITURE_QUICK_EXPENSES = [
-  { icon: Package, label: 'Wood/Timber', amount: 5000, category: 'materials' },
-  { icon: Wrench, label: 'Hardware', amount: 1000, category: 'materials' },
-  { icon: Factory, label: 'Labor', amount: 2000, category: 'production' },
-  { icon: Truck, label: 'Transport', amount: 1500, category: 'delivery' },
-  { icon: Receipt, label: 'Utilities', amount: 800, category: 'overhead' },
-  { icon: Sofa, label: 'Fabric/Cushion', amount: 2500, category: 'materials' }
-]
+interface QuickExpense {
+  category: string
+  icon: React.ElementType
+  placeholder: string
+  gstRate: number
+  color: string
+}
 
-export default function FurnitureDigitalAccountantPage() {
-  const router = useRouter()
+interface JournalEntry {
+  id: string
+  date: string
+  description: string
+  reference: string
+  entries: {
+    account: string
+    debit: number
+    credit: number
+  }[]
+  totalDebit: number
+  totalCredit: number
+}
 
-  const { isAuthenticated, contextLoading } = useHERAAuth()
+export default function DigitalAccountant() {
+  const [voiceInput, setVoiceInput] = useState('')
+  const [isListening, setIsListening] = useState(false)
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [selectedQuickExpense, setSelectedQuickExpense] = useState<string | null>(null)
+  const [amount, setAmount] = useState('')
+  const [description, setDescription] = useState('')
+  const [processedJournalEntry, setProcessedJournalEntry] = useState<JournalEntry | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
 
-  const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
+  // Kerala furniture business specific expense categories
+  const quickExpenseCategories: QuickExpense[] = [
+    {
+      category: 'Raw Materials',
+      icon: TreePine,
+      placeholder: 'Teak wood from Thrissur - 500kg',
+      gstRate: 5,
+      color: 'from-green-500 to-emerald-500'
+    },
+    {
+      category: 'Craftsman Wages',
+      icon: Hammer,
+      placeholder: 'Traditional carpenter - weekly payment',
+      gstRate: 0,
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      category: 'Export Expenses',
+      icon: Globe,
+      placeholder: 'Shipping to Dubai - container freight',
+      gstRate: 18,
+      color: 'from-purple-500 to-indigo-500'
+    },
+    {
+      category: 'Factory Rent',
+      icon: Building2,
+      placeholder: 'Workshop rent - Kozhikode unit',
+      gstRate: 18,
+      color: 'from-amber-500 to-orange-500'
+    },
+    {
+      category: 'Sales Revenue',
+      icon: DollarSign,
+      placeholder: 'Hotel order - ITC Grand Chola',
+      gstRate: 12,
+      color: 'from-rose-500 to-pink-500'
+    },
+    {
+      category: 'Transportation',
+      icon: Truck,
+      placeholder: 'Delivery to Kochi port',
+      gstRate: 5,
+      color: 'from-teal-500 to-cyan-500'
+    }
+  ]
 
-  const [messages, setMessages] = useState<FurnitureMessage[]>([
+  // Sample transactions for Kerala furniture business
+  const sampleTransactions: Transaction[] = [
     {
       id: '1',
-      type: 'assistant',
-      content: `Hi! I'm your furniture business accounting assistant. I'll help you record all your transactions without any accounting knowledge needed! Just tell me in simple words:
-•"Sold dining table to Marriott for 55,000" •"Bought teak wood for 35,000"
-•"Paid workers 8,000 for assembly"
-•"Delivered furniture to ITC Hotels"
-•"Show today's total" I'll handle all the technical accounting for you! 🪑`,
-      timestamp: new Date(),
-      status: 'success'
+      type: 'expense',
+      category: 'Raw Materials',
+      description: 'Premium teak wood purchase - Nilambur forest',
+      amount: 125000,
+      gstRate: 5,
+      gstAmount: 6250,
+      date: '2024-01-15',
+      vendor: 'Kerala Forest Development Corporation',
+      invoiceNumber: 'KFDC/2024/001'
+    },
+    {
+      id: '2',
+      type: 'income',
+      category: 'Sales Revenue',
+      description: 'Executive dining set - Marriott Kochi',
+      amount: 850000,
+      gstRate: 12,
+      gstAmount: 102000,
+      date: '2024-01-14',
+      vendor: 'Marriott International',
+      invoiceNumber: 'KFW/2024/0015',
+      isExport: false
+    },
+    {
+      id: '3',
+      type: 'expense',
+      category: 'Export Expenses',
+      description: 'Container shipping to Middle East',
+      amount: 45000,
+      gstRate: 0,
+      gstAmount: 0,
+      date: '2024-01-13',
+      vendor: 'Cochin Port Authority',
+      invoiceNumber: 'CPA/EXP/2024/089',
+      isExport: true
+    },
+    {
+      id: '4',
+      type: 'expense',
+      category: 'Craftsman Wages',
+      description: 'Traditional wood carver - monthly payment',
+      amount: 35000,
+      gstRate: 0,
+      gstAmount: 0,
+      date: '2024-01-12',
+      vendor: 'Raman Master - Craftsman'
     }
-  ])
+  ]
 
-  const [input, setInput] = useState('')
-
-  const [loading, setLoading] = useState(false)
-
-  const [showExamples, setShowExamples] = useState(true)
-
-  const [activeView, setActiveView] = useState<'chat' | 'expense' | 'history' | 'insights'>('chat')
-
-  const [isDarkMode, setIsDarkMode] = useState(true)
-
-  const [showScrollButton, setShowScrollButton] = useState(false)
-
-  const [useMCP, setUseMCP] = useState(true)
-
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
-
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  // Auto-scroll to bottom with smooth animation
   useEffect(() => {
-    const scrollToBottom = () => {
-      if (scrollAreaRef.current) {
-        const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
-        if (viewport) {
-          viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
+    setTransactions(sampleTransactions)
+  }, [])
+
+  const handleVoiceInput = () => {
+    setIsListening(!isListening)
+    if (!isListening) {
+      // Simulate voice recognition for demo
+      setTimeout(() => {
+        setVoiceInput("Add expense of 25000 rupees for rosewood purchase from Wayanad supplier with 5% GST")
+        setIsListening(false)
+      }, 2000)
+    }
+  }
+
+  const processVoiceInput = () => {
+    if (!voiceInput.trim()) return
+
+    setIsProcessing(true)
+    
+    // Simulate AI processing delay
+    setTimeout(() => {
+      // Generate journal entry based on voice input
+      const journalEntry = generateJournalEntry(voiceInput)
+      setProcessedJournalEntry(journalEntry)
+      
+      // Parse voice input and create transaction
+      if (voiceInput.toLowerCase().includes('expense') && voiceInput.includes('25000')) {
+        const newTransaction: Transaction = {
+          id: Date.now().toString(),
+          type: 'expense',
+          category: 'Raw Materials',
+          description: 'Rosewood purchase from Wayanad supplier',
+          amount: 25000,
+          gstRate: 5,
+          gstAmount: 1250,
+          date: new Date().toISOString().split('T')[0],
+          vendor: 'Wayanad Wood Suppliers'
         }
+        setTransactions(prev => [newTransaction, ...prev])
+      }
+      
+      setVoiceInput('')
+      setIsProcessing(false)
+    }, 2000)
+  }
+
+  const generateJournalEntry = (input: string): JournalEntry => {
+    // AI simulation - analyze voice input and generate appropriate journal entry
+    const amount = 50000 // Extract from voice input
+    const gstAmount = amount * 0.05 // 5% GST
+    
+    if (input.toLowerCase().includes('expense') || input.toLowerCase().includes('teak')) {
+      return {
+        id: `JE-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
+        description: 'Teak wood purchase with GST',
+        reference: `INV-${Date.now().toString().slice(-6)}`,
+        entries: [
+          { account: 'Raw Materials Inventory', debit: amount, credit: 0 },
+          { account: 'GST Input Tax Credit', debit: gstAmount, credit: 0 },
+          { account: 'Accounts Payable - Suppliers', debit: 0, credit: amount + gstAmount }
+        ],
+        totalDebit: amount + gstAmount,
+        totalCredit: amount + gstAmount
+      }
+    } else if (input.toLowerCase().includes('income') || input.toLowerCase().includes('sale')) {
+      return {
+        id: `JE-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
+        description: 'Furniture sales with GST',
+        reference: `INV-${Date.now().toString().slice(-6)}`,
+        entries: [
+          { account: 'Accounts Receivable - Customers', debit: amount + gstAmount, credit: 0 },
+          { account: 'Sales Revenue', debit: 0, credit: amount },
+          { account: 'GST Output Tax Payable', debit: 0, credit: gstAmount }
+        ],
+        totalDebit: amount + gstAmount,
+        totalCredit: amount + gstAmount
       }
     }
+    
+    // Default expense entry
+    return {
+      id: `JE-${Date.now()}`,
+      date: new Date().toISOString().split('T')[0],
+      description: 'General expense entry',
+      reference: `INV-${Date.now().toString().slice(-6)}`,
+      entries: [
+        { account: 'General Expenses', debit: amount, credit: 0 },
+        { account: 'Cash/Bank Account', debit: 0, credit: amount }
+      ],
+      totalDebit: amount,
+      totalCredit: amount
+    }
+  }
 
-    const timer = setTimeout(() => {
-      requestAnimationFrame(scrollToBottom)
-    }, 50)
+  const handleQuickExpense = (category: QuickExpense) => {
+    if (!amount || !description) return
 
-    return () => clearTimeout(timer)
-  }, [messages])
-
-  const processFurnitureTransaction = async (text: string) => {
-    setLoading(true)
-
-    const userMessage: FurnitureMessage = {
+    const newTransaction: Transaction = {
       id: Date.now().toString(),
-      type: 'user',
-      content: text,
-      timestamp: new Date()
+      type: category.category === 'Sales Revenue' ? 'income' : 'expense',
+      category: category.category,
+      description: description,
+      amount: parseFloat(amount),
+      gstRate: category.gstRate,
+      gstAmount: (parseFloat(amount) * category.gstRate) / 100,
+      date: new Date().toISOString().split('T')[0],
+      vendor: description.split('-')[0]?.trim()
     }
-    setMessages(prev => [...prev, userMessage])
 
-    try {
-      // Call the furniture digital accountant API
-      const response = await fetch('/api/v1/furniture/digital-accountant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: text,
-          organizationId: organizationId,
-          useMCP: useMCP
-        })
-      })
+    setTransactions(prev => [newTransaction, ...prev])
+    setAmount('')
+    setDescription('')
+    setSelectedQuickExpense(null)
+  }
 
-      if (!response.ok) {
-        throw new Error('Failed to process transaction')
+  const getTotalsByCategory = () => {
+    const totals = transactions.reduce((acc, transaction) => {
+      if (!acc[transaction.category]) {
+        acc[transaction.category] = { income: 0, expense: 0, gst: 0 }
       }
-
-      const data = await response.json()
-
-      const assistantMessage: FurnitureMessage = {
-        id: Date.now().toString(),
-        type: 'assistant',
-        content: data.message,
-        timestamp: new Date(),
-        category: data.category,
-        amount: data.amount,
-        status: data.status || 'success',
-        journalEntry: data.journalEntry,
-        actions: data.actions
+      if (transaction.type === 'income') {
+        acc[transaction.category].income += transaction.amount
+      } else {
+        acc[transaction.category].expense += transaction.amount
       }
-      setMessages(prev => [...prev, assistantMessage])
-    } catch (error) {
-      const errorMessage: FurnitureMessage = {
-        id: Date.now().toString(),
-        type: 'assistant',
-        content: 'Sorry, I had trouble processing that. Please try again.',
-        timestamp: new Date(),
-        status: 'error'
-      }
-      setMessages(prev => [...prev, errorMessage])
-    } finally {
-      setLoading(false)
-      setInput('')
-      inputRef.current?.focus()
-    }
+      acc[transaction.category].gst += transaction.gstAmount || 0
+      return acc
+    }, {} as Record<string, { income: number, expense: number, gst: number }>)
+
+    return totals
   }
 
-  const handleQuickPrompt = (prompt: string) => {
-    setInput(prompt)
-    inputRef.current?.focus()
+  const getGSTSummary = () => {
+    const gstCollected = transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + (t.gstAmount || 0), 0)
+    
+    const gstPaid = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + (t.gstAmount || 0), 0)
+
+    return { gstCollected, gstPaid, netGst: gstCollected - gstPaid }
   }
 
-  const handleQuickExpense = async (expense: any) => {
-    const prompt = `Paid ${expense.amount} for ${expense.label}`
-    await processFurnitureTransaction(prompt)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim() || loading) return
-    await processFurnitureTransaction(input.trim())
-  }
-
-  const handleDocumentAnalyzed = (result: any) => {
-    // Auto-populate input with suggested message
-    if (result.suggestedMessage) {
-      setInput(result.suggestedMessage)
-      inputRef.current?.focus()
-
-      // Add system message about document analysis
-      const systemMessage: FurnitureMessage = {
-        id: Date.now().toString(),
-        type: 'system',
-        content: `📄 Document analyzed! I've extracted the following information:
-• Vendor: ${result.analysis.vendor_name}
-• Amount: ₹${result.analysis.total_amount?.toLocaleString('en-IN')}
-• Date: ${result.analysis.date}
-${result.analysis.items?.length > 0 ? `• Items: ${result.analysis.items.map((i: any) => i.description).join(', ')}` : ''}
-
-I've prepared a transaction entry for you. Just click send or modify as needed!`,
-        timestamp: new Date(),
-        status: 'success'
-      }
-      setMessages(prev => [...prev, systemMessage])
-    }
-  }
-
-  // Show loading state
-  if (orgLoading) {
-    return <FurnitureOrgLoading />
-  }
-
-  // Authorization checks
-  if (isAuthenticated && contextLoading) {
-    return (
-      <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-[var(--color-text-secondary)]">Loading digital accountant...</p>
-        </div>
-      </div>
-    )
-  }
+  const categoryTotals = getTotalsByCategory()
+  const gstSummary = getGSTSummary()
 
   return (
-    <div
-      className={cn(
-        'min-h-screen',
-        isDarkMode ? 'bg-[var(--color-body)]' : 'bg-[var(--color-body)]'
-      )}
-    >
-      {' '}
-      <div className="p-6 space-y-6">
-        {' '}
-        {/* Header */}{' '}
-        <FurniturePageHeader
-          title="Digital Accountant"
-          subtitle="AI-powered accounting assistant for your furniture business"
-          actions={
-            <>
-              {' '}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setUseMCP(!useMCP)}
-                className={cn('gap-2', useMCP ? 'bg-green-500/10 hover:bg-green-500/20' : '')}
-              >
-                {' '}
-                <Zap className={cn('h-4 w-4', useMCP && 'text-green-500')} />{' '}
-                {useMCP ? 'MCP Mode' : 'API Mode'}{' '}
-              </Button>{' '}
-              <Button variant="outline" size="sm" onClick={() => setIsDarkMode(!isDarkMode)}>
-                {' '}
-                {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}{' '}
-              </Button>{' '}
-            </>
-          }
-        />{' '}
-        {/* Main Content */}{' '}
-        <div className="bg-[var(--color-body)] grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {' '}
-          {/* Chat Area */}{' '}
-          <div className="lg:col-span-3">
-            {' '}
-            <Card
-              className={cn(
-                'h-[600px] flex flex-col',
-                isDarkMode
-                  ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
-                  : 'bg-[var(--color-body)]'
-              )}
-            >
-              {' '}
-              {/* Chat Messages */}{' '}
-              <ScrollArea ref={scrollAreaRef} className="bg-[var(--color-body)] flex-1 p-4">
-                {' '}
-                <div className="space-y-4">
-                  {' '}
-                  {messages.map(message => (
-                    <div
-                      key={message.id}
-                      className={cn(
-                        'flex gap-3',
-                        message.type === 'user' ? 'justify-end' : 'justify-start'
-                      )}
-                    >
-                      {' '}
-                      {message.type === 'assistant' && (
-                        <div
-                          className={cn(
-                            'w-8 h-8 rounded-full flex items-center justify-center',
-                            isDarkMode ? 'bg-[var(--color-body)]/20' : 'bg-[var(--color-body)]/20'
-                          )}
-                        >
-                          {' '}
-                          <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />{' '}
-                        </div>
-                      )}{' '}
-                      <div
-                        className={cn(
-                          'max-w-[80%] rounded-lg p-3',
-                          message.type === 'user'
-                            ? isDarkMode
-                              ? 'bg-[var(--color-body)] text-[var(--color-text-primary)]'
-                              : 'bg-[var(--color-body)] text-[var(--color-text-primary)]'
-                            : message.type === 'system'
-                              ? isDarkMode
-                                ? 'bg-yellow-600/20 border border-yellow-600/40'
-                                : 'bg-yellow-100 border border-yellow-400'
-                              : isDarkMode
-                                ? 'bg-muted-foreground/10'
-                                : 'bg-[var(--color-body)]'
-                        )}
-                      >
-                        {' '}
-                        <p
-                          className={cn(
-                            'whitespace-pre-wrap',
-                            message.type === 'system' && 'text-yellow-200'
-                          )}
-                        >
-                          {' '}
-                          {message.content}{' '}
-                        </p>{' '}
-                        {message.amount && (
-                          <div className="mt-2 pt-2 border-t border-[var(--color-border)]">
-                            {' '}
-                            <p className="text-2xl font-bold">
-                              {' '}
-                              ₹{message.amount.toLocaleString('en-IN')}{' '}
-                            </p>{' '}
-                          </div>
-                        )}{' '}
-                        {message.journalEntry && (
-                          <div className="mt-3 p-2 bg-background/20 rounded text-xs font-mono">
-                            {' '}
-                            <p className="text-[var(--color-text-secondary)] mb-1">
-                              Journal Entry:
-                            </p>{' '}
-                            {message.journalEntry.debits.map((debit, i) => (
-                              <p key={i} className="bg-[var(--color-body)] text-green-400">
-                                {' '}
-                                DR: {debit.account} - ₹{debit.amount.toLocaleString('en-IN')}{' '}
-                              </p>
-                            ))}{' '}
-                            {message.journalEntry.credits.map((credit, i) => (
-                              <p key={i} className="bg-[var(--color-body)] text-red-400">
-                                {' '}
-                                CR: {credit.account} - ₹{credit.amount.toLocaleString('en-IN')}{' '}
-                              </p>
-                            ))}{' '}
-                          </div>
-                        )}{' '}
-                        {message.actions && message.actions.length > 0 && (
-                          <div className="mt-3 flex gap-2 flex-wrap">
-                            {' '}
-                            {message.actions.map((action, i) => (
-                              <Button
-                                key={i}
-                                size="sm"
-                                variant={action.variant || 'secondary'}
-                                className="gap-1"
-                              >
-                                {' '}
-                                <action.icon className="bg-[var(--color-body)] h-3 w-3" />{' '}
-                                {action.label}{' '}
-                              </Button>
-                            ))}{' '}
-                          </div>
-                        )}{' '}
-                      </div>{' '}
-                      {message.type === 'user' && (
-                        <div
-                          className={cn(
-                            'w-8 h-8 rounded-full flex items-center justify-center',
-                            isDarkMode ? 'bg-muted-foreground/10' : 'bg-gray-700'
-                          )}
-                        >
-                          {' '}
-                          <Users className="h-4 w-4" />{' '}
-                        </div>
-                      )}{' '}
-                    </div>
-                  ))}{' '}
-                  {loading && (
-                    <div className="flex gap-3 justify-start">
-                      {' '}
-                      <div
-                        className={cn(
-                          'w-8 h-8 rounded-full flex items-center justify-center',
-                          isDarkMode ? 'bg-[var(--color-body)]/20' : 'bg-[var(--color-body)]/20'
-                        )}
-                      >
-                        {' '}
-                        <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />{' '}
-                      </div>{' '}
-                      <div
-                        className={cn(
-                          'rounded-lg p-3',
-                          isDarkMode ? 'bg-muted-foreground/10' : 'bg-[var(--color-body)]'
-                        )}
-                      >
-                        {' '}
-                        <div className="flex items-center gap-2">
-                          {' '}
-                          <Loader2 className="h-4 w-4 animate-spin" />{' '}
-                          <span className="text-sm">Processing...</span>{' '}
-                        </div>{' '}
-                      </div>{' '}
-                    </div>
-                  )}{' '}
-                </div>{' '}
-              </ScrollArea>{' '}
-              {/* Quick Actions */}{' '}
-              {showExamples && (
-                <div className="p-3 border-t border-[var(--color-border)]">
-                  {' '}
-                  <div className="flex gap-2 flex-wrap">
-                    {' '}
-                    {FURNITURE_QUICK_PROMPTS.map((prompt, i) => (
-                      <Button
-                        key={i}
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleQuickPrompt(prompt.prompt)}
-                        className={cn(
-                          'gap-2',
-                          isDarkMode
-                            ? 'hover:bg-[var(--color-sidebar)]/30'
-                            : 'hover:bg-[var(--color-body)]'
-                        )}
-                      >
-                        {' '}
-                        <prompt.icon className={cn('h-4 w-4', prompt.color)} /> {prompt.label}{' '}
-                      </Button>
-                    ))}{' '}
-                  </div>{' '}
+    <div className="min-h-screen">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="jewelry-glass-card p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="jewelry-crown-glow p-3 rounded-xl">
+                  <Calculator className="h-8 w-8 jewelry-text-gold" />
                 </div>
-              )}{' '}
-              {/* Input Area */}{' '}
-              <form
-                onSubmit={handleSubmit}
-                className="bg-[var(--color-body)] p-4 border-t border-[var(--color-border)]"
-              >
-                {' '}
-                <div className="flex gap-2">
-                  {' '}
-                  <Input
-                    ref={inputRef}
-                    placeholder="Tell me about your transaction..."
-                    value={input}
-                    onChange={e => setInput(e.target.value)}
-                    disabled={loading}
-                    className={cn(
-                      'flex-1',
-                      isDarkMode
-                        ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
-                        : 'bg-[var(--color-body)] border-[var(--color-border)]'
-                    )}
-                  />{' '}
-                  <Button type="submit" disabled={loading || !input.trim()}>
-                    {' '}
-                    {loading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Send className="h-4 w-4" />
-                    )}{' '}
-                  </Button>{' '}
-                </div>{' '}
-              </form>{' '}
-            </Card>{' '}
-          </div>{' '}
-          {/* Side Panel */}{' '}
-          <div className="space-y-4">
-            {' '}
-            {/* Quick Expenses */}{' '}
-            <Card
-              className={cn(
-                isDarkMode
-                  ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
-                  : 'bg-[var(--color-body)]'
-              )}
-            >
-              {' '}
-              <CardHeader className="pb-3">
-                {' '}
-                <CardTitle className="text-sm font-medium">Quick Expenses</CardTitle>{' '}
-              </CardHeader>{' '}
-              <CardContent>
-                {' '}
-                <div className="grid grid-cols-2 gap-2">
-                  {' '}
-                  {FURNITURE_QUICK_EXPENSES.map((expense, i) => (
+                <div>
+                  <h1 className="text-3xl font-bold jewelry-text-luxury">Digital Accountant</h1>
+                  <p className="text-lg text-gray-300">Kerala Furniture Business Accounting & GST Compliance</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  GST Compliant
+                </Badge>
+                <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  Kerala Rates
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+          {/* GST Dashboard */}
+          <div className="jewelry-glass-card p-6">
+            <h2 className="text-xl font-semibold jewelry-text-luxury mb-4 flex items-center gap-2">
+              <Percent className="h-5 w-5 jewelry-text-gold" />
+              GST Summary (Current Month)
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-500">₹{gstSummary.gstCollected.toLocaleString()}</div>
+                <div className="text-sm text-gray-300">GST Collected (Output)</div>
+                <div className="text-xs text-gray-300 mt-1">From sales & services</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-500">₹{gstSummary.gstPaid.toLocaleString()}</div>
+                <div className="text-sm text-gray-300">GST Paid (Input)</div>
+                <div className="text-xs text-gray-300 mt-1">On purchases & expenses</div>
+              </div>
+              <div className="text-center">
+                <div className={`text-2xl font-bold ${gstSummary.netGst >= 0 ? 'text-amber-500' : 'text-green-500'}`}>
+                  ₹{Math.abs(gstSummary.netGst).toLocaleString()}
+                </div>
+                <div className="text-sm text-gray-300">
+                  {gstSummary.netGst >= 0 ? 'GST Payable' : 'GST Refund Due'}
+                </div>
+                <div className="text-xs text-gray-300 mt-1">Net position</div>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-center">
+              <Button className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold">
+                <Download className="h-4 w-4" />
+                Generate GST Return
+              </Button>
+            </div>
+          </div>
+
+          <Tabs defaultValue="voice" className="space-y-4">
+            <TabsList className="jewelry-glass-panel">
+              <TabsTrigger value="voice" className="jewelry-glass-btn jewelry-text-luxury">Voice Entry</TabsTrigger>
+              <TabsTrigger value="quick" className="jewelry-glass-btn jewelry-text-luxury">Quick Entry</TabsTrigger>
+              <TabsTrigger value="transactions" className="jewelry-glass-btn jewelry-text-luxury">Transactions</TabsTrigger>
+              <TabsTrigger value="reports" className="jewelry-glass-btn jewelry-text-luxury">Reports</TabsTrigger>
+            </TabsList>
+
+            {/* Voice Entry Tab */}
+            <TabsContent value="voice" className="space-y-6">
+              <div className="jewelry-glass-card p-6">
+                <h3 className="text-lg font-semibold jewelry-text-luxury mb-4 flex items-center gap-2">
+                  <Mic className="h-5 w-5 jewelry-text-gold" />
+                  Voice Transaction Entry
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
                     <Button
-                      key={i}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleQuickExpense(expense)}
-                      className={cn(
-                        'h-auto flex-col py-3 gap-1',
-                        isDarkMode
-                          ? 'hover:bg-[var(--color-sidebar)]/30'
-                          : 'hover:bg-[var(--color-body)]'
-                      )}
+                      onClick={handleVoiceInput}
+                      className={`jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold ${isListening ? 'bg-red-500/20 border-red-500' : ''}`}
                     >
-                      {' '}
-                      <expense.icon className="bg-[var(--color-body)] h-4 w-4 text-orange-500" />{' '}
-                      <span className="text-xs">{expense.label}</span>{' '}
-                      <span className="text-xs font-bold">₹{expense.amount}</span>{' '}
+                      <Mic className={`h-4 w-4 ${isListening ? 'text-red-500' : ''}`} />
+                      {isListening ? 'Listening...' : 'Start Recording'}
                     </Button>
-                  ))}{' '}
-                </div>{' '}
-              </CardContent>{' '}
-            </Card>{' '}
-            {/* Today's Summary */}{' '}
-            <Card
-              className={cn(
-                isDarkMode
-                  ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
-                  : 'bg-[var(--color-body)]'
+                    <span className="text-sm text-gray-300">
+                      Say: "Add expense of 50000 rupees for teak wood with 5% GST from Thrissur supplier"
+                    </span>
+                  </div>
+
+                  {voiceInput && (
+                    <div className="space-y-3">
+                      <Textarea
+                        value={voiceInput}
+                        onChange={(e) => setVoiceInput(e.target.value)}
+                        placeholder="Voice input will appear here..."
+                        className="jewelry-glass-input"
+                        rows={3}
+                      />
+                      <Button 
+                        onClick={processVoiceInput} 
+                        className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold"
+                        disabled={isProcessing}
+                      >
+                        {isProcessing ? (
+                          <>
+                            <div className="jewelry-spinner w-4 h-4" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4" />
+                            Process Transaction
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Journal Entry Processing Area */}
+                {processedJournalEntry && (
+                  <div className="mt-6 jewelry-glass-card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-semibold jewelry-text-luxury flex items-center gap-2">
+                        <FileText className="h-5 w-5 jewelry-text-gold" />
+                        Generated Journal Entry
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <Badge className="jewelry-status-luxury">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Balanced
+                        </Badge>
+                        <Button 
+                          size="sm" 
+                          className="jewelry-glass-btn gap-1 jewelry-text-luxury hover:jewelry-text-gold"
+                          onClick={() => setProcessedJournalEntry(null)}
+                        >
+                          <X className="h-3 w-3" />
+                          Clear
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {/* Journal Entry Header */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-white/5 rounded-lg">
+                        <div>
+                          <span className="text-sm font-medium jewelry-text-luxury">Entry ID:</span>
+                          <p className="text-sm text-gray-300">{processedJournalEntry.id}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm font-medium jewelry-text-luxury">Date:</span>
+                          <p className="text-sm text-gray-300">{processedJournalEntry.date}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm font-medium jewelry-text-luxury">Reference:</span>
+                          <p className="text-sm text-gray-300">{processedJournalEntry.reference}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-sm font-medium jewelry-text-luxury">Description:</span>
+                        <p className="text-sm text-gray-300 mt-1">{processedJournalEntry.description}</p>
+                      </div>
+
+                      {/* Journal Entry Table */}
+                      <div className="overflow-hidden rounded-lg border border-white/10">
+                        <table className="w-full">
+                          <thead className="bg-jewelry-royal">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-sm font-semibold jewelry-text-gold">Account</th>
+                              <th className="px-4 py-3 text-right text-sm font-semibold jewelry-text-gold">Debit (₹)</th>
+                              <th className="px-4 py-3 text-right text-sm font-semibold jewelry-text-gold">Credit (₹)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white/5">
+                            {processedJournalEntry.entries.map((entry, index) => (
+                              <tr key={index} className="border-t border-white/10">
+                                <td className="px-4 py-3 text-sm jewelry-text-luxury">{entry.account}</td>
+                                <td className="px-4 py-3 text-right text-sm">
+                                  {entry.debit > 0 ? (
+                                    <span className="font-medium jewelry-text-luxury">
+                                      {entry.debit.toLocaleString()}
+                                    </span>
+                                  ) : (
+                                    <span className="text-gray-400">-</span>
+                                  )}
+                                </td>
+                                <td className="px-4 py-3 text-right text-sm">
+                                  {entry.credit > 0 ? (
+                                    <span className="font-medium jewelry-text-luxury">
+                                      {entry.credit.toLocaleString()}
+                                    </span>
+                                  ) : (
+                                    <span className="text-gray-400">-</span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <tfoot className="bg-jewelry-blue-100 border-t-2 border-jewelry-gold-500">
+                            <tr>
+                              <td className="px-4 py-3 text-sm font-semibold jewelry-text-luxury">TOTALS</td>
+                              <td className="px-4 py-3 text-right text-sm font-bold jewelry-text-gold">
+                                ₹{processedJournalEntry.totalDebit.toLocaleString()}
+                              </td>
+                              <td className="px-4 py-3 text-right text-sm font-bold jewelry-text-gold">
+                                ₹{processedJournalEntry.totalCredit.toLocaleString()}
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex justify-end gap-3 pt-4">
+                        <Button variant="outline" className="jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold">
+                          <Edit className="h-4 w-4 mr-2" />
+                          Modify
+                        </Button>
+                        <Button className="jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold">
+                          <Save className="h-4 w-4 mr-2" />
+                          Post Entry
+                        </Button>
+                        <Button variant="outline" className="jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold">
+                          <Download className="h-4 w-4 mr-2" />
+                          Export
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium jewelry-text-luxury">Voice Command Examples:</h4>
+                    <div className="text-sm text-gray-300 space-y-1">
+                      <p>• "Add income 200000 rupees from Marriott hotel order"</p>
+                      <p>• "Record expense 75000 for rosewood with 5% GST"</p>
+                      <p>• "Export sale 500000 to Dubai customer zero GST"</p>
+                      <p>• "Craftsman payment 25000 no GST"</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-medium jewelry-text-luxury">Smart Features:</h4>
+                    <div className="text-sm text-gray-300 space-y-1">
+                      <p>• Automatic GST rate detection by category</p>
+                      <p>• Kerala business context understanding</p>
+                      <p>• Export vs domestic classification</p>
+                      <p>• Traditional vs modern terminology</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Quick Entry Tab */}
+            <TabsContent value="quick" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                {quickExpenseCategories.map((category, index) => (
+                  <div
+                    key={index}
+                    onClick={() => setSelectedQuickExpense(category.category)}
+                    className={`jewelry-glass-card p-4 cursor-pointer jewelry-scale-hover ${
+                      selectedQuickExpense === category.category ? 'ring-2 ring-jewelry-gold-500' : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center`}>
+                        <category.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium jewelry-text-luxury">{category.category}</h3>
+                        <p className="text-sm text-gray-300">GST: {category.gstRate}%</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {selectedQuickExpense && (
+                <div className="jewelry-glass-card p-6">
+                  <h3 className="text-lg font-semibold jewelry-text-luxury mb-4">
+                    Add {selectedQuickExpense}
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium jewelry-text-luxury mb-2">Amount (₹)</label>
+                        <Input
+                          type="number"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                          placeholder="50000"
+                          className="jewelry-glass-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium jewelry-text-luxury mb-2">Description</label>
+                        <Input
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          placeholder={quickExpenseCategories.find(c => c.category === selectedQuickExpense)?.placeholder}
+                          className="jewelry-glass-input"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => handleQuickExpense(quickExpenseCategories.find(c => c.category === selectedQuickExpense)!)}
+                        className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold"
+                        disabled={!amount || !description}
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Transaction
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => setSelectedQuickExpense(null)}
+                        className="jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               )}
-            >
-              {' '}
-              <CardHeader className="pb-3">
-                {' '}
-                <CardTitle className="text-sm font-medium">Today's Summary</CardTitle>{' '}
-              </CardHeader>{' '}
-              <CardContent>
-                {' '}
+            </TabsContent>
+
+            {/* Transactions Tab */}
+            <TabsContent value="transactions" className="space-y-6">
+              <div className="jewelry-glass-card p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold jewelry-text-luxury">Recent Transactions</h3>
+                  <Button className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold">
+                    <Upload className="h-4 w-4" />
+                    Import Excel
+                  </Button>
+                </div>
+                
                 <div className="space-y-3">
-                  {' '}
-                  <div className="flex justify-between items-center">
-                    {' '}
-                    <span className="text-sm text-[var(--color-text-secondary)]">Revenue</span>{' '}
-                    <span className="text-sm font-bold text-green-500">₹1,25,000</span>{' '}
-                  </div>{' '}
-                  <div className="flex justify-between items-center">
-                    {' '}
-                    <span className="text-sm text-[var(--color-text-secondary)]">
-                      Expenses
-                    </span>{' '}
-                    <span className="text-sm font-bold text-red-500">₹48,500</span>{' '}
-                  </div>{' '}
-                  <div className="pt-2 border-t border-[var(--color-border)]">
-                    {' '}
-                    <div className="bg-[var(--color-body)] flex justify-between items-center">
-                      {' '}
-                      <span className="text-sm font-medium">Net Profit</span>{' '}
-                      <span className="text-lg font-bold text-[var(--color-text-primary)]">
-                        ₹76,500
-                      </span>{' '}
-                    </div>{' '}
-                  </div>{' '}
-                </div>{' '}
-              </CardContent>{' '}
-            </Card>{' '}
-            {/* Document Upload */}{' '}
-            <FurnitureDocumentUpload
-              organizationId={organizationId || ''}
-              onDocumentAnalyzed={handleDocumentAnalyzed}
-              isDarkMode={isDarkMode}
-            />{' '}
-            {/* Help Tips */}{' '}
-            <Card
-              className={cn(
-                isDarkMode
-                  ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
-                  : 'bg-[var(--color-body)]'
-              )}
-            >
-              {' '}
-              <CardHeader className="pb-3">
-                {' '}
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  {' '}
-                  <HelpCircle className="h-4 w-4" /> Tips{' '}
-                </CardTitle>{' '}
-              </CardHeader>{' '}
-              <CardContent>
-                {' '}
-                <div className="bg-[var(--color-body)] space-y-2 text-xs text-[var(--color-text-secondary)]">
-                  {' '}
-                  <p>• Just describe transactions naturally</p>{' '}
-                  <p>• Include amounts and customer names</p> <p>• Ask for summaries anytime</p>{' '}
-                  <p>• Upload invoices for AI analysis</p>{' '}
-                  <p>• All entries are auto-journalized</p>{' '}
-                </div>{' '}
-              </CardContent>{' '}
-            </Card>{' '}
-          </div>{' '}
-        </div>{' '}
-      </div>{' '}
+                  {transactions.map((transaction) => (
+                    <div key={transaction.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${
+                          transaction.type === 'income' ? 'bg-green-500' : 'bg-red-500'
+                        }`} />
+                        <div>
+                          <div className="font-medium jewelry-text-luxury">{transaction.description}</div>
+                          <div className="text-sm text-gray-300 flex items-center gap-2">
+                            <span>{transaction.category}</span>
+                            {transaction.isExport && (
+                              <Badge className="text-xs bg-blue-500/10 text-blue-600">Export</Badge>
+                            )}
+                            <span>•</span>
+                            <span>{transaction.date}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`font-semibold ${
+                          transaction.type === 'income' ? 'text-green-500' : 'jewelry-text-luxury'
+                        }`}>
+                          {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toLocaleString()}
+                        </div>
+                        {transaction.gstAmount && transaction.gstAmount > 0 && (
+                          <div className="text-sm text-gray-300">
+                            GST: ₹{transaction.gstAmount.toLocaleString()} ({transaction.gstRate}%)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Reports Tab */}
+            <TabsContent value="reports" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Category Summary */}
+                <div className="jewelry-glass-card p-6">
+                  <h3 className="text-lg font-semibold jewelry-text-luxury mb-4">Category Summary</h3>
+                  <div className="space-y-3">
+                    {Object.entries(categoryTotals).map(([category, totals]) => (
+                      <div key={category} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <div>
+                          <div className="font-medium jewelry-text-luxury">{category}</div>
+                          <div className="text-sm text-gray-300">
+                            GST: ₹{totals.gst.toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          {totals.income > 0 && (
+                            <div className="text-green-500">+₹{totals.income.toLocaleString()}</div>
+                          )}
+                          {totals.expense > 0 && (
+                            <div className="jewelry-text-luxury">-₹{totals.expense.toLocaleString()}</div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Kerala Business Insights */}
+                <div className="jewelry-glass-card p-6">
+                  <h3 className="text-lg font-semibold jewelry-text-luxury mb-4">Kerala Business Insights</h3>
+                  <div className="space-y-4">
+                    <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                      <div className="flex items-center gap-2 text-green-600 font-medium">
+                        <CheckCircle className="h-4 w-4" />
+                        Export Advantage
+                      </div>
+                      <p className="text-sm text-gray-300 mt-1">
+                        70% of revenue from export sales (0% GST) improving margins significantly.
+                      </p>
+                    </div>
+                    
+                    <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                      <div className="flex items-center gap-2 text-amber-600 font-medium">
+                        <AlertCircle className="h-4 w-4" />
+                        Material Cost Alert
+                      </div>
+                      <p className="text-sm text-gray-300 mt-1">
+                        Teak prices up 15% this quarter. Consider forward contracts with suppliers.
+                      </p>
+                    </div>
+
+                    <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                      <div className="flex items-center gap-2 text-blue-600 font-medium">
+                        <TrendingUp className="h-4 w-4" />
+                        Seasonal Trend
+                      </div>
+                      <p className="text-sm text-gray-300 mt-1">
+                        Q4 shows 40% revenue increase due to festival and wedding season demand.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
     </div>
   )
 }

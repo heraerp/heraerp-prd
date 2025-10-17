@@ -1,6 +1,6 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
+// Removed force-dynamic for better client-side navigation performance
 
 import React, { useState, useMemo } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'

@@ -1,0 +1,135 @@
+{
+  "name": "@hera/finance-dna-v2.2-production",
+  "version": "2.2.0",
+  "description": "HERA Finance DNA v2.2 - Production Bundle for Michele's Hair Salon",
+  "main": "mcp-server/hera-mcp-salon-magic.js",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "deploy": "./deploy-production.sh",
+    "deploy:staging": "NODE_ENV=staging ./deploy-production.sh",
+    "test:comprehensive": "node mcp-server/test-salon-comprehensive-scenarios.js",
+    "test:integration": "node mcp-server/test-salon-finance-integration.js",
+    "test:simple": "node mcp-server/test-salon-finance-simple.js",
+    "test:michele": "node tools/salon/michele_salon_real_data_test.js",
+    "validate:security": "node scripts/validate-security-features.js",
+    "validate:performance": "node scripts/validate-performance.js",
+    "backup:production": "node scripts/backup-production-data.js",
+    "monitor:health": "node scripts/monitor-system-health.js",
+    "reports:financial": "node scripts/generate-financial-reports.js",
+    "start:production": "NODE_ENV=production node mcp-server/hera-mcp-salon-magic.js",
+    "start:mcp": "node mcp-server/hera-mcp-server-api.js",
+    "health": "curl $HERA_API/health || echo 'Health check endpoint not available'",
+    "version:check": "echo 'HERA Finance DNA v2.2.0 - Production Ready'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.2",
+    "jwt-decode": "^4.0.0",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^17.2.2",
+    "uuid": "^13.0.0",
+    "chalk": "^5.6.0",
+    "cli-table3": "^0.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-fetch": "^3.0.3",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "mcp-server/",
+    "tools/",
+    "guardrails/",
+    "packs/",
+    "db/",
+    "seeds/",
+    "docs/",
+    "deploy-production.sh",
+    "env.production",
+    "PRODUCTION-DEPLOYMENT-BUNDLE-v2.2.md"
+  ],
+  "keywords": [
+    "hera",
+    "finance-dna",
+    "salon",
+    "erp",
+    "sacred-six",
+    "multi-tenant",
+    "production",
+    "michele-salon"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hera-software/finance-dna-v2.2.git"
+  },
+  "author": "HERA Software Inc. <team@heraerp.com>",
+  "license": "MIT",
+  "homepage": "https://heraerp.com/finance-dna",
+  "bugs": {
+    "url": "https://github.com/hera-software/finance-dna-v2.2/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "config": {
+    "deployment_target": "michele_hair_salon",
+    "architecture": "sacred_six",
+    "security_level": "enterprise",
+    "compliance": "full",
+    "testing_coverage": "comprehensive"
+  },
+  "deployment": {
+    "version": "2.2.0",
+    "status": "production_ready",
+    "quality_gates": {
+      "security": "passed",
+      "performance": "passed", 
+      "integration": "passed",
+      "business_scenarios": "18/18",
+      "chart_of_accounts": "37_accounts",
+      "sacred_six_compliance": "validated"
+    },
+    "features": {
+      "actor_stamping": true,
+      "organization_isolation": true,
+      "smart_code_validation": true,
+      "gl_balancing": true,
+      "multi_currency": true,
+      "salon_integration": true,
+      "real_time_processing": true
+    },
+    "target_organizations": [
+      "michele_hair_salon",
+      "any_salon_organization"
+    ]
+  },
+  "michele_salon": {
+    "base_currency": "AED",
+    "tax_rate_vat": 0.05,
+    "commission_rates": {
+      "senior_stylist": 0.35,
+      "stylist": 0.30,
+      "junior_stylist": 0.25
+    },
+    "service_categories": {
+      "HAIRCUT": "4000",
+      "COLORING": "4000", 
+      "STYLING": "4000",
+      "TREATMENT": "4000"
+    },
+    "business_scenarios_supported": [
+      "service_revenue",
+      "product_retail",
+      "operating_expenses",
+      "fixed_asset_purchases",
+      "bank_transactions",
+      "payroll_processing",
+      "capital_investments",
+      "tax_compliance"
+    ]
+  }
+}
