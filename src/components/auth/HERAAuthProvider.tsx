@@ -103,14 +103,14 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         // PRODUCTION FIX: Direct client import with error handling
         let supabase
         try {
-          const { createClient } = await import('@/lib/supabase/client')
-          supabase = createClient()
+          const { createClient: createSupabaseClientSetup } = await import('@/lib/supabase/client')
+          supabase = createSupabaseClientSetup()
           console.log('✅ Supabase client created successfully')
         } catch (importError) {
           console.error('❌ Failed to import/create Supabase client:', importError)
           // Fallback to direct creation for production
-          const { createClient } = await import('@supabase/supabase-js')
-          supabase = createClient(
+          const { createClient: createSupabaseClientFallback } = await import('@supabase/supabase-js')
+          supabase = createSupabaseClientFallback(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
           )
@@ -219,8 +219,8 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       console.log('🔐 Initializing HERA v2.2 authentication...')
       
       // First try normal Supabase authentication
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
+      const { createClient: createSupabaseClientInit } = await import('@/lib/supabase/client')
+      const supabase = createSupabaseClientInit()
       
       const { data: { session }, error } = await supabase.auth.getSession()
       
