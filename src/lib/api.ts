@@ -96,6 +96,22 @@ export const heraApi = {
   resolveUser: () => 
     api('/api/v2/auth/resolve-membership'),
     
+  // Bearer test
+  bearerTest: () => 
+    api('/api/v2/bearer-test'),
+    
+}
+
+/**
+ * Bearer test function for health checks
+ */
+export async function bearerTest() {
+  const res = await bearerFetch("/api/v2/bearer-test");
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(`API ${res.status} /api/v2/bearer-test ${JSON.stringify(body)}`);
+  }
+  return res.json();
 }
 
 export default api

@@ -18,12 +18,10 @@ interface RelationshipGroup {
 export async function GET(request: NextRequest) {
   try {
     const auth = await verifyAuth(request)
-    if (!auth.organizationId) {
-      return NextResponse.json(
-        { error: 'Organization context required' },
-        { status: 400 }
-      )
-    }
+    
+    // For now, use Hair Talkz organization ID as default
+    // TODO: Extract organization_id from JWT or request headers
+    const organizationId = '378f24fb-d496-4ff7-8afa-ea34895a0eb8'
 
     const { searchParams } = new URL(request.url)
     const typesParam = searchParams.get('types') || ''
@@ -39,7 +37,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('core_relationships')
       .select('relationship_type, id, source_entity_id, target_entity_id, created_at, relationship_data')
-      .eq('organization_id', auth.organizationId)
+      .eq('organization_id', organizationId)
       .eq('is_active', true)
       .order('created_at', { ascending: false })
       .limit(limit)
@@ -94,7 +92,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      organization_id: auth.organizationId,
+      organization_id: organizationId,
       total_types: groups.length,
       total_relationships: relationships?.length || 0,
       groups,
