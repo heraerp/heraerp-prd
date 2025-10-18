@@ -48,6 +48,9 @@ import {
   isForwardTransition,
   getTransitionErrorMessage
 } from '@/hooks/useHeraAppointments'
+import { useHeraCustomers } from '@/hooks/useHeraCustomers'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import { KanbanCard, KanbanStatus } from '@/schemas/kanban'
 import { getNextAllowedStates } from '@/lib/salon/kanbanLifecycleRules'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
@@ -191,25 +194,39 @@ export default function KanbanPage() {
     }
   })
 
-  // ⚡ PERFORMANCE FIX: No need to fetch services - appointments already have service data in metadata
-  // This eliminates a slow database query that was taking 20+ seconds
+  // 🎯 ENTERPRISE: Load customers, staff, and services for runtime lookup (same as /appointments page)
+  const { customers } = useHeraCustomers({ organizationId })
+  const { staff } = useHeraStaff({ organizationId })
+  const { services } = useHeraServices({ organizationId })
 
-  // 🎯 ENTERPRISE: Transform appointments to kanban cards
+  // 🎯 ENTERPRISE: Transform appointments to kanban cards with runtime lookup (same as /appointments page)
   const cards: KanbanCard[] = useMemo(() => {
     return appointments.map(apt => {
-      // ⚡ PERFORMANCE: Service data already in appointment metadata - no need to fetch services
+      // 🎯 RUNTIME LOOKUP: Use same pattern as /appointments page for customer/staff/service names
+      const customerName = customers?.find(c => c.id === apt.customer_id)?.entity_name || 'Unknown Customer'
+      const stylistName = staff?.find(s => s.id === apt.stylist_id)?.entity_name || null
+
+      // Service data from metadata (already enriched)
       const serviceIds = apt.metadata?.service_ids || []
       const serviceNames = apt.metadata?.service_names || []
       const servicePrices = apt.metadata?.service_prices || []
 
-      // Get first service or fallback
+      // Get first service with runtime lookup as fallback
       const service_id = Array.isArray(serviceIds) && serviceIds.length > 0
         ? serviceIds[0]
         : apt.metadata?.service_id || undefined
 
-      const service_name = Array.isArray(serviceNames) && serviceNames.length > 0
+      let service_name = Array.isArray(serviceNames) && serviceNames.length > 0
         ? serviceNames[0]
         : apt.metadata?.service_name || 'Service'
+
+      // 🎯 FALLBACK: If service name not in metadata, do runtime lookup
+      if (service_id && service_name === 'Service') {
+        const foundService = services?.find(s => s.id === service_id)
+        if (foundService) {
+          service_name = foundService.entity_name || foundService.name || 'Service'
+        }
+      }
 
       const price = Array.isArray(servicePrices) && servicePrices.length > 0
         ? servicePrices[0]
@@ -221,11 +238,11 @@ export default function KanbanPage() {
         branch_id: apt.branch_id || '',
         date: format(new Date(apt.start_time), 'yyyy-MM-dd'),
         rank: apt.rank || '',
-        customer_name: apt.customer_name,
+        customer_name: customerName,  // ✅ Runtime lookup
         customer_id: apt.customer_id,
-        service_name,
+        service_name,  // ✅ Runtime lookup with fallback
         service_id,
-        stylist_name: apt.stylist_name || null,
+        stylist_name: stylistName,  // ✅ Runtime lookup
         stylist_id: apt.stylist_id,
         start: apt.start_time,
         end: apt.end_time,
@@ -246,7 +263,7 @@ export default function KanbanPage() {
         }
       }
     })
-  }, [appointments, dateFilter, dateRange, organizationId])
+  }, [appointments, customers, staff, services, organizationId])
 
   // 🎯 ENTERPRISE: Group cards by status column
   const cardsByColumn: Record<KanbanStatus, KanbanCard[]> = useMemo(() => {

@@ -7,6 +7,11 @@ import { getSupabaseService } from '@/lib/supabase-service'
 export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
+  // Declare variables at function scope so they're available in catch block
+  let organizationId: string | undefined
+  let userId: string | undefined
+  let actor: any
+
   try {
     // ✅ HERA v2.2 ACTOR STAMPING: Verify authentication
     const authResult = await verifyAuth(req)
@@ -14,13 +19,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { organizationId, id: userId } = authResult
+    organizationId = authResult.organizationId
+    userId = authResult.id
     const body = await req.json().catch(() => null)
     if (!body) return NextResponse.json({ error: 'invalid_json' }, { status: 400 })
 
     // ✅ HERA v2.2 ACTOR STAMPING: Build actor context
     const supabase = getSupabaseService()
-    const actor = await buildActorContext(supabase, userId, organizationId)
+    actor = await buildActorContext(supabase, userId, organizationId)
 
     console.log('[txn-emit] Processing transaction with actor context:', {
       user_id: userId?.substring(0, 8),
@@ -66,25 +72,37 @@ export async function POST(req: NextRequest) {
 
     const linesPayload = body.lines ?? []
 
-    console.log('[txn-emit] Calling hera_transactions_post_v2 with actor stamping:', {
+    console.log('[txn-emit] Calling hera_txn_create_v1 with actor stamping:', {
       transaction_type: transactionPayload.transaction_type,
       total_amount: transactionPayload.total_amount,
       lines_count: linesPayload.length,
       actor_user_id: actor.actor_user_id
     })
 
-    const { data: result, error } = await supabase.rpc('hera_transactions_post_v2', {
-      p_transaction: transactionPayload,
-      p_lines: linesPayload,
-      p_actor_user_id: actor.actor_user_id
+    // ✅ FIX: Use correct RPC function signature with only 3 parameters
+    // Database hint: public.hera_txn_create_v1(p_actor_user_id, p_header, p_lines)
+    const { data: result, error } = await supabase.rpc('hera_txn_create_v1', {
+      p_actor_user_id: actor.actor_user_id,
+      p_header: transactionPayload,
+      p_lines: linesPayload
     })
 
-    if (error || !result?.success) {
-      console.error('[txn-emit] Database error:', error || result)
-      throw new Error(error?.message || result?.error || 'Transaction posting failed')
+    // ✅ FIX: Handle response correctly - check for RPC error OR ok:false in result
+    if (error) {
+      console.error('[txn-emit] RPC error:', error)
+      throw new Error(error?.message || 'Transaction RPC call failed')
     }
 
-    console.log('[txn-emit] Transaction created successfully with actor stamping:', result.transaction_id)
+    if (!result || result.ok === false) {
+      console.error('[txn-emit] Transaction failed:', result)
+      throw new Error(result?.error || 'Transaction posting failed')
+    }
+
+    console.log('[txn-emit] Transaction created successfully with actor stamping:', {
+      transaction_id: result.transaction_id,
+      status: result.status,
+      lines_count: result.lines_count
+    })
 
     return NextResponse.json(
       {

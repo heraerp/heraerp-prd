@@ -90,6 +90,7 @@ interface AppointmentModalProps {
   branches: any[]
   onSave: (data: any) => Promise<void>
   existingAppointments?: Appointment[]
+  currencySymbol?: string
 }
 
 interface TimeSlot {
@@ -107,7 +108,8 @@ export function AppointmentModal({
   services,
   branches,
   onSave,
-  existingAppointments = []
+  existingAppointments = [],
+  currencySymbol = 'AED'
 }: AppointmentModalProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -906,9 +908,8 @@ export function AppointmentModal({
                                       <Clock className="w-3 h-3" />
                                       {formatDuration(serviceDuration)}
                                     </span>
-                                    <span className="flex items-center gap-1">
-                                      <DollarSign className="w-3 h-3" />
-                                      {servicePrice.toFixed(2)}
+                                    <span>
+                                      {currencySymbol} {servicePrice.toFixed(2)}
                                     </span>
                                   </div>
                                 </div>
@@ -979,7 +980,7 @@ export function AppointmentModal({
                   Total
                 </span>
                 <span className="text-2xl font-bold" style={{ color: LUXE_COLORS.gold }}>
-                  ${price.toFixed(2)}
+                  {currencySymbol} {price.toFixed(2)}
                 </span>
               </div>
               <div className="text-sm mt-1" style={{ color: LUXE_COLORS.bronze }}>

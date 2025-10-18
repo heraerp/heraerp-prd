@@ -79,13 +79,13 @@ export async function POST(request: NextRequest) {
     })
 
     // ✅ Use hera_dynamic_data_batch_v1 for batch dynamic field updates
+    // NOTE: Function expects p_items not p_fields (as shown in error hint)
     console.log('[dynamic-data batch V2 RPC] Calling hera_dynamic_data_batch_v1 with transformed fields:', transformedFields)
 
     const { data, error } = await supabase.rpc('hera_dynamic_data_batch_v1', {
       p_organization_id: organizationId,
       p_entity_id: p_entity_id,
-      p_fields: transformedFields,
-      p_operation: 'upsert',
+      p_items: transformedFields, // ✅ FIX: Use p_items not p_fields
       p_actor_user_id: userId
     })
 

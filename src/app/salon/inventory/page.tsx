@@ -112,6 +112,15 @@ function SalonInventoryContent() {
     }
   }, [deepBranchId, branchId, setSelectedBranchId])
 
+  // Debug branch filter state
+  useEffect(() => {
+    console.log('[Inventory] Branch filter state:', {
+      branchId,
+      branches: branches.map(b => ({ id: b.id, name: b.entity_name || b.name })),
+      hasMultipleBranches
+    })
+  }, [branchId, branches, hasMultipleBranches])
+
   // Inventory hook - NO direct Supabase
   const {
     items,
@@ -125,7 +134,7 @@ function SalonInventoryContent() {
     refetch
   } = useHeraInventory({
     organizationId,
-    branchId: branchId || 'all',
+    branchId: branchId && branchId !== 'all' ? branchId : undefined, // ✅ FIX: Pass undefined for 'all'
     includeArchived,
     searchQuery,
     categoryFilter,
@@ -142,7 +151,7 @@ function SalonInventoryContent() {
     createMovement
   } = useHeraStockMovements({
     organizationId,
-    branchId: branchId || 'all',
+    branchId: branchId && branchId !== 'all' ? branchId : undefined, // ✅ FIX: Pass undefined for 'all'
     filters: {
       include_dynamic: true
     }
@@ -409,7 +418,7 @@ function SalonInventoryContent() {
                     <SelectItem value="all">All Branches</SelectItem>
                     {branches.map(branch => (
                       <SelectItem key={branch.id} value={branch.id}>
-                        {branch.entity_name}
+                        {branch.entity_name || branch.name || branch.id}
                       </SelectItem>
                     ))}
                   </SelectContent>

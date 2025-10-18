@@ -68,38 +68,51 @@ export async function POST(request: NextRequest) {
 
     // ✅ HERA v2.2 ACTOR STAMPING: Build actor context
     const actor = await buildActorContext(supabase, userId, organizationId)
-    
-    // Step 1: Create entity using HERA v2.2 RPC with actor stamping
-    const entityPayload = {
-      organization_id: organizationId,
-      entity_type: data.entity_type,
-      entity_name: data.entity_name,
-      smart_code: data.smart_code,
-      entity_code: data.entity_code || `${data.entity_type.toUpperCase()}-${Date.now()}`,
-      metadata: data.metadata || {},
-      entity_description: data.entity_description,
-      parent_entity_id: data.parent_entity_id
-    }
 
-    const { data: entityResult, error: entityError } = await supabase.rpc('hera_entities_crud_v2', {
-      p_action: 'CREATE',
-      p_actor_user_id: actor.actor_user_id,
-      p_dynamic: data.dynamic_fields || {},
-      p_entity: entityPayload,
-      p_options: {},
+    // Step 1: Create entity using hera_entity_upsert_v1 RPC
+    const { data: entityResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', {
       p_organization_id: organizationId,
-      p_relationships: []
+      p_entity_type: data.entity_type,
+      p_entity_name: data.entity_name,
+      p_smart_code: data.smart_code,
+      p_entity_id: null, // null for create
+      p_entity_code: data.entity_code || `${data.entity_type.toUpperCase()}-${Date.now()}`,
+      p_entity_description: data.entity_description || null,
+      p_parent_entity_id: data.parent_entity_id || null,
+      p_status: data.status || null,
+      p_tags: null,
+      p_smart_code_status: null,
+      p_business_rules: null,
+      p_metadata: data.metadata || null,
+      p_ai_confidence: null,
+      p_ai_classification: null,
+      p_ai_insights: null,
+      p_actor_user_id: actor.actor_user_id // ✅ CRITICAL: Required for audit trail
     })
 
-    if (entityError || !entityResult?.items?.[0]) {
-      console.error('Entity creation failed:', entityError || entityResult)
+    if (entityError || !entityResult) {
+      console.error('Entity creation failed:', entityError)
+
+      // Handle duplicate entity_code error
+      if (entityError?.message?.includes('duplicate key') && entityError?.message?.includes('uq_entity_org_code')) {
+        return NextResponse.json(
+          {
+            error: 'Duplicate entity code',
+            details: `An entity with code "${data.entity_code}" already exists in this organization. Please use a different code.`,
+            code: 'DUPLICATE_ENTITY_CODE'
+          },
+          { status: 409 } // 409 Conflict
+        )
+      }
+
       return NextResponse.json(
         { error: 'Failed to create entity', details: entityError?.message || 'No entity returned' },
         { status: 500 }
       )
     }
 
-    const entityId = entityResult.items[0].id
+    // RPC returns the entity_id as a string
+    const entityId = entityResult
 
     // Step 2: Add dynamic fields if provided using batch operation
     if (data.dynamic_fields) {
@@ -285,7 +298,7 @@ export async function PUT(request: NextRequest) {
     // ✅ HERA v2.2 ACTOR STAMPING: Build actor context  
     const actor = await buildActorContext(supabase, userId, organizationId)
 
-    // Update entity core fields using RPC with actor stamping
+    // Update entity core fields using hera_entity_upsert_v1 RPC
     if (
       data.entity_name ||
       data.entity_code ||
@@ -295,31 +308,54 @@ export async function PUT(request: NextRequest) {
       data.metadata ||
       data.smart_code
     ) {
-      const updatePayload: any = {
+      console.log('📝 Updating core entity fields via RPC:', {
         entity_id: data.entity_id,
-        organization_id: organizationId
-      }
-
-      if (data.entity_name) updatePayload.entity_name = data.entity_name
-      if (data.entity_code) updatePayload.entity_code = data.entity_code
-      if (data.entity_description !== undefined) updatePayload.entity_description = data.entity_description
-      if (data.parent_entity_id !== undefined) updatePayload.parent_entity_id = data.parent_entity_id
-      if (data.status !== undefined) updatePayload.status = data.status
-      if (data.metadata) updatePayload.metadata = data.metadata
-      if (data.smart_code) updatePayload.smart_code = data.smart_code
-
-      console.log('📝 Updating core entity fields via RPC v2:', updatePayload)
-
-      const { data: updateResult, error: entityError } = await supabase.rpc('hera_entities_crud_v2', {
-        p_operation: 'UPDATE',
-        p_payload: updatePayload,
-        p_actor_user_id: actor.actor_user_id
+        fields: {
+          entity_name: data.entity_name,
+          entity_code: data.entity_code,
+          status: data.status
+        }
       })
 
-      if (entityError || !updateResult?.success) {
-        console.error('Entity update failed:', entityError || updateResult)
+      // Get the entity first to get required fields for update
+      const { data: existingEntity } = await supabase
+        .from('core_entities')
+        .select('entity_type, entity_name, smart_code')
+        .eq('id', data.entity_id)
+        .eq('organization_id', organizationId)
+        .single()
+
+      if (!existingEntity) {
         return NextResponse.json(
-          { error: 'Failed to update entity', details: entityError?.message || updateResult?.error },
+          { error: 'Entity not found' },
+          { status: 404 }
+        )
+      }
+
+      const { data: updateResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', {
+        p_organization_id: organizationId,
+        p_entity_type: existingEntity.entity_type, // Required
+        p_entity_name: data.entity_name || existingEntity.entity_name, // Required
+        p_smart_code: data.smart_code || existingEntity.smart_code, // Required
+        p_entity_id: data.entity_id, // Provide entity_id for update
+        p_entity_code: data.entity_code || null,
+        p_entity_description: data.entity_description !== undefined ? data.entity_description : null,
+        p_parent_entity_id: data.parent_entity_id !== undefined ? data.parent_entity_id : null,
+        p_status: data.status !== undefined ? data.status : null,
+        p_tags: null,
+        p_smart_code_status: null,
+        p_business_rules: null,
+        p_metadata: data.metadata || null,
+        p_ai_confidence: null,
+        p_ai_classification: null,
+        p_ai_insights: null,
+        p_actor_user_id: actor.actor_user_id // ✅ CRITICAL: Required for audit trail
+      })
+
+      if (entityError || !updateResult) {
+        console.error('Entity update failed:', entityError)
+        return NextResponse.json(
+          { error: 'Failed to update entity', details: entityError?.message || 'Update failed' },
           { status: 500 }
         )
       }

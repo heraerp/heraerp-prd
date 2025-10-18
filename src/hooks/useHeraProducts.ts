@@ -135,7 +135,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.price_cost = {
         value: data.cost_price,
         type: 'number',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.COST.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.COST.V1'
       }
     }
 
@@ -143,7 +143,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.price_market = {
         value: data.selling_price,
         type: 'number',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.V1'
       }
     }
 
@@ -151,7 +151,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.stock_quantity = {
         value: data.stock_level,
         type: 'number',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.STOCK.QTY.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.STOCK.QTY.V1'
       }
     }
 
@@ -159,7 +159,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.reorder_level = {
         value: data.reorder_level,
         type: 'number',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.REORDER.LEVEL.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.REORDER.LEVEL.V1'
       }
     }
 
@@ -175,7 +175,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.barcode = {
         value: data.barcode,
         type: 'text',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.V1'
       }
     }
 
@@ -183,7 +183,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.sku = {
         value: data.sku,
         type: 'text',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.SKU.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.SKU.V1'
       }
     }
 
@@ -191,7 +191,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.size = {
         value: data.size,
         type: 'text',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.SIZE.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.SIZE.V1'
       }
     }
 

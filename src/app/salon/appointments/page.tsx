@@ -38,7 +38,8 @@ import {
   RotateCcw,
   CreditCard,
   Shield,
-  Loader2
+  Loader2,
+  Scissors
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -91,7 +92,7 @@ type ViewMode = 'grid' | 'list'
 
 function AppointmentsContent() {
   const router = useRouter()
-  const { organizationId, isLoading: contextLoading, isAuthenticated } = useSecuredSalonContext()
+  const { organizationId, organization, isLoading: contextLoading, isAuthenticated } = useSecuredSalonContext()
 
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
 
@@ -1137,19 +1138,38 @@ function AppointmentsContent() {
                         <h3
                           className="font-semibold text-base mb-1 truncate"
                           style={{ color: LUXE_COLORS.champagne }}
-                          title={appointment.customer_name || 'Customer'}
+                          title={customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Customer'}
                         >
-                          {appointment.customer_name || 'Customer'}
+                          {customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Customer'}
                         </h3>
                         <div
                           className="flex items-center gap-2 text-xs mb-1"
                           style={{ color: LUXE_COLORS.bronze }}
                         >
                           <User className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="truncate" title={appointment.stylist_name || 'Unassigned'}>
-                            {appointment.stylist_name || 'Unassigned'}
+                          <span className="truncate" title={staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'}>
+                            {staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'}
                           </span>
                         </div>
+                        {(() => {
+                          const serviceIds = appointment.metadata?.service_ids || []
+                          const serviceNames = serviceIds
+                            .map((serviceId: string) => services?.find(s => s.id === serviceId)?.entity_name)
+                            .filter(Boolean)
+                            .join(', ')
+
+                          return serviceNames ? (
+                            <div
+                              className="flex items-center gap-2 text-xs mb-1"
+                              style={{ color: LUXE_COLORS.bronze }}
+                            >
+                              <Scissors className="w-3.5 h-3.5 flex-shrink-0" />
+                              <span className="truncate" title={serviceNames}>
+                                {serviceNames}
+                              </span>
+                            </div>
+                          ) : null
+                        })()}
                         {branchName && viewMode === 'list' && (
                           <div
                             className="flex items-center gap-2 text-xs"
@@ -1222,7 +1242,7 @@ function AppointmentsContent() {
                               style={{ color: LUXE_COLORS.gold }}
                             />
                             <span className="whitespace-nowrap">
-                              {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
+                              {organization?.currencySymbol || 'AED'} {appointment.price.toFixed(2)}
                             </span>
                           </div>
                         )}
@@ -1308,7 +1328,7 @@ function AppointmentsContent() {
                               style={{ color: LUXE_COLORS.gold }}
                             />
                             <span>
-                              {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
+                              {organization?.currencySymbol || 'AED'} {appointment.price.toFixed(2)}
                             </span>
                           </div>
                         )}
@@ -1420,15 +1440,27 @@ function AppointmentsContent() {
                                   servicesLoaded: services?.length || 0
                                 })
 
+                                // 🎯 ENTERPRISE PATTERN: Use runtime lookup for customer/staff names (same as tiles)
+                                // This ensures accurate data instead of relying on pre-enriched fields
+                                const customerName = customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown Customer'
+                                const stylistName = staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
+
+                                console.log('[Appointments READY FOR PAYMENT] 👤 Runtime lookup results:', {
+                                  customer_id: appointment.customer_id,
+                                  customer_name: customerName,
+                                  stylist_id: appointment.stylist_id,
+                                  stylist_name: stylistName
+                                })
+
                                 // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as customer_name/stylist_name)
                                 // This ensures POS can access service data directly without nested metadata drilling
                                 const appointmentData = {
                                   id: appointment.id,
                                   organization_id: organizationId,
                                   branch_id: appointment.branch_id,
-                                  customer_name: appointment.customer_name,
+                                  customer_name: customerName,
                                   customer_id: appointment.customer_id,
-                                  stylist_name: appointment.stylist_name,
+                                  stylist_name: stylistName,
                                   stylist_id: appointment.stylist_id,
                                   // ✅ SERVICE DATA AT TOP LEVEL (same pattern as customer_name/stylist_name)
                                   service_ids: serviceIds,
@@ -1577,15 +1609,27 @@ function AppointmentsContent() {
                               servicesLoaded: services?.length || 0
                             })
 
+                            // 🎯 ENTERPRISE PATTERN: Use runtime lookup for customer/staff names (same as tiles)
+                            // This ensures accurate data instead of relying on pre-enriched fields
+                            const customerName = customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown Customer'
+                            const stylistName = staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
+
+                            console.log('[Appointments PAY NOW] 👤 Runtime lookup results:', {
+                              customer_id: appointment.customer_id,
+                              customer_name: customerName,
+                              stylist_id: appointment.stylist_id,
+                              stylist_name: stylistName
+                            })
+
                             // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as customer_name/stylist_name)
                             // This ensures POS can access service data directly without nested metadata drilling
                             const appointmentData = {
                               id: appointment.id,
                               organization_id: organizationId,
                               branch_id: appointment.branch_id,
-                              customer_name: appointment.customer_name,
+                              customer_name: customerName,
                               customer_id: appointment.customer_id,
-                              stylist_name: appointment.stylist_name,
+                              stylist_name: stylistName,
                               stylist_id: appointment.stylist_id,
                               // ✅ SERVICE DATA AT TOP LEVEL (same pattern as customer_name/stylist_name)
                               service_ids: serviceIds,
@@ -2287,6 +2331,7 @@ function AppointmentsContent() {
         services={services || []}
         branches={branches}
         existingAppointments={appointments || []}
+        currencySymbol={organization?.currencySymbol || 'AED'}
         onSave={async data => {
           if (!selectedAppointment) return
 
