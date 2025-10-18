@@ -11,7 +11,7 @@ jobs:
       
       # Apply Supabase migrations
       - uses: supabase/setup-cli@v1
-      - run: supabase link --project-ref qqagokigwuujyeyrgdkq --password ${{ secrets.SUPABASE_DEV_DB_PASSWORD }}
+      - run: supabase link --project-ref awfcrncxngqwbhqapffb --password ${{ secrets.SUPABASE_DEV_DB_PASSWORD }}
       - run: supabase db push
       
       # Railway auto-deploys via GitHub integration (no action needed)
