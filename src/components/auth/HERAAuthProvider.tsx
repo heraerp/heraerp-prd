@@ -6,10 +6,13 @@
 
 'use client'
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState, useMemo, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { createSecurityContextFromAuth } from '@/lib/security/user-entity-resolver'
 import type { SecurityContext } from '@/lib/security/database-context'
+import { getSafeOrgConfig, setSafeOrgContext } from '@/lib/salon/safe-org-loader'
+
+type HeraStatus = 'idle' | 'resolving' | 'authenticated' | 'error'
 
 // HERA v2.2 native types
 interface HERAUser {
@@ -34,10 +37,14 @@ interface HERAAuthContext {
   organization: HERAOrganization | null
   isAuthenticated: boolean
   isLoading: boolean
+  status: HeraStatus
+  userEntityId?: string
+  organizationId?: string
 
   // Authorization
   scopes: string[]
   hasScope: (scope: string) => boolean
+  role?: 'owner' | 'manager' | 'staff'
 
   // Actions
   logout: () => Promise<void>
@@ -47,7 +54,6 @@ interface HERAAuthContext {
   currentOrganization: HERAOrganization | null
   organizations: HERAOrganization[]
   contextLoading: boolean
-  organizationId: string | null
 }
 
 const HERAAuthContext = createContext<HERAAuthContext | undefined>(undefined)
@@ -58,185 +64,167 @@ interface HERAAuthProviderProps {
 
 export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const router = useRouter()
+  const didResolveRef = useRef(false) // prevents double work in dev StrictMode
+  const subRef = useRef<ReturnType<any> | null>(null)
 
-  const [state, setState] = useState({
-    user: null as HERAUser | null,
-    organization: null as HERAOrganization | null,
+  const [ctx, setCtx] = useState<{
+    status: HeraStatus
+    user: HERAUser | null
+    organization: HERAOrganization | null
+    isAuthenticated: boolean
+    isLoading: boolean
+    scopes: string[]
+    userEntityId?: string
+    organizationId?: string
+    role?: 'owner' | 'manager' | 'staff'
+  }>({
+    status: 'idle',
+    user: null,
+    organization: null,
     isAuthenticated: false,
     isLoading: true,
-    scopes: [] as string[]
+    scopes: [],
+    userEntityId: undefined,
+    organizationId: undefined,
+    role: undefined
   })
 
   // Initialize authentication on mount
   useEffect(() => {
-    initializeAuth()
-    
-    // Subscribe to auth state changes
-    let unsubscribe: (() => void) | undefined
+    // Ensure single subscription per mount
+    if (subRef.current) return
+
     ;(async () => {
       try {
         const { createClient } = await import('@/lib/supabase/client')
         const supabase = createClient()
         
-        const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+        subRef.current = supabase.auth.onAuthStateChange(async (event, session) => {
           console.log('🔐 HERA Auth state change:', event, { hasSession: !!session })
           
-          if (event === 'SIGNED_IN' && session) {
-            await handleSignIn(session.user.id, session.access_token)
-          } else if (event === 'SIGNED_OUT') {
-            handleSignOut()
-          } else if (event === 'TOKEN_REFRESHED' && session) {
-            // Don't trigger full auth refresh on token refresh to prevent loops
-            console.log('🔄 Token refreshed, maintaining current auth state')
+          // Don't regress after we've authenticated
+          if (didResolveRef.current) {
+            // Only care if session disappeared
+            if (!session) {
+              setCtx({ 
+                status: 'idle',
+                user: null,
+                organization: null,
+                isAuthenticated: false,
+                isLoading: false,
+                scopes: [],
+                userEntityId: undefined,
+                organizationId: undefined,
+                role: undefined
+              })
+            }
+            return
+          }
+
+          if (!session) {
+            setCtx(prev => ({ ...prev, status: 'idle', isLoading: false }))
+            return
+          }
+
+          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+            // Only resolve once
+            if (didResolveRef.current) return
+            setCtx(prev => ({ ...prev, status: 'resolving', isLoading: true }))
+            
+            try {
+              const { user } = session
+              
+              // Get safe config first
+              const safeConfig = getSafeOrgConfig()
+              
+              // Fetch membership data
+              let res = {}
+              try {
+                const response = await fetch('/api/membership', {
+                  headers: { Authorization: `Bearer ${session.access_token}` },
+                  cache: 'no-store',
+                })
+                if (response.ok) {
+                  res = await response.json()
+                } else {
+                  console.warn('🚨 Membership API failed, using fallback')
+                  res = { organization_id: safeConfig.organizationId }
+                }
+              } catch (error) {
+                console.warn('🚨 Membership API error, using fallback:', error)
+                res = { organization_id: safeConfig.organizationId }
+              }
+              const normalizedOrgId =
+                res.org_entity_id ??
+                res.organization_id ??
+                res.membership?.organization_id ??
+                safeConfig.organizationId
+              
+              // Set safe context as backup
+              setSafeOrgContext()
+
+              const role = (res.role ?? res.membership?.roles?.[0] ?? '').toLowerCase()
+              const userEntityId = res.user_entity_id ?? user?.id
+
+              const heraUser: HERAUser = {
+                id: user.id,
+                entity_id: userEntityId,
+                name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+                email: user.email || '',
+                role: res.membership?.roles?.[0] || 'USER'
+              }
+
+              const heraOrg: HERAOrganization = {
+                id: normalizedOrgId,
+                entity_id: res.membership?.org_entity_id || normalizedOrgId,
+                name: res.membership?.organization_name || safeConfig.fallbackName,
+                type: 'salon',
+                industry: 'beauty'
+              }
+
+              setCtx({
+                status: 'authenticated',
+                user: heraUser,
+                organization: heraOrg,
+                isAuthenticated: true,
+                isLoading: false,
+                scopes: res.membership?.roles || [],
+                userEntityId,
+                organizationId: normalizedOrgId,
+                role: role as 'owner' | 'manager' | 'staff'
+              })
+
+              didResolveRef.current = true
+              console.debug('✅ HERA normalized context', {
+                userEntityId,
+                organizationId: normalizedOrgId,
+                role,
+                heraOrg,
+                currentOrganization: heraOrg
+              })
+            } catch (e) {
+              console.error('HERA resolve error', e)
+              setCtx(prev => ({ ...prev, status: 'error', isLoading: false }))
+            }
           }
         })
         
-        unsubscribe = data.subscription.unsubscribe
       } catch (error) {
         console.error('❌ Failed to set up auth state listener:', error)
       }
     })()
 
     return () => {
-      unsubscribe?.()
+      subRef.current?.data?.subscription?.unsubscribe?.()
+      subRef.current = null
     }
   }, [])
 
-  const initializeAuth = async () => {
-    try {
-      console.log('🔐 Initializing HERA v2.2 authentication...')
+  // Remove initializeAuth - handled in useEffect
 
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
+  // Remove handleSignIn - handled in useEffect
 
-      const { data: { session }, error } = await supabase.auth.getSession()
-
-      if (error) {
-        console.error('❌ Session error:', error)
-        setState(prev => ({ ...prev, isLoading: false }))
-        return
-      }
-
-      if (session?.user) {
-        await handleSignIn(session.user.id, session.access_token)
-      } else {
-        console.log('📭 No active session found')
-        setState(prev => ({ ...prev, isLoading: false }))
-      }
-    } catch (error) {
-      console.error('💥 Auth initialization error:', error)
-      setState(prev => ({ ...prev, isLoading: false }))
-    }
-  }
-
-  const handleSignIn = async (userId: string, accessToken?: string) => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true }))
-      
-      console.log('🔍 Resolving HERA v2.2 user context for:', userId)
-      
-      // Use HERA v2.2 canonical entity resolution
-      const result = await createSecurityContextFromAuth(userId, { 
-        accessToken, 
-        retries: 2 
-      })
-      
-      if (!result.success || !result.securityContext) {
-        console.error('❌ Failed to resolve user context:', result.error)
-        setState(prev => ({ 
-          ...prev, 
-          isAuthenticated: false, 
-          isLoading: false 
-        }))
-        return
-      }
-
-      const { securityContext } = result
-      
-      // Get user details from Supabase
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
-      const { data: { user: supabaseUser } } = await supabase.auth.getUser()
-      
-      if (!supabaseUser) {
-        console.error('❌ No Supabase user found')
-        setState(prev => ({ ...prev, isLoading: false }))
-        return
-      }
-
-      // Resolve user entity details via API
-      const membershipResponse = await fetch('/api/v2/auth/resolve-membership', {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (!membershipResponse.ok) {
-        console.error('❌ Failed to resolve membership')
-        setState(prev => ({ ...prev, isLoading: false }))
-        return
-      }
-
-      const membershipData = await membershipResponse.json()
-      
-      if (!membershipData.success) {
-        console.error('❌ Membership resolution failed:', membershipData)
-        setState(prev => ({ ...prev, isLoading: false }))
-        return
-      }
-
-      const heraUser: HERAUser = {
-        id: userId,
-        entity_id: membershipData.user_entity_id,
-        name: supabaseUser.user_metadata?.full_name || supabaseUser.email?.split('@')[0] || 'User',
-        email: supabaseUser.email || '',
-        role: membershipData.membership.roles[0] || 'USER'
-      }
-
-      const heraOrg: HERAOrganization = {
-        id: membershipData.membership.organization_id,
-        entity_id: membershipData.membership.org_entity_id,
-        name: 'Hair Talkz Salon', // TODO: Get from org entity
-        type: 'salon',
-        industry: 'beauty'
-      }
-
-      console.log('✅ HERA v2.2 authentication successful:', {
-        user_entity_id: heraUser.entity_id,
-        org_entity_id: heraOrg.entity_id,
-        organization_id: heraOrg.id,
-        role: heraUser.role
-      })
-
-      setState({
-        user: heraUser,
-        organization: heraOrg,
-        isAuthenticated: true,
-        isLoading: false,
-        scopes: membershipData.membership.roles
-      })
-
-    } catch (error) {
-      console.error('💥 Sign in handling error:', error)
-      setState(prev => ({ 
-        ...prev, 
-        isAuthenticated: false, 
-        isLoading: false 
-      }))
-    }
-  }
-
-  const handleSignOut = () => {
-    console.log('👋 User signed out')
-    setState({
-      user: null,
-      organization: null,
-      isAuthenticated: false,
-      isLoading: false,
-      scopes: []
-    })
-  }
+  // Remove handleSignOut - handled in useEffect
 
   const logout = async () => {
     try {
@@ -244,7 +232,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       const supabase = createClient()
       
       await supabase.auth.signOut()
-      handleSignOut()
+      didResolveRef.current = false
       router.push('/auth/login')
     } catch (error) {
       console.error('💥 Logout error:', error)
@@ -252,24 +240,24 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   }
 
   const refreshAuth = async () => {
-    await initializeAuth()
+    didResolveRef.current = false
+    setCtx(prev => ({ ...prev, isLoading: true }))
   }
 
   const hasScope = (scope: string): boolean => {
-    return state.scopes.includes('OWNER') || state.scopes.includes(scope)
+    return ctx.scopes.includes('OWNER') || ctx.scopes.includes(scope)
   }
 
-  const contextValue: HERAAuthContext = {
-    ...state,
+  const contextValue: HERAAuthContext = useMemo(() => ({
+    ...ctx,
     logout,
     refreshAuth,
     hasScope,
     // Legacy compatibility
-    currentOrganization: state.organization,
-    organizations: state.organization ? [state.organization] : [],
-    contextLoading: state.isLoading,
-    organizationId: state.organization?.id || null
-  }
+    currentOrganization: ctx.organization,
+    organizations: ctx.organization ? [ctx.organization] : [],
+    contextLoading: ctx.isLoading
+  }), [ctx])
 
   return (
     <HERAAuthContext.Provider value={contextValue}>
