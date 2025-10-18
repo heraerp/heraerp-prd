@@ -1,6 +1,8 @@
 # 🏛️ HERA Universal ERP Platform
 ## **Complete Business Management System with Universal Architecture**
 
+<!-- GitHub Actions CI/CD Pipeline Test -->
+
 ---
 
 ## 🎯 **What is HERA?**
