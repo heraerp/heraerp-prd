@@ -22,6 +22,8 @@
     "seed:salon-staff": "tsx scripts/seed/salon-staff.ts",
     "demo:setup": "node scripts/setup-demo-users.js",
     "demo:salon-users": "node scripts/create-salon-demo-users.js",
+    "salon": "node scripts/salon-access.js",
+    "salon:verify": "node scripts/verify-salon-org.js",
     "seed:salon-service-categories": "tsx scripts/seed/salon-service-categories.ts",
     "dev": "node scripts/startup-control-center.js && next dev",
     "dev:no-cc": "next dev",

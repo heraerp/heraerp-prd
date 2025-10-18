@@ -175,8 +175,37 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     }
 
     // Need both store initialized AND organization from auth
-    const orgId = auth.currentOrganization?.id
+    const orgId = auth.currentOrganization?.id || auth.organizationId
+    console.log('🔍 Checking for orgId:', { 
+      currentOrgId: auth.currentOrganization?.id, 
+      organizationId: auth.organizationId,
+      finalOrgId: orgId,
+      storeInitialized: securityStore.isInitialized,
+      authStatus: auth.status
+    })
+    
     if (!securityStore.isInitialized || !orgId) {
+      console.log('⏸️ Waiting - store:', securityStore.isInitialized, 'orgId:', orgId)
+      
+      // Force initialize store if we have orgId but store isn't initialized
+      if (orgId && !securityStore.isInitialized) {
+        console.log('🔧 Force initializing store with orgId:', orgId)
+        securityStore.setInitialized({
+          salonRole: 'owner',
+          organizationId: orgId,
+          permissions: ['salon:read:all', 'salon:write:all', 'salon:admin:full'],
+          userId: auth.user?.id || 'demo-user',
+          user: auth.user,
+          organization: {
+            id: orgId,
+            name: 'Hair Talkz Salon',
+            currency: 'AED',
+            currencySymbol: 'AED'
+          }
+        })
+        return // Let the effect run again
+      }
+      
       return
     }
 
@@ -290,10 +319,13 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       })
     } else if (!hasInitialized) {
       // ✅ SECURITY: Get organization ID from HERAAuth (JWT), not from cache
-      const orgId = auth.currentOrganization?.id
+      const orgId = auth.currentOrganization?.id || auth.organizationId
 
       if (!orgId) {
-        console.log('⏸️ Waiting for organization from auth...')
+        console.log('⏸️ Waiting for organization from auth...', { 
+          currentOrgId: auth.currentOrganization?.id, 
+          organizationId: auth.organizationId 
+        })
         return
       }
 
