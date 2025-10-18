@@ -145,7 +145,9 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                   cache: 'no-store',
                 })
                 if (response.ok) {
-                  res = await response.json()
+                  const apiResponse = await response.json()
+                  // Handle HERA standard response format
+                  res = apiResponse.success ? apiResponse.data : apiResponse
                 } else {
                   console.warn('🚨 Membership API failed, using fallback')
                   res = { organization_id: safeConfig.organizationId }
