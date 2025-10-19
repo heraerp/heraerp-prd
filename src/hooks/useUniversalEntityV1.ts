@@ -800,11 +800,21 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
 
       return data
     },
-    onSuccess: () => {
-      // Invalidate queries
-      queryClient.invalidateQueries({ queryKey: ['entities', entity_type] })
-      queryClient.invalidateQueries({ queryKey: ['entities-v1', entity_type] })
-      console.log('✅ [useUniversalEntityV1] Invalidated queries after entity deletion')
+    onSuccess: (_data, variables) => {
+      // ⚡ OPTIMISTIC UPDATE: Remove deleted entity from cache immediately
+      queryClient.setQueryData(queryKey, (old: any) => {
+        if (!old || !Array.isArray(old)) return []
+        return old.filter((entity: any) => entity.id !== variables.entity_id)
+      })
+
+      // Also invalidate legacy query keys for compatibility
+      queryClient.invalidateQueries({ queryKey: ['entities', entity_type], exact: false })
+      queryClient.invalidateQueries({ queryKey: ['entities-v1', entity_type], exact: false })
+
+      console.log('✅ [useUniversalEntityV1] Optimistically removed deleted entity from cache:', {
+        entity_id: variables.entity_id,
+        timestamp: new Date().toISOString()
+      })
     }
   })
 

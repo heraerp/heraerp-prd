@@ -31,10 +31,30 @@ export default function ReceptionistDashboard() {
   const { user, role } = useSalonSecurity()
   const [isRefreshing, setIsRefreshing] = useState(false)
 
+  // Redirect owner to their own dashboard
+  React.useEffect(() => {
+    if (role && role.toLowerCase() === 'owner') {
+      router.push('/salon/dashboard')
+    }
+  }, [role, router])
+
   const handleRefresh = async () => {
     setIsRefreshing(true)
     // Add refresh logic here
     setTimeout(() => setIsRefreshing(false), 800)
+  }
+
+  // Show loading if redirecting owner
+  if (role && role.toLowerCase() === 'owner') {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: LUXE_COLORS.black }}>
+        <div className="text-center">
+          <div className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
+            Redirecting to Owner Dashboard...
+          </div>
+        </div>
+      </div>
+    )
   }
 
   const quickActions = [
