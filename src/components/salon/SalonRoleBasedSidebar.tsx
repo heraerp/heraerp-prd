@@ -55,7 +55,7 @@ const getSidebarItems = (role: string): SidebarItem[] => {
     {
       title: 'My Dashboard',
       href: '/salon/receptionist',
-      icon: Home,
+      icon: Building2,
       roles: ['Receptionist']
     },
 
@@ -162,7 +162,7 @@ const getAllApps = (role: string): SidebarItem[] => {
   const allApps: SidebarItem[] = [
     // Core modules
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home, roles: ['Owner', 'Administrator'] },
-    { title: 'My Dashboard', href: '/salon/receptionist', icon: Home, roles: ['Receptionist'] },
+    { title: 'My Dashboard', href: '/salon/receptionist', icon: Building2, roles: ['Receptionist'] },
     {
       title: 'POS',
       href: '/salon/pos',
