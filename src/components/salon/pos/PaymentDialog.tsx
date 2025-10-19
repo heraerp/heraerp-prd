@@ -169,22 +169,38 @@ export function PaymentDialog({
   // Fetch branch address and phone from core_dynamic_data
   useEffect(() => {
     const fetchBranchDetails = async () => {
-      if (!branchId || !organizationId) return
+      // ✅ FIX: Ensure branchId is a valid UUID string, not null/undefined
+      if (!branchId || branchId === 'null' || branchId === 'undefined' || !organizationId) {
+        console.log('[PaymentDialog] Skipping branch details fetch - no branch selected:', { branchId })
+        return
+      }
 
       try {
-        const { universalApi } = await import('@/lib/universal-api-v2')
+        const { getDynamicData } = await import('@/lib/universal-api-v2-client')
 
-        // ✅ FIX: Use getDynamicFields to fetch ALL fields for the branch entity
-        universalApi.setOrganizationId(organizationId) // Set org context
-        const result = await universalApi.getDynamicFields(branchId)
+        console.log('[PaymentDialog] Fetching branch details for:', { branchId, organizationId })
 
-        if (result.success && result.data && Array.isArray(result.data)) {
-          const addressField = result.data.find((f: any) => f.field_name === 'address')
-          const phoneField = result.data.find((f: any) => f.field_name === 'phone')
+        // ✅ FIX: Use getDynamicData to fetch ALL fields for the branch entity
+        const dynamicFields = await getDynamicData('', {
+          p_organization_id: organizationId,
+          p_entity_id: branchId
+        })
+
+        if (dynamicFields && Array.isArray(dynamicFields)) {
+          const addressField = dynamicFields.find((f: any) => f.field_name === 'address')
+          const phoneField = dynamicFields.find((f: any) => f.field_name === 'phone')
 
           setBranchDetails({
             address: addressField?.field_value_text || undefined,
             phone: phoneField?.field_value_text || undefined
+          })
+
+          console.log('[PaymentDialog] ✅ Branch details loaded:', {
+            branchId,
+            hasAddress: !!addressField,
+            hasPhone: !!phoneField,
+            address: addressField?.field_value_text,
+            phone: phoneField?.field_value_text
           })
         }
       } catch (err) {

@@ -310,10 +310,10 @@ function DashboardContent() {
                     localStorage.removeItem('salonUserName')
                     localStorage.removeItem('salonUserEmail')
                     localStorage.removeItem('salonRole')
-                    router.push('/salon/auth')
+                    router.push('/salon-access')
                   } catch (error) {
                     console.error('Logout error:', error)
-                    router.push('/salon/auth')
+                    router.push('/salon-access')
                   }
                 }}
                 variant="outline"

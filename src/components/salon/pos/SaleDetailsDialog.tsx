@@ -84,7 +84,15 @@ export function SaleDetailsDialog({
         }
 
         const data = await response.json()
-        console.log('[SaleDetailsDialog] Fetched transaction:', data)
+        console.log('[SaleDetailsDialog] Fetched transaction:', {
+          fullData: data,
+          transaction: data.transaction,
+          lines: data.lines,
+          linesCount: data.lines?.length || 0,
+          transaction_number: data.transaction?.transaction_number,
+          transaction_code: data.transaction?.transaction_code,
+          total_amount: data.transaction?.total_amount
+        })
 
         setTransaction(data.transaction || data)
         setLines(data.lines || [])
@@ -156,11 +164,15 @@ export function SaleDetailsDialog({
   const metadata = transaction?.metadata || {}
 
   // ✅ Calculate amounts from transaction lines (enterprise-grade accuracy)
-  const serviceLines = lines.filter((l: any) => l.line_type === 'service' || l.line_type === 'product')
-  const taxLines = lines.filter((l: any) => l.line_type === 'tax')
-  const discountLines = lines.filter((l: any) => l.line_type === 'discount')
-  const tipLines = lines.filter((l: any) => l.line_type === 'tip')
-  const paymentLines = lines.filter((l: any) => l.line_type === 'payment')
+  // ✅ FIX: Handle both uppercase and lowercase line_type values
+  const serviceLines = lines.filter((l: any) => {
+    const type = l.line_type?.toLowerCase()
+    return type === 'service' || type === 'product'
+  })
+  const taxLines = lines.filter((l: any) => l.line_type?.toLowerCase() === 'tax')
+  const discountLines = lines.filter((l: any) => l.line_type?.toLowerCase() === 'discount')
+  const tipLines = lines.filter((l: any) => l.line_type?.toLowerCase() === 'tip')
+  const paymentLines = lines.filter((l: any) => l.line_type?.toLowerCase() === 'payment')
 
   const subtotal = serviceLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
   const taxAmount = taxLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
@@ -170,6 +182,30 @@ export function SaleDetailsDialog({
   // ✅ FIX: Calculate total from customer-facing lines (exclude payment lines)
   // Payment lines show how customer paid, not what they owe
   const totalAmount = subtotal - discountAmount + taxAmount + tipAmount
+
+  // ✅ DEBUG: Log calculated amounts
+  if (transaction && lines.length > 0) {
+    console.log('[SaleDetailsDialog] Calculated amounts:', {
+      totalLines: lines.length,
+      serviceLines: serviceLines.length,
+      taxLines: taxLines.length,
+      discountLines: discountLines.length,
+      tipLines: tipLines.length,
+      paymentLines: paymentLines.length,
+      subtotal,
+      taxAmount,
+      discountAmount,
+      tipAmount,
+      totalAmount,
+      allLines: lines.map(l => ({
+        type: l.line_type,
+        description: l.description,
+        amount: l.line_amount,
+        quantity: l.quantity,
+        unit_amount: l.unit_amount
+      }))
+    })
+  }
 
   return (
     <SalonLuxeModal
@@ -218,7 +254,7 @@ export function SaleDetailsDialog({
                     </span>
                   </div>
                   <p className="text-lg font-bold" style={{ color: LUXE_COLORS.champagne }}>
-                    {transaction.transaction_code}
+                    {transaction.transaction_number || transaction.transaction_code || 'N/A'}
                   </p>
                 </div>
                 <div>
@@ -307,7 +343,7 @@ export function SaleDetailsDialog({
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 flex-1">
-                          {line.line_type === 'service' ? (
+                          {line.line_type?.toLowerCase() === 'service' ? (
                             <Scissors
                               className="w-5 h-5"
                               style={{ color: LUXE_COLORS.plum }}

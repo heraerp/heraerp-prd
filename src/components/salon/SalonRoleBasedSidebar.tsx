@@ -354,7 +354,7 @@ export default function SalonRoleBasedSidebar() {
     localStorage.removeItem('organizationId')
     localStorage.removeItem('salonRole')
     localStorage.removeItem('salonUserName')
-    router.push('/salon/auth')
+    router.push('/salon-access')
   }
 
   // Get role-specific welcome message
@@ -381,28 +381,28 @@ export default function SalonRoleBasedSidebar() {
 
   return (
     <>
-      <aside className="fixed left-0 top-0 w-20 h-screen bg-background border-r border-border flex flex-col items-center py-4 z-40">
+      <aside className="fixed left-0 top-0 w-20 h-screen bg-background border-r border-border flex flex-col items-center py-4 z-40 overflow-y-auto">
         {/* Logo */}
-        <Link href="/salon" className="mb-6 p-3 hover:bg-accent rounded-xl transition-all group">
+        <Link href="/salon" className="mb-6 p-3 hover:bg-accent rounded-xl transition-all group flex-shrink-0">
           <Scissors className="w-6 h-6 text-pink-500 group-hover:scale-110 transition-transform" />
         </Link>
 
         {/* User info tooltip on hover */}
-        <div className="group relative mb-4">
+        <div className="group relative mb-4 flex-shrink-0">
           <div
             className={`p-2 rounded-lg bg-gradient-to-br ${getRoleColor()} opacity-20 group-hover:opacity-30 transition-opacity`}
           >
             <Shield className="w-5 h-5 text-primary-foreground" />
           </div>
-          <div className="absolute left-full ml-2 px-3 py-2 bg-popover rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+          <div className="absolute left-full ml-2 px-3 py-2 bg-popover rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
             <p className="text-xs font-medium text-foreground">{userName}</p>
             <p className="text-xs text-muted-foreground">{userRole}</p>
             <p className="text-xs text-pink-400 mt-1">{getRoleWelcome()}</p>
           </div>
         </div>
 
-        {/* Main navigation */}
-        <nav className="flex-1 flex flex-col items-center gap-1 w-full px-3">
+        {/* Main navigation - scrollable */}
+        <nav className="flex-1 flex flex-col items-center gap-1 w-full px-3 overflow-y-auto min-h-0">
           {sidebarItems.map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
@@ -412,7 +412,7 @@ export default function SalonRoleBasedSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'relative w-full p-3 rounded-xl flex items-center justify-center transition-all group',
+                  'relative w-full p-3 rounded-xl flex items-center justify-center transition-all group flex-shrink-0',
                   active
                     ? 'bg-gradient-to-br from-pink-500 to-violet-600 shadow-lg shadow-pink-500/25'
                     : 'hover:bg-accent'
@@ -437,38 +437,41 @@ export default function SalonRoleBasedSidebar() {
                   </span>
                 )}
                 {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+                <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   <span className="text-xs text-foreground">{item.title}</span>
                 </div>
               </Link>
             )
           })}
+        </nav>
 
+        {/* Bottom fixed section */}
+        <div className="flex flex-col items-center gap-1 w-full px-3 flex-shrink-0 pt-2 border-t border-border">
           {/* Apps grid */}
           <button
             onClick={() => setAppsModalOpen(true)}
             className={cn(
-              'w-full p-3 rounded-xl flex items-center justify-center transition-all group mt-2',
+              'w-full p-3 rounded-xl flex items-center justify-center transition-all group relative',
               'hover:bg-accent'
             )}
           >
             <Grid3x3 className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
-            <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+            <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <span className="text-xs text-foreground">All Apps</span>
             </div>
           </button>
-        </nav>
 
-        {/* Sign out button */}
-        <button
-          onClick={handleSignOut}
-          className="w-14 p-3 rounded-xl flex items-center justify-center transition-all group hover:bg-accent"
-        >
-          <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-red-400" />
-          <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
-            <span className="text-xs text-foreground">Sign Out</span>
-          </div>
-        </button>
+          {/* Sign out button */}
+          <button
+            onClick={handleSignOut}
+            className="w-full p-3 rounded-xl flex items-center justify-center transition-all group hover:bg-accent relative"
+          >
+            <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-red-400" />
+            <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+              <span className="text-xs text-foreground">Sign Out</span>
+            </div>
+          </button>
+        </div>
       </aside>
 
       <AppsModal
