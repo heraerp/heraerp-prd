@@ -80,37 +80,14 @@ export default function SalonFinancePage() {
 
   // Access control - check financial permissions
   if (!canViewFinancials) {
+    const AccessDenied = require('@/components/salon/AccessDenied').default
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: LUXE_COLORS.charcoal }}
-      >
-        <Card
-          className="max-w-md w-full border-0"
-          style={{ backgroundColor: LUXE_COLORS.charcoalLight }}
-        >
-          <CardContent className="p-8 text-center">
-            <AlertCircle className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.ruby }} />
-            <h3 className="text-xl mb-2" style={{ color: LUXE_COLORS.gold }}>
-              Financial Access Restricted
-            </h3>
-            <p style={{ color: LUXE_COLORS.bronze }}>
-              Financial data access is restricted to owners, managers, and accountants. Please
-              contact your manager for access.
-            </p>
-            <Button
-              onClick={() => router.push('/salon/dashboard')}
-              className="w-full mt-4"
-              style={{
-                backgroundColor: LUXE_COLORS.gold,
-                color: LUXE_COLORS.charcoal
-              }}
-            >
-              Return to Dashboard
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <AccessDenied
+        title="Financial Access Restricted"
+        message="Financial data access is restricted to owners, managers, and accountants. Please contact your manager for access."
+        returnPath={role === 'receptionist' ? '/salon/receptionist' : '/salon/dashboard'}
+        returnLabel={role === 'receptionist' ? 'Return to My Dashboard' : 'Return to Dashboard'}
+      />
     )
   }
 

@@ -16,6 +16,21 @@ export interface Branch {
   id: string
   name: string
   code?: string
+  metadata?: {
+    operating_hours?: {
+      monday?: string
+      tuesday?: string
+      wednesday?: string
+      thursday?: string
+      friday?: string
+      saturday?: string
+      sunday?: string
+    }
+    [key: string]: any
+  }
+  // ✅ Dynamic fields from core_dynamic_data
+  opening_time?: string // e.g., "09:00"
+  closing_time?: string // e.g., "21:00"
 }
 
 export interface UseBranchFilterReturn {
@@ -70,7 +85,7 @@ export function useBranchFilter(
     }
   }, [effectiveOrgId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Validate persisted branch ID when branches are loaded
+  // Validate persisted branch ID when branches are loaded (only run once after branches load)
   useEffect(() => {
     if (
       persistKey &&
@@ -86,7 +101,8 @@ export function useBranchFilter(
         localStorage.removeItem(`branch-filter-${persistKey}`) // Clear persistence
       }
     }
-  }, [persistKey, branches, branchId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [branches.length]) // Only re-run when branches count changes, not on every branchId change
 
   const loadBranches = async () => {
     if (!effectiveOrgId) {

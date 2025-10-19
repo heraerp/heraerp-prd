@@ -6,6 +6,7 @@ import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useSalonDashboard } from '@/hooks/useSalonDashboard'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { ComplianceAlertBanner } from '@/components/salon/ComplianceAlertBanner'
 import {
   Users,
   Scissors,
@@ -67,6 +68,13 @@ function DashboardContent() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [loadStage, setLoadStage] = useState(1) // Progressive loading stages
 
+  // ✅ ROLE-BASED REDIRECT: Redirect receptionist to their dashboard
+  useEffect(() => {
+    if (role && role.toLowerCase() === 'receptionist') {
+      router.push('/salon/receptionist')
+    }
+  }, [role, router])
+
   // ✅ PERFORMANCE: Progressive component loading
   useEffect(() => {
     if (isAuthenticated && !orgLoading && !securityLoading) {
@@ -87,17 +95,6 @@ function DashboardContent() {
     getOverrideCount,
     clearAllOverrides
   } = useDashboardFilter()
-
-  // Debug organization loading
-  React.useEffect(() => {
-    console.log('[Dashboard] Organization loaded:', {
-      organizationId,
-      organization,
-      hasName: !!organization?.name,
-      hasEntityName: !!(organization as any)?.entity_name,
-      orgLoading
-    })
-  }, [organization, organizationId, orgLoading])
 
   // Use the enhanced dashboard hook with global period filter
   const {
@@ -173,7 +170,7 @@ function DashboardContent() {
                 : 'No role assigned. Please contact your administrator.'}
             </p>
             <Button
-              onClick={() => router.push('/salon/auth')}
+              onClick={() => router.push('/salon-access')}
               className="w-full"
               style={{
                 backgroundColor: LUXE_COLORS.gold,
@@ -184,6 +181,23 @@ function DashboardContent() {
             </Button>
           </CardContent>
         </Card>
+      </div>
+    )
+  }
+
+  // Show loading while redirecting receptionist
+  if (role && role.toLowerCase() === 'receptionist') {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.black }}
+      >
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <div className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
+            Redirecting to Receptionist Dashboard...
+          </div>
+        </div>
       </div>
     )
   }
@@ -320,10 +334,10 @@ function DashboardContent() {
                     localStorage.removeItem('salonUserName')
                     localStorage.removeItem('salonUserEmail')
                     localStorage.removeItem('salonRole')
-                    router.push('/salon/auth')
+                    router.push('/salon-access')
                   } catch (error) {
                     console.error('Logout error:', error)
-                    router.push('/salon/auth')
+                    router.push('/salon-access')
                   }
                 }}
                 variant="outline"
@@ -450,6 +464,9 @@ function DashboardContent() {
 
       {/* Main Content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Compliance Alert Banner - 30-Day Expiry Notifications */}
+        <ComplianceAlertBanner organizationId={organizationId} />
+
         {/* Stage 1: Hero Metrics - Load immediately */}
         {loadStage >= 1 && (
           <div className="animate-fadeInUp">

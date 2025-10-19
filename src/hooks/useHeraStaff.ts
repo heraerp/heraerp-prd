@@ -30,6 +30,11 @@ export interface StaffMember {
   skills?: any[]
   bio?: string
   avatar_url?: string
+  // Document & Compliance fields
+  nationality?: string
+  passport_no?: string
+  visa_exp_date?: string
+  insurance_exp_date?: string
   created_at: string
   updated_at: string
 }
@@ -100,6 +105,11 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     branch_ids?: string[] // Support for multiple branch assignments
     location_id?: string
     supervisor_id?: string
+    // Document & Compliance fields
+    nationality?: string
+    passport_no?: string
+    visa_exp_date?: string
+    insurance_exp_date?: string
   }) => {
     const entity_name = `${data.first_name} ${data.last_name}`
 
@@ -186,6 +196,39 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
       }
     }
 
+    // Document & Compliance fields
+    if (data.nationality) {
+      dynamic_fields.nationality = {
+        value: data.nationality,
+        type: 'text',
+        smart_code: 'HERA.SALON.STAFF.FIELD.NATIONALITY.V1'
+      }
+    }
+
+    if (data.passport_no) {
+      dynamic_fields.passport_no = {
+        value: data.passport_no,
+        type: 'text',
+        smart_code: 'HERA.SALON.STAFF.FIELD.PASSPORT_NO.V1'
+      }
+    }
+
+    if (data.visa_exp_date) {
+      dynamic_fields.visa_exp_date = {
+        value: data.visa_exp_date,
+        type: 'date',
+        smart_code: 'HERA.SALON.STAFF.FIELD.VISA_EXP_DATE.V1'
+      }
+    }
+
+    if (data.insurance_exp_date) {
+      dynamic_fields.insurance_exp_date = {
+        value: data.insurance_exp_date,
+        type: 'date',
+        smart_code: 'HERA.SALON.STAFF.FIELD.INSURANCE_EXP_DATE.V1'
+      }
+    }
+
     // Build relationships payload for branches
     const relationships: Record<string, string[]> = {}
     if (data.branch_ids && data.branch_ids.length > 0) {
@@ -261,6 +304,23 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
 
     if (data.bio !== undefined) {
       dynamic_patch.bio = data.bio
+    }
+
+    // Document & Compliance fields
+    if (data.nationality !== undefined) {
+      dynamic_patch.nationality = data.nationality
+    }
+
+    if (data.passport_no !== undefined) {
+      dynamic_patch.passport_no = data.passport_no
+    }
+
+    if (data.visa_exp_date !== undefined) {
+      dynamic_patch.visa_exp_date = data.visa_exp_date
+    }
+
+    if (data.insurance_exp_date !== undefined) {
+      dynamic_patch.insurance_exp_date = data.insurance_exp_date
     }
 
     // Build relationships patch for branches

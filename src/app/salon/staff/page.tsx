@@ -28,7 +28,9 @@ import {
   MoreVertical,
   Archive,
   ArchiveRestore,
-  X
+  X,
+  FileText,
+  AlertTriangle
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -590,6 +592,19 @@ function StaffContent() {
             <p style={{ color: COLORS.bronze }}>Manage staff members and roles</p>
           </div>
           <div className="flex gap-3">
+            <Button
+              onClick={() => router.push('/salon/compliance')}
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.bronze} 0%, ${COLORS.bronze}DD 100%)`,
+                color: COLORS.champagne,
+                border: 'none'
+              }}
+              className="hover:opacity-90"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Compliance
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
             <Button
               onClick={() => router.push('/salon/leave')}
               style={{

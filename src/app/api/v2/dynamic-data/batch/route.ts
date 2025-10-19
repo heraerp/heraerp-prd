@@ -30,7 +30,17 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
-    const { p_entity_id, p_smart_code, p_fields } = body
+    let { p_entity_id, p_smart_code, p_fields } = body
+
+    // ✅ FIX: Extract entity_id if it's an object (defensive coding)
+    if (p_entity_id && typeof p_entity_id === 'object') {
+      console.warn('[dynamic-data batch] Received entity object instead of ID, extracting ID:', {
+        received: typeof p_entity_id,
+        hasId: !!p_entity_id.id,
+        hasEntityId: !!p_entity_id.entity_id
+      })
+      p_entity_id = p_entity_id.id || p_entity_id.entity_id
+    }
 
     if (!p_entity_id || !p_smart_code || !Array.isArray(p_fields)) {
       return NextResponse.json(
@@ -51,31 +61,29 @@ export async function POST(request: NextRequest) {
     })
 
     // ✅ Transform fields to hera_dynamic_data_batch_v1 format
-    // The RPC expects an array with field_name, field_type, and value fields
+    // The RPC expects TYPED columns: field_value_text, field_value_number, field_value_boolean, etc.
     const transformedFields = p_fields.map(field => {
-      const { field_name, field_type, field_value_number, field_value_text, field_value_boolean, field_value_date, field_value_json } = field
-
-      // Extract the value based on field type
-      let value = null
-      if (field_type === 'number') {
-        value = field_value_number ?? field.field_value_number ?? 0
-      } else if (field_type === 'text') {
-        value = field_value_text ?? field.field_value_text ?? ''
-      } else if (field_type === 'boolean') {
-        value = field_value_boolean ?? field.field_value_boolean ?? false
-      } else if (field_type === 'json') {
-        value = field_value_json ?? field.field_value_json ?? null
-      } else if (field_type === 'date') {
-        value = field_value_date ?? field.field_value_date ?? null
+      const item: any = {
+        field_name: field.field_name,
+        field_type: field.field_type,
+        smart_code: field.smart_code || p_smart_code
       }
 
-      return {
-        field_name,
-        field_type,
-        value,
-        smart_code: field.smart_code || p_smart_code,
-        metadata: field.metadata || null
+      // Set the appropriate TYPED column based on field type
+      // RPC reads from field_value_text, field_value_number, etc. (NOT a generic "value" field)
+      if (field.field_type === 'number') {
+        item.field_value_number = field.field_value_number ?? 0
+      } else if (field.field_type === 'text') {
+        item.field_value_text = field.field_value_text ?? ''
+      } else if (field.field_type === 'boolean') {
+        item.field_value_boolean = field.field_value_boolean ?? false
+      } else if (field.field_type === 'json') {
+        item.field_value_json = field.field_value_json ?? null
+      } else if (field.field_type === 'date') {
+        item.field_value_date = field.field_value_date ?? null
       }
+
+      return item
     })
 
     // ✅ Use hera_dynamic_data_batch_v1 for batch dynamic field updates

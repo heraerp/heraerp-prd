@@ -45,32 +45,27 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     { title: 'Products', href: '/salon/products', icon: Package },
-    { title: 'Inventory', href: '/salon/inventory', icon: FolderOpen },
     { title: 'Staff', href: '/salon/staff', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
     { title: 'Reports', href: '/salon/reports', icon: BarChart3 }
+    // Inventory moved to More modal
   ],
 
   receptionist: [
-    { title: 'Dashboard', href: '/salon/receptionist/dashboard', icon: Home },
+    { title: 'Dashboard', href: '/salon/receptionist', icon: Home },
     {
       title: 'Appointments',
       href: '/salon/appointments',
       icon: Calendar
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
-    { title: 'Customers', href: '/salon/customers', icon: Users },
-    { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Services', href: '/salon/services', icon: Scissors },
-    {
-      title: 'WhatsApp',
-      href: '/salon/whatsapp',
-      icon: MessageCircle,
-      badge: '5',
-      badgeColor: LUXE_COLORS.gold
-    }
+    { title: 'Products', href: '/salon/products', icon: Package },
+    { title: 'Staff', href: '/salon/staff', icon: UserPlus },
+    { title: 'Customers', href: '/salon/customers', icon: Users }
+    // WhatsApp moved to More modal
   ],
 
   accountant: [

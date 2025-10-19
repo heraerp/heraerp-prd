@@ -4,14 +4,8 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter
-} from '@/components/ui/luxe-dialog'
-import { Button } from '@/components/ui/button'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -23,7 +17,7 @@ import {
 } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
-  Loader2,
+  User,
   Trash2,
   Archive,
   ChevronDown,
@@ -32,7 +26,11 @@ import {
   Calendar,
   Building2,
   MapPin,
-  CheckCircle2
+  CheckCircle2,
+  FileText,
+  AlertTriangle,
+  Mail,
+  Phone
 } from 'lucide-react'
 import type { Role } from '@/hooks/useHeraRoles'
 
@@ -69,8 +67,56 @@ const staffSchema = z.object({
   hourly_cost: z.number().min(0).optional(),
   display_rate: z.number().min(0).optional(),
   hire_date: z.string().optional(),
-  branch_ids: z.array(z.string()).optional()
+  branch_ids: z.array(z.string()).optional(),
+  // Document & Compliance fields
+  nationality: z.string().optional(),
+  passport_no: z.string().optional(),
+  visa_exp_date: z.string().optional(),
+  insurance_exp_date: z.string().optional()
 })
+
+// Expiration status utility function
+function getExpirationStatus(expDate: string | undefined): {
+  status: 'expired' | 'warning' | 'valid' | 'none'
+  daysRemaining: number | null
+  message: string
+  color: string
+} {
+  if (!expDate) return {
+    status: 'none',
+    daysRemaining: null,
+    message: 'Not set',
+    color: COLORS.bronze
+  }
+
+  const exp = new Date(expDate)
+  const now = new Date()
+  const diffTime = exp.getTime() - now.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+  if (diffDays < 0) {
+    return {
+      status: 'expired',
+      daysRemaining: Math.abs(diffDays),
+      message: `EXPIRED ${Math.abs(diffDays)} days ago`,
+      color: '#DC2626' // red-600
+    }
+  } else if (diffDays <= 30) {
+    return {
+      status: 'warning',
+      daysRemaining: diffDays,
+      message: `Expires in ${diffDays} day${diffDays !== 1 ? 's' : ''}`,
+      color: '#F59E0B' // amber-500
+    }
+  } else {
+    return {
+      status: 'valid',
+      daysRemaining: diffDays,
+      message: `Valid for ${diffDays} days`,
+      color: '#10B981' // green-500
+    }
+  }
+}
 
 type StaffSchemaType = z.infer<typeof staffSchema>
 
@@ -86,6 +132,10 @@ export interface StaffFormValues {
   hourly_cost?: number
   display_rate?: number
   branch_ids?: string[]
+  nationality?: string
+  passport_no?: string
+  visa_exp_date?: string
+  insurance_exp_date?: string
 }
 
 interface StaffModalProps {
@@ -108,6 +158,10 @@ interface StaffModalProps {
     hourly_cost?: number
     display_rate?: number
     relationships?: any
+    nationality?: string
+    passport_no?: string
+    visa_exp_date?: string
+    insurance_exp_date?: string
   }
   roles: Role[]
   branches?: Branch[]
@@ -168,7 +222,11 @@ export function StaffModal({
       status: (staff?.status === 'archived' ? 'inactive' : 'active') as 'active' | 'inactive',
       hourly_cost: staff?.hourly_cost || 0,
       display_rate: staff?.display_rate || 0,
-      hire_date: staff?.hire_date || ''
+      hire_date: staff?.hire_date || '',
+      nationality: staff?.nationality || '',
+      passport_no: staff?.passport_no || '',
+      visa_exp_date: staff?.visa_exp_date || '',
+      insurance_exp_date: staff?.insurance_exp_date || ''
     }
   })
 
@@ -201,11 +259,16 @@ export function StaffModal({
         hourly_cost: staff?.hourly_cost || 0,
         display_rate: staff?.display_rate || 0,
         hire_date: staff?.hire_date || '',
-        branch_ids: branchIdsFromStaff
+        branch_ids: branchIdsFromStaff,
+        nationality: staff?.nationality || '',
+        passport_no: staff?.passport_no || '',
+        visa_exp_date: staff?.visa_exp_date || '',
+        insurance_exp_date: staff?.insurance_exp_date || ''
       })
 
       // Auto-expand advanced if any advanced fields have values
-      if (staff?.hourly_cost || staff?.display_rate || staff?.hire_date) {
+      if (staff?.hourly_cost || staff?.display_rate || staff?.hire_date ||
+          staff?.nationality || staff?.passport_no || staff?.visa_exp_date || staff?.insurance_exp_date) {
         setShowAdvanced(true)
       }
     }
@@ -232,7 +295,11 @@ export function StaffModal({
         hire_date: data.hire_date,
         hourly_cost: data.hourly_cost,
         display_rate: data.display_rate,
-        branch_ids: data.branch_ids
+        branch_ids: data.branch_ids,
+        nationality: data.nationality,
+        passport_no: data.passport_no,
+        visa_exp_date: data.visa_exp_date,
+        insurance_exp_date: data.insurance_exp_date
       }
 
       await onSave(staffData)
@@ -273,22 +340,60 @@ export function StaffModal({
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent
-          className="max-w-2xl max-h-[90vh] overflow-y-auto"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            border: `1px solid ${COLORS.gold}`,
-            color: COLORS.lightText
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle style={{ color: COLORS.champagne }} className="text-2xl font-bold">
-              {isEditMode ? 'Edit Staff Member' : 'Add New Staff Member'}
-            </DialogTitle>
-          </DialogHeader>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <SalonLuxeModal
+        open={open}
+        onClose={onOpenChange}
+        title={isEditMode ? 'Edit Staff Member' : 'Add New Staff Member'}
+        description={
+          isEditMode
+            ? 'Update staff member information and assignments'
+            : 'Add a new team member with role and branch assignments'
+        }
+        icon={<User className="h-6 w-6" />}
+        size="md"
+        className="!max-w-xl !max-h-[95vh]"
+        footer={
+          <>
+            {isEditMode && canArchive && onArchive && staff?.status !== 'archived' && (
+              <SalonLuxeButton
+                variant="outline"
+                onClick={handleArchive}
+                disabled={isSubmitting || isLoading}
+                icon={<Archive className="h-4 w-4" />}
+              >
+                Archive
+              </SalonLuxeButton>
+            )}
+            {isEditMode && canDelete && onDelete && staff?.status === 'archived' && (
+              <SalonLuxeButton
+                variant="destructive"
+                onClick={() => setDeleteConfirmOpen(true)}
+                disabled={isSubmitting || isLoading}
+                icon={<Trash2 className="h-4 w-4" />}
+              >
+                Delete
+              </SalonLuxeButton>
+            )}
+            <div className="ml-auto flex gap-2">
+              <SalonLuxeButton
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isSubmitting || isLoading}
+              >
+                Cancel
+              </SalonLuxeButton>
+              <SalonLuxeButton
+                type="submit"
+                loading={isSubmitting || isLoading}
+                onClick={handleSubmit(onSubmit)}
+              >
+                {isEditMode ? 'Update Staff' : 'Add Staff'}
+              </SalonLuxeButton>
+            </div>
+          </>
+        }
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-6">
             {/* Full Name Field (Required) */}
             <div className="space-y-2">
               <Label htmlFor="full_name" style={{ color: COLORS.champagne }}>
@@ -600,25 +705,20 @@ export function StaffModal({
 
             {/* Advanced Fields Toggle */}
             <div>
-              <Button
+              <SalonLuxeButton
                 type="button"
                 variant="outline"
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="w-full"
-                style={{
-                  borderColor: COLORS.gold + '40',
-                  color: COLORS.champagne,
-                  backgroundColor: COLORS.charcoalLight
-                }}
+                className="w-full justify-between"
+                icon={<Briefcase className="h-4 w-4" />}
               >
-                <Briefcase className="h-4 w-4 mr-2" />
-                Advanced Options
+                <span>Advanced Options</span>
                 {showAdvanced ? (
                   <ChevronUp className="h-4 w-4 ml-auto" />
                 ) : (
                   <ChevronDown className="h-4 w-4 ml-auto" />
                 )}
-              </Button>
+              </SalonLuxeButton>
             </div>
 
             {/* Advanced Fields (Expandable) */}
@@ -694,109 +794,223 @@ export function StaffModal({
                     }}
                   />
                 </div>
+
+                {/* Document & Compliance Section - Enterprise Grade */}
+                <div
+                  className="mt-6 p-5 rounded-xl border"
+                  style={{
+                    backgroundColor: COLORS.charcoal + 'E6',
+                    borderColor: COLORS.gold + '30',
+                    boxShadow: `0 4px 12px ${COLORS.black}40`
+                  }}
+                >
+                  {/* Section Header */}
+                  <div className="flex items-center gap-2 mb-5">
+                    <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                    <h3
+                      className="text-lg font-semibold tracking-wide"
+                      style={{ color: COLORS.champagne }}
+                    >
+                      Document & Compliance Tracking
+                    </h3>
+                  </div>
+
+                  <div className="space-y-4">
+                    {/* Nationality */}
+                    <div className="space-y-2">
+                      <Label htmlFor="nationality" style={{ color: COLORS.champagne }}>
+                        Nationality
+                      </Label>
+                      <Input
+                        id="nationality"
+                        {...register('nationality')}
+                        placeholder="e.g., UAE, India, Philippines"
+                        className="transition-all duration-200"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          color: COLORS.champagne,
+                          borderColor: COLORS.gold + '40',
+                          padding: '0.75rem',
+                          borderRadius: '0.375rem'
+                        }}
+                      />
+                    </div>
+
+                    {/* Passport Number */}
+                    <div className="space-y-2">
+                      <Label htmlFor="passport_no" style={{ color: COLORS.champagne }}>
+                        <FileText className="h-4 w-4 inline mr-2" />
+                        Passport Number
+                      </Label>
+                      <Input
+                        id="passport_no"
+                        {...register('passport_no')}
+                        placeholder="Enter passport number"
+                        className="transition-all duration-200"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          color: COLORS.champagne,
+                          borderColor: COLORS.gold + '40',
+                          padding: '0.75rem',
+                          borderRadius: '0.375rem'
+                        }}
+                      />
+                    </div>
+
+                    {/* Visa Expiration Date with Status Indicator */}
+                    <div className="space-y-2">
+                      <Label htmlFor="visa_exp_date" style={{ color: COLORS.champagne }}>
+                        <Calendar className="h-4 w-4 inline mr-2" />
+                        Visa Expiration Date
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="visa_exp_date"
+                          type="date"
+                          {...register('visa_exp_date')}
+                          className="transition-all duration-200"
+                          style={{
+                            backgroundColor: COLORS.charcoalLight,
+                            color: COLORS.champagne,
+                            borderColor: watch('visa_exp_date')
+                              ? getExpirationStatus(watch('visa_exp_date')).color
+                              : COLORS.gold + '40',
+                            padding: '0.75rem',
+                            borderRadius: '0.375rem',
+                            borderWidth: watch('visa_exp_date') ? '2px' : '1px'
+                          }}
+                        />
+                        {watch('visa_exp_date') && (
+                          <div className="mt-2 flex items-center gap-2">
+                            <div
+                              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                              style={{
+                                backgroundColor: getExpirationStatus(watch('visa_exp_date')).color + '20',
+                                color: getExpirationStatus(watch('visa_exp_date')).color,
+                                border: `1px solid ${getExpirationStatus(watch('visa_exp_date')).color}60`
+                              }}
+                            >
+                              {getExpirationStatus(watch('visa_exp_date')).status === 'expired' && (
+                                <AlertTriangle className="h-3 w-3" />
+                              )}
+                              {getExpirationStatus(watch('visa_exp_date')).status === 'warning' && (
+                                <AlertTriangle className="h-3 w-3" />
+                              )}
+                              {getExpirationStatus(watch('visa_exp_date')).message}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Insurance Expiration Date with Status Indicator */}
+                    <div className="space-y-2">
+                      <Label htmlFor="insurance_exp_date" style={{ color: COLORS.champagne }}>
+                        <Calendar className="h-4 w-4 inline mr-2" />
+                        Insurance Expiration Date
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="insurance_exp_date"
+                          type="date"
+                          {...register('insurance_exp_date')}
+                          className="transition-all duration-200"
+                          style={{
+                            backgroundColor: COLORS.charcoalLight,
+                            color: COLORS.champagne,
+                            borderColor: watch('insurance_exp_date')
+                              ? getExpirationStatus(watch('insurance_exp_date')).color
+                              : COLORS.gold + '40',
+                            padding: '0.75rem',
+                            borderRadius: '0.375rem',
+                            borderWidth: watch('insurance_exp_date') ? '2px' : '1px'
+                          }}
+                        />
+                        {watch('insurance_exp_date') && (
+                          <div className="mt-2 flex items-center gap-2">
+                            <div
+                              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                              style={{
+                                backgroundColor: getExpirationStatus(watch('insurance_exp_date')).color + '20',
+                                color: getExpirationStatus(watch('insurance_exp_date')).color,
+                                border: `1px solid ${getExpirationStatus(watch('insurance_exp_date')).color}60`
+                              }}
+                            >
+                              {getExpirationStatus(watch('insurance_exp_date')).status === 'expired' && (
+                                <AlertTriangle className="h-3 w-3" />
+                              )}
+                              {getExpirationStatus(watch('insurance_exp_date')).status === 'warning' && (
+                                <AlertTriangle className="h-3 w-3" />
+                              )}
+                              {getExpirationStatus(watch('insurance_exp_date')).message}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Enterprise Info Banner */}
+                    {(getExpirationStatus(watch('visa_exp_date')).status === 'warning' ||
+                      getExpirationStatus(watch('visa_exp_date')).status === 'expired' ||
+                      getExpirationStatus(watch('insurance_exp_date')).status === 'warning' ||
+                      getExpirationStatus(watch('insurance_exp_date')).status === 'expired') && (
+                      <div
+                        className="p-3 rounded-lg border flex items-start gap-2 animate-in fade-in slide-in-from-top-2"
+                        style={{
+                          backgroundColor: '#F59E0B20',
+                          borderColor: '#F59E0B60'
+                        }}
+                      >
+                        <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#F59E0B' }} />
+                        <div>
+                          <p className="text-xs font-semibold mb-1" style={{ color: '#F59E0B' }}>
+                            Compliance Alert
+                          </p>
+                          <p className="text-xs" style={{ color: COLORS.champagne, opacity: 0.9 }}>
+                            {getExpirationStatus(watch('visa_exp_date')).status === 'expired' ||
+                            getExpirationStatus(watch('insurance_exp_date')).status === 'expired'
+                              ? 'Critical: One or more documents have expired. Please renew immediately.'
+                              : 'Warning: Documents expiring within 30 days. Schedule renewal soon.'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
-
-            <DialogFooter className="flex justify-between gap-2">
-              <div className="flex gap-2">
-                {isEditMode && canArchive && onArchive && staff?.status !== 'archived' && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleArchive}
-                    disabled={isSubmitting || isLoading}
-                    style={{
-                      backgroundColor: COLORS.bronze + '20',
-                      color: COLORS.bronze,
-                      border: `1px solid ${COLORS.bronze}40`
-                    }}
-                  >
-                    <Archive className="h-4 w-4 mr-2" />
-                    Archive
-                  </Button>
-                )}
-                {isEditMode && canDelete && onDelete && staff?.status === 'archived' && (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => setDeleteConfirmOpen(true)}
-                    disabled={isSubmitting || isLoading}
-                    style={{
-                      backgroundColor: '#991B1B',
-                      color: '#FFFFFF'
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
-                  </Button>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={isSubmitting || isLoading}
-                  style={{
-                    borderColor: COLORS.gold,
-                    color: COLORS.champagne,
-                    backgroundColor: 'transparent'
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting || isLoading}
-                  style={{
-                    backgroundColor: COLORS.gold,
-                    color: COLORS.black
-                  }}
-                  className="hover:opacity-90"
-                >
-                  {isSubmitting || isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      {isEditMode ? 'Updating...' : 'Adding...'}
-                    </>
-                  ) : (
-                    <>{isEditMode ? 'Update Staff' : 'Add Staff'}</>
-                  )}
-                </Button>
-              </div>
-            </DialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </SalonLuxeModal>
 
       {/* Enterprise Delete Confirmation Dialog */}
-      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <DialogContent
-          className="max-w-lg"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            border: `2px solid #991B1B`,
-            color: COLORS.lightText
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle
-              className="text-2xl font-bold flex items-center gap-3"
-              style={{ color: '#FEE2E2' }}
+      <SalonLuxeModal
+        open={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        title="Permanent Deletion Warning"
+        description="This action cannot be undone"
+        icon={<Trash2 className="h-6 w-6" style={{ color: '#DC2626' }} />}
+        size="md"
+        footer={
+          <>
+            <SalonLuxeButton
+              variant="outline"
+              onClick={() => setDeleteConfirmOpen(false)}
+              disabled={isDeleting}
             >
-              <div
-                className="p-3 rounded-lg"
-                style={{
-                  backgroundColor: '#991B1B20',
-                  border: '2px solid #991B1B'
-                }}
-              >
-                <Trash2 className="h-6 w-6" style={{ color: '#991B1B' }} />
-              </div>
-              Permanent Deletion Warning
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-6 space-y-4">
+              Cancel
+            </SalonLuxeButton>
+            <SalonLuxeButton
+              variant="destructive"
+              onClick={handleDelete}
+              loading={isDeleting}
+              icon={<Trash2 className="h-4 w-4" />}
+            >
+              Yes, Delete Permanently
+            </SalonLuxeButton>
+          </>
+        }
+      >
+        <div className="space-y-4">
             <div
               className="p-4 rounded-lg border-l-4"
               style={{
@@ -840,47 +1054,7 @@ export function StaffModal({
               </p>
             </div>
           </div>
-          <DialogFooter className="flex gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setDeleteConfirmOpen(false)}
-              disabled={isDeleting}
-              className="flex-1"
-              style={{
-                borderColor: COLORS.gold,
-                color: COLORS.champagne,
-                backgroundColor: 'transparent'
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="flex-1"
-              style={{
-                backgroundColor: '#991B1B',
-                color: '#FFFFFF',
-                border: '2px solid #7F1D1D'
-              }}
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Yes, Delete Permanently
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </SalonLuxeModal>
     </>
   )
 }

@@ -214,16 +214,39 @@ export function requireAuth(handler: (req: NextRequest, user: AuthUser) => Promi
  * Ensures USER entity exists and returns actor_user_id for stamping
  */
 export async function buildActorContext(
-  supabase: any, 
-  supabaseUserId: string, 
+  supabase: any,
+  supabaseUserId: string,
   organizationId?: string
 ): Promise<ActorContext> {
   try {
+    console.log('[buildActorContext] 🔍 Building actor context for:', {
+      supabaseUserId,
+      organizationId
+    })
+
     // Try to resolve user identity via RPC first
-    const { data: ident } = await withTimeout(supabase.rpc('resolve_user_identity_v1'))
+    const { data: ident, error: identError } = await withTimeout(supabase.rpc('resolve_user_identity_v1'))
+
+    if (identError) {
+      console.error('[buildActorContext] ❌ RPC resolve_user_identity_v1 failed:', identError)
+    }
+
+    console.log('[buildActorContext] 📊 RPC response:', {
+      hasData: !!ident,
+      isArray: Array.isArray(ident),
+      length: Array.isArray(ident) ? ident.length : 0,
+      firstItem: ident?.[0]
+    })
+
     const userContext = ident?.[0]
-    
+
     if (userContext?.user_entity_id) {
+      console.log('[buildActorContext] ✅ USER entity found:', {
+        user_entity_id: userContext.user_entity_id,
+        email: userContext.email,
+        organization_ids: userContext.organization_ids
+      })
+
       return {
         actor_user_id: userContext.user_entity_id,
         organization_id: organizationId || userContext.organization_ids?.[0],
@@ -231,11 +254,14 @@ export async function buildActorContext(
         roles: userContext.roles || []
       }
     }
-    
+
     // Fallback: Use Supabase user ID as actor_user_id
     // This handles cases where USER entity might not exist yet
-    console.warn('[buildActorContext] No USER entity found, using Supabase ID as fallback')
-    
+    console.warn('[buildActorContext] ⚠️ No USER entity found, using Supabase ID as fallback:', {
+      supabaseUserId,
+      organizationId
+    })
+
     return {
       actor_user_id: supabaseUserId,
       organization_id: organizationId || '',
@@ -243,9 +269,11 @@ export async function buildActorContext(
       roles: []
     }
   } catch (error) {
-    console.error('[buildActorContext] Error building actor context:', error)
-    
+    console.error('[buildActorContext] ❌ Error building actor context:', error)
+
     // Ultimate fallback
+    console.warn('[buildActorContext] ⚠️ Using ultimate fallback - Supabase ID:', supabaseUserId)
+
     return {
       actor_user_id: supabaseUserId,
       organization_id: organizationId || '',

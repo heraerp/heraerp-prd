@@ -4,7 +4,7 @@
 // Centralized role homes and allowed paths with accountant role
 // ================================================================================
 
-export type Role = 'owner' | 'admin' | 'manager' | 'stylist' | 'cashier' | 'customer' | 'accountant'
+export type Role = 'owner' | 'admin' | 'manager' | 'stylist' | 'cashier' | 'customer' | 'accountant' | 'receptionist'
 
 /**
  * Landing page for each role after login
@@ -16,7 +16,8 @@ export const ROLE_HOME: Record<Role, string> = {
   stylist: '/appointments',
   cashier: '/pos/sale',
   customer: '/customer',
-  accountant: '/accountant'
+  accountant: '/accountant',
+  receptionist: '/receptionist'
 }
 
 /**
@@ -47,7 +48,20 @@ export const ROLE_NAV: Record<Role, string[]> = {
   stylist: ['/appointments', '/staff/schedule'],
   cashier: ['/pos/sale', '/appointments'],
   customer: ['/customer/*'],
-  accountant: ['/accountant', '/reports/*', '/finance/closing', '/finance/rules']
+  accountant: ['/accountant', '/reports/*', '/finance/closing', '/finance/rules'],
+  receptionist: [
+    '/receptionist',
+    '/appointments',
+    '/appointments/*',
+    '/customers',
+    '/customers/*',
+    '/pos',
+    '/pos/*',
+    '/calendar',
+    '/calendar/*',
+    '/kanban',
+    '/kanban/*'
+  ]
 }
 
 /**
@@ -125,6 +139,14 @@ export const ROLE_NAVIGATION = {
     { title: 'Reports', href: '/reports', icon: 'BarChart3' },
     { title: 'Period Closing', href: '/finance/closing', icon: 'Lock' },
     { title: 'GL Rules', href: '/finance/rules', icon: 'FileText' }
+  ],
+  receptionist: [
+    { title: 'Dashboard', href: '/receptionist', icon: 'Home' },
+    { title: 'Appointments', href: '/appointments', icon: 'Calendar' },
+    { title: 'Customers', href: '/customers', icon: 'Users' },
+    { title: 'POS', href: '/pos', icon: 'CreditCard' },
+    { title: 'Calendar', href: '/calendar', icon: 'CalendarDays' },
+    { title: 'Kanban', href: '/kanban', icon: 'LayoutGrid' }
   ]
 }
 

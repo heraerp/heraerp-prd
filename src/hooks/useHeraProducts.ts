@@ -263,6 +263,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
 
     if (data.category !== undefined) {
       dynamic_patch.category = data.category
+      console.log('[useHeraProducts] 🏷️ Category update:', { category: data.category })
     }
 
     if (data.cost_price !== undefined) {
@@ -322,6 +323,11 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
           }
         : undefined
 
+    console.log('[useHeraProducts] 📍 Location update:', {
+      branch_ids: data.branch_ids,
+      relationships_patch
+    })
+
     const payload: any = {
       entity_id: id,
       ...(entity_name && { entity_name }),
@@ -335,6 +341,15 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     if (data.status !== undefined) {
       payload.status = data.status === 'inactive' ? 'archived' : 'active'
     }
+
+    console.log('[useHeraProducts] 📦 Final update payload:', {
+      entity_id: id,
+      has_dynamic_patch: !!payload.dynamic_patch,
+      dynamic_patch_keys: payload.dynamic_patch ? Object.keys(payload.dynamic_patch) : [],
+      dynamic_patch: payload.dynamic_patch,
+      has_relationships: !!payload.relationships_patch,
+      relationships_patch: payload.relationships_patch
+    })
 
     const result = await baseUpdate(payload)
     // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)

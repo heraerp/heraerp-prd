@@ -9,19 +9,18 @@
 import { KanbanStatus } from '@/schemas/kanban'
 
 /**
- * Ordered pipeline of appointment states.
+ * ✅ SIMPLIFIED: Ordered pipeline of appointment states.
  * Appointments can only move FORWARD (left-to-right) through this pipeline.
  *
- * DRAFT → BOOKED → CHECKED_IN → IN_SERVICE → TO_PAY → DONE
+ * DRAFT → BOOKED → IN_PROGRESS → DONE
  *
+ * IN_PROGRESS combines the old statuses: CHECKED_IN, IN_SERVICE, and TO_PAY
  * CANCELLED is a terminal state that can be reached from any state.
  */
 export const APPOINTMENT_PIPELINE: ReadonlyArray<KanbanStatus> = [
   'DRAFT',
   'BOOKED',
-  'CHECKED_IN',
-  'IN_SERVICE',
-  'TO_PAY',
+  'IN_PROGRESS', // ✅ Unified status for service delivery (check-in → service → payment)
   'DONE',
   'CANCELLED' // Terminal state - reachable from any state
 ] as const

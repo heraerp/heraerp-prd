@@ -158,7 +158,7 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     isUpdating,
     isDeleting
   } = useUniversalEntity({
-    entity_type: 'product',
+    entity_type: 'PRODUCT',
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
@@ -257,7 +257,7 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     }
 
     const result = await baseCreate({
-      entity_type: 'product',
+      entity_type: 'PRODUCT',
       entity_name,
       entity_code,
       smart_code: 'HERA.SALON.PROD.ENT.V1',
@@ -484,7 +484,7 @@ export function useHeraStockMovements(options?: UseHeraInventoryOptions) {
     refetch,
     create: baseCreate
   } = useUniversalEntity({
-    entity_type: 'stock_movement',
+    entity_type: 'STOCK_MOVEMENT',
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,

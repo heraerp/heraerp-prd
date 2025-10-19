@@ -176,13 +176,11 @@ export default function ViewAppointmentPage({ params }: PageProps) {
   const getEffectiveOrgId = () => {
     // PRIORITY 1: Always use authenticated JWT organization (multi-tenant security)
     if (organization?.id) {
-      console.log('[Auth] Using JWT organization:', organization.id)
       return organization.id
     }
 
     // PRIORITY 2: LocalStorage only for demo/unauthenticated mode
     if (localOrgId) {
-      console.log('[Auth] Using localStorage organization (demo mode):', localOrgId)
       return localOrgId
     }
 
@@ -195,12 +193,10 @@ export default function ViewAppointmentPage({ params }: PageProps) {
         hostname.startsWith('heratalkz.') ||
         hostname === 'heratalkz.localhost'
       ) {
-        console.log('[Auth] Using Hair Talkz subdomain organization (fallback)')
         return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
       }
     }
 
-    console.warn('[Auth] No organization ID found')
     return null
   }
 
@@ -243,14 +239,10 @@ export default function ViewAppointmentPage({ params }: PageProps) {
         // Set organization ID on universalApi
         universalApi.setOrganizationId(orgId)
 
-        console.log('📊 Loading appointment details for:', unwrappedParams.id)
-
         // Load appointment - Universal API filters by organization automatically
         const appointmentResponse = await universalApi.read('universal_transactions', {
           id: unwrappedParams.id
         })
-
-        console.log('📅 Appointment response:', appointmentResponse)
 
         if (appointmentResponse.success && appointmentResponse.data?.length > 0) {
           const apt = appointmentResponse.data[0]
@@ -280,8 +272,6 @@ export default function ViewAppointmentPage({ params }: PageProps) {
           const linesResponse = await universalApi.read('universal_transaction_lines', {
             transaction_id: unwrappedParams.id
           })
-
-          console.log('📝 Transaction lines response:', linesResponse)
 
           if (linesResponse.success && linesResponse.data) {
             // Load service/product details for each line
@@ -334,8 +324,6 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
       const response = await universalApi.updateTransaction(unwrappedParams.id, updateData)
       if (response.success) {
-        console.log('Success:', 'Appointment cancelled successfully')
-
         // Show success message with animation
         const successDiv = document.createElement('div')
         successDiv.style.cssText = `
@@ -397,8 +385,6 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
       const response = await universalApi.updateTransaction(unwrappedParams.id, updateData)
       if (response.success) {
-        console.log('Success:', 'Appointment postponed successfully')
-
         // Show success message with animation
         const successDiv = document.createElement('div')
         successDiv.style.cssText = `

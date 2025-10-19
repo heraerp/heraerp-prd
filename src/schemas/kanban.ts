@@ -5,18 +5,14 @@
 export type KanbanStatus =
   | 'DRAFT'
   | 'BOOKED'
-  | 'CHECKED_IN'
-  | 'IN_SERVICE'
-  | 'TO_PAY'
+  | 'IN_PROGRESS' // ✅ SIMPLIFIED: Combines CHECKED_IN → IN_SERVICE → TO_PAY into one status
   | 'DONE'
   | 'CANCELLED'
 
 export const KANBAN_COLUMNS: { key: KanbanStatus; label: string }[] = [
   { key: 'DRAFT', label: 'Draft' },
   { key: 'BOOKED', label: 'Booked' },
-  { key: 'CHECKED_IN', label: 'Checked-in' },
-  { key: 'IN_SERVICE', label: 'In service' },
-  { key: 'TO_PAY', label: 'To pay' },
+  { key: 'IN_PROGRESS', label: 'In Progress' }, // ✅ Unified status for active service
   { key: 'DONE', label: 'Done' },
   { key: 'CANCELLED', label: 'Cancelled' }
 ]
@@ -50,19 +46,17 @@ export type KanbanCard = {
   metadata?: any
 }
 
-// Allowed status transitions matrix
+// ✅ SIMPLIFIED: Allowed status transitions matrix
 export const ALLOWED_TRANSITIONS: Record<KanbanStatus, KanbanStatus[]> = {
   DRAFT: ['BOOKED', 'CANCELLED'],
-  BOOKED: ['CHECKED_IN', 'CANCELLED'],
-  CHECKED_IN: ['IN_SERVICE', 'CANCELLED'],
-  IN_SERVICE: ['TO_PAY', 'CANCELLED'], // Allow cancel during service
-  TO_PAY: ['DONE', 'CANCELLED'], // Direct to DONE, removed REVIEW
-  DONE: [],
-  CANCELLED: []
+  BOOKED: ['IN_PROGRESS', 'CANCELLED'], // ✅ Simplified: Go directly to IN_PROGRESS
+  IN_PROGRESS: ['DONE', 'CANCELLED'], // ✅ Simplified: One status for entire service delivery
+  DONE: [], // Terminal state
+  CANCELLED: [] // Terminal state
 }
 
 // States that can be cancelled
-export const CANCELLABLE_STATES: KanbanStatus[] = ['DRAFT', 'BOOKED', 'CHECKED_IN', 'IN_SERVICE']
+export const CANCELLABLE_STATES: KanbanStatus[] = ['DRAFT', 'BOOKED', 'IN_PROGRESS']
 
 // States that can be rescheduled
-export const RESCHEDULABLE_STATES: KanbanStatus[] = ['DRAFT', 'BOOKED', 'CHECKED_IN']
+export const RESCHEDULABLE_STATES: KanbanStatus[] = ['DRAFT', 'BOOKED']

@@ -21,8 +21,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('Processing check-in for appointment:', appointmentId)
-
     // 1. Get appointment details with current status
     const { data: appointment, error: appointmentError } = await supabase
       .from('universal_transactions')
@@ -95,8 +93,6 @@ export async function POST(request: NextRequest) {
         checked_in_by: userId || 'reception'
       }
     })
-
-    console.log('Appointment checked in successfully')
 
     // 5. Update staff status to BUSY
     if (appointment.target_entity_id) {
@@ -220,8 +216,6 @@ async function updateStaffStatus(
           }
         })
       }
-
-      console.log(`Staff ${staffId} status updated to ${newStatusCode}`)
     }
   } catch (error) {
     console.error('Failed to update staff status:', error)
@@ -252,8 +246,6 @@ async function createCheckInEvent(
         timestamp: new Date().toISOString()
       }
     })
-
-    console.log('Check-in event created for audit trail')
   } catch (error) {
     console.error('Failed to create check-in event:', error)
     // Don't fail the check-in if event creation fails

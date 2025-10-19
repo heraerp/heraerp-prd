@@ -56,10 +56,9 @@ export function useUnifiedInventory(options: UseUnifiedInventoryOptions) {
     checkPhase2()
   }, [organizationId])
 
-  // Phase 1 hook
+  // ✅ ALWAYS initialize both hooks (React Hooks Rules)
+  // We'll just ignore the one we don't need
   const phase1 = useHeraInventory(options)
-
-  // Phase 2 hook
   const phase2 = useStockLevels({
     organizationId,
     locationId: branchId !== 'all' ? branchId : undefined
@@ -71,24 +70,72 @@ export function useUnifiedInventory(options: UseUnifiedInventoryOptions) {
       items: [],
       isLoading: true,
       phase: 'checking' as const,
-      ...phase1
+      refetch: async () => {},
+      createItem: undefined,
+      updateItem: undefined,
+      archiveItem: undefined,
+      restoreItem: undefined,
+      lowStockCount: 0,
+      totalValue: 0
     }
   }
 
   if (usePhase2) {
     console.log('✅ [Unified Inventory] Using Phase 2 (STOCK_LEVEL entities)')
+    console.log('   Stock levels loaded:', phase2.stockLevels?.length || 0)
+    console.log('   Phase 2 loading:', phase2.isLoading)
+
+    // Map Phase 2 stock levels to look like inventory items
+    const mappedItems = (phase2.stockLevels || []).map((sl: any) => ({
+      id: sl.id,
+      entity_name: sl.entity_name,
+      entity_code: sl.entity_code,
+      smart_code: sl.smart_code,
+      status: sl.status || 'active',
+      product_id: sl.product_id,
+      product_name: sl.product_name,
+      location_id: sl.location_id,
+      location_name: sl.location_name,
+      stock_quantity: sl.quantity,
+      reorder_level: sl.reorder_level,
+      stock_status: sl.status,
+      stock_value: 0, // TODO: Calculate from cost price
+      created_at: sl.created_at,
+      updated_at: sl.updated_at,
+      relationships: sl.relationships
+    }))
+
     return {
-      ...phase2,
-      items: phase2.stockLevels,
-      phase: 'phase2' as const,
+      items: mappedItems,
       isLoading: phase2.isLoading,
-      refetch: phase2.refetch
+      error: phase2.error,
+      refetch: phase2.refetch,
+      phase: 'phase2' as const,
+      // Phase 2 specific methods
+      createStockLevel: phase2.createStockLevel,
+      adjustStock: phase2.adjustStock,
+      incrementStock: phase2.incrementStock,
+      decrementStock: phase2.decrementStock,
+      isAdjusting: phase2.isAdjusting,
+      // Keep Phase 1 methods for compatibility
+      createItem: async () => { throw new Error('Use createStockLevel for Phase 2') },
+      updateItem: async () => { throw new Error('Use adjustStock for Phase 2') },
+      archiveItem: async () => { throw new Error('Not supported in Phase 2') },
+      restoreItem: async () => { throw new Error('Not supported in Phase 2') },
+      lowStockCount: mappedItems.filter(i => i.stock_status === 'low_stock' || i.stock_status === 'out_of_stock').length,
+      totalValue: 0 // TODO: Calculate from stock values
     }
   }
 
   console.log('📦 [Unified Inventory] Using Phase 1 (product.stock_quantity)')
   return {
     ...phase1,
-    phase: 'phase1' as const
+    phase: 'phase1' as const,
+    // Phase 1 doesn't have these
+    createStockLevel: undefined,
+    adjustStock: undefined,
+    incrementStock: undefined,
+    decrementStock: undefined,
+    isAdjusting: false
   }
 }

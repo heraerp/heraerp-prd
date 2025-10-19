@@ -174,15 +174,11 @@ export function BookAppointmentModal({
         // Set organization ID on universalApi
         universalApi.setOrganizationId(organizationId)
 
-        console.log('📊 Loading modal data for org:', organizationId)
-
         // Load customers
         const customersResponse = await universalApi.read('core_entities', {
           organization_id: organizationId,
           entity_type: 'customer'
         })
-
-        console.log('👥 Customers response:', customersResponse)
 
         // Load services
         const servicesResponse = await universalApi.read('core_entities', {
@@ -190,15 +186,11 @@ export function BookAppointmentModal({
           entity_type: 'service'
         })
 
-        console.log('✂️ Services response:', servicesResponse)
-
         // Load stylists
         const stylistsResponse = await universalApi.read('core_entities', {
           organization_id: organizationId,
           entity_type: 'employee'
         })
-
-        console.log('💇 Stylists response:', stylistsResponse)
 
         if (customersResponse.success) setCustomers(customersResponse.data || [])
         if (servicesResponse.success) setServices(servicesResponse.data || [])

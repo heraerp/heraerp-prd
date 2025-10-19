@@ -221,7 +221,7 @@ export function SalonResourceCalendar({
     }
   })
 
-  const { isLoading: customersLoading } = useHeraCustomers({
+  const { customers, isLoading: customersLoading } = useHeraCustomers({
     organizationId
   })
 
@@ -341,8 +341,8 @@ export function SalonResourceCalendar({
       const startDate = new Date(apt.start_time)
       const time = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`
 
-      // Customer and stylist info
-      const customerName = apt.customer_name || 'Walk-in Customer'
+      // Customer and stylist info - use runtime lookup
+      const customerName = customers?.find(c => c.id === apt.customer_id)?.entity_name || 'Walk-in Customer'
       const stylistId = apt.stylist_id || 'unassigned'
 
       // Get branch info from metadata

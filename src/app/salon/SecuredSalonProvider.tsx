@@ -190,10 +190,17 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       // Force initialize store if we have orgId but store isn't initialized
       if (orgId && !securityStore.isInitialized) {
         console.log('🔧 Force initializing store with orgId:', orgId)
+
+        // Get role from localStorage (set by sign-in page) or default to owner
+        const storedRole = (typeof window !== 'undefined' ? localStorage.getItem('salonRole') : null) || 'owner'
+        const permissions = SALON_ROLE_PERMISSIONS[storedRole as keyof typeof SALON_ROLE_PERMISSIONS] || SALON_ROLE_PERMISSIONS.owner
+
+        console.log('🔑 Using role from localStorage:', storedRole, 'with permissions:', permissions)
+
         securityStore.setInitialized({
-          salonRole: 'owner',
+          salonRole: storedRole as any,
           organizationId: orgId,
-          permissions: ['salon:read:all', 'salon:write:all', 'salon:admin:full'],
+          permissions,
           userId: auth.user?.id || 'demo-user',
           user: auth.user,
           organization: {
@@ -671,30 +678,35 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         } = await supabase.auth.getUser()
         if (user?.email) {
           console.log('🔍 Determining salon role for:', user.email)
+          const lowerEmail = user.email.toLowerCase()
 
-          // Michele is the salon owner
-          if (user.email.includes('michele')) {
+          // Owner: Hairtalkz2022@gmail.com
+          if (lowerEmail.includes('2022') || lowerEmail.includes('michele')) {
+            console.log('✅ Detected OWNER role from email')
             return 'owner'
           }
 
-          // Map common email patterns to roles
-          if (user.email.includes('manager')) {
-            return 'manager'
-          }
-
-          if (user.email.includes('receptionist') || user.email.includes('front')) {
+          // Receptionists: hairtalkz01@gmail.com, hairtalkz02@gmail.com
+          if (lowerEmail.includes('01') || lowerEmail.includes('02') || lowerEmail.includes('receptionist') || lowerEmail.includes('front')) {
+            console.log('✅ Detected RECEPTIONIST role from email')
             return 'receptionist'
           }
 
-          if (user.email.includes('stylist') || user.email.includes('hair')) {
+          // Map common email patterns to roles
+          if (lowerEmail.includes('manager')) {
+            return 'manager'
+          }
+
+          if (lowerEmail.includes('stylist') || lowerEmail.includes('hair')) {
             return 'stylist'
           }
 
-          if (user.email.includes('accountant') || user.email.includes('finance')) {
+          if (lowerEmail.includes('accountant') || lowerEmail.includes('finance')) {
             return 'accountant'
           }
 
           // Default to owner for salon demo
+          console.log('✅ Using default OWNER role')
           return 'owner'
         }
       } catch (emailError) {
@@ -884,7 +896,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const isPublicPage = (): boolean => {
     if (typeof window === 'undefined') return false
     const pathname = window.location.pathname
-    return pathname === '/salon' || pathname === '/salon/auth'
+    return pathname === '/salon' || pathname === '/salon-access'
   }
 
   /**
@@ -892,7 +904,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    */
   const redirectToAuth = () => {
     if (typeof window !== 'undefined' && !isPublicPage()) {
-      router.push('/salon/auth')
+      router.push('/salon-access')
     }
   }
 

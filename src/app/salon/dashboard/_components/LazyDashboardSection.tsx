@@ -48,7 +48,6 @@ export function LazyDashboardSection({
   )
 
   const handleVisible = () => {
-    console.log(`📊 Loading dashboard section: ${sectionId}`)
     setShouldLoad(true)
   }
 
