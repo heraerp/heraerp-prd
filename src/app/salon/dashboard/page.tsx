@@ -68,6 +68,13 @@ function DashboardContent() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [loadStage, setLoadStage] = useState(1) // Progressive loading stages
 
+  // ✅ ROLE-BASED REDIRECT: Redirect receptionist to their dashboard
+  useEffect(() => {
+    if (role && role.toLowerCase() === 'receptionist') {
+      router.push('/salon/receptionist')
+    }
+  }, [role, router])
+
   // ✅ PERFORMANCE: Progressive component loading
   useEffect(() => {
     if (isAuthenticated && !orgLoading && !securityLoading) {
@@ -163,7 +170,7 @@ function DashboardContent() {
                 : 'No role assigned. Please contact your administrator.'}
             </p>
             <Button
-              onClick={() => router.push('/salon/auth')}
+              onClick={() => router.push('/salon-access')}
               className="w-full"
               style={{
                 backgroundColor: LUXE_COLORS.gold,
@@ -174,6 +181,23 @@ function DashboardContent() {
             </Button>
           </CardContent>
         </Card>
+      </div>
+    )
+  }
+
+  // Show loading while redirecting receptionist
+  if (role && role.toLowerCase() === 'receptionist') {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.black }}
+      >
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <div className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
+            Redirecting to Receptionist Dashboard...
+          </div>
+        </div>
       </div>
     )
   }

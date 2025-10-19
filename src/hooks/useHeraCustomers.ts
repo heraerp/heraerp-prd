@@ -364,8 +364,8 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
         entity_id: id,
         hard_delete: true,
         cascade: true,
-        reason: reason || 'Permanently delete customer',
-        smart_code: 'HERA.SALON.CUSTOMER.DELETE.V1'
+        reason: reason || 'Permanently delete customer'
+        // ✅ FIX: Remove smart_code - not a valid parameter for delete mutation
       })
 
       // If we reach here, hard delete succeeded

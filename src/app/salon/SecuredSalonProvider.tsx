@@ -896,7 +896,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const isPublicPage = (): boolean => {
     if (typeof window === 'undefined') return false
     const pathname = window.location.pathname
-    return pathname === '/salon' || pathname === '/salon/auth'
+    return pathname === '/salon' || pathname === '/salon-access'
   }
 
   /**
@@ -904,7 +904,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    */
   const redirectToAuth = () => {
     if (typeof window !== 'undefined' && !isPublicPage()) {
-      router.push('/salon/auth')
+      router.push('/salon-access')
     }
   }
 

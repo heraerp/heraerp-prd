@@ -771,15 +771,19 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         p_options: {}  // ✅ Empty object (matches test)
       })
 
-      if (error) {
+      // ✅ FIX: Check both error field AND data.success field for RPC errors
+      const rpcError = error || (data?.success === false ? data?.error : null)
+
+      if (rpcError) {
         // ✅ FIX: Check if error is FK constraint (expected for entities with references)
+        const errorString = typeof rpcError === 'string' ? rpcError : String(rpcError)
         const isFKConstraint =
-          error.includes('409') ||
-          error.includes('Conflict') ||
-          error.includes('referenced') ||
-          error.includes('foreign key') ||
-          error.includes('violates') ||
-          error.includes('constraint')
+          errorString.includes('409') ||
+          errorString.includes('Conflict') ||
+          errorString.includes('referenced') ||
+          errorString.includes('foreign key') ||
+          errorString.includes('violates') ||
+          errorString.includes('constraint')
 
         if (isFKConstraint) {
           // ℹ️ FK constraint is EXPECTED behavior - log as info, let caller handle it
@@ -789,14 +793,18 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
           })
         } else {
           // ❌ Unexpected error - log as error
-          console.error('[useUniversalEntityV1] Orchestrator RPC delete error:', error)
+          console.error('[useUniversalEntityV1] Orchestrator RPC delete error:', {
+            error: rpcError,
+            errorString,
+            data
+          })
         }
 
         // Always throw so caller (useHeraCustomers) can catch and handle FK fallback
-        throw new Error(error)
+        throw new Error(errorString)
       }
 
-      console.log('[useUniversalEntityV1] ✅ Entity deleted:', data)
+      console.log('[useUniversalEntityV1] ✅ Entity deleted successfully:', data)
 
       return data
     },

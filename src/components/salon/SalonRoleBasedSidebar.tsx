@@ -408,39 +408,40 @@ export default function SalonRoleBasedSidebar() {
             const active = isActive(item.href)
 
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'relative w-full p-3 rounded-xl flex items-center justify-center transition-all group flex-shrink-0',
-                  active
-                    ? 'bg-gradient-to-br from-pink-500 to-violet-600 shadow-lg shadow-pink-500/25'
-                    : 'hover:bg-accent'
-                )}
-              >
-                <Icon
+              <div key={item.href} className="relative w-full flex-shrink-0 group">
+                <Link
+                  href={item.href}
                   className={cn(
-                    'w-5 h-5 transition-all',
+                    'w-full p-3 rounded-xl flex items-center justify-center transition-all',
                     active
-                      ? 'text-primary-foreground'
-                      : 'text-muted-foreground group-hover:text-foreground'
+                      ? 'bg-gradient-to-br from-pink-500 to-violet-600 shadow-lg shadow-pink-500/25'
+                      : 'hover:bg-accent'
                   )}
-                />
-                {item.badge && (
-                  <span
+                >
+                  <Icon
                     className={cn(
-                      'absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] rounded-full text-primary-foreground font-medium',
-                      item.badgeColor || 'bg-pink-500'
+                      'w-5 h-5 transition-all',
+                      active
+                        ? 'text-primary-foreground'
+                        : 'text-muted-foreground group-hover:text-foreground'
                     )}
-                  >
-                    {item.badge}
-                  </span>
-                )}
-                {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                  />
+                  {item.badge && (
+                    <span
+                      className={cn(
+                        'absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] rounded-full text-primary-foreground font-medium',
+                        item.badgeColor || 'bg-pink-500'
+                      )}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+                {/* Tooltip - outside Link to not affect centering */}
+                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   <span className="text-xs text-foreground">{item.title}</span>
                 </div>
-              </Link>
+              </div>
             )
           })}
         </nav>
@@ -448,29 +449,35 @@ export default function SalonRoleBasedSidebar() {
         {/* Bottom fixed section */}
         <div className="flex flex-col items-center gap-1 w-full px-3 flex-shrink-0 pt-2 border-t border-border">
           {/* Apps grid */}
-          <button
-            onClick={() => setAppsModalOpen(true)}
-            className={cn(
-              'w-full p-3 rounded-xl flex items-center justify-center transition-all group relative',
-              'hover:bg-accent'
-            )}
-          >
-            <Grid3x3 className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
-            <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+          <div className="relative w-full group">
+            <button
+              onClick={() => setAppsModalOpen(true)}
+              className={cn(
+                'w-full p-3 rounded-xl flex items-center justify-center transition-all',
+                'hover:bg-accent'
+              )}
+            >
+              <Grid3x3 className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
+            </button>
+            {/* Tooltip - outside button to not affect centering */}
+            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <span className="text-xs text-foreground">All Apps</span>
             </div>
-          </button>
+          </div>
 
           {/* Sign out button */}
-          <button
-            onClick={handleSignOut}
-            className="w-full p-3 rounded-xl flex items-center justify-center transition-all group hover:bg-accent relative"
-          >
-            <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-red-400" />
-            <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+          <div className="relative w-full group">
+            <button
+              onClick={handleSignOut}
+              className="w-full p-3 rounded-xl flex items-center justify-center transition-all hover:bg-accent"
+            >
+              <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-red-400" />
+            </button>
+            {/* Tooltip - outside button to not affect centering */}
+            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <span className="text-xs text-foreground">Sign Out</span>
             </div>
-          </button>
+          </div>
         </div>
       </aside>
 

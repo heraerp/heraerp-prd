@@ -24,10 +24,12 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
+import { useSalonDashboard } from '@/hooks/useSalonDashboard'
+import { Loader2 } from 'lucide-react'
 
 export default function ReceptionistDashboard() {
   const router = useRouter()
-  const { organization } = useSecuredSalonContext()
+  const { organization, organizationId } = useSecuredSalonContext()
   const { user, role } = useSalonSecurity()
   const [isRefreshing, setIsRefreshing] = useState(false)
 
@@ -38,10 +40,25 @@ export default function ReceptionistDashboard() {
     }
   }, [role, router])
 
+  // Fetch real data from Supabase
+  const {
+    kpis,
+    isLoading: dashboardLoading,
+    refreshAll,
+    appointments
+  } = useSalonDashboard({
+    organizationId: organizationId || '',
+    currency: 'AED',
+    selectedPeriod: 'today'
+  })
+
   const handleRefresh = async () => {
     setIsRefreshing(true)
-    // Add refresh logic here
-    setTimeout(() => setIsRefreshing(false), 800)
+    try {
+      await refreshAll()
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 800)
+    }
   }
 
   // Show loading if redirecting owner
@@ -57,19 +74,62 @@ export default function ReceptionistDashboard() {
     )
   }
 
+  // Show loading while fetching data
+  if (dashboardLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: LUXE_COLORS.black }}>
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <div className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
+            Loading dashboard...
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const quickActions = [
     { icon: UserPlus, label: 'New Appointment', href: '/salon/appointments/new', color: LUXE_COLORS.gold },
-    { icon: CheckCircle, label: 'Check-In', href: '/salon/appointments', color: LUXE_COLORS.emerald },
+    { icon: Calendar, label: 'View Calendar', href: '/salon/appointments/calendar', color: LUXE_COLORS.emerald },
     { icon: CreditCard, label: 'New Sale', href: '/salon/pos', color: LUXE_COLORS.plum },
     { icon: Users, label: 'Add Customer', href: '/salon/customers', color: LUXE_COLORS.bronze }
   ]
 
   const stats = [
-    { label: "Today's Appointments", value: "12", icon: Calendar, color: LUXE_COLORS.gold },
-    { label: 'Checked In', value: '8', icon: CheckCircle, color: LUXE_COLORS.emerald },
-    { label: 'Pending', value: '4', icon: Clock, color: LUXE_COLORS.bronze },
-    { label: 'Walk-Ins', value: '3', icon: Users, color: LUXE_COLORS.plum }
+    {
+      label: "Today's Appointments",
+      value: String(kpis.todayAppointments || 0),
+      icon: Calendar,
+      color: LUXE_COLORS.gold
+    },
+    {
+      label: 'Completed',
+      value: String(kpis.appointmentsByStatus.completed || 0),
+      icon: CheckCircle,
+      color: LUXE_COLORS.emerald
+    },
+    {
+      label: 'Pending',
+      value: String(kpis.appointmentsByStatus.pending + kpis.appointmentsByStatus.in_progress || 0),
+      icon: Clock,
+      color: LUXE_COLORS.bronze
+    },
+    {
+      label: 'In Progress',
+      value: String(kpis.appointmentsByStatus.in_progress || 0),
+      icon: Users,
+      color: LUXE_COLORS.plum
+    }
   ]
+
+  // Get today's appointments for display
+  const todayAppointments = (appointments || [])
+    .filter(apt => {
+      const aptDate = new Date(apt.transaction_date || apt.created_at)
+      const today = new Date()
+      return aptDate.toDateString() === today.toDateString()
+    })
+    .slice(0, 5) // Show first 5
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
@@ -145,37 +205,6 @@ export default function ReceptionistDashboard() {
 
             {/* User Info and Actions */}
             <div className="flex items-center gap-4">
-              {/* User Info Card */}
-              <div
-                className="flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02]"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}CC 0%, ${LUXE_COLORS.charcoal}CC 100%)`,
-                  border: `1px solid ${LUXE_COLORS.bronze}30`,
-                  boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
-                }}
-              >
-                <div
-                  className="p-2 rounded-lg"
-                  style={{
-                    background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}10 100%)`,
-                    border: `1px solid ${LUXE_COLORS.gold}30`
-                  }}
-                >
-                  <Users className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
-                </div>
-                <div>
-                  <div className="font-semibold text-sm" style={{ color: LUXE_COLORS.champagne }}>
-                    {user?.user_metadata?.full_name ||
-                      user?.email?.split('@')[0] ||
-                      localStorage.getItem('salonUserName') ||
-                      'Receptionist'}
-                  </div>
-                  <div className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
-                    {user?.email || localStorage.getItem('salonUserEmail') || 'receptionist@hairtalkz.com'}
-                  </div>
-                </div>
-              </div>
-
               {/* Refresh Button */}
               <button
                 onClick={handleRefresh}
@@ -260,23 +289,95 @@ export default function ReceptionistDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg" style={{ color: LUXE_COLORS.champagne }}>
               <Calendar className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
-              Today's Appointments
+              Today's Appointments ({todayAppointments.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {[1, 2, 3].map((_, index) => (
-                <div key={index} className="p-4 rounded-lg" style={{ background: `${LUXE_COLORS.charcoalDark}80`, border: `1px solid ${LUXE_COLORS.bronze}20` }}>
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="font-semibold" style={{ color: LUXE_COLORS.champagne }}>10:00 AM - Sarah Johnson</p>
-                    <span className="px-2 py-1 rounded text-xs font-medium" style={{ background: `${LUXE_COLORS.emerald}30`, color: LUXE_COLORS.emerald }}>Confirmed</span>
-                  </div>
-                  <p className="text-sm mb-2" style={{ color: LUXE_COLORS.bronze }}>Haircut & Styling with Michele</p>
-                  <Button size="sm" className="w-full" style={{ background: LUXE_COLORS.gold, color: LUXE_COLORS.charcoal }}>Check In</Button>
+              {todayAppointments.length > 0 ? (
+                todayAppointments.map((apt, index) => {
+                  const aptTime = apt.transaction_date
+                    ? new Date(apt.transaction_date).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      })
+                    : 'Time TBD'
+
+                  const customerName = apt.metadata?.customer_name || 'Walk-in Customer'
+                  const serviceNames = apt.metadata?.service_names || apt.metadata?.services || 'Service details pending'
+                  const status = apt.transaction_status || apt.metadata?.status || 'pending'
+
+                  const getStatusColor = (status: string) => {
+                    const s = status.toLowerCase()
+                    if (s === 'completed') return { bg: `${LUXE_COLORS.emerald}30`, text: LUXE_COLORS.emerald, label: 'Completed' }
+                    if (s === 'in_progress' || s === 'in_service') return { bg: `${LUXE_COLORS.plum}30`, text: LUXE_COLORS.plum, label: 'In Service' }
+                    if (s === 'checked_in') return { bg: `${LUXE_COLORS.gold}30`, text: LUXE_COLORS.gold, label: 'Checked In' }
+                    if (s === 'booked' || s === 'confirmed') return { bg: `${LUXE_COLORS.emerald}30`, text: LUXE_COLORS.emerald, label: 'Confirmed' }
+                    if (s === 'cancelled') return { bg: `${LUXE_COLORS.ruby}30`, text: LUXE_COLORS.ruby, label: 'Cancelled' }
+                    if (s === 'no_show') return { bg: `${LUXE_COLORS.bronze}30`, text: LUXE_COLORS.bronze, label: 'No Show' }
+                    return { bg: `${LUXE_COLORS.bronze}30`, text: LUXE_COLORS.bronze, label: 'Pending' }
+                  }
+
+                  const statusDisplay = getStatusColor(status)
+
+                  return (
+                    <div key={apt.id || index} className="p-4 rounded-lg" style={{ background: `${LUXE_COLORS.charcoalDark}80`, border: `1px solid ${LUXE_COLORS.bronze}20` }}>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                          {aptTime} - {customerName}
+                        </p>
+                        <span
+                          className="px-2 py-1 rounded text-xs font-medium"
+                          style={{ background: statusDisplay.bg, color: statusDisplay.text }}
+                        >
+                          {statusDisplay.label}
+                        </span>
+                      </div>
+                      <p className="text-sm mb-2" style={{ color: LUXE_COLORS.bronze }}>
+                        {serviceNames}
+                      </p>
+                      {status.toLowerCase() !== 'completed' && status.toLowerCase() !== 'cancelled' && (
+                        <Button
+                          size="sm"
+                          className="w-full"
+                          onClick={() => router.push(`/salon/appointments/${apt.id}`)}
+                          style={{ background: LUXE_COLORS.gold, color: LUXE_COLORS.charcoal }}
+                        >
+                          View Details
+                        </Button>
+                      )}
+                    </div>
+                  )
+                })
+              ) : (
+                <div
+                  className="p-8 rounded-lg text-center"
+                  style={{ background: `${LUXE_COLORS.charcoalDark}80`, border: `1px solid ${LUXE_COLORS.bronze}20` }}
+                >
+                  <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" style={{ color: LUXE_COLORS.bronze }} />
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                    No appointments scheduled for today
+                  </p>
+                  <Button
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => router.push('/salon/appointments/new')}
+                    style={{ background: LUXE_COLORS.gold, color: LUXE_COLORS.charcoal }}
+                  >
+                    Book New Appointment
+                  </Button>
                 </div>
-              ))}
+              )}
             </div>
-            <Button variant="outline" className="w-full mt-4" onClick={() => router.push('/salon/appointments')} style={{ borderColor: LUXE_COLORS.gold, color: LUXE_COLORS.gold }}>View All Appointments</Button>
+            <Button
+              variant="outline"
+              className="w-full mt-4"
+              onClick={() => router.push('/salon/appointments')}
+              style={{ borderColor: LUXE_COLORS.gold, color: LUXE_COLORS.gold }}
+            >
+              View All Appointments
+            </Button>
           </CardContent>
         </Card>
       </div>
