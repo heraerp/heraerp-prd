@@ -31,8 +31,8 @@ interface BillSetupModalProps {
     branchName: string
     customerId: string
     customerName: string
-    stylistId: string
-    stylistName: string
+    stylistId?: string // ✅ Optional - not required for product-only sales
+    stylistName?: string // ✅ Optional - not required for product-only sales
   }) => void
   organizationId: string
   currentBranchId?: string
@@ -40,6 +40,8 @@ interface BillSetupModalProps {
   currentStylistId?: string
   title?: string
   description?: string
+  lineItems?: any[] // ✅ NEW: Pass cart line items to check if services exist
+  pendingItem?: { item: any; staffId?: string; staffName?: string } | null // ✅ NEW: Check pending item type
 }
 
 export function BillSetupModal({
@@ -51,7 +53,9 @@ export function BillSetupModal({
   currentCustomerId,
   currentStylistId,
   title = 'Bill Setup',
-  description = 'All three fields are required for every sale'
+  description = 'All three fields are required for every sale',
+  lineItems = [], // ✅ Default to empty array
+  pendingItem = null // ✅ Default to null
 }: BillSetupModalProps) {
   const { availableBranches } = useSecuredSalonContext()
 
@@ -64,6 +68,31 @@ export function BillSetupModal({
     organizationId,
     search: ''
   })
+
+  // ✅ Check if cart has services (staff required) or only products (staff optional)
+  // IMPORTANT: Also check pendingItem because modal opens BEFORE item is added to cart
+  const hasServices = useMemo(() => {
+    // Check existing cart items
+    const cartHasServices = lineItems.some(item => item.entity_type === 'service')
+
+    // Check if pending item (being added) is a service
+    const pendingIsService = pendingItem?.item?.__kind === 'SERVICE'
+
+    const result = cartHasServices || pendingIsService
+
+    console.log('[BillSetupModal] hasServices check:', {
+      lineItems,
+      lineItemCount: lineItems.length,
+      entityTypes: lineItems.map(item => item.entity_type),
+      pendingItem: pendingItem?.item,
+      pendingItemKind: pendingItem?.item?.__kind,
+      cartHasServices,
+      pendingIsService,
+      finalResult: result
+    })
+
+    return result
+  }, [lineItems, pendingItem])
 
   // Filter staff by selected branch
   const filteredStaff = useMemo(() => {
@@ -90,16 +119,19 @@ export function BillSetupModal({
     }
   }, [open, currentBranchId, currentCustomerId, currentStylistId, staff])
 
-  // Validation - All three are REQUIRED for every sale
+  // ✅ UPDATED: Validation - Stylist optional for product-only sales
   const isValid = useMemo(() => {
     if (!selectedBranch) return false
     if (!selectedCustomer) return false
-    if (!selectedStylist) return false
+    // ✅ FIX: Only require stylist if there are services in the cart
+    if (hasServices && !selectedStylist) return false
     return true
-  }, [selectedBranch, selectedCustomer, selectedStylist])
+  }, [selectedBranch, selectedCustomer, selectedStylist, hasServices])
 
   const handleComplete = () => {
-    if (!isValid || !selectedBranch || !selectedCustomer || !selectedStylist) return
+    // ✅ UPDATED: Only require stylist validation if services exist
+    if (!isValid || !selectedBranch || !selectedCustomer) return
+    if (hasServices && !selectedStylist) return
 
     const branchName = availableBranches?.find(b => b.id === selectedBranch)?.entity_name || ''
 
@@ -108,8 +140,11 @@ export function BillSetupModal({
       branchName,
       customerId: selectedCustomer.id,
       customerName: selectedCustomer.entity_name,
-      stylistId: selectedStylist.id,
-      stylistName: selectedStylist.entity_name
+      // ✅ FIX: Only include stylist if one is selected (optional for products)
+      ...(selectedStylist ? {
+        stylistId: selectedStylist.id,
+        stylistName: selectedStylist.entity_name
+      } : {})
     })
 
     onClose()
@@ -209,7 +244,7 @@ export function BillSetupModal({
           />
         </div>
 
-        {/* Stylist Selection - Required */}
+        {/* Stylist Selection - Required for services, Optional for products */}
         <div>
           <div className="flex items-center gap-2 mb-3">
             <div
@@ -226,7 +261,8 @@ export function BillSetupModal({
                 Stylist / Staff
               </h3>
               <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.9 }}>
-                Required • {selectedBranch ? 'Select the service provider' : 'Select a branch first'}
+                {/* ✅ FIX: Show "Optional" for product-only sales */}
+                {hasServices ? 'Required' : 'Optional'} • {selectedBranch ? 'Select the service provider' : 'Select a branch first'}
               </p>
             </div>
           </div>
@@ -305,7 +341,8 @@ export function BillSetupModal({
                     <span style={{ color: COLORS.champagne }}>Select a customer</span>
                   </li>
                 )}
-                {!selectedStylist && (
+                {/* ✅ FIX: Only show stylist requirement if there are services */}
+                {hasServices && !selectedStylist && (
                   <li className="flex items-center gap-2">
                     <ChevronRight className="w-3 h-3" style={{ color: COLORS.rose }} />
                     <span style={{ color: COLORS.champagne }}>Select a stylist / staff member</span>

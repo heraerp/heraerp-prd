@@ -6,6 +6,7 @@ import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useSalonDashboard } from '@/hooks/useSalonDashboard'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { ComplianceAlertBanner } from '@/components/salon/ComplianceAlertBanner'
 import {
   Users,
   Scissors,
@@ -87,17 +88,6 @@ function DashboardContent() {
     getOverrideCount,
     clearAllOverrides
   } = useDashboardFilter()
-
-  // Debug organization loading
-  React.useEffect(() => {
-    console.log('[Dashboard] Organization loaded:', {
-      organizationId,
-      organization,
-      hasName: !!organization?.name,
-      hasEntityName: !!(organization as any)?.entity_name,
-      orgLoading
-    })
-  }, [organization, organizationId, orgLoading])
 
   // Use the enhanced dashboard hook with global period filter
   const {
@@ -450,6 +440,9 @@ function DashboardContent() {
 
       {/* Main Content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Compliance Alert Banner - 30-Day Expiry Notifications */}
+        <ComplianceAlertBanner organizationId={organizationId} />
+
         {/* Stage 1: Hero Metrics - Load immediately */}
         {loadStage >= 1 && (
           <div className="animate-fadeInUp">

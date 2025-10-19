@@ -32,13 +32,11 @@ import {
   DialogTitle,
   DialogDescription
 } from '@/components/ui/dialog'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
-import {
-  useHeraInventory,
-  useHeraStockMovements,
-  type InventoryItem
-} from '@/hooks/useHeraInventory'
+import { useStockLevels } from '@/hooks/useStockLevels'
+import { useHeraStockMovements } from '@/hooks/useHeraInventory'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { BranchStockManager } from '@/components/salon/products/BranchStockManager'
 import { getProductInventory, setBranchStock, adjustStock } from '@/lib/services/inventory-service'
@@ -74,6 +72,30 @@ const COLORS = {
   emerald: '#0F6F5C',
   rose: '#E8B4B8',
   plum: '#B794F4'
+}
+
+// Phase 2 Inventory Item type
+interface InventoryItem {
+  id: string
+  entity_name: string
+  entity_code?: string
+  smart_code?: string
+  status: string
+  stock_quantity: number
+  reorder_level: number
+  stock_status: 'in_stock' | 'low_stock' | 'out_of_stock'
+  stock_value: number
+  price_cost: number
+  price_market: number
+  created_at: string
+  updated_at: string
+  relationships?: any
+  product_id?: string
+  product_name?: string
+  location_id?: string
+  location_name?: string
+  sku?: string
+  category?: string
 }
 
 function SalonInventoryContent() {
@@ -121,28 +143,208 @@ function SalonInventoryContent() {
     })
   }, [branchId, branches, hasMultipleBranches])
 
-  // Inventory hook - NO direct Supabase
+  // ✅ PHASE 2: Stock Level Entities (Direct)
   const {
-    items,
+    stockLevels,
     isLoading: itemsLoading,
-    createItem,
-    updateItem,
-    archiveItem,
-    restoreItem,
-    lowStockCount,
-    totalValue,
-    refetch
-  } = useHeraInventory({
+    error: itemsError,
+    refetch,
+    createStockLevel,
+    adjustStock: adjustStockLevel,
+    incrementStock,
+    decrementStock,
+    isAdjusting
+  } = useStockLevels({
     organizationId,
-    branchId: branchId && branchId !== 'all' ? branchId : undefined, // ✅ FIX: Pass undefined for 'all'
-    includeArchived,
-    searchQuery,
-    categoryFilter,
-    filters: {
-      include_dynamic: true,
-      include_relationships: true
-    }
+    locationId: branchId && branchId !== 'all' ? branchId : undefined
   })
+
+  // Map stock levels to inventory items format
+  const items = useMemo(() => {
+    console.log('[Inventory Page] 📊 Stock Levels Data:', {
+      total: (stockLevels || []).length,
+      sampleStockLevel: stockLevels?.[0],
+      allEntityTypes: [...new Set((stockLevels || []).map((sl: any) => sl.entity_type))],
+      sampleDynamicFields: stockLevels?.[0] ? {
+        quantity: stockLevels[0].quantity,
+        reorder_level: stockLevels[0].reorder_level,
+        cost_price: stockLevels[0].cost_price,
+        selling_price: stockLevels[0].selling_price
+      } : undefined,
+      // 🔍 DETAILED RELATIONSHIP INSPECTION
+      firstThreeStockLevels: (stockLevels || []).slice(0, 3).map((sl: any) => {
+        const rels = sl.relationships || {}
+        return {
+          id: sl.id,
+          entity_name: sl.entity_name,
+          relationships_FULL: rels,  // Full relationships object
+          relationships_keys: Object.keys(rels),
+          // Check all possible key variations
+          STOCK_OF_PRODUCT: rels.STOCK_OF_PRODUCT,
+          stock_of_product: rels.stock_of_product,
+          STOCK_AT_LOCATION: rels.STOCK_AT_LOCATION,
+          stock_at_location: rels.stock_at_location,
+          // Check for the actual keys
+          all_rel_entries: Object.entries(rels).map(([key, value]) => ({
+            key,
+            isArray: Array.isArray(value),
+            length: Array.isArray(value) ? value.length : 0,
+            sample: Array.isArray(value) && value.length > 0 ? value[0] : value
+          }))
+        }
+      })
+    })
+
+    const mapped = (stockLevels || []).map((sl: any, index: any) => {
+      // 🔍 Debug first 3 stock levels in detail
+      if (index < 3) {
+        const rels = sl.relationships || {}
+        const relKeys = Object.keys(rels)
+
+        console.log(`[Inventory Page] 🔬 Stock Level #${index} Detailed Inspection:`, {
+          id: sl.id,
+          entity_name: sl.entity_name,
+          relationships_keys: relKeys,
+          // Log each relationship key and its value
+          ...Object.fromEntries(
+            relKeys.map(key => [
+              key,
+              {
+                isArray: Array.isArray(rels[key]),
+                length: Array.isArray(rels[key]) ? rels[key].length : 'not-array',
+                firstItem: Array.isArray(rels[key]) && rels[key].length > 0 ? rels[key][0] : null
+              }
+            ])
+          )
+        })
+      }
+
+      // ✅ UPPERCASE-ONLY: Use uppercase relationship keys for consistency
+      const productRels = sl.relationships?.STOCK_OF_PRODUCT || []
+      const productRel = Array.isArray(productRels) && productRels.length > 0 ? productRels[0] : null
+
+      const locationRels = sl.relationships?.STOCK_AT_LOCATION || []
+      const locationRel = Array.isArray(locationRels) && locationRels.length > 0 ? locationRels[0] : null
+
+      // Extract product and location info
+      let productName = 'Unknown Product'
+      let productId: string | undefined = undefined
+      let locationName = 'Unknown Location'
+      let locationId: string | undefined = undefined
+
+      // Try to get from relationships first
+      if (productRel) {
+        productName = productRel.to_entity?.entity_name || productRel.entity_name || productName
+        productId = productRel.to_entity?.id || productRel.to_entity_id || productRel.target_entity_id
+      }
+
+      if (locationRel) {
+        locationName = locationRel.to_entity?.entity_name || locationRel.entity_name || locationName
+        locationId = locationRel.to_entity?.id || locationRel.to_entity_id || locationRel.target_entity_id
+      }
+
+      // 🔧 FALLBACK: Parse entity_name if relationships are empty
+      // Format: "Stock: PRODUCT_NAME @ LOCATION_NAME"
+      if (!productId || !locationId) {
+        const match = sl.entity_name?.match(/^Stock: (.+?) @ (.+?)$/)
+        if (match) {
+          if (!productId) {
+            productName = match[1]
+            // Try to find product ID by name (not ideal but better than undefined)
+            // For now, we'll leave it undefined and show the name
+          }
+          if (!locationId) {
+            locationName = match[2]
+            // Try to match with loaded branches
+            const matchingBranch = branches.find(b =>
+              b.name === match[2] || b.entity_name === match[2]
+            )
+            if (matchingBranch) {
+              locationId = matchingBranch.id
+            }
+          }
+        }
+      }
+
+      if (index < 3) {
+        console.log(`[Inventory Page] 🔬 Stock Level #${index} Final Extraction:`, {
+          productName,
+          productId: productId || 'PARSED_FROM_NAME',
+          locationName,
+          locationId: locationId || 'PARSED_FROM_NAME',
+          usedFallback: !productRel || !locationRel
+        })
+      }
+
+      return {
+        id: sl.id,
+        entity_name: `${productName} @ ${locationName}`,
+        entity_code: sl.entity_code,
+        smart_code: sl.smart_code,
+        status: sl.status || 'active',
+        stock_quantity: sl.quantity || 0,
+        reorder_level: sl.reorder_level || 10,
+        stock_status: (sl.quantity || 0) === 0 ? 'out_of_stock' : (sl.quantity || 0) <= (sl.reorder_level || 10) ? 'low_stock' : 'in_stock',
+        stock_value: (sl.quantity || 0) * (sl.cost_price || 0),
+        price_cost: sl.cost_price || 0,
+        price_market: sl.selling_price || 0,
+        created_at: sl.created_at,
+        updated_at: sl.updated_at,
+        relationships: sl.relationships,
+        product_id: productId,
+        product_name: productName,
+        location_id: locationId,
+        location_name: locationName
+      }
+    })
+
+    // Deduplicate by product_name + location_name combination (more reliable than IDs)
+    const deduped = mapped.reduce((acc, item) => {
+      // Use entity_name as the key since it contains "Product @ Location"
+      const key = item.entity_name
+      if (!acc.has(key)) {
+        acc.set(key, item)
+      } else {
+        // Keep the one with the highest quantity (most recent/accurate)
+        const existing = acc.get(key)!
+        if (item.stock_quantity > existing.stock_quantity) {
+          console.log('[Inventory Page] ⚠️ Duplicate found, keeping higher quantity:', {
+            key,
+            existingQty: existing.stock_quantity,
+            newQty: item.stock_quantity
+          })
+          acc.set(key, item)
+        }
+      }
+      return acc
+    }, new Map())
+
+    const dedupedArray = Array.from(deduped.values())
+
+    console.log('[Inventory Page] 📦 Mapped Items:', {
+      count: mapped.length,
+      dedupedCount: dedupedArray.length,
+      sampleItem: dedupedArray[0],
+      uniqueProducts: [...new Set(dedupedArray.map(m => m.product_name))].length,
+      uniqueLocations: [...new Set(dedupedArray.map(m => m.location_name))].length,
+      duplicatesRemoved: mapped.length - dedupedArray.length,
+      productNames: [...new Set(dedupedArray.map(m => m.product_name))],
+      locationNames: [...new Set(dedupedArray.map(m => m.location_name))]
+    })
+
+    return dedupedArray
+  }, [stockLevels])
+
+  // Calculate metrics
+  const lowStockCount = useMemo(() => {
+    return items.filter(i => i.stock_status === 'low_stock' || i.stock_status === 'out_of_stock').length
+  }, [items])
+
+  const totalValue = useMemo(() => {
+    return items.reduce((sum, item) => sum + (item.stock_value || 0), 0)
+  }, [items])
+
+  const phase = 'phase2' as const
 
   // Stock movements hook
   const {
@@ -161,10 +363,22 @@ function SalonInventoryContent() {
   const displayItems = useMemo(() => {
     let filtered = items
 
+    console.log('[Inventory Page] 🔍 Display Items Before Filter:', {
+      itemsCount: items.length,
+      deepProductId,
+      hasDeepProduct: !!deepProductId
+    })
+
     // Filter by deep link product ID
     if (deepProductId) {
       filtered = filtered.filter(item => item.id === deepProductId)
+      console.log('[Inventory Page] 🔍 Display Items After Deep Product Filter:', filtered.length)
     }
+
+    console.log('[Inventory Page] 🔍 Final Display Items:', {
+      count: filtered.length,
+      sample: filtered[0]
+    })
 
     return filtered
   }, [items, deepProductId])
@@ -247,11 +461,38 @@ function SalonInventoryContent() {
       if (!organizationId || !selectedItem) return
 
       try {
-        await setBranchStock(organizationId, selectedItem.id, branchId, {
-          branch_id: branchId,
-          quantity,
-          reorder_level: reorderLevel
-        })
+        // Check if Phase 2 - use STOCK_LEVEL entity update
+        if (phase === 'phase2' && adjustStockLevel) {
+          // Find the stock level ID for this product and branch
+          const stockLevelId = selectedItem.id // In Phase 2, the item IS the stock level
+
+          console.log('[Phase 2] Updating stock level:', {
+            stockLevelId,
+            branchId,
+            quantity,
+            reorderLevel
+          })
+
+          // Update the stock level entity directly
+          await adjustStockLevel({
+            stock_level_id: stockLevelId,
+            product_id: selectedItem.product_id || selectedItem.id,
+            location_id: branchId,
+            movement: {
+              movement_type: 'adjust_in', // Will be calculated based on difference
+              quantity,
+              reason: 'Manual stock update'
+            },
+            current_quantity: selectedItem.stock_quantity || 0
+          })
+        } else {
+          // Phase 1 - use legacy setBranchStock
+          await setBranchStock(organizationId, selectedItem.id, branchId, {
+            branch_id: branchId,
+            quantity,
+            reorder_level: reorderLevel
+          })
+        }
 
         // Refetch items to get updated stock
         await refetch()
@@ -259,7 +500,7 @@ function SalonInventoryContent() {
         // Update current inventory display
         if (currentInventory) {
           const updatedBranchStocks = currentInventory.branch_stocks.map(bs =>
-            bs.branch_id === branchId ? { ...bs, quantity, reorder_level } : bs
+            bs.branch_id === branchId ? { ...bs, quantity, reorder_level: reorderLevel } : bs
           )
           setCurrentInventory({
             ...currentInventory,
@@ -272,7 +513,7 @@ function SalonInventoryContent() {
         console.error('Failed to update stock:', error)
       }
     },
-    [organizationId, selectedItem, refetch, currentInventory]
+    [organizationId, selectedItem, refetch, currentInventory, phase, adjustStockLevel]
   )
 
   // Handle quick stock adjustment - memoized for performance
@@ -285,13 +526,31 @@ function SalonInventoryContent() {
       const newQty = type === 'increase' ? currentQty + amount : currentQty - amount
 
       try {
-        await adjustStock(organizationId, user.id, {
-          product_id: selectedItem.id,
-          branch_id: branchId,
-          adjustment_type: 'set',
-          quantity: Math.max(0, newQty),
-          reason: 'Quick adjustment'
-        })
+        // Check if Phase 2 - use STOCK_LEVEL entity adjustment
+        if (phase === 'phase2' && adjustStockLevel) {
+          const stockLevelId = selectedItem.id
+
+          await adjustStockLevel({
+            stock_level_id: stockLevelId,
+            product_id: selectedItem.product_id || selectedItem.id,
+            location_id: branchId,
+            movement: {
+              movement_type: type === 'increase' ? 'adjust_in' : 'adjust_out',
+              quantity: amount,
+              reason: 'Quick adjustment'
+            },
+            current_quantity: currentQty
+          })
+        } else {
+          // Phase 1 - use legacy adjustStock
+          await adjustStock(organizationId, user.id, {
+            product_id: selectedItem.id,
+            branch_id: branchId,
+            adjustment_type: 'set',
+            quantity: Math.max(0, newQty),
+            reason: 'Quick adjustment'
+          })
+        }
 
         // Refetch items to get updated stock
         await refetch()
@@ -318,7 +577,7 @@ function SalonInventoryContent() {
         console.error('Failed to adjust stock:', error)
       }
     },
-    [organizationId, selectedItem, user?.id, currentInventory, refetch]
+    [organizationId, selectedItem, user?.id, currentInventory, refetch, phase, adjustStockLevel]
   )
 
   // Authentication checks
@@ -468,6 +727,7 @@ function SalonInventoryContent() {
             </div>
           </div>
         </div>
+
 
         {/* Focused Product Banner */}
         {deepProductId && (
@@ -935,46 +1195,36 @@ function SalonInventoryContent() {
           </TabsContent>
         </Tabs>
 
-        {/* Stock Management Dialog */}
-        <Dialog open={stockModalOpen} onOpenChange={setStockModalOpen}>
-          <DialogContent
-            className="max-w-4xl max-h-[90vh] overflow-y-auto"
-            style={{
-              backgroundColor: COLORS.charcoalDark,
-              border: `1px solid ${COLORS.gold}40`
-            }}
-          >
-            <DialogHeader>
-              <DialogTitle style={{ color: COLORS.gold }}>
-                Manage Stock - {selectedItem?.entity_name}
-              </DialogTitle>
-              <DialogDescription style={{ color: COLORS.lightText + '80' }}>
-                Update stock levels and reorder points for each branch
-              </DialogDescription>
-            </DialogHeader>
-
-            {loadingInventory ? (
-              <div className="flex items-center justify-center py-12">
-                <RefreshCw className="w-8 h-8 animate-spin" style={{ color: COLORS.gold }} />
-              </div>
-            ) : currentInventory && selectedItem ? (
-              <BranchStockManager
-                productId={selectedItem.id}
-                inventory={currentInventory}
-                onStockUpdate={handleStockUpdate}
-                onQuickAdjust={handleQuickAdjust}
+        {/* Stock Management Modal */}
+        <SalonLuxeModal
+          open={stockModalOpen}
+          onClose={() => setStockModalOpen(false)}
+          title={`Manage Stock - ${selectedItem?.entity_name || ''}`}
+          description="Update stock levels and reorder points for each branch"
+          icon={<Package2 className="w-6 h-6" />}
+          size="xl"
+        >
+          {loadingInventory ? (
+            <div className="flex items-center justify-center py-12">
+              <RefreshCw className="w-8 h-8 animate-spin" style={{ color: COLORS.gold }} />
+            </div>
+          ) : currentInventory && selectedItem ? (
+            <BranchStockManager
+              productId={selectedItem.id}
+              inventory={currentInventory}
+              onStockUpdate={handleStockUpdate}
+              onQuickAdjust={handleQuickAdjust}
+            />
+          ) : (
+            <div className="text-center py-12">
+              <Package2
+                className="w-12 h-12 mx-auto mb-4"
+                style={{ color: COLORS.gold + '40' }}
               />
-            ) : (
-              <div className="text-center py-12">
-                <Package2
-                  className="w-12 h-12 mx-auto mb-4"
-                  style={{ color: COLORS.gold + '40' }}
-                />
-                <p style={{ color: COLORS.lightText }}>No inventory data available</p>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+              <p style={{ color: COLORS.lightText }}>No inventory data available</p>
+            </div>
+          )}
+        </SalonLuxeModal>
       </div>
     </div>
   )

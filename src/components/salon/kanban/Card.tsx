@@ -204,13 +204,14 @@ const CardComponent = ({
               size="sm"
               variant="ghost"
               className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 cursor-pointer"
+              onPointerDown={e => {
+                // Stop event from reaching drag listeners
+                e.stopPropagation()
+              }}
               onClick={e => {
                 e.preventDefault()
                 e.stopPropagation()
                 onMoveToNext()
-              }}
-              onPointerDown={e => {
-                e.stopPropagation()
               }}
               style={{
                 color: LUXE_COLORS.gold,
@@ -278,14 +279,14 @@ const CardComponent = ({
         {card.status !== 'DRAFT' && (
           <div className="text-xs mt-2" style={{ color: LUXE_COLORS.bronze }}>
             Status: {(() => {
-              // Map status to user-friendly display text that matches column headers
+              // ✅ SIMPLIFIED: Map status to user-friendly display text
               switch (card.status) {
                 case 'BOOKED': return 'booked'
-                case 'CHECKED_IN': return 'checked-in'
-                case 'IN_SERVICE': return 'in service'
-                case 'IN_PROGRESS': return 'in service'
-                case 'TO_PAY': return 'to pay'
-                case 'PAYMENT_PENDING': return 'to pay'
+                case 'CHECKED_IN': return 'in progress' // Legacy - backward compat
+                case 'IN_SERVICE': return 'in progress' // Legacy - backward compat
+                case 'IN_PROGRESS': return 'in progress' // ✅ New unified status
+                case 'TO_PAY': return 'in progress' // Legacy - backward compat
+                case 'PAYMENT_PENDING': return 'in progress' // Legacy - backward compat
                 case 'DONE': return 'done'
                 case 'COMPLETED': return 'done'
                 case 'CANCELLED': return 'cancelled'
@@ -293,7 +294,8 @@ const CardComponent = ({
                 default: return card.status.replace('_', ' ').toLowerCase()
               }
             })()}
-            {(card.status === 'TO_PAY' || card.status === 'payment_pending' || card.status === 'PAYMENT_PENDING') && (
+            {/* ✅ Show POS Ready for IN_PROGRESS appointments */}
+            {(card.status === 'IN_PROGRESS' || card.status === 'TO_PAY' || card.status === 'payment_pending' || card.status === 'PAYMENT_PENDING' || card.status === 'CHECKED_IN' || card.status === 'IN_SERVICE') && (
               <span className="ml-2" style={{ color: LUXE_COLORS.gold }}>
                 💳 POS Ready
               </span>
@@ -328,7 +330,11 @@ const CardComponent = ({
                 e.currentTarget.style.transform = 'translateY(0) scale(1)'
                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(16,185,129,0.1)'
               }}
+              onPointerDown={e => {
+                e.stopPropagation()
+              }}
               onClick={e => {
+                e.preventDefault()
                 e.stopPropagation()
                 onConfirm?.()
               }}
@@ -360,7 +366,11 @@ const CardComponent = ({
                 e.currentTarget.style.transform = 'translateY(0) scale(1)'
                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,175,55,0.1)'
               }}
+              onPointerDown={e => {
+                e.stopPropagation()
+              }}
               onClick={e => {
+                e.preventDefault()
                 e.stopPropagation()
                 onEdit?.()
               }}
@@ -371,8 +381,8 @@ const CardComponent = ({
           </div>
         )}
 
-        {/* TO_PAY actions - 🎯 ENTERPRISE: PAY button redirects to POS */}
-        {(card.status === 'TO_PAY' || card.status === 'payment_pending' || card.status === 'PAYMENT_PENDING') && (
+        {/* ✅ SIMPLIFIED: IN_PROGRESS actions - PAY button redirects to POS */}
+        {(card.status === 'IN_PROGRESS' || card.status === 'TO_PAY' || card.status === 'payment_pending' || card.status === 'PAYMENT_PENDING' || card.status === 'CHECKED_IN' || card.status === 'IN_SERVICE') && (
           <div className="flex gap-2 pt-2 border-t" style={{ borderColor: '#8C785320' }}>
             <Button
               size="sm"

@@ -9,6 +9,7 @@ import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { usePosTicket } from '@/hooks/usePosTicket'
+import { ComplianceAlertBanner } from '@/components/salon/ComplianceAlertBanner'
 import {
   TrendingUp,
   TrendingDown,
@@ -361,6 +362,9 @@ export default function OwnerDashboard() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Compliance Alert Banner - 30-Day Expiry Notifications */}
+        <ComplianceAlertBanner organizationId={organizationId} />
+
         {/* Primary KPIs - 3 Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Total Revenue */}

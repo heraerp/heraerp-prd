@@ -240,7 +240,6 @@ function AppointmentsContent() {
       // Only clear time if date changed from original appointment date
       if (appointmentDate && postponeDate !== appointmentDate && postponeTime) {
         setPostponeTime('')
-        console.log('[Appointments] ⚡ Time slots reloading for new date:', postponeDate)
       }
     }
   }, [postponeDate, postponeDialogOpen, appointmentToPostpone, postponeTime])
@@ -1406,51 +1405,45 @@ function AppointmentsContent() {
                                   if (service) {
                                     serviceNames.push(service.entity_name || service.name || 'Unknown Service')
 
-                                    // 🎯 ENTERPRISE: dynamic_fields is an ARRAY of field objects
-                                    // Find the field with field_name='price_market' and get field_value_number
+                                    // 🎯 ENTERPRISE: dynamic_fields can be ARRAY or OBJECT with numeric keys
+                                    // Structure: {0: {value: {field_name: 'price_market', field_value_number: 500}}}
                                     let price = 0
-                                    if (Array.isArray(service.dynamic_fields)) {
-                                      const priceField = service.dynamic_fields.find((f: any) => f.field_name === 'price_market')
+                                    if (service.dynamic_fields) {
+                                      // Convert to array if it's an object with numeric keys
+                                      const fieldsArray = Array.isArray(service.dynamic_fields)
+                                        ? service.dynamic_fields
+                                        : Object.values(service.dynamic_fields)
+
+                                      // Extract actual field objects (unwrap {value: {...}})
+                                      const unwrappedFields = fieldsArray.map((f: any) => f.value || f)
+
+                                      // Find price field
+                                      const priceField = unwrappedFields.find((f: any) => f.field_name === 'price_market')
                                       price = priceField?.field_value_number || 0
-                                    } else {
-                                      // Fallback for nested object structure (old format)
-                                      price = service.dynamic_fields?.price_market?.value || service.price || 0
+
+                                      // Fallback: check nested structure
+                                      if (!price && service.dynamic_fields.price_market?.value) {
+                                        price = service.dynamic_fields.price_market.value
+                                      }
+                                    }
+
+                                    // Final fallback
+                                    if (!price && service.price) {
+                                      price = service.price
                                     }
 
                                     servicePrices.push(price)
 
-                                    // Debug first service
-                                    if (index === 0) {
-                                      console.log('[Appointments] 💰 Extracted price:', {
-                                        serviceName: service.entity_name,
-                                        price,
-                                        dynamic_fields_type: Array.isArray(service.dynamic_fields) ? 'array' : 'object'
-                                      })
-                                    }
                                   } else {
                                     serviceNames.push('Unknown Service')
                                     servicePrices.push(0)
                                   }
                                 })
 
-                                console.log('[Appointments] 📦 Enriched service data from in-memory services:', {
-                                  serviceIds,
-                                  serviceNames,
-                                  servicePrices,
-                                  servicesLoaded: services?.length || 0
-                                })
-
                                 // 🎯 ENTERPRISE PATTERN: Use runtime lookup for customer/staff names (same as tiles)
                                 // This ensures accurate data instead of relying on pre-enriched fields
                                 const customerName = customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown Customer'
                                 const stylistName = staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
-
-                                console.log('[Appointments READY FOR PAYMENT] 👤 Runtime lookup results:', {
-                                  customer_id: appointment.customer_id,
-                                  customer_name: customerName,
-                                  stylist_id: appointment.stylist_id,
-                                  stylist_name: stylistName
-                                })
 
                                 // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as customer_name/stylist_name)
                                 // This ensures POS can access service data directly without nested metadata drilling
@@ -1480,8 +1473,6 @@ function AppointmentsContent() {
                                   _source: 'appointments',
                                   _timestamp: new Date().toISOString()
                                 }
-
-                                console.log('[Appointments] 💾 Storing appointment data for POS:', appointmentData)
 
                                 // Store appointment details in sessionStorage for POS page
                                 sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))
@@ -1575,51 +1566,45 @@ function AppointmentsContent() {
                               if (service) {
                                 serviceNames.push(service.entity_name || service.name || 'Unknown Service')
 
-                                // 🎯 ENTERPRISE: dynamic_fields is an ARRAY of field objects
-                                // Find the field with field_name='price_market' and get field_value_number
+                                // 🎯 ENTERPRISE: dynamic_fields can be ARRAY or OBJECT with numeric keys
+                                // Structure: {0: {value: {field_name: 'price_market', field_value_number: 500}}}
                                 let price = 0
-                                if (Array.isArray(service.dynamic_fields)) {
-                                  const priceField = service.dynamic_fields.find((f: any) => f.field_name === 'price_market')
+                                if (service.dynamic_fields) {
+                                  // Convert to array if it's an object with numeric keys
+                                  const fieldsArray = Array.isArray(service.dynamic_fields)
+                                    ? service.dynamic_fields
+                                    : Object.values(service.dynamic_fields)
+
+                                  // Extract actual field objects (unwrap {value: {...}})
+                                  const unwrappedFields = fieldsArray.map((f: any) => f.value || f)
+
+                                  // Find price field
+                                  const priceField = unwrappedFields.find((f: any) => f.field_name === 'price_market')
                                   price = priceField?.field_value_number || 0
-                                } else {
-                                  // Fallback for nested object structure (old format)
-                                  price = service.dynamic_fields?.price_market?.value || service.price || 0
+
+                                  // Fallback: check nested structure
+                                  if (!price && service.dynamic_fields.price_market?.value) {
+                                    price = service.dynamic_fields.price_market.value
+                                  }
+                                }
+
+                                // Final fallback
+                                if (!price && service.price) {
+                                  price = service.price
                                 }
 
                                 servicePrices.push(price)
 
-                                // Debug first service
-                                if (index === 0) {
-                                  console.log('[Appointments PAY NOW] 💰 Extracted price:', {
-                                    serviceName: service.entity_name,
-                                    price,
-                                    dynamic_fields_type: Array.isArray(service.dynamic_fields) ? 'array' : 'object'
-                                  })
-                                }
                               } else {
                                 serviceNames.push('Unknown Service')
                                 servicePrices.push(0)
                               }
                             })
 
-                            console.log('[Appointments PAY NOW] 📦 Enriched service data from in-memory services:', {
-                              serviceIds,
-                              serviceNames,
-                              servicePrices,
-                              servicesLoaded: services?.length || 0
-                            })
-
                             // 🎯 ENTERPRISE PATTERN: Use runtime lookup for customer/staff names (same as tiles)
                             // This ensures accurate data instead of relying on pre-enriched fields
                             const customerName = customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown Customer'
                             const stylistName = staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
-
-                            console.log('[Appointments PAY NOW] 👤 Runtime lookup results:', {
-                              customer_id: appointment.customer_id,
-                              customer_name: customerName,
-                              stylist_id: appointment.stylist_id,
-                              stylist_name: stylistName
-                            })
 
                             // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as customer_name/stylist_name)
                             // This ensures POS can access service data directly without nested metadata drilling
@@ -1649,8 +1634,6 @@ function AppointmentsContent() {
                               _source: 'appointments',
                               _timestamp: new Date().toISOString()
                             }
-
-                            console.log('[Appointments] 💾 Storing appointment data for POS:', appointmentData)
 
                             // Store appointment details in sessionStorage for POS page
                             sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))

@@ -55,6 +55,16 @@ export const PRODUCT_PRESET = {
   },
   dynamicFields: [
     {
+      name: 'category',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.CATEGORY.V1',
+      ui: {
+        label: 'Category',
+        placeholder: 'Select category',
+        helpText: 'Product category'
+      }
+    },
+    {
       name: 'price_market',
       type: 'number' as const,
       smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.v1',
@@ -143,22 +153,22 @@ export const PRODUCT_PRESET = {
   relationships: [
     {
       type: 'HAS_CATEGORY',
-      smart_code: 'HERA.SALON.PRODUCT.REL.HAS_CATEGORY.v1',
+      smart_code: 'HERA.SALON.PRODUCT.REL.CATEGORY.V1',
       cardinality: 'one' as const
     },
     {
       type: 'HAS_BRAND',
-      smart_code: 'HERA.SALON.PRODUCT.REL.HAS_BRAND.v1',
+      smart_code: 'HERA.SALON.PRODUCT.REL.BRAND.V1',
       cardinality: 'one' as const
     },
     {
       type: 'SUPPLIED_BY',
-      smart_code: 'HERA.SALON.PRODUCT.REL.SUPPLIED_BY.v1',
+      smart_code: 'HERA.SALON.PRODUCT.REL.SUPPLIER.V1',
       cardinality: 'many' as const
     },
     {
       type: 'STOCK_AT',
-      smart_code: 'HERA.SALON.PRODUCT.REL.STOCK_AT.v1',
+      smart_code: 'HERA.SALON.PRODUCT.REL.LOCATION.V1',
       cardinality: 'many' as const
     }
   ]
@@ -217,22 +227,22 @@ export const SERVICE_PRESET = {
   relationships: [
     {
       type: 'HAS_CATEGORY',
-      smart_code: 'HERA.SALON.SERVICE.REL.HAS_CATEGORY.v1',
+      smart_code: 'HERA.SALON.SERVICE.REL.CATEGORY.V1',
       cardinality: 'one' as const
     },
     {
       type: 'PERFORMED_BY_ROLE',
-      smart_code: 'HERA.SALON.SERVICE.REL.PERFORMED_BY_ROLE.v1',
+      smart_code: 'HERA.SALON.SERVICE.REL.ROLE.V1',
       cardinality: 'many' as const
     },
     {
       type: 'REQUIRES_PRODUCT',
-      smart_code: 'HERA.SALON.SERVICE.REL.REQUIRES_PRODUCT.v1',
+      smart_code: 'HERA.SALON.SERVICE.REL.PRODUCT.V1',
       cardinality: 'many' as const
     },
     {
       type: 'AVAILABLE_AT',
-      smart_code: 'HERA.SALON.SERVICE.REL.AVAILABLE_AT.v1',
+      smart_code: 'HERA.SALON.SERVICE.REL.LOCATION.V1',
       cardinality: 'many' as const
     }
   ]

@@ -128,9 +128,6 @@ export function AppointmentModal({
   // Initialize form when appointment changes
   useEffect(() => {
     if (appointment && open) {
-      console.log('[AppointmentModal] Initializing with appointment:', appointment)
-      console.log('[AppointmentModal] Metadata:', appointment.metadata)
-
       setSelectedCustomer(appointment.customer_id || '')
       setSelectedStylist(appointment.stylist_id || '')
       setSelectedBranch(appointment.branch_id || '')
@@ -148,12 +145,9 @@ export function AppointmentModal({
       let serviceIds: string[] = []
       const metadata = appointment.metadata || {}
 
-      console.log('[AppointmentModal] Full metadata structure:', JSON.stringify(metadata, null, 2))
-
       // Option 1: metadata.service_ids (array)
       if (Array.isArray(metadata.service_ids)) {
         serviceIds = metadata.service_ids.filter(Boolean)
-        console.log('[AppointmentModal] Found service_ids array:', serviceIds)
       }
       // Option 2: metadata.service_ids (string - JSON or comma-separated)
       else if (typeof metadata.service_ids === 'string' && metadata.service_ids.trim()) {
@@ -166,30 +160,20 @@ export function AppointmentModal({
             .map((id: string) => id.trim())
             .filter(Boolean)
         }
-        console.log('[AppointmentModal] Parsed service_ids string:', serviceIds)
       }
       // Option 3: metadata.services (array of objects with id property)
       else if (Array.isArray(metadata.services) && metadata.services.length > 0) {
         serviceIds = metadata.services.map((s: any) => s?.id || s).filter(Boolean)
-        console.log('[AppointmentModal] Extracted from services array:', serviceIds)
       }
       // Option 4: metadata.service_id (singular)
       else if (metadata.service_id) {
         serviceIds = [metadata.service_id]
-        console.log('[AppointmentModal] Found single service_id:', serviceIds)
       }
       // Option 5: Check appointment.service_ids directly (not in metadata)
       else if ((appointment as any).service_ids) {
         const directIds = (appointment as any).service_ids
         serviceIds = Array.isArray(directIds) ? directIds : [directIds]
-        console.log('[AppointmentModal] Found service_ids on appointment object:', serviceIds)
       }
-
-      console.log('[AppointmentModal] ✅ Final parsed service IDs:', serviceIds)
-      console.log(
-        '[AppointmentModal] Available services:',
-        services.map(s => ({ id: s.id, name: s.entity_name }))
-      )
 
       setSelectedServices(serviceIds)
       setIsEditing(false)
@@ -280,9 +264,6 @@ export function AppointmentModal({
 
         // 🧬 ENTERPRISE: Only block time slots for confirmed/active appointments
         if (!BLOCKING_STATUSES.includes(apt.status)) {
-          console.log(
-            `[AppointmentModal] Skipping ${apt.status} appointment - doesn't block time slots`
-          )
           return false
         }
 
@@ -292,15 +273,6 @@ export function AppointmentModal({
 
         // Check for overlap: slot overlaps if it starts before appointment ends AND ends after appointment starts
         const overlaps = slotDateTime < aptEnd && slotEndTime > aptStart
-
-        if (overlaps) {
-          console.log(`[AppointmentModal] ⚠️ BLOCKED by ${apt.status} appointment:`, {
-            customer: apt.customer_name,
-            status: apt.status,
-            appointmentTime: `${format(aptStart, 'h:mm a')} - ${format(aptEnd, 'h:mm a')}`,
-            slotTime: `${format(slotDateTime, 'h:mm a')} - ${format(slotEndTime, 'h:mm a')}`
-          })
-        }
 
         return overlaps
       })
@@ -381,7 +353,6 @@ export function AppointmentModal({
 
       if (selectedStylist !== originalStylist || selectedDate !== originalDate) {
         setSelectedTime('')
-        console.log('[AppointmentModal] ⚡ Time slots reloading due to stylist/date change')
       }
     }
   }, [selectedStylist, selectedDate, isEditing, appointment])

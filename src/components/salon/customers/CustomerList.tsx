@@ -237,7 +237,9 @@ export function CustomerList({
                   {/* Joined Date */}
                   <TableCell>
                     <span className="text-xs" style={{ color: COLORS.lightText }}>
-                      {format(new Date(customer.created_at), 'MMM d, yyyy')}
+                      {customer.created_at && !isNaN(new Date(customer.created_at).getTime())
+                        ? format(new Date(customer.created_at), 'MMM d, yyyy')
+                        : 'N/A'}
                     </span>
                   </TableCell>
 
@@ -357,7 +359,7 @@ function CustomerGridView({
           <p className="text-sm">No customers found</p>
         </div>
       ) : (
-        customers.map(customer => {
+        customers.map((customer, index) => {
           const isDeleted = customer.status === 'deleted'
           const isArchived = customer.status === 'archived'
           const email = customer.dynamic_fields?.email?.value || customer.email
@@ -366,7 +368,7 @@ function CustomerGridView({
 
           return (
             <Card
-              key={customer.id}
+              key={customer.id || `customer-${index}`}
               className="group relative overflow-hidden transition-all duration-300 hover:scale-[1.02] cursor-pointer"
               style={{
                 backgroundColor: COLORS.charcoal + 'f5',
@@ -425,7 +427,9 @@ function CustomerGridView({
                       {customer.entity_name}
                     </p>
                     <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                      Member since {format(new Date(customer.created_at), 'MMM yyyy')}
+                      Member since {customer.created_at && !isNaN(new Date(customer.created_at).getTime())
+                        ? format(new Date(customer.created_at), 'MMM yyyy')
+                        : 'N/A'}
                     </p>
                   </div>
                 </div>

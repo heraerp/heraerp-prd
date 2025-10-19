@@ -17,7 +17,12 @@ export async function POST(
     const body = await request.json()
 
     console.log(`[RPC] Calling function: ${functionName}`, {
-      params: Object.keys(body)
+      params: Object.keys(body),
+      p_action: body.p_action,
+      p_options: body.p_options,
+      include_dynamic: body.p_options?.include_dynamic,
+      include_relationships: body.p_options?.include_relationships,
+      fullBody: body
     })
 
     // Call the RPC function
@@ -32,7 +37,17 @@ export async function POST(
     }
 
     console.log(`[RPC] Success calling ${functionName}:`, {
-      resultCount: Array.isArray(data) ? data.length : 'single result'
+      resultCount: Array.isArray(data) ? data.length : 'single result',
+      dataType: typeof data,
+      dataKeys: data && typeof data === 'object' ? Object.keys(data) : [],
+      hasItems: !!(data as any)?.items,
+      hasData: !!(data as any)?.data,
+      itemsCount: (data as any)?.items?.length || (data as any)?.data?.length || 0,
+      sampleData: data,
+      // 🔍 DEEP DIVE: Check if dynamic_data exists in nested structure
+      firstListItem: (data as any)?.data?.list?.[0],
+      firstListItemKeys: (data as any)?.data?.list?.[0] ? Object.keys((data as any).data.list[0]) : null,
+      hasDynamicDataInFirst: !!(data as any)?.data?.list?.[0]?.dynamic_data
     })
 
     return NextResponse.json(data)

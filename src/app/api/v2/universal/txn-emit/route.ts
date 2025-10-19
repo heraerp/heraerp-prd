@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
       organization_id: organizationId,
       transaction_type: body.transaction_type,
       smart_code: body.smart_code,
-      transaction_number: body.transaction_number ?? `TXN-${Date.now()}`,
+      // ✅ FIX: RPC expects transaction_code (not transaction_number)
+      transaction_code: body.transaction_code || body.transaction_number || `TXN-${Date.now()}`,
       transaction_date: body.transaction_date ?? new Date().toISOString(),
       source_entity_id: body.source_entity_id ?? null,
       target_entity_id: body.target_entity_id ?? null,
@@ -58,16 +59,17 @@ export async function POST(req: NextRequest) {
       metadata: body.metadata ?? {},
       approval_required: body.approval_required ?? false,
       approved_by: body.approved_by ?? null,
-      approved_at: body.approved_at ?? null,
-      transaction_currency_code: body.transaction_currency_code ?? 'AED',
-      base_currency_code: body.base_currency_code ?? 'AED',
-      exchange_rate: body.exchange_rate ?? 1.0,
-      exchange_rate_date: body.exchange_rate_date ?? null,
-      exchange_rate_type: body.exchange_rate_type ?? null,
-      fiscal_period_entity_id: body.fiscal_period_entity_id ?? null,
-      fiscal_year: body.fiscal_year ?? new Date().getFullYear(),
-      fiscal_period: body.fiscal_period ?? new Date().getMonth() + 1,
-      posting_period_code: body.posting_period_code ?? null
+      approved_at: body.approved_at ?? null
+      // ✅ FIX: Remove currency fields - currencies table doesn't exist
+      // transaction_currency_code: body.transaction_currency_code ?? 'AED',
+      // base_currency_code: body.base_currency_code ?? 'AED',
+      // exchange_rate: body.exchange_rate ?? 1.0,
+      // exchange_rate_date: body.exchange_rate_date ?? null,
+      // exchange_rate_type: body.exchange_rate_type ?? null,
+      // fiscal_period_entity_id: body.fiscal_period_entity_id ?? null,
+      // fiscal_year: body.fiscal_year ?? new Date().getFullYear(),
+      // fiscal_period: body.fiscal_period ?? new Date().getMonth() + 1,
+      // posting_period_code: body.posting_period_code ?? null
     }
 
     const linesPayload = body.lines ?? []

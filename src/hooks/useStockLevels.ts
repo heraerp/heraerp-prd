@@ -54,12 +54,13 @@ export function useStockLevels(options: UseStockLevelsOptions) {
     create: createStockLevelEntity,
     update: updateStockLevelEntity
   } = useUniversalEntity({
-    entity_type: 'STOCK_LEVEL',
+    entity_type: 'STOCK_LEVEL', // Will be normalized to uppercase by useUniversalEntity
     organizationId,
     filters: {
       include_dynamic: true,
       include_relationships: true,
       limit: 100
+      // Removed status filter - let's fetch all stock levels
     },
     dynamicFields: [
       { name: 'quantity', type: 'number', smart_code: 'HERA.SALON.INV.DYN.QTY.V1' },
@@ -71,6 +72,14 @@ export function useStockLevels(options: UseStockLevelsOptions) {
       { type: 'STOCK_OF_PRODUCT', smart_code: 'HERA.SALON.INV.REL.STOCKOFPRODUCT.V1' },
       { type: 'STOCK_AT_LOCATION', smart_code: 'HERA.SALON.INV.REL.STOCKATLOCATION.V1' }
     ] as RelationshipDef[]
+  })
+
+  // Debug: Log what entity_type is being fetched
+  console.log('[useStockLevels] 🔍 Hook initialized with:', {
+    entity_type: 'STOCK_LEVEL',
+    organizationId,
+    stockLevelsCount: stockLevels?.length || 0,
+    sampleEntity: stockLevels?.[0]
   })
 
   // Transaction hook for stock movements (using v2 API)

@@ -150,15 +150,11 @@ export function PaymentDialog({
         }
 
         // Fetch currency from organization dynamic data
-        universalApi.setOrganizationId(organizationId)
-        const dynamicDataResult = await universalApi.getDynamicFields(organizationId)
+        const currencyResult = await universalApi.getDynamicData(organizationId, 'currency')
 
-        if (dynamicDataResult.success && dynamicDataResult.data && Array.isArray(dynamicDataResult.data)) {
-          const currencyField = dynamicDataResult.data.find((f: any) => f.field_name === 'currency')
-          if (currencyField && currencyField.field_value_text) {
-            console.log('[PaymentDialog] ✅ Fetched currency:', currencyField.field_value_text)
-            setCurrency(currencyField.field_value_text)
-          }
+        if (currencyResult.success && currencyResult.data?.field_value_text) {
+          console.log('[PaymentDialog] ✅ Fetched currency:', currencyResult.data.field_value_text)
+          setCurrency(currencyResult.data.field_value_text)
         }
       } catch (err) {
         console.error('[PaymentDialog] Error fetching organization details:', err)
@@ -288,12 +284,14 @@ export function PaymentDialog({
       })
     }
 
-    // 4. Validate all services have staff assigned
-    const servicesWithoutStaff = ticket.lineItems?.filter(
-      (item: any) => item.entity_type === 'service' && !item.stylist_id && !item.stylist_entity_id
-    ) || []
+    // 4. Validate all services have staff assigned (products don't need staff)
+    const services = ticket.lineItems?.filter((item: any) => item.entity_type === 'service') || []
+    const servicesWithoutStaff = services.filter(
+      (item: any) => !item.stylist_id && !item.stylist_entity_id
+    )
 
-    if (servicesWithoutStaff.length > 0) {
+    // Only require staff if there are services in the cart
+    if (services.length > 0 && servicesWithoutStaff.length > 0) {
       issues.push({
         type: 'staff',
         message: `${servicesWithoutStaff.length} service(s) missing stylist assignment`,

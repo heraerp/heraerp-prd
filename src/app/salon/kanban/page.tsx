@@ -206,31 +206,59 @@ export default function KanbanPage() {
       const customerName = customers?.find(c => c.id === apt.customer_id)?.entity_name || 'Unknown Customer'
       const stylistName = staff?.find(s => s.id === apt.stylist_id)?.entity_name || null
 
-      // Service data from metadata (already enriched)
+      // 🎯 ENTERPRISE PATTERN: Enrich service data from already-loaded services (same as appointments page)
       const serviceIds = apt.metadata?.service_ids || []
-      const serviceNames = apt.metadata?.service_names || []
-      const servicePrices = apt.metadata?.service_prices || []
 
-      // Get first service with runtime lookup as fallback
+      // ✅ DO RUNTIME ENRICHMENT (same logic as appointments page lines 1404-1434)
+      const serviceNames: string[] = []
+      const servicePrices: number[] = []
+
+      serviceIds.forEach((serviceId: string, index: number) => {
+        const service = services?.find((s: any) => s.id === serviceId)
+        if (service) {
+          serviceNames.push(service.entity_name || service.name || 'Unknown Service')
+
+          // 🎯 ENTERPRISE: dynamic_fields can be ARRAY or OBJECT with numeric keys
+          // Structure can be: {0: {value: {field_name: 'price_market', field_value_number: 500}}}
+          let price = 0
+          if (service.dynamic_fields) {
+            // Convert to array if it's an object with numeric keys
+            const fieldsArray = Array.isArray(service.dynamic_fields)
+              ? service.dynamic_fields
+              : Object.values(service.dynamic_fields)
+
+            // Extract the actual field objects (they might be wrapped in {value: {...}})
+            const unwrappedFields = fieldsArray.map((f: any) => f.value || f)
+
+            // Find price field
+            const priceField = unwrappedFields.find((f: any) => f.field_name === 'price_market')
+            price = priceField?.field_value_number || 0
+
+            // Fallback: check nested structure
+            if (!price && service.dynamic_fields.price_market?.value) {
+              price = service.dynamic_fields.price_market.value
+            }
+          }
+
+          // Final fallback
+          if (!price && service.price) {
+            price = service.price
+          }
+
+          servicePrices.push(price)
+        } else {
+          serviceNames.push('Unknown Service')
+          servicePrices.push(0)
+        }
+      })
+
+      // Get first service for card display
       const service_id = Array.isArray(serviceIds) && serviceIds.length > 0
         ? serviceIds[0]
         : apt.metadata?.service_id || undefined
 
-      let service_name = Array.isArray(serviceNames) && serviceNames.length > 0
-        ? serviceNames[0]
-        : apt.metadata?.service_name || 'Service'
-
-      // 🎯 FALLBACK: If service name not in metadata, do runtime lookup
-      if (service_id && service_name === 'Service') {
-        const foundService = services?.find(s => s.id === service_id)
-        if (foundService) {
-          service_name = foundService.entity_name || foundService.name || 'Service'
-        }
-      }
-
-      const price = Array.isArray(servicePrices) && servicePrices.length > 0
-        ? servicePrices[0]
-        : apt.price || apt.total_amount || apt.metadata?.price || 0
+      const service_name = serviceNames.length > 0 ? serviceNames[0] : 'Service'
+      const price = servicePrices.length > 0 ? servicePrices[0] : apt.price || apt.total_amount || apt.metadata?.price || 0
 
       return {
         id: apt.id,
@@ -267,28 +295,22 @@ export default function KanbanPage() {
 
   // 🎯 ENTERPRISE: Group cards by status column
   const cardsByColumn: Record<KanbanStatus, KanbanCard[]> = useMemo(() => {
+    // ✅ SIMPLIFIED: Use new 5-column structure
     const columns: Record<KanbanStatus, KanbanCard[]> = {
       DRAFT: [],
       BOOKED: [],
-      CHECKED_IN: [],
-      IN_SERVICE: [], // ✅ FIXED: Correct column name from schema
-      TO_PAY: [],
+      IN_PROGRESS: [], // ✅ Unified status column
       DONE: [],
       CANCELLED: []
     }
 
     cards.forEach(card => {
-      // Map appointment statuses to kanban columns
+      // ✅ SIMPLIFIED: Direct mapping with backward compatibility
       const status = card.status
-      if (status === 'PAYMENT_PENDING') {
-        columns.TO_PAY.push(card)
-      } else if (status === 'COMPLETED') {
+      if (status === 'COMPLETED') {
         columns.DONE.push(card)
       } else if (status === 'NO_SHOW') {
         columns.CANCELLED.push(card)
-      } else if (status === 'IN_PROGRESS') {
-        // Map IN_PROGRESS appointment status to IN_SERVICE kanban column
-        columns.IN_SERVICE.push(card)
       } else if (columns[status]) {
         columns[status].push(card)
       }
@@ -303,7 +325,7 @@ export default function KanbanPage() {
       const card = cards.find(c => c.id === cardId)
       if (!card) return
 
-      // Map kanban column to appointment status
+      // ✅ SIMPLIFIED: Map new kanban columns to database statuses
       let newStatus: AppointmentStatus
       switch (targetColumn) {
         case 'DRAFT':
@@ -312,14 +334,8 @@ export default function KanbanPage() {
         case 'BOOKED':
           newStatus = 'booked'
           break
-        case 'CHECKED_IN':
-          newStatus = 'checked_in'
-          break
-        case 'IN_SERVICE':
+        case 'IN_PROGRESS': // ✅ Unified status
           newStatus = 'in_progress'
-          break
-        case 'TO_PAY':
-          newStatus = 'payment_pending'
           break
         case 'DONE':
           newStatus = 'completed'
@@ -358,13 +374,8 @@ export default function KanbanPage() {
         return
       }
 
-      // ⚡ PERFORMANCE: Show success toast immediately (don't wait for API)
-      toast({
-        title: '✅ Moving...',
-        description: `Updating appointment status to ${targetColumn.replace('_', ' ').toLowerCase()}`,
-        duration: 1500
-      })
-
+      // ⚡ PERFORMANCE: Don't show toast immediately - Board has optimistic updates
+      // Only show toast on error for cleaner UX
       try {
         // Fire-and-forget for faster perceived speed (Board component handles optimistic updates)
         updateAppointmentStatus({ id: cardId, status: newStatus }).catch((error: any) => {
@@ -390,18 +401,9 @@ export default function KanbanPage() {
   // 🎯 ENTERPRISE: Quick action to move card to next logical status (FORWARD ONLY)
   const handleMoveToNext = useCallback(
     async (card: KanbanCard) => {
-      // 🔧 FIX: Normalize database statuses to Kanban column statuses before using lifecycle rules
-      // The lifecycle rules expect KanbanStatus (IN_SERVICE, TO_PAY, DONE, etc.)
-      // But cards may have database statuses (IN_PROGRESS, PAYMENT_PENDING, COMPLETED)
-      let normalizedStatus: KanbanStatus = card.status
-
-      if (card.status === 'IN_PROGRESS') {
-        normalizedStatus = 'IN_SERVICE'
-      } else if (card.status === 'PAYMENT_PENDING') {
-        normalizedStatus = 'TO_PAY'
-      } else if (card.status === 'COMPLETED') {
-        normalizedStatus = 'DONE'
-      }
+      // ✅ SIMPLIFIED: With new schema, statuses match directly
+      // No need to normalize - lifecycle rules now use IN_PROGRESS
+      const normalizedStatus: KanbanStatus = card.status
 
       // Use lifecycle rules to get allowed next states (forward-only)
       const nextAllowedStates = getNextAllowedStates(normalizedStatus)

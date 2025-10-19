@@ -163,8 +163,10 @@ function NewAppointmentContent() {
     loading: branchesLoading,
     error: branchesError,
     setBranchId,
-    hasMultipleBranches
+    hasMultipleBranches,
+    selectedBranch // ✅ Add selectedBranch from the hook
   } = useBranchFilter(selectedBranchId, 'salon-appointments', organizationId)
+
 
   // Form state - MUST be declared before hooks that use these values
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
@@ -229,7 +231,7 @@ function NewAppointmentContent() {
   const [saving, setSaving] = useState(false)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const [createdAppointmentId, setCreatedAppointmentId] = useState<string | null>(null)
-  const [savedStatus, setSavedStatus] = useState<'draft' | 'booked'>('booked')
+  const [savedStatus, setSavedStatus] = useState<'DRAFT' | 'BOOKED'>('BOOKED')
 
   // Search state
   const [customerSearch, setCustomerSearch] = useState('')
@@ -247,32 +249,65 @@ function NewAppointmentContent() {
   // Combined loading state
   const loading = customersLoading || servicesLoading || staffLoading
 
-  // Generate available time slots (realistic working hours: 9 AM - 9 PM)
+  // Helper function to convert 24-hour format to 12-hour format
+  const formatTime12Hour = (time24: string): string => {
+    const [hours, minutes] = time24.split(':')
+    const hour = parseInt(hours, 10)
+    const ampm = hour >= 12 ? 'PM' : 'AM'
+    const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour
+    return `${hour12}:${minutes} ${ampm}`
+  }
+
+  // Helper function to format operating hours range in 12-hour format
+  const formatOperatingHours = (hours: string): string => {
+    if (hours === 'Closed') return 'Closed'
+    const [start, end] = hours.split('-')
+    if (!start || !end) return hours
+    return `${formatTime12Hour(start)} - ${formatTime12Hour(end)}`
+  }
+
+  // ✅ DYNAMIC WORKING HOURS: Generate time slots based on branch operating hours
   const generateTimeSlots = (): TimeSlot[] => {
     const slots: TimeSlot[] = []
     const now = new Date()
     const selectedDateObj = new Date(selectedDate)
     const isToday = selectedDateObj.toDateString() === now.toDateString()
 
-    // Working hours: 9:00 AM to 9:00 PM
-    const startHour = 9
-    const endHour = 21
+    // Default working hours (fallback if branch not selected or no operating hours)
+    let startHour = 9 // 9:00 AM
+    let endHour = 21 // 9:00 PM
+
+    // ✅ If a branch is selected, use its opening_time and closing_time
+    if (selectedBranch?.opening_time && selectedBranch?.closing_time) {
+      // Parse times like "09:00" and "21:00"
+      const openingHour = parseInt(selectedBranch.opening_time.split(':')[0], 10)
+      const closingHour = parseInt(selectedBranch.closing_time.split(':')[0], 10)
+
+      if (!isNaN(openingHour) && !isNaN(closingHour)) {
+        startHour = openingHour
+        endHour = closingHour
+      }
+    }
 
     // Start from current hour if today, otherwise from opening time
     let currentHour = isToday ? Math.max(now.getHours(), startHour) : startHour
-    let currentMinute = isToday ? (now.getMinutes() < 30 ? 30 : 0) : 0
-
-    // If today and current minute is 30+, start from next hour
-    if (isToday && now.getMinutes() >= 30 && currentMinute === 0) {
-      currentHour += 1
+    // Round up to next 15-minute interval
+    let currentMinute = 0
+    if (isToday) {
+      const nowMinutes = now.getMinutes()
+      currentMinute = Math.ceil(nowMinutes / 15) * 15
+      if (currentMinute >= 60) {
+        currentMinute = 0
+        currentHour += 1
+      }
     }
 
-    // Generate 30-minute slots
+    // Generate 15-minute slots
     while (currentHour < endHour || (currentHour === endHour && currentMinute === 0)) {
       const startTime = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`
 
-      // Calculate end time (30 minutes later)
-      let endMinute = currentMinute + 30
+      // Calculate end time (15 minutes later)
+      let endMinute = currentMinute + 15
       let endHour = currentHour
       if (endMinute >= 60) {
         endMinute = 0
@@ -286,7 +321,7 @@ function NewAppointmentContent() {
       })
 
       // Move to next slot
-      currentMinute += 30
+      currentMinute += 15
       if (currentMinute >= 60) {
         currentMinute = 0
         currentHour += 1
@@ -313,15 +348,18 @@ function NewAppointmentContent() {
     [services, serviceSearch]
   )
 
-  const timeSlots = useMemo(() => generateTimeSlots(), [selectedDate])
+  const timeSlots = useMemo(() => generateTimeSlots(), [selectedDate, selectedBranch])
 
   // 🧬 ENTERPRISE: Status-based time slot blocking
   // Only these statuses actually block time slots (stylist is committed)
   const BLOCKING_STATUSES = [
-    'booked', // Confirmed appointment
-    'checked_in', // Customer has arrived
-    'in_progress', // Service is happening
-    'payment_pending' // Service done, awaiting payment
+    'BOOKED', // Confirmed appointment
+    'IN_PROGRESS', // Service is happening (unified status)
+    // Legacy statuses for backward compatibility
+    'booked',
+    'checked_in',
+    'in_progress',
+    'payment_pending'
   ]
 
   // ⚡ PERFORMANCE: Check for time slot conflicts
@@ -336,9 +374,9 @@ function NewAppointmentContent() {
       const slotDateTime = new Date(selectedDate)
       slotDateTime.setHours(hours, minutes, 0, 0)
 
-      // Calculate slot end time (30 minutes later)
+      // Calculate slot end time (15 minutes later)
       const slotEndTime = new Date(slotDateTime)
-      slotEndTime.setMinutes(slotEndTime.getMinutes() + 30)
+      slotEndTime.setMinutes(slotEndTime.getMinutes() + 15)
 
       // Check for conflicts with existing appointments for this stylist
       const conflict = appointments.find(apt => {
@@ -348,7 +386,6 @@ function NewAppointmentContent() {
         // 🧬 ENTERPRISE: Only block time slots for confirmed/active appointments
         // Draft appointments don't block (allows exploring options)
         if (!BLOCKING_STATUSES.includes(apt.status)) {
-          console.log(`[Time Slot] Skipping ${apt.status} appointment - doesn't block time slots`)
           return false
         }
 
@@ -358,10 +395,6 @@ function NewAppointmentContent() {
 
         // Check for overlap: slot overlaps if it starts before appointment ends AND ends after appointment starts
         const overlaps = slotDateTime < aptEnd && slotEndTime > aptStart
-
-        if (overlaps) {
-          console.log(`[Time Slot] BLOCKED by ${apt.status} appointment for ${apt.customer_name}`)
-        }
 
         return overlaps
       })
@@ -398,7 +431,6 @@ function NewAppointmentContent() {
       const customer = customers.find(c => c.id === customerIdFromUrl)
       if (customer) {
         setSelectedCustomer(customer)
-        console.log('Pre-selected customer:', customer)
       }
     }
   }, [customerIdFromUrl, customers])
@@ -522,8 +554,8 @@ function NewAppointmentContent() {
     }
   }
 
-  // Save appointment with status (draft or booked)
-  const handleSave = async (status: 'draft' | 'booked') => {
+  // Save appointment with status (DRAFT or BOOKED)
+  const handleSave = async (status: 'DRAFT' | 'BOOKED') => {
     if (!organizationId) {
       toast({
         title: 'Error',
@@ -582,11 +614,10 @@ function NewAppointmentContent() {
       const serviceIds = cart.map(item => item.service.id)
 
       // Create appointment using Universal Transaction Hook (RPC-based)
-      console.log('Creating appointment with status:', status)
       const result = await createAppointmentTransaction({
         transaction_type: 'APPOINTMENT',
         smart_code:
-          status === 'draft'
+          status === 'DRAFT'
             ? 'HERA.SALON.APPOINTMENT.TXN.DRAFT.V1'
             : 'HERA.SALON.APPOINTMENT.TXN.BOOKED.V1',
         source_entity_id: selectedCustomer.id, // Customer
@@ -614,7 +645,6 @@ function NewAppointmentContent() {
       })
 
       const appointmentId = result.id
-      console.log('Appointment created with ID:', appointmentId, 'Status:', status)
 
       // 🎯 CRITICAL FIX: Invalidate AND refetch React Query cache to auto-refresh appointments list
       // Use predicate to match all transactions queries (used by useUniversalTransaction)
@@ -1311,6 +1341,18 @@ function NewAppointmentContent() {
                                 string,
                                 { bg: string; text: string; border: string }
                               > = {
+                                // New UPPERCASE statuses
+                                BOOKED: {
+                                  bg: 'rgba(239, 68, 68, 0.2)',
+                                  text: '#F87171',
+                                  border: 'rgba(239, 68, 68, 0.3)'
+                                },
+                                IN_PROGRESS: {
+                                  bg: 'rgba(249, 115, 22, 0.2)',
+                                  text: '#FB923C',
+                                  border: 'rgba(249, 115, 22, 0.3)'
+                                },
+                                // Legacy lowercase statuses for backward compatibility
                                 booked: {
                                   bg: 'rgba(239, 68, 68, 0.2)',
                                   text: '#F87171',
@@ -1334,8 +1376,8 @@ function NewAppointmentContent() {
                               }
 
                               const statusColor = conflictingApt
-                                ? statusColors[conflictingApt.status] || statusColors.booked
-                                : statusColors.booked
+                                ? statusColors[conflictingApt.status] || statusColors.BOOKED || statusColors.booked
+                                : statusColors.BOOKED || statusColors.booked
 
                               return (
                                 <SelectItem
@@ -1397,9 +1439,26 @@ function NewAppointmentContent() {
                       <Clock className="w-3 h-3 text-emerald-400" />
                       <span className="font-medium text-emerald-400">Working Hours</span>
                     </div>
-                    <p>Monday - Sunday: 9:00 AM - 9:00 PM</p>
-                    <p className="mt-1 text-[#F5E6C8]/50">
-                      Appointments are available in 30-minute slots
+                    {selectedBranch?.opening_time && selectedBranch?.closing_time ? (
+                      <>
+                        <p className="font-medium mb-1">{selectedBranch.name}</p>
+                        <p className="text-sm text-[#F5E6C8]/90">
+                          {formatTime12Hour(selectedBranch.opening_time)} - {formatTime12Hour(selectedBranch.closing_time)}
+                        </p>
+                        <p className="mt-1 text-[#F5E6C8]/50 text-xs">
+                          All days (Monday - Sunday)
+                        </p>
+                      </>
+                    ) : selectedBranch ? (
+                      <>
+                        <p className="font-medium mb-1">{selectedBranch.name}</p>
+                        <p className="text-[#F5E6C8]/70">Operating hours not configured</p>
+                      </>
+                    ) : (
+                      <p>Please select a branch to view operating hours</p>
+                    )}
+                    <p className="mt-2 text-[#F5E6C8]/50">
+                      Appointments are available in 15-minute slots
                     </p>
                   </div>
 
@@ -1744,7 +1803,7 @@ function NewAppointmentContent() {
                   <Button
                     className="w-full"
                     size="lg"
-                    onClick={() => handleSave('booked')}
+                    onClick={() => handleSave('BOOKED')}
                     disabled={
                       (hasMultipleBranches && !branchId) ||
                       !selectedCustomer ||
@@ -1780,7 +1839,7 @@ function NewAppointmentContent() {
                     className="w-full"
                     variant="outline"
                     size="lg"
-                    onClick={() => handleSave('draft')}
+                    onClick={() => handleSave('DRAFT')}
                     disabled={
                       (hasMultipleBranches && !branchId) ||
                       !selectedCustomer ||
@@ -2088,11 +2147,11 @@ function NewAppointmentContent() {
                     backgroundClip: 'text'
                   }}
                 >
-                  {savedStatus === 'draft' ? 'Draft Saved!' : 'Appointment Confirmed!'}
+                  {savedStatus === 'DRAFT' ? 'Draft Saved!' : 'Appointment Confirmed!'}
                 </span>
               </DialogTitle>
               <DialogDescription className="text-[#F5E6C8]/70 text-base">
-                {savedStatus === 'draft'
+                {savedStatus === 'DRAFT'
                   ? 'Your appointment has been saved as a draft and can be confirmed later'
                   : 'Your appointment has been successfully scheduled'}
               </DialogDescription>

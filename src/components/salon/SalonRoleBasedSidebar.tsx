@@ -39,6 +39,9 @@ export interface SidebarItem {
 
 // Role-based sidebar items configuration
 const getSidebarItems = (role: string): SidebarItem[] => {
+  // Normalize role to match our convention (lowercase with first letter capitalized)
+  const normalizedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase()
+
   const allItems: SidebarItem[] = [
     // Dashboard - available to Owner and Admin only
     {
@@ -46,6 +49,14 @@ const getSidebarItems = (role: string): SidebarItem[] => {
       href: '/salon/dashboard',
       icon: Home,
       roles: ['Owner', 'Administrator']
+    },
+
+    // Receptionist Dashboard - Receptionist only
+    {
+      title: 'My Dashboard',
+      href: '/salon/receptionist',
+      icon: Home,
+      roles: ['Receptionist']
     },
 
     // POS & Appointments - Receptionist main features
@@ -139,15 +150,19 @@ const getSidebarItems = (role: string): SidebarItem[] => {
     }
   ]
 
-  // Filter items based on role
-  return allItems.filter(item => !item.roles || item.roles.includes(role))
+  // Filter items based on role (using normalized role)
+  return allItems.filter(item => !item.roles || item.roles.includes(normalizedRole))
 }
 
 // Apps modal items with role restrictions
 const getAllApps = (role: string): SidebarItem[] => {
+  // Normalize role to match our convention
+  const normalizedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase()
+
   const allApps: SidebarItem[] = [
     // Core modules
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home, roles: ['Owner', 'Administrator'] },
+    { title: 'My Dashboard', href: '/salon/receptionist', icon: Home, roles: ['Receptionist'] },
     {
       title: 'POS',
       href: '/salon/pos',
@@ -225,7 +240,7 @@ const getAllApps = (role: string): SidebarItem[] => {
     { title: 'Leave', href: '/salon/leave', icon: CalendarCheck, roles: ['Owner', 'Administrator'] }
   ]
 
-  return allApps.filter(app => !app.roles || app.roles.includes(role))
+  return allApps.filter(app => !app.roles || app.roles.includes(normalizedRole))
 }
 
 // Apps Modal Component

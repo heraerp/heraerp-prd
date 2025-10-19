@@ -112,19 +112,16 @@ function POSContent() {
   useEffect(() => {
     // 🛡️ CRITICAL: Prevent infinite loops - only attempt load once
     if (appointmentLoadAttempted.current) {
-      console.log('[POSPage] ⏭️ Skipping - already attempted to load appointment')
       return
     }
 
     // Only run if we have organization ID
     if (!effectiveOrgId) {
-      console.log('[POSPage] ⏭️ Skipping - no organization ID yet')
       return
     }
 
     // Don't load if ticket already has items
     if (ticket.lineItems.length > 0) {
-      console.log('[POSPage] ⏭️ Skipping - ticket already has items')
       appointmentLoadAttempted.current = true
       return
     }
@@ -134,16 +131,6 @@ function POSContent() {
     if (storedAppointment) {
       try {
         const appointmentData = JSON.parse(storedAppointment)
-        console.log('[POSPage] 💾 Loading appointment directly from kanban data:', {
-          id: appointmentData.id,
-          customer: appointmentData.customer_name,
-          stylist: appointmentData.stylist_name,
-          source: appointmentData._source,
-          // 🔍 DEBUG: Log service data from TOP LEVEL (same as customer/stylist)
-          service_ids: appointmentData.service_ids,
-          service_names: appointmentData.service_names,
-          service_prices: appointmentData.service_prices
-        })
 
         // 🛡️ Mark as attempted to prevent re-runs
         appointmentLoadAttempted.current = true
@@ -159,7 +146,6 @@ function POSContent() {
         // 🎯 ENTERPRISE: Use data directly from kanban - NO DATABASE CALL NEEDED!
         // Add customer info
         if (appointmentData.customer_id && appointmentData.customer_name) {
-          console.log('[POSPage] 👤 Adding customer:', appointmentData.customer_name)
           addCustomerToTicket({
             customer_id: appointmentData.customer_id,
             customer_name: appointmentData.customer_name
@@ -172,14 +158,12 @@ function POSContent() {
 
         // Add stylist as default
         if (appointmentData.stylist_id && appointmentData.stylist_name) {
-          console.log('[POSPage] 💇 Setting default stylist:', appointmentData.stylist_name)
           setDefaultStylistId(appointmentData.stylist_id)
           setDefaultStylistName(appointmentData.stylist_name)
         }
 
         // Set branch if available
         if (appointmentData.branch_id) {
-          console.log('[POSPage] 🏢 Setting branch:', appointmentData.branch_id)
           setSelectedBranchId(appointmentData.branch_id)
         }
 
@@ -193,12 +177,6 @@ function POSContent() {
             ? appointmentData.service_ids
             : [appointmentData.service_ids]
 
-          console.log('[POSPage] 🎨 Building services from TOP LEVEL data:', {
-            serviceIds,
-            serviceNames: appointmentData.service_names,
-            servicePrices: appointmentData.service_prices
-          })
-
           serviceIds.forEach((serviceId: string, index: number) => {
             if (serviceId) {
               services.push({
@@ -211,8 +189,6 @@ function POSContent() {
             }
           })
         }
-
-        console.log('[POSPage] 🎨 Adding services to cart:', services)
 
         // Add services to appointment
         if (services.length > 0) {
@@ -239,7 +215,6 @@ function POSContent() {
           duration: 3000
         })
 
-        console.log('[POSPage] ✅ Appointment loaded successfully from kanban data!')
         setIsLoadingAppointment(false)
       } catch (error) {
         console.error('[POSPage] ❌ Failed to parse appointment data from sessionStorage:', error)
@@ -262,10 +237,6 @@ function POSContent() {
       return
     }
 
-    // Load appointment from URL parameter
-    console.log('[POSPage] 🚀 Loading appointment from URL:', appointmentId)
-    console.log('[POSPage] 📋 Organization ID:', effectiveOrgId)
-
     // 🛡️ Mark as attempted to prevent re-runs
     appointmentLoadAttempted.current = true
     setIsLoadingAppointment(true)
@@ -277,27 +248,8 @@ function POSContent() {
       duration: 2000
     })
 
-    // 🔍 DEBUG: Query database directly to see what's there
-    universalApi.read({
-      table: 'core_entities',
-      filters: [
-        { field: 'organization_id', operator: 'eq', value: effectiveOrgId },
-        { field: 'id', operator: 'eq', value: appointmentId }
-      ]
-    }).then(directResult => {
-      console.log('[POSPage] 🔍 Direct DB query result:', {
-        found: directResult?.data?.length || 0,
-        entity_type: directResult?.data?.[0]?.entity_type,
-        entity_name: directResult?.data?.[0]?.entity_name,
-        full_data: directResult?.data?.[0]
-      })
-    }).catch(err => {
-      console.error('[POSPage] ❌ Direct DB query failed:', err)
-    })
-
     loadAppointment(appointmentId).then(fullAppointment => {
       if (fullAppointment) {
-        console.log('[POSPage] ✅ Appointment loaded successfully:', fullAppointment)
 
         // Add customer info
         if (fullAppointment.customer_id && fullAppointment.customer_name) {
@@ -541,8 +493,8 @@ function POSContent() {
       branchName: string
       customerId: string
       customerName: string
-      stylistId: string
-      stylistName: string
+      stylistId?: string // ✅ Optional for product-only sales
+      stylistName?: string // ✅ Optional for product-only sales
     }) => {
       // Update branch
       setSelectedBranchId(data.branchId)
@@ -554,9 +506,11 @@ function POSContent() {
       })
       setSelectedCustomer({ id: data.customerId, entity_name: data.customerName })
 
-      // Update default stylist (always provided now)
-      setDefaultStylistId(data.stylistId)
-      setDefaultStylistName(data.stylistName)
+      // ✅ FIX: Only update stylist if provided (optional for products)
+      if (data.stylistId && data.stylistName) {
+        setDefaultStylistId(data.stylistId)
+        setDefaultStylistName(data.stylistName)
+      }
 
       // If there's a pending item, add it now
       if (pendingItem) {
@@ -568,8 +522,9 @@ function POSContent() {
           entity_name: item.title || item.entity_name || item.raw?.entity_name || 'Unknown Item',
           quantity: 1,
           unit_price: Number(item.price || item.unit_price || item.raw?.price || 0),
-          stylist_id: data.stylistId,
-          stylist_name: data.stylistName
+          // ✅ FIX: Only include stylist if provided (services require it, products don't)
+          ...(data.stylistId ? { stylist_id: data.stylistId } : {}),
+          ...(data.stylistName ? { stylist_name: data.stylistName } : {})
         })
 
         setPendingItem(null)
@@ -590,7 +545,6 @@ function POSContent() {
 
   // Memoized branch change handler to prevent infinite loops
   const handleBranchChange = useCallback((branchId: string) => {
-    console.log('[POSPage] ✅ Branch changed from catalog:', branchId)
     setSelectedBranchId(branchId)
   }, [setSelectedBranchId])
 
@@ -917,6 +871,7 @@ function POSContent() {
               organizationId={effectiveOrgId!}
               selectedCustomer={selectedCustomer}
               onCustomerSelect={handleCustomerSelect}
+              onAddItem={handleAddItem}
             />
           </div>
         </div>
@@ -975,6 +930,8 @@ function POSContent() {
           currentBranchId={selectedBranchId}
           currentCustomerId={ticket.customer_id}
           currentStylistId={defaultStylistId}
+          lineItems={ticket.lineItems} // ✅ Pass line items to check for services
+          pendingItem={pendingItem} // ✅ Pass pending item to check type (service vs product)
           title="Bill Setup"
           description="All three fields are required for every sale"
         />

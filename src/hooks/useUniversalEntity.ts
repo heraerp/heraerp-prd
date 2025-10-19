@@ -309,6 +309,12 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       if (!organizationId) throw new Error('Organization ID required')
 
       // Fetch entities using RPC
+      console.log('[useUniversalEntity] 🔍 Fetching entities with params:', {
+        p_organization_id: organizationId,
+        p_entity_type: entity_type,
+        p_status: filters.status || null
+      })
+
       const result = await getEntities('', {
         p_organization_id: organizationId,
         p_entity_type: entity_type,
@@ -318,6 +324,15 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       })
 
       const entitiesArray = Array.isArray(result) ? result : []
+
+      const entityTypes = [...new Set(entitiesArray.map((e: any) => e.entity_type))]
+      console.log('[useUniversalEntity] ✅ Fetched entities:', {
+        count: entitiesArray.length,
+        entity_types: entityTypes,
+        entity_types_string: entityTypes.join(', '),
+        sampleEntity: entitiesArray[0],
+        sampleEntityType: entitiesArray[0]?.entity_type
+      })
 
       // Check if entities already have dynamic_fields from RPC
       const hasDynamicFieldsInRpc = entitiesArray[0]?.dynamic_fields
@@ -568,8 +583,27 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       dynamic_patch?: Record<string, any>
       relationships_patch?: Record<string, string[]> // TYPE -> [toIds]
     }) => {
+      console.log('[useUniversalEntity] 🔍 UPDATE mutation called with:', {
+        entity_type,
+        entity_id,
+        updates,
+        has_entity_name: !!updates.entity_name,
+        has_smart_code: !!updates.smart_code,
+        has_status: !!updates.status,
+        will_call_upsert: !!(updates.entity_name || updates.smart_code || updates.status),
+        dynamic_patch: dynamic_patch ? Object.keys(dynamic_patch) : undefined,
+        relationships_patch: relationships_patch ? Object.keys(relationships_patch) : undefined
+      })
+
       // ✅ USE RPC CLIENT: Use upsertEntity for updates
       if (updates.entity_name || updates.smart_code || updates.status) {
+        console.log('[useUniversalEntity] 🚀 Calling upsertEntity with:', {
+          p_organization_id: organizationId,
+          p_entity_type: entity_type,
+          p_entity_name: updates.entity_name,
+          p_smart_code: updates.smart_code,
+          p_entity_id: entity_id
+        })
         await upsertEntity('', {
           p_organization_id: organizationId!,
           p_entity_type: entity_type,
@@ -582,6 +616,8 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
           p_status: updates.status || null
         })
         console.log('[useUniversalEntity] ✅ Entity updated via RPC client')
+      } else {
+        console.warn('[useUniversalEntity] ⚠️ SKIPPING entity upsert - no entity_name, smart_code, or status provided')
       }
 
       // Handle dynamic_patch using RPC client

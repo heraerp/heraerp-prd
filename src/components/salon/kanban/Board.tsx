@@ -440,13 +440,11 @@ export function Board({
   const optimisticCardsByColumn = useMemo(() => {
     if (optimisticMoves.length === 0) return cardsByColumn
 
-    // Create a deep copy to avoid mutating props
+    // ✅ SIMPLIFIED: Create a deep copy with new status structure
     const result: Record<KanbanStatus, KanbanCard[]> = {
       DRAFT: [],
       BOOKED: [],
-      CHECKED_IN: [],
-      IN_SERVICE: [],
-      TO_PAY: [],
+      IN_PROGRESS: [], // ✅ New unified status
       DONE: [],
       CANCELLED: []
     }
@@ -557,21 +555,29 @@ export function Board({
 
   // ============================================================================
   // STATUS NORMALIZATION - Convert database status to KanbanStatus
+  // ✅ SIMPLIFIED: Map old statuses to new unified IN_PROGRESS status
   // ============================================================================
   const normalizeStatus = useCallback((status: string): KanbanStatus => {
     // Map database status values to KanbanStatus enum
     // Handle both lowercase and uppercase variants
     const statusMap: Record<string, KanbanStatus> = {
-      'payment_pending': 'TO_PAY',
-      'PAYMENT_PENDING': 'TO_PAY',
+      // ✅ OLD STATUSES → New IN_PROGRESS (backward compatibility)
+      'checked_in': 'IN_PROGRESS',
+      'CHECKED_IN': 'IN_PROGRESS',
+      'in_service': 'IN_PROGRESS',
+      'IN_SERVICE': 'IN_PROGRESS',
+      'payment_pending': 'IN_PROGRESS',
+      'PAYMENT_PENDING': 'IN_PROGRESS',
+      'to_pay': 'IN_PROGRESS',
+      'TO_PAY': 'IN_PROGRESS',
+      // ✅ NEW STATUS → Direct mapping
+      'in_progress': 'IN_PROGRESS',
+      'IN_PROGRESS': 'IN_PROGRESS',
+      // Other statuses
       'completed': 'DONE',
       'COMPLETED': 'DONE',
-      'in_progress': 'IN_SERVICE',
-      'IN_PROGRESS': 'IN_SERVICE',
       'no_show': 'CANCELLED',
       'NO_SHOW': 'CANCELLED',
-      'checked_in': 'CHECKED_IN',
-      'CHECKED_IN': 'CHECKED_IN',
       'draft': 'DRAFT',
       'DRAFT': 'DRAFT',
       'booked': 'BOOKED',

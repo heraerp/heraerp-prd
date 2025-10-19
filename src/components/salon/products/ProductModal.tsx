@@ -147,7 +147,24 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
 
   const handleSubmit = async (data: ProductForm) => {
     try {
-      await onSave(data)
+      // 🎯 ENTERPRISE DEFAULT: If no branches selected, default to ALL branches
+      // This ensures products are visible across all locations unless specifically restricted
+      const dataWithDefaults = {
+        ...data,
+        branch_ids:
+          data.branch_ids && data.branch_ids.length > 0
+            ? data.branch_ids // User selected specific branches
+            : availableBranches.map(b => b.id) // Default to ALL branches
+      }
+
+      console.log('[ProductModal] Saving product with branch defaults:', {
+        original_branch_ids: data.branch_ids?.length || 0,
+        defaulted_branch_ids: dataWithDefaults.branch_ids.length,
+        defaulting_to_all: !data.branch_ids || data.branch_ids.length === 0,
+        available_branches: availableBranches.length
+      })
+
+      await onSave(dataWithDefaults)
       form.reset()
     } catch (error) {
       console.error('Product save error:', error)

@@ -69,8 +69,13 @@ export async function POST(request: NextRequest) {
     // ✅ HERA v2.2 ACTOR STAMPING: Build actor context
     const actor = await buildActorContext(supabase, userId, organizationId)
 
+    console.log('🎭 [CREATE] Actor context built:', {
+      actor_user_id: actor.actor_user_id,
+      actor_user_id_type: typeof actor.actor_user_id
+    })
+
     // Step 1: Create entity using hera_entity_upsert_v1 RPC
-    const { data: entityResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', {
+    const createPayload = {
       p_organization_id: organizationId,
       p_entity_type: data.entity_type,
       p_entity_name: data.entity_name,
@@ -88,7 +93,12 @@ export async function POST(request: NextRequest) {
       p_ai_classification: null,
       p_ai_insights: null,
       p_actor_user_id: actor.actor_user_id // ✅ CRITICAL: Required for audit trail
-    })
+    }
+
+    console.log('🚀 [CREATE] EXACT RPC PAYLOAD:', JSON.stringify(createPayload, null, 2))
+    console.log('🔑 [CREATE] p_actor_user_id value:', createPayload.p_actor_user_id)
+
+    const { data: entityResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', createPayload)
 
     if (entityError || !entityResult) {
       console.error('Entity creation failed:', entityError)
@@ -116,23 +126,45 @@ export async function POST(request: NextRequest) {
 
     // Step 2: Add dynamic fields if provided using batch operation
     if (data.dynamic_fields) {
-      const dynamicFields = Object.entries(data.dynamic_fields).map(([fieldName, fieldConfig]) => ({
-        entity_id: entityId,
-        field_name: fieldName,
-        field_type: fieldConfig.type,
-        field_value_text: fieldConfig.type === 'text' ? fieldConfig.value : null,
-        field_value_number: fieldConfig.type === 'number' ? fieldConfig.value : null,
-        field_value_boolean: fieldConfig.type === 'boolean' ? fieldConfig.value : null,
-        field_value_date: fieldConfig.type === 'date' ? fieldConfig.value : null,
-        field_value_json: fieldConfig.type === 'json' ? fieldConfig.value : null,
-        smart_code: fieldConfig.smart_code
-      }))
+      // ✅ FIX: Transform to RPC format with TYPED columns (field_value_text, field_value_number, etc.)
+      const dynamicFields = Object.entries(data.dynamic_fields).map(([fieldName, fieldConfig]) => {
+        const item: any = {
+          field_name: fieldName,
+          field_type: fieldConfig.type,
+          smart_code: fieldConfig.smart_code
+        }
+
+        // Set the appropriate typed column based on field type
+        switch (fieldConfig.type) {
+          case 'number':
+            item.field_value_number = fieldConfig.value
+            break
+          case 'boolean':
+            item.field_value_boolean = fieldConfig.value
+            break
+          case 'date':
+            item.field_value_date = fieldConfig.value
+            break
+          case 'json':
+            item.field_value_json = fieldConfig.value
+            break
+          case 'text':
+          default:
+            item.field_value_text = fieldConfig.value
+            break
+        }
+
+        return item
+      })
+
+      console.log('📝 Creating dynamic fields:', dynamicFields)
 
       // Use batch RPC for dynamic data (when available)
       const { error: dynamicError } = await supabase.rpc('hera_dynamic_data_batch_v1', {
         p_organization_id: organizationId,
         p_entity_id: entityId,
-        p_fields: dynamicFields
+        p_items: dynamicFields, // ✅ FIX: Use p_items not p_fields (correct RPC parameter name)
+        p_actor_user_id: actor.actor_user_id // ✅ Add actor stamping for audit trail
       })
 
       if (dynamicError) {
@@ -242,6 +274,8 @@ export async function GET(request: NextRequest) {
       isSuccess: result?.success,
       dataCount: result?.data?.length || 0,
       firstItemHasRelationships: result?.data?.[0] ? !!result.data[0].relationships : false,
+      firstItemHasDynamicFields: result?.data?.[0] ? !!result.data[0].dynamic_fields : false,
+      firstItemDynamicFieldsSample: result?.data?.[0]?.dynamic_fields || null,
       firstItemSample: result?.data?.[0] || null
     })
 
@@ -295,8 +329,18 @@ export async function PUT(request: NextRequest) {
 
     const supabase = getSupabaseService()
 
-    // ✅ HERA v2.2 ACTOR STAMPING: Build actor context  
+    // ✅ HERA v2.2 ACTOR STAMPING: Build actor context
     const actor = await buildActorContext(supabase, userId, organizationId)
+
+    console.log('🎭 Actor context built:', {
+      actor_user_id: actor.actor_user_id,
+      organization_id: actor.organization_id,
+      user_email: actor.user_email,
+      actor_user_id_type: typeof actor.actor_user_id,
+      actor_user_id_isNull: actor.actor_user_id === null,
+      actor_user_id_isUndefined: actor.actor_user_id === undefined,
+      actor_user_id_isEmpty: actor.actor_user_id === ''
+    })
 
     // Update entity core fields using hera_entity_upsert_v1 RPC
     if (
@@ -314,7 +358,8 @@ export async function PUT(request: NextRequest) {
           entity_name: data.entity_name,
           entity_code: data.entity_code,
           status: data.status
-        }
+        },
+        actor_user_id: actor.actor_user_id
       })
 
       // Get the entity first to get required fields for update
@@ -332,12 +377,13 @@ export async function PUT(request: NextRequest) {
         )
       }
 
-      const { data: updateResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', {
+      // 🔍 CRITICAL DEBUG: Log the EXACT RPC payload being sent
+      const rpcPayload = {
         p_organization_id: organizationId,
-        p_entity_type: existingEntity.entity_type, // Required
-        p_entity_name: data.entity_name || existingEntity.entity_name, // Required
-        p_smart_code: data.smart_code || existingEntity.smart_code, // Required
-        p_entity_id: data.entity_id, // Provide entity_id for update
+        p_entity_type: existingEntity.entity_type,
+        p_entity_name: data.entity_name || existingEntity.entity_name,
+        p_smart_code: data.smart_code || existingEntity.smart_code,
+        p_entity_id: data.entity_id,
         p_entity_code: data.entity_code || null,
         p_entity_description: data.entity_description !== undefined ? data.entity_description : null,
         p_parent_entity_id: data.parent_entity_id !== undefined ? data.parent_entity_id : null,
@@ -349,8 +395,14 @@ export async function PUT(request: NextRequest) {
         p_ai_confidence: null,
         p_ai_classification: null,
         p_ai_insights: null,
-        p_actor_user_id: actor.actor_user_id // ✅ CRITICAL: Required for audit trail
-      })
+        p_actor_user_id: actor.actor_user_id
+      }
+
+      console.log('🚀 EXACT RPC PAYLOAD:', JSON.stringify(rpcPayload, null, 2))
+      console.log('🔑 p_actor_user_id value:', rpcPayload.p_actor_user_id)
+      console.log('🔑 p_actor_user_id type:', typeof rpcPayload.p_actor_user_id)
+
+      const { data: updateResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', rpcPayload)
 
       if (entityError || !updateResult) {
         console.error('Entity update failed:', entityError)

@@ -158,10 +158,15 @@ export function usePosCheckout(): UsePosCheckoutReturn {
       for (const item of items) {
         const line_amount = item.quantity * item.unit_price - (item.discount || 0)
 
+        // ✅ FIX: Handle custom "Other" items (temporary IDs starting with "custom-")
+        // These don't exist in the database, so set entity_id to null
+        const isCustomItem = item.entity_id?.startsWith('custom-')
+        const entity_id = isCustomItem ? null : item.entity_id
+
         lines.push({
           line_number: line_number++,
           line_type: item.type,
-          entity_id: item.entity_id,
+          entity_id: entity_id,
           description: item.name,
           quantity: item.quantity,
           unit_amount: item.unit_price,
@@ -171,7 +176,9 @@ export function usePosCheckout(): UsePosCheckoutReturn {
             item.type === 'service' ? SMART_CODES.SERVICE_COMPLETE : SMART_CODES.PRODUCT_SALE,
           metadata: {
             staff_id: item.staff_id,
-            appointment_id
+            appointment_id,
+            // ✅ Store original custom ID for reference if needed
+            ...(isCustomItem ? { custom_item_id: item.entity_id } : {})
           }
         })
 
@@ -336,11 +343,11 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           pos_session: Date.now().toString(),
           appointment_id, // Store appointment ID in metadata
           branch_id, // ✅ Store branch ID for location tracking
-          // Enterprise-grade tracking: link to all entities
+          // Enterprise-grade tracking: link to all entities (filter out custom temporary IDs)
           customer_entity_id: customer_id,
           staff_entity_id: primaryStaffId,
-          service_ids: items.filter(i => i.type === 'service').map(i => i.entity_id),
-          product_ids: items.filter(i => i.type === 'product').map(i => i.entity_id),
+          service_ids: items.filter(i => i.type === 'service' && !i.entity_id?.startsWith('custom-')).map(i => i.entity_id),
+          product_ids: items.filter(i => i.type === 'product' && !i.entity_id?.startsWith('custom-')).map(i => i.entity_id),
           // Finance DNA v2 integration markers
           finance_dna_version: 'v2', // Finance DNA v2 marker
           auto_journal_enabled: true,

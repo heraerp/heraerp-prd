@@ -13,8 +13,6 @@ const DEFAULT_SALON_ORG_ID =
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('🎯 Fetching Salon Dashboard Data...')
-
     // Get organization_id from query params or use default
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id') || DEFAULT_SALON_ORG_ID
@@ -114,7 +112,6 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString()
     }
 
-    console.log('✅ Salon dashboard data loaded successfully')
     return NextResponse.json(dashboardData)
   } catch (error) {
     console.error('❌ Error in salon dashboard API:', error)
@@ -125,12 +122,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
-    console.log('📝 Saving salon dashboard data...')
 
     // In a full implementation, this would save changes to the database
     // For now, we'll just return success
 
-    console.log('✅ Salon data saved successfully')
     return NextResponse.json({
       success: true,
       timestamp: new Date().toISOString()
