@@ -127,7 +127,7 @@ export function CustomerModal({
   // Initialize form with customer data when editing
   useEffect(() => {
     if (customer) {
-      setFormData({
+      const formDataToSet = {
         name: customer.entity_name || '',
         email: customer.dynamic_fields?.email?.value || customer.email || '',
         phone: customer.dynamic_fields?.phone?.value || customer.phone || '',
@@ -137,7 +137,9 @@ export function CustomerModal({
         vip: customer.dynamic_fields?.vip?.value || customer.vip || false,
         loyalty_points:
           customer.dynamic_fields?.loyalty_points?.value || customer.loyalty_points || 0
-      })
+      }
+
+      setFormData(formDataToSet)
     } else {
       // Reset form for new customer
       setFormData({

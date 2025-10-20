@@ -534,7 +534,8 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         p_options: {
           include_dynamic: true,
           include_relationships: true,
-          relationships_mode: 'UPSERT'  // ✅ Mode in p_options (matches test)
+          relationships_mode: 'UPSERT',  // ✅ Mode in p_options (matches test)
+          system_actor_user_id: actorUserId  // ✅ Required for internal trigger transactions (AI confidence reviews)
         }
       })
 
@@ -544,17 +545,82 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
       }
 
       console.log('[useUniversalEntityV1] ✅ Entity created:', data)
+      console.log('[useUniversalEntityV1] 🔍 Response structure:', {
+        hasData: !!data,
+        dataKeys: data ? Object.keys(data) : [],
+        hasEntity: !!data?.entity,
+        hasDataEntity: !!data?.data?.entity,
+        hasDataData: !!data?.data?.data,
+        dataType: typeof data,
+        success: data?.success,
+        action: data?.action,
+        // Check if data.data is nested structure
+        hasDataDataEntity: !!data?.data?.data?.entity,
+        dataDataKeys: data?.data?.data ? Object.keys(data.data.data) : null,
+        fullData: JSON.stringify(data, null, 2)
+      })
 
-      // Extract full entity from response (RPC returns complete entity with dynamic fields)
-      const createdEntity = data?.entity || data?.data?.entity
+      // Extract full entity from response - try multiple formats
+      let createdEntity = null
 
-      if (!createdEntity || !createdEntity.id) {
+      // ✅ CRITICAL FIX: Check for nested wrapper format from orchestrator RPC
+      // Format 0: { data: { data: { entity: {...}, dynamic_data: [...], relationships: [...] } } }
+      if (data?.data?.data && typeof data.data.data === 'object' && data.data.data.entity) {
+        console.log('[useUniversalEntityV1] 📦 Format 0: Nested wrapper with entity/dynamic_data/relationships')
+        createdEntity = data.data.data
+      }
+      // Format 1: { entity: {...} }
+      else if (data?.entity) {
+        console.log('[useUniversalEntityV1] 📦 Format 1: Direct entity')
+        createdEntity = data.entity
+      }
+      // Format 2: { data: { entity: {...} } }
+      else if (data?.data?.entity) {
+        console.log('[useUniversalEntityV1] 📦 Format 2: data.entity')
+        createdEntity = data.data.entity
+      }
+      // Format 3: { data: { data: {...} } } - nested data (entity is the data itself)
+      else if (data?.data?.data && data.data.data.id) {
+        console.log('[useUniversalEntityV1] 📦 Format 3: data.data with id')
+        createdEntity = data.data.data
+      }
+      // Format 4: Direct response with id (simple object)
+      else if (data?.id) {
+        console.log('[useUniversalEntityV1] 📦 Format 4: Direct object with id')
+        createdEntity = data
+      }
+      // Format 5: { data: {...} } where data is the entity itself
+      else if (data?.data?.id) {
+        console.log('[useUniversalEntityV1] 📦 Format 5: data is entity with id')
+        createdEntity = data.data
+      }
+
+      if (!createdEntity) {
         console.error('[useUniversalEntityV1] ❌ No entity in response:', data)
         throw new Error('Entity created but no entity data returned')
       }
 
+      // ✅ CRITICAL FIX: Handle nested wrapper format where entity is in createdEntity.entity
+      // This happens when RPC returns { entity: {...}, dynamic_data: [...], relationships: [...] }
+      let entityForTransform = createdEntity
+      if (createdEntity.entity && !createdEntity.id) {
+        console.log('[useUniversalEntityV1] 📦 Detected wrapper format - extracting nested entity')
+        entityForTransform = createdEntity
+      } else if (createdEntity.id) {
+        // It's already a flat entity object
+        entityForTransform = createdEntity
+      }
+
+      console.log('[useUniversalEntityV1] 📋 Extracted entity for transformation:', {
+        hasId: !!entityForTransform.id,
+        hasEntity: !!entityForTransform.entity,
+        entityId: entityForTransform.id || entityForTransform.entity?.id,
+        entity_name: entityForTransform.entity_name || entityForTransform.entity?.entity_name,
+        allKeys: Object.keys(entityForTransform)
+      })
+
       // Transform RPC response to hook format for immediate cache update
-      const transformedEntity = transformRPCResponseToEntity(createdEntity)
+      const transformedEntity = transformRPCResponseToEntity(entityForTransform)
 
       console.log('[useUniversalEntityV1] 📦 Transformed created entity:', transformedEntity)
 

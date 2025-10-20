@@ -479,18 +479,38 @@ p_options: {
 - `service_role` JWT automatically bypasses this check
 - No need to set flag when using service role
 
-#### `system_actor_user_id` (uuid, required for platform identity)
-System actor for platform identity operations (USER/ROLE creation)
+#### `system_actor_user_id` (uuid, required for platform identity and internal triggers)
+System actor for audit stamping in operations that require actor context
 
 ```typescript
 p_options: {
-  allow_platform_identity: true,
-  system_actor_user_id: 'system-admin-uuid'  // Used for audit stamping
+  system_actor_user_id: 'user-uuid'  // Required for audit stamping
 }
 ```
 
-**Purpose**: Provides actor for audit trail when creating USER/ROLE entities in platform org
-**Requirement**: Must be provided when `allow_platform_identity: true` and entity_type is USER or ROLE
+**Purpose**: Provides actor for audit trail in two scenarios:
+1. **Platform identity operations**: USER/ROLE creation in platform org (with `allow_platform_identity: true`)
+2. **Internal trigger transactions**: Database triggers that create transactions (e.g., AI confidence review, normalization workflows)
+
+**Requirement**:
+- REQUIRED for platform identity operations (USER/ROLE creation in platform org)
+- RECOMMENDED for all CREATE/UPDATE operations to support internal trigger transactions
+- The RPC uses effective actor pattern: `coalesce(p_actor_user_id, system_actor_user_id)`
+- Sets PostgreSQL GUC (`app.actor_user_id`) for trigger context
+
+**How It Works**:
+```sql
+-- In RPC function (database side)
+v_effective_actor := coalesce(p_actor_user_id, v_system_actor_user_id);
+PERFORM set_config('app.actor_user_id', v_effective_actor::text, true);
+-- Now triggers can access actor via current_setting('app.actor_user_id')
+```
+
+**Use Cases**:
+- ✅ Creating STAFF entities (triggers AI confidence review transaction)
+- ✅ Creating USER/ROLE in platform org (platform identity provisioning)
+- ✅ Any operation where database triggers create additional transactions
+- ✅ Audit trail requirements for internal system operations
 
 ### Audit Options
 

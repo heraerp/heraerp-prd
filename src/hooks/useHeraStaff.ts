@@ -78,7 +78,7 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
-      include_relationships: true, // Enable relationships for branch filtering
+      include_relationships: true, // ✅ FIXED: RPC GROUP BY bug resolved with LATERAL JSON aggregation
       limit: 100,
       // Only filter by 'active' status when not including archived
       // When includeArchived is true, don't pass status to get all staff

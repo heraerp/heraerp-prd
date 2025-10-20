@@ -30,7 +30,13 @@ import {
   ArchiveRestore,
   X,
   FileText,
-  AlertTriangle
+  AlertTriangle,
+  User,
+  UserCog,
+  Briefcase,
+  Star,
+  Crown,
+  Sparkles
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -90,6 +96,33 @@ const getAvatarColor = (id: string, index: number) => {
     ? id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % AVATAR_COLORS.length
     : index % AVATAR_COLORS.length
   return AVATAR_COLORS[colorIndex]
+}
+
+// Get attractive avatar icon based on role
+const getAvatarIcon = (roleTitle?: string) => {
+  if (!roleTitle) return User
+
+  const role = roleTitle.toLowerCase()
+
+  // Match role keywords to icons
+  if (role.includes('manager') || role.includes('supervisor') || role.includes('lead')) {
+    return Crown
+  }
+  if (role.includes('senior') || role.includes('expert') || role.includes('master')) {
+    return Star
+  }
+  if (role.includes('stylist') || role.includes('artist') || role.includes('designer')) {
+    return Sparkles
+  }
+  if (role.includes('receptionist') || role.includes('front desk') || role.includes('coordinator')) {
+    return UserCog
+  }
+  if (role.includes('consultant') || role.includes('advisor') || role.includes('specialist')) {
+    return Briefcase
+  }
+
+  // Default to professional user icon
+  return User
 }
 
 interface StaffStats {
@@ -922,6 +955,7 @@ function StaffContent() {
                 {filteredStaff.map((member, index) => {
                   const isArchived = member.status === 'archived'
                   const avatarColor = getAvatarColor(member.id, index)
+                  const AvatarIcon = getAvatarIcon(member.role_title)
                   return (
                     <Card
                       key={member.id}
@@ -970,8 +1004,8 @@ function StaffContent() {
                                 ringColor: `${avatarColor.border}40`
                               }}
                             >
-                              <UserCircle
-                                className="h-10 w-10"
+                              <AvatarIcon
+                                className="h-8 w-8 transition-all duration-300 group-hover:scale-110"
                                 style={{ color: avatarColor.icon }}
                               />
                             </div>
