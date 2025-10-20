@@ -338,9 +338,10 @@ export default function SalonDarkSidebar({
       // Clear local storage
       localStorage.removeItem('organizationId')
       localStorage.removeItem('salonRole')
+      localStorage.removeItem('salonUserName')
 
-      // Redirect to auth page
-      router.push('/salon/auth')
+      // Redirect to salon access page
+      router.push('/salon-access')
     } catch (error) {
       console.error('Error signing out:', error)
     }
