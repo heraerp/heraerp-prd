@@ -529,15 +529,24 @@ function NewAppointmentContent() {
           description: 'Customer created successfully'
         })
 
-        // Auto-select the newly created customer
-        const newCustomer = customers.find(c => c.id === result.id) || {
+        // ✅ FIX: useHeraCustomers.createCustomer returns transformed entity directly
+        // The useUniversalEntityV1 hook already transforms the RPC response, so result is the entity
+        console.log('[New Appointment] Customer created:', {
+          result,
           id: result.id,
-          entity_name: newCustomerData.name,
+          entity_name: result.entity_name
+        })
+
+        // Auto-select the newly created customer
+        // The customers array is automatically updated via optimistic update in useUniversalEntityV1
+        // But use the result directly to avoid waiting for cache update
+        setSelectedCustomer({
+          id: result.id,
+          entity_name: result.entity_name,
           entity_code: result.entity_code || '',
-          phone: newCustomerData.phone,
-          email: newCustomerData.email
-        }
-        setSelectedCustomer(newCustomer as Customer)
+          phone: result.phone || newCustomerData.phone,
+          email: result.email || newCustomerData.email
+        } as Customer)
 
         // Reset form and close modal
         setNewCustomerData({ name: '', phone: '', email: '' })
