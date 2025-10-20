@@ -481,12 +481,16 @@ export default function SalonDarkSidebar({
             )
           })}
 
-          {/* More Apps Button */}
-          <button
+          {/* More Apps - Using Link structure like other nav items */}
+          <div
             onClick={() => setShowAppsModal(true)}
-            className="flex flex-col items-center justify-center py-2 transition-all duration-200 group relative rounded-xl mx-2 hover:scale-[1.02]"
+            className={cn(
+              'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative rounded-xl mx-2 cursor-pointer',
+              'hover:scale-[1.02]'
+            )}
             style={{
-              backgroundColor: 'transparent'
+              backgroundColor: 'transparent',
+              color: COLORS.lightText
             }}
             onMouseEnter={e => {
               e.currentTarget.style.backgroundColor = `${COLORS.gold}08`
@@ -496,28 +500,29 @@ export default function SalonDarkSidebar({
             }}
           >
             <div className="relative">
-              <Grid3x3 className="h-5 w-5" style={{ color: COLORS.bronze }} />
+              <Grid3x3
+                className="h-5 w-5"
+                style={{
+                  color: COLORS.bronze
+                }}
+              />
             </div>
+
+            {/* Text label */}
             <span
               className="text-[9px] mt-0.5 font-medium text-center leading-tight"
-              style={{ color: COLORS.bronze }}
+              style={{
+                color: COLORS.bronze
+              }}
             >
               More
             </span>
 
-            {/* Tooltip */}
-            <div
-              className="absolute left-full ml-2 px-3 py-2 text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50"
-              style={{
-                backgroundColor: COLORS.charcoalLight,
-                border: `1px solid ${COLORS.gold}20`,
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.4)',
-                color: COLORS.champagne
-              }}
-            >
+            {/* Tooltip for full title */}
+            <div className="absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
             </div>
-          </button>
+          </div>
         </div>
 
         {/* Separator */}

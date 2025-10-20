@@ -1,12 +1,22 @@
 /**
- * Salon Access Page
- * Allows Hair Talkz users (owner and receptionists) to sign in with email/password
- * Automatically detects role based on email and sets up organization context
+ * HERA Salon Access Page
+ * Enterprise-grade authentication portal for salon professionals
+ * Automatically detects user role and sets up organization context
+ *
+ * Features:
+ * - Role-based authentication (Owner, Receptionist, Staff)
+ * - SalonLuxe theme integration
+ * - Secure session management
+ * - Organization context setup
  */
 
 'use client'
 
 import { useState } from 'react'
+import { Mail, Lock, Sparkles } from 'lucide-react'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
+import { SalonLuxeInput } from '@/components/salon/shared/SalonLuxeInput'
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
 export default function SalonAccessPage() {
   const [email, setEmail] = useState('')
@@ -15,21 +25,22 @@ export default function SalonAccessPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
-  // Detect role based on email
+  // Detect role based on email domain or user metadata
   const detectRole = (userEmail: string): string => {
     const lowerEmail = userEmail.toLowerCase()
 
-    // Owner: Hairtalkz2022@gmail.com
-    if (lowerEmail.includes('2022')) {
+    // Role detection logic - can be extended based on your needs
+    // Owner detection (customize based on your organization's email pattern)
+    if (lowerEmail.includes('owner') || lowerEmail.includes('admin')) {
       return 'owner'
     }
 
-    // Receptionists: hairtalkz01@gmail.com, hairtalkz02@gmail.com
-    if (lowerEmail.includes('01') || lowerEmail.includes('02')) {
+    // Receptionist detection
+    if (lowerEmail.includes('receptionist') || lowerEmail.includes('reception')) {
       return 'receptionist'
     }
 
-    // Default fallback
+    // Default to staff for all other users
     return 'staff'
   }
 
@@ -101,23 +112,95 @@ export default function SalonAccessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-white/10 backdrop-blur-lg rounded-2xl p-10 border border-white/20">
+    <div
+      className="min-h-screen relative flex items-center justify-center p-4"
+      style={{
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+        backgroundImage: `
+          radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+          radial-gradient(ellipse 60% 50% at 0% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+          radial-gradient(ellipse 60% 50% at 100% 100%, rgba(212, 175, 55, 0.08) 0%, transparent 50%)
+        `
+      }}
+    >
+      {/* Animated gradient overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-30"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 60% at 30% 20%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
+            radial-gradient(ellipse 70% 50% at 70% 80%, rgba(212, 175, 55, 0.15) 0%, transparent 50%)
+          `,
+          animation: 'gradient-slow 20s cubic-bezier(0.4, 0, 0.2, 1) infinite'
+        }}
+      />
+
+      {/* Login Card */}
+      <div
+        className="w-full max-w-lg relative z-10 rounded-2xl p-10 backdrop-blur-xl"
+        style={{
+          background: 'linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%)',
+          border: `1px solid ${SALON_LUXE_COLORS.border.base}`,
+          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1)'
+        }}
+      >
+        {/* Header */}
         <div className="text-center mb-8">
-          <div className="text-7xl mb-6">💇‍♀️</div>
-          <h1 className="text-4xl font-bold text-white mb-2">Hair Talkz</h1>
-          <h2 className="text-xl text-purple-200 mb-2">Salon Sign-In</h2>
-          <p className="text-sm text-purple-300">Owner & Receptionist Access</p>
+          {/* Logo */}
+          <div
+            className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-lg"
+            style={{
+              background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.gold.dark} 100%)`,
+              boxShadow: '0 8px 24px rgba(212, 175, 55, 0.4)'
+            }}
+          >
+            <Sparkles className="h-8 w-8" style={{ color: SALON_LUXE_COLORS.charcoal.dark }} />
+          </div>
+
+          {/* Title */}
+          <h1
+            className="text-4xl font-bold mb-2"
+            style={{
+              background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.champagne.light} 0%, ${SALON_LUXE_COLORS.gold.base} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '-0.02em'
+            }}
+          >
+            HERA Salon
+          </h1>
+          <h2
+            className="text-xl font-semibold mb-1"
+            style={{ color: SALON_LUXE_COLORS.champagne.base }}
+          >
+            Enterprise Login
+          </h2>
+          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze }}>
+            Secure Access Portal for Salon Professionals
+          </p>
         </div>
 
         {/* Status Messages */}
         {(message || error) && (
-          <div className={`rounded-xl p-4 mb-6 border ${
-            error
-              ? 'bg-red-500/20 border-red-400/30'
-              : 'bg-black/30 border-purple-400/30'
-          }`}>
-            <p className={`text-lg ${error ? 'text-red-100' : 'text-purple-100'}`}>
+          <div
+            className="rounded-xl p-4 mb-6 backdrop-blur-xl"
+            style={{
+              background: error
+                ? 'linear-gradient(135deg, rgba(232, 180, 184, 0.2) 0%, rgba(232, 180, 184, 0.1) 100%)'
+                : 'linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%)',
+              border: `1px solid ${error ? SALON_LUXE_COLORS.danger.border : SALON_LUXE_COLORS.border.base}`,
+              boxShadow: error
+                ? `0 4px 16px ${SALON_LUXE_COLORS.shadow.danger}`
+                : `0 4px 16px ${SALON_LUXE_COLORS.shadow.goldLighter}`
+            }}
+          >
+            <p
+              className="text-base font-medium"
+              style={{
+                color: error ? SALON_LUXE_COLORS.danger.base : SALON_LUXE_COLORS.champagne.light
+              }}
+            >
               {error || message}
             </p>
           </div>
@@ -126,58 +209,106 @@ export default function SalonAccessPage() {
         {/* Sign-In Form */}
         <form onSubmit={handleSignIn} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-purple-200 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium mb-2"
+              style={{ color: SALON_LUXE_COLORS.champagne.base }}
+            >
               Email Address
             </label>
-            <input
+            <SalonLuxeInput
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your-email@gmail.com"
-              className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+              leftIcon={<Mail className="w-4 h-4" />}
               required
               disabled={loading}
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-purple-200 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-2"
+              style={{ color: SALON_LUXE_COLORS.champagne.base }}
+            >
               Password
             </label>
-            <input
+            <SalonLuxeInput
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+              leftIcon={<Lock className="w-4 h-4" />}
               required
               disabled={loading}
             />
           </div>
 
-          <button
+          <SalonLuxeButton
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-4 px-6 rounded-xl font-bold text-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:cursor-not-allowed"
+            loading={loading}
+            variant="primary"
+            size="lg"
+            className="w-full"
           >
-            {loading ? '⏳ Signing In...' : '🔓 Sign In'}
-          </button>
+            {loading ? 'Signing In...' : '🔓 Sign In'}
+          </SalonLuxeButton>
         </form>
 
         {/* Information */}
-        <div className="mt-10 pt-6 border-t border-white/20">
-          <div className="text-purple-200 text-sm space-y-2">
-            <p className="font-semibold text-white mb-3">Authorized Users:</p>
-            <div className="space-y-1 text-xs">
-              <p>👑 <strong>Owner:</strong> Hairtalkz2022@gmail.com</p>
-              <p>📋 <strong>Receptionist 1:</strong> hairtalkz01@gmail.com</p>
-              <p>📋 <strong>Receptionist 2:</strong> hairtalkz02@gmail.com</p>
+        <div
+          className="mt-8 pt-6 border-t"
+          style={{ borderColor: SALON_LUXE_COLORS.border.light }}
+        >
+          <p
+            className="font-semibold mb-3 text-center"
+            style={{ color: SALON_LUXE_COLORS.champagne.light }}
+          >
+            Enterprise Features
+          </p>
+          <div className="grid grid-cols-3 gap-4 text-center text-xs" style={{ color: SALON_LUXE_COLORS.bronze }}>
+            <div>
+              <div className="text-2xl mb-1">🔐</div>
+              <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>Secure</p>
+              <p>Bank-grade encryption</p>
+            </div>
+            <div>
+              <div className="text-2xl mb-1">⚡</div>
+              <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>Fast</p>
+              <p>Instant access</p>
+            </div>
+            <div>
+              <div className="text-2xl mb-1">🎯</div>
+              <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>Smart</p>
+              <p>Role-based access</p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Animation styles */}
+      <style jsx>{`
+        @keyframes gradient-slow {
+          0%,
+          100% {
+            opacity: 0.3;
+            transform: scale(1) rotate(0deg);
+          }
+          33% {
+            opacity: 0.4;
+            transform: scale(1.1) rotate(2deg);
+          }
+          66% {
+            opacity: 0.25;
+            transform: scale(0.95) rotate(-2deg);
+          }
+        }
+      `}</style>
     </div>
   )
 }
