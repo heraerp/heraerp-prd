@@ -1,0 +1,22 @@
+Looking at the hera_txn_crud_v1 CREATE action:
+
+WHEN 'CREATE' THEN
+  -- header + lines
+  v_resp := hera_txn_create_v1(v_header, v_lines, p_actor_user_id);
+  
+Expected signature based on updated function:
+  hera_txn_create_v1(p_header jsonb, p_lines jsonb, p_actor_user_id uuid)
+
+Actual call:
+  hera_txn_create_v1(v_header, v_lines, p_actor_user_id)
+
+Where:
+  v_header = COALESCE(p_payload->'header', '{}'::jsonb)
+  v_lines = COALESCE(p_payload->'lines', '[]'::jsonb)
+
+This is CORRECT! ✅
+
+The signature matches perfectly:
+- 1st param: jsonb (header)
+- 2nd param: jsonb (lines)
+- 3rd param: uuid (actor)

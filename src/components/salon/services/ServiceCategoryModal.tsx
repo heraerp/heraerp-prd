@@ -71,27 +71,30 @@ export function ServiceCategoryModal({
     resolver: zodResolver(ServiceCategoryFormSchema),
     defaultValues: {
       name: '',
-      description: '',
+      description: '', // Always initialize as empty string
       color: '#D4AF37'
-    }
+    },
+    mode: 'onChange' // Enable real-time validation
   })
 
-  // Reset form when category changes
+  // Reset form when category changes or modal opens/closes
   useEffect(() => {
-    if (category) {
-      form.reset({
-        name: category.entity_name || '',
-        description: category.description || '',
-        color: category.color || '#D4AF37'
-      })
-    } else {
-      form.reset({
-        name: '',
-        description: '',
-        color: '#D4AF37'
-      })
+    if (open) {
+      if (category) {
+        form.reset({
+          name: category.entity_name || '',
+          description: category.description || '', // Ensure always a string
+          color: category.color || '#D4AF37'
+        })
+      } else {
+        form.reset({
+          name: '',
+          description: '', // Empty string for new categories
+          color: '#D4AF37'
+        })
+      }
     }
-  }, [category, form])
+  }, [category, open, form])
 
   const handleSubmit = async (data: ServiceCategoryFormValues) => {
     try {
@@ -381,6 +384,7 @@ export function ServiceCategoryModal({
                       <FormControl>
                         <Textarea
                           {...field}
+                          value={field.value || ''}
                           placeholder="Add a brief description of this category (e.g., 'Premium hair coloring and styling services for all hair types')"
                           maxLength={200}
                           className="min-h-[110px] rounded-lg resize-none"

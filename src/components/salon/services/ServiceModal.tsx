@@ -94,78 +94,77 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
       status: 'active',
       currency: currency || 'AED',
       branch_ids: [] // Default to no branches selected
-    }
+    },
+    mode: 'onChange' // ✅ Enable real-time form updates
   })
 
-  // Reset form when service changes
+  // Reset form when service changes or modal opens/closes
   useEffect(() => {
-    if (service) {
-      // Extract branch IDs from AVAILABLE_AT relationships
-      const availableAtRels = (service as any).relationships?.available_at
-      let branchIds: string[] = []
+    if (open) {
+      if (service) {
+        // ✅ ENTERPRISE FIX: Extract branch IDs from AVAILABLE_AT relationships
+        // Relationships have to_entity_id (UUID), not populated to_entity object
+        const availableAtRels = (service as any).relationships?.available_at ||
+                                 (service as any).relationships?.AVAILABLE_AT
+        let branchIds: string[] = []
 
-      if (Array.isArray(availableAtRels)) {
-        branchIds = availableAtRels.filter(rel => rel?.to_entity?.id).map(rel => rel.to_entity.id)
-      } else if (availableAtRels?.to_entity?.id) {
-        branchIds = [availableAtRels.to_entity.id]
+        if (Array.isArray(availableAtRels)) {
+          branchIds = availableAtRels
+            .filter(rel => rel?.to_entity_id || rel?.to_entity?.id)
+            .map(rel => rel.to_entity_id || rel.to_entity?.id)
+        } else if (availableAtRels?.to_entity_id || availableAtRels?.to_entity?.id) {
+          branchIds = [availableAtRels.to_entity_id || availableAtRels.to_entity?.id]
+        }
+
+        // Extract category ID from HAS_CATEGORY relationship
+        // Note: useUniversalEntity stores relationships as lowercase keys
+        const categoryRels =
+          (service as any).relationships?.has_category ||
+          (service as any).relationships?.HAS_CATEGORY ||
+          (service as any).relationships?.category
+        let categoryId = ''
+
+        if (Array.isArray(categoryRels) && categoryRels.length > 0) {
+          categoryId = categoryRels[0].to_entity?.id || categoryRels[0].to_entity_id || ''
+        } else if (categoryRels?.to_entity?.id) {
+          categoryId = categoryRels.to_entity.id
+        } else if (categoryRels?.to_entity_id) {
+          categoryId = categoryRels.to_entity_id
+        }
+
+        // Map service dynamic fields to form fields
+        // Service has: price_market, duration_min, description (dynamic field), status (entity field)
+        // Form expects: price, duration_minutes, status, description
+        form.reset({
+          name: service.entity_name || '',
+          code: service.entity_code || '',
+          category: categoryId, // Use category ID from relationship
+          price: service.price_market || service.price || undefined,
+          duration_minutes: service.duration_min || service.duration_minutes || undefined,
+          requires_booking: service.requires_booking || false,
+          description: service.description || service.entity_description || '',
+          // 🎯 CRITICAL FIX: Use entity-level status field directly (not active dynamic field)
+          status: service.status || 'active',
+          currency: service.currency || currency || 'AED',
+          branch_ids: branchIds
+        })
+      } else {
+        // Creating new service - initialize with defaults
+        form.reset({
+          name: '',
+          code: '',
+          category: '',
+          price: undefined,
+          duration_minutes: undefined,
+          requires_booking: false,
+          description: '',
+          status: 'active',
+          currency: currency || 'AED',
+          branch_ids: []
+        })
       }
-
-      // Extract category ID from HAS_CATEGORY relationship
-      // Note: useUniversalEntity stores relationships as lowercase keys
-      const categoryRels =
-        (service as any).relationships?.has_category ||
-        (service as any).relationships?.HAS_CATEGORY ||
-        (service as any).relationships?.category
-      let categoryId = ''
-
-      console.log('[ServiceModal] Extracting category:', {
-        service_id: service.id,
-        relationships: (service as any).relationships,
-        categoryRels,
-        isArray: Array.isArray(categoryRels)
-      })
-
-      if (Array.isArray(categoryRels) && categoryRels.length > 0) {
-        categoryId = categoryRels[0].to_entity?.id || categoryRels[0].to_entity_id || ''
-      } else if (categoryRels?.to_entity?.id) {
-        categoryId = categoryRels.to_entity.id
-      } else if (categoryRels?.to_entity_id) {
-        categoryId = categoryRels.to_entity_id
-      }
-
-      console.log('[ServiceModal] Extracted category ID:', categoryId)
-
-      // Map service dynamic fields to form fields
-      // Service has: price_market, duration_min, description (dynamic field), status (entity field)
-      // Form expects: price, duration_minutes, status, description
-      form.reset({
-        name: service.entity_name || '',
-        code: service.entity_code || '',
-        category: categoryId, // Use category ID from relationship
-        price: service.price_market || service.price || undefined,
-        duration_minutes: service.duration_min || service.duration_minutes || undefined,
-        requires_booking: service.requires_booking || false,
-        description: service.description || service.entity_description || '',
-        // 🎯 CRITICAL FIX: Use entity-level status field directly (not active dynamic field)
-        status: service.status || 'active',
-        currency: service.currency || currency || 'AED',
-        branch_ids: branchIds
-      })
-    } else {
-      form.reset({
-        name: '',
-        code: '',
-        category: '',
-        price: undefined,
-        duration_minutes: undefined,
-        requires_booking: false,
-        description: '',
-        status: 'active',
-        currency: currency || 'AED',
-        branch_ids: []
-      })
     }
-  }, [service, form, currency])
+  }, [service, open, form, currency])
 
   const handleSubmit = async (data: ServiceFormValues) => {
     try {
@@ -282,6 +281,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                         <FormControl>
                           <Input
                             {...field}
+                            value={field.value || ''} // ✅ Always ensure it's a string
                             placeholder="e.g., Premium Cut & Style"
                             className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
                             style={
@@ -313,6 +313,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                         <FormControl>
                           <Input
                             {...field}
+                            value={field.value || ''} // ✅ Always ensure it's a string
                             placeholder="Auto-generated"
                             className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
                             style={
@@ -709,6 +710,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                       <FormControl>
                         <Textarea
                           {...field}
+                          value={field.value || ''} // ✅ Always ensure it's a string
                           placeholder="Describe what makes this service special..."
                           className="min-h-[100px] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none"
                           style={

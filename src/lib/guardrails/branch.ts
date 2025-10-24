@@ -111,53 +111,21 @@ export async function getOrganizationBranches(
     const branches = await getEntities('', {
       p_organization_id: organization_id,
       p_entity_type: 'BRANCH',
-      p_status: null, // Get all branches regardless of status
-      p_include_dynamic: true // ✅ Include dynamic fields (opening_time, closing_time)
+      p_include_dynamic: true, // Include dynamic fields
+      p_status: 'active' // Only active branches
     })
 
-    console.log('[getOrganizationBranches] Fetched branches:', {
-      count: branches.length,
-      orgId: organization_id
-    })
-
-    // 🔍 DEBUG: Log raw response to understand structure
-    if (branches.length > 0) {
-      console.log('[getOrganizationBranches] First branch RAW:', {
-        id: branches[0].id,
-        entity_name: branches[0].entity_name,
-        has_dynamic_fields: !!branches[0].dynamic_fields,
-        dynamic_fields: branches[0].dynamic_fields,
-        has_opening_time_top_level: !!branches[0].opening_time,
-        has_closing_time_top_level: !!branches[0].closing_time,
-        all_keys: Object.keys(branches[0])
-      })
-    }
-
-    const mappedBranches = branches.map((branch: any) => ({
+    // Map to expected format with dynamic fields
+    return branches.map((branch: any) => ({
       id: branch.id,
       name: branch.entity_name,
       code: branch.entity_code,
       metadata: branch.metadata,
-      // ✅ Extract opening_time and closing_time from dynamic_fields object
-      opening_time: branch.dynamic_fields?.opening_time || branch.opening_time,
-      closing_time: branch.dynamic_fields?.closing_time || branch.closing_time
+      opening_time: branch.opening_time,
+      closing_time: branch.closing_time
     }))
-
-    // 🔍 DEBUG: Log mapped result
-    if (mappedBranches.length > 0) {
-      console.log('[getOrganizationBranches] First branch MAPPED:', {
-        id: mappedBranches[0].id,
-        name: mappedBranches[0].name,
-        hasMetadata: !!mappedBranches[0].metadata,
-        metadata: mappedBranches[0].metadata,
-        opening_time: mappedBranches[0].opening_time,
-        closing_time: mappedBranches[0].closing_time
-      })
-    }
-
-    return mappedBranches
   } catch (error) {
-    console.error('Error fetching branches:', error)
+    console.error('[getOrganizationBranches] Error fetching branches:', error)
     return []
   }
 }

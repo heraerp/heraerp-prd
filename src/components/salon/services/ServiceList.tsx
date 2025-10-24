@@ -22,6 +22,7 @@ import {
 import { formatDistanceToNow } from 'date-fns'
 import { Edit, Trash2, Archive, ArchiveRestore, MoreVertical, Sparkles, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { SalonLuxeTile } from '@/components/salon/shared/SalonLuxeTile'
 
 interface ServiceListProps {
   services: Service[]
@@ -317,17 +318,13 @@ function ServiceCard({
   const isArchived = service.status === 'archived'
 
   return (
-    <div
-      className={cn(
-        'relative p-6 rounded-xl transition-all duration-200',
-        'hover:shadow-xl hover:scale-[1.02]',
-        isArchived && 'opacity-60'
-      )}
-      style={{
-        backgroundColor: COLORS.charcoalLight,
-        border: `1px solid ${COLORS.bronze}20`,
-        boxShadow: `0 4px 12px rgba(0,0,0,0.2)`
-      }}
+    <SalonLuxeTile
+      mode="grid"
+      className="relative p-6"
+      enableMouseTracking={!isArchived}
+      enableHoverEffects={!isArchived}
+      opacity={isArchived ? 0.6 : 1}
+      onClick={() => onEdit(service)}
     >
       {/* Status Badge */}
       {isArchived && (
@@ -358,6 +355,7 @@ function ServiceCard({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
+              onClick={(e) => e.stopPropagation()}
               className="p-1 rounded hover:bg-black/20 transition-colors"
               style={{ color: COLORS.lightText }}
             >
@@ -369,7 +367,10 @@ function ServiceCard({
             style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
           >
             <DropdownMenuItem
-              onClick={() => onEdit(service)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onEdit(service)
+              }}
               style={{ color: COLORS.lightText }}
               className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
             >
@@ -381,7 +382,10 @@ function ServiceCard({
 
             {isArchived ? (
               <DropdownMenuItem
-                onClick={() => onRestore(service)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRestore(service)
+                }}
                 style={{ color: COLORS.lightText }}
                 className="hover:!bg-green-900/20 hover:!text-green-300"
               >
@@ -390,7 +394,10 @@ function ServiceCard({
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem
-                onClick={() => onArchive(service)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onArchive(service)
+                }}
                 style={{ color: COLORS.lightText }}
                 className="hover:!bg-yellow-900/20 hover:!text-yellow-300"
               >
@@ -402,7 +409,10 @@ function ServiceCard({
             <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
 
             <DropdownMenuItem
-              onClick={() => onDelete(service)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onDelete(service)
+              }}
               className="hover:!bg-red-900/20 hover:!text-red-300"
               style={{ color: '#FF6B6B' }}
             >
@@ -459,6 +469,6 @@ function ServiceCard({
           </Badge>
         </div>
       )}
-    </div>
+    </SalonLuxeTile>
   )
 }

@@ -1,16 +1,16 @@
 /**
- * HERA Service Categories Hook
+ * HERA Service Categories Hook V2
  *
- * ✅ REFACTORED: Now uses useUniversalEntity for optimal performance
+ * ✅ UPGRADED: Now uses useUniversalEntityV1 with RPC hera_entities_crud_v1
  * - Automatic dynamic field flattening
- * - No 401 authentication errors
- * - Consistent with products hook pattern
+ * - RPC orchestrator for atomic operations
+ * - Consistent with staffs/services hook pattern
  * - Better caching and optimization
  */
 
-import { useUniversalEntity } from './useUniversalEntity'
+import { useUniversalEntityV1 } from './useUniversalEntityV1'
 import { SERVICE_CATEGORY_PRESET } from './entityPresets'
-import type { DynamicFieldDef } from './useUniversalEntity'
+import type { DynamicFieldDef } from './useUniversalEntityV1'
 
 export interface ServiceCategory {
   id: string
@@ -52,8 +52,8 @@ export function useHeraServiceCategories(options?: UseHeraServiceCategoriesOptio
     isCreating,
     isUpdating,
     isDeleting
-  } = useUniversalEntity({
-    entity_type: 'SERVICE_CATEGORY', // ✅ Must match database case - this will normalize to uppercase in useUniversalEntity
+  } = useUniversalEntityV1({
+    entity_type: 'SERVICE_CATEGORY', // ✅ UPGRADED: Uppercase for RPC pattern (already correct)
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
@@ -116,14 +116,16 @@ export function useHeraServiceCategories(options?: UseHeraServiceCategoriesOptio
       smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.SERVICE_COUNT.v1'
     }
 
-    return baseCreate({
-      entity_type: 'service_category',
+    const result = await baseCreate({
+      entity_type: 'SERVICE_CATEGORY', // ✅ UPGRADED: Uppercase for RPC pattern
       entity_name,
-      smart_code: 'HERA.SALON.SERVICE.CATEGORY.STANDARD.V1',
+      smart_code: 'HERA.SALON.SERVICE.CATEGORY.STANDARD.v1',
       entity_description: data.description || null,
       status: 'active',
       dynamic_fields
     } as any)
+
+    return result
   }
 
   // Helper to update category
@@ -169,14 +171,19 @@ export function useHeraServiceCategories(options?: UseHeraServiceCategoriesOptio
     const category = (categories as ServiceCategory[])?.find(c => c.id === id)
     if (!category) throw new Error('Category not found')
 
-    return baseUpdate({
+    const result = await baseUpdate({
       entity_id: id,
       entity_name: category.entity_name,
       status: 'archived'
     })
+
+    // ✅ NO REFETCH NEEDED: updateMutation.onSuccess handles cache update automatically
+    // The RPC returns updated data, onSuccess removes archived items from cache
+
+    return result
   }
 
-  // Helper to delete category
+  // Helper to delete category (HARD DELETE by default)
   const deleteCategory = async (id: string, options?: { hard_delete?: boolean; reason?: string }) => {
     const category = (categories as ServiceCategory[])?.find(c => c.id === id)
     if (!category) throw new Error('Category not found')
@@ -188,11 +195,21 @@ export function useHeraServiceCategories(options?: UseHeraServiceCategoriesOptio
       )
     }
 
-    if (options?.hard_delete) {
-      return baseDelete({ entity_id: id, hard_delete: true })
+    // 🎯 CHANGED: Default to HARD DELETE (permanent removal)
+    // Use { hard_delete: false } to archive instead
+    if (options?.hard_delete === false) {
+      return archiveCategory(id)
     }
 
-    return archiveCategory(id)
+    const result = await baseDelete({
+      entity_id: id,
+      hard_delete: true,
+      reason: options?.reason || 'Category deleted by user'
+    })
+
+    // ✅ NO REFETCH NEEDED: deleteMutation.onSuccess handles cache removal automatically
+
+    return result
   }
 
   return {

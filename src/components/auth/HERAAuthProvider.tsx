@@ -66,6 +66,15 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const router = useRouter()
   const didResolveRef = useRef(false) // prevents double work in dev StrictMode
   const subRef = useRef<ReturnType<any> | null>(null)
+  const ctxRef = useRef<{
+    user: HERAUser | null
+    organization: HERAOrganization | null
+    isAuthenticated: boolean
+  }>({
+    user: null,
+    organization: null,
+    isAuthenticated: false
+  })
 
   const [ctx, setCtx] = useState<{
     status: HeraStatus
@@ -89,6 +98,15 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     role: undefined
   })
 
+  // Keep ref in sync with state
+  useEffect(() => {
+    ctxRef.current = {
+      user: ctx.user,
+      organization: ctx.organization,
+      isAuthenticated: ctx.isAuthenticated
+    }
+  }, [ctx.user, ctx.organization, ctx.isAuthenticated])
+
   // Initialize authentication on mount
   useEffect(() => {
     // Ensure single subscription per mount
@@ -98,15 +116,21 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       try {
         const { createClient } = await import('@/lib/supabase/client')
         const supabase = createClient()
-        
+
         subRef.current = supabase.auth.onAuthStateChange(async (event, session) => {
-          console.log('🔐 HERA Auth state change:', event, { hasSession: !!session })
-          
-          // Don't regress after we've authenticated
+          console.log('🔐 HERA Auth state change:', event, {
+            hasSession: !!session,
+            didResolve: didResolveRef.current,
+            currentUser: ctxRef.current.user?.email
+          })
+
+          // Handle session state changes
           if (didResolveRef.current) {
-            // Only care if session disappeared
+            // If session disappeared, reset context
             if (!session) {
-              setCtx({ 
+              console.log('🔐 Session disappeared, resetting context')
+              didResolveRef.current = false
+              setCtx({
                 status: 'idle',
                 user: null,
                 organization: null,
@@ -117,8 +141,19 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                 organizationId: undefined,
                 role: undefined
               })
+              return
             }
-            return
+            // If session exists but context is missing (page navigation/reload), allow re-resolution
+            // This handles the case where the provider re-mounts but session is still valid
+            if (session && !ctxRef.current.user) {
+              console.log('🔄 Session exists but context missing, re-resolving...')
+              didResolveRef.current = false
+              // Fall through to resolution logic below
+            } else {
+              // Session exists and context is valid, no action needed
+              console.log('✅ Session and context both valid, no re-resolution needed')
+              return
+            }
           }
 
           if (!session) {
@@ -137,35 +172,43 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
               // Get safe config first
               const safeConfig = getSafeOrgConfig()
               
-              // Fetch membership data
+              // Fetch membership data from API v2
               let res = {}
               try {
-                const response = await fetch('/api/membership', {
+                const response = await fetch('/api/v2/auth/resolve-membership', {
                   headers: { Authorization: `Bearer ${session.access_token}` },
                   cache: 'no-store',
                 })
                 if (response.ok) {
                   const apiResponse = await response.json()
                   // Handle HERA standard response format
-                  res = apiResponse.success ? apiResponse.data : apiResponse
+                  res = apiResponse.success ? apiResponse : apiResponse
+                  console.log('✅ Membership resolved from v2 API:', res)
                 } else {
-                  console.warn('🚨 Membership API failed, using fallback')
+                  console.warn('🚨 Membership API v2 failed, using fallback')
                   res = { organization_id: safeConfig.organizationId }
                 }
               } catch (error) {
-                console.warn('🚨 Membership API error, using fallback:', error)
+                console.warn('🚨 Membership API v2 error, using fallback:', error)
                 res = { organization_id: safeConfig.organizationId }
               }
+              // Parse v2 API response structure
               const normalizedOrgId =
-                res.org_entity_id ??
-                res.organization_id ??
                 res.membership?.organization_id ??
+                res.organization_id ??
+                res.org_entity_id ??
                 safeConfig.organizationId
-              
+
               // Set safe context as backup
               setSafeOrgContext()
 
-              const role = (res.role ?? res.membership?.roles?.[0] ?? '').toLowerCase()
+              // Extract role from v2 response
+              const role = (
+                res.membership?.roles?.[0] ??
+                res.role ??
+                'member'
+              ).toLowerCase()
+
               const userEntityId = res.user_entity_id ?? user?.id
 
               const heraUser: HERAUser = {

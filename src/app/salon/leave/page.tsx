@@ -1,571 +1,868 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, Suspense, lazy } from 'react'
 import { useRouter } from 'next/navigation'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useHeraLeave } from '@/hooks/useHeraLeave'
+import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
+import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
+import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
+import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import { Plus, FileText, Clock, CheckCircle, Calendar, RefreshCw, Settings, Users, AlertTriangle } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  Calendar,
-  Users,
-  FileText,
-  Settings,
-  Plus,
-  Search,
-  Download,
-  ChevronLeft,
-  User
-} from 'lucide-react'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { AlertCircle } from 'lucide-react'
-import { useLeavePlaybook } from '@/hooks/useLeavePlaybook'
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 
-// Components
-import { LeaveRequestList } from '@/components/salon/leave/LeaveRequestList'
-import { LeaveRequestModal } from '@/components/salon/leave/LeaveRequestModal'
-import { LeaveCalendar } from '@/components/salon/leave/LeaveCalendar'
-import { AnnualLeaveReport } from '@/components/salon/leave/AnnualLeaveReport'
-import { PolicyModal } from '@/components/salon/leave/PolicyModal'
-
-import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
-
-// Design tokens (map to SALON_LUXE_COLORS for consistency)
 const COLORS = {
-  black: SALON_LUXE_COLORS.charcoal.dark,
-  charcoal: SALON_LUXE_COLORS.charcoal.base,
-  gold: SALON_LUXE_COLORS.gold.base,
-  goldDark: SALON_LUXE_COLORS.gold.dark,
-  champagne: SALON_LUXE_COLORS.champagne.base,
-  espresso: '#3E2723',
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
   bronze: '#8C7853',
-  emerald: SALON_LUXE_COLORS.emerald.base,
-  plum: SALON_LUXE_COLORS.plum.base,
-  rose: SALON_LUXE_COLORS.rose.base,
-  lightText: SALON_LUXE_COLORS.text.primary
+  emerald: '#0F6F5C',
+  plum: '#9B59B6',
+  rose: '#E8B4B8'
 }
 
-const SoftCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className = ''
-}) => {
-  const cardRef = useRef<HTMLDivElement>(null)
+// Lazy load tab components for instant page load
+const LeaveRequestsTab = lazy(() =>
+  import('./LeaveRequestsTab').then(module => ({ default: module.LeaveRequestsTab }))
+)
+const LeaveCalendarTab = lazy(() =>
+  import('./LeaveCalendarTab').then(module => ({ default: module.LeaveCalendarTab }))
+)
+const LeaveReportTab = lazy(() =>
+  import('./LeaveReportTab').then(module => ({ default: module.LeaveReportTab }))
+)
+const LeavePoliciesTab = lazy(() =>
+  import('./LeavePoliciesTab').then(module => ({ default: module.LeavePoliciesTab }))
+)
+const LeaveModal = lazy(() =>
+  import('./LeaveModal').then(module => ({ default: module.LeaveModal }))
+)
+const PolicyModal = lazy(() =>
+  import('./PolicyModal').then(module => ({ default: module.PolicyModal }))
+)
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-    const rotateX = ((y - centerY) / centerY) * -3
-    const rotateY = ((x - centerX) / centerX) * 3
-    cardRef.current.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.005)`
-  }
-
-  const handleMouseLeave = () => {
-    if (!cardRef.current) return
-    cardRef.current.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)'
-  }
-
+// Loading fallback component
+function TabLoader() {
   return (
-    <div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`p-4 md:p-6 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] group relative overflow-hidden ${className}`}
-      style={{
-        backgroundColor: COLORS.charcoal,
-        border: `1px solid ${COLORS.black}`,
-        transition: 'transform 0.15s ease-out, box-shadow 0.3s ease',
-        willChange: 'transform'
-      }}
-    >
-      {/* Animated gradient overlay */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none"
-        style={{
-          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${COLORS.gold}15 0%, transparent 60%)`,
-          transition: 'opacity 0.5s ease'
-        }}
-      />
-
-      {/* Soft edge glow */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none rounded-2xl"
-        style={{
-          boxShadow: `inset 0 0 40px ${COLORS.gold}20, 0 0 60px ${COLORS.gold}10`,
-          transition: 'opacity 0.5s ease'
-        }}
-      />
-
-      <div className="relative z-10">{children}</div>
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: COLORS.gold }} />
+      <span className="ml-3" style={{ color: COLORS.bronze }}>
+        Loading...
+      </span>
     </div>
   )
 }
 
-export default function LeaveManagementPage() {
+function LeaveManagementPageContent() {
+  const { organizationId, availableBranches } = useSecuredSalonContext()
+  const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
   const router = useRouter()
-  const { organization, isAuthenticated, contextLoading } = useHERAAuth()
-  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
+
+  // State
   const [activeTab, setActiveTab] = useState('requests')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [modalOpen, setModalOpen] = useState(false)
   const [selectedBranch, setSelectedBranch] = useState<string>()
-  const [requestModalOpen, setRequestModalOpen] = useState(false)
   const [policyModalOpen, setPolicyModalOpen] = useState(false)
+  const [selectedPolicy, setSelectedPolicy] = useState<any>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [policyToDelete, setPolicyToDelete] = useState<string | null>(null)
 
-  // Get branches from secured salon context
-  const { availableBranches, isLoadingBranches } = useSecuredSalonContext()
+  // ✅ NEW: Leave request state management
+  const [selectedRequest, setSelectedRequest] = useState<any>(null) // For edit mode
+  const [requestDeleteDialogOpen, setRequestDeleteDialogOpen] = useState(false)
+  const [requestToDelete, setRequestToDelete] = useState<string | null>(null)
 
-  // Get organization ID from localStorage for demo mode
-  useEffect(() => {
-    const storedOrgId = localStorage.getItem('organizationId')
-    if (storedOrgId) {
-      setLocalOrgId(storedOrgId)
-    }
-  }, [])
+  // ✅ ENTERPRISE PATTERN: Server-side filters state
+  const [policyFilters, setPolicyFilters] = useState<{
+    leave_type?: 'ANNUAL' | 'SICK' | 'UNPAID' | 'OTHER'
+    status?: 'active' | 'archived' | 'all'
+  }>({ status: 'all' })
 
+  // 🚀 UPGRADED: Now using useHeraLeave hook with RPC-first architecture
+  // Fetch ALL policies (including archived) so we can filter client-side like services page
   const {
     requests,
-    balancesByStaff,
-    policies,
-    holidays,
+    policies: allPolicies,
     staff,
-    loading,
-    error,
-    createLeave,
-    approve,
-    reject,
-    exportAnnualReportCSV
-  } = useLeavePlaybook({
+    balances,
+    isLoading,
+    isCreating,
+    isUpdatingRequest, // ✅ NEW
+    isDeletingRequest, // ✅ NEW
+    isCreatingPolicy,
+    isUpdatingPolicy,
+    isArchivingPolicy,
+    isRestoringPolicy,
+    isDeletingPolicy,
+    createRequest,
+    updateRequest, // ✅ NEW
+    deleteRequest, // ✅ NEW
+    createPolicy,
+    updatePolicy,
+    archivePolicy,
+    restorePolicy,
+    deletePolicy,
+    approveRequest,
+    rejectRequest,
+    cancelRequest,
+    withdrawRequest // ✅ NEW
+  } = useHeraLeave({
+    organizationId: organizationId || '',
     branchId: selectedBranch,
-    query: searchQuery
+    year: new Date().getFullYear(),
+    includeArchived: true // ✅ FIXED: Fetch ALL policies, filter client-side
   })
 
-  // Keyboard shortcuts
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as any).tagName)) {
-        e.preventDefault()
-        document.getElementById('search-input')?.focus()
-      }
-      if (e.key === 'n' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setRequestModalOpen(true)
-      }
+  // ✅ ENTERPRISE PATTERN: Client-side filtering (like services page)
+  const policies = React.useMemo(() => {
+    if (!allPolicies) return []
+
+    return allPolicies.filter(policy => {
+      // Apply status filter
+      if (policyFilters.status === 'active' && !policy.active) return false
+      if (policyFilters.status === 'archived' && policy.active) return false
+      // 'all' shows everything
+
+      // Apply leave type filter
+      if (policyFilters.leave_type && policy.leave_type !== policyFilters.leave_type) return false
+
+      return true
+    })
+  }, [allPolicies, policyFilters])
+
+  // Calculate stats
+  const stats = {
+    totalRequests: requests?.length || 0,
+    pendingRequests: requests?.filter(r => r.status === 'submitted').length || 0,
+    approvedRequests: requests?.filter(r => r.status === 'approved').length || 0,
+    upcomingLeave: requests?.filter(r => {
+      if (r.status !== 'approved') return false
+      const startDate = new Date(r.start_date)
+      const now = new Date()
+      const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+      return startDate >= now && startDate <= sevenDaysFromNow
+    }).length || 0
+  }
+
+  // CRUD Handlers
+  const handleCreateRequest = async (data: any) => {
+    const loadingId = showLoading('Creating leave request...', 'Please wait')
+
+    try {
+      await createRequest(data)
+      removeToast(loadingId)
+      showSuccess('Leave request created', 'Your leave request has been submitted for approval')
+      setModalOpen(false)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to create leave request', error.message || 'Please try again')
+    }
+  }
+
+  const handleApprove = async (requestId: string, notes?: string) => {
+    const request = requests?.find(r => r.id === requestId)
+    const staffName = request?.staff_name || 'Staff member'
+
+    const loadingId = showLoading('Approving leave request...', 'Please wait')
+
+    try {
+      await approveRequest(requestId, notes)
+      removeToast(loadingId)
+      showSuccess('Leave request approved', `${staffName}'s leave request has been approved`)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to approve request', error.message || 'Please try again')
+    }
+  }
+
+  const handleReject = async (requestId: string, reason?: string) => {
+    const request = requests?.find(r => r.id === requestId)
+    const staffName = request?.staff_name || 'Staff member'
+
+    const loadingId = showLoading('Rejecting leave request...', 'Please wait')
+
+    try {
+      await rejectRequest(requestId, reason)
+      removeToast(loadingId)
+      showSuccess('Leave request rejected', `${staffName}'s leave request has been rejected`)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to reject request', error.message || 'Please try again')
+    }
+  }
+
+  // ✅ NEW: Leave request CRUD handlers
+  const handleEditRequest = (request: any) => {
+    console.log('📝 [page] EDIT REQUEST CLICKED:', { requestId: request.id, staffName: request.staff_name })
+    setSelectedRequest(request)
+    setModalOpen(true)
+  }
+
+  const handleUpdateRequest = async (data: any) => {
+    console.log('📝 [page] UPDATE REQUEST CALLED:', {
+      hasSelectedRequest: !!selectedRequest,
+      selectedRequestId: selectedRequest?.id,
+      dataKeys: Object.keys(data)
+    })
+
+    if (!selectedRequest?.id) {
+      console.warn('⚠️ [page] No selected request ID!')
+      return
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
+    const loadingId = showLoading('Updating leave request...', 'Please wait')
 
-  // Check for Hair Talkz subdomain
-  const getEffectiveOrgId = () => {
-    if (organization?.id) return organization.id
-    if (localOrgId) return localOrgId
+    try {
+      console.log('🚀 [page] Calling updateRequest mutation...')
+      await updateRequest({ requestId: selectedRequest.id, data })
+      console.log('✅ [page] Update request completed successfully')
+      removeToast(loadingId)
+      showSuccess('Request updated', 'Leave request has been updated successfully')
+      setModalOpen(false)
+      setSelectedRequest(null)
+    } catch (error: any) {
+      console.error('❌ [page] Update request error:', error)
+      removeToast(loadingId)
+      showError('Failed to update request', error.message || 'Please try again')
+    }
+  }
 
-    // Check if we're on hairtalkz or heratalkz subdomain
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname
-      if (
-        hostname.startsWith('hairtalkz.') ||
-        hostname === 'hairtalkz.localhost' ||
-        hostname.startsWith('heratalkz.') ||
-        hostname === 'heratalkz.localhost'
-      ) {
-        return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
-      }
+  const handleWithdrawRequest = async (requestId: string) => {
+    const request = requests?.find(r => r.id === requestId)
+    const staffName = request?.staff_name || 'Staff member'
+
+    const loadingId = showLoading('Withdrawing leave request...', 'Please wait')
+
+    try {
+      await withdrawRequest(requestId)
+      removeToast(loadingId)
+      showSuccess('Request withdrawn', `${staffName}'s leave request has been withdrawn`)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to withdraw request', error.message || 'Please try again')
+    }
+  }
+
+  const handleDeleteRequest = (requestId: string) => {
+    console.log('🗑️ [page] DELETE REQUEST CLICKED:', { requestId })
+    setRequestToDelete(requestId)
+    setRequestDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDeleteRequest = async () => {
+    if (!requestToDelete) return
+
+    const request = requests?.find(r => r.id === requestToDelete)
+    const staffName = request?.staff_name || 'Staff member'
+
+    const loadingId = showLoading('Deleting leave request...', 'Please wait')
+
+    try {
+      await deleteRequest(requestToDelete)
+      removeToast(loadingId)
+      showSuccess('Request deleted', `${staffName}'s leave request has been permanently deleted`)
+      setRequestDeleteDialogOpen(false)
+      setRequestToDelete(null)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to delete request', error.message || 'Please try again')
+      console.error('Request delete error:', error)
+    }
+  }
+
+  const handleCreatePolicy = async (data: any) => {
+    const loadingId = showLoading('Creating leave policy...', 'Please wait')
+
+    try {
+      // ✅ CORRECT: Use hook's createPolicy function (no direct RPC calls)
+      await createPolicy(data)
+
+      removeToast(loadingId)
+      showSuccess('Leave policy created', `Policy "${data.policy_name}" has been created successfully`)
+      setPolicyModalOpen(false)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to create policy', error.message || 'Please try again')
+      console.error('Policy creation error:', error)
+    }
+  }
+
+  // Policy CRUD Handlers (following services page pattern)
+  const handleEditPolicy = (policy: any) => {
+    console.log('📝 [page] EDIT POLICY CLICKED:', { policyId: policy.id, policyName: policy.entity_name })
+    setSelectedPolicy(policy)
+    setPolicyModalOpen(true)
+  }
+
+  const handleUpdatePolicy = async (data: any) => {
+    console.log('📝 [page] UPDATE POLICY CALLED:', {
+      hasSelectedPolicy: !!selectedPolicy,
+      selectedPolicyId: selectedPolicy?.id,
+      dataKeys: Object.keys(data)
+    })
+
+    if (!selectedPolicy?.id) {
+      console.warn('⚠️ [page] No selected policy ID!')
+      return
     }
 
-    return organization?.id || localOrgId
+    const loadingId = showLoading('Updating leave policy...', 'Please wait')
+
+    try {
+      console.log('🚀 [page] Calling updatePolicy mutation...')
+      await updatePolicy({ id: selectedPolicy.id, data })
+      console.log('✅ [page] Update policy completed successfully')
+      removeToast(loadingId)
+      showSuccess('Policy updated', `Policy "${data.policy_name}" has been updated successfully`)
+      setPolicyModalOpen(false)
+      setSelectedPolicy(null)
+    } catch (error: any) {
+      console.error('❌ [page] Update policy error:', error)
+      removeToast(loadingId)
+      showError('Failed to update policy', error.message || 'Please try again')
+      console.error('Policy update error:', error)
+    }
   }
 
-  // Get effective organization ID
-  const effectiveOrgId = getEffectiveOrgId()
+  const handleArchivePolicy = async (policyId: string) => {
+    const policy = policies?.find(p => p.id === policyId)
+    const policyName = policy?.entity_name || 'Policy'
 
-  // Three-layer authorization pattern (adapted for demo mode)
-  // Layer 1: Authentication check (skip for demo mode)
-  if (!isAuthenticated && !localOrgId) {
+    console.log('📦 [page] ARCHIVE POLICY CALLED:', { policyId, policyName })
+
+    const loadingId = showLoading('Archiving policy...', 'Please wait')
+
+    try {
+      console.log('🚀 [page] Calling archivePolicy mutation...')
+      await archivePolicy(policyId)
+      console.log('✅ [page] Archive policy completed successfully')
+      removeToast(loadingId)
+      showSuccess('Policy archived', `"${policyName}" has been archived`)
+    } catch (error: any) {
+      console.error('❌ [page] Archive policy error:', error)
+      removeToast(loadingId)
+      showError('Failed to archive policy', error.message || 'Please try again')
+      console.error('Policy archive error:', error)
+    }
+  }
+
+  const handleRestorePolicy = async (policyId: string) => {
+    const policy = policies?.find(p => p.id === policyId)
+    const policyName = policy?.entity_name || 'Policy'
+
+    const loadingId = showLoading('Restoring policy...', 'Please wait')
+
+    try {
+      await restorePolicy(policyId)
+      removeToast(loadingId)
+      showSuccess('Policy restored', `"${policyName}" has been restored`)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to restore policy', error.message || 'Please try again')
+      console.error('Policy restore error:', error)
+    }
+  }
+
+  const handleDeletePolicy = (policyId: string) => {
+    setPolicyToDelete(policyId)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!policyToDelete) return
+
+    const policy = policies?.find(p => p.id === policyToDelete)
+    const policyName = policy?.entity_name || 'Policy'
+
+    const loadingId = showLoading('Deleting policy...', 'Please wait')
+
+    try {
+      const result = await deletePolicy(policyToDelete)
+      removeToast(loadingId)
+
+      if (result.archived) {
+        // Policy was archived instead of deleted
+        showSuccess(
+          'Policy archived',
+          result.message || `"${policyName}" is being used and has been archived instead of deleted`
+        )
+      } else {
+        // Policy was permanently deleted
+        showSuccess('Policy deleted', `"${policyName}" has been permanently deleted`)
+      }
+
+      setDeleteDialogOpen(false)
+      setPolicyToDelete(null)
+    } catch (error: any) {
+      removeToast(loadingId)
+      showError('Failed to delete policy', error.message || 'Please try again')
+      console.error('Policy delete error:', error)
+    }
+  }
+
+  if (!organizationId) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>Please log in to access leave management.</AlertDescription>
-        </Alert>
-      </div>
-    )
-  }
-
-  // Layer 2: Context loading check
-  if (contextLoading && !localOrgId) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500" />
-      </div>
-    )
-  }
-
-  // Layer 3: Organization check
-  if (!effectiveOrgId) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>No organization context found.</AlertDescription>
-        </Alert>
-      </div>
-    )
-  }
-
-  const isAdmin = true // TODO: Check actual role
-
-  return (
-    <div
-      className="min-h-screen"
-      style={{
-        backgroundColor: COLORS.black,
-        backgroundImage: `linear-gradient(135deg, ${COLORS.black} 0%, ${COLORS.charcoal} 100%)`,
-        color: COLORS.lightText
-      }}
-    >
-      {/* Header */}
-      <div
-        className="sticky top-0 z-30 border-b ml-20 backdrop-blur-lg"
-        style={{
-          backgroundColor: COLORS.charcoal + 'F0',
-          borderColor: COLORS.black,
-          boxShadow: `0 4px 20px ${COLORS.black}60`
-        }}
-      >
-        <div className="px-4 md:px-6 py-4">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:justify-between">
-            <div className="flex items-center gap-3">
-              <div
-                className="h-10 w-10 rounded-xl flex items-center justify-center relative group"
-                style={{
-                  backgroundColor: COLORS.charcoal,
-                  boxShadow: `inset 0 0 0 1px ${COLORS.gold}30, 0 0 20px ${COLORS.gold}10`,
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                <Calendar size={18} color={COLORS.gold} />
-                <div
-                  className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100"
-                  style={{
-                    background: `radial-gradient(circle at center, ${COLORS.gold}20 0%, transparent 70%)`,
-                    transition: 'opacity 0.3s ease'
-                  }}
-                />
-              </div>
-              <div>
-                <div
-                  className="text-xs uppercase tracking-wider transition-colors duration-300"
-                  style={{ color: COLORS.bronze }}
-                >
-                  HERA • HR Management
-                </div>
-                <div
-                  className="text-lg font-semibold transition-colors duration-300"
-                  style={{ color: COLORS.champagne }}
-                >
-                  Leave Management
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* Back to Staff */}
-              <Button
-                onClick={() => router.push('/salon/staff')}
-                variant="outline"
-                className="border text-sm px-3 py-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                style={{
-                  borderColor: COLORS.bronze,
-                  color: COLORS.champagne,
-                  backgroundColor: 'transparent'
-                }}
-              >
-                <ChevronLeft size={14} className="mr-1" />
-                <User size={14} className="mr-1" />
-                <span className="hidden sm:inline">Back to Staff</span>
-                <span className="sm:hidden">Staff</span>
-              </Button>
-
-              {/* Branch Selector */}
-              <select
-                className="px-3 py-1.5 rounded-lg border text-sm transition-all duration-300 hover:shadow-lg"
-                style={{
-                  borderColor: COLORS.bronze,
-                  color: COLORS.champagne,
-                  backgroundColor: COLORS.charcoal,
-                  cursor: 'pointer'
-                }}
-                value={selectedBranch || ''}
-                onChange={e => setSelectedBranch(e.target.value || undefined)}
-                disabled={isLoadingBranches}
-              >
-                <option value="">All Branches</option>
-                {availableBranches.map((branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.entity_name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Search */}
-              <div className="relative group">
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity duration-300"
-                  color={COLORS.bronze}
-                />
-                <Input
-                  id="search-input"
-                  placeholder="Search staff..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-9 w-48 lg:w-64 border transition-all duration-300 hover:shadow-lg"
-                  style={{
-                    borderColor: COLORS.bronze,
-                    color: COLORS.champagne,
-                    backgroundColor: COLORS.charcoal
-                  }}
-                />
-              </div>
-
-              {/* Actions */}
-              <Button
-                onClick={() => setRequestModalOpen(true)}
-                className="border-0 font-semibold text-sm px-3 py-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                style={{
-                  backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black,
-                  boxShadow: `0 4px 15px ${COLORS.gold}40`
-                }}
-              >
-                <Plus size={14} className="mr-1" />
-                <span className="hidden sm:inline">New Request</span>
-                <span className="sm:hidden">New</span>
-              </Button>
-
-              {isAdmin && (
-                <Button
-                  variant="outline"
-                  onClick={() => setPolicyModalOpen(true)}
-                  className="border text-sm px-3 py-2 transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                  style={{
-                    borderColor: COLORS.bronze,
-                    color: COLORS.champagne,
-                    backgroundColor: 'transparent'
-                  }}
-                >
-                  <Settings size={14} className="mr-1" />
-                  <span className="hidden sm:inline">Policies</span>
-                  <span className="sm:hidden">Settings</span>
-                </Button>
-              )}
-            </div>
-          </div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: COLORS.black }}>
+        <div
+          className="text-center p-8 rounded-xl"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+          }}
+        >
+          <h2 className="text-xl font-medium mb-2" style={{ color: COLORS.champagne }}>
+            Loading...
+          </h2>
+          <p style={{ color: COLORS.bronze, opacity: 0.7 }}>Setting up leave management.</p>
         </div>
       </div>
+    )
+  }
 
-      {/* Main Content */}
-      <div className="px-4 md:px-6 py-6 ml-20">
+  return (
+    <SalonLuxePage
+      title="Leave Management"
+      description="Manage staff leave requests and policies"
+      actions={
+        <>
+          {/* Team Management - Emerald color */}
+          <button
+            onClick={() => router.push('/salon/staffs')}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.emerald,
+              color: COLORS.champagne,
+              border: `1px solid ${COLORS.emerald}`
+            }}
+          >
+            <Users className="w-4 h-4" />
+            Team Management
+          </button>
+          {/* Submit Leave Request - Gold color */}
+          {activeTab === 'requests' && (
+            <button
+              onClick={() => setModalOpen(true)}
+              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+              style={{
+                backgroundColor: COLORS.gold,
+                color: COLORS.black,
+                border: `1px solid ${COLORS.gold}`
+              }}
+            >
+              <Plus className="w-4 h-4" />
+              Submit Leave Request
+            </button>
+          )}
+          {/* Configure Policy - Plum color */}
+          {activeTab === 'policies' && (
+            <button
+              onClick={() => setPolicyModalOpen(true)}
+              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+              style={{
+                backgroundColor: COLORS.plum,
+                color: COLORS.champagne,
+                border: `1px solid ${COLORS.plum}`
+              }}
+            >
+              <Settings className="w-4 h-4" />
+              Configure Policy
+            </button>
+          )}
+          {/* Refresh Data - Icon only at the end */}
+          <button
+            onClick={() => window.location.reload()}
+            className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.charcoal,
+              border: `1px solid ${COLORS.bronze}40`,
+              color: COLORS.bronze
+            }}
+            title="Refresh leave data"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </>
+      }
+    >
+      {/* 📱 PREMIUM MOBILE HEADER */}
+      <PremiumMobileHeader
+        title="Leave"
+        subtitle={`${stats.totalRequests} requests`}
+        showNotifications
+        notificationCount={stats.pendingRequests}
+        shrinkOnScroll
+        rightAction={
+          <button
+            onClick={() => setModalOpen(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#D4AF37] active:scale-90 transition-transform duration-200 shadow-lg"
+            aria-label="New leave request"
+            style={{
+              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)'
+            }}
+          >
+            <Plus className="w-5 h-5 text-black" strokeWidth={2.5} />
+          </button>
+        }
+      />
+
+      <div className="p-4 md:p-6 lg:p-8">
+        {/* 📊 ENTERPRISE-GRADE KPI CARDS - Reusable SalonLuxeKPICard Component */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
+          <SalonLuxeKPICard
+            title="Total Requests"
+            value={stats.totalRequests}
+            icon={FileText}
+            color={COLORS.gold}
+            description="This year"
+            animationDelay={0}
+          />
+          <SalonLuxeKPICard
+            title="Pending"
+            value={stats.pendingRequests}
+            icon={Clock}
+            color={COLORS.bronze}
+            description="Awaiting approval"
+            animationDelay={100}
+          />
+          <SalonLuxeKPICard
+            title="Approved"
+            value={stats.approvedRequests}
+            icon={CheckCircle}
+            color={COLORS.emerald}
+            description="This month"
+            animationDelay={200}
+          />
+          <SalonLuxeKPICard
+            title="Upcoming"
+            value={stats.upcomingLeave}
+            icon={Calendar}
+            color={COLORS.plum}
+            description="Next 7 days"
+            animationDelay={300}
+          />
+        </div>
+
+        {/* 📱 MOBILE QUICK ACTIONS */}
+        <div className="md:hidden mb-6 flex gap-2">
+          <button
+            onClick={() => router.push('/salon/staffs')}
+            className="flex-1 min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
+            style={{
+              backgroundColor: COLORS.emerald,
+              color: COLORS.champagne
+            }}
+          >
+            <Users className="w-4 h-4" />
+            Team Management
+          </button>
+          <button
+            onClick={() => window.location.reload()}
+            className="min-w-[48px] min-h-[48px] rounded-xl transition-all duration-200 active:scale-95 flex items-center justify-center"
+            style={{
+              backgroundColor: COLORS.charcoal,
+              border: `1px solid ${COLORS.bronze}40`,
+              color: COLORS.bronze
+            }}
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Branch Selector (Desktop) */}
+        <div className="hidden md:flex items-center gap-3 mb-6">
+          <label className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+            Branch:
+          </label>
+          <select
+            className="px-3 py-2 rounded-lg border text-sm transition-all duration-300"
+            style={{
+              borderColor: COLORS.bronze,
+              color: COLORS.champagne,
+              backgroundColor: COLORS.charcoal
+            }}
+            value={selectedBranch || ''}
+            onChange={e => setSelectedBranch(e.target.value || undefined)}
+          >
+            <option value="">All Branches</option>
+            {availableBranches.map(branch => (
+              <option key={branch.id} value={branch.id}>
+                {branch.entity_name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList
-            className="bg-transparent p-1 rounded-full border mb-6"
-            style={{ borderColor: COLORS.bronze, boxShadow: `0 4px 20px ${COLORS.black}80` }}
+            className="mb-6 animate-in fade-in slide-in-from-top-2 duration-500"
+            style={{
+              background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.black} 100%)`,
+              border: `1px solid ${COLORS.gold}30`,
+              padding: '4px'
+            }}
           >
             <TabsTrigger
               value="requests"
-              className="rounded-full data-[state=active]:text-black transition-all duration-300 hover:scale-105"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-gold/20 data-[state=active]:to-gold/10 transition-all duration-300"
+              style={{ color: COLORS.champagne }}
             >
-              <span
-                className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all duration-300"
-                style={{
-                  background:
-                    activeTab === 'requests'
-                      ? `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                      : 'transparent',
-                  color: activeTab === 'requests' ? COLORS.black : COLORS.champagne,
-                  boxShadow:
-                    activeTab === 'requests' ? `0 4px 15px ${COLORS.gold}40` : 'none'
-                }}
-              >
-                <FileText size={16} />
-                Requests
-              </span>
+              <FileText className="w-4 h-4 mr-2" />
+              Requests
             </TabsTrigger>
             <TabsTrigger
               value="calendar"
-              className="rounded-full data-[state=active]:text-black transition-all duration-300 hover:scale-105"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-gold/20 data-[state=active]:to-gold/10 transition-all duration-300"
+              style={{ color: COLORS.champagne }}
             >
-              <span
-                className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all duration-300"
-                style={{
-                  background:
-                    activeTab === 'calendar'
-                      ? `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                      : 'transparent',
-                  color: activeTab === 'calendar' ? COLORS.black : COLORS.champagne,
-                  boxShadow:
-                    activeTab === 'calendar' ? `0 4px 15px ${COLORS.gold}40` : 'none'
-                }}
-              >
-                <Calendar size={16} />
-                Calendar
-              </span>
+              <Calendar className="w-4 h-4 mr-2" />
+              Calendar
             </TabsTrigger>
             <TabsTrigger
               value="report"
-              className="rounded-full data-[state=active]:text-black transition-all duration-300 hover:scale-105"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-gold/20 data-[state=active]:to-gold/10 transition-all duration-300"
+              style={{ color: COLORS.champagne }}
             >
-              <span
-                className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all duration-300"
-                style={{
-                  background:
-                    activeTab === 'report'
-                      ? `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                      : 'transparent',
-                  color: activeTab === 'report' ? COLORS.black : COLORS.champagne,
-                  boxShadow:
-                    activeTab === 'report' ? `0 4px 15px ${COLORS.gold}40` : 'none'
-                }}
-              >
-                <FileText size={16} />
-                Report
-              </span>
+              <FileText className="w-4 h-4 mr-2" />
+              Report
             </TabsTrigger>
             <TabsTrigger
               value="policies"
-              className="rounded-full data-[state=active]:text-black transition-all duration-300 hover:scale-105"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-gold/20 data-[state=active]:to-gold/10 transition-all duration-300"
+              style={{ color: COLORS.champagne }}
             >
-              <span
-                className="px-3 py-1.5 rounded-full flex items-center gap-2 transition-all duration-300"
-                style={{
-                  background:
-                    activeTab === 'policies'
-                      ? `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                      : 'transparent',
-                  color: activeTab === 'policies' ? COLORS.black : COLORS.champagne,
-                  boxShadow:
-                    activeTab === 'policies' ? `0 4px 15px ${COLORS.gold}40` : 'none'
-                }}
-              >
-                <Settings size={16} />
-                Policies
-              </span>
+              <Settings className="w-4 h-4 mr-2" />
+              Policies
             </TabsTrigger>
           </TabsList>
 
-          {/* Tabs Content */}
-          <TabsContent value="requests">
-            <LeaveRequestList
-              requests={requests}
-              staff={staff}
-              onApprove={approve}
-              onReject={reject}
-              loading={loading}
-            />
+          <TabsContent value="requests" className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <Suspense fallback={<TabLoader />}>
+              <LeaveRequestsTab
+                requests={requests || []}
+                staff={staff || []}
+                isLoading={isLoading}
+                onApprove={handleApprove}
+                onReject={handleReject}
+                onCancel={cancelRequest}
+                onEdit={handleEditRequest} // ✅ NEW
+                onDelete={handleDeleteRequest} // ✅ NEW
+                onWithdraw={handleWithdrawRequest} // ✅ NEW
+              />
+            </Suspense>
           </TabsContent>
 
-          <TabsContent value="calendar">
-            <LeaveCalendar
-              requests={requests.filter(r => r.current_status === 'APPROVED')}
-              staff={staff}
-              branchId={selectedBranch}
-            />
+          <TabsContent value="calendar" className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <Suspense fallback={<TabLoader />}>
+              <LeaveCalendarTab
+                requests={requests?.filter(r => r.status === 'approved') || []}
+                staff={staff || []}
+                branchId={selectedBranch}
+              />
+            </Suspense>
           </TabsContent>
 
-          <TabsContent value="report">
-            <AnnualLeaveReport
-              staff={staff}
-              balances={balancesByStaff}
-              branchId={selectedBranch}
-              onExport={() =>
-                exportAnnualReportCSV({ year: new Date().getFullYear(), branchId: selectedBranch })
-              }
-            />
+          <TabsContent value="report" className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <Suspense fallback={<TabLoader />}>
+              <LeaveReportTab
+                staff={staff || []}
+                balances={balances || {}}
+                requests={requests || []}
+                branchId={selectedBranch}
+              />
+            </Suspense>
           </TabsContent>
 
-          <TabsContent value="policies">
-            <SoftCard>
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold" style={{ color: COLORS.champagne }}>
-                  Leave Policies
-                </h3>
-                {isAdmin && (
-                  <Button
-                    onClick={() => setPolicyModalOpen(true)}
-                    size="sm"
-                    className="border-0"
-                    style={{
-                      backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                      color: COLORS.black
-                    }}
-                  >
-                    <Plus size={16} className="mr-2" />
-                    Add Policy
-                  </Button>
-                )}
-              </div>
-
-              <div className="space-y-3">
-                {policies.map(policy => (
-                  <div
-                    key={policy.id}
-                    className="p-4 rounded-xl border"
-                    style={{ backgroundColor: '#141414', borderColor: COLORS.black }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium" style={{ color: COLORS.champagne }}>
-                          {policy.entity_name}
-                        </h4>
-                        <p className="text-sm opacity-70 mt-1">
-                          {policy.metadata?.annual_entitlement} days • Carry-over:{' '}
-                          {policy.metadata?.carry_over_cap} days • Notice:{' '}
-                          {policy.metadata?.min_notice_days} days
-                        </p>
-                      </div>
-                      {isAdmin && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setPolicyModalOpen(true)}
-                          style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
-                        >
-                          Edit
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </SoftCard>
+          <TabsContent value="policies" className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <Suspense fallback={<TabLoader />}>
+              <LeavePoliciesTab
+                policies={policies || []}
+                isLoading={isLoading}
+                onAdd={() => setPolicyModalOpen(true)}
+                onEdit={handleEditPolicy}
+                onArchive={handleArchivePolicy}
+                onRestore={handleRestorePolicy}
+                onDelete={handleDeletePolicy}
+                filters={policyFilters}
+                onFiltersChange={setPolicyFilters}
+              />
+            </Suspense>
           </TabsContent>
         </Tabs>
+
+        {/* 📱 MOBILE-FIRST: Bottom spacing for comfortable mobile scrolling - MANDATORY */}
+        <div className="h-20 md:h-0" />
       </div>
 
-      {/* Modals */}
-      {requestModalOpen && (
-        <LeaveRequestModal
-          open={requestModalOpen}
-          onClose={() => setRequestModalOpen(false)}
-          onSubmit={createLeave}
-          staff={staff}
-          policies={policies}
-          holidays={holidays}
-        />
+      {/* Leave Request Modal - Lazy Loaded */}
+      {modalOpen && (
+        <Suspense fallback={null}>
+          <LeaveModal
+            open={modalOpen}
+            onOpenChange={(open) => {
+              setModalOpen(open)
+              if (!open) setSelectedRequest(null) // ✅ Clear selected request on close
+            }}
+            onSubmit={selectedRequest ? handleUpdateRequest : handleCreateRequest} // ✅ Route to update or create
+            staff={staff || []}
+            policies={policies || []}
+            balances={balances || {}}
+            isLoading={selectedRequest ? isUpdatingRequest : isCreating} // ✅ Use appropriate loading state
+            initialData={selectedRequest} // ✅ Pass selected request for edit mode
+          />
+        </Suspense>
       )}
 
+      {/* Policy Modal - Lazy Loaded */}
       {policyModalOpen && (
-        <PolicyModal
-          open={policyModalOpen}
-          onClose={() => setPolicyModalOpen(false)}
-          policy={null} // TODO: Pass policy for editing
-        />
+        <Suspense fallback={null}>
+          <PolicyModal
+            open={policyModalOpen}
+            onOpenChange={(open) => {
+              setPolicyModalOpen(open)
+              if (!open) setSelectedPolicy(null)
+            }}
+            onSubmit={selectedPolicy ? handleUpdatePolicy : handleCreatePolicy}
+            initialData={selectedPolicy}
+            isLoading={selectedPolicy ? isUpdatingPolicy : isCreatingPolicy}
+          />
+        </Suspense>
       )}
-    </div>
+
+      {/* Delete Policy Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent
+          style={{
+            backgroundColor: COLORS.charcoal,
+            border: `1px solid ${COLORS.bronze}30`
+          }}
+        >
+          <AlertDialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: `${COLORS.rose}20` }}
+              >
+                <AlertTriangle className="w-6 h-6" style={{ color: COLORS.rose }} />
+              </div>
+              <AlertDialogTitle style={{ color: COLORS.champagne }}>
+                Delete Leave Policy?
+              </AlertDialogTitle>
+            </div>
+            <AlertDialogDescription style={{ color: COLORS.bronze }}>
+              This action cannot be undone. This policy will be permanently deleted from the system.
+            </AlertDialogDescription>
+            {policyToDelete && policies?.find(p => p.id === policyToDelete) && (
+              <div
+                className="mt-3 p-3 rounded-lg"
+                style={{ backgroundColor: `${COLORS.black}40` }}
+              >
+                <div className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                  {policies.find(p => p.id === policyToDelete)?.entity_name}
+                </div>
+              </div>
+            )}
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              style={{
+                backgroundColor: COLORS.charcoal,
+                borderColor: `${COLORS.bronze}30`,
+                color: COLORS.champagne
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              style={{
+                backgroundColor: COLORS.rose,
+                color: 'white'
+              }}
+            >
+              Delete Policy
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* ✅ NEW: Delete Request Confirmation Dialog */}
+      <AlertDialog open={requestDeleteDialogOpen} onOpenChange={setRequestDeleteDialogOpen}>
+        <AlertDialogContent
+          style={{
+            backgroundColor: COLORS.charcoal,
+            border: `1px solid ${COLORS.bronze}30`
+          }}
+        >
+          <AlertDialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: `${COLORS.rose}20` }}
+              >
+                <AlertTriangle className="w-6 h-6" style={{ color: COLORS.rose }} />
+              </div>
+              <AlertDialogTitle style={{ color: COLORS.champagne }}>
+                Delete Leave Request?
+              </AlertDialogTitle>
+            </div>
+            <AlertDialogDescription style={{ color: COLORS.bronze }}>
+              This action cannot be undone. This leave request will be permanently deleted.
+            </AlertDialogDescription>
+            {requestToDelete && requests?.find(r => r.id === requestToDelete) && (
+              <div
+                className="mt-3 p-3 rounded-lg"
+                style={{ backgroundColor: `${COLORS.black}40` }}
+              >
+                <div className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                  {requests.find(r => r.id === requestToDelete)?.staff_name} - {requests.find(r => r.id === requestToDelete)?.transaction_code}
+                </div>
+              </div>
+            )}
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              style={{
+                backgroundColor: COLORS.charcoal,
+                borderColor: `${COLORS.bronze}30`,
+                color: COLORS.champagne
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDeleteRequest}
+              style={{
+                backgroundColor: COLORS.rose,
+                color: 'white'
+              }}
+            >
+              Delete Request
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </SalonLuxePage>
+  )
+}
+
+export default function LeaveManagementPage() {
+  return (
+    <StatusToastProvider>
+      <LeaveManagementPageContent />
+    </StatusToastProvider>
   )
 }

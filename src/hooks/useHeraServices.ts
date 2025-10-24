@@ -1,14 +1,15 @@
 /**
- * HERA Services Hook V2
+ * HERA Services Hook V3
  *
- * Thin wrapper over useUniversalEntity for service management
+ * ✅ UPGRADED: Now uses useUniversalEntityV1 with RPC hera_entities_crud_v1
+ * Thin wrapper over useUniversalEntityV1 for service management
  * Provides service-specific helpers and relationship management
  */
 
 import { useMemo } from 'react'
-import { useUniversalEntity } from './useUniversalEntity'
+import { useUniversalEntityV1 } from './useUniversalEntityV1'
 import { SERVICE_PRESET } from './entityPresets'
-import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
+import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntityV1'
 
 export interface ServiceEntity {
   id: string
@@ -46,6 +47,15 @@ export interface UseHeraServicesOptions {
 }
 
 export function useHeraServices(options?: UseHeraServicesOptions) {
+  // 🔍 DEBUG: Log what we're fetching
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[useHeraServices] 🔍 Fetching services:', {
+      organizationId: options?.organizationId,
+      entity_type: 'SERVICE',
+      filters: options?.filters
+    })
+  }
+
   const {
     entities: services,
     isLoading,
@@ -59,45 +69,86 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     isCreating,
     isUpdating,
     isDeleting
-  } = useUniversalEntity({
-    entity_type: 'service',
+  } = useUniversalEntityV1({
+    entity_type: 'SERVICE', // ✅ UPPERCASE for RPC pattern
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
-      // ✅ ALWAYS fetch relationships for category display
-      // useUniversalEntity handles this efficiently with bulk loading
       include_relationships: true,
-      limit: 100,
+      limit: options?.filters?.limit || 50, // ✅ FIXED: Reduced from 100, use passed limit
       ...options?.filters
     },
     dynamicFields: SERVICE_PRESET.dynamicFields as DynamicFieldDef[],
     relationships: SERVICE_PRESET.relationships as RelationshipDef[]
   })
 
-  // Map services to include category name from relationships
+  // 🔍 DEBUG: Log what we got
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[useHeraServices] 📦 Services loaded:', {
+      count: services?.length || 0,
+      isLoading,
+      hasError: !!error,
+      organizationId: options?.organizationId
+    })
+  }
+
+  // ✅ ENTERPRISE FIX: Fetch categories separately to map IDs to names
+  const { entities: categories } = useUniversalEntityV1({
+    entity_type: 'SERVICE_CATEGORY',
+    organizationId: options?.organizationId,
+    filters: {
+      include_dynamic: false,
+      include_relationships: false,
+      limit: 100
+    }
+  })
+
+  // Map services to include category name from relationships AND flatten dynamic fields
   const servicesWithCategory = useMemo(() => {
     if (!services) return services as ServiceEntity[]
 
     return (services as ServiceEntity[]).map(service => {
-      // Extract category name from has_category relationship
+      // ✅ ENTERPRISE FIX: Extract category ID from relationship, then lookup name
       const categoryRels =
         service.relationships?.has_category ||
         service.relationships?.HAS_CATEGORY ||
         service.relationships?.category
 
       let categoryName = null
+      let categoryId = null
+
+      // Get category ID from relationship
       if (Array.isArray(categoryRels) && categoryRels.length > 0) {
-        categoryName = categoryRels[0].to_entity?.entity_name || null
-      } else if (categoryRels?.to_entity?.entity_name) {
-        categoryName = categoryRels.to_entity.entity_name
+        categoryId = categoryRels[0].to_entity_id || categoryRels[0].to_entity?.id
+      } else if (categoryRels?.to_entity_id || categoryRels?.to_entity?.id) {
+        categoryId = categoryRels.to_entity_id || categoryRels.to_entity?.id
       }
 
-      return {
-        ...service,
-        category: categoryName // Add category name for easy display
+      // Lookup category name from categories list
+      if (categoryId && categories) {
+        const category = (categories as any[]).find((c: any) => c.id === categoryId)
+        categoryName = category?.entity_name || null
       }
+
+      // ✅ ENTERPRISE: Start with base service fields
+      const flattenedService: any = {
+        ...service,
+        category: categoryName
+      }
+
+      // ✅ CRITICAL: Force flatten dynamic_fields if they exist in nested format
+      if (service.dynamic_fields && typeof service.dynamic_fields === 'object') {
+        Object.entries(service.dynamic_fields).forEach(([key, field]) => {
+          if (field && typeof field === 'object' && 'value' in field) {
+            // Always set from dynamic_fields if value exists, even if already at top level
+            flattenedService[key] = field.value
+          }
+        })
+      }
+
+      return flattenedService
     })
-  }, [services])
+  }, [services, categories])
 
   // Filter services by branch and category using HERA relationship patterns
   const filteredServices = useMemo(() => {
@@ -110,7 +161,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     if (options?.filters?.branch_id) {
       filtered = filtered.filter(s => {
         // Check if service has AVAILABLE_AT relationship with the specified branch
-        // Smart Code: HERA.SALON.SERVICE.REL.AVAILABLE_AT.V1
+        // Smart Code: HERA.SALON.SERVICE.REL.AVAILABLE_AT.v1
         const availableAtRelationships = s.relationships?.available_at
         if (!availableAtRelationships) return false
 
@@ -188,11 +239,11 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     }
 
     return baseCreate({
-      entity_type: 'service',
+      entity_type: 'SERVICE',
       entity_name: data.name,
-      smart_code: 'HERA.SALON.SERVICE.ENTITY.SERVICE.V1',
+      smart_code: 'HERA.SALON.SERVICE.ENTITY.SERVICE.v1',
       dynamic_fields,
-      metadata: { relationships }
+      relationships
     } as any)
   }
 
@@ -241,7 +292,15 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
 
   // Helper to archive service (soft delete)
   const archiveService = async (id: string) => {
-    return baseArchive(id)
+    const service = (services as ServiceEntity[])?.find(s => s.id === id)
+    if (!service) throw new Error('Service not found')
+
+    const result = await baseArchive(id)
+
+    // ✅ NO REFETCH NEEDED: baseArchive updates cache automatically
+    // The archive() function in useUniversalEntityV1 handles cache update (lines 1007-1018)
+
+    return result
   }
 
   // Helper to restore service (set status to active)
@@ -269,7 +328,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         hard_delete: true,
         cascade: true,
         reason: reason || 'Permanently delete service',
-        smart_code: 'HERA.SALON.SERVICE.DELETE.V1'
+        smart_code: 'HERA.SALON.SERVICE.DELETE.v1'
       })
 
       // If we reach here, hard delete succeeded
@@ -292,6 +351,8 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
           entity_name: service.entity_name,
           status: 'archived'
         })
+
+        // ✅ NO REFETCH NEEDED: updateMutation.onSuccess handles cache update automatically
 
         return {
           success: true,
@@ -329,9 +390,10 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
   }
 
   // Helper to calculate service price with commission
-  const calculateServicePrice = (service: ServiceEntity) => {
-    const price = service.dynamic_fields?.price_market?.value || 0
-    const commission = service.dynamic_fields?.commission_rate?.value || 0.5
+  const calculateServicePrice = (service: any) => {
+    // ✅ FIXED: Use flattened fields from servicesWithCategory transformation
+    const price = service.price_market || 0
+    const commission = service.commission_rate || 0.5
 
     return {
       price,

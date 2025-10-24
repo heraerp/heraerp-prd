@@ -175,27 +175,34 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     }
 
     // Need both store initialized AND organization from auth
-    const orgId = auth.currentOrganization?.id || auth.organizationId
-    console.log('🔍 Checking for orgId:', { 
-      currentOrgId: auth.currentOrganization?.id, 
+    // 🔒 CRITICAL FIX: Check localStorage first for immediate org ID (set by login page)
+    const localStorageOrgId = typeof window !== 'undefined' ? localStorage.getItem('organizationId') : null
+    const orgId = auth.currentOrganization?.id || auth.organizationId || localStorageOrgId
+
+    console.log('🔍 Checking for orgId:', {
+      currentOrgId: auth.currentOrganization?.id,
       organizationId: auth.organizationId,
+      localStorageOrgId,
       finalOrgId: orgId,
       storeInitialized: securityStore.isInitialized,
       authStatus: auth.status
     })
-    
+
     if (!securityStore.isInitialized || !orgId) {
       console.log('⏸️ Waiting - store:', securityStore.isInitialized, 'orgId:', orgId)
-      
+
       // Force initialize store if we have orgId but store isn't initialized
       if (orgId && !securityStore.isInitialized) {
         console.log('🔧 Force initializing store with orgId:', orgId)
 
         // Get role from localStorage (set by sign-in page) or default to owner
-        const storedRole = (typeof window !== 'undefined' ? localStorage.getItem('salonRole') : null) || 'owner'
+        // 🔒 CRITICAL: Normalize role to lowercase to handle OWNER, Owner, owner, etc.
+        const rawStoredRole = (typeof window !== 'undefined' ? localStorage.getItem('salonRole') : null) || 'owner'
+        const storedRole = String(rawStoredRole).toLowerCase().trim()
         const permissions = SALON_ROLE_PERMISSIONS[storedRole as keyof typeof SALON_ROLE_PERMISSIONS] || SALON_ROLE_PERMISSIONS.owner
 
-        console.log('🔑 Using role from localStorage:', storedRole, 'with permissions:', permissions)
+        console.log('🔑 Using role from localStorage (raw):', rawStoredRole)
+        console.log('🔑 Using role from localStorage (normalized):', storedRole, 'with permissions:', permissions)
 
         securityStore.setInitialized({
           salonRole: storedRole as any,
@@ -296,13 +303,14 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       return
     }
 
-    // Wait for HERA auth to finish loading (only on first check)
-    if (auth.isLoading && !authCheckDoneRef.current) {
+    // 🔒 CRITICAL FIX: Wait for HERA auth to finish loading before checking authentication
+    // This prevents redirect on page refresh when session is being restored
+    if (auth.isLoading) {
       console.log('⏸️ Waiting for HERA Auth to finish loading...')
       return
     }
 
-    // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (after loading completes)
+    // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (ONLY after loading completes)
     if (!auth.isAuthenticated) {
       console.log('🚪 Not authenticated, redirecting to auth...')
       authCheckDoneRef.current = false // Reset for next login
@@ -326,12 +334,15 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       })
     } else if (!hasInitialized) {
       // ✅ SECURITY: Get organization ID from HERAAuth (JWT), not from cache
-      const orgId = auth.currentOrganization?.id || auth.organizationId
+      // 🔒 CRITICAL FIX: Check localStorage first for immediate org ID (set by login page)
+      const localStorageOrgId = typeof window !== 'undefined' ? localStorage.getItem('organizationId') : null
+      const orgId = auth.currentOrganization?.id || auth.organizationId || localStorageOrgId
 
       if (!orgId) {
-        console.log('⏸️ Waiting for organization from auth...', { 
-          currentOrgId: auth.currentOrganization?.id, 
-          organizationId: auth.organizationId 
+        console.log('⏸️ Waiting for organization from auth...', {
+          currentOrgId: auth.currentOrganization?.id,
+          organizationId: auth.organizationId,
+          localStorageOrgId
         })
         return
       }
@@ -671,42 +682,59 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         return 'owner' // Default to owner for salon demo
       }
 
-      // For salon demo, use email-based role detection
+      // 🔒 PRIORITY 1: Check localStorage first (set by login page from database)
+      // This takes priority over email-based detection
+      const storedRole = typeof window !== 'undefined' ? localStorage.getItem('salonRole') : null
+      if (storedRole) {
+        const normalizedStoredRole = String(storedRole).toLowerCase().trim()
+        console.log('✅ Using role from localStorage (database source):', normalizedStoredRole)
+
+        // Validate it's a known role
+        if (['owner', 'manager', 'receptionist', 'stylist', 'accountant', 'admin'].includes(normalizedStoredRole)) {
+          return normalizedStoredRole as SalonSecurityContext['salonRole']
+        }
+      }
+
+      // 🔒 FALLBACK: For salon demo, use email-based role detection
+      // This is only used if localStorage doesn't have a role
       try {
         const {
           data: { user }
         } = await supabase.auth.getUser()
         if (user?.email) {
-          console.log('🔍 Determining salon role for:', user.email)
+          console.log('🔍 Determining salon role from email (fallback):', user.email)
           const lowerEmail = user.email.toLowerCase()
 
           // Owner: Hairtalkz2022@gmail.com
           if (lowerEmail.includes('2022') || lowerEmail.includes('michele')) {
-            console.log('✅ Detected OWNER role from email')
+            console.log('✅ Detected OWNER role from email pattern')
             return 'owner'
           }
 
           // Receptionists: hairtalkz01@gmail.com, hairtalkz02@gmail.com
           if (lowerEmail.includes('01') || lowerEmail.includes('02') || lowerEmail.includes('receptionist') || lowerEmail.includes('front')) {
-            console.log('✅ Detected RECEPTIONIST role from email')
+            console.log('✅ Detected RECEPTIONIST role from email pattern')
             return 'receptionist'
           }
 
           // Map common email patterns to roles
           if (lowerEmail.includes('manager')) {
+            console.log('✅ Detected MANAGER role from email pattern')
             return 'manager'
           }
 
           if (lowerEmail.includes('stylist') || lowerEmail.includes('hair')) {
+            console.log('✅ Detected STYLIST role from email pattern')
             return 'stylist'
           }
 
           if (lowerEmail.includes('accountant') || lowerEmail.includes('finance')) {
+            console.log('✅ Detected ACCOUNTANT role from email pattern')
             return 'accountant'
           }
 
           // Default to owner for salon demo
-          console.log('✅ Using default OWNER role')
+          console.log('✅ Using default OWNER role (email pattern fallback)')
           return 'owner'
         }
       } catch (emailError) {

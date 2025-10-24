@@ -167,6 +167,21 @@ function NewAppointmentContent() {
     selectedBranch // ✅ Add selectedBranch from the hook
   } = useBranchFilter(selectedBranchId, 'salon-appointments', organizationId)
 
+  // 🔍 DEBUG: Log selectedBranch to check if operating hours are loaded
+  useEffect(() => {
+    if (selectedBranch) {
+      console.log('[NewAppointment] 🔍 selectedBranch DEBUG:', {
+        id: selectedBranch.id,
+        name: selectedBranch.name,
+        has_opening_time: !!selectedBranch.opening_time,
+        has_closing_time: !!selectedBranch.closing_time,
+        opening_time: selectedBranch.opening_time,
+        closing_time: selectedBranch.closing_time,
+        all_keys: Object.keys(selectedBranch),
+        full_branch: selectedBranch
+      })
+    }
+  }, [selectedBranch])
 
   // Form state - MUST be declared before hooks that use these values
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
@@ -2257,8 +2272,8 @@ function NewAppointmentContent() {
                 </span>
               </div>
               <div className="space-y-2">
-                {cart.slice(0, 3).map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-sm">
+                {cart.slice(0, 3).map((item) => (
+                  <div key={item.service.id} className="flex items-center justify-between text-sm">
                     <span className="text-[#F5E6C8]/80">
                       {item.quantity}x {item.service.entity_name}
                     </span>
