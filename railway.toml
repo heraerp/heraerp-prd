@@ -6,7 +6,7 @@ buildCommand = "npm run build"
 
 [deploy]
 # Optimized Next.js server with faster startup (Golden Rule #1)
-startCommand = "npm run start:railway"
+startCommand = "npm start"
 
 # Robust healthcheck configuration (Golden Rule #4)
 healthcheckPath = "/api/health"
