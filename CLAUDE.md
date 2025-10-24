@@ -30,7 +30,7 @@ if (!validation.isValid) {
 1. ✅ **Schema Field Assumptions** - Uses actual database schema, prevents wrong field names
 2. ✅ **Wrong Field Placement** - Enforces business data in `core_dynamic_data` NOT metadata
 3. ✅ **Incorrect Relationships** - Enforces `source_entity_id`/`target_entity_id` patterns
-4. ✅ **Smart Code Format Errors** - Enforces UPPERCASE .V1 format automatically
+4. ✅ **Smart Code Format Errors** - Enforces UPPERCASE segments with lowercase `.v1` version automatically
 5. ✅ **Non-V2 API Usage** - Enforces `/api/v2/` endpoints with organization_id filtering
 6. ✅ **Duplicate Component Creation** - Checks existing components before creating new ones
 
@@ -308,16 +308,17 @@ ALTER TABLE core_dynamic_data RESET (autovacuum_vacuum_scale_factor, autovacuum_
 ## 🧬 HERA DNA SMART CODE RULES
 
 ### Format Requirements:
-- Structure: `HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.V1`
-- 6-10 segments, UPPERCASE, ends with `.V1` (not `.v1`)
+- Structure: `HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v1`
+- 6-10 segments, **UPPERCASE for all segments EXCEPT version**
+- Version segment: **lowercase `.v1`** (not `.V1`)
 - Use existing families, don't invent new ones
 
 ### Common Examples:
 ```typescript
-'HERA.SALON.POS.CART.ACTIVE.V1'           // Salon POS cart
-'HERA.REST.MENU.ITEM.FOOD.V1'             // Restaurant menu item
-'HERA.CRM.CUSTOMER.ENTITY.PROFILE.V1'     // Customer profile
-'HERA.FIN.GL.ACCOUNT.ENTITY.V1'           // GL account
+'HERA.SALON.POS.CART.ACTIVE.v1'           // Salon POS cart
+'HERA.REST.MENU.ITEM.FOOD.v1'             // Restaurant menu item
+'HERA.CRM.CUSTOMER.ENTITY.PROFILE.v1'     // Customer profile
+'HERA.FIN.GL.ACCOUNT.ENTITY.v1'           // GL account
 ```
 
 ---
@@ -1032,3 +1033,335 @@ HERA's universal architecture eliminates traditional ERP complexity through:
 - **Production Proven** - Running live businesses successfully
 
 **Follow these rules, and HERA will handle the complexity for you.**
+
+---
+
+## 📱 HERA MOBILE-FIRST RESPONSIVE DESIGN - MANDATORY
+
+**🚨 CRITICAL**: All HERA user interfaces MUST follow mobile-first responsive design principles. This is now a mandatory standard for all development.
+
+### 🎯 Dual-Experience Architecture
+
+HERA applications deliver two distinct, optimized experiences:
+
+**Desktop Experience: SAP Fiori Enterprise**
+- Wide-screen layouts with data density
+- Multi-column grids and detailed tables
+- Advanced filtering and bulk operations
+- Keyboard shortcuts and power user features
+
+**Mobile Experience: Native App Feel**
+- Touch-optimized interactions (44px minimum targets)
+- iOS/Android native patterns
+- Progressive disclosure and focused tasks
+- Thumb-friendly navigation zones
+
+### 🔴 MANDATORY MOBILE REQUIREMENTS
+
+**1. Touch Targets**
+```typescript
+// ✅ REQUIRED - Minimum 44px touch targets
+<button className="min-h-[44px] min-w-[44px]">Action</button>
+
+// ✅ REQUIRED - Active state feedback for native feel
+<button className="active:scale-95 transition-transform">Tap Me</button>
+
+// ❌ FORBIDDEN - Touch targets smaller than 44px
+<button className="h-8 w-8">Too Small</button>
+```
+
+**2. Progressive Typography**
+```typescript
+// ✅ REQUIRED - Responsive text scaling
+<h1 className="text-xl md:text-3xl lg:text-4xl">Page Title</h1>
+<p className="text-sm md:text-base">Description text</p>
+
+// ❌ FORBIDDEN - Fixed desktop-only sizes
+<h1 className="text-4xl">Desktop Only</h1>
+```
+
+**3. Responsive Spacing**
+```typescript
+// ✅ REQUIRED - Mobile-first padding/margin
+<div className="p-4 md:p-6 lg:p-8">Content</div>
+<div className="space-y-4 md:space-y-6">Stacked items</div>
+
+// ❌ FORBIDDEN - Desktop-only spacing
+<div className="p-8">Desktop Only</div>
+```
+
+**4. Responsive Grids**
+```typescript
+// ✅ REQUIRED - Progressive grid columns
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+  {items.map(item => <Card key={item.id} />)}
+</div>
+
+// ❌ FORBIDDEN - Fixed desktop grids
+<div className="grid grid-cols-4 gap-8">Desktop Only</div>
+```
+
+### 📱 Mobile Navigation Architecture
+
+**HERA uses dual navigation patterns:**
+
+**Desktop: Sidebar Navigation (SAP Fiori)**
+- Fixed left sidebar (80px width)
+- Icon + tooltip on hover
+- Role-based menu items
+- Always visible
+
+**Mobile: Bottom Tab Bar (iOS/Android Native)**
+- Fixed bottom navigation (56px height)
+- 5 tabs maximum (iOS standard)
+- Icon + label layout
+- Safe area aware for iPhone notch
+- Active state with haptic feedback (active:scale-95)
+
+**Implementation:**
+```tsx
+// Layout automatically handles responsive navigation
+// Sidebar hidden on mobile, bottom nav hidden on desktop
+
+// Desktop: <SalonRoleBasedDarkSidebar /> (md:block)
+// Mobile: <SalonMobileBottomNav userRole={role} /> (md:hidden)
+```
+
+### 📐 Standard Mobile Header Pattern
+
+**Every HERA page MUST implement this mobile header:**
+
+```tsx
+{/* iOS-style status bar spacer - MANDATORY on mobile */}
+<div className="h-11 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
+
+{/* Mobile app header - MANDATORY */}
+<div className="md:hidden sticky top-0 z-50 bg-charcoal border-b border-gold/20">
+  <div className="flex items-center justify-between p-4">
+    <div className="flex items-center gap-3">
+      {/* Rounded app icon */}
+      <div className="w-10 h-10 rounded-xl bg-gold/20 flex items-center justify-center">
+        <Sparkles className="w-5 h-5 text-gold" />
+      </div>
+      {/* Title and subtitle */}
+      <div>
+        <h1 className="text-lg font-bold text-champagne">{title}</h1>
+        <p className="text-xs text-bronze">{subtitle}</p>
+      </div>
+    </div>
+    {/* Touch-friendly action button */}
+    <button className="min-w-[44px] min-h-[44px] rounded-full bg-gold/10 flex items-center justify-center active:scale-95">
+      <Bell className="w-5 h-5 text-gold" />
+      {notificationCount > 0 && (
+        <span className="absolute top-0 right-0 w-5 h-5 bg-rose text-white text-xs rounded-full flex items-center justify-center">
+          {notificationCount}
+        </span>
+      )}
+    </button>
+  </div>
+</div>
+```
+
+### 🎨 Responsive Content Patterns
+
+**Welcome Cards (Mobile)**
+```tsx
+{/* Mobile welcome card - MANDATORY pattern */}
+<div className="md:hidden bg-gradient-to-br from-gold/20 to-champagne/10 rounded-2xl p-6 mb-6">
+  <h2 className="text-2xl font-bold text-champagne mb-2">Welcome Back!</h2>
+  <p className="text-bronze">You have {taskCount} tasks today</p>
+</div>
+```
+
+**Touch-Friendly Tiles**
+```tsx
+{/* Mobile tile grid - MANDATORY for dashboards */}
+<div className="grid grid-cols-2 gap-4 md:hidden">
+  <button className="min-h-[120px] bg-charcoal rounded-xl p-4 active:scale-95 transition-transform">
+    <Calendar className="w-8 h-8 text-gold mb-2" />
+    <span className="block text-champagne font-medium">Appointments</span>
+    <span className="text-xs text-bronze">12 today</span>
+  </button>
+</div>
+```
+
+**Vertical Quick Actions**
+```tsx
+{/* Mobile action list - MANDATORY pattern */}
+<div className="md:hidden space-y-2 mb-6">
+  <button className="w-full min-h-[56px] bg-gold text-black rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95">
+    <Plus className="w-5 h-5" />
+    New Appointment
+  </button>
+  <button className="w-full min-h-[56px] bg-charcoal text-champagne rounded-xl flex items-center justify-center gap-2 active:scale-95">
+    <Search className="w-5 h-5" />
+    Search Customers
+  </button>
+</div>
+```
+
+### 🚀 Performance Requirements
+
+**Lazy Loading - MANDATORY**
+```tsx
+import { lazy, Suspense } from 'react'
+
+// ✅ REQUIRED - Split heavy components
+const PageHeader = lazy(() => import('./PageHeader'))
+const FilterBar = lazy(() => import('./FilterBar'))
+const ContentGrid = lazy(() => import('./ContentGrid'))
+
+// ✅ REQUIRED - Suspense boundaries with skeletons
+<Suspense fallback={<HeaderSkeleton />}>
+  <PageHeader />
+</Suspense>
+```
+
+**Performance Targets - MANDATORY**
+- Initial page load: < 1.5s
+- Time to Interactive: < 2.5s
+- First Contentful Paint: < 1.0s
+- Lighthouse Mobile Score: > 90
+
+### 🏗️ Standard Page Layout
+
+**All HERA pages MUST use this structure:**
+
+```tsx
+import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
+import { Suspense, lazy } from 'react'
+
+const PageContent = lazy(() => import('./PageContent'))
+
+export default function SalonPage() {
+  return (
+    <SalonLuxePage
+      title="Page Title"
+      description="Page description"
+      maxWidth="full"
+      padding="lg"
+    >
+      {/* Mobile Header - MANDATORY */}
+      <div className="h-11 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
+
+      {/* Mobile App Header - MANDATORY */}
+      <div className="md:hidden sticky top-0 z-50">
+        {/* ... mobile header implementation ... */}
+      </div>
+
+      {/* Page Content with Lazy Loading - MANDATORY */}
+      <Suspense fallback={<ContentSkeleton />}>
+        <PageContent />
+      </Suspense>
+
+      {/* Bottom Spacing for Mobile - MANDATORY */}
+      <div className="h-24 md:h-0" />
+    </SalonLuxePage>
+  )
+}
+```
+
+### 📋 Design Tokens
+
+**Mobile-specific constants - USE THESE:**
+
+```typescript
+export const MOBILE_DESIGN_TOKENS = {
+  // Touch targets
+  touchTarget: {
+    min: '44px',        // iOS HIG minimum
+    comfortable: '48px',
+    large: '56px'
+  },
+
+  // Spacing scales
+  spacing: {
+    mobile: {
+      xs: '0.5rem',   // 8px
+      sm: '0.75rem',  // 12px
+      md: '1rem',     // 16px
+      lg: '1.5rem',   // 24px
+      xl: '2rem'      // 32px
+    },
+    desktop: {
+      xs: '0.75rem',  // 12px
+      sm: '1rem',     // 16px
+      md: '1.5rem',   // 24px
+      lg: '2rem',     // 32px
+      xl: '3rem'      // 48px
+    }
+  },
+
+  // Typography scales
+  fontSize: {
+    mobile: {
+      xs: '0.75rem',   // 12px
+      sm: '0.875rem',  // 14px
+      base: '1rem',    // 16px
+      lg: '1.125rem',  // 18px
+      xl: '1.25rem',   // 20px
+      '2xl': '1.5rem', // 24px
+      '3xl': '1.875rem' // 30px
+    },
+    desktop: {
+      xs: '0.75rem',   // 12px
+      sm: '0.875rem',  // 14px
+      base: '1rem',    // 16px
+      lg: '1.125rem',  // 18px
+      xl: '1.25rem',   // 20px
+      '2xl': '1.5rem', // 24px
+      '3xl': '2.25rem' // 36px
+    }
+  },
+
+  // Z-index hierarchy
+  zIndex: {
+    mobileNav: 50,
+    stickyHeader: 40,
+    filterBar: 30,
+    dropdown: 20,
+    modal: 60
+  }
+}
+```
+
+### ✅ COMPLIANCE CHECKLIST
+
+Before merging any HERA UI code, verify:
+
+- [ ] ✅ All touch targets >= 44px on mobile
+- [ ] ✅ Active state feedback (active:scale-95) on all interactive elements
+- [ ] ✅ Progressive typography (text-xl md:text-3xl pattern)
+- [ ] ✅ Responsive spacing (p-4 md:p-6 lg:p-8 pattern)
+- [ ] ✅ Responsive grids (grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pattern)
+- [ ] ✅ iOS-style mobile header with status bar spacer
+- [ ] ✅ Mobile bottom navigation (iOS/Android tab bar)
+- [ ] ✅ Sidebar hidden on mobile (md:hidden)
+- [ ] ✅ Lazy loading with Suspense boundaries
+- [ ] ✅ Mobile performance targets met (< 1.5s initial load)
+- [ ] ✅ Bottom spacing for comfortable mobile scrolling
+- [ ] ✅ Tested on iOS Safari and Chrome Mobile
+
+### 📖 COMPREHENSIVE IMPLEMENTATION GUIDE
+
+**For detailed implementation instructions, see:**
+`/docs/salon/MOBILE-FIRST-STANDARDIZATION-CHECKLIST.md`
+
+This document includes:
+- Component architecture specifications
+- Page-by-page implementation plan
+- Mobile optimization patterns
+- Testing and QA procedures
+- 4-week rollout timeline
+
+### 🛡️ MANDATORY COMPLIANCE
+
+**Mobile-first responsive design is NOT optional. All HERA interfaces must:**
+
+1. **Work perfectly on mobile first** - Mobile is the primary experience
+2. **Enhance progressively for desktop** - Desktop gets additional features
+3. **Follow iOS/Android native patterns** - Feel like a native app
+4. **Meet performance targets** - Fast, smooth, instant loading
+5. **Pass accessibility standards** - WCAG 2.1 AA compliance
+
+**Non-compliance will block PR merges. Mobile-first is HERA DNA.**

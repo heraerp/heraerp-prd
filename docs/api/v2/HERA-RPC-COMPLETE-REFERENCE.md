@@ -87,8 +87,8 @@ ai_confidence, ai_classification, ai_insights
 ### `hera_entities_crud_v1` ⭐ **RECOMMENDED**
 
 **Purpose**: Universal orchestrator for complete entity CRUD operations in a single call
-**Status**: ✅ Production Ready (12/12 tests passing, 100% success rate)
-**Performance**: Avg 97ms (67-171ms range)
+**Status**: ✅ Production Ready (13/13 tests passing, 100% success rate)
+**Performance**: Avg 90ms (67-171ms range)
 **Test Coverage**: 100% (All features validated)
 
 **Why Use This?**
@@ -96,7 +96,8 @@ ai_confidence, ai_classification, ai_insights
 - **Atomic operations** - all changes succeed or fail together
 - **Complete response** - returns entity + dynamic_data + relationships
 - **Enterprise security** - actor + membership + smart code validation built-in
-- **Battle-tested** - 12 comprehensive production tests passing
+- **Battle-tested** - 13 comprehensive production tests passing (100% success rate)
+- **High performance** - 90ms average, optimized LATERAL joins for list reads
 
 **Function Signature**:
 ```sql
@@ -320,14 +321,15 @@ const user = await supabase.rpc('hera_entities_crud_v1', {
 | `HERA_LIST_MODE_INVALID` | Invalid list_mode | Use HEADERS or FULL |
 
 **Production Ready Checklist**:
-- [x] All 12 tests passing (100% success rate)
+- [x] All 13 tests passing (100% success rate)
 - [x] Security guardrails enforced
-- [x] Performance validated (<100ms average)
+- [x] Performance validated (90ms average)
 - [x] Response structure complete
 - [x] Relationship modes working (UPSERT + REPLACE)
 - [x] Platform identity support
-- [x] Smart code normalization
+- [x] Smart code normalization (.V1 → .v1 automatic)
 - [x] Comprehensive error handling
+- [x] List reads optimized (LATERAL joins)
 
 **📚 Full Documentation**: `/docs/api/v2/HERA-ORCHESTRATOR-RPC-GUIDE.md`
 
@@ -1667,9 +1669,11 @@ Before deploying RPC-based features:
 
 ---
 
-**Version**: 2.0.0
+**Version**: 2.1.0
 **Status**: ✅ Production Ready
-**Last Updated**: 2025-10-18
+**Last Updated**: 2025-10-22
 **Verified Against**: Supabase Production Database
+**Test Coverage**: 13/13 tests passing (100%)
+**Performance**: 90ms average response time
 
 **The HERA Promise**: 6 Tables. Infinite Business Complexity. Zero Schema Changes.

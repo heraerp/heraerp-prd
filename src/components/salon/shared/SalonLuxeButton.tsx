@@ -103,11 +103,11 @@ export const SalonLuxeButton = forwardRef<HTMLButtonElement, SalonLuxeButtonProp
           return isHovered
             ? {
                 ...baseStyle,
-                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                backgroundColor: 'rgba(212, 175, 55, 0.05)', // Reduced from 0.08
                 borderWidth: '2px',
-                borderColor: SALON_LUXE_COLORS.gold.base,
-                color: SALON_LUXE_COLORS.champagne.light,
-                boxShadow: `0 2px 12px ${SALON_LUXE_COLORS.shadow.goldLighter}`,
+                borderColor: 'rgba(212, 175, 55, 0.4)', // Reduced from 0.5
+                color: SALON_LUXE_COLORS.champagne.base,
+                boxShadow: `0 2px 8px rgba(212, 175, 55, 0.10)`, // Reduced from 0.15
               }
             : {
                 ...baseStyle,
@@ -134,18 +134,18 @@ export const SalonLuxeButton = forwardRef<HTMLButtonElement, SalonLuxeButtonProp
           return isHovered
             ? {
                 ...baseStyle,
-                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(184, 134, 11, 0.30) 100%)`,
+                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(184, 134, 11, 0.22) 100%)`,
                 backdropFilter: 'blur(16px)',
                 WebkitBackdropFilter: 'blur(16px)',
                 borderWidth: '2px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(212, 175, 55, 0.90)',
+                borderColor: 'rgba(212, 175, 55, 0.70)',
                 borderRadius: '16px',
                 color: SALON_LUXE_COLORS.champagne.light,
                 fontWeight: 700,
                 letterSpacing: '0.02em',
-                boxShadow: '0 16px 48px rgba(212, 175, 55, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25)',
-                transform: 'translateY(-3px) scale(1.02)',
+                boxShadow: '0 12px 36px rgba(212, 175, 55, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.20)',
+                transform: 'translateY(-2px) scale(1.01)',
                 transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)', // spring animation
                 position: 'relative' as const,
                 overflow: 'hidden' as const,
@@ -157,12 +157,12 @@ export const SalonLuxeButton = forwardRef<HTMLButtonElement, SalonLuxeButtonProp
                 WebkitBackdropFilter: 'blur(16px)',
                 borderWidth: '2px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(212, 175, 55, 0.60)',
+                borderColor: 'rgba(212, 175, 55, 0.50)',
                 borderRadius: '16px',
                 color: SALON_LUXE_COLORS.champagne.base,
                 fontWeight: 700,
                 letterSpacing: '0.02em',
-                boxShadow: '0 8px 32px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 8px 24px rgba(212, 175, 55, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
                 transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)', // spring animation
                 position: 'relative' as const,
                 overflow: 'hidden' as const,

@@ -167,7 +167,7 @@ export function UnifiedDashboard() {
     if (!isLoading && isAuthenticated) {
       const userRole = role?.toLowerCase()
       if (userRole === 'receptionist') {
-        router.push('/salon/receptionist/dashboard')
+        router.push('/salon/receptionist')
       } else if (userRole === 'admin') {
         router.push('/salon/admin/dashboard')
       }

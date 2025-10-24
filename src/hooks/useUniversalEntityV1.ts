@@ -30,6 +30,7 @@ export interface UniversalEntity {
   smart_code: string
   metadata?: Record<string, any>
   status?: string
+  ai_confidence?: number  // ✅ NEW: AI confidence score (0-1) - set to 1.0 to bypass normalization trigger
   dynamic_fields?: Record<
     string,
     {
@@ -164,21 +165,41 @@ function transformDynamicFieldsToRPC(
 }
 
 /**
- * Transform relationships to FLAT format (matches orchestrator test)
+ * ✅ FIX: Transform relationships to object format WITH smart_code_map
  *
- * Input:  { HAS_CATEGORY: ['cat-uuid-1', 'cat-uuid-2'] }
- * Output: { HAS_CATEGORY: ['cat-uuid-1', 'cat-uuid-2'] }
+ * RPC expects: { relationship_type: [ids] } format
+ * We also need to pass smart_codes via a map in p_options
  *
- * Note: Orchestrator test shows simple flat format without smart_codes in relationships
+ * Input:  { STAFF_HAS_ROLE: ['role-uuid-1'] }, relationshipDefs
+ * Output: {
+ *   relationships: { STAFF_HAS_ROLE: ['role-uuid-1'] },
+ *   smart_code_map: { STAFF_HAS_ROLE: 'HERA.SALON.STAFF.REL.HAS_ROLE.V1' }
+ * }
  */
 function transformRelationshipsToFlatFormat(
-  relationships: Record<string, string[]> | undefined
-): Record<string, string[]> {
-  if (!relationships) return {}
+  relationships: Record<string, string[]> | undefined,
+  relationshipDefs?: RelationshipDef[]
+): { relationships: Record<string, string[]>, smart_code_map: Record<string, string> } {
+  if (!relationships || !relationshipDefs) {
+    return { relationships: {}, smart_code_map: {} }
+  }
 
-  // ✅ ORCHESTRATOR TEST FORMAT: Return as-is (flat format)
-  // The RPC handles smart_code resolution internally
-  return relationships
+  const smart_code_map: Record<string, string> = {}
+
+  // Build smart_code_map from relationship definitions
+  Object.keys(relationships).forEach(relType => {
+    const relDef = relationshipDefs.find(r => r.type === relType)
+    if (relDef) {
+      smart_code_map[relType] = relDef.smart_code
+    } else {
+      console.warn(`[transformRelationshipsToFlatFormat] ⚠️ No preset found for relationship type: ${relType} - relationship will FAIL without smart_code!`)
+    }
+  })
+
+  return {
+    relationships,
+    smart_code_map
+  }
 }
 
 /**
@@ -235,27 +256,18 @@ function transformRPCResponseToEntity(rpcEntity: any): any {
 
   if (isNestedFormat) {
     // Nested format from list READ operations
-    console.log('[transformRPCResponseToEntity] 🔍 Detected NESTED format')
     entity = rpcEntity.entity || {}
     dynamicFieldsArray = rpcEntity.dynamic_data || rpcEntity.dynamic_fields || []
     relationshipsArray = rpcEntity.relationships || []
   } else {
     // Flat format from single entity operations
-    console.log('[transformRPCResponseToEntity] 🔍 Detected FLAT format')
     entity = rpcEntity
     dynamicFieldsArray = rpcEntity.dynamic_fields || rpcEntity.dynamic_data || []
     relationshipsArray = rpcEntity.relationships || []
   }
 
-  console.log('[transformRPCResponseToEntity] 🔍 Input RPC entity:', {
-    isNestedFormat,
-    id: entity.id,
-    entity_name: entity.entity_name,
-    hasDynamicData: !!dynamicFieldsArray,
-    dynamicDataCount: dynamicFieldsArray?.length || 0,
-    allEntityKeys: Object.keys(entity),
-    allWrapperKeys: Object.keys(rpcEntity)
-  })
+  // ✅ PRESERVE entity-level status before flattening dynamic fields
+  const entityLevelStatus = entity.status
 
   const transformedEntity: any = {
     id: entity.id,
@@ -263,7 +275,7 @@ function transformRPCResponseToEntity(rpcEntity: any): any {
     entity_name: entity.entity_name,
     entity_code: entity.entity_code,
     smart_code: entity.smart_code,
-    status: entity.status,
+    status: entityLevelStatus,  // Entity-level status (active/archived for soft delete)
     metadata: entity.metadata,
     created_at: entity.created_at,
     updated_at: entity.updated_at,
@@ -275,11 +287,6 @@ function transformRPCResponseToEntity(rpcEntity: any): any {
   if (dynamicFieldsArray && Array.isArray(dynamicFieldsArray) && dynamicFieldsArray.length > 0) {
     transformedEntity.dynamic_fields = {} // Add structured format for compatibility
 
-    console.log('[transformRPCResponseToEntity] 📦 Processing dynamic fields array:', {
-      count: dynamicFieldsArray.length,
-      fields: dynamicFieldsArray.map((f: any) => f.field_name)
-    })
-
     dynamicFieldsArray.forEach((field: any) => {
       const value =
         field.field_value_number ??
@@ -289,27 +296,20 @@ function transformRPCResponseToEntity(rpcEntity: any): any {
         field.field_value_json ??
         null
 
-      console.log('[transformRPCResponseToEntity] 🔧 Processing field:', {
-        field_name: field.field_name,
-        value,
-        rawField: field
-      })
+      // ✅ FIX: Don't overwrite entity-level status with dynamic field status
+      // Business logic status (active/inactive) goes to a different field
+      if (field.field_name === 'status') {
+        transformedEntity.employee_status = value  // Rename to avoid conflict
+      } else {
+        // Flatten other dynamic fields to entity level (e.g., entity.phone, entity.email)
+        transformedEntity[field.field_name] = value
+      }
 
-      // Flatten to entity level (e.g., entity.phone, entity.email)
-      transformedEntity[field.field_name] = value
-
-      // Also add to dynamic_fields for compatibility with useHeraCustomers
+      // Also add to dynamic_fields for compatibility
       transformedEntity.dynamic_fields[field.field_name] = {
         value: value
       }
     })
-
-    console.log('[transformRPCResponseToEntity] ✅ Dynamic fields processed:', {
-      flatFields: Object.keys(transformedEntity).filter(k => !['id', 'entity_type', 'entity_name', 'entity_code', 'smart_code', 'status', 'metadata', 'created_at', 'updated_at', 'created_by', 'updated_by', 'dynamic_fields', 'relationships'].includes(k)),
-      dynamicFieldsKeys: Object.keys(transformedEntity.dynamic_fields)
-    })
-  } else {
-    console.log('[transformRPCResponseToEntity] ⚠️ No dynamic_fields or dynamic_data found or not an array')
   }
 
   // Transform relationships array to grouped format
@@ -414,74 +414,47 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         }
       }
 
-      console.log('[useUniversalEntityV1] 🚀 Fetching entities via orchestrator RPC:', {
+      console.log('[useUniversalEntityV1] 📖 READ query params:', {
         entity_type,
-        organizationId,
-        actorUserId,
-        filters,
-        rpcParams,
-        include_dynamic_value: rpcParams.p_options.include_dynamic
+        status_filter: filters.status,
+        p_entity_status: rpcParams.p_entity.status
       })
 
       // 🌟 ENTITY CRUD - Single call for everything
       const { data, error } = await entityCRUD(rpcParams)
 
+      console.log('[useUniversalEntityV1] 📖 READ response:', {
+        entity_type,
+        item_count: data?.items?.length || data?.data?.length || 0,
+        first_item_status: data?.items?.[0]?.status || data?.data?.[0]?.status
+      })
+
       if (error) {
-        console.error('[useUniversalEntityV1] Orchestrator RPC error:', error)
+        console.error('[useUniversalEntityV1] RPC error:', error)
         throw new Error(error)
       }
-
-      console.log('[useUniversalEntityV1] ✅ Orchestrator RPC response:', {
-        hasData: !!data,
-        dataKeys: data ? Object.keys(data) : [],
-        hasItems: !!data?.items,
-        itemsCount: data?.items?.length || 0,
-        hasEntity: !!data?.entity,
-        hasSuccess: data?.success,
-        fullData: data,
-        // 🔍 DEEP DIVE: Check nested structure
-        dataDataKeys: data?.data ? Object.keys(data.data) : null,
-        dataListLength: data?.data?.list?.length,
-        firstEntityInList: data?.data?.list?.[0],
-        firstEntityKeys: data?.data?.list?.[0] ? Object.keys(data.data.list[0]) : null
-      })
 
       // Extract entities from response - support multiple response formats
       let entitiesArray = []
 
       if (data?.items) {
-        // Response format: { items: [...] }
         entitiesArray = data.items
       } else if (data?.data) {
-        // Response format: { data: [...] } or { data: { items: [...] } } or { data: { list: [...] } }
         if (Array.isArray(data.data)) {
           entitiesArray = data.data
         } else if (data.data.items) {
           entitiesArray = data.data.items
         } else if (data.data.list) {
-          // ✅ ORCHESTRATOR RPC FORMAT: { data: { list: [...] } }
           entitiesArray = data.data.list
         }
       } else if (data?.entity) {
-        // Single entity response: { entity: {...} }
         entitiesArray = [data.entity]
       } else if (Array.isArray(data)) {
-        // Direct array response
         entitiesArray = data
       }
 
-      console.log('[useUniversalEntityV1] 📦 Extracted entities array:', {
-        count: entitiesArray.length,
-        firstEntity: entitiesArray[0] || null
-      })
-
       // Transform RPC response to hook format
       const transformedEntities = entitiesArray.map(transformRPCResponseToEntity)
-
-      console.log('[useUniversalEntityV1] 📊 Transformed entities:', {
-        count: transformedEntities.length,
-        sample: transformedEntities[0]
-      })
 
       return transformedEntities
     },
@@ -509,13 +482,13 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
       // Transform dynamic fields to RPC format (simple format matching test)
       const p_dynamic = transformDynamicFieldsToRPCSimple(entity.dynamic_fields)
 
-      // Transform relationships to FLAT format matching orchestrator test
-      const p_relationships = transformRelationshipsToFlatFormat(entity.relationships)
+      // Transform relationships to FLAT format with smart_code_map
+      const { relationships: p_relationships, smart_code_map } = transformRelationshipsToFlatFormat(
+        entity.relationships,
+        config.relationships
+      )
 
-      console.log('[useUniversalEntityV1] 🔍 Transformed for RPC:', {
-        p_dynamic,
-        p_relationships
-      })
+      console.log('[useUniversalEntityV1] 📤 CREATE:', entity.entity_name)
 
       // 🌟 ENTITY CRUD - Atomic create with guardrails
       const { data, error } = await entityCRUD({
@@ -528,13 +501,18 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
           entity_code: entity.entity_code || null,
           smart_code: entity.smart_code,
           status: entity.status || 'active'
+          // ✅ CRITICAL FIX: Removed ai_confidence field - not recognized by RPC
+          // This was causing RPC to return {success: true, entity: null, entity_id: null}
         },
-        p_dynamic,
-        p_relationships,  // ✅ FLAT format: { HAS_CATEGORY: [id1, id2] }
+        // ✅ CRITICAL FIX: Only include p_dynamic and p_relationships if they have content (matches UPDATE pattern)
+        // Empty objects can cause RPC to ignore them
+        ...(p_dynamic && Object.keys(p_dynamic).length > 0 && { p_dynamic }),
+        ...(p_relationships && Object.keys(p_relationships).length > 0 && { p_relationships }),
         p_options: {
           include_dynamic: true,
           include_relationships: true,
-          relationships_mode: 'UPSERT'  // ✅ Mode in p_options (matches test)
+          relationships_mode: 'UPSERT',  // ✅ Mode in p_options (matches test)
+          ...(smart_code_map && Object.keys(smart_code_map).length > 0 && { relationship_smart_code_map: smart_code_map })  // ✅ FIX: Only include smart_code_map if relationships exist
         }
       })
 
@@ -543,24 +521,104 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         throw new Error(error)
       }
 
-      console.log('[useUniversalEntityV1] ✅ Entity created:', data)
+      console.log('[useUniversalEntityV1] ✅ Created:', data?.entity_id || data?.data?.entity?.id)
 
-      // Extract full entity from response (RPC returns complete entity with dynamic fields)
-      const createdEntity = data?.entity || data?.data?.entity
+      // Extract full entity from response - try multiple formats
+      let createdEntity = null
 
-      if (!createdEntity || !createdEntity.id) {
-        console.error('[useUniversalEntityV1] ❌ No entity in response:', data)
-        throw new Error('Entity created but no entity data returned')
+      // ✅ CRITICAL FIX: Check for nested wrapper format from orchestrator RPC
+      // Format 0: { data: { data: { entity: {...}, dynamic_data: [...], relationships: [...] } } }
+      if (data?.data?.data && typeof data.data.data === 'object' && data.data.data.entity) {
+        console.log('[useUniversalEntityV1] 📦 Format 0: Nested wrapper with entity/dynamic_data/relationships')
+        createdEntity = data.data.data
+      }
+      // ✅ CRITICAL FIX: Format 2 should extract COMPLETE wrapper (entity + dynamic_data + relationships)
+      // Format 2: { data: { entity: {...}, dynamic_data: [...], relationships: [...] } }
+      else if (data?.data?.entity && (data?.data?.dynamic_data || data?.data?.relationships)) {
+        console.log('[useUniversalEntityV1] 📦 Format 2: data wrapper with entity/dynamic_data/relationships')
+        createdEntity = data.data  // ✅ FIX: Extract COMPLETE wrapper, not just entity
+      }
+      // Format 2b: { data: { entity: {...} } } - entity only, no dynamic/relationships
+      else if (data?.data?.entity) {
+        console.log('[useUniversalEntityV1] 📦 Format 2b: data.entity only (no dynamic/relationships)')
+        createdEntity = data.data.entity
+      }
+      // Format 1: { entity: {...} }
+      else if (data?.entity) {
+        console.log('[useUniversalEntityV1] 📦 Format 1: Direct entity')
+        createdEntity = data.entity
+      }
+      // Format 3: { data: { data: {...} } } - nested data (entity is the data itself)
+      else if (data?.data?.data && data.data.data.id) {
+        console.log('[useUniversalEntityV1] 📦 Format 3: data.data with id')
+        createdEntity = data.data.data
+      }
+      // Format 4: Direct response with id (simple object)
+      else if (data?.id) {
+        console.log('[useUniversalEntityV1] 📦 Format 4: Direct object with id')
+        createdEntity = data
+      }
+      // Format 5: { data: {...} } where data is the entity itself
+      else if (data?.data?.id) {
+        console.log('[useUniversalEntityV1] 📦 Format 5: data is entity with id')
+        createdEntity = data.data
+      }
+      // ✅ NEW Format 6: { entity_id: 'uuid' } - minimal response, need to refetch
+      else if (data?.entity_id) {
+        console.log('[useUniversalEntityV1] 📦 Format 6: Minimal response with entity_id only - will refetch')
+        // Return minimal entity object and trigger refetch in onSuccess
+        createdEntity = {
+          id: data.entity_id,
+          entity_type: entity_type,
+          entity_name: entity.entity_name,
+          smart_code: entity.smart_code,
+          status: entity.status || 'active',
+          // Mark as incomplete so we know to refetch
+          _incomplete: true
+        }
       }
 
-      // Transform RPC response to hook format for immediate cache update
+      if (!createdEntity) {
+        console.error('[useUniversalEntityV1] ❌ No entity in response:', {
+          dataKeys: data ? Object.keys(data) : [],
+          data: safeData
+        })
+
+        // ✅ WORKAROUND: RPC sometimes returns success but no entity data
+        // The entity IS created (confirmed by refetch), so we need to handle this gracefully
+        console.warn('[useUniversalEntityV1] ⚠️ RPC returned success but no entity - will trigger refetch')
+
+        // Return a minimal entity object that will trigger a refetch
+        return {
+          id: null, // Will be populated after refetch
+          entity_type: entity_type,
+          entity_name: entity.entity_name,
+          smart_code: entity.smart_code,
+          _needs_refetch: true // Flag to trigger refetch in onSuccess
+        }
+      }
+
+      // ✅ ENTERPRISE FIX: Transform wrapper or flat entity to flattened format
+      // RPC returns { entity: {...}, dynamic_data: [...], relationships: [...] }
+      // transformRPCResponseToEntity handles both formats and flattens dynamic fields to top level
       const transformedEntity = transformRPCResponseToEntity(createdEntity)
 
-      console.log('[useUniversalEntityV1] 📦 Transformed created entity:', transformedEntity)
 
       return transformedEntity
     },
-    onSuccess: (newEntity) => {
+    onSuccess: async (newEntity) => {
+      // ✅ WORKAROUND: If RPC didn't return entity data, refetch to get the latest
+      if ((newEntity as any)._needs_refetch) {
+        console.warn('[useUniversalEntityV1] ⚠️ Entity created but no data returned - triggering refetch')
+
+        // Invalidate and refetch to get the newly created entity
+        await queryClient.invalidateQueries({ queryKey })
+        await refetch()
+
+        console.log('✅ [useUniversalEntityV1] Refetch completed after null entity response')
+        return
+      }
+
       // ⚡ OPTIMISTIC UPDATE: Add new entity to cache immediately without refetch
       queryClient.setQueryData(queryKey, (old: any) => {
         if (!old || !Array.isArray(old)) return [newEntity]
@@ -633,8 +691,11 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         p_dynamic = transformDynamicFieldsToRPCSimple(dynamicFields)
       }
 
-      // Transform relationships_patch to FLAT format (matches test)
-      const p_relationships = transformRelationshipsToFlatFormat(relationships_patch)
+      // Transform relationships_patch to FLAT format with smart_code_map
+      const { relationships: p_relationships, smart_code_map } = transformRelationshipsToFlatFormat(
+        relationships_patch,
+        config.relationships
+      )
 
       // 🌟 ENTITY CRUD - Atomic update with guardrails
       const { data, error } = await entityCRUD({
@@ -653,7 +714,8 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         p_options: {
           include_dynamic: true,
           include_relationships: true,
-          relationships_mode: 'REPLACE'  // ✅ Mode in p_options (matches test)
+          relationships_mode: 'REPLACE',  // ✅ Mode in p_options (matches test)
+          relationship_smart_code_map: smart_code_map  // ✅ FIX: Pass smart_codes for each relationship type
         }
       })
 
@@ -768,7 +830,12 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         },
         p_dynamic: {},  // ✅ Required by RPC (matches test)
         p_relationships: {},  // ✅ Required by RPC (matches test)
-        p_options: {}  // ✅ Empty object (matches test)
+        p_options: {
+          // ✅ CRITICAL FIX: Pass delete options to RPC
+          ...(hard_delete !== undefined && { hard_delete }),
+          ...(cascade !== undefined && { cascade }),
+          ...(reason && { reason })
+        }
       })
 
       // ✅ FIX: Check both error field AND data.success field for RPC errors
@@ -843,25 +910,99 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
     update: updateMutation.mutateAsync,
     delete: deleteMutation.mutateAsync,
 
-    // Helper functions
+    // Helper functions - Simple status updates (no relationships needed)
     archive: async (entity_id: string) => {
-      const entity = entities?.find((e: any) => e.id === entity_id)
-      if (!entity) throw new Error('Entity not found')
+      if (!organizationId || !actorUserId) {
+        throw new Error('Organization ID and User ID required')
+      }
 
-      return updateMutation.mutateAsync({
-        entity_id,
-        status: 'archived'
+      console.log('[useUniversalEntityV1] 🗄️ Archiving entity (status update only):', entity_id)
+
+      // ✅ SIMPLE STATUS UPDATE - No relationships, no dynamic fields
+      const { data, error } = await entityCRUD({
+        p_action: 'UPDATE',
+        p_actor_user_id: actorUserId,
+        p_organization_id: organizationId,
+        p_entity: {
+          entity_id,
+          status: 'archived'  // Only update status
+        },
+        p_options: {}  // No include_relationships, no relationships_mode
       })
+
+      if (error) {
+        console.error('[useUniversalEntityV1] Archive error:', error)
+        throw new Error(error)
+      }
+
+      console.log('[useUniversalEntityV1] ✅ Entity archived:', entity_id)
+
+      // Update cache immediately
+      queryClient.setQueryData(queryKey, (old: any) => {
+        if (!old || !Array.isArray(old)) return []
+        // If query filters for status='active', remove archived entity
+        if (filters.status === 'active') {
+          return old.filter((e: any) => e.id !== entity_id)
+        }
+        // Otherwise, update status in cache
+        return old.map((e: any) =>
+          e.id === entity_id ? { ...e, status: 'archived' } : e
+        )
+      })
+
+      return data
     },
 
     restore: async (entity_id: string) => {
-      const entity = entities?.find((e: any) => e.id === entity_id)
-      if (!entity) throw new Error('Entity not found')
-
-      return updateMutation.mutateAsync({
-        entity_id,
-        status: 'active'
+      // ✅ ENTERPRISE DEBUG: Log authentication context before restore
+      console.log('[useUniversalEntityV1] 🔍 RESTORE - Auth Context:', {
+        organizationId,
+        actorUserId,
+        hasOrganization: !!organizationId,
+        hasActorUser: !!actorUserId,
+        entity_id
       })
+
+      if (!organizationId) {
+        const errorMsg = 'Organization ID is missing - cannot restore product'
+        console.error('[useUniversalEntityV1] ❌ RESTORE FAILED:', errorMsg)
+        throw new Error(errorMsg)
+      }
+
+      if (!actorUserId) {
+        const errorMsg = 'User ID is missing - session may have expired. Please log out and log back in.'
+        console.error('[useUniversalEntityV1] ❌ RESTORE FAILED:', errorMsg, {
+          hint: 'This usually means the authentication context is not properly loaded'
+        })
+        throw new Error(errorMsg)
+      }
+
+      console.log('[useUniversalEntityV1] ♻️ Restoring entity (status update only):', entity_id)
+
+      // ✅ SIMPLE STATUS UPDATE - No relationships, no dynamic fields
+      const { data, error } = await entityCRUD({
+        p_action: 'UPDATE',
+        p_actor_user_id: actorUserId,
+        p_organization_id: organizationId,
+        p_entity: {
+          entity_id,
+          status: 'active'  // Only update status
+        },
+        p_options: {}  // No include_relationships, no relationships_mode
+      })
+
+      if (error) {
+        console.error('[useUniversalEntityV1] Restore error:', error)
+        throw new Error(error)
+      }
+
+      console.log('[useUniversalEntityV1] ✅ Entity restored:', entity_id)
+
+      // For restore, trigger refetch since restored entity not in current cache
+      await queryClient.invalidateQueries({ queryKey })
+      await refetch()
+
+      return data
     },
 
     // Loading states

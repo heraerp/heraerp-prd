@@ -1,20 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseService } from '@/lib/supabase-service'
-import { verifyAuth } from '@/lib/auth/verify-auth'
+import { createClient } from '@supabase/supabase-js'
 
 /**
  * GET /api/v2/auth/resolve-membership
- * 
+ *
  * Idempotent membership resolver - returns current state or self-heals
  * Never returns 401 for valid JWT - only 200 with current/healed state
  */
 export async function GET(request: NextRequest) {
   try {
-    // Verify JWT (basic JWT validation only)
-    const auth = await verifyAuth(request)
-    if (!auth || !auth.id) {
+    // Simple JWT verification without complex RPC dependencies
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
     }
+
+    const token = authHeader.substring(7)
+
+    // Verify token with Supabase
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+
+    if (authError || !user) {
+      console.error('[resolve-membership] Auth failed:', authError)
+      return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+    }
+
+    const auth = { id: user.id, email: user.email }
 
     // If JWT already has org context, return success immediately
     if (auth.organizationId) {
@@ -31,13 +48,13 @@ export async function GET(request: NextRequest) {
     }
 
     console.log(`[resolve-membership] JWT missing org context - self-healing for user ${auth.id}`)
-    
+
     const userId = auth.id
-    const supabase = getSupabaseService()
+    const supabaseService = getSupabaseService()
 
     // Self-heal: ensure membership exists
     try {
-      await supabase.rpc('ensure_membership_for_email', {
+      await supabaseService.rpc('ensure_membership_for_email', {
         p_email: auth.email,
         p_org_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
         p_service_user: userId
@@ -48,7 +65,7 @@ export async function GET(request: NextRequest) {
       // Continue anyway - maybe relationship already exists
     }
     // Fetch canonical IDs after self-heal
-    const { data: relationships, error: relError } = await supabase
+    const { data: relationships, error: relError } = await supabaseService
       .from('core_relationships')
       .select('id, to_entity_id, organization_id, relationship_data, is_active')
       .eq('from_entity_id', userId)
@@ -72,19 +89,23 @@ export async function GET(request: NextRequest) {
 
     // Get canonical entity IDs
     const tenantOrgId = relationship.organization_id
-    const { data: userEntity } = await supabase
+
+    // ✅ USER entities are in PLATFORM organization (00000000-0000-0000-0000-000000000000)
+    // According to hera_onboard_user_v1, platform USER entity id == auth.users.id
+    const { data: userEntity } = await supabaseService
       .from('core_entities')
       .select('id')
       .eq('entity_type', 'USER')
-      .eq('organization_id', tenantOrgId)
+      .eq('organization_id', '00000000-0000-0000-0000-000000000000')
       .eq('id', userId)
       .maybeSingle()
 
-    const { data: orgEntity } = await supabase
+    // ✅ ORGANIZATION shadow entities are in tenant org
+    const { data: orgEntity } = await supabaseService
       .from('core_entities')
       .select('id')
       .eq('id', relationship.to_entity_id)
-      .eq('entity_type', 'ORG')
+      .eq('entity_type', 'ORGANIZATION')
       .eq('organization_id', tenantOrgId)
       .maybeSingle()
 

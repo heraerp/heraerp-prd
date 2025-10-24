@@ -1,13 +1,15 @@
 /**
  * HERA Branches Hook
  *
- * Thin wrapper over useUniversalEntity for branch management
- * Provides branch-specific helpers and RPC integration
+ * ✅ Migrated to useUniversalEntityV1 - Uses hera_entities_crud_v1 orchestrator RPC
+ * ✅ Single atomic call for entity + dynamic fields + relationships
+ * ✅ Enterprise security: actor + membership + smart code validation
+ * ✅ Provides branch-specific helpers with GPS location support
  */
 
 import { useMemo } from 'react'
-import { useUniversalEntity } from './useUniversalEntity'
-import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
+import { useUniversalEntityV1 } from './useUniversalEntityV1'
+import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntityV1'
 
 export interface BranchEntity {
   id: string
@@ -139,7 +141,7 @@ export function useHeraBranches(options?: UseHeraBranchesOptions) {
     isCreating,
     isUpdating,
     isDeleting
-  } = useUniversalEntity({
+  } = useUniversalEntityV1({
     entity_type: 'BRANCH',
     organizationId: options?.organizationId,
     filters: {
@@ -318,8 +320,9 @@ export function useHeraBranches(options?: UseHeraBranchesOptions) {
 
       console.log('[useHeraBranches] Branch created successfully:', result)
 
-      // Force immediate refetch to show new branch
-      await refetch()
+      // ✅ FIXED: Let useUniversalEntityV1's onSuccess handler update cache automatically
+      // Don't manually refetch - this was causing "no entity in response" error
+      // The cache is updated optimistically by the hook's onSuccess callback
 
       return result
     } catch (error: any) {
@@ -435,8 +438,8 @@ export function useHeraBranches(options?: UseHeraBranchesOptions) {
 
       console.log('[useHeraBranches] Branch updated successfully:', result)
 
-      // Force immediate refetch to update UI
-      await refetch()
+      // ✅ FIXED: Let useUniversalEntityV1's onSuccess handler update cache automatically
+      // Don't manually refetch - the cache is updated optimistically by the hook
 
       return result
     } catch (error: any) {
@@ -466,8 +469,8 @@ export function useHeraBranches(options?: UseHeraBranchesOptions) {
 
       console.log('[useHeraBranches] Archive successful:', result)
 
-      // Force immediate refetch to update UI
-      await refetch()
+      // ✅ FIXED: Let useUniversalEntityV1's onSuccess handler update cache automatically
+      // Don't manually refetch - the cache is updated optimistically by the hook
 
       return result
     } catch (error: any) {
@@ -493,8 +496,8 @@ export function useHeraBranches(options?: UseHeraBranchesOptions) {
 
       console.log('[useHeraBranches] Restore successful:', result)
 
-      // Force immediate refetch to update UI
-      await refetch()
+      // ✅ FIXED: Let useUniversalEntityV1's onSuccess handler update cache automatically
+      // Don't manually refetch - the cache is updated optimistically by the hook
 
       return result
     } catch (error: any) {

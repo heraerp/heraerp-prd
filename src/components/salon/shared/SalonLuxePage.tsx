@@ -97,11 +97,17 @@ export function SalonLuxePage({
       )}
 
       {/* Main container */}
-      <div className={cn('mx-auto relative z-10', maxWidthClasses[maxWidth], paddingClasses[padding])}>
-        {/* Page header */}
+      <div
+        className={cn(
+          'mx-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700',
+          maxWidthClasses[maxWidth],
+          paddingClasses[padding]
+        )}
+      >
+        {/* Page header - DESKTOP ONLY (Mobile uses PremiumMobileHeader) */}
         {(title || description || actions) && (
           <div
-            className="rounded-2xl p-8 mb-6 backdrop-blur-xl"
+            className="hidden md:block group rounded-2xl p-8 mb-6 backdrop-blur-xl relative overflow-hidden transition-all duration-500 hover:shadow-2xl animate-in fade-in slide-in-from-top-2 duration-500"
             style={{
               background:
                 'linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%)',
@@ -109,13 +115,21 @@ export function SalonLuxePage({
               boxShadow: '0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.1)'
             }}
           >
-            <div className="flex justify-between items-start">
+            {/* Animated shimmer effect on hover */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+              style={{
+                background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold}30 0%, ${SALON_LUXE_COLORS.gold}15 50%, transparent 70%)`
+              }}
+            />
+
+            <div className="flex justify-between items-start relative z-10">
               <div>
                 {title && (
                   <h1
-                    className="text-4xl font-bold mb-2"
+                    className="text-4xl font-bold mb-2 transition-transform duration-300 group-hover:scale-[1.02]"
                     style={{
-                      background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.champagne} 0%, ${SALON_LUXE_COLORS.gold.base} 100%)`,
+                      background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.champagne.base} 0%, ${SALON_LUXE_COLORS.gold.base} 100%)`,
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       backgroundClip: 'text',
@@ -126,19 +140,29 @@ export function SalonLuxePage({
                   </h1>
                 )}
                 {description && (
-                  <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze }}>
+                  <p
+                    className="text-sm transition-colors duration-300"
+                    style={{ color: SALON_LUXE_COLORS.text.secondary }}
+                  >
                     {description}
                   </p>
                 )}
               </div>
-              {actions && <div className="flex gap-3">{actions}</div>}
+              {actions && (
+                <div className="flex gap-3 animate-in fade-in slide-in-from-right-2 duration-500 delay-150">
+                  {actions}
+                </div>
+              )}
             </div>
           </div>
         )}
 
         {/* Page content container */}
         <div
-          className={cn('rounded-2xl backdrop-blur-xl', className)}
+          className={cn(
+            'rounded-2xl backdrop-blur-xl transition-all duration-500 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100',
+            className
+          )}
           style={{
             background: 'linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%)',
             border: `1px solid ${SALON_LUXE_COLORS.gold}15`,

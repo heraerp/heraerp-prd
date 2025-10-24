@@ -4,11 +4,13 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 import { QueryClient } from '@tanstack/react-query'
 import SalonRoleBasedDarkSidebar from '@/components/salon/SalonRoleBasedDarkSidebar'
+import { PremiumBottomNav } from '@/components/salon/mobile/PremiumBottomNav'
 import { SecuredSalonProvider } from './SecuredSalonProvider'
 import { SalonQueryWrapper } from './SalonQueryWrapper'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { NavigationProvider } from './navigation-provider'
 import { PrefetchLinks } from './prefetch-links'
+import { useSecuredSalonContext } from './SecuredSalonProvider'
 
 // Import global salon luxe theme
 import '@/styles/salon-luxe.css'
@@ -29,6 +31,36 @@ const queryClient = new QueryClient({
     }
   }
 })
+// Inner component to access SecuredSalonProvider context
+function SalonLayoutContent({ children }: { children: React.ReactNode }) {
+  const { salonRole } = useSecuredSalonContext()
+
+  return (
+    <>
+      {/* 📱 MOBILE-FIRST: Hide sidebar on mobile, show on desktop */}
+      <div className="hidden md:block">
+        <SalonRoleBasedDarkSidebar />
+      </div>
+
+      {/* Main content area */}
+      <main
+        id="salon-main"
+        className="md:ml-20 min-h-[100dvh]"
+        style={{
+          backgroundColor: '#1A1A1A',
+          minHeight: '100vh',
+          position: 'relative'
+        }}
+      >
+        <React.Suspense fallback={<div>Loading...</div>}>{children}</React.Suspense>
+      </main>
+
+      {/* 📱 PREMIUM BOTTOM NAVIGATION (mobile only) */}
+      <PremiumBottomNav userRole={salonRole?.toLowerCase()} />
+    </>
+  )
+}
+
 export default function SalonLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
@@ -47,20 +79,8 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
           <PrefetchLinks />
           {/* Enterprise navigation progress bar */}
           <NavigationProgress />
-          {/* Use role-based narrow Teams-style sidebar */}
-          <SalonRoleBasedDarkSidebar />
-          {/* reserve exactly the sidebar width */}
-          <main
-            id="salon-main"
-            className="ml-20 min-h-[100dvh]"
-            style={{
-              backgroundColor: '#1A1A1A',
-              minHeight: '100vh',
-              position: 'relative'
-            }}
-          >
-            <React.Suspense fallback={<div>Loading...</div>}>{children}</React.Suspense>
-          </main>
+          {/* Layout with role-based navigation */}
+          <SalonLayoutContent>{children}</SalonLayoutContent>
         </SecuredSalonProvider>
       </SalonQueryWrapper>
     </NavigationProvider>

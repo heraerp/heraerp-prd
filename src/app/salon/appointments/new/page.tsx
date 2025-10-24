@@ -167,6 +167,21 @@ function NewAppointmentContent() {
     selectedBranch // ✅ Add selectedBranch from the hook
   } = useBranchFilter(selectedBranchId, 'salon-appointments', organizationId)
 
+  // 🔍 DEBUG: Log selectedBranch to check if operating hours are loaded
+  useEffect(() => {
+    if (selectedBranch) {
+      console.log('[NewAppointment] 🔍 selectedBranch DEBUG:', {
+        id: selectedBranch.id,
+        name: selectedBranch.name,
+        has_opening_time: !!selectedBranch.opening_time,
+        has_closing_time: !!selectedBranch.closing_time,
+        opening_time: selectedBranch.opening_time,
+        closing_time: selectedBranch.closing_time,
+        all_keys: Object.keys(selectedBranch),
+        full_branch: selectedBranch
+      })
+    }
+  }, [selectedBranch])
 
   // Form state - MUST be declared before hooks that use these values
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
@@ -529,15 +544,24 @@ function NewAppointmentContent() {
           description: 'Customer created successfully'
         })
 
-        // Auto-select the newly created customer
-        const newCustomer = customers.find(c => c.id === result.id) || {
+        // ✅ FIX: useHeraCustomers.createCustomer returns transformed entity directly
+        // The useUniversalEntityV1 hook already transforms the RPC response, so result is the entity
+        console.log('[New Appointment] Customer created:', {
+          result,
           id: result.id,
-          entity_name: newCustomerData.name,
+          entity_name: result.entity_name
+        })
+
+        // Auto-select the newly created customer
+        // The customers array is automatically updated via optimistic update in useUniversalEntityV1
+        // But use the result directly to avoid waiting for cache update
+        setSelectedCustomer({
+          id: result.id,
+          entity_name: result.entity_name,
           entity_code: result.entity_code || '',
-          phone: newCustomerData.phone,
-          email: newCustomerData.email
-        }
-        setSelectedCustomer(newCustomer as Customer)
+          phone: result.phone || newCustomerData.phone,
+          email: result.email || newCustomerData.email
+        } as Customer)
 
         // Reset form and close modal
         setNewCustomerData({ name: '', phone: '', email: '' })
@@ -2248,8 +2272,8 @@ function NewAppointmentContent() {
                 </span>
               </div>
               <div className="space-y-2">
-                {cart.slice(0, 3).map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-sm">
+                {cart.slice(0, 3).map((item) => (
+                  <div key={item.service.id} className="flex items-center justify-between text-sm">
                     <span className="text-[#F5E6C8]/80">
                       {item.quantity}x {item.service.entity_name}
                     </span>

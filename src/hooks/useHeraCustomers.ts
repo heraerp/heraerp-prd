@@ -227,7 +227,7 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
       entity_name: data.name,
       smart_code: 'HERA.SALON.CUSTOMER.ENTITY.CUSTOMER.V1',
       dynamic_fields,
-      metadata: { relationships }
+      relationships  // ✅ FIX: Relationships at top level, not in metadata
     } as any)
   }
 

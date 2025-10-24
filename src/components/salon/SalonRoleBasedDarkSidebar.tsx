@@ -45,7 +45,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     { title: 'Products', href: '/salon/products', icon: Package },
-    { title: 'Staff', href: '/salon/staff', icon: UserPlus },
+    { title: 'Staff', href: '/salon/staffs', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Branches', href: '/salon/branches', icon: Building2 },
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
@@ -63,7 +63,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
     { title: 'Services', href: '/salon/services', icon: Scissors },
     { title: 'Products', href: '/salon/products', icon: Package },
-    { title: 'Staff', href: '/salon/staff', icon: UserPlus },
+    { title: 'Staff', href: '/salon/staffs', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users }
     // WhatsApp moved to More modal
   ],
