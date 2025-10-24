@@ -14,4 +14,4 @@ cmds = ["ls -la /app", "pwd", "npm ci --omit=dev"]
 cmds = ["npm run build"]
 
 [start]
-cmd = "npm run start:railway"
+cmd = "npm start"
