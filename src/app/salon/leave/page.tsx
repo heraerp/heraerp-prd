@@ -146,7 +146,7 @@ function LeaveManagementPageContent() {
   // Calculate stats
   const stats = {
     totalRequests: requests?.length || 0,
-    pendingRequests: requests?.filter(r => r.status === 'submitted').length || 0,
+    pendingRequests: requests?.filter(r => r.status === 'submitted' || r.status === 'pending').length || 0, // ✅ Handle both status values
     approvedRequests: requests?.filter(r => r.status === 'approved').length || 0,
     upcomingLeave: requests?.filter(r => {
       if (r.status !== 'approved') return false

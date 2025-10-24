@@ -24,6 +24,11 @@ const COLORS = {
   rose: '#E8B4B8'
 }
 
+// ✅ Helper function to check if status is pending (handles both 'submitted' and 'pending')
+function isPendingStatus(status: string): boolean {
+  return status === 'submitted' || status === 'pending'
+}
+
 interface LeaveRequestsTabProps {
   requests: LeaveRequest[]
   staff: Array<{ id: string; entity_name: string }>
@@ -40,6 +45,7 @@ interface LeaveRequestsTabProps {
 function StatusBadge({ status }: { status: string }) {
   const statusConfig = {
     submitted: { label: 'Pending', icon: Clock, color: COLORS.bronze, bgColor: `${COLORS.bronze}20` },
+    pending: { label: 'Pending', icon: Clock, color: COLORS.bronze, bgColor: `${COLORS.bronze}20` }, // ✅ Handle 'pending' status
     approved: { label: 'Approved', icon: CheckCircle, color: COLORS.emerald, bgColor: `${COLORS.emerald}20` },
     rejected: { label: 'Rejected', icon: XCircle, color: COLORS.rose, bgColor: `${COLORS.rose}20` },
     cancelled: { label: 'Cancelled', icon: Ban, color: '#666', bgColor: '#66666620' }
@@ -169,7 +175,7 @@ function DesktopTableRow({
       <td className="px-4 py-4">
         <div className="flex items-center gap-2">
           {/* ✅ Quick Actions for Pending Requests */}
-          {request.status === 'submitted' && (
+          {isPendingStatus(request.status) && (
             <>
               <button
                 onClick={() => onApprove(request.id)}
@@ -215,10 +221,11 @@ function DesktopTableRow({
               }}
             >
               {/* Edit - Only for submitted requests */}
-              {request.status === 'submitted' && onEdit && (
+              {isPendingStatus(request.status) && onEdit && (
                 <DropdownMenuItem
                   onClick={() => onEdit(request)}
                   style={{ color: COLORS.champagne }}
+                  className="cursor-pointer hover:bg-gold/10"
                 >
                   <Edit2 className="w-4 h-4 mr-2" />
                   Edit Request
@@ -226,10 +233,11 @@ function DesktopTableRow({
               )}
 
               {/* Withdraw - For submitted or approved requests */}
-              {(request.status === 'submitted' || request.status === 'approved') && onWithdraw && (
+              {(isPendingStatus(request.status) || request.status === 'approved') && onWithdraw && (
                 <DropdownMenuItem
                   onClick={() => onWithdraw(request.id)}
                   style={{ color: COLORS.bronze }}
+                  className="cursor-pointer hover:bg-gold/10"
                 >
                   <Ban className="w-4 h-4 mr-2" />
                   Withdraw Request
@@ -243,11 +251,21 @@ function DesktopTableRow({
                   <DropdownMenuItem
                     onClick={() => onDelete(request.id)}
                     style={{ color: COLORS.rose }}
+                    className="cursor-pointer hover:bg-rose/10"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete Request
                   </DropdownMenuItem>
                 </>
+              )}
+
+              {/* 🔍 FALLBACK: Show info message if no actions available */}
+              {!((isPendingStatus(request.status) && onEdit) ||
+                 ((isPendingStatus(request.status) || request.status === 'approved') && onWithdraw) ||
+                 ((request.status === 'rejected' || request.status === 'cancelled') && onDelete)) && (
+                <DropdownMenuItem disabled style={{ color: COLORS.bronze, opacity: 0.6, fontSize: '12px' }}>
+                  No actions for "{request.status}" status
+                </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -327,10 +345,11 @@ function MobileCard({
               }}
             >
               {/* Edit - Only for submitted requests */}
-              {request.status === 'submitted' && onEdit && (
+              {isPendingStatus(request.status) && onEdit && (
                 <DropdownMenuItem
                   onClick={() => onEdit(request)}
                   style={{ color: COLORS.champagne }}
+                  className="cursor-pointer hover:bg-gold/10"
                 >
                   <Edit2 className="w-4 h-4 mr-2" />
                   Edit Request
@@ -338,10 +357,11 @@ function MobileCard({
               )}
 
               {/* Withdraw - For submitted or approved requests */}
-              {(request.status === 'submitted' || request.status === 'approved') && onWithdraw && (
+              {(isPendingStatus(request.status) || request.status === 'approved') && onWithdraw && (
                 <DropdownMenuItem
                   onClick={() => onWithdraw(request.id)}
                   style={{ color: COLORS.bronze }}
+                  className="cursor-pointer hover:bg-gold/10"
                 >
                   <Ban className="w-4 h-4 mr-2" />
                   Withdraw Request
@@ -355,11 +375,21 @@ function MobileCard({
                   <DropdownMenuItem
                     onClick={() => onDelete(request.id)}
                     style={{ color: COLORS.rose }}
+                    className="cursor-pointer hover:bg-rose/10"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete Request
                   </DropdownMenuItem>
                 </>
+              )}
+
+              {/* 🔍 FALLBACK: Show info message if no actions available */}
+              {!((isPendingStatus(request.status) && onEdit) ||
+                 ((isPendingStatus(request.status) || request.status === 'approved') && onWithdraw) ||
+                 ((request.status === 'rejected' || request.status === 'cancelled') && onDelete)) && (
+                <DropdownMenuItem disabled style={{ color: COLORS.bronze, opacity: 0.6, fontSize: '12px' }}>
+                  No actions for "{request.status}" status
+                </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -467,10 +497,10 @@ function MobileCard({
       )}
 
       {/* Action Buttons */}
-      {(request.status === 'submitted' ||
+      {(isPendingStatus(request.status) ||
         request.status === 'approved') && (
         <div className="mt-3 flex flex-col gap-2">
-          {request.status === 'submitted' && (
+          {isPendingStatus(request.status) && (
             <>
               <button
                 onClick={() => onApprove(request.id)}
@@ -592,7 +622,8 @@ export function LeaveRequestsTab({
           }}
         >
           <option value="all">All Statuses</option>
-          <option value="submitted">Pending</option>
+          <option value="submitted">Pending (Submitted)</option>
+          <option value="pending">Pending</option>
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
@@ -624,7 +655,8 @@ export function LeaveRequestsTab({
           }}
         >
           <option value="all">All Statuses</option>
-          <option value="submitted">Pending</option>
+          <option value="submitted">Pending (Submitted)</option>
+          <option value="pending">Pending</option>
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
