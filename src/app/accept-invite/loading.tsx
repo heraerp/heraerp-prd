@@ -1,18 +1,4 @@
-import { Suspense } from 'react'
-import AcceptInviteClient from './AcceptInviteClient'
-
-// Force dynamic rendering (required for useSearchParams)
-export const dynamic = 'force-dynamic'
-
-export default function AcceptInvitePage() {
-  return (
-    <Suspense fallback={<AcceptInviteFallback />}>
-      <AcceptInviteClient />
-    </Suspense>
-  )
-}
-
-function AcceptInviteFallback() {
+export default function Loading() {
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
       <div className="fixed inset-0 -z-10 bg-slate-950">
@@ -23,7 +9,7 @@ function AcceptInviteFallback() {
       <div className="relative w-full max-w-md">
         <div className="card-glass p-12 rounded-2xl border border-slate-700/50 text-center">
           <div className="w-12 h-12 border-4 border-indigo-400 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="ink-muted">Loading invitation...</p>
+          <p className="ink-muted">Loading...</p>
         </div>
       </div>
     </div>
