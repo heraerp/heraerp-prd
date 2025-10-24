@@ -62,7 +62,7 @@
     "build:verify": "npm run build && node scripts/verify-next-build.js",
     "clean:build": "rm -rf .next || true",
     "build:local": "npm run quality:pre-build && npm run dna:gate && node scripts/clear-browser-cache.js && node scripts/inject-build-version.js && next build",
-    "start": "next start -H 0.0.0.0 -p $PORT",
+    "start": "node scripts/railway-start.js",
     "start:standalone": "PORT=${PORT:-3000} HOST=0.0.0.0 node .next/standalone/server.js",
     "start:custom": "node server-simple.js",
     "lint": "next lint",
