@@ -82,21 +82,6 @@ const nextConfig = {
 
   // 🔧 Webpack optimizations and alias resolution
   webpack(config, { dev, isServer }) {
-    // 🛡️ SSR Polyfill: Inject self-polyfill to prevent SSR crashes (SERVER ONLY)
-    if (isServer) {
-      const originalEntry = config.entry
-      config.entry = async () => {
-        const entries = await originalEntry()
-        const polyfillPath = './src/polyfills/self-polyfill.ts'
-
-        if (entries['main-app'] && !entries['main-app'].includes(polyfillPath)) {
-          entries['main-app'].unshift(polyfillPath)
-        }
-
-        return entries
-      }
-    }
-
     // Alias resolution
     config.resolve.alias = {
       ...(config.resolve.alias ?? {}),

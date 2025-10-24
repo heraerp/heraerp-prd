@@ -13,7 +13,8 @@ import { ServiceCategory, ServiceCategoryFormValues } from '@/types/salon-servic
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
-import * as XLSX from 'xlsx'
+// ✅ SSR FIX: Dynamically import xlsx only when needed (browser-only library)
+// import * as XLSX from 'xlsx' // REMOVED - causes SSR crash
 
 // 🚀 LAZY LOADING: Split code for faster initial load
 const ServiceList = lazy(() =>
@@ -519,8 +520,11 @@ function SalonServicesPageContent() {
   )
 
   // 📊 EXCEL TEMPLATE: Enterprise-grade with formatting and instructions
-  const handleDownloadTemplate = useCallback(() => {
+  const handleDownloadTemplate = useCallback(async () => {
     try {
+      // ✅ SSR FIX: Dynamically import xlsx (browser-only)
+      const XLSX = await import('xlsx')
+
       // Create workbook
       const wb = XLSX.utils.book_new()
 
@@ -650,6 +654,9 @@ function SalonServicesPageContent() {
       const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls')
 
       if (isExcel) {
+        // ✅ SSR FIX: Dynamically import xlsx (browser-only)
+        const XLSX = await import('xlsx')
+
         // ===== EXCEL PARSING =====
         const arrayBuffer = await file.arrayBuffer()
         const workbook = XLSX.read(arrayBuffer, { type: 'array' })
@@ -879,13 +886,16 @@ function SalonServicesPageContent() {
   }, [serviceCategories, availableBranches, createService, showSuccess, showError, logError])
 
   // 📊 EXCEL EXPORT: Professional export with formatting
-  const handleExport = useCallback(() => {
+  const handleExport = useCallback(async () => {
     if (!allServicesForKPIs || allServicesForKPIs.length === 0) {
       showError('No services to export', 'Please add some services first')
       return
     }
 
     try {
+      // ✅ SSR FIX: Dynamically import xlsx (browser-only)
+      const XLSX = await import('xlsx')
+
       // Create workbook
       const wb = XLSX.utils.book_new()
 
