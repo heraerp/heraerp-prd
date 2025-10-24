@@ -1,22 +1,23 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
-import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback, Suspense, lazy } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { useHeraProductCategories } from '@/hooks/useHeraProductCategories'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
-import { ProductList } from '@/components/salon/products/ProductList'
-import { ProductModal } from '@/components/salon/products/ProductModal'
-import { ProductCategoryModal } from '@/components/salon/products/ProductCategoryModal'
-import { DeleteProductDialog } from '@/components/salon/products/DeleteProductDialog'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { Product } from '@/types/salon-product'
 import { ProductCategory, ProductCategoryFormValues } from '@/types/salon-product-category'
-import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
+import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
+import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
+import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+// ✅ ENTERPRISE IMPORT/EXPORT: Reusable system for all HERA apps
+import {
+  useHeraImportExport,
+  HeraImportModal,
+  ImportExportConfig
+} from '@/components/shared/enterprise/HeraImportExport'
 import {
   Plus,
   Grid3X3,
@@ -24,6 +25,7 @@ import {
   Package,
   Search,
   Download,
+  Upload,
   Building2,
   Filter,
   X,
@@ -33,8 +35,18 @@ import {
   AlertTriangle,
   TrendingUp,
   DollarSign,
-  Archive
+  Archive,
+  Sparkles,
+  Bell,
+  FileSpreadsheet,
+  ChevronDown
 } from 'lucide-react'
+
+// ✅ LAZY LOADING: Split heavy components for better performance
+const ProductList = lazy(() => import('@/components/salon/products/ProductList').then(mod => ({ default: mod.ProductList })))
+const ProductModal = lazy(() => import('@/components/salon/products/ProductModal').then(mod => ({ default: mod.ProductModal })))
+const ProductCategoryModal = lazy(() => import('@/components/salon/products/ProductCategoryModal').then(mod => ({ default: mod.ProductCategoryModal })))
+const DeleteProductDialog = lazy(() => import('@/components/salon/products/DeleteProductDialog').then(mod => ({ default: mod.DeleteProductDialog })))
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -71,8 +83,44 @@ const COLORS = {
 }
 
 function SalonProductsPageContent() {
-  const { organizationId } = useSecuredSalonContext()
+  // ✅ HERA AUTH: Get user context for debugging
+  const { user, isAuthenticated } = useHERAAuth()
+
+  // ✅ HERA PATTERN: Use context for organization AND branches (same as services page)
+  const {
+    organizationId,
+    organization,
+    currency,
+    selectedBranchId,
+    availableBranches,
+    setSelectedBranchId,
+    isLoadingBranches
+  } = useSecuredSalonContext()
+
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
+
+  // 🔍 DEBUG: Log branch loading context
+  useEffect(() => {
+    console.log('[SalonProducts] 🏢 Branch Context DEBUG:', {
+      isLoadingBranches,
+      availableBranchesCount: availableBranches?.length || 0,
+      availableBranches: availableBranches,
+      organizationId,
+      organizationName: organization?.entity_name,
+      timestamp: new Date().toISOString()
+    })
+
+    // Log individual branch structure
+    if (availableBranches && availableBranches.length > 0) {
+      console.log('[SalonProducts] 📍 First branch structure:', {
+        firstBranch: availableBranches[0],
+        hasId: !!availableBranches[0]?.id,
+        hasName: !!availableBranches[0]?.name,
+        hasEntityName: !!(availableBranches[0] as any)?.entity_name,
+        allKeys: Object.keys(availableBranches[0])
+      })
+    }
+  }, [isLoadingBranches, availableBranches, organizationId, organization])
   const searchParams = useSearchParams()
   const highlightedProductId = searchParams.get('productId')
   const productRefs = useRef<Record<string, HTMLDivElement | null>>({})
@@ -89,6 +137,8 @@ function SalonProductsPageContent() {
   const [categoryFilter, setCategoryFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState('name_asc')
+  // Local branch filter state (separate from global context) - matches services page pattern
+  const [localBranchFilter, setLocalBranchFilter] = useState<string | null>(null)
 
   // Category modal state
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
@@ -97,14 +147,8 @@ function SalonProductsPageContent() {
   const [isDeletingCategory, setIsDeletingCategory] = useState(false)
   const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null)
 
-  // Branch filter hook
-  const {
-    branchId,
-    branches,
-    loading: branchesLoading,
-    setBranchId,
-    hasMultipleBranches
-  } = useBranchFilter(undefined, 'salon-products-list', organizationId)
+  // Import/Export state
+  const [importModalOpen, setImportModalOpen] = useState(false)
 
   // Fetch products using new Universal API v2
   const {
@@ -124,7 +168,7 @@ function SalonProductsPageContent() {
     filters: {
       include_dynamic: true,
       include_relationships: true,
-      branch_id: branchId || 'all' // Pass branch filter to hook
+      branch_id: localBranchFilter || undefined // ✅ Pass local branch filter to hook
     }
   })
 
@@ -148,10 +192,210 @@ function SalonProductsPageContent() {
     [productCategories]
   )
 
-  // Filter products - memoized for performance
-  const filteredProducts = useMemo(
-    () =>
-      products.filter(product => {
+  // ✅ ENTERPRISE IMPORT/EXPORT: Declarative configuration replaces 280+ lines of manual code
+  const productImportExportConfig: ImportExportConfig<Product> = {
+    entityName: 'Product',
+    entityNamePlural: 'Products',
+    filePrefix: 'HERA_Products',
+    templateSheetName: 'Products Data',
+
+    fields: [
+      {
+        headerName: 'Product Name',
+        fieldName: 'name',
+        type: 'text',
+        required: true,
+        example: 'Premium Shampoo',
+        description: 'Product name (required)'
+      },
+      {
+        headerName: 'Product Code',
+        fieldName: 'code',
+        type: 'text',
+        required: false,
+        example: 'PROD001',
+        description: 'Optional product code/SKU'
+      },
+      {
+        headerName: 'Category',
+        fieldName: 'category',
+        type: 'text',
+        required: false,
+        example: productCategories[0]?.entity_name || 'Hair Care',
+        description: 'Category name (must match existing category)'
+      },
+      {
+        headerName: 'Cost Price (AED)',
+        fieldName: 'cost_price',
+        type: 'number',
+        required: true,
+        example: 50,
+        description: 'Product cost price in AED'
+      },
+      {
+        headerName: 'Selling Price (AED)',
+        fieldName: 'selling_price',
+        type: 'number',
+        required: true,
+        example: 100,
+        description: 'Product selling price in AED'
+      },
+      {
+        headerName: 'Stock Quantity',
+        fieldName: 'stock_level',
+        type: 'number',
+        required: false,
+        example: 10,
+        description: 'Current stock quantity'
+      },
+      {
+        headerName: 'Reorder Level',
+        fieldName: 'reorder_level',
+        type: 'number',
+        required: false,
+        example: 5,
+        description: 'Minimum stock level before reordering'
+      },
+      {
+        headerName: 'Brand',
+        fieldName: 'brand',
+        type: 'text',
+        required: false,
+        example: 'L\'Oreal',
+        description: 'Product brand name'
+      },
+      {
+        headerName: 'Barcode',
+        fieldName: 'barcode',
+        type: 'text',
+        required: false,
+        example: '1234567890123',
+        description: 'Product barcode'
+      },
+      {
+        headerName: 'Barcode Primary',
+        fieldName: 'barcode_primary',
+        type: 'text',
+        required: false,
+        example: '1234567890123',
+        description: 'Primary barcode identifier'
+      },
+      {
+        headerName: 'Barcode Type',
+        fieldName: 'barcode_type',
+        type: 'text',
+        required: false,
+        example: 'EAN13',
+        description: 'Barcode type (EAN13, UPC, etc.)'
+      },
+      {
+        headerName: 'GTIN',
+        fieldName: 'gtin',
+        type: 'text',
+        required: false,
+        example: '1234567890123',
+        description: 'Global Trade Item Number'
+      },
+      {
+        headerName: 'SKU',
+        fieldName: 'sku',
+        type: 'text',
+        required: false,
+        example: 'SKU-001',
+        description: 'Stock Keeping Unit'
+      },
+      {
+        headerName: 'Size',
+        fieldName: 'size',
+        type: 'text',
+        required: false,
+        example: '500ml',
+        description: 'Product size/volume'
+      },
+      {
+        headerName: 'Description',
+        fieldName: 'description',
+        type: 'text',
+        required: false,
+        example: 'Professional salon shampoo',
+        description: 'Product description'
+      },
+      {
+        headerName: 'Status',
+        fieldName: 'status',
+        type: 'enum',
+        required: false,
+        example: 'active',
+        enumValues: ['active', 'inactive', 'archived'],
+        description: 'Product status'
+      }
+    ],
+
+    referenceData: [
+      {
+        name: 'categories',
+        displayName: 'Available Categories',
+        items: productCategories.map(c => ({ id: c.id, name: c.entity_name }))
+      }
+    ],
+
+    onCreate: async (data) => {
+      await createProduct(data)
+    },
+
+    exportData: products,
+
+    exportMapper: (product) => ({
+      'Product Name': product.entity_name || '',
+      'Product Code': product.entity_code || '',
+      'Category': product.category || '',
+      'Cost Price (AED)': product.price_cost || product.cost_price || 0,
+      'Selling Price (AED)': product.price_market || product.selling_price || 0,
+      'Stock Quantity': product.stock_quantity || product.stock_level || 0,
+      'Reorder Level': product.reorder_level || 0,
+      'Brand': product.brand || '',
+      'Barcode': product.barcode || '',
+      'Barcode Primary': product.barcode_primary || '',
+      'Barcode Type': product.barcode_type || '',
+      'GTIN': product.gtin || '',
+      'SKU': product.sku || '',
+      'Size': product.size || '',
+      'Description': product.entity_description || '',
+      'Status': product.status || 'active',
+      'Created At': new Date(product.created_at).toLocaleString(),
+      'Updated At': new Date(product.updated_at).toLocaleString()
+    }),
+
+    validateRow: (data, rowIndex) => {
+      // Validate selling price is greater than cost price
+      if (data.cost_price && data.selling_price && data.selling_price < data.cost_price) {
+        return 'Selling price must be greater than cost price'
+      }
+      // Validate stock levels are non-negative
+      if (data.stock_level && data.stock_level < 0) {
+        return 'Stock quantity cannot be negative'
+      }
+      return null
+    }
+  }
+
+  // ✅ ENTERPRISE HOOK: Replaces 280+ lines of manual import/export code
+  const {
+    isImporting,
+    isExporting,
+    importProgress,
+    importResults,
+    downloadTemplate,
+    importFile,
+    exportData,
+    resetImport
+  } = useHeraImportExport(productImportExportConfig)
+
+  // ✅ ENTERPRISE PATTERN: Filter and sort products - memoized for performance
+  const filteredAndSortedProducts = useMemo(
+    () => {
+      // Step 1: Filter products
+      let filtered = products.filter(product => {
         // Skip invalid products
         if (!product || !product.entity_name) {
           return false
@@ -177,9 +421,79 @@ function SalonProductsPageContent() {
         // No need for manual client-side filtering
 
         return true
-      }),
-    [products, searchQuery, categoryFilter]
+      })
+
+      // Step 2: Sort products
+      const sorted = [...filtered].sort((a, b) => {
+        switch (sortBy) {
+          case 'name_asc':
+            return a.entity_name.localeCompare(b.entity_name)
+          case 'name_desc':
+            return b.entity_name.localeCompare(a.entity_name)
+          case 'price_low':
+            const priceA = a.price_market || a.selling_price || 0
+            const priceB = b.price_market || b.selling_price || 0
+            return priceA - priceB
+          case 'price_high':
+            const priceLowA = a.price_market || a.selling_price || 0
+            const priceLowB = b.price_market || b.selling_price || 0
+            return priceLowB - priceLowA
+          case 'stock_low':
+            const stockA = a.stock_quantity || a.stock_level || 0
+            const stockB = b.stock_quantity || b.stock_level || 0
+            return stockA - stockB
+          case 'stock_high':
+            const stockLowA = a.stock_quantity || a.stock_level || 0
+            const stockLowB = b.stock_quantity || b.stock_level || 0
+            return stockLowB - stockLowA
+          case 'updated_desc':
+            return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+          case 'updated_asc':
+            return new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+          default:
+            return 0
+        }
+      })
+
+      return sorted
+    },
+    [products, searchQuery, categoryFilter, sortBy]
   )
+
+  // For backward compatibility, keep filteredProducts reference
+  const filteredProducts = filteredAndSortedProducts
+
+  // 🚨 ENTERPRISE ERROR LOGGING: Detailed console logs with timestamps
+  // MUST be defined BEFORE any handlers that use it to avoid temporal dead zone
+  const logError = useCallback((context: string, error: any, additionalInfo?: any) => {
+    const timestamp = new Date().toISOString()
+    const errorLog = {
+      timestamp,
+      context,
+      error: {
+        message: error?.message || String(error),
+        stack: error?.stack,
+        code: error?.code,
+        name: error?.name
+      },
+      additionalInfo,
+      organizationId,
+      page: 'products'
+    }
+
+    console.error('🚨 [HERA Products Error]', errorLog)
+
+    if (process.env.NODE_ENV === 'development') {
+      console.group('🔍 Error Details')
+      console.log('Context:', context)
+      console.log('Message:', error?.message)
+      console.log('Stack:', error?.stack)
+      console.log('Additional Info:', additionalInfo)
+      console.groupEnd()
+    }
+
+    return errorLog
+  }, [organizationId])
 
   // Scroll to highlighted product from deep link
   useEffect(() => {
@@ -220,14 +534,18 @@ function SalonProductsPageContent() {
         setModalOpen(false)
         setEditingProduct(null)
       } catch (error: any) {
+        logError(editingProduct ? 'Update Product Failed' : 'Create Product Failed', error, {
+          productName: data.name,
+          productData: data
+        })
         removeToast(loadingId)
         showError(
           editingProduct ? 'Failed to update product' : 'Failed to create product',
-          error.message || 'Please try again or contact support'
+          error.message || 'Please check the console for detailed error information and try again'
         )
       }
     },
-    [editingProduct, updateProduct, createProduct, showLoading, removeToast, showSuccess, showError]
+    [editingProduct, updateProduct, createProduct, showLoading, removeToast, showSuccess, showError, logError]
   )
 
   const handleEdit = useCallback((product: Product) => {
@@ -270,12 +588,16 @@ function SalonProductsPageContent() {
       setDeleteDialogOpen(false)
       setProductToDelete(null)
     } catch (error: any) {
+      logError('Delete Product Failed', error, {
+        productId: productToDelete.id,
+        productName: productToDelete.entity_name
+      })
       removeToast(loadingId)
-      showError('Failed to delete product', error.message || 'Please try again')
+      showError('Failed to delete product', error.message || 'Please check the console for details')
     } finally {
       setIsDeleting(false)
     }
-  }, [productToDelete, deleteProduct, showLoading, removeToast, showSuccess, showError])
+  }, [productToDelete, deleteProduct, showLoading, removeToast, showSuccess, showError, logError])
 
   const handleArchive = useCallback(
     async (product: Product) => {
@@ -286,11 +608,15 @@ function SalonProductsPageContent() {
         removeToast(loadingId)
         showSuccess('Product archived', `${product.entity_name} has been archived`)
       } catch (error: any) {
+        logError('Archive Product Failed', error, {
+          productId: product.id,
+          productName: product.entity_name
+        })
         removeToast(loadingId)
-        showError('Failed to archive product', error.message || 'Please try again')
+        showError('Failed to archive product', error.message || 'Please check the console for details')
       }
     },
-    [archiveProduct, showLoading, removeToast, showSuccess, showError]
+    [archiveProduct, showLoading, removeToast, showSuccess, showError, logError]
   )
 
   const handleRestore = useCallback(
@@ -302,17 +628,32 @@ function SalonProductsPageContent() {
         removeToast(loadingId)
         showSuccess('Product restored', `${product.entity_name} has been restored`)
       } catch (error: any) {
+        logError('Restore Product Failed', error, {
+          productId: product.id,
+          productName: product.entity_name
+        })
         removeToast(loadingId)
-        showError('Failed to restore product', error.message || 'Please try again')
+        showError('Failed to restore product', error.message || 'Please check the console for details')
       }
     },
-    [restoreProduct, showLoading, removeToast, showSuccess, showError]
+    [restoreProduct, showLoading, removeToast, showSuccess, showError, logError]
   )
 
-  const handleExport = useCallback(() => {
-    // TODO: Implement export functionality
-    showSuccess('Export started', 'Your products will be exported shortly')
-  }, [showSuccess])
+  // ✅ ENTERPRISE EXPORT: Simplified using enterprise system
+  const handleExport = useCallback(async () => {
+    if (!products || products.length === 0) {
+      showError('No products to export', 'Please add some products first')
+      return
+    }
+
+    try {
+      const { fileName } = await exportData()
+      showSuccess('Export completed', `Exported ${products.length} products to ${fileName}`)
+    } catch (error: any) {
+      logError('Export Products Failed', error, { productCount: products.length })
+      showError('Failed to export products', error.message || 'Please try again')
+    }
+  }, [exportData, products, showSuccess, showError, logError])
 
   // Category CRUD handlers
   const handleSaveCategory = async (data: ProductCategoryFormValues) => {
@@ -334,10 +675,14 @@ function SalonProductsPageContent() {
       setCategoryModalOpen(false)
       setEditingCategory(null)
     } catch (error: any) {
+      logError(editingCategory ? 'Update Category Failed' : 'Create Category Failed', error, {
+        categoryName: data.name,
+        categoryData: data
+      })
       removeToast(loadingId)
       showError(
         editingCategory ? 'Failed to update category' : 'Failed to create category',
-        error.message || 'Please try again or contact support'
+        error.message || 'Please check the console for detailed error information'
       )
     }
   }
@@ -360,85 +705,243 @@ function SalonProductsPageContent() {
       setCategoryDeleteDialogOpen(false)
       setCategoryToDelete(null)
     } catch (error: any) {
+      logError('Delete Category Failed', error, {
+        categoryId: categoryToDelete.id,
+        categoryName: categoryToDelete.entity_name
+      })
       removeToast(loadingId)
-      showError('Failed to delete category', error.message || 'Please try again')
+      showError('Failed to delete category', error.message || 'Please check the console for details')
     } finally {
       setIsDeletingCategory(false)
     }
   }
 
+  // ✅ ENTERPRISE IMPORT: Simplified template download using enterprise system
+  const handleDownloadTemplate = useCallback(async () => {
+    try {
+      const { fileName } = await downloadTemplate()
+      showSuccess('Template downloaded', 'Fill in the Excel template with your products and import it back')
+    } catch (error: any) {
+      logError('Download Template Failed', error, {
+        categoryCount: productCategories.length
+      })
+      showError('Failed to download template', error.message || 'Please try again')
+    }
+  }, [downloadTemplate, productCategories, showSuccess, showError, logError])
+
+  // ✅ ENTERPRISE IMPORT: Simplified using enterprise system
+  const handleImport = useCallback(
+    async (file: File) => {
+      try {
+        const results = await importFile(file)
+
+        if (results.success > 0 && results.failed === 0) {
+          showSuccess('Import successful', `Imported ${results.success} product${results.success > 1 ? 's' : ''}`)
+        } else if (results.success > 0 && results.failed > 0) {
+          showSuccess(
+            'Partial import',
+            `${results.success} product${results.success > 1 ? 's' : ''} succeeded, ${results.failed} failed`
+          )
+        } else {
+          showError('Import failed', results.errors[0] || 'No products were imported')
+        }
+      } catch (error: any) {
+        logError('Import Products Failed', error, { fileName: file.name, fileSize: file.size })
+        showError('Failed to import products', error.message || 'Please check the file format')
+      }
+    },
+    [importFile, showSuccess, showError, logError]
+  )
+
   // Calculate stats
   const activeCount = products.filter(p => p.status === 'active').length
   const archivedCount = products.filter(p => p.status === 'archived').length
-  const totalValue = products.reduce(
-    (sum, product) => sum + (product.price_cost || 0) * (product.stock_quantity || 0),
-    0
-  )
-  const lowStockCount = products.filter(
-    p => (p.stock_quantity || 0) < (p.reorder_level || 10)
-  ).length
+  const categoriesCount = productCategories.length
+  const avgPrice = products.length > 0
+    ? products.reduce((sum, product) => sum + (product.price_market || product.selling_price || 0), 0) / products.length
+    : 0
+
+  // Calculate profit margin: ((selling_price - cost_price) / selling_price) * 100
+  const profitMargin = useMemo(() => {
+    const productsWithPrices = products.filter(p =>
+      (p.price_market || p.selling_price) && (p.price_cost || p.cost_price)
+    )
+
+    if (productsWithPrices.length === 0) return 0
+
+    const totalMargin = productsWithPrices.reduce((sum, product) => {
+      const sellingPrice = product.price_market || product.selling_price || 0
+      const costPrice = product.price_cost || product.cost_price || 0
+
+      if (sellingPrice === 0) return sum
+
+      const margin = ((sellingPrice - costPrice) / sellingPrice) * 100
+      return sum + margin
+    }, 0)
+
+    return totalMargin / productsWithPrices.length
+  }, [products])
 
   return (
-    <div className="h-screen overflow-hidden" style={{ backgroundColor: COLORS.black }}>
-      <div className="h-full flex flex-col">
-        {/* Background gradient overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-30"
-          style={{
-            background:
-              'radial-gradient(ellipse at top right, rgba(212, 175, 55, 0.15), transparent 50%), radial-gradient(ellipse at bottom left, rgba(15, 111, 92, 0.1), transparent 50%)'
-          }}
-        />
+    <SalonLuxePage
+      title="Products"
+      description={`${products.length} products | ${activeCount} active | ${archivedCount} archived`}
+      maxWidth="full"
+      padding="lg"
+      actions={
+        <>
+          {/* New Category - Emerald */}
+          <button
+            onClick={() => {
+              setEditingCategory(null)
+              setCategoryModalOpen(true)
+            }}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.emerald,
+              color: COLORS.champagne,
+              border: `1px solid ${COLORS.emerald}`
+            }}
+          >
+            <FolderPlus className="w-4 h-4" />
+            New Category
+          </button>
+          {/* New Product - Gold */}
+          <button
+            onClick={() => {
+              setEditingProduct(null)
+              setModalOpen(true)
+            }}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.gold,
+              color: COLORS.black,
+              border: `1px solid ${COLORS.gold}`
+            }}
+          >
+            <Plus className="w-4 h-4" />
+            New Product
+          </button>
+          {/* Template - Bronze */}
+          <button
+            onClick={handleDownloadTemplate}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.bronze,
+              color: COLORS.champagne,
+              border: `1px solid ${COLORS.bronze}`
+            }}
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Template
+          </button>
+          {/* Import - Rose */}
+          <button
+            onClick={() => setImportModalOpen(true)}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.rose,
+              color: COLORS.charcoal,
+              border: `1px solid ${COLORS.rose}`
+            }}
+          >
+            <Upload className="w-4 h-4" />
+            Import
+          </button>
+          {/* Export - Plum */}
+          <button
+            onClick={handleExport}
+            disabled={isExporting}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.plum,
+              color: COLORS.champagne,
+              border: `1px solid ${COLORS.plum}`
+            }}
+          >
+            <Download className="w-4 h-4" />
+            {isExporting ? 'Exporting...' : 'Export'}
+          </button>
+        </>
+      }
+    >
+      {/* ✅ ENTERPRISE: Premium Mobile Header */}
+      <PremiumMobileHeader
+        title="Products"
+        subtitle={`${products.length} items`}
+        showNotifications={false}
+        shrinkOnScroll
+        rightAction={
+          <button
+            onClick={() => {
+              setEditingProduct(null)
+              setModalOpen(true)
+            }}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#D4AF37] active:scale-90 transition-transform duration-200 shadow-lg"
+            aria-label="Add new product"
+            style={{ boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)' }}
+          >
+            <Plus className="w-5 h-5 text-black" strokeWidth={2.5} />
+          </button>
+        }
+      />
 
-        {/* Main Content */}
-        <div
-          className="relative flex-1 overflow-auto"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            minHeight: '100vh',
-            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
-          }}
-        >
-          <PageHeader
-            title="Products"
-            breadcrumbs={[
-              { label: 'HERA' },
-              { label: 'SALON OS' },
-              { label: 'Products', isActive: true }
-            ]}
-            actions={
-              <>
-                <PageHeaderSearch
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder="Search products..."
-                />
-                <PageHeaderButton
-                  variant="secondary"
-                  icon={FolderPlus}
-                  onClick={() => {
-                    setEditingCategory(null)
-                    setCategoryModalOpen(true)
-                  }}
-                >
-                  New Category
-                </PageHeaderButton>
-                <PageHeaderButton
-                  variant="primary"
-                  icon={Plus}
-                  onClick={() => {
-                    setEditingProduct(null)
-                    setModalOpen(true)
-                  }}
-                >
-                  New Product
-                </PageHeaderButton>
-                <PageHeaderButton variant="secondary" icon={Download} onClick={handleExport} />
-              </>
-            }
+      {/* ✅ MOBILE: Search bar and quick actions */}
+      <div className="md:hidden px-4 pb-4 space-y-3">
+        {/* Mobile search bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bronze" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search products..."
+            className="w-full pl-10 pr-4 py-2.5 bg-charcoalLight border border-bronze/30 rounded-xl text-champagne placeholder-bronze focus:outline-none focus:border-gold/50"
           />
+        </div>
 
-          {/* Error Banner */}
+        {/* Mobile quick actions */}
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          <button
+            onClick={() => {
+              setEditingCategory(null)
+              setCategoryModalOpen(true)
+            }}
+            className="px-4 py-2 bg-emerald text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
+            style={{ backgroundColor: COLORS.emerald }}
+          >
+            <FolderPlus className="w-4 h-4" />
+            New Category
+          </button>
+          <button
+            onClick={handleDownloadTemplate}
+            className="px-4 py-2 bg-bronze text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
+            style={{ backgroundColor: COLORS.bronze }}
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Template
+          </button>
+          <button
+            onClick={() => setImportModalOpen(true)}
+            className="px-4 py-2 text-charcoal rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
+            style={{ backgroundColor: COLORS.rose }}
+          >
+            <Upload className="w-4 h-4" />
+            Import
+          </button>
+          <button
+            onClick={handleExport}
+            disabled={isExporting}
+            className="px-4 py-2 bg-plum text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
+            style={{ backgroundColor: COLORS.plum }}
+          >
+            <Download className="w-4 h-4" />
+            {isExporting ? 'Exporting...' : 'Export'}
+          </button>
+        </div>
+      </div>
+
+      {/* Error Banner */}
           {error && (
             <div
               className="mx-6 mt-4 text-sm px-3 py-2 rounded-lg border flex items-center gap-2"
@@ -453,7 +956,7 @@ function SalonProductsPageContent() {
             </div>
           )}
 
-          {/* Highlight Banner - Coming from Inventory */}
+          {/* Highlight Banner - Product Details */}
           {highlightedProductId && (
             <div className="mx-6 mt-4">
               <div
@@ -467,7 +970,7 @@ function SalonProductsPageContent() {
                   <div className="flex items-center gap-2">
                     <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
                     <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                      Showing product from inventory
+                      Showing highlighted product
                     </span>
                   </div>
                   <Button
@@ -508,8 +1011,8 @@ function SalonProductsPageContent() {
                   </span>
                 </div>
                 <Select
-                  value={branchId || '__ALL__'}
-                  onValueChange={value => setBranchId(value === '__ALL__' ? undefined : value)}
+                  value={localBranchFilter || '__ALL__'}
+                  onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
                 >
                   <SelectTrigger
                     className="w-52 border"
@@ -538,14 +1041,14 @@ function SalonProductsPageContent() {
                     >
                       All Locations
                     </SelectItem>
-                    {branchesLoading ? (
+                    {isLoadingBranches ? (
                       <div
                         className="px-2 py-3 text-center text-sm"
                         style={{ color: COLORS.bronze }}
                       >
                         Loading...
                       </div>
-                    ) : branches.length === 0 ? (
+                    ) : availableBranches.length === 0 ? (
                       <div
                         className="px-2 py-3 text-center text-sm"
                         style={{ color: COLORS.bronze }}
@@ -553,7 +1056,7 @@ function SalonProductsPageContent() {
                         No branches
                       </div>
                     ) : (
-                      branches.map(branch => (
+                      availableBranches.map(branch => (
                         <SelectItem
                           key={branch.id}
                           value={branch.id}
@@ -576,7 +1079,7 @@ function SalonProductsPageContent() {
                 </Select>
 
                 {/* Active Branch Badge */}
-                {branchId && (
+                {localBranchFilter && (
                   <div
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity"
                     style={{
@@ -586,10 +1089,10 @@ function SalonProductsPageContent() {
                     }}
                   >
                     <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                    <span>{branches.find(b => b.id === branchId)?.name || 'Branch'}</span>
+                    <span>{availableBranches.find(b => b.id === localBranchFilter)?.name || 'Branch'}</span>
                     <X
                       className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
-                      onClick={() => setBranchId(undefined)}
+                      onClick={() => setLocalBranchFilter(null)}
                       style={{ color: COLORS.gold }}
                     />
                   </div>
@@ -671,9 +1174,9 @@ function SalonProductsPageContent() {
             </div>
           </div>
 
-          {/* Categories Section */}
+          {/* ✅ ENTERPRISE: Categories Section with Animations */}
           {productCategories.length > 0 && (
-            <div className="mx-6 mt-4">
+            <div className="mx-6 mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4" style={{ color: COLORS.gold }} />
@@ -683,14 +1186,15 @@ function SalonProductsPageContent() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                {productCategories.map(category => (
+                {productCategories.map((category, index) => (
                   <div
                     key={category.id}
-                    className="group relative px-3 py-1.5 rounded-lg border transition-all"
+                    className="group relative px-3 py-1.5 rounded-lg border transition-all duration-200 hover:scale-105 hover:shadow-md animate-in fade-in slide-in-from-left-2"
                     style={{
                       backgroundColor: category.color + '15',
                       borderColor: category.color + '40',
-                      color: COLORS.champagne
+                      color: COLORS.champagne,
+                      animationDelay: `${index * 50}ms`
                     }}
                   >
                     <div className="flex items-center gap-1.5">
@@ -730,246 +1234,46 @@ function SalonProductsPageContent() {
             </div>
           )}
 
-          {/* Stats Cards - Enterprise Grade Aesthetic */}
-          <div className="mx-6 mt-4 grid grid-cols-4 gap-3">
-            {/* Total Products */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.bronze}15 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.bronze}60`,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(140, 120, 83, 0.2)'
-              }}
-            >
-              {/* Animated gradient overlay on hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.bronze}25 0%, transparent 50%)`
-                }}
-              />
-
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.bronze}30 0%, ${COLORS.bronze}15 100%)`,
-                      border: `1px solid ${COLORS.bronze}60`,
-                      boxShadow: `0 4px 16px ${COLORS.bronze}20`
-                    }}
-                  >
-                    <Package className="h-4 w-4" style={{ color: COLORS.bronze }} />
-                  </div>
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
-                >
-                  Total Products
-                </p>
-                <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
-                  style={{ color: COLORS.champagne }}
-                >
-                  {products.length}
-                </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <div
-                    className="w-1 h-1 rounded-full"
-                    style={{ backgroundColor: COLORS.bronze + '80' }}
-                  />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                    Across all categories
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Active Products */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.gold}12 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.gold}50`,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(212, 175, 55, 0.15)'
-              }}
-            >
-              {/* Animated gradient overlay on hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold}20 0%, transparent 50%)`
-                }}
-              />
-
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.gold}25 0%, ${COLORS.gold}12 100%)`,
-                      border: `1px solid ${COLORS.gold}60`,
-                      boxShadow: `0 4px 16px ${COLORS.gold}20`
-                    }}
-                  >
-                    <TrendingUp className="h-4 w-4" style={{ color: COLORS.gold }} />
-                  </div>
-                  <div
-                    className="px-2 py-0.5 rounded-lg text-[10px] font-bold"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.gold}30 0%, ${COLORS.gold}18 100%)`,
-                      color: COLORS.gold,
-                      border: `1px solid ${COLORS.gold}50`
-                    }}
-                  >
-                    {((activeCount / products.length) * 100).toFixed(0)}%
-                  </div>
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
-                >
-                  Active Products
-                </p>
-                <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
-                  style={{ color: COLORS.champagne }}
-                >
-                  {activeCount}
-                </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <div
-                    className="w-1 h-1 rounded-full"
-                    style={{ backgroundColor: COLORS.gold + '80' }}
-                  />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                    Ready for sale
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Inventory Value - Premium Gold Gradient */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 25%, ${COLORS.charcoal}f5 60%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.gold}80`,
-                boxShadow: `0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(212, 175, 55, 0.25), 0 0 30px ${COLORS.gold}15`
-              }}
-            >
-              {/* Animated shimmer effect on hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold}30 0%, ${COLORS.gold}15 50%, transparent 70%)`
-                }}
-              />
-
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.gold}40 0%, ${COLORS.gold}20 100%)`,
-                      border: `1.5px solid ${COLORS.gold}80`,
-                      boxShadow: `0 6px 20px ${COLORS.gold}30, inset 0 1px 0 ${COLORS.gold}50`
-                    }}
-                  >
-                    <DollarSign className="h-4 w-4" style={{ color: COLORS.gold }} />
-                  </div>
-                  <TrendingUp
-                    className="h-3 w-3 opacity-40 group-hover:opacity-70 transition-opacity"
-                    style={{ color: COLORS.gold }}
-                  />
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
-                >
-                  Inventory Value
-                </p>
-                <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
-                  style={{ color: COLORS.gold }}
-                >
-                  AED {totalValue.toLocaleString()}
-                </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <div className="w-1 h-1 rounded-full" style={{ backgroundColor: COLORS.gold }} />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                    Total stock value
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Low Stock Alert */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.rose}12 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.rose}55`,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(239, 68, 68, 0.12)'
-              }}
-            >
-              {/* Animated gradient overlay on hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.rose}18 0%, transparent 50%)`
-                }}
-              />
-
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.rose}25 0%, ${COLORS.rose}12 100%)`,
-                      border: `1px solid ${COLORS.rose}50`,
-                      boxShadow: `0 4px 16px ${COLORS.rose}18`
-                    }}
-                  >
-                    <AlertTriangle className="h-4 w-4" style={{ color: COLORS.rose }} />
-                  </div>
-                  {lowStockCount > 0 && (
-                    <div
-                      className="px-2 py-0.5 rounded-lg text-[10px] font-bold animate-pulse"
-                      style={{
-                        background: `linear-gradient(135deg, ${COLORS.rose}35 0%, ${COLORS.rose}22 100%)`,
-                        color: COLORS.rose,
-                        border: `1px solid ${COLORS.rose}60`
-                      }}
-                    >
-                      Alert
-                    </div>
-                  )}
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze, letterSpacing: '0.1em' }}
-                >
-                  Low Stock Alert
-                </p>
-                <p
-                  className="text-2xl font-bold mb-0.5 tracking-tight"
-                  style={{ color: COLORS.rose }}
-                >
-                  {lowStockCount}
-                </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <div
-                    className="w-1 h-1 rounded-full animate-pulse"
-                    style={{ backgroundColor: COLORS.rose + '90' }}
-                  />
-                  <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                    {lowStockCount > 0 ? 'Requires attention' : 'All products stocked'}
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* ✅ ENTERPRISE: KPI Cards - Product Catalog Overview */}
+          <div className="mx-6 mt-4 md:mt-6 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <SalonLuxeKPICard
+              title="Total Products"
+              value={products.length}
+              icon={Package}
+              color={COLORS.bronze}
+              description="Across all categories"
+              animationDelay={0}
+            />
+            <SalonLuxeKPICard
+              title="Active Products"
+              value={activeCount}
+              icon={Sparkles}
+              color={COLORS.emerald}
+              description="Ready for sale"
+              animationDelay={100}
+              badge={
+                products.length > 0
+                  ? `${((activeCount / products.length) * 100).toFixed(0)}%`
+                  : undefined
+              }
+            />
+            <SalonLuxeKPICard
+              title="Profit Margin"
+              value={`${profitMargin.toFixed(1)}%`}
+              icon={TrendingUp}
+              color={COLORS.emerald}
+              description="Average across products"
+              animationDelay={200}
+            />
+            <SalonLuxeKPICard
+              title="Average Price"
+              value={`AED ${avgPrice.toFixed(0)}`}
+              icon={DollarSign}
+              color={COLORS.gold}
+              description="Catalog pricing"
+              animationDelay={300}
+              highlight
+            />
           </div>
 
           {/* Filters Bar */}
@@ -1086,157 +1390,192 @@ function SalonProductsPageContent() {
             </div>
           )}
 
-          {/* Content Area */}
-          <div className="mx-6 mt-6 mb-6">
-            {isLoading ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                  <Package
-                    className="w-12 h-12 mx-auto mb-3 animate-pulse"
-                    style={{ color: COLORS.gold }}
-                  />
-                  <p style={{ color: COLORS.lightText }}>Loading products...</p>
-                </div>
-              </div>
-            ) : filteredProducts.length === 0 ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                  <Package
-                    className="w-12 h-12 mx-auto mb-3 opacity-30"
-                    style={{ color: COLORS.gold }}
-                  />
-                  <p className="text-lg mb-1" style={{ color: COLORS.champagne }}>
-                    {searchQuery || categoryFilter ? 'No products found' : 'No products yet'}
-                  </p>
-                  <p className="text-sm opacity-60 mb-4" style={{ color: COLORS.lightText }}>
-                    {searchQuery || categoryFilter
-                      ? 'Try adjusting your search or filters'
-                      : 'Create your first product to start managing inventory'}
-                  </p>
-                  {!searchQuery && !categoryFilter && (
-                    <button
-                      onClick={() => setModalOpen(true)}
-                      className="px-4 py-2 rounded-lg font-medium transition-all"
-                      style={{
-                        background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                        color: COLORS.black
-                      }}
-                    >
-                      Create Product
-                    </button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <ProductList
-                products={filteredProducts}
-                organizationId={organizationId}
-                loading={isLoading}
-                viewMode={viewMode}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onArchive={handleArchive}
-                onRestore={handleRestore}
+      {/* Content Area */}
+      <div className="mx-6 mt-6 mb-6">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <Package
+                className="w-12 h-12 mx-auto mb-3 animate-pulse"
+                style={{ color: COLORS.gold }}
               />
-            )}
+              <p style={{ color: COLORS.lightText }}>Loading products...</p>
+            </div>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <Package
+                className="w-12 h-12 mx-auto mb-3 opacity-30"
+                style={{ color: COLORS.gold }}
+              />
+              <p className="text-lg mb-1" style={{ color: COLORS.champagne }}>
+                {searchQuery || categoryFilter ? 'No products found' : 'No products yet'}
+              </p>
+              <p className="text-sm opacity-60 mb-4" style={{ color: COLORS.lightText }}>
+                {searchQuery || categoryFilter
+                  ? 'Try adjusting your search or filters'
+                  : 'Create your first product to build your catalog'}
+              </p>
+              {!searchQuery && !categoryFilter && (
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="px-4 py-2 rounded-lg font-medium transition-all"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                    color: COLORS.black
+                  }}
+                >
+                  Create Product
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <Suspense fallback={
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-64 rounded-xl animate-pulse"
+                  style={{ backgroundColor: COLORS.charcoalLight }}
+                />
+              ))}
+            </div>
+          }>
+            <ProductList
+              products={filteredProducts}
+              organizationId={organizationId}
+              loading={isLoading}
+              viewMode={viewMode}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onArchive={handleArchive}
+              onRestore={handleRestore}
+            />
+          </Suspense>
+        )}
+      </div>
+
+      {/* ✅ SUSPENSE: Wrap lazy-loaded modals */}
+      <Suspense fallback={null}>
+        <ProductModal
+          open={modalOpen}
+          onClose={() => {
+            setModalOpen(false)
+            setEditingProduct(null)
+          }}
+          product={editingProduct}
+          onSave={handleSave}
+        />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <DeleteProductDialog
+          open={deleteDialogOpen}
+          onClose={() => {
+            setDeleteDialogOpen(false)
+            setProductToDelete(null)
+          }}
+          onConfirm={handleConfirmDelete}
+          product={productToDelete}
+          loading={isDeleting}
+        />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <ProductCategoryModal
+          open={categoryModalOpen}
+          onClose={() => {
+            setCategoryModalOpen(false)
+            setEditingCategory(null)
+          }}
+          category={editingCategory}
+          onSave={handleSaveCategory}
+        />
+      </Suspense>
+
+      {/* Delete Category Dialog */}
+      <AlertDialog open={categoryDeleteDialogOpen} onOpenChange={setCategoryDeleteDialogOpen}>
+        <AlertDialogContent
+          className="max-w-md"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            border: `1px solid ${COLORS.bronze}40`,
+            boxShadow: '0 20px 30px rgba(0,0,0,0.3)'
+          }}
+        >
+          <AlertDialogHeader>
+            <div className="flex items-center gap-2 mb-3">
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{
+                  backgroundColor: '#FF6B6B20',
+                  border: '1px solid #FF6B6B40'
+                }}
+              >
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+              </div>
+              <AlertDialogTitle
+                className="text-lg font-semibold"
+                style={{ color: COLORS.champagne }}
+              >
+                Delete Category
+              </AlertDialogTitle>
+            </div>
+          </AlertDialogHeader>
+
+          <div className="space-y-3" style={{ color: COLORS.lightText }}>
+            <p className="text-sm">
+              Are you sure you want to delete{' '}
+              <span className="font-semibold" style={{ color: COLORS.champagne }}>
+                "{categoryToDelete?.entity_name}"
+              </span>
+              ?
+            </p>
+            <p className="text-sm opacity-70">
+              This action cannot be undone. The category will be permanently removed.
+            </p>
           </div>
 
-          {/* Modals */}
-          <ProductModal
-            open={modalOpen}
-            onClose={() => {
-              setModalOpen(false)
-              setEditingProduct(null)
-            }}
-            product={editingProduct}
-            onSave={handleSave}
-          />
-
-          <DeleteProductDialog
-            open={deleteDialogOpen}
-            onClose={() => {
-              setDeleteDialogOpen(false)
-              setProductToDelete(null)
-            }}
-            onConfirm={handleConfirmDelete}
-            product={productToDelete}
-            loading={isDeleting}
-          />
-
-          <ProductCategoryModal
-            open={categoryModalOpen}
-            onClose={() => {
-              setCategoryModalOpen(false)
-              setEditingCategory(null)
-            }}
-            category={editingCategory}
-            onSave={handleSaveCategory}
-          />
-
-          {/* Delete Category Dialog */}
-          <AlertDialog open={categoryDeleteDialogOpen} onOpenChange={setCategoryDeleteDialogOpen}>
-            <AlertDialogContent
-              className="max-w-md"
-              style={{
-                backgroundColor: COLORS.charcoal,
-                border: `1px solid ${COLORS.bronze}40`,
-                boxShadow: '0 20px 30px rgba(0,0,0,0.3)'
-              }}
+          <AlertDialogFooter className="mt-6">
+            <AlertDialogCancel
+              className="border-border hover:bg-muted/50"
+              style={{ color: COLORS.lightText }}
+              disabled={isDeletingCategory}
             >
-              <AlertDialogHeader>
-                <div className="flex items-center gap-2 mb-3">
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{
-                      backgroundColor: '#FF6B6B20',
-                      border: '1px solid #FF6B6B40'
-                    }}
-                  >
-                    <AlertTriangle className="w-5 h-5 text-red-400" />
-                  </div>
-                  <AlertDialogTitle
-                    className="text-lg font-semibold"
-                    style={{ color: COLORS.champagne }}
-                  >
-                    Delete Category
-                  </AlertDialogTitle>
-                </div>
-              </AlertDialogHeader>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteCategory}
+              disabled={isDeletingCategory}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isDeletingCategory ? 'Deleting...' : 'Delete Category'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
-              <div className="space-y-3" style={{ color: COLORS.lightText }}>
-                <p className="text-sm">
-                  Are you sure you want to delete{' '}
-                  <span className="font-semibold" style={{ color: COLORS.champagne }}>
-                    "{categoryToDelete?.entity_name}"
-                  </span>
-                  ?
-                </p>
-                <p className="text-sm opacity-70">
-                  This action cannot be undone. The category will be permanently removed.
-                </p>
-              </div>
+      {/* ✅ ENTERPRISE IMPORT MODAL: Replaces manual import implementation */}
+      <HeraImportModal
+        open={importModalOpen}
+        onClose={() => {
+          setImportModalOpen(false)
+          resetImport()
+        }}
+        entityName={productImportExportConfig.entityName}
+        entityNamePlural={productImportExportConfig.entityNamePlural}
+        isImporting={isImporting}
+        importProgress={importProgress}
+        importResults={importResults}
+        onDownloadTemplate={handleDownloadTemplate}
+        onImport={handleImport}
+      />
 
-              <AlertDialogFooter className="mt-6">
-                <AlertDialogCancel
-                  className="border-border hover:bg-muted/50"
-                  style={{ color: COLORS.lightText }}
-                  disabled={isDeletingCategory}
-                >
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDeleteCategory}
-                  disabled={isDeletingCategory}
-                  className="bg-red-600 hover:bg-red-700 text-white"
-                >
-                  {isDeletingCategory ? 'Deleting...' : 'Delete Category'}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      </div>
-    </div>
+      {/* ✅ MOBILE: Bottom spacing for mobile scrolling */}
+      <div className="h-24 md:h-0" />
+    </SalonLuxePage>
   )
 }
 

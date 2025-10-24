@@ -1,0 +1,270 @@
+/**
+ * Revenue Trends Section
+ * Enterprise-grade revenue analytics with line/bar charts
+ *
+ * 🎯 FILTER STRATEGY:
+ * - Uses DashboardFilterContext for intelligent filter management
+ * - Respects global filter by default
+ * - Allows local override with clear UI indication
+ * - Provides 7-day and 30-day view modes
+ */
+
+'use client'
+
+import React, { useState, useMemo } from 'react'
+import { DollarSign, TrendingUp, Calendar, BarChart3 } from 'lucide-react'
+import { LUXE_COLORS } from '@/lib/constants/salon'
+import { SalonDashboardKPIs } from '@/hooks/useSalonDashboard'
+import { LuxeLineChart } from './charts/LuxeLineChart'
+import { LuxeBarChart } from './charts/LuxeBarChart'
+import { FilterOverrideControl, FilterStatusBadge } from './FilterOverrideControl'
+import { useDashboardFilter, getPeriodLabel } from '@/contexts/DashboardFilterContext'
+
+interface RevenueTrendsProps {
+  kpis: SalonDashboardKPIs
+  formatCurrency: (amount: number) => string
+  selectedPeriod: 'today' | 'last7Days' | 'last30Days' | 'yearToDate' | 'allTime'
+}
+
+const COMPONENT_ID = 'revenue-trends'
+
+export function RevenueTrends({ kpis, formatCurrency, selectedPeriod }: RevenueTrendsProps) {
+  // ✅ ENTERPRISE: Use filter context for intelligent override management
+  const { getComponentPeriod } = useDashboardFilter()
+  const effectivePeriod = getComponentPeriod(COMPONENT_ID)
+
+  const [chartType, setChartType] = useState<'line' | 'bar'>('line')
+
+  // ✅ ENTERPRISE: Smart data selection based on effective period
+  const data = useMemo(() => {
+    switch (effectivePeriod) {
+      case 'today':
+        return kpis.last7DaysRevenue.slice(-1) // Show only today
+      case 'last7Days':
+        return kpis.last7DaysRevenue
+      case 'last30Days':
+        return kpis.last30DaysRevenue
+      case 'yearToDate':
+      case 'allTime':
+        // For longer periods, show 30-day aggregated view
+        return kpis.last30DaysRevenue
+      default:
+        return kpis.last7DaysRevenue
+    }
+  }, [effectivePeriod, kpis.last7DaysRevenue, kpis.last30DaysRevenue])
+
+  return (
+    <div
+      className="rounded-2xl p-6 backdrop-blur-xl transition-all duration-500 hover:shadow-lg"
+      style={{
+        backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark} 0%, ${LUXE_COLORS.charcoal} 100%)`,
+        border: `1px solid ${LUXE_COLORS.gold}20`,
+        boxShadow: `0 8px 32px ${LUXE_COLORS.black}40`
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div
+            className="p-3 rounded-xl"
+            style={{
+              backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.gold}25 0%, ${LUXE_COLORS.gold}10 100%)`,
+              border: `1px solid ${LUXE_COLORS.gold}30`,
+              boxShadow: `0 4px 12px ${LUXE_COLORS.gold}20`
+            }}
+          >
+            <TrendingUp className="w-6 h-6" style={{ color: LUXE_COLORS.gold }} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <h2
+                className="text-2xl font-bold"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                Revenue Trends
+              </h2>
+              {/* ✅ ENTERPRISE: Filter status badge */}
+              <FilterStatusBadge componentId={COMPONENT_ID} />
+            </div>
+            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+              Daily revenue performance • Currently showing:{' '}
+              <span style={{ color: LUXE_COLORS.gold }}>
+                {getPeriodLabel(effectivePeriod)}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        {/* ✅ ENTERPRISE: Controls */}
+        <div className="flex items-center gap-2">
+          {/* Chart Type Toggle */}
+          <div
+            className="flex items-center p-1 rounded-lg"
+            style={{
+              background: LUXE_COLORS.charcoalDark,
+              border: `1px solid ${LUXE_COLORS.bronze}30`
+            }}
+          >
+            <button
+              onClick={() => setChartType('line')}
+              className="px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-300"
+              style={{
+                backgroundColor:
+                  chartType === 'line' ? `${LUXE_COLORS.gold}30` : 'transparent',
+                color: chartType === 'line' ? LUXE_COLORS.gold : LUXE_COLORS.bronze,
+                border:
+                  chartType === 'line' ? `1px solid ${LUXE_COLORS.gold}40` : '1px solid transparent'
+              }}
+            >
+              <TrendingUp className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setChartType('bar')}
+              className="px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-300"
+              style={{
+                backgroundColor: chartType === 'bar' ? `${LUXE_COLORS.gold}30` : 'transparent',
+                color: chartType === 'bar' ? LUXE_COLORS.gold : LUXE_COLORS.bronze,
+                border:
+                  chartType === 'bar' ? `1px solid ${LUXE_COLORS.gold}40` : '1px solid transparent'
+              }}
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* ✅ ENTERPRISE: Filter Override Control */}
+          <FilterOverrideControl
+            componentId={COMPONENT_ID}
+            availablePeriods={['today', 'last7Days', 'last30Days']}
+            label="Revenue Period"
+            showGlobalIndicator={true}
+          />
+        </div>
+      </div>
+
+      {/* Chart */}
+      <div className="mb-6">
+        {chartType === 'line' ? (
+          <LuxeLineChart
+            data={data}
+            xKey="date"
+            yKey="revenue"
+            color={LUXE_COLORS.gold}
+            gradient={true}
+            height={350}
+            formatYAxis={value => {
+              if (value >= 1000) return `${(value / 1000).toFixed(0)}k`
+              return value.toString()
+            }}
+            formatTooltip={value => formatCurrency(value)}
+          />
+        ) : (
+          <LuxeBarChart
+            data={data}
+            xKey="date"
+            yKey="revenue"
+            color={LUXE_COLORS.gold}
+            height={350}
+            formatYAxis={value => {
+              if (value >= 1000) return `${(value / 1000).toFixed(0)}k`
+              return value.toString()
+            }}
+            formatTooltip={value => formatCurrency(value)}
+          />
+        )}
+      </div>
+
+      {/* Summary Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Month-to-Date Revenue */}
+        <div
+          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+          style={{
+            backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.emerald}15 0%, ${LUXE_COLORS.emerald}05 100%)`,
+            border: `1px solid ${LUXE_COLORS.emerald}30`,
+            boxShadow: `0 4px 12px ${LUXE_COLORS.black}30`
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <Calendar className="w-4 h-4" style={{ color: LUXE_COLORS.emerald }} />
+            <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: LUXE_COLORS.bronze }}>
+              Month-to-Date
+            </span>
+          </div>
+          <p
+            className="text-2xl font-bold transition-all duration-300 group-hover:scale-102"
+            style={{
+              backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.emerald} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            {formatCurrency(kpis.monthToDateRevenue)}
+          </p>
+        </div>
+
+        {/* Average Transaction Value */}
+        <div
+          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+          style={{
+            backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.sapphire}15 0%, ${LUXE_COLORS.sapphire}05 100%)`,
+            border: `1px solid ${LUXE_COLORS.sapphire}30`,
+            boxShadow: `0 4px 12px ${LUXE_COLORS.black}30`
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <DollarSign className="w-4 h-4" style={{ color: LUXE_COLORS.sapphire }} />
+            <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: LUXE_COLORS.bronze }}>
+              Avg Transaction
+            </span>
+          </div>
+          <p
+            className="text-2xl font-bold transition-all duration-300 group-hover:scale-102"
+            style={{
+              backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.sapphire} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            {formatCurrency(kpis.averageTransactionValue)}
+          </p>
+        </div>
+
+        {/* Total Revenue */}
+        <div
+          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+          style={{
+            backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.gold}15 0%, ${LUXE_COLORS.gold}05 100%)`,
+            border: `1px solid ${LUXE_COLORS.gold}40`,
+            boxShadow: `0 4px 12px ${LUXE_COLORS.gold}20`
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+            <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: LUXE_COLORS.bronze }}>
+              Total Revenue
+            </span>
+          </div>
+          <p
+            className="text-2xl font-bold transition-all duration-300 group-hover:scale-102"
+            style={{
+              backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            {formatCurrency(kpis.totalRevenue)}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}

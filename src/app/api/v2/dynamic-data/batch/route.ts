@@ -1,6 +1,6 @@
 /**
  * Dynamic Data Batch API v2
- * Handles bulk dynamic field operations
+ * Handles bulk dynamic field operations using hera_dynamic_data_batch_v1 RPC
  *
  * POST /api/v2/dynamic-data/batch - Set multiple dynamic fields at once
  */
@@ -17,10 +17,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { organizationId } = authResult
+    // ✅ FIX: verifyAuth returns 'id' not 'userId'
+    const { organizationId, id: userId } = authResult
+
+    // ✅ HERA v2.2: Actor stamping required for all writes
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'User ID required for actor stamping', code: 'ACTOR_REQUIRED' },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json()
 
-    const { p_entity_id, p_smart_code, p_fields } = body
+    let { p_entity_id, p_smart_code, p_fields } = body
+
+    // ✅ FIX: Extract entity_id if it's an object (defensive coding)
+    if (p_entity_id && typeof p_entity_id === 'object') {
+      console.warn('[dynamic-data batch] Received entity object instead of ID, extracting ID:', {
+        received: typeof p_entity_id,
+        hasId: !!p_entity_id.id,
+        hasEntityId: !!p_entity_id.entity_id
+      })
+      p_entity_id = p_entity_id.id || p_entity_id.entity_id
+    }
 
     if (!p_entity_id || !p_smart_code || !Array.isArray(p_fields)) {
       return NextResponse.json(
@@ -31,167 +51,82 @@ export async function POST(request: NextRequest) {
 
     const supabase = getSupabaseService()
 
-    console.log('[dynamic-data batch] Processing:', {
+    console.log('[dynamic-data batch V2 RPC] Processing:', {
       organizationId,
+      userId,
       entity_id: p_entity_id,
       smart_code: p_smart_code,
       fieldCount: p_fields.length,
       fields: p_fields
     })
 
-    const results = []
-    const errors = []
-
-    for (const field of p_fields) {
-      const { field_name, field_type, field_value, field_value_number, field_value_boolean } = field
-
-      if (!field_name || !field_type) {
-        console.warn('[dynamic-data batch] Skipping invalid field:', field)
-        continue
-      }
-
-      console.log('[dynamic-data batch] Processing field:', field_name, {
-        field_type,
-        field_value_boolean,
-        organizationId,
-        entity_id: p_entity_id
-      })
-
-      // Check if field exists
-      const { data: existing } = await supabase
-        .from('core_dynamic_data')
-        .select('id')
-        .eq('organization_id', organizationId)
-        .eq('entity_id', p_entity_id)
-        .eq('field_name', field_name)
-        .single()
-
-      console.log('[dynamic-data batch] Field exists:', !!existing, existing?.id)
-
-      const fieldData: any = {
-        organization_id: organizationId,
-        entity_id: p_entity_id,
-        field_name: field_name,
-        field_type: field_type,
-        // Use field's smart_code if provided, otherwise use batch smart_code
+    // ✅ Transform fields to hera_dynamic_data_batch_v1 format
+    // The RPC expects TYPED columns: field_value_text, field_value_number, field_value_boolean, etc.
+    const transformedFields = p_fields.map(field => {
+      const item: any = {
+        field_name: field.field_name,
+        field_type: field.field_type,
         smart_code: field.smart_code || p_smart_code
       }
 
-      console.log('[dynamic-data batch] Field data before type-specific values:', {
-        ...fieldData,
-        field_smart_code: field.smart_code,
-        batch_smart_code: p_smart_code,
-        using: fieldData.smart_code
-      })
-
-      // Set appropriate value based on type
-      if (field_type === 'text') {
-        fieldData.field_value_text = field_value || field.field_value_text || null
-      } else if (field_type === 'number') {
-        fieldData.field_value_number = field_value_number ?? field.field_value_number ?? null
-      } else if (field_type === 'boolean') {
-        fieldData.field_value_boolean = field_value_boolean ?? field.field_value_boolean ?? null
-      } else if (field_type === 'json') {
-        fieldData.field_value_json = field.field_value_json || null
-      } else if (field_type === 'date') {
-        fieldData.field_value_date = field.field_value_date || null
+      // Set the appropriate TYPED column based on field type
+      // RPC reads from field_value_text, field_value_number, etc. (NOT a generic "value" field)
+      if (field.field_type === 'number') {
+        item.field_value_number = field.field_value_number ?? 0
+      } else if (field.field_type === 'text') {
+        item.field_value_text = field.field_value_text ?? ''
+      } else if (field.field_type === 'boolean') {
+        item.field_value_boolean = field.field_value_boolean ?? false
+      } else if (field.field_type === 'json') {
+        item.field_value_json = field.field_value_json ?? null
+      } else if (field.field_type === 'date') {
+        item.field_value_date = field.field_value_date ?? null
       }
 
-      try {
-        if (existing) {
-          // Update existing
-          console.log('[dynamic-data batch] Updating existing field:', field_name)
-          const { data, error } = await supabase
-            .from('core_dynamic_data')
-            .update(fieldData)
-            .eq('id', existing.id)
-            .select()
-            .single()
+      return item
+    })
 
-          if (error) {
-            console.error('[dynamic-data batch] Update error for field:', field_name, {
-              error,
-              code: error.code,
-              message: error.message,
-              details: error.details,
-              hint: error.hint
-            })
-            errors.push({
-              field_name,
-              operation: 'update',
-              error: error.message,
-              code: error.code,
-              details: error.details,
-              hint: error.hint
-            })
-          } else {
-            console.log(
-              '[dynamic-data batch] Updated field:',
-              field_name,
-              '=',
-              fieldData.field_value_boolean
-            )
-            results.push(data)
-          }
-        } else {
-          // Insert new
-          console.log('[dynamic-data batch] Inserting new field:', field_name)
-          const { data, error } = await supabase
-            .from('core_dynamic_data')
-            .insert(fieldData)
-            .select()
-            .single()
+    // ✅ Use hera_dynamic_data_batch_v1 for batch dynamic field updates
+    // NOTE: Function expects p_items not p_fields (as shown in error hint)
+    console.log('[dynamic-data batch V2 RPC] Calling hera_dynamic_data_batch_v1 with transformed fields:', transformedFields)
 
-          if (error) {
-            console.error('[dynamic-data batch] Insert error for field:', field_name, {
-              error,
-              code: error.code,
-              message: error.message,
-              details: error.details,
-              hint: error.hint
-            })
-            errors.push({
-              field_name,
-              operation: 'insert',
-              error: error.message,
-              code: error.code,
-              details: error.details,
-              hint: error.hint
-            })
-          } else {
-            console.log(
-              '[dynamic-data batch] Inserted field:',
-              field_name,
-              '=',
-              fieldData.field_value_boolean
-            )
-            results.push(data)
-          }
-        }
-      } catch (fieldError: any) {
-        console.error('[dynamic-data batch] Field processing error:', fieldError)
-        errors.push({ field_name, operation: 'process', error: fieldError.message })
-      }
+    const { data, error } = await supabase.rpc('hera_dynamic_data_batch_v1', {
+      p_organization_id: organizationId,
+      p_entity_id: p_entity_id,
+      p_items: transformedFields, // ✅ FIX: Use p_items not p_fields
+      p_actor_user_id: userId
+    })
+
+    if (error) {
+      console.error('[dynamic-data batch V2 RPC] RPC error:', error)
+      return NextResponse.json(
+        {
+          error: error.message || 'Failed to update dynamic fields',
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        },
+        { status: 500 }
+      )
     }
 
-    console.log('[dynamic-data batch] Completed:', {
+    console.log('[dynamic-data batch V2 RPC] Success:', {
       requested: p_fields.length,
-      processed: results.length,
-      errors: errors.length
+      entity_id: p_entity_id
     })
 
     return NextResponse.json({
-      success: errors.length === 0,
-      data: results,
-      errors: errors.length > 0 ? errors : undefined,
+      success: true,
+      data: data,
       metadata: {
         requested: p_fields.length,
-        processed: results.length,
-        failed: errors.length
+        processed: p_fields.length,
+        failed: 0,
+        entity_id: p_entity_id
       }
     })
   } catch (error: any) {
-    console.error('[dynamic-data batch] Exception:', error)
+    console.error('[dynamic-data batch V2 RPC] Exception:', error)
     return NextResponse.json(
       { error: 'Internal server error', details: error.message },
       { status: 500 }

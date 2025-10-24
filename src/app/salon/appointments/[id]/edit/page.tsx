@@ -93,23 +93,19 @@ export default function EditAppointmentPage() {
   const getEffectiveOrgId = () => {
     // PRIORITY 1: Always use authenticated JWT organization (multi-tenant security)
     if (organization?.id) {
-      console.log('[Edit Page Auth] Using JWT organization:', organization.id)
       return organization.id
     }
 
     // PRIORITY 2: Demo cookie only for demo/unauthenticated mode
     if (demoOrganizationId) {
-      console.log('[Edit Page Auth] Using demo cookie organization:', demoOrganizationId)
       return demoOrganizationId
     }
 
     // PRIORITY 3: SessionStorage as final fallback
     if (sessionStorage.getItem('isDemoLogin') === 'true') {
-      console.log('[Edit Page Auth] Using default demo organization (sessionStorage fallback)')
       return DEFAULT_SALON_ORG_ID
     }
 
-    console.warn('[Edit Page Auth] No organization ID found')
     return null
   }
 
@@ -118,7 +114,6 @@ export default function EditAppointmentPage() {
   // Load appointment details
   const loadAppointment = async () => {
     if (!organizationId || !appointmentId) {
-      console.log('⚠️ Missing organizationId or appointmentId')
       return
     }
 

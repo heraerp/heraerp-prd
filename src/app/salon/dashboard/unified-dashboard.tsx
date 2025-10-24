@@ -167,7 +167,7 @@ export function UnifiedDashboard() {
     if (!isLoading && isAuthenticated) {
       const userRole = role?.toLowerCase()
       if (userRole === 'receptionist') {
-        router.push('/salon/receptionist/dashboard')
+        router.push('/salon/receptionist')
       } else if (userRole === 'admin') {
         router.push('/salon/admin/dashboard')
       }
@@ -186,7 +186,6 @@ export function UnifiedDashboard() {
   }
 
   if (!isAuthenticated || !role) {
-    console.log('Dashboard auth check failed:', { isAuthenticated, role, user })
     return (
       <div
         className="min-h-screen flex items-center justify-center"

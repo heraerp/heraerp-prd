@@ -53,7 +53,7 @@ export const getSupabase = () => {
         autoRefreshToken: true,
         detectSessionInUrl: true,
         storageKey: 'hera-supabase-auth', // Consistent storage key
-        flowType: 'pkce' // Enable proper session recovery
+        flowType: 'implicit' // Use implicit flow for password-based authentication
       },
       global: {
         headers: {
@@ -65,13 +65,41 @@ export const getSupabase = () => {
       }
     })
 
-    // Add error handling for auth errors
+    // Add comprehensive error handling for auth errors
     client.auth.onAuthStateChange((event, session) => {
-      if (event === 'TOKEN_REFRESHED' && !session) {
-        console.warn('🚨 Token refresh failed, clearing invalid tokens')
+      console.log('🔐 Auth state change:', event, session ? 'Session valid' : 'No session')
+
+      // Handle failed token refresh or sign out - clear all tokens
+      if ((event === 'TOKEN_REFRESHED' && !session) || event === 'SIGNED_OUT') {
         clearInvalidTokens()
       }
     })
+
+    // Proactively validate stored session on initialization
+    client.auth.getSession().then(({ data, error }) => {
+      if (error && error.message.includes('Invalid Refresh Token')) {
+        console.warn('🧹 Found invalid refresh token on init, clearing')
+        clearInvalidTokens()
+        // Force sign out to clean state
+        client.auth.signOut({ scope: 'local' })
+      }
+    })
+
+    // Intercept auth errors to provide better messaging
+    const originalRefreshSession = client.auth.refreshSession.bind(client.auth)
+    client.auth.refreshSession = async (...args) => {
+      try {
+        return await originalRefreshSession(...args)
+      } catch (error: any) {
+        if (error?.message?.includes('Invalid Refresh Token') || error?.message?.includes('Refresh Token Not Found')) {
+          console.warn('🧹 Auto-clearing invalid refresh token')
+          clearInvalidTokens()
+          // Return a failed response instead of throwing
+          return { data: { session: null, user: null }, error }
+        }
+        throw error
+      }
+    }
 
     globalForSupabase.supabaseInstance = client
 

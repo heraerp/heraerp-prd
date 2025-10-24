@@ -1,0 +1,55 @@
+{
+  "transaction": {
+    "smart_code": "HERA.FINANCE.TXN.SALE.v1",
+    "transaction_type": "SALE",
+    "transaction_date": "2025-10-17T09:05:00Z",
+    "transaction_currency_code": "AED",
+    "base_currency_code": "AED",
+    "exchange_rate": 1.0,
+    "fiscal_year": 2025,
+    "fiscal_period": 10,
+    "business_context": {
+      "source": "pos",
+      "salon_service": "SERVICE:HAIRCUT",
+      "commission_amount": 45.00,
+      "vat_rate": 0.05,
+      "net_of_tax": 450.00,
+      "tax_total": 22.50,
+      "gross_total": 472.50
+    }
+  },
+  "lines": [
+    {
+      "line_number": 10,
+      "line_type": "GL",
+      "smart_code": "HERA.FINANCE.GL.LINE.v1",
+      "account_code": "1000",
+      "amount_expr": "gross_total",
+      "side": "DR"
+    },
+    {
+      "line_number": 20,
+      "line_type": "GL",
+      "smart_code": "HERA.FINANCE.GL.LINE.v1",
+      "account_code": "4000",
+      "amount_expr": "net_of_tax",
+      "side": "CR"
+    },
+    {
+      "line_number": 30,
+      "line_type": "GL",
+      "smart_code": "HERA.FINANCE.GL.LINE.v1",
+      "account_code": "2100",
+      "amount_expr": "tax_total",
+      "side": "CR"
+    },
+    {
+      "line_number": 40,
+      "line_type": "GL",
+      "smart_code": "HERA.FINANCE.GL.LINE.v1",
+      "account_code": "5000",
+      "amount_expr": "commission_amount",
+      "side": "DR"
+    }
+  ]
+}

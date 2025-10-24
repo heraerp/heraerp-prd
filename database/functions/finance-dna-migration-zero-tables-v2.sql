@@ -34,16 +34,16 @@ BEGIN
     -- Use CTE to identify migration candidates (no tables created)
     WITH sc_map(v1, v2) AS (
         VALUES
-            ('HERA.ACCOUNTING.AR.TXN.CUSTOMER_INVOICE.V1','HERA.ACCOUNTING.AR.TXN.CUSTOMER_INVOICE.v2'),
-            ('HERA.ACCOUNTING.AP.TXN.VENDOR_BILL.V1',     'HERA.ACCOUNTING.AP.TXN.VENDOR_BILL.v2'),
-            ('HERA.SALON.POS.TXN.SALE.V1',                'HERA.SALON.POS.TXN.SALE.v2'),
-            ('HERA.SD.SALES.TXN.SHIPMENT.V1',             'HERA.SD.SALES.TXN.SHIPMENT.v2'),
-            ('HERA.SALON.INVENTORY.TXN.ISSUE.V1',         'HERA.SALON.INVENTORY.TXN.ISSUE.v2'),
-            ('HERA.HR.PAYROLL.TXN.PAYRUN.V1',             'HERA.HR.PAYROLL.TXN.PAYRUN.v2'),
-            ('HERA.MM.INVENTORY.TXN.GOODS_RECEIPT.V1',    'HERA.MM.INVENTORY.TXN.GOODS_RECEIPT.v2'),
-            ('HERA.MFG.PROD.TXN.WO_ISSUE.V1',             'HERA.MFG.PROD.TXN.WO_ISSUE.v2'),
-            ('HERA.MFG.PROD.TXN.WO_RECEIPT.V1',           'HERA.MFG.PROD.TXN.WO_RECEIPT.v2'),
-            ('HERA.MFG.PROD.TXN.VARIANCE.V1',             'HERA.MFG.PROD.TXN.VARIANCE.v2')
+            ('HERA.ACCOUNTING.AR.TXN.CUSTOMER_INVOICE.V1','HERA.ACCOUNTING.AR.TXN.CUSTOMER_INVOICE.V2'),
+            ('HERA.ACCOUNTING.AP.TXN.VENDOR_BILL.V1',     'HERA.ACCOUNTING.AP.TXN.VENDOR_BILL.V2'),
+            ('HERA.SALON.POS.TXN.SALE.V1',                'HERA.SALON.POS.TXN.SALE.V2'),
+            ('HERA.SD.SALES.TXN.SHIPMENT.V1',             'HERA.SD.SALES.TXN.SHIPMENT.V2'),
+            ('HERA.SALON.INVENTORY.TXN.ISSUE.V1',         'HERA.SALON.INVENTORY.TXN.ISSUE.V2'),
+            ('HERA.HR.PAYROLL.TXN.PAYRUN.V1',             'HERA.HR.PAYROLL.TXN.PAYRUN.V2'),
+            ('HERA.MM.INVENTORY.TXN.GOODS_RECEIPT.V1',    'HERA.MM.INVENTORY.TXN.GOODS_RECEIPT.V2'),
+            ('HERA.MFG.PROD.TXN.WO_ISSUE.V1',             'HERA.MFG.PROD.TXN.WO_ISSUE.V2'),
+            ('HERA.MFG.PROD.TXN.WO_RECEIPT.V1',           'HERA.MFG.PROD.TXN.WO_RECEIPT.V2'),
+            ('HERA.MFG.PROD.TXN.VARIANCE.V1',             'HERA.MFG.PROD.TXN.VARIANCE.V2')
     ),
     candidates AS (
         SELECT u.id AS txn_id, u.smart_code, u.transaction_date, m.v2 AS target_smart_code
@@ -193,16 +193,16 @@ BEGIN
     FOR r IN
         WITH sc_map(v1, v2) AS (
             VALUES
-                ('HERA.ACCOUNTING.AR.TXN.CUSTOMER_INVOICE.V1','HERA.ACCOUNTING.AR.TXN.CUSTOMER_INVOICE.v2'),
-                ('HERA.ACCOUNTING.AP.TXN.VENDOR_BILL.V1',     'HERA.ACCOUNTING.AP.TXN.VENDOR_BILL.v2'),
-                ('HERA.SALON.POS.TXN.SALE.V1',                'HERA.SALON.POS.TXN.SALE.v2'),
-                ('HERA.SD.SALES.TXN.SHIPMENT.V1',             'HERA.SD.SALES.TXN.SHIPMENT.v2'),
-                ('HERA.SALON.INVENTORY.TXN.ISSUE.V1',         'HERA.SALON.INVENTORY.TXN.ISSUE.v2'),
-                ('HERA.HR.PAYROLL.TXN.PAYRUN.V1',             'HERA.HR.PAYROLL.TXN.PAYRUN.v2'),
-                ('HERA.MM.INVENTORY.TXN.GOODS_RECEIPT.V1',    'HERA.MM.INVENTORY.TXN.GOODS_RECEIPT.v2'),
-                ('HERA.MFG.PROD.TXN.WO_ISSUE.V1',             'HERA.MFG.PROD.TXN.WO_ISSUE.v2'),
-                ('HERA.MFG.PROD.TXN.WO_RECEIPT.V1',           'HERA.MFG.PROD.TXN.WO_RECEIPT.v2'),
-                ('HERA.MFG.PROD.TXN.VARIANCE.V1',             'HERA.MFG.PROD.TXN.VARIANCE.v2')
+                ('HERA.ACCOUNTING.AR.TXN.CUSTOMER_INVOICE.V1','HERA.ACCOUNTING.AR.TXN.CUSTOMER_INVOICE.V2'),
+                ('HERA.ACCOUNTING.AP.TXN.VENDOR_BILL.V1',     'HERA.ACCOUNTING.AP.TXN.VENDOR_BILL.V2'),
+                ('HERA.SALON.POS.TXN.SALE.V1',                'HERA.SALON.POS.TXN.SALE.V2'),
+                ('HERA.SD.SALES.TXN.SHIPMENT.V1',             'HERA.SD.SALES.TXN.SHIPMENT.V2'),
+                ('HERA.SALON.INVENTORY.TXN.ISSUE.V1',         'HERA.SALON.INVENTORY.TXN.ISSUE.V2'),
+                ('HERA.HR.PAYROLL.TXN.PAYRUN.V1',             'HERA.HR.PAYROLL.TXN.PAYRUN.V2'),
+                ('HERA.MM.INVENTORY.TXN.GOODS_RECEIPT.V1',    'HERA.MM.INVENTORY.TXN.GOODS_RECEIPT.V2'),
+                ('HERA.MFG.PROD.TXN.WO_ISSUE.V1',             'HERA.MFG.PROD.TXN.WO_ISSUE.V2'),
+                ('HERA.MFG.PROD.TXN.WO_RECEIPT.V1',           'HERA.MFG.PROD.TXN.WO_RECEIPT.V2'),
+                ('HERA.MFG.PROD.TXN.VARIANCE.V1',             'HERA.MFG.PROD.TXN.VARIANCE.V2')
         ),
         base AS (
             SELECT u.*, m.v2 AS target_smart_code
@@ -239,7 +239,7 @@ BEGIN
                 p_organization_id,
                 r.txn_id,
                 'Finance DNA v2 migration',
-                'HERA.ACCOUNTING.GL.TXN.REVERSAL.v2'
+                'HERA.ACCOUNTING.GL.TXN.REVERSAL.V2'
             );
 
             -- Step 2: Read original transaction (header + lines) using existing RPC
@@ -435,7 +435,7 @@ BEGIN
     WITH sc_validation AS (
         SELECT 
             COUNT(*) FILTER (WHERE smart_code LIKE '%.V1') as v1_count,
-            COUNT(*) FILTER (WHERE smart_code LIKE '%.v2') as v2_count,
+            COUNT(*) FILTER (WHERE smart_code LIKE '%.V2') as v2_count,
             COUNT(*) FILTER (WHERE metadata->>'reporting_smartcode' IS NOT NULL) as aliased_count
         FROM universal_transactions
         WHERE organization_id = p_organization_id
@@ -457,7 +457,7 @@ BEGIN
           AND fp.organization_id = p_organization_id
           AND fp.entity_type = 'fiscal_period'
           AND fp.status = 'closed'
-          AND ut.smart_code LIKE '%.v2'
+          AND ut.smart_code LIKE '%.V2'
           AND ut.created_at > fp.updated_at
     ) INTO v_fiscal_compliance;
 
@@ -568,10 +568,10 @@ BEGIN
     WITH migration_summary AS (
         SELECT 
             COUNT(*) FILTER (WHERE smart_code LIKE '%.V1' AND smart_code NOT LIKE '%.REVERSAL.%') as v1_transactions,
-            COUNT(*) FILTER (WHERE smart_code LIKE '%.v2') as v2_transactions,
+            COUNT(*) FILTER (WHERE smart_code LIKE '%.V2') as v2_transactions,
             COUNT(*) FILTER (WHERE metadata->>'reporting_smartcode' IS NOT NULL) as aliased_transactions,
             SUM(total_amount) FILTER (WHERE smart_code LIKE '%.V1') as v1_total_amount,
-            SUM(total_amount) FILTER (WHERE smart_code LIKE '%.v2') as v2_total_amount
+            SUM(total_amount) FILTER (WHERE smart_code LIKE '%.V2') as v2_total_amount
         FROM universal_transactions
         WHERE organization_id = p_organization_id
           AND transaction_date <= p_comparison_date
@@ -621,7 +621,7 @@ BEGIN
         SELECT 
             CASE 
                 WHEN smart_code LIKE '%.V1' THEN 'v1'
-                WHEN smart_code LIKE '%.v2' THEN 'v2'
+                WHEN smart_code LIKE '%.V2' THEN 'v2'
                 ELSE 'other'
             END as version,
             SPLIT_PART(smart_code, '.', 2) as module,
@@ -708,7 +708,7 @@ BEGIN
         SELECT id, metadata->'migration'->>'original_txn_id' as original_txn_id
         FROM universal_transactions
         WHERE organization_id = p_organization_id
-          AND smart_code LIKE '%.v2'
+          AND smart_code LIKE '%.V2'
           AND metadata->'migration'->>'migration_session_id' = p_migration_session_identifier
         ORDER BY created_at DESC
     LOOP
@@ -718,7 +718,7 @@ BEGIN
                 p_organization_id,
                 r.id,
                 p_rollback_reason,
-                'HERA.ACCOUNTING.GL.TXN.VOID.v2'
+                'HERA.ACCOUNTING.GL.TXN.VOID.V2'
             );
 
             -- Restore original v1 transaction (un-reverse it)
@@ -728,7 +728,7 @@ BEGIN
                     p_organization_id,
                     r.original_txn_id::uuid,
                     'Migration rollback - restore original',
-                    'HERA.ACCOUNTING.GL.TXN.RESTORE.v2'
+                    'HERA.ACCOUNTING.GL.TXN.RESTORE.V2'
                 );
             END IF;
 

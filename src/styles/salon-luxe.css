@@ -1,4 +1,63 @@
-/* Salon Luxe Theme Styles */
+/* Salon Luxe Theme Styles - HIGHEST PRIORITY OVERRIDES */
+
+/*
+ * CRITICAL: Override globals-dna-safe.css dark mode styles
+ * These need !important and high specificity to override .dark selectors
+ */
+
+/* Override dark mode dropdown styling from globals-dna-safe.css */
+.dark [role="listbox"],
+.dark [data-radix-select-content],
+html.dark [role="listbox"],
+html.dark [data-radix-select-content],
+body.dark [role="listbox"],
+body.dark [data-radix-select-content] {
+  background-color: #232323 !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  color: #F5E6C8 !important;
+}
+
+/* Override dark mode dropdown item hover from globals-dna-safe.css */
+.dark [role="option"]:hover,
+.dark [role="option"]:focus,
+.dark [role="option"][data-highlighted],
+.dark [data-radix-select-item]:hover,
+.dark [data-radix-select-item]:focus,
+.dark [data-radix-select-item][data-highlighted],
+html.dark [role="option"]:hover,
+html.dark [role="option"]:focus,
+html.dark [role="option"][data-highlighted],
+html.dark [data-radix-select-item]:hover,
+html.dark [data-radix-select-item]:focus,
+html.dark [data-radix-select-item][data-highlighted],
+body.dark [role="option"]:hover,
+body.dark [role="option"]:focus,
+body.dark [role="option"][data-highlighted],
+body.dark [data-radix-select-item]:hover,
+body.dark [data-radix-select-item]:focus,
+body.dark [data-radix-select-item][data-highlighted] {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  color: #F5E6C8 !important;
+}
+
+/* Override dark mode input/select styling */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #232323 !important;
+  border: 1px solid #8C7853 !important;
+  color: #F5E6C8 !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  background-color: #232323 !important;
+  border-color: #D4AF37 !important;
+  outline: 2px solid rgba(212, 175, 55, 0.3) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+}
 
 /* Input placeholder styling */
 .luxe-input::placeholder {
@@ -6,14 +65,146 @@
   opacity: 0.7;
 }
 
-/* Select dropdown styling */
-.luxe-select-content {
-  background-color: #232323;
-  border: 1px solid rgba(212, 175, 55, 0.3);
+/* Select dropdown styling - Global overrides for all salon pages */
+select {
+  background-color: #232323 !important;
+  color: #F5E6C8 !important;
+  border-color: #8C7853 !important;
 }
 
+select option {
+  background-color: #232323 !important;
+  color: #F5E6C8 !important;
+  padding: 8px !important;
+}
+
+select:focus {
+  ring-color: #D4AF37 !important;
+  border-color: #D4AF37 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+}
+
+select:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Shadcn UI Select components - Maximum specificity overrides */
+
+/* SelectContent - Override ALL possible classes including Tailwind compiled classes */
+[data-radix-select-content],
+div[data-radix-select-content],
+.hera-select-content,
+.luxe-select-content,
+/* Override Tailwind bg-popover class */
+[data-radix-select-content].bg-popover,
+div[data-radix-select-content].bg-popover,
+[data-radix-select-content].text-popover-foreground,
+div[data-radix-select-content].text-popover-foreground {
+  background-color: #232323 !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  color: #F5E6C8 !important;
+  z-index: 100 !important;
+}
+
+/* Force override any Tailwind background utilities */
+[data-radix-select-content][class*="bg-"],
+div[data-radix-select-content][class*="bg-"] {
+  background-color: #232323 !important;
+}
+
+/* Force override any Tailwind text color utilities */
+[data-radix-select-content][class*="text-"],
+div[data-radix-select-content][class*="text-"] {
+  color: #F5E6C8 !important;
+}
+
+/* SelectItem - Override ALL possible states and Tailwind classes */
+[data-radix-select-item],
+div[data-radix-select-item],
+.hera-select-item,
+.luxe-select-item,
+/* Override Tailwind utility classes */
+[data-radix-select-item].focus\:bg-accent,
+div[data-radix-select-item].focus\:bg-accent,
+[data-radix-select-item].focus\:text-accent-foreground,
+div[data-radix-select-item].focus\:text-accent-foreground {
+  color: #F5E6C8 !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  padding: 8px 12px !important;
+}
+
+/* Force override any background on items */
+[data-radix-select-item][class*="bg-"],
+div[data-radix-select-item][class*="bg-"] {
+  background-color: transparent !important;
+}
+
+/* Force override any text color on items */
+[data-radix-select-item][class*="text-"],
+div[data-radix-select-item][class*="text-"] {
+  color: #F5E6C8 !important;
+}
+
+/* Hover state for SelectItem */
+[data-radix-select-item]:hover,
+div[data-radix-select-item]:hover,
+.hera-select-item:hover,
 .luxe-select-item:hover {
-  background-color: rgba(212, 175, 55, 0.1);
+  background-color: rgba(212, 175, 55, 0.1) !important;
+  color: #F5E6C8 !important;
+}
+
+/* Highlighted/focused state for SelectItem - Override Tailwind focus:bg-accent */
+[data-radix-select-item]:focus,
+[data-radix-select-item][data-highlighted],
+div[data-radix-select-item]:focus,
+div[data-radix-select-item][data-highlighted],
+.hera-select-item:focus,
+.hera-select-item[data-highlighted],
+.luxe-select-item:focus,
+.luxe-select-item[data-highlighted],
+/* Override compiled Tailwind classes */
+[data-radix-select-item]:focus[class*="focus:bg-"],
+div[data-radix-select-item]:focus[class*="focus:bg-"],
+[data-radix-select-item][data-highlighted][class*="bg-"],
+div[data-radix-select-item][data-highlighted][class*="bg-"] {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  color: #F5E6C8 !important;
+}
+
+/* Checked/selected state for SelectItem */
+[data-radix-select-item][data-state="checked"],
+div[data-radix-select-item][data-state="checked"],
+.hera-select-item[data-state="checked"],
+.luxe-select-item[data-state="checked"] {
+  background-color: rgba(212, 175, 55, 0.15) !important;
+  color: #D4AF37 !important;
+}
+
+/* Select trigger (button that opens dropdown) */
+[data-radix-select-trigger],
+.luxe-select-trigger,
+.hera-select-trigger {
+  background-color: #232323 !important;
+  color: #F5E6C8 !important;
+  border-color: #8C7853 !important;
+}
+
+[data-radix-select-trigger]:focus,
+.luxe-select-trigger:focus,
+.hera-select-trigger:focus {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+}
+
+[data-radix-select-trigger]:hover,
+.luxe-select-trigger:hover,
+.hera-select-trigger:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
 /* Scrollbar styling for luxe theme */
@@ -33,6 +224,50 @@
 
 .luxe-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(212, 175, 55, 0.5);
+}
+
+/* Input and textarea styling - Global overrides */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="date"],
+textarea {
+  background-color: #232323 !important;
+  color: #F5E6C8 !important;
+  border-color: #8C7853 !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="date"]:focus,
+textarea:focus {
+  ring-color: #D4AF37 !important;
+  border-color: #D4AF37 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3) !important;
+  --tw-ring-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+input[type="search"]:hover,
+input[type="tel"]:hover,
+input[type="url"]:hover,
+input[type="date"]:hover,
+textarea:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
 /* Focus styles */
@@ -90,4 +325,44 @@
 /* Ensure dialog content has proper overflow */
 .luxe-modal .overflow-hidden {
   overflow: visible !important;
+}
+
+/* Global button enhancements for salon pages */
+button:not(.unstyled) {
+  transition: all 0.3s ease !important;
+}
+
+button:not(.unstyled):hover {
+  transform: scale(1.02) !important;
+}
+
+/* Primary gold buttons */
+.primary-button,
+button[type="submit"]:not([variant="outline"]) {
+  background: linear-gradient(90deg, #D4AF37 0%, #B8941F 100%) !important;
+  color: #0F0F0F !important;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4) !important;
+  transition: all 0.3s ease !important;
+}
+
+.primary-button:hover,
+button[type="submit"]:not([variant="outline"]):hover {
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6) !important;
+  transform: scale(1.05) !important;
+}
+
+/* Outline buttons */
+.outline-button,
+button[variant="outline"] {
+  background-color: transparent !important;
+  border-color: #8C7853 !important;
+  color: #F5E6C8 !important;
+  transition: all 0.3s ease !important;
+}
+
+.outline-button:hover,
+button[variant="outline"]:hover {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3) !important;
+  transform: scale(1.05) !important;
 }

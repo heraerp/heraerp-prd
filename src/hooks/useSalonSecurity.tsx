@@ -210,7 +210,9 @@ export function useSalonSecurity() {
   const canViewFinancials = useMemo(() => {
     return hasAnyPermission([
       SALON_PERMISSIONS.FINANCE.VIEW_REVENUE,
-      SALON_PERMISSIONS.FINANCE.VIEW_EXPENSES
+      SALON_PERMISSIONS.FINANCE.VIEW_EXPENSES,
+      'salon:finance:full', // Owner permission
+      'salon:finance:read'  // Accountant permission
     ])
   }, [hasAnyPermission])
 
@@ -218,7 +220,12 @@ export function useSalonSecurity() {
    * Check POS access permissions
    */
   const canUsePOS = useMemo(() => {
-    return hasAnyPermission([SALON_PERMISSIONS.POS.OPERATE, SALON_PERMISSIONS.POS.PROCESS_SALES])
+    return hasAnyPermission([
+      SALON_PERMISSIONS.POS.OPERATE,
+      SALON_PERMISSIONS.POS.PROCESS_SALES,
+      'salon:write:all', // Owner permission
+      'salon:read:operations' // Manager permission
+    ])
   }, [hasAnyPermission])
 
   /**

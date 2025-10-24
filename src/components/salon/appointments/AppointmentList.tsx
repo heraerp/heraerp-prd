@@ -26,13 +26,15 @@ interface AppointmentListProps {
   onConfirm: (id: string) => void
   onCancel: (id: string) => void
   loading?: boolean
+  currencySymbol?: string
 }
 
 export function AppointmentList({
   appointments,
   onConfirm,
   onCancel,
-  loading
+  loading,
+  currencySymbol = 'AED'
 }: AppointmentListProps) {
   const [showNotificationHistory, setShowNotificationHistory] = useState<string | null>(null)
   const getStatusIcon = (status: string) => {
@@ -171,7 +173,7 @@ export function AppointmentList({
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4 text-muted-foreground" />
                     <span className="text-lg font-semibold !text-gray-100 dark:!text-foreground">
-                      AED {appointment.price.toFixed(2)}
+                      {currencySymbol} {appointment.price.toFixed(2)}
                     </span>
                   </div>
 

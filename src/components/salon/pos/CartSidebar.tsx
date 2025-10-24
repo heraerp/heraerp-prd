@@ -18,7 +18,13 @@ import {
   TrendingUp,
   Percent,
   DollarSign,
-  Trash2
+  Trash2,
+  UserPlus,
+  UserMinus,
+  Users,
+  Edit3,
+  Check,
+  FileText
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -29,7 +35,7 @@ import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { salonButtonThemes } from '@/styles/salon-button-themes'
-import { CustomerSearchInline } from '@/components/salon/pos/CustomerSearchModal'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -54,6 +60,10 @@ interface LineItem {
   quantity: number
   unit_price: number
   line_amount: number
+  // Multiple staff support
+  stylist_ids?: string[]
+  stylist_names?: string[]
+  // Keep old fields for backward compatibility
   stylist_id?: string
   stylist_name?: string
   appointment_id?: string
@@ -111,6 +121,7 @@ interface CartSidebarProps {
   organizationId: string
   selectedCustomer: any | null
   onCustomerSelect: (customer: any | null) => void
+  onAddItem?: (item: any, staffId?: string, staffName?: string) => void
 }
 
 export function CartSidebar({
@@ -126,12 +137,35 @@ export function CartSidebar({
   onClearTicket,
   organizationId,
   selectedCustomer,
-  onCustomerSelect
+  onCustomerSelect,
+  onAddItem
 }: CartSidebarProps) {
   const [showDiscountSection, setShowDiscountSection] = useState(false)
   const [showTipSection, setShowTipSection] = useState(false)
   const [customDiscountPercent, setCustomDiscountPercent] = useState('')
   const [customTipAmount, setCustomTipAmount] = useState('')
+  const [showStaffSelector, setShowStaffSelector] = useState<string | null>(null)
+  const [editingPriceId, setEditingPriceId] = useState<string | null>(null)
+  const [editPrice, setEditPrice] = useState<string>('')
+
+  // State for custom "Other" items - Unified approach
+  const [showOtherItemModal, setShowOtherItemModal] = useState(false)
+  const [otherItemType, setOtherItemType] = useState<'service' | 'product'>('service')
+  const [otherItemPrice, setOtherItemPrice] = useState('')
+
+  // State for discount mode toggle
+  const [discountMode, setDiscountMode] = useState<'percent' | 'amount'>('percent')
+  const [customDiscountAmount, setCustomDiscountAmount] = useState('')
+
+  // Load staff members using proper hook
+  const { staff, isLoading: staffLoading } = useHeraStaff({
+    organizationId,
+    filters: {
+      include_dynamic: true,
+      include_relationships: false,
+      limit: 100
+    }
+  })
 
   // Handle discount application
   const applyQuickDiscount = useCallback(
@@ -148,18 +182,33 @@ export function CartSidebar({
   )
 
   const applyCustomDiscount = useCallback(() => {
-    const percent = parseFloat(customDiscountPercent)
-    if (percent > 0 && percent <= 100) {
-      onAddDiscount({
-        type: 'percentage',
-        value: percent,
-        description: `${percent}% discount`,
-        applied_to: 'subtotal'
-      })
-      setCustomDiscountPercent('')
-      setShowDiscountSection(false)
+    if (discountMode === 'percent') {
+      const percent = parseFloat(customDiscountPercent)
+      if (percent > 0 && percent <= 100) {
+        onAddDiscount({
+          type: 'percentage',
+          value: percent,
+          description: `${percent}% discount`,
+          applied_to: 'subtotal'
+        })
+        setCustomDiscountPercent('')
+        setShowDiscountSection(false)
+      }
+    } else {
+      // Amount mode
+      const amount = parseFloat(customDiscountAmount)
+      if (amount > 0 && amount <= totals.subtotal) {
+        onAddDiscount({
+          type: 'fixed',
+          value: amount,
+          description: `AED ${amount.toFixed(2)} discount`,
+          applied_to: 'subtotal'
+        })
+        setCustomDiscountAmount('')
+        setShowDiscountSection(false)
+      }
     }
-  }, [customDiscountPercent, onAddDiscount])
+  }, [discountMode, customDiscountPercent, customDiscountAmount, totals.subtotal, onAddDiscount])
 
   // Handle tip application
   const applyQuickTip = useCallback(
@@ -201,6 +250,58 @@ export function CartSidebar({
     }
   }
 
+  // Helper to get current staff list for an item
+  const getCurrentStaffList = (item: LineItem): { ids: string[]; names: string[] } => {
+    // Check if using new array format
+    if (item.stylist_ids && item.stylist_names) {
+      return { ids: item.stylist_ids, names: item.stylist_names }
+    }
+    // Migrate from old single format to array format
+    if (item.stylist_id && item.stylist_name) {
+      return { ids: [item.stylist_id], names: [item.stylist_name] }
+    }
+    return { ids: [], names: [] }
+  }
+
+  // Add staff to service item
+  const handleAddStaff = (itemId: string, staffId: string, staffName: string) => {
+    const item = ticket.lineItems.find(i => i.id === itemId)
+    if (!item) return
+
+    const current = getCurrentStaffList(item)
+
+    // Don't add if already assigned
+    if (current.ids.includes(staffId)) {
+      setShowStaffSelector(null)
+      return
+    }
+
+    onUpdateItem(itemId, {
+      stylist_ids: [...current.ids, staffId],
+      stylist_names: [...current.names, staffName]
+    })
+    setShowStaffSelector(null)
+  }
+
+  // Remove specific staff from service item
+  const handleRemoveStaff = (itemId: string, staffId: string) => {
+    const item = ticket.lineItems.find(i => i.id === itemId)
+    if (!item) return
+
+    const current = getCurrentStaffList(item)
+    const staffIndex = current.ids.indexOf(staffId)
+
+    if (staffIndex === -1) return
+
+    const newIds = current.ids.filter((_, i) => i !== staffIndex)
+    const newNames = current.names.filter((_, i) => i !== staffIndex)
+
+    onUpdateItem(itemId, {
+      stylist_ids: newIds.length > 0 ? newIds : undefined,
+      stylist_names: newNames.length > 0 ? newNames : undefined
+    })
+  }
+
   const truncateText = (text: string | undefined | null, maxLength: number) => {
     if (!text) return ''
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
@@ -214,6 +315,77 @@ export function CartSidebar({
       .join('')
       .toUpperCase()
       .slice(0, 2)
+  }
+
+  // Handle price edit for services
+  const handleStartEditPrice = (item: LineItem) => {
+    setEditingPriceId(item.id)
+    setEditPrice(item.unit_price.toFixed(2))
+  }
+
+  const handleSavePrice = (itemId: string) => {
+    const item = ticket.lineItems.find(i => i.id === itemId)
+    if (!item) return
+
+    const newPrice = parseFloat(editPrice)
+    if (isNaN(newPrice) || newPrice < 0) {
+      setEditingPriceId(null)
+      return
+    }
+
+    onUpdateItem(itemId, {
+      unit_price: newPrice,
+      line_amount: newPrice * item.quantity
+    })
+    setEditingPriceId(null)
+    setEditPrice('')
+  }
+
+  const handleCancelEditPrice = () => {
+    setEditingPriceId(null)
+    setEditPrice('')
+  }
+
+  // Handle custom "Other" item creation - Unified approach
+  const handleOpenOtherItem = () => {
+    // Start with service as default, user can toggle
+    setOtherItemType('service')
+    setOtherItemPrice('')
+    setShowOtherItemModal(true)
+  }
+
+  const handleAddOtherItem = () => {
+    if (!onAddItem) return
+
+    const price = parseFloat(otherItemPrice)
+    if (isNaN(price) || price < 0) {
+      return
+    }
+
+    // Use standardized names for consistency and reporting
+    const itemName = otherItemType === 'service' ? 'Other Service' : 'Other Product'
+
+    // Create a custom item with temporary ID
+    const customItem = {
+      __kind: otherItemType.toUpperCase() as 'SERVICE' | 'PRODUCT',
+      id: `custom-${otherItemType}-${Date.now()}`,
+      title: itemName,
+      price: price,
+      entity_id: `custom-${otherItemType}-${Date.now()}`,
+      entity_name: itemName,
+      unit_price: price
+    }
+
+    onAddItem(customItem)
+
+    // Reset and close modal
+    setOtherItemPrice('')
+    setShowOtherItemModal(false)
+  }
+
+  const handleCancelOtherItem = () => {
+    setOtherItemPrice('')
+    setShowOtherItemModal(false)
   }
 
   return (
@@ -235,9 +407,9 @@ export function CartSidebar({
         }}
       />
 
-      {/* Refined gradient header */}
+      {/* Compact Cart Header */}
       <div
-        className="relative h-20 flex items-center justify-between px-6 overflow-hidden flex-shrink-0"
+        className="relative h-14 flex items-center justify-between px-4 overflow-hidden flex-shrink-0"
         style={{
           background: `linear-gradient(to right, ${COLORS.charcoalDark} 0%, ${COLORS.charcoal} 100%)`,
           borderBottom: `1px solid ${COLORS.gold}30`
@@ -250,41 +422,31 @@ export function CartSidebar({
             backgroundSize: '200% 100%'
           }}
         />
-        <div className="relative z-10 flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <div
-              className="p-2 rounded-lg"
-              style={{
-                backgroundColor: `${COLORS.gold}20`,
-                border: `1px solid ${COLORS.gold}40`
-              }}
+        <div className="relative z-10 flex items-center gap-2">
+          <div
+            className="p-1.5 rounded-lg"
+            style={{
+              backgroundColor: `${COLORS.gold}20`,
+              border: `1px solid ${COLORS.gold}40`
+            }}
+          >
+            <ShoppingCart className="w-4 h-4" style={{ color: COLORS.gold }} />
+          </div>
+          <div>
+            <h2
+              className="text-sm font-semibold"
+              style={{ color: COLORS.champagne }}
             >
-              <ShoppingCart className="w-5 h-5" style={{ color: COLORS.gold }} />
-            </div>
-            <div>
-              <h2
-                className="text-base font-semibold tracking-wide"
-                style={{ color: COLORS.champagne }}
-              >
-                Shopping Cart
-              </h2>
-              <p className="text-xs font-normal" style={{ color: COLORS.bronze }}>
-                {ticket.lineItems.length} {ticket.lineItems.length === 1 ? 'item' : 'items'}
-              </p>
-            </div>
+              Cart
+            </h2>
+            <p className="text-[10px]" style={{ color: COLORS.bronze }}>
+              {ticket.lineItems.length} {ticket.lineItems.length === 1 ? 'item' : 'items'}
+            </p>
           </div>
         </div>
         {ticket.lineItems.length > 0 && (
-          <div
-            className="text-right"
-            style={{
-              padding: '0.5rem 0.75rem',
-              borderRadius: '0.5rem',
-              background: `${COLORS.gold}10`,
-              border: `1px solid ${COLORS.gold}30`
-            }}
-          >
-            <p className="text-xs" style={{ color: COLORS.bronze }}>
+          <div className="text-right">
+            <p className="text-[10px]" style={{ color: COLORS.bronze }}>
               Subtotal
             </p>
             <p className="text-sm font-semibold" style={{ color: COLORS.gold }}>
@@ -294,16 +456,45 @@ export function CartSidebar({
         )}
       </div>
 
-      {/* Customer Selection - Inline */}
+      {/* Customer Info - Display Only */}
       <div
-        className="px-6 pb-4 pt-3 border-b"
+        className="px-4 py-2.5 border-b flex-shrink-0"
         style={{ borderColor: `${COLORS.gold}20`, background: `${COLORS.charcoalDark}40` }}
       >
-        <CustomerSearchInline
-          selectedCustomer={selectedCustomer}
-          onCustomerSelect={onCustomerSelect}
-          organizationId={organizationId}
-        />
+        {ticket.customer_name ? (
+          <div className="flex items-center gap-2">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{
+                background: `${COLORS.gold}20`,
+                border: `1px solid ${COLORS.gold}40`
+              }}
+            >
+              <User className="w-4 h-4" style={{ color: COLORS.gold }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium truncate" style={{ color: COLORS.champagne }}>
+                {ticket.customer_name}
+              </p>
+              <p className="text-[10px]" style={{ color: COLORS.bronze }}>
+                Customer
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div
+            className="flex items-center gap-2 p-2 rounded-lg"
+            style={{
+              background: `${COLORS.charcoalLight}`,
+              border: `1px dashed ${COLORS.gold}40`
+            }}
+          >
+            <User className="w-4 h-4 flex-shrink-0" style={{ color: COLORS.gold }} />
+            <p className="text-[10px] flex-1" style={{ color: COLORS.champagne }}>
+              Customer will be selected in Bill Setup
+            </p>
+          </div>
+        )}
       </div>
 
       <CardContent className="p-0 flex-1 flex flex-col min-h-0 relative z-10">
@@ -382,36 +573,137 @@ export function CartSidebar({
                             </div>
                           </div>
 
-                          {item.stylist_name && (
-                            <div
-                              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg mt-2"
-                              style={{
-                                background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}05 100%)`,
-                                border: `1px solid ${COLORS.gold}40`,
-                                boxShadow: `0 1px 3px ${COLORS.gold}20`
-                              }}
-                            >
-                              <div
-                                className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-semibold"
-                                style={{
-                                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                                  color: COLORS.black
-                                }}
-                              >
-                                {getInitials(item.stylist_name)}
+                          {/* Staff Assignment Section - Only for Services */}
+                          {item.entity_type === 'service' && (() => {
+                            const currentStaff = getCurrentStaffList(item)
+                            const hasStaff = currentStaff.ids.length > 0
+
+                            return (
+                              <div className="mt-2 space-y-2">
+                                {/* Staff Badges - Show all assigned staff */}
+                                {hasStaff && (
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {currentStaff.ids.map((staffId, index) => {
+                                      const staffName = currentStaff.names[index]
+                                      return (
+                                        <div
+                                          key={staffId}
+                                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg group/staff"
+                                          style={{
+                                            background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}05 100%)`,
+                                            border: `1px solid ${COLORS.gold}40`,
+                                            boxShadow: `0 1px 3px ${COLORS.gold}20`
+                                          }}
+                                        >
+                                          <div
+                                            className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-semibold"
+                                            style={{
+                                              background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                                              color: COLORS.black
+                                            }}
+                                          >
+                                            {getInitials(staffName)}
+                                          </div>
+                                          <p
+                                            className="text-[11px] font-medium truncate"
+                                            style={{ color: COLORS.gold, maxWidth: '100px' }}
+                                          >
+                                            {staffName}
+                                          </p>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleRemoveStaff(item.id, staffId)}
+                                            className="h-5 w-5 p-0 opacity-60 hover:opacity-100"
+                                            style={{ color: '#EF4444' }}
+                                          >
+                                            <X className="w-3 h-3" />
+                                          </Button>
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                )}
+
+                                {/* Add Staff Button - Always Visible */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setShowStaffSelector(showStaffSelector === item.id ? null : item.id)}
+                                  className="w-full text-xs py-1.5 h-auto"
+                                  style={{
+                                    background: `${COLORS.charcoalDark}`,
+                                    borderColor: `${COLORS.gold}40`,
+                                    color: COLORS.gold,
+                                    borderStyle: hasStaff ? 'solid' : 'dashed'
+                                  }}
+                                >
+                                  <UserPlus className="w-3 h-3 mr-1.5" />
+                                  {hasStaff ? 'Add Another Staff' : 'Assign Staff'}
+                                </Button>
+
+                                {/* Staff Selector Dropdown */}
+                                {showStaffSelector === item.id && (
+                                  <div
+                                    className="p-2 rounded-lg animate-fadeIn"
+                                    style={{
+                                      background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoalDark} 100%)`,
+                                      border: `1px solid ${COLORS.gold}40`,
+                                      boxShadow: `0 4px 12px ${COLORS.black}50`
+                                    }}
+                                  >
+                                    <div className="max-h-40 overflow-y-auto space-y-1">
+                                      {staffLoading ? (
+                                        <div className="text-center py-3" style={{ color: COLORS.lightText }}>
+                                          <p className="text-xs">Loading staff...</p>
+                                        </div>
+                                      ) : !staff || staff.length === 0 ? (
+                                        <div className="text-center py-3" style={{ color: COLORS.lightText }}>
+                                          <p className="text-xs">No staff found</p>
+                                        </div>
+                                      ) : (
+                                        staff.map(s => {
+                                          const isAssigned = currentStaff.ids.includes(s.id)
+                                          return (
+                                            <Button
+                                              key={s.id}
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() => handleAddStaff(item.id, s.id, s.entity_name)}
+                                              disabled={isAssigned}
+                                              className="w-full justify-start text-xs py-1.5 h-auto disabled:opacity-40"
+                                              style={{
+                                                color: COLORS.champagne,
+                                                background: isAssigned ? `${COLORS.gold}20` : 'transparent'
+                                              }}
+                                            >
+                                              <div
+                                                className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-semibold mr-2"
+                                                style={{
+                                                  background: isAssigned
+                                                    ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+                                                    : `${COLORS.gold}30`,
+                                                  color: isAssigned ? COLORS.black : COLORS.gold
+                                                }}
+                                              >
+                                                {getInitials(s.entity_name)}
+                                              </div>
+                                              {s.entity_name}
+                                              {isAssigned && (
+                                                <span className="ml-auto text-[10px]" style={{ color: COLORS.gold }}>
+                                                  ✓ Assigned
+                                                </span>
+                                              )}
+                                            </Button>
+                                          )
+                                        })
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                              <p
-                                className="text-[11px] font-medium truncate flex-1"
-                                style={{ color: COLORS.gold }}
-                              >
-                                {item.stylist_name}
-                              </p>
-                              <Award
-                                className="w-3 h-3 flex-shrink-0"
-                                style={{ color: COLORS.gold }}
-                              />
-                            </div>
-                          )}
+                            )
+                          })()}
                         </div>
 
                         <Button
@@ -466,12 +758,70 @@ export function CartSidebar({
                         </div>
 
                         <div className="text-right">
-                          <div className="text-[10px] mb-0.5" style={{ color: COLORS.bronze }}>
-                            AED {(item?.unit_price || 0).toFixed(2)} each
-                          </div>
-                          <div className="font-semibold text-sm" style={{ color: COLORS.gold }}>
-                            AED {(item?.line_amount || 0).toFixed(2)}
-                          </div>
+                          {/* Price Edit for Services Only */}
+                          {item.entity_type === 'service' && editingPriceId === item.id ? (
+                            <div className="flex items-center gap-2 animate-fadeIn">
+                              <Input
+                                type="number"
+                                value={editPrice}
+                                onChange={(e) => setEditPrice(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') handleSavePrice(item.id)
+                                  if (e.key === 'Escape') handleCancelEditPrice()
+                                }}
+                                className="h-7 w-24 text-xs text-right"
+                                style={{
+                                  backgroundColor: COLORS.charcoalDark,
+                                  borderColor: COLORS.gold,
+                                  color: COLORS.champagne
+                                }}
+                                autoFocus
+                                step="0.01"
+                                min="0"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleSavePrice(item.id)}
+                                className="h-7 w-7 p-0"
+                                style={{ color: COLORS.emerald }}
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={handleCancelEditPrice}
+                                className="h-7 w-7 p-0"
+                                style={{ color: '#EF4444' }}
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="flex items-center justify-end gap-1.5 mb-0.5">
+                                <span className="text-[10px]" style={{ color: COLORS.bronze }}>
+                                  AED {(item?.unit_price || 0).toFixed(2)} each
+                                </span>
+                                {item.entity_type === 'service' && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleStartEditPrice(item)}
+                                    className="h-4 w-4 p-0 opacity-60 hover:opacity-100 transition-opacity"
+                                    style={{ color: COLORS.gold }}
+                                    title="Edit service price"
+                                  >
+                                    <Edit3 className="w-3 h-3" />
+                                  </Button>
+                                )}
+                              </div>
+                              <div className="font-semibold text-sm" style={{ color: COLORS.gold }}>
+                                AED {(item?.line_amount || 0).toFixed(2)}
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
 
@@ -498,23 +848,37 @@ export function CartSidebar({
               </div>
             </ScrollArea>
 
-            {/* Discount and Tip Section - Side by Side */}
+            {/* Discount, Tip, and Other Item Section - Three Columns */}
             <div
               className="px-4 py-2.5 border-t flex-shrink-0"
               style={{ borderColor: `${COLORS.gold}20` }}
             >
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {/* Discount */}
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setShowDiscountSection(!showDiscountSection)}
-                  className="text-xs py-2"
+                  className="text-xs py-2 hover:scale-[1.02] transition-all duration-200"
                   style={{
-                    ...salonButtonThemes.subtleAction.style,
-                    fontSize: '0.75rem',
-                    backgroundColor: showDiscountSection ? `${COLORS.emerald}20` : undefined,
-                    borderColor: showDiscountSection ? COLORS.emerald : undefined
+                    background: showDiscountSection
+                      ? `${COLORS.emerald}20`
+                      : `${COLORS.charcoalDark}80`,
+                    borderColor: showDiscountSection ? COLORS.emerald : `${COLORS.emerald}40`,
+                    color: COLORS.emerald,
+                    fontSize: '0.75rem'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${COLORS.emerald}25`
+                    e.currentTarget.style.borderColor = `${COLORS.emerald}60`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = showDiscountSection
+                      ? `${COLORS.emerald}20`
+                      : `${COLORS.charcoalDark}80`
+                    e.currentTarget.style.borderColor = showDiscountSection
+                      ? COLORS.emerald
+                      : `${COLORS.emerald}40`
                   }}
                 >
                   <Percent className="w-3.5 h-3.5 mr-1.5" />
@@ -526,21 +890,60 @@ export function CartSidebar({
                   variant="outline"
                   size="sm"
                   onClick={() => setShowTipSection(!showTipSection)}
-                  className="text-xs py-2"
+                  className="text-xs py-2 hover:scale-[1.02] transition-all duration-200"
                   style={{
-                    ...salonButtonThemes.subtleAction.style,
+                    background: showTipSection
+                      ? `${COLORS.gold}20`
+                      : `${COLORS.charcoalDark}80`,
                     borderColor: showTipSection ? COLORS.gold : `${COLORS.gold}40`,
                     color: COLORS.gold,
-                    fontSize: '0.75rem',
-                    backgroundColor: showTipSection ? `${COLORS.gold}20` : undefined
+                    fontSize: '0.75rem'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${COLORS.gold}25`
+                    e.currentTarget.style.borderColor = `${COLORS.gold}60`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = showTipSection
+                      ? `${COLORS.gold}20`
+                      : `${COLORS.charcoalDark}80`
+                    e.currentTarget.style.borderColor = showTipSection
+                      ? COLORS.gold
+                      : `${COLORS.gold}40`
                   }}
                 >
                   <DollarSign className="w-3.5 h-3.5 mr-1.5" />
                   Tip
                 </Button>
+
+                {/* Unified Other Item Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleOpenOtherItem}
+                  disabled={!onAddItem}
+                  className="text-xs py-2 hover:scale-[1.02] transition-all duration-200"
+                  style={{
+                    background: `${COLORS.charcoalDark}80`,
+                    borderColor: `${COLORS.bronze}40`,
+                    color: COLORS.champagne,
+                    fontSize: '0.75rem'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${COLORS.bronze}25`
+                    e.currentTarget.style.borderColor = `${COLORS.bronze}60`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = `${COLORS.charcoalDark}80`
+                    e.currentTarget.style.borderColor = `${COLORS.bronze}40`
+                  }}
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1.5" />
+                  Other Item
+                </Button>
               </div>
 
-              {/* Discount Section */}
+              {/* Discount Section - Enhanced with Mode Toggle */}
               {showDiscountSection && (
                 <div
                   className="mt-3 p-3 rounded-lg animate-fadeIn"
@@ -549,7 +952,7 @@ export function CartSidebar({
                     border: `1px solid ${COLORS.emerald}40`
                   }}
                 >
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-3">
                     <Label className="text-xs font-semibold" style={{ color: COLORS.champagne }}>
                       Quick Discount
                     </Label>
@@ -563,37 +966,98 @@ export function CartSidebar({
                       <X className="w-3 h-3" />
                     </Button>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    {[5, 10, 15].map(percent => (
-                      <Button
-                        key={percent}
-                        size="sm"
-                        onClick={() => applyQuickDiscount(percent)}
-                        className="text-xs py-1.5"
-                        style={{
-                          background: `${COLORS.emerald}30`,
-                          color: COLORS.champagne,
-                          borderColor: `${COLORS.emerald}60`,
-                          border: '1px solid'
-                        }}
-                      >
-                        {percent}%
-                      </Button>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      type="number"
-                      placeholder="Custom %"
-                      value={customDiscountPercent}
-                      onChange={e => setCustomDiscountPercent(e.target.value)}
-                      className="text-xs h-8"
+
+                  {/* Mode Toggle - Percent vs Amount */}
+                  <div className="flex gap-1.5 mb-3 p-1 rounded-lg" style={{ background: COLORS.charcoalDark }}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDiscountMode('percent')}
+                      className="flex-1 text-xs py-1.5 transition-all"
                       style={{
-                        backgroundColor: COLORS.charcoalDark,
-                        borderColor: `${COLORS.emerald}40`,
-                        color: COLORS.champagne
+                        background: discountMode === 'percent' ? `${COLORS.emerald}40` : 'transparent',
+                        color: discountMode === 'percent' ? COLORS.black : COLORS.emerald,
+                        fontWeight: discountMode === 'percent' ? '600' : '400'
                       }}
-                    />
+                    >
+                      <Percent className="w-3 h-3 mr-1" />
+                      Percent
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDiscountMode('amount')}
+                      className="flex-1 text-xs py-1.5 transition-all"
+                      style={{
+                        background: discountMode === 'amount' ? `${COLORS.emerald}40` : 'transparent',
+                        color: discountMode === 'amount' ? COLORS.black : COLORS.emerald,
+                        fontWeight: discountMode === 'amount' ? '600' : '400'
+                      }}
+                    >
+                      <DollarSign className="w-3 h-3 mr-1" />
+                      Amount
+                    </Button>
+                  </div>
+
+                  {/* Quick Discount Buttons - Percent Only */}
+                  {discountMode === 'percent' && (
+                    <div className="grid grid-cols-3 gap-2 mb-3">
+                      {[5, 10, 15].map(percent => (
+                        <Button
+                          key={percent}
+                          size="sm"
+                          onClick={() => applyQuickDiscount(percent)}
+                          className="text-xs py-1.5"
+                          style={{
+                            background: `${COLORS.emerald}30`,
+                            color: COLORS.champagne,
+                            borderColor: `${COLORS.emerald}60`,
+                            border: '1px solid'
+                          }}
+                        >
+                          {percent}%
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Custom Input - Changes based on mode */}
+                  <div className="flex gap-2">
+                    {discountMode === 'percent' ? (
+                      <Input
+                        type="number"
+                        placeholder="Custom %"
+                        value={customDiscountPercent}
+                        onChange={e => setCustomDiscountPercent(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && applyCustomDiscount()}
+                        className="text-xs h-8"
+                        style={{
+                          backgroundColor: COLORS.charcoalDark,
+                          borderColor: `${COLORS.emerald}40`,
+                          color: COLORS.champagne
+                        }}
+                        min="0"
+                        max="100"
+                        step="1"
+                      />
+                    ) : (
+                      <Input
+                        type="number"
+                        placeholder="Custom AED"
+                        value={customDiscountAmount}
+                        onChange={e => setCustomDiscountAmount(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && applyCustomDiscount()}
+                        className="text-xs h-8"
+                        style={{
+                          backgroundColor: COLORS.charcoalDark,
+                          borderColor: `${COLORS.emerald}40`,
+                          color: COLORS.champagne
+                        }}
+                        min="0"
+                        max={totals.subtotal.toString()}
+                        step="0.01"
+                      />
+                    )}
                     <Button
                       size="sm"
                       onClick={applyCustomDiscount}
@@ -674,6 +1138,166 @@ export function CartSidebar({
                     >
                       Apply
                     </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Unified "Other Item" Modal - Enterprise Grade */}
+              {showOtherItemModal && (
+                <div
+                  className="mt-3 p-4 rounded-lg animate-fadeIn"
+                  style={{
+                    background: `linear-gradient(135deg, ${
+                      otherItemType === 'service' ? COLORS.gold : COLORS.silver
+                    }15 0%, ${COLORS.charcoalDark} 100%)`,
+                    border: `1px solid ${
+                      otherItemType === 'service' ? COLORS.gold : COLORS.silver
+                    }40`,
+                    boxShadow: `0 4px 12px ${COLORS.black}50`
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Plus className="w-4 h-4" style={{ color: COLORS.champagne }} />
+                      <Label className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                        Add Other Item
+                      </Label>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleCancelOtherItem}
+                      className="h-6 w-6 p-0"
+                      style={{ color: COLORS.bronze }}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* Type Selector - Service or Product */}
+                    <div>
+                      <Label className="text-xs mb-2 block" style={{ color: COLORS.bronze }}>
+                        Item Type
+                      </Label>
+                      <div className="flex gap-2 p-1 rounded-lg" style={{ background: COLORS.charcoalDark }}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setOtherItemType('service')}
+                          className="flex-1 text-xs py-2 transition-all"
+                          style={{
+                            background: otherItemType === 'service' ? `${COLORS.gold}40` : 'transparent',
+                            color: otherItemType === 'service' ? COLORS.black : COLORS.gold,
+                            fontWeight: otherItemType === 'service' ? '600' : '400'
+                          }}
+                        >
+                          <Scissors className="w-3.5 h-3.5 mr-1.5" />
+                          Service
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setOtherItemType('product')}
+                          className="flex-1 text-xs py-2 transition-all"
+                          style={{
+                            background: otherItemType === 'product' ? `${COLORS.silver}40` : 'transparent',
+                            color: otherItemType === 'product' ? COLORS.black : COLORS.silver,
+                            fontWeight: otherItemType === 'product' ? '600' : '400'
+                          }}
+                        >
+                          <Package className="w-3.5 h-3.5 mr-1.5" />
+                          Product
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Fixed Name Display */}
+                    <div
+                      className="p-3 rounded-lg"
+                      style={{
+                        background: `${COLORS.charcoalDark}`,
+                        border: `1px solid ${
+                          otherItemType === 'service' ? COLORS.gold : COLORS.silver
+                        }30`
+                      }}
+                    >
+                      <Label className="text-xs mb-1 block" style={{ color: COLORS.bronze }}>
+                        Will be added as
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        {otherItemType === 'service' ? (
+                          <Scissors className="w-3.5 h-3.5" style={{ color: COLORS.gold }} />
+                        ) : (
+                          <Package className="w-3.5 h-3.5" style={{ color: COLORS.silver }} />
+                        )}
+                        <p className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                          {otherItemType === 'service' ? 'Other Service' : 'Other Product'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Price Input Only */}
+                    <div>
+                      <Label className="text-xs mb-1.5 block" style={{ color: COLORS.bronze }}>
+                        Price (AED) *
+                      </Label>
+                      <Input
+                        type="number"
+                        placeholder="0.00"
+                        value={otherItemPrice}
+                        onChange={e => setOtherItemPrice(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') handleAddOtherItem()
+                          if (e.key === 'Escape') handleCancelOtherItem()
+                        }}
+                        className="text-sm h-10"
+                        style={{
+                          backgroundColor: COLORS.charcoalDark,
+                          borderColor: `${
+                            otherItemType === 'service' ? COLORS.gold : COLORS.silver
+                          }40`,
+                          color: COLORS.champagne
+                        }}
+                        step="0.01"
+                        min="0"
+                        autoFocus
+                      />
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleCancelOtherItem}
+                        className="text-xs h-9"
+                        style={{
+                          background: `${COLORS.charcoalDark}`,
+                          borderColor: `${COLORS.bronze}40`,
+                          color: COLORS.bronze
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={handleAddOtherItem}
+                        disabled={!otherItemPrice || parseFloat(otherItemPrice) <= 0}
+                        className="text-xs h-9"
+                        style={{
+                          background: `linear-gradient(135deg, ${
+                            otherItemType === 'service' ? COLORS.gold : COLORS.silver
+                          } 0%, ${
+                            otherItemType === 'service' ? COLORS.goldDark : COLORS.silverDark
+                          } 100%)`,
+                          color: COLORS.black
+                        }}
+                      >
+                        <Plus className="w-3.5 h-3.5 mr-1.5" />
+                        Add to Cart
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}

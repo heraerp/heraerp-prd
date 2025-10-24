@@ -1,12 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter
-} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
@@ -18,24 +10,14 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
-import { Calendar as CalendarIcon, AlertCircle, Info } from 'lucide-react'
+import { Calendar as CalendarIcon, AlertCircle, Info, CalendarDays } from 'lucide-react'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { format, differenceInDays, isWeekend, eachDayOfInterval } from 'date-fns'
+import { format, differenceInDays } from 'date-fns'
 import { calculateWorkingDays } from '@/lib/playbook/hr_leave'
 import type { LeaveRequest } from '@/schemas/hr_leave'
-
-const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  emerald: '#0F6F5C',
-  rose: '#E8B4B8',
-  lightText: '#E0E0E0'
-}
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
 interface LeaveRequestModalProps {
   open: boolean
@@ -65,15 +47,32 @@ export function LeaveRequestModal({
   const [workingDays, setWorkingDays] = useState(0)
   const [noticeWarning, setNoticeWarning] = useState(false)
 
+  // ✅ DEBUG: Log staff data received by modal
+  useEffect(() => {
+    if (staff && staff.length > 0) {
+      console.log('[LeaveRequestModal] 🔍 Staff data received:', {
+        count: staff.length,
+        staff: staff.slice(0, 3).map(s => ({
+          id: s.id,
+          entity_name: s.entity_name,
+          entity_code: s.entity_code,
+          entity_type: s.entity_type
+        }))
+      })
+    }
+  }, [staff])
+
   // Calculate working days whenever dates change
   useEffect(() => {
     if (from && to) {
-      const holidayDates = holidays.map(h => new Date(h.metadata.date))
+      const holidayDates = holidays && holidays.length > 0
+        ? holidays.map(h => new Date(h.metadata?.date || h.date))
+        : []
       const days = calculateWorkingDays(from, to, holidayDates, halfDayStart, halfDayEnd)
       setWorkingDays(days)
 
       // Check min notice days
-      const policy = policies[0] // TODO: Get policy for staff
+      const policy = policies && policies.length > 0 ? policies[0] : null
       const minNoticeDays = policy?.metadata?.min_notice_days || 7
       const daysUntilStart = differenceInDays(from, new Date())
       setNoticeWarning(daysUntilStart < minNoticeDays)
@@ -88,20 +87,19 @@ export function LeaveRequestModal({
 
     setLoading(true)
     try {
-      // Get staff's branch
-      const selectedStaff = staff.find(s => s.id === staffId)
-      const branchId = selectedStaff?.metadata?.branch_id || 'branch-1'
+      // Get staff's branch and manager (for now, use the first staff member as manager - TODO: proper manager selection)
+      const selectedStaff = staff && staff.length > 0 ? staff.find(s => s.id === staffId) : null
+      const managerId = staff && staff.length > 0 ? staff[0].id : staffId // TODO: Add proper manager selection
 
       await onSubmit({
         staff_id: staffId,
-        branch_id: branchId,
-        type,
-        from,
-        to,
-        half_day_start: halfDayStart,
-        half_day_end: halfDayEnd,
-        notes
-      })
+        manager_id: managerId,
+        leave_type: type,
+        start_date: from.toISOString(),
+        end_date: to.toISOString(),
+        reason: notes || 'Leave request', // Use notes as reason, or default text
+        notes: notes
+      } as any)
 
       onClose()
       // Reset form
@@ -132,229 +130,306 @@ export function LeaveRequestModal({
   }, [open, staffId, from, to])
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent
-        className="sm:max-w-2xl max-h-[90vh] flex flex-col"
-        style={{
-          backgroundColor: COLORS.charcoal,
-          color: COLORS.champagne,
-          border: `1px solid ${COLORS.black}`
-        }}
-      >
-        <DialogHeader className="flex-shrink-0">
-          <DialogTitle style={{ color: COLORS.champagne }}>New Leave Request</DialogTitle>
-          <DialogDescription style={{ color: COLORS.bronze }}>
-            Submit a leave request for approval. Working days exclude weekends and public holidays.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-6 py-4 overflow-y-auto flex-1 min-h-0">
-          {/* Staff Selection */}
-          <div className="space-y-2">
-            <Label htmlFor="staff" style={{ color: COLORS.champagne }}>
-              Staff Member
-            </Label>
-            <Select value={staffId} onValueChange={setStaffId}>
-              <SelectTrigger
-                className="bg-transparent border"
-                style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
-              >
-                <SelectValue placeholder="Select staff member" />
-              </SelectTrigger>
-              <SelectContent className="hera-select-content">
-                {staff.map(s => (
+    <SalonLuxeModal
+      open={open}
+      onClose={onClose}
+      title="New Leave Request"
+      description="Submit a leave request for approval. Working days exclude weekends and public holidays."
+      icon={<CalendarDays className="w-6 h-6" />}
+      size="lg"
+      footer={
+        <>
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={loading}
+            className="outline-button"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={loading || !staffId || !from || !to}
+            className="primary-button"
+          >
+            {loading ? 'Submitting...' : 'Submit Request'}
+          </Button>
+        </>
+      }
+    >
+      <div className="space-y-6 py-4">
+        {/* Staff Selection */}
+        <div className="space-y-2">
+          <Label htmlFor="staff">Staff Member</Label>
+          <Select value={staffId} onValueChange={setStaffId}>
+            <SelectTrigger className="hera-select-trigger">
+              <SelectValue placeholder="Select staff member" />
+            </SelectTrigger>
+            <SelectContent className="hera-select-content">
+              {staff && staff.length > 0 ? (
+                staff.map(s => (
                   <SelectItem key={s.id} value={s.id} className="hera-select-item">
-                    {s.entity_name} ({s.entity_code})
+                    {s.entity_name}
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Leave Type */}
-          <div className="space-y-2">
-            <Label htmlFor="type" style={{ color: COLORS.champagne }}>
-              Leave Type
-            </Label>
-            <Select value={type} onValueChange={v => setType(v as any)}>
-              <SelectTrigger
-                className="bg-transparent border"
-                style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="hera-select-content">
-                <SelectItem value="ANNUAL" className="hera-select-item">
-                  Annual Leave
+                ))
+              ) : (
+                <SelectItem value="loading" disabled className="hera-select-item">
+                  Loading staff...
                 </SelectItem>
-                <SelectItem value="SICK" className="hera-select-item">
-                  Sick Leave
-                </SelectItem>
-                <SelectItem value="UNPAID" className="hera-select-item">
-                  Unpaid Leave
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Date Range */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="from" style={{ color: COLORS.champagne }}>
-                From Date
-              </Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left bg-transparent border"
-                    style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
-                  >
-                    <CalendarIcon size={16} className="mr-2" />
-                    {from ? format(from, 'PPP') : 'Select date'}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0 z-50"
-                  style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}` }}
-                  side="bottom"
-                  align="start"
-                >
-                  <Calendar
-                    mode="single"
-                    selected={from}
-                    onSelect={setFrom}
-                    disabled={date => date < new Date()}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="to" style={{ color: COLORS.champagne }}>
-                To Date
-              </Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left bg-transparent border"
-                    style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
-                  >
-                    <CalendarIcon size={16} className="mr-2" />
-                    {to ? format(to, 'PPP') : 'Select date'}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0 z-50"
-                  style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}` }}
-                  side="bottom"
-                  align="start"
-                >
-                  <Calendar
-                    mode="single"
-                    selected={to}
-                    onSelect={setTo}
-                    disabled={date => (from ? date < from : date < new Date())}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-
-          {/* Half Day Options */}
-          {from && to && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="half-start" style={{ color: COLORS.champagne }}>
-                  Half day on start date
-                </Label>
-                <Switch id="half-start" checked={halfDayStart} onCheckedChange={setHalfDayStart} />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="half-end" style={{ color: COLORS.champagne }}>
-                  Half day on end date
-                </Label>
-                <Switch id="half-end" checked={halfDayEnd} onCheckedChange={setHalfDayEnd} />
-              </div>
-            </div>
-          )}
-
-          {/* Working Days Preview */}
-          {from && to && (
-            <div
-              className="p-4 rounded-lg"
-              style={{ backgroundColor: '#141414', border: `1px solid ${COLORS.black}` }}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Info size={16} color={COLORS.bronze} />
-                  <span className="text-sm" style={{ color: COLORS.champagne }}>
-                    Working days
-                  </span>
-                </div>
-                <span className="text-2xl font-semibold" style={{ color: COLORS.gold }}>
-                  {workingDays}
-                </span>
-              </div>
-              {noticeWarning && (
-                <div
-                  className="flex items-center gap-2 mt-3 text-sm"
-                  style={{ color: COLORS.rose }}
-                >
-                  <AlertCircle size={16} />
-                  Short notice: Less than required notice period
-                </div>
               )}
-            </div>
-          )}
+            </SelectContent>
+          </Select>
+        </div>
 
-          {/* Notes */}
+        {/* Leave Type */}
+        <div className="space-y-2">
+          <Label htmlFor="type">Leave Type</Label>
+          <Select value={type} onValueChange={v => setType(v as any)}>
+            <SelectTrigger className="hera-select-trigger">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="hera-select-content">
+              <SelectItem value="ANNUAL" className="hera-select-item">
+                Annual Leave
+              </SelectItem>
+              <SelectItem value="SICK" className="hera-select-item">
+                Sick Leave
+              </SelectItem>
+              <SelectItem value="UNPAID" className="hera-select-item">
+                Unpaid Leave
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Date Range */}
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="notes" style={{ color: COLORS.champagne }}>
-              Notes (Optional)
-            </Label>
-            <Textarea
-              id="notes"
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              placeholder="Additional information..."
-              className="bg-transparent border resize-none"
-              style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
-              rows={3}
-            />
+            <Label htmlFor="from">From Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left outline-button">
+                  <CalendarIcon size={16} className="mr-2" />
+                  {from ? format(from, 'PPP') : 'Select date'}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 z-50" side="bottom" align="start">
+                <Calendar
+                  mode="single"
+                  selected={from}
+                  onSelect={setFrom}
+                  disabled={date => date < new Date()}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="to">To Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left outline-button">
+                  <CalendarIcon size={16} className="mr-2" />
+                  {to ? format(to, 'PPP') : 'Select date'}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 z-50" side="bottom" align="start">
+                <Calendar
+                  mode="single"
+                  selected={to}
+                  onSelect={setTo}
+                  disabled={date => (from ? date < from : date < new Date())}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
-        <DialogFooter className="flex-shrink-0 border-t pt-4" style={{ borderColor: COLORS.black }}>
-          <div className="flex flex-col gap-2 w-full">
-            <div className="flex gap-2 justify-end">
-              <Button
-                variant="outline"
-                onClick={onClose}
-                disabled={loading}
-                style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSubmit}
-                disabled={loading || !staffId || !from || !to}
-                className="border-0"
+        {/* Half Day Options */}
+        {from && to && (
+          <div className="space-y-4 p-4 rounded-lg border-2" style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.base,
+            borderColor: `${SALON_LUXE_COLORS.gold.base}40`
+          }}>
+            <div className="flex items-center justify-between gap-4">
+              <Label htmlFor="half-start" className="text-base font-medium cursor-pointer" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                Half day on start date
+              </Label>
+              <Switch
+                id="half-start"
+                checked={halfDayStart}
+                onCheckedChange={setHalfDayStart}
                 style={{
-                  backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black
+                  backgroundColor: halfDayStart ? SALON_LUXE_COLORS.gold.base : '#374151'
                 }}
-              >
-                {loading ? 'Submitting...' : 'Submit Request'}
-              </Button>
+              />
             </div>
-            <p className="text-xs text-center">Press ⌘+Enter to submit</p>
+            <div className="flex items-center justify-between gap-4">
+              <Label htmlFor="half-end" className="text-base font-medium cursor-pointer" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                Half day on end date
+              </Label>
+              <Switch
+                id="half-end"
+                checked={halfDayEnd}
+                onCheckedChange={setHalfDayEnd}
+                style={{
+                  backgroundColor: halfDayEnd ? SALON_LUXE_COLORS.gold.base : '#374151'
+                }}
+              />
+            </div>
           </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        )}
+
+        {/* Working Days Preview */}
+        {from && to && (
+          <div
+            className="p-4 rounded-lg"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.darker,
+              border: `1px solid ${SALON_LUXE_COLORS.gold.base}30`
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Info size={16} style={{ color: SALON_LUXE_COLORS.gold.base }} />
+                <span className="text-sm">Working days</span>
+              </div>
+              <span className="text-2xl font-semibold" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+                {workingDays}
+              </span>
+            </div>
+            {noticeWarning && (
+              <div className="flex items-center gap-2 mt-3 text-sm" style={{ color: SALON_LUXE_COLORS.rose.base }}>
+                <AlertCircle size={16} />
+                Short notice: Less than required notice period
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Notes */}
+        <div className="space-y-2">
+          <Label htmlFor="notes">Notes (Optional)</Label>
+          <Textarea
+            id="notes"
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            placeholder="Additional information..."
+            className="resize-none"
+            rows={3}
+          />
+        </div>
+
+        {/* Keyboard Shortcut Hint */}
+        <p className="text-xs text-center opacity-60">Press ⌘+Enter to submit</p>
+      </div>
+
+      {/* Calendar Date Visibility Styling */}
+      <style jsx global>{`
+        /* Calendar date picker - MUCH better contrast for selected dates */
+        .salon-luxe-modal [role="gridcell"][data-selected="true"] button,
+        .salon-luxe-modal .rdp-day_selected {
+          background-color: rgba(140, 120, 83, 0.4) !important;
+          color: #FFFFFF !important;
+          font-weight: 700 !important;
+          border: 2px solid ${SALON_LUXE_COLORS.gold.base} !important;
+        }
+
+        .salon-luxe-modal [role="gridcell"][data-selected="true"] button:hover,
+        .salon-luxe-modal .rdp-day_selected:hover {
+          background-color: rgba(140, 120, 83, 0.6) !important;
+          color: #FFFFFF !important;
+        }
+
+        /* Calendar normal dates - white text for visibility */
+        .salon-luxe-modal [role="gridcell"] button,
+        .salon-luxe-modal .rdp-day {
+          color: ${SALON_LUXE_COLORS.champagne.base} !important;
+          font-weight: 500 !important;
+        }
+
+        /* Calendar today indicator - clear border */
+        .salon-luxe-modal [role="gridcell"][data-today="true"] button,
+        .salon-luxe-modal .rdp-day_today {
+          border: 2px solid ${SALON_LUXE_COLORS.gold.base} !important;
+          background-color: rgba(212, 175, 55, 0.1) !important;
+          color: ${SALON_LUXE_COLORS.gold.base} !important;
+          font-weight: 700 !important;
+        }
+
+        /* Calendar hover state - subtle highlight */
+        .salon-luxe-modal [role="gridcell"] button:hover,
+        .salon-luxe-modal .rdp-day:hover {
+          background-color: rgba(212, 175, 55, 0.2) !important;
+          color: #FFFFFF !important;
+        }
+
+        /* Calendar disabled dates - clearly dimmed */
+        .salon-luxe-modal [role="gridcell"] button[disabled],
+        .salon-luxe-modal .rdp-day[disabled] {
+          opacity: 0.25 !important;
+          color: rgba(224, 224, 224, 0.3) !important;
+        }
+
+        /* Calendar background - dark charcoal */
+        .salon-luxe-modal [role="grid"],
+        .salon-luxe-modal .rdp-months {
+          background-color: ${SALON_LUXE_COLORS.charcoal.darker} !important;
+          padding: 1rem !important;
+        }
+
+        /* Calendar header (month/year) - bright champagne */
+        .salon-luxe-modal .rdp-caption,
+        .salon-luxe-modal .rdp-caption_label {
+          color: ${SALON_LUXE_COLORS.champagne.base} !important;
+          font-weight: 600 !important;
+          font-size: 0.95rem !important;
+        }
+
+        /* Calendar navigation buttons - gold with hover */
+        .salon-luxe-modal .rdp-nav button,
+        .salon-luxe-modal .rdp-nav_button {
+          color: ${SALON_LUXE_COLORS.gold.base} !important;
+        }
+
+        .salon-luxe-modal .rdp-nav button:hover,
+        .salon-luxe-modal .rdp-nav_button:hover {
+          background-color: ${SALON_LUXE_COLORS.gold.base}20 !important;
+        }
+
+        /* Calendar weekday headers - secondary text */
+        .salon-luxe-modal .rdp-head_cell,
+        .salon-luxe-modal .rdp-head th {
+          color: ${SALON_LUXE_COLORS.text.secondary} !important;
+          font-weight: 600 !important;
+          font-size: 0.85rem !important;
+        }
+
+        /* Popover content for calendar - dark with gold border */
+        .salon-luxe-modal [role="dialog"],
+        .salon-luxe-modal .rdp {
+          background-color: ${SALON_LUXE_COLORS.charcoal.darker} !important;
+          border: 1px solid ${SALON_LUXE_COLORS.gold.base}30 !important;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+          border-radius: 0.75rem !important;
+        }
+
+        /* Calendar cell spacing */
+        .salon-luxe-modal .rdp-cell {
+          padding: 2px !important;
+        }
+
+        /* Calendar day button sizing */
+        .salon-luxe-modal .rdp-day {
+          width: 2.5rem !important;
+          height: 2.5rem !important;
+          border-radius: 0.5rem !important;
+          transition: all 0.2s ease !important;
+        }
+      `}</style>
+    </SalonLuxeModal>
   )
 }

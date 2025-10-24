@@ -8,7 +8,8 @@ import { callRPC, assertOrgScope } from '@/lib/universal/supabase'
 import { SmartCodeEngine } from '@/lib/universal/smart-code-engine'
 import { EntityBuilder } from '@/lib/universal/entity-builder'
 import { EntityReadParams, EntityDeleteParams, EntityUpsertBody } from '@/lib/universal/schemas'
-import { GuardrailViolation, UUID } from '@/lib/universal/guardrails'
+import type { GuardrailViolation } from '@/lib/universal/guardrails'
+import { UUID } from '@/lib/universal/guardrails'
 
 interface RouteParams {
   params: {

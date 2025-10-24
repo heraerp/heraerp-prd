@@ -7,14 +7,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
   Loader2,
   Eye,
   EyeOff,
@@ -24,12 +16,12 @@ import {
   User,
   Lock,
   ChevronRight,
-  Sparkles,
-  AlertCircle
+  Sparkles
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
+import { clearInvalidTokens } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
-import { DemoUserSelector } from './DemoUserSelector'
+// Demo authentication removed - using proper HERA v2.2 authentication
 
 // Luxe color palette
 const COLORS = {
@@ -145,6 +137,28 @@ function getRolePermissions(role: string): string[] {
   return permissions[role] || []
 }
 
+// Helper function to determine role from email
+function determineRoleFromEmail(email: string): string {
+  const emailLower = email.toLowerCase()
+
+  if (emailLower.includes('michele') || emailLower.includes('owner')) {
+    return 'owner'
+  } else if (emailLower.includes('manager')) {
+    return 'manager'
+  } else if (emailLower.includes('receptionist')) {
+    return 'receptionist'
+  } else if (emailLower.includes('stylist')) {
+    return 'stylist'
+  } else if (emailLower.includes('accountant')) {
+    return 'accountant'
+  } else if (emailLower.includes('admin')) {
+    return 'admin'
+  }
+
+  // Default to receptionist for unrecognized emails
+  return 'receptionist'
+}
+
 export function HairTalkzAuthSimple() {
   const router = useRouter()
   const { toast } = useToast()
@@ -153,65 +167,53 @@ export function HairTalkzAuthSimple() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const [selectedRole, setSelectedRole] = useState('')
-  const [showDemoUsers, setShowDemoUsers] = useState(false)
-  const [showSessionExpiredMessage, setShowSessionExpiredMessage] = useState(false)
+  // Demo users removed - using proper Supabase authentication
 
-  // Check if user was redirected due to session expiration
+  // Clear any invalid tokens on mount to prevent refresh errors
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedRedirect = sessionStorage.getItem('salon_auth_redirect')
-      if (savedRedirect) {
-        setShowSessionExpiredMessage(true)
+    const handleAuthError = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+
+        // If there's an error or no valid session, clear storage
+        if (error || !session) {
+          await supabase.auth.signOut()
+          clearInvalidTokens()
+          console.log('🧹 Cleared invalid auth tokens on mount')
+        }
+      } catch (error) {
+        console.error('Error checking session:', error)
+        // Clear tokens on any error
+        clearInvalidTokens()
       }
     }
+
+    handleAuthError()
   }, [])
 
-  const handleDemoUserSelect = async (demoEmail: string, demoPassword: string) => {
-    setEmail(demoEmail)
-    setPassword(demoPassword)
-
-    // Determine role from email
-    const roleFromEmail = demoEmail.includes('michele')
-      ? 'owner'
-      : demoEmail.includes('manager')
-        ? 'manager'
-        : demoEmail.includes('receptionist')
-          ? 'receptionist'
-          : demoEmail.includes('stylist')
-            ? 'stylist'
-            : demoEmail.includes('accountant')
-              ? 'accountant'
-              : demoEmail.includes('admin')
-                ? 'admin'
-                : 'owner'
-
-    setSelectedRole(roleFromEmail)
-
-    // Auto-login
-    await handleLogin(null, demoEmail, demoPassword, roleFromEmail)
-  }
+  // Demo user selection removed - using proper authentication flow
 
   const handleLogin = async (
     e: React.FormEvent | null,
     loginEmail?: string,
-    loginPassword?: string,
-    loginRole?: string
+    loginPassword?: string
   ) => {
     if (e) e.preventDefault()
 
     const currentEmail = loginEmail || email
     const currentPassword = loginPassword || password
-    const currentRole = loginRole || selectedRole
 
-    if (!currentEmail || !currentPassword || !currentRole) {
+    if (!currentEmail || !currentPassword) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in all fields and select your role',
+        description: 'Please fill in email and password',
         variant: 'destructive'
       })
       return
     }
+
+    // Automatically determine role from email
+    const currentRole = determineRoleFromEmail(currentEmail)
 
     setLoading(true)
 
@@ -236,30 +238,64 @@ export function HairTalkzAuthSimple() {
 
         // Set local storage for organization context and RBAC
         localStorage.setItem('organizationId', HAIRTALKZ_ORG_ID)
-        localStorage.setItem('salonRole', selectedRole)
-        localStorage.setItem('userPermissions', JSON.stringify(getRolePermissions(selectedRole)))
+        localStorage.setItem('salonRole', currentRole)
+        localStorage.setItem(
+          'userPermissions',
+          JSON.stringify(getRolePermissions(currentRole))
+        )
 
-        // ✅ ENTERPRISE: Check for saved redirect URL (from 401 error)
-        const savedRedirect = sessionStorage.getItem('salon_auth_redirect')
-
-        let redirectPath: string
-        if (savedRedirect) {
-          // Redirect back to the page they were trying to access
-          redirectPath = savedRedirect
-          sessionStorage.removeItem('salon_auth_redirect') // Clean up
-        } else {
-          // Get default redirect path based on role
-          const roleConfig = USER_ROLES.find(r => r.value === selectedRole)
-          redirectPath = roleConfig?.redirectPath || '/salon/dashboard'
-        }
+        // Get redirect path based on role
+        const roleConfig = USER_ROLES.find(r => r.value === currentRole)
+        const redirectPath = roleConfig?.redirectPath || '/salon/dashboard'
 
         toast({
           title: 'Welcome to HairTalkz',
-          description: `Logged in as ${USER_ROLES.find(r => r.value === selectedRole)?.label}`
+          description: `Logged in as ${roleConfig?.label}`
         })
 
-        // Use window.location for a clean redirect
-        window.location.href = redirectPath
+        // Wait for auth/attach endpoint to complete before redirecting
+        console.log('🔗 Calling auth/attach endpoint...')
+        try {
+          const attachResponse = await fetch('/api/v2/auth/attach', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${data.session.access_token}`,
+              'x-hera-org-id': HAIRTALKZ_ORG_ID,
+              'Content-Type': 'application/json'
+            }
+          })
+
+          if (attachResponse.ok) {
+            console.log('✅ Auth attach completed successfully')
+            
+            // Give a moment for the auth provider to update state
+            setTimeout(() => {
+              window.location.href = redirectPath
+            }, 500)
+          } else {
+            console.error('❌ Auth attach failed:', await attachResponse.text())
+            // Still redirect but show warning
+            toast({
+              title: 'Warning',
+              description: 'Authentication completed but user setup had issues',
+              variant: 'destructive'
+            })
+            setTimeout(() => {
+              window.location.href = redirectPath
+            }, 1000)
+          }
+        } catch (error) {
+          console.error('❌ Auth attach error:', error)
+          // Still redirect but show warning
+          toast({
+            title: 'Warning', 
+            description: 'Authentication completed but user setup had issues',
+            variant: 'destructive'
+          })
+          setTimeout(() => {
+            window.location.href = redirectPath
+          }, 1000)
+        }
       }
     } catch (error: any) {
       console.error('Login error:', error)
@@ -315,23 +351,6 @@ export function HairTalkzAuthSimple() {
             Professional Access Portal
           </p>
         </div>
-
-        {/* Session Expired Alert */}
-        {showSessionExpiredMessage && (
-          <Alert
-            className="mb-6 animate-fadeIn"
-            style={{
-              backgroundColor: `${COLORS.gold}15`,
-              borderColor: `${COLORS.gold}50`,
-              border: '1px solid'
-            }}
-          >
-            <AlertCircle className="h-4 w-4" style={{ color: COLORS.gold }} />
-            <AlertDescription style={{ color: COLORS.champagne }}>
-              <strong>Session Expired</strong> - Please log in again to continue.
-            </AlertDescription>
-          </Alert>
-        )}
 
         {/* Login Form */}
         <form
@@ -401,57 +420,12 @@ export function HairTalkzAuthSimple() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-          </div>
-
-          {/* Role Selection */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="role"
-              className="text-sm font-light tracking-wider uppercase"
-              style={{ color: COLORS.bronze }}
+            <p
+              className="text-xs font-light italic mt-1"
+              style={{ color: COLORS.bronze + '80' }}
             >
-              Access Level
-            </Label>
-            <Select value={selectedRole} onValueChange={setSelectedRole} disabled={loading}>
-              <SelectTrigger
-                className="h-12 font-light"
-                style={{
-                  backgroundColor: COLORS.charcoal,
-                  border: `1px solid ${COLORS.bronze}50`,
-                  color: COLORS.champagne
-                }}
-              >
-                <SelectValue placeholder="Select your role" />
-              </SelectTrigger>
-              <SelectContent
-                className="hera-select-content hairtalkz-select-content"
-                style={{
-                  backgroundColor: COLORS.charcoalLight,
-                  border: `1px solid ${COLORS.bronze}50`
-                }}
-              >
-                {USER_ROLES.map(role => (
-                  <SelectItem
-                    key={role.value}
-                    value={role.value}
-                    className="cursor-pointer hera-select-item"
-                    style={{
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <role.icon className="h-4 w-4" style={{ color: COLORS.gold }} />
-                      <div>
-                        <div style={{ color: COLORS.champagne }}>{role.label}</div>
-                        <div className="text-xs" style={{ color: COLORS.bronze }}>
-                          {role.description}
-                        </div>
-                      </div>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              Your access level is automatically determined from your email
+            </p>
           </div>
 
           {/* Remember Me */}
@@ -523,29 +497,12 @@ export function HairTalkzAuthSimple() {
           </div>
         </form>
 
-        {/* Demo Users Toggle */}
+        {/* Authentication Notice */}
         <div className="mt-6 text-center">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setShowDemoUsers(!showDemoUsers)}
-            className="text-sm"
-            style={{
-              borderColor: COLORS.bronze,
-              color: COLORS.bronze,
-              backgroundColor: 'transparent'
-            }}
-          >
-            {showDemoUsers ? 'Hide Demo Users' : 'Show Demo Users'} 🧪
-          </Button>
+          <p className="text-sm font-light tracking-wider" style={{ color: COLORS.bronze + '80' }}>
+            Using secure HERA v2.2 authentication
+          </p>
         </div>
-
-        {/* Demo User Selector */}
-        {showDemoUsers && (
-          <div className="mt-6">
-            <DemoUserSelector onUserSelect={handleDemoUserSelect} isLoading={loading} />
-          </div>
-        )}
 
         {/* Footer */}
         <div className="mt-8 text-center">
@@ -561,23 +518,6 @@ export function HairTalkzAuthSimple() {
           </div>
         </div>
       </div>
-
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out;
-        }
-      `}</style>
     </div>
   )
 }

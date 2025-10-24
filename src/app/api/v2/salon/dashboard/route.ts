@@ -18,14 +18,6 @@ async function handleGetSalonDashboard(req: NextRequest, context: SecurityContex
     const { searchParams } = new URL(req.url)
     const timeRange = searchParams.get('timeRange') || 'today'
 
-    console.log('🎯 Salon Dashboard API called with context:', {
-      userId: context.userId,
-      orgId: context.orgId,
-      role: context.role,
-      authMode: context.authMode,
-      timeRange
-    })
-
     // Role-based permissions
     const canViewFinancials = ['owner', 'manager', 'accountant'].includes(context.role)
     const canViewAllStaff = ['owner', 'manager'].includes(context.role)
@@ -126,8 +118,6 @@ async function handleGetSalonDashboard(req: NextRequest, context: SecurityContex
       timeRange,
       demoMode: true
     }
-
-    console.log('✅ Dashboard data generated successfully for role:', context.role)
 
     return NextResponse.json({
       success: true,

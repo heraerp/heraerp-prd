@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getSupabaseService } from '@/lib/supabase-service'
-import { verifyAuth } from '@/lib/auth/verify-auth'
+import { verifyAuth, buildActorContext } from '@/lib/auth/verify-auth'
 import { assertSmartCode } from '@/lib/universal/smartcode'
 
 // Universal entity schema - works for ANY entity type
@@ -25,6 +25,9 @@ const entitySchema = z.object({
   parent_entity_id: z.string().uuid().optional().nullable(),
   status: z.string().optional().nullable(),
   metadata: z.record(z.any()).optional(),
+
+  // ✅ ENTERPRISE AUDIT TRAIL: Accept created_by for tracking entity creation
+  created_by: z.string().uuid().optional(),
 
   // Dynamic fields - can be anything!
   dynamic_fields: z
@@ -40,7 +43,9 @@ const entitySchema = z.object({
 
 // Update schema
 const updateSchema = entitySchema.partial().extend({
-  entity_id: z.string().uuid()
+  entity_id: z.string().uuid(),
+  // ✅ ENTERPRISE AUDIT TRAIL: Accept updated_by for tracking entity updates
+  updated_by: z.string().uuid().optional()
 })
 
 export async function POST(request: NextRequest) {
@@ -61,95 +66,109 @@ export async function POST(request: NextRequest) {
 
     const supabase = getSupabaseService()
 
-    // Ensure user exists as an entity (for audit trail references)
-    const { data: existingUser } = await supabase
-      .from('core_entities')
-      .select('id')
-      .eq('id', userId)
-      .eq('organization_id', organizationId)
-      .single()
+    // ✅ HERA v2.2 ACTOR STAMPING: Build actor context
+    const actor = await buildActorContext(supabase, userId, organizationId)
 
-    if (!existingUser) {
-      // Create user entity
-      await supabase.from('core_entities').insert({
-        id: userId, // Use Supabase auth ID as entity ID
-        organization_id: organizationId,
-        entity_type: 'user',
-        entity_name: email || 'User',
-        entity_code: `USER-${userId.substring(0, 8)}`,
-        smart_code: 'HERA.CORE.USER.ENT.STANDARD.V1',
-        metadata: { email }
-      })
+    console.log('🎭 [CREATE] Actor context built:', {
+      actor_user_id: actor.actor_user_id,
+      actor_user_id_type: typeof actor.actor_user_id
+    })
+
+    // Step 1: Create entity using hera_entity_upsert_v1 RPC
+    const createPayload = {
+      p_organization_id: organizationId,
+      p_entity_type: data.entity_type,
+      p_entity_name: data.entity_name,
+      p_smart_code: data.smart_code,
+      p_entity_id: null, // null for create
+      p_entity_code: data.entity_code || `${data.entity_type.toUpperCase()}-${Date.now()}`,
+      p_entity_description: data.entity_description || null,
+      p_parent_entity_id: data.parent_entity_id || null,
+      p_status: data.status || null,
+      p_tags: null,
+      p_smart_code_status: null,
+      p_business_rules: null,
+      p_metadata: data.metadata || null,
+      p_ai_confidence: null,
+      p_ai_classification: null,
+      p_ai_insights: null,
+      p_actor_user_id: actor.actor_user_id // ✅ CRITICAL: Required for audit trail
     }
 
-    // Step 1: Create entity using direct database insert
-    const entityData: any = {
-      organization_id: organizationId,
-      entity_type: data.entity_type,
-      entity_name: data.entity_name,
-      smart_code: data.smart_code,
-      entity_code: data.entity_code || `${data.entity_type.toUpperCase()}-${Date.now()}`,
-      metadata: data.metadata || {},
-      status: data.status || 'active' // Default to 'active' if not provided
-      // created_by and updated_by are set by database triggers (handle_audit_trail)
-    }
+    console.log('🚀 [CREATE] EXACT RPC PAYLOAD:', JSON.stringify(createPayload, null, 2))
+    console.log('🔑 [CREATE] p_actor_user_id value:', createPayload.p_actor_user_id)
 
-    // Add optional fields if provided
-    if (data.entity_description) entityData.entity_description = data.entity_description
-    if (data.parent_entity_id) entityData.parent_entity_id = data.parent_entity_id
-
-    const { data: entityResult, error: entityError } = await supabase
-      .from('core_entities')
-      .insert(entityData)
-      .select()
-      .single()
+    const { data: entityResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', createPayload)
 
     if (entityError || !entityResult) {
       console.error('Entity creation failed:', entityError)
+
+      // Handle duplicate entity_code error
+      if (entityError?.message?.includes('duplicate key') && entityError?.message?.includes('uq_entity_org_code')) {
+        return NextResponse.json(
+          {
+            error: 'Duplicate entity code',
+            details: `An entity with code "${data.entity_code}" already exists in this organization. Please use a different code.`,
+            code: 'DUPLICATE_ENTITY_CODE'
+          },
+          { status: 409 } // 409 Conflict
+        )
+      }
+
       return NextResponse.json(
-        { error: 'Failed to create entity', details: entityError?.message },
+        { error: 'Failed to create entity', details: entityError?.message || 'No entity returned' },
         { status: 500 }
       )
     }
 
-    const entityId = entityResult.id
+    // RPC returns the entity_id as a string
+    const entityId = entityResult
 
-    // Step 2: Add dynamic fields if provided
+    // Step 2: Add dynamic fields if provided using batch operation
     if (data.dynamic_fields) {
-      for (const [fieldName, fieldConfig] of Object.entries(data.dynamic_fields)) {
-        const dynamicData: any = {
-          organization_id: organizationId,
-          entity_id: entityId,
+      // ✅ FIX: Transform to RPC format with TYPED columns (field_value_text, field_value_number, etc.)
+      const dynamicFields = Object.entries(data.dynamic_fields).map(([fieldName, fieldConfig]) => {
+        const item: any = {
           field_name: fieldName,
           field_type: fieldConfig.type,
           smart_code: fieldConfig.smart_code
-          // created_by and updated_by are set by database triggers
         }
 
-        // Set the appropriate value field based on type
+        // Set the appropriate typed column based on field type
         switch (fieldConfig.type) {
-          case 'text':
-            dynamicData.field_value_text = fieldConfig.value
-            break
           case 'number':
-            dynamicData.field_value_number = fieldConfig.value
+            item.field_value_number = fieldConfig.value
             break
           case 'boolean':
-            dynamicData.field_value_boolean = fieldConfig.value
+            item.field_value_boolean = fieldConfig.value
             break
           case 'date':
-            dynamicData.field_value_date = fieldConfig.value
+            item.field_value_date = fieldConfig.value
             break
           case 'json':
-            dynamicData.field_value_json = fieldConfig.value
+            item.field_value_json = fieldConfig.value
+            break
+          case 'text':
+          default:
+            item.field_value_text = fieldConfig.value
             break
         }
 
-        const { error: dynamicError } = await supabase.from('core_dynamic_data').insert(dynamicData)
+        return item
+      })
 
-        if (dynamicError) {
-          console.error(`Warning: Failed to set field ${fieldName}:`, dynamicError)
-        }
+      console.log('📝 Creating dynamic fields:', dynamicFields)
+
+      // Use batch RPC for dynamic data (when available)
+      const { error: dynamicError } = await supabase.rpc('hera_dynamic_data_batch_v1', {
+        p_organization_id: organizationId,
+        p_entity_id: entityId,
+        p_items: dynamicFields, // ✅ FIX: Use p_items not p_fields (correct RPC parameter name)
+        p_actor_user_id: actor.actor_user_id // ✅ Add actor stamping for audit trail
+      })
+
+      if (dynamicError) {
+        console.error('Warning: Failed to set dynamic fields:', dynamicError)
       }
     }
 
@@ -161,7 +180,9 @@ export async function POST(request: NextRequest) {
           entity_id: entityId,
           ...entityResult,
           dynamic_fields: data.dynamic_fields
-        }
+        },
+        actor_stamped: true, // ✅ Indicates actor stamping was applied
+        actor_user_id: actor.actor_user_id
       },
       { status: 201 }
     )
@@ -253,6 +274,8 @@ export async function GET(request: NextRequest) {
       isSuccess: result?.success,
       dataCount: result?.data?.length || 0,
       firstItemHasRelationships: result?.data?.[0] ? !!result.data[0].relationships : false,
+      firstItemHasDynamicFields: result?.data?.[0] ? !!result.data[0].dynamic_fields : false,
+      firstItemDynamicFieldsSample: result?.data?.[0]?.dynamic_fields || null,
       firstItemSample: result?.data?.[0] || null
     })
 
@@ -306,7 +329,20 @@ export async function PUT(request: NextRequest) {
 
     const supabase = getSupabaseService()
 
-    // Update entity core fields if provided
+    // ✅ HERA v2.2 ACTOR STAMPING: Build actor context
+    const actor = await buildActorContext(supabase, userId, organizationId)
+
+    console.log('🎭 Actor context built:', {
+      actor_user_id: actor.actor_user_id,
+      organization_id: actor.organization_id,
+      user_email: actor.user_email,
+      actor_user_id_type: typeof actor.actor_user_id,
+      actor_user_id_isNull: actor.actor_user_id === null,
+      actor_user_id_isUndefined: actor.actor_user_id === undefined,
+      actor_user_id_isEmpty: actor.actor_user_id === ''
+    })
+
+    // Update entity core fields using hera_entity_upsert_v1 RPC
     if (
       data.entity_name ||
       data.entity_code ||
@@ -316,32 +352,62 @@ export async function PUT(request: NextRequest) {
       data.metadata ||
       data.smart_code
     ) {
-      const updateData: any = {
-        updated_by: userId,
-        updated_at: new Date().toISOString()
-      }
+      console.log('📝 Updating core entity fields via RPC:', {
+        entity_id: data.entity_id,
+        fields: {
+          entity_name: data.entity_name,
+          entity_code: data.entity_code,
+          status: data.status
+        },
+        actor_user_id: actor.actor_user_id
+      })
 
-      if (data.entity_name) updateData.entity_name = data.entity_name
-      if (data.entity_code) updateData.entity_code = data.entity_code
-      if (data.entity_description !== undefined)
-        updateData.entity_description = data.entity_description
-      if (data.parent_entity_id !== undefined) updateData.parent_entity_id = data.parent_entity_id
-      if (data.status !== undefined) updateData.status = data.status
-      if (data.metadata) updateData.metadata = data.metadata
-      if (data.smart_code) updateData.smart_code = data.smart_code
-
-      console.log('📝 Updating core entity fields:', updateData)
-
-      const { error: entityError } = await supabase
+      // Get the entity first to get required fields for update
+      const { data: existingEntity } = await supabase
         .from('core_entities')
-        .update(updateData)
+        .select('entity_type, entity_name, smart_code')
         .eq('id', data.entity_id)
         .eq('organization_id', organizationId)
+        .single()
 
-      if (entityError) {
+      if (!existingEntity) {
+        return NextResponse.json(
+          { error: 'Entity not found' },
+          { status: 404 }
+        )
+      }
+
+      // 🔍 CRITICAL DEBUG: Log the EXACT RPC payload being sent
+      const rpcPayload = {
+        p_organization_id: organizationId,
+        p_entity_type: existingEntity.entity_type,
+        p_entity_name: data.entity_name || existingEntity.entity_name,
+        p_smart_code: data.smart_code || existingEntity.smart_code,
+        p_entity_id: data.entity_id,
+        p_entity_code: data.entity_code || null,
+        p_entity_description: data.entity_description !== undefined ? data.entity_description : null,
+        p_parent_entity_id: data.parent_entity_id !== undefined ? data.parent_entity_id : null,
+        p_status: data.status !== undefined ? data.status : null,
+        p_tags: null,
+        p_smart_code_status: null,
+        p_business_rules: null,
+        p_metadata: data.metadata || null,
+        p_ai_confidence: null,
+        p_ai_classification: null,
+        p_ai_insights: null,
+        p_actor_user_id: actor.actor_user_id
+      }
+
+      console.log('🚀 EXACT RPC PAYLOAD:', JSON.stringify(rpcPayload, null, 2))
+      console.log('🔑 p_actor_user_id value:', rpcPayload.p_actor_user_id)
+      console.log('🔑 p_actor_user_id type:', typeof rpcPayload.p_actor_user_id)
+
+      const { data: updateResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', rpcPayload)
+
+      if (entityError || !updateResult) {
         console.error('Entity update failed:', entityError)
         return NextResponse.json(
-          { error: 'Failed to update entity', details: entityError.message },
+          { error: 'Failed to update entity', details: entityError?.message || 'Update failed' },
           { status: 500 }
         )
       }
@@ -358,7 +424,8 @@ export async function PUT(request: NextRequest) {
           field_name: fieldName,
           field_type: fieldConfig.type,
           smart_code: fieldConfig.smart_code,
-          updated_by: userId,
+          // ✅ ENTERPRISE AUDIT TRAIL: Use provided updated_by or default to current user
+          updated_by: data.updated_by || userId,
           updated_at: new Date().toISOString()
         }
 
@@ -400,11 +467,13 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    console.log('✅ Entity update completed successfully')
+    console.log('✅ Entity update completed successfully with actor stamping')
 
     return NextResponse.json({
       success: true,
-      message: 'Entity updated successfully'
+      message: 'Entity updated successfully',
+      actor_stamped: true, // ✅ Indicates actor stamping was applied
+      actor_user_id: actor.actor_user_id
     })
   } catch (error) {
     console.error('Universal entity update error:', error)

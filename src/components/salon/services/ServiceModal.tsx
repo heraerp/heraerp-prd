@@ -6,7 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Service, ServiceFormValues, ServiceFormSchema } from '@/types/salon-service'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import {
   Form,
   FormControl,
@@ -27,7 +28,6 @@ import {
 } from '@/components/ui/select'
 import {
   Sparkles,
-  X,
   Clock,
   CalendarCheck,
   CalendarX,
@@ -43,16 +43,17 @@ interface ServiceModalProps {
   onSave: (data: ServiceFormValues) => Promise<void>
 }
 
+// Map SALON_LUXE_COLORS to flat structure for convenience
 const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323'
+  black: SALON_LUXE_COLORS.charcoal.dark,      // #0F0F0F
+  charcoal: SALON_LUXE_COLORS.charcoal.base,   // #1A1A1A
+  gold: SALON_LUXE_COLORS.gold.base,           // #D4AF37
+  goldDark: SALON_LUXE_COLORS.gold.dark,       // #B8860B
+  champagne: SALON_LUXE_COLORS.champagne.base, // #f5e9b8
+  bronze: '#8C7853',                            // Custom bronze (not in luxe colors)
+  lightText: SALON_LUXE_COLORS.text.primary,   // #F5F7FA
+  charcoalDark: SALON_LUXE_COLORS.charcoal.dark,   // #0F0F0F
+  charcoalLight: SALON_LUXE_COLORS.charcoal.light  // #252525
 }
 
 export function ServiceModal({ open, onClose, service, onSave }: ServiceModalProps) {
@@ -93,78 +94,77 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
       status: 'active',
       currency: currency || 'AED',
       branch_ids: [] // Default to no branches selected
-    }
+    },
+    mode: 'onChange' // ✅ Enable real-time form updates
   })
 
-  // Reset form when service changes
+  // Reset form when service changes or modal opens/closes
   useEffect(() => {
-    if (service) {
-      // Extract branch IDs from AVAILABLE_AT relationships
-      const availableAtRels = (service as any).relationships?.available_at
-      let branchIds: string[] = []
+    if (open) {
+      if (service) {
+        // ✅ ENTERPRISE FIX: Extract branch IDs from AVAILABLE_AT relationships
+        // Relationships have to_entity_id (UUID), not populated to_entity object
+        const availableAtRels = (service as any).relationships?.available_at ||
+                                 (service as any).relationships?.AVAILABLE_AT
+        let branchIds: string[] = []
 
-      if (Array.isArray(availableAtRels)) {
-        branchIds = availableAtRels.filter(rel => rel?.to_entity?.id).map(rel => rel.to_entity.id)
-      } else if (availableAtRels?.to_entity?.id) {
-        branchIds = [availableAtRels.to_entity.id]
+        if (Array.isArray(availableAtRels)) {
+          branchIds = availableAtRels
+            .filter(rel => rel?.to_entity_id || rel?.to_entity?.id)
+            .map(rel => rel.to_entity_id || rel.to_entity?.id)
+        } else if (availableAtRels?.to_entity_id || availableAtRels?.to_entity?.id) {
+          branchIds = [availableAtRels.to_entity_id || availableAtRels.to_entity?.id]
+        }
+
+        // Extract category ID from HAS_CATEGORY relationship
+        // Note: useUniversalEntity stores relationships as lowercase keys
+        const categoryRels =
+          (service as any).relationships?.has_category ||
+          (service as any).relationships?.HAS_CATEGORY ||
+          (service as any).relationships?.category
+        let categoryId = ''
+
+        if (Array.isArray(categoryRels) && categoryRels.length > 0) {
+          categoryId = categoryRels[0].to_entity?.id || categoryRels[0].to_entity_id || ''
+        } else if (categoryRels?.to_entity?.id) {
+          categoryId = categoryRels.to_entity.id
+        } else if (categoryRels?.to_entity_id) {
+          categoryId = categoryRels.to_entity_id
+        }
+
+        // Map service dynamic fields to form fields
+        // Service has: price_market, duration_min, description (dynamic field), status (entity field)
+        // Form expects: price, duration_minutes, status, description
+        form.reset({
+          name: service.entity_name || '',
+          code: service.entity_code || '',
+          category: categoryId, // Use category ID from relationship
+          price: service.price_market || service.price || undefined,
+          duration_minutes: service.duration_min || service.duration_minutes || undefined,
+          requires_booking: service.requires_booking || false,
+          description: service.description || service.entity_description || '',
+          // 🎯 CRITICAL FIX: Use entity-level status field directly (not active dynamic field)
+          status: service.status || 'active',
+          currency: service.currency || currency || 'AED',
+          branch_ids: branchIds
+        })
+      } else {
+        // Creating new service - initialize with defaults
+        form.reset({
+          name: '',
+          code: '',
+          category: '',
+          price: undefined,
+          duration_minutes: undefined,
+          requires_booking: false,
+          description: '',
+          status: 'active',
+          currency: currency || 'AED',
+          branch_ids: []
+        })
       }
-
-      // Extract category ID from HAS_CATEGORY relationship
-      // Note: useUniversalEntity stores relationships as lowercase keys
-      const categoryRels =
-        (service as any).relationships?.has_category ||
-        (service as any).relationships?.HAS_CATEGORY ||
-        (service as any).relationships?.category
-      let categoryId = ''
-
-      console.log('[ServiceModal] Extracting category:', {
-        service_id: service.id,
-        relationships: (service as any).relationships,
-        categoryRels,
-        isArray: Array.isArray(categoryRels)
-      })
-
-      if (Array.isArray(categoryRels) && categoryRels.length > 0) {
-        categoryId = categoryRels[0].to_entity?.id || categoryRels[0].to_entity_id || ''
-      } else if (categoryRels?.to_entity?.id) {
-        categoryId = categoryRels.to_entity.id
-      } else if (categoryRels?.to_entity_id) {
-        categoryId = categoryRels.to_entity_id
-      }
-
-      console.log('[ServiceModal] Extracted category ID:', categoryId)
-
-      // Map service dynamic fields to form fields
-      // Service has: price_market, duration_min, description (dynamic field), status (entity field)
-      // Form expects: price, duration_minutes, status, description
-      form.reset({
-        name: service.entity_name || '',
-        code: service.entity_code || '',
-        category: categoryId, // Use category ID from relationship
-        price: service.price_market || service.price || undefined,
-        duration_minutes: service.duration_min || service.duration_minutes || undefined,
-        requires_booking: service.requires_booking || false,
-        description: service.description || service.entity_description || '',
-        // 🎯 CRITICAL FIX: Use entity-level status field directly (not active dynamic field)
-        status: service.status || 'active',
-        currency: service.currency || currency || 'AED',
-        branch_ids: branchIds
-      })
-    } else {
-      form.reset({
-        name: '',
-        code: '',
-        category: '',
-        price: undefined,
-        duration_minutes: undefined,
-        requires_booking: false,
-        description: '',
-        status: 'active',
-        currency: currency || 'AED',
-        branch_ids: []
-      })
     }
-  }, [service, form, currency])
+  }, [service, open, form, currency])
 
   const handleSubmit = async (data: ServiceFormValues) => {
     try {
@@ -191,89 +191,58 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent
-        className="max-w-3xl max-h-[92vh] overflow-hidden flex flex-col p-0 animate-in fade-in zoom-in-95 duration-300"
-        aria-describedby={undefined}
-        style={{
-          backgroundColor: COLORS.black,
-          border: `1px solid ${COLORS.gold}30`,
-          boxShadow: `0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px ${COLORS.gold}20`,
-          borderRadius: '16px'
-        }}
-      >
-        {/* Luxe Header with Gradient */}
-        <div
-          className="relative px-8 py-6"
-          style={{
-            background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.black} 100%)`,
-            borderBottom: `1px solid ${COLORS.bronze}30`
-          }}
-        >
-          {/* Decorative Gold Accent Line */}
-          <div
-            className="absolute top-0 left-0 right-0 h-1"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${COLORS.gold}, transparent)`
-            }}
-          />
+    <SalonLuxeModal
+      open={open}
+      onClose={handleClose}
+      title={service ? 'Edit Service' : 'Create New Service'}
+      description={
+        service
+          ? 'Update service details and pricing'
+          : 'Add a premium service to elevate your offerings'
+      }
+      icon={<Sparkles className="w-7 h-7" />}
+      size="lg"
+      footer={
+        <div className="flex items-center justify-between w-full">
+          {/* Helper Text */}
+          <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.6 }}>
+            <span style={{ color: COLORS.gold }}>*</span> Required fields
+          </p>
 
-          <DialogHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-4">
-                {/* Luxe Icon Badge */}
-                <div
-                  className="relative w-14 h-14 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.gold}30 0%, ${COLORS.gold}10 100%)`,
-                    border: `2px solid ${COLORS.gold}50`,
-                    boxShadow: `0 8px 16px ${COLORS.gold}20`
-                  }}
-                >
-                  <Sparkles className="w-7 h-7" style={{ color: COLORS.gold }} />
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              className="h-11 px-6 rounded-lg outline-button"
+            >
+              Cancel
+            </Button>
 
-                  {/* Sparkle Effect */}
-                  <div
-                    className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
-                    style={{ backgroundColor: COLORS.gold }}
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <DialogTitle
-                    className="text-2xl font-bold tracking-tight"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text'
-                    }}
-                  >
-                    {service ? 'Edit Service' : 'Create New Service'}
-                  </DialogTitle>
-                  <p className="text-sm" style={{ color: COLORS.lightText, opacity: 0.8 }}>
-                    {service
-                      ? 'Update service details and pricing'
-                      : 'Add a premium service to elevate your offerings'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={handleClose}
-                className="rounded-lg p-2 transition-all duration-200 hover:bg-muted"
-                style={{ color: COLORS.lightText }}
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-          </DialogHeader>
+            <Button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              onClick={form.handleSubmit(handleSubmit)}
+              className="h-11 px-8 rounded-lg font-semibold primary-button"
+            >
+              {form.formState.isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  {service ? 'Updating...' : 'Creating...'}
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  {service ? 'Update Service' : 'Create Service'}
+                </span>
+              )}
+            </Button>
+          </div>
         </div>
-
-        {/* Form Content - Scrollable */}
-        <div className="flex-1 overflow-y-auto px-8 py-6">
+      }
+    >
+      <div className="py-2">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
               {/* Basic Information Section */}
@@ -312,6 +281,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                         <FormControl>
                           <Input
                             {...field}
+                            value={field.value || ''} // ✅ Always ensure it's a string
                             placeholder="e.g., Premium Cut & Style"
                             className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
                             style={
@@ -343,6 +313,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                         <FormControl>
                           <Input
                             {...field}
+                            value={field.value || ''} // ✅ Always ensure it's a string
                             placeholder="Auto-generated"
                             className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
                             style={
@@ -739,6 +710,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
                       <FormControl>
                         <Textarea
                           {...field}
+                          value={field.value || ''} // ✅ Always ensure it's a string
                           placeholder="Describe what makes this service special..."
                           className="min-h-[100px] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none"
                           style={
@@ -964,67 +936,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
               </div>
             </form>
           </Form>
-        </div>
-
-        {/* Luxe Footer with Actions */}
-        <div
-          className="px-8 py-5 border-t animate-in fade-in slide-in-from-bottom-2 duration-300"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            borderColor: COLORS.bronze + '30',
-            animationDelay: '200ms'
-          }}
-        >
-          <div className="flex items-center justify-between">
-            {/* Helper Text */}
-            <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.6 }}>
-              <span style={{ color: COLORS.gold }}>*</span> Required fields
-            </p>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                className="h-11 px-6 rounded-lg transition-all duration-200"
-                style={{
-                  backgroundColor: 'transparent',
-                  borderColor: COLORS.bronze + '50',
-                  color: COLORS.lightText
-                }}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                type="submit"
-                disabled={form.formState.isSubmitting}
-                onClick={form.handleSubmit(handleSubmit)}
-                className="h-11 px-8 rounded-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black,
-                  border: 'none',
-                  boxShadow: `0 4px 12px ${COLORS.gold}30`
-                }}
-              >
-                {form.formState.isSubmitting ? (
-                  <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                    {service ? 'Updating...' : 'Creating...'}
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" />
-                    {service ? 'Update Service' : 'Create Service'}
-                  </span>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </SalonLuxeModal>
   )
 }

@@ -1,560 +1,385 @@
+/**
+ * Receptionist Dashboard
+ * Simplified dashboard for front-desk staff
+ */
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/luxe-card'
+import React, { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
   Calendar,
-  Clock,
   Users,
-  Phone,
   CheckCircle,
-  AlertCircle,
+  Clock,
   CreditCard,
-  MessageSquare,
-  Plus,
   Search,
-  User,
-  DollarSign,
-  Loader2,
-  CalendarDays,
   UserPlus,
-  Receipt
+  Scissors,
+  Sparkles,
+  RefreshCw,
+  Settings
 } from 'lucide-react'
-import Link from 'next/link'
-import { supabase } from '@/lib/supabase/client'
-
-// Luxe color palette
-const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323',
-  plum: '#B794F4',
-  emerald: '#0F6F5C',
-  ruby: '#DC2626',
-  sapphire: '#2563EB'
-}
-
-const HAIRTALKZ_ORG_ID = '378f24fb-d496-4ff7-8afa-ea34895a0eb8'
-
-interface AppointmentCard {
-  id: string
-  time: string
-  clientName: string
-  service: string
-  stylist: string
-  status: 'upcoming' | 'in-progress' | 'completed' | 'cancelled'
-  amount: number
-}
-
-function AppointmentStatusBadge({ status }: { status: AppointmentCard['status'] }) {
-  const colors = {
-    upcoming: { bg: `${COLORS.sapphire}20`, text: COLORS.sapphire, label: 'Upcoming' },
-    'in-progress': { bg: `${COLORS.emerald}20`, text: COLORS.emerald, label: 'In Progress' },
-    completed: { bg: `${COLORS.bronze}20`, text: COLORS.bronze, label: 'Completed' },
-    cancelled: { bg: `${COLORS.ruby}20`, text: COLORS.ruby, label: 'Cancelled' }
-  }
-
-  const config = colors[status]
-
-  return (
-    <span
-      className="px-3 py-1 rounded-full text-xs font-medium"
-      style={{
-        backgroundColor: config.bg,
-        color: config.text
-      }}
-    >
-      {config.label}
-    </span>
-  )
-}
-
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  color = COLORS.gold
-}: {
-  icon: React.ElementType
-  label: string
-  value: string | number
-  color?: string
-}) {
-  return (
-    <Card
-      style={{
-        backgroundColor: COLORS.charcoalLight,
-        border: `1px solid ${COLORS.bronze}20`
-      }}
-    >
-      <CardContent className="p-4">
-        <div className="flex items-center gap-3">
-          <div
-            className="h-10 w-10 rounded-lg flex items-center justify-center"
-            style={{
-              backgroundColor: `${color}20`,
-              color: color
-            }}
-          >
-            <Icon className="h-5 w-5" />
-          </div>
-          <div>
-            <p
-              className="text-xs font-light uppercase tracking-wider"
-              style={{ color: COLORS.bronze }}
-            >
-              {label}
-            </p>
-            <p className="text-xl font-light" style={{ color: COLORS.champagne }}>
-              {value}
-            </p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
+import { LUXE_COLORS } from '@/lib/constants/salon'
+import { useRouter } from 'next/navigation'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSalonSecurity } from '@/hooks/useSalonSecurity'
+import { useSalonDashboard } from '@/hooks/useSalonDashboard'
+import { Loader2 } from 'lucide-react'
 
 export default function ReceptionistDashboard() {
   const router = useRouter()
-  const [loading, setLoading] = useState(true)
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const [appointments, setAppointments] = useState<AppointmentCard[]>([])
+  const { organization, organizationId } = useSecuredSalonContext()
+  const { user, role } = useSalonSecurity()
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
-  useEffect(() => {
-    checkAuth()
-    loadAppointments()
-
-    // Update time every minute
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 60000)
-
-    return () => clearInterval(timer)
-  }, [])
-
-  const checkAuth = async () => {
-    const {
-      data: { session }
-    } = await supabase.auth.getSession()
-
-    if (!session?.user) {
-      router.push('/salon/auth')
-      return
+  // Redirect owner to their own dashboard
+  React.useEffect(() => {
+    if (role && role.toLowerCase() === 'owner') {
+      router.push('/salon/dashboard')
     }
+  }, [role, router])
 
-    const userMetadata = session.user.user_metadata
-    const userRole =
-      userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
+  // Fetch real data from Supabase
+  const {
+    kpis,
+    isLoading: dashboardLoading,
+    refreshAll,
+    appointments
+  } = useSalonDashboard({
+    organizationId: organizationId || '',
+    currency: 'AED',
+    selectedPeriod: 'today'
+  })
 
-    // Check organization
-    if (userMetadata?.organization_id !== HAIRTALKZ_ORG_ID) {
-      router.push('/salon/auth')
-      return
-    }
-
-    // Check role
-    if (userRole && userRole !== 'receptionist') {
-      // Redirect to appropriate dashboard based on role
-      const redirectMap: Record<string, string> = {
-        owner: '/salon/dashboard',
-        accountant: '/salon/accountant',
-        admin: '/salon/admin'
-      }
-
-      const redirectPath = redirectMap[userRole] || '/salon/auth'
-      router.push(redirectPath)
-      return
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    try {
+      await refreshAll()
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 800)
     }
   }
 
-  const loadAppointments = async () => {
-    // Mock appointments for demo
-    setAppointments([
-      {
-        id: '1',
-        time: '2:00 PM',
-        clientName: 'Emma Wilson',
-        service: 'Hair Color & Style',
-        stylist: 'Sarah Martinez',
-        status: 'upcoming',
-        amount: 450
-      },
-      {
-        id: '2',
-        time: '2:30 PM',
-        clientName: 'Olivia Brown',
-        service: 'Haircut & Blowdry',
-        stylist: 'Maria Lopez',
-        status: 'upcoming',
-        amount: 200
-      },
-      {
-        id: '3',
-        time: '1:30 PM',
-        clientName: 'Sophia Davis',
-        service: 'Keratin Treatment',
-        stylist: 'Lisa Chen',
-        status: 'in-progress',
-        amount: 800
-      },
-      {
-        id: '4',
-        time: '12:00 PM',
-        clientName: 'Isabella Garcia',
-        service: 'Highlights',
-        stylist: 'Sarah Martinez',
-        status: 'completed',
-        amount: 550
-      }
-    ])
-    setLoading(false)
-  }
-
-  if (loading) {
+  // Show loading if redirecting owner
+  if (role && role.toLowerCase() === 'owner') {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: COLORS.charcoal }}
-      >
-        <Loader2 className="h-8 w-8 animate-spin" style={{ color: COLORS.gold }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: LUXE_COLORS.black }}>
+        <div className="text-center">
+          <div className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
+            Redirecting to Owner Dashboard...
+          </div>
+        </div>
       </div>
     )
   }
 
+  // Show loading while fetching data
+  if (dashboardLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: LUXE_COLORS.black }}>
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+          <div className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
+            Loading dashboard...
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const quickActions = [
+    { icon: UserPlus, label: 'New Appointment', href: '/salon/appointments/new', color: LUXE_COLORS.gold },
+    { icon: Calendar, label: 'View Calendar', href: '/salon/appointments/calendar', color: LUXE_COLORS.emerald },
+    { icon: CreditCard, label: 'New Sale', href: '/salon/pos', color: LUXE_COLORS.plum },
+    { icon: Users, label: 'Add Customer', href: '/salon/customers', color: LUXE_COLORS.bronze }
+  ]
+
+  const stats = [
+    {
+      label: "Today's Appointments",
+      value: String(kpis.todayAppointments || 0),
+      icon: Calendar,
+      color: LUXE_COLORS.gold
+    },
+    {
+      label: 'Completed',
+      value: String(kpis.appointmentsByStatus.completed || 0),
+      icon: CheckCircle,
+      color: LUXE_COLORS.emerald
+    },
+    {
+      label: 'Pending',
+      value: String(kpis.appointmentsByStatus.pending + kpis.appointmentsByStatus.in_progress || 0),
+      icon: Clock,
+      color: LUXE_COLORS.bronze
+    },
+    {
+      label: 'In Progress',
+      value: String(kpis.appointmentsByStatus.in_progress || 0),
+      icon: Users,
+      color: LUXE_COLORS.plum
+    }
+  ]
+
+  // Get today's appointments for display
+  const todayAppointments = (appointments || [])
+    .filter(apt => {
+      const aptDate = new Date(apt.transaction_date || apt.created_at)
+      const today = new Date()
+      return aptDate.toDateString() === today.toDateString()
+    })
+    .slice(0, 5) // Show first 5
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: COLORS.charcoal }}>
-      {/* Header */}
+    <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
+      {/* Elegant gradient background overlay */}
       <div
-        className="border-b px-6 py-4"
+        className="fixed inset-0 pointer-events-none"
         style={{
-          backgroundColor: COLORS.charcoalLight,
-          borderColor: `${COLORS.bronze}20`
+          background: `
+            radial-gradient(circle at 10% 20%, ${LUXE_COLORS.gold}06 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, ${LUXE_COLORS.plum}04 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, ${LUXE_COLORS.emerald}03 0%, transparent 50%)
+          `,
+          opacity: 0.4
+        }}
+      />
+
+      {/* Premium Header */}
+      <div
+        className="sticky top-0 z-30 mb-8"
+        style={{
+          background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
+          border: `1px solid ${LUXE_COLORS.gold}20`,
+          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px ${LUXE_COLORS.gold}10`,
+          backdropFilter: 'blur(20px)'
         }}
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-light tracking-wider" style={{ color: COLORS.champagne }}>
-              Reception Dashboard
-            </h1>
-            <p
-              className="text-sm font-light mt-1 flex items-center gap-2"
-              style={{ color: COLORS.bronze }}
-            >
-              <Clock className="h-4 w-4" />
-              {currentTime.toLocaleString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-6 flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              {/* Organization Icon */}
+              <div
+                className="p-4 rounded-xl transition-all duration-500 hover:scale-110"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold}25 0%, ${LUXE_COLORS.gold}15 100%)`,
+                  border: `1px solid ${LUXE_COLORS.gold}40`,
+                  boxShadow: `0 0 20px ${LUXE_COLORS.gold}20`
+                }}
+              >
+                <Scissors className="w-8 h-8" style={{ color: LUXE_COLORS.gold }} />
+              </div>
 
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              className="font-light"
-              style={{
-                borderColor: COLORS.bronze,
-                color: COLORS.champagne
-              }}
-              asChild
-            >
-              <Link href="/salon/customers/new">
-                <UserPlus className="h-4 w-4 mr-2" />
-                New Customer
-              </Link>
-            </Button>
+              {/* Title and subtitle */}
+              <div>
+                <h1
+                  className="text-4xl font-bold tracking-tight mb-1 flex items-center gap-3"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    letterSpacing: '-0.02em'
+                  }}
+                >
+                  Receptionist Dashboard
+                  <Sparkles className="w-6 h-6 animate-pulse" style={{ color: LUXE_COLORS.gold }} />
+                </h1>
+                <p
+                  className="text-sm flex items-center gap-2"
+                  style={{ color: LUXE_COLORS.bronze }}
+                >
+                  <span className="font-medium">Front Desk Operations</span>
+                  <span>•</span>
+                  <span>
+                    {new Date().toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </p>
+              </div>
+            </div>
 
-            <Button
-              className="font-light"
-              style={{
-                backgroundColor: COLORS.gold,
-                color: COLORS.black
-              }}
-              asChild
-            >
-              <Link href="/salon/appointments/new">
-                <Plus className="h-4 w-4 mr-2" />
-                Book Appointment
-              </Link>
-            </Button>
+            {/* User Info and Actions */}
+            <div className="flex items-center gap-4">
+              {/* Refresh Button */}
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}20 0%, ${LUXE_COLORS.emerald}10 100%)`,
+                  border: `1px solid ${LUXE_COLORS.emerald}30`,
+                  color: LUXE_COLORS.champagne,
+                  boxShadow: isRefreshing ? `0 0 20px ${LUXE_COLORS.emerald}40` : undefined
+                }}
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
+
+              {/* Logout Button */}
+              <Button
+                onClick={async () => {
+                  try {
+                    const { supabase } = await import('@/lib/supabase/client')
+                    await supabase.auth.signOut()
+                    localStorage.removeItem('salonUserName')
+                    localStorage.removeItem('salonUserEmail')
+                    localStorage.removeItem('salonRole')
+                    router.push('/salon-access')
+                  } catch (error) {
+                    console.error('Logout error:', error)
+                    router.push('/salon-access')
+                  }
+                }}
+                variant="outline"
+                className="px-4 py-2.5 font-medium transition-all hover:scale-105"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.ruby}20 0%, ${LUXE_COLORS.ruby}10 100%)`,
+                  border: `1px solid ${LUXE_COLORS.ruby}40`,
+                  color: LUXE_COLORS.ruby,
+                  boxShadow: `0 0 0 1px ${LUXE_COLORS.ruby}20`
+                }}
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="p-6">
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <StatCard
-            icon={CalendarDays}
-            label="Today's Appointments"
-            value="18"
-            color={COLORS.sapphire}
-          />
-          <StatCard icon={Users} label="Walk-ins Today" value="5" color={COLORS.emerald} />
-          <StatCard
-            icon={DollarSign}
-            label="Today's Revenue"
-            value="AED 8,450"
-            color={COLORS.gold}
-          />
-          <StatCard icon={MessageSquare} label="Pending Messages" value="3" color={COLORS.plum} />
+      {/* Main Content */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-8">
+
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: LUXE_COLORS.champagne }}>Quick Actions</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {quickActions.map((action, index) => (
+              <button key={index} onClick={() => router.push(action.href)} className="p-6 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl" style={{ background: `linear-gradient(135deg, ${action.color}20 0%, ${action.color}10 100%)`, border: `1px solid ${action.color}40` }}>
+                <action.icon className="w-8 h-8 mx-auto mb-3" style={{ color: action.color }} />
+                <p className="text-sm font-medium text-center" style={{ color: LUXE_COLORS.champagne }}>{action.label}</p>
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Appointments List */}
-          <div className="lg:col-span-2">
-            <Card
-              style={{
-                backgroundColor: COLORS.charcoalLight,
-                border: `1px solid ${COLORS.bronze}20`
-              }}
-            >
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle
-                    className="text-lg font-light tracking-wider"
-                    style={{ color: COLORS.champagne }}
-                  >
-                    Today's Appointments
-                  </CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="font-light"
-                    style={{ color: COLORS.bronze }}
-                    asChild
-                  >
-                    <Link href="/salon/appointments">View All</Link>
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {appointments.map(appointment => (
-                    <div
-                      key={appointment.id}
-                      className="p-4 rounded-lg transition-all duration-200 hover:scale-[1.01]"
-                      style={{
-                        backgroundColor: COLORS.charcoal,
-                        border: `1px solid ${COLORS.bronze}20`
-                      }}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className="flex items-center gap-3">
-                            <span
-                              className="text-lg font-medium"
-                              style={{ color: COLORS.champagne }}
-                            >
-                              {appointment.time}
-                            </span>
-                            <AppointmentStatusBadge status={appointment.status} />
-                          </div>
-                          <h4 className="font-medium mt-1" style={{ color: COLORS.lightText }}>
-                            {appointment.clientName}
-                          </h4>
-                        </div>
-                        <span className="text-lg font-light" style={{ color: COLORS.gold }}>
-                          AED {appointment.amount}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: LUXE_COLORS.champagne }}>Today's Overview</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {stats.map((stat, index) => (
+              <Card key={index} className="border-0" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`, border: `1px solid ${stat.color}20` }}>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <stat.icon className="w-8 h-8" style={{ color: stat.color }} />
+                    <div className="text-3xl font-bold" style={{ color: LUXE_COLORS.champagne }}>{stat.value}</div>
+                  </div>
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{stat.label}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <Card className="border-0" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`, border: `1px solid ${LUXE_COLORS.gold}20` }}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg" style={{ color: LUXE_COLORS.champagne }}>
+              <Calendar className="w-5 h-5" style={{ color: LUXE_COLORS.gold }} />
+              Today's Appointments ({todayAppointments.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {todayAppointments.length > 0 ? (
+                todayAppointments.map((apt, index) => {
+                  const aptTime = apt.transaction_date
+                    ? new Date(apt.transaction_date).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      })
+                    : 'Time TBD'
+
+                  const customerName = apt.metadata?.customer_name || 'Walk-in Customer'
+                  const serviceNames = apt.metadata?.service_names || apt.metadata?.services || 'Service details pending'
+                  const status = apt.transaction_status || apt.metadata?.status || 'pending'
+
+                  const getStatusColor = (status: string) => {
+                    const s = status.toLowerCase()
+                    if (s === 'completed') return { bg: `${LUXE_COLORS.emerald}30`, text: LUXE_COLORS.emerald, label: 'Completed' }
+                    if (s === 'in_progress' || s === 'in_service') return { bg: `${LUXE_COLORS.plum}30`, text: LUXE_COLORS.plum, label: 'In Service' }
+                    if (s === 'checked_in') return { bg: `${LUXE_COLORS.gold}30`, text: LUXE_COLORS.gold, label: 'Checked In' }
+                    if (s === 'booked' || s === 'confirmed') return { bg: `${LUXE_COLORS.emerald}30`, text: LUXE_COLORS.emerald, label: 'Confirmed' }
+                    if (s === 'cancelled') return { bg: `${LUXE_COLORS.ruby}30`, text: LUXE_COLORS.ruby, label: 'Cancelled' }
+                    if (s === 'no_show') return { bg: `${LUXE_COLORS.bronze}30`, text: LUXE_COLORS.bronze, label: 'No Show' }
+                    return { bg: `${LUXE_COLORS.bronze}30`, text: LUXE_COLORS.bronze, label: 'Pending' }
+                  }
+
+                  const statusDisplay = getStatusColor(status)
+
+                  return (
+                    <div key={apt.id || index} className="p-4 rounded-lg" style={{ background: `${LUXE_COLORS.charcoalDark}80`, border: `1px solid ${LUXE_COLORS.bronze}20` }}>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                          {aptTime} - {customerName}
+                        </p>
+                        <span
+                          className="px-2 py-1 rounded text-xs font-medium"
+                          style={{ background: statusDisplay.bg, color: statusDisplay.text }}
+                        >
+                          {statusDisplay.label}
                         </span>
                       </div>
-
-                      <p className="text-sm font-light" style={{ color: COLORS.bronze }}>
-                        {appointment.service} • with {appointment.stylist}
+                      <p className="text-sm mb-2" style={{ color: LUXE_COLORS.bronze }}>
+                        {serviceNames}
                       </p>
-
-                      <div className="flex items-center gap-2 mt-3">
-                        {appointment.status === 'upcoming' && (
-                          <>
-                            <Button
-                              size="sm"
-                              className="font-light"
-                              style={{
-                                backgroundColor: COLORS.emerald,
-                                color: COLORS.black
-                              }}
-                            >
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              Check In
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="font-light"
-                              style={{
-                                borderColor: COLORS.bronze,
-                                color: COLORS.bronze
-                              }}
-                            >
-                              <Phone className="h-3 w-3 mr-1" />
-                              Contact
-                            </Button>
-                          </>
-                        )}
-                        {appointment.status === 'in-progress' && (
-                          <Button
-                            size="sm"
-                            className="font-light"
-                            style={{
-                              backgroundColor: COLORS.gold,
-                              color: COLORS.black
-                            }}
-                          >
-                            <CreditCard className="h-3 w-3 mr-1" />
-                            Process Payment
-                          </Button>
-                        )}
-                        {appointment.status === 'completed' && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="font-light"
-                            style={{
-                              borderColor: COLORS.bronze,
-                              color: COLORS.bronze
-                            }}
-                          >
-                            <Receipt className="h-3 w-3 mr-1" />
-                            View Receipt
-                          </Button>
-                        )}
-                      </div>
+                      {status.toLowerCase() !== 'completed' && status.toLowerCase() !== 'cancelled' && (
+                        <Button
+                          size="sm"
+                          className="w-full"
+                          onClick={() => router.push(`/salon/appointments/${apt.id}`)}
+                          style={{ background: LUXE_COLORS.gold, color: LUXE_COLORS.charcoal }}
+                        >
+                          View Details
+                        </Button>
+                      )}
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Quick Actions & Recent Activity */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <Card
-              style={{
-                backgroundColor: COLORS.charcoalLight,
-                border: `1px solid ${COLORS.bronze}20`
-              }}
-            >
-              <CardHeader>
-                <CardTitle
-                  className="text-lg font-light tracking-wider"
-                  style={{ color: COLORS.champagne }}
+                  )
+                })
+              ) : (
+                <div
+                  className="p-8 rounded-lg text-center"
+                  style={{ background: `${LUXE_COLORS.charcoalDark}80`, border: `1px solid ${LUXE_COLORS.bronze}20` }}
                 >
-                  Quick Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+                  <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" style={{ color: LUXE_COLORS.bronze }} />
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                    No appointments scheduled for today
+                  </p>
                   <Button
-                    className="w-full justify-start font-light"
-                    variant="outline"
-                    style={{
-                      borderColor: COLORS.bronze,
-                      color: COLORS.champagne
-                    }}
-                    asChild
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => router.push('/salon/appointments/new')}
+                    style={{ background: LUXE_COLORS.gold, color: LUXE_COLORS.charcoal }}
                   >
-                    <Link href="/salon/pos">
-                      <CreditCard className="h-4 w-4 mr-3" />
-                      Process Payment
-                    </Link>
-                  </Button>
-
-                  <Button
-                    className="w-full justify-start font-light"
-                    variant="outline"
-                    style={{
-                      borderColor: COLORS.bronze,
-                      color: COLORS.champagne
-                    }}
-                    asChild
-                  >
-                    <Link href="/salon/appointments/calendar">
-                      <Calendar className="h-4 w-4 mr-3" />
-                      View Calendar
-                    </Link>
-                  </Button>
-
-                  <Button
-                    className="w-full justify-start font-light"
-                    variant="outline"
-                    style={{
-                      borderColor: COLORS.bronze,
-                      color: COLORS.champagne
-                    }}
-                    asChild
-                  >
-                    <Link href="/salon/whatsapp">
-                      <MessageSquare className="h-4 w-4 mr-3" />
-                      Send WhatsApp
-                    </Link>
+                    Book New Appointment
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Walk-in Queue */}
-            <Card
-              style={{
-                backgroundColor: COLORS.charcoalLight,
-                border: `1px solid ${COLORS.bronze}20`
-              }}
+              )}
+            </div>
+            <Button
+              variant="outline"
+              className="w-full mt-4"
+              onClick={() => router.push('/salon/appointments')}
+              style={{ borderColor: LUXE_COLORS.gold, color: LUXE_COLORS.gold }}
             >
-              <CardHeader>
-                <CardTitle
-                  className="text-lg font-light tracking-wider"
-                  style={{ color: COLORS.champagne }}
-                >
-                  Walk-in Queue
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {[
-                    { name: 'Jessica Miller', service: 'Haircut', wait: '15 mins' },
-                    { name: 'Amanda Taylor', service: 'Consultation', wait: '30 mins' },
-                    { name: 'Rachel Anderson', service: 'Blowdry', wait: '45 mins' }
-                  ].map((walkin, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-between p-3 rounded-lg"
-                      style={{
-                        backgroundColor: COLORS.charcoal,
-                        border: `1px solid ${COLORS.bronze}20`
-                      }}
-                    >
-                      <div>
-                        <p style={{ color: COLORS.lightText }} className="text-sm font-medium">
-                          {walkin.name}
-                        </p>
-                        <p style={{ color: COLORS.bronze }} className="text-xs">
-                          {walkin.service}
-                        </p>
-                      </div>
-                      <span className="text-xs" style={{ color: COLORS.gold }}>
-                        {walkin.wait}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+              View All Appointments
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

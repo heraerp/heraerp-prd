@@ -196,6 +196,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
   const queryClient = useQueryClient()
 
   // ✅ LAYER 1: Fetch appointment transactions using useUniversalTransaction (RPC API v2)
+  // 🚀 OPTIMIZED: Smart caching - appointments change frequently so 30s stale time
   const {
     transactions,
     isLoading: transactionsLoading,
@@ -215,8 +216,11 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       date_to: options?.filters?.date_to,
       status: options?.filters?.status
     },
-    staleTime: 0, // ✅ Set to 0 for immediate updates across all pages
-    refetchOnWindowFocus: true
+    staleTime: 30000, // 🚀 OPTIMIZED: 30 seconds cache - data stays fresh
+    refetchOnWindowFocus: true, // ✅ ENTERPRISE: Refetch when user returns to window
+    refetchOnMount: 'always', // ✅ ENTERPRISE: Always fetch fresh data on mount
+    retry: 2, // Retry failed requests twice
+    retryDelay: 1000 // Wait 1 second between retries
   })
 
   // ✅ LAYER 1: Fetch customers using useUniversalEntity (RPC API v2)
@@ -226,53 +230,73 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
   } = useUniversalEntity({
     organizationId: options?.organizationId,
     filters: {
-      entity_type: 'CUSTOMER' // ✅ UPPERCASE
+      entity_type: 'CUSTOMER' // ✅ UPPERCASE as per database standard
     }
   })
 
-  // ✅ LAYER 1: Fetch staff (UPPERCASE) using useUniversalEntity (RPC API v2)
+  // ✅ LAYER 1: Fetch staff using useUniversalEntity (RPC API v2)
   const {
-    entities: staffUpper,
-    isLoading: staffUpperLoading
+    entities: staffEntities,
+    isLoading: staffLoading
   } = useUniversalEntity({
     organizationId: options?.organizationId,
     filters: {
-      entity_type: 'STAFF' // ✅ UPPERCASE
+      entity_type: 'staff' // ✅ lowercase to match useHeraStaff - includes all staff/stylists
     }
   })
 
-  // ✅ LAYER 1: Fetch staff (lowercase) for backward compatibility using useUniversalEntity (RPC API v2)
+  // ✅ LAYER 1: Fetch services to enrich appointment service data
   const {
-    entities: staffLower,
-    isLoading: staffLowerLoading
+    entities: services,
+    isLoading: servicesLoading
   } = useUniversalEntity({
     organizationId: options?.organizationId,
     filters: {
-      entity_type: 'staff' // lowercase for backward compatibility
+      entity_type: 'service'
     }
   })
 
-  // Merge staff
-  const allStaff = useMemo(() => {
-    return [...staffUpper, ...staffLower]
-  }, [staffUpper, staffLower])
+  // Use staff entities directly (no merge needed since STYLIST doesn't exist)
+  const allStaff = staffEntities
 
   // Create lookup maps
   const customerMap = useMemo(() => {
     const map = new Map<string, string>()
+    console.log('[useHeraAppointments] Building customerMap from', customers.length, 'customers')
     for (const c of customers) {
       map.set(c.id, c.entity_name)
     }
+    console.log('[useHeraAppointments] Customer map size:', map.size)
     return map
   }, [customers])
 
   const staffMap = useMemo(() => {
     const map = new Map<string, string>()
+    console.log('[useHeraAppointments] Building staffMap from', allStaff.length, 'staff')
     for (const s of allStaff) {
       map.set(s.id, s.entity_name)
     }
+    console.log('[useHeraAppointments] Staff map size:', map.size)
     return map
-  }, [allStaff])
+  }, [staffEntities])
+
+  // Create service lookup map with names and prices
+  const serviceMap = useMemo(() => {
+    const map = new Map<string, { name: string; price: number }>()
+    for (const service of services) {
+      const name = service.entity_name || 'Service'
+
+      // Extract price from dynamic_fields array
+      let price = 0
+      if (Array.isArray(service.dynamic_fields)) {
+        const priceField = service.dynamic_fields.find((f: any) => f.field_name === 'price_market')
+        price = priceField?.field_value_number || 0
+      }
+
+      map.set(service.id, { name, price })
+    }
+    return map
+  }, [services])
 
   // Transform transactions to appointments
   const enrichedAppointments = useMemo(() => {
@@ -280,7 +304,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       return []
     }
 
-    const enriched = transactions.map((txn: any) => {
+    const enriched = transactions.map((txn: any, index: number) => {
       const metadata = txn.metadata || {}
       const customerName = txn.source_entity_id
         ? customerMap.get(txn.source_entity_id) || 'Unknown Customer'
@@ -289,6 +313,47 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       const stylistName = txn.target_entity_id
         ? staffMap.get(txn.target_entity_id) || 'Unassigned'
         : 'Unassigned'
+
+      if (index === 0) {
+        console.log('[useHeraAppointments] First appointment enrichment:', {
+          source_entity_id: txn.source_entity_id,
+          target_entity_id: txn.target_entity_id,
+          customerName,
+          stylistName,
+          customerMapHasId: customerMap.has(txn.source_entity_id),
+          staffMapHasId: staffMap.has(txn.target_entity_id)
+        })
+      }
+
+      // 🎯 ENTERPRISE: Enrich service data from service_ids in metadata
+      const serviceIds = metadata.service_ids || []
+      const serviceNames: string[] = []
+      const servicePrices: number[] = []
+
+      if (Array.isArray(serviceIds)) {
+        serviceIds.forEach((serviceId: string) => {
+          const serviceData = serviceMap.get(serviceId)
+          if (serviceData) {
+            serviceNames.push(serviceData.name)
+            servicePrices.push(serviceData.price)
+          } else {
+            serviceNames.push('Service')
+            servicePrices.push(0)
+          }
+        })
+      }
+
+      // 🎯 ENTERPRISE: Calculate correct total from service prices (not from database)
+      // This fixes incorrect totals from old RPC bug or incomplete data
+      const calculatedTotal = servicePrices.reduce((sum, price) => sum + price, 0)
+
+      // Build enriched metadata with service names and prices
+      const enrichedMetadata = {
+        ...metadata,
+        service_ids: serviceIds,
+        service_names: serviceNames,
+        service_prices: servicePrices
+      }
 
       const appointment: Appointment = {
         id: txn.id,
@@ -303,12 +368,12 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
         start_time: metadata.start_time || txn.transaction_date,
         end_time: metadata.end_time || txn.transaction_date,
         duration_minutes: metadata.duration_minutes || 0,
-        price: txn.total_amount || 0,
-        total_amount: txn.total_amount || 0,
+        price: calculatedTotal, // ✅ Use calculated total from service prices
+        total_amount: calculatedTotal, // ✅ Use calculated total from service prices
         status: txn.transaction_status || metadata.status || 'draft',
         notes: metadata.notes,
         branch_id: metadata.branch_id,
-        metadata: metadata,
+        metadata: enrichedMetadata, // ✅ Use enriched metadata
         created_at: txn.created_at,
         updated_at: txn.updated_at,
         transaction_status: txn.transaction_status
@@ -318,7 +383,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     })
 
     return enriched
-  }, [transactions, customerMap, staffMap])
+  }, [transactions, customerMap, staffMap, serviceMap])
 
   // Filter appointments
   const filteredAppointments = useMemo(() => {
@@ -480,7 +545,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
   }
 
   const isLoading =
-    transactionsLoading || customersLoading || staffUpperLoading || staffLowerLoading
+    transactionsLoading || customersLoading || staffLoading || servicesLoading
 
   return {
     appointments: filteredAppointments,

@@ -31,6 +31,16 @@ export default function ClearSessionPage() {
         localStorage.removeItem('redirectAfterLogin')
         localStorage.removeItem('redirectAfterOrg')
         localStorage.removeItem('supabase.auth.token')
+        
+        // Clear HERA-specific auth caches
+        localStorage.removeItem('hera-auth-cache')
+        localStorage.removeItem('hera-context-cache')
+        localStorage.removeItem('hera-supabase-auth')
+        sessionStorage.removeItem('hera-auth-temp')
+        
+        // Clear all localStorage and sessionStorage completely
+        localStorage.clear()
+        sessionStorage.clear()
 
         // Clear all cookies
         document.cookie.split(';').forEach(c => {

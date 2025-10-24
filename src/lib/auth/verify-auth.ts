@@ -18,6 +18,13 @@ export interface AuthUser {
   permissions?: string[]
 }
 
+export interface ActorContext {
+  actor_user_id: string
+  organization_id: string
+  user_email?: string
+  roles?: string[]
+}
+
 const ROLE_PERMS: Record<string, string[]> = {
   OWNER: [
     'entities:read',
@@ -97,10 +104,23 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
     }
     const payload = validation.payload as JWTPayload
 
-    // Resolve identity + memberships via RPC (RLS-safe under user's JWT)
+    // Resolve identity + memberships via direct query
+    // Note: Cannot use hera_entities_crud_v1 RPC because MEMBER_OF relationships
+    // are stored in tenant orgs, not platform org where USER entities live
     const sb = supabaseForToken(token)
-    const { data: ident } = await withTimeout(sb.rpc('resolve_user_identity_v1'))
-    const allowedOrgs: string[] = (ident?.[0]?.organization_ids ?? []).filter(Boolean)
+
+    // Query user's memberships directly from core_relationships
+    const { data: memberships } = await withTimeout(
+      sb.from('core_relationships')
+        .select('to_entity_id, organization_id, relationship_data')
+        .eq('from_entity_id', payload.sub)
+        .eq('relationship_type', 'MEMBER_OF')
+        .eq('is_active', true)
+    )
+
+    const allowedOrgs: string[] = (memberships || [])
+      .map(m => m.organization_id)
+      .filter(Boolean)
 
     // Choose org by precedence: header > jwt > resolved (but only if ∈ allowed)
     const headerOrg = request.headers.get('x-hera-org-id') || undefined
@@ -131,15 +151,15 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
       return null
     }
 
-    // Roles within chosen org
+    // Roles within chosen org - get from memberships we already queried
     let roles: string[] = []
-    try {
-      const { data: roleArr } = await withTimeout(
-        sb.rpc('resolve_user_roles_in_org', { p_org: organizationId })
-      )
-      roles = (roleArr || []).map((r: string) => r?.toUpperCase()).filter(Boolean)
-    } catch (e) {
-      console.warn('[verifyAuth] resolve_user_roles_in_org failed:', e)
+    const userMembership = memberships?.find(m => m.organization_id === organizationId)
+
+    if (userMembership?.relationship_data?.role) {
+      roles = [userMembership.relationship_data.role.toUpperCase()]
+    } else {
+      // Fallback: default to empty roles array
+      console.warn('[verifyAuth] No role found in relationship_data for org:', organizationId)
       roles = []
     }
 
@@ -176,5 +196,91 @@ export function requireAuth(handler: (req: NextRequest, user: AuthUser) => Promi
     const user = await verifyAuth(req)
     if (!user) return new Response('Unauthorized', { status: 401 })
     return handler(req, user)
+  }
+}
+
+/**
+ * Build actor context for HERA v2.2 actor stamping
+ * Ensures USER entity exists and returns actor_user_id for stamping
+ */
+export async function buildActorContext(
+  supabase: any,
+  supabaseUserId: string,
+  organizationId?: string
+): Promise<ActorContext> {
+  try {
+    console.log('[buildActorContext] 🔍 Building actor context for:', {
+      supabaseUserId,
+      organizationId
+    })
+
+    // Query user's memberships and roles directly
+    // Note: Cannot use hera_entities_crud_v1 RPC for cross-org relationship queries
+    const { data: memberships, error: memberError } = await withTimeout(
+      supabase
+        .from('core_relationships')
+        .select('organization_id, relationship_data')
+        .eq('from_entity_id', supabaseUserId)
+        .eq('relationship_type', 'MEMBER_OF')
+        .eq('is_active', true)
+    )
+
+    if (memberError) {
+      console.error('[buildActorContext] ❌ Failed to query memberships:', memberError)
+    }
+
+    console.log('[buildActorContext] 📊 Memberships found:', {
+      count: memberships?.length || 0,
+      organizations: memberships?.map(m => m.organization_id)
+    })
+
+    // Get email from Supabase auth user
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    const userEmail = user?.email
+
+    if (memberships && memberships.length > 0) {
+      const targetOrg = organizationId || memberships[0].organization_id
+      const membership = memberships.find(m => m.organization_id === targetOrg) || memberships[0]
+      const role = membership.relationship_data?.role
+
+      console.log('[buildActorContext] ✅ Using membership:', {
+        actor_user_id: supabaseUserId,
+        organization_id: targetOrg,
+        role
+      })
+
+      return {
+        actor_user_id: supabaseUserId,
+        organization_id: targetOrg,
+        user_email: userEmail,
+        roles: role ? [role.toUpperCase()] : []
+      }
+    }
+
+    // Fallback: Use Supabase user ID as actor_user_id
+    // This handles cases where USER entity might not exist yet
+    console.warn('[buildActorContext] ⚠️ No USER entity found, using Supabase ID as fallback:', {
+      supabaseUserId,
+      organizationId
+    })
+
+    return {
+      actor_user_id: supabaseUserId,
+      organization_id: organizationId || '',
+      user_email: undefined,
+      roles: []
+    }
+  } catch (error) {
+    console.error('[buildActorContext] ❌ Error building actor context:', error)
+
+    // Ultimate fallback
+    console.warn('[buildActorContext] ⚠️ Using ultimate fallback - Supabase ID:', supabaseUserId)
+
+    return {
+      actor_user_id: supabaseUserId,
+      organization_id: organizationId || '',
+      user_email: undefined,
+      roles: []
+    }
   }
 }

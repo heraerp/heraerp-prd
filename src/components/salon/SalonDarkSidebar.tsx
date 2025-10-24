@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { BranchIndicator } from '@/components/salon/BranchSelector'
+import { supabase } from '@/lib/supabase/client'
 import {
   Calendar,
   Users,
@@ -43,7 +44,8 @@ import {
   BarChart3,
   DollarSign,
   Brain,
-  Building2
+  Building2,
+  LogOut
 } from 'lucide-react'
 
 // Luxe color palette
@@ -113,7 +115,7 @@ const allApps: SidebarItem[] = [
 
   // Staff Management
   { title: 'Team', href: '/salon/team', icon: UserPlus },
-  { title: 'Leave', href: '/salon/leave1', icon: CalendarCheck },
+  { title: 'Leave', href: '/salon/leave', icon: CalendarCheck },
   { title: 'Payroll', href: '/salon/payroll', icon: DollarSign },
 
   // Financial
@@ -318,6 +320,7 @@ export default function SalonDarkSidebar({
   extraItems?: SidebarItem[]
 }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [showAppsModal, setShowAppsModal] = useState(false)
 
   const isActive = (href: string) => {
@@ -325,6 +328,23 @@ export default function SalonDarkSidebar({
     if (href === '/salon-data' && pathname === '/salon-data') return true
     if (href !== '/salon-data' && pathname.startsWith(href)) return true
     return false
+  }
+
+  const handleLogout = async () => {
+    try {
+      // Sign out from Supabase
+      await supabase.auth.signOut()
+
+      // Clear local storage
+      localStorage.removeItem('organizationId')
+      localStorage.removeItem('salonRole')
+      localStorage.removeItem('salonUserName')
+
+      // Redirect to salon access page
+      router.push('/salon-access')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
   // Use provided items or default sidebar items
@@ -371,43 +391,6 @@ export default function SalonDarkSidebar({
           SALON
         </span>
       </div>
-
-      {/* Branch Indicator - Simplified for narrow sidebar */}
-      <Link
-        href="/salon/branches"
-        className="flex flex-col items-center justify-center py-2 transition-all duration-200 group relative border-b hover:scale-[1.02]"
-        style={{
-          borderColor: `${COLORS.gold}15`,
-          backgroundColor: `${COLORS.charcoalLight}50`
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = `${COLORS.gold}08`
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.backgroundColor = `${COLORS.charcoalLight}50`
-        }}
-      >
-        <Building2 className="h-5 w-5" style={{ color: COLORS.gold }} />
-        <span
-          className="text-[9px] mt-0.5 font-medium text-center leading-tight"
-          style={{ color: COLORS.gold }}
-        >
-          Branch
-        </span>
-
-        {/* Tooltip */}
-        <div
-          className="absolute left-full ml-2 px-3 py-2 text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50"
-          style={{
-            backgroundColor: COLORS.charcoalLight,
-            border: `1px solid ${COLORS.gold}20`,
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.4)',
-            color: COLORS.champagne
-          }}
-        >
-          <p className="font-medium">Manage Branches</p>
-        </div>
-      </Link>
 
       {/* Navigation Items */}
       <nav
@@ -498,12 +481,16 @@ export default function SalonDarkSidebar({
             )
           })}
 
-          {/* More Apps Button */}
-          <button
+          {/* More Apps - Using Link structure like other nav items */}
+          <div
             onClick={() => setShowAppsModal(true)}
-            className="flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative rounded-xl mx-2 hover:scale-[1.02]"
+            className={cn(
+              'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative rounded-xl mx-2 cursor-pointer',
+              'hover:scale-[1.02]'
+            )}
             style={{
-              backgroundColor: 'transparent'
+              backgroundColor: 'transparent',
+              color: COLORS.lightText
             }}
             onMouseEnter={e => {
               e.currentTarget.style.backgroundColor = `${COLORS.gold}08`
@@ -512,27 +499,30 @@ export default function SalonDarkSidebar({
               e.currentTarget.style.backgroundColor = 'transparent'
             }}
           >
-            <Grid3x3 className="h-5 w-5" style={{ color: COLORS.bronze }} />
+            <div className="relative">
+              <Grid3x3
+                className="h-5 w-5"
+                style={{
+                  color: COLORS.bronze
+                }}
+              />
+            </div>
+
+            {/* Text label */}
             <span
               className="text-[9px] mt-0.5 font-medium text-center leading-tight"
-              style={{ color: COLORS.bronze }}
+              style={{
+                color: COLORS.bronze
+              }}
             >
               More
             </span>
 
-            {/* Tooltip */}
-            <div
-              className="absolute left-full ml-2 px-3 py-2 text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50"
-              style={{
-                backgroundColor: COLORS.charcoalLight,
-                border: `1px solid ${COLORS.gold}20`,
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.4)',
-                color: COLORS.champagne
-              }}
-            >
+            {/* Tooltip for full title */}
+            <div className="absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
             </div>
-          </button>
+          </div>
         </div>
 
         {/* Separator */}
@@ -567,12 +557,14 @@ export default function SalonDarkSidebar({
                   }
                 }}
               >
-                <Icon
-                  className="h-5 w-5"
-                  style={{
-                    color: active ? COLORS.gold : COLORS.bronze
-                  }}
-                />
+                <div className="relative">
+                  <Icon
+                    className="h-5 w-5"
+                    style={{
+                      color: active ? COLORS.gold : COLORS.bronze
+                    }}
+                  />
+                </div>
 
                 {/* Text label */}
                 <span
@@ -602,20 +594,59 @@ export default function SalonDarkSidebar({
         </div>
       </nav>
 
-      {/* User Profile Section */}
-      <div className="p-2 border-t border-border/50 bg-background/50">
-        <div className="flex flex-col items-center justify-center py-2 rounded-lg hover:bg-muted-foreground/10/50 transition-colors cursor-pointer group relative">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-cyan-600 flex items-center justify-center">
-            <span className="text-foreground text-sm font-semibold">S</span>
+      {/* Logout Section */}
+      <div
+        className="p-2 border-t"
+        style={{
+          borderColor: `${COLORS.gold}15`,
+          backgroundColor: `${COLORS.charcoalLight}80`
+        }}
+      >
+        <button
+          onClick={handleLogout}
+          className="flex flex-col items-center justify-center py-2 w-full rounded-xl transition-all duration-200 group relative hover:scale-[1.02]"
+          style={{
+            backgroundColor: 'transparent'
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.backgroundColor = `${COLORS.gold}08`
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.backgroundColor = 'transparent'
+          }}
+        >
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{
+              background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+            }}
+          >
+            <LogOut className="h-5 w-5" style={{ color: COLORS.bronze }} />
           </div>
-          <span className="text-[10px] text-muted-foreground mt-1 font-medium">Admin</span>
+          <span
+            className="text-[9px] mt-1 font-medium text-center"
+            style={{ color: COLORS.bronze }}
+          >
+            Logout
+          </span>
 
           {/* Tooltip */}
-          <div className="absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 bottom-2">
-            <p className="font-medium">Salon Admin</p>
-            <p className="text-muted-foreground text-xs">admin@salon.com</p>
+          <div
+            className="absolute left-full ml-2 px-3 py-2 text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 bottom-2"
+            style={{
+              backgroundColor: COLORS.charcoalLight,
+              border: `1px solid ${COLORS.gold}20`,
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.4)',
+              color: COLORS.champagne
+            }}
+          >
+            <p className="font-medium">Sign Out</p>
+            <p className="text-xs" style={{ color: COLORS.bronze }}>
+              Return to login page
+            </p>
           </div>
-        </div>
+        </button>
       </div>
 
       {/* Apps Modal Portal */}

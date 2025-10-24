@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "mappings": {
+    "service_category_to_account_code": {
+      "SERVICE:HAIRCUT": "4000",
+      "SERVICE:COLORING": "4000",
+      "SERVICE:SPA": "4000"
+    },
+    "commission_account_code": "5000",
+    "vat_payable_account_code": "2100"
+  },
+  "tax": {
+    "vat_rate_default": 0.05
+  }
+}

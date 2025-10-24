@@ -1,5 +1,20 @@
 import { z } from 'zod'
 
+// Single source of truth for guardrail contracts used across API & builders
+export type GuardrailSeverity = 'error' | 'warn' | 'info'
+
+export type GuardrailViolation = {
+  code: string
+  message: string
+  severity?: 'info' | 'warn' | 'error'
+  field?: string
+  context?: Record<string, unknown>
+}
+
+export const gv = (
+  init: Omit<GuardrailViolation, 'severity'> & { severity?: GuardrailSeverity }
+): GuardrailViolation => ({ severity: 'error', ...init })
+
 export const UUID = z.string().uuid()
 export const SmartCode = z
   .string()
@@ -36,10 +51,10 @@ export const parseSmartCode = (code: string): SmartCodeParts => {
     version: parts[parts.length - 1] // v1, v2, etc.
   }
 }
+
 // compat re-exports
 export {
   UuidZ,
-  GuardrailViolation,
   guardOrganization,
   normalizeEntityType,
   validateSmartCodeSegment

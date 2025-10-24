@@ -1,0 +1,42 @@
+/* HERA Documentation Default Stylesheet */
+:root {
+  --doc-fg: #111;
+  --doc-bg: #fff;
+  --doc-border: #e1e5e9;
+  --doc-muted: #6c757d;
+  --doc-primary: #0d6efd;
+  --doc-accent: #f8f9fa;
+}
+
+body {
+  color: var(--doc-fg);
+  background: var(--doc-bg);
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+}
+
+.docs-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--doc-fg);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+code {
+  background: var(--doc-accent);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+pre {
+  background: var(--doc-accent);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}

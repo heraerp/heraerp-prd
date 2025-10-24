@@ -97,7 +97,6 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    console.log('Appointment POST request body:', body)
 
     const {
       organizationId,
@@ -119,7 +118,6 @@ export async function POST(request: NextRequest) {
       organizationId ||
       process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID ||
       '550e8400-e29b-41d4-a716-446655440000'
-    console.log('Using organization ID:', orgId)
 
     // Use the truly integrated appointment booking
     const result = await createIntegratedAppointment({
@@ -148,8 +146,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-
-    console.log('Integrated appointment created successfully:', result)
 
     // Get the full appointment with relationships for the response
     const { data: fullAppointment } = await supabase
@@ -210,8 +206,6 @@ export async function PUT(request: NextRequest) {
 
     // If status change requested, update appointment status directly
     if (status) {
-      console.log(`Updating appointment ${id} status to: ${status}`)
-
       // First get the current appointment to preserve existing metadata
       const { data: currentAppointment } = await supabase
         .from('universal_transactions')
@@ -245,8 +239,6 @@ export async function PUT(request: NextRequest) {
         )
       }
 
-      console.log(`✅ Successfully updated appointment ${id} status to ${status}`)
-
       // Also try the workflow transition if the status entities exist
       try {
         const statusMap: Record<string, string> = {
@@ -278,11 +270,10 @@ export async function PUT(request: NextRequest) {
               userId: userId || 'system',
               reason: updates.reason || 'Status updated'
             })
-            console.log(`Also updated workflow status to ${targetStatusCode}`)
           }
         }
       } catch (workflowError) {
-        console.warn('Workflow update failed, but main status update succeeded:', workflowError)
+        // Workflow update failed, but main status update succeeded
       }
     }
 
@@ -391,8 +382,6 @@ export async function DELETE(request: NextRequest) {
           }
         })
         .eq('id', id)
-
-      console.log(`Cancelled appointment ${id} with workflow transition`)
     } else {
       // Fallback if no workflow status found
       await supabase

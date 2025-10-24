@@ -388,7 +388,7 @@ BEGIN
   ) VALUES (
     '00000000-0000-0000-0000-000000000000'::uuid, -- System organization
     'system_operation',
-    'HERA.FIN.COA.VIEWS.REFRESH.v2',
+    'HERA.FIN.COA.VIEWS.REFRESH.V2',
     CURRENT_TIMESTAMP,
     'COA-VIEWS-REFRESH-' || extract(epoch from now())::text,
     0.00,

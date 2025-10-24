@@ -45,6 +45,8 @@ interface SalonSecurityContext extends SecurityContext {
   organization: {
     id: string
     name: string
+    currency: string // ✅ ENTERPRISE: Dynamic currency from organization
+    currencySymbol: string // ✅ ENTERPRISE: Currency symbol for display
     settings?: any
   }
   user: any
@@ -147,7 +149,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       salonRole: 'stylist',
       authMode: 'supabase',
       permissions: [],
-      organization: { id: '', name: '' }, // Empty until JWT validation
+      organization: { id: '', name: '', currency: 'AED', currencySymbol: 'AED' }, // Empty until JWT validation
       user: null,
       isLoading: true, // 🔒 ALWAYS start with loading to force JWT validation
       isAuthenticated: false,
@@ -162,6 +164,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const [retryCount, setRetryCount] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false)
   const authCheckDoneRef = React.useRef(false) // 🎯 Track if initial auth check is complete
+  const initializedForUser = React.useRef<string | null>(null) // 🎯 Track user-specific initialization
 
   // 🎯 ENTERPRISE FIX: Sync context with security store AND HERAAuth
   // SECURITY: organizationId comes from HERAAuth (JWT), not from store cache
@@ -172,12 +175,79 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     }
 
     // Need both store initialized AND organization from auth
-    const orgId = auth.currentOrganization?.id
+    // 🔒 CRITICAL FIX: Check localStorage first for immediate org ID (set by login page)
+    const localStorageOrgId = typeof window !== 'undefined' ? localStorage.getItem('organizationId') : null
+    const orgId = auth.currentOrganization?.id || auth.organizationId || localStorageOrgId
+
+    console.log('🔍 Checking for orgId:', {
+      currentOrgId: auth.currentOrganization?.id,
+      organizationId: auth.organizationId,
+      localStorageOrgId,
+      finalOrgId: orgId,
+      storeInitialized: securityStore.isInitialized,
+      authStatus: auth.status
+    })
+
     if (!securityStore.isInitialized || !orgId) {
+      console.log('⏸️ Waiting - store:', securityStore.isInitialized, 'orgId:', orgId)
+
+      // Force initialize store if we have orgId but store isn't initialized
+      if (orgId && !securityStore.isInitialized) {
+        console.log('🔧 Force initializing store with orgId:', orgId)
+
+        // Get role from localStorage (set by sign-in page) or default to owner
+        // 🔒 CRITICAL: Normalize role to lowercase to handle OWNER, Owner, owner, etc.
+        const rawStoredRole = (typeof window !== 'undefined' ? localStorage.getItem('salonRole') : null) || 'owner'
+        const storedRole = String(rawStoredRole).toLowerCase().trim()
+        const permissions = SALON_ROLE_PERMISSIONS[storedRole as keyof typeof SALON_ROLE_PERMISSIONS] || SALON_ROLE_PERMISSIONS.owner
+
+        console.log('🔑 Using role from localStorage (raw):', rawStoredRole)
+        console.log('🔑 Using role from localStorage (normalized):', storedRole, 'with permissions:', permissions)
+
+        securityStore.setInitialized({
+          salonRole: storedRole as any,
+          organizationId: orgId,
+          permissions,
+          userId: auth.user?.id || 'demo-user',
+          user: auth.user,
+          organization: {
+            id: orgId,
+            name: 'Hair Talkz Salon',
+            currency: 'AED',
+            currencySymbol: 'AED'
+          }
+        })
+        return // Let the effect run again
+      }
+      
       return
     }
 
     // ✅ SECURITY: Get organization ID from HERAAuth (JWT), not from cache
+    // Build organization object with fallback to user metadata
+    const user = securityStore.user || auth.user
+    const orgNameFromMetadata = user?.user_metadata?.organization_name || 'Salon Dashboard'
+
+    // Check if we have a valid organization object with a proper name
+    const storedOrg = securityStore.organization
+    const authOrg = auth.currentOrganization
+
+    // Prefer stored org if it has a real name, otherwise use metadata
+    let finalOrg
+    if (storedOrg?.name && storedOrg.name !== 'Organization' && storedOrg.name !== '') {
+      finalOrg = storedOrg
+    } else if (authOrg?.name && authOrg.name !== 'Organization' && authOrg.name !== '') {
+      finalOrg = authOrg
+    } else {
+      // Fallback to building from user metadata
+      finalOrg = {
+        id: orgId,
+        name: orgNameFromMetadata,
+        currency: 'AED',
+        currencySymbol: 'AED'
+      }
+    }
+
     setContext(prev => ({
       ...prev,
       orgId,
@@ -185,8 +255,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       userId: securityStore.userId || '',
       salonRole: securityStore.salonRole || 'stylist',
       permissions: securityStore.permissions || [],
-      organization: auth.currentOrganization || { id: orgId, name: '' },
-      user: securityStore.user || auth.user,
+      organization: finalOrg,
+      user,
       isLoading: false, // ✅ CRITICAL: Set loading to false
       isAuthenticated: true,
       selectedBranchId,
@@ -224,18 +294,23 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     if (
       authCheckDoneRef.current &&
       securityStore.isInitialized &&
-      !securityStore.shouldReinitialize()
+      !securityStore.shouldReinitialize() &&
+      hasInitialized &&
+      context.isAuthenticated &&
+      context.organization?.id
     ) {
+      console.log('✅ Auth already initialized and valid, skipping re-initialization')
       return
     }
 
-    // Wait for HERA auth to finish loading (only on first check)
-    if (auth.isLoading && !authCheckDoneRef.current) {
+    // 🔒 CRITICAL FIX: Wait for HERA auth to finish loading before checking authentication
+    // This prevents redirect on page refresh when session is being restored
+    if (auth.isLoading) {
       console.log('⏸️ Waiting for HERA Auth to finish loading...')
       return
     }
 
-    // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (after loading completes)
+    // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (ONLY after loading completes)
     if (!auth.isAuthenticated) {
       console.log('🚪 Not authenticated, redirecting to auth...')
       authCheckDoneRef.current = false // Reset for next login
@@ -259,16 +334,46 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       })
     } else if (!hasInitialized) {
       // ✅ SECURITY: Get organization ID from HERAAuth (JWT), not from cache
-      const orgId = auth.currentOrganization?.id
+      // 🔒 CRITICAL FIX: Check localStorage first for immediate org ID (set by login page)
+      const localStorageOrgId = typeof window !== 'undefined' ? localStorage.getItem('organizationId') : null
+      const orgId = auth.currentOrganization?.id || auth.organizationId || localStorageOrgId
 
       if (!orgId) {
-        console.log('⏸️ Waiting for organization from auth...')
+        console.log('⏸️ Waiting for organization from auth...', {
+          currentOrgId: auth.currentOrganization?.id,
+          organizationId: auth.organizationId,
+          localStorageOrgId
+        })
         return
       }
 
       console.log('✅ Security context already initialized, updating context with auth org')
 
       // 🎯 CRITICAL FIX: Update context with store data + auth organization
+      // Build organization object with fallback to user metadata
+      const user = securityStore.user || auth.user
+      const orgNameFromMetadata = user?.user_metadata?.organization_name || 'Salon Dashboard'
+
+      // Check if we have a valid organization object with a proper name
+      const storedOrg = securityStore.organization
+      const authOrg = auth.currentOrganization
+
+      // Prefer stored org if it has a real name, otherwise use metadata
+      let finalOrg
+      if (storedOrg?.name && storedOrg.name !== 'Organization' && storedOrg.name !== '') {
+        finalOrg = storedOrg
+      } else if (authOrg?.name && authOrg.name !== 'Organization' && authOrg.name !== '') {
+        finalOrg = authOrg
+      } else {
+        // Fallback to building from user metadata
+        finalOrg = {
+          id: orgId,
+          name: orgNameFromMetadata,
+          currency: 'AED',
+          currencySymbol: 'AED'
+        }
+      }
+
       setContext(prev => ({
         ...prev,
         orgId,
@@ -276,8 +381,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         userId: securityStore.userId || '',
         salonRole: securityStore.salonRole || 'stylist',
         permissions: securityStore.permissions || [],
-        organization: auth.currentOrganization || { id: orgId, name: '' },
-        user: securityStore.user || auth.user,
+        organization: finalOrg,
+        user,
         isLoading: false, // ✅ CRITICAL: Set loading to false
         isAuthenticated: true,
         selectedBranchId,
@@ -312,15 +417,25 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       })
 
       if (event === 'SIGNED_IN' && session) {
-        // Force re-initialization on sign in
-        console.log('🔐 SIGNED_IN event - resetting auth check')
-        authCheckDoneRef.current = false
-        securityStore.clearState()
-        await initializeSecureContext()
-        authCheckDoneRef.current = true
+        // Only re-initialize if user or organization changed
+        const currentUserId = context.userId
+        const sessionUserId = session.user.id
+
+        if (!currentUserId || currentUserId !== sessionUserId) {
+          // New user logged in - full re-initialization needed
+          console.log('🔐 SIGNED_IN event - new user, resetting auth check')
+          authCheckDoneRef.current = false
+          securityStore.clearState()
+          await initializeSecureContext()
+          authCheckDoneRef.current = true
+        } else {
+          // Same user - just verify session is valid, don't clear data
+          console.log('🔐 SIGNED_IN event - same user, keeping existing state')
+        }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔐 SIGNED_OUT event - clearing state')
         authCheckDoneRef.current = false
+        initializedForUser.current = null // ✅ reset user initialization marker
         securityStore.clearState()
         clearContext()
         redirectToAuth()
@@ -336,7 +451,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     })
 
     return () => subscription.unsubscribe()
-  }, [auth.isLoading, auth.isAuthenticated, auth.currentOrganization?.id, auth.user]) // ✅ Include org and user
+  }, []) // ✅ Empty deps - use refs to prevent re-initialization
 
   /**
    * Initialize secure authentication context
@@ -344,6 +459,31 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const initializeSecureContext = async () => {
     try {
       setAuthError(null)
+      
+      // Get current session first to check user
+      const {
+        data: { session },
+        error: sessionError
+      } = await supabase.auth.getSession()
+
+      if (sessionError) {
+        throw new Error(`Session error: ${sessionError.message}`)
+      }
+
+      const uid = session?.user?.id
+      if (!uid) {
+        console.log('🚪 No session user, redirecting to auth')
+        return
+      }
+
+      // Already initialized for this user? bail.
+      if (initializedForUser.current === uid && hasInitialized) {
+        console.log(`✅ Already initialized for user ${uid}, skipping`)
+        return
+      }
+
+      console.log(`🔄 Initializing secure context for user: ${uid}`)
+      
       // Only show loading if we don't have cached data (prevent page from disappearing on revalidation)
       if (!securityStore.isInitialized || !hasInitialized) {
         setContext(prev => ({ ...prev, isLoading: true }))
@@ -353,16 +493,6 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       if (isPublicPage()) {
         setContext(prev => ({ ...prev, isLoading: false }))
         return
-      }
-
-      // Get current session
-      const {
-        data: { session },
-        error: sessionError
-      } = await supabase.auth.getSession()
-
-      if (sessionError) {
-        throw new Error(`Session error: ${sessionError.message}`)
       }
 
       if (!session?.user) {
@@ -486,7 +616,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       setRetryCount(0) // Reset retry count on success
       setHasInitialized(true)
-      console.log('✅ Salon security context initialized successfully')
+      initializedForUser.current = uid // ✅ mark initialization complete for this user
+      console.log(`✅ Salon security context initialized successfully for user: ${uid}`)
     } catch (error: any) {
       console.error('🚨 Salon auth initialization failed:', error)
 
@@ -551,37 +682,59 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         return 'owner' // Default to owner for salon demo
       }
 
-      // For salon demo, use email-based role detection
+      // 🔒 PRIORITY 1: Check localStorage first (set by login page from database)
+      // This takes priority over email-based detection
+      const storedRole = typeof window !== 'undefined' ? localStorage.getItem('salonRole') : null
+      if (storedRole) {
+        const normalizedStoredRole = String(storedRole).toLowerCase().trim()
+        console.log('✅ Using role from localStorage (database source):', normalizedStoredRole)
+
+        // Validate it's a known role
+        if (['owner', 'manager', 'receptionist', 'stylist', 'accountant', 'admin'].includes(normalizedStoredRole)) {
+          return normalizedStoredRole as SalonSecurityContext['salonRole']
+        }
+      }
+
+      // 🔒 FALLBACK: For salon demo, use email-based role detection
+      // This is only used if localStorage doesn't have a role
       try {
         const {
           data: { user }
         } = await supabase.auth.getUser()
         if (user?.email) {
-          console.log('🔍 Determining salon role for:', user.email)
+          console.log('🔍 Determining salon role from email (fallback):', user.email)
+          const lowerEmail = user.email.toLowerCase()
 
-          // Michele is the salon owner
-          if (user.email.includes('michele')) {
+          // Owner: Hairtalkz2022@gmail.com
+          if (lowerEmail.includes('2022') || lowerEmail.includes('michele')) {
+            console.log('✅ Detected OWNER role from email pattern')
             return 'owner'
           }
 
-          // Map common email patterns to roles
-          if (user.email.includes('manager')) {
-            return 'manager'
-          }
-
-          if (user.email.includes('receptionist') || user.email.includes('front')) {
+          // Receptionists: hairtalkz01@gmail.com, hairtalkz02@gmail.com
+          if (lowerEmail.includes('01') || lowerEmail.includes('02') || lowerEmail.includes('receptionist') || lowerEmail.includes('front')) {
+            console.log('✅ Detected RECEPTIONIST role from email pattern')
             return 'receptionist'
           }
 
-          if (user.email.includes('stylist') || user.email.includes('hair')) {
+          // Map common email patterns to roles
+          if (lowerEmail.includes('manager')) {
+            console.log('✅ Detected MANAGER role from email pattern')
+            return 'manager'
+          }
+
+          if (lowerEmail.includes('stylist') || lowerEmail.includes('hair')) {
+            console.log('✅ Detected STYLIST role from email pattern')
             return 'stylist'
           }
 
-          if (user.email.includes('accountant') || user.email.includes('finance')) {
+          if (lowerEmail.includes('accountant') || lowerEmail.includes('finance')) {
+            console.log('✅ Detected ACCOUNTANT role from email pattern')
             return 'accountant'
           }
 
           // Default to owner for salon demo
+          console.log('✅ Using default OWNER role (email pattern fallback)')
           return 'owner'
         }
       } catch (emailError) {
@@ -605,6 +758,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
   /**
    * Load organization details securely
+   * ✅ ENTERPRISE: Loads currency from dynamic data for universal currency support
    */
   const loadOrganizationDetails = async (orgId: string) => {
     try {
@@ -623,11 +777,53 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             .eq('id', orgId)
             .single()
 
-          return {
+          // ✅ ENTERPRISE: Fetch currency from dynamic data
+          const { data: dynamicData } = await client
+            .from('core_dynamic_data')
+            .select('*')
+            .eq('organization_id', orgId)
+            .eq('entity_id', orgId) // Organization's own dynamic data
+            .eq('field_name', 'currency')
+            .maybeSingle()
+
+          const currency = dynamicData?.field_value_text || org?.metadata?.currency || 'AED'
+
+          // ✅ ENTERPRISE: Currency symbol mapping
+          const currencySymbolMap: Record<string, string> = {
+            'AED': 'AED',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+            'SAR': 'SAR',
+            'QAR': 'QAR',
+            'KWD': 'KWD',
+            'BHD': 'BHD',
+            'OMR': 'OMR',
+            'INR': '₹',
+            'PKR': 'Rs'
+          }
+
+          const currencySymbol = currencySymbolMap[currency] || currency
+
+          const orgData = {
             id: orgId,
             name: org?.organization_name || 'HairTalkz',
+            currency,
+            currencySymbol,
             settings: org?.metadata || {}
           }
+
+          console.log('[SecuredSalonProvider] ✅ Loaded organization:', {
+            orgId,
+            orgData,
+            hasOrganizationName: !!org?.organization_name,
+            rawOrganizationName: org?.organization_name,
+            currency,
+            currencySymbol,
+            source: dynamicData ? 'dynamic_data' : 'metadata'
+          })
+
+          return orgData
         }
       )
     } catch (error) {
@@ -635,6 +831,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       return {
         id: orgId,
         name: 'HairTalkz',
+        currency: 'AED',
+        currencySymbol: 'AED',
         settings: {}
       }
     }
@@ -726,7 +924,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const isPublicPage = (): boolean => {
     if (typeof window === 'undefined') return false
     const pathname = window.location.pathname
-    return pathname === '/salon' || pathname === '/salon/auth'
+    return pathname === '/salon' || pathname === '/salon-access'
   }
 
   /**
@@ -734,7 +932,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    */
   const redirectToAuth = () => {
     if (typeof window !== 'undefined' && !isPublicPage()) {
-      router.push('/salon/auth')
+      router.push('/salon-access')
     }
   }
 

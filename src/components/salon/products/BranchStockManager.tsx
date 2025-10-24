@@ -23,7 +23,7 @@ import {
   Check,
   X
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import type { BranchStock, ProductInventory } from '@/types/inventory'
@@ -288,23 +288,25 @@ export function BranchStockManager({
                         />
                       </div>
                       <div className="flex gap-2 mt-6">
-                        <Button
+                        <SalonLuxeButton
                           size="sm"
+                          variant="primary"
                           onClick={handleSaveEdit}
                           disabled={saving}
-                          style={{ backgroundColor: COLORS.emerald, color: 'white' }}
+                          loading={saving}
+                          icon={<Check className="w-4 h-4" />}
                         >
-                          <Check className="w-4 h-4" />
-                        </Button>
-                        <Button
+                          Save
+                        </SalonLuxeButton>
+                        <SalonLuxeButton
                           size="sm"
                           variant="outline"
                           onClick={handleCancelEdit}
                           disabled={saving}
-                          style={{ borderColor: COLORS.rose, color: COLORS.rose }}
+                          icon={<X className="w-4 h-4" />}
                         >
-                          <X className="w-4 h-4" />
-                        </Button>
+                          Cancel
+                        </SalonLuxeButton>
                       </div>
                     </div>
                   ) : (
@@ -343,35 +345,29 @@ export function BranchStockManager({
                   <div className="flex items-center gap-2">
                     {onQuickAdjust && (
                       <>
-                        <Button
+                        <SalonLuxeButton
                           size="sm"
                           variant="outline"
                           onClick={() => handleQuickAdjust(branch.branch_id, 'decrease')}
                           disabled={saving || branch.quantity === 0}
-                          style={{ borderColor: COLORS.rose + '40', color: COLORS.rose }}
-                        >
-                          <Minus className="w-4 h-4" />
-                        </Button>
-                        <Button
+                          icon={<Minus className="w-4 h-4" />}
+                        />
+                        <SalonLuxeButton
                           size="sm"
                           variant="outline"
                           onClick={() => handleQuickAdjust(branch.branch_id, 'increase')}
                           disabled={saving}
-                          style={{ borderColor: COLORS.emerald + '40', color: COLORS.emerald }}
-                        >
-                          <Plus className="w-4 h-4" />
-                        </Button>
+                          icon={<Plus className="w-4 h-4" />}
+                        />
                       </>
                     )}
-                    <Button
+                    <SalonLuxeButton
                       size="sm"
                       variant="outline"
                       onClick={() => handleStartEdit(branch)}
                       disabled={saving}
-                      style={{ borderColor: COLORS.gold + '40', color: COLORS.gold }}
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </Button>
+                      icon={<Edit2 className="w-4 h-4" />}
+                    />
                   </div>
                 )}
               </div>

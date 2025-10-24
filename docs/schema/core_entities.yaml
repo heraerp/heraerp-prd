@@ -1,0 +1,257 @@
+tables:
+  - name: core_entities
+    rls_enabled: true
+    primary_key: [id]
+    columns:
+      - name: id
+        type: uuid
+        not_null: true
+        default: gen_random_uuid()
+        purpose: Primary key for the entity row
+        usage: Referenced by relationships, dynamic data, and transactions to maintain global consistency
+        pii: false
+        mutable: false
+        constraints: Must be unique across the table
+        example: "b0b21324-9d7f-47df-879a-b47d218cf3e3"
+        owner: kernel
+
+      - name: organization_id
+        type: uuid
+        not_null: true
+        default: null
+        purpose: Tenant boundary for perfect multi-tenancy
+        usage: Every record is scoped by organization; RLS enforces isolation
+        pii: false
+        mutable: false
+        constraints: FK → core_organizations.id
+        example: "378f24fb-d496-4ff7-8afa-ea34895a0eb8"
+        owner: security
+
+      - name: entity_type
+        type: text
+        not_null: true
+        default: null
+        purpose: Canonical type of the business object
+        usage: Drives UI rendering, Rules Engine bundle selection, and validation logic
+        pii: false
+        mutable: false
+        constraints: Upper snake case (e.g., ACCOUNT, CUSTOMER, PRODUCT)
+        example: "ACCOUNT"
+        owner: kernel
+
+      - name: entity_name
+        type: text
+        not_null: true
+        default: null
+        purpose: Human-readable name or label for the entity
+        usage: Displayed in UI tables, search results, and reports
+        pii: maybe
+        mutable: true
+        constraints: Must be non-empty and normalized for full-text search
+        example: "Cash on Hand"
+        owner: app
+
+      - name: entity_code
+        type: text
+        not_null: false
+        default: null
+        purpose: External or business code representing this entity
+        usage: Used for imports, integration lookups, and GL/account references
+        pii: false
+        mutable: true
+        constraints: Unique per organization; immutable once referenced
+        example: "1000"
+        owner: finance
+
+      - name: entity_description
+        type: text
+        not_null: false
+        default: null
+        purpose: Optional long-form description of the entity
+        usage: Provides context for UI tooltips, reports, or integration notes
+        pii: false
+        mutable: true
+        constraints: Free text, 1–500 characters
+        example: "Represents cash and equivalent accounts"
+        owner: app
+
+      - name: parent_entity_id
+        type: uuid
+        not_null: false
+        default: null
+        purpose: Parent entity for hierarchical or grouped entities
+        usage: Used to build account trees, product families, or organizational structures
+        pii: false
+        mutable: true
+        constraints: FK → core_entities.id; null if top-level
+        example: "d593c775-34e0-4f3a-b89b-427e86e9b45e"
+        owner: kernel
+
+      - name: smart_code
+        type: character varying
+        not_null: true
+        default: null
+        purpose: Smart Code DNA for this entity
+        usage: Validated by Guardrails and used for business context routing
+        pii: false
+        mutable: versioned
+        constraints: Must match ^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$
+        example: "HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1"
+        owner: kernel
+
+      - name: smart_code_status
+        type: text
+        not_null: false
+        default: "'DRAFT'::text"
+        purpose: Lifecycle state of the smart code
+        usage: Used for version control and migration of business logic
+        pii: false
+        mutable: true
+        constraints: Enum [DRAFT, LIVE, DEPRECATED]
+        example: "LIVE"
+        owner: kernel
+
+      - name: ai_confidence
+        type: numeric
+        not_null: false
+        default: "0.0000"
+        purpose: Confidence score from AI validations or inferences
+        usage: Used by Finance DNA and auto-classification pipelines
+        pii: false
+        mutable: true
+        constraints: Decimal between 0 and 1
+        example: 0.92
+        owner: ai
+
+      - name: ai_classification
+        type: text
+        not_null: false
+        default: null
+        purpose: AI-generated label or classification
+        usage: Helps cluster entities for predictions, grouping, or automation
+        pii: false
+        mutable: true
+        constraints: Optional; managed by AI pipeline
+        example: "asset-account"
+        owner: ai
+
+      - name: ai_insights
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Detailed AI reasoning or explanation trace
+        usage: Provides transparency in AI-driven decisions for auditing
+        pii: false
+        mutable: true
+        constraints: Valid JSON object
+        example:
+          { "explanation": "Auto-classified as GL asset based on code 1000" }
+        owner: ai
+
+      - name: business_rules
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Policy or logic definition specific to this entity
+        usage: Read by Rules Engine for validation and posting behaviors
+        pii: false
+        mutable: true
+        constraints: JSON schema validated in CI
+        example: { "ledger_type": "GL", "allow_posting": true }
+        owner: kernel
+
+      - name: metadata
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Non-authoritative annotations and UI hints
+        usage: Display-only; includes labels, icons, or integration metadata
+        pii: maybe
+        mutable: true
+        constraints: Should not contain secrets or credentials
+        example: { "icon": "bank", "color": "#00FF88" }
+        owner: app
+
+      - name: tags
+        type: text[]
+        not_null: false
+        default: null
+        purpose: Free-form labels for quick filtering or grouping
+        usage: Used in UI filters, analytics, and API search
+        pii: false
+        mutable: true
+        constraints: Array of strings (max 20 elements)
+        example: ["finance", "asset"]
+        owner: app
+
+      - name: status
+        type: text
+        not_null: false
+        default: "'active'::text"
+        purpose: Lifecycle status of the entity
+        usage: Used for filtering and logical deletion (active/inactive/archived)
+        pii: false
+        mutable: true
+        constraints: Enum [active, inactive, archived]
+        example: "active"
+        owner: app
+
+      - name: created_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Timestamp when record was created
+        usage: Used in audit trail and synchronization systems
+        pii: false
+        mutable: false
+        constraints: Auto-filled by DB on insert
+        example: "2025-10-14T09:30:00Z"
+        owner: kernel
+
+      - name: updated_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Timestamp when record was last updated
+        usage: Used for audit trail and synchronization systems
+        pii: false
+        mutable: false
+        constraints: Auto-filled by triggers or RPCs
+        example: "2025-10-14T10:15:00Z"
+        owner: kernel
+
+      - name: created_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity ID of the actor who created the record
+        usage: For audit trail and actor-based analytics
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: updated_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity ID of the actor who last updated the record
+        usage: For audit and compliance tracking
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id (entity_type='USER')
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: version
+        type: integer
+        not_null: false
+        default: "1"
+        purpose: Version number for optimistic concurrency and audit purposes
+        usage: Incremented automatically by RPCs or update triggers
+        pii: false
+        mutable: false
+        constraints: Integer >= 1
+        example: 3
+        owner: kernel

@@ -110,7 +110,7 @@ BEGIN
     ) VALUES (
         p_organization_id,
         'REPORT_GENERATION',
-        'HERA.ACCOUNTING.REPORT.TRIAL.BALANCE.v2',
+        'HERA.ACCOUNTING.REPORT.TRIAL.BALANCE.V2',
         jsonb_build_object(
             'report_type', 'trial_balance',
             'as_of_date', p_as_of_date,
@@ -321,7 +321,7 @@ INSERT INTO universal_transactions (
 ) VALUES (
     '00000000-0000-0000-0000-000000000000'::uuid,  -- System org
     'SYSTEM_UPDATE',
-    'HERA.ACCOUNTING.FIXES.COLUMN.REFERENCES.v2',
+    'HERA.ACCOUNTING.FIXES.COLUMN.REFERENCES.V2',
     jsonb_build_object(
         'fix_type', 'column_reference_updates',
         'functions_fixed', ARRAY['hera_generate_trial_balance_v2', 'hera_generate_profit_loss_v2', 'hera_generate_balance_sheet_v2'],

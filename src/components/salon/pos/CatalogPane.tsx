@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Search,
   Plus,
@@ -27,7 +27,8 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { useSalonPOS, type PosItem } from '@/hooks/useSalonPOS'
-import { StylistSelectionModal } from './StylistSelectionModal'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
+import { ScanToCart } from '@/components/salon/pos/ScanToCart'
 import { cn } from '@/lib/utils'
 
 const COLORS = {
@@ -51,6 +52,8 @@ interface CatalogPaneProps {
   currentAppointmentId?: string
   defaultStylistId?: string
   defaultStylistName?: string
+  onBranchChange?: (branchId: string) => void // Callback to sync branch with parent context
+  contextBranchId?: string // Current branch from context to prevent infinite loops
 }
 
 export function CatalogPane({
@@ -59,19 +62,43 @@ export function CatalogPane({
   currentCustomerId,
   currentAppointmentId,
   defaultStylistId,
-  defaultStylistName
+  defaultStylistName,
+  onBranchChange,
+  contextBranchId
 }: CatalogPaneProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [activeTab, setActiveTab] = useState<'services' | 'products'>('services')
-  const [selectedItem, setSelectedItem] = useState<PosItem | null>(null)
-  const [showStylistModal, setShowStylistModal] = useState(false)
 
-  // Use composition hook for POS data
-  const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS({
+  // Memoize options to prevent infinite re-renders
+  const posOptions = useMemo(() => ({
     search: searchQuery,
     organizationId
-  })
+  }), [searchQuery, organizationId])
+
+  // Use composition hook for POS data
+  const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS(posOptions)
+
+  // ✅ CRITICAL FIX: Initialize branch from context (e.g., from appointment)
+  // This ensures the correct branch is selected when redirecting from appointments
+  useEffect(() => {
+    if (contextBranchId && contextBranchId !== branchId && branches.length > 0) {
+      // Verify the contextBranchId exists in the branches list
+      const branchExists = branches.some(b => b.id === contextBranchId)
+      if (branchExists) {
+        console.log('[CatalogPane] 🏢 Setting branch from context (appointment):', contextBranchId)
+        setBranchId(contextBranchId)
+      }
+    }
+  }, [contextBranchId, branchId, branches, setBranchId])
+
+  // ✅ FIX: Sync branch changes to parent context (only if different)
+  useEffect(() => {
+    if (branchId && onBranchChange && branchId !== contextBranchId) {
+      console.log('[CatalogPane] ✅ Branch changed, syncing to context:', branchId, 'was:', contextBranchId)
+      onBranchChange(branchId)
+    }
+  }, [branchId, contextBranchId, onBranchChange])
 
   // Filter items by tab and category
   const filteredItems = useMemo(() => {
@@ -105,26 +132,9 @@ export function CatalogPane({
   }, [items])
 
   const handleAddItem = (item: PosItem) => {
-    // ENTERPRISE RULE: First item ALWAYS requires stylist selection (for both services and products)
-    // This ensures every sale is linked with staff from the start
-    if (!defaultStylistId || !defaultStylistName) {
-      // Show modal to select stylist for first item
-      setSelectedItem(item)
-      setShowStylistModal(true)
-      return
-    }
-
-    // For subsequent items: use default stylist automatically
-    // This applies to both services and products
+    // Pass item to parent - parent will handle BillSetupModal if needed
+    // Parent will show BillSetupModal for first item or when branch/customer/stylist is missing
     onAddItem(item, defaultStylistId, defaultStylistName)
-  }
-
-  const handleStylistConfirm = (staffId: string, staffName?: string) => {
-    if (selectedItem) {
-      onAddItem(selectedItem, staffId, staffName)
-      setSelectedItem(null)
-      setShowStylistModal(false)
-    }
   }
 
   const formatDuration = (minutes: number) => {
@@ -195,8 +205,8 @@ export function CatalogPane({
 
         {/* Combined Search and Branch Filter Row */}
         <div className="flex gap-3 mb-3">
-          {/* Enhanced Search */}
-          <div className="relative flex-1">
+          {/* Enhanced Search - Compact */}
+          <div className="relative w-64">
             <Search
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4"
               style={{ color: COLORS.gold }}
@@ -219,9 +229,9 @@ export function CatalogPane({
             />
           </div>
 
-          {/* Branch Filter - Required */}
+          {/* Branch Filter - Expanded */}
           {branches.length > 0 && (
-            <div className="w-56">
+            <div className="flex-1">
               <Select
                 value={branchId || ''}
                 onValueChange={value => value && setBranchId(value)}
@@ -267,6 +277,28 @@ export function CatalogPane({
             <span className="text-xs font-medium" style={{ color: COLORS.champagne }}>
               Please select a branch to view available items
             </span>
+          </div>
+        )}
+
+        {/* Barcode Scanner */}
+        {branchId && (
+          <div className="mb-3">
+            <ScanToCart
+              organizationId={organizationId}
+              onProductFound={product => {
+                // Transform product to PosItem format and add to cart
+                const posItem: PosItem = {
+                  id: product.id,
+                  entity_id: product.id,
+                  title: product.entity_name,
+                  price: product.price_market || product.selling_price || 0,
+                  __kind: 'PRODUCT',
+                  category: product.category || 'General',
+                  raw: product
+                }
+                handleAddItem(posItem)
+              }}
+            />
           </div>
         )}
 
@@ -337,44 +369,19 @@ export function CatalogPane({
           backgroundColor: COLORS.charcoal
         }}
       >
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2">
           {categories.map(category => {
             const isSelected = selectedCategory === category
             return (
-              <Badge
+              <SalonLuxeButton
                 key={category}
-                variant="outline"
-                className="cursor-pointer transition-all duration-300 px-3 py-1.5 text-xs font-semibold border"
-                style={{
-                  background: isSelected
-                    ? `linear-gradient(135deg, ${COLORS.gold}35 0%, ${COLORS.gold}25 100%)`
-                    : `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}10 100%)`,
-                  color: COLORS.champagne,
-                  borderColor: isSelected ? `${COLORS.gold}70` : `${COLORS.gold}40`,
-                  boxShadow: isSelected ? `0 4px 12px ${COLORS.gold}30` : `0 2px 6px ${COLORS.gold}15`,
-                  fontWeight: isSelected ? '700' : '600',
-                  transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-                }}
+                variant={isSelected ? 'primary' : 'outline'}
+                size="sm"
                 onClick={() => setSelectedCategory(category)}
-                onMouseEnter={e => {
-                  if (!isSelected) {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.gold}25 0%, ${COLORS.gold}15 100%)`
-                    e.currentTarget.style.borderColor = `${COLORS.gold}60`
-                    e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-                    e.currentTarget.style.boxShadow = `0 4px 12px ${COLORS.gold}25`
-                  }
-                }}
-                onMouseLeave={e => {
-                  if (!isSelected) {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.gold}10 100%)`
-                    e.currentTarget.style.borderColor = `${COLORS.gold}40`
-                    e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                    e.currentTarget.style.boxShadow = `0 2px 6px ${COLORS.gold}15`
-                  }
-                }}
+                className="text-xs"
               >
                 {category === 'all' ? 'All' : category}
-              </Badge>
+              </SalonLuxeButton>
             )
           })}
         </div>
@@ -527,21 +534,6 @@ export function CatalogPane({
               </Card>
             ))}
           </div>
-        )}
-
-        {/* Stylist Selection Modal */}
-        {selectedItem && (
-          <StylistSelectionModal
-            open={showStylistModal}
-            onClose={() => {
-              setShowStylistModal(false)
-              setSelectedItem(null)
-            }}
-            service={selectedItem.raw}
-            organizationId={organizationId}
-            branchId={branchId}
-            onConfirm={handleStylistConfirm}
-          />
         )}
       </div>
     </div>

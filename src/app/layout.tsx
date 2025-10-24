@@ -5,7 +5,7 @@ import { QueryProvider } from '@/components/providers/QueryProvider'
 import ThemeProvider from '@/app/components/ThemeProvider'
 import PublicPageWrapper from '@/app/components/PublicPageWrapper'
 import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
-// import { DemoAuthHandler } from '@/components/auth/DemoAuthHandler'; // Temporarily disabled due to runtime error
+// Demo authentication removed - using proper HERA v2.2 authentication
 import { ToastProvider } from '@/components/ui/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'

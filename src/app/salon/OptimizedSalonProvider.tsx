@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Loader2, Shield, AlertTriangle } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 import { dbContext } from '@/lib/security/database-context'
@@ -185,7 +185,7 @@ interface OptimizedSalonProviderProps {
 }
 
 export function OptimizedSalonProvider({ children }: OptimizedSalonProviderProps) {
-  const { user, currentOrganization, isAuthenticated } = useMultiOrgAuth()
+  const { user, currentOrganization, isAuthenticated } = useHERAAuth()
   const [performanceStartTime] = useState(Date.now())
   const [performanceMetrics, setPerformanceMetrics] = useState({
     cacheHitRate: 0,

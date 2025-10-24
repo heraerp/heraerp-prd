@@ -55,6 +55,16 @@ export const PRODUCT_PRESET = {
   },
   dynamicFields: [
     {
+      name: 'category',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.CATEGORY.v1',
+      ui: {
+        label: 'Category',
+        placeholder: 'Select category',
+        helpText: 'Product category'
+      }
+    },
+    {
       name: 'price_market',
       type: 'number' as const,
       smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.v1',
@@ -91,27 +101,74 @@ export const PRODUCT_PRESET = {
       defaultValue: 10
     },
     { name: 'size', type: 'text' as const, smart_code: 'HERA.SALON.PRODUCT.DYN.SIZE.v1' },
+    // ✅ ENTERPRISE BARCODE FIELDS - Multi-format support with alternates
+    {
+      name: 'barcode_primary',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.PRIMARY.v1',
+      required: false,
+      ui: {
+        label: 'Primary Barcode',
+        placeholder: 'Scan or enter barcode',
+        helpText: 'Main barcode for product identification (EAN13, UPC, CODE128, QR)',
+        widget: 'text'
+      }
+    },
+    {
+      name: 'barcode_type',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.TYPE.v1',
+      defaultValue: 'EAN13',
+      ui: {
+        label: 'Barcode Type',
+        helpText: 'Format of the primary barcode',
+        widget: 'select'
+      }
+    },
+    {
+      name: 'barcodes_alt',
+      type: 'json' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODES.ALT.v1',
+      defaultValue: [],
+      ui: {
+        label: 'Alternate Barcodes',
+        helpText: 'Additional barcodes (e.g., pack sizes, legacy labels)',
+        widget: 'json'
+      }
+    },
+    {
+      name: 'gtin',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.GTIN.v1',
+      required: false,
+      ui: {
+        label: 'GTIN (Optional)',
+        placeholder: '8-14 digits',
+        helpText: 'Global Trade Item Number for international tracking'
+      }
+    },
+    // Legacy barcode field (kept for backward compatibility)
     { name: 'barcode', type: 'text' as const, smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.v1' }
   ],
   relationships: [
     {
       type: 'HAS_CATEGORY',
-      smart_code: 'HERA.SALON.PRODUCT.REL.HAS_CATEGORY.v1',
+      smart_code: 'HERA.SALON.PRODUCT.REL.CATEGORY.v1',
       cardinality: 'one' as const
     },
     {
       type: 'HAS_BRAND',
-      smart_code: 'HERA.SALON.PRODUCT.REL.HAS_BRAND.v1',
+      smart_code: 'HERA.SALON.PRODUCT.REL.BRAND.v1',
       cardinality: 'one' as const
     },
     {
       type: 'SUPPLIED_BY',
-      smart_code: 'HERA.SALON.PRODUCT.REL.SUPPLIED_BY.v1',
+      smart_code: 'HERA.SALON.PRODUCT.REL.SUPPLIER.v1',
       cardinality: 'many' as const
     },
     {
       type: 'STOCK_AT',
-      smart_code: 'HERA.SALON.PRODUCT.REL.STOCK_AT.v1',
+      smart_code: 'HERA.SALON.PRODUCT.REL.LOCATION.v1',
       cardinality: 'many' as const
     }
   ]
@@ -170,22 +227,22 @@ export const SERVICE_PRESET = {
   relationships: [
     {
       type: 'HAS_CATEGORY',
-      smart_code: 'HERA.SALON.SERVICE.REL.HAS_CATEGORY.v1',
+      smart_code: 'HERA.SALON.SERVICE.REL.CATEGORY.v1',
       cardinality: 'one' as const
     },
     {
       type: 'PERFORMED_BY_ROLE',
-      smart_code: 'HERA.SALON.SERVICE.REL.PERFORMED_BY_ROLE.v1',
+      smart_code: 'HERA.SALON.SERVICE.REL.ROLE.v1',
       cardinality: 'many' as const
     },
     {
       type: 'REQUIRES_PRODUCT',
-      smart_code: 'HERA.SALON.SERVICE.REL.REQUIRES_PRODUCT.v1',
+      smart_code: 'HERA.SALON.SERVICE.REL.PRODUCT.v1',
       cardinality: 'many' as const
     },
     {
       type: 'AVAILABLE_AT',
-      smart_code: 'HERA.SALON.SERVICE.REL.AVAILABLE_AT.v1',
+      smart_code: 'HERA.SALON.SERVICE.REL.LOCATION.v1',
       cardinality: 'many' as const
     }
   ]
@@ -329,7 +386,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'customer_id',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_ID.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_ID.v1',
       required: true,
       ui: {
         label: 'Customer ID',
@@ -339,7 +396,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'customer_name',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_NAME.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.CUSTOMER_NAME.v1',
       ui: {
         label: 'Customer Name',
         placeholder: 'Customer name'
@@ -348,7 +405,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'stylist_id',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_ID.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_ID.v1',
       ui: {
         label: 'Stylist ID'
       }
@@ -356,7 +413,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'stylist_name',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_NAME.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.STYLIST_NAME.v1',
       ui: {
         label: 'Stylist Name',
         placeholder: 'Stylist name'
@@ -365,7 +422,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'service_ids',
       type: 'json' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.SERVICE_IDS.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.SERVICE_IDS.v1',
       defaultValue: [],
       ui: {
         label: 'Services',
@@ -376,7 +433,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'start_time',
       type: 'datetime' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.START_TIME.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.START_TIME.v1',
       required: true,
       ui: {
         label: 'Start Time',
@@ -387,7 +444,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'end_time',
       type: 'datetime' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.END_TIME.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.END_TIME.v1',
       ui: {
         label: 'End Time',
         widget: 'date'
@@ -396,7 +453,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'duration_minutes',
       type: 'number' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.DURATION.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.DURATION.v1',
       defaultValue: 60,
       ui: {
         label: 'Duration (minutes)',
@@ -408,7 +465,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'price',
       type: 'number' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.PRICE.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.PRICE.v1',
       defaultValue: 0,
       ui: {
         label: 'Price (AED)',
@@ -420,7 +477,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'currency_code',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.CURRENCY.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.CURRENCY.v1',
       defaultValue: 'AED',
       ui: {
         label: 'Currency',
@@ -430,7 +487,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'notes',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.NOTES.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.NOTES.v1',
       ui: {
         label: 'Notes',
         placeholder: 'Special requests or notes',
@@ -440,7 +497,7 @@ export const APPOINTMENT_PRESET = {
     {
       name: 'branch_id',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.APPT.FIELD.BRANCH_ID.V1',
+      smart_code: 'HERA.SALON.APPT.FIELD.BRANCH_ID.v1',
       ui: {
         label: 'Branch ID'
       }
@@ -536,13 +593,24 @@ export const SERVICE_CATEGORY_PRESET = {
   },
   dynamicFields: [
     {
+      name: 'description',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.DESCRIPTION.v1',
+      ui: {
+        label: 'Description',
+        placeholder: 'Category description',
+        helpText: 'Brief description of this service category',
+        widget: 'textarea'
+      }
+    },
+    {
       name: 'color',
       type: 'text' as const,
       smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.COLOR.v1',
-      defaultValue: '#8B5CF6',
+      defaultValue: '#D4AF37',
       ui: {
         label: 'Color',
-        placeholder: '#8B5CF6',
+        placeholder: '#D4AF37',
         helpText: 'Hex color for category display'
       }
     },
@@ -566,6 +634,17 @@ export const SERVICE_CATEGORY_PRESET = {
         label: 'Display Order',
         placeholder: '0',
         helpText: 'Sort order for display'
+      }
+    },
+    {
+      name: 'service_count',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.SVC.CATEGORY.DYN.SERVICE_COUNT.v1',
+      defaultValue: 0,
+      ui: {
+        label: 'Service Count',
+        helpText: 'Number of services in this category',
+        roles: ['owner', 'manager'] // Read-only computed field
       }
     },
     {
@@ -762,7 +841,7 @@ export const ROLE_PRESET = {
     {
       name: 'title',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.ROLE.DYN.TITLE.V1',
+      smart_code: 'HERA.SALON.ROLE.DYN.TITLE.v1',
       required: true,
       ui: {
         label: 'Title',
@@ -773,7 +852,7 @@ export const ROLE_PRESET = {
     {
       name: 'description',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.ROLE.DYN.DESCRIPTION.V1',
+      smart_code: 'HERA.SALON.ROLE.DYN.DESCRIPTION.v1',
       ui: {
         label: 'Description',
         placeholder: 'Role description',
@@ -783,7 +862,7 @@ export const ROLE_PRESET = {
     {
       name: 'permissions',
       type: 'json' as const,
-      smart_code: 'HERA.SALON.ROLE.DYN.PERMISSIONS.V1',
+      smart_code: 'HERA.SALON.ROLE.DYN.PERMISSIONS.v1',
       defaultValue: [],
       ui: {
         label: 'Permissions',
@@ -795,7 +874,7 @@ export const ROLE_PRESET = {
     {
       name: 'status',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.ROLE.DYN.STATUS.V1',
+      smart_code: 'HERA.SALON.ROLE.DYN.STATUS.v1',
       defaultValue: 'active',
       ui: {
         label: 'Status',
@@ -809,7 +888,7 @@ export const ROLE_PRESET = {
     {
       name: 'rank',
       type: 'number' as const,
-      smart_code: 'HERA.SALON.ROLE.DYN.RANK.V1',
+      smart_code: 'HERA.SALON.ROLE.DYN.RANK.v1',
       ui: {
         label: 'Rank',
         placeholder: 'Role hierarchy rank (higher = more senior)',
@@ -820,7 +899,7 @@ export const ROLE_PRESET = {
     {
       name: 'active',
       type: 'boolean' as const,
-      smart_code: 'HERA.SALON.ROLE.DYN.ACTIVE.V1',
+      smart_code: 'HERA.SALON.ROLE.DYN.ACTIVE.v1',
       defaultValue: true,
       ui: {
         label: 'Active',
@@ -848,7 +927,7 @@ export const STAFF_PRESET = {
     {
       name: 'first_name',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.FIRST_NAME.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.FIRST_NAME.v1',
       required: true,
       ui: {
         label: 'First Name',
@@ -859,7 +938,7 @@ export const STAFF_PRESET = {
     {
       name: 'last_name',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.LAST_NAME.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.LAST_NAME.v1',
       required: true,
       ui: {
         label: 'Last Name',
@@ -870,7 +949,7 @@ export const STAFF_PRESET = {
     {
       name: 'email',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.EMAIL.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.EMAIL.v1',
       required: true,
       ui: {
         label: 'Email',
@@ -882,7 +961,7 @@ export const STAFF_PRESET = {
     {
       name: 'phone',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.PHONE.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.PHONE.v1',
       ui: {
         label: 'Phone Number',
         placeholder: '+971 50 123 4567'
@@ -891,7 +970,7 @@ export const STAFF_PRESET = {
     {
       name: 'role_title',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.ROLE_TITLE.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.ROLE_TITLE.v1',
       ui: {
         label: 'Role Title',
         placeholder: 'e.g., Senior Stylist, Receptionist',
@@ -901,7 +980,7 @@ export const STAFF_PRESET = {
     {
       name: 'status',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.STATUS.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.STATUS.v1',
       defaultValue: 'active',
       ui: {
         label: 'Status',
@@ -912,7 +991,7 @@ export const STAFF_PRESET = {
     {
       name: 'hire_date',
       type: 'date' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.HIRE_DATE.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.HIRE_DATE.v1',
       ui: {
         label: 'Hire Date',
         widget: 'date'
@@ -921,7 +1000,7 @@ export const STAFF_PRESET = {
     {
       name: 'hourly_cost',
       type: 'number' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.PRICE.COST.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.PRICE.COST.v1',
       defaultValue: 0,
       ui: {
         label: 'Hourly Cost (AED)',
@@ -935,7 +1014,7 @@ export const STAFF_PRESET = {
     {
       name: 'display_rate',
       type: 'number' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.RATE.DISPLAY.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.RATE.DISPLAY.v1',
       defaultValue: 0,
       ui: {
         label: 'Display Rate (AED)',
@@ -948,7 +1027,7 @@ export const STAFF_PRESET = {
     {
       name: 'skills',
       type: 'json' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.SKILLS.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.SKILLS.v1',
       defaultValue: [],
       ui: {
         label: 'Skills',
@@ -959,7 +1038,7 @@ export const STAFF_PRESET = {
     {
       name: 'bio',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.BIO.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.BIO.v1',
       ui: {
         label: 'Biography',
         placeholder: 'Professional bio for client-facing profiles',
@@ -969,18 +1048,60 @@ export const STAFF_PRESET = {
     {
       name: 'avatar_url',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.STAFF.DYN.AVATAR_URL.V1',
+      smart_code: 'HERA.SALON.STAFF.DYN.AVATAR_URL.v1',
       ui: {
         label: 'Avatar URL',
         placeholder: 'https://example.com/avatar.jpg',
         helpText: 'Profile picture URL'
+      }
+    },
+    // Document & Compliance fields
+    {
+      name: 'nationality',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.STAFF.DYN.NATIONALITY.v1',
+      ui: {
+        label: 'Nationality',
+        placeholder: 'Select nationality',
+        widget: 'select',
+        helpText: 'Staff member nationality'
+      }
+    },
+    {
+      name: 'passport_no',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.STAFF.DYN.PASSPORT.v1',
+      ui: {
+        label: 'Passport Number',
+        placeholder: 'Enter passport number',
+        helpText: 'Passport identification number'
+      }
+    },
+    {
+      name: 'visa_exp_date',
+      type: 'date' as const,
+      smart_code: 'HERA.SALON.STAFF.DYN.VISA_EXP.v1',
+      ui: {
+        label: 'Visa Expiration Date',
+        widget: 'date',
+        helpText: 'Visa expiry date for tracking compliance'
+      }
+    },
+    {
+      name: 'insurance_exp_date',
+      type: 'date' as const,
+      smart_code: 'HERA.SALON.STAFF.DYN.INSURANCE_EXP.v1',
+      ui: {
+        label: 'Insurance Expiration Date',
+        widget: 'date',
+        helpText: 'Insurance policy expiry date'
       }
     }
   ],
   relationships: [
     {
       type: 'STAFF_HAS_ROLE',
-      smart_code: 'HERA.SALON.STAFF.REL.HAS_ROLE.V1',
+      smart_code: 'HERA.SALON.STAFF.REL.HAS_ROLE.v1',
       cardinality: 'one' as const,
       ui: {
         label: 'Role',
@@ -990,7 +1111,7 @@ export const STAFF_PRESET = {
     },
     {
       type: 'STAFF_CAN_SERVICE',
-      smart_code: 'HERA.SALON.STAFF.REL.CAN_SERVICE.V1',
+      smart_code: 'HERA.SALON.STAFF.REL.CAN_SERVICE.v1',
       cardinality: 'many' as const,
       ui: {
         label: 'Can Perform Services',
@@ -1001,7 +1122,7 @@ export const STAFF_PRESET = {
     },
     {
       type: 'STAFF_MEMBER_OF',
-      smart_code: 'HERA.SALON.STAFF.REL.MEMBER_OF.V1',
+      smart_code: 'HERA.SALON.STAFF.REL.MEMBER_OF.v1',
       cardinality: 'one' as const,
       ui: {
         label: 'Salon Location',
@@ -1011,7 +1132,7 @@ export const STAFF_PRESET = {
     },
     {
       type: 'STAFF_REPORTS_TO',
-      smart_code: 'HERA.SALON.STAFF.REL.REPORTS_TO.V1',
+      smart_code: 'HERA.SALON.STAFF.REL.REPORTS_TO.v1',
       cardinality: 'one' as const,
       ui: {
         label: 'Reports To',
@@ -1036,13 +1157,13 @@ export const BRANCH_PRESET = {
     delete: ['owner'] as Role[],
     view: ['owner', 'manager', 'receptionist', 'staff'] as Role[]
   },
-  smart_code: 'HERA.SALON.LOCATION.ENTITY.BRANCH.V1',
+  smart_code: 'HERA.SALON.LOCATION.ENTITY.BRANCH.v1',
   dynamicFields: [
     {
       name: 'code',
       type: 'text' as const,
       required: true,
-      smart_code: 'HERA.SALON.LOCATION.DYN.CODE.V1',
+      smart_code: 'HERA.SALON.LOCATION.DYN.CODE.v1',
       ui: {
         label: 'Branch Code',
         placeholder: 'BR-001',
@@ -1052,7 +1173,7 @@ export const BRANCH_PRESET = {
     {
       name: 'address',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.LOCATION.DYN.ADDRESS.V1',
+      smart_code: 'HERA.SALON.LOCATION.DYN.ADDRESS.v1',
       ui: {
         label: 'Address',
         placeholder: '123 Main St, City, State ZIP',
@@ -1062,7 +1183,7 @@ export const BRANCH_PRESET = {
     {
       name: 'phone',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.LOCATION.DYN.PHONE.V1',
+      smart_code: 'HERA.SALON.LOCATION.DYN.PHONE.v1',
       ui: {
         label: 'Phone',
         placeholder: '+1 (555) 123-4567'
@@ -1071,7 +1192,7 @@ export const BRANCH_PRESET = {
     {
       name: 'timezone',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.LOCATION.DYN.TIMEZONE.V1',
+      smart_code: 'HERA.SALON.LOCATION.DYN.TIMEZONE.v1',
       defaultValue: 'America/New_York',
       ui: {
         label: 'Timezone',
@@ -1082,7 +1203,7 @@ export const BRANCH_PRESET = {
     {
       name: 'status',
       type: 'text' as const,
-      smart_code: 'HERA.SALON.LOCATION.DYN.STATUS.V1',
+      smart_code: 'HERA.SALON.LOCATION.DYN.STATUS.v1',
       defaultValue: 'active',
       ui: {
         label: 'Status',
@@ -1098,7 +1219,7 @@ export const BRANCH_PRESET = {
   relationships: [
     {
       type: 'STAFF_MEMBER_OF',
-      smart_code: 'HERA.SALON.STAFF.REL.MEMBER_OF.V1',
+      smart_code: 'HERA.SALON.STAFF.REL.MEMBER_OF.v1',
       from: 'STAFF',
       to: 'BRANCH',
       cardinality: '1:1',
@@ -1110,7 +1231,7 @@ export const BRANCH_PRESET = {
     },
     {
       type: 'SERVICE_AVAILABLE_AT',
-      smart_code: 'HERA.SALON.SERVICE.REL.AVAILABLE_AT.V1',
+      smart_code: 'HERA.SALON.SERVICE.REL.AVAILABLE_AT.v1',
       from: 'SERVICE',
       to: 'BRANCH',
       cardinality: 'M:N',
@@ -1143,6 +1264,181 @@ export const BRANCH_PRESET = {
   }
 }
 
+// Leave Policy configuration
+export const LEAVE_POLICY_PRESET = {
+  entity_type: 'LEAVE_POLICY',
+  labels: {
+    singular: 'Leave Policy',
+    plural: 'Leave Policies'
+  },
+  permissions: {
+    create: (role: Role) => ['owner'].includes(role),
+    edit: (role: Role) => ['owner', 'manager'].includes(role),
+    delete: (role: Role) => ['owner'].includes(role),
+    view: () => true
+  },
+  dynamicFields: [
+    {
+      name: 'leave_type',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.TYPE.v1',
+      required: true,
+      ui: {
+        label: 'Leave Type',
+        placeholder: 'ANNUAL',
+        widget: 'select',
+        helpText: 'Type of leave (ANNUAL, SICK, UNPAID, OTHER)',
+        required: true
+      }
+    },
+    {
+      name: 'annual_entitlement',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.ENTITLEMENT.v1',
+      required: true,
+      defaultValue: 21,
+      ui: {
+        label: 'Annual Entitlement (Days)',
+        placeholder: '21',
+        helpText: 'Number of leave days per year',
+        required: true,
+        min: 0,
+        max: 365
+      }
+    },
+    {
+      name: 'carry_over_cap',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.CARRY_OVER.v1',
+      defaultValue: 5,
+      ui: {
+        label: 'Carry Over Cap (Days)',
+        placeholder: '5',
+        helpText: 'Maximum days that can be carried over to next year',
+        min: 0,
+        max: 365
+      }
+    },
+    {
+      name: 'min_notice_days',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.MIN_NOTICE.v1',
+      defaultValue: 7,
+      ui: {
+        label: 'Minimum Notice (Days)',
+        placeholder: '7',
+        helpText: 'Minimum advance notice required',
+        min: 0,
+        max: 90
+      }
+    },
+    {
+      name: 'max_consecutive_days',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.MAX_CONSECUTIVE.v1',
+      defaultValue: 15,
+      ui: {
+        label: 'Max Consecutive Days',
+        placeholder: '15',
+        helpText: 'Maximum consecutive days allowed',
+        min: 1,
+        max: 365
+      }
+    },
+    {
+      name: 'min_leave_days',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.MIN_LEAVE.v1',
+      defaultValue: 0.5,
+      ui: {
+        label: 'Minimum Leave Days',
+        placeholder: '0.5',
+        helpText: 'Minimum leave duration (0.5 for half-day)',
+        decimals: 1,
+        min: 0.5,
+        max: 365
+      }
+    },
+    {
+      name: 'accrual_method',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.ACCRUAL.v1',
+      defaultValue: 'IMMEDIATE',
+      ui: {
+        label: 'Accrual Method',
+        widget: 'select',
+        helpText: 'How leave days are accrued (IMMEDIATE or MONTHLY)'
+      }
+    },
+    {
+      name: 'probation_period_months',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.PROBATION.v1',
+      defaultValue: 3,
+      ui: {
+        label: 'Probation Period (Months)',
+        placeholder: '3',
+        helpText: 'Months before leave entitlement starts',
+        min: 0,
+        max: 12
+      }
+    },
+    {
+      name: 'applies_to',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.APPLIES_TO.v1',
+      defaultValue: 'ALL',
+      ui: {
+        label: 'Applies To',
+        widget: 'select',
+        helpText: 'Employee types this policy applies to (FULL_TIME, PART_TIME, ALL)'
+      }
+    },
+    {
+      name: 'effective_from',
+      type: 'date' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.EFFECTIVE_FROM.v1',
+      ui: {
+        label: 'Effective From',
+        widget: 'date',
+        helpText: 'Policy start date'
+      }
+    },
+    {
+      name: 'effective_to',
+      type: 'date' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.EFFECTIVE_TO.v1',
+      ui: {
+        label: 'Effective To',
+        widget: 'date',
+        helpText: 'Policy end date (optional)'
+      }
+    },
+    {
+      name: 'description',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.DESCRIPTION.v1',
+      ui: {
+        label: 'Description',
+        widget: 'textarea',
+        placeholder: 'Policy description and terms'
+      }
+    },
+    {
+      name: 'active',
+      type: 'boolean' as const,
+      smart_code: 'HERA.SALON.HR.POLICY.DYN.ACTIVE.v1',
+      defaultValue: true,
+      ui: {
+        label: 'Active',
+        widget: 'checkbox',
+        helpText: 'Whether this policy is currently active'
+      }
+    }
+  ],
+  relationships: []
+}
+
 // Preset registry for easy access
 export const ENTITY_PRESETS = {
   PRODUCT: PRODUCT_PRESET,
@@ -1156,7 +1452,8 @@ export const ENTITY_PRESETS = {
   CATEGORY: CATEGORY_PRESET,
   BRAND: BRAND_PRESET,
   ROLE: ROLE_PRESET,
-  BRANCH: BRANCH_PRESET
+  BRANCH: BRANCH_PRESET,
+  LEAVE_POLICY: LEAVE_POLICY_PRESET
 } as const
 
 // Jewelry-specific entity presets
@@ -1416,7 +1713,8 @@ export const entityPresets = {
   JEWELRY_CATEGORY: JEWELRY_CATEGORY_PRESET,
   JEWELRY_SUPPLIER: JEWELRY_SUPPLIER_PRESET,
   GRADING_JOB: GRADING_JOB_PRESET,
-  CERTIFICATE: CERTIFICATE_PRESET
+  CERTIFICATE: CERTIFICATE_PRESET,
+  LEAVE_POLICY: LEAVE_POLICY_PRESET
 }
 
 // Type helper to get preset by entity type

@@ -88,34 +88,44 @@ export async function validateBranchExists(
 }
 
 /**
- * Get list of branches for an organization
+ * Get list of branches for an organization with dynamic fields
  * Useful for UI dropdowns and filters
  * ✅ Uses RPC API v2 (client-safe, no direct Supabase queries)
+ * ✅ Includes opening_time and closing_time dynamic fields
  */
 export async function getOrganizationBranches(
   organization_id: string
-): Promise<Array<{ id: string; name: string; code?: string }>> {
+): Promise<
+  Array<{
+    id: string
+    name: string
+    code?: string
+    metadata?: any
+    opening_time?: string
+    closing_time?: string
+  }>
+> {
   try {
     const { getEntities } = await import('@/lib/universal-api-v2-client')
 
     const branches = await getEntities('', {
       p_organization_id: organization_id,
       p_entity_type: 'BRANCH',
-      p_status: null // Get all branches regardless of status
+      p_include_dynamic: true, // Include dynamic fields
+      p_status: 'active' // Only active branches
     })
 
-    console.log('[getOrganizationBranches] Fetched branches:', {
-      count: branches.length,
-      orgId: organization_id
-    })
-
+    // Map to expected format with dynamic fields
     return branches.map((branch: any) => ({
       id: branch.id,
       name: branch.entity_name,
-      code: branch.entity_code
+      code: branch.entity_code,
+      metadata: branch.metadata,
+      opening_time: branch.opening_time,
+      closing_time: branch.closing_time
     }))
   } catch (error) {
-    console.error('Error fetching branches:', error)
+    console.error('[getOrganizationBranches] Error fetching branches:', error)
     return []
   }
 }

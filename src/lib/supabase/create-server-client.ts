@@ -1,15 +1,45 @@
-import type { Cookies } from 'next/dist/server/web/spec-extension/cookies'
-type SupabaseClient = { auth: { getUser: () => Promise<{ data: any; error: any }> } }
+import { createServerClient as createSupabaseSSR } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
-export function createServerClient(_cookies?: Cookies): SupabaseClient {
-  // TODO: swap in @supabase/ssr or your wrapper
-  return {
-    auth: {
-      async getUser() {
-        return { data: null, error: null }
+export async function createServerClient() {
+  const cookieStore = await cookies()
+  
+  return createSupabaseSSR(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
+        set(name: string, value: string, options: any) {
+          // Production-safe cookie settings for heraerp.com
+          cookieStore.set({
+            name,
+            value,
+            ...options,
+            secure: true,
+            sameSite: 'none',
+            domain: process.env.NODE_ENV === 'production' ? '.heraerp.com' : undefined,
+            httpOnly: false, // Allow client-side access for auth
+            path: '/'
+          })
+        },
+        remove(name: string, options: any) {
+          cookieStore.set({
+            name,
+            value: '',
+            ...options,
+            maxAge: 0,
+            secure: true,
+            sameSite: 'none',
+            domain: process.env.NODE_ENV === 'production' ? '.heraerp.com' : undefined,
+            path: '/'
+          })
+        }
       }
     }
-  }
+  )
 }
 
 // Back-compat alias if some code imports { createClient }

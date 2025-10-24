@@ -21,4 +21,7 @@ export const TxnBatchBody = makeSchema<any>()
 export const TxnEmitBody = makeSchema<any>()
 export const TxnSearchQuery = makeSchema<any>()
 
-// Add any other schema symbols here if the build later asks for them.
+// Type aliases for import compatibility (matches build log patterns)
+export type DynamicDeleteBody = typeof DynamicBatchBody
+export type DynamicGetQuery = typeof DynamicGetQuery
+export type RelationshpBatchBody = typeof RelationshipBatchBody  // Note: typo matches import site

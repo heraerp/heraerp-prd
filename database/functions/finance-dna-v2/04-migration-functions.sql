@@ -59,7 +59,7 @@ BEGIN
             END as complexity
         FROM universal_transactions
         WHERE organization_id = p_organization_id
-          AND smart_code NOT LIKE '%.v2'
+          AND smart_code NOT LIKE '%.V2'
     ),
     policies_assessment AS (
         SELECT 
@@ -104,7 +104,7 @@ BEGIN
             'assessment_duration', clock_timestamp() - v_start_time,
             'performed_by', current_setting('app.current_user', true)
         ),
-        'HERA.ACCOUNTING.MIGRATION.CANDIDATE.PREVIEW.v2'
+        'HERA.ACCOUNTING.MIGRATION.CANDIDATE.PREVIEW.V2'
     );
 END;
 $$;
@@ -154,7 +154,7 @@ BEGIN
         p_organization_id,
         'MIGRATION_BATCH',
         p_migration_batch_id,
-        'HERA.ACCOUNTING.MIGRATION.BATCH.START.v2',
+        'HERA.ACCOUNTING.MIGRATION.BATCH.START.V2',
         jsonb_build_object(
             'phase', 'backup_preparation',
             'started_by', current_setting('app.current_user', true),
@@ -198,7 +198,7 @@ BEGIN
         v_backup_transaction_id,
         row_number() OVER (ORDER BY data_type),
         'SNAPSHOT',
-        'HERA.ACCOUNTING.MIGRATION.SNAPSHOT.BACKUP.v2',
+        'HERA.ACCOUNTING.MIGRATION.SNAPSHOT.BACKUP.V2',
         jsonb_build_object(
             'data_type', data_type,
             'record_count', record_count,
@@ -245,14 +245,14 @@ BEGIN
             entity_type,
             smart_code as current_smart_code,
             CASE entity_type
-                WHEN 'gl_account' THEN 'HERA.ACCOUNTING.GL.ACC.ENTITY.v2'
-                WHEN 'fin_rule' THEN 'HERA.ACCOUNTING.POLICY.RULE.ENTITY.v2'
-                WHEN 'fiscal_period' THEN 'HERA.ACCOUNTING.FISCAL.PERIOD.ENTITY.v2'
-                ELSE 'HERA.ACCOUNTING.ENTITY.MIGRATION.v2'
+                WHEN 'gl_account' THEN 'HERA.ACCOUNTING.GL.ACC.ENTITY.V2'
+                WHEN 'fin_rule' THEN 'HERA.ACCOUNTING.POLICY.RULE.ENTITY.V2'
+                WHEN 'fiscal_period' THEN 'HERA.ACCOUNTING.FISCAL.PERIOD.ENTITY.V2'
+                ELSE 'HERA.ACCOUNTING.ENTITY.MIGRATION.V2'
             END as new_smart_code
         FROM core_entities
         WHERE organization_id = p_organization_id
-          AND (smart_code IS NULL OR NOT smart_code LIKE '%.v2')
+          AND (smart_code IS NULL OR NOT smart_code LIKE '%.V2')
     LOOP
         -- Store mapping in dynamic data
         INSERT INTO core_dynamic_data (
@@ -273,7 +273,7 @@ BEGIN
                 'migration_batch', p_migration_batch_id,
                 'mapped_at', NOW()
             ),
-            'HERA.ACCOUNTING.MIGRATION.MAPPING.SMART.CODE.v2'
+            'HERA.ACCOUNTING.MIGRATION.MAPPING.SMART.CODE.V2'
         );
         
         v_mappings_created := v_mappings_created + 1;
@@ -331,7 +331,7 @@ BEGIN
         FROM universal_transactions ut
         LEFT JOIN universal_transaction_lines utl ON ut.id = utl.transaction_id
         WHERE ut.organization_id = p_organization_id
-          AND ut.smart_code NOT LIKE '%.v2'
+          AND ut.smart_code NOT LIKE '%.V2'
           AND ut.transaction_type = 'JOURNAL_ENTRY'
         GROUP BY ut.id, ut.transaction_type, ut.transaction_code, 
                  ut.transaction_date, ut.total_amount, ut.smart_code
@@ -352,7 +352,7 @@ BEGIN
             format('REV_%s', v_transaction_record.transaction_code),
             CURRENT_DATE,
             v_transaction_record.total_amount,
-            'HERA.ACCOUNTING.MIGRATION.REVERSE.REPOST.v2',
+            'HERA.ACCOUNTING.MIGRATION.REVERSE.REPOST.V2',
             jsonb_build_object(
                 'migration_type', 'reversal',
                 'original_transaction_id', v_transaction_record.id,
@@ -385,7 +385,7 @@ BEGIN
             END,
             COALESCE((line_data->>'credit_amount')::DECIMAL, 0), -- Flip amounts
             COALESCE((line_data->>'debit_amount')::DECIMAL, 0),  -- Flip amounts
-            'HERA.ACCOUNTING.MIGRATION.REVERSE.LINE.v2',
+            'HERA.ACCOUNTING.MIGRATION.REVERSE.LINE.V2',
             jsonb_build_object(
                 'reversal_of_line', line_data->>'line_number',
                 'original_smart_code', line_data->>'smart_code'
@@ -450,14 +450,14 @@ BEGIN
         FROM universal_transactions ut
         LEFT JOIN universal_transaction_lines utl ON ut.id = utl.transaction_id
         WHERE ut.organization_id = p_organization_id
-          AND ut.smart_code NOT LIKE '%.v2'
+          AND ut.smart_code NOT LIKE '%.V2'
           AND ut.transaction_type = 'JOURNAL_ENTRY'
           AND EXISTS (
               -- Only repost if reversal exists
               SELECT 1 FROM universal_transactions rev
               WHERE rev.organization_id = p_organization_id
                 AND rev.metadata->>'original_transaction_id' = ut.id::text
-                AND rev.smart_code = 'HERA.ACCOUNTING.MIGRATION.REVERSE.REPOST.v2'
+                AND rev.smart_code = 'HERA.ACCOUNTING.MIGRATION.REVERSE.REPOST.V2'
           )
         GROUP BY ut.id, ut.transaction_type, ut.transaction_code, 
                  ut.transaction_date, ut.total_amount, ut.smart_code, ut.metadata
@@ -465,10 +465,10 @@ BEGIN
     LOOP
         -- Determine new v2 smart code
         v_new_smart_code := CASE v_original_record.transaction_type
-            WHEN 'JOURNAL_ENTRY' THEN 'HERA.ACCOUNTING.GL.TXN.JOURNAL.v2'
-            WHEN 'PAYMENT' THEN 'HERA.ACCOUNTING.GL.TXN.PAYMENT.v2'
-            WHEN 'RECEIPT' THEN 'HERA.ACCOUNTING.GL.TXN.RECEIPT.v2'
-            ELSE 'HERA.ACCOUNTING.GL.TXN.MIGRATED.v2'
+            WHEN 'JOURNAL_ENTRY' THEN 'HERA.ACCOUNTING.GL.TXN.JOURNAL.V2'
+            WHEN 'PAYMENT' THEN 'HERA.ACCOUNTING.GL.TXN.PAYMENT.V2'
+            WHEN 'RECEIPT' THEN 'HERA.ACCOUNTING.GL.TXN.RECEIPT.V2'
+            ELSE 'HERA.ACCOUNTING.GL.TXN.MIGRATED.V2'
         END;
         
         -- Create new v2 transaction
@@ -518,8 +518,8 @@ BEGIN
             COALESCE((line_data->>'credit_amount')::DECIMAL, 0),
             CASE 
                 WHEN (line_data->>'debit_amount')::DECIMAL > 0 
-                THEN 'HERA.ACCOUNTING.GL.LINE.DEBIT.v2'
-                ELSE 'HERA.ACCOUNTING.GL.LINE.CREDIT.v2'
+                THEN 'HERA.ACCOUNTING.GL.LINE.DEBIT.V2'
+                ELSE 'HERA.ACCOUNTING.GL.LINE.CREDIT.V2'
             END,
             jsonb_build_object(
                 'migration_type', 'v2_repost',
@@ -564,18 +564,18 @@ BEGIN
         SELECT 
             'SMART_CODE_MIGRATION' as category,
             CASE 
-                WHEN COUNT(*) FILTER (WHERE smart_code NOT LIKE '%.v2') = 0 THEN 'PASS'
+                WHEN COUNT(*) FILTER (WHERE smart_code NOT LIKE '%.V2') = 0 THEN 'PASS'
                 ELSE 'FAIL'
             END as status,
             COUNT(*) as items_validated,
-            COUNT(*) FILTER (WHERE smart_code NOT LIKE '%.v2') as issues_found,
+            COUNT(*) FILTER (WHERE smart_code NOT LIKE '%.V2') as issues_found,
             jsonb_agg(
                 jsonb_build_object(
                     'entity_id', id,
                     'entity_type', entity_type,
                     'smart_code', smart_code
                 )
-            ) FILTER (WHERE smart_code NOT LIKE '%.v2') as details
+            ) FILTER (WHERE smart_code NOT LIKE '%.V2') as details
         FROM core_entities
         WHERE organization_id = p_organization_id
     ),
@@ -603,7 +603,7 @@ BEGIN
             FROM universal_transactions ut
             LEFT JOIN universal_transaction_lines utl ON ut.id = utl.transaction_id
             WHERE ut.organization_id = p_organization_id
-              AND ut.smart_code LIKE '%.v2'
+              AND ut.smart_code LIKE '%.V2'
             GROUP BY ut.id
         ) balance_check
     ),
@@ -620,7 +620,7 @@ BEGIN
             ) as details
         FROM universal_transactions
         WHERE organization_id = p_organization_id
-          AND smart_code LIKE 'HERA.ACCOUNTING.MIGRATION.%.v2'
+          AND smart_code LIKE 'HERA.ACCOUNTING.MIGRATION.%.V2'
           AND metadata->>'migration_batch' = p_migration_batch_id
     )
     SELECT * FROM smart_code_validation

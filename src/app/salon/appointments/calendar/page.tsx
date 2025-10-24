@@ -8,7 +8,9 @@
 
 import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { Loader2, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle, ArrowLeft, List } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 const LUXE_COLORS = {
   black: '#0B0B0B',
@@ -19,6 +21,7 @@ const LUXE_COLORS = {
 
 export default function SalonAppointmentsCalendarPage() {
   const { organizationId, organization, isLoading } = useSecuredSalonContext()
+  const router = useRouter()
 
   // Show loading state while JWT authentication is being verified
   if (isLoading) {
@@ -109,6 +112,52 @@ export default function SalonAppointmentsCalendarPage() {
             boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
           }}
         >
+          {/* Enterprise Navigation Header */}
+          <div
+            className="sticky top-0 z-50 border-b backdrop-blur-xl"
+            style={{
+              backgroundColor: `${LUXE_COLORS.charcoal}F5`,
+              borderColor: `${LUXE_COLORS.gold}20`,
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+            }}
+          >
+            <div className="px-6 py-4">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push('/salon/appointments')}
+                  className="gap-2 transition-all duration-200 hover:scale-105"
+                  style={{
+                    color: LUXE_COLORS.champagne,
+                    backgroundColor: 'transparent'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = `${LUXE_COLORS.gold}15`
+                    e.currentTarget.style.color = LUXE_COLORS.gold
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = LUXE_COLORS.champagne
+                  }}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Appointments
+                </Button>
+                <div className="h-6 w-px" style={{ backgroundColor: `${LUXE_COLORS.gold}30` }} />
+                <div>
+                  <h1 className="text-lg font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                    Calendar View
+                  </h1>
+                  <p className="text-xs" style={{ color: `${LUXE_COLORS.gold}80` }}>
+                    {organization?.name || 'Hair Talkz Salon'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Calendar Component */}
           <SalonResourceCalendar organizations={salonOrganizations} canViewAllBranches={false} />
         </div>
       </div>

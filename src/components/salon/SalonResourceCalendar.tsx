@@ -34,7 +34,7 @@ import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useHeraAppointments } from '@/hooks/useHeraAppointments'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
-import { useHeraServices } from '@/hooks/useHeraServicesV2'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -47,6 +47,14 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 // 🎯 Debug flag - set to false for production
 const DEBUG_MODE = false
@@ -152,6 +160,10 @@ export function SalonResourceCalendar({
     stylistId: string
   } | null>(null)
 
+  // 🔍 Search state
+  const [showSearchModal, setShowSearchModal] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
   // 🕐 Current time state for timeline and past slot detection
   const [currentTime, setCurrentTime] = useState(new Date())
 
@@ -209,7 +221,7 @@ export function SalonResourceCalendar({
     }
   })
 
-  const { isLoading: customersLoading } = useHeraCustomers({
+  const { customers, isLoading: customersLoading } = useHeraCustomers({
     organizationId
   })
 
@@ -325,12 +337,12 @@ export function SalonResourceCalendar({
       return []
     }
 
-    return rawAppointments.map((apt: any) => {
+    const appointments = rawAppointments.map((apt: any) => {
       const startDate = new Date(apt.start_time)
       const time = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`
 
-      // Customer and stylist info
-      const customerName = apt.customer_name || 'Walk-in Customer'
+      // Customer and stylist info - use runtime lookup
+      const customerName = customers?.find(c => c.id === apt.customer_id)?.entity_name || 'Walk-in Customer'
       const stylistId = apt.stylist_id || 'unassigned'
 
       // Get branch info from metadata
@@ -380,7 +392,32 @@ export function SalonResourceCalendar({
         branchId: appointmentBranchId
       }
     })
+
+    // 🔍 Apply filters (status, service, date range) if any are active
+    // For now, just return all appointments - filters can be added in future
+    return appointments
   }, [rawAppointments, mounted, allStylists, services])
+
+  // 🔍 Search filtered appointments (MUST come after transformedAppointments)
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return []
+
+    const query = searchQuery.toLowerCase().trim()
+    return transformedAppointments.filter((apt: Appointment) => {
+      const customerMatch = apt.client?.toLowerCase().includes(query)
+      const serviceMatch = apt.serviceNames?.some((name: string) =>
+        name.toLowerCase().includes(query)
+      )
+      const stylistMatch = stylists
+        .find(s => s.id === apt.stylist)
+        ?.name.toLowerCase()
+        .includes(query)
+      const timeMatch = apt.time.includes(query)
+      const dateMatch = apt.date.toLocaleDateString().toLowerCase().includes(query)
+
+      return customerMatch || serviceMatch || stylistMatch || timeMatch || dateMatch
+    })
+  }, [searchQuery, transformedAppointments, stylists])
 
   // Get dates based on selected view
   const getViewDates = useCallback(() => {
@@ -401,15 +438,28 @@ export function SalonResourceCalendar({
         dates.push(date)
       }
     } else {
-      // For month view, get current month's weeks (simplified to current week for now)
-      const startOfWeek = new Date(selectedDate)
-      const day = startOfWeek.getDay()
-      const diff = startOfWeek.getDate() - day
-      startOfWeek.setDate(diff)
+      // ✨ ENTERPRISE MONTH VIEW: Full calendar grid with all weeks
+      const year = selectedDate.getFullYear()
+      const month = selectedDate.getMonth()
 
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(startOfWeek.getTime() + i * 24 * 60 * 60 * 1000)
-        dates.push(date)
+      // Get first day of month and last day of month
+      const firstDayOfMonth = new Date(year, month, 1)
+      const lastDayOfMonth = new Date(year, month + 1, 0)
+
+      // Get the starting Sunday (could be from previous month)
+      const startOfCalendar = new Date(firstDayOfMonth)
+      startOfCalendar.setDate(startOfCalendar.getDate() - firstDayOfMonth.getDay())
+
+      // Get the ending Saturday (could be from next month)
+      const endOfCalendar = new Date(lastDayOfMonth)
+      const daysToAdd = 6 - lastDayOfMonth.getDay()
+      endOfCalendar.setDate(endOfCalendar.getDate() + daysToAdd)
+
+      // Generate all dates for the calendar grid (typically 35 or 42 days)
+      const currentDate = new Date(startOfCalendar)
+      while (currentDate <= endOfCalendar) {
+        dates.push(new Date(currentDate))
+        currentDate.setDate(currentDate.getDate() + 1)
       }
     }
 
@@ -797,27 +847,23 @@ export function SalonResourceCalendar({
         >
           {/* Sidebar Header */}
           <div className="p-4 border-b" style={{ borderColor: `${COLORS.gold}33` }}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold" style={{ color: COLORS.champagne }}>
-                Calendar
-              </h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSidebar(false)}
-                className="hover:opacity-80"
-                style={{ color: COLORS.bronze }}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Branch Filter */}
+            {/* Branch Filter - Moved to top */}
             {hasMultipleBranches && (
               <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2" style={{ color: COLORS.champagne }}>
-                  Branch
-                </h4>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                    Branch
+                  </h4>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowSidebar(false)}
+                    className="hover:opacity-80 h-6 w-6"
+                    style={{ color: COLORS.bronze }}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
                 <Select
                   value={branchId || '__ALL__'}
                   onValueChange={value => setFilterBranchId(value === '__ALL__' ? '' : value)}
@@ -865,6 +911,21 @@ export function SalonResourceCalendar({
                     )}
                   </SelectContent>
                 </Select>
+              </div>
+            )}
+
+            {/* Close button for single branch case */}
+            {!hasMultipleBranches && (
+              <div className="flex items-center justify-end mb-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowSidebar(false)}
+                  className="hover:opacity-80 h-6 w-6"
+                  style={{ color: COLORS.bronze }}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
               </div>
             )}
 
@@ -1264,25 +1325,10 @@ export function SalonResourceCalendar({
                   size="icon"
                   className="hover:opacity-80"
                   style={{ color: COLORS.bronze }}
+                  onClick={() => setShowSearchModal(true)}
+                  title="Search appointments"
                 >
                   <Search className="w-5 h-5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:opacity-80"
-                  style={{ color: COLORS.bronze }}
-                >
-                  <Filter className="w-5 h-5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:opacity-80"
-                  style={{ color: COLORS.bronze }}
-                  title="Keyboard Shortcuts: ← → Navigate, Home: Today, 1: Day, 2: Week, 3: Month"
-                >
-                  <Settings className="w-5 h-5" />
                 </Button>
               </div>
             </div>
@@ -1296,25 +1342,366 @@ export function SalonResourceCalendar({
               className="grid"
               style={{
                 gridTemplateColumns:
-                  viewMode === 'single'
-                    ? `80px repeat(${viewDates.length}, 1fr)`
-                    : `80px repeat(${displayedStylists.length}, 1fr)`,
-                minHeight: `${timeSlots.length * 64}px`
+                  selectedView === 'month'
+                    ? `repeat(7, 1fr)` // Month view: 7 equal columns for days of week
+                    : selectedView === 'week'
+                      ? `80px repeat(7, 1fr)` // Week view: time column + 7 day columns
+                      : viewMode === 'single'
+                        ? `80px repeat(${viewDates.length}, 1fr)`
+                        : `80px repeat(${displayedStylists.length}, 1fr)`,
+                minHeight: selectedView === 'month' ? 'auto' : `${timeSlots.length * 64}px`
               }}
             >
-              {/* Sticky Header Row */}
-              <div
-                className="sticky top-0 z-10"
-                style={{
-                  gridColumn: '1',
-                  backgroundColor: `${COLORS.charcoal}CC`,
-                  borderRight: `1px solid ${COLORS.gold}33`,
-                  borderBottom: `1px solid ${COLORS.gold}33`,
-                  height: viewMode === 'resource' ? '80px' : '56px'
-                }}
-              />
+              {/* ✨ ENTERPRISE MONTH VIEW GRID */}
+              {selectedView === 'month' ? (
+                <>
+                  {/* Month View: Day of week headers */}
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((dayName, idx) => (
+                    <div
+                      key={dayName}
+                      className="sticky top-0 z-10 text-center py-3 border-b"
+                      style={{
+                        backgroundColor: `${COLORS.charcoal}DD`,
+                        borderColor: `${COLORS.gold}33`,
+                        gridColumn: `${idx + 1}`
+                      }}
+                    >
+                      <p className="text-sm font-bold uppercase tracking-wider" style={{ color: COLORS.gold }}>
+                        {dayName}
+                      </p>
+                    </div>
+                  ))}
 
-              {viewMode === 'single'
+                  {/* Month View: Date cells */}
+                  {viewDates.map((date, idx) => {
+                    const { dayNumber, isToday } = formatDateHeader(date)
+                    const isCurrentMonth = date.getMonth() === selectedDate.getMonth()
+
+                    // Get appointments for this day
+                    const dayAppointments = transformedAppointments.filter(
+                      (apt: Appointment) =>
+                        apt.date.toDateString() === date.toDateString() &&
+                        (selectedStylists.includes('all') || selectedStylists.includes(apt.stylist || 'unassigned')) &&
+                        (!hasMultipleBranches || !branchId || branchId === '' || branchId === '__ALL__' || apt.branchId === branchId)
+                    )
+
+                    return (
+                      <div
+                        key={idx}
+                        className={cn(
+                          'min-h-[120px] p-2 border-b border-r transition-all duration-200 cursor-pointer hover:scale-[1.01]',
+                          isToday && 'ring-2 ring-inset',
+                          !isCurrentMonth && 'opacity-40'
+                        )}
+                        style={{
+                          backgroundColor: isToday ? `${COLORS.gold}08` : COLORS.charcoal,
+                          borderColor: `${COLORS.gold}${isCurrentMonth ? '33' : '15'}`,
+                          ringColor: COLORS.gold
+                        }}
+                        onClick={() => {
+                          setSelectedDate(date)
+                          setSelectedView('day')
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isToday) {
+                            e.currentTarget.style.backgroundColor = `${COLORS.gold}05`
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isToday) {
+                            e.currentTarget.style.backgroundColor = COLORS.charcoal
+                          }
+                        }}
+                      >
+                        {/* Date number */}
+                        <div className="flex items-center justify-between mb-2">
+                          <span
+                            className={cn('text-sm font-bold', isToday && 'text-lg')}
+                            style={{
+                              color: isToday ? COLORS.gold : isCurrentMonth ? COLORS.champagne : COLORS.bronze
+                            }}
+                          >
+                            {dayNumber}
+                          </span>
+                          {dayAppointments.length > 0 && (
+                            <Badge
+                              variant="secondary"
+                              className="text-xs h-5 px-2"
+                              style={{
+                                backgroundColor: `${COLORS.gold}20`,
+                                color: COLORS.gold,
+                                border: `1px solid ${COLORS.gold}40`
+                              }}
+                            >
+                              {dayAppointments.length}
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Appointments list (max 3 shown) */}
+                        <div className="space-y-1">
+                          {dayAppointments.slice(0, 3).map((apt: Appointment) => (
+                            <div
+                              key={apt.id}
+                              className="text-xs p-1 rounded truncate"
+                              style={{
+                                backgroundColor: apt.colorLight,
+                                borderLeft: `2px solid ${apt.color}`,
+                                color: COLORS.champagne
+                              }}
+                              title={`${apt.time} - ${apt.client} - ${apt.serviceNames?.join(', ') || apt.service}`}
+                            >
+                              <span className="font-semibold">{apt.time}</span> {apt.client}
+                            </div>
+                          ))}
+                          {dayAppointments.length > 3 && (
+                            <p className="text-xs text-center" style={{ color: COLORS.bronze }}>
+                              +{dayAppointments.length - 3} more
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </>
+              ) : selectedView === 'week' ? (
+                <>
+                  {/* Week View: Time column header (empty cell) */}
+                  <div
+                    className="sticky top-0 z-10"
+                    style={{
+                      gridColumn: '1',
+                      backgroundColor: `${COLORS.charcoal}CC`,
+                      borderRight: `1px solid ${COLORS.gold}33`,
+                      borderBottom: `1px solid ${COLORS.gold}33`,
+                      height: '80px'
+                    }}
+                  />
+
+                  {/* Week View: Day headers with dates */}
+                  {viewDates.map((date, dayIdx) => {
+                    const { dayName, dayNumber, isToday } = formatDateHeader(date)
+                    return (
+                      <div
+                        key={dayIdx}
+                        className="sticky top-0 z-10 text-center py-3 border-b border-r"
+                        style={{
+                          gridColumn: `${dayIdx + 2}`,
+                          backgroundColor: isToday ? `${COLORS.gold}15` : `${COLORS.charcoal}DD`,
+                          borderColor: `${COLORS.gold}33`,
+                          height: '80px'
+                        }}
+                      >
+                        <p className="text-xs font-bold uppercase tracking-wider" style={{ color: isToday ? COLORS.gold : COLORS.bronze }}>
+                          {dayName}
+                        </p>
+                        <p className="text-2xl font-extrabold mt-1" style={{ color: isToday ? COLORS.gold : COLORS.champagne }}>
+                          {dayNumber}
+                        </p>
+                      </div>
+                    )
+                  })}
+
+                  {/* Week View: Time Slots Grid - Each row contains time cell + day cells */}
+                  {timeSlots.map((slot, slotIdx) => (
+                    <React.Fragment key={slot.time}>
+                      {/* Time Cell (First Column) */}
+                      <div
+                        className="h-16 border-b px-2 py-1"
+                        style={{
+                          gridColumn: '1',
+                          gridRow: `${slotIdx + 2}`,
+                          backgroundColor: `${COLORS.charcoal}CC`,
+                          borderRight: `1px solid ${COLORS.gold}33`,
+                          borderBottom: `1px solid ${COLORS.gold}1A`
+                        }}
+                      >
+                        <span className="text-xs font-semibold" style={{ color: COLORS.bronze }}>
+                          {slot.displayTime}
+                        </span>
+                      </div>
+
+                      {/* Day cells with time slot appointments */}
+                      {viewDates.map((date, dayIdx) => {
+                        const { isToday } = formatDateHeader(date)
+
+                        const slotAppointments = transformedAppointments.filter(
+                          (apt: Appointment) =>
+                            apt.time === slot.time &&
+                            apt.date.toDateString() === date.toDateString() &&
+                            (selectedStylists.includes('all') || selectedStylists.includes(apt.stylist || 'unassigned')) &&
+                            (!hasMultipleBranches || !branchId || branchId === '' || branchId === '__ALL__' || apt.branchId === branchId)
+                        )
+
+                        const isPast = isTimeSlotPast(date, slot.time)
+
+                        return (
+                          <div
+                            key={`${dayIdx}-${slotIdx}`}
+                            className={cn(
+                              'h-16 border-b border-r relative group calendar-time-slot transition-all duration-200',
+                              !isPast && 'cursor-pointer',
+                              isPast && 'pointer-events-none'
+                            )}
+                            style={{
+                              gridColumn: `${dayIdx + 2}`,
+                              gridRow: `${slotIdx + 2}`,
+                              borderRight: `1px solid ${COLORS.gold}33`,
+                              borderBottom: `1px solid ${COLORS.gold}1A`,
+                              backgroundColor: isPast
+                                ? 'rgba(107, 114, 128, 0.15)'
+                                : isToday
+                                  ? `${COLORS.gold}03`
+                                  : 'transparent',
+                              opacity: isPast ? 0.4 : 1
+                            }}
+                            onClick={() => {
+                              if (!slotAppointments.length && !isPast) {
+                                window.location.href = '/salon/appointments/new'
+                              }
+                            }}
+                            onMouseEnter={e => {
+                              if (!slotAppointments.length && !isPast) {
+                                e.currentTarget.style.backgroundColor = `${COLORS.gold}08`
+                                e.currentTarget.style.borderLeft = `2px solid ${COLORS.gold}60`
+                                e.currentTarget.style.boxShadow = `inset 0 0 12px ${COLORS.gold}15, 0 2px 8px ${COLORS.gold}10`
+                                e.currentTarget.style.transform = 'scale(1.01)'
+                              }
+                            }}
+                            onMouseLeave={e => {
+                              if (!isPast) {
+                                e.currentTarget.style.backgroundColor = isToday ? `${COLORS.gold}03` : 'transparent'
+                                e.currentTarget.style.borderLeft = 'none'
+                                e.currentTarget.style.boxShadow = 'none'
+                                e.currentTarget.style.transform = 'scale(1)'
+                              }
+                            }}
+                          >
+                            {/* 🕐 Timeline Indicator (only for today's column) */}
+                            {isToday && slotIdx === 0 && getTimelinePosition() !== null && (
+                              <div
+                                className="absolute left-0 right-0 z-20 pointer-events-none"
+                                style={{
+                                  top: `${getTimelinePosition()}px`
+                                }}
+                              >
+                                <div
+                                  className="absolute left-0 w-3 h-3 rounded-full animate-pulse"
+                                  style={{
+                                    backgroundColor: COLORS.gold,
+                                    boxShadow: `0 0 12px ${COLORS.gold}`,
+                                    transform: 'translate(-50%, -50%)'
+                                  }}
+                                />
+                                <div
+                                  className="h-0.5 w-full"
+                                  style={{
+                                    backgroundColor: COLORS.gold,
+                                    boxShadow: `0 0 8px ${COLORS.gold}80`,
+                                    transform: 'translateY(-50%)'
+                                  }}
+                                />
+                              </div>
+                            )}
+
+                            {/* Appointments */}
+                            {slotAppointments.map((apt: Appointment, aptIdx: number) => {
+                              const durationSlots = Math.ceil(
+                                apt.duration / BUSINESS_HOURS.slotDuration
+                              )
+                              const stylistInfo = stylists.find(s => s.id === apt.stylist)
+
+                              return (
+                                <div
+                                  key={apt.id}
+                                  className={cn(
+                                    'absolute inset-x-1 top-1 mx-1 rounded-lg p-2 cursor-pointer',
+                                    'calendar-appointment-card transition-all duration-200'
+                                  )}
+                                  style={{
+                                    backgroundColor: apt.colorLight || `${apt.color}15`,
+                                    borderLeft: `4px solid ${apt.color}`,
+                                    border: `1px solid ${apt.colorBorder || `${apt.color}40`}`,
+                                    height: `${durationSlots * 64 - 8}px`,
+                                    zIndex: 5 + aptIdx,
+                                    boxShadow: `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`
+                                  }}
+                                  onClick={() => {
+                                    setSelectedDate(apt.date)
+                                    setSelectedView('day')
+                                  }}
+                                  onMouseEnter={e => {
+                                    e.currentTarget.style.transform = 'translateY(-2px)'
+                                    e.currentTarget.style.boxShadow = `0 6px 16px ${apt.colorBorder || 'rgba(0,0,0,0.2)'}`
+                                  }}
+                                  onMouseLeave={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)'
+                                    e.currentTarget.style.boxShadow = `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`
+                                  }}
+                                >
+                                  {/* Compact appointment card for week view */}
+                                  <div className="flex items-start gap-1">
+                                    <div
+                                      className="w-5 h-5 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
+                                      style={{ backgroundColor: apt.color }}
+                                    >
+                                      {apt.icon}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p
+                                        className="text-xs font-semibold truncate"
+                                        style={{ color: COLORS.champagne }}
+                                      >
+                                        {apt.client}
+                                      </p>
+                                      {apt.serviceNames && apt.serviceNames.length > 0 && (
+                                        <p
+                                          className="text-xs truncate"
+                                          style={{ color: COLORS.gold, opacity: 0.8 }}
+                                          title={apt.serviceNames.join(', ')}
+                                        >
+                                          {apt.serviceNames[0]}
+                                        </p>
+                                      )}
+                                      {stylistInfo && (
+                                        <p className="text-xs truncate" style={{ color: COLORS.bronze }}>
+                                          {stylistInfo.name}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            })}
+
+                            {/* Add appointment hint */}
+                            {!slotAppointments.length && !isPast && (
+                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Plus className="w-4 h-4 text-muted-foreground" />
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </React.Fragment>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {/* ✨ DAY VIEW: Time-based grid with detailed appointments */}
+                  {/* Sticky Header Row */}
+                  <div
+                    className="sticky top-0 z-10"
+                    style={{
+                      gridColumn: '1',
+                      backgroundColor: `${COLORS.charcoal}CC`,
+                      borderRight: `1px solid ${COLORS.gold}33`,
+                      borderBottom: `1px solid ${COLORS.gold}33`,
+                      height: viewMode === 'resource' ? '80px' : '56px'
+                    }}
+                  />
+
+                  {viewMode === 'single'
                 ? // Single view headers (dates)
                   viewDates.map((date, dayIdx) => {
                     const { dayName, dayNumber, isToday } = formatDateHeader(date)
@@ -1736,10 +2123,176 @@ export function SalonResourceCalendar({
                       })}
                 </React.Fragment>
               ))}
+                </>
+              )}
             </div>
           </ScrollArea>
         </div>
       </div>
+
+      {/* 🔍 Search Modal */}
+      <Dialog open={showSearchModal} onOpenChange={setShowSearchModal}>
+        <DialogContent
+          className="max-w-2xl"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            borderColor: `${COLORS.gold}40`,
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)'
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle style={{ color: COLORS.champagne }}>
+              Search Appointments
+            </DialogTitle>
+            <DialogDescription style={{ color: COLORS.bronze }}>
+              Search by customer name, service, stylist, date or time
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Search Input */}
+            <div className="relative">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                style={{ color: COLORS.bronze }}
+              />
+              <Input
+                type="text"
+                placeholder="Start typing to search..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="pl-11 text-base"
+                style={{
+                  backgroundColor: COLORS.black,
+                  borderColor: `${COLORS.gold}40`,
+                  color: COLORS.champagne
+                }}
+                autoFocus
+              />
+            </div>
+
+            {/* Search Results */}
+            <div
+              className="max-h-[400px] overflow-y-auto rounded-lg"
+              style={{
+                backgroundColor: COLORS.black,
+                border: `1px solid ${COLORS.gold}20`
+              }}
+            >
+              {searchQuery.trim() === '' ? (
+                <div className="text-center py-12">
+                  <Search className="w-12 h-12 mx-auto mb-3 opacity-30" style={{ color: COLORS.bronze }} />
+                  <p className="text-sm" style={{ color: COLORS.bronze }}>
+                    Start typing to search appointments
+                  </p>
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="text-center py-12">
+                  <AlertCircle className="w-12 h-12 mx-auto mb-3" style={{ color: COLORS.rose }} />
+                  <p className="font-medium mb-1" style={{ color: COLORS.champagne }}>
+                    No appointments found
+                  </p>
+                  <p className="text-sm" style={{ color: COLORS.bronze }}>
+                    Try a different search term
+                  </p>
+                </div>
+              ) : (
+                <div className="divide-y" style={{ borderColor: `${COLORS.gold}20` }}>
+                  {searchResults.map((apt: Appointment) => {
+                    const stylistInfo = stylists.find(s => s.id === apt.stylist)
+                    return (
+                      <div
+                        key={apt.id}
+                        className="p-4 cursor-pointer transition-all duration-200"
+                        style={{
+                          backgroundColor: 'transparent'
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.backgroundColor = `${COLORS.gold}08`
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                        }}
+                        onClick={() => {
+                          // Navigate to the appointment's date
+                          setSelectedDate(apt.date)
+                          setSelectedView('day')
+                          setShowSearchModal(false)
+                          setSearchQuery('')
+                        }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ backgroundColor: apt.color }}
+                          >
+                            {apt.icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="font-semibold" style={{ color: COLORS.champagne }}>
+                                {apt.client}
+                              </p>
+                              <Badge
+                                variant="outline"
+                                className="text-xs"
+                                style={{
+                                  backgroundColor: `${apt.color}20`,
+                                  color: apt.color,
+                                  borderColor: apt.color
+                                }}
+                              >
+                                {apt.status}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center gap-4 text-sm" style={{ color: COLORS.bronze }}>
+                              <span>📅 {apt.date.toLocaleDateString('en-US', {
+                                weekday: 'short',
+                                month: 'short',
+                                day: 'numeric'
+                              })}</span>
+                              <span>🕐 {apt.time}</span>
+                              {stylistInfo && <span>👤 {stylistInfo.name}</span>}
+                            </div>
+                            {apt.serviceNames && apt.serviceNames.length > 0 && (
+                              <p className="text-sm mt-1" style={{ color: COLORS.gold, opacity: 0.8 }}>
+                                {apt.serviceNames.join(', ')}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge
+                                variant="secondary"
+                                className="text-xs"
+                                style={{
+                                  backgroundColor: `${COLORS.gold}20`,
+                                  color: COLORS.gold,
+                                  borderColor: `${COLORS.gold}40`
+                                }}
+                              >
+                                {apt.price}
+                              </Badge>
+                              <span className="text-xs" style={{ color: COLORS.bronze }}>
+                                {apt.duration} min
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Results Count */}
+            {searchQuery.trim() !== '' && searchResults.length > 0 && (
+              <p className="text-sm text-center" style={{ color: COLORS.bronze }}>
+                Found {searchResults.length} appointment{searchResults.length !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

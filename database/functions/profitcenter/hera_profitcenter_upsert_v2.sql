@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION hera_profitcenter_upsert_v2(
   p_tags TEXT[] DEFAULT NULL,
   p_codm_inclusion BOOLEAN DEFAULT FALSE,
   p_metadata JSONB DEFAULT NULL,
-  p_smart_code TEXT DEFAULT 'HERA.PROFITCENTER.TXN.CREATE.v2',
+  p_smart_code TEXT DEFAULT 'HERA.PROFITCENTER.TXN.CREATE.V2',
   p_actor_entity_id UUID DEFAULT NULL -- User performing the operation
 )
 RETURNS TABLE(
@@ -286,7 +286,7 @@ BEGIN
       'PROFIT_CENTER',
       p_entity_name,
       p_pc_code,  -- Use pc_code as entity_code
-      'HERA.PROFITCENTER.ENTITY.PROFIT_CENTER.v2',
+      'HERA.PROFITCENTER.ENTITY.PROFIT_CENTER.V2',
       'ACTIVE',
       COALESCE(p_metadata, '{}'::jsonb),
       CURRENT_TIMESTAMP,
@@ -313,7 +313,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_text, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'pc_code', 'text', p_pc_code, 'HERA.PROFITCENTER.DYN.CODE.v2'
+    p_organization_id, v_entity_id, 'pc_code', 'text', p_pc_code, 'HERA.PROFITCENTER.DYN.CODE.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   
@@ -321,7 +321,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_number, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'depth', 'number', v_computed_depth, 'HERA.PROFITCENTER.DYN.DEPTH.v2'
+    p_organization_id, v_entity_id, 'depth', 'number', v_computed_depth, 'HERA.PROFITCENTER.DYN.DEPTH.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_number = EXCLUDED.field_value_number, updated_at = CURRENT_TIMESTAMP;
   
@@ -329,7 +329,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_date, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'valid_from', 'date', p_valid_from, 'HERA.PROFITCENTER.DYN.VALID_FROM.v2'
+    p_organization_id, v_entity_id, 'valid_from', 'date', p_valid_from, 'HERA.PROFITCENTER.DYN.VALID_FROM.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_date = EXCLUDED.field_value_date, updated_at = CURRENT_TIMESTAMP;
   
@@ -337,7 +337,7 @@ BEGIN
   INSERT INTO core_dynamic_data (
     organization_id, entity_id, field_name, field_type, field_value_boolean, smart_code
   ) VALUES (
-    p_organization_id, v_entity_id, 'codm_inclusion', 'boolean', p_codm_inclusion, 'HERA.PROFITCENTER.DYN.CODM_INCLUSION.v2'
+    p_organization_id, v_entity_id, 'codm_inclusion', 'boolean', p_codm_inclusion, 'HERA.PROFITCENTER.DYN.CODM_INCLUSION.V2'
   ) ON CONFLICT (organization_id, entity_id, field_name) 
   DO UPDATE SET field_value_boolean = EXCLUDED.field_value_boolean, updated_at = CURRENT_TIMESTAMP;
   
@@ -350,7 +350,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_text, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'segment_code', 'text', p_segment_code, 'HERA.PROFITCENTER.DYN.SEGMENT_CODE.v2'
+      p_organization_id, v_entity_id, 'segment_code', 'text', p_segment_code, 'HERA.PROFITCENTER.DYN.SEGMENT_CODE.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -360,7 +360,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_date, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'valid_to', 'date', p_valid_to, 'HERA.PROFITCENTER.DYN.VALID_TO.v2'
+      p_organization_id, v_entity_id, 'valid_to', 'date', p_valid_to, 'HERA.PROFITCENTER.DYN.VALID_TO.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_date = EXCLUDED.field_value_date, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -370,7 +370,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_text, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'manager', 'text', p_manager, 'HERA.PROFITCENTER.DYN.MANAGER.v2'
+      p_organization_id, v_entity_id, 'manager', 'text', p_manager, 'HERA.PROFITCENTER.DYN.MANAGER.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -380,7 +380,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_text, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'region_code', 'text', p_region_code, 'HERA.PROFITCENTER.DYN.REGION_CODE.v2'
+      p_organization_id, v_entity_id, 'region_code', 'text', p_region_code, 'HERA.PROFITCENTER.DYN.REGION_CODE.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_text = EXCLUDED.field_value_text, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -390,7 +390,7 @@ BEGIN
     INSERT INTO core_dynamic_data (
       organization_id, entity_id, field_name, field_type, field_value_json, smart_code
     ) VALUES (
-      p_organization_id, v_entity_id, 'tags', 'json', to_jsonb(p_tags), 'HERA.PROFITCENTER.DYN.TAGS.v2'
+      p_organization_id, v_entity_id, 'tags', 'json', to_jsonb(p_tags), 'HERA.PROFITCENTER.DYN.TAGS.V2'
     ) ON CONFLICT (organization_id, entity_id, field_name) 
     DO UPDATE SET field_value_json = EXCLUDED.field_value_json, updated_at = CURRENT_TIMESTAMP;
   END IF;
@@ -421,7 +421,7 @@ BEGIN
       p_parent_id,      -- Parent is the "from" entity
       v_entity_id,      -- Child is the "to" entity
       'PROFIT_CENTER_PARENT_OF',
-      'HERA.PROFITCENTER.REL.PARENT_OF.v2',
+      'HERA.PROFITCENTER.REL.PARENT_OF.V2',
       jsonb_build_object(
         'hierarchy_depth', v_computed_depth,
         'created_by_txn', v_audit_txn_id,
@@ -456,7 +456,7 @@ BEGIN
     1,
     v_entity_id,
     0.00,  -- No monetary amount
-    'HERA.PROFITCENTER.TXN.FIELD_SET.v2',
+    'HERA.PROFITCENTER.TXN.FIELD_SET.V2',
     jsonb_build_object(
       'operation_type', v_operation_type,
       'pc_code', p_pc_code,

@@ -231,7 +231,7 @@ SET metadata = '{
         }
     }
 }'::jsonb,
-smart_code = 'HERA.SYSTEM.ENGINE.ENT.DAG_ENHANCED.v2',
+smart_code = 'HERA.SYSTEM.ENGINE.ENT.DAG_ENHANCED.V2',
 smart_code_version = 'v2',
 updated_at = CURRENT_TIMESTAMP
 WHERE organization_id = '719dfed1-09b4-4ca8-bfda-f682460de945'
@@ -482,7 +482,7 @@ SET metadata = '{
         }
     }
 }'::jsonb,
-smart_code = 'HERA.SYSTEM.TEMPLATE.ENT.PRC_REST_ENHANCED.v2',
+smart_code = 'HERA.SYSTEM.TEMPLATE.ENT.PRC_REST_ENHANCED.V2',
 smart_code_version = 'v2',
 updated_at = CURRENT_TIMESTAMP
 WHERE organization_id = '719dfed1-09b4-4ca8-bfda-f682460de945'

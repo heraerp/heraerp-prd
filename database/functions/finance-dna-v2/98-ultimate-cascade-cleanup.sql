@@ -374,7 +374,7 @@ BEGIN
                 'gl_account',
                 v_account.name,
                 v_account.code,
-                'HERA.ACCOUNTING.CHART.ACCOUNT.v2',
+                'HERA.ACCOUNTING.CHART.ACCOUNT.V2',
                 jsonb_build_object('account_type', v_account.type)
             ) RETURNING id INTO v_entity_id;
             
@@ -390,7 +390,7 @@ BEGIN
                 p_organization_id,
                 'account_type',
                 v_account.type,
-                'HERA.ACCOUNTING.ACCOUNT.TYPE.v2'
+                'HERA.ACCOUNTING.ACCOUNT.TYPE.V2'
             );
             
             v_created_count := v_created_count + 1;
@@ -417,7 +417,7 @@ INSERT INTO universal_transactions (
 ) VALUES (
     '00000000-0000-0000-0000-000000000000'::uuid,
     'SYSTEM_UPDATE',
-    'HERA.ACCOUNTING.CLEANUP.ULTIMATE.CASCADE.v2',
+    'HERA.ACCOUNTING.CLEANUP.ULTIMATE.CASCADE.V2',
     jsonb_build_object(
         'cleanup_type', 'ultimate_cascade_cleanup',
         'strategy', 'proper_fk_dependency_handling',

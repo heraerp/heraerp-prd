@@ -423,12 +423,21 @@ export const Schemas = {
 export default Schemas
 // compat re-exports
 export {
-  DynamicDeleteBody,
   DynamicGetQuery,
   DynamicBatchBody,
   DynamicSetBody,
+  RelationshipBatchBody,
   RelationshipQuery,
   TxnBatchBody,
   TxnEmitBody,
   TxnSearchQuery
 } from './schemas-core'
+
+// Dynamic Delete Body Schema - for batch deletion of dynamic data fields
+export const DynamicDeleteBody = z.object({
+  organization_id: UUID,
+  entity_id: UUID,
+  field_name: z.string().min(1).optional() // if provided, delete specific field; if not, delete all fields for entity
+})
+
+export type DynamicDeleteBody = z.infer<typeof DynamicDeleteBody>

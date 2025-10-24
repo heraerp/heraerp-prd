@@ -1,0 +1,540 @@
+/* 🎨 HERA Fiori-Style Design System - Vibrant Enterprise UI */
+:root {
+  /* HERA Fiori Color Palette */
+  --hera-primary-start: #667eea;
+  --hera-primary-end: #764ba2;
+  --hera-bg-main: #f8f9ff;
+  --hera-accent: #ffb84d;
+  --hera-text-dark: #1e1e2f;
+  --hera-text-medium: #4a5568;
+  --hera-text-light: #718096;
+  --hera-surface: #ffffff;
+  --hera-surface-elevated: #fafbff;
+  --hera-border: #e2e8f0;
+  --hera-success: #48bb78;
+  --hera-warning: #ed8936;
+  --hera-error: #f56565;
+  --hera-info: #4299e1;
+  
+  /* Gradient Definitions */
+  --hera-gradient-primary: linear-gradient(135deg, var(--hera-primary-start) 0%, var(--hera-primary-end) 100%);
+  --hera-gradient-accent: linear-gradient(135deg, var(--hera-accent) 0%, #ff9500 100%);
+  --hera-gradient-surface: linear-gradient(145deg, var(--hera-surface) 0%, var(--hera-surface-elevated) 100%);
+  --hera-gradient-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%);
+  
+  /* Shadows */
+  --hera-shadow-sm: 0 2px 8px rgba(102, 126, 234, 0.08);
+  --hera-shadow-md: 0 4px 16px rgba(102, 126, 234, 0.12);
+  --hera-shadow-lg: 0 8px 24px rgba(102, 126, 234, 0.16);
+  --hera-shadow-xl: 0 12px 32px rgba(102, 126, 234, 0.20);
+  --hera-shadow-float: 0 20px 40px rgba(102, 126, 234, 0.25);
+  
+  /* Dark Mode Colors */
+  --hera-dark-bg: #1a202c;
+  --hera-dark-surface: #2d3748;
+  --hera-dark-surface-elevated: #4a5568;
+  --hera-dark-text: #f7fafc;
+  --hera-dark-border: #4a5568;
+}
+
+/* Typography - Inter/Nunito Sans */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap');
+
+.hera-font-primary {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.hera-font-secondary {
+  font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Core Component Classes */
+.hera-navbar {
+  background: var(--hera-gradient-primary);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--hera-shadow-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hera-surface {
+  background: var(--hera-gradient-surface);
+  border: 1px solid var(--hera-border);
+  border-radius: 16px;
+  box-shadow: var(--hera-shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hera-surface:hover {
+  box-shadow: var(--hera-shadow-md);
+  transform: translateY(-2px);
+}
+
+.hera-card {
+  @apply hera-surface;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hera-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--hera-gradient-primary);
+}
+
+.hera-card-elevated {
+  @apply hera-card;
+  box-shadow: var(--hera-shadow-lg);
+  background: var(--hera-gradient-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.hera-card-float {
+  @apply hera-card-elevated;
+  box-shadow: var(--hera-shadow-float);
+  transform: translateY(-4px);
+}
+
+/* Buttons */
+.hera-btn {
+  @apply hera-font-primary;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  min-height: 44px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hera-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.hera-btn:hover::before {
+  left: 100%;
+}
+
+.hera-btn-primary {
+  @apply hera-btn;
+  background: var(--hera-gradient-primary);
+  color: white;
+  box-shadow: var(--hera-shadow-md);
+}
+
+.hera-btn-primary:hover {
+  box-shadow: var(--hera-shadow-lg);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.hera-btn-accent {
+  @apply hera-btn;
+  background: var(--hera-gradient-accent);
+  color: var(--hera-text-dark);
+  box-shadow: var(--hera-shadow-md);
+}
+
+.hera-btn-accent:hover {
+  box-shadow: var(--hera-shadow-lg);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.hera-btn-surface {
+  @apply hera-btn;
+  background: var(--hera-surface);
+  color: var(--hera-text-dark);
+  border: 1px solid var(--hera-border);
+  box-shadow: var(--hera-shadow-sm);
+}
+
+.hera-btn-surface:hover {
+  background: var(--hera-surface-elevated);
+  box-shadow: var(--hera-shadow-md);
+  border-color: var(--hera-primary-start);
+}
+
+.hera-btn-ghost {
+  @apply hera-btn;
+  background: transparent;
+  color: var(--hera-primary-start);
+  border: 1px solid var(--hera-primary-start);
+}
+
+.hera-btn-ghost:hover {
+  background: var(--hera-gradient-primary);
+  color: white;
+}
+
+/* Inputs */
+.hera-input {
+  @apply hera-font-primary;
+  background: var(--hera-surface);
+  border: 1.5px solid var(--hera-border);
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  min-height: 44px;
+  color: var(--hera-text-dark);
+}
+
+.hera-input:focus {
+  outline: none;
+  border-color: var(--hera-primary-start);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: var(--hera-surface-elevated);
+}
+
+.hera-input::placeholder {
+  color: var(--hera-text-light);
+}
+
+.hera-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hera-input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--hera-text-light);
+  pointer-events: none;
+}
+
+.hera-input-with-icon {
+  padding-left: 2.75rem;
+}
+
+/* Filter Chips */
+.hera-chip {
+  @apply hera-font-primary;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 24px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.hera-chip-active {
+  @apply hera-chip;
+  background: var(--hera-gradient-primary);
+  color: white;
+  box-shadow: var(--hera-shadow-sm);
+}
+
+.hera-chip-inactive {
+  @apply hera-chip;
+  background: var(--hera-surface);
+  color: var(--hera-text-medium);
+  border: 1px solid var(--hera-border);
+}
+
+.hera-chip-inactive:hover {
+  background: var(--hera-surface-elevated);
+  border-color: var(--hera-primary-start);
+  color: var(--hera-primary-start);
+}
+
+/* Tables */
+.hera-table {
+  background: var(--hera-surface);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--hera-shadow-sm);
+  border: 1px solid var(--hera-border);
+}
+
+.hera-table-header {
+  background: var(--hera-gradient-surface);
+  border-bottom: 2px solid var(--hera-border);
+}
+
+.hera-table-header th {
+  @apply hera-font-primary;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--hera-text-medium);
+}
+
+.hera-table-body tr {
+  border-bottom: 1px solid var(--hera-border);
+  transition: background-color 0.2s ease;
+}
+
+.hera-table-body tr:hover {
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.03) 0%, transparent 100%);
+}
+
+.hera-table-body td {
+  @apply hera-font-primary;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--hera-text-dark);
+}
+
+/* Card Grid */
+.hera-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.hera-grid-card {
+  @apply hera-card;
+  cursor: pointer;
+  position: relative;
+  min-height: 160px;
+}
+
+.hera-grid-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--hera-shadow-lg);
+}
+
+.hera-grid-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--hera-gradient-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hera-grid-card:hover::after {
+  opacity: 1;
+}
+
+/* Filter Panel */
+.hera-filter-panel {
+  background: var(--hera-surface);
+  border: 1px solid var(--hera-border);
+  border-radius: 16px;
+  box-shadow: var(--hera-shadow-md);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.hera-filter-section {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--hera-border);
+}
+
+.hera-filter-section:last-child {
+  border-bottom: none;
+}
+
+.hera-filter-title {
+  @apply hera-font-primary;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--hera-text-dark);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Status Indicators */
+.hera-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hera-status-success {
+  @apply hera-status;
+  background: rgba(72, 187, 120, 0.1);
+  color: var(--hera-success);
+  border: 1px solid rgba(72, 187, 120, 0.2);
+}
+
+.hera-status-warning {
+  @apply hera-status;
+  background: rgba(237, 137, 54, 0.1);
+  color: var(--hera-warning);
+  border: 1px solid rgba(237, 137, 54, 0.2);
+}
+
+.hera-status-error {
+  @apply hera-status;
+  background: rgba(245, 101, 101, 0.1);
+  color: var(--hera-error);
+  border: 1px solid rgba(245, 101, 101, 0.2);
+}
+
+.hera-status-info {
+  @apply hera-status;
+  background: rgba(66, 153, 225, 0.1);
+  color: var(--hera-info);
+  border: 1px solid rgba(66, 153, 225, 0.2);
+}
+
+/* Animations */
+@keyframes hera-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hera-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes hera-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.hera-animate-fade-in {
+  animation: hera-fade-in 0.4s ease-out forwards;
+}
+
+.hera-animate-scale-in {
+  animation: hera-scale-in 0.3s ease-out forwards;
+}
+
+.hera-animate-slide-in {
+  animation: hera-slide-in 0.5s ease-out forwards;
+}
+
+/* Loading States */
+.hera-skeleton {
+  background: linear-gradient(90deg, var(--hera-surface) 25%, var(--hera-surface-elevated) 50%, var(--hera-surface) 75%);
+  background-size: 200% 100%;
+  animation: hera-skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes hera-skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .hera-card {
+    padding: 1rem;
+  }
+  
+  .hera-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  
+  .hera-btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hera-card {
+    padding: 0.875rem;
+    border-radius: 12px;
+  }
+  
+  .hera-grid {
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+  }
+  
+  .hera-table-header th,
+  .hera-table-body td {
+    padding: 0.75rem;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hera-bg-main: var(--hera-dark-bg);
+    --hera-surface: var(--hera-dark-surface);
+    --hera-surface-elevated: var(--hera-dark-surface-elevated);
+    --hera-text-dark: var(--hera-dark-text);
+    --hera-text-medium: #cbd5e0;
+    --hera-text-light: #a0aec0;
+    --hera-border: var(--hera-dark-border);
+  }
+  
+  .hera-navbar {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  }
+  
+  .hera-card::before {
+    background: var(--hera-gradient-accent);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .hera-surface {
+    border-width: 2px;
+  }
+  
+  .hera-btn {
+    border-width: 2px;
+  }
+  
+  .hera-input {
+    border-width: 2px;
+  }
+}

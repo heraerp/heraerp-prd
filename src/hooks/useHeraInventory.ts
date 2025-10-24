@@ -158,7 +158,7 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     isUpdating,
     isDeleting
   } = useUniversalEntity({
-    entity_type: 'product',
+    entity_type: 'PRODUCT',
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
@@ -257,7 +257,7 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     }
 
     const result = await baseCreate({
-      entity_type: 'product',
+      entity_type: 'PRODUCT',
       entity_name,
       entity_code,
       smart_code: 'HERA.SALON.PROD.ENT.V1',
@@ -357,19 +357,61 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
 
     let filtered = items as InventoryItem[]
 
-    // Filter by branch
+    // ✅ FIX: Filter by branch using STOCK_AT relationships
+    // Products with stock at specific branches will be shown
     if (options?.branchId && options.branchId !== 'all') {
-      filtered = filtered.filter(item => {
+      console.log('[useHeraInventory] Filtering by branch:', options.branchId)
+      console.log('[useHeraInventory] Total items before filter:', filtered.length)
+
+      filtered = filtered.filter((item, index) => {
+        // Check both lowercase and UPPERCASE relationship keys
         const stockAtRelationships =
           (item as any).relationships?.stock_at || (item as any).relationships?.STOCK_AT
-        if (!stockAtRelationships) return false
 
+        // Log first item for debugging
+        if (index === 0) {
+          console.log('[useHeraInventory] Sample item relationships:', {
+            item_id: item.id,
+            item_name: item.entity_name,
+            relationships: (item as any).relationships,
+            stockAtRelationships
+          })
+        }
+
+        // If no relationships exist, show the item (it's available at all branches)
+        if (!stockAtRelationships) return true
+
+        // If relationships exist, check if the branch is in the list
         if (Array.isArray(stockAtRelationships)) {
-          return stockAtRelationships.some((rel: any) => rel.to_entity?.id === options.branchId)
+          // Show if there's a STOCK_AT relationship with this branch
+          const hasMatch = stockAtRelationships.some((rel: any) => {
+            const branchId = rel.to_entity?.id || rel.target_entity_id
+            return branchId === options.branchId
+          })
+          if (index === 0) {
+            console.log('[useHeraInventory] Array relationship check:', {
+              hasMatch,
+              stockAtRelationships: stockAtRelationships.map((r: any) => ({
+                to_entity_id: r.to_entity?.id,
+                target_entity_id: r.target_entity_id
+              }))
+            })
+          }
+          return hasMatch
         } else {
-          return stockAtRelationships.to_entity?.id === options.branchId
+          // Single relationship
+          const branchId = stockAtRelationships.to_entity?.id || stockAtRelationships.target_entity_id
+          if (index === 0) {
+            console.log('[useHeraInventory] Single relationship check:', {
+              branchId,
+              matches: branchId === options.branchId
+            })
+          }
+          return branchId === options.branchId
         }
       })
+
+      console.log('[useHeraInventory] Items after branch filter:', filtered.length)
     }
 
     // Search filter
@@ -442,7 +484,7 @@ export function useHeraStockMovements(options?: UseHeraInventoryOptions) {
     refetch,
     create: baseCreate
   } = useUniversalEntity({
-    entity_type: 'stock_movement',
+    entity_type: 'STOCK_MOVEMENT',
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,

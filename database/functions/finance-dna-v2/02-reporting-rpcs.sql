@@ -80,7 +80,7 @@ BEGIN
                 p_currency_code as currency_code,
                 MAX(ut.transaction_date) as last_transaction_date,
                 COUNT(DISTINCT ut.id) as transaction_count,
-                'HERA.ACCOUNTING.REPORT.TRIAL.BALANCE.v2' as smart_code
+                'HERA.ACCOUNTING.REPORT.TRIAL.BALANCE.V2' as smart_code
             FROM core_entities ce
             LEFT JOIN universal_transaction_lines utl ON ce.id = utl.line_entity_id
             LEFT JOIN universal_transactions ut ON utl.transaction_id = ut.id
@@ -121,7 +121,7 @@ BEGIN
                 p_currency_code as currency_code,
                 MAX(ut.transaction_date) as last_transaction_date,
                 COUNT(DISTINCT ut.id) as transaction_count,
-                'HERA.ACCOUNTING.REPORT.TRIAL.BALANCE.v2' as smart_code
+                'HERA.ACCOUNTING.REPORT.TRIAL.BALANCE.V2' as smart_code
             FROM core_entities ce
             LEFT JOIN universal_transaction_lines utl ON ce.id = utl.line_entity_id
             LEFT JOIN universal_transactions ut ON utl.transaction_id = ut.id
@@ -150,7 +150,7 @@ BEGIN
             'include_zero_balances', p_include_zero_balances,
             'account_type_filter', p_account_type_filter
         ),
-        'HERA.ACCOUNTING.AUDIT.REPORT.TRIAL.BALANCE.v2'
+        'HERA.ACCOUNTING.AUDIT.REPORT.TRIAL.BALANCE.V2'
     );
 END;
 $$;
@@ -226,7 +226,7 @@ BEGIN
                     END
                 ELSE 0.00
             END as comparative_period_amount,
-            'HERA.ACCOUNTING.REPORT.PROFIT.LOSS.v2' as smart_code
+            'HERA.ACCOUNTING.REPORT.PROFIT.LOSS.V2' as smart_code
         FROM core_entities ce
         LEFT JOIN universal_transaction_lines utl ON ce.id = utl.line_entity_id
         LEFT JOIN universal_transactions ut ON utl.transaction_id = ut.id
@@ -262,7 +262,7 @@ BEGIN
             'include_comparative', p_include_comparative,
             'processing_time_ms', EXTRACT(MILLISECONDS FROM v_processing_time)
         ),
-        'HERA.ACCOUNTING.AUDIT.REPORT.PROFIT.LOSS.v2'
+        'HERA.ACCOUNTING.AUDIT.REPORT.PROFIT.LOSS.V2'
     );
 END;
 $$;
@@ -336,7 +336,7 @@ BEGIN
                     END
                 ELSE 0.00
             END as comparative_balance,
-            'HERA.ACCOUNTING.REPORT.BALANCE.SHEET.v2' as smart_code
+            'HERA.ACCOUNTING.REPORT.BALANCE.SHEET.V2' as smart_code
         FROM core_entities ce
         LEFT JOIN universal_transaction_lines utl ON ce.id = utl.line_entity_id
         LEFT JOIN universal_transactions ut ON utl.transaction_id = ut.id
@@ -378,7 +378,7 @@ BEGIN
             'include_comparative', p_include_comparative,
             'processing_time_ms', EXTRACT(MILLISECONDS FROM v_processing_time)
         ),
-        'HERA.ACCOUNTING.AUDIT.REPORT.BALANCE.SHEET.v2'
+        'HERA.ACCOUNTING.AUDIT.REPORT.BALANCE.SHEET.V2'
     );
 END;
 $$;

@@ -306,7 +306,7 @@ BEGIN
                 'gl_account',
                 v_account.name,
                 v_account.code,
-                'HERA.ACCOUNTING.CHART.ACCOUNT.v2',
+                'HERA.ACCOUNTING.CHART.ACCOUNT.V2',
                 jsonb_build_object('account_type', v_account.type)
             ) RETURNING id INTO v_entity_id;
             
@@ -322,7 +322,7 @@ BEGIN
                 p_organization_id,
                 'account_type',
                 v_account.type,
-                'HERA.ACCOUNTING.ACCOUNT.TYPE.v2'
+                'HERA.ACCOUNTING.ACCOUNT.TYPE.V2'
             );
             
             v_created_count := v_created_count + 1;
@@ -350,7 +350,7 @@ BEGIN;
     ) VALUES (
         '00000000-0000-0000-0000-000000000000'::uuid,
         'SYSTEM_UPDATE',
-        'HERA.ACCOUNTING.CLEANUP.SIMPLE.DATA.ONLY.v2',
+        'HERA.ACCOUNTING.CLEANUP.SIMPLE.DATA.ONLY.V2',
         jsonb_build_object(
             'cleanup_type', 'simple_data_only_cleanup',
             'note', 'constraints_need_manual_update',

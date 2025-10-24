@@ -7,16 +7,6 @@
 export const SMARTCODE_REGEX = /^HERA\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[vV][0-9]+$/
 
 /**
- * Validate a universal event against basic requirements
- */
-export function validateEvent(data: any): boolean {
-  // Basic validation without schema dependency
-  const errors = preflight(data)
-  ;(validateEvent as any).errors = errors.map(err => ({ message: err }))
-  return errors.length === 0
-}
-
-/**
  * Guardrail preflight checks for universal events
  */
 export function preflight(event: any): string[] {

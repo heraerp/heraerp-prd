@@ -9,15 +9,9 @@
 import { useEffect, useState } from 'react'
 import { useUniversalTransaction } from '@/hooks/useUniversalTransaction'
 import { getTransactions, getEntities } from '@/lib/universal-api-v2-client'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription
-} from '@/components/ui/luxe-dialog'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import {
   Receipt,
@@ -27,7 +21,6 @@ import {
   CreditCard,
   Package,
   Scissors,
-  X,
   Loader2,
   Users,
   Clock,
@@ -42,6 +35,7 @@ interface SaleDetailsDialogProps {
   onClose: () => void
   saleId: string
   organizationId: string
+  currency?: string // ✅ ENTERPRISE: Dynamic currency support
 }
 
 // Luxury salon color palette (matching payments page)
@@ -59,7 +53,8 @@ export function SaleDetailsDialog({
   open,
   onClose,
   saleId,
-  organizationId
+  organizationId,
+  currency = 'AED' // ✅ ENTERPRISE: Default to AED if not provided
 }: SaleDetailsDialogProps) {
   const [transaction, setTransaction] = useState<any>(null)
   const [lines, setLines] = useState<any[]>([])
@@ -67,14 +62,14 @@ export function SaleDetailsDialog({
   const [staff, setStaff] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Fetch transaction details when dialog opens
+  // ✅ OPTIMIZED: Fetch transaction details when dialog opens
   useEffect(() => {
     async function fetchTransactionDetails() {
       if (!open || !saleId || !organizationId) return
 
       setIsLoading(true)
       try {
-        // Fetch the transaction using RPC API v2
+        // Step 1: Fetch the transaction using RPC API v2
         const response = await fetch(
           `/api/v2/transactions/${saleId}?organization_id=${organizationId}`,
           {
@@ -89,46 +84,71 @@ export function SaleDetailsDialog({
         }
 
         const data = await response.json()
-        console.log('[SaleDetailsDialog] Fetched transaction:', data)
+        console.log('[SaleDetailsDialog] Fetched transaction:', {
+          fullData: data,
+          transaction: data.transaction,
+          lines: data.lines,
+          linesCount: data.lines?.length || 0,
+          transaction_number: data.transaction?.transaction_number,
+          transaction_code: data.transaction?.transaction_code,
+          total_amount: data.transaction?.total_amount
+        })
 
         setTransaction(data.transaction || data)
         setLines(data.lines || [])
 
-        // ✅ Fetch customer entity if exists
-        if (data.transaction?.source_entity_id) {
-          try {
-            const customerData = await getEntities('', {
+        // ✅ OPTIMIZED: Parallel fetch customer and staff entities using Promise.all
+        const customerPromise = data.transaction?.source_entity_id
+          ? getEntities('', {
               p_organization_id: organizationId,
               p_entity_type: 'CUSTOMER',
               p_include_dynamic: false,
               p_include_relationships: false
             })
-            const foundCustomer = customerData.find(
-              (c: any) => c.id === data.transaction.source_entity_id
-            )
-            setCustomer(foundCustomer || null)
-          } catch (err) {
-            console.error('[SaleDetailsDialog] Error fetching customer:', err)
-          }
-        }
+              .then((customerData: any[]) => {
+                const foundCustomer = customerData.find(
+                  (c: any) => c.id === data.transaction.source_entity_id
+                )
+                return foundCustomer || null
+              })
+              .catch((err: any) => {
+                console.error('[SaleDetailsDialog] Error fetching customer:', err)
+                return null
+              })
+          : Promise.resolve(null)
 
-        // ✅ Fetch staff entity if exists
-        if (data.transaction?.target_entity_id) {
-          try {
-            const staffData = await getEntities('', {
+        const staffPromise = data.transaction?.target_entity_id
+          ? getEntities('', {
               p_organization_id: organizationId,
               p_entity_type: 'STAFF',
               p_include_dynamic: false,
               p_include_relationships: false
             })
-            const foundStaff = staffData.find(
-              (s: any) => s.id === data.transaction.target_entity_id
-            )
-            setStaff(foundStaff || null)
-          } catch (err) {
-            console.error('[SaleDetailsDialog] Error fetching staff:', err)
-          }
-        }
+              .then((staffData: any[]) => {
+                const foundStaff = staffData.find(
+                  (s: any) => s.id === data.transaction.target_entity_id
+                )
+                return foundStaff || null
+              })
+              .catch((err: any) => {
+                console.error('[SaleDetailsDialog] Error fetching staff:', err)
+                return null
+              })
+          : Promise.resolve(null)
+
+        // ✅ ENTERPRISE: Parallel loading - fetch both entities simultaneously
+        const [customerResult, staffResult] = await Promise.all([
+          customerPromise,
+          staffPromise
+        ])
+
+        setCustomer(customerResult)
+        setStaff(staffResult)
+
+        console.log('[SaleDetailsDialog] ✅ All data loaded in parallel:', {
+          customer: customerResult?.entity_name,
+          staff: staffResult?.entity_name
+        })
       } catch (error) {
         console.error('[SaleDetailsDialog] Error fetching transaction:', error)
       } finally {
@@ -144,58 +164,63 @@ export function SaleDetailsDialog({
   const metadata = transaction?.metadata || {}
 
   // ✅ Calculate amounts from transaction lines (enterprise-grade accuracy)
-  const serviceLines = lines.filter((l: any) => l.line_type === 'service' || l.line_type === 'product')
-  const taxLines = lines.filter((l: any) => l.line_type === 'tax')
-  const discountLines = lines.filter((l: any) => l.line_type === 'discount')
-  const paymentLines = lines.filter((l: any) => l.line_type === 'payment')
+  // ✅ FIX: Handle both uppercase and lowercase line_type values
+  const serviceLines = lines.filter((l: any) => {
+    const type = l.line_type?.toLowerCase()
+    return type === 'service' || type === 'product'
+  })
+  const taxLines = lines.filter((l: any) => l.line_type?.toLowerCase() === 'tax')
+  const discountLines = lines.filter((l: any) => l.line_type?.toLowerCase() === 'discount')
+  const tipLines = lines.filter((l: any) => l.line_type?.toLowerCase() === 'tip')
+  const paymentLines = lines.filter((l: any) => l.line_type?.toLowerCase() === 'payment')
 
   const subtotal = serviceLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
   const taxAmount = taxLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
   const discountAmount = Math.abs(discountLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0))
-  const tipAmount = metadata.tip_amount || 0
-  const totalAmount = transaction?.total_amount || 0
+  const tipAmount = tipLines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
+
+  // ✅ FIX: Calculate total from customer-facing lines (exclude payment lines)
+  // Payment lines show how customer paid, not what they owe
+  const totalAmount = subtotal - discountAmount + taxAmount + tipAmount
+
+  // ✅ DEBUG: Log calculated amounts
+  if (transaction && lines.length > 0) {
+    console.log('[SaleDetailsDialog] Calculated amounts:', {
+      totalLines: lines.length,
+      serviceLines: serviceLines.length,
+      taxLines: taxLines.length,
+      discountLines: discountLines.length,
+      tipLines: tipLines.length,
+      paymentLines: paymentLines.length,
+      subtotal,
+      taxAmount,
+      discountAmount,
+      tipAmount,
+      totalAmount,
+      allLines: lines.map(l => ({
+        type: l.line_type,
+        description: l.description,
+        amount: l.line_amount,
+        quantity: l.quantity,
+        unit_amount: l.unit_amount
+      }))
+    })
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent
-        className="max-w-4xl max-h-[90vh] overflow-y-auto"
-        style={{
-          backgroundColor: LUXE_COLORS.charcoal,
-          border: `1px solid ${LUXE_COLORS.gold}40`,
-          boxShadow: '0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.2)',
-          backgroundImage: `
-            radial-gradient(ellipse 80% 60% at 20% 30%, ${LUXE_COLORS.gold}08 0%, transparent 50%),
-            radial-gradient(ellipse 70% 50% at 80% 70%, ${LUXE_COLORS.plum}06 0%, transparent 50%)
-          `
-        }}
-      >
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <DialogTitle
-                className="text-2xl font-bold"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
-              >
-                Sale Details
-              </DialogTitle>
-              <DialogDescription style={{ color: LUXE_COLORS.bronze }}>
-                Complete transaction information
-              </DialogDescription>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              style={{ color: LUXE_COLORS.bronze }}
-            >
-              <X className="w-5 h-5" />
-            </Button>
-          </div>
-        </DialogHeader>
+    <SalonLuxeModal
+      open={open}
+      onClose={onClose}
+      title="Sale Details"
+      description="Complete transaction information"
+      icon={<Receipt className="w-6 h-6" />}
+      size="xl"
+      footer={
+        <SalonLuxeButton variant="outline" onClick={onClose}>
+          Close
+        </SalonLuxeButton>
+      }
+    >
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
@@ -229,7 +254,7 @@ export function SaleDetailsDialog({
                     </span>
                   </div>
                   <p className="text-lg font-bold" style={{ color: LUXE_COLORS.champagne }}>
-                    {transaction.transaction_code}
+                    {transaction.transaction_number || transaction.transaction_code || 'N/A'}
                   </p>
                 </div>
                 <div>
@@ -285,7 +310,7 @@ export function SaleDetailsDialog({
                     </span>
                   </div>
                   <p className="text-2xl font-bold" style={{ color: LUXE_COLORS.gold }}>
-                    AED {totalAmount.toFixed(2)}
+                    {currency} {totalAmount.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -318,7 +343,7 @@ export function SaleDetailsDialog({
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 flex-1">
-                          {line.line_type === 'service' ? (
+                          {line.line_type?.toLowerCase() === 'service' ? (
                             <Scissors
                               className="w-5 h-5"
                               style={{ color: LUXE_COLORS.plum }}
@@ -352,13 +377,13 @@ export function SaleDetailsDialog({
                             className="text-sm"
                             style={{ color: LUXE_COLORS.bronze }}
                           >
-                            {line.quantity} × AED {(line.unit_amount || 0).toFixed(2)}
+                            {line.quantity} × {currency} {(line.unit_amount || 0).toFixed(2)}
                           </p>
                           <p
                             className="text-lg font-bold"
                             style={{ color: LUXE_COLORS.gold }}
                           >
-                            AED {(line.line_amount || 0).toFixed(2)}
+                            {currency} {(line.line_amount || 0).toFixed(2)}
                           </p>
                         </div>
                       </div>
@@ -389,14 +414,14 @@ export function SaleDetailsDialog({
                 <div className="flex justify-between">
                   <span style={{ color: LUXE_COLORS.bronze }}>Subtotal</span>
                   <span style={{ color: LUXE_COLORS.champagne }}>
-                    AED {subtotal.toFixed(2)}
+                    {currency} {subtotal.toFixed(2)}
                   </span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between">
                     <span style={{ color: LUXE_COLORS.bronze }}>Discount</span>
                     <span style={{ color: LUXE_COLORS.champagne }}>
-                      -AED {discountAmount.toFixed(2)}
+                      -{currency} {discountAmount.toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -404,7 +429,7 @@ export function SaleDetailsDialog({
                   <div className="flex justify-between">
                     <span style={{ color: LUXE_COLORS.bronze }}>Tax (5%)</span>
                     <span style={{ color: LUXE_COLORS.champagne }}>
-                      AED {taxAmount.toFixed(2)}
+                      {currency} {taxAmount.toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -412,7 +437,7 @@ export function SaleDetailsDialog({
                   <div className="flex justify-between">
                     <span style={{ color: LUXE_COLORS.bronze }}>Tip</span>
                     <span style={{ color: LUXE_COLORS.champagne }}>
-                      AED {tipAmount.toFixed(2)}
+                      {currency} {tipAmount.toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -427,7 +452,7 @@ export function SaleDetailsDialog({
                     Total
                   </span>
                   <span className="text-2xl font-bold" style={{ color: LUXE_COLORS.gold }}>
-                    AED {totalAmount.toFixed(2)}
+                    {currency} {totalAmount.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -462,7 +487,7 @@ export function SaleDetailsDialog({
                             className="text-lg font-bold"
                             style={{ color: LUXE_COLORS.emerald }}
                           >
-                            AED {(line.line_amount || 0).toFixed(2)}
+                            {currency} {(line.line_amount || 0).toFixed(2)}
                           </span>
                         </div>
                       )
@@ -493,7 +518,6 @@ export function SaleDetailsDialog({
             )}
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+    </SalonLuxeModal>
   )
 }

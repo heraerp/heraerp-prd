@@ -1,1067 +1,783 @@
 'use client'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
-
-/**
- * HERA Furniture Enterprise Digital Accountant
- * Smart Code: HERA.FURNITURE.DIGITAL.ACCOUNTANT.ENTERPRISE.V2
- * 
- * Professional enterprise-grade AI accounting assistant
- * Advanced financial automation and intelligent bookkeeping
- */
-
-import React, { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import React, { useState, useEffect } from 'react'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  Brain,
-  Send,
-  Loader2,
-  DollarSign,
-  ShoppingBag,
-  Users,
-  Receipt,
-  CreditCard,
-  Banknote,
-  TrendingUp,
-  TrendingDown,
-  Calendar,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  MessageSquare,
-  Camera,
-  Mic,
-  HelpCircle,
-  Sparkles,
   Calculator,
+  Mic,
   FileText,
-  ChevronRight,
-  Package,
-  Home,
-  Zap,
-  Coins,
-  BarChart3,
-  Target,
-  History,
-  Settings,
-  Download,
-  Moon,
-  Sun,
-  ArrowDown,
-  ChevronDown,
+  Plus,
+  TrendingUp,
+  DollarSign,
+  Receipt,
   Truck,
-  Wrench,
-  Factory,
-  Sofa,
+  TreePine,
   Hammer,
-  BookOpen,
-  PieChart,
-  LineChart,
-  Briefcase,
-  Shield,
+  Building2,
+  Calendar,
+  AlertCircle,
+  CheckCircle,
+  Send,
+  Upload,
+  Download,
   Globe,
-  Cpu,
-  Network,
-  Building,
-  CircleDollarSign,
-  Star,
-  Award,
-  Activity
+  MapPin,
+  Percent,
+  Users,
+  Package,
+  Edit,
+  Save,
+  X
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { FurnitureDocumentUpload } from '@/components/furniture/FurnitureDocumentUpload'
 
-// Enhanced TypeScript interfaces for enterprise features
-interface AccountingCapability {
+interface Transaction {
   id: string
-  name: string
+  type: 'income' | 'expense'
+  category: string
   description: string
-  icon: React.ElementType
-  status: 'active' | 'processing' | 'ready'
-  accuracy: number
-  category: 'automation' | 'analysis' | 'compliance' | 'intelligence'
-  color: string
+  amount: number
+  gstRate?: number
+  gstAmount?: number
+  date: string
+  vendor?: string
+  invoiceNumber?: string
+  isExport?: boolean
 }
 
-interface FinancialMetric {
-  id: string
-  name: string
-  value: string | number
-  previousValue: string | number
-  change: number
-  trend: 'up' | 'down' | 'stable'
-  icon: React.ElementType
+interface QuickExpense {
   category: string
-  priority: 'critical' | 'high' | 'medium' | 'low'
+  icon: React.ElementType
+  placeholder: string
+  gstRate: number
   color: string
 }
 
-interface FurnitureMessage {
+interface JournalEntry {
   id: string
-  type: 'user' | 'assistant' | 'system' | 'insight'
-  content: string
-  timestamp: Date
-  category?: 'revenue' | 'expense' | 'payment' | 'production' | 'inventory' | 'summary'
-  amount?: number
-  status?: 'success' | 'pending' | 'error'
-  priority?: 'high' | 'medium' | 'low'
-  actions?: QuickAction[]
-  journalEntry?: {
-    debits: Array<{ account: string; amount: number }>
-    credits: Array<{ account: string; amount: number }>
-  }
+  date: string
+  description: string
+  reference: string
+  entries: {
+    account: string
+    debit: number
+    credit: number
+  }[]
+  totalDebit: number
+  totalCredit: number
 }
 
-interface QuickAction {
-  icon: React.ElementType
-  label: string
-  action: string
-  variant?: 'default' | 'secondary' | 'outline'
-  data?: any
-}
+export default function DigitalAccountant() {
+  const [voiceInput, setVoiceInput] = useState('')
+  const [isListening, setIsListening] = useState(false)
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [selectedQuickExpense, setSelectedQuickExpense] = useState<string | null>(null)
+  const [amount, setAmount] = useState('')
+  const [description, setDescription] = useState('')
+  const [processedJournalEntry, setProcessedJournalEntry] = useState<JournalEntry | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
 
-interface QuickPrompt {
-  icon: React.ElementType
-  label: string
-  prompt: string
-  color: string
-  category: string
-}
+  // Kerala furniture business specific expense categories
+  const quickExpenseCategories: QuickExpense[] = [
+    {
+      category: 'Raw Materials',
+      icon: TreePine,
+      placeholder: 'Teak wood from Thrissur - 500kg',
+      gstRate: 5,
+      color: 'from-green-500 to-emerald-500'
+    },
+    {
+      category: 'Craftsman Wages',
+      icon: Hammer,
+      placeholder: 'Traditional carpenter - weekly payment',
+      gstRate: 0,
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      category: 'Export Expenses',
+      icon: Globe,
+      placeholder: 'Shipping to Dubai - container freight',
+      gstRate: 18,
+      color: 'from-purple-500 to-indigo-500'
+    },
+    {
+      category: 'Factory Rent',
+      icon: Building2,
+      placeholder: 'Workshop rent - Kozhikode unit',
+      gstRate: 18,
+      color: 'from-amber-500 to-orange-500'
+    },
+    {
+      category: 'Sales Revenue',
+      icon: DollarSign,
+      placeholder: 'Hotel order - ITC Grand Chola',
+      gstRate: 12,
+      color: 'from-rose-500 to-pink-500'
+    },
+    {
+      category: 'Transportation',
+      icon: Truck,
+      placeholder: 'Delivery to Kochi port',
+      gstRate: 5,
+      color: 'from-teal-500 to-cyan-500'
+    }
+  ]
 
-// Enterprise Accounting Capabilities
-const ACCOUNTING_CAPABILITIES: AccountingCapability[] = [
-  {
-    id: 'auto_journaling',
-    name: 'Auto-Journaling',
-    description: 'Automatic journal entry creation with 99.2% accuracy',
-    icon: BookOpen,
-    status: 'active',
-    accuracy: 99.2,
-    category: 'automation',
-    color: 'text-emerald-600'
-  },
-  {
-    id: 'financial_analysis',
-    name: 'Financial Analysis',
-    description: 'Real-time financial health monitoring and insights',
-    icon: BarChart3,
-    status: 'active',
-    accuracy: 96.8,
-    category: 'analysis',
-    color: 'text-blue-600'
-  },
-  {
-    id: 'compliance_monitoring',
-    name: 'Compliance Monitoring',
-    description: 'Automated compliance checks and audit trail maintenance',
-    icon: Shield,
-    status: 'active',
-    accuracy: 98.5,
-    category: 'compliance',
-    color: 'text-purple-600'
-  },
-  {
-    id: 'expense_intelligence',
-    name: 'Expense Intelligence',
-    description: 'Smart expense categorization and pattern recognition',
-    icon: Target,
-    status: 'processing',
-    accuracy: 94.7,
-    category: 'intelligence',
-    color: 'text-cyan-600'
-  },
-  {
-    id: 'cash_flow_prediction',
-    name: 'Cash Flow Prediction',
-    description: 'AI-powered cash flow forecasting and optimization',
-    icon: TrendingUp,
-    status: 'active',
-    accuracy: 97.3,
-    category: 'analysis',
-    color: 'text-indigo-600'
-  },
-  {
-    id: 'document_processing',
-    name: 'Document AI',
-    description: 'Advanced OCR and intelligent document processing',
-    icon: FileText,
-    status: 'active',
-    accuracy: 98.9,
-    category: 'automation',
-    color: 'text-rose-600'
-  }
-]
-
-// Enhanced financial metrics with enterprise focus
-const FINANCIAL_METRICS: FinancialMetric[] = [
-  {
-    id: 'daily_revenue',
-    name: 'Daily Revenue',
-    value: '₹1,25,000',
-    previousValue: '₹1,18,400',
-    change: 5.6,
-    trend: 'up',
-    icon: CircleDollarSign,
-    category: 'revenue',
-    priority: 'high',
-    color: 'text-emerald-600'
-  },
-  {
-    id: 'gross_margin',
-    name: 'Gross Margin',
-    value: '61.2%',
-    previousValue: '58.7%',
-    change: 4.3,
-    trend: 'up',
-    icon: PieChart,
-    category: 'profitability',
-    priority: 'critical',
-    color: 'text-blue-600'
-  },
-  {
-    id: 'expense_ratio',
-    name: 'Expense Ratio',
-    value: '38.8%',
-    previousValue: '41.3%',
-    change: -6.1,
-    trend: 'up',
-    icon: Receipt,
-    category: 'efficiency',
-    priority: 'medium',
-    color: 'text-purple-600'
-  },
-  {
-    id: 'cash_position',
-    name: 'Cash Position',
-    value: '₹4,82,500',
-    previousValue: '₹4,56,200',
-    change: 5.8,
-    trend: 'up',
-    icon: Banknote,
-    category: 'liquidity',
-    priority: 'high',
-    color: 'text-cyan-600'
-  },
-  {
-    id: 'receivables',
-    name: 'Receivables',
-    value: '₹2,15,600',
-    previousValue: '₹2,48,900',
-    change: -13.4,
-    trend: 'up',
-    icon: Calendar,
-    category: 'collections',
-    priority: 'medium',
-    color: 'text-indigo-600'
-  },
-  {
-    id: 'automation_score',
-    name: 'Automation Score',
-    value: '94.7%',
-    previousValue: '89.2%',
-    change: 6.2,
-    trend: 'up',
-    icon: Zap,
-    category: 'automation',
-    priority: 'critical',
-    color: 'text-rose-600'
-  }
-]
-
-// Enterprise-focused quick prompts
-const FURNITURE_QUICK_PROMPTS: QuickPrompt[] = [
-  {
-    icon: CircleDollarSign,
-    label: 'Sales Transaction',
-    prompt: 'Record sales revenue with automatic journal posting',
-    color: 'text-green-600',
-    category: 'revenue'
-  },
-  {
-    icon: Receipt,
-    label: 'Expense Processing',
-    prompt: 'Process expense with intelligent categorization',
-    color: 'text-red-600',
-    category: 'expense'
-  },
-  {
-    icon: Factory,
-    label: 'Production Costing',
-    prompt: 'Calculate and allocate production costs with overhead distribution',
-    color: 'text-purple-600',
-    category: 'production'
-  },
-  {
-    icon: TrendingUp,
-    label: 'Financial Analysis',
-    prompt: 'Generate comprehensive financial performance analysis',
-    color: 'text-blue-600',
-    category: 'analysis'
-  },
-  {
-    icon: Target,
-    label: 'Budget Variance',
-    prompt: 'Analyze budget vs actual with variance explanations',
-    color: 'text-cyan-600',
-    category: 'budgeting'
-  },
-  {
-    icon: BookOpen,
-    label: 'Audit Trail',
-    prompt: 'Generate detailed audit trail and compliance report',
-    color: 'text-indigo-600',
-    category: 'compliance'
-  }
-]
-
-// Enhanced furniture-specific quick expenses with enterprise categories
-const FURNITURE_QUICK_EXPENSES = [
-  { icon: Package, label: 'Premium Timber', amount: 15000, category: 'raw_materials', code: 'MAT-001' },
-  { icon: Wrench, label: 'Hardware & Fittings', amount: 3500, category: 'components', code: 'MAT-002' },
-  { icon: Factory, label: 'Skilled Labor', amount: 8000, category: 'direct_labor', code: 'LAB-001' },
-  { icon: Truck, label: 'Logistics & Delivery', amount: 2500, category: 'distribution', code: 'LOG-001' },
-  { icon: Receipt, label: 'Utilities & Overhead', amount: 1200, category: 'overhead', code: 'OVH-001' },
-  { icon: Sofa, label: 'Upholstery Materials', amount: 4500, category: 'raw_materials', code: 'MAT-003' }
-]
-
-export default function FurnitureDigitalAccountantPage() {
-  const router = useRouter()
-  const { isAuthenticated, contextLoading } = useHERAAuth()
-  const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-
-  const [messages, setMessages] = useState<FurnitureMessage[]>([
+  // Sample transactions for Kerala furniture business
+  const sampleTransactions: Transaction[] = [
     {
       id: '1',
-      type: 'assistant',
-      content: `🚀 **Welcome to HERA Enterprise Digital Accountant v2.1**
-
-I'm your advanced AI accounting assistant for ${organizationName || 'your furniture business'}. I provide enterprise-grade financial automation:
-
-💼 **Advanced Features:**
-• Automatic journal entry generation (99.2% accuracy)
-• Real-time financial analysis and insights
-• Intelligent expense categorization and approval workflows
-• Cash flow forecasting with predictive analytics
-• Compliance monitoring and audit trail automation
-• Smart document processing with OCR technology
-
-📊 **Enterprise Capabilities:**
-• Multi-dimensional cost center accounting
-• Automated variance analysis and budget tracking
-• Integrated receivables and payables management
-• Real-time profitability analysis by product line
-• Advanced reporting with customizable dashboards
-
-Simply describe your transactions naturally - I'll handle all the complex accounting automatically while ensuring full compliance and providing intelligent insights for better business decisions.`,
-      timestamp: new Date(),
-      status: 'success',
-      category: 'summary'
+      type: 'expense',
+      category: 'Raw Materials',
+      description: 'Premium teak wood purchase - Nilambur forest',
+      amount: 125000,
+      gstRate: 5,
+      gstAmount: 6250,
+      date: '2024-01-15',
+      vendor: 'Kerala Forest Development Corporation',
+      invoiceNumber: 'KFDC/2024/001'
+    },
+    {
+      id: '2',
+      type: 'income',
+      category: 'Sales Revenue',
+      description: 'Executive dining set - Marriott Kochi',
+      amount: 850000,
+      gstRate: 12,
+      gstAmount: 102000,
+      date: '2024-01-14',
+      vendor: 'Marriott International',
+      invoiceNumber: 'KFW/2024/0015',
+      isExport: false
+    },
+    {
+      id: '3',
+      type: 'expense',
+      category: 'Export Expenses',
+      description: 'Container shipping to Middle East',
+      amount: 45000,
+      gstRate: 0,
+      gstAmount: 0,
+      date: '2024-01-13',
+      vendor: 'Cochin Port Authority',
+      invoiceNumber: 'CPA/EXP/2024/089',
+      isExport: true
+    },
+    {
+      id: '4',
+      type: 'expense',
+      category: 'Craftsman Wages',
+      description: 'Traditional wood carver - monthly payment',
+      amount: 35000,
+      gstRate: 0,
+      gstAmount: 0,
+      date: '2024-01-12',
+      vendor: 'Raman Master - Craftsman'
     }
-  ])
+  ]
 
-  const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [showExamples, setShowExamples] = useState(true)
-  const [useMCP, setUseMCP] = useState(true)
-  const [selectedCapability, setSelectedCapability] = useState<AccountingCapability | null>(null)
-  const [showMetrics, setShowMetrics] = useState(true)
-
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  // Auto-scroll to bottom with smooth animation
   useEffect(() => {
-    const scrollToBottom = () => {
-      if (scrollAreaRef.current) {
-        const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
-        if (viewport) {
-          viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
+    setTransactions(sampleTransactions)
+  }, [])
+
+  const handleVoiceInput = () => {
+    setIsListening(!isListening)
+    if (!isListening) {
+      // Simulate voice recognition for demo
+      setTimeout(() => {
+        setVoiceInput("Add expense of 25000 rupees for rosewood purchase from Wayanad supplier with 5% GST")
+        setIsListening(false)
+      }, 2000)
+    }
+  }
+
+  const processVoiceInput = () => {
+    if (!voiceInput.trim()) return
+
+    setIsProcessing(true)
+    
+    // Simulate AI processing delay
+    setTimeout(() => {
+      // Generate journal entry based on voice input
+      const journalEntry = generateJournalEntry(voiceInput)
+      setProcessedJournalEntry(journalEntry)
+      
+      // Parse voice input and create transaction
+      if (voiceInput.toLowerCase().includes('expense') && voiceInput.includes('25000')) {
+        const newTransaction: Transaction = {
+          id: Date.now().toString(),
+          type: 'expense',
+          category: 'Raw Materials',
+          description: 'Rosewood purchase from Wayanad supplier',
+          amount: 25000,
+          gstRate: 5,
+          gstAmount: 1250,
+          date: new Date().toISOString().split('T')[0],
+          vendor: 'Wayanad Wood Suppliers'
         }
+        setTransactions(prev => [newTransaction, ...prev])
+      }
+      
+      setVoiceInput('')
+      setIsProcessing(false)
+    }, 2000)
+  }
+
+  const generateJournalEntry = (input: string): JournalEntry => {
+    // AI simulation - analyze voice input and generate appropriate journal entry
+    const amount = 50000 // Extract from voice input
+    const gstAmount = amount * 0.05 // 5% GST
+    
+    if (input.toLowerCase().includes('expense') || input.toLowerCase().includes('teak')) {
+      return {
+        id: `JE-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
+        description: 'Teak wood purchase with GST',
+        reference: `INV-${Date.now().toString().slice(-6)}`,
+        entries: [
+          { account: 'Raw Materials Inventory', debit: amount, credit: 0 },
+          { account: 'GST Input Tax Credit', debit: gstAmount, credit: 0 },
+          { account: 'Accounts Payable - Suppliers', debit: 0, credit: amount + gstAmount }
+        ],
+        totalDebit: amount + gstAmount,
+        totalCredit: amount + gstAmount
+      }
+    } else if (input.toLowerCase().includes('income') || input.toLowerCase().includes('sale')) {
+      return {
+        id: `JE-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
+        description: 'Furniture sales with GST',
+        reference: `INV-${Date.now().toString().slice(-6)}`,
+        entries: [
+          { account: 'Accounts Receivable - Customers', debit: amount + gstAmount, credit: 0 },
+          { account: 'Sales Revenue', debit: 0, credit: amount },
+          { account: 'GST Output Tax Payable', debit: 0, credit: gstAmount }
+        ],
+        totalDebit: amount + gstAmount,
+        totalCredit: amount + gstAmount
       }
     }
+    
+    // Default expense entry
+    return {
+      id: `JE-${Date.now()}`,
+      date: new Date().toISOString().split('T')[0],
+      description: 'General expense entry',
+      reference: `INV-${Date.now().toString().slice(-6)}`,
+      entries: [
+        { account: 'General Expenses', debit: amount, credit: 0 },
+        { account: 'Cash/Bank Account', debit: 0, credit: amount }
+      ],
+      totalDebit: amount,
+      totalCredit: amount
+    }
+  }
 
-    const timer = setTimeout(() => {
-      requestAnimationFrame(scrollToBottom)
-    }, 50)
+  const handleQuickExpense = (category: QuickExpense) => {
+    if (!amount || !description) return
 
-    return () => clearTimeout(timer)
-  }, [messages])
-
-  const processFurnitureTransaction = async (text: string) => {
-    setLoading(true)
-
-    const userMessage: FurnitureMessage = {
+    const newTransaction: Transaction = {
       id: Date.now().toString(),
-      type: 'user',
-      content: text,
-      timestamp: new Date()
+      type: category.category === 'Sales Revenue' ? 'income' : 'expense',
+      category: category.category,
+      description: description,
+      amount: parseFloat(amount),
+      gstRate: category.gstRate,
+      gstAmount: (parseFloat(amount) * category.gstRate) / 100,
+      date: new Date().toISOString().split('T')[0],
+      vendor: description.split('-')[0]?.trim()
     }
-    setMessages(prev => [...prev, userMessage])
 
-    try {
-      // Call the furniture digital accountant API
-      const response = await fetch('/api/v1/furniture/digital-accountant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: text,
-          organizationId: organizationId,
-          useMCP: useMCP
-        })
-      })
+    setTransactions(prev => [newTransaction, ...prev])
+    setAmount('')
+    setDescription('')
+    setSelectedQuickExpense(null)
+  }
 
-      if (!response.ok) {
-        throw new Error('Failed to process transaction')
+  const getTotalsByCategory = () => {
+    const totals = transactions.reduce((acc, transaction) => {
+      if (!acc[transaction.category]) {
+        acc[transaction.category] = { income: 0, expense: 0, gst: 0 }
       }
-
-      const data = await response.json()
-
-      const assistantMessage: FurnitureMessage = {
-        id: Date.now().toString(),
-        type: 'assistant',
-        content: data.message,
-        timestamp: new Date(),
-        category: data.category,
-        amount: data.amount,
-        status: data.status || 'success',
-        priority: data.priority,
-        journalEntry: data.journalEntry,
-        actions: data.actions
+      if (transaction.type === 'income') {
+        acc[transaction.category].income += transaction.amount
+      } else {
+        acc[transaction.category].expense += transaction.amount
       }
-      setMessages(prev => [...prev, assistantMessage])
+      acc[transaction.category].gst += transaction.gstAmount || 0
+      return acc
+    }, {} as Record<string, { income: number, expense: number, gst: number }>)
 
-      // Add insights if available
-      if (data.insights && data.insights.length > 0) {
-        data.insights.forEach((insight: any, index: number) => {
-          setTimeout(() => {
-            const insightMessage: FurnitureMessage = {
-              id: `insight-${Date.now()}-${index}`,
-              type: 'insight',
-              content: insight.content,
-              timestamp: new Date(),
-              category: insight.category,
-              priority: insight.priority
-            }
-            setMessages(prev => [...prev, insightMessage])
-          }, 500 * (index + 1))
-        })
-      }
-    } catch (error) {
-      const errorMessage: FurnitureMessage = {
-        id: Date.now().toString(),
-        type: 'assistant',
-        content: 'I encountered an issue processing your transaction. Please try again or contact support if the problem persists.',
-        timestamp: new Date(),
-        status: 'error'
-      }
-      setMessages(prev => [...prev, errorMessage])
-    } finally {
-      setLoading(false)
-      setInput('')
-      inputRef.current?.focus()
-    }
+    return totals
   }
 
-  const handleQuickPrompt = (prompt: string) => {
-    processAIQuery(prompt)
+  const getGSTSummary = () => {
+    const gstCollected = transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + (t.gstAmount || 0), 0)
+    
+    const gstPaid = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + (t.gstAmount || 0), 0)
+
+    return { gstCollected, gstPaid, netGst: gstCollected - gstPaid }
   }
 
-  const processAIQuery = async (text: string) => {
-    await processFurnitureTransaction(text)
-  }
-
-  const handleQuickExpense = async (expense: any) => {
-    const prompt = `Record expense: ${expense.label} - ₹${expense.amount} (Category: ${expense.category}, Code: ${expense.code})`
-    await processFurnitureTransaction(prompt)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim() || loading) return
-    await processFurnitureTransaction(input.trim())
-  }
-
-  const handleDocumentAnalyzed = (result: any) => {
-    // Auto-populate input with suggested message
-    if (result.suggestedMessage) {
-      setInput(result.suggestedMessage)
-      inputRef.current?.focus()
-
-      // Add system message about document analysis
-      const systemMessage: FurnitureMessage = {
-        id: Date.now().toString(),
-        type: 'system',
-        content: `📄 **Advanced Document Analysis Complete**
-
-**AI Extraction Results:**
-• Vendor: ${result.analysis.vendor_name}
-• Amount: ₹${result.analysis.total_amount?.toLocaleString('en-IN')}
-• Date: ${result.analysis.date}
-• Classification: ${result.analysis.category || 'Auto-detected'}
-${result.analysis.items?.length > 0 ? `• Line Items: ${result.analysis.items.map((i: any) => i.description).join(', ')}` : ''}
-
-**Automated Processing:**
-• Journal entry pre-configured
-• Expense category intelligently assigned
-• Compliance checks completed
-• Audit trail automatically generated
-
-Ready for one-click processing with full automation!`,
-        timestamp: new Date(),
-        status: 'success'
-      }
-      setMessages(prev => [...prev, systemMessage])
-    }
-  }
-
-  const renderAccountingCapabilityCard = (capability: AccountingCapability) => (
-    <Card
-      key={capability.id}
-      className={cn(
-        "relative border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md",
-        selectedCapability?.id === capability.id && "ring-2 ring-blue-500 border-blue-500"
-      )}
-      onClick={() => setSelectedCapability(capability)}
-    >
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <div className={cn(
-              "w-10 h-10 rounded-lg flex items-center justify-center",
-              capability.status === 'active' ? 'bg-green-100 dark:bg-green-900/30' :
-              capability.status === 'processing' ? 'bg-yellow-100 dark:bg-yellow-900/30' :
-              'bg-gray-100 dark:bg-gray-800'
-            )}>
-              <capability.icon className={cn('h-5 w-5', capability.color)} />
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100">{capability.name}</h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{capability.description}</p>
-            </div>
-          </div>
-          <Badge variant={capability.status === 'active' ? 'default' : 'secondary'} className="text-xs">
-            {capability.status}
-          </Badge>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500 dark:text-slate-400">Accuracy:</span>
-            <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">{capability.accuracy}%</span>
-          </div>
-          <Progress value={capability.accuracy} className="w-16 h-2" />
-        </div>
-      </CardContent>
-    </Card>
-  )
-
-  const renderFinancialMetricCard = (metric: FinancialMetric) => (
-    <Card
-      key={metric.id}
-      className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-200 shadow-sm hover:shadow-md"
-    >
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">{metric.name}</p>
-              <Badge 
-                variant="outline" 
-                className={cn(
-                  "text-xs px-1.5 py-0.5",
-                  metric.priority === 'critical' ? 'border-red-500 text-red-600 dark:text-red-400' :
-                  metric.priority === 'high' ? 'border-orange-500 text-orange-600 dark:text-orange-400' :
-                  metric.priority === 'medium' ? 'border-blue-500 text-blue-600 dark:text-blue-400' :
-                  'border-green-500 text-green-600 dark:text-green-400'
-                )}
-              >
-                {metric.priority}
-              </Badge>
-            </div>
-            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{metric.value}</p>
-            <div className="flex items-center gap-3">
-              <div
-                className={cn(
-                  'flex items-center gap-1 text-xs font-medium',
-                  metric.trend === 'up'
-                    ? 'text-green-600 dark:text-green-400'
-                    : metric.trend === 'down'
-                      ? 'text-red-600 dark:text-red-400'
-                      : 'text-slate-500 dark:text-slate-400'
-                )}
-              >
-                {metric.trend === 'up' ? (
-                  <TrendingUp className="h-3 w-3" />
-                ) : metric.trend === 'down' ? (
-                  <TrendingDown className="h-3 w-3" />
-                ) : (
-                  <Activity className="h-3 w-3" />
-                )}
-                <span>+{Math.abs(metric.change)}%</span>
-              </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400">vs {metric.previousValue}</span>
-            </div>
-          </div>
-          <div
-            className={cn(
-              'w-12 h-12 rounded-xl flex items-center justify-center',
-              metric.color.includes('emerald') ? 'bg-emerald-100 dark:bg-emerald-900/30' :
-              metric.color.includes('blue') ? 'bg-blue-100 dark:bg-blue-900/30' :
-              metric.color.includes('purple') ? 'bg-purple-100 dark:bg-purple-900/30' :
-              metric.color.includes('cyan') ? 'bg-cyan-100 dark:bg-cyan-900/30' :
-              metric.color.includes('indigo') ? 'bg-indigo-100 dark:bg-indigo-900/30' :
-              'bg-rose-100 dark:bg-rose-900/30'
-            )}
-          >
-            <metric.icon className={cn('h-6 w-6', metric.color)} />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
-
-  const renderMessage = (message: FurnitureMessage) => {
-    const isUser = message.type === 'user'
-    const isInsight = message.type === 'insight'
-    const isSystem = message.type === 'system'
-
-    return (
-      <div key={message.id} className={cn('flex gap-3', isUser ? 'justify-end' : 'justify-start')}>
-        {!isUser && (
-          <div
-            className={cn(
-              'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
-              isInsight ? 'bg-yellow-100 dark:bg-yellow-900/30' : 
-              isSystem ? 'bg-blue-100 dark:bg-blue-900/30' :
-              'bg-emerald-100 dark:bg-emerald-900/30'
-            )}
-          >
-            {isInsight ? (
-              <Sparkles className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-            ) : isSystem ? (
-              <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            ) : (
-              <Brain className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-            )}
-          </div>
-        )}
-        <div
-          className={cn(
-            'max-w-[80%] rounded-lg p-4',
-            isUser
-              ? 'bg-blue-600 text-white'
-              : isInsight
-                ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800'
-                : isSystem
-                  ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
-                  : 'bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700'
-          )}
-        >
-          {message.priority && !isUser && (
-            <Badge
-              variant="outline"
-              className={cn(
-                'mb-2',
-                message.priority === 'high'
-                  ? 'border-red-500 text-red-600 dark:text-red-400'
-                  : message.priority === 'medium'
-                    ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
-                    : 'border-green-500 text-green-600 dark:text-green-400'
-              )}
-            >
-              {message.priority.toUpperCase()} PRIORITY
-            </Badge>
-          )}
-          <p className={cn('whitespace-pre-wrap text-sm', isInsight && 'font-medium', isUser ? 'text-white' : 'text-slate-900 dark:text-slate-100')}>{message.content}</p>
-          
-          {message.amount && (
-            <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                ₹{message.amount.toLocaleString('en-IN')}
-              </p>
-            </div>
-          )}
-          
-          {message.journalEntry && (
-            <div className="mt-3 p-3 bg-slate-100 dark:bg-slate-800 rounded text-xs font-mono">
-              <p className="text-slate-600 dark:text-slate-400 mb-2 font-semibold">Journal Entry:</p>
-              {message.journalEntry.debits.map((debit, i) => (
-                <p key={i} className="text-green-600 dark:text-green-400">
-                  DR: {debit.account} - ₹{debit.amount.toLocaleString('en-IN')}
-                </p>
-              ))}
-              {message.journalEntry.credits.map((credit, i) => (
-                <p key={i} className="text-red-600 dark:text-red-400">
-                  CR: {credit.account} - ₹{credit.amount.toLocaleString('en-IN')}
-                </p>
-              ))}
-            </div>
-          )}
-          
-          {message.actions && message.actions.length > 0 && (
-            <div className="mt-3 flex gap-2 flex-wrap">
-              {message.actions.map((action, i) => (
-                <Button
-                  key={i}
-                  size="sm"
-                  variant={action.variant || 'secondary'}
-                  className="gap-1"
-                >
-                  <action.icon className="h-3 w-3" />
-                  {action.label}
-                </Button>
-              ))}
-            </div>
-          )}
-        </div>
-        {isUser && (
-          <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
-            <Users className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  // Show loading state
-  if (orgLoading) {
-    return <FurnitureOrgLoading />
-  }
-
-  // Authorization checks
-  if (isAuthenticated && contextLoading) {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-6">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Calculator className="h-8 w-8 text-white animate-pulse" />
-          </div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">Initializing Enterprise Accountant</h3>
-          <p className="text-slate-600 dark:text-slate-400">Preparing AI accounting systems...</p>
-          <Loader2 className="h-6 w-6 animate-spin mx-auto mt-4 text-emerald-500" />
-        </div>
-      </div>
-    )
-  }
+  const categoryTotals = getTotalsByCategory()
+  const gstSummary = getGSTSummary()
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <FurniturePageHeader
-          title="Enterprise Digital Accountant"
-          subtitle="AI-Powered Financial Automation & Intelligent Bookkeeping Platform"
-          actions={
-            <>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowMetrics(!showMetrics)}
-                className="gap-2 border-slate-300 dark:border-slate-600"
-              >
-                <BarChart3 className="h-4 w-4" />
-                {showMetrics ? 'Hide' : 'Show'} Metrics
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setUseMCP(!useMCP)}
-                className={cn(
-                  'gap-2 border-slate-300 dark:border-slate-600',
-                  useMCP ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900/30' : ''
-                )}
-              >
-                <Zap className={cn('h-4 w-4', useMCP ? 'text-green-600 dark:text-green-400' : 'text-slate-500')} />
-                {useMCP ? 'AI Mode' : 'Standard Mode'}
-              </Button>
-              <Button
-                size="sm"
-                className="gap-2 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700"
-                onClick={() => handleQuickPrompt('Generate comprehensive financial analysis with insights')}
-              >
-                <Cpu className="h-4 w-4" />
-                Full Analysis
-              </Button>
-            </>
-          }
-        />
-
-        {/* Accounting Capabilities Overview */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Accounting Capabilities</h3>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-slate-600 dark:text-slate-400">AI Systems Active</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ACCOUNTING_CAPABILITIES.map(capability => renderAccountingCapabilityCard(capability))}
-          </div>
-        </div>
-
-        {/* Financial Metrics Dashboard */}
-        {showMetrics && (
-          <div className="space-y-4">
+    <div className="min-h-screen">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="jewelry-glass-card p-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Real-time Financial Metrics</h3>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-slate-600 dark:text-slate-400">Live Data</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {FINANCIAL_METRICS.map(metric => renderFinancialMetricCard(metric))}
-            </div>
-          </div>
-        )}
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Chat Area */}
-          <div className="lg:col-span-3">
-            <Card className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 h-[700px] flex flex-col shadow-lg">
-              {/* Enhanced Header */}
-              <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-slate-800 dark:to-slate-900">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center">
-                      <Calculator className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-900 dark:text-slate-100">HERA AI Enterprise Accountant</h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">Advanced Financial Intelligence • 99.2% Accuracy</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-full">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">AI Active</span>
-                    </div>
-                    <Badge variant="outline" className="text-xs">v2.1.0</Badge>
-                  </div>
+              <div className="flex items-center gap-4">
+                <div className="jewelry-crown-glow p-3 rounded-xl">
+                  <Calculator className="h-8 w-8 jewelry-text-gold" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold jewelry-text-luxury">Digital Accountant</h1>
+                  <p className="text-lg text-gray-300">Kerala Furniture Business Accounting & GST Compliance</p>
                 </div>
               </div>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  GST Compliant
+                </Badge>
+                <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  Kerala Rates
+                </Badge>
+              </div>
+            </div>
+          </div>
 
-              {/* Messages */}
-              <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 bg-slate-50 dark:bg-slate-950">
+          {/* GST Dashboard */}
+          <div className="jewelry-glass-card p-6">
+            <h2 className="text-xl font-semibold jewelry-text-luxury mb-4 flex items-center gap-2">
+              <Percent className="h-5 w-5 jewelry-text-gold" />
+              GST Summary (Current Month)
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-500">₹{gstSummary.gstCollected.toLocaleString()}</div>
+                <div className="text-sm text-gray-300">GST Collected (Output)</div>
+                <div className="text-xs text-gray-300 mt-1">From sales & services</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-500">₹{gstSummary.gstPaid.toLocaleString()}</div>
+                <div className="text-sm text-gray-300">GST Paid (Input)</div>
+                <div className="text-xs text-gray-300 mt-1">On purchases & expenses</div>
+              </div>
+              <div className="text-center">
+                <div className={`text-2xl font-bold ${gstSummary.netGst >= 0 ? 'text-amber-500' : 'text-green-500'}`}>
+                  ₹{Math.abs(gstSummary.netGst).toLocaleString()}
+                </div>
+                <div className="text-sm text-gray-300">
+                  {gstSummary.netGst >= 0 ? 'GST Payable' : 'GST Refund Due'}
+                </div>
+                <div className="text-xs text-gray-300 mt-1">Net position</div>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-center">
+              <Button className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold">
+                <Download className="h-4 w-4" />
+                Generate GST Return
+              </Button>
+            </div>
+          </div>
+
+          <Tabs defaultValue="voice" className="space-y-4">
+            <TabsList className="jewelry-glass-panel">
+              <TabsTrigger value="voice" className="jewelry-glass-btn jewelry-text-luxury">Voice Entry</TabsTrigger>
+              <TabsTrigger value="quick" className="jewelry-glass-btn jewelry-text-luxury">Quick Entry</TabsTrigger>
+              <TabsTrigger value="transactions" className="jewelry-glass-btn jewelry-text-luxury">Transactions</TabsTrigger>
+              <TabsTrigger value="reports" className="jewelry-glass-btn jewelry-text-luxury">Reports</TabsTrigger>
+            </TabsList>
+
+            {/* Voice Entry Tab */}
+            <TabsContent value="voice" className="space-y-6">
+              <div className="jewelry-glass-card p-6">
+                <h3 className="text-lg font-semibold jewelry-text-luxury mb-4 flex items-center gap-2">
+                  <Mic className="h-5 w-5 jewelry-text-gold" />
+                  Voice Transaction Entry
+                </h3>
+                
                 <div className="space-y-4">
-                  {messages.map(message => renderMessage(message))}
-                  {loading && (
-                    <div className="flex gap-3 justify-start">
-                      <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                        <Calculator className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                      </div>
-                      <div className="rounded-lg p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin text-emerald-500" />
-                          <span className="text-sm text-slate-700 dark:text-slate-300">Processing transaction with AI...</span>
-                        </div>
-                      </div>
+                  <div className="flex items-center gap-4">
+                    <Button
+                      onClick={handleVoiceInput}
+                      className={`jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold ${isListening ? 'bg-red-500/20 border-red-500' : ''}`}
+                    >
+                      <Mic className={`h-4 w-4 ${isListening ? 'text-red-500' : ''}`} />
+                      {isListening ? 'Listening...' : 'Start Recording'}
+                    </Button>
+                    <span className="text-sm text-gray-300">
+                      Say: "Add expense of 50000 rupees for teak wood with 5% GST from Thrissur supplier"
+                    </span>
+                  </div>
+
+                  {voiceInput && (
+                    <div className="space-y-3">
+                      <Textarea
+                        value={voiceInput}
+                        onChange={(e) => setVoiceInput(e.target.value)}
+                        placeholder="Voice input will appear here..."
+                        className="jewelry-glass-input"
+                        rows={3}
+                      />
+                      <Button 
+                        onClick={processVoiceInput} 
+                        className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold"
+                        disabled={isProcessing}
+                      >
+                        {isProcessing ? (
+                          <>
+                            <div className="jewelry-spinner w-4 h-4" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4" />
+                            Process Transaction
+                          </>
+                        )}
+                      </Button>
                     </div>
                   )}
                 </div>
-              </ScrollArea>
 
-              {/* Quick Actions */}
-              {showExamples && (
-                <div className="p-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-                  <div className="flex gap-2 flex-wrap">
-                    {FURNITURE_QUICK_PROMPTS.map((prompt, i) => (
-                      <Button
-                        key={i}
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleQuickPrompt(prompt.prompt)}
-                        className="gap-2 hover:bg-slate-100 dark:hover:bg-slate-800"
+                {/* Journal Entry Processing Area */}
+                {processedJournalEntry && (
+                  <div className="mt-6 jewelry-glass-card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-semibold jewelry-text-luxury flex items-center gap-2">
+                        <FileText className="h-5 w-5 jewelry-text-gold" />
+                        Generated Journal Entry
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <Badge className="jewelry-status-luxury">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Balanced
+                        </Badge>
+                        <Button 
+                          size="sm" 
+                          className="jewelry-glass-btn gap-1 jewelry-text-luxury hover:jewelry-text-gold"
+                          onClick={() => setProcessedJournalEntry(null)}
+                        >
+                          <X className="h-3 w-3" />
+                          Clear
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {/* Journal Entry Header */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-white/5 rounded-lg">
+                        <div>
+                          <span className="text-sm font-medium jewelry-text-luxury">Entry ID:</span>
+                          <p className="text-sm text-gray-300">{processedJournalEntry.id}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm font-medium jewelry-text-luxury">Date:</span>
+                          <p className="text-sm text-gray-300">{processedJournalEntry.date}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm font-medium jewelry-text-luxury">Reference:</span>
+                          <p className="text-sm text-gray-300">{processedJournalEntry.reference}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-sm font-medium jewelry-text-luxury">Description:</span>
+                        <p className="text-sm text-gray-300 mt-1">{processedJournalEntry.description}</p>
+                      </div>
+
+                      {/* Journal Entry Table */}
+                      <div className="overflow-hidden rounded-lg border border-white/10">
+                        <table className="w-full">
+                          <thead className="bg-jewelry-royal">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-sm font-semibold jewelry-text-gold">Account</th>
+                              <th className="px-4 py-3 text-right text-sm font-semibold jewelry-text-gold">Debit (₹)</th>
+                              <th className="px-4 py-3 text-right text-sm font-semibold jewelry-text-gold">Credit (₹)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white/5">
+                            {processedJournalEntry.entries.map((entry, index) => (
+                              <tr key={index} className="border-t border-white/10">
+                                <td className="px-4 py-3 text-sm jewelry-text-luxury">{entry.account}</td>
+                                <td className="px-4 py-3 text-right text-sm">
+                                  {entry.debit > 0 ? (
+                                    <span className="font-medium jewelry-text-luxury">
+                                      {entry.debit.toLocaleString()}
+                                    </span>
+                                  ) : (
+                                    <span className="text-gray-400">-</span>
+                                  )}
+                                </td>
+                                <td className="px-4 py-3 text-right text-sm">
+                                  {entry.credit > 0 ? (
+                                    <span className="font-medium jewelry-text-luxury">
+                                      {entry.credit.toLocaleString()}
+                                    </span>
+                                  ) : (
+                                    <span className="text-gray-400">-</span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <tfoot className="bg-jewelry-blue-100 border-t-2 border-jewelry-gold-500">
+                            <tr>
+                              <td className="px-4 py-3 text-sm font-semibold jewelry-text-luxury">TOTALS</td>
+                              <td className="px-4 py-3 text-right text-sm font-bold jewelry-text-gold">
+                                ₹{processedJournalEntry.totalDebit.toLocaleString()}
+                              </td>
+                              <td className="px-4 py-3 text-right text-sm font-bold jewelry-text-gold">
+                                ₹{processedJournalEntry.totalCredit.toLocaleString()}
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex justify-end gap-3 pt-4">
+                        <Button variant="outline" className="jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold">
+                          <Edit className="h-4 w-4 mr-2" />
+                          Modify
+                        </Button>
+                        <Button className="jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold">
+                          <Save className="h-4 w-4 mr-2" />
+                          Post Entry
+                        </Button>
+                        <Button variant="outline" className="jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold">
+                          <Download className="h-4 w-4 mr-2" />
+                          Export
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium jewelry-text-luxury">Voice Command Examples:</h4>
+                    <div className="text-sm text-gray-300 space-y-1">
+                      <p>• "Add income 200000 rupees from Marriott hotel order"</p>
+                      <p>• "Record expense 75000 for rosewood with 5% GST"</p>
+                      <p>• "Export sale 500000 to Dubai customer zero GST"</p>
+                      <p>• "Craftsman payment 25000 no GST"</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-medium jewelry-text-luxury">Smart Features:</h4>
+                    <div className="text-sm text-gray-300 space-y-1">
+                      <p>• Automatic GST rate detection by category</p>
+                      <p>• Kerala business context understanding</p>
+                      <p>• Export vs domestic classification</p>
+                      <p>• Traditional vs modern terminology</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Quick Entry Tab */}
+            <TabsContent value="quick" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                {quickExpenseCategories.map((category, index) => (
+                  <div
+                    key={index}
+                    onClick={() => setSelectedQuickExpense(category.category)}
+                    className={`jewelry-glass-card p-4 cursor-pointer jewelry-scale-hover ${
+                      selectedQuickExpense === category.category ? 'ring-2 ring-jewelry-gold-500' : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center`}>
+                        <category.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium jewelry-text-luxury">{category.category}</h3>
+                        <p className="text-sm text-gray-300">GST: {category.gstRate}%</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {selectedQuickExpense && (
+                <div className="jewelry-glass-card p-6">
+                  <h3 className="text-lg font-semibold jewelry-text-luxury mb-4">
+                    Add {selectedQuickExpense}
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium jewelry-text-luxury mb-2">Amount (₹)</label>
+                        <Input
+                          type="number"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                          placeholder="50000"
+                          className="jewelry-glass-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium jewelry-text-luxury mb-2">Description</label>
+                        <Input
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          placeholder={quickExpenseCategories.find(c => c.category === selectedQuickExpense)?.placeholder}
+                          className="jewelry-glass-input"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => handleQuickExpense(quickExpenseCategories.find(c => c.category === selectedQuickExpense)!)}
+                        className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold"
+                        disabled={!amount || !description}
                       >
-                        <prompt.icon className={cn('h-4 w-4', prompt.color)} />
-                        <span className="text-xs">{prompt.label}</span>
+                        <Plus className="h-4 w-4" />
+                        Add Transaction
                       </Button>
-                    ))}
+                      <Button 
+                        variant="outline"
+                        onClick={() => setSelectedQuickExpense(null)}
+                        className="jewelry-glass-btn jewelry-text-luxury hover:jewelry-text-gold"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
+            </TabsContent>
 
-              {/* Enhanced Input */}
-              <form
-                onSubmit={handleSubmit}
-                className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
-              >
-                <div className="flex gap-3">
-                  <div className="flex-1 relative">
-                    <Input
-                      ref={inputRef}
-                      placeholder="Describe your transaction or ask for financial analysis..."
-                      value={input}
-                      onChange={e => setInput(e.target.value)}
-                      disabled={loading}
-                      className="pr-12 border-slate-300 dark:border-slate-600 focus:border-emerald-500 dark:focus:border-emerald-400"
-                    />
-                    {loading && (
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        <Calculator className="h-4 w-4 text-emerald-500 animate-pulse" />
-                      </div>
-                    )}
-                  </div>
-                  <Button 
-                    type="submit" 
-                    disabled={loading || !input.trim()}
-                    className="bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white"
-                  >
-                    {loading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Send className="h-4 w-4" />
-                    )}
+            {/* Transactions Tab */}
+            <TabsContent value="transactions" className="space-y-6">
+              <div className="jewelry-glass-card p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold jewelry-text-luxury">Recent Transactions</h3>
+                  <Button className="jewelry-glass-btn gap-2 jewelry-text-luxury hover:jewelry-text-gold">
+                    <Upload className="h-4 w-4" />
+                    Import Excel
                   </Button>
                 </div>
-                <div className="flex items-center gap-4 mt-3 text-xs text-slate-500 dark:text-slate-400">
-                  <span>• Auto-journaling</span>
-                  <span>• Smart categorization</span>
-                  <span>• Compliance checks</span>
-                  <span>• Audit trails</span>
-                </div>
-              </form>
-            </Card>
-          </div>
-
-          {/* Side Panel */}
-          <div className="space-y-4">
-            {/* Quick Expenses */}
-            <Card className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-slate-900 dark:text-slate-100">
-                  <Receipt className="h-4 w-4" />
-                  Smart Expense Processing
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-2">
-                  {FURNITURE_QUICK_EXPENSES.map((expense, i) => (
-                    <Button
-                      key={i}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleQuickExpense(expense)}
-                      className="h-auto flex justify-between items-center py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
-                    >
-                      <div className="flex items-center gap-2">
-                        <expense.icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                        <div className="text-left">
-                          <span className="text-xs font-medium">{expense.label}</span>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">{expense.code}</p>
+                
+                <div className="space-y-3">
+                  {transactions.map((transaction) => (
+                    <div key={transaction.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${
+                          transaction.type === 'income' ? 'bg-green-500' : 'bg-red-500'
+                        }`} />
+                        <div>
+                          <div className="font-medium jewelry-text-luxury">{transaction.description}</div>
+                          <div className="text-sm text-gray-300 flex items-center gap-2">
+                            <span>{transaction.category}</span>
+                            {transaction.isExport && (
+                              <Badge className="text-xs bg-blue-500/10 text-blue-600">Export</Badge>
+                            )}
+                            <span>•</span>
+                            <span>{transaction.date}</span>
+                          </div>
                         </div>
                       </div>
-                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">₹{expense.amount.toLocaleString()}</span>
-                    </Button>
+                      <div className="text-right">
+                        <div className={`font-semibold ${
+                          transaction.type === 'income' ? 'text-green-500' : 'jewelry-text-luxury'
+                        }`}>
+                          {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toLocaleString()}
+                        </div>
+                        {transaction.gstAmount && transaction.gstAmount > 0 && (
+                          <div className="text-sm text-gray-300">
+                            GST: ₹{transaction.gstAmount.toLocaleString()} ({transaction.gstRate}%)
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </TabsContent>
 
-            {/* Document Upload */}
-            <FurnitureDocumentUpload
-              organizationId={organizationId || ''}
-              onDocumentAnalyzed={handleDocumentAnalyzed}
-              isDarkMode={false}
-            />
+            {/* Reports Tab */}
+            <TabsContent value="reports" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Category Summary */}
+                <div className="jewelry-glass-card p-6">
+                  <h3 className="text-lg font-semibold jewelry-text-luxury mb-4">Category Summary</h3>
+                  <div className="space-y-3">
+                    {Object.entries(categoryTotals).map(([category, totals]) => (
+                      <div key={category} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <div>
+                          <div className="font-medium jewelry-text-luxury">{category}</div>
+                          <div className="text-sm text-gray-300">
+                            GST: ₹{totals.gst.toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          {totals.income > 0 && (
+                            <div className="text-green-500">+₹{totals.income.toLocaleString()}</div>
+                          )}
+                          {totals.expense > 0 && (
+                            <div className="jewelry-text-luxury">-₹{totals.expense.toLocaleString()}</div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-            {/* Enterprise Features */}
-            <Card className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-slate-900 dark:text-slate-100">
-                  <Sparkles className="h-4 w-4" />
-                  Enterprise Features
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
-                    <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                    <div className="flex-1">
-                      <span className="text-xs font-medium text-slate-900 dark:text-slate-100">Auto-Journaling</span>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">99.2% accuracy</p>
+                {/* Kerala Business Insights */}
+                <div className="jewelry-glass-card p-6">
+                  <h3 className="text-lg font-semibold jewelry-text-luxury mb-4">Kerala Business Insights</h3>
+                  <div className="space-y-4">
+                    <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                      <div className="flex items-center gap-2 text-green-600 font-medium">
+                        <CheckCircle className="h-4 w-4" />
+                        Export Advantage
+                      </div>
+                      <p className="text-sm text-gray-300 mt-1">
+                        70% of revenue from export sales (0% GST) improving margins significantly.
+                      </p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                    <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    <div className="flex-1">
-                      <span className="text-xs font-medium text-slate-900 dark:text-slate-100">Financial Analysis</span>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">Real-time insights</p>
+                    
+                    <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                      <div className="flex items-center gap-2 text-amber-600 font-medium">
+                        <AlertCircle className="h-4 w-4" />
+                        Material Cost Alert
+                      </div>
+                      <p className="text-sm text-gray-300 mt-1">
+                        Teak prices up 15% this quarter. Consider forward contracts with suppliers.
+                      </p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20">
-                    <CheckCircle className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                    <div className="flex-1">
-                      <span className="text-xs font-medium text-slate-900 dark:text-slate-100">Compliance Monitoring</span>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">Audit ready</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-2 rounded-lg bg-cyan-50 dark:bg-cyan-900/20">
-                    <CheckCircle className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
-                    <div className="flex-1">
-                      <span className="text-xs font-medium text-slate-900 dark:text-slate-100">Cash Flow Forecasting</span>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">Predictive analytics</p>
+
+                    <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                      <div className="flex items-center gap-2 text-blue-600 font-medium">
+                        <TrendingUp className="h-4 w-4" />
+                        Seasonal Trend
+                      </div>
+                      <p className="text-sm text-gray-300 mt-1">
+                        Q4 shows 40% revenue increase due to festival and wedding season demand.
+                      </p>
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* AI Accounting Guide */}
-            <Card className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-slate-900 dark:text-slate-100">
-                  <HelpCircle className="h-4 w-4" />
-                  AI Accounting Commands
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-xs">
-                  <div className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1.5"></div>
-                    <div>
-                      <p className="font-medium text-slate-900 dark:text-slate-100">Transaction Processing</p>
-                      <p className="text-slate-600 dark:text-slate-400">"Sold dining set to Marriott for ₹85,000"</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5"></div>
-                    <div>
-                      <p className="font-medium text-slate-900 dark:text-slate-100">Financial Analysis</p>
-                      <p className="text-slate-600 dark:text-slate-400">"Show profit margin analysis for this month"</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1.5"></div>
-                    <div>
-                      <p className="font-medium text-slate-900 dark:text-slate-100">Budget Tracking</p>
-                      <p className="text-slate-600 dark:text-slate-400">"Compare actual vs budget performance"</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1.5"></div>
-                    <div>
-                      <p className="font-medium text-slate-900 dark:text-slate-100">Cash Flow</p>
-                      <p className="text-slate-600 dark:text-slate-400">"Generate 3-month cash flow forecast"</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Product, ProductForm, ProductFormSchema } from '@/types/salon-product'
 import { useHeraProductCategories } from '@/hooks/useHeraProductCategories'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import {
   Form,
   FormControl,
@@ -29,7 +29,6 @@ import {
 } from '@/components/ui/select'
 import {
   Package,
-  X,
   Sparkles,
   DollarSign,
   Tag,
@@ -39,21 +38,10 @@ import {
   BarChart3,
   Building2,
   MapPin,
-  Check
+  Check,
+  Barcode
 } from 'lucide-react'
-
-const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  emerald: '#0F6F5C',
-  lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323'
-}
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
 interface ProductModalProps {
   open: boolean
@@ -102,7 +90,11 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
       cost_price: undefined,
       selling_price: undefined,
       description: '',
-      branch_ids: [] // Branch selection support
+      branch_ids: [], // Branch selection support
+      barcode_primary: '',
+      barcode_type: 'EAN13',
+      barcodes_alt: [],
+      gtin: ''
     }
   })
 
@@ -130,7 +122,11 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
         cost_price: product.price_cost || product.cost_price || undefined,
         selling_price: product.price_market || product.selling_price || product.price || undefined,
         description: product.description || '',
-        branch_ids: branchIds // Set branch IDs from relationships
+        branch_ids: branchIds, // Set branch IDs from relationships
+        barcode_primary: (product as any).barcode_primary || '',
+        barcode_type: (product as any).barcode_type || 'EAN13',
+        barcodes_alt: (product as any).barcodes_alt || [],
+        gtin: (product as any).gtin || ''
       })
     } else {
       form.reset({
@@ -140,14 +136,35 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
         cost_price: undefined,
         selling_price: undefined,
         description: '',
-        branch_ids: [] // Empty array for new products
+        branch_ids: [], // Empty array for new products
+        barcode_primary: '',
+        barcode_type: 'EAN13',
+        barcodes_alt: [],
+        gtin: ''
       })
     }
   }, [product, form])
 
   const handleSubmit = async (data: ProductForm) => {
     try {
-      await onSave(data)
+      // 🎯 ENTERPRISE DEFAULT: If no branches selected, default to ALL branches
+      // This ensures products are visible across all locations unless specifically restricted
+      const dataWithDefaults = {
+        ...data,
+        branch_ids:
+          data.branch_ids && data.branch_ids.length > 0
+            ? data.branch_ids // User selected specific branches
+            : availableBranches.map(b => b.id) // Default to ALL branches
+      }
+
+      console.log('[ProductModal] Saving product with branch defaults:', {
+        original_branch_ids: data.branch_ids?.length || 0,
+        defaulted_branch_ids: dataWithDefaults.branch_ids.length,
+        defaulting_to_all: !data.branch_ids || data.branch_ids.length === 0,
+        available_branches: availableBranches.length
+      })
+
+      await onSave(dataWithDefaults)
       form.reset()
     } catch (error) {
       console.error('Product save error:', error)
@@ -171,107 +188,68 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
   const hasNegativeMargin = costPrice && sellingPrice && costPrice > sellingPrice
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent
-        className="max-w-3xl max-h-[92vh] overflow-hidden flex flex-col p-0"
-        aria-describedby={undefined}
-        style={{
-          backgroundColor: COLORS.black,
-          border: `1px solid ${COLORS.gold}30`,
-          boxShadow: `0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px ${COLORS.gold}20`,
-          borderRadius: '16px'
-        }}
-      >
-        {/* Luxe Header with Gradient */}
-        <div
-          className="relative px-8 py-6"
-          style={{
-            background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.black} 100%)`,
-            borderBottom: `1px solid ${COLORS.bronze}30`
-          }}
-        >
-          {/* Decorative Gold Accent Line */}
-          <div
-            className="absolute top-0 left-0 right-0 h-1"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${COLORS.gold}, transparent)`
-            }}
-          />
-
-          <DialogHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-4">
-                {/* Luxe Icon Badge */}
-                <div
-                  className="relative w-14 h-14 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.gold}30 0%, ${COLORS.gold}10 100%)`,
-                    border: `2px solid ${COLORS.gold}50`,
-                    boxShadow: `0 8px 16px ${COLORS.gold}20`
-                  }}
-                >
-                  <Package className="w-7 h-7" style={{ color: COLORS.gold }} />
-
-                  {/* Sparkle Effect */}
-                  <div
-                    className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
-                    style={{ backgroundColor: COLORS.gold }}
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <DialogTitle
-                    className="text-2xl font-bold tracking-tight"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text'
-                    }}
-                  >
-                    {product ? 'Edit Product' : 'Create New Product'}
-                  </DialogTitle>
-                  <p className="text-sm" style={{ color: COLORS.lightText, opacity: 0.8 }}>
-                    {product
-                      ? 'Update product details, pricing and branch availability'
-                      : 'Add a premium product with pricing and branch availability'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={handleClose}
-                className="rounded-lg p-2 transition-all duration-200 hover:bg-muted/50"
-                style={{ color: COLORS.lightText }}
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-          </DialogHeader>
+    <SalonLuxeModal
+      open={open}
+      onClose={handleClose}
+      title={product ? 'Edit Product' : 'Create New Product'}
+      description={
+        product
+          ? 'Update product details, pricing and branch availability'
+          : 'Add a premium product with pricing and branch availability'
+      }
+      icon={<Package className="w-7 h-7" />}
+      size="xl"
+      footer={
+        <div className="flex items-center justify-between w-full">
+          <p className="text-xs" style={{ color: SALON_LUXE_COLORS.text.secondary, opacity: 0.7 }}>
+            <span style={{ color: SALON_LUXE_COLORS.gold.base }}>*</span> Required fields
+          </p>
+          <div className="flex items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              className="outline-button"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              onClick={form.handleSubmit(handleSubmit)}
+              className="primary-button"
+            >
+              {form.formState.isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 rounded-full animate-spin border-t-transparent" />
+                  {product ? 'Updating...' : 'Creating...'}
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  {product ? 'Update Product' : 'Create Product'}
+                </span>
+              )}
+            </Button>
+          </div>
         </div>
-
-        {/* Form Content - Scrollable */}
-        <div className="flex-1 overflow-y-auto px-8 py-6" style={{ backgroundColor: COLORS.black }}>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      }
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-4">
               {/* Basic Information Section */}
               <div
                 className="relative p-6 rounded-xl border backdrop-blur-sm"
                 style={{
-                  backgroundColor: COLORS.charcoalDark + 'E6',
-                  borderColor: COLORS.bronze + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                  backgroundColor: SALON_LUXE_COLORS.charcoal.dark + 'E6',
+                  borderColor: '#8C7853' + '30',
+                  boxShadow: `0 4px 12px rgba(0,0,0,0.4)`
                 }}
               >
                 {/* Section Header with Icon */}
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
-                  <h3
-                    className="text-lg font-semibold tracking-wide"
-                    style={{ color: COLORS.champagne }}
-                  >
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: SALON_LUXE_COLORS.gold.base }} />
+                  <h3 className="text-lg font-semibold tracking-wide">
                     Basic Information
                   </h3>
                 </div>
@@ -282,25 +260,14 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel
-                          className="text-sm font-medium tracking-wide"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          Product Name <span style={{ color: COLORS.gold }}>*</span>
+                        <FormLabel className="text-sm font-medium tracking-wide">
+                          Product Name <span style={{ color: SALON_LUXE_COLORS.gold.base }}>*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
                             placeholder="e.g., Premium Shampoo"
-                            className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                            style={
-                              {
-                                backgroundColor: COLORS.charcoalLight + '80',
-                                borderColor: COLORS.bronze + '40',
-                                color: COLORS.champagne,
-                                '--tw-ring-color': COLORS.gold + '60'
-                              } as React.CSSProperties
-                            }
+                            className="h-11 rounded-lg"
                           />
                         </FormControl>
                         <FormMessage />
@@ -313,25 +280,14 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     name="code"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel
-                          className="text-sm font-medium tracking-wide"
-                          style={{ color: COLORS.champagne }}
-                        >
+                        <FormLabel className="text-sm font-medium tracking-wide">
                           Product Code / SKU
                         </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
                             placeholder="Auto-generated if empty"
-                            className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-                            style={
-                              {
-                                backgroundColor: COLORS.charcoalLight + '80',
-                                borderColor: COLORS.bronze + '40',
-                                color: COLORS.champagne,
-                                '--tw-ring-color': COLORS.gold + '60'
-                              } as React.CSSProperties
-                            }
+                            className="h-11 rounded-lg"
                           />
                         </FormControl>
                         <FormMessage />
@@ -346,11 +302,8 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     name="category"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel
-                          className="text-sm font-medium tracking-wide flex items-center gap-2"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          <Tag className="w-4 h-4" style={{ color: COLORS.gold }} />
+                        <FormLabel className="text-sm font-medium tracking-wide flex items-center gap-2">
+                          <Tag className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.gold.base }} />
                           Category
                         </FormLabel>
                         <Select
@@ -360,30 +313,22 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                         >
                           <FormControl>
                             <SelectTrigger
-                              className="h-11 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                              className="h-11 rounded-lg hera-select-trigger"
                               aria-describedby={undefined}
-                              style={
-                                {
-                                  backgroundColor: COLORS.charcoalLight + '80',
-                                  borderColor: COLORS.bronze + '40',
-                                  color: COLORS.champagne,
-                                  '--tw-ring-color': COLORS.gold + '60'
-                                } as React.CSSProperties
-                              }
                             >
                               <SelectValue
                                 placeholder={categoriesLoading ? 'Loading...' : 'Select category'}
                               />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent className="hera-select-content">
                             {categoryOptions.length === 0 ? (
                               <div className="px-3 py-2 text-sm text-muted-foreground">
                                 No categories found
                               </div>
                             ) : (
                               categoryOptions.map(cat => (
-                                <SelectItem key={cat.id} value={cat.entity_name}>
+                                <SelectItem key={cat.id} value={cat.entity_name} className="hera-select-item">
                                   <div className="flex items-center gap-2">
                                     <div
                                       className="w-3 h-3 rounded-full"
@@ -403,13 +348,111 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                 </div>
               </div>
 
+              {/* Barcode Information Section */}
+              <div
+                className="relative p-6 rounded-xl border backdrop-blur-sm"
+                style={{
+                  backgroundColor: SALON_LUXE_COLORS.charcoal.dark + 'E6',
+                  borderColor: '#8C7853' + '30',
+                  boxShadow: `0 4px 12px rgba(0,0,0,0.4)`
+                }}
+              >
+                {/* Section Header with Icon */}
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: SALON_LUXE_COLORS.gold.base }} />
+                  <h3 className="text-lg font-semibold tracking-wide">
+                    Barcode Information
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <FormField
+                    control={form.control}
+                    name="barcode_primary"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium tracking-wide flex items-center gap-2">
+                          <Barcode className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+                          Primary Barcode
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Scan or enter barcode"
+                            className="h-11 rounded-lg"
+                          />
+                        </FormControl>
+                        <FormDescription className="text-xs" style={{ color: '#8C7853', opacity: 0.7 }}>
+                          Main barcode for product identification
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="barcode_type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium tracking-wide">
+                          Barcode Type
+                        </FormLabel>
+                        <Select value={field.value || 'EAN13'} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger className="h-11 rounded-lg hera-select-trigger" aria-describedby={undefined}>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="hera-select-content">
+                            <SelectItem value="EAN13" className="hera-select-item">EAN-13</SelectItem>
+                            <SelectItem value="UPC" className="hera-select-item">UPC</SelectItem>
+                            <SelectItem value="CODE128" className="hera-select-item">CODE-128</SelectItem>
+                            <SelectItem value="QR" className="hera-select-item">QR Code</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription className="text-xs" style={{ color: '#8C7853', opacity: 0.7 }}>
+                          Format of the primary barcode
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="mt-5">
+                  <FormField
+                    control={form.control}
+                    name="gtin"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium tracking-wide">
+                          GTIN (Optional)
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="8-14 digits"
+                            className="h-11 rounded-lg"
+                          />
+                        </FormControl>
+                        <FormDescription className="text-xs" style={{ color: '#8C7853', opacity: 0.7 }}>
+                          Global Trade Item Number for international tracking
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
               {/* Financial Management Section */}
               <div
                 className="relative p-6 rounded-xl border backdrop-blur-sm"
                 style={{
-                  backgroundColor: COLORS.charcoalDark + 'E6',
-                  borderColor: COLORS.emerald + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                  backgroundColor: SALON_LUXE_COLORS.charcoal.dark + 'E6',
+                  borderColor: SALON_LUXE_COLORS.emerald.base + '30',
+                  boxShadow: `0 4px 12px ${SALON_LUXE_COLORS.charcoal.dark}40`
                 }}
               >
                 {/* Section Header with Icon */}
@@ -417,11 +460,11 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                   <div className="flex items-center gap-2">
                     <div
                       className="w-1 h-6 rounded-full"
-                      style={{ backgroundColor: COLORS.emerald }}
+                      style={{ backgroundColor: SALON_LUXE_COLORS.emerald.base }}
                     />
                     <h3
                       className="text-lg font-semibold tracking-wide"
-                      style={{ color: COLORS.champagne }}
+                      style={{ color: SALON_LUXE_COLORS.champagne.base }}
                     >
                       Financial Management
                     </h3>
@@ -431,15 +474,15 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                       className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
                       style={{
                         backgroundColor:
-                          parseFloat(margin) >= 30 ? COLORS.emerald + '20' : COLORS.gold + '20',
-                        border: `1px solid ${parseFloat(margin) >= 30 ? COLORS.emerald : COLORS.gold}40`
+                          parseFloat(margin) >= 30 ? SALON_LUXE_COLORS.emerald.base + '20' : SALON_LUXE_COLORS.gold.base + '20',
+                        border: `1px solid ${parseFloat(margin) >= 30 ? SALON_LUXE_COLORS.emerald.base : SALON_LUXE_COLORS.gold.base}40`
                       }}
                     >
                       <TrendingUp
                         className="w-4 h-4"
-                        style={{ color: parseFloat(margin) >= 30 ? COLORS.emerald : COLORS.gold }}
+                        style={{ color: parseFloat(margin) >= 30 ? SALON_LUXE_COLORS.emerald.base : SALON_LUXE_COLORS.gold.base }}
                       />
-                      <span className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                      <span className="text-sm font-semibold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
                         {margin}% Margin
                       </span>
                     </div>
@@ -453,17 +496,16 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
-                          className="text-sm font-medium tracking-wide flex items-center gap-2"
-                          style={{ color: COLORS.champagne }}
+                          className="text-sm font-medium tracking-wide"
+                          style={{ color: SALON_LUXE_COLORS.champagne.base }}
                         >
-                          <DollarSign className="w-4 h-4" style={{ color: COLORS.bronze }} />
                           Cost Price
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
                             <span
                               className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold"
-                              style={{ color: COLORS.bronze }}
+                              style={{ color: '#8C7853' }}
                             >
                               AED
                             </span>
@@ -475,10 +517,10 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                               className="h-12 rounded-lg pl-20 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
                               style={
                                 {
-                                  backgroundColor: COLORS.charcoalLight + '80',
-                                  borderColor: COLORS.bronze + '40',
-                                  color: COLORS.champagne,
-                                  '--tw-ring-color': COLORS.emerald + '60'
+                                  backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '80',
+                                  borderColor: '#8C7853' + '40',
+                                  color: SALON_LUXE_COLORS.champagne.base,
+                                  '--tw-ring-color': SALON_LUXE_COLORS.emerald.base + '60'
                                 } as React.CSSProperties
                               }
                               onChange={e => {
@@ -491,7 +533,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                         </FormControl>
                         <FormDescription
                           className="text-xs"
-                          style={{ color: COLORS.bronze, opacity: 0.7 }}
+                          style={{ color: '#8C7853', opacity: 0.7 }}
                         >
                           Your purchase/wholesale cost
                         </FormDescription>
@@ -506,17 +548,16 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
-                          className="text-sm font-medium tracking-wide flex items-center gap-2"
-                          style={{ color: COLORS.champagne }}
+                          className="text-sm font-medium tracking-wide"
+                          style={{ color: SALON_LUXE_COLORS.champagne.base }}
                         >
-                          <DollarSign className="w-4 h-4" style={{ color: COLORS.gold }} />
                           Selling Price
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
                             <span
                               className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold"
-                              style={{ color: COLORS.gold }}
+                              style={{ color: SALON_LUXE_COLORS.gold.base }}
                             >
                               AED
                             </span>
@@ -528,10 +569,10 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                               className="h-12 rounded-lg pl-20 text-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
                               style={
                                 {
-                                  backgroundColor: COLORS.charcoalLight + '80',
-                                  borderColor: COLORS.gold + '40',
-                                  color: COLORS.champagne,
-                                  '--tw-ring-color': COLORS.emerald + '60'
+                                  backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '80',
+                                  borderColor: SALON_LUXE_COLORS.gold.base + '40',
+                                  color: SALON_LUXE_COLORS.champagne.base,
+                                  '--tw-ring-color': SALON_LUXE_COLORS.emerald.base + '60'
                                 } as React.CSSProperties
                               }
                               onChange={e => {
@@ -544,7 +585,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                         </FormControl>
                         <FormDescription
                           className="text-xs"
-                          style={{ color: COLORS.gold, opacity: 0.7 }}
+                          style={{ color: SALON_LUXE_COLORS.gold.base, opacity: 0.7 }}
                         >
                           Customer retail price
                         </FormDescription>
@@ -581,7 +622,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                       </h4>
                       <p
                         className="text-sm leading-relaxed"
-                        style={{ color: COLORS.champagne, opacity: 0.9 }}
+                        style={{ color: SALON_LUXE_COLORS.champagne.base, opacity: 0.9 }}
                       >
                         Cost Price (AED {costPrice?.toFixed(2)}) is higher than Selling Price (AED{' '}
                         {sellingPrice?.toFixed(2)}). This will result in a loss of AED{' '}
@@ -599,17 +640,17 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
               <div
                 className="relative p-6 rounded-xl border backdrop-blur-sm"
                 style={{
-                  backgroundColor: COLORS.charcoalDark + 'E6',
-                  borderColor: COLORS.bronze + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                  backgroundColor: SALON_LUXE_COLORS.charcoal.dark + 'E6',
+                  borderColor: '#8C7853' + '30',
+                  boxShadow: `0 4px 12px ${SALON_LUXE_COLORS.charcoal.dark}40`
                 }}
               >
                 {/* Section Header with Icon */}
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: SALON_LUXE_COLORS.gold.base }} />
                   <h3
                     className="text-lg font-semibold tracking-wide"
-                    style={{ color: COLORS.champagne }}
+                    style={{ color: SALON_LUXE_COLORS.champagne.base }}
                   >
                     Branch Availability
                   </h3>
@@ -622,9 +663,9 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                     <FormItem>
                       <FormLabel
                         className="text-sm font-medium tracking-wide flex items-center gap-2"
-                        style={{ color: COLORS.champagne }}
+                        style={{ color: SALON_LUXE_COLORS.champagne.base }}
                       >
-                        <Building2 className="w-4 h-4" style={{ color: COLORS.gold }} />
+                        <Building2 className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.gold.base }} />
                         Select Locations Where This Product is Stocked
                       </FormLabel>
                       <FormControl>
@@ -633,14 +674,14 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                             <div
                               className="col-span-2 p-4 rounded-lg text-center"
                               style={{
-                                backgroundColor: COLORS.charcoalLight + '50',
-                                border: `1px dashed ${COLORS.bronze}40`,
-                                color: COLORS.lightText
+                                backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '50',
+                                border: `1px dashed ${'#8C7853'}40`,
+                                color: SALON_LUXE_COLORS.text.primary
                               }}
                             >
                               <Building2
                                 className="w-8 h-8 mx-auto mb-2 opacity-50"
-                                style={{ color: COLORS.bronze }}
+                                style={{ color: '#8C7853' }}
                               />
                               <p className="text-sm opacity-70">No branches available</p>
                             </div>
@@ -662,31 +703,31 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                                   className="relative group transition-all duration-200 hover:scale-102"
                                   style={{
                                     backgroundColor: isSelected
-                                      ? COLORS.charcoalDark
-                                      : COLORS.charcoalLight + '50',
-                                    border: `2px solid ${isSelected ? COLORS.gold : COLORS.bronze + '40'}`,
+                                      ? SALON_LUXE_COLORS.charcoal.dark
+                                      : SALON_LUXE_COLORS.charcoal.lighter + '50',
+                                    border: `2px solid ${isSelected ? SALON_LUXE_COLORS.gold.base : '#8C7853' + '40'}`,
                                     borderRadius: '12px',
                                     padding: '14px',
                                     cursor: 'pointer',
-                                    boxShadow: isSelected ? `0 0 20px ${COLORS.gold}30` : 'none'
+                                    boxShadow: isSelected ? `0 0 20px ${SALON_LUXE_COLORS.gold.base}30` : 'none'
                                   }}
                                 >
                                   {/* Selection Indicator */}
                                   {isSelected && (
                                     <div
                                       className="absolute top-2 right-2"
-                                      style={{ color: COLORS.gold }}
+                                      style={{ color: SALON_LUXE_COLORS.gold.base }}
                                     >
                                       <div
                                         className="w-6 h-6 rounded-full flex items-center justify-center"
                                         style={{
-                                          backgroundColor: COLORS.gold,
-                                          boxShadow: `0 0 10px ${COLORS.gold}60`
+                                          backgroundColor: SALON_LUXE_COLORS.gold.base,
+                                          boxShadow: `0 0 10px ${SALON_LUXE_COLORS.gold.base}60`
                                         }}
                                       >
                                         <Check
                                           className="w-4 h-4"
-                                          style={{ color: COLORS.black }}
+                                          style={{ color: SALON_LUXE_COLORS.charcoal.dark }}
                                         />
                                       </div>
                                     </div>
@@ -698,15 +739,15 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                                       className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200"
                                       style={{
                                         backgroundColor: isSelected
-                                          ? COLORS.gold + '20'
-                                          : COLORS.bronze + '20',
-                                        border: `1px solid ${isSelected ? COLORS.gold + '40' : COLORS.bronze + '30'}`
+                                          ? SALON_LUXE_COLORS.gold.base + '20'
+                                          : '#8C7853' + '20',
+                                        border: `1px solid ${isSelected ? SALON_LUXE_COLORS.gold.base + '40' : '#8C7853' + '30'}`
                                       }}
                                     >
                                       <MapPin
                                         className="w-5 h-5"
                                         style={{
-                                          color: isSelected ? COLORS.gold : COLORS.bronze
+                                          color: isSelected ? SALON_LUXE_COLORS.gold.base : '#8C7853'
                                         }}
                                       />
                                     </div>
@@ -714,7 +755,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                                       <p
                                         className="text-sm font-semibold line-clamp-1"
                                         style={{
-                                          color: isSelected ? COLORS.champagne : COLORS.lightText
+                                          color: isSelected ? SALON_LUXE_COLORS.champagne.base : SALON_LUXE_COLORS.text.primary
                                         }}
                                       >
                                         {branch.entity_name}
@@ -722,7 +763,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                                       {branch.entity_code && (
                                         <p
                                           className="text-xs opacity-70 mt-0.5"
-                                          style={{ color: COLORS.bronze }}
+                                          style={{ color: '#8C7853' }}
                                         >
                                           {branch.entity_code}
                                         </p>
@@ -737,7 +778,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                       </FormControl>
                       <FormDescription
                         className="text-xs mt-3"
-                        style={{ color: COLORS.bronze, opacity: 0.7 }}
+                        style={{ color: '#8C7853', opacity: 0.7 }}
                       >
                         {field.value && field.value.length > 0
                           ? `Product will be available at ${field.value.length} selected ${field.value.length === 1 ? 'location' : 'locations'}`
@@ -753,17 +794,17 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
               <div
                 className="relative p-6 rounded-xl border backdrop-blur-sm"
                 style={{
-                  backgroundColor: COLORS.charcoalDark + 'E6',
-                  borderColor: COLORS.bronze + '30',
-                  boxShadow: `0 4px 12px ${COLORS.black}40`
+                  backgroundColor: SALON_LUXE_COLORS.charcoal.dark + 'E6',
+                  borderColor: '#8C7853' + '30',
+                  boxShadow: `0 4px 12px ${SALON_LUXE_COLORS.charcoal.dark}40`
                 }}
               >
                 {/* Section Header with Icon */}
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.gold }} />
+                  <div className="w-1 h-6 rounded-full" style={{ backgroundColor: SALON_LUXE_COLORS.gold.base }} />
                   <h3
                     className="text-lg font-semibold tracking-wide"
-                    style={{ color: COLORS.champagne }}
+                    style={{ color: SALON_LUXE_COLORS.champagne.base }}
                   >
                     Product Description
                   </h3>
@@ -781,10 +822,10 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                           className="min-h-[120px] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none"
                           style={
                             {
-                              backgroundColor: COLORS.charcoalLight + '80',
-                              borderColor: COLORS.bronze + '40',
-                              color: COLORS.champagne,
-                              '--tw-ring-color': COLORS.gold + '60'
+                              backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '80',
+                              borderColor: '#8C7853' + '40',
+                              color: SALON_LUXE_COLORS.champagne.base,
+                              '--tw-ring-color': SALON_LUXE_COLORS.gold.base + '60'
                             } as React.CSSProperties
                           }
                         />
@@ -794,68 +835,8 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                   )}
                 />
               </div>
-            </form>
-          </Form>
-        </div>
-
-        {/* Luxe Footer with Actions */}
-        <div
-          className="px-8 py-5 border-t"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            borderColor: COLORS.bronze + '30'
-          }}
-        >
-          <div className="flex items-center justify-between">
-            {/* Helper Text */}
-            <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.6 }}>
-              <span style={{ color: COLORS.gold }}>*</span> Required fields
-            </p>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                className="h-11 px-6 rounded-lg transition-all duration-200"
-                style={{
-                  backgroundColor: 'transparent',
-                  borderColor: COLORS.bronze + '50',
-                  color: COLORS.lightText
-                }}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                type="submit"
-                disabled={form.formState.isSubmitting}
-                onClick={form.handleSubmit(handleSubmit)}
-                className="h-11 px-8 rounded-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black,
-                  border: 'none',
-                  boxShadow: `0 4px 12px ${COLORS.gold}30`
-                }}
-              >
-                {form.formState.isSubmitting ? (
-                  <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                    {product ? 'Updating...' : 'Creating...'}
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" />
-                    {product ? 'Update Product' : 'Create Product'}
-                  </span>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </form>
+      </Form>
+    </SalonLuxeModal>
   )
 }

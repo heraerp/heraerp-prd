@@ -19,22 +19,30 @@ import {
 } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Guard } from '@/lib/auth/guard'
-import { useDashboardMetrics } from '@/lib/api/dashboard'
-import { useFinancialReports } from '@/lib/api/reports'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { formatCurrency } from '@/lib/utils/format'
 
 export default function AccountantDashboard() {
   const { currentOrganization, contextLoading } = useHERAAuth()
-  const organizationId = currentOrganization?.id || ''
 
-  // Fetch financial data
-  const { data: metrics, isLoading: metricsLoading } = useDashboardMetrics(organizationId)
-  const { data: reports, isLoading: reportsLoading } = useFinancialReports(organizationId)
+  const isLoading = contextLoading
 
-  const isLoading = contextLoading || metricsLoading || reportsLoading
+  // Mock financial metrics
+  const metrics = {
+    monthlyRevenue: 125000,
+    outstandingReceivables: 35000,
+    monthlyExpenses: 78000,
+    netProfitMargin: 35.2
+  }
+
+  // Format currency helper
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-AE', {
+      style: 'currency',
+      currency: 'AED'
+    }).format(amount)
+  }
 
   // Financial KPIs
   const financialKpis = [

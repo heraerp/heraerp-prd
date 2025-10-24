@@ -57,6 +57,7 @@ interface PaymentDialogProps {
   ticket: any
   totals: any
   organizationId: string
+  organizationName?: string
   branchId?: string
   branchName?: string
   onComplete: (saleData: any) => void
@@ -68,6 +69,7 @@ export function PaymentDialog({
   ticket,
   totals,
   organizationId,
+  organizationName,
   branchId,
   branchName,
   onComplete
@@ -77,6 +79,9 @@ export function PaymentDialog({
   const [validationWarnings, setValidationWarnings] = useState<string[]>([])
   const [showValidationModal, setShowValidationModal] = useState(false)
   const [validationIssues, setValidationIssues] = useState<Array<{ type: string; message: string; action?: string }>>([])
+  const [branchDetails, setBranchDetails] = useState<{ address?: string; phone?: string }>({})
+  const [actualOrgName, setActualOrgName] = useState<string | null>(null)
+  const [currency, setCurrency] = useState<string>('AED') // Default to AED
 
   // ✅ LAYER 2: Use usePosCheckout hook (which uses useUniversalTransaction RPC API v2)
   const { processCheckout, isProcessing, error, clearError } = usePosCheckout()
@@ -124,6 +129,88 @@ export function PaymentDialog({
       setChangeAmount(0)
     }
   }, [cashAmount, payments, totals?.total])
+
+  // ✅ ENTERPRISE: Fetch actual organization name and currency from database
+  useEffect(() => {
+    const fetchOrganizationDetails = async () => {
+      if (!organizationId) return
+
+      try {
+        const { universalApi } = await import('@/lib/universal-api-v2')
+
+        // ✅ ALWAYS fetch from database for most current organization name
+        const result = await universalApi.getOrganization(organizationId)
+        if (result.success && result.data) {
+          console.log('[PaymentDialog] ✅ Fetched organization name:', result.data.organization_name)
+          setActualOrgName(result.data.organization_name)
+        } else {
+          // Use provided name as fallback
+          console.log('[PaymentDialog] Using provided organization name:', organizationName)
+          setActualOrgName(organizationName || 'Salon')
+        }
+
+        // Fetch currency from organization dynamic data
+        const currencyResult = await universalApi.getDynamicData(organizationId, 'currency')
+
+        if (currencyResult.success && currencyResult.data?.field_value_text) {
+          console.log('[PaymentDialog] ✅ Fetched currency:', currencyResult.data.field_value_text)
+          setCurrency(currencyResult.data.field_value_text)
+        }
+      } catch (err) {
+        console.error('[PaymentDialog] Error fetching organization details:', err)
+        setActualOrgName(organizationName || 'Salon')  // Fallback to provided name or 'Salon'
+        // Currency stays as default 'AED'
+      }
+    }
+
+    fetchOrganizationDetails()
+  }, [organizationId, organizationName])
+
+  // Fetch branch address and phone from core_dynamic_data
+  useEffect(() => {
+    const fetchBranchDetails = async () => {
+      // ✅ FIX: Ensure branchId is a valid UUID string, not null/undefined
+      if (!branchId || branchId === 'null' || branchId === 'undefined' || !organizationId) {
+        console.log('[PaymentDialog] Skipping branch details fetch - no branch selected:', { branchId })
+        return
+      }
+
+      try {
+        const { getDynamicData } = await import('@/lib/universal-api-v2-client')
+
+        console.log('[PaymentDialog] Fetching branch details for:', { branchId, organizationId })
+
+        // ✅ FIX: Use getDynamicData to fetch ALL fields for the branch entity
+        const dynamicFields = await getDynamicData('', {
+          p_organization_id: organizationId,
+          p_entity_id: branchId
+        })
+
+        if (dynamicFields && Array.isArray(dynamicFields)) {
+          const addressField = dynamicFields.find((f: any) => f.field_name === 'address')
+          const phoneField = dynamicFields.find((f: any) => f.field_name === 'phone')
+
+          setBranchDetails({
+            address: addressField?.field_value_text || undefined,
+            phone: phoneField?.field_value_text || undefined
+          })
+
+          console.log('[PaymentDialog] ✅ Branch details loaded:', {
+            branchId,
+            hasAddress: !!addressField,
+            hasPhone: !!phoneField,
+            address: addressField?.field_value_text,
+            phone: phoneField?.field_value_text
+          })
+        }
+      } catch (err) {
+        console.error('[PaymentDialog] Error fetching branch details:', err)
+        // Don't block payment if branch details fail to load
+      }
+    }
+
+    fetchBranchDetails()
+  }, [branchId, organizationId])
 
   const addPayment = (type: 'cash' | 'card' | 'voucher') => {
     let amount = 0
@@ -213,12 +300,14 @@ export function PaymentDialog({
       })
     }
 
-    // 4. Validate all services have staff assigned
-    const servicesWithoutStaff = ticket.lineItems?.filter(
-      (item: any) => item.entity_type === 'service' && !item.stylist_id && !item.stylist_entity_id
-    ) || []
+    // 4. Validate all services have staff assigned (products don't need staff)
+    const services = ticket.lineItems?.filter((item: any) => item.entity_type === 'service') || []
+    const servicesWithoutStaff = services.filter(
+      (item: any) => !item.stylist_id && !item.stylist_entity_id
+    )
 
-    if (servicesWithoutStaff.length > 0) {
+    // Only require staff if there are services in the cart
+    if (services.length > 0 && servicesWithoutStaff.length > 0) {
       issues.push({
         type: 'staff',
         message: `${servicesWithoutStaff.length} service(s) missing stylist assignment`,
@@ -262,26 +351,8 @@ export function PaymentDialog({
         notes: ticket.notes
       }
 
-      console.log('[PaymentDialog] Processing checkout with ENTERPRISE TRACKING:', {
-        ...checkoutData,
-        calculated_total: (totals?.subtotal || 0) - (totals?.discountAmount || 0) + (totals?.taxAmount || 0) + (totals?.tipAmount || 0),
-        enterprise_tracking: {
-          branch_id: branchId,
-          branch_name: branchName,
-          customer_id: ticket.customer_id,
-          customer_name: ticket.customer_name,
-          appointment_id: ticket.appointment_id,
-          staff_assigned: checkoutData.items.filter((i: any) => i.staff_id).length,
-          total_items: checkoutData.items.length,
-          services: checkoutData.items.filter((i: any) => i.type === 'service').length,
-          products: checkoutData.items.filter((i: any) => i.type === 'product').length
-        }
-      })
-
       // ✅ Use processCheckout from usePosCheckout hook (RPC API v2)
       const result = await processCheckout(checkoutData)
-
-      console.log('[PaymentDialog] Checkout result:', result)
 
       // Success - prepare sale data for receipt
       const saleData = {
@@ -290,8 +361,12 @@ export function PaymentDialog({
         timestamp: new Date().toISOString(),
         customer_name: ticket.customer_name,
         appointment_id: ticket.appointment_id,
+        organization_name: actualOrgName || 'Salon', // ✅ ENTERPRISE: Actual organization name from database
+        currency, // ✅ ENTERPRISE: Dynamic currency from organization
         branch_id: branchId, // ✅ Store branch ID
         branch_name: branchName || 'Main Branch', // ✅ Store branch name
+        ...(branchDetails.address && { branch_address: branchDetails.address }), // ✅ Only include if available
+        ...(branchDetails.phone && { branch_phone: branchDetails.phone }), // ✅ Only include if available
         lineItems: ticket.lineItems,
         discounts: ticket.discounts,
         tips: ticket.tips,
@@ -370,7 +445,8 @@ export function PaymentDialog({
       title="Process Payment"
       description={`Total amount: AED ${(totals?.total || 0).toFixed(2)}`}
       icon={<Receipt className="w-6 h-6" />}
-      size="lg"
+      size="md"
+      className="max-w-xl max-h-[95vh] overflow-x-auto"
       footer={
         <div className="flex gap-3 w-full">
           <SalonLuxeButton
@@ -528,46 +604,53 @@ export function PaymentDialog({
               </TabsList>
 
               <TabsContent value="card" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label style={{ color: COLORS.champagne }}>Amount</Label>
-                    <SalonLuxeInput
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      value={cardAmount}
-                      onChange={e => setCardAmount(e.target.value)}
-                      leftIcon={<CreditCard className="w-4 h-4" />}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label style={{ color: COLORS.champagne }}>Card Type</Label>
-                    <select
-                      className="w-full h-12 px-4 border rounded-xl text-sm font-medium"
-                      value={cardType}
-                      onChange={e => setCardType(e.target.value)}
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(245,230,200,0.08) 0%, rgba(212,175,55,0.05) 50%, rgba(184,134,11,0.03) 100%)',
-                        backdropFilter: 'blur(8px)',
-                        WebkitBackdropFilter: 'blur(8px)',
-                        border: '1px solid rgba(212, 175, 55, 0.25)',
-                        color: COLORS.champagne
-                      }}
-                    >
-                      <option value="visa">Visa</option>
-                      <option value="mastercard">Mastercard</option>
-                      <option value="amex">American Express</option>
-                      <option value="discover">Discover</option>
-                    </select>
-                  </div>
-                </div>
                 <div className="space-y-2">
-                  <Label style={{ color: COLORS.champagne }}>Reference/Last 4 Digits (optional)</Label>
+                  <Label style={{ color: COLORS.champagne }}>Card Amount</Label>
                   <SalonLuxeInput
-                    placeholder="1234"
-                    value={cardReference}
-                    onChange={e => setCardReference(e.target.value)}
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={cardAmount}
+                    onChange={e => setCardAmount(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && cardAmount && parseFloat(cardAmount) > 0) {
+                        addPayment('card')
+                      }
+                    }}
+                    leftIcon={<CreditCard className="w-4 h-4" />}
+                    autoFocus
                   />
+                  <p className="text-xs" style={{ color: COLORS.bronze }}>
+                    Enter amount and press Enter or click Add
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCardAmount(remainingAmount.toString())}
+                    className="text-xs transition-all duration-200 hover:scale-[1.02]"
+                    style={{
+                      background: `${COLORS.gold}20`,
+                      color: COLORS.champagne,
+                      borderColor: `${COLORS.gold}40`
+                    }}
+                  >
+                    Remaining: AED {remainingAmount.toFixed(2)}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCardAmount((totals?.total || 0).toString())}
+                    className="text-xs transition-all duration-200 hover:scale-[1.02]"
+                    style={{
+                      background: `${COLORS.charcoalLight}80`,
+                      color: COLORS.champagne,
+                      borderColor: `${COLORS.gold}40`
+                    }}
+                  >
+                    Full Amount
+                  </Button>
                 </div>
                 <SalonLuxeButton
                   variant="primary"
@@ -589,12 +672,49 @@ export function PaymentDialog({
                     placeholder="0.00"
                     value={cashAmount}
                     onChange={e => setCashAmount(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && cashAmount && parseFloat(cashAmount) > 0) {
+                        addPayment('cash')
+                      }
+                    }}
                     leftIcon={<Banknote className="w-4 h-4" />}
+                    autoFocus
                   />
+                  <p className="text-xs" style={{ color: COLORS.bronze }}>
+                    Enter amount and press Enter or use quick buttons
+                  </p>
                 </div>
 
-                {/* Quick Cash Buttons */}
+                {/* Quick Amount Buttons - Remaining + Common Amounts */}
                 <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCashAmount(remainingAmount.toString())}
+                      className="text-xs transition-all duration-200 hover:scale-[1.02]"
+                      style={{
+                        background: `${COLORS.emerald}20`,
+                        color: COLORS.champagne,
+                        borderColor: `${COLORS.emerald}40`
+                      }}
+                    >
+                      Remaining: AED {remainingAmount.toFixed(2)}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCashAmount((totals?.total || 0).toString())}
+                      className="text-xs transition-all duration-200 hover:scale-[1.02]"
+                      style={{
+                        background: `${COLORS.charcoalLight}80`,
+                        color: COLORS.champagne,
+                        borderColor: `${COLORS.gold}40`
+                      }}
+                    >
+                      Full Amount
+                    </Button>
+                  </div>
                   <Label className="text-sm" style={{ color: COLORS.champagne }}>
                     Quick amounts:
                   </Label>
@@ -650,31 +770,73 @@ export function PaymentDialog({
               </TabsContent>
 
               <TabsContent value="voucher" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label style={{ color: COLORS.champagne }}>Voucher Amount</Label>
-                    <SalonLuxeInput
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      value={voucherAmount}
-                      onChange={e => setVoucherAmount(e.target.value)}
-                      leftIcon={<Gift className="w-4 h-4" />}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label style={{ color: COLORS.champagne }}>Voucher Code</Label>
-                    <SalonLuxeInput
-                      placeholder="VOUCHER123"
-                      value={voucherCode}
-                      onChange={e => setVoucherCode(e.target.value)}
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label style={{ color: COLORS.champagne }}>Voucher Amount</Label>
+                  <SalonLuxeInput
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={voucherAmount}
+                    onChange={e => setVoucherAmount(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && voucherAmount && parseFloat(voucherAmount) > 0) {
+                        addPayment('voucher')
+                      }
+                    }}
+                    leftIcon={<Gift className="w-4 h-4" />}
+                    autoFocus
+                  />
+                  <p className="text-xs" style={{ color: COLORS.bronze }}>
+                    Enter amount and press Enter or click Add
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setVoucherAmount(remainingAmount.toString())}
+                    className="text-xs transition-all duration-200 hover:scale-[1.02]"
+                    style={{
+                      background: `${COLORS.bronze}20`,
+                      color: COLORS.champagne,
+                      borderColor: `${COLORS.bronze}40`
+                    }}
+                  >
+                    Remaining: AED {remainingAmount.toFixed(2)}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setVoucherAmount((totals?.total || 0).toString())}
+                    className="text-xs transition-all duration-200 hover:scale-[1.02]"
+                    style={{
+                      background: `${COLORS.charcoalLight}80`,
+                      color: COLORS.champagne,
+                      borderColor: `${COLORS.gold}40`
+                    }}
+                  >
+                    Full Amount
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <Label style={{ color: COLORS.champagne }}>
+                    Voucher Code <span className="text-xs" style={{ color: COLORS.bronze }}>(Optional)</span>
+                  </Label>
+                  <SalonLuxeInput
+                    placeholder="VOUCHER123"
+                    value={voucherCode}
+                    onChange={e => setVoucherCode(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && voucherAmount && parseFloat(voucherAmount) > 0) {
+                        addPayment('voucher')
+                      }
+                    }}
+                  />
                 </div>
                 <SalonLuxeButton
                   variant="primary"
                   onClick={() => addPayment('voucher')}
-                  disabled={!voucherAmount || !voucherCode || parseFloat(voucherAmount) <= 0}
+                  disabled={!voucherAmount || parseFloat(voucherAmount) <= 0}
                   icon={<Plus className="w-4 h-4" />}
                   className="w-full"
                 >

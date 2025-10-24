@@ -159,7 +159,7 @@ async function handlePostSecurityDemo(req: NextRequest, context: SecurityContext
         transaction_number: `DEMO-${Date.now()}`,
         smart_code: 'HERA.DEMO.TXN.CREATE.V1',
         total_amount: 0,
-        from_entity_id: entity.id,
+        source_entity_id: entity.id,
         created_by: context.userId,
         metadata: {
           created_via: 'security_demo_api',

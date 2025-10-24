@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { AlertTriangle, FileText, Package, MessageSquareWarning, X } from 'lucide-react'
+import { AlertTriangle, FileText, Package, MessageSquare, X } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -55,7 +55,7 @@ export function AlertsStrip({ organizationId }: AlertsStripProps) {
       activeAlerts.push({
         id: 'wa-failures',
         type: 'error',
-        icon: MessageSquareWarning,
+        icon: MessageSquare,
         message: `${whatsappFailures.failed_count} failed WhatsApp messages`,
         link: '/whatsapp/history?status=failed',
         color: 'from-rose-500 to-red-500'

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2017",
     "lib": [
       "dom",
       "dom.iterable",
@@ -11,31 +11,22 @@
     "strict": false,
     "noEmit": true,
     "incremental": true,
-    "tsBuildInfoFile": ".next/tsbuildinfo",
     "module": "esnext",
     "esModuleInterop": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/utils/*": ["./src/utils/*"],
-      "@/types/*": ["./src/types/*"]
+      "@/*": ["src/*"]
     },
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "strictNullChecks": true,
-    "verbatimModuleSyntax": true
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
@@ -44,8 +35,6 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "docs/**/*.template.ts",
-    "**/*.template.ts"
+    "node_modules"
   ]
 }

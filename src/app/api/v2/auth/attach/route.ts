@@ -7,15 +7,18 @@ import { verifyAuth } from '@/lib/auth/verify-auth'
  * Idempotently ensures:
  * - The authenticated user exists as a USER entity in core_entities
  * - The organization exists as an ORG entity in core_entities (id = org id)
- * - A USER_MEMBER_OF_ORG relationship links user -> org entity
+ * - A MEMBER_OF relationship links user -> org entity
  *
  * Notes
  * - Org is derived strictly from JWT. Client cannot supply org.
  * - Smart codes follow universal pattern; values are stable but not validated here.
  */
 export async function POST(request: NextRequest) {
+  console.log('[auth/attach] Starting attach process')
+  
   const auth = await verifyAuth(request)
   if (!auth || !auth.id || !auth.organizationId) {
+    console.log('[auth/attach] Auth verification failed:', { auth })
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
@@ -23,171 +26,176 @@ export async function POST(request: NextRequest) {
   const orgId = auth.organizationId
   const platformOrgId = '00000000-0000-0000-0000-000000000000'
 
+  console.log('[auth/attach] Processing for user:', { userId, orgId, platformOrgId })
+
   const supabase = getSupabaseService()
 
   try {
-    // Normalize pre-existing user entity to uppercase type if present
-    const { data: preUser } = await supabase
+    // HERA v2.2 FIX: Create USER entity in TENANT organization, not platform
+    // This aligns with canonical entity ID resolution architecture
+    console.log('[auth/attach] Creating/updating user entity in tenant org:', orgId)
+    const userName = auth.email?.split('@')[0] || 'User'
+    
+    // Check if USER entity already exists in tenant org
+    const { data: existingUser } = await supabase
       .from('core_entities')
-      .select('id, entity_type')
+      .select('id')
       .eq('id', userId)
-      .eq('organization_id', platformOrgId)
+      .eq('organization_id', orgId)
+      .eq('entity_type', 'USER')
       .maybeSingle()
 
-    if (preUser && preUser.entity_type !== 'USER') {
-      const { error: upErr } = await supabase
+    let userInsErr: any = null
+    
+    if (existingUser) {
+      // Update existing USER entity
+      const { error } = await supabase
         .from('core_entities')
-        .update({ entity_type: 'USER' })
+        .update({
+          entity_name: userName,
+          metadata: { 
+            email: auth.email,
+            supabase_uid: userId // ✅ Add supabase_uid for lookup
+          },
+          updated_by: userId,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', userId)
-        .eq('organization_id', platformOrgId)
-      if (upErr) {
-        return NextResponse.json(
-          { error: 'normalize_failed', details: upErr.message },
-          { status: 500 }
-        )
-      }
+        .eq('organization_id', orgId)
+      userInsErr = error
+    } else {
+      // Create new USER entity
+      const { error } = await supabase.from('core_entities').insert([
+        {
+          id: userId,
+          organization_id: orgId, // ✅ FIXED: Store in tenant org, not platform
+          entity_type: 'USER',
+          entity_name: userName,
+          entity_code: `USER-${userId.substring(0, 8)}`,
+          smart_code: 'HERA.SYSTEM.USER.ENTITY.PERSON.V1',
+          metadata: { 
+            email: auth.email,
+            supabase_uid: userId // ✅ Add supabase_uid for lookup
+          },
+          // HERA v2.2 audit fields (required)
+          created_by: userId,
+          updated_by: userId,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ])
+      userInsErr = error
     }
-
-    // Upsert USER entity via RPC to honor all guardrails
-    const userName = auth.email?.split('@')[0] || 'User'
-    const { data: userUpsert, error: userRpcErr } = await supabase.rpc('hera_entity_upsert_v1', {
-      p_organization_id: platformOrgId,
-      p_entity_type: 'USER',
-      p_entity_name: userName,
-      p_smart_code: 'HERA.SYSTEM.USER.ENTITY.PERSON.V1',
-      p_entity_id: userId,
-      p_entity_code: `USER-${userId.substring(0, 8)}`,
-      p_entity_description: null,
-      p_parent_entity_id: null,
-      p_status: 'active',
-      p_tags: null,
-      p_smart_code_status: 'ACTIVE',
-      p_business_rules: {},
-      p_metadata: { email: auth.email },
-      p_ai_confidence: 1.0,
-      p_ai_classification: null,
-      p_ai_insights: {},
-      p_attributes: {},
-      p_actor_user_id: userId
-    })
-    if (userRpcErr) {
-      // Fallback to direct upsert if RPC not available
-      const { error: insErr } = await supabase.from('core_entities').upsert(
-        [
-          {
-            id: userId,
-            organization_id: platformOrgId,
-            entity_type: 'USER',
-            entity_name: userName,
-            entity_code: `USER-${userId.substring(0, 8)}`,
-            smart_code: 'HERA.SYSTEM.USER.ENTITY.PERSON.V1',
-            status: 'active',
-            metadata: { email: auth.email }
-          }
-        ],
-        { onConflict: 'id' }
+    if (userInsErr) {
+      console.error('[auth/attach] User entity upsert failed:', userInsErr)
+      return NextResponse.json(
+        { error: 'user_upsert_failed', details: userInsErr.message },
+        { status: 500 }
       )
-      if (insErr) {
-        return NextResponse.json(
-          { error: 'user_upsert_failed', details: userRpcErr.message || insErr.message },
-          { status: 500 }
-        )
-      }
     }
+    console.log('[auth/attach] User entity created/updated successfully')
 
-    // Ensure ORG entity exists using RPC upsert as well
-    const { data: orgRow } = await supabase
+    // Ensure ORG entity exists with proper HERA v2.2 audit fields
+    console.log('[auth/attach] Getting organization data')
+    const { data: orgRow, error: orgRowError } = await supabase
       .from('core_organizations')
       .select('organization_name, organization_code')
       .eq('id', orgId)
       .single()
 
-    const { error: orgRpcErr } = await supabase.rpc('hera_entity_upsert_v1', {
-      p_organization_id: orgId,
-      p_entity_type: 'ORG',
-      p_entity_name: orgRow?.organization_name || 'Organization',
-      p_smart_code: 'HERA.SYSTEM.ORG.ENTITY.ORGANIZATION.V1',
-      p_entity_id: orgId,
-      p_entity_code: orgRow?.organization_code || `ORG-${orgId.substring(0, 8)}`,
-      p_entity_description: null,
-      p_parent_entity_id: null,
-      p_status: 'active',
-      p_tags: null,
-      p_smart_code_status: 'ACTIVE',
-      p_business_rules: {},
-      p_metadata: {},
-      p_ai_confidence: 1.0,
-      p_ai_classification: null,
-      p_ai_insights: {},
-      p_attributes: {},
-      p_actor_user_id: userId
-    })
-    if (orgRpcErr) {
-      const { error: orgInsErr } = await supabase.from('core_entities').upsert(
-        [
-          {
-            id: orgId,
-            organization_id: orgId,
-            entity_type: 'ORG',
-            entity_name: orgRow?.organization_name || 'Organization',
-            entity_code: orgRow?.organization_code || `ORG-${orgId.substring(0, 8)}`,
-            smart_code: 'HERA.SYSTEM.ORG.ENTITY.ORGANIZATION.V1',
-            status: 'active'
-          }
-        ],
-        { onConflict: 'id' }
+    if (orgRowError) {
+      console.error('[auth/attach] Failed to get organization data:', orgRowError)
+      return NextResponse.json(
+        { error: 'org_lookup_failed', details: orgRowError.message },
+        { status: 500 }
       )
-      if (orgInsErr) {
-        return NextResponse.json(
-          { error: 'org_upsert_failed', details: orgRpcErr.message || orgInsErr.message },
-          { status: 500 }
-        )
-      }
     }
 
-    // Upsert relationship via RPC
-    const { error: relRpcErr } = await supabase.rpc('hera_relationship_upsert_v1', {
-      p_organization_id: orgId,
-      p_from_entity_id: userId,
-      p_to_entity_id: orgId,
-      p_relationship_type: 'USER_MEMBER_OF_ORG',
-      p_smart_code: 'HERA.SYSTEM.USER.REL.MEMBER_OF_ORG.V1',
-      p_relationship_direction: 'forward',
-      p_relationship_strength: 1,
-      p_relationship_data: {},
-      p_smart_code_status: 'ACTIVE',
-      p_ai_confidence: 1.0,
-      p_ai_classification: null,
-      p_ai_insights: {},
-      p_business_logic: {},
-      p_validation_rules: {},
-      p_is_active: true,
-      p_effective_date: new Date().toISOString(),
-      p_expiration_date: null,
-      p_actor_user_id: userId
-    })
-    if (relRpcErr) {
-      const { error: relInsErr } = await supabase.from('core_relationships').upsert(
-        [
-          {
-            organization_id: orgId,
-            from_entity_id: userId,
-            to_entity_id: orgId,
-            relationship_type: 'USER_MEMBER_OF_ORG',
-            smart_code: 'HERA.SYSTEM.USER.REL.MEMBER_OF_ORG.V1',
-            is_active: true
-          }
-        ],
-        { onConflict: 'organization_id,from_entity_id,to_entity_id,relationship_type' }
+    console.log('[auth/attach] Creating/updating organization entity')
+    const { error: orgInsErr } = await supabase.from('core_entities').upsert(
+      [
+        {
+          id: orgId,
+          organization_id: orgId,
+          entity_type: 'ORG',
+          entity_name: orgRow?.organization_name || 'Organization',
+          entity_code: orgRow?.organization_code || `ORG-${orgId.substring(0, 8)}`,
+          smart_code: 'HERA.SYSTEM.ORG.ENTITY.ORGANIZATION.V1',
+          // HERA v2.2 audit fields (required)
+          created_by: userId,
+          updated_by: userId,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ],
+      { onConflict: 'id' }
+    )
+    if (orgInsErr) {
+      console.error('[auth/attach] Organization entity upsert failed:', orgInsErr)
+      return NextResponse.json(
+        { error: 'org_upsert_failed', details: orgInsErr.message },
+        { status: 500 }
       )
-      if (relInsErr) {
-        return NextResponse.json(
-          { error: 'relationship_upsert_failed', details: relRpcErr.message || relInsErr.message },
-          { status: 500 }
-        )
-      }
     }
+    console.log('[auth/attach] Organization entity created/updated successfully')
 
+    // Upsert MEMBER_OF relationship with proper HERA v2.2 audit fields
+    console.log('[auth/attach] Creating/updating MEMBER_OF relationship')
+    
+    // First check if relationship already exists
+    const { data: existingRel } = await supabase
+      .from('core_relationships')
+      .select('id')
+      .eq('organization_id', orgId)
+      .eq('from_entity_id', userId)
+      .eq('to_entity_id', orgId)
+      .eq('relationship_type', 'MEMBER_OF')
+      .maybeSingle()
+
+    let relInsErr: any = null
+    
+    if (existingRel) {
+      // Update existing relationship
+      const { error } = await supabase
+        .from('core_relationships')
+        .update({
+          relationship_data: { role: 'OWNER', permissions: ['*'] },
+          is_active: true,
+          updated_by: userId,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existingRel.id)
+      relInsErr = error
+    } else {
+      // Create new relationship
+      const { error } = await supabase.from('core_relationships').insert([
+        {
+          organization_id: orgId,
+          from_entity_id: userId,
+          to_entity_id: orgId,
+          relationship_type: 'MEMBER_OF',
+          smart_code: 'HERA.CORE.USER.REL.MEMBER_OF.V1',
+          relationship_data: { role: 'OWNER', permissions: ['*'] },
+          is_active: true,
+          // HERA v2.2 audit fields (required)
+          created_by: userId,
+          updated_by: userId,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ])
+      relInsErr = error
+    }
+    if (relInsErr) {
+      console.error('[auth/attach] Relationship upsert failed:', relInsErr)
+      return NextResponse.json(
+        { error: 'relationship_upsert_failed', details: relInsErr.message },
+        { status: 500 }
+      )
+    }
+    console.log('[auth/attach] MEMBER_OF relationship created/updated successfully')
+
+    console.log('[auth/attach] Attach process completed successfully')
     return NextResponse.json({ ok: true, organization_id: orgId, user_entity_id: userId })
   } catch (e: any) {
     console.error('[auth/attach] error', e)

@@ -51,8 +51,8 @@ export interface Service {
 // Form Validation Schemas
 export const ServiceCategoryFormSchema = z.object({
   name: z.string().min(1, 'Category name is required'),
-  color: z.string().min(1, 'Color is required'),
-  description: z.string().optional()
+  description: z.string().optional(),
+  color: z.string().optional()
 })
 
 export type ServiceCategoryFormValues = z.infer<typeof ServiceCategoryFormSchema>

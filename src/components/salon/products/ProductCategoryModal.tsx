@@ -5,13 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ProductCategory, ProductCategoryFormValues } from '@/types/salon-product-category'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription
-} from '@/components/ui/dialog'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import {
   Form,
   FormControl,
@@ -31,33 +25,15 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Tag, X, Sparkles } from 'lucide-react'
+import { Tag, Sparkles } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
 interface ProductCategoryModalProps {
   open: boolean
   onClose: () => void
   category?: ProductCategory | null
   onSave: (data: ProductCategoryFormValues) => Promise<void>
-}
-
-// Salon Luxe Theme Colors
-const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  emerald: '#0F6F5C',
-  plum: '#B794F4',
-  rose: '#E8B4B8',
-  lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323',
-  purple: '#d946ef',
-  pink: '#ec4899',
-  amber: '#f59e0b'
 }
 
 // Icon options for categories
@@ -175,61 +151,51 @@ export function ProductCategoryModal({
   const selectedColor = form.watch('color')
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent
-        className="max-w-2xl max-h-[90vh] overflow-y-auto"
-        style={{
-          backgroundColor: COLORS.charcoal,
-          border: `1px solid ${COLORS.bronze}40`,
-          boxShadow: '0 20px 30px rgba(0,0,0,0.3)'
-        }}
-      >
-        {/* Header */}
-        <DialogHeader className="pb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{
-                  backgroundColor: COLORS.gold + '20',
-                  border: `1px solid ${COLORS.gold}40`
-                }}
-              >
-                <Tag className="w-5 h-5" style={{ color: COLORS.gold }} />
-              </div>
-              <div>
-                <DialogTitle className="text-xl font-semibold" style={{ color: COLORS.champagne }}>
-                  {category ? 'Edit Category' : 'Create Category'}
-                </DialogTitle>
-                <DialogDescription className="text-sm mt-1" style={{ color: COLORS.lightText }}>
-                  {category ? 'Update category information' : 'Add a new product category'}
-                </DialogDescription>
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClose}
-              className="hover:bg-white/5 transition-colors"
-              style={{ color: COLORS.lightText }}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </DialogHeader>
-
-        {/* Form */}
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+    <SalonLuxeModal
+      open={open}
+      onClose={handleClose}
+      title={category ? 'Edit Category' : 'Create Category'}
+      description={category ? 'Update category information' : 'Add a new product category'}
+      icon={<Tag className="w-6 h-6" />}
+      size="lg"
+      footer={
+        <div className="flex items-center gap-3 w-full justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleClose}
+            className="outline-button"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            onClick={form.handleSubmit(handleSubmit)}
+            className="primary-button"
+          >
+            {form.formState.isSubmitting
+              ? category
+                ? 'Updating...'
+                : 'Creating...'
+              : category
+                ? 'Update Category'
+                : 'Create Category'}
+          </Button>
+        </div>
+      }
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-4">
             {/* Basic Information */}
             <div
               className="p-4 rounded-lg border"
               style={{
-                backgroundColor: COLORS.charcoalLight + '50',
-                borderColor: COLORS.bronze + '20'
+                backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '50',
+                borderColor: '#8C7853' + '20'
               }}
             >
-              <h3 className="font-medium mb-4" style={{ color: COLORS.champagne }}>
+              <h3 className="font-medium mb-4" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
                 Basic Information
               </h3>
 
@@ -239,17 +205,12 @@ export function ProductCategoryModal({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>Category Name *</FormLabel>
+                      <FormLabel>Category Name *</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           placeholder="e.g., Hair Services"
                           className="transition-all focus:ring-2 focus:ring-gold-500/20"
-                          style={{
-                            backgroundColor: COLORS.charcoalDark + '80',
-                            borderColor: COLORS.bronze + '40',
-                            color: COLORS.champagne
-                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -262,17 +223,12 @@ export function ProductCategoryModal({
                   name="code"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>Category Code</FormLabel>
+                      <FormLabel>Category Code</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           placeholder="Auto-generated if empty"
                           className="transition-all focus:ring-2 focus:ring-gold-500/20"
-                          style={{
-                            backgroundColor: COLORS.charcoalDark + '80',
-                            borderColor: COLORS.bronze + '40',
-                            color: COLORS.champagne
-                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -287,17 +243,12 @@ export function ProductCategoryModal({
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>Description</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
                           placeholder="Enter category description..."
                           className="min-h-[80px] transition-all focus:ring-2 focus:ring-gold-500/20 resize-none"
-                          style={{
-                            backgroundColor: COLORS.charcoalDark + '80',
-                            borderColor: COLORS.bronze + '40',
-                            color: COLORS.champagne
-                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -311,11 +262,11 @@ export function ProductCategoryModal({
             <div
               className="p-4 rounded-lg border"
               style={{
-                backgroundColor: COLORS.charcoalLight + '50',
-                borderColor: COLORS.bronze + '20'
+                backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '50',
+                borderColor: '#8C7853' + '20'
               }}
             >
-              <h3 className="font-medium mb-4" style={{ color: COLORS.champagne }}>
+              <h3 className="font-medium mb-4" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
                 Appearance
               </h3>
 
@@ -325,49 +276,35 @@ export function ProductCategoryModal({
                   name="color"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>Color</FormLabel>
+                      <FormLabel>Color</FormLabel>
                       <Select value={field.value || '#D4AF37'} onValueChange={field.onChange}>
                         <FormControl>
-                          <SelectTrigger
-                            className="transition-all focus:ring-2 focus:ring-gold-500/20"
-                            style={{
-                              backgroundColor: COLORS.charcoalDark + '80',
-                              borderColor: COLORS.bronze + '40',
-                              color: COLORS.champagne
-                            }}
-                          >
+                          <SelectTrigger className="transition-all focus:ring-2 focus:ring-gold-500/20 hera-select-trigger">
                             <div className="flex items-center gap-2">
                               <div
                                 className="w-4 h-4 rounded-full border"
                                 style={{
                                   backgroundColor: selectedColor || '#D4AF37',
-                                  borderColor: COLORS.gold + '60'
+                                  borderColor: SALON_LUXE_COLORS.gold.base + '60'
                                 }}
                               />
                               <SelectValue placeholder="Select color" />
                             </div>
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent
-                          className="hera-select-content"
-                          style={{
-                            backgroundColor: COLORS.charcoal,
-                            borderColor: COLORS.bronze + '40'
-                          }}
-                        >
+                        <SelectContent className="hera-select-content">
                           {COLOR_OPTIONS.map(option => (
                             <SelectItem
                               key={option.value}
                               value={option.value}
                               className="hera-select-item"
-                              style={{ color: COLORS.champagne }}
                             >
                               <div className="flex items-center gap-2">
                                 <div
                                   className="w-4 h-4 rounded-full border"
                                   style={{
                                     backgroundColor: option.color,
-                                    borderColor: COLORS.gold + '60'
+                                    borderColor: SALON_LUXE_COLORS.gold.base + '60'
                                   }}
                                 />
                                 {option.label}
@@ -386,33 +323,19 @@ export function ProductCategoryModal({
                   name="icon"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>Icon</FormLabel>
+                      <FormLabel>Icon</FormLabel>
                       <Select value={field.value || 'Tag'} onValueChange={field.onChange}>
                         <FormControl>
-                          <SelectTrigger
-                            className="transition-all focus:ring-2 focus:ring-gold-500/20"
-                            style={{
-                              backgroundColor: COLORS.charcoalDark + '80',
-                              borderColor: COLORS.bronze + '40',
-                              color: COLORS.champagne
-                            }}
-                          >
+                          <SelectTrigger className="transition-all focus:ring-2 focus:ring-gold-500/20 hera-select-trigger">
                             <SelectValue placeholder="Select icon" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent
-                          className="hera-select-content"
-                          style={{
-                            backgroundColor: COLORS.charcoal,
-                            borderColor: COLORS.bronze + '40'
-                          }}
-                        >
+                        <SelectContent className="hera-select-content">
                           {ICON_OPTIONS.map(option => (
                             <SelectItem
                               key={option.value}
                               value={option.value}
                               className="hera-select-item"
-                              style={{ color: COLORS.champagne }}
                             >
                               {option.label}
                             </SelectItem>
@@ -431,7 +354,7 @@ export function ProductCategoryModal({
                   name="sort_order"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>Sort Order</FormLabel>
+                      <FormLabel>Sort Order</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -440,11 +363,6 @@ export function ProductCategoryModal({
                           step="1"
                           placeholder="0"
                           className="transition-all focus:ring-2 focus:ring-gold-500/20"
-                          style={{
-                            backgroundColor: COLORS.charcoalDark + '80',
-                            borderColor: COLORS.bronze + '40',
-                            color: COLORS.champagne
-                          }}
                           onChange={e => {
                             const value = e.target.value
                             field.onChange(value === '' ? 0 : parseInt(value))
@@ -458,43 +376,8 @@ export function ProductCategoryModal({
                 />
               </div>
             </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-end gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                className="hover:bg-white/5 transition-all"
-                style={{
-                  borderColor: COLORS.bronze + '40',
-                  color: COLORS.lightText
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={form.formState.isSubmitting}
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black,
-                  border: 'none'
-                }}
-                className="hover:opacity-90 transition-opacity"
-              >
-                {form.formState.isSubmitting
-                  ? category
-                    ? 'Updating...'
-                    : 'Creating...'
-                  : category
-                    ? 'Update Category'
-                    : 'Create Category'}
-              </Button>
-            </div>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+    </SalonLuxeModal>
   )
 }

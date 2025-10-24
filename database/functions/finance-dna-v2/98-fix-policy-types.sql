@@ -70,7 +70,7 @@ BEGIN
         'financial_policy',
         p_policy_name,
         'POL-' || EXTRACT(EPOCH FROM NOW())::TEXT,
-        'HERA.ACCOUNTING.POLICY.ENTITY.v2',
+        'HERA.ACCOUNTING.POLICY.ENTITY.V2',
         jsonb_build_object(
             'policy_type', p_policy_type,
             'priority', p_priority,
@@ -91,7 +91,7 @@ BEGIN
         p_organization_id,
         'policy_config',
         p_policy_config,
-        'HERA.ACCOUNTING.POLICY.CONFIG.v2'
+        'HERA.ACCOUNTING.POLICY.CONFIG.V2'
     );
     
     -- Store policy priority
@@ -106,7 +106,7 @@ BEGIN
         p_organization_id,
         'priority',
         p_priority,
-        'HERA.ACCOUNTING.POLICY.PRIORITY.v2'
+        'HERA.ACCOUNTING.POLICY.PRIORITY.V2'
     );
     
     -- Log policy creation
@@ -118,7 +118,7 @@ BEGIN
     ) VALUES (
         p_organization_id,
         'POLICY_CREATION',
-        'HERA.ACCOUNTING.POLICY.CREATE.v2',
+        'HERA.ACCOUNTING.POLICY.CREATE.V2',
         jsonb_build_object(
             'policy_id', v_policy_entity_id,
             'policy_name', p_policy_name,
@@ -241,7 +241,7 @@ BEGIN
     ) VALUES (
         p_organization_id,
         'POLICY_EXECUTION',
-        'HERA.ACCOUNTING.POLICY.EXECUTE.v2',
+        'HERA.ACCOUNTING.POLICY.EXECUTE.V2',
         jsonb_build_object(
             'policy_id', p_policy_id,
             'policy_type', v_policy_type,

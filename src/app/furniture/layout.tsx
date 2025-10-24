@@ -1,21 +1,36 @@
-// Force dynamic rendering for all furniture pages - skip SSG
-export const dynamic = 'force-dynamic'
-
-export const revalidate = 0
-export const fetchCache = 'force-no-store'
+'use client'
 
 import React from 'react'
-import FurnitureDarkLayout from '@/components/furniture/FurnitureDarkLayout'
-import { FurnitureOrgProvider } from '@/components/furniture/FurnitureOrgContext'
-import { FurnitureDarkThemeProvider } from '@/components/furniture/FurnitureDarkThemeProvider'
-import '@/styles/furniture-enterprise.css'
+import { usePathname } from 'next/navigation'
+import { FurnitureNavbar } from '@/components/furniture/FurnitureNavbar'
+import { JewelryGradientBG } from '@/components/jewelry/JewelryGradientBG'
+import '@/styles/jewelry-glassmorphism.css'
 
-export default function FurnitureLayout({ children }: { children: React.ReactNode }) {
+interface Furniture1LayoutProps {
+  children: React.ReactNode
+}
+
+export default function Furniture1Layout({ children }: Furniture1LayoutProps) {
+  const pathname = usePathname()
+
+  // Don't show navbar on auth pages only
+  const isAuthPage = pathname === '/furniture/auth'
+
+  if (isAuthPage) {
+    return <>{children}</>
+  }
+
   return (
-    <FurnitureDarkThemeProvider>
-      <FurnitureDarkLayout>
-        <FurnitureOrgProvider>{children}</FurnitureOrgProvider>
-      </FurnitureDarkLayout>
-    </FurnitureDarkThemeProvider>
+    <div className="min-h-screen">
+      <JewelryGradientBG />
+      <div className="relative z-10 min-h-screen flex flex-col">
+        <div className="relative z-50">
+          <FurnitureNavbar />
+        </div>
+        <main className="flex-1 w-full py-2 sm:py-3 lg:py-4 relative z-0">
+          {children}
+        </main>
+      </div>
+    </div>
   )
 }

@@ -1,0 +1,185 @@
+tables:
+  - name: core_organizations
+    rls_enabled: true
+    primary_key: [id]
+    columns:
+      - name: id
+        type: uuid
+        not_null: true
+        default: gen_random_uuid()
+        purpose: Unique identifier for the organization record
+        usage: Primary key used in relationships and tenancy filters
+        pii: false
+        mutable: false
+        constraints: Must be globally unique
+        example: "62e6b3f2-8b2a-4218-b6a7-73b0c5f21d10"
+        owner: kernel
+
+      - name: organization_name
+        type: text
+        not_null: true
+        default: null
+        purpose: Human-readable name of the organization
+        usage: Display name used in dashboards, invoices, and reports
+        pii: maybe
+        mutable: true
+        constraints: Cannot be empty; max length 255
+        example: "Aurora Salon Group"
+        owner: app
+
+      - name: organization_code
+        type: text
+        not_null: true
+        default: null
+        purpose: Unique short code or slug identifying the organization
+        usage: Used in URLs, login redirects, and tenant routing
+        pii: false
+        mutable: false
+        constraints: Must be unique across all organizations
+        example: "aurora"
+        owner: kernel
+
+      - name: organization_type
+        type: text
+        not_null: false
+        default: "'business_unit'::text"
+        purpose: Classifies the organization record type
+        usage: Used for multi-level hierarchies (HQ, branch, department)
+        pii: false
+        mutable: true
+        constraints:
+        Enum: [business_unit, branch, division, partner]
+        example: "branch"
+        owner: kernel
+
+      - name: industry_classification
+        type: text
+        not_null: false
+        default: null
+        purpose: Industry vertical for analytics and template selection
+        usage: Drives presets, theming, and Finance DNA defaults
+        pii: false
+        mutable: true
+        constraints: Optional free text (e.g., salon, retail, healthcare)
+        example: "salon"
+        owner: strategy
+
+      - name: parent_organization_id
+        type: uuid
+        not_null: false
+        default: null
+        purpose: Parent organization for hierarchy or consolidation
+        usage: Enables group reporting and inter-company relationships
+        pii: false
+        mutable: true
+        constraints: FK → core_organizations.id
+        example: "5c76f112-1a4e-4b78-9f01-59cf47a8745d"
+        owner: finance
+
+      - name: ai_insights
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: AI-generated organizational insights or summaries
+        usage: Stores key findings, forecasts, or recommendations
+        pii: false
+        mutable: true
+        constraints: JSON schema validated in AI pipeline
+        example: {"segment":"premium","growth_score":0.91}
+        owner: ai
+
+      - name: ai_classification
+        type: text
+        not_null: false
+        default: null
+        purpose: AI-assigned category for the organization
+        usage: Used for segmentation or recommendation grouping
+        pii: false
+        mutable: true
+        constraints: Optional free text label
+        example: "high-value-customer"
+        owner: ai
+
+      - name: ai_confidence
+        type: numeric
+        not_null: false
+        default: "0.0000"
+        purpose: Confidence score associated with AI insights/classification
+        usage: Helps evaluate reliability of AI suggestions
+        pii: false
+        mutable: true
+        constraints: 0–1 normalized score
+        example: 0.94
+        owner: ai
+
+      - name: settings
+        type: jsonb
+        not_null: false
+        default: "'{}'::jsonb"
+        purpose: Configuration JSON storing per-organization settings
+        usage: Holds Finance DNA, Fiscal DNA, feature flags, and preferences
+        pii: false
+        mutable: true
+        constraints: Valid JSON; keys validated in CI
+        example: {"fiscal_year":"Jan-Dec","currency":"AED"}
+        owner: kernel
+
+      - name: status
+        type: text
+        not_null: false
+        default: "'active'::text"
+        purpose: Lifecycle state of the organization
+        usage: Controls tenant activation/suspension in platform access
+        pii: false
+        mutable: true
+        constraints: Enum: [active, inactive, archived]
+        example: "active"
+        owner: security
+
+      - name: created_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Timestamp when record was created
+        usage: Used for audit trail and reporting
+        pii: false
+        mutable: false
+        constraints: Auto-filled by DB default
+        example: "2025-01-03T10:45:00Z"
+        owner: kernel
+
+      - name: updated_at
+        type: timestamp with time zone
+        not_null: false
+        default: now()
+        purpose: Timestamp when record was last updated
+        usage: Used for audit trail and synchronization
+        pii: false
+        mutable: false
+        constraints: Auto-updated by triggers or RPCs
+        example: "2025-01-03T12:15:00Z"
+        owner: kernel
+
+      - name: created_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity id of the actor who created the organization
+        usage: Audit reference; used in event outbox metadata
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id where entity_type='USER'
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security
+
+      - name: updated_by
+        type: uuid
+        not_null: false
+        default: null
+        purpose: USER entity id of the actor who last updated the organization
+        usage: Audit reference for last modification
+        pii: false
+        mutable: false
+        constraints: FK → core_entities.id where entity_type='USER'
+        example: "09b0b92a-d797-489e-bc03-5ca0a6272674"
+        owner: security

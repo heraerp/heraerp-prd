@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { WorkforceClient } from '@/lib/workforce/workforce-client-v3'
-import { assertV2, v2Body } from '@/lib/server/route-utils'
+import { assertV2, v2Body } from '@/lib/client/fetchV2'
 
 // ============================================================================
 // POST /api/v3/workforce - Main workforce operations

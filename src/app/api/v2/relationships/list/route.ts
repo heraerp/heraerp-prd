@@ -9,7 +9,7 @@ import { getSupabaseService } from '@/lib/supabase-service'
 
 export const runtime = 'nodejs'
 
-export async function POST(request: NextRequest) {
+async function handleListRelationships(request: NextRequest) {
   try {
     // Auth verification
     const authResult = await verifyAuth(request)
@@ -17,8 +17,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { filters = {}, limit = 500, cursor = null } = body
+    // Get filters from body (POST) or query params (GET)
+    let filters: any = {}
+    let limit = 500
+    let cursor: string | null = null
+
+    if (request.method === 'POST') {
+      const body = await request.json()
+      filters = body.filters || {}
+      limit = body.limit || 500
+      cursor = body.cursor || null
+    } else {
+      // GET: parse from query params
+      const searchParams = request.nextUrl.searchParams
+      const relationshipType = searchParams.get('relationship_type')
+      const fromEntityId = searchParams.get('from_entity_id')
+      const toEntityId = searchParams.get('to_entity_id')
+      const status = searchParams.get('status')
+
+      filters = {}
+      if (relationshipType) filters.relationship_type = relationshipType
+      if (fromEntityId) filters.from_entity_id = fromEntityId
+      if (toEntityId) filters.to_entity_id = toEntityId
+      if (status) filters.status = status
+
+      limit = parseInt(searchParams.get('limit') || '500')
+      cursor = searchParams.get('cursor')
+    }
 
     console.log('🔗 [List Relationships] Request:', {
       organizationId: authResult.organizationId,
@@ -101,4 +126,13 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+// Export both GET and POST handlers
+export async function GET(request: NextRequest) {
+  return handleListRelationships(request)
+}
+
+export async function POST(request: NextRequest) {
+  return handleListRelationships(request)
 }

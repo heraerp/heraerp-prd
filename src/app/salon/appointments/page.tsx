@@ -1,6 +1,6 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
+// Removed force-dynamic for better client-side navigation performance
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -14,7 +14,7 @@ import {
 } from '@/hooks/useHeraAppointments'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
-import { useHeraServices } from '@/hooks/useHeraServicesV2'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { AppointmentModal } from '@/components/salon/appointments/AppointmentModal'
@@ -36,7 +36,10 @@ import {
   LayoutList,
   X,
   RotateCcw,
-  CreditCard
+  CreditCard,
+  Shield,
+  Loader2,
+  Scissors
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -50,7 +53,6 @@ import {
   DialogTitle,
   DialogFooter
 } from '@/components/ui/luxe-dialog'
-import { Loader2 } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -90,7 +92,7 @@ type ViewMode = 'grid' | 'list'
 
 function AppointmentsContent() {
   const router = useRouter()
-  const { organizationId, isLoading: contextLoading, isAuthenticated } = useSecuredSalonContext()
+  const { organizationId, organization, isLoading: contextLoading, isAuthenticated } = useSecuredSalonContext()
 
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
 
@@ -109,6 +111,7 @@ function AppointmentsContent() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [dateFilter, setDateFilter] = useState<string>('all')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
+  const [isNavigating, setIsNavigating] = useState(false)
 
   // ✨ ENTERPRISE: Modal state
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
@@ -143,7 +146,13 @@ function AppointmentsContent() {
 
   // ✨ ENTERPRISE: Load data for modal
   const { customers } = useHeraCustomers({ organizationId: organizationId || '' })
-  const { services } = useHeraServices({ organizationId: organizationId || '' })
+  const { services } = useHeraServices({
+    organizationId: organizationId || '',
+    filters: {
+      include_dynamic: true,
+      include_relationships: true
+    }
+  })
   const { staff } = useHeraStaff({ organizationId: organizationId || '' })
 
   // 🕐 ENTERPRISE: Generate time slots for reschedule (9 AM - 9 PM, 30-min intervals)
@@ -231,7 +240,6 @@ function AppointmentsContent() {
       // Only clear time if date changed from original appointment date
       if (appointmentDate && postponeDate !== appointmentDate && postponeTime) {
         setPostponeTime('')
-        console.log('[Appointments] ⚡ Time slots reloading for new date:', postponeDate)
       }
     }
   }, [postponeDate, postponeDialogOpen, appointmentToPostpone, postponeTime])
@@ -635,71 +643,142 @@ function AppointmentsContent() {
               </button>
             </div>
             <Button
-              onClick={() => router.push('/salon/appointments/calendar')}
+              onClick={() => {
+                // 🎯 ENTERPRISE: Show immediate feedback
+                setIsNavigating(true)
+                showLoading('Loading Calendar View...')
+                router.push('/salon/appointments/calendar')
+              }}
+              disabled={isNavigating}
               className="transition-all duration-300"
               style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.emerald}DD 100%)`,
+                background: isNavigating
+                  ? `linear-gradient(135deg, ${LUXE_COLORS.emerald}80 0%, ${LUXE_COLORS.emerald}60 100%)`
+                  : `linear-gradient(135deg, ${LUXE_COLORS.emerald} 0%, ${LUXE_COLORS.emerald}DD 100%)`,
                 color: LUXE_COLORS.champagne,
                 border: 'none',
                 boxShadow: '0 4px 12px rgba(15,111,92,0.2)',
-                transitionTimingFunction: LUXE_COLORS.spring
+                transitionTimingFunction: LUXE_COLORS.spring,
+                opacity: isNavigating ? 0.6 : 1,
+                cursor: isNavigating ? 'not-allowed' : 'pointer'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(15,111,92,0.3)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(15,111,92,0.3)'
+                }
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,111,92,0.2)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,111,92,0.2)'
+                }
               }}
             >
-              <Calendar className="w-4 h-4 mr-2" />
-              Calendar View
+              {isNavigating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Calendar View
+                </>
+              )}
             </Button>
             <Button
-              onClick={() => router.push('/salon/kanban')}
+              onClick={() => {
+                // 🎯 ENTERPRISE: Show immediate feedback
+                setIsNavigating(true)
+                showLoading('Loading Kanban Board...')
+
+                // Navigate (this might take time)
+                router.push('/salon/kanban')
+              }}
+              disabled={isNavigating}
               className="transition-all duration-300"
               style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.bronze} 0%, ${LUXE_COLORS.bronze}DD 100%)`,
+                background: isNavigating
+                  ? `linear-gradient(135deg, ${LUXE_COLORS.bronze}80 0%, ${LUXE_COLORS.bronze}60 100%)`
+                  : `linear-gradient(135deg, ${LUXE_COLORS.bronze} 0%, ${LUXE_COLORS.bronze}DD 100%)`,
                 color: LUXE_COLORS.champagne,
                 border: 'none',
                 boxShadow: '0 4px 12px rgba(140,120,83,0.2)',
-                transitionTimingFunction: LUXE_COLORS.spring
+                transitionTimingFunction: LUXE_COLORS.spring,
+                opacity: isNavigating ? 0.6 : 1,
+                cursor: isNavigating ? 'not-allowed' : 'pointer'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(140,120,83,0.3)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(140,120,83,0.3)'
+                }
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(140,120,83,0.2)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(140,120,83,0.2)'
+                }
               }}
             >
-              <LayoutGrid className="w-4 h-4 mr-2" />
-              Kanban Board
+              {isNavigating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <LayoutGrid className="w-4 h-4 mr-2" />
+                  Kanban Board
+                </>
+              )}
             </Button>
             <Button
-              onClick={() => router.push('/salon/appointments/new')}
+              onClick={() => {
+                // 🎯 ENTERPRISE: Show immediate feedback
+                setIsNavigating(true)
+                showLoading('Opening appointment form...')
+                router.push('/salon/appointments/new')
+              }}
+              disabled={isNavigating}
               className="transition-all duration-300"
               style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+                background: isNavigating
+                  ? `linear-gradient(135deg, ${LUXE_COLORS.gold}80 0%, ${LUXE_COLORS.goldDark}80 100%)`
+                  : `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
                 color: LUXE_COLORS.black,
                 border: 'none',
                 fontWeight: '600',
                 boxShadow: '0 4px 12px rgba(212,175,55,0.3)',
-                transitionTimingFunction: LUXE_COLORS.spring
+                transitionTimingFunction: LUXE_COLORS.spring,
+                opacity: isNavigating ? 0.6 : 1,
+                cursor: isNavigating ? 'not-allowed' : 'pointer'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(212,175,55,0.4)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(212,175,55,0.4)'
+                }
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(212,175,55,0.3)'
+                if (!isNavigating) {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(212,175,55,0.3)'
+                }
               }}
             >
-              <Plus className="w-4 h-4 mr-2" />
-              New Appointment
+              {isNavigating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Appointment
+                </>
+              )}
             </Button>
           </div>
         </div>
@@ -1058,19 +1137,38 @@ function AppointmentsContent() {
                         <h3
                           className="font-semibold text-base mb-1 truncate"
                           style={{ color: LUXE_COLORS.champagne }}
-                          title={appointment.customer_name || 'Customer'}
+                          title={customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Customer'}
                         >
-                          {appointment.customer_name || 'Customer'}
+                          {customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Customer'}
                         </h3>
                         <div
                           className="flex items-center gap-2 text-xs mb-1"
                           style={{ color: LUXE_COLORS.bronze }}
                         >
                           <User className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="truncate" title={appointment.stylist_name || 'Unassigned'}>
-                            {appointment.stylist_name || 'Unassigned'}
+                          <span className="truncate" title={staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'}>
+                            {staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'}
                           </span>
                         </div>
+                        {(() => {
+                          const serviceIds = appointment.metadata?.service_ids || []
+                          const serviceNames = serviceIds
+                            .map((serviceId: string) => services?.find(s => s.id === serviceId)?.entity_name)
+                            .filter(Boolean)
+                            .join(', ')
+
+                          return serviceNames ? (
+                            <div
+                              className="flex items-center gap-2 text-xs mb-1"
+                              style={{ color: LUXE_COLORS.bronze }}
+                            >
+                              <Scissors className="w-3.5 h-3.5 flex-shrink-0" />
+                              <span className="truncate" title={serviceNames}>
+                                {serviceNames}
+                              </span>
+                            </div>
+                          ) : null
+                        })()}
                         {branchName && viewMode === 'list' && (
                           <div
                             className="flex items-center gap-2 text-xs"
@@ -1143,7 +1241,7 @@ function AppointmentsContent() {
                               style={{ color: LUXE_COLORS.gold }}
                             />
                             <span className="whitespace-nowrap">
-                              {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
+                              {organization?.currencySymbol || 'AED'} {appointment.price.toFixed(2)}
                             </span>
                           </div>
                         )}
@@ -1229,7 +1327,7 @@ function AppointmentsContent() {
                               style={{ color: LUXE_COLORS.gold }}
                             />
                             <span>
-                              {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
+                              {organization?.currencySymbol || 'AED'} {appointment.price.toFixed(2)}
                             </span>
                           </div>
                         )}
@@ -1261,6 +1359,20 @@ function AppointmentsContent() {
                     {/* Status Transitions - Only ONE next status button (one step at a time) */}
                     <div className="flex gap-2 flex-wrap flex-1">
                       {(() => {
+                        // ✨ ENTERPRISE: Action-oriented button labels (user-friendly, clear intent)
+                        // Each label describes the action to TRANSITION TO that status
+                        const STATUS_ACTION_LABELS: Record<AppointmentStatus, string> = {
+                          draft: '📝 Save as Draft',
+                          booked: '📝 Confirm Booking',
+                          checked_in: '✓ Check In Customer',
+                          in_progress: '🎯 Begin Service',
+                          payment_pending: '💰 Ready for Payment',
+                          completed: '✓ Mark as Completed',
+                          cancelled: '🔄 Restore Booking',
+                          no_show: '🔄 Restore Booking',
+                          archived: '🔄 Restore'
+                        }
+
                         // Get next logical status (first non-cancelled option)
                         const nextStatus = VALID_STATUS_TRANSITIONS[
                           appointment.status as AppointmentStatus
@@ -1269,6 +1381,135 @@ function AppointmentsContent() {
                         if (!nextStatus) return null
 
                         const statusInfo = STATUS_CONFIG[nextStatus]
+                        const actionLabel = STATUS_ACTION_LABELS[nextStatus] || statusInfo.label
+
+                        // 🎯 ENTERPRISE: Special handling for "Ready for Payment" button
+                        // Redirect to POS instead of changing status
+                        if (nextStatus === 'payment_pending') {
+                          return (
+                            <Button
+                              key={nextStatus}
+                              size="sm"
+                              onClick={e => {
+                                e.stopPropagation()
+
+                                // 🎯 ENTERPRISE PATTERN: Enrich service data from already-loaded services (in-memory, no DB call)
+                                const serviceIds = appointment.metadata?.service_ids || []
+
+                                // Services are already loaded in page context - just do in-memory lookup
+                                const serviceNames: string[] = []
+                                const servicePrices: number[] = []
+
+                                serviceIds.forEach((serviceId: string, index: number) => {
+                                  const service = services?.find((s: any) => s.id === serviceId)
+                                  if (service) {
+                                    serviceNames.push(service.entity_name || service.name || 'Unknown Service')
+
+                                    // 🎯 ENTERPRISE: dynamic_fields can be ARRAY or OBJECT with numeric keys
+                                    // Structure: {0: {value: {field_name: 'price_market', field_value_number: 500}}}
+                                    let price = 0
+                                    if (service.dynamic_fields) {
+                                      // Convert to array if it's an object with numeric keys
+                                      const fieldsArray = Array.isArray(service.dynamic_fields)
+                                        ? service.dynamic_fields
+                                        : Object.values(service.dynamic_fields)
+
+                                      // Extract actual field objects (unwrap {value: {...}})
+                                      const unwrappedFields = fieldsArray.map((f: any) => f.value || f)
+
+                                      // Find price field
+                                      const priceField = unwrappedFields.find((f: any) => f.field_name === 'price_market')
+                                      price = priceField?.field_value_number || 0
+
+                                      // Fallback: check nested structure
+                                      if (!price && service.dynamic_fields.price_market?.value) {
+                                        price = service.dynamic_fields.price_market.value
+                                      }
+                                    }
+
+                                    // Final fallback
+                                    if (!price && service.price) {
+                                      price = service.price
+                                    }
+
+                                    servicePrices.push(price)
+
+                                  } else {
+                                    serviceNames.push('Unknown Service')
+                                    servicePrices.push(0)
+                                  }
+                                })
+
+                                // 🎯 ENTERPRISE PATTERN: Use runtime lookup for customer/staff names (same as tiles)
+                                // This ensures accurate data instead of relying on pre-enriched fields
+                                const customerName = customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown Customer'
+                                const stylistName = staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
+
+                                // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as customer_name/stylist_name)
+                                // This ensures POS can access service data directly without nested metadata drilling
+                                const appointmentData = {
+                                  id: appointment.id,
+                                  organization_id: organizationId,
+                                  branch_id: appointment.branch_id,
+                                  customer_name: customerName,
+                                  customer_id: appointment.customer_id,
+                                  stylist_name: stylistName,
+                                  stylist_id: appointment.stylist_id,
+                                  // ✅ SERVICE DATA AT TOP LEVEL (same pattern as customer_name/stylist_name)
+                                  service_ids: serviceIds,
+                                  service_names: serviceNames,
+                                  service_prices: servicePrices,
+                                  start: appointment.start_time,
+                                  end: appointment.end_time,
+                                  date: format(new Date(appointment.start_time), 'yyyy-MM-dd'),
+                                  price: appointment.price || appointment.total_amount || 0,
+                                  duration: appointment.duration_minutes,
+                                  status: appointment.status,
+                                  flags: {
+                                    vip: appointment.metadata?.vip || false,
+                                    new: appointment.metadata?.new_customer || false
+                                  },
+                                  metadata: appointment.metadata, // Keep original metadata for reference
+                                  _source: 'appointments',
+                                  _timestamp: new Date().toISOString()
+                                }
+
+                                // Store appointment details in sessionStorage for POS page
+                                sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))
+
+                                // Navigate to POS with appointment ID
+                                router.push(`/salon/pos?appointment=${appointment.id}`)
+                              }}
+                              disabled={isUpdating}
+                              className="transition-all duration-300 font-medium"
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)',
+                                color: '#A855F7',
+                                border: '1px solid rgba(147,51,234,0.5)',
+                                transitionTimingFunction: LUXE_COLORS.spring,
+                                fontSize: '0.75rem',
+                                padding: '0.5rem 1rem',
+                                boxShadow: '0 2px 12px rgba(147,51,234,0.2)'
+                              }}
+                              onMouseEnter={e => {
+                                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.5) 0%, rgba(192,132,252,0.35) 100%)'
+                                e.currentTarget.style.borderColor = 'rgba(147,51,234,0.8)'
+                                e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
+                                e.currentTarget.style.boxShadow = '0 6px 20px rgba(147,51,234,0.35)'
+                              }}
+                              onMouseLeave={e => {
+                                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)'
+                                e.currentTarget.style.borderColor = 'rgba(147,51,234,0.5)'
+                                e.currentTarget.style.transform = 'translateY(0) scale(1)'
+                                e.currentTarget.style.boxShadow = '0 2px 12px rgba(147,51,234,0.2)'
+                              }}
+                            >
+                              {actionLabel}
+                            </Button>
+                          )
+                        }
+
+                        // Regular status transition buttons
                         return (
                           <Button
                             key={nextStatus}
@@ -1301,7 +1542,7 @@ function AppointmentsContent() {
                               e.currentTarget.style.boxShadow = `0 2px 8px ${statusInfo.color}10`
                             }}
                           >
-                            {statusInfo.label}
+                            {actionLabel}
                           </Button>
                         )
                       })()}
@@ -1312,20 +1553,86 @@ function AppointmentsContent() {
                           size="sm"
                           onClick={e => {
                             e.stopPropagation()
-                            // 🎯 ENTERPRISE: Build comprehensive appointment data for POS
+
+                            // 🎯 ENTERPRISE PATTERN: Enrich service data from already-loaded services (in-memory, no DB call)
+                            const serviceIds = appointment.metadata?.service_ids || []
+
+                            // Services are already loaded in page context - just do in-memory lookup
+                            const serviceNames: string[] = []
+                            const servicePrices: number[] = []
+
+                            serviceIds.forEach((serviceId: string, index: number) => {
+                              const service = services?.find((s: any) => s.id === serviceId)
+                              if (service) {
+                                serviceNames.push(service.entity_name || service.name || 'Unknown Service')
+
+                                // 🎯 ENTERPRISE: dynamic_fields can be ARRAY or OBJECT with numeric keys
+                                // Structure: {0: {value: {field_name: 'price_market', field_value_number: 500}}}
+                                let price = 0
+                                if (service.dynamic_fields) {
+                                  // Convert to array if it's an object with numeric keys
+                                  const fieldsArray = Array.isArray(service.dynamic_fields)
+                                    ? service.dynamic_fields
+                                    : Object.values(service.dynamic_fields)
+
+                                  // Extract actual field objects (unwrap {value: {...}})
+                                  const unwrappedFields = fieldsArray.map((f: any) => f.value || f)
+
+                                  // Find price field
+                                  const priceField = unwrappedFields.find((f: any) => f.field_name === 'price_market')
+                                  price = priceField?.field_value_number || 0
+
+                                  // Fallback: check nested structure
+                                  if (!price && service.dynamic_fields.price_market?.value) {
+                                    price = service.dynamic_fields.price_market.value
+                                  }
+                                }
+
+                                // Final fallback
+                                if (!price && service.price) {
+                                  price = service.price
+                                }
+
+                                servicePrices.push(price)
+
+                              } else {
+                                serviceNames.push('Unknown Service')
+                                servicePrices.push(0)
+                              }
+                            })
+
+                            // 🎯 ENTERPRISE PATTERN: Use runtime lookup for customer/staff names (same as tiles)
+                            // This ensures accurate data instead of relying on pre-enriched fields
+                            const customerName = customers?.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown Customer'
+                            const stylistName = staff?.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
+
+                            // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as customer_name/stylist_name)
+                            // This ensures POS can access service data directly without nested metadata drilling
                             const appointmentData = {
                               id: appointment.id,
-                              customer_name: appointment.customer_name,
-                              customer_id: appointment.metadata?.customer_id,
-                              stylist_name: appointment.stylist_name,
+                              organization_id: organizationId,
+                              branch_id: appointment.branch_id,
+                              customer_name: customerName,
+                              customer_id: appointment.customer_id,
+                              stylist_name: stylistName,
                               stylist_id: appointment.stylist_id,
-                              service_name: appointment.metadata?.service_name,
-                              service_id: appointment.metadata?.service_id,
+                              // ✅ SERVICE DATA AT TOP LEVEL (same pattern as customer_name/stylist_name)
+                              service_ids: serviceIds,
+                              service_names: serviceNames,
+                              service_prices: servicePrices,
                               start: appointment.start_time,
                               end: appointment.end_time,
-                              price: appointment.price,
+                              date: format(new Date(appointment.start_time), 'yyyy-MM-dd'),
+                              price: appointment.price || appointment.total_amount || 0,
                               duration: appointment.duration_minutes,
-                              status: appointment.status
+                              status: appointment.status,
+                              flags: {
+                                vip: appointment.metadata?.vip || false,
+                                new: appointment.metadata?.new_customer || false
+                              },
+                              metadata: appointment.metadata, // Keep original metadata for reference
+                              _source: 'appointments',
+                              _timestamp: new Date().toISOString()
                             }
 
                             // Store appointment details in sessionStorage for POS page
@@ -1336,27 +1643,27 @@ function AppointmentsContent() {
                           }}
                           className="transition-all duration-300 font-medium"
                           style={{
-                            background: 'linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.15) 100%)',
-                            color: '#10B981',
-                            border: '1px solid rgba(16,185,129,0.4)',
+                            background: 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)',
+                            color: '#A855F7',
+                            border: '1px solid rgba(147,51,234,0.5)',
                             borderRadius: '0.5rem',
                             fontSize: '0.75rem',
                             padding: '0.5rem 1rem',
-                            boxShadow: '0 2px 8px rgba(16,185,129,0.1)',
+                            boxShadow: '0 2px 12px rgba(147,51,234,0.2)',
                             cursor: 'pointer',
                             pointerEvents: 'auto'
                           }}
                           onMouseEnter={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(16,185,129,0.25) 100%)'
-                            e.currentTarget.style.borderColor = 'rgba(16,185,129,0.7)'
+                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.5) 0%, rgba(192,132,252,0.35) 100%)'
+                            e.currentTarget.style.borderColor = 'rgba(147,51,234,0.8)'
                             e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'
-                            e.currentTarget.style.boxShadow = '0 6px 16px rgba(16,185,129,0.25)'
+                            e.currentTarget.style.boxShadow = '0 6px 20px rgba(147,51,234,0.35)'
                           }}
                           onMouseLeave={e => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.15) 100%)'
-                            e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)'
+                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)'
+                            e.currentTarget.style.borderColor = 'rgba(147,51,234,0.5)'
                             e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(16,185,129,0.1)'
+                            e.currentTarget.style.boxShadow = '0 2px 12px rgba(147,51,234,0.2)'
                           }}
                         >
                           <CreditCard className="w-4 h-4 mr-2 inline" />
@@ -2007,6 +2314,7 @@ function AppointmentsContent() {
         services={services || []}
         branches={branches}
         existingAppointments={appointments || []}
+        currencySymbol={organization?.currencySymbol || 'AED'}
         onSave={async data => {
           if (!selectedAppointment) return
 

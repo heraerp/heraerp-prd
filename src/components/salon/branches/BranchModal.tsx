@@ -1,13 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription
-} from '@/components/ui/dialog'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -263,47 +257,15 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
                      (formData.city && formData.city.trim().length > 0)
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent
-        className="max-w-4xl max-h-[90vh] overflow-y-auto salon-luxe-modal"
-        style={{
-          backgroundColor: `${COLORS.charcoal} !important`,
-          border: `1px solid ${COLORS.bronze}40 !important`,
-          borderRadius: '1rem !important',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5) !important',
-          padding: '2rem !important'
-        }}
-      >
-        {/* Header */}
-        <DialogHeader className="mb-6">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-105"
-              style={{
-                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%)`,
-                border: `1px solid ${COLORS.gold}50`,
-                boxShadow: '0 6px 20px rgba(212, 175, 55, 0.3), 0 0 0 1px rgba(212, 175, 55, 0.1)'
-              }}
-            >
-              <Building2 className="w-7 h-7" style={{ color: COLORS.gold }} />
-            </div>
-            <div>
-              <DialogTitle
-                className="text-2xl font-bold !mb-1"
-                style={{ color: `${COLORS.champagne} !important` }}
-              >
-                {branch ? 'Edit Branch' : 'Create New Branch'}
-              </DialogTitle>
-              <DialogDescription
-                style={{ color: `${COLORS.bronze} !important`, fontSize: '0.9rem' }}
-              >
-                {branch ? 'Update branch location details' : 'Add a new luxury salon location'}
-              </DialogDescription>
-            </div>
-          </div>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
+    <SalonLuxeModal
+      open={open}
+      onClose={onClose}
+      title={branch ? 'Edit Branch' : 'Create New Branch'}
+      description={branch ? 'Update branch location details' : 'Add a new luxury salon location'}
+      icon={<Building2 className="w-6 h-6" />}
+      size="xl"
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
           {/* Basic Information */}
           <div
             className="p-6 rounded-xl transition-all duration-300 hover:shadow-lg"
@@ -398,9 +360,36 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="hera-select-content">
-                  <SelectItem value="active" className="hera-select-item">Active</SelectItem>
-                  <SelectItem value="inactive" className="hera-select-item">Inactive</SelectItem>
+                <SelectContent
+                  className="hera-select-content"
+                  style={{
+                    backgroundColor: `${COLORS.charcoalDark} !important`,
+                    borderColor: `${COLORS.gold}40 !important`,
+                    border: `1px solid ${COLORS.gold}40 !important`,
+                    boxShadow: `0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px ${COLORS.gold}20 !important`,
+                    borderRadius: '0.5rem !important'
+                  }}
+                >
+                  <SelectItem
+                    value="active"
+                    className="hera-select-item"
+                    style={{
+                      backgroundColor: 'transparent !important',
+                      color: `${COLORS.champagne} !important`
+                    }}
+                  >
+                    Active
+                  </SelectItem>
+                  <SelectItem
+                    value="inactive"
+                    className="hera-select-item"
+                    style={{
+                      backgroundColor: 'transparent !important',
+                      color: `${COLORS.champagne} !important`
+                    }}
+                  >
+                    Inactive
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -772,11 +761,56 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="hera-select-content">
-                  <SelectItem value="Asia/Dubai" className="hera-select-item">Asia/Dubai (GST +4)</SelectItem>
-                  <SelectItem value="Asia/Riyadh" className="hera-select-item">Asia/Riyadh (AST +3)</SelectItem>
-                  <SelectItem value="Europe/London" className="hera-select-item">Europe/London (GMT)</SelectItem>
-                  <SelectItem value="America/New_York" className="hera-select-item">America/New_York (EST -5)</SelectItem>
+                <SelectContent
+                  className="hera-select-content"
+                  style={{
+                    backgroundColor: `${COLORS.charcoalDark} !important`,
+                    borderColor: `${COLORS.gold}40 !important`,
+                    border: `1px solid ${COLORS.gold}40 !important`,
+                    boxShadow: `0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px ${COLORS.gold}20 !important`,
+                    borderRadius: '0.5rem !important'
+                  }}
+                >
+                  <SelectItem
+                    value="Asia/Dubai"
+                    className="hera-select-item"
+                    style={{
+                      backgroundColor: 'transparent !important',
+                      color: `${COLORS.champagne} !important`
+                    }}
+                  >
+                    Asia/Dubai (GST +4)
+                  </SelectItem>
+                  <SelectItem
+                    value="Asia/Riyadh"
+                    className="hera-select-item"
+                    style={{
+                      backgroundColor: 'transparent !important',
+                      color: `${COLORS.champagne} !important`
+                    }}
+                  >
+                    Asia/Riyadh (AST +3)
+                  </SelectItem>
+                  <SelectItem
+                    value="Europe/London"
+                    className="hera-select-item"
+                    style={{
+                      backgroundColor: 'transparent !important',
+                      color: `${COLORS.champagne} !important`
+                    }}
+                  >
+                    Europe/London (GMT)
+                  </SelectItem>
+                  <SelectItem
+                    value="America/New_York"
+                    className="hera-select-item"
+                    style={{
+                      backgroundColor: 'transparent !important',
+                      color: `${COLORS.champagne} !important`
+                    }}
+                  >
+                    America/New_York (EST -5)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -808,7 +842,7 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
               className="salon-submit-button px-8 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
               style={{
                 background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%) !important`,
-                color: `${COLORS.black} !important`,
+                color: '#000000 !important',
                 fontWeight: 700,
                 boxShadow: '0 6px 20px rgba(212, 175, 55, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
                 minWidth: '150px',
@@ -819,22 +853,46 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
               }}
             >
               {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" style={{ color: `${COLORS.black} !important` }} />
-                  <span style={{ color: `${COLORS.black} !important` }}>Saving...</span>
-                </>
+                <div className="flex items-center" style={{ color: '#000000 !important' }}>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" style={{ color: '#000000 !important' }} />
+                  <span style={{ color: '#000000 !important', fontWeight: 700 }}>Saving...</span>
+                </div>
               ) : (
-                <>
-                  <Check className="w-5 h-5 mr-2" style={{ color: `${COLORS.black} !important` }} />
-                  <span style={{ color: `${COLORS.black} !important` }}>
+                <div className="flex items-center" style={{ color: '#000000 !important' }}>
+                  <Check className="w-5 h-5 mr-2" style={{ color: '#000000 !important' }} />
+                  <span style={{ color: '#000000 !important', fontWeight: 700 }}>
                     {branch ? 'Update Branch' : 'Create Branch'}
                   </span>
-                </>
+                </div>
               )}
             </Button>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+
+        {/* Global Styles for Dropdown Items */}
+        <style jsx global>{`
+          /* Override global CSS for select items */
+          .hera-select-item[data-radix-collection-item] {
+            cursor: pointer !important;
+            padding: 0.5rem 0.75rem !important;
+            transition: all 0.2s ease !important;
+          }
+
+          .hera-select-item[data-radix-collection-item]:hover {
+            background-color: ${COLORS.gold}20 !important;
+            color: ${COLORS.champagne} !important;
+          }
+
+          .hera-select-item[data-radix-collection-item][data-state="checked"] {
+            background-color: ${COLORS.gold}30 !important;
+            color: ${COLORS.champagne} !important;
+          }
+
+          /* Ensure dropdown content is above everything */
+          [role="listbox"] {
+            z-index: 99999 !important;
+          }
+        `}</style>
+    </SalonLuxeModal>
   )
 }

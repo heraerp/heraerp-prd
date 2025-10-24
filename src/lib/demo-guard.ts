@@ -35,4 +35,14 @@ export function demoGuard(orgId?: string | null): {
       : ''
   }
 }
-export { guardDemoOperation } from './demo/guard'
+/**
+ * Guard function for demo operations
+ * Prevents certain operations in production unless explicitly allowed
+ */
+export function guardDemoOperation(opts?: { allowProd?: boolean; message?: string }) {
+  const allowProd = !!opts?.allowProd;
+  if (process.env.NODE_ENV === 'production' && !allowProd) {
+    throw new Error(opts?.message ?? 'Demo-only operation blocked in production');
+  }
+  return true;
+}

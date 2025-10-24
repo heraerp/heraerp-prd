@@ -1,45 +1,24 @@
 import { NextResponse } from "next/server";
 
-// Fast, dependency-free health check per Railway documentation
+// Keep it fast and dependency-free.
 export async function GET() {
   try {
-    return NextResponse.json(
-      { 
-        status: "healthy", 
-        timestamp: new Date().toISOString(),
-        service: "hera-erp",
-        ok: true 
-      }, 
-      { 
-        status: 200, 
-        headers: { 
-          "Cache-Control": "no-store, no-cache, must-revalidate",
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    return NextResponse.json({ ok: true }, { status: 200, headers: { "Cache-Control": "no-store" }});
   } catch (error) {
-    return NextResponse.json(
-      { 
-        status: "unhealthy", 
-        error: "Health check failed",
-        ok: false 
-      }, 
-      { status: 500 }
-    );
+    console.error('[HEALTH] Error:', error)
+    return NextResponse.json({ ok: false }, { status: 500 });
   }
 }
 
-// Support HEAD requests for health checks
+// Optional: support HEAD since some probes do that too.
 export async function HEAD() {
-  return new Response(null, { 
-    status: 200, 
-    headers: { 
-      "Cache-Control": "no-store, no-cache, must-revalidate" 
-    }
-  });
+  try {
+    return new Response(null, { status: 200, headers: { "Cache-Control": "no-store" }});
+  } catch (error) {
+    console.error('[HEALTH HEAD] Error:', error)
+    return new Response(null, { status: 500 });
+  }
 }
 
-// Force Node runtime to prevent Edge runtime issues
+// Optional: force Node runtime (avoid Edge surprises)
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";

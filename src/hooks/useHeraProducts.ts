@@ -1,19 +1,15 @@
 /**
- * HERA Products Hook
+ * HERA Products Hook V3
  *
- * Thin wrapper over useUniversalEntity for product management
- * Provides product-specific helpers and RPC integration
- *
- * ✅ FOLLOWS HERA CRUD ARCHITECTURE:
- * - Uses useUniversalEntity (NO direct Supabase)
- * - Uses PRODUCT_PRESET for dynamic fields
- * - Follows staff/role pattern exactly
+ * ✅ UPGRADED: Now uses useUniversalEntityV1 with RPC hera_entities_crud_v1
+ * Thin wrapper over useUniversalEntityV1 for product management
+ * Provides product-specific helpers and relationship management
  */
 
 import { useMemo } from 'react'
-import { useUniversalEntity } from './useUniversalEntity'
+import { useUniversalEntityV1 } from './useUniversalEntityV1'
 import { PRODUCT_PRESET } from './entityPresets'
-import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
+import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntityV1'
 
 export interface Product {
   id: string
@@ -32,7 +28,13 @@ export interface Product {
   stock_quantity?: number // ✅ Matches PRODUCT_PRESET
   reorder_level?: number
   brand?: string
+  // Legacy barcode field
   barcode?: string
+  // ✅ ENTERPRISE BARCODE FIELDS
+  barcode_primary?: string
+  barcode_type?: string
+  barcodes_alt?: string[]
+  gtin?: string
   sku?: string
   size?: string
   // Backward compatibility aliases
@@ -60,6 +62,15 @@ export interface UseHeraProductsOptions {
 }
 
 export function useHeraProducts(options?: UseHeraProductsOptions) {
+  // 🔍 DEBUG: Log what we're fetching
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[useHeraProducts] 🔍 Fetching products:', {
+      organizationId: options?.organizationId,
+      entity_type: 'PRODUCT',
+      filters: options?.filters
+    })
+  }
+
   const {
     entities: products,
     isLoading,
@@ -69,16 +80,17 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     update: baseUpdate,
     delete: baseDelete,
     archive: baseArchive,
+    restore: baseRestore,
     isCreating,
     isUpdating,
     isDeleting
-  } = useUniversalEntity({
-    entity_type: 'product',
+  } = useUniversalEntityV1({
+    entity_type: 'PRODUCT', // ✅ UPPERCASE for RPC pattern
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
-      include_relationships: true, // Enable relationships for branch filtering
-      limit: 100,
+      include_relationships: true,
+      limit: options?.filters?.limit || 50, // ✅ Reduced default, configurable
       // Only filter by 'active' status when not including archived
       ...(options?.includeArchived ? {} : { status: 'active' }),
       ...options?.filters
@@ -87,7 +99,17 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     relationships: PRODUCT_PRESET.relationships as RelationshipDef[]
   })
 
-  // Helper to create product with proper smart codes
+  // 🔍 DEBUG: Log what we got
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[useHeraProducts] 📦 Products loaded:', {
+      count: products?.length || 0,
+      isLoading,
+      hasError: !!error,
+      organizationId: options?.organizationId
+    })
+  }
+
+  // Helper to create product with proper smart codes and relationships
   const createProduct = async (data: {
     name: string
     code?: string
@@ -99,15 +121,18 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     reorder_level?: number
     brand?: string
     barcode?: string
+    // ✅ ENTERPRISE BARCODE FIELDS
+    barcode_primary?: string
+    barcode_type?: string
+    barcodes_alt?: string[]
+    gtin?: string
     sku?: string
     size?: string
     status?: string
     branch_ids?: string[]
+    category_id?: string
   }) => {
-    const entity_name = data.name
-    const entity_code = data.code || data.name.toUpperCase().replace(/\s+/g, '_')
-
-    // Build dynamic_fields payload following useHeraStaff pattern
+    // Map provided primitives to dynamic_fields payload using preset definitions
     const dynamic_fields: Record<string, any> = {}
 
     if (data.category !== undefined) {
@@ -122,7 +147,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.price_cost = {
         value: data.cost_price,
         type: 'number',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.COST.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.COST.V1'
       }
     }
 
@@ -130,7 +155,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.price_market = {
         value: data.selling_price,
         type: 'number',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.PRICE.MARKET.V1'
       }
     }
 
@@ -138,7 +163,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.stock_quantity = {
         value: data.stock_level,
         type: 'number',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.STOCK.QTY.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.STOCK.QTY.V1'
       }
     }
 
@@ -146,7 +171,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.reorder_level = {
         value: data.reorder_level,
         type: 'number',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.REORDER.LEVEL.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.REORDER.LEVEL.V1'
       }
     }
 
@@ -162,7 +187,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.barcode = {
         value: data.barcode,
         type: 'text',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.V1'
       }
     }
 
@@ -170,7 +195,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.sku = {
         value: data.sku,
         type: 'text',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.SKU.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.SKU.V1'
       }
     }
 
@@ -178,39 +203,70 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       dynamic_fields.size = {
         value: data.size,
         type: 'text',
-        smart_code: 'HERA.SALON.PRODUCT.DYN.SIZE.v1'
+        smart_code: 'HERA.SALON.PRODUCT.DYN.SIZE.V1'
       }
     }
 
-    const result = await baseCreate({
-      entity_type: 'product',
-      entity_name,
-      entity_code,
-      smart_code: 'HERA.SALON.PROD.ENT.RETAIL.V1',
-      entity_description: data.description || null,
+    // ✅ ENTERPRISE BARCODE FIELDS
+    if (data.barcode_primary) {
+      dynamic_fields.barcode_primary = {
+        value: data.barcode_primary,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.PRIMARY.V1'
+      }
+    }
+
+    if (data.barcode_type) {
+      dynamic_fields.barcode_type = {
+        value: data.barcode_type,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.TYPE.V1'
+      }
+    }
+
+    if (data.barcodes_alt && data.barcodes_alt.length > 0) {
+      dynamic_fields.barcodes_alt = {
+        value: data.barcodes_alt,
+        type: 'json',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODES.ALT.V1'
+      }
+    }
+
+    if (data.gtin) {
+      dynamic_fields.gtin = {
+        value: data.gtin,
+        type: 'text',
+        smart_code: 'HERA.SALON.PRODUCT.DYN.BARCODE.GTIN.V1'
+      }
+    }
+
+    // Relationships map according to preset relationship types
+    const relationships: Record<string, string[] | undefined> = {
+      ...(data.category_id ? { HAS_CATEGORY: [data.category_id] } : {}),
+      // Add branch relationships - use STOCK_AT for product availability at branches
+      ...(data.branch_ids && data.branch_ids.length > 0 ? { STOCK_AT: data.branch_ids } : {})
+    }
+
+    return baseCreate({
+      entity_type: 'PRODUCT',
+      entity_name: data.name,
+      entity_code: data.code,
+      smart_code: 'HERA.SALON.PRODUCT.ENTITY.RETAIL.V1',
+      entity_description: data.description,
       status: data.status === 'inactive' ? 'archived' : 'active',
       dynamic_fields,
-      metadata:
-        data.branch_ids && data.branch_ids.length > 0
-          ? {
-              relationships: {
-                STOCK_AT: data.branch_ids
-              }
-            }
-          : undefined
+      relationships
     } as any)
-
-    // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
-    return result
   }
 
   // Helper to update product
-  const updateProduct = async (id: string, data: Partial<Parameters<typeof createProduct>[0]>) => {
-    // Get existing product to build complete update
+  const updateProduct = async (
+    id: string,
+    data: Partial<Parameters<typeof createProduct>[0]> & { status?: string }
+  ) => {
+    // 🎯 ENTERPRISE PATTERN: Get entity to ensure entity_name is always passed
     const product = (products as Product[])?.find(p => p.id === id)
-
-    const entity_name = data.name || product?.entity_name
-    const entity_code = data.code || product?.entity_code
+    if (!product) throw new Error('Product not found')
 
     // Build dynamic patch from provided fields
     const dynamic_patch: Record<string, any> = {}
@@ -218,64 +274,64 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     if (data.category !== undefined) {
       dynamic_patch.category = data.category
     }
-
     if (data.cost_price !== undefined) {
-      dynamic_patch.price_cost = data.cost_price // Map to correct field name
+      dynamic_patch.price_cost = data.cost_price
     }
-
     if (data.selling_price !== undefined) {
-      dynamic_patch.price_market = data.selling_price // Map to correct field name
+      dynamic_patch.price_market = data.selling_price
     }
-
     if (data.stock_level !== undefined) {
-      dynamic_patch.stock_quantity = data.stock_level // Map to correct field name
+      dynamic_patch.stock_quantity = data.stock_level
     }
-
     if (data.reorder_level !== undefined) {
       dynamic_patch.reorder_level = data.reorder_level
     }
-
     if (data.brand !== undefined) {
       dynamic_patch.brand = data.brand
     }
-
     if (data.barcode !== undefined) {
       dynamic_patch.barcode = data.barcode
     }
-
     if (data.sku !== undefined) {
       dynamic_patch.sku = data.sku
     }
-
     if (data.size !== undefined) {
       dynamic_patch.size = data.size
     }
+    if (data.barcode_primary !== undefined) {
+      dynamic_patch.barcode_primary = data.barcode_primary
+    }
+    if (data.barcode_type !== undefined) {
+      dynamic_patch.barcode_type = data.barcode_type
+    }
+    if (data.barcodes_alt !== undefined) {
+      dynamic_patch.barcodes_alt = data.barcodes_alt
+    }
+    if (data.gtin !== undefined) {
+      dynamic_patch.gtin = data.gtin
+    }
 
-    // Build relationships patch if branch_ids provided
-    const relationships_patch =
-      data.branch_ids !== undefined
-        ? {
-            STOCK_AT: data.branch_ids
-          }
-        : undefined
+    // Relationships patch
+    const relationships_patch: Record<string, string[]> = {}
+    if (data.category_id) relationships_patch['HAS_CATEGORY'] = [data.category_id]
+    if (data.branch_ids !== undefined) {
+      // Support multiple branches - if array is empty, it removes all STOCK_AT relationships
+      relationships_patch['STOCK_AT'] = data.branch_ids
+    }
 
+    // 🎯 ENTERPRISE PATTERN: Build payload (entity_name always required)
     const payload: any = {
       entity_id: id,
-      ...(entity_name && { entity_name }),
-      ...(entity_code && { entity_code }),
+      entity_name: data.name || product.entity_name, // Always include entity_name
+      ...(data.code !== undefined && { entity_code: data.code }),
       ...(data.description !== undefined && { entity_description: data.description }),
       ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
-      ...(relationships_patch && { relationships_patch })
+      ...(Object.keys(relationships_patch).length ? { relationships_patch } : {}),
+      // 🎯 CRITICAL: Status at entity level (NOT dynamic field)
+      ...(data.status !== undefined && { status: data.status === 'inactive' ? 'archived' : 'active' })
     }
 
-    // Handle status separately if needed
-    if (data.status !== undefined) {
-      payload.status = data.status === 'inactive' ? 'archived' : 'active'
-    }
-
-    const result = await baseUpdate(payload)
-    // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
-    return result
+    return baseUpdate(payload)
   }
 
   // Helper to archive product (soft delete)
@@ -283,33 +339,12 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     const product = (products as Product[])?.find(p => p.id === id)
     if (!product) throw new Error('Product not found')
 
-    // console.log('[useHeraProducts] Archiving product:', { id })
-
-    const result = await baseUpdate({
-      entity_id: id,
-      entity_name: product.entity_name,
-      status: 'archived'
-    })
-
-    // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
-    return result
+    return baseArchive(id)
   }
 
-  // Helper to restore archived product
+  // Helper to restore product (set status to active)
   const restoreProduct = async (id: string) => {
-    const product = (products as Product[])?.find(p => p.id === id)
-    if (!product) throw new Error('Product not found')
-
-    // console.log('[useHeraProducts] Restoring product:', { id })
-
-    const result = await baseUpdate({
-      entity_id: id,
-      entity_name: product.entity_name,
-      status: 'active'
-    })
-
-    // 🎯 ENTERPRISE PATTERN: No explicit refetch needed (React Query auto-invalidation)
-    return result
+    return baseRestore(id)
   }
 
   // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
@@ -433,7 +468,10 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
           product.entity_code?.toLowerCase().includes(query) ||
           product.category?.toLowerCase().includes(query) ||
           product.brand?.toLowerCase().includes(query) ||
-          product.barcode?.toLowerCase().includes(query)
+          product.barcode?.toLowerCase().includes(query) ||
+          product.barcode_primary?.toLowerCase().includes(query) ||
+          product.gtin?.toLowerCase().includes(query) ||
+          product.sku?.toLowerCase().includes(query)
       )
     }
 

@@ -63,7 +63,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.POLICY.POSTING_RULE.v2',
+    'HERA.ACCOUNTING.SEED.POLICY.POSTING_RULE.V2',
     '{"policy_type": "posting_rule", "module": "GL", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -124,7 +124,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.POLICY.POSTING_RULE.v2',
+    'HERA.ACCOUNTING.SEED.POLICY.POSTING_RULE.V2',
     '{"policy_type": "posting_rule", "module": "AR", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -182,7 +182,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.POLICY.POSTING_RULE.v2',
+    'HERA.ACCOUNTING.SEED.POLICY.POSTING_RULE.V2',
     '{"policy_type": "posting_rule", "module": "AP", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -250,7 +250,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.POLICY.POSTING_RULE.v2',
+    'HERA.ACCOUNTING.SEED.POLICY.POSTING_RULE.V2',
     '{"policy_type": "posting_rule", "module": "HR", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -316,7 +316,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.COA.DERIVATION.v2',
+    'HERA.ACCOUNTING.SEED.COA.DERIVATION.V2',
     '{"derivation_type": "payment_method", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -374,7 +374,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.COA.DERIVATION.v2',
+    'HERA.ACCOUNTING.SEED.COA.DERIVATION.V2',
     '{"derivation_type": "revenue_type", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -447,7 +447,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.COA.DERIVATION.v2',
+    'HERA.ACCOUNTING.SEED.COA.DERIVATION.V2',
     '{"derivation_type": "expense_type", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -497,7 +497,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.FISCAL.POLICY.v2',
+    'HERA.ACCOUNTING.SEED.FISCAL.POLICY.V2',
     '{"policy_type": "fiscal_configuration", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -547,7 +547,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.FISCAL.POLICY.v2',
+    'HERA.ACCOUNTING.SEED.FISCAL.POLICY.V2',
     '{"policy_type": "period_close_rules", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -602,7 +602,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.AI.CONFIG.v2',
+    'HERA.ACCOUNTING.SEED.AI.CONFIG.V2',
     '{"policy_type": "ai_configuration", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -661,7 +661,7 @@ INSERT INTO core_dynamic_data (
         }
     }'::text,
     'json',
-    'HERA.ACCOUNTING.SEED.CURRENCY.CONFIG.v2',
+    'HERA.ACCOUNTING.SEED.CURRENCY.CONFIG.V2',
     '{"policy_type": "multi_currency", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 
@@ -687,7 +687,7 @@ INSERT INTO core_entities (
     'SYSTEM',
     'FINANCE_DNA_V2',
     'SYSTEM-FINANCE-DNA-V2',
-    'HERA.ACCOUNTING.SYSTEM.ENTITY.v2',
+    'HERA.ACCOUNTING.SYSTEM.ENTITY.V2',
     '{"system_type": "finance_dna", "version": "v2", "purpose": "policy_data_container"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_type, entity_name) 
@@ -710,7 +710,7 @@ SELECT
     metadata->>'policy_type' as policy_type,
     created_at
 FROM core_dynamic_data 
-WHERE smart_code LIKE 'HERA.ACCOUNTING.SEED.%.v2'
+WHERE smart_code LIKE 'HERA.ACCOUNTING.SEED.%.V2'
 ORDER BY field_name;
 */
 
@@ -745,7 +745,7 @@ INSERT INTO core_dynamic_data (
         'status', 'completed'
     )::text,
     'json',
-    'HERA.ACCOUNTING.SEED.COMPLETION.LOG.v2',
+    'HERA.ACCOUNTING.SEED.COMPLETION.LOG.V2',
     '{"seed_type": "completion_log", "version": "v2"}'::jsonb
 )
 ON CONFLICT (organization_id, entity_id, field_name) 

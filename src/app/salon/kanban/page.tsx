@@ -1,13 +1,20 @@
 // ============================================================================
-// HERA • Salon Appointments Kanban Page with DRAFT support
+// HERA • Salon Appointments Kanban Page with DRAFT support - Enhanced V2
+// Smart Code: HERA.SALON.KANBAN.PAGE.ENTERPRISE.V2
+// ✅ Ultra-smooth drag & drop with @dnd-kit
+// ✅ 60 FPS performance with GPU acceleration
+// ✅ Touch-friendly with long-press (mobile-first)
+// ✅ Keyboard accessibility (WCAG 2.1 AA)
+// ✅ Auto-scroll while dragging
+// ✅ Theme-compliant with CSS variables
 // ============================================================================
 
 'use client'
 
 import React, { useState, useCallback, useEffect } from 'react'
-import '@/app/salon/kanban/kanban-luxe-theme.css'
+import './kanban-luxe-theme.css'
 import { format, startOfToday, addDays, startOfDay, endOfDay } from 'date-fns'
-import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays } from 'lucide-react'
+import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -38,12 +45,18 @@ import {
   AppointmentStatus,
   VALID_STATUS_TRANSITIONS,
   canTransitionTo,
+  isForwardTransition,
   getTransitionErrorMessage
 } from '@/hooks/useHeraAppointments'
+import { useHeraCustomers } from '@/hooks/useHeraCustomers'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import { KanbanCard, KanbanStatus } from '@/schemas/kanban'
+import { getNextAllowedStates } from '@/lib/salon/kanbanLifecycleRules'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useMemo } from 'react'
+import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 
 // Luxury color palette
 const LUXE_COLORS = {
@@ -118,6 +131,19 @@ export default function KanbanPage() {
     duration: '60'
   })
 
+  // Navigation state for scroll arrows
+  const [scrollState, setScrollState] = useState<{
+    atStart: boolean
+    atEnd: boolean
+    scrollLeft: () => void
+    scrollRight: () => void
+  }>({
+    atStart: true,
+    atEnd: false,
+    scrollLeft: () => {},
+    scrollRight: () => {}
+  })
+
   // Calculate date range based on filter
   const getDateRange = () => {
     const today = startOfToday()
@@ -168,48 +194,123 @@ export default function KanbanPage() {
     }
   })
 
-  // 🎯 ENTERPRISE: Transform appointments to kanban cards
+  // 🎯 ENTERPRISE: Load customers, staff, and services for runtime lookup (same as /appointments page)
+  const { customers } = useHeraCustomers({ organizationId })
+  const { staff } = useHeraStaff({ organizationId })
+  const { services } = useHeraServices({ organizationId })
+
+  // 🎯 ENTERPRISE: Transform appointments to kanban cards with runtime lookup (same as /appointments page)
   const cards: KanbanCard[] = useMemo(() => {
-    return appointments.map(apt => ({
-      id: apt.id,
-      customer_name: apt.customer_name,
-      service_name: apt.metadata?.service_name || 'Service',
-      stylist_name: apt.stylist_name || null,
-      start: apt.start_time,
-      end: apt.end_time,
-      status: apt.status.toUpperCase() as KanbanStatus,
-      flags: {
-        vip: apt.metadata?.vip || false,
-        new: apt.metadata?.new_customer || false
-      },
-      cancellation_reason: apt.metadata?.cancellation_reason || null
-    }))
-  }, [appointments, dateFilter, dateRange])
+    return appointments.map(apt => {
+      // 🎯 RUNTIME LOOKUP: Use same pattern as /appointments page for customer/staff/service names
+      const customerName = customers?.find(c => c.id === apt.customer_id)?.entity_name || 'Unknown Customer'
+      const stylistName = staff?.find(s => s.id === apt.stylist_id)?.entity_name || null
+
+      // 🎯 ENTERPRISE PATTERN: Enrich service data from already-loaded services (same as appointments page)
+      const serviceIds = apt.metadata?.service_ids || []
+
+      // ✅ DO RUNTIME ENRICHMENT (same logic as appointments page lines 1404-1434)
+      const serviceNames: string[] = []
+      const servicePrices: number[] = []
+
+      serviceIds.forEach((serviceId: string, index: number) => {
+        const service = services?.find((s: any) => s.id === serviceId)
+        if (service) {
+          serviceNames.push(service.entity_name || service.name || 'Unknown Service')
+
+          // 🎯 ENTERPRISE: dynamic_fields can be ARRAY or OBJECT with numeric keys
+          // Structure can be: {0: {value: {field_name: 'price_market', field_value_number: 500}}}
+          let price = 0
+          if (service.dynamic_fields) {
+            // Convert to array if it's an object with numeric keys
+            const fieldsArray = Array.isArray(service.dynamic_fields)
+              ? service.dynamic_fields
+              : Object.values(service.dynamic_fields)
+
+            // Extract the actual field objects (they might be wrapped in {value: {...}})
+            const unwrappedFields = fieldsArray.map((f: any) => f.value || f)
+
+            // Find price field
+            const priceField = unwrappedFields.find((f: any) => f.field_name === 'price_market')
+            price = priceField?.field_value_number || 0
+
+            // Fallback: check nested structure
+            if (!price && service.dynamic_fields.price_market?.value) {
+              price = service.dynamic_fields.price_market.value
+            }
+          }
+
+          // Final fallback
+          if (!price && service.price) {
+            price = service.price
+          }
+
+          servicePrices.push(price)
+        } else {
+          serviceNames.push('Unknown Service')
+          servicePrices.push(0)
+        }
+      })
+
+      // Get first service for card display
+      const service_id = Array.isArray(serviceIds) && serviceIds.length > 0
+        ? serviceIds[0]
+        : apt.metadata?.service_id || undefined
+
+      const service_name = serviceNames.length > 0 ? serviceNames[0] : 'Service'
+      const price = servicePrices.length > 0 ? servicePrices[0] : apt.price || apt.total_amount || apt.metadata?.price || 0
+
+      return {
+        id: apt.id,
+        organization_id: apt.organization_id || organizationId || '',
+        branch_id: apt.branch_id || '',
+        date: format(new Date(apt.start_time), 'yyyy-MM-dd'),
+        rank: apt.rank || '',
+        customer_name: customerName,  // ✅ Runtime lookup
+        customer_id: apt.customer_id,
+        service_name,  // ✅ Runtime lookup with fallback
+        service_id,
+        stylist_name: stylistName,  // ✅ Runtime lookup
+        stylist_id: apt.stylist_id,
+        start: apt.start_time,
+        end: apt.end_time,
+        duration: apt.duration_minutes,
+        price,
+        status: apt.status.toUpperCase() as KanbanStatus,
+        flags: {
+          vip: apt.metadata?.vip || false,
+          new: apt.metadata?.new_customer || false
+        },
+        cancellation_reason: apt.metadata?.cancellation_reason || null,
+        metadata: {
+          ...apt.metadata,
+          // Preserve all service arrays for POS page
+          service_ids: serviceIds,
+          service_names: serviceNames,
+          service_prices: servicePrices
+        }
+      }
+    })
+  }, [appointments, customers, staff, services, organizationId])
 
   // 🎯 ENTERPRISE: Group cards by status column
   const cardsByColumn: Record<KanbanStatus, KanbanCard[]> = useMemo(() => {
+    // ✅ SIMPLIFIED: Use new 5-column structure
     const columns: Record<KanbanStatus, KanbanCard[]> = {
       DRAFT: [],
       BOOKED: [],
-      CHECKED_IN: [],
-      IN_SERVICE: [], // ✅ FIXED: Correct column name from schema
-      TO_PAY: [],
+      IN_PROGRESS: [], // ✅ Unified status column
       DONE: [],
       CANCELLED: []
     }
 
     cards.forEach(card => {
-      // Map appointment statuses to kanban columns
+      // ✅ SIMPLIFIED: Direct mapping with backward compatibility
       const status = card.status
-      if (status === 'PAYMENT_PENDING') {
-        columns.TO_PAY.push(card)
-      } else if (status === 'COMPLETED') {
+      if (status === 'COMPLETED') {
         columns.DONE.push(card)
       } else if (status === 'NO_SHOW') {
         columns.CANCELLED.push(card)
-      } else if (status === 'IN_PROGRESS') {
-        // Map IN_PROGRESS appointment status to IN_SERVICE kanban column
-        columns.IN_SERVICE.push(card)
       } else if (columns[status]) {
         columns[status].push(card)
       }
@@ -224,7 +325,7 @@ export default function KanbanPage() {
       const card = cards.find(c => c.id === cardId)
       if (!card) return
 
-      // Map kanban column to appointment status
+      // ✅ SIMPLIFIED: Map new kanban columns to database statuses
       let newStatus: AppointmentStatus
       switch (targetColumn) {
         case 'DRAFT':
@@ -233,14 +334,8 @@ export default function KanbanPage() {
         case 'BOOKED':
           newStatus = 'booked'
           break
-        case 'CHECKED_IN':
-          newStatus = 'checked_in'
-          break
-        case 'IN_SERVICE':
+        case 'IN_PROGRESS': // ✅ Unified status
           newStatus = 'in_progress'
-          break
-        case 'TO_PAY':
-          newStatus = 'payment_pending'
           break
         case 'DONE':
           newStatus = 'completed'
@@ -256,6 +351,7 @@ export default function KanbanPage() {
       const currentStatus = card.status.toLowerCase() as AppointmentStatus
 
       // 🎯 ENTERPRISE: Validate transition with detailed error messages
+      // Check 1: Is this transition allowed at all?
       if (!canTransitionTo(currentStatus, newStatus)) {
         const errorMessage = getTransitionErrorMessage(currentStatus, newStatus)
         toast({
@@ -266,12 +362,30 @@ export default function KanbanPage() {
         return
       }
 
-      try {
-        await updateAppointmentStatus({ id: cardId, status: newStatus })
+      // Check 2: Is this a FORWARD move only? (Extra safety - prevent backward moves)
+      if (!isForwardTransition(currentStatus, newStatus)) {
+        const errorMessage = `Cannot move backward from ${currentStatus} to ${newStatus}. Appointments can only move forward in the workflow.`
         toast({
-          title: '✅ Status Updated',
-          description: `Appointment moved to ${targetColumn.replace('_', ' ').toLowerCase()}`,
-          duration: 2000
+          title: '🚫 Backward Move Blocked',
+          description: errorMessage,
+          variant: 'destructive',
+          duration: 4000
+        })
+        return
+      }
+
+      // ⚡ PERFORMANCE: Don't show toast immediately - Board has optimistic updates
+      // Only show toast on error for cleaner UX
+      try {
+        // Fire-and-forget for faster perceived speed (Board component handles optimistic updates)
+        updateAppointmentStatus({ id: cardId, status: newStatus }).catch((error: any) => {
+          // Only show toast on error
+          toast({
+            title: 'Update failed',
+            description: error.message || 'Please try again',
+            variant: 'destructive',
+            duration: 4000
+          })
         })
       } catch (error: any) {
         toast({
@@ -284,13 +398,17 @@ export default function KanbanPage() {
     [cards, updateAppointmentStatus, toast]
   )
 
-  // 🎯 ENTERPRISE: Quick action to move card to next logical status
+  // 🎯 ENTERPRISE: Quick action to move card to next logical status (FORWARD ONLY)
   const handleMoveToNext = useCallback(
     async (card: KanbanCard) => {
-      const currentStatus = card.status.toLowerCase() as AppointmentStatus
-      const validTransitions = VALID_STATUS_TRANSITIONS[currentStatus]
+      // ✅ SIMPLIFIED: With new schema, statuses match directly
+      // No need to normalize - lifecycle rules now use IN_PROGRESS
+      const normalizedStatus: KanbanStatus = card.status
 
-      if (validTransitions.length === 0) {
+      // Use lifecycle rules to get allowed next states (forward-only)
+      const nextAllowedStates = getNextAllowedStates(normalizedStatus)
+
+      if (nextAllowedStates.length === 0) {
         toast({
           title: 'No further transitions',
           description: 'This appointment is in a terminal state',
@@ -299,8 +417,10 @@ export default function KanbanPage() {
         return
       }
 
-      // Get next logical status (first non-cancelled option)
-      const nextStatus = validTransitions.find(s => s !== 'cancelled' && s !== 'no_show')
+      // Get the IMMEDIATE next status (first non-cancelled option in pipeline)
+      // This ensures we move to the very next column, not skip ahead
+      const nextStatus = nextAllowedStates.find(s => s !== 'CANCELLED')
+
       if (!nextStatus) {
         toast({
           title: 'No next status available',
@@ -310,31 +430,10 @@ export default function KanbanPage() {
         return
       }
 
-      // Map status to column
-      let targetColumn: KanbanStatus
-      switch (nextStatus) {
-        case 'booked':
-          targetColumn = 'BOOKED'
-          break
-        case 'checked_in':
-          targetColumn = 'CHECKED_IN'
-          break
-        case 'in_progress':
-          targetColumn = 'IN_SERVICE'
-          break
-        case 'payment_pending':
-          targetColumn = 'TO_PAY'
-          break
-        case 'completed':
-          targetColumn = 'DONE'
-          break
-        default:
-          return
-      }
-
-      await moveCard(card.id, targetColumn, 0)
+      // Move to next column (nextStatus is already a KanbanStatus)
+      await moveCard(card.id, nextStatus, 0)
     },
-    [moveCard, toast, VALID_STATUS_TRANSITIONS]
+    [moveCard, toast]
   )
 
   const handleCardAction = useCallback(
@@ -832,6 +931,143 @@ export default function KanbanPage() {
         </div>
       )}
 
+      {/* ========================================================================
+          DEDICATED NAVIGATION BAR - Enterprise-grade arrow controls
+          ======================================================================== */}
+      <div
+        className="px-6 py-3 flex items-center justify-center gap-4 animate-slideDown"
+        style={{
+          backgroundColor: `${LUXE_COLORS.charcoal}F0`,
+          borderBottom: `1px solid ${LUXE_COLORS.gold}30`,
+          backdropFilter: 'blur(10px)'
+        }}
+      >
+        <button
+          onClick={scrollState.scrollLeft}
+          disabled={scrollState.atStart}
+          className="group"
+          style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: scrollState.atStart
+              ? `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`
+              : `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+            border: scrollState.atStart
+              ? `2px solid ${LUXE_COLORS.bronze}60`
+              : `2px solid ${LUXE_COLORS.champagne}`,
+            boxShadow: scrollState.atStart
+              ? `0 2px 8px rgba(140, 120, 83, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.3)`
+              : `0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 3px rgba(212, 175, 55, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2)`,
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            cursor: scrollState.atStart ? 'not-allowed' : 'pointer',
+            opacity: scrollState.atStart ? 0.6 : 1
+          }}
+          onMouseEnter={(e) => {
+            if (!scrollState.atStart) {
+              e.currentTarget.style.transform = 'scale(1.1)'
+              e.currentTarget.style.boxShadow = `0 6px 24px rgba(212, 175, 55, 0.6), 0 0 0 4px rgba(212, 175, 55, 0.2), inset 0 2px 6px rgba(255, 255, 255, 0.3)`
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            if (!scrollState.atStart) {
+              e.currentTarget.style.boxShadow = `0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 3px rgba(212, 175, 55, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2)`
+            }
+          }}
+          aria-label="Scroll to previous columns"
+          aria-disabled={scrollState.atStart}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            style={{
+              margin: '0 auto',
+              display: 'block',
+              filter: scrollState.atStart
+                ? 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'
+                : 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+            }}
+          >
+            <path
+              d="M15 18L9 12L15 6"
+              stroke={scrollState.atStart ? LUXE_COLORS.bronze : LUXE_COLORS.black}
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        <div
+          className="text-sm font-medium tracking-wide"
+          style={{ color: LUXE_COLORS.champagne }}
+        >
+          Navigate Board
+        </div>
+
+        <button
+          onClick={scrollState.scrollRight}
+          disabled={scrollState.atEnd}
+          className="group"
+          style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: scrollState.atEnd
+              ? `linear-gradient(135deg, ${LUXE_COLORS.charcoal} 0%, ${LUXE_COLORS.black} 100%)`
+              : `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
+            border: scrollState.atEnd
+              ? `2px solid ${LUXE_COLORS.bronze}60`
+              : `2px solid ${LUXE_COLORS.champagne}`,
+            boxShadow: scrollState.atEnd
+              ? `0 2px 8px rgba(140, 120, 83, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.3)`
+              : `0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 3px rgba(212, 175, 55, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2)`,
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            cursor: scrollState.atEnd ? 'not-allowed' : 'pointer',
+            opacity: scrollState.atEnd ? 0.6 : 1
+          }}
+          onMouseEnter={(e) => {
+            if (!scrollState.atEnd) {
+              e.currentTarget.style.transform = 'scale(1.1)'
+              e.currentTarget.style.boxShadow = `0 6px 24px rgba(212, 175, 55, 0.6), 0 0 0 4px rgba(212, 175, 55, 0.2), inset 0 2px 6px rgba(255, 255, 255, 0.3)`
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            if (!scrollState.atEnd) {
+              e.currentTarget.style.boxShadow = `0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 3px rgba(212, 175, 55, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2)`
+            }
+          }}
+          aria-label="Scroll to next columns"
+          aria-disabled={scrollState.atEnd}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            style={{
+              margin: '0 auto',
+              display: 'block',
+              filter: scrollState.atEnd
+                ? 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'
+                : 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+            }}
+          >
+            <path
+              d="M9 18L15 12L9 6"
+              stroke={scrollState.atEnd ? LUXE_COLORS.bronze : LUXE_COLORS.black}
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+
       {/* Kanban board */}
       <div className="flex-1 overflow-hidden">
         <Board
@@ -841,6 +1077,7 @@ export default function KanbanPage() {
           onMoveToNext={handleMoveToNext}
           loading={loading}
           isMoving={isMoving}
+          onScrollStateChange={setScrollState}
         />
       </div>
 
