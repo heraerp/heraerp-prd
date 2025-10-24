@@ -6,22 +6,35 @@ Railway healthcheck is failing when code is pushed to `develop` branch. This was
 
 ## 🔍 Root Cause
 
-**Configuration Mismatch**: The `nixpacks.toml` file is calling a script that no longer exists in `package.json`.
+**CRITICAL DISCOVERY**: Railway uses `railway.toml` which takes PRIORITY over `nixpacks.toml`.
+
+**Configuration Priority Order:**
+1. **railway.toml** ← Railway uses this FIRST (if it exists)
+2. railway.json
+3. nixpacks.toml ← Ignored if railway.toml exists
+
+Both configuration files were calling a non-existent script.
 
 ### The Mismatch:
 
-**`nixpacks.toml` (Line 17):**
+**`railway.toml` (Line 9) - THE REAL CULPRIT:**
+```toml
+[deploy]
+startCommand = "npm run start:railway"  ❌
+```
+
+**`nixpacks.toml` (Line 17) - ALSO HAD THE ISSUE:**
 ```toml
 [start]
-cmd = "npm run start:railway"
+cmd = "npm run start:railway"  ❌
 ```
 
-**`package.json` (Line 65):**
+**`package.json` (Line 65) - CORRECT:**
 ```json
-"start": "node scripts/railway-start.js"
+"start": "node scripts/railway-start.js"  ✅
 ```
 
-**❌ Issue**: There is NO `start:railway` script in `package.json` anymore!
+**❌ Issue**: BOTH Railway config files were calling non-existent `start:railway` script!
 
 ## 📋 Previous Fix History
 
@@ -42,32 +55,24 @@ cmd = "npm run start:railway"
 
 ## 🎯 The Fix
 
-### Option 1: Update nixpacks.toml (RECOMMENDED)
+### Fix BOTH Configuration Files (REQUIRED)
 
+**1. railway.toml (Line 9) - PRIMARY FIX:**
 ```toml
-# nixpacks.toml (Line 17)
+[deploy]
+startCommand = "npm start"  # ✅ Changed from "npm run start:railway"
+```
+
+**2. nixpacks.toml (Line 17) - SECONDARY FIX:**
+```toml
 [start]
-cmd = "npm start"  # Change from "npm run start:railway"
+cmd = "npm start"  # ✅ Changed from "npm run start:railway"
 ```
 
-**Why this works:**
-- `npm start` calls the `start` script in package.json
-- The `start` script is already correctly configured: `node scripts/railway-start.js`
-- This maintains the Railway-specific startup logic
-
-### Option 2: Add start:railway script back to package.json
-
-```json
-"scripts": {
-  "start": "node scripts/railway-start.js",
-  "start:railway": "node scripts/railway-start.js",  // Add this alias
-  ...
-}
-```
-
-**Why Option 1 is better:**
-- Simpler - no duplicate scripts
-- One source of truth
+**Why both must be fixed:**
+- Railway prioritizes `railway.toml` if it exists
+- But some deployments might fall back to `nixpacks.toml`
+- Fixing both ensures consistent behavior
 - Standard npm convention (`npm start` is the standard)
 
 ## 🛡️ Railway Health Check Configuration
@@ -119,7 +124,29 @@ The `scripts/railway-start.js` script provides:
 
 ## 📝 Complete Configuration
 
-### 1. nixpacks.toml (NEEDS UPDATE)
+### 1. railway.toml (PRIMARY CONFIG - FIXED)
+
+```toml
+# railway.toml - Railway deployment configuration
+[build]
+builder = "nixpacks"
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "npm start"  # ✅ FIXED: Changed from "npm run start:railway"
+
+# Robust healthcheck configuration
+healthcheckPath = "/api/health"
+healthcheckTimeout = 600
+healthcheckInterval = 30
+gracePeriod = 60
+
+# Enhanced restart policy
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+```
+
+### 2. nixpacks.toml (FALLBACK CONFIG - ALSO FIXED)
 
 ```toml
 # nixpacks.toml
@@ -141,7 +168,7 @@ cmds = ["npm run build"]
 cmd = "npm start"  # ✅ FIXED: Changed from "npm run start:railway"
 ```
 
-### 2. package.json (Already Correct)
+### 3. package.json (Already Correct)
 
 ```json
 {
@@ -153,7 +180,7 @@ cmd = "npm start"  # ✅ FIXED: Changed from "npm run start:railway"
 }
 ```
 
-### 3. Railway Environment Variables
+### 4. Railway Environment Variables
 
 ```bash
 # Required in Railway dashboard
@@ -163,7 +190,7 @@ NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID=378f24fb-d496-4ff7-8afa-ea34895a0eb8
 NODE_ENV=production
 ```
 
-### 4. Railway Health Check Settings (in Railway Dashboard)
+### 5. Railway Health Check Settings (in Railway Dashboard)
 
 **Recommended Settings:**
 - **Health Check Path**: `/api/health` or `/api/healthz`
@@ -245,9 +272,10 @@ curl http://localhost:3000/api/healthz
 
 ## 🎯 Action Items
 
-- [ ] Update `nixpacks.toml` line 17: Change `cmd = "npm run start:railway"` to `cmd = "npm start"`
-- [ ] Commit the fix
-- [ ] Push to develop
+- [x] Update `railway.toml` line 9: Change `startCommand = "npm run start:railway"` to `startCommand = "npm start"`
+- [x] Update `nixpacks.toml` line 17: Change `cmd = "npm run start:railway"` to `cmd = "npm start"`
+- [x] Commit the fixes
+- [x] Push to develop
 - [ ] Verify Railway deployment succeeds
 - [ ] Confirm health check passes in Railway logs
 
@@ -283,29 +311,48 @@ After deploying the fix:
 
 **Root Cause**: Multiple configuration files need to stay in sync:
 - `package.json` (defines scripts)
-- `nixpacks.toml` (Railway build/start configuration)
+- `railway.toml` (PRIMARY Railway configuration - highest priority)
+- `nixpacks.toml` (FALLBACK Railway configuration - lower priority)
 - Railway dashboard settings (environment variables, health checks)
 
 **Prevention Strategy**:
-1. When changing `package.json` scripts, always check if Railway config needs updating
+1. When changing `package.json` scripts, ALWAYS update BOTH:
+   - `railway.toml` (primary Railway config)
+   - `nixpacks.toml` (fallback Railway config)
 2. Document Railway-specific scripts clearly
 3. Add a pre-push hook to validate Railway configuration consistency
-4. Consider using Railway's `railway.json` for centralized configuration
+4. Remember: Railway config priority is `railway.toml` > `railway.json` > `nixpacks.toml`
 
 ## 📖 Historical Context
 
 This healthcheck issue has been fixed multiple times:
 
 1. **Oct 11, 2025** - `605920cfe` - Implemented Railway gold standard health endpoint
-2. **Oct 24, 2025** - `1d0f0f27c` - Restored Railway start script
-3. **Today** - Discovered nixpacks.toml mismatch
+2. **Oct 24, 2025** - `1d0f0f27c` - Restored Railway start script in package.json
+3. **Oct 24, 2025** - `d3cf71060` - Fixed nixpacks.toml (but missed railway.toml)
+4. **Oct 24, 2025** - `a794e98b6` - FINAL FIX: Updated railway.toml (the actual file Railway uses)
 
-**Pattern**: Changes to startup scripts in `package.json` are not being propagated to `nixpacks.toml`.
+**Pattern**: Changes to startup scripts in `package.json` were not being propagated to:
+- `railway.toml` (primary Railway config - highest priority)
+- `nixpacks.toml` (fallback config - lower priority)
 
 ---
 
-**Fix Applied**: Update `nixpacks.toml` to use `npm start` instead of `npm run start:railway`.
+## ✅ FINAL RESOLUTION
+
+**Fixes Applied**:
+1. ✅ `railway.toml` line 9: `startCommand = "npm start"` (PRIMARY FIX)
+2. ✅ `nixpacks.toml` line 17: `cmd = "npm start"` (SECONDARY FIX)
+
+**Commits**:
+- `d3cf71060` - Fixed nixpacks.toml
+- `a794e98b6` - Fixed railway.toml (the critical one)
 
 **Expected Result**: Railway healthcheck passes, deployment succeeds.
 
 **Test Command**: `npm start` locally should work without errors.
+
+**Railway will now execute**:
+```
+railway.toml → npm start → node scripts/railway-start.js → Next.js server → Health check passes ✅
+```
