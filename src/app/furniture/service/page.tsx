@@ -60,6 +60,7 @@ import {
   Home,
   Factory
 } from 'lucide-react'
+import { Motorcycle } from '@/icons/lucide-shims'
 
 // TypeScript interfaces for enterprise service management
 interface ServiceCustomer {

@@ -56,7 +56,6 @@ import {
   Sunrise,
   Wifi,
   WifiOff,
-  CloudUpload,
   CloudDownload,
   Archive,
   FileText,
@@ -70,6 +69,7 @@ import {
   ChevronRight,
   ChevronDown
 } from 'lucide-react'
+import { CloudUpload } from '@/icons/lucide-shims'
 
 interface UserProfile {
   name: string
