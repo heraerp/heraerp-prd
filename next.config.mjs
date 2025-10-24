@@ -88,9 +88,23 @@ const nextConfig = {
       '@': path.join(__dirname, 'src'),
     }
 
-    // Production optimizations
-    if (!dev) {
-      // Enable aggressive chunk splitting
+    // ✅ SSR FIX: Prevent browser-only libraries from being bundled on server
+    // This prevents "self is not defined" errors during build
+    if (isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Alias browser-only libraries to false on server to prevent bundling
+        'xlsx': false,
+        'file-saver': false,
+        'html2canvas': false,
+        'downloadjs': false,
+        'chart.js': false,
+      }
+    }
+
+    // ✅ SSR FIX: Only apply optimizations to client bundle
+    if (!dev && !isServer) {
+      // Enable aggressive chunk splitting for CLIENT only
       config.optimization = {
         ...config.optimization,
         splitChunks: {
@@ -125,13 +139,9 @@ const nextConfig = {
               priority: 25
             }
           }
-        }
-      }
-
-      // Minimize bundles
-      if (!isServer) {
-        config.optimization.usedExports = true
-        config.optimization.sideEffects = false
+        },
+        usedExports: true,
+        sideEffects: false
       }
     }
 
