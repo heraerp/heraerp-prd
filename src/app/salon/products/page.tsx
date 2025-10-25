@@ -391,11 +391,35 @@ function SalonProductsPageContent() {
     resetImport
   } = useHeraImportExport(productImportExportConfig)
 
-  // ✅ ENTERPRISE PATTERN: Filter and sort products - memoized for performance
+  // ✅ ENTERPRISE PATTERN: Filter, deduplicate, and sort products - memoized for performance
   const filteredAndSortedProducts = useMemo(
     () => {
-      // Step 1: Filter products
-      let filtered = products.filter(product => {
+      // Step 1: Deduplicate products by ID (prevent React duplicate key warnings)
+      const uniqueProductsMap = new Map()
+      const duplicateCount = products.length
+
+      products.forEach(product => {
+        if (product && product.id) {
+          if (uniqueProductsMap.has(product.id)) {
+            // Log duplicate detection in development
+            if (process.env.NODE_ENV === 'development') {
+              console.warn(`[Products] 🔄 Duplicate product detected: ${product.entity_name} (${product.id})`)
+            }
+          } else {
+            uniqueProductsMap.set(product.id, product)
+          }
+        }
+      })
+
+      const uniqueProducts = Array.from(uniqueProductsMap.values())
+
+      // Log deduplication stats if duplicates were found
+      if (uniqueProducts.length < duplicateCount && process.env.NODE_ENV === 'development') {
+        console.warn(`[Products] 🔄 Removed ${duplicateCount - uniqueProducts.length} duplicate(s) from ${duplicateCount} total products`)
+      }
+
+      // Step 2: Filter products
+      let filtered = uniqueProducts.filter(product => {
         // Skip invalid products
         if (!product || !product.entity_name) {
           return false
@@ -423,7 +447,7 @@ function SalonProductsPageContent() {
         return true
       })
 
-      // Step 2: Sort products
+      // Step 3: Sort products
       const sorted = [...filtered].sort((a, b) => {
         switch (sortBy) {
           case 'name_asc':
@@ -1066,9 +1090,9 @@ function SalonProductsPageContent() {
                           <div className="flex items-center gap-2">
                             <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
                             <div className="flex flex-col">
-                              <span className="font-medium">{branch.name}</span>
-                              {branch.code && (
-                                <span className="text-xs opacity-60">{branch.code}</span>
+                              <span className="font-medium">{branch.entity_name}</span>
+                              {branch.entity_code && (
+                                <span className="text-xs opacity-60">{branch.entity_code}</span>
                               )}
                             </div>
                           </div>
@@ -1089,7 +1113,7 @@ function SalonProductsPageContent() {
                     }}
                   >
                     <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                    <span>{availableBranches.find(b => b.id === localBranchFilter)?.name || 'Branch'}</span>
+                    <span>{availableBranches.find(b => b.id === localBranchFilter)?.entity_name || 'Branch'}</span>
                     <X
                       className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
                       onClick={() => setLocalBranchFilter(null)}
@@ -1448,6 +1472,7 @@ function SalonProductsPageContent() {
               organizationId={organizationId}
               loading={isLoading}
               viewMode={viewMode}
+              selectedBranchId={selectedBranchId} // ✅ Pass from context to prevent infinite loop
               onEdit={handleEdit}
               onDelete={handleDelete}
               onArchive={handleArchive}

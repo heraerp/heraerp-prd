@@ -56,6 +56,7 @@ interface SalonSecurityContext extends SecurityContext {
   selectedBranchId: string | null
   selectedBranch: Branch | null
   availableBranches: Branch[]
+  isLoadingBranches: boolean // ✅ Track branch loading state
   setSelectedBranchId: (branchId: string) => void
 }
 
@@ -133,6 +134,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     return null
   })
   const [availableBranches, setAvailableBranches] = useState<Branch[]>([])
+  const [isLoadingBranches, setIsLoadingBranches] = useState(false)
 
   // Initialize context - ALWAYS start with loading state to force JWT validation
   // This ensures we never use cached org ID that doesn't match JWT
@@ -156,6 +158,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       selectedBranchId: null,
       selectedBranch: null,
       availableBranches: [],
+      isLoadingBranches: false, // ✅ Branch loading state
       setSelectedBranchId: () => {}
     }
   })
@@ -844,6 +847,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    */
   const loadBranches = async (orgId: string): Promise<Branch[]> => {
     try {
+      setIsLoadingBranches(true) // ✅ Set loading state
+
       const { getEntities } = await import('@/lib/universal-api-v2-client')
 
       const branches = await getEntities('', {
@@ -870,6 +875,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     } catch (error) {
       console.error('Failed to load branches:', error)
       return []
+    } finally {
+      setIsLoadingBranches(false) // ✅ Clear loading state
     }
   }
 
@@ -985,12 +992,13 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const enhancedContext = useMemo(
     () => ({
       ...context,
+      isLoadingBranches, // ✅ Add branch loading state from local state
       executeSecurely,
       hasPermission,
       hasAnyPermission,
       retry: initializeSecureContext
     }),
-    [context, hasPermission, hasAnyPermission]
+    [context, isLoadingBranches, hasPermission, hasAnyPermission]
   )
 
   // Loading state - only show if not already initialized

@@ -32,7 +32,6 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { InventoryChip } from './InventoryChip'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useInventorySettings, shouldDisplayInventoryChip } from '@/hooks/useInventorySettings'
 
 interface ProductListProps {
@@ -41,6 +40,7 @@ interface ProductListProps {
   loading?: boolean
   viewMode?: 'grid' | 'list'
   currency?: string
+  selectedBranchId?: string // ✅ From parent context
   onEdit: (product: Product) => void
   onDelete: (product: Product) => void
   onArchive: (product: Product) => void
@@ -67,12 +67,12 @@ export function ProductList({
   loading = false,
   viewMode = 'list',
   currency = 'AED',
+  selectedBranchId, // ✅ Receive from parent instead of loading separately
   onEdit,
   onDelete,
   onArchive,
   onRestore
 }: ProductListProps) {
-  const { selectedBranchId } = useBranchFilter()
   const { settings } = useInventorySettings(organizationId)
 
   if (loading) {
@@ -173,6 +173,7 @@ export function ProductList({
             product={product}
             organizationId={organizationId}
             currency={currency}
+            selectedBranchId={selectedBranchId} // ✅ Pass from parent
             settings={settings}
             onEdit={onEdit}
             onDelete={onDelete}
@@ -449,6 +450,7 @@ function ProductCard({
   product,
   organizationId,
   currency = 'AED',
+  selectedBranchId, // ✅ Receive from parent instead of loading separately
   settings,
   onEdit,
   onDelete,
@@ -458,13 +460,13 @@ function ProductCard({
   product: Product
   organizationId: string
   currency?: string
+  selectedBranchId?: string // ✅ From parent context
   settings?: any
   onEdit: (product: Product) => void
   onDelete: (product: Product) => void
   onArchive: (product: Product) => void
   onRestore: (product: Product) => void
 }) {
-  const { selectedBranchId } = useBranchFilter()
   const isArchived = product.status === 'archived'
   // Check for price in multiple locations (price_market, selling_price, price)
   const sellingPrice = product.price_market || product.selling_price || product.price || 0

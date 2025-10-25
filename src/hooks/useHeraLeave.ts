@@ -90,6 +90,7 @@ export interface CreateLeaveRequestInput {
   end_date: string
   reason: string
   notes?: string
+  status?: 'draft' | 'submitted' | 'pending' // ✅ NEW: Allow status override
 }
 
 interface UseHeraLeaveOptions {
@@ -1000,7 +1001,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         source_entity_id: data.staff_id, // Who is taking leave
         target_entity_id: data.manager_id, // Manager approving
         total_amount: totalDays,
-        transaction_status: 'submitted',
+        transaction_status: data.status || 'submitted', // ✅ Use provided status or default to submitted
         metadata: {
           leave_type: data.leave_type,
           start_date: data.start_date,
