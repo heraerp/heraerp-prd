@@ -1,5 +1,5 @@
 // HERA Database Types - Auto-generated from actual schema
-// Generated: 2025-10-25T07:35:08.514Z
+// Generated: 2025-10-25T13:35:36.749Z
 // Run 'node mcp-server/schema-introspection.js' to update
 
 export interface CoreOrganizations {
@@ -140,7 +140,29 @@ export interface UniversalTransactions {
 }
 
 export interface UniversalTransactionLines {
+  id: string
   organization_id: string
+  transaction_id: string
+  line_number: number
+  entity_id?: string
+  line_type?: string
+  description?: string
+  quantity?: string
+  unit_amount?: number
+  line_amount: number
+  discount_amount?: number
+  tax_amount?: number
+  smart_code?: string
+  smart_code_status?: string
+  ai_confidence?: string
+  ai_classification?: string
+  ai_insights?: string
+  line_data?: string
+  created_at: string
+  updated_at: string
+  created_by?: string
+  updated_by?: string
+  version?: string
 }
 
 // Utility Types

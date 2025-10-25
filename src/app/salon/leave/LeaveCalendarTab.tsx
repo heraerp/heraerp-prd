@@ -76,11 +76,68 @@ export function LeaveCalendarTab({ requests, staff, branchId }: LeaveCalendarTab
     <div>
       {/* Calendar Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold" style={{ color: COLORS.champagne }}>
-            {format(currentDate, 'MMMM yyyy')}
+        <div className="flex-1">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: COLORS.champagne }}>
+            Leave Calendar
           </h2>
-          <p className="text-sm mt-1" style={{ color: COLORS.bronze, opacity: 0.7 }}>
+
+          {/* Month/Year Selectors */}
+          <div className="flex items-center gap-3">
+            <select
+              value={currentDate.getMonth()}
+              onChange={(e) => {
+                const newDate = new Date(currentDate)
+                newDate.setMonth(parseInt(e.target.value))
+                setCurrentDate(newDate)
+              }}
+              className="px-3 py-2 rounded-lg border text-sm transition-all duration-300"
+              style={{
+                borderColor: COLORS.bronze,
+                color: COLORS.champagne,
+                backgroundColor: COLORS.charcoal
+              }}
+            >
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i} value={i}>
+                  {format(new Date(2024, i, 1), 'MMMM')}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={currentDate.getFullYear()}
+              onChange={(e) => {
+                const newDate = new Date(currentDate)
+                newDate.setFullYear(parseInt(e.target.value))
+                setCurrentDate(newDate)
+              }}
+              className="px-3 py-2 rounded-lg border text-sm transition-all duration-300"
+              style={{
+                borderColor: COLORS.bronze,
+                color: COLORS.champagne,
+                backgroundColor: COLORS.charcoal
+              }}
+            >
+              {Array.from({ length: 10 }, (_, i) => {
+                const year = new Date().getFullYear() - 2 + i
+                return (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                )
+              })}
+            </select>
+
+            <button
+              onClick={goToToday}
+              className="px-4 h-10 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+              style={{ backgroundColor: `${COLORS.gold}20`, color: COLORS.gold }}
+            >
+              Today
+            </button>
+          </div>
+
+          <p className="text-sm mt-2" style={{ color: COLORS.bronze, opacity: 0.7 }}>
             {monthRequests.length} leave request{monthRequests.length !== 1 ? 's' : ''} this month
           </p>
         </div>
@@ -93,13 +150,6 @@ export function LeaveCalendarTab({ requests, staff, branchId }: LeaveCalendarTab
             style={{ backgroundColor: `${COLORS.gold}20`, color: COLORS.gold }}
           >
             <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={goToToday}
-            className="px-4 h-10 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95"
-            style={{ backgroundColor: `${COLORS.gold}20`, color: COLORS.gold }}
-          >
-            Today
           </button>
           <button
             onClick={goToNextMonth}

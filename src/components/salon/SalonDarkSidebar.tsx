@@ -45,7 +45,8 @@ import {
   DollarSign,
   Brain,
   Building2,
-  LogOut
+  LogOut,
+  Search
 } from 'lucide-react'
 
 // Luxe color palette
@@ -99,63 +100,62 @@ const sidebarItems: SidebarItem[] = [
   { title: 'Staff', href: '/salon/staff', icon: UserPlus }
 ]
 
-// All apps for the modal (production ready)
+// All apps for the modal (production ready - only existing pages)
 const allApps: SidebarItem[] = [
   // Core modules
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
   { title: 'Appointments', href: '/salon/appointments', icon: Calendar },
+  { title: 'Appointments Calendar', href: '/salon/appointments/calendar', icon: CalendarCheck },
+  { title: 'New Appointment', href: '/salon/appointments/new', icon: Calendar },
   { title: 'POS', href: '/salon/pos', icon: CreditCard },
+  { title: 'POS Payments', href: '/salon/pos/payments', icon: DollarSign },
   { title: 'Customers', href: '/salon/customers', icon: Users },
+  { title: 'New Customer', href: '/salon/customers/new', icon: UserPlus },
   { title: 'Services', href: '/salon/services', icon: Scissors },
+  { title: 'Service Categories', href: '/salon/service-categories', icon: Grid3x3 },
+  { title: 'Products', href: '/salon/products', icon: ShoppingBag },
+  { title: 'Product Categories', href: '/salon/products/categories', icon: Grid3x3 },
   { title: 'Inventory', href: '/salon/inventory', icon: Package },
+  { title: 'Inventory Settings', href: '/salon/settings/inventory', icon: Settings },
 
   // Communication
   { title: 'WhatsApp', href: '/salon/whatsapp', icon: MessageCircle },
-  { title: 'Marketing', href: '/salon/marketing', icon: Megaphone },
 
   // Staff Management
-  { title: 'Team', href: '/salon/team', icon: UserPlus },
+  { title: 'Team Management', href: '/salon/team-management', icon: Users },
+  { title: 'Staffs', href: '/salon/staffs', icon: UserPlus },
+  { title: 'Staff V2', href: '/salon/staff-v2', icon: UserPlus },
+  { title: 'Users', href: '/salon/users', icon: Users },
   { title: 'Leave', href: '/salon/leave', icon: CalendarCheck },
-  { title: 'Payroll', href: '/salon/payroll', icon: DollarSign },
+  { title: 'Receptionist', href: '/salon/receptionist', icon: Coffee },
+  { title: 'Admin', href: '/salon/admin', icon: Shield },
+  { title: 'Admin Dashboard', href: '/salon/admin/dashboard', icon: BarChart },
 
   // Financial
   { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
-  { title: 'Finance', href: '/salon/finance', icon: TrendingDown },
-  { title: 'P&L Report', href: '/salon/reports/pnl', icon: BarChart3 },
-  { title: 'Balance Sheet', href: '/salon/reports/balance-sheet', icon: Scale },
-  { title: 'Branch P&L', href: '/salon/reports/branch-pnl', icon: Building2 },
-  {
-    title: 'Smart Accountant',
-    href: '/salon/digital-accountant',
-    icon: Brain,
-    badge: 'AI',
-    badgeColor: 'bg-purple-500'
-  },
+  { title: 'Owner Dashboard V2', href: '/salon/owner-dashboard', icon: TrendingUp },
+  { title: 'Finance', href: '/salon/finance', icon: DollarSign },
+  { title: 'Finance Entry', href: '/salon/finance-entry', icon: FileText },
+  { title: 'Accountant', href: '/salon/accountant', icon: Brain },
+  { title: 'Chart of Accounts', href: '/salon/coa', icon: BookOpen },
+  { title: 'Trial Balance', href: '/salon/trial-balance', icon: Scale },
+  { title: 'Balance Sheet', href: '/salon/balance-sheet', icon: Scale },
+  { title: 'Profit & Loss', href: '/salon/profit-loss', icon: BarChart3 },
 
-  // Reports & Analytics
+  // Reports
   { title: 'Reports', href: '/salon/reports', icon: BarChart },
-  { title: 'Analytics', href: '/salon/analytics', icon: TrendingUp },
+  { title: 'Branch P&L', href: '/salon/reports/branch-pnl', icon: Building2 },
 
-  // Products & Sales
-  { title: 'Products', href: '/salon/products', icon: ShoppingBag },
-  { title: 'Invoices', href: '/salon/invoices', icon: Receipt },
-  { title: 'Payments', href: '/salon/payments', icon: CreditCard },
-
-  // Loyalty & Reviews
-  { title: 'Promotions', href: '/salon/promotions', icon: Gift },
-  { title: 'Reviews', href: '/salon/reviews', icon: Star },
-  { title: 'Rewards', href: '/salon/rewards', icon: Award },
+  // Other Modules
+  { title: 'Gift Cards', href: '/salon/gift-cards', icon: Gift },
+  { title: 'Branches', href: '/salon/branches', icon: Building2 },
+  { title: 'Categories', href: '/salon/categories', icon: Grid3x3 },
+  { title: 'Compliance', href: '/salon/compliance', icon: Shield },
+  { title: 'Kanban', href: '/salon/kanban', icon: Grid3x3 },
+  { title: 'More', href: '/salon/more', icon: Grid3x3 },
 
   // Administration
-  { title: 'Settings', href: '/salon/settings', icon: Settings },
-  { title: 'Security', href: '/salon/security', icon: Shield },
-  { title: 'HR Portal', href: '/salon/hr', icon: Briefcase },
-  { title: 'Training', href: '/salon/training', icon: BookOpen },
-
-  // Others
-  { title: 'Gallery', href: '/salon/gallery', icon: Camera },
-  { title: 'Themes', href: '/salon/themes', icon: Palette },
-  { title: 'Automation', href: '/salon/automation', icon: Zap }
+  { title: 'Settings', href: '/salon/settings', icon: Settings }
 ]
 
 const bottomItems: SidebarItem[] = [
@@ -174,11 +174,24 @@ function AppsModal({
   isActive: (href: string) => boolean
 }) {
   const [mounted, setMounted] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     setMounted(true)
     return () => setMounted(false)
   }, [])
+
+  // Clear search when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchQuery('')
+    }
+  }, [isOpen])
+
+  // Filter apps based on search query
+  const filteredApps = allApps.filter(app =>
+    app.title.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   if (!isOpen || !mounted) return null
 
@@ -203,48 +216,89 @@ function AppsModal({
         >
           {/* Modal Header */}
           <div
-            className="flex items-center justify-between p-6 border-b"
+            className="p-6 border-b"
             style={{ borderColor: `${COLORS.gold}20` }}
           >
-            <div>
-              <h2
-                className="text-2xl font-bold"
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2
+                  className="text-2xl font-bold"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  All Apps
+                </h2>
+                <p className="text-sm mt-1" style={{ color: COLORS.bronze }}>
+                  Access all your salon management tools
+                </p>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-lg transition-colors hover:scale-110"
                 style={{
-                  background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
+                  color: COLORS.bronze
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = `${COLORS.gold}15`
+                  e.currentTarget.style.color = COLORS.champagne
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.color = COLORS.bronze
                 }}
               >
-                All Apps
-              </h2>
-              <p className="text-sm mt-1" style={{ color: COLORS.bronze }}>
-                Access all your salon management tools
-              </p>
+                <X className="h-6 w-6" />
+              </button>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg transition-colors hover:scale-110"
-              style={{
-                color: COLORS.bronze
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = `${COLORS.gold}15`
-                e.currentTarget.style.color = COLORS.champagne
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = 'transparent'
-                e.currentTarget.style.color = COLORS.bronze
-              }}
-            >
-              <X className="h-6 w-6" />
-            </button>
+
+            {/* Search Input */}
+            <div className="relative">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5"
+                style={{ color: COLORS.bronze }}
+              />
+              <input
+                type="text"
+                placeholder="Search apps..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-xl text-sm transition-all focus:outline-none"
+                style={{
+                  backgroundColor: `${COLORS.charcoalLight}80`,
+                  border: `1px solid ${COLORS.bronze}20`,
+                  color: COLORS.champagne
+                }}
+                onFocus={e => {
+                  e.currentTarget.style.borderColor = `${COLORS.gold}40`
+                  e.currentTarget.style.backgroundColor = `${COLORS.charcoalLight}CC`
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.borderColor = `${COLORS.bronze}20`
+                  e.currentTarget.style.backgroundColor = `${COLORS.charcoalLight}80`
+                }}
+              />
+            </div>
           </div>
 
           {/* Apps Grid */}
-          <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {allApps.map(app => {
+          <div className="p-6 overflow-y-auto max-h-[calc(80vh-180px)]">
+            {filteredApps.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <Search className="h-12 w-12 mb-4" style={{ color: COLORS.bronze }} />
+                <p className="text-lg font-medium" style={{ color: COLORS.champagne }}>
+                  No apps found
+                </p>
+                <p className="text-sm mt-2" style={{ color: COLORS.bronze }}>
+                  Try searching with different keywords
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {filteredApps.map(app => {
                 const Icon = app.icon
                 const active = isActive(app.href)
 
@@ -303,7 +357,8 @@ function AppsModal({
                   </Link>
                 )
               })}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -352,7 +407,7 @@ export default function SalonDarkSidebar({
 
   return (
     <div
-      className="fixed inset-y-0 left-0 h-[100dvh] w-20 z-40 border-r overflow-x-hidden overflow-y-hidden"
+      className="fixed inset-y-0 left-0 h-[100dvh] w-20 z-40 border-r overflow-x-hidden flex flex-col"
       style={{
         backgroundColor: COLORS.charcoal,
         borderColor: `${COLORS.gold}15`,

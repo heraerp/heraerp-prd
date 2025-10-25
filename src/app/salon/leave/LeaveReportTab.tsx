@@ -2,7 +2,10 @@
 
 import React, { useMemo, useState } from 'react'
 import { LeaveRequest, LeaveBalance } from '@/hooks/useHeraLeave'
-import { User, TrendingUp, TrendingDown, Calendar, FileText, Download, Zap, Clock } from 'lucide-react'
+import { User, TrendingUp, TrendingDown, Calendar, FileText, Download, Zap, Clock, Filter, FileSpreadsheet, CalendarDays } from 'lucide-react'
+import { exportLeaveReportToExcel, exportLeaveReportToPDF } from '@/lib/reports/leaveReportExport'
+import { exportDetailedLeaveReport, exportDetailedLeaveReportPDF, DetailedReportFilters } from '@/lib/reports/leaveReportDetailed'
+import { format, startOfYear, endOfYear } from 'date-fns'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -238,6 +241,18 @@ function StaffBalanceRowDesktop({ balance }: { balance: LeaveBalance }) {
 
 export function LeaveReportTab({ staff, balances, requests, branchId }: LeaveReportTabProps) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
+  const [leaveTypeFilter, setLeaveTypeFilter] = useState<string>('all')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+
+  // Summary report date range (defaults to current year)
+  const [summaryStartDate, setSummaryStartDate] = useState(format(startOfYear(new Date()), 'yyyy-MM-dd'))
+  const [summaryEndDate, setSummaryEndDate] = useState(format(endOfYear(new Date()), 'yyyy-MM-dd'))
+
+  // Detailed report date range (defaults to current year)
+  const [detailedStartDate, setDetailedStartDate] = useState(format(startOfYear(new Date()), 'yyyy-MM-dd'))
+  const [detailedEndDate, setDetailedEndDate] = useState(format(endOfYear(new Date()), 'yyyy-MM-dd'))
+  const [showDetailedOptions, setShowDetailedOptions] = useState(false)
 
   // Calculate summary stats
   const summaryStats = useMemo(() => {
@@ -385,27 +400,362 @@ export function LeaveReportTab({ staff, balances, requests, branchId }: LeaveRep
         />
       </div>
 
-      {/* Search and Export */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Search staff..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="w-full md:w-auto md:flex-1 px-4 py-2 rounded-lg border text-sm transition-all duration-300"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            borderColor: `${COLORS.bronze}30`,
-            color: COLORS.champagne
-          }}
-        />
-        <button
-          className="w-full md:w-auto px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-          style={{ backgroundColor: `${COLORS.gold}20`, color: COLORS.gold }}
-        >
-          <Download className="w-4 h-4" />
-          Export Report
-        </button>
+      {/* Unified Filters & Report Export Section */}
+      <div
+        className="rounded-xl p-4 md:p-6 mb-6"
+        style={{
+          background: `linear-gradient(135deg, ${COLORS.plum}20 0%, ${COLORS.charcoal} 100%)`,
+          border: `1px solid ${COLORS.plum}30`
+        }}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <CalendarDays className="w-5 h-5" style={{ color: COLORS.plum }} />
+              <h3 className="text-lg font-semibold" style={{ color: COLORS.champagne }}>
+                Leave Reports & Filters
+              </h3>
+            </div>
+            <p className="text-xs" style={{ color: COLORS.bronze, opacity: 0.7 }}>
+              Configure filters and generate comprehensive leave reports (Summary or Detailed)
+            </p>
+          </div>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="px-3 py-1 rounded-lg text-xs font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+            style={{ backgroundColor: `${COLORS.plum}20`, color: COLORS.plum }}
+          >
+            {showFilters ? 'Hide Filters' : 'Show Filters'}
+          </button>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search staff..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2 rounded-lg border text-sm transition-all duration-300"
+            style={{
+              backgroundColor: COLORS.black,
+              borderColor: `${COLORS.plum}30`,
+              color: COLORS.champagne
+            }}
+          />
+        </div>
+
+        {/* Filters Panel */}
+        {showFilters && (
+          <div className="space-y-4 mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            {/* Date Range Section */}
+            <div>
+              <label className="text-xs mb-2 block font-semibold" style={{ color: COLORS.plum }}>
+                📅 Report Date Range
+              </label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <label className="text-xs mb-1 block" style={{ color: COLORS.bronze }}>
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    value={summaryStartDate}
+                    onChange={e => {
+                      setSummaryStartDate(e.target.value)
+                      setDetailedStartDate(e.target.value)
+                    }}
+                    className="w-full px-3 py-2 rounded-lg border text-sm transition-all duration-300"
+                    style={{
+                      backgroundColor: COLORS.black,
+                      borderColor: `${COLORS.plum}30`,
+                      color: COLORS.champagne
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs mb-1 block" style={{ color: COLORS.bronze }}>
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    value={summaryEndDate}
+                    onChange={e => {
+                      setSummaryEndDate(e.target.value)
+                      setDetailedEndDate(e.target.value)
+                    }}
+                    className="w-full px-3 py-2 rounded-lg border text-sm transition-all duration-300"
+                    style={{
+                      backgroundColor: COLORS.black,
+                      borderColor: `${COLORS.plum}30`,
+                      color: COLORS.champagne
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Quick date range presets */}
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => {
+                    const now = new Date()
+                    const start = format(startOfYear(now), 'yyyy-MM-dd')
+                    const end = format(endOfYear(now), 'yyyy-MM-dd')
+                    setSummaryStartDate(start)
+                    setSummaryEndDate(end)
+                    setDetailedStartDate(start)
+                    setDetailedEndDate(end)
+                  }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: `${COLORS.plum}20`, color: COLORS.plum }}
+                >
+                  Current Year
+                </button>
+                <button
+                  onClick={() => {
+                    const lastYear = new Date()
+                    lastYear.setFullYear(lastYear.getFullYear() - 1)
+                    const start = format(startOfYear(lastYear), 'yyyy-MM-dd')
+                    const end = format(endOfYear(lastYear), 'yyyy-MM-dd')
+                    setSummaryStartDate(start)
+                    setSummaryEndDate(end)
+                    setDetailedStartDate(start)
+                    setDetailedEndDate(end)
+                  }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: `${COLORS.plum}20`, color: COLORS.plum }}
+                >
+                  Last Year
+                </button>
+                <button
+                  onClick={() => {
+                    const now = new Date()
+                    const sixMonthsAgo = new Date()
+                    sixMonthsAgo.setMonth(now.getMonth() - 6)
+                    const start = format(sixMonthsAgo, 'yyyy-MM-dd')
+                    const end = format(now, 'yyyy-MM-dd')
+                    setSummaryStartDate(start)
+                    setSummaryEndDate(end)
+                    setDetailedStartDate(start)
+                    setDetailedEndDate(end)
+                  }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: `${COLORS.plum}20`, color: COLORS.plum }}
+                >
+                  Last 6 Months
+                </button>
+                <button
+                  onClick={() => {
+                    const now = new Date()
+                    const threeMonthsAgo = new Date()
+                    threeMonthsAgo.setMonth(now.getMonth() - 3)
+                    const start = format(threeMonthsAgo, 'yyyy-MM-dd')
+                    const end = format(now, 'yyyy-MM-dd')
+                    setSummaryStartDate(start)
+                    setSummaryEndDate(end)
+                    setDetailedStartDate(start)
+                    setDetailedEndDate(end)
+                  }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: `${COLORS.plum}20`, color: COLORS.plum }}
+                >
+                  Last 3 Months
+                </button>
+              </div>
+            </div>
+
+            {/* Leave Type and Status Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="text-xs mb-2 block" style={{ color: COLORS.bronze }}>
+                  Leave Type
+                </label>
+                <select
+                  value={leaveTypeFilter}
+                  onChange={e => setLeaveTypeFilter(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border text-sm transition-all duration-300"
+                  style={{
+                    backgroundColor: COLORS.black,
+                    borderColor: `${COLORS.plum}30`,
+                    color: COLORS.champagne
+                  }}
+                >
+                  <option value="all">All Types</option>
+                  <option value="ANNUAL">Annual Leave</option>
+                  <option value="SICK">Sick Leave</option>
+                  <option value="UNPAID">Unpaid Leave</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs mb-2 block" style={{ color: COLORS.bronze }}>
+                  Status
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={e => setStatusFilter(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border text-sm transition-all duration-300"
+                  style={{
+                    backgroundColor: COLORS.black,
+                    borderColor: `${COLORS.plum}30`,
+                    color: COLORS.champagne
+                  }}
+                >
+                  <option value="all">All Status</option>
+                  <option value="draft">Draft</option>
+                  <option value="submitted">Submitted</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setLeaveTypeFilter('all')
+                    setStatusFilter('all')
+                    const now = new Date()
+                    const start = format(startOfYear(now), 'yyyy-MM-dd')
+                    const end = format(endOfYear(now), 'yyyy-MM-dd')
+                    setSummaryStartDate(start)
+                    setSummaryEndDate(end)
+                    setDetailedStartDate(start)
+                    setDetailedEndDate(end)
+                  }}
+                  className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: `${COLORS.plum}30`, color: COLORS.champagne }}
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Export Buttons Section */}
+        <div className="space-y-3">
+          {/* Summary Reports */}
+          <div>
+            <label className="text-xs mb-2 block font-semibold" style={{ color: COLORS.plum }}>
+              📊 Summary Reports (Multi-Sheet Analytics)
+            </label>
+            <div className="flex flex-col md:flex-row gap-3">
+              <button
+                onClick={() => {
+                  const reportData = {
+                    balances,
+                    requests,
+                    staff,
+                    filters: {
+                      startDate: summaryStartDate,
+                      endDate: summaryEndDate,
+                      leaveTypes: leaveTypeFilter !== 'all' ? [leaveTypeFilter as any] : undefined,
+                      status: statusFilter !== 'all' ? [statusFilter as any] : undefined
+                    },
+                    organizationName: 'HERA Organization',
+                    generatedAt: format(new Date(), 'dd MMM yyyy HH:mm')
+                  }
+                  exportLeaveReportToExcel(reportData)
+                }}
+                className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                style={{ backgroundColor: COLORS.emerald, color: COLORS.champagne }}
+                title={`Export summary report from ${summaryStartDate} to ${summaryEndDate}`}
+              >
+                <FileSpreadsheet className="w-5 h-5" />
+                Summary Excel (4 Sheets)
+              </button>
+
+              <button
+                onClick={() => {
+                  const reportData = {
+                    balances,
+                    requests,
+                    staff,
+                    filters: {
+                      startDate: summaryStartDate,
+                      endDate: summaryEndDate,
+                      leaveTypes: leaveTypeFilter !== 'all' ? [leaveTypeFilter as any] : undefined,
+                      status: statusFilter !== 'all' ? [statusFilter as any] : undefined
+                    },
+                    organizationName: 'HERA Organization',
+                    generatedAt: format(new Date(), 'dd MMM yyyy HH:mm')
+                  }
+                  exportLeaveReportToPDF(reportData)
+                }}
+                className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                style={{ backgroundColor: COLORS.rose, color: 'white' }}
+                title={`Print/Save summary report from ${summaryStartDate} to ${summaryEndDate}`}
+              >
+                <Download className="w-5 h-5" />
+                Summary PDF
+              </button>
+            </div>
+          </div>
+
+          {/* Detailed Reports */}
+          <div>
+            <label className="text-xs mb-2 block font-semibold" style={{ color: COLORS.plum }}>
+              📋 Detailed Annual Report (HR Format)
+            </label>
+            <div className="flex flex-col md:flex-row gap-3">
+              <button
+                onClick={() => {
+                  const detailedReportData = {
+                    organizationName: 'HERA Organization',
+                    policyName: 'Standard Leave Policy',
+                    startDate: summaryStartDate,
+                    endDate: summaryEndDate,
+                    staff: staff.map(s => ({ ...s, department: 'General' })),
+                    requests,
+                    balances,
+                    filters: {
+                      startDate: summaryStartDate,
+                      endDate: summaryEndDate,
+                      leaveType: leaveTypeFilter === 'all' ? undefined : (leaveTypeFilter as any),
+                      status: statusFilter === 'all' ? undefined : (statusFilter as any)
+                    }
+                  }
+                  exportDetailedLeaveReport(detailedReportData)
+                }}
+                className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                style={{ backgroundColor: COLORS.emerald, color: COLORS.champagne }}
+              >
+                <FileSpreadsheet className="w-5 h-5" />
+                Detailed Excel
+              </button>
+
+              <button
+                onClick={() => {
+                  const detailedReportData = {
+                    organizationName: 'HERA Organization',
+                    policyName: 'Standard Leave Policy',
+                    startDate: summaryStartDate,
+                    endDate: summaryEndDate,
+                    staff: staff.map(s => ({ ...s, department: 'General' })),
+                    requests,
+                    balances,
+                    filters: {
+                      startDate: summaryStartDate,
+                      endDate: summaryEndDate,
+                      leaveType: leaveTypeFilter === 'all' ? undefined : (leaveTypeFilter as any),
+                      status: statusFilter === 'all' ? undefined : (statusFilter as any)
+                    }
+                  }
+                  exportDetailedLeaveReportPDF(detailedReportData)
+                }}
+                className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                style={{ backgroundColor: COLORS.rose, color: 'white' }}
+              >
+                <Download className="w-5 h-5" />
+                Detailed PDF
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Empty State */}

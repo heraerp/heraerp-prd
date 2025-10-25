@@ -38,7 +38,6 @@ import {
   Archive,
   Sparkles,
   Bell,
-  FileSpreadsheet,
   ChevronDown
 } from 'lucide-react'
 
@@ -193,11 +192,27 @@ function SalonProductsPageContent() {
   )
 
   // ✅ ENTERPRISE IMPORT/EXPORT: Declarative configuration replaces 280+ lines of manual code
-  const productImportExportConfig: ImportExportConfig<Product> = {
+  // 💰 Dynamic currency support from organization context
+  const productImportExportConfig: ImportExportConfig<Product> = useMemo(() => ({
     entityName: 'Product',
     entityNamePlural: 'Products',
     filePrefix: 'HERA_Products',
     templateSheetName: 'Products Data',
+
+    // 💰 MULTI-CURRENCY: Organization-specific currency configuration
+    currency: currency || 'AED',
+    currencySymbol: currency || 'AED',
+
+    // 🎯 ENTERPRISE CUSTOMIZATION: Page-specific instructions and formatting
+    customWarning: '⚠️ IMPORTANT: CREATE CATEGORIES FIRST',
+    customInstructions: [
+      'Category must match existing category names exactly (case-insensitive)',
+      'Selling Price must be greater than Cost Price',
+      'Stock quantities cannot be negative',
+      'Status: Enter "active", "inactive", or "archived" (defaults to active)'
+    ],
+    exampleNote: 'Professional salon product example',
+    columnWidths: [25, 12, 15, 12, 12, 15, 15, 20, 18, 15, 12, 40, 10], // Custom widths for each field
 
     fields: [
       {
@@ -205,7 +220,7 @@ function SalonProductsPageContent() {
         fieldName: 'name',
         type: 'text',
         required: true,
-        example: 'Premium Shampoo',
+        example: 'L\'Oreal Professional Shampoo 500ml',
         description: 'Product name (required)'
       },
       {
@@ -213,7 +228,7 @@ function SalonProductsPageContent() {
         fieldName: 'code',
         type: 'text',
         required: false,
-        example: 'PROD001',
+        example: 'LOREAL-SHP-500',
         description: 'Optional product code/SKU'
       },
       {
@@ -225,27 +240,27 @@ function SalonProductsPageContent() {
         description: 'Category name (must match existing category)'
       },
       {
-        headerName: 'Cost Price (AED)',
+        headerName: `Cost Price (${currency || 'AED'})`,
         fieldName: 'cost_price',
         type: 'number',
         required: true,
-        example: 50,
-        description: 'Product cost price in AED'
+        example: 75,
+        description: `Product cost price in ${currency || 'AED'}`
       },
       {
-        headerName: 'Selling Price (AED)',
+        headerName: `Selling Price (${currency || 'AED'})`,
         fieldName: 'selling_price',
         type: 'number',
         required: true,
-        example: 100,
-        description: 'Product selling price in AED'
+        example: 150,
+        description: `Product selling price in ${currency || 'AED'}`
       },
       {
         headerName: 'Stock Quantity',
         fieldName: 'stock_level',
         type: 'number',
         required: false,
-        example: 10,
+        example: 25,
         description: 'Current stock quantity'
       },
       {
@@ -253,7 +268,7 @@ function SalonProductsPageContent() {
         fieldName: 'reorder_level',
         type: 'number',
         required: false,
-        example: 5,
+        example: 10,
         description: 'Minimum stock level before reordering'
       },
       {
@@ -261,7 +276,7 @@ function SalonProductsPageContent() {
         fieldName: 'brand',
         type: 'text',
         required: false,
-        example: 'L\'Oreal',
+        example: 'L\'Oreal Professional',
         description: 'Product brand name'
       },
       {
@@ -269,7 +284,7 @@ function SalonProductsPageContent() {
         fieldName: 'barcode',
         type: 'text',
         required: false,
-        example: '1234567890123',
+        example: '3474636391813',
         description: 'Product barcode'
       },
       {
@@ -277,7 +292,7 @@ function SalonProductsPageContent() {
         fieldName: 'barcode_primary',
         type: 'text',
         required: false,
-        example: '1234567890123',
+        example: '3474636391813',
         description: 'Primary barcode identifier'
       },
       {
@@ -293,7 +308,7 @@ function SalonProductsPageContent() {
         fieldName: 'gtin',
         type: 'text',
         required: false,
-        example: '1234567890123',
+        example: '03474636391813',
         description: 'Global Trade Item Number'
       },
       {
@@ -301,7 +316,7 @@ function SalonProductsPageContent() {
         fieldName: 'sku',
         type: 'text',
         required: false,
-        example: 'SKU-001',
+        example: 'LOREAL-PRO-SHP-500',
         description: 'Stock Keeping Unit'
       },
       {
@@ -317,7 +332,7 @@ function SalonProductsPageContent() {
         fieldName: 'description',
         type: 'text',
         required: false,
-        example: 'Professional salon shampoo',
+        example: 'Professional salon shampoo for color-treated hair. Sulfate-free formula with UV protection.',
         description: 'Product description'
       },
       {
@@ -349,8 +364,8 @@ function SalonProductsPageContent() {
       'Product Name': product.entity_name || '',
       'Product Code': product.entity_code || '',
       'Category': product.category || '',
-      'Cost Price (AED)': product.price_cost || product.cost_price || 0,
-      'Selling Price (AED)': product.price_market || product.selling_price || 0,
+      [`Cost Price (${currency || 'AED'})`]: product.price_cost || product.cost_price || 0,
+      [`Selling Price (${currency || 'AED'})`]: product.price_market || product.selling_price || 0,
       'Stock Quantity': product.stock_quantity || product.stock_level || 0,
       'Reorder Level': product.reorder_level || 0,
       'Brand': product.brand || '',
@@ -377,7 +392,7 @@ function SalonProductsPageContent() {
       }
       return null
     }
-  }
+  }), [productCategories, products, currency, createProduct]) // ✅ Dependencies for useMemo
 
   // ✅ ENTERPRISE HOOK: Replaces 280+ lines of manual import/export code
   const {
@@ -846,19 +861,6 @@ function SalonProductsPageContent() {
             <Plus className="w-4 h-4" />
             New Product
           </button>
-          {/* Template - Bronze */}
-          <button
-            onClick={handleDownloadTemplate}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.bronze,
-              color: COLORS.champagne,
-              border: `1px solid ${COLORS.bronze}`
-            }}
-          >
-            <FileSpreadsheet className="w-4 h-4" />
-            Template
-          </button>
           {/* Import - Rose */}
           <button
             onClick={() => setImportModalOpen(true)}
@@ -936,14 +938,6 @@ function SalonProductsPageContent() {
           >
             <FolderPlus className="w-4 h-4" />
             New Category
-          </button>
-          <button
-            onClick={handleDownloadTemplate}
-            className="px-4 py-2 bg-bronze text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
-            style={{ backgroundColor: COLORS.bronze }}
-          >
-            <FileSpreadsheet className="w-4 h-4" />
-            Template
           </button>
           <button
             onClick={() => setImportModalOpen(true)}
@@ -1291,7 +1285,7 @@ function SalonProductsPageContent() {
             />
             <SalonLuxeKPICard
               title="Average Price"
-              value={`AED ${avgPrice.toFixed(0)}`}
+              value={`${currency || 'AED'} ${avgPrice.toFixed(0)}`}
               icon={DollarSign}
               color={COLORS.gold}
               description="Catalog pricing"
