@@ -2,7 +2,8 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/tests', '<rootDir>/src'],
   testMatch: [
-    'tests/**/*.test.{js,ts,tsx}'
+    'tests/**/*.test.{js,ts,tsx}',
+    'src/**/__tests__/**/*.test.{js,ts,tsx}'
   ],
   // Projects for different test types
   projects: [
@@ -10,6 +11,16 @@ module.exports = {
       displayName: 'unit',
       testMatch: ['<rootDir>/tests/unit/**/*.test.{js,ts,tsx}'],
       testEnvironment: 'jsdom',
+    },
+    {
+      displayName: 'controlling',
+      testMatch: ['<rootDir>/src/app/controlling/**/__tests__/*.test.{js,ts,tsx}'],
+      testEnvironment: 'jsdom',
+      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+        '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+      },
     },
     {
       displayName: 'api',
@@ -54,6 +65,12 @@ module.exports = {
       functions: 80,
       lines: 80,
       statements: 80,
+    },
+    'src/app/controlling/': {
+      branches: 75,
+      functions: 75,
+      lines: 75,
+      statements: 75,
     },
   },
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
