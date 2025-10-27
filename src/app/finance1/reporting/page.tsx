@@ -17,7 +17,7 @@ import {
   Globe, Bookmark, LineChart, Gauge, Box,
   ArrowUpRight, Bell, Hash, Timer, Workflow, Wrench,
   Brain, Bot, Sparkles, Lightbulb, Radar, Microscope,
-  TrendingUpDown, BarChart2, Mail, Send, Archive,
+  ArrowUpDown, BarChart2, Mail, Send, Archive, // TrendingUpDown not in this lucide version
   FilePlus, FileSpreadsheet, Presentation, Image,
   CheckSquare, XCircle, Pause, Play, RotateCcw, Copy
 } from 'lucide-react'

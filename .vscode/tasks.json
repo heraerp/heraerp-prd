@@ -2,56 +2,102 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "HERA Control Center",
+      "label": "HERA: Validate Current File",
       "type": "shell",
-      "command": "node mcp-server/hera-control-center.js control",
+      "command": "node",
+      "args": ["scripts/auto-validator.js", "--file", "${file}"],
       "group": {
         "kind": "build",
         "isDefault": true
       },
       "presentation": {
+        "echo": true,
         "reveal": "always",
-        "panel": "new"
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       },
       "problemMatcher": []
     },
     {
-      "label": "Check System Health",
+      "label": "HERA: Auto-Fix Issues",
       "type": "shell",
-      "command": "node mcp-server/hera-control-center.js health --detailed",
+      "command": "npm",
+      "args": ["run", "fix:auto"],
+      "group": "build",
       "presentation": {
+        "echo": true,
         "reveal": "always",
-        "panel": "new"
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       },
       "problemMatcher": []
     },
     {
-      "label": "Check Guardrails",
+      "label": "HERA: Start Auto-Validator",
       "type": "shell",
-      "command": "node mcp-server/hera-control-center.js guardrails",
+      "command": "npm",
+      "args": ["run", "validate:watch"],
+      "group": "build",
       "presentation": {
+        "echo": true,
         "reveal": "always",
-        "panel": "new"
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "hera-validator",
+        "fileLocation": "relative",
+        "pattern": {
+          "regexp": "^(.+):(\\d+):(\\d+)\\s+-\\s+(.+)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "🔍 Validating",
+          "endsPattern": "(✅ All checks passed|❌ Validation failed)"
+        }
+      }
+    },
+    {
+      "label": "HERA: Safe Development Mode",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev:safe"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "isBackground": true,
       "problemMatcher": []
     },
     {
-      "label": "Deployment Check",
-      "type": "shell",
-      "command": "node mcp-server/hera-control-center.js deploy-check",
+      "label": "HERA: Check Staged Files",
+      "type": "shell", 
+      "command": "npm",
+      "args": ["run", "check:staged"],
+      "group": "test",
       "presentation": {
+        "echo": true,
         "reveal": "always",
-        "panel": "new"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Rebuild Module Index",
-      "type": "shell",
-      "command": "node mcp-server/hera-control-center.js index --rebuild",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       },
       "problemMatcher": []
     }

@@ -17,7 +17,7 @@ import {
   Globe, Bookmark, LineChart, Gauge, Box,
   ArrowUpRight, Bell, Hash, Timer, Workflow, Wrench,
   Brain, Bot, Sparkles, Lightbulb, Radar, Microscope,
-  TrendingUpDown, BarChart2, Activity as ActivityIcon,
+  ArrowUpDown, BarChart2, Activity as ActivityIcon, // TrendingUpDown not in this lucide version
   PieChart as PieChartIcon, Signal, Wifi, Cpu, Thermometer
 } from 'lucide-react'
 

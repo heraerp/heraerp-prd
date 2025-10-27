@@ -14,7 +14,7 @@ import {
   Percent, CalendarDays, UserCheck, ClipboardList, Banknote,
   Building2, Users, Activity, MapPin, Award, Database,
   Layers, Zap, Grid, Table, Monitor, Briefcase, Shield,
-  Globe, CreditCard, Wallet, ArrowUpDown, TrendingUpDown
+  Globe, CreditCard, Wallet, ArrowUpDown // TrendingUpDown not in this lucide version
 } from 'lucide-react'
 
 interface TreasuryPosition {
@@ -1353,7 +1353,7 @@ export default function TreasuryPage() {
                       {[
                         { tool: 'Monte Carlo Simulation', icon: Calculator, color: 'bg-blue-600' },
                         { tool: 'Stress Testing', icon: AlertTriangle, color: 'bg-red-600' },
-                        { tool: 'Scenario Analysis', icon: TrendingUpDown, color: 'bg-green-600' },
+                        { tool: 'Scenario Analysis', icon: ArrowUpDown, color: 'bg-green-600' },
                         { tool: 'Correlation Analysis', icon: Grid, color: 'bg-purple-600' }
                       ].map((tool) => {
                         const IconComponent = tool.icon

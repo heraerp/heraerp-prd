@@ -4,7 +4,8 @@ import AcceptInviteClient from './AcceptInviteClient'
 // Force dynamic rendering (required for useSearchParams)
 export const dynamic = 'force-dynamic'
 
-export default function AcceptInvitePage() {
+function AcceptInviteContent() {
+
   return (
     <Suspense fallback={<AcceptInviteFallback />}>
       <AcceptInviteClient />
@@ -13,7 +14,8 @@ export default function AcceptInvitePage() {
 }
 
 function AcceptInviteFallback() {
-  return (
+  
+return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
       <div className="fixed inset-0 -z-10 bg-slate-950">
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse" />
@@ -27,5 +29,23 @@ function AcceptInviteFallback() {
         </div>
       </div>
     </div>
+  )
+
+}
+
+export default function AcceptInvitePage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 mx-auto">Loading...</div>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <AcceptInviteContent />
+    </Suspense>
   )
 }

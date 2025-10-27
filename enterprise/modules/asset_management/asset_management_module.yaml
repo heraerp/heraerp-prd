@@ -1,0 +1,141 @@
+---
+# HERA CRM Asset Management Module
+#
+# This YAML file outlines the Asset Management module for HERA CRM,
+# inspired by SAP Cloud ERP’s comprehensive maintenance management
+# capabilities.  It organizes functions across technical asset
+# management, demand monitoring, scheduling and dispatching,
+# maintenance execution and embedded analytics.  The module
+# emphasises standardized maintenance processes, preventive and
+# predictive planning and real‑time analytics to maximise asset
+# utilisation and reduce unplanned downtime【102621162141765†L33-L49】.
+
+version: "1.0"
+module: "AssetManagement"
+description: |
+  The Asset Management module enables HERA CRM to minimise downtime by
+  establishing a comprehensive corporate maintenance process.  It
+  provides standardized, industry‑best practice workflows to ensure
+  business continuity, enhance maintenance team productivity, give
+  planners real‑time visibility into asset conditions and define
+  optimal maintenance strategies for faster action【102621162141765†L33-L49】.
+
+areas:
+  TechnicalAssetManagement:
+    description: |
+      Onboard assets and maintain accurate master data by setting up
+      measurement points, time‑based hierarchies and reusable task
+      lists to manage operations and spare parts efficiently【102621162141765†L60-L77】.
+    capabilities:
+      - name: AssetLifecycleManagement
+        detail: |
+          Establish points of asset measurement to record
+          instantaneous or counter‑based values while managing
+          critical asset data【102621162141765†L64-L67】.
+      - name: AssetHierarchies
+        detail: |
+          Preserve and update time‑based information of asset
+          hierarchies by using functional locations and equipment
+          identifiers【102621162141765†L69-L72】.
+      - name: AcceleratedMaintenancePlanningAndExecution
+        detail: |
+          Engineer reusable maintenance task lists to oversee
+          operations, spare parts, lean services and documents more
+          efficiently【102621162141765†L74-L77】.
+
+  DemandMonitoring:
+    description: |
+      Track and analyse maintenance requests to ensure timely and
+      effective resolution.  Preventive and predictive maintenance
+      plans improve uptime and reliability while prioritisation
+      frameworks enable responsive handling of incoming demands【102621162141765†L81-L101】.
+    capabilities:
+      - name: MaintenancePlanning
+        detail: |
+          Schedule asset inspections, servicing and upkeep with
+          preventive and predictive plans to improve uptime and
+          reliability【102621162141765†L88-L91】.
+      - name: ScreeningOfRequests
+        detail: |
+          Categorise, prioritise and react to maintenance requests
+          based on asset criticality, safety, compliance and other
+          factors【102621162141765†L93-L96】.
+      - name: ReactiveMaintenance
+        detail: |
+          Assess requests based on priority, breakdown and
+          performance when creating an order to address equipment
+          failures【102621162141765†L98-L101】.
+
+  PlanningSchedulingAndDispatching:
+    description: |
+      Organise and track tasks related to maintenance, repairs and
+      inspections by defining workflows, grouping orders and
+      assigning jobs to the right workers based on operational
+      constraints and priorities【102621162141765†L103-L122】.
+    capabilities:
+      - name: MaintenanceOrderPlanning
+        detail: |
+          Define workflows for approving maintenance order execution
+          costs and procuring spare parts and services【102621162141765†L109-L112】.
+      - name: PreparationOfOrderExecution
+        detail: |
+          Access grouped views of maintenance orders based on
+          flexible planning buckets to prepare execution【102621162141765†L114-L116】.
+      - name: OrderSchedulingAndDispatching
+        detail: |
+          Consider resource availability, operational constraints and
+          priority, then assign jobs to the right workers【102621162141765†L118-L121】.
+
+  MaintenanceExecution:
+    description: |
+      Improve equipment reliability through efficient maintenance
+      execution processes, including job management, intuitive
+      malfunction reporting and offline task completion【102621162141765†L125-L144】.
+    capabilities:
+      - name: JobManagement
+        detail: |
+          Manage job paperwork, record malfunction information and
+          document time and measurement while handling planned and
+          unplanned goods【102621162141765†L131-L134】.
+      - name: MalfunctionRecordingAndConfirmation
+        detail: |
+          Empower technicians to promptly report malfunctions and
+          efficiently plan, document and confirm repair work【102621162141765†L136-L139】.
+      - name: OfflineTaskCompletion
+        detail: |
+          Use mobile‑friendly apps offline to execute maintenance
+          jobs, perform inspections and update asset status in the
+          field【102621162141765†L141-L144】.
+
+  EmbeddedAssetAnalytics:
+    description: |
+      Provide real‑time insights into critical asset metrics through
+      embedded analytics.  These tools enable data‑driven
+      decision‑making by analysing breakdowns, running on‑the‑fly
+      queries and comparing planned versus actual maintenance costs
+      【102621162141765†L148-L168】.
+    capabilities:
+      - name: AssetBreakdownAnalysis
+        detail: |
+          Evaluate key industry metrics related to asset breakdowns
+          and damage to focus maintenance strategies【102621162141765†L155-L158】.
+      - name: ProactiveAnalyticalQueries
+        detail: |
+          Create reports for on‑the‑fly analysis of asset‑related
+          data, making maintenance processes more proactive【102621162141765†L160-L163】.
+      - name: MaintenanceCostAnalysis
+        detail: |
+          Identify gaps between planned and actual costs by
+          analysing maintenance expenses with drill‑down
+          capabilities【102621162141765†L165-L168】.
+
+# Cross‑module considerations
+notes: |
+  - The asset management module complements Manufacturing and
+    Supply Chain modules by ensuring equipment reliability and
+    availability, which directly affects production and order
+    fulfilment schedules.
+  - Leveraging AI and analytics across all areas enables proactive
+    maintenance strategies and real‑time visibility into asset
+    performance, cost and utilisation【102621162141765†L33-L49】.
+---

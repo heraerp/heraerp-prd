@@ -1,0 +1,582 @@
+# HERA Application Configuration Schema
+# Smart Code: HERA.CONFIG.APP.SCHEMA.YAML.v1
+# This YAML schema defines the complete structure for any HERA application
+
+# ==============================================================================
+# EXAMPLE: Complete CRM Application Configuration
+# ==============================================================================
+
+app:
+  # Basic App Information
+  name: "Customer Relationship Management"
+  code: "CRM"
+  version: "1.0.0"
+  description: "Complete CRM system with customers, leads, opportunities, and sales"
+  smart_code: "HERA.CRM.APP.SYSTEM.v1"
+  
+  # Organization Context
+  organization:
+    id: "org_12345"  # Required - which org this app belongs to
+    name: "Sample Company"
+    
+  # Module Configuration
+  module:
+    code: "CRM"
+    icon: "users"
+    color: "#3B82F6"
+    category: "business"
+    
+# ==============================================================================
+# ENTITIES DEFINITION
+# ==============================================================================
+
+entities:
+  # Customer Entity
+  - entity_type: "CUSTOMER"
+    entity_name: "Customer"
+    description: "Customer master data with complete profile"
+    smart_code: "HERA.CRM.CUSTOMER.ENTITY.v1"
+    icon: "user"
+    
+    # Core Fields (always present)
+    core_fields:
+      entity_code:
+        required: true
+        pattern: "CUST-[0-9]{4}"
+        auto_generate: true
+      entity_name:
+        required: true
+        max_length: 200
+      
+    # Dynamic Fields (stored in core_dynamic_data)
+    dynamic_fields:
+      - name: "customer_type"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.CUSTOMER.FIELD.TYPE.v1"
+        options: ["individual", "corporate", "government"]
+        default: "individual"
+        
+      - name: "credit_limit"
+        type: "number"
+        required: false
+        smart_code: "HERA.CRM.CUSTOMER.FIELD.CREDIT_LIMIT.v1"
+        default: 10000.00
+        
+      - name: "industry"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.CUSTOMER.FIELD.INDUSTRY.v1"
+        options: ["retail", "manufacturing", "services", "technology"]
+        
+      - name: "contact_info"
+        type: "json"
+        required: true
+        smart_code: "HERA.CRM.CUSTOMER.FIELD.CONTACT.v1"
+        schema:
+          phone: "string"
+          email: "string"
+          address: "object"
+          
+    # Relationships this entity can have
+    relationships:
+      - type: "HAS_SALES_REP"
+        target_entity: "EMPLOYEE"
+        cardinality: "one"
+        smart_code: "HERA.CRM.CUSTOMER.REL.HAS_SALES_REP.v1"
+        required: false
+        
+      - type: "BELONGS_TO_TERRITORY"
+        target_entity: "TERRITORY"
+        cardinality: "one"
+        smart_code: "HERA.CRM.CUSTOMER.REL.TERRITORY.v1"
+        required: true
+
+  # Lead Entity
+  - entity_type: "LEAD"
+    entity_name: "Sales Lead"
+    description: "Potential customer leads and prospects"
+    smart_code: "HERA.CRM.LEAD.ENTITY.v1"
+    icon: "target"
+    
+    dynamic_fields:
+      - name: "lead_source"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.LEAD.FIELD.SOURCE.v1"
+        options: ["website", "referral", "cold_call", "marketing", "trade_show"]
+        
+      - name: "lead_score"
+        type: "number"
+        required: false
+        smart_code: "HERA.CRM.LEAD.FIELD.SCORE.v1"
+        min: 0
+        max: 100
+        default: 50
+        
+      - name: "qualification_status"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.LEAD.FIELD.STATUS.v1"
+        options: ["new", "contacted", "qualified", "unqualified", "converted"]
+        default: "new"
+        
+    relationships:
+      - type: "ASSIGNED_TO"
+        target_entity: "EMPLOYEE"
+        cardinality: "one"
+        smart_code: "HERA.CRM.LEAD.REL.ASSIGNED_TO.v1"
+        
+      - type: "CONVERTS_TO"
+        target_entity: "CUSTOMER"
+        cardinality: "one"
+        smart_code: "HERA.CRM.LEAD.REL.CONVERTS_TO.v1"
+
+  # Opportunity Entity
+  - entity_type: "OPPORTUNITY"
+    entity_name: "Sales Opportunity"
+    description: "Sales opportunities and pipeline management"
+    smart_code: "HERA.CRM.OPPORTUNITY.ENTITY.v1"
+    icon: "trending-up"
+    
+    dynamic_fields:
+      - name: "opportunity_value"
+        type: "number"
+        required: true
+        smart_code: "HERA.CRM.OPPORTUNITY.FIELD.VALUE.v1"
+        min: 0
+        
+      - name: "probability"
+        type: "number"
+        required: true
+        smart_code: "HERA.CRM.OPPORTUNITY.FIELD.PROBABILITY.v1"
+        min: 0
+        max: 100
+        default: 25
+        
+      - name: "sales_stage"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.OPPORTUNITY.FIELD.STAGE.v1"
+        options: ["prospecting", "qualification", "proposal", "negotiation", "closed_won", "closed_lost"]
+        default: "prospecting"
+        
+      - name: "expected_close_date"
+        type: "date"
+        required: true
+        smart_code: "HERA.CRM.OPPORTUNITY.FIELD.CLOSE_DATE.v1"
+        
+    relationships:
+      - type: "BELONGS_TO_CUSTOMER"
+        target_entity: "CUSTOMER"
+        cardinality: "one"
+        smart_code: "HERA.CRM.OPPORTUNITY.REL.CUSTOMER.v1"
+        required: true
+        
+      - type: "OWNED_BY"
+        target_entity: "EMPLOYEE"
+        cardinality: "one"
+        smart_code: "HERA.CRM.OPPORTUNITY.REL.OWNER.v1"
+        required: true
+
+# ==============================================================================
+# TRANSACTIONS DEFINITION
+# ==============================================================================
+
+transactions:
+  # Customer Onboarding Transaction
+  - transaction_type: "CUSTOMER_ONBOARDING"
+    transaction_name: "Customer Onboarding Process"
+    description: "Complete customer onboarding with KYC and setup"
+    smart_code: "HERA.CRM.TXN.CUSTOMER_ONBOARDING.v1"
+    category: "onboarding"
+    
+    # Transaction Lines Configuration
+    line_types:
+      - name: "kyc_verification"
+        description: "KYC verification step"
+        required: true
+        smart_code: "HERA.CRM.TXN.LINE.KYC.v1"
+        
+      - name: "credit_check"
+        description: "Credit limit verification"
+        required: false
+        smart_code: "HERA.CRM.TXN.LINE.CREDIT.v1"
+        
+      - name: "account_setup"
+        description: "Account setup and configuration"
+        required: true
+        smart_code: "HERA.CRM.TXN.LINE.SETUP.v1"
+        
+    # Business Rules
+    validation_rules:
+      - rule: "customer_type_required"
+        description: "Customer type must be specified"
+        condition: "dynamic_fields.customer_type != null"
+        
+      - rule: "credit_limit_corporate"
+        description: "Corporate customers must have credit limit >= 50000"
+        condition: "customer_type == 'corporate' implies credit_limit >= 50000"
+
+  # Sales Transaction
+  - transaction_type: "SALE"
+    transaction_name: "Sales Transaction"
+    description: "Record sales with customer and revenue recognition"
+    smart_code: "HERA.CRM.TXN.SALE.v1"
+    category: "revenue"
+    
+    line_types:
+      - name: "receivable"
+        description: "Accounts receivable booking"
+        account_type: "asset"
+        side: "DR"
+        smart_code: "HERA.CRM.TXN.LINE.AR.v1"
+        
+      - name: "revenue"
+        description: "Revenue recognition"
+        account_type: "revenue"
+        side: "CR"
+        smart_code: "HERA.CRM.TXN.LINE.REVENUE.v1"
+        
+    # Auto-balancing rules
+    balancing_rules:
+      - rule: "dr_cr_balance"
+        description: "Debits must equal credits"
+        condition: "sum(DR) == sum(CR)"
+
+# ==============================================================================
+# WORKFLOWS DEFINITION
+# ==============================================================================
+
+workflows:
+  # Lead to Customer Conversion
+  - workflow_name: "Lead to Customer Conversion"
+    workflow_code: "LEAD_CONVERSION"
+    description: "Convert qualified leads to customers"
+    smart_code: "HERA.CRM.WORKFLOW.LEAD_CONVERSION.v1"
+    trigger_entity: "LEAD"
+    
+    steps:
+      - step_name: "Qualification Review"
+        step_code: "QUALIFY"
+        description: "Review lead qualification status"
+        actor_role: "sales_manager"
+        ai_assistance: true
+        
+      - step_name: "Customer Creation"
+        step_code: "CREATE_CUSTOMER"
+        description: "Create customer record from lead data"
+        actor_role: "sales_rep"
+        auto_execute: true
+        
+      - step_name: "Onboarding Transaction"
+        step_code: "ONBOARDING"
+        description: "Execute customer onboarding process"
+        actor_role: "onboarding_specialist"
+        transaction_type: "CUSTOMER_ONBOARDING"
+
+  # Opportunity Management
+  - workflow_name: "Opportunity Lifecycle"
+    workflow_code: "OPP_LIFECYCLE"
+    description: "Manage opportunity from creation to close"
+    smart_code: "HERA.CRM.WORKFLOW.OPPORTUNITY.v1"
+    trigger_entity: "OPPORTUNITY"
+    
+    steps:
+      - step_name: "Initial Qualification"
+        step_code: "INITIAL_QUAL"
+        description: "Initial opportunity qualification"
+        actor_role: "sales_rep"
+        
+      - step_name: "Proposal Generation"
+        step_code: "PROPOSAL"
+        description: "Generate and send proposal"
+        actor_role: "sales_rep"
+        ai_assistance: true
+        
+      - step_name: "Management Approval"
+        step_code: "APPROVAL"
+        description: "Get management approval for large deals"
+        actor_role: "sales_manager"
+        condition: "opportunity_value > 100000"
+        
+      - step_name: "Close Won Processing"
+        step_code: "CLOSE_WON"
+        description: "Process won opportunity"
+        actor_role: "sales_rep"
+        transaction_type: "SALE"
+        condition: "sales_stage == 'closed_won'"
+
+# ==============================================================================
+# USER INTERFACE CONFIGURATION
+# ==============================================================================
+
+ui:
+  # Dashboard Configuration
+  dashboard:
+    title: "CRM Dashboard"
+    layout: "grid"
+    refresh_interval: 300 # 5 minutes
+    
+    widgets:
+      - type: "metric"
+        title: "Total Customers"
+        entity: "CUSTOMER"
+        calculation: "count"
+        timeframe: "all"
+        color: "blue"
+        
+      - type: "metric"
+        title: "Active Leads"
+        entity: "LEAD"
+        calculation: "count"
+        filter: "qualification_status != 'converted'"
+        color: "green"
+        
+      - type: "metric"
+        title: "Pipeline Value"
+        entity: "OPPORTUNITY"
+        calculation: "sum"
+        field: "opportunity_value"
+        filter: "sales_stage not in ['closed_won', 'closed_lost']"
+        color: "purple"
+        
+      - type: "chart"
+        title: "Sales by Month"
+        chart_type: "line"
+        entity: "OPPORTUNITY"
+        group_by: "month(expected_close_date)"
+        calculation: "sum"
+        field: "opportunity_value"
+        
+  # Navigation Menu
+  navigation:
+    - section: "Customers"
+      items:
+        - label: "All Customers"
+          entity: "CUSTOMER"
+          view: "list"
+          icon: "users"
+          
+        - label: "Add Customer"
+          entity: "CUSTOMER"
+          view: "create"
+          icon: "user-plus"
+          
+    - section: "Sales"
+      items:
+        - label: "Leads"
+          entity: "LEAD"
+          view: "list"
+          icon: "target"
+          
+        - label: "Opportunities"
+          entity: "OPPORTUNITY"
+          view: "list"
+          icon: "trending-up"
+          
+        - label: "Sales Pipeline"
+          view: "custom"
+          component: "SalesPipeline"
+          icon: "bar-chart"
+
+  # List Views Configuration
+  list_views:
+    CUSTOMER:
+      columns:
+        - field: "entity_code"
+          title: "Customer ID"
+          sortable: true
+          
+        - field: "entity_name"
+          title: "Customer Name"
+          sortable: true
+          searchable: true
+          
+        - field: "dynamic_fields.customer_type"
+          title: "Type"
+          sortable: true
+          filter: true
+          
+        - field: "dynamic_fields.credit_limit"
+          title: "Credit Limit"
+          format: "currency"
+          sortable: true
+          
+      filters:
+        - field: "dynamic_fields.customer_type"
+          type: "select"
+          options: ["individual", "corporate", "government"]
+          
+        - field: "dynamic_fields.credit_limit"
+          type: "range"
+          min: 0
+          max: 1000000
+
+# ==============================================================================
+# DEPLOYMENT CONFIGURATION
+# ==============================================================================
+
+deployment:
+  # Database Setup
+  database:
+    # These tables will be auto-created if they don't exist
+    required_tables:
+      - "core_entities"
+      - "core_dynamic_data"
+      - "core_relationships"
+      - "universal_transactions"
+      - "universal_transaction_lines"
+      - "core_workflows"
+      
+  # API Endpoints
+  api:
+    base_path: "/api/crm"
+    version: "v1"
+    authentication: "hera_auth"
+    
+  # Permissions
+  permissions:
+    roles:
+      - role: "crm_admin"
+        permissions: ["create", "read", "update", "delete"]
+        entities: ["*"]
+        
+      - role: "sales_rep"
+        permissions: ["create", "read", "update"]
+        entities: ["LEAD", "OPPORTUNITY", "CUSTOMER"]
+        conditions:
+          - "assigned_to == current_user.id OR owned_by == current_user.id"
+          
+      - role: "sales_manager"
+        permissions: ["create", "read", "update", "delete"]
+        entities: ["LEAD", "OPPORTUNITY", "CUSTOMER"]
+        workflows: ["LEAD_CONVERSION", "OPP_LIFECYCLE"]
+
+# ==============================================================================
+# INTEGRATION CONFIGURATION
+# ==============================================================================
+
+integrations:
+  # External Systems
+  external_apis:
+    - name: "Email Marketing"
+      type: "webhook"
+      endpoint: "https://api.mailchimp.com/3.0/"
+      events: ["CUSTOMER_CREATED", "LEAD_CONVERTED"]
+      
+    - name: "Accounting System"
+      type: "rpc"
+      endpoint: "https://api.quickbooks.com/"
+      events: ["SALE_COMPLETED"]
+      
+  # Internal HERA Modules
+  hera_modules:
+    - module: "FINANCE"
+      integration_type: "transaction_sync"
+      sync_transactions: ["SALE", "CUSTOMER_ONBOARDING"]
+      
+    - module: "INVENTORY"
+      integration_type: "entity_relationship"
+      shared_entities: ["PRODUCT", "SERVICE"]
+
+# ==============================================================================
+# AI ASSISTANCE CONFIGURATION
+# ==============================================================================
+
+ai_assistance:
+  # AI-powered features
+  features:
+    - feature: "lead_scoring"
+      description: "Automatically score leads based on behavior and profile"
+      entity: "LEAD"
+      model: "lead_scoring_v1"
+      
+    - feature: "opportunity_insights"
+      description: "Provide insights on opportunity win probability"
+      entity: "OPPORTUNITY"
+      model: "opportunity_analysis_v1"
+      
+    - feature: "customer_recommendations"
+      description: "Recommend next best actions for customers"
+      entity: "CUSTOMER"
+      model: "customer_intelligence_v1"
+      
+  # Smart suggestions
+  suggestions:
+    - context: "creating_lead"
+      suggestions:
+        - "Based on email domain, suggest customer type"
+        - "Recommend lead source based on referrer"
+        - "Auto-assign to territory sales rep"
+        
+    - context: "updating_opportunity"
+      suggestions:
+        - "Suggest probability based on stage and history"
+        - "Recommend next actions based on stage"
+        - "Warn about stale opportunities"
+
+# ==============================================================================
+# VALIDATION RULES
+# ==============================================================================
+
+validation:
+  # Global validation rules
+  global_rules:
+    - rule: "smart_code_pattern"
+      description: "All smart codes must follow HERA pattern"
+      pattern: "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$"
+      
+    - rule: "entity_code_uniqueness"
+      description: "Entity codes must be unique within organization"
+      scope: "organization"
+      
+  # Entity-specific validation
+  entity_validation:
+    CUSTOMER:
+      - rule: "credit_limit_positive"
+        description: "Credit limit must be positive"
+        condition: "credit_limit >= 0"
+        
+    OPPORTUNITY:
+      - rule: "close_date_future"
+        description: "Expected close date should be in the future"
+        condition: "expected_close_date >= today()"
+        severity: "warning"
+
+# ==============================================================================
+# TESTING CONFIGURATION
+# ==============================================================================
+
+testing:
+  # Sample data for testing
+  sample_data:
+    CUSTOMER:
+      - entity_code: "CUST-0001"
+        entity_name: "Acme Corporation"
+        customer_type: "corporate"
+        credit_limit: 100000
+        
+    LEAD:
+      - entity_code: "LEAD-0001"
+        entity_name: "John Smith - Tech Startup"
+        lead_source: "website"
+        lead_score: 85
+        
+  # Test scenarios
+  test_scenarios:
+    - scenario: "lead_to_customer_conversion"
+      description: "Test complete lead conversion workflow"
+      steps:
+        - "Create lead with high score"
+        - "Trigger qualification workflow"
+        - "Convert to customer"
+        - "Verify customer record created"
+        
+    - scenario: "opportunity_lifecycle"
+      description: "Test opportunity from creation to close"
+      steps:
+        - "Create opportunity"
+        - "Progress through sales stages"
+        - "Generate sales transaction"
+        - "Verify revenue recognition"

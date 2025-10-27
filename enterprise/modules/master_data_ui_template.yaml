@@ -1,0 +1,180 @@
+---
+# HERA CRM Generic Master Data UI Template
+#
+# This YAML file defines a reusable template for creating modern
+# master data entry forms.  It is designed to work with any HERA
+# CRM entity by providing a structured definition of tabs, fields,
+# and UI behaviour.  The template incorporates best practices for
+# multi‑step forms such as clearly labelled progress steps, visual
+# cues like icons or checkmarks, and consistent progress indicators
+# across tabs【546966068403289†L45-L75】.  When fields are completed,
+# colours can change to signal completion, and invalid fields can be
+# highlighted, enhancing user experience and reducing errors【546966068403289†L79-L104】.
+
+version: "1.0"
+template: "MasterDataForm"
+description: |
+  A generic template for creating master data entry forms with
+  multiple tabs and a progress indicator.  The template supports
+  dynamic colour changes when fields are filled or invalid and
+  provides a consistent user interface across all steps【546966068403289†L114-L137】.
+
+parameters:
+  entityName: string # Name of the entity (e.g., "Customer", "Product")
+  fields: # List of fields with metadata (type, label, required)
+    - name: string
+      type: string
+      label: string
+      required: boolean
+      tab: string # Identifier for the tab where this field appears
+      validation: # Optional validation rules (regex or functions)
+        pattern: string
+        message: string
+
+  # Relationships define links to other entities. Each relationship can
+  # specify the type (e.g., oneToMany, manyToOne), the target entity, a
+  # label for the UI, the UI component used to select related
+  # records, and the tab where the relationship selector appears.  If
+  # your master data does not involve related entities, you can omit
+  # this section.
+  relationships:
+    - name: string # Relationship name (e.g., "primaryContact")
+      type: string # Relationship type (e.g., "manyToOne", "oneToMany")
+      targetEntity: string # Target entity name (e.g., "Contact")
+      label: string # Label shown in the UI
+      uiComponent: string # UI component ("select", "multiSelect")
+      tab: string # Tab where this relationship selector appears
+
+  # Workflow defines optional post‑creation processes triggered when
+  # the form is completed.  Each step can describe an action (e.g.,
+  # validation, persistence, notifications) and link to the next step.
+  workflow:
+    name: string # Workflow name (e.g., "OnCreateCustomer")
+    description: string # Description of the workflow’s purpose
+    steps:
+      - id: string
+        description: string
+        action: string # e.g., "validate", "persist", "sendNotification"
+        next: string # ID of the next step or null if last
+
+ui:
+  tabs:
+    # Define the sequence of tabs for the master data form.  Each tab
+    # has a title, optional icon, and a description.  The UI will
+    # automatically group fields by their "tab" identifier.
+    - id: string
+      title: string
+      icon: string # Optional icon name (e.g., "user", "address")
+      description: string
+  progressIndicator:
+    type: "stepper" # Supported types: "stepper", "progressBar"
+    labels: true # Display text labels for each step【546966068403289†L45-L49】
+    icons: true # Include icons or checkmarks for completed steps【546966068403289†L79-L104】
+    consistent: true # Keep the progress indicator fixed across tabs【546966068403289†L114-L137】
+    colourScheme:
+      completed: "#00b388" # Colour for completed fields/steps
+      active: "#0073e6" # Colour for the current active step
+      upcoming: "#bdbdbd" # Colour for upcoming steps (lighter text)【546966068403289†L135-L136】
+    autoUpdate: true # Automatically update progress as fields are completed
+
+behaviour:
+  validation:
+    # Real‑time validation rules: highlight fields in error and
+    # update progress only when all required fields on a tab are valid.
+    invalidColour: "#e74c3c"
+    validColour: "#00b388"
+    onFieldChange: |
+      # Pseudocode for field change handler:
+      # if field is invalid -> colour = invalidColour
+      # else if field is filled -> colour = validColour
+      # update progress if all required fields in current tab are valid
+      pass
+  navigation:
+    # Configuration for navigation controls between tabs
+    showNextButton: true
+    showPreviousButton: true
+    disableNextUntilValid: true
+    saveOnNavigate: true # Auto‑save data when moving between tabs
+
+example:
+  entityName: "Customer"
+  fields:
+    - name: "firstName"
+      type: "string"
+      label: "First Name"
+      required: true
+      tab: "basicInfo"
+    - name: "lastName"
+      type: "string"
+      label: "Last Name"
+      required: true
+      tab: "basicInfo"
+    - name: "email"
+      type: "string"
+      label: "Email Address"
+      required: true
+      tab: "contact"
+      validation:
+        pattern: "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+        message: "Invalid email address"
+    - name: "phone"
+      type: "string"
+      label: "Phone Number"
+      required: false
+      tab: "contact"
+  ui:
+    tabs:
+      - id: "basicInfo"
+        title: "Basic Information"
+        icon: "user"
+        description: "Enter the customer’s primary details."
+      - id: "contact"
+        title: "Contact Details"
+        icon: "phone"
+        description: "Provide contact information."
+    progressIndicator:
+      type: "stepper"
+      labels: true
+      icons: true
+      consistent: true
+      colourScheme:
+        completed: "#00b388"
+        active: "#0073e6"
+        upcoming: "#bdbdbd"
+      autoUpdate: true
+  behaviour:
+    validation:
+      invalidColour: "#e74c3c"
+      validColour: "#00b388"
+    navigation:
+      showNextButton: true
+      showPreviousButton: true
+      disableNextUntilValid: true
+      saveOnNavigate: true
+
+  relationships:
+    - name: "primaryContact"
+      type: "manyToOne"
+      targetEntity: "Contact"
+      label: "Primary Contact"
+      uiComponent: "select"
+      tab: "contact"
+
+  workflow:
+    name: "CreateCustomerWorkflow"
+    description: "Workflow executed after the customer form is completed."
+    steps:
+      - id: "validate"
+        description: "Validate the form data"
+        action: "validate"
+        next: "save"
+      - id: "save"
+        description: "Persist the customer record and relationship references"
+        action: "persist"
+        next: "notify"
+      - id: "notify"
+        description: "Send a welcome notification to the primary contact"
+        action: "sendNotification"
+        next: null
+---
+

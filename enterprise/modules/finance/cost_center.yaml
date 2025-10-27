@@ -1,0 +1,92 @@
+# apps/cost_center.yaml
+# Smart Code: HERA.APP.COST_CENTER.v1
+app:
+  name: "HERA Cost Center"
+  smart_code: "HERA.APP.COST_CENTER.v1"
+  version: 1
+
+entities:
+  - type: COST_CENTER
+    smart_code: "HERA.ORG.STRUCTURE.COST_CENTER.STANDARD.v1"
+    code_policy:
+      pattern: "^[A-Z0-9_-]{2,30}$"
+      uniqueness: per_org
+    display:
+      name_template: "{{code}} – {{attributes.name}}"
+      icon: "Building2"
+    attributes:
+      - key: name
+        label: Name
+        type: text
+        required: true
+      - key: manager_id
+        label: Manager
+        type: entity_ref
+        ref:
+          entity_type: USER
+        required: false
+      - key: budget_annual
+        label: Annual Budget
+        type: number
+        min: 0
+      - key: active
+        label: Active
+        type: boolean
+        default: true
+    relationships:
+      allowed_types:
+        - PARENT_OF
+        - MEMBER_OF
+      presets:
+        - type: PARENT_OF
+          to:
+            entity_type: COST_CENTER
+            code: ROOT
+    validations:
+      - id: CC_NAME_REQUIRED
+        when: "true"
+        rule: "attributes.name IS NOT EMPTY"
+        error: "Name is required"
+      - id: BUDGET_POSITIVE
+        when: "attributes.budget_annual IS NOT NULL"
+        rule: "attributes.budget_annual >= 0"
+        error: "Budget must be ≥ 0"
+    import:
+      keys: [code]
+      sample_csv: ["code,name,budget_annual,active"]
+    workflows:
+      on_create: []
+      on_update: []
+
+pages:
+  - kind: entity_wizard
+    entity_type: COST_CENTER
+    steps:
+      - basics
+      - relationships
+      - attributes
+      - review_activate
+
+  - kind: entity_list
+    entity_type: COST_CENTER
+    filters:
+      - key: active
+        type: boolean
+
+  - kind: entity_detail
+    entity_type: COST_CENTER
+
+security:
+  guardrails:
+    - SMART_CODE_REQUIRED
+    - ORG_FILTER_REQUIRED
+    - ACTOR_STAMP_REQUIRED
+  rls:
+    enabled: true
+
+generator:
+  outputs:
+    - ui_wizards
+    - ui_list_detail
+    - api_bindings
+    - tests

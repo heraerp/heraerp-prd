@@ -1,0 +1,798 @@
+# HERA Salon Management Application
+# Smart Code: HERA.SALON.APP.SYSTEM.v1
+# Complete salon management with appointments, services, staff, and inventory
+
+app:
+  name: "Salon Management System"
+  code: "SALON"
+  version: "1.0.0"
+  description: "Complete salon management with bookings, services, staff, and customer management"
+  smart_code: "HERA.SALON.APP.SYSTEM.v1"
+  
+  organization:
+    id: "org_salon_demo"
+    name: "Glamour Salon Chain"
+    
+  module:
+    code: "SALON"
+    icon: "scissors"
+    color: "#EC4899"
+    category: "service"
+
+entities:
+  # Customer Entity
+  - entity_type: "CUSTOMER"
+    entity_name: "Customer"
+    description: "Salon customers with preferences and history"
+    smart_code: "HERA.SALON.CUSTOMER.ENTITY.v1"
+    icon: "user"
+    
+    dynamic_fields:
+      - name: "phone_number"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.CUSTOMER.FIELD.PHONE.v1"
+        pattern: "^\\+?[1-9]\\d{1,14}$"
+        
+      - name: "email"
+        type: "text"
+        required: false
+        smart_code: "HERA.SALON.CUSTOMER.FIELD.EMAIL.v1"
+        pattern: "^[^@]+@[^@]+\\.[^@]+$"
+        
+      - name: "customer_tier"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.CUSTOMER.FIELD.TIER.v1"
+        options: ["bronze", "silver", "gold", "platinum"]
+        default: "bronze"
+        
+      - name: "hair_type"
+        type: "text"
+        required: false
+        smart_code: "HERA.SALON.CUSTOMER.FIELD.HAIR_TYPE.v1"
+        options: ["straight", "wavy", "curly", "coily"]
+        
+      - name: "allergies"
+        type: "json"
+        required: false
+        smart_code: "HERA.SALON.CUSTOMER.FIELD.ALLERGIES.v1"
+        schema:
+          chemicals: "array"
+          products: "array"
+          notes: "string"
+          
+      - name: "preferred_stylist"
+        type: "text"
+        required: false
+        smart_code: "HERA.SALON.CUSTOMER.FIELD.STYLIST.v1"
+        
+    relationships:
+      - type: "HAS_MEMBERSHIP"
+        target_entity: "MEMBERSHIP"
+        cardinality: "one"
+        smart_code: "HERA.SALON.CUSTOMER.REL.MEMBERSHIP.v1"
+
+  # Service Entity
+  - entity_type: "SERVICE"
+    entity_name: "Service"
+    description: "Salon services and treatments"
+    smart_code: "HERA.SALON.SERVICE.ENTITY.v1"
+    icon: "scissors"
+    
+    dynamic_fields:
+      - name: "service_category"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.SERVICE.FIELD.CATEGORY.v1"
+        options: ["haircut", "coloring", "styling", "treatment", "manicure", "pedicure", "facial"]
+        
+      - name: "duration_minutes"
+        type: "number"
+        required: true
+        smart_code: "HERA.SALON.SERVICE.FIELD.DURATION.v1"
+        min: 15
+        max: 300
+        default: 60
+        
+      - name: "base_price"
+        type: "number"
+        required: true
+        smart_code: "HERA.SALON.SERVICE.FIELD.PRICE.v1"
+        min: 0
+        
+      - name: "skill_level_required"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.SERVICE.FIELD.SKILL.v1"
+        options: ["junior", "senior", "master", "expert"]
+        default: "senior"
+        
+      - name: "products_used"
+        type: "json"
+        required: false
+        smart_code: "HERA.SALON.SERVICE.FIELD.PRODUCTS.v1"
+        schema:
+          primary_products: "array"
+          optional_products: "array"
+          
+    relationships:
+      - type: "REQUIRES_PRODUCTS"
+        target_entity: "PRODUCT"
+        cardinality: "many"
+        smart_code: "HERA.SALON.SERVICE.REL.PRODUCTS.v1"
+
+  # Staff Entity
+  - entity_type: "STAFF"
+    entity_name: "Staff Member"
+    description: "Salon staff and stylists"
+    smart_code: "HERA.SALON.STAFF.ENTITY.v1"
+    icon: "user-check"
+    
+    dynamic_fields:
+      - name: "employee_id"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.STAFF.FIELD.EMP_ID.v1"
+        pattern: "^EMP-[0-9]{4}$"
+        
+      - name: "role"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.STAFF.FIELD.ROLE.v1"
+        options: ["receptionist", "junior_stylist", "senior_stylist", "master_stylist", "manager"]
+        
+      - name: "skill_level"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.STAFF.FIELD.SKILL.v1"
+        options: ["junior", "senior", "master", "expert"]
+        
+      - name: "specializations"
+        type: "json"
+        required: false
+        smart_code: "HERA.SALON.STAFF.FIELD.SPECIALIZATIONS.v1"
+        schema:
+          services: "array"
+          certifications: "array"
+          
+      - name: "hourly_rate"
+        type: "number"
+        required: true
+        smart_code: "HERA.SALON.STAFF.FIELD.RATE.v1"
+        min: 0
+        
+      - name: "commission_rate"
+        type: "number"
+        required: false
+        smart_code: "HERA.SALON.STAFF.FIELD.COMMISSION.v1"
+        min: 0
+        max: 100
+        default: 40
+        
+    relationships:
+      - type: "WORKS_AT_STATION"
+        target_entity: "STATION"
+        cardinality: "one"
+        smart_code: "HERA.SALON.STAFF.REL.STATION.v1"
+
+  # Appointment Entity
+  - entity_type: "APPOINTMENT"
+    entity_name: "Appointment"
+    description: "Customer service appointments"
+    smart_code: "HERA.SALON.APPOINTMENT.ENTITY.v1"
+    icon: "calendar"
+    
+    dynamic_fields:
+      - name: "appointment_date"
+        type: "date"
+        required: true
+        smart_code: "HERA.SALON.APPOINTMENT.FIELD.DATE.v1"
+        
+      - name: "start_time"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.APPOINTMENT.FIELD.START.v1"
+        pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+        
+      - name: "end_time"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.APPOINTMENT.FIELD.END.v1"
+        pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+        
+      - name: "status"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.APPOINTMENT.FIELD.STATUS.v1"
+        options: ["scheduled", "confirmed", "in_progress", "completed", "cancelled", "no_show"]
+        default: "scheduled"
+        
+      - name: "notes"
+        type: "text"
+        required: false
+        smart_code: "HERA.SALON.APPOINTMENT.FIELD.NOTES.v1"
+        max_length: 500
+        
+      - name: "estimated_total"
+        type: "number"
+        required: false
+        smart_code: "HERA.SALON.APPOINTMENT.FIELD.TOTAL.v1"
+        min: 0
+        
+    relationships:
+      - type: "BOOKED_BY"
+        target_entity: "CUSTOMER"
+        cardinality: "one"
+        smart_code: "HERA.SALON.APPOINTMENT.REL.CUSTOMER.v1"
+        required: true
+        
+      - type: "ASSIGNED_TO"
+        target_entity: "STAFF"
+        cardinality: "one"
+        smart_code: "HERA.SALON.APPOINTMENT.REL.STAFF.v1"
+        required: true
+        
+      - type: "INCLUDES_SERVICES"
+        target_entity: "SERVICE"
+        cardinality: "many"
+        smart_code: "HERA.SALON.APPOINTMENT.REL.SERVICES.v1"
+
+  # Product Entity  
+  - entity_type: "PRODUCT"
+    entity_name: "Product"
+    description: "Salon products and inventory"
+    smart_code: "HERA.SALON.PRODUCT.ENTITY.v1"
+    icon: "package"
+    
+    dynamic_fields:
+      - name: "product_category"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.PRODUCT.FIELD.CATEGORY.v1"
+        options: ["shampoo", "conditioner", "styling", "coloring", "treatment", "tools", "retail"]
+        
+      - name: "brand"
+        type: "text"
+        required: true
+        smart_code: "HERA.SALON.PRODUCT.FIELD.BRAND.v1"
+        
+      - name: "cost_price"
+        type: "number"
+        required: true
+        smart_code: "HERA.SALON.PRODUCT.FIELD.COST.v1"
+        min: 0
+        
+      - name: "retail_price"
+        type: "number"
+        required: false
+        smart_code: "HERA.SALON.PRODUCT.FIELD.RETAIL.v1"
+        min: 0
+        
+      - name: "current_stock"
+        type: "number"
+        required: true
+        smart_code: "HERA.SALON.PRODUCT.FIELD.STOCK.v1"
+        min: 0
+        default: 0
+        
+      - name: "reorder_level"
+        type: "number"
+        required: true
+        smart_code: "HERA.SALON.PRODUCT.FIELD.REORDER.v1"
+        min: 0
+        default: 5
+        
+      - name: "supplier_info"
+        type: "json"
+        required: false
+        smart_code: "HERA.SALON.PRODUCT.FIELD.SUPPLIER.v1"
+        schema:
+          supplier_name: "string"
+          supplier_contact: "string"
+          lead_time_days: "number"
+
+transactions:
+  # Service Sale Transaction
+  - transaction_type: "SERVICE_SALE"
+    transaction_name: "Service Sale"
+    description: "Record completed salon services and payment"
+    smart_code: "HERA.SALON.TXN.SERVICE_SALE.v1"
+    category: "revenue"
+    
+    line_types:
+      - name: "service_revenue"
+        description: "Revenue from services"
+        required: true
+        smart_code: "HERA.SALON.TXN.LINE.SERVICE_REV.v1"
+        account_type: "revenue"
+        side: "CR"
+        
+      - name: "stylist_commission"
+        description: "Commission payable to stylist"
+        required: true
+        smart_code: "HERA.SALON.TXN.LINE.COMMISSION.v1"
+        account_type: "expense"
+        side: "DR"
+        
+      - name: "cash_received"
+        description: "Cash payment received"
+        required: false
+        smart_code: "HERA.SALON.TXN.LINE.CASH.v1"
+        account_type: "asset"
+        side: "DR"
+        
+      - name: "card_received"
+        description: "Card payment received"
+        required: false
+        smart_code: "HERA.SALON.TXN.LINE.CARD.v1"
+        account_type: "asset"
+        side: "DR"
+        
+    validation_rules:
+      - rule: "payment_required"
+        description: "At least one payment method is required"
+        condition: "cash_received > 0 OR card_received > 0"
+        
+    balancing_rules:
+      - rule: "dr_cr_balance"
+        description: "Total debits must equal total credits"
+        condition: "sum(DR) == sum(CR)"
+
+  # Product Sale Transaction
+  - transaction_type: "PRODUCT_SALE"
+    transaction_name: "Product Sale"
+    description: "Retail product sales to customers"
+    smart_code: "HERA.SALON.TXN.PRODUCT_SALE.v1"
+    category: "revenue"
+    
+    line_types:
+      - name: "product_revenue"
+        description: "Revenue from product sales"
+        required: true
+        smart_code: "HERA.SALON.TXN.LINE.PRODUCT_REV.v1"
+        side: "CR"
+        
+      - name: "inventory_reduction"
+        description: "Reduce inventory value"
+        required: true
+        smart_code: "HERA.SALON.TXN.LINE.INVENTORY.v1"
+        side: "CR"
+        
+      - name: "cost_of_goods"
+        description: "Cost of goods sold"
+        required: true
+        smart_code: "HERA.SALON.TXN.LINE.COGS.v1"
+        side: "DR"
+        
+      - name: "payment_received"
+        description: "Payment received"
+        required: true
+        smart_code: "HERA.SALON.TXN.LINE.PAYMENT.v1"
+        side: "DR"
+
+  # Appointment Booking Transaction
+  - transaction_type: "APPOINTMENT_BOOKING"
+    transaction_name: "Appointment Booking"
+    description: "Record new appointment booking"
+    smart_code: "HERA.SALON.TXN.BOOKING.v1"
+    category: "operational"
+    
+    line_types:
+      - name: "booking_record"
+        description: "Appointment booking entry"
+        required: true
+        smart_code: "HERA.SALON.TXN.LINE.BOOKING.v1"
+        
+      - name: "deposit_received"
+        description: "Deposit payment received"
+        required: false
+        smart_code: "HERA.SALON.TXN.LINE.DEPOSIT.v1"
+
+workflows:
+  # Appointment Booking Workflow
+  - workflow_name: "Appointment Booking Process"
+    workflow_code: "APPOINTMENT_BOOKING"
+    description: "Complete appointment booking from inquiry to confirmation"
+    smart_code: "HERA.SALON.WORKFLOW.BOOKING.v1"
+    trigger_entity: "APPOINTMENT"
+    
+    steps:
+      - step_name: "Customer Consultation"
+        step_code: "CONSULTATION"
+        description: "Discuss services and requirements with customer"
+        actor_role: "receptionist"
+        ai_assistance: true
+        
+      - step_name: "Stylist Assignment"
+        step_code: "ASSIGN_STYLIST"
+        description: "Assign appropriate stylist based on service and skill"
+        actor_role: "manager"
+        ai_assistance: true
+        
+      - step_name: "Schedule Confirmation"
+        step_code: "CONFIRM_SCHEDULE"
+        description: "Confirm appointment time and send reminder"
+        actor_role: "receptionist"
+        auto_execute: true
+        
+      - step_name: "Booking Transaction"
+        step_code: "BOOKING_TXN"
+        description: "Record appointment booking transaction"
+        actor_role: "system"
+        auto_execute: true
+        transaction_type: "APPOINTMENT_BOOKING"
+
+  # Service Delivery Workflow
+  - workflow_name: "Service Delivery Process"
+    workflow_code: "SERVICE_DELIVERY"
+    description: "Manage service delivery from check-in to payment"
+    smart_code: "HERA.SALON.WORKFLOW.SERVICE.v1"
+    trigger_entity: "APPOINTMENT"
+    
+    steps:
+      - step_name: "Customer Check-in"
+        step_code: "CHECKIN"
+        description: "Customer arrival and check-in"
+        actor_role: "receptionist"
+        condition: "status == 'confirmed'"
+        
+      - step_name: "Service Preparation"
+        step_code: "PREPARATION"
+        description: "Prepare workspace and products"
+        actor_role: "assigned_stylist"
+        
+      - step_name: "Service Delivery"
+        step_code: "SERVICE"
+        description: "Deliver the scheduled services"
+        actor_role: "assigned_stylist"
+        
+      - step_name: "Quality Check"
+        step_code: "QUALITY"
+        description: "Final quality check and customer approval"
+        actor_role: "assigned_stylist"
+        
+      - step_name: "Payment Processing"
+        step_code: "PAYMENT"
+        description: "Process payment and record transaction"
+        actor_role: "receptionist"
+        transaction_type: "SERVICE_SALE"
+        
+      - step_name: "Customer Feedback"
+        step_code: "FEEDBACK"
+        description: "Collect customer feedback and book next appointment"
+        actor_role: "receptionist"
+        ai_assistance: true
+
+ui:
+  dashboard:
+    title: "Salon Management Dashboard"
+    layout: "grid"
+    refresh_interval: 180
+    
+    widgets:
+      - type: "metric"
+        title: "Today's Appointments"
+        entity: "APPOINTMENT"
+        calculation: "count"
+        filter: "appointment_date == today() AND status != 'cancelled'"
+        color: "blue"
+        
+      - type: "metric"
+        title: "Daily Revenue"
+        entity: "SERVICE_SALE"
+        calculation: "sum"
+        field: "total_amount"
+        filter: "transaction_date == today()"
+        color: "green"
+        
+      - type: "metric"
+        title: "Active Stylists"
+        entity: "STAFF"
+        calculation: "count"
+        filter: "role in ['junior_stylist', 'senior_stylist', 'master_stylist']"
+        color: "purple"
+        
+      - type: "chart"
+        title: "Weekly Revenue Trend"
+        chart_type: "line"
+        entity: "SERVICE_SALE"
+        group_by: "day(transaction_date)"
+        calculation: "sum"
+        field: "total_amount"
+        
+      - type: "chart"
+        title: "Popular Services"
+        chart_type: "pie"
+        entity: "APPOINTMENT"
+        group_by: "services.service_category"
+        calculation: "count"
+        
+  navigation:
+    - section: "Bookings"
+      items:
+        - label: "Today's Schedule"
+          entity: "APPOINTMENT"
+          view: "list"
+          icon: "calendar-days"
+          
+        - label: "New Appointment"
+          entity: "APPOINTMENT"
+          view: "create"
+          icon: "calendar-plus"
+          
+        - label: "All Appointments"
+          entity: "APPOINTMENT"
+          view: "list"
+          icon: "calendar"
+          
+    - section: "Customers"
+      items:
+        - label: "Customer List"
+          entity: "CUSTOMER"
+          view: "list"
+          icon: "users"
+          
+        - label: "Add Customer"
+          entity: "CUSTOMER"
+          view: "create"
+          icon: "user-plus"
+          
+    - section: "Services & Staff"
+      items:
+        - label: "Services"
+          entity: "SERVICE"
+          view: "list"
+          icon: "scissors"
+          
+        - label: "Staff"
+          entity: "STAFF"
+          view: "list"
+          icon: "user-check"
+          
+    - section: "Inventory"
+      items:
+        - label: "Products"
+          entity: "PRODUCT"
+          view: "list"
+          icon: "package"
+          
+        - label: "Low Stock Alert"
+          view: "custom"
+          component: "LowStockAlert"
+          icon: "alert-triangle"
+          
+    - section: "Reports"
+      items:
+        - label: "Sales Report"
+          view: "custom"
+          component: "SalesReport"
+          icon: "trending-up"
+          
+        - label: "Stylist Performance"
+          view: "custom"
+          component: "StylistReport"
+          icon: "bar-chart"
+
+  list_views:
+    APPOINTMENT:
+      columns:
+        - field: "entity_code"
+          title: "Booking ID"
+          sortable: true
+          
+        - field: "dynamic_fields.appointment_date"
+          title: "Date"
+          format: "date"
+          sortable: true
+          
+        - field: "dynamic_fields.start_time"
+          title: "Time"
+          sortable: true
+          
+        - field: "relationships.BOOKED_BY[0].entity_name"
+          title: "Customer"
+          searchable: true
+          
+        - field: "relationships.ASSIGNED_TO[0].entity_name"
+          title: "Stylist"
+          sortable: true
+          
+        - field: "dynamic_fields.status"
+          title: "Status"
+          sortable: true
+          filter: true
+          
+      filters:
+        - field: "dynamic_fields.status"
+          type: "select"
+          options: ["scheduled", "confirmed", "in_progress", "completed", "cancelled"]
+          
+        - field: "dynamic_fields.appointment_date"
+          type: "date"
+          
+    CUSTOMER:
+      columns:
+        - field: "entity_code"
+          title: "Customer ID"
+          sortable: true
+          
+        - field: "entity_name"
+          title: "Name"
+          sortable: true
+          searchable: true
+          
+        - field: "dynamic_fields.phone_number"
+          title: "Phone"
+          searchable: true
+          
+        - field: "dynamic_fields.customer_tier"
+          title: "Tier"
+          sortable: true
+          filter: true
+          
+        - field: "dynamic_fields.preferred_stylist"
+          title: "Preferred Stylist"
+          sortable: true
+
+deployment:
+  database:
+    required_tables:
+      - "core_entities"
+      - "core_dynamic_data"
+      - "core_relationships"
+      - "universal_transactions"
+      - "universal_transaction_lines"
+      - "core_workflows"
+      
+  api:
+    base_path: "/api/salon"
+    version: "v1"
+    authentication: "hera_auth"
+    
+  permissions:
+    roles:
+      - role: "salon_owner"
+        permissions: ["create", "read", "update", "delete"]
+        entities: ["*"]
+        workflows: ["*"]
+        
+      - role: "salon_manager"
+        permissions: ["create", "read", "update"]
+        entities: ["APPOINTMENT", "CUSTOMER", "SERVICE", "STAFF", "PRODUCT"]
+        workflows: ["APPOINTMENT_BOOKING", "SERVICE_DELIVERY"]
+        
+      - role: "receptionist"
+        permissions: ["create", "read", "update"]
+        entities: ["APPOINTMENT", "CUSTOMER"]
+        workflows: ["APPOINTMENT_BOOKING"]
+        
+      - role: "stylist"
+        permissions: ["read", "update"]
+        entities: ["APPOINTMENT", "CUSTOMER", "SERVICE"]
+        conditions:
+          - "APPOINTMENT.assigned_to == current_user.id"
+        workflows: ["SERVICE_DELIVERY"]
+
+integrations:
+  external_apis:
+    - name: "SMS Notifications"
+      type: "webhook"
+      endpoint: "https://api.twilio.com/2010-04-01/"
+      events: ["APPOINTMENT_CONFIRMED", "APPOINTMENT_REMINDER"]
+      
+    - name: "Payment Processing"
+      type: "rpc"
+      endpoint: "https://api.stripe.com/v1/"
+      events: ["SERVICE_SALE_COMPLETED", "PRODUCT_SALE_COMPLETED"]
+      
+  hera_modules:
+    - module: "INVENTORY"
+      integration_type: "entity_relationship"
+      shared_entities: ["PRODUCT"]
+      
+    - module: "FINANCE"
+      integration_type: "transaction_sync"
+      sync_transactions: ["SERVICE_SALE", "PRODUCT_SALE"]
+
+ai_assistance:
+  features:
+    - feature: "appointment_optimization"
+      description: "Optimize appointment scheduling based on stylist skills and availability"
+      entity: "APPOINTMENT"
+      model: "salon_scheduling_v1"
+      
+    - feature: "customer_preferences"
+      description: "Learn and suggest services based on customer history"
+      entity: "CUSTOMER"
+      model: "customer_intelligence_v1"
+      
+    - feature: "inventory_prediction"
+      description: "Predict product usage and reorder recommendations"
+      entity: "PRODUCT"
+      model: "inventory_forecast_v1"
+      
+  suggestions:
+    - context: "booking_appointment"
+      suggestions:
+        - "Suggest stylist based on service type and customer preference"
+        - "Recommend service packages based on customer history"
+        - "Optimize time slot based on service duration and availability"
+        
+    - context: "service_delivery"
+      suggestions:
+        - "Suggest upsell services based on current appointment"
+        - "Recommend products for customer purchase"
+        - "Alert about customer allergies or preferences"
+
+validation:
+  global_rules:
+    - rule: "appointment_in_future"
+      description: "Appointment date must be today or in the future"
+      condition: "appointment_date >= today()"
+      
+    - rule: "staff_skill_match"
+      description: "Assigned stylist must have required skill level for service"
+      condition: "staff.skill_level >= service.skill_level_required"
+      
+  entity_validation:
+    APPOINTMENT:
+      - rule: "end_after_start"
+        description: "End time must be after start time"
+        condition: "end_time > start_time"
+        
+      - rule: "stylist_availability"
+        description: "Stylist must be available at appointment time"
+        condition: "no_conflicting_appointments(stylist_id, appointment_date, start_time, end_time)"
+        
+    PRODUCT:
+      - rule: "reorder_below_stock"
+        description: "Reorder level should be less than current stock"
+        condition: "reorder_level <= current_stock"
+        severity: "warning"
+
+testing:
+  sample_data:
+    CUSTOMER:
+      - entity_code: "CUST-0001"
+        entity_name: "Sarah Johnson"
+        phone_number: "+1234567890"
+        customer_tier: "gold"
+        hair_type: "curly"
+        
+    SERVICE:
+      - entity_code: "SVC-0001"
+        entity_name: "Women's Haircut & Style"
+        service_category: "haircut"
+        duration_minutes: 60
+        base_price: 75.00
+        skill_level_required: "senior"
+        
+    STAFF:
+      - entity_code: "STF-0001"
+        entity_name: "Emma Rodriguez"
+        employee_id: "EMP-0001"
+        role: "senior_stylist"
+        skill_level: "senior"
+        hourly_rate: 25.00
+        commission_rate: 45
+        
+  test_scenarios:
+    - scenario: "complete_appointment_cycle"
+      description: "Test full appointment lifecycle from booking to payment"
+      steps:
+        - "Create customer record"
+        - "Book appointment with service selection"
+        - "Assign stylist based on skill requirements"
+        - "Process service delivery workflow"
+        - "Complete payment transaction"
+        - "Record customer feedback"
+        
+    - scenario: "inventory_management"
+      description: "Test product inventory tracking and reorder alerts"
+      steps:
+        - "Create product with initial stock"
+        - "Process service that uses products"
+        - "Update inventory levels"
+        - "Trigger low stock alerts"
+        - "Generate reorder recommendations"

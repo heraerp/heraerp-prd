@@ -351,6 +351,7 @@ export default function SalonAccessPage() {
         console.log('🔍 normalizedRole after force normalization:', normalizedRole)
         console.log('🔍 normalizedRole === "owner":', normalizedRole === 'owner')
 
+        // Direct salon routing - enterprise wrapper removed
         if (normalizedRole === 'owner') {
           redirectPath = '/salon/dashboard'
           console.log('✅ OWNER detected - redirecting to dashboard')

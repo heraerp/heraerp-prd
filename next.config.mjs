@@ -80,6 +80,17 @@ const nextConfig = {
     return { beforeFiles: [], afterFiles: [], fallback: [] }
   },
 
+  // Redirect old enterprise/salon routes to standalone salon
+  async redirects() {
+    return [
+      {
+        source: '/enterprise/salon/:path*',
+        destination: '/salon/:path*',
+        permanent: true
+      }
+    ]
+  },
+
   // 🔧 Webpack optimizations and alias resolution
   webpack(config, { dev, isServer }) {
     // Alias resolution
