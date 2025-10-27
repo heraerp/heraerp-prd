@@ -1,5 +1,7 @@
+'use client'
 // Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
 export const dynamic = "force-dynamic";
+
 
 /**
  * HERA Salon: Mobile-Optimized Customers Page (EXAMPLE)
@@ -14,7 +16,6 @@ export const dynamic = "force-dynamic";
  * Copy this pattern to other salon pages
  */
 
-'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'

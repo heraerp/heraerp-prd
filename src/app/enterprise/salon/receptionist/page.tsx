@@ -1,11 +1,12 @@
+'use client'
 // Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
 export const dynamic = "force-dynamic";
+
 
 /**
  * Receptionist Dashboard
  * Simplified dashboard for front-desk staff
  */
-'use client'
 
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'

@@ -298,7 +298,14 @@
     "hera:crm:test": "npx tsx src/scripts/test-crm-demo.ts",
     "hera:demo:create-org": "npx tsx src/scripts/create-demo-org.ts",
     "hera:crm:full-setup": "npm run hera:demo:create-org && npm run hera:crm:demo && npm run hera:crm:test",
-    "hera:crm:full-deploy": "npm run hera:template:deploy:sales && npm run hera:demo:deploy:sales -- --include-test-data && npm run hera:test:sales"
+    "hera:crm:full-deploy": "npm run hera:template:deploy:sales && npm run hera:demo:deploy:sales -- --include-test-data && npm run hera:test:sales",
+    "vibe:start": "npm run dev:safe",
+    "vibe:template": "node scripts/vibe-templates.js",
+    "vibe:check": "npm run check:code",
+    "vibe:fix": "npm run fix:auto",
+    "vibe:salon": "node scripts/vibe-templates.js salonPage",
+    "vibe:enterprise": "node scripts/vibe-templates.js enterprisePage",
+    "vibe:transaction": "node scripts/vibe-templates.js universalTransaction"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
