@@ -54,16 +54,44 @@ const PolicyModal = lazy(() =>
   import('./PolicyModal').then(module => ({ default: module.PolicyModal }))
 )
 
-// Loading fallback component
-function TabLoader() {
+// ✅ ENTERPRISE PATTERN: Skeleton loaders for better perceived performance
+function KPICardsSkeleton() {
   return (
-    <div className="flex items-center justify-center py-12">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: COLORS.gold }} />
-      <span className="ml-3" style={{ color: COLORS.bronze }}>
-        Loading...
-      </span>
+    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8 animate-pulse">
+      {[...Array(4)].map((_, i) => (
+        <div
+          key={i}
+          className="h-32 rounded-xl"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            border: `1px solid ${COLORS.bronze}20`
+          }}
+        />
+      ))}
     </div>
   )
+}
+
+function TabContentSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      {[...Array(5)].map((_, i) => (
+        <div
+          key={i}
+          className="h-24 rounded-lg"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            border: `1px solid ${COLORS.bronze}20`
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+// Legacy loading fallback (keep for backwards compatibility)
+function TabLoader() {
+  return <TabContentSkeleton />
 }
 
 function LeaveManagementPageContent() {
@@ -90,6 +118,36 @@ function LeaveManagementPageContent() {
     leave_type?: 'ANNUAL' | 'SICK' | 'UNPAID' | 'OTHER'
     status?: 'active' | 'archived' | 'all'
   }>({ status: 'all' })
+
+  // ✅ ENTERPRISE PATTERN: Error logging with context (like services page)
+  const logError = React.useCallback((context: string, error: any, additionalInfo?: any) => {
+    const timestamp = new Date().toISOString()
+    const errorLog = {
+      timestamp,
+      context,
+      error: {
+        message: error?.message || String(error),
+        stack: error?.stack,
+        code: error?.code,
+        name: error?.name
+      },
+      additionalInfo,
+      organizationId
+    }
+
+    console.error('🚨 [HERA Leave Management Error]', errorLog)
+
+    if (process.env.NODE_ENV === 'development') {
+      console.group('🔍 Error Details')
+      console.log('Context:', context)
+      console.log('Message:', error?.message)
+      console.log('Stack:', error?.stack)
+      console.log('Additional Info:', additionalInfo)
+      console.groupEnd()
+    }
+
+    return errorLog
+  }, [organizationId])
 
   // 🚀 UPGRADED: Now using useHeraLeave hook with RPC-first architecture
   // Fetch ALL policies (including archived) so we can filter client-side like services page
@@ -143,19 +201,27 @@ function LeaveManagementPageContent() {
     })
   }, [allPolicies, policyFilters])
 
-  // Calculate stats
-  const stats = {
-    totalRequests: requests?.length || 0,
-    pendingRequests: requests?.filter(r => r.status === 'submitted' || r.status === 'pending').length || 0, // ✅ Handle both status values
-    approvedRequests: requests?.filter(r => r.status === 'approved').length || 0,
-    upcomingLeave: requests?.filter(r => {
+  // ✅ PERFORMANCE: Memoized stats calculations (like services page)
+  const stats = React.useMemo(() => {
+    const totalRequests = requests?.length || 0
+    const pendingRequests = requests?.filter(r => r.status === 'submitted' || r.status === 'pending').length || 0
+    const approvedRequests = requests?.filter(r => r.status === 'approved').length || 0
+
+    const upcomingLeave = requests?.filter(r => {
       if (r.status !== 'approved') return false
       const startDate = new Date(r.start_date)
       const now = new Date()
       const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
       return startDate >= now && startDate <= sevenDaysFromNow
     }).length || 0
-  }
+
+    return {
+      totalRequests,
+      pendingRequests,
+      approvedRequests,
+      upcomingLeave
+    }
+  }, [requests])
 
   // CRUD Handlers
   const handleCreateRequest = async (data: any) => {
@@ -167,6 +233,7 @@ function LeaveManagementPageContent() {
       showSuccess('Leave request created', 'Your leave request has been submitted for approval')
       setModalOpen(false)
     } catch (error: any) {
+      logError('handleCreateRequest', error, { data })
       removeToast(loadingId)
       showError('Failed to create leave request', error.message || 'Please try again')
     }
@@ -183,6 +250,7 @@ function LeaveManagementPageContent() {
       removeToast(loadingId)
       showSuccess('Leave request approved', `${staffName}'s leave request has been approved`)
     } catch (error: any) {
+      logError('handleApprove', error, { requestId, notes, staffName })
       removeToast(loadingId)
       showError('Failed to approve request', error.message || 'Please try again')
     }
@@ -199,6 +267,7 @@ function LeaveManagementPageContent() {
       removeToast(loadingId)
       showSuccess('Leave request rejected', `${staffName}'s leave request has been rejected`)
     } catch (error: any) {
+      logError('handleReject', error, { requestId, reason, staffName })
       removeToast(loadingId)
       showError('Failed to reject request', error.message || 'Please try again')
     }
@@ -234,7 +303,7 @@ function LeaveManagementPageContent() {
       setModalOpen(false)
       setSelectedRequest(null)
     } catch (error: any) {
-      console.error('❌ [page] Update request error:', error)
+      logError('handleUpdateRequest', error, { requestId: selectedRequest.id, data })
       removeToast(loadingId)
       showError('Failed to update request', error.message || 'Please try again')
     }
@@ -251,6 +320,7 @@ function LeaveManagementPageContent() {
       removeToast(loadingId)
       showSuccess('Request withdrawn', `${staffName}'s leave request has been withdrawn`)
     } catch (error: any) {
+      logError('handleWithdrawRequest', error, { requestId, staffName })
       removeToast(loadingId)
       showError('Failed to withdraw request', error.message || 'Please try again')
     }
@@ -277,9 +347,9 @@ function LeaveManagementPageContent() {
       setRequestDeleteDialogOpen(false)
       setRequestToDelete(null)
     } catch (error: any) {
+      logError('handleConfirmDeleteRequest', error, { requestId: requestToDelete, staffName })
       removeToast(loadingId)
       showError('Failed to delete request', error.message || 'Please try again')
-      console.error('Request delete error:', error)
     }
   }
 
@@ -294,9 +364,9 @@ function LeaveManagementPageContent() {
       showSuccess('Leave policy created', `Policy "${data.policy_name}" has been created successfully`)
       setPolicyModalOpen(false)
     } catch (error: any) {
+      logError('handleCreatePolicy', error, { data })
       removeToast(loadingId)
       showError('Failed to create policy', error.message || 'Please try again')
-      console.error('Policy creation error:', error)
     }
   }
 
@@ -330,10 +400,9 @@ function LeaveManagementPageContent() {
       setPolicyModalOpen(false)
       setSelectedPolicy(null)
     } catch (error: any) {
-      console.error('❌ [page] Update policy error:', error)
+      logError('handleUpdatePolicy', error, { policyId: selectedPolicy.id, data })
       removeToast(loadingId)
       showError('Failed to update policy', error.message || 'Please try again')
-      console.error('Policy update error:', error)
     }
   }
 
@@ -352,10 +421,9 @@ function LeaveManagementPageContent() {
       removeToast(loadingId)
       showSuccess('Policy archived', `"${policyName}" has been archived`)
     } catch (error: any) {
-      console.error('❌ [page] Archive policy error:', error)
+      logError('handleArchivePolicy', error, { policyId, policyName })
       removeToast(loadingId)
       showError('Failed to archive policy', error.message || 'Please try again')
-      console.error('Policy archive error:', error)
     }
   }
 
@@ -370,9 +438,9 @@ function LeaveManagementPageContent() {
       removeToast(loadingId)
       showSuccess('Policy restored', `"${policyName}" has been restored`)
     } catch (error: any) {
+      logError('handleRestorePolicy', error, { policyId, policyName })
       removeToast(loadingId)
       showError('Failed to restore policy', error.message || 'Please try again')
-      console.error('Policy restore error:', error)
     }
   }
 
@@ -407,9 +475,9 @@ function LeaveManagementPageContent() {
       setDeleteDialogOpen(false)
       setPolicyToDelete(null)
     } catch (error: any) {
+      logError('handleConfirmDelete', error, { policyId: policyToDelete, policyName })
       removeToast(loadingId)
       showError('Failed to delete policy', error.message || 'Please try again')
-      console.error('Policy delete error:', error)
     }
   }
 

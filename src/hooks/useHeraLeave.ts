@@ -224,7 +224,10 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
       if (result.error) throw new Error(result.error.message)
       return result.data
     },
-    enabled: !!organizationId && !!user?.id
+    enabled: !!organizationId && !!user?.id,
+    // ✅ PERFORMANCE: Smart caching for policies (changes infrequently)
+    staleTime: 30000, // 30 seconds - policies don't change often
+    gcTime: 5 * 60 * 1000 // 5 minutes in cache
   })
 
   // ============================================================================
@@ -255,7 +258,10 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
       if (result.error) throw new Error(result.error.message)
       return result.data
     },
-    enabled: !!organizationId && !!user?.id
+    enabled: !!organizationId && !!user?.id,
+    // ✅ PERFORMANCE: Smart caching for staff (changes infrequently)
+    staleTime: 30000, // 30 seconds - staff roster doesn't change often
+    gcTime: 5 * 60 * 1000 // 5 minutes in cache
   })
 
   // ============================================================================
@@ -381,13 +387,18 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
       staffNames: Array.from(staffMap.values())
     })
 
-    // ✅ FILTER: Exclude soft-deleted transactions (deleted_at is not null)
-    const activeTransactions = requestsData.items.filter((txn: any) => !txn.deleted_at)
+    // ✅ FILTER: Exclude soft-deleted transactions AND enforce LEAVE transaction type
+    // 🐛 WORKAROUND: RPC hera_txn_crud_v1 QUERY action ignores transaction_type filter
+    // Filter client-side until RPC is fixed
+    const activeTransactions = requestsData.items.filter((txn: any) =>
+      !txn.deleted_at && txn.transaction_type === 'LEAVE'
+    )
 
     console.log('🔍 [useHeraLeave] Filtering Transactions:', {
       totalTransactions: requestsData.items.length,
       activeTransactions: activeTransactions.length,
       deletedCount: requestsData.items.length - activeTransactions.length,
+      nonLeaveCount: requestsData.items.filter((txn: any) => txn.transaction_type !== 'LEAVE').length,
       firstActiveTransaction: activeTransactions[0]
     })
 
