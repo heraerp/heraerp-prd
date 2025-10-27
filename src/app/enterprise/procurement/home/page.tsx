@@ -21,7 +21,6 @@ import {
   DollarSign,
   Package,
   FileSearch,
-  Handshake,
   UserCheck,
   Calculator,
   Database,
@@ -241,7 +240,7 @@ export default function ProcurementHomePage() {
           {
             title: "Contract Negotiation",
             subtitle: "Terms & conditions management",
-            icon: Handshake,
+            icon: UserCheck, // fallback for "Handshake"
             href: "/enterprise/procurement/sourcing/negotiation",
             requiredPermissions: ["procurement.contracts"]
           },

@@ -1,3 +1,6 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 /**
  * HERA Salon: Mobile-Optimized Customers Page (EXAMPLE)
  * Smart Code: HERA.SALON.CUSTOMERS.MOBILE.EXAMPLE.V1
