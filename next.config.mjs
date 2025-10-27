@@ -72,7 +72,10 @@ const nextConfig = {
     },
   ],
 
-  images: { domains: ['localhost'], formats: ['image/avif', 'image/webp'] },
+  images: { 
+    domains: ['localhost', 'images.unsplash.com'], 
+    formats: ['image/avif', 'image/webp'] 
+  },
   reactStrictMode: true,
 
   // No health rewrites needed - using App Router /api/health
