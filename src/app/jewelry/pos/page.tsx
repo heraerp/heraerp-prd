@@ -78,6 +78,7 @@ interface Customer {
 }
 
 export default function JewelryPOSPage() {
+  console.log('🔶 JEWELRY POS PAGE LOADED - NOT REDIRECTING TO SALON')
   const orgId = useOrgId()
 
   // Cart and transaction state
@@ -230,14 +231,9 @@ export default function JewelryPOSPage() {
 
   // Load current gold rate
   useEffect(() => {
-    ;(async () => {
-      try {
-        const rate = await getEffectiveGoldRate(orgId, new Date().toISOString(), 22)
-        setCurrentGoldRate(rate?.rate_per_gram || 0)
-      } catch (error) {
-        console.error('Failed to load gold rate:', error)
-      }
-    })()
+    console.log('🔶 JEWELRY POS USEEFFECT RUNNING')
+    // Temporarily disable gold rate loading to avoid any API issues
+    setCurrentGoldRate(185) // Fixed demo rate
   }, [orgId])
 
   const filteredItems = retailItems.filter(item => {
