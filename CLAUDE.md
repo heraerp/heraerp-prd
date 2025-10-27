@@ -50,6 +50,65 @@ if (!validation.isValid) {
 
 ---
 
+## 🤖 HERA AUTO-VALIDATOR - PERMANENT BACKGROUND VALIDATION
+
+**🎯 AUTOMATIC TYPESCRIPT & JSX VALIDATION**: HERA now includes a permanent auto-validator that runs in the background during development, catching issues immediately after every file save.
+
+### 🚀 **ALWAYS-ON VALIDATION SYSTEM:**
+```bash
+# Start auto-validator (runs permanently in background)
+npm run validate:watch
+
+# Safe development mode (auto-validator + dev server)
+npm run dev:safe
+
+# Auto-fix common issues
+npm run fix:auto
+
+# Check only staged files before committing
+npm run check:staged
+```
+
+### 🛡️ **AUTOMATIC ISSUE DETECTION:**
+1. ✅ **TypeScript Errors** - Incremental TS compilation checking
+2. ✅ **Missing Modules** - Import path validation and module existence
+3. ✅ **JSX Entity Issues** - Unescaped `<` `>` `&` character detection
+4. ✅ **Import Validation** - Component path verification
+5. ✅ **Real-time Feedback** - Instant validation on every save
+
+### 📱 **VS CODE INTEGRATION:**
+- **Automatic validation** on file save
+- **Background task** runs continuously
+- **Problem markers** show issues inline
+- **Auto-fix suggestions** for common problems
+
+### 🔧 **COMMANDS FOR DEVELOPMENT:**
+```bash
+# Start development with continuous validation
+npm run dev:safe
+
+# Fix issues automatically
+npm run fix:auto
+
+# Validate before committing
+npm run safe:commit
+
+# Manual validation check
+npm run check:code
+```
+
+### 💡 **ZERO-CONFIGURATION SETUP:**
+The auto-validator is now permanently integrated into HERA development workflow:
+- Runs automatically when you save files
+- Validates TypeScript, JSX entities, and module imports
+- Shows clear error messages with file/line locations
+- Suggests automatic fixes for common issues
+- Works seamlessly with existing VS Code extensions
+
+**No manual intervention required - just code and the validator handles the rest!**
+
+---
+
 ## 🚨 SACRED RULES - NEVER VIOLATE
 
 ### 🔴 ALWAYS REQUIRED:
