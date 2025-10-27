@@ -144,7 +144,7 @@ const getContextualNavigation = (pathname: string): NavDropdown[] => {
           { id: 'enterprise-home', label: 'Enterprise Home', href: '/enterprise/home', icon: Home },
           { id: 'finance', label: 'Finance', href: '/enterprise/finance/home', icon: BarChart3 },
           { id: 'sales', label: 'Sales & CRM', href: '/enterprise/sales/home', icon: ShoppingCart },
-          { id: 'salon', label: 'Salon Management', href: '/enterprise/salon/home', icon: Star }
+          { id: 'salon', label: 'Salon Management', href: '/salon', icon: Star }
         ]
       }
     ]

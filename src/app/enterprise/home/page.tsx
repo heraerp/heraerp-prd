@@ -86,7 +86,7 @@ export default function EnterpriseHome() {
       description: 'Beauty Business Operations',
       icon: Settings, // Will use Scissors icon when available
       color: 'bg-pink-600',
-      href: '/enterprise/salon/home'
+      href: '/salon'
     },
     {
       id: 'fixed-assets',
