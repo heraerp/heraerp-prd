@@ -278,7 +278,20 @@
     "db:seed-finance-dna-v2-perf-test": "psql \"$DATABASE_URL\" -f database/seed/finance-dna-v2-policy-seeds.sql && psql \"$DATABASE_URL\" -f database/functions/finance-posting-rules-v2-rpc.sql",
     "db:setup-integration-test": "echo 'Setting up integration test database...' && node scripts/setup-integration-test-db.js",
     "db:migrate-integration-test": "echo 'Running integration test migrations...' && node scripts/migrate-integration-test-db.js",
-    "db:seed-integration-test": "psql \"$DATABASE_URL\" -f database/seed/finance-dna-v2-policy-seeds.sql && psql \"$DATABASE_URL\" -f database/functions/finance-posting-rules-v2-rpc.sql"
+    "db:seed-integration-test": "psql \"$DATABASE_URL\" -f database/seed/finance-dna-v2-policy-seeds.sql && psql \"$DATABASE_URL\" -f database/functions/finance-posting-rules-v2-rpc.sql",
+    "hera:template:deploy": "npx tsx src/scripts/deploy-sales-template.ts",
+    "hera:template:deploy:sales": "npx tsx src/scripts/deploy-sales-template.ts",
+    "hera:demo:deploy": "npx tsx src/scripts/deploy-to-demo-org.ts",
+    "hera:demo:deploy:sales": "npx tsx src/scripts/deploy-to-demo-org.ts",
+    "hera:test:sales": "npx tsx src/scripts/test-sales-module.ts",
+    "hera:test:crm": "npx tsx src/scripts/test-sales-module.ts",
+    "hera:yaml:validate": "echo 'YAML validation - add yaml validator here'",
+    "hera:app:generate": "npx tsx src/scripts/deploy-sales-template.ts && npx tsx src/scripts/deploy-to-demo-org.ts",
+    "hera:crm:demo": "npx tsx src/scripts/deploy-crm-demo.ts",
+    "hera:crm:test": "npx tsx src/scripts/test-crm-demo.ts",
+    "hera:demo:create-org": "npx tsx src/scripts/create-demo-org.ts",
+    "hera:crm:full-setup": "npm run hera:demo:create-org && npm run hera:crm:demo && npm run hera:crm:test",
+    "hera:crm:full-deploy": "npm run hera:template:deploy:sales && npm run hera:demo:deploy:sales -- --include-test-data && npm run hera:test:sales"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",

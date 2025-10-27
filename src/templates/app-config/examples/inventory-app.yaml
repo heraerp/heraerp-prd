@@ -1,0 +1,836 @@
+# HERA Inventory Management Application
+# Smart Code: HERA.INVENTORY.APP.SYSTEM.v1
+# Complete inventory management with products, warehouses, stock movements, and procurement
+
+app:
+  name: "Inventory Management System"
+  code: "INVENTORY"
+  version: "1.0.0"
+  description: "Comprehensive inventory management with multi-warehouse support, automated reordering, and real-time stock tracking"
+  smart_code: "HERA.INVENTORY.APP.SYSTEM.v1"
+  
+  organization:
+    id: "org_inventory_demo"
+    name: "Global Supply Corp"
+    
+  module:
+    code: "INVENTORY"
+    icon: "warehouse"
+    color: "#059669"
+    category: "operations"
+
+entities:
+  # Product Entity
+  - entity_type: "PRODUCT"
+    entity_name: "Product"
+    description: "Inventory products with specifications and tracking"
+    smart_code: "HERA.INVENTORY.PRODUCT.ENTITY.v1"
+    icon: "package"
+    
+    dynamic_fields:
+      - name: "sku"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.SKU.v1"
+        pattern: "^[A-Z0-9]{3,15}$"
+        
+      - name: "barcode"
+        type: "text"
+        required: false
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.BARCODE.v1"
+        
+      - name: "product_category"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.CATEGORY.v1"
+        options: ["raw_materials", "finished_goods", "work_in_progress", "consumables", "spare_parts"]
+        
+      - name: "unit_of_measure"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.UOM.v1"
+        options: ["pieces", "kg", "lbs", "liters", "gallons", "meters", "feet"]
+        default: "pieces"
+        
+      - name: "standard_cost"
+        type: "number"
+        required: true
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.STD_COST.v1"
+        min: 0
+        
+      - name: "reorder_point"
+        type: "number"
+        required: true
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.REORDER_POINT.v1"
+        min: 0
+        default: 10
+        
+      - name: "maximum_stock"
+        type: "number"
+        required: true
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.MAX_STOCK.v1"
+        min: 0
+        default: 1000
+        
+      - name: "lead_time_days"
+        type: "number"
+        required: true
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.LEAD_TIME.v1"
+        min: 0
+        default: 7
+        
+      - name: "is_serialized"
+        type: "boolean"
+        required: true
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.SERIALIZED.v1"
+        default: false
+        
+      - name: "specifications"
+        type: "json"
+        required: false
+        smart_code: "HERA.INVENTORY.PRODUCT.FIELD.SPECS.v1"
+        schema:
+          dimensions: "object"
+          weight: "number"
+          material: "string"
+          color: "string"
+          
+    relationships:
+      - type: "SUPPLIED_BY"
+        target_entity: "SUPPLIER"
+        cardinality: "many"
+        smart_code: "HERA.INVENTORY.PRODUCT.REL.SUPPLIER.v1"
+        
+      - type: "STORED_IN"
+        target_entity: "WAREHOUSE"
+        cardinality: "many"
+        smart_code: "HERA.INVENTORY.PRODUCT.REL.WAREHOUSE.v1"
+
+  # Warehouse Entity
+  - entity_type: "WAREHOUSE"
+    entity_name: "Warehouse"
+    description: "Storage facilities and locations"
+    smart_code: "HERA.INVENTORY.WAREHOUSE.ENTITY.v1"
+    icon: "building"
+    
+    dynamic_fields:
+      - name: "warehouse_code"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.WAREHOUSE.FIELD.CODE.v1"
+        pattern: "^WH-[A-Z0-9]{3,8}$"
+        
+      - name: "warehouse_type"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.WAREHOUSE.FIELD.TYPE.v1"
+        options: ["main", "distribution", "transit", "quarantine", "returns"]
+        
+      - name: "address"
+        type: "json"
+        required: true
+        smart_code: "HERA.INVENTORY.WAREHOUSE.FIELD.ADDRESS.v1"
+        schema:
+          street: "string"
+          city: "string"
+          state: "string"
+          zip_code: "string"
+          country: "string"
+          
+      - name: "capacity_cubic_meters"
+        type: "number"
+        required: false
+        smart_code: "HERA.INVENTORY.WAREHOUSE.FIELD.CAPACITY.v1"
+        min: 0
+        
+      - name: "climate_controlled"
+        type: "boolean"
+        required: true
+        smart_code: "HERA.INVENTORY.WAREHOUSE.FIELD.CLIMATE.v1"
+        default: false
+        
+      - name: "security_level"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.WAREHOUSE.FIELD.SECURITY.v1"
+        options: ["basic", "standard", "high", "maximum"]
+        default: "standard"
+        
+    relationships:
+      - type: "MANAGED_BY"
+        target_entity: "EMPLOYEE"
+        cardinality: "one"
+        smart_code: "HERA.INVENTORY.WAREHOUSE.REL.MANAGER.v1"
+
+  # Stock Location Entity
+  - entity_type: "STOCK_LOCATION"
+    entity_name: "Stock Location"
+    description: "Specific locations within warehouses"
+    smart_code: "HERA.INVENTORY.LOCATION.ENTITY.v1"
+    icon: "map-pin"
+    
+    dynamic_fields:
+      - name: "location_code"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.LOCATION.FIELD.CODE.v1"
+        pattern: "^[A-Z0-9]{2,3}-[A-Z0-9]{2,3}-[A-Z0-9]{2,3}$"
+        
+      - name: "location_type"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.LOCATION.FIELD.TYPE.v1"
+        options: ["shelf", "bin", "rack", "floor", "cooler", "freezer"]
+        
+      - name: "aisle"
+        type: "text"
+        required: false
+        smart_code: "HERA.INVENTORY.LOCATION.FIELD.AISLE.v1"
+        
+      - name: "zone"
+        type: "text"
+        required: false
+        smart_code: "HERA.INVENTORY.LOCATION.FIELD.ZONE.v1"
+        
+      - name: "capacity_units"
+        type: "number"
+        required: false
+        smart_code: "HERA.INVENTORY.LOCATION.FIELD.CAPACITY.v1"
+        min: 0
+        
+    relationships:
+      - type: "LOCATED_IN"
+        target_entity: "WAREHOUSE"
+        cardinality: "one"
+        smart_code: "HERA.INVENTORY.LOCATION.REL.WAREHOUSE.v1"
+        required: true
+
+  # Stock Level Entity
+  - entity_type: "STOCK_LEVEL"
+    entity_name: "Stock Level"
+    description: "Current stock quantities by product and location"
+    smart_code: "HERA.INVENTORY.STOCK.ENTITY.v1"
+    icon: "trending-up"
+    
+    dynamic_fields:
+      - name: "quantity_on_hand"
+        type: "number"
+        required: true
+        smart_code: "HERA.INVENTORY.STOCK.FIELD.ON_HAND.v1"
+        min: 0
+        default: 0
+        
+      - name: "quantity_reserved"
+        type: "number"
+        required: true
+        smart_code: "HERA.INVENTORY.STOCK.FIELD.RESERVED.v1"
+        min: 0
+        default: 0
+        
+      - name: "quantity_available"
+        type: "number"
+        required: true
+        smart_code: "HERA.INVENTORY.STOCK.FIELD.AVAILABLE.v1"
+        min: 0
+        default: 0
+        
+      - name: "last_count_date"
+        type: "date"
+        required: false
+        smart_code: "HERA.INVENTORY.STOCK.FIELD.LAST_COUNT.v1"
+        
+      - name: "average_cost"
+        type: "number"
+        required: false
+        smart_code: "HERA.INVENTORY.STOCK.FIELD.AVG_COST.v1"
+        min: 0
+        
+    relationships:
+      - type: "STOCK_OF_PRODUCT"
+        target_entity: "PRODUCT"
+        cardinality: "one"
+        smart_code: "HERA.INVENTORY.STOCK.REL.PRODUCT.v1"
+        required: true
+        
+      - type: "LOCATED_AT"
+        target_entity: "STOCK_LOCATION"
+        cardinality: "one"
+        smart_code: "HERA.INVENTORY.STOCK.REL.LOCATION.v1"
+        required: true
+
+  # Supplier Entity
+  - entity_type: "SUPPLIER"
+    entity_name: "Supplier"
+    description: "Vendor and supplier information"
+    smart_code: "HERA.INVENTORY.SUPPLIER.ENTITY.v1"
+    icon: "truck"
+    
+    dynamic_fields:
+      - name: "supplier_code"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.SUPPLIER.FIELD.CODE.v1"
+        pattern: "^SUP-[A-Z0-9]{4,8}$"
+        
+      - name: "supplier_type"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.SUPPLIER.FIELD.TYPE.v1"
+        options: ["manufacturer", "distributor", "wholesaler", "local", "international"]
+        
+      - name: "payment_terms"
+        type: "text"
+        required: true
+        smart_code: "HERA.INVENTORY.SUPPLIER.FIELD.PAYMENT_TERMS.v1"
+        options: ["net_30", "net_60", "net_90", "cash_on_delivery", "prepaid"]
+        default: "net_30"
+        
+      - name: "delivery_lead_time"
+        type: "number"
+        required: true
+        smart_code: "HERA.INVENTORY.SUPPLIER.FIELD.LEAD_TIME.v1"
+        min: 0
+        default: 14
+        
+      - name: "quality_rating"
+        type: "number"
+        required: false
+        smart_code: "HERA.INVENTORY.SUPPLIER.FIELD.QUALITY.v1"
+        min: 1
+        max: 5
+        default: 3
+        
+      - name: "contact_info"
+        type: "json"
+        required: true
+        smart_code: "HERA.INVENTORY.SUPPLIER.FIELD.CONTACT.v1"
+        schema:
+          primary_contact: "string"
+          phone: "string"
+          email: "string"
+          address: "object"
+
+transactions:
+  # Stock Receipt Transaction
+  - transaction_type: "STOCK_RECEIPT"
+    transaction_name: "Stock Receipt"
+    description: "Receive inventory into warehouse"
+    smart_code: "HERA.INVENTORY.TXN.RECEIPT.v1"
+    category: "inventory_in"
+    
+    line_types:
+      - name: "inventory_increase"
+        description: "Increase inventory asset value"
+        required: true
+        smart_code: "HERA.INVENTORY.TXN.LINE.INV_INCREASE.v1"
+        account_type: "asset"
+        side: "DR"
+        
+      - name: "accounts_payable"
+        description: "Create accounts payable to supplier"
+        required: false
+        smart_code: "HERA.INVENTORY.TXN.LINE.AP.v1"
+        account_type: "liability"
+        side: "CR"
+        
+      - name: "cash_payment"
+        description: "Direct cash payment to supplier"
+        required: false
+        smart_code: "HERA.INVENTORY.TXN.LINE.CASH_PAY.v1"
+        account_type: "asset"
+        side: "CR"
+        
+    validation_rules:
+      - rule: "payment_method_required"
+        description: "Either accounts payable or cash payment is required"
+        condition: "accounts_payable > 0 OR cash_payment > 0"
+
+  # Stock Issue Transaction
+  - transaction_type: "STOCK_ISSUE"
+    transaction_name: "Stock Issue"
+    description: "Issue inventory from warehouse"
+    smart_code: "HERA.INVENTORY.TXN.ISSUE.v1"
+    category: "inventory_out"
+    
+    line_types:
+      - name: "inventory_decrease"
+        description: "Decrease inventory asset value"
+        required: true
+        smart_code: "HERA.INVENTORY.TXN.LINE.INV_DECREASE.v1"
+        account_type: "asset"
+        side: "CR"
+        
+      - name: "cost_of_goods_sold"
+        description: "Record cost of goods sold"
+        required: false
+        smart_code: "HERA.INVENTORY.TXN.LINE.COGS.v1"
+        account_type: "expense"
+        side: "DR"
+        
+      - name: "work_in_progress"
+        description: "Transfer to work in progress"
+        required: false
+        smart_code: "HERA.INVENTORY.TXN.LINE.WIP.v1"
+        account_type: "asset"
+        side: "DR"
+
+  # Stock Transfer Transaction
+  - transaction_type: "STOCK_TRANSFER"
+    transaction_name: "Stock Transfer"
+    description: "Transfer inventory between locations"
+    smart_code: "HERA.INVENTORY.TXN.TRANSFER.v1"
+    category: "inventory_move"
+    
+    line_types:
+      - name: "source_decrease"
+        description: "Decrease inventory at source location"
+        required: true
+        smart_code: "HERA.INVENTORY.TXN.LINE.SRC_DECREASE.v1"
+        
+      - name: "destination_increase"
+        description: "Increase inventory at destination location"
+        required: true
+        smart_code: "HERA.INVENTORY.TXN.LINE.DEST_INCREASE.v1"
+        
+    balancing_rules:
+      - rule: "quantity_balance"
+        description: "Source decrease must equal destination increase"
+        condition: "source_decrease == destination_increase"
+
+  # Stock Adjustment Transaction
+  - transaction_type: "STOCK_ADJUSTMENT"
+    transaction_name: "Stock Adjustment"
+    description: "Adjust inventory for cycle counts and corrections"
+    smart_code: "HERA.INVENTORY.TXN.ADJUSTMENT.v1"
+    category: "inventory_adjustment"
+    
+    line_types:
+      - name: "inventory_adjustment"
+        description: "Inventory quantity adjustment"
+        required: true
+        smart_code: "HERA.INVENTORY.TXN.LINE.ADJUSTMENT.v1"
+        
+      - name: "adjustment_expense"
+        description: "Adjustment variance expense/income"
+        required: true
+        smart_code: "HERA.INVENTORY.TXN.LINE.ADJ_EXPENSE.v1"
+
+workflows:
+  # Stock Receipt Workflow
+  - workflow_name: "Stock Receipt Process"
+    workflow_code: "STOCK_RECEIPT"
+    description: "Complete stock receipt from PO to putaway"
+    smart_code: "HERA.INVENTORY.WORKFLOW.RECEIPT.v1"
+    trigger_entity: "STOCK_RECEIPT"
+    
+    steps:
+      - step_name: "Delivery Inspection"
+        step_code: "INSPECT"
+        description: "Inspect delivered goods against purchase order"
+        actor_role: "warehouse_receiver"
+        
+      - step_name: "Quality Check"
+        step_code: "QUALITY"
+        description: "Perform quality inspection of received items"
+        actor_role: "quality_inspector"
+        condition: "requires_quality_check == true"
+        
+      - step_name: "System Receipt"
+        step_code: "SYSTEM_RECEIPT"
+        description: "Record receipt in inventory system"
+        actor_role: "warehouse_clerk"
+        transaction_type: "STOCK_RECEIPT"
+        auto_execute: true
+        
+      - step_name: "Location Assignment"
+        step_code: "ASSIGN_LOCATION"
+        description: "Assign optimal storage location"
+        actor_role: "system"
+        ai_assistance: true
+        auto_execute: true
+        
+      - step_name: "Putaway"
+        step_code: "PUTAWAY"
+        description: "Move goods to assigned storage location"
+        actor_role: "warehouse_operator"
+
+  # Cycle Count Workflow
+  - workflow_name: "Cycle Count Process"
+    workflow_code: "CYCLE_COUNT"
+    description: "Systematic inventory counting and adjustment"
+    smart_code: "HERA.INVENTORY.WORKFLOW.CYCLE_COUNT.v1"
+    trigger_entity: "STOCK_LEVEL"
+    
+    steps:
+      - step_name: "Count Assignment"
+        step_code: "ASSIGN_COUNT"
+        description: "Assign count tasks to warehouse staff"
+        actor_role: "warehouse_supervisor"
+        ai_assistance: true
+        
+      - step_name: "Physical Count"
+        step_code: "PHYSICAL_COUNT"
+        description: "Perform physical count of assigned items"
+        actor_role: "warehouse_counter"
+        
+      - step_name: "Count Verification"
+        step_code: "VERIFY_COUNT"
+        description: "Verify count accuracy and investigate variances"
+        actor_role: "warehouse_supervisor"
+        condition: "variance_percentage > 5"
+        
+      - step_name: "Adjustment Processing"
+        step_code: "ADJUSTMENT"
+        description: "Process inventory adjustments"
+        actor_role: "warehouse_clerk"
+        transaction_type: "STOCK_ADJUSTMENT"
+        condition: "adjustment_required == true"
+
+ui:
+  dashboard:
+    title: "Inventory Management Dashboard"
+    layout: "grid"
+    refresh_interval: 300
+    
+    widgets:
+      - type: "metric"
+        title: "Total SKUs"
+        entity: "PRODUCT"
+        calculation: "count"
+        color: "blue"
+        
+      - type: "metric"
+        title: "Low Stock Items"
+        entity: "STOCK_LEVEL"
+        calculation: "count"
+        filter: "quantity_available <= product.reorder_point"
+        color: "red"
+        
+      - type: "metric"
+        title: "Total Inventory Value"
+        entity: "STOCK_LEVEL"
+        calculation: "sum"
+        field: "quantity_on_hand * average_cost"
+        color: "green"
+        
+      - type: "metric"
+        title: "Warehouses"
+        entity: "WAREHOUSE"
+        calculation: "count"
+        color: "purple"
+        
+      - type: "chart"
+        title: "Stock Movements (7 days)"
+        chart_type: "line"
+        entity: "STOCK_RECEIPT"
+        group_by: "day(transaction_date)"
+        calculation: "sum"
+        field: "total_quantity"
+        
+      - type: "chart"
+        title: "Inventory by Category"
+        chart_type: "pie"
+        entity: "PRODUCT"
+        group_by: "product_category"
+        calculation: "count"
+
+  navigation:
+    - section: "Products"
+      items:
+        - label: "Product Catalog"
+          entity: "PRODUCT"
+          view: "list"
+          icon: "package"
+          
+        - label: "Add Product"
+          entity: "PRODUCT"
+          view: "create"
+          icon: "plus-circle"
+          
+        - label: "Stock Levels"
+          entity: "STOCK_LEVEL"
+          view: "list"
+          icon: "trending-up"
+          
+    - section: "Warehouses"
+      items:
+        - label: "Warehouse List"
+          entity: "WAREHOUSE"
+          view: "list"
+          icon: "building"
+          
+        - label: "Stock Locations"
+          entity: "STOCK_LOCATION"
+          view: "list"
+          icon: "map-pin"
+          
+    - section: "Transactions"
+      items:
+        - label: "Stock Receipts"
+          view: "custom"
+          component: "StockReceiptList"
+          icon: "truck"
+          
+        - label: "Stock Issues"
+          view: "custom"
+          component: "StockIssueList"
+          icon: "arrow-right"
+          
+        - label: "Transfers"
+          view: "custom"
+          component: "StockTransferList"
+          icon: "arrow-right-left"
+          
+    - section: "Suppliers"
+      items:
+        - label: "Supplier List"
+          entity: "SUPPLIER"
+          view: "list"
+          icon: "truck"
+          
+        - label: "Add Supplier"
+          entity: "SUPPLIER"
+          view: "create"
+          icon: "plus"
+          
+    - section: "Reports"
+      items:
+        - label: "Low Stock Report"
+          view: "custom"
+          component: "LowStockReport"
+          icon: "alert-triangle"
+          
+        - label: "Inventory Valuation"
+          view: "custom"
+          component: "InventoryValuation"
+          icon: "dollar-sign"
+          
+        - label: "Movement History"
+          view: "custom"
+          component: "MovementHistory"
+          icon: "activity"
+
+  list_views:
+    PRODUCT:
+      columns:
+        - field: "dynamic_fields.sku"
+          title: "SKU"
+          sortable: true
+          searchable: true
+          
+        - field: "entity_name"
+          title: "Product Name"
+          sortable: true
+          searchable: true
+          
+        - field: "dynamic_fields.product_category"
+          title: "Category"
+          sortable: true
+          filter: true
+          
+        - field: "dynamic_fields.standard_cost"
+          title: "Standard Cost"
+          format: "currency"
+          sortable: true
+          
+        - field: "dynamic_fields.reorder_point"
+          title: "Reorder Point"
+          sortable: true
+          
+      filters:
+        - field: "dynamic_fields.product_category"
+          type: "select"
+          options: ["raw_materials", "finished_goods", "work_in_progress", "consumables", "spare_parts"]
+          
+        - field: "dynamic_fields.standard_cost"
+          type: "range"
+          min: 0
+          max: 10000
+          
+    STOCK_LEVEL:
+      columns:
+        - field: "relationships.STOCK_OF_PRODUCT[0].dynamic_fields.sku"
+          title: "SKU"
+          sortable: true
+          searchable: true
+          
+        - field: "relationships.STOCK_OF_PRODUCT[0].entity_name"
+          title: "Product"
+          sortable: true
+          searchable: true
+          
+        - field: "relationships.LOCATED_AT[0].dynamic_fields.location_code"
+          title: "Location"
+          sortable: true
+          
+        - field: "dynamic_fields.quantity_on_hand"
+          title: "On Hand"
+          sortable: true
+          
+        - field: "dynamic_fields.quantity_available"
+          title: "Available"
+          sortable: true
+          
+        - field: "dynamic_fields.last_count_date"
+          title: "Last Count"
+          format: "date"
+          sortable: true
+
+deployment:
+  database:
+    required_tables:
+      - "core_entities"
+      - "core_dynamic_data"
+      - "core_relationships"
+      - "universal_transactions"
+      - "universal_transaction_lines"
+      - "core_workflows"
+      
+  api:
+    base_path: "/api/inventory"
+    version: "v1"
+    authentication: "hera_auth"
+    
+  permissions:
+    roles:
+      - role: "inventory_admin"
+        permissions: ["create", "read", "update", "delete"]
+        entities: ["*"]
+        workflows: ["*"]
+        
+      - role: "warehouse_manager"
+        permissions: ["create", "read", "update"]
+        entities: ["PRODUCT", "WAREHOUSE", "STOCK_LOCATION", "STOCK_LEVEL", "SUPPLIER"]
+        workflows: ["STOCK_RECEIPT", "CYCLE_COUNT"]
+        
+      - role: "warehouse_clerk"
+        permissions: ["read", "update"]
+        entities: ["PRODUCT", "STOCK_LEVEL"]
+        workflows: ["STOCK_RECEIPT"]
+        
+      - role: "warehouse_operator"
+        permissions: ["read", "update"]
+        entities: ["STOCK_LEVEL"]
+
+integrations:
+  external_apis:
+    - name: "ERP System"
+      type: "rpc"
+      endpoint: "https://api.erp-system.com/v1/"
+      events: ["STOCK_RECEIPT_COMPLETED", "STOCK_ISSUE_COMPLETED"]
+      
+    - name: "WMS System"
+      type: "webhook"
+      endpoint: "https://wms.warehouse-system.com/api/"
+      events: ["STOCK_MOVEMENT", "CYCLE_COUNT_COMPLETED"]
+      
+  hera_modules:
+    - module: "PROCUREMENT"
+      integration_type: "transaction_sync"
+      sync_transactions: ["STOCK_RECEIPT"]
+      
+    - module: "FINANCE"
+      integration_type: "transaction_sync"
+      sync_transactions: ["STOCK_RECEIPT", "STOCK_ISSUE", "STOCK_ADJUSTMENT"]
+
+ai_assistance:
+  features:
+    - feature: "demand_forecasting"
+      description: "Predict future demand and optimize reorder points"
+      entity: "PRODUCT"
+      model: "demand_forecast_v1"
+      
+    - feature: "optimal_location"
+      description: "Suggest optimal storage locations for received goods"
+      entity: "STOCK_LOCATION"
+      model: "location_optimization_v1"
+      
+    - feature: "cycle_count_priority"
+      description: "Prioritize items for cycle counting based on ABC analysis"
+      entity: "STOCK_LEVEL"
+      model: "cycle_count_priority_v1"
+      
+  suggestions:
+    - context: "stock_receipt"
+      suggestions:
+        - "Suggest optimal putaway location based on product characteristics"
+        - "Recommend quality inspection based on supplier history"
+        - "Alert about potential overstocking situations"
+        
+    - context: "stock_management"
+      suggestions:
+        - "Identify slow-moving items for clearance"
+        - "Recommend safety stock adjustments"
+        - "Suggest inventory consolidation opportunities"
+
+validation:
+  global_rules:
+    - rule: "positive_quantities"
+      description: "Stock quantities must be non-negative"
+      condition: "quantity_on_hand >= 0 AND quantity_available >= 0"
+      
+    - rule: "available_vs_onhand"
+      description: "Available quantity cannot exceed on-hand quantity"
+      condition: "quantity_available <= quantity_on_hand"
+      
+  entity_validation:
+    PRODUCT:
+      - rule: "reorder_point_validation"
+        description: "Reorder point should be less than maximum stock"
+        condition: "reorder_point <= maximum_stock"
+        severity: "warning"
+        
+    STOCK_TRANSFER:
+      - rule: "different_locations"
+        description: "Source and destination locations must be different"
+        condition: "source_location_id != destination_location_id"
+
+testing:
+  sample_data:
+    PRODUCT:
+      - entity_code: "PRD-0001"
+        entity_name: "Steel Bolt M8x20"
+        sku: "BOLT-M8-20"
+        product_category: "raw_materials"
+        unit_of_measure: "pieces"
+        standard_cost: 0.25
+        reorder_point: 100
+        maximum_stock: 5000
+        
+    WAREHOUSE:
+      - entity_code: "WH-0001"
+        entity_name: "Main Warehouse"
+        warehouse_code: "WH-MAIN"
+        warehouse_type: "main"
+        climate_controlled: true
+        security_level: "high"
+        
+    SUPPLIER:
+      - entity_code: "SUP-0001"
+        entity_name: "Industrial Supplies Inc"
+        supplier_code: "SUP-IND001"
+        supplier_type: "distributor"
+        payment_terms: "net_30"
+        delivery_lead_time: 7
+        quality_rating: 4
+        
+  test_scenarios:
+    - scenario: "complete_receipt_process"
+      description: "Test complete stock receipt from delivery to putaway"
+      steps:
+        - "Create purchase order with supplier"
+        - "Receive delivery and inspect goods"
+        - "Process stock receipt transaction"
+        - "Assign storage location"
+        - "Complete putaway process"
+        - "Verify stock levels updated"
+        
+    - scenario: "cycle_count_adjustment"
+      description: "Test cycle count process with inventory adjustment"
+      steps:
+        - "Select items for cycle count"
+        - "Perform physical count"
+        - "Identify count variances"
+        - "Investigate and approve adjustments"
+        - "Process stock adjustment transaction"
+        - "Update stock levels and costs"

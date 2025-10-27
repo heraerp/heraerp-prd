@@ -351,16 +351,24 @@ export default function SalonAccessPage() {
         console.log('🔍 normalizedRole after force normalization:', normalizedRole)
         console.log('🔍 normalizedRole === "owner":', normalizedRole === 'owner')
 
+        // Check if user came from enterprise route
+        const isFromEnterprise = typeof window !== 'undefined' && 
+          (window.location.search.includes('enterprise=true') || 
+           document.referrer.includes('/enterprise/salon') ||
+           sessionStorage.getItem('salon-enterprise-mode') === 'true')
+        
+        console.log('🏢 Enterprise mode detected:', isFromEnterprise)
+
         if (normalizedRole === 'owner') {
-          redirectPath = '/salon/dashboard'
+          redirectPath = isFromEnterprise ? '/enterprise/salon/dashboard' : '/salon/dashboard'
           console.log('✅ OWNER detected - redirecting to dashboard')
           console.log('✅ Redirect path set to:', redirectPath)
         } else if (normalizedRole === 'receptionist') {
-          redirectPath = '/salon/receptionist'
+          redirectPath = isFromEnterprise ? '/enterprise/salon/receptionist' : '/salon/receptionist'
           console.log('✅ RECEPTIONIST detected - redirecting to receptionist page')
           console.log('✅ Redirect path set to:', redirectPath)
         } else {
-          redirectPath = '/salon/receptionist' // default fallback
+          redirectPath = isFromEnterprise ? '/enterprise/salon/receptionist' : '/salon/receptionist' // default fallback
           console.log('⚠️ Unknown role - using default receptionist redirect')
           console.log('⚠️ Role was:', normalizedRole)
         }

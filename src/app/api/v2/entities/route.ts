@@ -74,31 +74,26 @@ export async function POST(request: NextRequest) {
       actor_user_id_type: typeof actor.actor_user_id
     })
 
-    // Step 1: Create entity using hera_entity_upsert_v1 RPC
-    const createPayload = {
+    // Step 1: Create entity using hera_entities_crud_v1 RPC
+
+    const { data: entityResult, error: entityError } = await supabase.rpc('hera_entities_crud_v1', {
+      p_action: 'CREATE',
+      p_actor_user_id: actor.actor_user_id,
       p_organization_id: organizationId,
-      p_entity_type: data.entity_type,
-      p_entity_name: data.entity_name,
-      p_smart_code: data.smart_code,
-      p_entity_id: null, // null for create
-      p_entity_code: data.entity_code || `${data.entity_type.toUpperCase()}-${Date.now()}`,
-      p_entity_description: data.entity_description || null,
-      p_parent_entity_id: data.parent_entity_id || null,
-      p_status: data.status || null,
-      p_tags: null,
-      p_smart_code_status: null,
-      p_business_rules: null,
-      p_metadata: data.metadata || null,
-      p_ai_confidence: null,
-      p_ai_classification: null,
-      p_ai_insights: null,
-      p_actor_user_id: actor.actor_user_id // ✅ CRITICAL: Required for audit trail
-    }
-
-    console.log('🚀 [CREATE] EXACT RPC PAYLOAD:', JSON.stringify(createPayload, null, 2))
-    console.log('🔑 [CREATE] p_actor_user_id value:', createPayload.p_actor_user_id)
-
-    const { data: entityResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', createPayload)
+      p_entity: {
+        entity_type: data.entity_type,
+        entity_name: data.entity_name,
+        entity_code: data.entity_code,
+        entity_description: data.entity_description,
+        smart_code: data.smart_code,
+        parent_entity_id: data.parent_entity_id,
+        status: data.status,
+        metadata: data.metadata
+      },
+      p_dynamic: {},  // Will be populated separately
+      p_relationships: [],
+      p_options: {}
+    })
 
     if (entityError || !entityResult) {
       console.error('Entity creation failed:', entityError)
@@ -121,8 +116,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // RPC returns the entity_id as a string
-    const entityId = entityResult
+    // hera_entities_crud_v1 returns a structured response
+    const entityId = entityResult?.entity_id || entityResult?.id || entityResult
 
     // Step 2: Add dynamic fields if provided using batch operation
     if (data.dynamic_fields) {
@@ -377,32 +372,31 @@ export async function PUT(request: NextRequest) {
         )
       }
 
-      // 🔍 CRITICAL DEBUG: Log the EXACT RPC payload being sent
-      const rpcPayload = {
+      console.log('🔄 Updating entity with hera_entities_crud_v1:', {
+        entity_id: data.entity_id,
+        actor_user_id: actor.actor_user_id,
+        organization_id: organizationId
+      })
+
+      const { data: updateResult, error: entityError } = await supabase.rpc('hera_entities_crud_v1', {
+        p_action: 'UPDATE',
+        p_actor_user_id: actor.actor_user_id,
         p_organization_id: organizationId,
-        p_entity_type: existingEntity.entity_type,
-        p_entity_name: data.entity_name || existingEntity.entity_name,
-        p_smart_code: data.smart_code || existingEntity.smart_code,
-        p_entity_id: data.entity_id,
-        p_entity_code: data.entity_code || null,
-        p_entity_description: data.entity_description !== undefined ? data.entity_description : null,
-        p_parent_entity_id: data.parent_entity_id !== undefined ? data.parent_entity_id : null,
-        p_status: data.status !== undefined ? data.status : null,
-        p_tags: null,
-        p_smart_code_status: null,
-        p_business_rules: null,
-        p_metadata: data.metadata || null,
-        p_ai_confidence: null,
-        p_ai_classification: null,
-        p_ai_insights: null,
-        p_actor_user_id: actor.actor_user_id
-      }
-
-      console.log('🚀 EXACT RPC PAYLOAD:', JSON.stringify(rpcPayload, null, 2))
-      console.log('🔑 p_actor_user_id value:', rpcPayload.p_actor_user_id)
-      console.log('🔑 p_actor_user_id type:', typeof rpcPayload.p_actor_user_id)
-
-      const { data: updateResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', rpcPayload)
+        p_entity: {
+          entity_id: data.entity_id,
+          entity_type: existingEntity.entity_type,
+          entity_name: data.entity_name || existingEntity.entity_name,
+          entity_code: data.entity_code,
+          entity_description: data.entity_description,
+          smart_code: data.smart_code || existingEntity.smart_code,
+          parent_entity_id: data.parent_entity_id,
+          status: data.status,
+          metadata: data.metadata
+        },
+        p_dynamic: {},  // Will be handled separately
+        p_relationships: [],
+        p_options: {}
+      })
 
       if (entityError || !updateResult) {
         console.error('Entity update failed:', entityError)

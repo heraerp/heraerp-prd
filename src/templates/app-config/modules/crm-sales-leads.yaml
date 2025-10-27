@@ -1,0 +1,1023 @@
+# HERA CRM Sales/Lead Management YAML configuration
+
+# ----------------------------------------------------------------------
+# This YAML file defines the foundational Sales/Lead module for the HERA
+# CRM platform.  It contains entity definitions, transaction flows,
+# workflows, UI layout, seed data scaffolding and security rules.  The
+# module is designed to be deployed first within the Platform
+# Organization and then replicated to a Demo Organization for testing.
+# It uses the proven `useUniversalEntityV1` and `useUniversalTransactionV1`
+# hooks and deploys the standard Master Data Wizard and Transaction
+# Wizard templates.  Once validated, the same structure can be reused
+# for subsequent modules.
+
+app:
+  name: "CRM Sales & Lead Management"
+  code: "CRM_SALES"
+  version: "1.0.0"
+  description: "Complete sales and lead management module with AI-powered qualification, opportunity tracking, and quote generation"
+  smart_code: "HERA.CRM.SALES.APP.SYSTEM.v1"
+  
+  organization:
+    id: "00000000-0000-0000-0000-000000000001"  # Demo organization for testing
+    name: "HERA Demo Organization"
+    
+  module:
+    code: "CRM_SALES"
+    icon: "trending-up"
+    color: "#3B82F6"
+    category: "sales"
+
+# ==============================================================================
+# ENTITIES DEFINITION
+# ==============================================================================
+
+entities:
+  # Lead Entity - Potential customers captured through various channels
+  - entity_type: "LEAD"
+    entity_name: "Sales Lead"
+    description: "Potential customer or prospect captured through marketing campaigns, website forms or manual entry"
+    smart_code: "HERA.CRM.SALES.LEAD.ENTITY.v1"
+    icon: "user-plus"
+    
+    core_fields:
+      entity_code:
+        required: true
+        pattern: "LEAD-[0-9]{6}"
+        auto_generate: true
+      entity_name:
+        required: true
+        max_length: 200
+        
+    dynamic_fields:
+      - name: "first_name"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.FIRST_NAME.v1"
+        max_length: 50
+        
+      - name: "last_name"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.LAST_NAME.v1"
+        max_length: 50
+        
+      - name: "email"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.EMAIL.v1"
+        pattern: "^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$"
+        
+      - name: "phone"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.PHONE.v1"
+        pattern: "^[+]?[0-9\\s\\-\\(\\)]{10,15}$"
+        
+      - name: "company"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.COMPANY.v1"
+        max_length: 100
+        
+      - name: "lead_source"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.SOURCE.v1"
+        options: ["website", "referral", "email_campaign", "social_media", "trade_show", "cold_call", "other"]
+        default: "website"
+        
+      - name: "status"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.STATUS.v1"
+        options: ["new", "contacted", "qualified", "disqualified", "converted"]
+        default: "new"
+        
+      - name: "lead_score"
+        type: "number"
+        required: false
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.SCORE.v1"
+        min: 0
+        max: 100
+        default: 50
+        
+      - name: "qualification_notes"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.NOTES.v1"
+        max_length: 1000
+        
+      - name: "contact_info"
+        type: "json"
+        required: false
+        smart_code: "HERA.CRM.SALES.LEAD.FIELD.CONTACT_INFO.v1"
+        schema:
+          address: "string"
+          city: "string"
+          state: "string"
+          postal_code: "string"
+          country: "string"
+          
+    relationships:
+      - type: "ASSIGNED_TO"
+        target_entity: "SALES_REP"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.LEAD.REL.ASSIGNED_TO.v1"
+        required: false
+        
+      - type: "CONVERTS_TO"
+        target_entity: "OPPORTUNITY"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.LEAD.REL.CONVERTS_TO.v1"
+        required: false
+
+  # Opportunity Entity - Potential revenue-generating deals
+  - entity_type: "OPPORTUNITY"
+    entity_name: "Sales Opportunity"
+    description: "Potential revenue-producing event such as a deal or project"
+    smart_code: "HERA.CRM.SALES.OPPORTUNITY.ENTITY.v1"
+    icon: "target"
+    
+    core_fields:
+      entity_code:
+        required: true
+        pattern: "OPP-[0-9]{6}"
+        auto_generate: true
+      entity_name:
+        required: true
+        max_length: 200
+        
+    dynamic_fields:
+      - name: "opportunity_name"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.FIELD.NAME.v1"
+        max_length: 200
+        
+      - name: "stage"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.FIELD.STAGE.v1"
+        options: ["prospecting", "qualification", "proposal", "negotiation", "closed_won", "closed_lost"]
+        default: "prospecting"
+        
+      - name: "amount"
+        type: "number"
+        required: true
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.FIELD.AMOUNT.v1"
+        min: 0
+        
+      - name: "probability"
+        type: "number"
+        required: true
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.FIELD.PROBABILITY.v1"
+        min: 0
+        max: 100
+        default: 25
+        
+      - name: "expected_close_date"
+        type: "date"
+        required: true
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.FIELD.CLOSE_DATE.v1"
+        
+      - name: "currency"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.FIELD.CURRENCY.v1"
+        options: ["USD", "EUR", "GBP", "CAD", "AUD"]
+        default: "USD"
+        
+      - name: "description"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.FIELD.DESCRIPTION.v1"
+        max_length: 1000
+        
+    relationships:
+      - type: "BELONGS_TO_CUSTOMER"
+        target_entity: "CUSTOMER"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.REL.CUSTOMER.v1"
+        required: true
+        
+      - type: "OWNED_BY"
+        target_entity: "SALES_REP"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.REL.OWNER.v1"
+        required: true
+        
+      - type: "IN_TERRITORY"
+        target_entity: "TERRITORY"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.OPPORTUNITY.REL.TERRITORY.v1"
+        required: false
+
+  # Customer Entity - Qualified prospects and existing customers
+  - entity_type: "CUSTOMER"
+    entity_name: "Customer"
+    description: "Individual or organization that has purchased or intends to purchase products/services"
+    smart_code: "HERA.CRM.SALES.CUSTOMER.ENTITY.v1"
+    icon: "users"
+    
+    core_fields:
+      entity_code:
+        required: true
+        pattern: "CUST-[0-9]{6}"
+        auto_generate: true
+      entity_name:
+        required: true
+        max_length: 200
+        
+    dynamic_fields:
+      - name: "customer_type"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.CUSTOMER.FIELD.TYPE.v1"
+        options: ["individual", "business", "enterprise"]
+        default: "business"
+        
+      - name: "industry"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.SALES.CUSTOMER.FIELD.INDUSTRY.v1"
+        options: ["technology", "manufacturing", "healthcare", "finance", "retail", "education", "other"]
+        
+      - name: "annual_revenue"
+        type: "number"
+        required: false
+        smart_code: "HERA.CRM.SALES.CUSTOMER.FIELD.REVENUE.v1"
+        min: 0
+        
+      - name: "employee_count"
+        type: "number"
+        required: false
+        smart_code: "HERA.CRM.SALES.CUSTOMER.FIELD.EMPLOYEES.v1"
+        min: 1
+        
+      - name: "primary_contact"
+        type: "json"
+        required: true
+        smart_code: "HERA.CRM.SALES.CUSTOMER.FIELD.CONTACT.v1"
+        schema:
+          name: "string"
+          email: "string"
+          phone: "string"
+          title: "string"
+          
+      - name: "billing_address"
+        type: "json"
+        required: true
+        smart_code: "HERA.CRM.SALES.CUSTOMER.FIELD.BILLING_ADDRESS.v1"
+        schema:
+          street: "string"
+          city: "string"
+          state: "string"
+          postal_code: "string"
+          country: "string"
+          
+    relationships:
+      - type: "HAS_SALES_REP"
+        target_entity: "SALES_REP"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.CUSTOMER.REL.SALES_REP.v1"
+        required: false
+        
+      - type: "IN_TERRITORY"
+        target_entity: "TERRITORY"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.CUSTOMER.REL.TERRITORY.v1"
+        required: false
+
+  # Sales Rep Entity - Sales team members
+  - entity_type: "SALES_REP"
+    entity_name: "Sales Representative"
+    description: "Sales team member responsible for managing leads, opportunities, and customers"
+    smart_code: "HERA.CRM.SALES.SALES_REP.ENTITY.v1"
+    icon: "user"
+    
+    core_fields:
+      entity_code:
+        required: true
+        pattern: "REP-[0-9]{4}"
+        auto_generate: true
+      entity_name:
+        required: true
+        max_length: 200
+        
+    dynamic_fields:
+      - name: "first_name"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.SALES_REP.FIELD.FIRST_NAME.v1"
+        max_length: 50
+        
+      - name: "last_name"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.SALES_REP.FIELD.LAST_NAME.v1"
+        max_length: 50
+        
+      - name: "email"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.SALES_REP.FIELD.EMAIL.v1"
+        pattern: "^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$"
+        
+      - name: "phone"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.SALES.SALES_REP.FIELD.PHONE.v1"
+        
+      - name: "role"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.SALES_REP.FIELD.ROLE.v1"
+        options: ["sales_rep", "senior_sales_rep", "sales_manager", "sales_director"]
+        default: "sales_rep"
+        
+      - name: "quota"
+        type: "number"
+        required: false
+        smart_code: "HERA.CRM.SALES.SALES_REP.FIELD.QUOTA.v1"
+        min: 0
+        
+      - name: "commission_rate"
+        type: "number"
+        required: false
+        smart_code: "HERA.CRM.SALES.SALES_REP.FIELD.COMMISSION.v1"
+        min: 0
+        max: 100
+        
+    relationships:
+      - type: "BELONGS_TO_TERRITORY"
+        target_entity: "TERRITORY"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.SALES_REP.REL.TERRITORY.v1"
+        required: false
+        
+      - type: "REPORTS_TO"
+        target_entity: "SALES_REP"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.SALES_REP.REL.MANAGER.v1"
+        required: false
+
+  # Territory Entity - Geographic or logical sales regions
+  - entity_type: "TERRITORY"
+    entity_name: "Sales Territory"
+    description: "Geographic or logical grouping for sales management and reporting"
+    smart_code: "HERA.CRM.SALES.TERRITORY.ENTITY.v1"
+    icon: "map"
+    
+    core_fields:
+      entity_code:
+        required: true
+        pattern: "TERR-[0-9]{4}"
+        auto_generate: true
+      entity_name:
+        required: true
+        max_length: 200
+        
+    dynamic_fields:
+      - name: "territory_name"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.TERRITORY.FIELD.NAME.v1"
+        max_length: 100
+        
+      - name: "region"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.TERRITORY.FIELD.REGION.v1"
+        options: ["north_america", "south_america", "europe", "asia_pacific", "middle_east_africa"]
+        
+      - name: "countries"
+        type: "json"
+        required: false
+        smart_code: "HERA.CRM.SALES.TERRITORY.FIELD.COUNTRIES.v1"
+        schema:
+          countries: "array"
+          
+      - name: "description"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.SALES.TERRITORY.FIELD.DESCRIPTION.v1"
+        max_length: 500
+        
+    relationships:
+      - type: "MANAGED_BY"
+        target_entity: "SALES_REP"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.TERRITORY.REL.MANAGER.v1"
+        required: false
+
+  # Quote Entity - Formal proposals to customers
+  - entity_type: "QUOTE"
+    entity_name: "Sales Quote"
+    description: "Formal pricing proposal for products or services"
+    smart_code: "HERA.CRM.SALES.QUOTE.ENTITY.v1"
+    icon: "file-text"
+    
+    core_fields:
+      entity_code:
+        required: true
+        pattern: "QUO-[0-9]{6}"
+        auto_generate: true
+      entity_name:
+        required: true
+        max_length: 200
+        
+    dynamic_fields:
+      - name: "quote_number"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.QUOTE.FIELD.NUMBER.v1"
+        pattern: "QUO-[0-9]{6}"
+        
+      - name: "quote_date"
+        type: "date"
+        required: true
+        smart_code: "HERA.CRM.SALES.QUOTE.FIELD.DATE.v1"
+        
+      - name: "expiry_date"
+        type: "date"
+        required: true
+        smart_code: "HERA.CRM.SALES.QUOTE.FIELD.EXPIRY.v1"
+        
+      - name: "total_amount"
+        type: "number"
+        required: true
+        smart_code: "HERA.CRM.SALES.QUOTE.FIELD.TOTAL.v1"
+        min: 0
+        
+      - name: "currency"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.QUOTE.FIELD.CURRENCY.v1"
+        options: ["USD", "EUR", "GBP", "CAD", "AUD"]
+        default: "USD"
+        
+      - name: "status"
+        type: "text"
+        required: true
+        smart_code: "HERA.CRM.SALES.QUOTE.FIELD.STATUS.v1"
+        options: ["draft", "sent", "accepted", "rejected", "expired"]
+        default: "draft"
+        
+      - name: "terms_and_conditions"
+        type: "text"
+        required: false
+        smart_code: "HERA.CRM.SALES.QUOTE.FIELD.TERMS.v1"
+        max_length: 2000
+        
+    relationships:
+      - type: "FOR_OPPORTUNITY"
+        target_entity: "OPPORTUNITY"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.QUOTE.REL.OPPORTUNITY.v1"
+        required: true
+        
+      - type: "FOR_CUSTOMER"
+        target_entity: "CUSTOMER"
+        cardinality: "one"
+        smart_code: "HERA.CRM.SALES.QUOTE.REL.CUSTOMER.v1"
+        required: true
+
+# ==============================================================================
+# TRANSACTIONS DEFINITION
+# ==============================================================================
+
+transactions:
+  # Lead Qualification Transaction
+  - transaction_type: "LEAD_QUALIFICATION"
+    transaction_name: "Lead Qualification Process"
+    description: "AI-powered lead scoring and qualification workflow"
+    smart_code: "HERA.CRM.SALES.TXN.LEAD_QUALIFICATION.v1"
+    category: "qualification"
+    
+    line_types:
+      - name: "scoring_calculation"
+        description: "AI-powered lead score calculation"
+        required: true
+        smart_code: "HERA.CRM.SALES.TXN.LINE.SCORING.v1"
+        
+      - name: "assignment_routing"
+        description: "Automatic sales rep assignment"
+        required: true
+        smart_code: "HERA.CRM.SALES.TXN.LINE.ASSIGNMENT.v1"
+        
+      - name: "status_update"
+        description: "Lead status progression"
+        required: true
+        smart_code: "HERA.CRM.SALES.TXN.LINE.STATUS.v1"
+        
+    validation_rules:
+      - rule: "lead_exists"
+        description: "Lead must exist in system"
+        condition: "lead_id is not null"
+        
+      - rule: "not_already_qualified"
+        description: "Lead must not already be qualified"
+        condition: "status not in ['qualified', 'converted']"
+
+  # Opportunity Creation Transaction
+  - transaction_type: "OPPORTUNITY_CREATION"
+    transaction_name: "Opportunity Creation Process"
+    description: "Convert qualified lead to sales opportunity"
+    smart_code: "HERA.CRM.SALES.TXN.OPPORTUNITY_CREATION.v1"
+    category: "conversion"
+    
+    line_types:
+      - name: "customer_creation"
+        description: "Create customer record if needed"
+        required: false
+        smart_code: "HERA.CRM.SALES.TXN.LINE.CUSTOMER.v1"
+        
+      - name: "opportunity_setup"
+        description: "Create opportunity with initial values"
+        required: true
+        smart_code: "HERA.CRM.SALES.TXN.LINE.OPPORTUNITY.v1"
+        
+      - name: "lead_conversion"
+        description: "Mark lead as converted"
+        required: true
+        smart_code: "HERA.CRM.SALES.TXN.LINE.CONVERSION.v1"
+        
+    validation_rules:
+      - rule: "qualified_lead"
+        description: "Lead must be qualified"
+        condition: "lead_status == 'qualified'"
+
+  # Quote Generation Transaction
+  - transaction_type: "QUOTE_GENERATION"
+    transaction_name: "Quote Generation Process"
+    description: "Generate formal quote for opportunity"
+    smart_code: "HERA.CRM.SALES.TXN.QUOTE_GENERATION.v1"
+    category: "proposal"
+    
+    line_types:
+      - name: "quote_header"
+        description: "Quote header information"
+        required: true
+        smart_code: "HERA.CRM.SALES.TXN.LINE.QUOTE_HEADER.v1"
+        
+      - name: "quote_calculation"
+        description: "Price calculation and totals"
+        required: true
+        smart_code: "HERA.CRM.SALES.TXN.LINE.CALCULATION.v1"
+        
+    validation_rules:
+      - rule: "valid_opportunity"
+        description: "Opportunity must exist and be open"
+        condition: "opportunity_status == 'open'"
+
+# ==============================================================================
+# WORKFLOWS DEFINITION
+# ==============================================================================
+
+workflows:
+  # Lead to Customer Conversion Workflow
+  - workflow_name: "Lead to Customer Conversion"
+    workflow_code: "LEAD_TO_CUSTOMER"
+    description: "Complete lead qualification and conversion process"
+    smart_code: "HERA.CRM.SALES.WORKFLOW.LEAD_CONVERSION.v1"
+    trigger_entity: "LEAD"
+    
+    steps:
+      - step_name: "Initial Contact"
+        step_code: "CONTACT"
+        description: "First contact with lead"
+        actor_role: "sales_rep"
+        
+      - step_name: "AI Qualification"
+        step_code: "AI_QUALIFY"
+        description: "AI-powered lead scoring and qualification"
+        actor_role: "system"
+        ai_assistance: true
+        auto_execute: true
+        transaction_type: "LEAD_QUALIFICATION"
+        
+      - step_name: "Manual Review"
+        step_code: "REVIEW"
+        description: "Sales rep reviews AI qualification"
+        actor_role: "sales_rep"
+        
+      - step_name: "Opportunity Creation"
+        step_code: "CREATE_OPP"
+        description: "Convert qualified lead to opportunity"
+        actor_role: "sales_rep"
+        transaction_type: "OPPORTUNITY_CREATION"
+        condition: "lead_status == 'qualified'"
+
+  # Sales Pipeline Management
+  - workflow_name: "Sales Pipeline Management"
+    workflow_code: "PIPELINE_MGMT"
+    description: "Manage opportunity through sales stages"
+    smart_code: "HERA.CRM.SALES.WORKFLOW.PIPELINE.v1"
+    trigger_entity: "OPPORTUNITY"
+    
+    steps:
+      - step_name: "Prospecting"
+        step_code: "PROSPECT"
+        description: "Initial opportunity qualification"
+        actor_role: "sales_rep"
+        
+      - step_name: "Proposal Generation"
+        step_code: "PROPOSAL"
+        description: "Generate and send quote"
+        actor_role: "sales_rep"
+        transaction_type: "QUOTE_GENERATION"
+        ai_assistance: true
+        
+      - step_name: "Negotiation"
+        step_code: "NEGOTIATE"
+        description: "Negotiate terms and pricing"
+        actor_role: "sales_rep"
+        
+      - step_name: "Close"
+        step_code: "CLOSE"
+        description: "Close opportunity as won or lost"
+        actor_role: "sales_rep"
+
+# ==============================================================================
+# USER INTERFACE CONFIGURATION
+# ==============================================================================
+
+ui:
+  # Dashboard Configuration
+  dashboard:
+    title: "Sales & Lead Management Dashboard"
+    layout: "grid"
+    refresh_interval: 300
+    
+    widgets:
+      - type: "metric"
+        title: "Total Leads"
+        entity: "LEAD"
+        calculation: "count"
+        timeframe: "all"
+        color: "blue"
+        
+      - type: "metric"
+        title: "Qualified Leads"
+        entity: "LEAD"
+        calculation: "count"
+        filter: "status == 'qualified'"
+        color: "green"
+        
+      - type: "metric"
+        title: "Open Opportunities"
+        entity: "OPPORTUNITY"
+        calculation: "count"
+        filter: "stage not in ['closed_won', 'closed_lost']"
+        color: "orange"
+        
+      - type: "metric"
+        title: "Pipeline Value"
+        entity: "OPPORTUNITY"
+        calculation: "sum"
+        field: "amount"
+        filter: "stage not in ['closed_won', 'closed_lost']"
+        color: "purple"
+        
+      - type: "chart"
+        title: "Lead Conversion Funnel"
+        chart_type: "funnel"
+        entity: "LEAD"
+        group_by: "status"
+        calculation: "count"
+        
+      - type: "chart"
+        title: "Sales Pipeline by Stage"
+        chart_type: "bar"
+        entity: "OPPORTUNITY"
+        group_by: "stage"
+        calculation: "sum"
+        field: "amount"
+
+  # Navigation Menu
+  navigation:
+    - section: "Leads"
+      items:
+        - label: "All Leads"
+          entity: "LEAD"
+          view: "list"
+          icon: "users"
+          
+        - label: "Add Lead"
+          entity: "LEAD"
+          view: "create"
+          icon: "user-plus"
+          
+        - label: "Lead Qualification"
+          view: "custom"
+          component: "LeadQualificationWizard"
+          icon: "check-circle"
+          
+    - section: "Opportunities"
+      items:
+        - label: "Sales Pipeline"
+          entity: "OPPORTUNITY"
+          view: "list"
+          icon: "trending-up"
+          
+        - label: "Create Opportunity"
+          entity: "OPPORTUNITY"
+          view: "create"
+          icon: "target"
+          
+    - section: "Customers"
+      items:
+        - label: "All Customers"
+          entity: "CUSTOMER"
+          view: "list"
+          icon: "building"
+          
+        - label: "Add Customer"
+          entity: "CUSTOMER"
+          view: "create"
+          icon: "plus"
+          
+    - section: "Quotes"
+      items:
+        - label: "All Quotes"
+          entity: "QUOTE"
+          view: "list"
+          icon: "file-text"
+          
+        - label: "Generate Quote"
+          view: "custom"
+          component: "QuoteGenerationWizard"
+          icon: "calculator"
+
+  # List Views Configuration
+  list_views:
+    LEAD:
+      columns:
+        - field: "entity_code"
+          title: "Lead ID"
+          sortable: true
+          
+        - field: "entity_name"
+          title: "Lead Name"
+          sortable: true
+          searchable: true
+          
+        - field: "dynamic_fields.company"
+          title: "Company"
+          sortable: true
+          searchable: true
+          
+        - field: "dynamic_fields.lead_source"
+          title: "Source"
+          sortable: true
+          filter: true
+          
+        - field: "dynamic_fields.status"
+          title: "Status"
+          sortable: true
+          filter: true
+          
+        - field: "dynamic_fields.lead_score"
+          title: "Score"
+          sortable: true
+          format: "number"
+          
+      filters:
+        - field: "dynamic_fields.status"
+          type: "select"
+          options: ["new", "contacted", "qualified", "disqualified", "converted"]
+          
+        - field: "dynamic_fields.lead_source"
+          type: "select"
+          options: ["website", "referral", "email_campaign", "social_media", "trade_show", "cold_call", "other"]
+          
+        - field: "dynamic_fields.lead_score"
+          type: "range"
+          min: 0
+          max: 100
+
+    OPPORTUNITY:
+      columns:
+        - field: "entity_code"
+          title: "Opportunity ID"
+          sortable: true
+          
+        - field: "dynamic_fields.opportunity_name"
+          title: "Opportunity Name"
+          sortable: true
+          searchable: true
+          
+        - field: "dynamic_fields.stage"
+          title: "Stage"
+          sortable: true
+          filter: true
+          
+        - field: "dynamic_fields.amount"
+          title: "Amount"
+          format: "currency"
+          sortable: true
+          
+        - field: "dynamic_fields.probability"
+          title: "Probability"
+          format: "percentage"
+          sortable: true
+          
+        - field: "dynamic_fields.expected_close_date"
+          title: "Close Date"
+          format: "date"
+          sortable: true
+
+# ==============================================================================
+# DEPLOYMENT CONFIGURATION
+# ==============================================================================
+
+deployment:
+  # Database Setup
+  database:
+    required_tables:
+      - "core_entities"
+      - "core_dynamic_data"
+      - "core_relationships"
+      - "universal_transactions"
+      - "universal_transaction_lines"
+      - "core_workflows"
+      
+  # API Endpoints
+  api:
+    base_path: "/api/crm/sales"
+    version: "v1"
+    authentication: "hera_auth"
+    
+  # Permissions
+  permissions:
+    roles:
+      - role: "sales_rep"
+        permissions: ["create", "read", "update"]
+        entities: ["LEAD", "OPPORTUNITY", "CUSTOMER", "QUOTE"]
+        conditions:
+          - "assigned_to == current_user.id OR owned_by == current_user.id"
+          
+      - role: "sales_manager"
+        permissions: ["create", "read", "update", "delete"]
+        entities: ["LEAD", "OPPORTUNITY", "CUSTOMER", "QUOTE", "SALES_REP"]
+        workflows: ["LEAD_TO_CUSTOMER", "PIPELINE_MGMT"]
+        
+      - role: "sales_admin"
+        permissions: ["create", "read", "update", "delete"]
+        entities: ["*"]
+        workflows: ["*"]
+
+# ==============================================================================
+# AI ASSISTANCE CONFIGURATION
+# ==============================================================================
+
+ai_assistance:
+  features:
+    - feature: "lead_scoring"
+      description: "AI-powered lead scoring based on historical data"
+      entity: "LEAD"
+      model: "lead_scoring_v1"
+      
+    - feature: "opportunity_insights"
+      description: "Win probability and next best actions"
+      entity: "OPPORTUNITY"
+      model: "opportunity_analysis_v1"
+      
+    - feature: "quote_optimization"
+      description: "Optimal pricing recommendations"
+      entity: "QUOTE"
+      model: "pricing_optimization_v1"
+      
+  suggestions:
+    - context: "creating_lead"
+      suggestions:
+        - "Auto-complete company information from domain"
+        - "Suggest lead source based on referrer"
+        - "Recommend initial lead score based on profile"
+        
+    - context: "qualifying_lead"
+      suggestions:
+        - "Review AI-generated lead score"
+        - "Check similar successful conversions"
+        - "Recommend next best action"
+
+# ==============================================================================
+# VALIDATION RULES
+# ==============================================================================
+
+validation:
+  global_rules:
+    - rule: "smart_code_pattern"
+      description: "All smart codes must follow HERA pattern"
+      pattern: "^HERA\\.CRM\\.SALES\\.[A-Z0-9_]{2,30}\\.[A-Z0-9_]{2,30}\\.[A-Z0-9_]{2,30}\\.v[0-9]+$"
+      
+  entity_validation:
+    LEAD:
+      - rule: "email_format"
+        description: "Email must be valid format"
+        condition: "email matches email pattern"
+        
+    OPPORTUNITY:
+      - rule: "close_date_future"
+        description: "Expected close date should be in future"
+        condition: "expected_close_date >= today()"
+        severity: "warning"
+
+# ==============================================================================
+# TESTING CONFIGURATION
+# ==============================================================================
+
+testing:
+  sample_data:
+    TERRITORY:
+      - entity_code: "TERR-0001"
+        entity_name: "North America"
+        dynamic_fields:
+          territory_name: "North America"
+          region: "north_america"
+          description: "US and Canada markets"
+          
+    SALES_REP:
+      - entity_code: "REP-0001"
+        entity_name: "John Smith"
+        dynamic_fields:
+          first_name: "John"
+          last_name: "Smith"
+          email: "john.smith@company.com"
+          role: "sales_rep"
+          quota: 500000
+          
+    CUSTOMER:
+      - entity_code: "CUST-0001"
+        entity_name: "Acme Corporation"
+        dynamic_fields:
+          customer_type: "business"
+          industry: "technology"
+          annual_revenue: 10000000
+          primary_contact:
+            name: "Jane Doe"
+            email: "jane.doe@acme.com"
+            phone: "+1-555-0123"
+            
+    LEAD:
+      - entity_code: "LEAD-0001"
+        entity_name: "Alice Johnson"
+        dynamic_fields:
+          first_name: "Alice"
+          last_name: "Johnson"
+          email: "alice@example.com"
+          company: "Example Tech"
+          lead_source: "website"
+          status: "new"
+          lead_score: 75
+          
+    OPPORTUNITY:
+      - entity_code: "OPP-0001"
+        entity_name: "Enterprise Software Deal"
+        dynamic_fields:
+          opportunity_name: "Enterprise Software Deal"
+          stage: "qualification"
+          amount: 250000
+          probability: 30
+          expected_close_date: "2024-03-31"
+          currency: "USD"
+
+  test_scenarios:
+    - scenario: "lead_to_customer_conversion"
+      description: "Test complete lead conversion workflow"
+      steps:
+        - "Create new lead with high score"
+        - "Execute lead qualification transaction"
+        - "Convert lead to opportunity"
+        - "Generate quote for opportunity"
+        - "Verify customer record created"
+        
+    - scenario: "sales_pipeline_progression"
+      description: "Test opportunity through sales stages"
+      steps:
+        - "Create opportunity in prospecting stage"
+        - "Progress through qualification"
+        - "Generate and send quote"
+        - "Move to negotiation stage"
+        - "Close as won"
+
+# ==============================================================================
+# PLATFORM INTEGRATION
+# ==============================================================================
+
+platform_integration:
+  template_storage:
+    platform_org_id: "org_hera_platform_00000000"
+    template_category: "crm_sales"
+    complexity_level: "intermediate"
+    
+  deployment_target:
+    demo_org_id: "00000000-0000-0000-0000-000000000001"
+    deployment_mode: "full"
+    include_seed_data: true
+    
+  replication_pattern:
+    next_modules: ["customer_support", "marketing_automation", "inventory_management"]
+    shared_entities: ["CUSTOMER", "SALES_REP", "TERRITORY"]
+    integration_points: ["customer_data", "sales_metrics", "territory_management"]

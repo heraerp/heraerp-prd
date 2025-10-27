@@ -145,7 +145,7 @@ export interface TransactionLineAppendResult {
  */
 export type RpcMap = {
   // Entities
-  hera_entity_upsert_v1: UpsertEntityResult
+  hera_entities_crud_v1: UpsertEntityResult
   hera_entities_query_v1: EntitiesQueryResult
   hera_entity_get_v1: EntityGetResult
   hera_entity_delete_v1: EntityDeleteResult

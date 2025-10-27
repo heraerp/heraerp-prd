@@ -1,0 +1,384 @@
+# Product Master Data Template
+# Smart Code: HERA.ENTERPRISE.MASTER_DATA.PRODUCT.v1
+
+entityName: Product
+smartCode: HERA.INVENTORY.PRODUCT.v1
+description: Product master data management with inventory and pricing details
+
+# Tab organization
+tabs:
+  basic:
+    label: Basic Information
+    description: Core product identification and description
+    order: 1
+    
+  pricing:
+    label: Pricing & Costing
+    description: Cost and pricing information
+    order: 2
+    
+  inventory:
+    label: Inventory Management
+    description: Stock levels and tracking settings
+    order: 3
+    
+  attributes:
+    label: Product Attributes
+    description: Specifications and characteristics
+    order: 4
+
+# Field definitions
+fields:
+  # Basic Information Tab
+  - name: product_name
+    label: Product Name
+    type: string
+    required: true
+    tab: basic
+    placeholder: Enter product name
+    validation:
+      minLength: 2
+      maxLength: 100
+    
+  - name: product_code
+    label: Product Code/SKU
+    type: string
+    required: false
+    tab: basic
+    placeholder: AUTO (will be generated)
+    help: Unique product identifier or SKU
+    
+  - name: description
+    label: Description
+    type: textarea
+    required: true
+    tab: basic
+    placeholder: Detailed product description
+    rows: 3
+    
+  - name: product_category
+    label: Category
+    type: select
+    required: true
+    tab: basic
+    options:
+      - value: electronics
+        label: Electronics
+      - value: clothing
+        label: Clothing & Apparel
+      - value: books
+        label: Books & Media
+      - value: home_garden
+        label: Home & Garden
+      - value: sports
+        label: Sports & Recreation
+      - value: automotive
+        label: Automotive
+      - value: health_beauty
+        label: Health & Beauty
+      - value: toys
+        label: Toys & Games
+      - value: industrial
+        label: Industrial Supplies
+      - value: services
+        label: Services
+      - value: other
+        label: Other
+        
+  - name: product_type
+    label: Product Type
+    type: select
+    required: true
+    tab: basic
+    options:
+      - value: physical
+        label: Physical Product
+      - value: digital
+        label: Digital Product
+      - value: service
+        label: Service
+      - value: subscription
+        label: Subscription
+    defaultValue: physical
+    
+  - name: status
+    label: Status
+    type: select
+    required: true
+    tab: basic
+    options:
+      - value: active
+        label: Active
+      - value: inactive
+        label: Inactive
+      - value: discontinued
+        label: Discontinued
+      - value: draft
+        label: Draft
+    defaultValue: draft
+    
+  # Pricing & Costing Tab
+  - name: cost_price
+    label: Cost Price
+    type: number
+    required: false
+    tab: pricing
+    placeholder: 0.00
+    help: Your cost to acquire or produce this product
+    
+  - name: selling_price
+    label: Selling Price
+    type: number
+    required: true
+    tab: pricing
+    placeholder: 0.00
+    validation:
+      min: 0
+    
+  - name: msrp
+    label: MSRP (List Price)
+    type: number
+    required: false
+    tab: pricing
+    placeholder: 0.00
+    help: Manufacturer's Suggested Retail Price
+    
+  - name: currency
+    label: Currency
+    type: select
+    required: true
+    tab: pricing
+    options:
+      - value: USD
+        label: US Dollar (USD)
+      - value: EUR
+        label: Euro (EUR)
+      - value: GBP
+        label: British Pound (GBP)
+      - value: CAD
+        label: Canadian Dollar (CAD)
+      - value: AUD
+        label: Australian Dollar (AUD)
+    defaultValue: USD
+    
+  - name: tax_category
+    label: Tax Category
+    type: select
+    required: false
+    tab: pricing
+    options:
+      - value: standard
+        label: Standard Rate
+      - value: reduced
+        label: Reduced Rate
+      - value: zero
+        label: Zero Rate
+      - value: exempt
+        label: Tax Exempt
+    defaultValue: standard
+    
+  # Inventory Management Tab
+  - name: track_inventory
+    label: Track Inventory
+    type: boolean
+    required: false
+    tab: inventory
+    defaultValue: true
+    help: Enable inventory tracking for this product
+    
+  - name: current_stock
+    label: Current Stock Level
+    type: number
+    required: false
+    tab: inventory
+    placeholder: 0
+    help: Current quantity in stock
+    
+  - name: minimum_stock
+    label: Minimum Stock Level
+    type: number
+    required: false
+    tab: inventory
+    placeholder: 0
+    help: Reorder point threshold
+    
+  - name: maximum_stock
+    label: Maximum Stock Level
+    type: number
+    required: false
+    tab: inventory
+    placeholder: 0
+    help: Maximum inventory level
+    
+  - name: reorder_quantity
+    label: Reorder Quantity
+    type: number
+    required: false
+    tab: inventory
+    placeholder: 0
+    help: Default quantity to reorder
+    
+  - name: unit_of_measure
+    label: Unit of Measure
+    type: select
+    required: true
+    tab: inventory
+    options:
+      - value: each
+        label: Each (EA)
+      - value: box
+        label: Box
+      - value: case
+        label: Case
+      - value: dozen
+        label: Dozen
+      - value: pound
+        label: Pound (LB)
+      - value: kilogram
+        label: Kilogram (KG)
+      - value: liter
+        label: Liter (L)
+      - value: gallon
+        label: Gallon (GAL)
+      - value: meter
+        label: Meter (M)
+      - value: foot
+        label: Foot (FT)
+    defaultValue: each
+    
+  # Product Attributes Tab
+  - name: weight
+    label: Weight
+    type: number
+    required: false
+    tab: attributes
+    placeholder: 0.0
+    help: Product weight for shipping calculations
+    
+  - name: weight_unit
+    label: Weight Unit
+    type: select
+    required: false
+    tab: attributes
+    options:
+      - value: lbs
+        label: Pounds
+      - value: kg
+        label: Kilograms
+      - value: oz
+        label: Ounces
+      - value: g
+        label: Grams
+    defaultValue: lbs
+    
+  - name: dimensions
+    label: Dimensions (L x W x H)
+    type: string
+    required: false
+    tab: attributes
+    placeholder: "12 x 8 x 4"
+    help: Length x Width x Height for shipping
+    
+  - name: color
+    label: Color
+    type: string
+    required: false
+    tab: attributes
+    placeholder: Enter color
+    
+  - name: size
+    label: Size
+    type: string
+    required: false
+    tab: attributes
+    placeholder: Enter size
+    
+  - name: material
+    label: Material
+    type: string
+    required: false
+    tab: attributes
+    placeholder: Enter material
+    
+  - name: warranty_period
+    label: Warranty Period
+    type: string
+    required: false
+    tab: attributes
+    placeholder: "1 year"
+    help: Warranty or guarantee period
+    
+  - name: barcode
+    label: Barcode/UPC
+    type: string
+    required: false
+    tab: attributes
+    placeholder: Enter barcode number
+    
+  - name: manufacturer
+    label: Manufacturer
+    type: string
+    required: false
+    tab: attributes
+    placeholder: Enter manufacturer name
+    
+  - name: brand
+    label: Brand
+    type: string
+    required: false
+    tab: attributes
+    placeholder: Enter brand name
+
+# Relationships
+relationships:
+  - name: primary_vendor
+    label: Primary Vendor
+    type: manyToOne
+    targetEntity: Vendor
+    required: false
+    tab: inventory
+    help: Default supplier for this product
+    
+  - name: product_manager
+    label: Product Manager
+    type: manyToOne
+    targetEntity: User
+    required: false
+    tab: basic
+    help: Person responsible for this product
+
+# Behavior configuration
+behaviour:
+  navigation:
+    showProgress: true
+    allowSkip: false
+    disableNextUntilValid: true
+    
+  validation:
+    validateOnSubmit: true
+    validateOnTabChange: true
+    showErrorSummary: true
+    
+  autoSave:
+    enabled: true
+    interval: 30000
+    onTabChange: true
+
+# Workflow configuration
+workflow:
+  enabled: true
+  name: product_lifecycle
+  triggerOn: create
+  states:
+    - name: draft
+      label: Draft
+      color: gray
+    - name: active
+      label: Active
+      color: green
+    - name: inactive
+      label: Inactive
+      color: orange
+    - name: discontinued
+      label: Discontinued
+      color: red

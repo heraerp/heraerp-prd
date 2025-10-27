@@ -1,0 +1,411 @@
+# Vendor Master Data Template
+# Smart Code: HERA.ENTERPRISE.MASTER_DATA.VENDOR.v1
+
+entityName: Vendor
+smartCode: HERA.PROCUREMENT.VENDOR.v1
+description: Vendor/Supplier master data management with procurement details
+
+# Tab organization
+tabs:
+  basic:
+    label: Basic Information
+    description: Core vendor identification details
+    order: 1
+    
+  contact:
+    label: Contact Details
+    description: Communication and address information
+    order: 2
+    
+  business:
+    label: Business Terms
+    description: Payment terms and business relationship
+    order: 3
+    
+  performance:
+    label: Performance & Compliance
+    description: Vendor ratings and compliance tracking
+    order: 4
+
+# Field definitions
+fields:
+  # Basic Information Tab
+  - name: vendor_name
+    label: Vendor Name
+    type: string
+    required: true
+    tab: basic
+    placeholder: Enter vendor company name
+    validation:
+      minLength: 2
+      maxLength: 100
+    
+  - name: vendor_code
+    label: Vendor Code
+    type: string
+    required: false
+    tab: basic
+    placeholder: AUTO (will be generated)
+    help: Unique identifier for this vendor
+    
+  - name: vendor_type
+    label: Vendor Type
+    type: select
+    required: true
+    tab: basic
+    options:
+      - value: manufacturer
+        label: Manufacturer
+      - value: distributor
+        label: Distributor
+      - value: wholesaler
+        label: Wholesaler
+      - value: service_provider
+        label: Service Provider
+      - value: consultant
+        label: Consultant
+      - value: contractor
+        label: Contractor
+      - value: other
+        label: Other
+    defaultValue: manufacturer
+    
+  - name: business_registration
+    label: Business Registration Number
+    type: string
+    required: false
+    tab: basic
+    placeholder: Enter registration number
+    
+  - name: tax_id
+    label: Tax ID / EIN
+    type: string
+    required: false
+    tab: basic
+    placeholder: XX-XXXXXXX
+    help: Federal Tax ID or Employer Identification Number
+    
+  - name: status
+    label: Status
+    type: select
+    required: true
+    tab: basic
+    options:
+      - value: active
+        label: Active
+      - value: inactive
+        label: Inactive
+      - value: approved
+        label: Approved
+      - value: pending_approval
+        label: Pending Approval
+      - value: suspended
+        label: Suspended
+      - value: blacklisted
+        label: Blacklisted
+    defaultValue: pending_approval
+    
+  # Contact Details Tab
+  - name: primary_contact_name
+    label: Primary Contact Name
+    type: string
+    required: true
+    tab: contact
+    placeholder: Enter contact person name
+    
+  - name: primary_contact_title
+    label: Primary Contact Title
+    type: string
+    required: false
+    tab: contact
+    placeholder: Job title or position
+    
+  - name: primary_email
+    label: Primary Email
+    type: email
+    required: true
+    tab: contact
+    placeholder: contact@vendor.com
+    validation:
+      format: email
+    
+  - name: secondary_email
+    label: Secondary Email
+    type: email
+    required: false
+    tab: contact
+    placeholder: alternate@vendor.com
+    
+  - name: primary_phone
+    label: Primary Phone
+    type: phone
+    required: true
+    tab: contact
+    placeholder: +1 (555) 123-4567
+    
+  - name: fax_number
+    label: Fax Number
+    type: phone
+    required: false
+    tab: contact
+    placeholder: +1 (555) 123-4568
+    
+  - name: business_address
+    label: Business Address
+    type: textarea
+    required: true
+    tab: contact
+    placeholder: Street address, city, state, postal code
+    rows: 3
+    
+  - name: billing_address
+    label: Billing Address
+    type: textarea
+    required: false
+    tab: contact
+    placeholder: Leave blank to use business address
+    rows: 3
+    
+  - name: website
+    label: Website
+    type: string
+    required: false
+    tab: contact
+    placeholder: https://www.vendor.com
+    validation:
+      format: url
+      
+  # Business Terms Tab
+  - name: payment_terms
+    label: Payment Terms
+    type: select
+    required: false
+    tab: business
+    options:
+      - value: net_15
+        label: Net 15 Days
+      - value: net_30
+        label: Net 30 Days
+      - value: net_45
+        label: Net 45 Days
+      - value: net_60
+        label: Net 60 Days
+      - value: cod
+        label: Cash on Delivery
+      - value: prepaid
+        label: Prepaid
+      - value: due_on_receipt
+        label: Due on Receipt
+    defaultValue: net_30
+    
+  - name: credit_limit
+    label: Credit Limit
+    type: number
+    required: false
+    tab: business
+    placeholder: 0
+    help: Maximum outstanding balance allowed
+    
+  - name: currency
+    label: Primary Currency
+    type: select
+    required: true
+    tab: business
+    options:
+      - value: USD
+        label: US Dollar (USD)
+      - value: EUR
+        label: Euro (EUR)
+      - value: GBP
+        label: British Pound (GBP)
+      - value: CAD
+        label: Canadian Dollar (CAD)
+      - value: AUD
+        label: Australian Dollar (AUD)
+    defaultValue: USD
+    
+  - name: minimum_order_amount
+    label: Minimum Order Amount
+    type: number
+    required: false
+    tab: business
+    placeholder: 0
+    help: Minimum order value required by vendor
+    
+  - name: lead_time_days
+    label: Lead Time (Days)
+    type: number
+    required: false
+    tab: business
+    placeholder: 0
+    help: Typical delivery lead time in days
+    
+  - name: return_policy
+    label: Return Policy
+    type: textarea
+    required: false
+    tab: business
+    placeholder: Describe vendor's return policy
+    rows: 3
+    
+  # Performance & Compliance Tab
+  - name: quality_rating
+    label: Quality Rating
+    type: select
+    required: false
+    tab: performance
+    options:
+      - value: excellent
+        label: Excellent (5 stars)
+      - value: good
+        label: Good (4 stars)
+      - value: average
+        label: Average (3 stars)
+      - value: below_average
+        label: Below Average (2 stars)
+      - value: poor
+        label: Poor (1 star)
+      - value: not_rated
+        label: Not Rated
+    defaultValue: not_rated
+    
+  - name: delivery_rating
+    label: Delivery Rating
+    type: select
+    required: false
+    tab: performance
+    options:
+      - value: excellent
+        label: Excellent (5 stars)
+      - value: good
+        label: Good (4 stars)
+      - value: average
+        label: Average (3 stars)
+      - value: below_average
+        label: Below Average (2 stars)
+      - value: poor
+        label: Poor (1 star)
+      - value: not_rated
+        label: Not Rated
+    defaultValue: not_rated
+    
+  - name: service_rating
+    label: Service Rating
+    type: select
+    required: false
+    tab: performance
+    options:
+      - value: excellent
+        label: Excellent (5 stars)
+      - value: good
+        label: Good (4 stars)
+      - value: average
+        label: Average (3 stars)
+      - value: below_average
+        label: Below Average (2 stars)
+      - value: poor
+        label: Poor (1 star)
+      - value: not_rated
+        label: Not Rated
+    defaultValue: not_rated
+    
+  - name: certifications
+    label: Certifications
+    type: string
+    required: false
+    tab: performance
+    placeholder: ISO 9001, ISO 14001, etc.
+    help: Relevant business certifications
+    
+  - name: insurance_coverage
+    label: Insurance Coverage
+    type: string
+    required: false
+    tab: performance
+    placeholder: General liability, professional, etc.
+    
+  - name: diversity_classification
+    label: Diversity Classification
+    type: select
+    required: false
+    tab: performance
+    options:
+      - value: none
+        label: None
+      - value: minority_owned
+        label: Minority Owned
+      - value: women_owned
+        label: Women Owned
+      - value: veteran_owned
+        label: Veteran Owned
+      - value: small_business
+        label: Small Business
+      - value: disadvantaged
+        label: Disadvantaged Business
+    defaultValue: none
+    
+  - name: notes
+    label: Notes
+    type: textarea
+    required: false
+    tab: performance
+    placeholder: Additional notes about this vendor...
+    rows: 4
+    help: Internal notes about vendor relationship
+
+# Relationships
+relationships:
+  - name: primary_buyer
+    label: Primary Buyer
+    type: manyToOne
+    targetEntity: User
+    required: false
+    tab: business
+    help: Primary procurement contact for this vendor
+    
+  - name: backup_buyer
+    label: Backup Buyer
+    type: manyToOne
+    targetEntity: User
+    required: false
+    tab: business
+    help: Secondary procurement contact
+
+# Behavior configuration
+behaviour:
+  navigation:
+    showProgress: true
+    allowSkip: false
+    disableNextUntilValid: true
+    
+  validation:
+    validateOnSubmit: true
+    validateOnTabChange: true
+    showErrorSummary: true
+    
+  autoSave:
+    enabled: true
+    interval: 30000
+    onTabChange: true
+
+# Workflow configuration
+workflow:
+  enabled: true
+  name: vendor_onboarding
+  triggerOn: create
+  states:
+    - name: pending_approval
+      label: Pending Approval
+      color: yellow
+    - name: approved
+      label: Approved
+      color: green
+    - name: active
+      label: Active
+      color: blue
+    - name: inactive
+      label: Inactive
+      color: gray
+    - name: suspended
+      label: Suspended
+      color: red
