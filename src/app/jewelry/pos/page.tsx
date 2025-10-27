@@ -44,7 +44,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { useAction } from '@/lib/ui-binder'
 import { getEffectiveGoldRate } from '@/lib/jewelry/rates'
 import { useOrgId } from '@/lib/runtime/useOrgId'
 import '@/styles/jewelry-glassmorphism.css'
@@ -80,7 +79,6 @@ interface Customer {
 
 export default function JewelryPOSPage() {
   const orgId = useOrgId()
-  const { executeAction } = useAction()
 
   // Cart and transaction state
   const [cart, setCart] = useState<CartItem[]>([])
