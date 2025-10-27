@@ -39,7 +39,8 @@ import {
   PieChart,
   Settings,
   BookOpen,
-  Briefcase
+  Briefcase,
+  RefreshCw
 } from 'lucide-react'
 
 export default function ManufacturingHomePage() {
