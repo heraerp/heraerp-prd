@@ -1,3 +1,6 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -25,7 +28,7 @@ import {
   Scissors,
   DollarSign
 } from 'lucide-react'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
 import type { GLAccountNode } from '@/lib/furniture/chart-of-accounts-service'
 import { cn } from '@/lib/utils'

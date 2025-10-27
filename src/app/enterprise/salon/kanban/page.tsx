@@ -9,6 +9,9 @@
 // ✅ Theme-compliant with CSS variables
 // ============================================================================
 
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 import React, { useState, useCallback, useEffect } from 'react'

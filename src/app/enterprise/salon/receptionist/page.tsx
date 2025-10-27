@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import { useRouter } from 'next/navigation'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useSalonDashboard } from '@/hooks/useSalonDashboard'
 import { Loader2 } from 'lucide-react'

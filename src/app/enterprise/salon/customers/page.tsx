@@ -1,3 +1,6 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 // Removed force-dynamic for better client-side navigation performance

@@ -1,3 +1,6 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 import React, { useState, useMemo } from 'react'
@@ -12,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 import { SERVICE_CATEGORY_PRESET } from '@/hooks/entityPresets'
 import { EntityForm } from '@/components/entity/EntityForm'

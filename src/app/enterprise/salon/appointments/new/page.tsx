@@ -4,6 +4,9 @@
 // POS-style appointment booking page with service selection and checkout
 // ================================================================================
 
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 import React, { useState, useEffect, Suspense, useMemo, useCallback } from 'react'

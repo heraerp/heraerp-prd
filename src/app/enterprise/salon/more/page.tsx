@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 import { PremiumCard, PremiumListItem } from '@/components/salon/mobile/PremiumCard'

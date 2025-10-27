@@ -1,7 +1,10 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { useStaffComplianceAlerts } from '@/hooks/useStaffComplianceAlerts'
 import { AlertTriangle, FileText, Calendar, Filter, Download, RefreshCw, User, CheckCircle, XCircle } from 'lucide-react'
 import Link from 'next/link'

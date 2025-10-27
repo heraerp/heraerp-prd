@@ -1,10 +1,13 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 // Removed force-dynamic for better client-side navigation performance
 
 import React, { useState, useMemo, useCallback, Suspense, lazy } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'

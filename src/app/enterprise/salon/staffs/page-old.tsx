@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { useUniversalEntityV1 } from '@/hooks/useUniversalEntityV1'
 import { useHeraRoles } from '@/hooks/useHeraRoles'
 import { useHeraBranches } from '@/hooks/useHeraBranches'

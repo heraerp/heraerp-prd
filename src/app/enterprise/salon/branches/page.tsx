@@ -1,9 +1,12 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 // Removed force-dynamic for better client-side navigation performance
 
 import React, { useState, useMemo, useCallback } from 'react'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { useHeraBranches } from '@/hooks/useHeraBranches'
 import { BranchModal } from '@/components/salon/branches/BranchModal'
 import type { BranchFormValues } from '@/components/salon/branches/BranchModal'

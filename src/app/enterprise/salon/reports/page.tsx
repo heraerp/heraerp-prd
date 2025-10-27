@@ -1,7 +1,10 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { universalApi } from '@/lib/universal-api-v2'
 import {

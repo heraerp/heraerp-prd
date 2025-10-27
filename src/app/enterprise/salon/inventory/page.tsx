@@ -1,3 +1,6 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 /**
@@ -33,7 +36,7 @@ import {
   DialogDescription
 } from '@/components/ui/dialog'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useStockLevels } from '@/hooks/useStockLevels'
 import { useHeraStockMovements } from '@/hooks/useHeraInventory'

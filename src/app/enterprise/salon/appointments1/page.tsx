@@ -1,3 +1,6 @@
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 /**
@@ -54,7 +57,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/hooks/use-toast'
 import { LUXE_COLORS } from '@/lib/constants/salon'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 import { APPOINTMENT_PRESET } from '@/hooks/entityPresets'
 import { AppointmentForm } from '@/components/salon/AppointmentForm'

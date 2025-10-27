@@ -4,6 +4,9 @@
 // Beautiful resource calendar view for appointments
 // ================================================================================
 
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 'use client'
 
 import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'

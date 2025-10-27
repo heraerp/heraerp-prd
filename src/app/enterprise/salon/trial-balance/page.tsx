@@ -1,4 +1,7 @@
 /**
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
  * Salon Trial Balance Report
  *
  * Modern IFRS-compliant Trial Balance with professional formatting,
@@ -15,7 +18,7 @@ import { LuxeCard } from '@/components/ui/salon/luxe-card'
 import { LuxeButton } from '@/components/ui/salon/luxe-button'
 import { MobileLayout, ResponsiveGrid, MobileContainer } from '@/components/salon/mobile-layout'
 import { useTrialBalance } from '@/lib/dna/integration/financial-reporting-api-v2'
-import { useSecuredSalonContext } from '../SecuredSalonProvider'
+import { useSecuredSalonContext } from '../EnterpriseSecuredSalonProvider'
 import {
   Download,
   Calendar,
