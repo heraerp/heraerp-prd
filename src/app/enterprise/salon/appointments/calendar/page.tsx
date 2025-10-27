@@ -1,13 +1,14 @@
+'use client'
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 // ================================================================================
 // SALON APPOINTMENTS CALENDAR PAGE
 // Smart Code: HERA.PAGES.SALON.APPOINTMENTS.CALENDAR.V1
 // Beautiful resource calendar view for appointments
 // ================================================================================
 
-// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
-export const dynamic = "force-dynamic";
 
-'use client'
 
 import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'

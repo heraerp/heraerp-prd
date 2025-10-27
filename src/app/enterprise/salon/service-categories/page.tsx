@@ -1,7 +1,8 @@
+'use client'
 // Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
 export const dynamic = "force-dynamic";
 
-'use client'
+
 
 import React, { useState, useMemo } from 'react'
 import { Plus, FolderOpen, Search, Filter, Save, Loader2 } from 'lucide-react'

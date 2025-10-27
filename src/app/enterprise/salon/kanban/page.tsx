@@ -1,3 +1,7 @@
+'use client'
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 // ============================================================================
 // HERA • Salon Appointments Kanban Page with DRAFT support - Enhanced V2
 // Smart Code: HERA.SALON.KANBAN.PAGE.ENTERPRISE.V2
@@ -9,10 +13,7 @@
 // ✅ Theme-compliant with CSS variables
 // ============================================================================
 
-// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
-export const dynamic = "force-dynamic";
 
-'use client'
 
 import React, { useState, useCallback, useEffect } from 'react'
 import './kanban-luxe-theme.css'

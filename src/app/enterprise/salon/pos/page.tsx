@@ -1,7 +1,8 @@
+'use client'
 // Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
 export const dynamic = "force-dynamic";
 
-'use client'
+
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { ProtectedPage } from '@/components/rbac/ProtectedPage'

@@ -1,11 +1,11 @@
+'use client'
 // Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
 export const dynamic = "force-dynamic";
 
-'use client'
+
 
 import React, { useState, useEffect, useCallback } from 'react'
 
-// Force dynamic rendering to avoid build issues
 // Removed force-dynamic for better client-side navigation performance
 
 import { Card } from '@/components/ui/card'

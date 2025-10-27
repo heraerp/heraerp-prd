@@ -1,3 +1,5 @@
+'use client'
+
 import type { Metadata } from 'next'
 import CategoriesPage from '@/features/product/categories/CategoriesPage'
 

@@ -1,7 +1,8 @@
+'use client'
 // Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
 export const dynamic = "force-dynamic";
 
-'use client'
+
 
 import React, { useState, Suspense, lazy } from 'react'
 import { useRouter } from 'next/navigation'

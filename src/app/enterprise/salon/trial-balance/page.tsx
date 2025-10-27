@@ -1,6 +1,8 @@
-/**
+'use client'
 // Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
 export const dynamic = "force-dynamic";
+
+/**
 
  * Salon Trial Balance Report
  *
@@ -8,7 +10,6 @@ export const dynamic = "force-dynamic";
  * real-time data from HERA Universal API, and salon-specific styling.
  */
 
-'use client'
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'

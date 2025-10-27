@@ -1,13 +1,14 @@
+'use client'
+// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
+export const dynamic = "force-dynamic";
+
 // ================================================================================
 // NEW APPOINTMENT PAGE
 // Smart Code: HERA.PAGES.SALON.APPOINTMENTS.NEW.V1
 // POS-style appointment booking page with service selection and checkout
 // ================================================================================
 
-// Force dynamic rendering to prevent SSG issues with SecuredSalonProvider
-export const dynamic = "force-dynamic";
 
-'use client'
 
 import React, { useState, useEffect, Suspense, useMemo, useCallback } from 'react'
 import '@/styles/dialog-overrides.css'
