@@ -553,7 +553,7 @@ export default function CreateLeadPage() {
                         <SelectValue placeholder="Select timeline" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="immediate">Immediate (< 1 month)</SelectItem>
+                        <SelectItem value="immediate">Immediate (&lt; 1 month)</SelectItem>
                         <SelectItem value="short">Short term (1-3 months)</SelectItem>
                         <SelectItem value="medium">Medium term (3-6 months)</SelectItem>
                         <SelectItem value="long">Long term (6+ months)</SelectItem>

@@ -170,7 +170,7 @@ export default function OpportunitiesPage() {
       options: [
         { value: 'high', label: 'High (70%+)' },
         { value: 'medium', label: 'Medium (30-70%)' },
-        { value: 'low', label: 'Low (<30%)' }
+        { value: 'low', label: 'Low (&lt;30%)' }
       ],
       value: filters.probability,
       onChange: (value) => setFilters(prev => ({ ...prev, probability: value }))
