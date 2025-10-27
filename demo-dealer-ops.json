@@ -1,0 +1,183 @@
+{
+  "app": {
+    "id": "dealer-ops",
+    "name": "Dealer Operations",
+    "version": "1.0.0",
+    "description": "Complete dealer management system with inventory and sales",
+    "smart_code": "HERA.DEALER.OPS.APPLICATION.MAIN.v1"
+  },
+  "entities": [
+    {
+      "entity_type": "DEALER",
+      "entity_name": "Dealer",
+      "description": "Authorized dealer entity",
+      "smart_code": "HERA.DEALER.OPS.DEALER.ENTITY.v1",
+      "icon": "building",
+      "fields": [
+        {
+          "name": "dealer_code",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.DEALER.FIELD.CODE.v1"
+        },
+        {
+          "name": "dealer_name",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.DEALER.FIELD.NAME.v1"
+        },
+        {
+          "name": "region",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.DEALER.FIELD.REGION.v1"
+        },
+        {
+          "name": "credit_limit",
+          "type": "number",
+          "required": false,
+          "smart_code": "HERA.DEALER.OPS.DEALER.FIELD.CREDIT_LIMIT.v1"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "entity_type": "VEHICLE",
+      "entity_name": "Vehicle",
+      "description": "Vehicle inventory item",
+      "smart_code": "HERA.DEALER.OPS.VEHICLE.ENTITY.v1",
+      "icon": "car",
+      "fields": [
+        {
+          "name": "vin",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.VEHICLE.FIELD.VIN.v1"
+        },
+        {
+          "name": "make",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.VEHICLE.FIELD.MAKE.v1"
+        },
+        {
+          "name": "model",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.VEHICLE.FIELD.MODEL.v1"
+        },
+        {
+          "name": "year",
+          "type": "number",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.VEHICLE.FIELD.YEAR.v1"
+        },
+        {
+          "name": "price",
+          "type": "number",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.VEHICLE.FIELD.PRICE.v1"
+        }
+      ],
+      "relationships": []
+    }
+  ],
+  "transactions": [
+    {
+      "transaction_type": "VEHICLE_SALE",
+      "transaction_name": "Vehicle Sale",
+      "description": "Sale of vehicle to customer",
+      "smart_code": "HERA.DEALER.OPS.TXN.VEHICLE_SALE.MAIN.v1",
+      "category": "sales",
+      "lines": [
+        {
+          "name": "Vehicle Line",
+          "description": "Vehicle being sold",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.TXN.LINE.VEHICLE.v1",
+          "line_type": "PRODUCT"
+        },
+        {
+          "name": "Cash Payment",
+          "description": "Cash received",
+          "required": false,
+          "smart_code": "HERA.DEALER.OPS.TXN.LINE.CASH.v1",
+          "line_type": "GL",
+          "account_type": "ASSET",
+          "side": "DR"
+        },
+        {
+          "name": "Sales Revenue",
+          "description": "Revenue recognition",
+          "required": true,
+          "smart_code": "HERA.DEALER.OPS.TXN.LINE.REVENUE.v1",
+          "line_type": "GL",
+          "account_type": "REVENUE",
+          "side": "CR"
+        }
+      ]
+    }
+  ],
+  "ui": {
+    "dashboard": {
+      "title": "Dealer Operations Dashboard",
+      "widgets": [
+        {
+          "type": "metric",
+          "title": "Total Dealers",
+          "entity": "DEALER",
+          "calculation": "count",
+          "color": "blue"
+        },
+        {
+          "type": "metric",
+          "title": "Vehicles in Stock",
+          "entity": "VEHICLE",
+          "calculation": "count",
+          "color": "green"
+        }
+      ]
+    },
+    "navigation": [
+      {
+        "section": "Management",
+        "items": [
+          {
+            "label": "Dealers",
+            "entity": "DEALER",
+            "view": "list",
+            "icon": "building"
+          },
+          {
+            "label": "Vehicles",
+            "entity": "VEHICLE",
+            "view": "list",
+            "icon": "car"
+          }
+        ]
+      }
+    ]
+  },
+  "deployment": {
+    "api": {
+      "base_path": "/api/v2",
+      "version": "2.0"
+    },
+    "permissions": {
+      "roles": [
+        {
+          "role": "dealer_manager",
+          "permissions": [
+            "create",
+            "read",
+            "update"
+          ],
+          "entities": [
+            "DEALER",
+            "VEHICLE"
+          ]
+        }
+      ]
+    }
+  }
+}
