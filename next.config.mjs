@@ -113,6 +113,11 @@ const nextConfig = {
         'html2canvas': false,
         'downloadjs': false,
         'chart.js': false,
+        // 🚨 CRITICAL: Prevent browser deps from being bundled (fixes build timeout)
+        'puppeteer': false,
+        'playwright': false,
+        '@playwright/test': false,
+        'playwright-core': false,
       }
     }
 
