@@ -357,8 +357,8 @@ export default function GLJournalsPage() {
       <MobileDataTable
         data={gl_journals}
         columns={columns}
-        selectedRows={selectedGL Journals}
-        onRowSelect={setSelectedGL Journals}
+        selectedRows={selectedGLJournals}
+        onRowSelect={setSelectedGLJournals}
         onRowClick={(gl_journal) => {
           setCurrentGLJournal(gl_journal)
           setShowEditModal(true)

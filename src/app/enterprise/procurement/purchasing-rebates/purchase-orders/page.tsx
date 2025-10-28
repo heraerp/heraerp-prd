@@ -357,8 +357,8 @@ export default function PurchaseOrdersPage() {
       <MobileDataTable
         data={purchase_orders}
         columns={columns}
-        selectedRows={selectedPurchase Orders}
-        onRowSelect={setSelectedPurchase Orders}
+        selectedRows={selectedPurchaseOrders}
+        onRowSelect={setSelectedPurchaseOrders}
         onRowClick={(purchase_order) => {
           setCurrentPurchaseOrder(purchase_order)
           setShowEditModal(true)

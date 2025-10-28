@@ -357,8 +357,8 @@ export default function APInvoicesPage() {
       <MobileDataTable
         data={ap_invoices}
         columns={columns}
-        selectedRows={selectedAP Invoices}
-        onRowSelect={setSelectedAP Invoices}
+        selectedRows={selectedAPInvoices}
+        onRowSelect={setSelectedAPInvoices}
         onRowClick={(ap_invoice) => {
           setCurrentAPInvoice(ap_invoice)
           setShowEditModal(true)
