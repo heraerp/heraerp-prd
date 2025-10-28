@@ -11,6 +11,8 @@ import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 import { Plus, FileText, Clock, CheckCircle, Calendar, RefreshCw, Settings, Users, AlertTriangle } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useQuery } from '@tanstack/react-query'
+import { getEntities } from '@/lib/universal-api-v2-client'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -95,7 +97,7 @@ function TabLoader() {
 }
 
 function LeaveManagementPageContent() {
-  const { organizationId, availableBranches } = useSecuredSalonContext()
+  const { organizationId, availableBranches, user } = useSecuredSalonContext() // ✅ Get user from salon context
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
   const router = useRouter()
 
@@ -183,6 +185,53 @@ function LeaveManagementPageContent() {
     year: new Date().getFullYear(),
     includeArchived: true // ✅ FIXED: Fetch ALL policies, filter client-side
   })
+
+  // ✅ Fetch USER entities for approver names in reports (BACKWARD COMPATIBILITY ONLY)
+  // 🎯 NEW APPROACH: Approver names are now stored in transaction metadata at approval time
+  // This query is kept for backward compatibility with old records that don't have stored approver names
+  // ⚠️ NOTE: Platform user queries may fail due to RLS - this is non-critical and handled gracefully
+  const {
+    data: usersData,
+    isLoading: usersLoading,
+    error: usersError
+  } = useQuery({
+    queryKey: ['all-users', organizationId],
+    queryFn: async () => {
+      if (!organizationId) return []
+
+      try {
+        // Query only Tenant Organization users (platform users now unreliable due to RLS)
+        const tenantUsers = await getEntities('', {
+          p_organization_id: organizationId,
+          p_entity_type: 'USER',
+          p_include_dynamic: false,
+          p_include_relationships: false
+        })
+
+        return tenantUsers || []
+      } catch (error: any) {
+        // ✅ Graceful degradation: Return empty array if query fails
+        // New approvals have names stored in metadata, so this is non-critical
+        console.warn('⚠️ Non-critical: Failed to fetch users for backward compatibility:', error.message)
+        return []
+      }
+    },
+    enabled: !!organizationId,
+    staleTime: 60000, // 1 minute cache
+    retry: false // Don't retry on failure - this is non-critical
+  })
+
+  // Transform users data - getEntities returns array directly
+  // ✅ CRITICAL: Preserve metadata field for supabase_uid lookup in Excel export
+  const users = React.useMemo(() => {
+    if (!usersData || !Array.isArray(usersData)) return []
+
+    return usersData.map((user: any) => ({
+      id: user.id,
+      entity_name: user.entity_name || 'Unknown User',
+      metadata: user.metadata // ✅ Preserve metadata for supabase_uid lookup
+    }))
+  }, [usersData])
 
   // ✅ ENTERPRISE PATTERN: Client-side filtering (like services page)
   const policies = React.useMemo(() => {
@@ -749,6 +798,7 @@ function LeaveManagementPageContent() {
                 staff={staff || []}
                 balances={balances || {}}
                 requests={requests || []}
+                users={users || []} // ✅ Pass users for approver name resolution
                 branchId={selectedBranch}
               />
             </Suspense>

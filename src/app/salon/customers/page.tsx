@@ -2,13 +2,21 @@
 
 // Removed force-dynamic for better client-side navigation performance
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, Suspense, lazy } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraCustomers, type CustomerEntity } from '@/hooks/useHeraCustomers'
 import { CustomerList } from '@/components/salon/customers/CustomerList'
-import { CustomerModal, type CustomerFormData } from '@/components/salon/customers/CustomerModal'
+import type { CustomerFormData } from '@/components/salon/customers/CustomerModal'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
-import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
+import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
+import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
+import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+
+// 🚀 LAZY LOADING: Split code for faster initial load
+const CustomerModal = lazy(() =>
+  import('@/components/salon/customers/CustomerModal').then(module => ({ default: module.CustomerModal }))
+)
+
 import {
   Plus,
   Grid3X3,
@@ -20,7 +28,10 @@ import {
   Filter,
   X,
   Archive,
-  UserPlus
+  UserPlus,
+  RefreshCw,
+  AlertTriangle,
+  Search
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -57,6 +68,36 @@ const COLORS = {
   charcoalLight: '#232323'
 }
 
+// Skeleton loaders for initial page load
+function CustomerListSkeleton({ viewMode }: { viewMode: 'grid' | 'list' }) {
+  return (
+    <div
+      className={
+        viewMode === 'grid'
+          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-pulse'
+          : 'space-y-3 animate-pulse'
+      }
+    >
+      {[...Array(6)].map((_, i) => (
+        <div
+          key={i}
+          className={viewMode === 'grid' ? 'h-64 rounded-lg' : 'h-24 rounded-lg'}
+          style={{
+            backgroundColor: COLORS.charcoalLight + '95',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+          }}
+        >
+          <div className="p-6 space-y-4">
+            <div className="w-12 h-12 rounded-full" style={{ backgroundColor: COLORS.gold + '20' }} />
+            <div className="h-4 rounded" style={{ backgroundColor: COLORS.bronze + '30', width: '80%' }} />
+            <div className="h-3 rounded" style={{ backgroundColor: COLORS.bronze + '20', width: '60%' }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function SalonCustomersPageContent() {
   const { organizationId } = useSecuredSalonContext()
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
@@ -65,12 +106,54 @@ function SalonCustomersPageContent() {
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [includeArchived, setIncludeArchived] = useState(false)
+  const [sortBy, setSortBy] = useState('name_asc')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingCustomer, setEditingCustomer] = useState<CustomerEntity | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [customerToDelete, setCustomerToDelete] = useState<CustomerEntity | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [showFilters, setShowFilters] = useState(false)
+
+  // 🚨 ENTERPRISE ERROR LOGGING: Detailed console logs with timestamps
+  const logError = useCallback(
+    (context: string, error: any, additionalInfo?: any) => {
+      const timestamp = new Date().toISOString()
+      const errorLog = {
+        timestamp,
+        context,
+        error: {
+          message: error?.message || String(error),
+          stack: error?.stack,
+          code: error?.code,
+          name: error?.name
+        },
+        additionalInfo,
+        organizationId
+      }
+
+      console.error('🚨 [HERA Customers Error]', errorLog)
+
+      if (process.env.NODE_ENV === 'development') {
+        console.group('🔍 Error Details')
+        console.log('Context:', context)
+        console.log('Message:', error?.message)
+        console.log('Stack:', error?.stack)
+        console.log('Additional Info:', additionalInfo)
+        console.groupEnd()
+      }
+
+      return errorLog
+    },
+    [organizationId]
+  )
+
+  // 🔍 DEBUG: Log filter states
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[CustomersPage] 🔍 Filter states:', {
+      includeArchived,
+      searchQuery,
+      organizationId
+    })
+  }
 
   // Fetch customers using Universal API v2
   const {
@@ -91,16 +174,62 @@ function SalonCustomersPageContent() {
     organizationId
   })
 
-  // Get customer statistics - memoized for performance
+  // 🔍 DEBUG: Log customer data
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[CustomersPage] 📊 Customer data:', {
+      totalCustomers: allCustomers.length,
+      filteredCustomers: customers.length,
+      activeCount: allCustomers.filter(c => c.status === 'active').length,
+      archivedCount: allCustomers.filter(c => c.status === 'archived').length,
+      includeArchived
+    })
+  }
+
+  // 🔍 DEBUG: The issue - allCustomers from hook is ALREADY filtered by status
+  // When includeArchived=false, the hook filters to status='active' only
+  // So allCustomers.filter(c => c.status === 'archived') returns ZERO always!
+  // We need to use the customers array for display, but keep separate KPI counts
+
+  // Get customer statistics from the FILTERED list (this is what we're displaying)
   const stats = useMemo(() => getCustomerStats(), [getCustomerStats])
+
+  // Count active and archived from what we're currently DISPLAYING
   const activeCount = useMemo(
-    () => allCustomers.filter(c => c.status === 'active').length,
-    [allCustomers]
+    () => customers.filter(c => c.status === 'active').length,
+    [customers]
   )
   const archivedCount = useMemo(
-    () => allCustomers.filter(c => c.status === 'archived').length,
-    [allCustomers]
+    () => customers.filter(c => c.status === 'archived').length,
+    [customers]
   )
+
+  // Total count from the displayed customers (includes archived if includeArchived is true)
+  const totalDisplayed = useMemo(() => customers.length, [customers])
+
+  // Filter and sort customers - memoized for performance
+  const filteredAndSortedCustomers = useMemo(() => {
+    // Apply sorting
+    const sorted = [...customers].sort((a, b) => {
+      switch (sortBy) {
+        case 'name_asc':
+          return (a.entity_name || '').localeCompare(b.entity_name || '')
+        case 'name_desc':
+          return (b.entity_name || '').localeCompare(a.entity_name || '')
+        case 'lifetime_value_asc':
+          return (a.lifetime_value || 0) - (b.lifetime_value || 0)
+        case 'lifetime_value_desc':
+          return (b.lifetime_value || 0) - (a.lifetime_value || 0)
+        case 'visits_asc':
+          return (a.total_visits || 0) - (b.total_visits || 0)
+        case 'visits_desc':
+          return (b.total_visits || 0) - (a.total_visits || 0)
+        default:
+          return 0
+      }
+    })
+
+    return sorted
+  }, [customers, sortBy])
 
   // CRUD Handlers - memoized for performance
   const handleSave = useCallback(
@@ -123,10 +252,14 @@ function SalonCustomersPageContent() {
         setModalOpen(false)
         setEditingCustomer(null)
       } catch (error: any) {
+        logError(editingCustomer ? 'Update Customer Failed' : 'Create Customer Failed', error, {
+          customerName: data.name,
+          customerData: data
+        })
         removeToast(loadingId)
         showError(
           editingCustomer ? 'Failed to update customer' : 'Failed to create customer',
-          error.message || 'Please try again or contact support'
+          error.message || 'Please check the console for detailed error information and try again'
         )
       }
     },
@@ -137,7 +270,8 @@ function SalonCustomersPageContent() {
       showLoading,
       removeToast,
       showSuccess,
-      showError
+      showError,
+      logError
     ]
   )
 
@@ -177,10 +311,11 @@ function SalonCustomersPageContent() {
         errorCode === 'FOREIGN_KEY_CONSTRAINT' || errorCode === 'TRANSACTION_INTEGRITY_VIOLATION'
 
       if (!isExpectedFallback) {
-        console.log('[handleConfirmDelete] Unexpected error:', {
+        logError('Delete Customer Failed', error, {
+          customerId: customerToDelete.id,
+          customerName: customerToDelete.entity_name,
           errorCode,
-          errorMessage,
-          fullError: error
+          errorMessage
         })
       }
 
@@ -217,9 +352,8 @@ function SalonCustomersPageContent() {
           setDeleteDialogOpen(false)
           setCustomerToDelete(null)
         } catch (softDeleteError: any) {
-          console.error('[handleConfirmDelete] Soft delete failed:', {
-            customerId: customerToDelete.id,
-            error: softDeleteError
+          logError('Soft Delete Customer Failed', softDeleteError, {
+            customerId: customerToDelete.id
           })
           showError(
             'Failed to mark customer as deleted',
@@ -255,6 +389,9 @@ function SalonCustomersPageContent() {
           setDeleteDialogOpen(false)
           setCustomerToDelete(null)
         } catch (softDeleteError: any) {
+          logError('Soft Delete Customer Failed', softDeleteError, {
+            customerId: customerToDelete.id
+          })
           showError(
             'Failed to mark customer as deleted',
             softDeleteError.message || 'Please contact support'
@@ -281,7 +418,8 @@ function SalonCustomersPageContent() {
     showLoading,
     removeToast,
     showSuccess,
-    showError
+    showError,
+    logError
   ])
 
   const handleArchive = useCallback(
@@ -293,11 +431,15 @@ function SalonCustomersPageContent() {
         removeToast(loadingId)
         showSuccess('Customer archived', `${customer.entity_name} has been archived`)
       } catch (error: any) {
+        logError('Archive Customer Failed', error, {
+          customerId: customer.id,
+          customerName: customer.entity_name
+        })
         removeToast(loadingId)
         showError('Failed to archive customer', error.message || 'Please try again')
       }
     },
-    [archiveCustomer, showLoading, removeToast, showSuccess, showError]
+    [archiveCustomer, showLoading, removeToast, showSuccess, showError, logError]
   )
 
   const handleRestore = useCallback(
@@ -309,332 +451,445 @@ function SalonCustomersPageContent() {
         removeToast(loadingId)
         showSuccess('Customer restored', `${customer.entity_name} has been restored to active`)
       } catch (error: any) {
+        logError('Restore Customer Failed', error, {
+          customerId: customer.id,
+          customerName: customer.entity_name
+        })
         removeToast(loadingId)
         showError('Failed to restore customer', error.message || 'Please try again')
       }
     },
-    [restoreCustomer, showLoading, removeToast, showSuccess, showError]
+    [restoreCustomer, showLoading, removeToast, showSuccess, showError, logError]
   )
 
   return (
-    <div className="h-screen overflow-hidden" style={{ backgroundColor: COLORS.black }}>
-      <div className="h-full flex flex-col">
-        {/* Background gradient */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-30"
-          style={{
-            background:
-              'radial-gradient(ellipse at top right, rgba(212, 175, 55, 0.15), transparent 50%), radial-gradient(ellipse at bottom left, rgba(15, 111, 92, 0.1), transparent 50%)'
-          }}
-        />
+    <SalonLuxePage
+      title="Customers"
+      description="Manage your customer database and loyalty program"
+      maxWidth="full"
+      padding="lg"
+      actions={
+        <>
+          {/* New Customer - Gold */}
+          <button
+            onClick={() => {
+              setEditingCustomer(null)
+              setModalOpen(true)
+            }}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.gold,
+              color: COLORS.black,
+              border: `1px solid ${COLORS.gold}`
+            }}
+          >
+            <Plus className="w-4 h-4" />
+            Add Customer
+          </button>
+          {/* Refresh Data - Bronze */}
+          <button
+            onClick={() => window.location.reload()}
+            className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.charcoal,
+              border: `1px solid ${COLORS.bronze}40`,
+              color: COLORS.bronze
+            }}
+            title="Refresh data"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </>
+      }
+    >
+      {/* 📱 PREMIUM MOBILE HEADER */}
+      <PremiumMobileHeader
+        title="Customers"
+        subtitle={`${totalDisplayed} ${includeArchived ? 'total' : 'active'} customers`}
+        showNotifications={false}
+        shrinkOnScroll
+        rightAction={
+          <button
+            onClick={() => {
+              setEditingCustomer(null)
+              setModalOpen(true)
+            }}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#D4AF37] active:scale-90 transition-transform duration-200 shadow-lg"
+            aria-label="Add new customer"
+            style={{ boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)' }}
+          >
+            <Plus className="w-5 h-5 text-black" strokeWidth={2.5} />
+          </button>
+        }
+      />
 
-        {/* Page Header */}
-        <div
-          className="relative z-10 px-6 py-4 border-b"
-          style={{ borderColor: COLORS.bronze + '30' }}
-        >
-          <PageHeader
-            title="Customers"
-            actions={
-              <>
-                <PageHeaderSearch
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder="Search customers..."
-                />
-                <PageHeaderButton icon={Plus} onClick={() => setModalOpen(true)}>
-                  Add Customer
-                </PageHeaderButton>
-              </>
+      <div className="p-4 md:p-6 lg:p-8">
+        {/* 🚨 ENTERPRISE ERROR BANNER */}
+        {error && (
+          <div
+            className="mb-6 p-4 rounded-lg border animate-in fade-in slide-in-from-top-2 duration-300"
+            style={{
+              backgroundColor: '#FF6B6B15',
+              borderColor: '#FF6B6B40',
+              color: COLORS.lightText
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5 animate-pulse" style={{ color: '#FF6B6B' }} />
+              <div className="flex-1 space-y-2">
+                <p className="font-semibold" style={{ color: COLORS.champagne }}>
+                  Failed to load customers
+                </p>
+                <p className="text-sm opacity-90">{error.message}</p>
+                <div className="flex items-center gap-2 pt-2">
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105"
+                    style={{
+                      backgroundColor: COLORS.gold + '30',
+                      color: COLORS.champagne,
+                      border: `1px solid ${COLORS.gold}50`
+                    }}
+                  >
+                    Retry
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 📊 KPI CARDS - Responsive Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
+          <SalonLuxeKPICard
+            title={includeArchived ? "Total Customers" : "Active Customers"}
+            value={totalDisplayed}
+            icon={Users}
+            color={COLORS.emerald}
+            description={includeArchived ? "Active + Archived" : "Current active base"}
+            animationDelay={0}
+          />
+          <SalonLuxeKPICard
+            title="VIP Customers"
+            value={stats.vipCustomers}
+            icon={Star}
+            color={COLORS.gold}
+            description="Premium members"
+            animationDelay={100}
+            percentageBadge={
+              stats.totalCustomers > 0
+                ? `${((stats.vipCustomers / stats.totalCustomers) * 100).toFixed(0)}%`
+                : undefined
             }
+          />
+          <SalonLuxeKPICard
+            title={includeArchived ? "Active" : "Search Results"}
+            value={activeCount}
+            icon={UserPlus}
+            color={COLORS.emerald}
+            description={includeArchived ? "Active customers" : `Showing ${totalDisplayed} results`}
+            animationDelay={200}
+          />
+          <SalonLuxeKPICard
+            title="Avg Lifetime Value"
+            value={`AED ${Math.round(stats.averageLifetimeValue).toLocaleString()}`}
+            icon={DollarSign}
+            color={COLORS.gold}
+            description="Per customer"
+            animationDelay={300}
           />
         </div>
 
-        {/* Stats Cards */}
-        <div className="relative z-10 px-6 py-4">
-          <div className="grid grid-cols-4 gap-4">
-            {/* Total Customers */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer"
+        {/* 📱 MOBILE QUICK ACTIONS */}
+        <div className="md:hidden mb-6 space-y-2">
+          <button
+            onClick={() => {
+              setEditingCustomer(null)
+              setModalOpen(true)
+            }}
+            className="w-full min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
+            style={{
+              backgroundColor: COLORS.gold,
+              color: COLORS.black
+            }}
+          >
+            <Plus className="w-4 h-4" />
+            Add Customer
+          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => window.location.reload()}
+              className="min-w-[48px] min-h-[48px] rounded-xl transition-all duration-200 active:scale-95 flex items-center justify-center"
               style={{
-                background: `linear-gradient(135deg, ${COLORS.emerald}15 0%, ${COLORS.charcoal}f5 50%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.emerald}60`,
-                boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 30px ${COLORS.emerald}15`
+                backgroundColor: COLORS.charcoal,
+                border: `1px solid ${COLORS.bronze}40`,
+                color: COLORS.bronze
               }}
             >
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.emerald}40 0%, ${COLORS.emerald}20 100%)`,
-                      border: `1.5px solid ${COLORS.emerald}60`
-                    }}
-                  >
-                    <Users className="h-4 w-4" style={{ color: COLORS.emerald }} />
-                  </div>
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze }}
-                >
-                  Total Customers
-                </p>
-                <p className="text-2xl font-bold mb-0.5" style={{ color: COLORS.champagne }}>
-                  {stats.totalCustomers}
-                </p>
-                <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                  All time customers
-                </p>
-              </div>
-            </div>
-
-            {/* VIP Customers */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.plum}15 0%, ${COLORS.charcoal}f5 50%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.plum}60`,
-                boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 30px ${COLORS.plum}15`
-              }}
-            >
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.gold}40 0%, ${COLORS.gold}20 100%)`,
-                      border: `1.5px solid ${COLORS.gold}60`
-                    }}
-                  >
-                    <Star className="h-4 w-4" style={{ color: COLORS.gold }} />
-                  </div>
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze }}
-                >
-                  VIP Customers
-                </p>
-                <p className="text-2xl font-bold mb-0.5" style={{ color: COLORS.gold }}>
-                  {stats.vipCustomers}
-                </p>
-                <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                  Premium members
-                </p>
-              </div>
-            </div>
-
-            {/* Active Customers */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.emerald}12 0%, ${COLORS.charcoal}f5 40%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.emerald}50`,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
-              }}
-            >
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.emerald}30 0%, ${COLORS.emerald}15 100%)`,
-                      border: `1px solid ${COLORS.emerald}50`
-                    }}
-                  >
-                    <UserPlus className="h-4 w-4" style={{ color: COLORS.emerald }} />
-                  </div>
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze }}
-                >
-                  Active Customers
-                </p>
-                <p className="text-2xl font-bold mb-0.5" style={{ color: COLORS.champagne }}>
-                  {activeCount}
-                </p>
-                <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                  Current active base
-                </p>
-              </div>
-            </div>
-
-            {/* Average Lifetime Value */}
-            <div
-              className="group relative p-4 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] cursor-pointer"
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 25%, ${COLORS.charcoal}f5 60%, ${COLORS.charcoal}f0 100%)`,
-                border: `1.5px solid ${COLORS.gold}80`,
-                boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 30px ${COLORS.gold}15`
-              }}
-            >
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="p-2 rounded-lg"
-                    style={{
-                      background: `linear-gradient(135deg, ${COLORS.gold}40 0%, ${COLORS.gold}20 100%)`,
-                      border: `1.5px solid ${COLORS.gold}80`
-                    }}
-                  >
-                    <DollarSign className="h-4 w-4" style={{ color: COLORS.gold }} />
-                  </div>
-                  <TrendingUp className="h-3 w-3 opacity-40" style={{ color: COLORS.gold }} />
-                </div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 opacity-70"
-                  style={{ color: COLORS.bronze }}
-                >
-                  Avg Lifetime Value
-                </p>
-                <p className="text-2xl font-bold mb-0.5" style={{ color: COLORS.gold }}>
-                  AED {Math.round(stats.averageLifetimeValue).toLocaleString()}
-                </p>
-                <p className="text-[10px] opacity-60" style={{ color: COLORS.lightText }}>
-                  Per customer
-                </p>
-              </div>
-            </div>
+              <RefreshCw className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {/* Toolbar */}
-        <div className="relative z-10 px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* View Mode Toggle */}
-            <div
-              className="flex items-center gap-1 p-1 rounded-lg"
-              style={{ backgroundColor: COLORS.charcoalLight }}
-            >
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                style={{
-                  backgroundColor: viewMode === 'grid' ? COLORS.gold + '20' : 'transparent',
-                  color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText
-                }}
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setViewMode('list')}
-                style={{
-                  backgroundColor: viewMode === 'list' ? COLORS.gold + '20' : 'transparent',
-                  color: viewMode === 'list' ? COLORS.gold : COLORS.lightText
-                }}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {/* Include Archived Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIncludeArchived(!includeArchived)}
+        {/* Toolbar - MOBILE RESPONSIVE */}
+        <div className="flex flex-col gap-4 mb-6">
+          {/* Search Bar - Full Width */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search customers by name, email, or phone..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg text-sm transition-all duration-200 focus:outline-none focus:ring-2"
               style={{
-                backgroundColor: includeArchived ? COLORS.bronze + '20' : 'transparent',
-                color: includeArchived ? COLORS.bronze : COLORS.lightText,
-                border: `1px solid ${COLORS.bronze}30`
+                backgroundColor: COLORS.charcoalLight,
+                color: COLORS.champagne,
+                border: `1px solid ${COLORS.bronze}30`,
+                focusRing: COLORS.gold
               }}
-            >
-              <Archive className="h-4 w-4 mr-2" />
-              {includeArchived ? 'Hide Archived' : 'Show Archived'}
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Badge
-              variant="secondary"
-              style={{ backgroundColor: COLORS.charcoalLight, color: COLORS.lightText }}
-            >
-              {customers.length} customers
-            </Badge>
-          </div>
-        </div>
-
-        {/* Customer List */}
-        <div className="relative z-10 flex-1 overflow-auto px-6 pb-6">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <Users
-                  className="h-12 w-12 mx-auto mb-3 animate-pulse"
-                  style={{ color: COLORS.bronze }}
-                />
-                <p style={{ color: COLORS.lightText }}>Loading customers...</p>
-              </div>
-            </div>
-          ) : error ? (
-            <div className="flex items-center justify-center h-64">
-              <p style={{ color: COLORS.rose }}>Error loading customers: {error.message}</p>
-            </div>
-          ) : (
-            <CustomerList
-              customers={customers}
-              viewMode={viewMode}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onArchive={handleArchive}
-              onRestore={handleRestore}
             />
-          )}
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-bronze/20 transition-colors"
+                style={{ color: COLORS.bronze }}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Filters Row */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-3">{/* ✅ REMOVED overflow-x-auto to fix horizontal scrollbar */}
+              {/* View Mode Toggle */}
+              <div
+                className="flex items-center gap-1 p-1 rounded-lg flex-shrink-0"
+                style={{ backgroundColor: COLORS.charcoalLight }}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  style={{
+                    backgroundColor: viewMode === 'grid' ? COLORS.gold + '20' : 'transparent',
+                    color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText
+                  }}
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  style={{
+                    backgroundColor: viewMode === 'list' ? COLORS.gold + '20' : 'transparent',
+                    color: viewMode === 'list' ? COLORS.gold : COLORS.lightText
+                  }}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Include Archived Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  console.log('[CustomersPage] 🔄 Toggling includeArchived:', !includeArchived)
+                  setIncludeArchived(!includeArchived)
+                }}
+                className="flex-shrink-0"
+                style={{
+                  backgroundColor: includeArchived ? COLORS.bronze + '20' : 'transparent',
+                  color: includeArchived ? COLORS.bronze : COLORS.lightText,
+                  border: `1px solid ${COLORS.bronze}30`
+                }}
+              >
+                <Archive className="h-4 w-4 mr-2" />
+                <span className="hidden md:inline">{includeArchived ? 'Hide Archived' : 'Show Archived'}</span>
+                <span className="md:hidden">Archived</span>
+              </Button>
+            </div>
+
+            {/* Right Side: Sort and Badges */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full md:w-auto">
+              {/* Sort Dropdown */}
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger
+                  className="flex-1 md:w-48 transition-all duration-200 hover:scale-105 hover:border-gold/50"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight + '80',
+                    borderColor: COLORS.bronze + '40',
+                    color: COLORS.champagne
+                  }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="name_asc" className="hera-select-item">
+                    Name (A-Z)
+                  </SelectItem>
+                  <SelectItem value="name_desc" className="hera-select-item">
+                    Name (Z-A)
+                  </SelectItem>
+                  <SelectItem value="lifetime_value_desc" className="hera-select-item">
+                    Lifetime Value (High to Low)
+                  </SelectItem>
+                  <SelectItem value="lifetime_value_asc" className="hera-select-item">
+                    Lifetime Value (Low to High)
+                  </SelectItem>
+                  <SelectItem value="visits_desc" className="hera-select-item">
+                    Visits (Most First)
+                  </SelectItem>
+                  <SelectItem value="visits_asc" className="hera-select-item">
+                    Visits (Least First)
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Badges */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge
+                  variant="secondary"
+                  style={{ backgroundColor: COLORS.charcoalLight, color: COLORS.lightText }}
+                >
+                  Showing {customers.length} {includeArchived ? 'total' : 'active'}
+                </Badge>
+                {includeArchived && activeCount > 0 && (
+                  <Badge
+                    variant="secondary"
+                    style={{ backgroundColor: COLORS.emerald + '20', color: COLORS.emerald }}
+                  >
+                    {activeCount} active
+                  </Badge>
+                )}
+                {includeArchived && archivedCount > 0 && (
+                  <Badge
+                    variant="secondary"
+                    style={{ backgroundColor: COLORS.plum + '20', color: COLORS.plum }}
+                  >
+                    {archivedCount} archived
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* 🔄 MAIN CONTENT - Customer List */}
+        {isLoading ? (
+          <div className="space-y-4">
+            <div
+              className="flex items-center justify-between p-4 rounded-lg"
+              style={{ backgroundColor: COLORS.charcoalLight + '50' }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="animate-spin rounded-full h-6 w-6 border-2 border-gold/30 border-t-gold" />
+                <div>
+                  <p className="font-medium" style={{ color: COLORS.champagne }}>
+                    Loading customers...
+                  </p>
+                  <p className="text-xs" style={{ color: COLORS.bronze }}>
+                    Fetching customer database
+                  </p>
+                </div>
+              </div>
+            </div>
+            <CustomerListSkeleton viewMode={viewMode} />
+          </div>
+        ) : (
+          <CustomerList
+            customers={filteredAndSortedCustomers}
+            viewMode={viewMode}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onArchive={handleArchive}
+            onRestore={handleRestore}
+          />
+        )}
+
+        {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}
+        <div className="h-20 md:h-0" />
       </div>
 
-      {/* Customer Modal */}
-      <CustomerModal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false)
-          setEditingCustomer(null)
-        }}
-        onSubmit={handleSave}
-        customer={editingCustomer}
-      />
+      {/* MODALS - Lazy Loaded */}
+      {modalOpen && (
+        <Suspense fallback={null}>
+          <CustomerModal
+            open={modalOpen}
+            onClose={() => {
+              setModalOpen(false)
+              setEditingCustomer(null)
+            }}
+            onSubmit={handleSave}
+            customer={editingCustomer}
+          />
+        </Suspense>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent
-          style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.rose}40` }}
+          style={{
+            backgroundColor: COLORS.charcoal,
+            border: `1px solid ${COLORS.rose}40`,
+            boxShadow: '0 20px 30px rgba(0,0,0,0.3)'
+          }}
         >
           <AlertDialogHeader>
-            <AlertDialogTitle style={{ color: COLORS.champagne }}>Delete Customer</AlertDialogTitle>
-            <AlertDialogDescription style={{ color: COLORS.lightText }}>
-              Are you sure you want to delete {customerToDelete?.entity_name}? This action cannot be
-              undone if the customer has no transaction history.
-            </AlertDialogDescription>
+            <div className="flex items-center gap-2 mb-3">
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{
+                  backgroundColor: '#FF6B6B20',
+                  border: '1px solid #FF6B6B40'
+                }}
+              >
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+              </div>
+              <AlertDialogTitle className="text-lg font-semibold" style={{ color: COLORS.champagne }}>
+                Delete Customer
+              </AlertDialogTitle>
+            </div>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+
+          <div className="space-y-3" style={{ color: COLORS.lightText }}>
+            <p className="text-sm">
+              Are you sure you want to delete{' '}
+              <span className="font-semibold" style={{ color: COLORS.champagne }}>
+                "{customerToDelete?.entity_name}"
+              </span>
+              ?
+            </p>
+            <p className="text-sm opacity-70">
+              This action cannot be undone if the customer has no transaction history. If the customer
+              has appointments or transactions, they will be archived instead.
+            </p>
+          </div>
+
+          <AlertDialogFooter className="mt-6">
             <AlertDialogCancel
-              disabled={isDeleting}
-              style={{
-                backgroundColor: COLORS.charcoalLight,
-                color: COLORS.lightText,
-                border: `1px solid ${COLORS.bronze}40`
+              onClick={() => {
+                setDeleteDialogOpen(false)
+                setCustomerToDelete(null)
               }}
+              disabled={isDeleting}
+              className="border-border text-muted-foreground hover:text-foreground"
             >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmDelete}
               disabled={isDeleting}
-              style={{
-                backgroundColor: COLORS.rose,
-                color: COLORS.charcoalDark
-              }}
+              className="bg-red-500 hover:bg-red-600 text-white"
             >
               {isDeleting ? 'Deleting...' : 'Delete Customer'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </SalonLuxePage>
   )
 }
 

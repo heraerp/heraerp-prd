@@ -1013,180 +1013,190 @@ function SalonProductsPageContent() {
           {/* Top Control Bar - Branch Filter & View Controls */}
           <div className="mx-6 mt-6">
             <div
-              className="p-4 rounded-xl flex items-center justify-between"
+              className="p-4 rounded-xl"
               style={{
                 backgroundColor: COLORS.charcoalLight + 'ee',
                 border: `1px solid ${COLORS.bronze}30`,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
               }}
             >
-              {/* Left: Branch Filter */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
-                  <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                    Location:
-                  </span>
-                </div>
-                <Select
-                  value={localBranchFilter || '__ALL__'}
-                  onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
-                >
-                  <SelectTrigger
-                    className="w-52 border"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" style={{ color: COLORS.gold }} />
-                      <SelectValue placeholder="All Locations" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent
-                    className="salon-luxe-select"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40'
-                    }}
-                  >
-                    <SelectItem
-                      value="__ALL__"
-                      className="salon-luxe-select-item"
-                      style={{ color: COLORS.champagne }}
-                    >
-                      All Locations
-                    </SelectItem>
-                    {isLoadingBranches ? (
-                      <div
-                        className="px-2 py-3 text-center text-sm"
-                        style={{ color: COLORS.bronze }}
-                      >
-                        Loading...
-                      </div>
-                    ) : availableBranches.length === 0 ? (
-                      <div
-                        className="px-2 py-3 text-center text-sm"
-                        style={{ color: COLORS.bronze }}
-                      >
-                        No branches
-                      </div>
-                    ) : (
-                      availableBranches.map(branch => (
-                        <SelectItem
-                          key={branch.id}
-                          value={branch.id}
-                          className="salon-luxe-select-item"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
-                            <div className="flex flex-col">
-                              <span className="font-medium">{branch.entity_name}</span>
-                              {branch.entity_code && (
-                                <span className="text-xs opacity-60">{branch.entity_code}</span>
-                              )}
-                            </div>
-                          </div>
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-
-                {/* Active Branch Badge */}
-                {localBranchFilter && (
-                  <div
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      borderColor: COLORS.gold + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                    <span>{availableBranches.find(b => b.id === localBranchFilter)?.entity_name || 'Branch'}</span>
-                    <X
-                      className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
-                      onClick={() => setLocalBranchFilter(null)}
-                      style={{ color: COLORS.gold }}
-                    />
+              {/* ✅ MOBILE: Stack vertically on mobile, side-by-side on desktop */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                {/* Left: Branch Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
+                    <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                      Location:
+                    </span>
                   </div>
-                )}
-              </div>
+                  <Select
+                    value={localBranchFilter || '__ALL__'}
+                    onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
+                  >
+                    <SelectTrigger
+                      className="w-full sm:w-52 border"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" style={{ color: COLORS.gold }} />
+                        <SelectValue placeholder="All Locations" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent
+                      className="salon-luxe-select"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40'
+                      }}
+                    >
+                      <SelectItem
+                        value="__ALL__"
+                        className="salon-luxe-select-item"
+                        style={{ color: COLORS.champagne }}
+                      >
+                        All Locations
+                      </SelectItem>
+                      {isLoadingBranches ? (
+                        <div
+                          className="px-2 py-3 text-center text-sm"
+                          style={{ color: COLORS.bronze }}
+                        >
+                          Loading...
+                        </div>
+                      ) : availableBranches.length === 0 ? (
+                        <div
+                          className="px-2 py-3 text-center text-sm"
+                          style={{ color: COLORS.bronze }}
+                        >
+                          No branches
+                        </div>
+                      ) : (
+                        availableBranches.map(branch => (
+                          <SelectItem
+                            key={branch.id}
+                            value={branch.id}
+                            className="salon-luxe-select-item"
+                            style={{ color: COLORS.champagne }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
+                              <div className="flex flex-col">
+                                <span className="font-medium">{branch.entity_name}</span>
+                                {branch.entity_code && (
+                                  <span className="text-xs opacity-60">{branch.entity_code}</span>
+                                )}
+                              </div>
+                            </div>
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
 
-              {/* Right: View Mode & Sort */}
-              <div className="flex items-center gap-3">
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger
-                    className="w-44 border"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent
-                    className="salon-luxe-select"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40'
-                    }}
-                  >
-                    <SelectItem value="name_asc" className="salon-luxe-select-item">
-                      Name (A-Z)
-                    </SelectItem>
-                    <SelectItem value="name_desc" className="salon-luxe-select-item">
-                      Name (Z-A)
-                    </SelectItem>
-                    <SelectItem value="updated_desc" className="salon-luxe-select-item">
-                      Updated (Newest)
-                    </SelectItem>
-                    <SelectItem value="updated_asc" className="salon-luxe-select-item">
-                      Updated (Oldest)
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                  {/* Active Branch Badge */}
+                  {localBranchFilter && (
+                    <div
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity"
+                      style={{
+                        backgroundColor: COLORS.charcoalLight,
+                        borderColor: COLORS.gold + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
+                      <span className="hidden sm:inline">{availableBranches.find(b => b.id === localBranchFilter)?.entity_name || 'Branch'}</span>
+                      <X
+                        className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
+                        onClick={() => setLocalBranchFilter(null)}
+                        style={{ color: COLORS.gold }}
+                      />
+                    </div>
+                  )}
+                </div>
 
-                {/* Include Archived Toggle */}
-                <button
-                  onClick={() => setIncludeArchived(!includeArchived)}
-                  className={`px-3 py-2 rounded-lg transition-all flex items-center gap-2 ${
-                    includeArchived
-                      ? 'bg-gold/20 border-gold/40'
-                      : 'hover:bg-white/10 border-bronze/30'
-                  } border`}
-                  style={{
-                    color: includeArchived ? COLORS.gold : COLORS.lightText,
-                    borderColor: includeArchived ? COLORS.gold + '40' : COLORS.bronze + '30'
-                  }}
-                  title={includeArchived ? 'Hide archived products' : 'Show archived products'}
-                >
-                  <Archive className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    {includeArchived ? 'Hide Archived' : 'Show Archived'}
-                  </span>
-                </button>
+                {/* Right: View Mode & Sort */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  {/* Sort Dropdown */}
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger
+                      className="w-full sm:w-44 border"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent
+                      className="salon-luxe-select"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40'
+                      }}
+                    >
+                      <SelectItem value="name_asc" className="salon-luxe-select-item">
+                        Name (A-Z)
+                      </SelectItem>
+                      <SelectItem value="name_desc" className="salon-luxe-select-item">
+                        Name (Z-A)
+                      </SelectItem>
+                      <SelectItem value="updated_desc" className="salon-luxe-select-item">
+                        Updated (Newest)
+                      </SelectItem>
+                      <SelectItem value="updated_asc" className="salon-luxe-select-item">
+                        Updated (Oldest)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
-                    style={{ color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText }}
-                  >
-                    <Grid3X3 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
-                    style={{ color: viewMode === 'list' ? COLORS.gold : COLORS.lightText }}
-                  >
-                    <List className="w-4 h-4" />
-                  </button>
+                  {/* Include Archived Toggle & View Mode */}
+                  <div className="flex items-center gap-3">
+                    {/* Include Archived Toggle */}
+                    <button
+                      onClick={() => setIncludeArchived(!includeArchived)}
+                      className={`px-3 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                        includeArchived
+                          ? 'bg-gold/20 border-gold/40'
+                          : 'hover:bg-white/10 border-bronze/30'
+                      } border`}
+                      style={{
+                        color: includeArchived ? COLORS.gold : COLORS.lightText,
+                        borderColor: includeArchived ? COLORS.gold + '40' : COLORS.bronze + '30'
+                      }}
+                      title={includeArchived ? 'Hide archived products' : 'Show archived products'}
+                    >
+                      <Archive className="w-4 h-4" />
+                      <span className="text-sm font-medium hidden sm:inline">
+                        {includeArchived ? 'Hide Archived' : 'Show Archived'}
+                      </span>
+                    </button>
+
+                    {/* Grid/List Toggle */}
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setViewMode('grid')}
+                        className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
+                        style={{ color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText }}
+                        title="Grid view"
+                      >
+                        <Grid3X3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setViewMode('list')}
+                        className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
+                        style={{ color: viewMode === 'list' ? COLORS.gold : COLORS.lightText }}
+                        title="List view"
+                      >
+                        <List className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

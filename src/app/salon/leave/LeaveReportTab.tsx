@@ -2,10 +2,10 @@
 
 import React, { useMemo, useState } from 'react'
 import { LeaveRequest, LeaveBalance } from '@/hooks/useHeraLeave'
-import { User, TrendingUp, TrendingDown, Calendar, FileText, Download, Zap, Clock, Filter, FileSpreadsheet, CalendarDays } from 'lucide-react'
+import { User, TrendingUp, TrendingDown, Calendar, FileText, Download, Zap, Clock, FileSpreadsheet, CalendarDays } from 'lucide-react'
 import { exportLeaveReportToExcel, exportLeaveReportToPDF } from '@/lib/reports/leaveReportExport'
-import { exportDetailedLeaveReport, exportDetailedLeaveReportPDF, DetailedReportFilters } from '@/lib/reports/leaveReportDetailed'
 import { format, startOfYear, endOfYear } from 'date-fns'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -23,6 +23,7 @@ interface LeaveReportTabProps {
   staff: Array<{ id: string; entity_name: string }>
   balances: Record<string, LeaveBalance>
   requests: LeaveRequest[]
+  users: Array<{ id: string; entity_name: string }> // ✅ Users for approver name resolution
   branchId?: string
 }
 
@@ -239,7 +240,7 @@ function StaffBalanceRowDesktop({ balance }: { balance: LeaveBalance }) {
   )
 }
 
-export function LeaveReportTab({ staff, balances, requests, branchId }: LeaveReportTabProps) {
+export function LeaveReportTab({ staff, balances, requests, users, branchId }: LeaveReportTabProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [leaveTypeFilter, setLeaveTypeFilter] = useState<string>('all')
@@ -292,6 +293,25 @@ export function LeaveReportTab({ staff, balances, requests, branchId }: LeaveRep
       return bUtil - aUtil
     })
   }, [filteredBalances])
+
+  // ✅ Filter requests for report generation based on date range, leave type, and status
+  const filteredRequestsForReport = useMemo(() => {
+    return requests.filter(request => {
+      // Filter by date range (check if request start_date falls within the selected range)
+      const requestDate = new Date(request.start_date)
+      const startDate = new Date(summaryStartDate)
+      const endDate = new Date(summaryEndDate)
+      const isInDateRange = requestDate >= startDate && requestDate <= endDate
+
+      // Filter by leave type
+      const matchesLeaveType = leaveTypeFilter === 'all' || request.leave_type === leaveTypeFilter
+
+      // Filter by status
+      const matchesStatus = statusFilter === 'all' || request.status === statusFilter
+
+      return isInDateRange && matchesLeaveType && matchesStatus
+    })
+  }, [requests, summaryStartDate, summaryEndDate, leaveTypeFilter, statusFilter])
 
   return (
     <div>
@@ -638,18 +658,40 @@ export function LeaveReportTab({ staff, balances, requests, branchId }: LeaveRep
 
         {/* Export Buttons Section */}
         <div className="space-y-3">
-          {/* Summary Reports */}
+          {/* Report Export */}
           <div>
             <label className="text-xs mb-2 block font-semibold" style={{ color: COLORS.plum }}>
-              📊 Summary Reports (Multi-Sheet Analytics)
+              📊 Leave Reports (Comprehensive Analytics)
             </label>
-            <div className="flex flex-col md:flex-row gap-3">
-              <button
+            <div className="flex flex-col md:flex-row gap-2">
+              <SalonLuxeButton
+                size="sm"
+                variant="outline"
+                icon={<FileSpreadsheet className="w-4 h-4" />}
                 onClick={() => {
+                  // 🔍 ENHANCED DEBUG: Log complete data snapshot
+                  console.log('📊 [Excel Export] Complete data snapshot:', {
+                    users: {
+                      count: users?.length || 0,
+                      array: users,
+                      sampleUser: users?.[0],
+                      allUserIds: users?.map(u => u.id).slice(0, 5),
+                      allUserNames: users?.map(u => u.entity_name).slice(0, 5)
+                    },
+                    requests: {
+                      count: requests?.length || 0,
+                      sampleRequest: requests?.[0],
+                      approvedRequests: requests?.filter(r => r.approved_by)?.length || 0,
+                      sampleApprovedBy: requests?.find(r => r.approved_by)?.approved_by,
+                      allApprovedByIds: requests?.filter(r => r.approved_by).map(r => r.approved_by).slice(0, 5)
+                    }
+                  })
+
                   const reportData = {
                     balances,
-                    requests,
+                    requests: filteredRequestsForReport, // ✅ Use filtered requests instead of all requests
                     staff,
+                    users, // ✅ Pass users for approver name resolution
                     filters: {
                       startDate: summaryStartDate,
                       endDate: summaryEndDate,
@@ -659,22 +701,34 @@ export function LeaveReportTab({ staff, balances, requests, branchId }: LeaveRep
                     organizationName: 'HERA Organization',
                     generatedAt: format(new Date(), 'dd MMM yyyy HH:mm')
                   }
+
+                  console.log('📊 [Excel Export] Final report payload:', {
+                    hasUsers: !!reportData.users,
+                    usersCount: reportData.users?.length || 0,
+                    totalRequestsCount: requests?.length || 0, // ✅ Log total requests for comparison
+                    filteredRequestsCount: reportData.requests?.length || 0, // ✅ Log filtered count
+                    balancesCount: Object.keys(reportData.balances || {}).length,
+                    staffCount: reportData.staff?.length || 0
+                  })
+
                   exportLeaveReportToExcel(reportData)
                 }}
-                className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                style={{ backgroundColor: COLORS.emerald, color: COLORS.champagne }}
-                title={`Export summary report from ${summaryStartDate} to ${summaryEndDate}`}
+                title={`Export comprehensive report from ${summaryStartDate} to ${summaryEndDate}`}
+                className="flex-1"
               >
-                <FileSpreadsheet className="w-5 h-5" />
-                Summary Excel (4 Sheets)
-              </button>
+                Download Excel
+              </SalonLuxeButton>
 
-              <button
+              <SalonLuxeButton
+                size="sm"
+                variant="outline"
+                icon={<Download className="w-4 h-4" />}
                 onClick={() => {
                   const reportData = {
                     balances,
-                    requests,
+                    requests: filteredRequestsForReport, // ✅ Use filtered requests instead of all requests
                     staff,
+                    users, // ✅ Pass users for approver name resolution
                     filters: {
                       startDate: summaryStartDate,
                       endDate: summaryEndDate,
@@ -686,73 +740,11 @@ export function LeaveReportTab({ staff, balances, requests, branchId }: LeaveRep
                   }
                   exportLeaveReportToPDF(reportData)
                 }}
-                className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                style={{ backgroundColor: COLORS.rose, color: 'white' }}
-                title={`Print/Save summary report from ${summaryStartDate} to ${summaryEndDate}`}
+                title={`Print/Save report from ${summaryStartDate} to ${summaryEndDate}`}
+                className="flex-1"
               >
-                <Download className="w-5 h-5" />
-                Summary PDF
-              </button>
-            </div>
-          </div>
-
-          {/* Detailed Reports */}
-          <div>
-            <label className="text-xs mb-2 block font-semibold" style={{ color: COLORS.plum }}>
-              📋 Detailed Annual Report (HR Format)
-            </label>
-            <div className="flex flex-col md:flex-row gap-3">
-              <button
-                onClick={() => {
-                  const detailedReportData = {
-                    organizationName: 'HERA Organization',
-                    policyName: 'Standard Leave Policy',
-                    startDate: summaryStartDate,
-                    endDate: summaryEndDate,
-                    staff: staff.map(s => ({ ...s, department: 'General' })),
-                    requests,
-                    balances,
-                    filters: {
-                      startDate: summaryStartDate,
-                      endDate: summaryEndDate,
-                      leaveType: leaveTypeFilter === 'all' ? undefined : (leaveTypeFilter as any),
-                      status: statusFilter === 'all' ? undefined : (statusFilter as any)
-                    }
-                  }
-                  exportDetailedLeaveReport(detailedReportData)
-                }}
-                className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                style={{ backgroundColor: COLORS.emerald, color: COLORS.champagne }}
-              >
-                <FileSpreadsheet className="w-5 h-5" />
-                Detailed Excel
-              </button>
-
-              <button
-                onClick={() => {
-                  const detailedReportData = {
-                    organizationName: 'HERA Organization',
-                    policyName: 'Standard Leave Policy',
-                    startDate: summaryStartDate,
-                    endDate: summaryEndDate,
-                    staff: staff.map(s => ({ ...s, department: 'General' })),
-                    requests,
-                    balances,
-                    filters: {
-                      startDate: summaryStartDate,
-                      endDate: summaryEndDate,
-                      leaveType: leaveTypeFilter === 'all' ? undefined : (leaveTypeFilter as any),
-                      status: statusFilter === 'all' ? undefined : (statusFilter as any)
-                    }
-                  }
-                  exportDetailedLeaveReportPDF(detailedReportData)
-                }}
-                className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                style={{ backgroundColor: COLORS.rose, color: 'white' }}
-              >
-                <Download className="w-5 h-5" />
-                Detailed PDF
-              </button>
+                Print / Save PDF
+              </SalonLuxeButton>
             </div>
           </div>
         </div>

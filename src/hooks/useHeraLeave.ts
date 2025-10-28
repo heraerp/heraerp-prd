@@ -33,15 +33,19 @@ export interface LeaveRequest {
   start_date: string
   end_date: string
   total_days: number
+  isHalfDay?: boolean // ✅ Half-day leave flag
+  halfDayPeriod?: 'morning' | 'afternoon' // ✅ Which half of the day
   reason: string
   notes?: string
   status: 'draft' | 'submitted' | 'approved' | 'rejected' | 'cancelled' // ✅ Removed 'pending'
   submitted_at: string
   approved_at?: string
   approved_by?: string
+  approved_by_name?: string // ✅ Stored approver name (for reports)
   approval_notes?: string
   rejected_at?: string
   rejected_by?: string
+  rejected_by_name?: string // ✅ Stored rejector name (for reports)
   rejection_reason?: string
   smart_code: string
 }
@@ -91,6 +95,9 @@ export interface CreateLeaveRequestInput {
   reason: string
   notes?: string
   status?: 'draft' | 'submitted' // ✅ Removed 'pending'
+  isHalfDay?: boolean // ✅ Half-day leave flag
+  halfDayPeriod?: 'morning' | 'afternoon' // ✅ Which half of the day (morning/afternoon)
+  totalDays?: number // ✅ Pre-calculated total days (respects half-day = 0.5)
 }
 
 interface UseHeraLeaveOptions {
@@ -369,23 +376,9 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
   }, [staffData])
 
   const requests: LeaveRequest[] = React.useMemo(() => {
-    console.log('🔍 [useHeraLeave] Request Transformation Start:', {
-      hasRequestsData: !!requestsData,
-      hasItems: !!requestsData?.items,
-      itemsCount: requestsData?.items?.length || 0,
-      staffCount: staff.length,
-      firstItem: requestsData?.items?.[0]
-    })
-
     if (!requestsData?.items || !staff.length) return []
 
     const staffMap = new Map(staff.map(s => [s.id, s.entity_name]))
-
-    console.log('🔍 [useHeraLeave] Staff Map:', {
-      staffMapSize: staffMap.size,
-      staffIds: Array.from(staffMap.keys()),
-      staffNames: Array.from(staffMap.values())
-    })
 
     // ✅ FILTER: Exclude soft-deleted transactions AND enforce LEAVE transaction type
     // 🐛 WORKAROUND: RPC hera_txn_crud_v1 QUERY action ignores transaction_type filter
@@ -394,66 +387,34 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
       !txn.deleted_at && txn.transaction_type === 'LEAVE'
     )
 
-    console.log('🔍 [useHeraLeave] Filtering Transactions:', {
-      totalTransactions: requestsData.items.length,
-      activeTransactions: activeTransactions.length,
-      deletedCount: requestsData.items.length - activeTransactions.length,
-      nonLeaveCount: requestsData.items.filter((txn: any) => txn.transaction_type !== 'LEAVE').length,
-      firstActiveTransaction: activeTransactions[0]
-    })
-
-    const transformed = activeTransactions.map((txn: any) => {
-      const request = {
-        id: txn.id,
-        transaction_code: txn.transaction_code,
-        transaction_date: txn.transaction_date,
-        staff_id: txn.source_entity_id,
-        staff_name: staffMap.get(txn.source_entity_id) || 'Unknown',
-        manager_id: txn.target_entity_id,
-        manager_name: staffMap.get(txn.target_entity_id) || 'Unknown',
-        leave_type: txn.metadata?.leave_type || 'ANNUAL',
-        start_date: txn.metadata?.start_date,
-        end_date: txn.metadata?.end_date,
-        total_days: txn.metadata?.total_days || txn.total_amount,
-        reason: txn.metadata?.reason || '',
-        notes: txn.metadata?.notes,
-        status: txn.transaction_status || 'submitted',
-        submitted_at: txn.metadata?.submitted_at || txn.created_at,
-        approved_at: txn.metadata?.approved_at,
-        approved_by: txn.metadata?.approved_by,
-        approval_notes: txn.metadata?.approval_notes,
-        rejected_at: txn.metadata?.rejected_at,
-        rejected_by: txn.metadata?.rejected_by,
-        rejection_reason: txn.metadata?.rejection_reason,
-        smart_code: txn.smart_code
-      }
-
-      console.log('🔍 [useHeraLeave] Transforming Transaction:', {
-        txnId: txn.id,
-        txnCode: txn.transaction_code,
-        rawSourceEntityId: txn.source_entity_id,
-        rawTargetEntityId: txn.target_entity_id,
-        rawMetadata: txn.metadata,
-        rawTransactionStatus: txn.transaction_status,
-        rawDeletedAt: txn.deleted_at,
-        transformedStaffId: request.staff_id,
-        transformedStaffName: request.staff_name,
-        transformedManagerId: request.manager_id,
-        transformedManagerName: request.manager_name,
-        transformedStartDate: request.start_date,
-        transformedEndDate: request.end_date,
-        transformedStatus: request.status
-      })
-
-      return request
-    })
-
-    console.log('🔍 [useHeraLeave] Final Transformed Requests:', {
-      count: transformed.length,
-      firstRequest: transformed[0]
-    })
-
-    return transformed
+    return activeTransactions.map((txn: any) => ({
+      id: txn.id,
+      transaction_code: txn.transaction_code,
+      transaction_date: txn.transaction_date,
+      staff_id: txn.source_entity_id,
+      staff_name: staffMap.get(txn.source_entity_id) || 'Unknown',
+      manager_id: txn.target_entity_id,
+      manager_name: staffMap.get(txn.target_entity_id) || 'Unknown',
+      leave_type: txn.metadata?.leave_type || 'ANNUAL',
+      start_date: txn.metadata?.start_date,
+      end_date: txn.metadata?.end_date,
+      total_days: txn.metadata?.total_days || txn.total_amount,
+      isHalfDay: txn.metadata?.isHalfDay || false,
+      halfDayPeriod: txn.metadata?.halfDayPeriod || undefined,
+      reason: txn.metadata?.reason || '',
+      notes: txn.metadata?.notes,
+      status: txn.transaction_status || 'submitted',
+      submitted_at: txn.metadata?.submitted_at || txn.created_at,
+      approved_at: txn.metadata?.approved_at,
+      approved_by: txn.metadata?.approved_by,
+      approved_by_name: txn.metadata?.approved_by_name, // ✅ Extract stored approver name
+      approval_notes: txn.metadata?.approval_notes,
+      rejected_at: txn.metadata?.rejected_at,
+      rejected_by: txn.metadata?.rejected_by,
+      rejected_by_name: txn.metadata?.rejected_by_name, // ✅ Extract stored rejector name
+      rejection_reason: txn.metadata?.rejection_reason,
+      smart_code: txn.smart_code
+    }))
   }, [requestsData, staff])
 
   // ============================================================================
@@ -946,7 +907,8 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
   const createRequestMutation = useMutation({
     mutationFn: async (data: CreateLeaveRequestInput) => {
-      const totalDays = calculateDays(data.start_date, data.end_date)
+      // ✅ Use provided totalDays (respects half-day = 0.5) or calculate if not provided
+      const totalDays = data.totalDays ?? calculateDays(data.start_date, data.end_date)
       const transactionCode = generateTransactionCode(year)
 
       // Use the createTransaction function from useUniversalTransactionV1
@@ -957,13 +919,15 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         transaction_date: new Date().toISOString(),
         source_entity_id: data.staff_id, // Who is taking leave
         target_entity_id: data.manager_id, // Manager approving
-        total_amount: totalDays,
+        total_amount: totalDays, // ✅ Now respects half-day (0.5)
         transaction_status: data.status || 'submitted', // ✅ Use provided status or default to submitted
         metadata: {
           leave_type: data.leave_type,
           start_date: data.start_date,
           end_date: data.end_date,
-          total_days: totalDays,
+          total_days: totalDays, // ✅ Store correct value (0.5 for half-day)
+          isHalfDay: data.isHalfDay || false, // ✅ Store half-day flag for audit trail
+          halfDayPeriod: data.halfDayPeriod || null, // ✅ Store morning/afternoon selection
           reason: data.reason,
           notes: data.notes,
           submitted_at: new Date().toISOString()
@@ -972,10 +936,10 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
           {
             line_number: 1,
             line_type: 'LEAVE',
-            description: `${data.leave_type} Leave: ${totalDays} days`,
-            quantity: totalDays,
+            description: `${data.leave_type} Leave: ${totalDays} day${totalDays !== 1 ? 's' : ''}`,
+            quantity: totalDays, // ✅ Correct quantity (0.5 for half-day)
             unit_amount: 1,
-            line_amount: totalDays,
+            line_amount: totalDays, // ✅ Correct amount (0.5 for half-day)
             smart_code: `HERA.SALON.HR.LINE.${data.leave_type}.v1`
           }
         ]
@@ -1014,10 +978,14 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         updatedMetadata.approved_at = new Date().toISOString()
         updatedMetadata.approval_notes = notes
         updatedMetadata.approved_by = user?.id
+        // ✅ Store approver name for reports (eliminates need for USER entity lookup)
+        updatedMetadata.approved_by_name = user?.entity_name || user?.name || 'Unknown User'
       } else if (status === 'rejected') {
         updatedMetadata.rejected_at = new Date().toISOString()
         updatedMetadata.rejection_reason = notes
         updatedMetadata.rejected_by = user?.id
+        // ✅ Store rejector name for reports (eliminates need for USER entity lookup)
+        updatedMetadata.rejected_by_name = user?.entity_name || user?.name || 'Unknown User'
       }
 
       // Use the updateTransaction function from useUniversalTransactionV1
@@ -1044,17 +1012,19 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         throw new Error('Request not found')
       }
 
-      // Recalculate total days if dates changed
+      // ✅ Use provided totalDays (respects half-day = 0.5) or calculate if not provided
       const startDate = data.start_date || existingRequest.start_date
       const endDate = data.end_date || existingRequest.end_date
-      const totalDays = calculateDays(startDate, endDate)
+      const totalDays = data.totalDays ?? calculateDays(startDate, endDate)
 
       // Build updated metadata
       const updatedMetadata: Record<string, any> = {
         leave_type: data.leave_type || existingRequest.leave_type,
         start_date: startDate,
         end_date: endDate,
-        total_days: totalDays,
+        total_days: totalDays, // ✅ Store correct value (0.5 for half-day)
+        isHalfDay: data.isHalfDay ?? false, // ✅ Store half-day flag for audit trail
+        halfDayPeriod: data.halfDayPeriod || null, // ✅ Store morning/afternoon selection
         reason: data.reason || existingRequest.reason,
         notes: data.notes !== undefined ? data.notes : existingRequest.notes,
         submitted_at: existingRequest.submitted_at
@@ -1065,7 +1035,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         transaction_id: requestId,
         source_entity_id: data.staff_id || existingRequest.staff_id,
         target_entity_id: data.manager_id || existingRequest.manager_id,
-        total_amount: totalDays,
+        total_amount: totalDays, // ✅ Now respects half-day (0.5)
         metadata: updatedMetadata
       }
 

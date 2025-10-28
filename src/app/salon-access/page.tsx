@@ -250,14 +250,30 @@ export default function SalonAccessPage() {
             console.log('🔍 DEBUG - roleFromDB as JSON:', JSON.stringify(roleFromDB))
 
             // 🔒 CRITICAL: Normalize role to lowercase and trim whitespace
-            // This ensures OWNER, Owner, owner, RECEPTIONIST, Receptionist, receptionist all work
+            // This ensures OWNER, Owner, owner, ORG_OWNER, RECEPTIONIST, etc. all work
             if (roleFromDB) {
               const rawRole = roleFromDB
-              roleFromDB = String(roleFromDB).toLowerCase().trim()
+              // Map HERA RBAC roles (ORG_OWNER, ORG_ADMIN, ORG_EMPLOYEE) to salon roles
+              const roleMapping: Record<string, string> = {
+                'org_owner': 'owner',
+                'org_admin': 'manager',
+                'org_manager': 'manager',
+                'org_accountant': 'accountant',
+                'org_employee': 'receptionist',
+                'owner': 'owner',
+                'manager': 'manager',
+                'receptionist': 'receptionist',
+                'accountant': 'accountant',
+                'member': 'receptionist'
+              }
+
+              const normalizedRaw = String(roleFromDB).toLowerCase().trim()
+              roleFromDB = roleMapping[normalizedRaw] || normalizedRaw
               userRole = roleFromDB
 
               console.log('✅ Role fetched from database (raw):', rawRole)
-              console.log('✅ Role after normalization (trimmed, lowercase):', JSON.stringify(roleFromDB))
+              console.log('✅ Role after normalization (trimmed, lowercase):', JSON.stringify(normalizedRaw))
+              console.log('✅ Role after mapping:', JSON.stringify(roleFromDB))
               console.log('✅ userRole variable set to:', userRole)
               console.log('✅ userRole === "owner":', userRole === 'owner')
               console.log('✅ userRole === "receptionist":', userRole === 'receptionist')
@@ -334,7 +350,17 @@ export default function SalonAccessPage() {
 
         console.log('✅ LocalStorage updated with fresh role from database')
 
-        setMessage(`🎉 Welcome! You are signed in as ${userRole.toUpperCase()}`)
+        // 🎯 Enterprise-grade role display names
+        const roleDisplayNames: Record<string, string> = {
+          'owner': 'Salon Owner',
+          'manager': 'Salon Manager',
+          'receptionist': 'Front Desk',
+          'accountant': 'Accountant',
+          'stylist': 'Stylist'
+        }
+
+        const displayName = roleDisplayNames[userRole] || 'Team Member'
+        setMessage(`🎉 Welcome! Signing you in as ${displayName}...`)
 
         // Redirect based on role (with detailed logging)
         let redirectPath

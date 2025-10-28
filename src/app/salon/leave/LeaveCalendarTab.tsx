@@ -44,10 +44,12 @@ export function LeaveCalendarTab({ requests, staff, branchId }: LeaveCalendarTab
     return requests.filter(request => {
       const startDate = new Date(request.start_date)
       const endDate = new Date(request.end_date)
+
+      // Check if leave request date range overlaps with the current month
       return (
-        isWithinInterval(monthStart, { start: startDate, end: endDate }) ||
-        isWithinInterval(monthEnd, { start: startDate, end: endDate }) ||
-        (startDate <= monthStart && endDate >= monthEnd)
+        (startDate >= monthStart && startDate <= monthEnd) ||  // Leave starts in this month
+        (endDate >= monthStart && endDate <= monthEnd) ||      // Leave ends in this month
+        (startDate <= monthStart && endDate >= monthEnd)       // Leave spans entire month
       )
     })
   }, [requests, monthStart, monthEnd])
@@ -221,18 +223,21 @@ export function LeaveCalendarTab({ requests, staff, branchId }: LeaveCalendarTab
                 const leaveForDay = getLeaveForDay(day)
                 const isToday = isSameDay(day, new Date())
                 const isSelected = selectedDate && isSameDay(day, selectedDate)
+                const hasLeave = leaveForDay.length > 0
 
                 return (
                   <button
                     key={day.toISOString()}
                     onClick={() => setSelectedDate(day)}
-                    className="aspect-square rounded-lg p-1 transition-all duration-300 hover:scale-105 active:scale-95 relative"
+                    className={`aspect-square rounded-lg p-1 transition-all duration-300 relative ${
+                      hasLeave ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'cursor-default'
+                    }`}
                     style={{
                       backgroundColor: isSelected
                         ? `${COLORS.gold}40`
                         : isToday
                         ? `${COLORS.gold}20`
-                        : leaveForDay.length > 0
+                        : hasLeave
                         ? `${COLORS.bronze}10`
                         : 'transparent',
                       border: isToday ? `2px solid ${COLORS.gold}` : '1px solid transparent'

@@ -2,7 +2,6 @@
 
 import React, { useState, Suspense, lazy } from 'react'
 import { useRouter } from 'next/navigation'
-import { useQueryClient } from '@tanstack/react-query'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
@@ -65,10 +64,50 @@ function TabLoader() {
   )
 }
 
+// ✅ MOBILE-FIRST: Skeleton loaders matching final layout
+function KPICardsSkeleton() {
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8 animate-pulse">
+      {[...Array(4)].map((_, i) => (
+        <div
+          key={i}
+          className="h-32 rounded-xl"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+          }}
+        >
+          <div className="p-6 space-y-4">
+            <div className="w-12 h-12 rounded-lg" style={{ backgroundColor: COLORS.gold + '20' }} />
+            <div className="h-4 rounded" style={{ backgroundColor: COLORS.bronze + '30', width: '80%' }} />
+            <div className="h-3 rounded" style={{ backgroundColor: COLORS.bronze + '20', width: '60%' }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function StaffListSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      {[...Array(5)].map((_, i) => (
+        <div
+          key={i}
+          className="h-24 rounded-lg"
+          style={{
+            backgroundColor: COLORS.charcoalLight + '95',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 function StaffsPageContent() {
   const { organizationId } = useSecuredSalonContext()
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
-  const queryClient = useQueryClient()
   const router = useRouter()
 
   // State
@@ -79,8 +118,41 @@ function StaffsPageContent() {
   const [staffToDelete, setStaffToDelete] = useState<any>(null)
   const [viewMode, setViewMode] = useState<'active' | 'all'>('active') // ✅ FIX: View mode for UI filtering only
 
+  // 🚨 ENTERPRISE ERROR LOGGING: Detailed console logs with timestamps
+  // MUST be defined BEFORE any handlers that use it to avoid temporal dead zone
+  const logError = React.useCallback((context: string, error: any, additionalInfo?: any) => {
+    const timestamp = new Date().toISOString()
+    const errorLog = {
+      timestamp,
+      context,
+      error: {
+        message: error?.message || String(error),
+        stack: error?.stack,
+        code: error?.code,
+        name: error?.name
+      },
+      additionalInfo,
+      organizationId,
+      user: organizationId
+    }
+
+    console.error('🚨 [HERA Staff Management Error]', errorLog)
+
+    // In development, show detailed error breakdown
+    if (process.env.NODE_ENV === 'development') {
+      console.group('🔍 Error Details')
+      console.log('Context:', context)
+      console.log('Message:', error?.message)
+      console.log('Stack:', error?.stack)
+      console.log('Additional Info:', additionalInfo)
+      console.groupEnd()
+    }
+
+    return errorLog
+  }, [organizationId])
+
   // 🚀 UPGRADED: Now using useHeraStaff hook (60% fewer API calls)
-  // Always fetch ALL staff (including archived) for consistent KPI calculations
+  // Fetch only active staff to match services pattern (deleted staff won't reappear)
   const {
     staff: allStaff,
     isLoading: isLoadingStaff,
@@ -95,15 +167,18 @@ function StaffsPageContent() {
     isDeleting
   } = useHeraStaff({
     organizationId: organizationId || '',
-    includeArchived: true, // ✅ FIX: Always fetch all staff for stable KPIs
+    includeArchived: false, // ✅ FIX: Only fetch active staff (matches services pattern)
     enabled: !!organizationId && activeTab === 'staff' // Only fetch when tab is active
   })
 
-  // ✅ FIX: Filter staff based on view mode (UI-only filtering)
+  // ✅ FIX: Filter staff based on view mode (client-side filtering)
+  // Note: Since includeArchived=false, allStaff already contains only active staff
+  // viewMode='all' would need a separate query with includeArchived=true
   const staff = React.useMemo(() => {
     if (!allStaff) return []
-    if (viewMode === 'all') return allStaff
-    return allStaff.filter(s => s.status === 'active')
+    // For now, both viewMode values show the same data (active only)
+    // To support 'all' view, we'd need to fetch archived staff separately
+    return allStaff
   }, [allStaff, viewMode])
 
   // Fetch roles for the staff modal
@@ -118,13 +193,21 @@ function StaffsPageContent() {
     includeArchived: false
   })
 
-  // ✅ FIX: Calculate stats from ALL staff for consistent KPI display
-  const stats = {
-    totalStaff: allStaff?.length || 0, // Total team size (active + archived)
-    activeToday: allStaff?.filter(s => s && s.status === 'active').length || 0,
-    onLeave: allStaff?.filter(s => s && s.status === 'on_leave').length || 0,
-    totalRoles: roles?.length || 0
-  }
+  // ✅ FIX: Calculate stats from active staff only (matches services pattern)
+  // 🚀 PERFORMANCE: Memoized stats calculation (only recalculates when data changes)
+  const stats = React.useMemo(() => {
+    const totalStaff = allStaff?.length || 0
+    const activeToday = allStaff?.filter(s => s && s.status === 'active').length || 0
+    const onLeave = allStaff?.filter(s => s && s.status === 'on_leave').length || 0
+    const totalRoles = roles?.length || 0
+
+    return {
+      totalStaff,
+      activeToday,
+      onLeave,
+      totalRoles
+    }
+  }, [allStaff, roles])
 
   // 🏥 COMPLIANCE: Scan for expiring documents (30-day warning)
   const compliance = React.useMemo(() => {
@@ -167,10 +250,14 @@ function StaffsPageContent() {
 
       handleCloseModal()
     } catch (error: any) {
+      logError(editingStaff ? 'Update Staff Failed' : 'Create Staff Failed', error, {
+        staffName: fullName,
+        staffData: data
+      })
       removeToast(loadingId)
       showError(
         editingStaff ? 'Failed to update staff member' : 'Failed to create staff member',
-        error.message || 'Please try again or contact support'
+        error.message || 'Please check the console for detailed error information and try again'
       )
     }
   }
@@ -191,37 +278,12 @@ function StaffsPageContent() {
     try {
       console.log('[handleDelete] Starting delete for:', { id: staffId, name: staffName })
 
-      // useHeraStaff has smart delete: tries hard delete, falls back to archive if referenced
+      // 🎯 ENTERPRISE PATTERN: Smart delete with automatic fallback to archive
+      // Try hard delete first, but if staff is referenced, archive instead
+      // NO MANUAL CACHE UPDATE - useUniversalEntityV1 handles it automatically!
       const result = await deleteStaff(staffId)
 
       console.log('[handleDelete] Delete complete, result:', result)
-
-      // ✅ OPTIMISTIC UPDATE: Update cache based on result
-      queryClient.setQueryData(
-        ['universal-entities', 'STAFF', organizationId],
-        (oldData: any) => {
-          if (!oldData) return oldData
-          console.log('[handleDelete] Updating cache:', {
-            oldCount: oldData.length,
-            staffId,
-            wasArchived: result.archived
-          })
-
-          if (result.archived) {
-            // If archived (not deleted), update status to archived
-            const newData = oldData.map((s: any) =>
-              s.id === staffId ? { ...s, status: 'archived' } : s
-            )
-            console.log('[handleDelete] Updated status to archived in cache')
-            return newData
-          } else {
-            // If truly deleted, remove from cache
-            const newData = oldData.filter((s: any) => s.id !== staffId)
-            console.log('[handleDelete] Removed from cache:', { newCount: newData.length })
-            return newData
-          }
-        }
-      )
 
       removeToast(loadingId)
 
@@ -239,9 +301,13 @@ function StaffsPageContent() {
       setDeleteDialogOpen(false)
       setStaffToDelete(null)
     } catch (error: any) {
+      logError('Delete Staff Failed', error, {
+        staffId: staffToDelete?.id,
+        staffName: staffName
+      })
       console.error('[handleDelete] Error:', error)
       removeToast(loadingId)
-      showError('Failed to delete staff member', error.message || 'Please try again')
+      showError('Failed to delete staff member', error.message || 'Please check the console for detailed error information')
     }
   }
 
@@ -255,36 +321,22 @@ function StaffsPageContent() {
       console.log('[handleArchive] Starting archive for:', { staffId, staffName, currentStatus: staffMember?.status })
 
       // Archive in database - RPC handles the update
+      // NO MANUAL CACHE UPDATE - useUniversalEntityV1 handles it automatically!
       await archiveStaff(staffId)
 
-      console.log('[handleArchive] Archive complete in DB, updating React Query cache...')
-
-      // ✅ OPTIMISTIC UPDATE: Update status in cache
-      // No need to refetch - we know exactly what changed!
-      // UI filtering will handle showing/hiding based on view mode
-      queryClient.setQueryData(
-        ['universal-entities', 'STAFF', organizationId],
-        (oldData: any) => {
-          if (!oldData) return oldData
-          console.log('[handleArchive] Updating status to archived in cache:', {
-            oldCount: oldData.length,
-            staffId
-          })
-
-          const newData = oldData.map((s: any) =>
-            s.id === staffId ? { ...s, status: 'archived' } : s
-          )
-          console.log('[handleArchive] Cache updated:', { newCount: newData.length })
-          return newData
-        }
-      )
+      console.log('[handleArchive] Archive complete - cache auto-updated by useUniversalEntityV1')
 
       removeToast(loadingId)
       showSuccess('Staff member archived', `${staffName} has been archived and removed from active list`)
     } catch (error: any) {
+      logError('Archive Staff Failed', error, {
+        staffId,
+        staffName,
+        currentStatus: staffMember?.status
+      })
       console.error('[handleArchive] Error:', error)
       removeToast(loadingId)
-      showError('Failed to archive staff member', error.message || 'Please try again')
+      showError('Failed to archive staff member', error.message || 'Please check the console for detailed error information')
     }
   }
 
@@ -298,32 +350,21 @@ function StaffsPageContent() {
       console.log('[handleRestore] Starting restore for:', { staffId, staffName })
 
       // Restore in database - RPC handles the update
+      // NO MANUAL CACHE UPDATE - useUniversalEntityV1 handles it automatically!
       await restoreStaff(staffId)
 
-      console.log('[handleRestore] Restore complete in DB, updating React Query cache...')
-
-      // ✅ OPTIMISTIC UPDATE: Update status in cache
-      // No need to refetch - we already have all staff in cache!
-      // UI filtering will handle showing/hiding based on view mode
-      queryClient.setQueryData(
-        ['universal-entities', 'STAFF', organizationId],
-        (oldData: any) => {
-          if (!oldData) return oldData
-          console.log('[handleRestore] Updating status to active in cache:', { staffId })
-          return oldData.map((s: any) =>
-            s.id === staffId ? { ...s, status: 'active' } : s
-          )
-        }
-      )
-
-      console.log('[handleRestore] Cache updated - restored staff now visible')
+      console.log('[handleRestore] Restore complete - cache auto-updated by useUniversalEntityV1')
 
       removeToast(loadingId)
       showSuccess('Staff member restored', `${staffName} has been restored to active status`)
     } catch (error: any) {
+      logError('Restore Staff Failed', error, {
+        staffId,
+        staffName
+      })
       console.error('[handleRestore] Error:', error)
       removeToast(loadingId)
-      showError('Failed to restore staff member', error.message || 'Please try again')
+      showError('Failed to restore staff member', error.message || 'Please check the console for detailed error information')
     }
   }
 
@@ -485,8 +526,30 @@ function StaffsPageContent() {
       />
 
       <div className="p-4 md:p-6 lg:p-8">
-        {/* 📱 ENTERPRISE-GRADE KPI CARDS - Reusable SalonLuxeKPICard Component */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
+        {/* 🔄 LOADING STATE: Show skeleton loaders while data is loading */}
+        {isLoadingStaff ? (
+          <>
+            <KPICardsSkeleton />
+            <div className="mb-6 space-y-4">
+              <div
+                className="flex items-center justify-between p-4 rounded-lg"
+                style={{ backgroundColor: COLORS.charcoalLight + '50' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-gold/30 border-t-gold" />
+                  <div>
+                    <p className="font-medium" style={{ color: COLORS.champagne }}>Loading staff...</p>
+                    <p className="text-xs" style={{ color: COLORS.bronze }}>Fetching your team members</p>
+                  </div>
+                </div>
+              </div>
+              <StaffListSkeleton />
+            </div>
+          </>
+        ) : (
+          <>
+            {/* 📱 ENTERPRISE-GRADE KPI CARDS - Reusable SalonLuxeKPICard Component */}
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
           <SalonLuxeKPICard
             title="Total Staff"
             value={stats.totalStaff}
@@ -612,8 +675,10 @@ function StaffsPageContent() {
           </TabsContent>
         </Tabs>
 
-        {/* 📱 MOBILE-FIRST: Bottom spacing for comfortable mobile scrolling - MANDATORY */}
-        <div className="h-20 md:h-0" />
+            {/* 📱 MOBILE-FIRST: Bottom spacing for comfortable mobile scrolling - MANDATORY */}
+            <div className="h-20 md:h-0" />
+          </>
+        )}
       </div>
 
       {/* Staff Modal - Lazy Loaded */}

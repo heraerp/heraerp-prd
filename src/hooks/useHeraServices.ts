@@ -345,11 +345,11 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         error.message?.includes('foreign key')
 
       if (is409Conflict) {
-        // Service is referenced - fallback to archive with warning
+        // Service is referenced - fallback to soft delete (status='deleted') with warning
         await baseUpdate({
           entity_id: id,
           entity_name: service.entity_name,
-          status: 'archived'
+          status: 'deleted'  // ✅ FIX: Use 'deleted' status instead of 'archived'
         })
 
         // ✅ NO REFETCH NEEDED: updateMutation.onSuccess handles cache update automatically
@@ -358,7 +358,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
           success: true,
           archived: true,
           message:
-            'Service is used in appointments or transactions and cannot be deleted. It has been archived instead.'
+            'Service is used in appointments or transactions and cannot be deleted. It has been marked as deleted instead.'
         }
       }
 
