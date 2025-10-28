@@ -23,57 +23,112 @@ export function useHeraImportExport<T = any>(config: ImportExportConfig<T>) {
       const XLSX = await import('xlsx')
       const wb = XLSX.utils.book_new()
 
-      // ===== INSTRUCTIONS SHEET =====
+      // ===== INSTRUCTIONS SHEET - ENTERPRISE GRADE =====
       const instructionsData: any[] = [
-        [`${config.entityName} Import Template`],
+        [`HERA ${config.entityNamePlural} Import Template`],
         [''],
-        ['⚠️ IMPORTANT INSTRUCTIONS'],
-        ['1. Fill in the data sheet with your information'],
+        // Custom or default warning
+        [config.customWarning || '⚠️ IMPORTANT: CREATE REFERENCE DATA FIRST'],
+        ['If you need reference data (categories, branches, etc.) that doesn\'t exist in the lists below,'],
+        ['please create it in the system FIRST, then download a fresh template before uploading.'],
+        [''],
+        ['INSTRUCTIONS:'],
+        [`1. Fill in the "${config.templateSheetName || 'Data'}" sheet with your ${config.entityNamePlural.toLowerCase()}`],
         ['2. Required fields are marked with * in the header'],
-        ['3. Ensure reference data matches existing entries exactly (case-insensitive)'],
-        ['4. Save and upload the file to import'],
-        ['']
+        ['3. Reference data must match existing entries exactly (case-insensitive)']
       ]
 
-      // Add field descriptions
-      instructionsData.push(['FIELD DESCRIPTIONS:'])
-      config.fields.forEach(field => {
-        const required = field.required ? ' (REQUIRED)' : ' (Optional)'
-        const typeInfo = field.type === 'enum' ? ` - Values: ${field.enumValues?.join(', ')}` : ''
-        instructionsData.push([`${field.headerName}${required}${typeInfo}`])
-        if (field.description) {
-          instructionsData.push([`  ${field.description}`])
-        }
-      })
-      instructionsData.push([''])
+      // Add custom page-specific instructions
+      let nextInstructionNumber = 4
+      if (config.customInstructions && config.customInstructions.length > 0) {
+        config.customInstructions.forEach((instruction, index) => {
+          instructionsData.push([`${nextInstructionNumber + index}. ${instruction}`])
+        })
+        nextInstructionNumber += config.customInstructions.length
+      }
 
-      // Add reference data
+      instructionsData.push([`${nextInstructionNumber}. Save and upload the file to import`], [''])
+
+      // Required and optional fields summary
+      const requiredFields = config.fields.filter(f => f.required).map(f => f.headerName)
+      const optionalFields = config.fields.filter(f => !f.required).map(f => f.headerName)
+
+      if (requiredFields.length > 0) {
+        instructionsData.push(['REQUIRED FIELDS:'])
+        instructionsData.push([requiredFields.join(', ')])
+        instructionsData.push([''])
+      }
+
+      if (optionalFields.length > 0) {
+        instructionsData.push(['OPTIONAL FIELDS:'])
+        instructionsData.push([optionalFields.join(', ')])
+        instructionsData.push([''])
+      }
+
+      // Enum field allowed values
+      const enumFields = config.fields.filter(f => f.type === 'enum')
+      if (enumFields.length > 0) {
+        instructionsData.push(['ALLOWED VALUES:'])
+        enumFields.forEach(field => {
+          instructionsData.push([`${field.headerName}: ${field.enumValues?.join(', ')}`])
+        })
+        instructionsData.push([''])
+      }
+
+      // Reference data (categories, branches, etc.) - BEFORE example
       if (config.referenceData && config.referenceData.length > 0) {
-        instructionsData.push(['AVAILABLE REFERENCE DATA:'])
         config.referenceData.forEach(ref => {
-          instructionsData.push([`${ref.displayName}:`])
-          ref.items.forEach(item => instructionsData.push([`  - ${item.name}`]))
+          instructionsData.push([`AVAILABLE ${ref.displayName.toUpperCase()}:`])
+          ref.items.forEach(item => instructionsData.push([item.name]))
           instructionsData.push([''])
         })
       }
 
-      // Add example row
-      instructionsData.push(['EXAMPLE DATA:'])
-      const exampleHeaders = config.fields.map(f => f.headerName)
+      // Example row - clearly labeled
+      const exampleNote = config.exampleNote || 'for reference only'
+      instructionsData.push([`EXAMPLE ${config.entityName.toUpperCase()} (${exampleNote}):`])
+      const exampleHeaders = config.fields.map(f => f.required ? `${f.headerName}*` : f.headerName)
       const exampleValues = config.fields.map(f => f.example ?? '')
       instructionsData.push(exampleHeaders)
       instructionsData.push(exampleValues)
 
       const instructionsSheet = XLSX.utils.aoa_to_sheet(instructionsData)
-      instructionsSheet['!cols'] = [{ wch: 80 }] // Wide column for readability
+
+      // Enterprise-grade column widths for instructions sheet
+      instructionsSheet['!cols'] = config.columnWidths
+        ? config.columnWidths.map(wch => ({ wch }))
+        : [{ wch: 80 }] // Default: single wide column
+
       XLSX.utils.book_append_sheet(wb, instructionsSheet, 'Instructions')
 
-      // ===== DATA SHEET (Headers only) =====
+      // ===== DATA SHEET (Headers only) - ENTERPRISE GRADE =====
       const headers = config.fields.map(f => f.required ? `${f.headerName}*` : f.headerName)
       const dataSheet = XLSX.utils.aoa_to_sheet([headers])
 
-      // Set column widths based on header length
-      dataSheet['!cols'] = config.fields.map(f => ({ wch: Math.max(f.headerName.length + 5, 15) }))
+      // Enterprise-grade column widths for data sheet
+      if (config.columnWidths && config.columnWidths.length === config.fields.length) {
+        // Use custom widths if provided (must match number of fields)
+        dataSheet['!cols'] = config.columnWidths.map(wch => ({ wch }))
+      } else {
+        // Smart auto-sizing based on field type and header length
+        dataSheet['!cols'] = config.fields.map(f => {
+          const baseWidth = f.headerName.length + 5
+          const minWidth = 15
+          const maxWidth = 50
+
+          // Adjust width based on field type
+          let width = baseWidth
+          if (f.type === 'text' && f.fieldName.includes('description')) {
+            width = 40 // Wider for description fields
+          } else if (f.type === 'number') {
+            width = Math.max(15, baseWidth) // Numbers need consistent width
+          } else if (f.type === 'date') {
+            width = 20 // Dates need specific width
+          }
+
+          return { wch: Math.min(Math.max(width, minWidth), maxWidth) }
+        })
+      }
 
       XLSX.utils.book_append_sheet(wb, dataSheet, config.templateSheetName || 'Data')
 

@@ -18,26 +18,79 @@ const REASON_TEMPLATES: Template[] = [
   { label: 'Mental Health', value: 'Mental health and wellbeing rest day.' }
 ]
 
-// Zod validation schema - ENTERPRISE GRADE (removed manager_id)
-const leaveRequestSchema = z.object({
+// 🎯 ENTERPRISE: Base validation schema
+const baseLeaveRequestSchema = z.object({
   staff_id: z.string().min(1, 'Staff member is required'),
   leave_type: z.enum(['ANNUAL', 'SICK', 'UNPAID', 'OTHER'], {
     errorMap: () => ({ message: 'Please select a leave type' })
   }),
   start_date: z.string().min(1, 'Start date is required'),
   end_date: z.string().min(1, 'End date is required'),
-  reason: z.string().min(10, 'Reason must be at least 10 characters'),
+  reason: z.string(),
   notes: z.string().optional()
-}).refine(
-  data => {
-    if (!data.start_date || !data.end_date) return true
-    return new Date(data.start_date) <= new Date(data.end_date)
-  },
-  {
-    message: 'End date must be after start date',
-    path: ['end_date']
-  }
-)
+})
+
+// 🎯 ENTERPRISE: Validation schema for submitted requests (strict)
+const leaveRequestSchema = baseLeaveRequestSchema
+  .extend({
+    reason: z.string().min(10, 'Reason must be at least 10 characters')
+  })
+  .refine(
+    data => {
+      // Validate end date is not before start date
+      if (!data.start_date || !data.end_date) return true
+      return new Date(data.start_date) <= new Date(data.end_date)
+    },
+    {
+      message: 'End date cannot be before start date',
+      path: ['end_date']
+    }
+  )
+  .refine(
+    data => {
+      // Validate start date is not in the past
+      if (!data.start_date) return true
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      const startDate = new Date(data.start_date)
+      return startDate >= today
+    },
+    {
+      message: 'Start date cannot be in the past',
+      path: ['start_date']
+    }
+  )
+
+// 🎯 ENTERPRISE: Validation schema for drafts (lenient - reason optional)
+const draftLeaveRequestSchema = baseLeaveRequestSchema
+  .extend({
+    reason: z.string().optional()
+  })
+  .refine(
+    data => {
+      // Validate end date is not before start date
+      if (!data.start_date || !data.end_date) return true
+      return new Date(data.start_date) <= new Date(data.end_date)
+    },
+    {
+      message: 'End date cannot be before start date',
+      path: ['end_date']
+    }
+  )
+  .refine(
+    data => {
+      // Validate start date is not in the past
+      if (!data.start_date) return true
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      const startDate = new Date(data.start_date)
+      return startDate >= today
+    },
+    {
+      message: 'Start date cannot be in the past',
+      path: ['start_date']
+    }
+  )
 
 interface LeaveModalProps {
   open: boolean
@@ -72,6 +125,10 @@ export function LeaveModal({
     reason: initialData?.reason || '',
     notes: initialData?.notes || ''
   })
+
+  // 🎯 ENTERPRISE: Half-day leave toggle
+  const [isHalfDay, setIsHalfDay] = useState(false)
+  const [halfDayPeriod, setHalfDayPeriod] = useState<'morning' | 'afternoon'>('morning')
 
 
   // ✅ React to modal open/close - reset form when modal opens
@@ -109,6 +166,7 @@ export function LeaveModal({
           reason: '',
           notes: ''
         })
+        setIsHalfDay(false) // ✅ Reset half-day toggle
       }
 
       // Clear errors when opening modal
@@ -139,17 +197,33 @@ export function LeaveModal({
     }
   }, [formData.staff_id, balances])
 
-  // Calculate days between dates
-  const calculateDays = (start: string, end: string): number => {
+  // 🎯 ENTERPRISE: Auto-sync end date when half-day is enabled
+  useEffect(() => {
+    if (isHalfDay && formData.start_date && formData.start_date !== formData.end_date) {
+      setFormData(prev => ({ ...prev, end_date: formData.start_date }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHalfDay, formData.start_date])
+
+  // 🎯 ENTERPRISE: Calculate days with half-day support
+  const calculateDays = (start: string, end: string, halfDay: boolean): number => {
     if (!start || !end) return 0
     const startDate = new Date(start)
     const endDate = new Date(end)
     const diffTime = Math.abs(endDate.getTime() - startDate.getTime())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays + 1
+    const fullDays = diffDays + 1
+
+    // If half-day and same start/end date, return 0.5
+    if (halfDay && start === end) return 0.5
+
+    return fullDays
   }
 
-  const totalDays = calculateDays(formData.start_date, formData.end_date)
+  const totalDays = calculateDays(formData.start_date, formData.end_date, isHalfDay)
+
+  // 🎯 ENTERPRISE: Get minimum date (today)
+  const minDate = new Date().toISOString().split('T')[0]
 
   // 🎯 ENTERPRISE: Scroll to first error field
   const scrollToError = (fieldName: string) => {
@@ -194,13 +268,10 @@ export function LeaveModal({
 
       let validatedData
       if (status === 'draft') {
-        // For drafts, only validate required fields (reason is optional)
-        const draftSchema = leaveRequestSchema.extend({
-          reason: z.string().optional() // Make reason optional for drafts
-        })
-        validatedData = draftSchema.parse(formData)
+        // For drafts, use lenient schema (reason is optional)
+        validatedData = draftLeaveRequestSchema.parse(formData)
       } else {
-        // For submissions, validate all fields including reason minimum length
+        // For submissions, use strict schema (reason minimum 10 characters)
         validatedData = leaveRequestSchema.parse(formData)
       }
 
@@ -218,7 +289,10 @@ export function LeaveModal({
         await onSubmit({
           ...validatedData,
           manager_id: managerId,
-          status // ✅ Pass status to API (draft or submitted)
+          status, // ✅ Pass status to API (draft or submitted)
+          isHalfDay, // ✅ Pass half-day flag for proper calculation
+          halfDayPeriod: isHalfDay ? halfDayPeriod : undefined, // ✅ Pass morning/afternoon selection
+          totalDays // ✅ Pass calculated total days (respects half-day = 0.5)
         })
 
         console.log('✅ [LeaveModal] Submission successful!')
@@ -678,7 +752,185 @@ export function LeaveModal({
           </div>
         </FieldWithError>
 
-        {/* Date Range */}
+        {/* 🎯 ENTERPRISE: Leave Duration Selection - Full Day vs Half Day */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Clock className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+            <label className="text-sm font-semibold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              Leave Duration Type
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* Full Day Option */}
+            <button
+              type="button"
+              onClick={() => setIsHalfDay(false)}
+              className="p-4 rounded-xl text-left transition-all duration-300 hover:scale-105 active:scale-95"
+              style={{
+                backgroundColor: !isHalfDay ? `${SALON_LUXE_COLORS.gold.base}30` : `${SALON_LUXE_COLORS.charcoal.darker}`,
+                border: !isHalfDay
+                  ? `2px solid ${SALON_LUXE_COLORS.gold.base}`
+                  : `1px solid ${SALON_LUXE_COLORS.bronze}30`,
+                boxShadow: !isHalfDay ? `0 0 20px ${SALON_LUXE_COLORS.gold.base}40` : 'none'
+              }}
+              disabled={isSubmitting || isLoading}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{
+                    backgroundColor: !isHalfDay ? `${SALON_LUXE_COLORS.gold.base}40` : `${SALON_LUXE_COLORS.bronze}20`
+                  }}
+                >
+                  <Calendar
+                    className="w-5 h-5"
+                    style={{ color: !isHalfDay ? SALON_LUXE_COLORS.gold.base : SALON_LUXE_COLORS.bronze }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-sm font-bold" style={{
+                      color: !isHalfDay ? SALON_LUXE_COLORS.champagne.base : SALON_LUXE_COLORS.bronze
+                    }}>
+                      Full Day Leave
+                    </p>
+                    {!isHalfDay && (
+                      <CheckCircle className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.emerald }} />
+                    )}
+                  </div>
+                  <p className="text-xs" style={{ color: SALON_LUXE_COLORS.bronze }}>
+                    Complete working day (1 day per date)
+                  </p>
+                </div>
+              </div>
+            </button>
+
+            {/* Half Day Option */}
+            <button
+              type="button"
+              onClick={() => setIsHalfDay(true)}
+              className="p-4 rounded-xl text-left transition-all duration-300 hover:scale-105 active:scale-95"
+              style={{
+                backgroundColor: isHalfDay ? `${SALON_LUXE_COLORS.plum}30` : `${SALON_LUXE_COLORS.charcoal.darker}`,
+                border: isHalfDay
+                  ? `2px solid ${SALON_LUXE_COLORS.plum}`
+                  : `1px solid ${SALON_LUXE_COLORS.bronze}30`,
+                boxShadow: isHalfDay ? `0 0 20px ${SALON_LUXE_COLORS.plum}40` : 'none'
+              }}
+              disabled={isSubmitting || isLoading}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{
+                    backgroundColor: isHalfDay ? `${SALON_LUXE_COLORS.plum}40` : `${SALON_LUXE_COLORS.bronze}20`
+                  }}
+                >
+                  <Clock
+                    className="w-5 h-5"
+                    style={{ color: isHalfDay ? SALON_LUXE_COLORS.plum : SALON_LUXE_COLORS.bronze }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-sm font-bold" style={{
+                      color: isHalfDay ? SALON_LUXE_COLORS.champagne.base : SALON_LUXE_COLORS.bronze
+                    }}>
+                      Half Day Leave
+                    </p>
+                    {isHalfDay && (
+                      <CheckCircle className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.emerald }} />
+                    )}
+                  </div>
+                  <p className="text-xs" style={{ color: SALON_LUXE_COLORS.bronze }}>
+                    {isHalfDay
+                      ? `${halfDayPeriod === 'morning' ? 'Morning' : 'Afternoon'} only (0.5 days)`
+                      : 'Partial working day (0.5 days)'}
+                  </p>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          {/* 🎯 HALF DAY PERIOD SELECTION - Show only when half day is selected */}
+          {isHalfDay && (
+            <div
+              className="p-4 rounded-xl space-y-3 animate-in fade-in slide-in-from-top-2 duration-300"
+              style={{
+                backgroundColor: `${SALON_LUXE_COLORS.plum}15`,
+                border: `1px solid ${SALON_LUXE_COLORS.plum}30`
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.plum }} />
+                <label className="text-xs font-semibold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                  Which Half of the Day?
+                </label>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {/* Morning Option */}
+                <button
+                  type="button"
+                  onClick={() => setHalfDayPeriod('morning')}
+                  className="p-3 rounded-lg text-center transition-all duration-300 hover:scale-105 active:scale-95"
+                  style={{
+                    backgroundColor: halfDayPeriod === 'morning'
+                      ? `${SALON_LUXE_COLORS.gold.base}40`
+                      : `${SALON_LUXE_COLORS.charcoal.darker}`,
+                    border: halfDayPeriod === 'morning'
+                      ? `2px solid ${SALON_LUXE_COLORS.gold.base}`
+                      : `1px solid ${SALON_LUXE_COLORS.bronze}30`
+                  }}
+                  disabled={isSubmitting || isLoading}
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="text-2xl">🌅</div>
+                    <p className="text-xs font-bold" style={{
+                      color: halfDayPeriod === 'morning' ? SALON_LUXE_COLORS.champagne.base : SALON_LUXE_COLORS.bronze
+                    }}>
+                      Morning
+                    </p>
+                    <p className="text-[10px]" style={{ color: SALON_LUXE_COLORS.bronze, opacity: 0.7 }}>
+                      Start of day
+                    </p>
+                  </div>
+                </button>
+
+                {/* Afternoon Option */}
+                <button
+                  type="button"
+                  onClick={() => setHalfDayPeriod('afternoon')}
+                  className="p-3 rounded-lg text-center transition-all duration-300 hover:scale-105 active:scale-95"
+                  style={{
+                    backgroundColor: halfDayPeriod === 'afternoon'
+                      ? `${SALON_LUXE_COLORS.gold.base}40`
+                      : `${SALON_LUXE_COLORS.charcoal.darker}`,
+                    border: halfDayPeriod === 'afternoon'
+                      ? `2px solid ${SALON_LUXE_COLORS.gold.base}`
+                      : `1px solid ${SALON_LUXE_COLORS.bronze}30`
+                  }}
+                  disabled={isSubmitting || isLoading}
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="text-2xl">🌆</div>
+                    <p className="text-xs font-bold" style={{
+                      color: halfDayPeriod === 'afternoon' ? SALON_LUXE_COLORS.champagne.base : SALON_LUXE_COLORS.bronze
+                    }}>
+                      Afternoon
+                    </p>
+                    <p className="text-[10px]" style={{ color: SALON_LUXE_COLORS.bronze, opacity: 0.7 }}>
+                      End of day
+                    </p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 🎯 ENTERPRISE: Date Range with Calendar Icons */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FieldWithError
             ref={startDateRef}
@@ -686,19 +938,27 @@ export function LeaveModal({
             error={errors.start_date}
             required
           >
-            <input
-              type="date"
-              value={formData.start_date}
-              onChange={e => handleChange('start_date', e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border text-sm transition-all duration-300 focus:ring-2"
-              style={{
-                backgroundColor: SALON_LUXE_COLORS.charcoal.darker,
-                borderColor: errors.start_date ? SALON_LUXE_COLORS.rose : `${SALON_LUXE_COLORS.bronze}30`,
-                color: SALON_LUXE_COLORS.champagne.base,
-                outline: 'none'
-              }}
-              disabled={isSubmitting || isLoading}
-            />
+            <div className="relative">
+              <Calendar
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none z-10"
+                style={{ color: SALON_LUXE_COLORS.champagne.base, opacity: 0.7 }}
+              />
+              <input
+                type="date"
+                value={formData.start_date}
+                onChange={e => handleChange('start_date', e.target.value)}
+                min={minDate}
+                className="w-full pl-12 pr-4 py-3 rounded-xl border text-sm transition-all duration-300 focus:ring-2 cursor-pointer"
+                style={{
+                  backgroundColor: SALON_LUXE_COLORS.charcoal.darker,
+                  borderColor: errors.start_date ? SALON_LUXE_COLORS.rose : `${SALON_LUXE_COLORS.bronze}30`,
+                  color: SALON_LUXE_COLORS.champagne.base,
+                  outline: 'none',
+                  colorScheme: 'dark'
+                }}
+                disabled={isSubmitting || isLoading}
+              />
+            </div>
           </FieldWithError>
 
           <FieldWithError
@@ -707,34 +967,55 @@ export function LeaveModal({
             error={errors.end_date}
             required
           >
-            <input
-              type="date"
-              value={formData.end_date}
-              onChange={e => handleChange('end_date', e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border text-sm transition-all duration-300 focus:ring-2"
-              style={{
-                backgroundColor: SALON_LUXE_COLORS.charcoal.darker,
-                borderColor: errors.end_date ? SALON_LUXE_COLORS.rose : `${SALON_LUXE_COLORS.bronze}30`,
-                color: SALON_LUXE_COLORS.champagne.base,
-                outline: 'none'
-              }}
-              disabled={isSubmitting || isLoading}
-            />
+            <div className="relative">
+              <Calendar
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none z-10"
+                style={{ color: SALON_LUXE_COLORS.champagne.base, opacity: 0.7 }}
+              />
+              <input
+                type="date"
+                value={formData.end_date}
+                onChange={e => handleChange('end_date', e.target.value)}
+                min={formData.start_date || minDate}
+                className="w-full pl-12 pr-4 py-3 rounded-xl border text-sm transition-all duration-300 focus:ring-2 cursor-pointer"
+                style={{
+                  backgroundColor: SALON_LUXE_COLORS.charcoal.darker,
+                  borderColor: errors.end_date ? SALON_LUXE_COLORS.rose : `${SALON_LUXE_COLORS.bronze}30`,
+                  color: SALON_LUXE_COLORS.champagne.base,
+                  outline: 'none',
+                  colorScheme: 'dark'
+                }}
+                disabled={isSubmitting || isLoading}
+              />
+            </div>
           </FieldWithError>
         </div>
 
-        {/* Total Days Display */}
+        {/* 🎯 ENTERPRISE: Total Days Display with Half-Day Support */}
         {totalDays > 0 && (
           <div
-            className="p-4 rounded-xl flex items-center justify-between"
-            style={{ backgroundColor: `${SALON_LUXE_COLORS.gold.base}10`, border: `1px solid ${SALON_LUXE_COLORS.gold.base}30` }}
+            className="p-4 rounded-xl flex items-center justify-between animate-in fade-in slide-in-from-bottom-2 duration-300"
+            style={{
+              background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base}15 0%, ${SALON_LUXE_COLORS.emerald}10 100%)`,
+              border: `2px solid ${SALON_LUXE_COLORS.gold.base}40`
+            }}
           >
-            <span className="text-sm font-medium" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
-              Total Days Requested
-            </span>
-            <span className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.gold.base }}>
-              {totalDays} {totalDays === 1 ? 'day' : 'days'}
-            </span>
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+              <span className="text-sm font-medium" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                Total Leave Duration
+              </span>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+                {totalDays} {totalDays === 0.5 ? 'day' : totalDays === 1 ? 'day' : 'days'}
+              </div>
+              {isHalfDay && totalDays === 0.5 && (
+                <span className="text-xs font-medium" style={{ color: SALON_LUXE_COLORS.emerald }}>
+                  Half Day
+                </span>
+              )}
+            </div>
           </div>
         )}
 
@@ -782,24 +1063,6 @@ export function LeaveModal({
           <div className="flex items-center justify-end mt-2">
             <CharacterCounter current={formData.reason.length} min={10} showCheck />
           </div>
-        </FieldWithError>
-
-        {/* Additional Notes */}
-        <FieldWithError label="Additional Notes" hint="Optional - any extra information">
-          <textarea
-            value={formData.notes}
-            onChange={e => handleChange('notes', e.target.value)}
-            placeholder="Any additional information..."
-            rows={3}
-            className="w-full px-4 py-3 rounded-xl border text-sm transition-all duration-300 focus:ring-2 resize-none"
-            style={{
-              backgroundColor: SALON_LUXE_COLORS.charcoal.darker,
-              borderColor: `${SALON_LUXE_COLORS.bronze}30`,
-              color: SALON_LUXE_COLORS.champagne.base,
-              outline: 'none'
-            }}
-            disabled={isSubmitting || isLoading}
-          />
         </FieldWithError>
       </form>
     </SalonLuxeModal>

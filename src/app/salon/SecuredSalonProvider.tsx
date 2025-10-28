@@ -761,7 +761,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
   /**
    * Load organization details securely
-   * ✅ ENTERPRISE: Loads currency from dynamic data for universal currency support
+   * ✅ ENTERPRISE: Loads ALL organization settings from dynamic data (HERA DNA pattern)
    */
   const loadOrganizationDetails = async (orgId: string) => {
     try {
@@ -780,28 +780,49 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             .eq('id', orgId)
             .single()
 
-          // ✅ ENTERPRISE: Fetch currency from dynamic data
-          const { data: dynamicData } = await client
+          // ✅ ENTERPRISE: Fetch ALL organization settings from dynamic data
+          // Organization entity stores its settings as dynamic fields (HERA DNA pattern)
+          const { data: allDynamicData } = await client
             .from('core_dynamic_data')
             .select('*')
             .eq('organization_id', orgId)
             .eq('entity_id', orgId) // Organization's own dynamic data
-            .eq('field_name', 'currency')
-            .maybeSingle()
 
-          const currency = dynamicData?.field_value_text || org?.metadata?.currency || 'AED'
+          // Transform dynamic data array to object for easy access
+          const settingsFromDynamic: Record<string, any> = {}
+          if (allDynamicData && Array.isArray(allDynamicData)) {
+            allDynamicData.forEach((field: any) => {
+              const value = field.field_value_text ||
+                            field.field_value_number ||
+                            field.field_value_boolean ||
+                            field.field_value_date ||
+                            field.field_value_json
+              settingsFromDynamic[field.field_name] = value
+            })
+          }
+
+          // Extract settings with fallbacks
+          const currency = settingsFromDynamic.currency || org?.metadata?.currency || 'AED'
+          const organization_name = settingsFromDynamic.organization_name || org?.organization_name || 'HairTalkz'
+          const legal_name = settingsFromDynamic.legal_name
+          const address = settingsFromDynamic.address
+          const phone = settingsFromDynamic.phone
+          const email = settingsFromDynamic.email
+          const trn = settingsFromDynamic.trn
+          const fiscal_year_start = settingsFromDynamic.fiscal_year_start
+          const logo_url = settingsFromDynamic.logo_url
 
           // ✅ ENTERPRISE: Currency symbol mapping
           const currencySymbolMap: Record<string, string> = {
-            'AED': 'AED',
+            'AED': 'د.إ',
             'USD': '$',
             'EUR': '€',
             'GBP': '£',
-            'SAR': 'SAR',
-            'QAR': 'QAR',
-            'KWD': 'KWD',
-            'BHD': 'BHD',
-            'OMR': 'OMR',
+            'SAR': 'ر.س',
+            'QAR': 'ر.ق',
+            'KWD': 'د.ك',
+            'BHD': 'د.ب',
+            'OMR': 'ر.ع.',
             'INR': '₹',
             'PKR': 'Rs'
           }
@@ -810,20 +831,31 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
           const orgData = {
             id: orgId,
-            name: org?.organization_name || 'HairTalkz',
+            name: organization_name,
+            legal_name,
+            address,
+            phone,
+            email,
+            trn,
             currency,
             currencySymbol,
-            settings: org?.metadata || {}
+            fiscal_year_start,
+            logo_url,
+            settings: {
+              ...org?.metadata,
+              ...settingsFromDynamic
+            }
           }
 
-          console.log('[SecuredSalonProvider] ✅ Loaded organization:', {
+          console.log('[SecuredSalonProvider] ✅ Loaded organization with full settings:', {
             orgId,
-            orgData,
-            hasOrganizationName: !!org?.organization_name,
-            rawOrganizationName: org?.organization_name,
+            hasName: !!organization_name,
+            hasAddress: !!address,
+            hasPhone: !!phone,
+            hasEmail: !!email,
+            hasTRN: !!trn,
             currency,
-            currencySymbol,
-            source: dynamicData ? 'dynamic_data' : 'metadata'
+            dynamicFieldsCount: allDynamicData?.length || 0
           })
 
           return orgData
@@ -835,7 +867,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         id: orgId,
         name: 'HairTalkz',
         currency: 'AED',
-        currencySymbol: 'AED',
+        currencySymbol: 'د.إ',
         settings: {}
       }
     }
@@ -844,6 +876,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   /**
    * Load branches for organization
    * ✅ Uses RPC API v2 (client-safe, no direct Supabase queries)
+   * ✅ GRACEFUL ERROR HANDLING: 401 errors are logged but don't block page load
    */
   const loadBranches = async (orgId: string): Promise<Branch[]> => {
     try {
@@ -857,7 +890,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         p_status: 'active'
       })
 
-      console.log('[loadBranches] Fetched branches via RPC API v2:', {
+      console.log('[loadBranches] ✅ Fetched branches via RPC API v2:', {
         count: branches.length,
         orgId
       })
@@ -872,8 +905,16 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       }
 
       return branches || []
-    } catch (error) {
-      console.error('Failed to load branches:', error)
+    } catch (error: any) {
+      // ✅ GRACEFUL ERROR HANDLING: Don't block page load if branches fail to load
+      console.warn('[loadBranches] ⚠️ Failed to load branches (non-critical):', {
+        error: error.message || error,
+        orgId,
+        note: 'Branch loading is optional - page will continue without branches'
+      })
+
+      // Return empty array instead of throwing - branches are not critical for most pages
+      setAvailableBranches([])
       return []
     } finally {
       setIsLoadingBranches(false) // ✅ Clear loading state

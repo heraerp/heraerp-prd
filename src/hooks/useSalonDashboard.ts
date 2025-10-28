@@ -1,8 +1,12 @@
 /**
- * HERA Enterprise Dashboard Hook
- * Smart Code: HERA.SALON.DASHBOARD.ENTERPRISE.HOOK.V1
+ * HERA Enterprise Dashboard Hook V1
+ * Smart Code: HERA.SALON.DASHBOARD.ENTERPRISE.HOOK.v1
  *
- * Comprehensive enterprise-grade dashboard hook with advanced analytics
+ * ✅ UPGRADED: Now using useUniversalEntityV1 and useUniversalTransactionV1
+ * ⚡ 100% RPC-based with zero direct Supabase queries
+ * 🛡️ Full HERA V1 compliance (orchestrator RPC pattern)
+ *
+ * Comprehensive enterprise-grade dashboard analytics:
  * - Appointment analytics and conversion rates
  * - Revenue trends and forecasting
  * - Staff performance metrics and leaderboard
@@ -14,8 +18,8 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useUniversalEntity } from './useUniversalEntity'
-import { useUniversalTransaction } from './useUniversalTransaction'
+import { useUniversalEntityV1 } from './useUniversalEntityV1'
+import { useUniversalTransactionV1 } from './useUniversalTransactionV1'
 import {
   startOfDay,
   endOfDay,
@@ -357,105 +361,95 @@ export interface UseSalonDashboardConfig {
 
 /**
  * Universal hook for salon dashboard data with enterprise analytics
- * Uses useUniversalEntity and useUniversalTransaction with RPC API v2
+ * ✅ UPGRADED: Uses useUniversalEntityV1 and useUniversalTransactionV1
+ * All data fetched via RPC functions (hera_entities_crud_v1 / hera_txn_crud_v1)
+ * Zero direct Supabase queries - 100% compliant with HERA V1 architecture
  */
 export function useSalonDashboard(config: UseSalonDashboardConfig) {
   const { organizationId, currency = 'AED', selectedPeriod = 'allTime' } = config
 
-  // Fetch customers using Universal Entity hook with caching
+  // Fetch customers using Universal Entity V1 hook (RPC-based)
   const {
     entities: customers,
     isLoading: customersLoading,
     refetch: refetchCustomers
-  } = useUniversalEntity({
+  } = useUniversalEntityV1({
     entity_type: 'CUSTOMER',
     organizationId,
     filters: {
       include_dynamic: true,
       include_relationships: false
-    },
-    staleTime: 30000, // 30 seconds cache
-    refetchOnWindowFocus: false
+    }
   })
 
-  // Fetch services using Universal Entity hook with caching
+  // Fetch services using Universal Entity V1 hook (RPC-based)
   const {
     entities: services,
     isLoading: servicesLoading,
     refetch: refetchServices
-  } = useUniversalEntity({
+  } = useUniversalEntityV1({
     entity_type: 'SERVICE',
     organizationId,
     filters: {
       include_dynamic: true,
       include_relationships: false
-    },
-    staleTime: 30000, // 30 seconds cache
-    refetchOnWindowFocus: false
+    }
   })
 
-  // Fetch products using Universal Entity hook with caching
+  // Fetch products using Universal Entity V1 hook (RPC-based)
   const {
     entities: products,
     isLoading: productsLoading,
     refetch: refetchProducts
-  } = useUniversalEntity({
+  } = useUniversalEntityV1({
     entity_type: 'PRODUCT',
     organizationId,
     filters: {
       include_dynamic: true,
       include_relationships: false
-    },
-    staleTime: 30000, // 30 seconds cache
-    refetchOnWindowFocus: false
+    }
   })
 
-  // Fetch staff using Universal Entity hook with caching
+  // Fetch staff using Universal Entity V1 hook (RPC-based)
   const {
     entities: staff,
     isLoading: staffLoading,
     refetch: refetchStaff
-  } = useUniversalEntity({
+  } = useUniversalEntityV1({
     entity_type: 'STAFF',
     organizationId,
     filters: {
       include_dynamic: true,
       include_relationships: false
-    },
-    staleTime: 30000, // 30 seconds cache
-    refetchOnWindowFocus: false
+    }
   })
 
-  // Fetch transactions (tickets/sales) using Universal Transaction hook with caching
+  // Fetch transactions (tickets/sales) using Universal Transaction V1 hook (RPC-based)
   // ✅ ENTERPRISE FIX: Include lines to get payment method details
   const {
     transactions: tickets,
     isLoading: ticketsLoading,
     refetch: refetchTickets
-  } = useUniversalTransaction({
+  } = useUniversalTransactionV1({
     organizationId,
     filters: {
       transaction_type: 'SALE',
       limit: 1000,
       include_lines: true // ✅ CRITICAL: Include lines for payment method breakdown
-    },
-    staleTime: 30000, // 30 seconds cache for dashboard
-    refetchOnWindowFocus: false
+    }
   })
 
-  // Fetch appointments for staff utilization calculations
+  // Fetch appointments using Universal Transaction V1 hook (RPC-based)
   const {
     transactions: appointments,
     isLoading: appointmentsLoading,
     refetch: refetchAppointments
-  } = useUniversalTransaction({
+  } = useUniversalTransactionV1({
     organizationId,
     filters: {
       transaction_type: 'APPOINTMENT',
       limit: 1000
-    },
-    staleTime: 30000, // 30 seconds cache for dashboard
-    refetchOnWindowFocus: false
+    }
   })
 
   // Calculate comprehensive KPIs

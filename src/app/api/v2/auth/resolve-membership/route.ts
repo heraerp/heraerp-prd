@@ -5,12 +5,14 @@ import { createClient } from '@supabase/supabase-js'
 /**
  * GET /api/v2/auth/resolve-membership
  *
- * Idempotent membership resolver - returns current state or self-heals
- * Never returns 401 for valid JWT - only 200 with current/healed state
+ * OPTIMIZED: Uses hera_auth_introspect_v1 RPC for single-call authentication
+ * Returns user's organization membership with complete role context
+ *
+ * Performance: Single RPC call vs. O(N) calls per organization
  */
 export async function GET(request: NextRequest) {
   try {
-    // Simple JWT verification without complex RPC dependencies
+    // JWT verification
     const authHeader = request.headers.get('authorization')
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
@@ -31,107 +33,83 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
     }
 
-    const auth = { id: user.id, email: user.email }
+    const userId = user.id
+    const userEmail = user.email
 
-    // If JWT already has org context, return success immediately
-    if (auth.organizationId) {
-      console.log(`[resolve-membership] JWT has org context - returning current state`)
-      return NextResponse.json({
-        success: true,
-        user_entity_id: auth.id, // Use Supabase UID as entity ID for Hair Talkz
-        membership: {
-          organization_id: auth.organizationId,
-          roles: auth.roles || ['OWNER'],
-          is_active: true
-        }
-      })
-    }
+    console.log(`[resolve-membership] Resolving membership for user ${userId} (${userEmail})`)
 
-    console.log(`[resolve-membership] JWT missing org context - self-healing for user ${auth.id}`)
-
-    const userId = auth.id
     const supabaseService = getSupabaseService()
 
-    // Self-heal: ensure membership exists
-    try {
-      await supabaseService.rpc('ensure_membership_for_email', {
-        p_email: auth.email,
-        p_org_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
-        p_service_user: userId
-      })
-      console.log(`[resolve-membership] Self-heal completed for ${auth.email}`)
-    } catch (healError) {
-      console.warn(`[resolve-membership] Self-heal warning:`, healError)
-      // Continue anyway - maybe relationship already exists
-    }
-    // Fetch canonical IDs after self-heal
-    const { data: relationships, error: relError } = await supabaseService
-      .from('core_relationships')
-      .select('id, to_entity_id, organization_id, relationship_data, is_active')
-      .eq('from_entity_id', userId)
-      .eq('relationship_type', 'MEMBER_OF')
-      .eq('is_active', true)
-
-    const relationship = relationships?.[0]
-    if (!relationship) {
-      // Return success with fallback data instead of 404
-      console.log(`[resolve-membership] No relationships found - returning fallback`)
-      return NextResponse.json({
-        success: true,
-        user_entity_id: userId,
-        membership: {
-          organization_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
-          roles: ['OWNER'],
-          is_active: true
-        }
-      })
-    }
-
-    // Get canonical entity IDs
-    const tenantOrgId = relationship.organization_id
-
-    // ✅ USER entities are in PLATFORM organization (00000000-0000-0000-0000-000000000000)
-    // According to hera_onboard_user_v1, platform USER entity id == auth.users.id
-    const { data: userEntity } = await supabaseService
-      .from('core_entities')
-      .select('id')
-      .eq('entity_type', 'USER')
-      .eq('organization_id', '00000000-0000-0000-0000-000000000000')
-      .eq('id', userId)
-      .maybeSingle()
-
-    // ✅ ORGANIZATION shadow entities are in tenant org
-    const { data: orgEntity } = await supabaseService
-      .from('core_entities')
-      .select('id')
-      .eq('id', relationship.to_entity_id)
-      .eq('entity_type', 'ORGANIZATION')
-      .eq('organization_id', tenantOrgId)
-      .maybeSingle()
-
-    console.log(`[resolve-membership] Canonical IDs resolved:`, {
-      userEntityId: userEntity?.id,
-      orgEntityId: orgEntity?.id,
-      organizationId: tenantOrgId
+    // ✅ OPTIMIZED: Single RPC call gets ALL organizations with roles and metadata
+    const { data: authContext, error: introspectError } = await supabaseService.rpc('hera_auth_introspect_v1', {
+      p_actor_user_id: userId
     })
+
+    if (introspectError) {
+      console.error('[resolve-membership] Introspect error:', introspectError)
+      return NextResponse.json({
+        error: 'database_error',
+        message: 'Failed to resolve user authentication context'
+      }, { status: 500 })
+    }
+
+    if (!authContext || !authContext.organizations || authContext.organizations.length === 0) {
+      console.log('[resolve-membership] No active memberships found')
+      return NextResponse.json({
+        error: 'no_membership',
+        message: 'User has no organization memberships'
+      }, { status: 404 })
+    }
+
+    // Transform introspect response to match existing API format
+    const validOrgs = authContext.organizations.map((org: any) => ({
+      id: org.id,
+      code: org.code,
+      name: org.name,
+      status: org.status,
+      joined_at: org.joined_at,
+      primary_role: org.primary_role,
+      roles: org.roles,
+      is_owner: org.is_owner,
+      is_admin: org.is_admin,
+      relationship_id: null, // Not available in introspect, but not critical
+      org_entity_id: org.id // Use org ID as fallback
+    }))
+
+    const defaultOrg = validOrgs[0] // First organization (sorted by joined_at DESC)
+
+    console.log(`[resolve-membership] ⚡ OPTIMIZED: Single RPC resolved ${validOrgs.length} organization(s) for user ${userId}`)
+    console.log(`[resolve-membership] Default org: ${defaultOrg.id} (${defaultOrg.name}) - Role: ${defaultOrg.primary_role}`)
 
     return NextResponse.json({
       success: true,
-      user_entity_id: userEntity?.id || userId,
+      user_id: userId,
+      user_entity_id: userId, // Platform USER entity id = auth.users.id
+      organization_count: authContext.organization_count,
+      default_organization_id: authContext.default_organization_id,
+      organizations: validOrgs,
+      is_platform_admin: authContext.is_platform_admin,
+      introspected_at: authContext.introspected_at,
+      // ✅ Legacy support for existing client code (salon-access page)
       membership: {
-        organization_id: tenantOrgId,
-        org_entity_id: orgEntity?.id || relationship.to_entity_id,
-        relationship_id: relationship.id,
-        roles: [relationship.relationship_data?.role || 'OWNER'],
-        is_active: relationship.is_active
+        organization_id: defaultOrg.id,
+        org_entity_id: defaultOrg.id,
+        relationship_id: defaultOrg.relationship_id,
+        roles: defaultOrg.roles,
+        role: defaultOrg.primary_role,
+        primary_role: defaultOrg.primary_role,
+        is_active: true,
+        is_owner: defaultOrg.is_owner,
+        is_admin: defaultOrg.is_admin,
+        organization_name: defaultOrg.name // Add for convenience
       }
     })
 
   } catch (error: any) {
     console.error('[resolve-membership] Unexpected error:', error)
-    return NextResponse.json({ 
-      error: 'internal_error', 
-      message: error.message 
+    return NextResponse.json({
+      error: 'internal_error',
+      message: error.message
     }, { status: 500 })
   }
 }

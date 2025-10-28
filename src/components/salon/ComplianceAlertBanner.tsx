@@ -178,7 +178,7 @@ export function ComplianceAlertBanner({ organizationId, onViewDetails }: Complia
           )}
 
           {/* Action Button */}
-          <Link href="/salon/staff">
+          <Link href="/salon/staffs">
             <button
               className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all hover:scale-105"
               style={{

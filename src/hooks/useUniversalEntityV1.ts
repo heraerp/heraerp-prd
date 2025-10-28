@@ -581,7 +581,7 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
       if (!createdEntity) {
         console.error('[useUniversalEntityV1] ❌ No entity in response:', {
           dataKeys: data ? Object.keys(data) : [],
-          data: safeData
+          data: data
         })
 
         // ✅ WORKAROUND: RPC sometimes returns success but no entity data
@@ -831,9 +831,9 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         p_dynamic: {},  // ✅ Required by RPC (matches test)
         p_relationships: {},  // ✅ Required by RPC (matches test)
         p_options: {
-          // ✅ CRITICAL FIX: Pass delete options to RPC
-          ...(hard_delete !== undefined && { hard_delete }),
-          ...(cascade !== undefined && { cascade }),
+          // ✅ CRITICAL FIX: Always include hard_delete and cascade (explicit values, not conditional)
+          hard_delete: hard_delete,
+          cascade: cascade,
           ...(reason && { reason })
         }
       })

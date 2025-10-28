@@ -227,13 +227,40 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     if (!staffMember) throw new Error('Staff member not found')
 
     try {
-      // Attempt hard delete with cascade
-      await baseDelete({
+      console.log('[useHeraStaff] 🔥 Attempting HARD DELETE:', {
+        staffId: id,
+        staffName: staffMember.entity_name,
+        hard_delete: true,
+        cascade: true,
+        timestamp: new Date().toISOString()
+      })
+
+      console.log('[useHeraStaff] 📞 Calling baseDelete with params:', {
         entity_id: id,
         hard_delete: true,
         cascade: true,
         reason: reason || 'Permanently delete staff member',
-        smart_code: 'HERA.SALON.STAFF.DELETE.V1'
+        smart_code: 'HERA.SALON.STAFF.DELETE.v1'
+      })
+
+      // Attempt hard delete with cascade
+      const deleteResult = await baseDelete({
+        entity_id: id,
+        hard_delete: true,
+        cascade: true,
+        reason: reason || 'Permanently delete staff member',
+        smart_code: 'HERA.SALON.STAFF.DELETE.v1'  // ✅ FIX: lowercase .v1 per HERA DNA rules
+      })
+
+      console.log('[useHeraStaff] 📥 baseDelete returned:', {
+        deleteResult,
+        type: typeof deleteResult,
+        keys: deleteResult ? Object.keys(deleteResult) : 'null'
+      })
+
+      console.log('[useHeraStaff] ✅ HARD DELETE SUCCESS:', {
+        deleteResult,
+        stringified: JSON.stringify(deleteResult, null, 2)
       })
 
       // If we reach here, hard delete succeeded
@@ -245,11 +272,12 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
       // 🎯 ENTERPRISE ERROR DETECTION: Match services pattern - simpler and more reliable
       const errorMessage = error.message || ''
 
-      console.log('[useHeraStaff] Delete error caught:', {
+      console.log('[useHeraStaff] ❌ Delete error caught:', {
         errorType: error.constructor.name,
         status: error.status || error.statusCode,
         code: error.code,
-        message: errorMessage
+        message: errorMessage,
+        fullError: error
       })
 
       // Check if error is due to foreign key constraint (referenced in transactions)
@@ -263,23 +291,23 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
         errorMessage.includes('Cannot delete')
 
       if (is409Conflict) {
-        console.log('[useHeraStaff] Staff has references - fallback to archive')
+        console.log('[useHeraStaff] Staff has references - fallback to soft delete')
 
-        // Staff is referenced - fallback to archive with warning
-        // 🎯 CRITICAL: DON'T throw, just archive and return success (matches services pattern)
+        // Staff is referenced - fallback to soft delete (status='deleted') with warning
+        // 🎯 CRITICAL: DON'T throw, just mark as deleted and return success (matches services pattern)
         await baseUpdate({
           entity_id: id,
           entity_name: staffMember.entity_name,
-          status: 'archived'
+          status: 'deleted'  // ✅ FIX: Use 'deleted' status instead of 'archived'
         })
 
-        console.log('[useHeraStaff] Archive successful - returning success response')
+        console.log('[useHeraStaff] Soft delete successful - returning success response')
 
         return {
           success: true,
           archived: true,
           message:
-            'Staff member is referenced by other records (appointments, transactions, or schedules) and cannot be deleted. They have been archived instead.'
+            'Staff member is referenced by other records (appointments, transactions, or schedules) and cannot be deleted. They have been marked as deleted instead.'
         }
       }
 

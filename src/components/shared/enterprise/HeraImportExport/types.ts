@@ -51,6 +51,22 @@ export interface ImportExportConfig<T = any> {
   filePrefix?: string
   /** Template sheet name */
   templateSheetName?: string
+
+  // 🎯 ENTERPRISE CUSTOMIZATION: Page-specific template instructions
+  /** Custom warning message (default: "CREATE REFERENCE DATA FIRST") */
+  customWarning?: string
+  /** Additional page-specific instructions (added after generic instructions) */
+  customInstructions?: string[]
+  /** Note for example row (default: "for reference only") */
+  exampleNote?: string
+  /** Custom column widths for better readability (array of widths in characters) */
+  columnWidths?: number[]
+
+  // 💰 MULTI-CURRENCY SUPPORT: Organization-specific currency
+  /** Currency code for price fields (e.g., 'USD', 'EUR', 'AED', 'GBP') */
+  currency?: string
+  /** Currency symbol for display (e.g., '$', '€', 'AED', '£') - defaults to currency code if not provided */
+  currencySymbol?: string
 }
 
 export interface ImportResult {

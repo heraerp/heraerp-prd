@@ -151,6 +151,11 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
               console.log('🔄 Session exists but context missing, re-resolving...')
               didResolveRef.current = false
               // Fall through to resolution logic below
+            } else if (session && ctxRef.current.user && !ctxRef.current.organization) {
+              // Session and user exist but organization missing - allow re-resolution
+              console.log('🔄 Session and user exist but organization missing, re-resolving...')
+              didResolveRef.current = false
+              // Fall through to resolution logic below
             } else {
               // Session exists and context is valid, no action needed
               console.log('✅ Session and context both valid, no re-resolution needed')

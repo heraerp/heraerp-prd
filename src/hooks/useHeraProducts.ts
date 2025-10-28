@@ -366,7 +366,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
         hard_delete: true,
         cascade: true,
         reason: 'Permanently delete product',
-        smart_code: 'HERA.SALON.PRODUCT.DELETE.V1'
+        smart_code: 'HERA.SALON.PRODUCT.DELETE.v1'  // ✅ FIX: lowercase .v1 per HERA DNA rules
       })
 
       // If we reach here, hard delete succeeded
