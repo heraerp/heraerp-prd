@@ -1,5 +1,6 @@
 # HERA ERP Nixpacks Configuration
 # Prevents Chromium/browser installation that was causing build timeouts
+# Updated: Force new deployment trigger
 
 [phases.setup]
 nixPkgs = ["nodejs_20", "openssl"]
