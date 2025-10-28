@@ -145,6 +145,14 @@ export default function EnterpriseProcurementOverviewPage() {
       icon: BarChart3,
       color: 'bg-red-600',
       href: '/enterprise/procurement/analytics'
+    },
+    {
+      id: 'purchasing-rebates',
+      title: 'Purchasing Rebates',
+      subtitle: 'End-to-end Supplier Rebate Management',
+      icon: Calculator,
+      color: 'bg-indigo-600',
+      href: '/enterprise/procurement/purchasing-rebates'
     }
   ]
 

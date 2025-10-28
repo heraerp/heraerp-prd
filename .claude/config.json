@@ -1,0 +1,49 @@
+{
+  "version": "2.0",
+  "project": "hera-v2-autopilot-learning",
+  "model": "claude-sonnet-4-20250514",
+  "context": {
+    "architecture": "docs/HERA_Architecture_v2.2.md",
+    "schemas": "docs/Sacred_Six_Schemas.yaml",
+    "patterns": "docs/Actor_Flow_Enhanced.html",
+    "learning": {
+      "knowledge_base": ".claude/learning/knowledge-base.json",
+      "bug_patterns": ".claude/learning/bug-patterns.json",
+      "successful_fixes": ".claude/learning/successful-fixes.json",
+      "failure_analysis": ".claude/learning/failure-analysis.json"
+    }
+  },
+  "env": {
+    "dev": { 
+      "contextRoots": ["docs/", "sql/", "src/", ".claude/learning/"],
+      "learning_mode": "aggressive"
+    },
+    "prod": { 
+      "contextRoots": ["docs/", "sql/", "src/", ".claude/learning/"],
+      "learning_mode": "conservative"
+    }
+  },
+  "rules": {
+    "always_use_api_v2": true,
+    "never_direct_rpc_calls": true,
+    "enforce_actor_stamping": true,
+    "validate_smart_codes": true,
+    "ensure_org_isolation": true,
+    "immutable_sacred_six_schema": true,
+    "learn_from_failures": true,
+    "update_knowledge_base": true,
+    "track_fix_success_rate": true
+  },
+  "learning": {
+    "enabled": true,
+    "retention_days": 90,
+    "min_pattern_frequency": 3,
+    "confidence_threshold": 0.8,
+    "max_knowledge_entries": 1000,
+    "auto_prompt_evolution": true
+  },
+  "output": { 
+    "typescript": { "strict": true, "target": "ES2022", "module": "ESNext" }, 
+    "sql": { "dialect": "postgresql", "version": "15" }
+  }
+}

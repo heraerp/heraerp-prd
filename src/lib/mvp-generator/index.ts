@@ -351,6 +351,13 @@ export class MVPGenerator {
 
     const pages: GeneratedFile[] = []
 
+    // Generate application overview page
+    pages.push({
+      path: `pages/index.tsx`,
+      content: this.generateApplicationOverviewPage(),
+      type: 'typescript'
+    })
+
     // Generate entity pages
     for (const entity of this.mergedConfig.entities) {
       pages.push({
@@ -516,23 +523,33 @@ export class MVPGenerator {
   // ============================================================================
 
   private generateEntityListPage(entity: EntityDefinition): string {
-    // TODO: Implement shadcn/ui entity list page
-    return `// Entity list page for ${entity.entity_type} - TODO: Implement`
+    if (!this.mergedConfig) throw new Error('No configuration')
+    const { generateEntityListPage } = require('./generators/pages')
+    return generateEntityListPage(entity, this.mergedConfig)
   }
 
   private generateEntityCreatePage(entity: EntityDefinition): string {
-    // TODO: Implement shadcn/ui entity create page
-    return `// Entity create page for ${entity.entity_type} - TODO: Implement`
+    if (!this.mergedConfig) throw new Error('No configuration')
+    const { generateEntityCreatePage } = require('./generators/pages')
+    return generateEntityCreatePage(entity, this.mergedConfig)
   }
 
   private generateTransactionPage(transaction: TransactionDefinition): string {
-    // TODO: Implement transaction page
-    return `// Transaction page for ${transaction.transaction_type} - TODO: Implement`
+    if (!this.mergedConfig) throw new Error('No configuration')
+    const { generateTransactionPage } = require('./generators/pages')
+    return generateTransactionPage(transaction, this.mergedConfig)
+  }
+
+  private generateApplicationOverviewPage(): string {
+    if (!this.mergedConfig) throw new Error('No configuration')
+    const { generateApplicationOverviewPage } = require('./generators/pages')
+    return generateApplicationOverviewPage(this.mergedConfig)
   }
 
   private generateProductionAPIHandler(): string {
+    if (!this.mergedConfig) throw new Error('No configuration')
     const { generateProductionAPIHandler } = require('./generators/api-handler')
-    return generateProductionAPIHandler()
+    return generateProductionAPIHandler(this.mergedConfig)
   }
 
   private generateSeedPlan(): any {

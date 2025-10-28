@@ -238,12 +238,12 @@ function getSampleDataForEntity(entityDef: EntityDefinition): any {
   const samples = ${JSON.stringify(generateSampleDataMap(config), null, 2)}
   
   return samples[entityDef.entity_type] || {
-    entity_name: \`Sample \${entityDef.entity_name}\`,
-    entity_code: \`SAMPLE_\${entityDef.entity_type}_001\`,
+    entity_name: \`Sample \$\{entityDef.entity_name\}\`,
+    entity_code: \`SAMPLE_\$\{entityDef.entity_type\}_001\`,
     dynamic_fields: entityDef.fields.slice(0, 3).map((field, index) => ({
       field_name: field.name,
       field_type: field.type,
-      field_value_text: field.type === 'text' ? \`Sample \${field.name}\` : undefined,
+      field_value_text: field.type === 'text' ? \`Sample \$\{field.name\}\` : undefined,
       field_value_number: field.type === 'number' ? 100 + index : undefined,
       field_value_boolean: field.type === 'boolean' ? true : undefined,
       smart_code: field.smart_code
@@ -394,12 +394,12 @@ function generateSampleForEntityType(entity: EntityDefinition): any {
   }
   
   return typeSpecificSamples[entity.entity_type] || {
-    entity_name: \`Sample \${entity.entity_name}\`,
-    entity_code: \`SAMPLE_\${entity.entity_type}_001\`,
+    entity_name: `Sample ${entity.entity_name}`,
+    entity_code: `SAMPLE_${entity.entity_type}_001`,
     dynamic_fields: entity.fields.slice(0, 3).map(field => ({
       field_name: field.name,
       field_type: field.type,
-      field_value_text: field.type === 'text' ? \`Sample \${field.name}\` : undefined,
+      field_value_text: field.type === 'text' ? `Sample ${field.name}` : undefined,
       field_value_number: field.type === 'number' ? 100 : undefined,
       field_value_boolean: field.type === 'boolean' ? true : undefined,
       smart_code: field.smart_code
