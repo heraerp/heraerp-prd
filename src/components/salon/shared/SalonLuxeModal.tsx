@@ -119,23 +119,34 @@ export function SalonLuxeModal({
           }}
         />
 
-        {/* Close Button */}
+        {/* Close Button - Always Visible */}
         {showCloseButton && (
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 z-50 rounded-lg p-2 hover:scale-110"
+            className="absolute right-4 top-4 rounded-lg p-2 hover:scale-110 transition-all"
             style={{
-              backgroundColor: 'rgba(212, 175, 55, 0.1)',
+              zIndex: 999,
+              backgroundColor: 'rgba(212, 175, 55, 0.15)',
               color: SALON_LUXE_COLORS.gold.base,
-              transitionProperty: 'background-color, transform',
+              transitionProperty: 'background-color, transform, box-shadow',
               transitionDuration: '200ms',
               transitionTimingFunction: 'ease',
+              border: `1px solid rgba(212, 175, 55, 0.3)`,
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)'
+              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.3)'
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.6)'
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.4)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)'
+              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.15)'
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)'
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3)'
             }}
           >
             <X className="h-4 w-4" />

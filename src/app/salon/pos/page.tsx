@@ -1,27 +1,56 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { universalApi } from '@/lib/universal-api-v2'
-import { flags } from '@/config/flags'
 import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
-import { CatalogPane } from '@/components/salon/pos/CatalogPane'
-import { CartSidebar } from '@/components/salon/pos/CartSidebar'
-import { PaymentDialog } from '@/components/salon/pos/PaymentDialog'
-import { Receipt } from '@/components/salon/pos/Receipt'
-import { TicketDetailsModal } from '@/components/salon/pos/TicketDetailsModal'
-import { BillSetupModal } from '@/components/salon/pos/BillSetupModal'
 import { usePosTicket } from '@/hooks/usePosTicket'
 import { useAppointmentLookup } from '@/hooks/useAppointmentLookup'
 import { useCustomerLookup } from '@/hooks/useCustomerLookup'
 import { useHeraAppointments } from '@/hooks/useHeraAppointments'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
-import { Button } from '@/components/ui/button'
+import { PremiumMobileHeader } from '@/components/salon/shared/PremiumMobileHeader'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { ShoppingCart, CreditCard, Monitor, Sparkles, Receipt as ReceiptIcon, AlertCircle, Building2, UserX, Users } from 'lucide-react'
+import { ShoppingCart, Monitor, Sparkles, Receipt as ReceiptIcon, AlertCircle, Building2, UserX, Users } from 'lucide-react'
 import Link from 'next/link'
+
+// ✅ ENTERPRISE PATTERN: Lazy load heavy components for better performance
+const CatalogPane = lazy(() => import('@/components/salon/pos/CatalogPane').then(m => ({ default: m.CatalogPane })))
+const CartSidebar = lazy(() => import('@/components/salon/pos/CartSidebar').then(m => ({ default: m.CartSidebar })))
+const PaymentDialog = lazy(() => import('@/components/salon/pos/PaymentDialog').then(m => ({ default: m.PaymentDialog })))
+const Receipt = lazy(() => import('@/components/salon/pos/Receipt').then(m => ({ default: m.Receipt })))
+const TicketDetailsModal = lazy(() => import('@/components/salon/pos/TicketDetailsModal').then(m => ({ default: m.TicketDetailsModal })))
+const BillSetupModal = lazy(() => import('@/components/salon/pos/BillSetupModal').then(m => ({ default: m.BillSetupModal })))
+
+// ✅ ENTERPRISE PATTERN: Skeleton loaders for perceived performance
+function CatalogPaneSkeleton() {
+  return (
+    <div className="h-full p-6 animate-pulse">
+      <div className="h-10 bg-charcoal-light rounded-lg mb-4 w-1/2" />
+      <div className="h-12 bg-charcoal-light rounded-lg mb-6" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[1, 2, 3, 4, 5, 6].map(i => (
+          <div key={i} className="h-32 bg-charcoal-light rounded-lg" />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CartSidebarSkeleton() {
+  return (
+    <div className="h-full p-6 animate-pulse">
+      <div className="h-8 bg-charcoal-light rounded-lg mb-4 w-3/4" />
+      <div className="space-y-3 mb-6">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-20 bg-charcoal-light rounded-lg" />
+        ))}
+      </div>
+      <div className="h-16 bg-gold/20 rounded-lg" />
+    </div>
+  )
+}
 
 // Luxe salon color palette for enterprise-grade aesthetics - Extended for visual balance
 const COLORS = {
@@ -97,7 +126,8 @@ function POSContent() {
     clearTicket,
     addCustomerToTicket,
     addItemsFromAppointment,
-    calculateTotals
+    calculateTotals,
+    updateTicketInfo
   } = posTicketResult
 
   const appointmentLookupResult = useAppointmentLookup(effectiveOrgId || 'demo-org')
@@ -217,7 +247,16 @@ function POSContent() {
 
         setIsLoadingAppointment(false)
       } catch (error) {
-        console.error('[POSPage] ❌ Failed to parse appointment data from sessionStorage:', error)
+        // ✅ ENTERPRISE ERROR LOGGING: Structured error with context
+        const errorDetails = {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          context: 'POS appointment load from sessionStorage',
+          organizationId: effectiveOrgId,
+          timestamp: new Date().toISOString()
+        }
+        console.error('[POSPage] ❌ Failed to parse appointment data:', errorDetails)
+
         setIsLoadingAppointment(false)
         toast({
           title: '❌ Loading Failed',
@@ -297,7 +336,16 @@ function POSContent() {
 
         setIsLoadingAppointment(false)
       } else {
-        console.error('[POSPage] ❌ Appointment not found:', appointmentId)
+        // ✅ ENTERPRISE ERROR LOGGING: Structured error with context
+        const errorDetails = {
+          error: 'Appointment not found',
+          context: 'POS appointment load from URL',
+          appointmentId,
+          organizationId: effectiveOrgId,
+          timestamp: new Date().toISOString()
+        }
+        console.error('[POSPage] ❌ Appointment not found:', errorDetails)
+
         setIsLoadingAppointment(false)
         toast({
           title: '❌ Appointment Not Found',
@@ -307,7 +355,17 @@ function POSContent() {
         })
       }
     }).catch(error => {
-      console.error('[POSPage] ❌ Failed to load appointment:', error)
+      // ✅ ENTERPRISE ERROR LOGGING: Structured error with context
+      const errorDetails = {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        context: 'POS appointment load from URL',
+        appointmentId,
+        organizationId: effectiveOrgId,
+        timestamp: new Date().toISOString()
+      }
+      console.error('[POSPage] ❌ Failed to load appointment:', errorDetails)
+
       setIsLoadingAppointment(false)
       toast({
         title: '❌ Loading Failed',
@@ -548,6 +606,11 @@ function POSContent() {
     setSelectedBranchId(branchId)
   }, [setSelectedBranchId])
 
+  // Handle transaction date changes for old bill entry
+  const handleTransactionDateChange = useCallback((date: string | undefined) => {
+    updateTicketInfo({ transaction_date: date })
+  }, [updateTicketInfo])
+
   const handlePaymentComplete = useCallback(
     async (saleData: any) => {
       setCompletedSale(saleData)
@@ -557,14 +620,10 @@ function POSContent() {
       // Update appointment status to completed if payment was for an appointment
       if (ticket.appointment_id) {
         try {
-          console.log('[POSPage] 📝 Updating appointment status to completed:', ticket.appointment_id)
-
           await updateAppointmentStatus({
             id: ticket.appointment_id,
             status: 'completed'
           })
-
-          console.log('[POSPage] ✅ Appointment status updated successfully')
 
           toast({
             title: '✅ Appointment Completed',
@@ -593,8 +652,8 @@ function POSContent() {
     [clearTicket, ticket.appointment_id, updateAppointmentStatus, toast]
   )
 
-  // Memoize totals calculation for performance
-  const totals = useMemo(() => calculateTotals(), [calculateTotals])
+  // Memoize totals calculation for performance - FIXED: Use ticket as dependency instead of function
+  const totals = useMemo(() => calculateTotals(), [ticket])
 
   if (!effectiveOrgId) {
     return (
@@ -638,6 +697,25 @@ function POSContent() {
 
   return (
     <div className="min-h-screen" data-salon-page style={{ backgroundColor: COLORS.black }}>
+      {/* ✅ MOBILE: iOS-style status bar spacer */}
+      <div className="h-11 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
+
+      {/* ✅ MOBILE: Premium Mobile Header */}
+      <div className="md:hidden">
+        <PremiumMobileHeader
+          title="Point of Sale"
+          subtitle={`${ticket.lineItems.length} items in cart`}
+          icon={<Monitor className="w-5 h-5" />}
+          actions={
+            <Link href="/salon/pos/payments">
+              <button className="min-w-[44px] min-h-[44px] rounded-full bg-gold/10 flex items-center justify-center active:scale-95 transition-transform">
+                <ReceiptIcon className="w-5 h-5 text-gold" />
+              </button>
+            </Link>
+          }
+        />
+      </div>
+
       {/* Enhanced gradient background overlay with balanced color spectrum */}
       <div
         className="fixed inset-0 pointer-events-none animate-gradient"
@@ -741,9 +819,9 @@ function POSContent() {
 
       {/* Main content wrapper */}
       <div className="relative" style={{ minHeight: '100vh' }}>
-        {/* Compact Enterprise Header */}
+        {/* Compact Enterprise Header - Desktop Only */}
         <div
-          className="sticky top-0 z-40 px-6 py-3 backdrop-blur-xl transition-all duration-500 ease-out animate-slideDown"
+          className="hidden md:block sticky top-0 z-40 px-6 py-3 backdrop-blur-xl transition-all duration-500 ease-out animate-slideDown"
           style={{
             backgroundColor: `${COLORS.charcoal}F0`,
             borderBottom: `1px solid ${COLORS.gold}25`,
@@ -799,34 +877,21 @@ function POSContent() {
 
             {/* Payment History Link - Compact */}
             <Link href="/salon/pos/payments">
-              <Button
+              <SalonLuxeButton
                 variant="outline"
                 size="sm"
-                className="px-4 py-2 text-xs font-semibold transition-all duration-300 hover:scale-105"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
-                  border: `1.5px solid ${COLORS.plum}70`,
-                  color: COLORS.champagne,
-                  boxShadow: `0 2px 12px ${COLORS.plum}25, 0 0 0 1px ${COLORS.plum}30`
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = COLORS.plum
-                  e.currentTarget.style.boxShadow = `0 4px 20px ${COLORS.plum}40, 0 0 0 1px ${COLORS.plum}50`
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = `${COLORS.plum}70`
-                  e.currentTarget.style.boxShadow = `0 2px 12px ${COLORS.plum}25, 0 0 0 1px ${COLORS.plum}30`
-                }}
+                icon={<ReceiptIcon className="w-3.5 h-3.5" />}
+                className="transition-all duration-300 hover:scale-105"
               >
-                <ReceiptIcon className="w-3.5 h-3.5 mr-1.5" style={{ color: COLORS.plum }} />
                 Payment History
-              </Button>
+              </SalonLuxeButton>
             </Link>
           </div>
         </div>
 
-        {/* Main Content - Two Pane Layout */}
-        <div className="flex h-[calc(100vh-62px)]">
+        {/* Main Content - Responsive Layout */}
+        {/* Desktop: Two pane side-by-side | Mobile: Stacked vertically (catalog above, cart below) */}
+        <div className="flex flex-col md:flex-row md:h-[calc(100vh-62px)]">
           {/* Left Pane - Catalog */}
           <div
             className="flex-1 min-w-0 animate-fadeIn"
@@ -837,104 +902,118 @@ function POSContent() {
               animationDelay: '0.1s'
             }}
           >
-            <CatalogPane
-              organizationId={effectiveOrgId!}
-              onAddItem={handleAddItem}
-              {...(ticket.customer_id ? { currentCustomerId: ticket.customer_id } : {})}
-              {...(ticket.appointment_id ? { currentAppointmentId: ticket.appointment_id } : {})}
-              {...(defaultStylistId ? { defaultStylistId } : {})}
-              {...(defaultStylistName ? { defaultStylistName } : {})}
-              onBranchChange={handleBranchChange}
-              contextBranchId={selectedBranchId}
-            />
+            <Suspense fallback={<CatalogPaneSkeleton />}>
+              <CatalogPane
+                organizationId={effectiveOrgId!}
+                onAddItem={handleAddItem}
+                {...(ticket.customer_id ? { currentCustomerId: ticket.customer_id } : {})}
+                {...(ticket.appointment_id ? { currentAppointmentId: ticket.appointment_id } : {})}
+                {...(defaultStylistId ? { defaultStylistId } : {})}
+                {...(defaultStylistName ? { defaultStylistName } : {})}
+                onBranchChange={handleBranchChange}
+                contextBranchId={selectedBranchId}
+              />
+            </Suspense>
           </div>
 
           {/* Right Pane - Cart Sidebar */}
+          {/* Desktop: Fixed right sidebar | Mobile: Below catalog, full width */}
           <div
-            className="w-[420px] shrink-0 flex flex-col animate-fadeIn"
+            className="w-full md:w-[420px] shrink-0 flex flex-col animate-fadeIn"
             style={{
               background: `linear-gradient(to bottom, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
               animationDelay: '0.2s'
             }}
           >
-            <CartSidebar
-              ticket={ticket}
-              totals={totals}
-              onUpdateItem={updateLineItem}
-              onRemoveItem={removeLineItem}
-              onAddDiscount={addDiscount}
-              onRemoveDiscount={removeDiscount}
-              onAddTip={addTip}
-              onRemoveTip={removeTip}
-              onPayment={handlePayment}
-              onClearTicket={handleClearAll}
-              organizationId={effectiveOrgId!}
-              selectedCustomer={selectedCustomer}
-              onCustomerSelect={handleCustomerSelect}
-              onAddItem={handleAddItem}
-            />
+            <Suspense fallback={<CartSidebarSkeleton />}>
+              <CartSidebar
+                ticket={ticket}
+                totals={totals}
+                onUpdateItem={updateLineItem}
+                onRemoveItem={removeLineItem}
+                onAddDiscount={addDiscount}
+                onRemoveDiscount={removeDiscount}
+                onAddTip={addTip}
+                onRemoveTip={removeTip}
+                onPayment={handlePayment}
+                onClearTicket={handleClearAll}
+                organizationId={effectiveOrgId!}
+                selectedCustomer={selectedCustomer}
+                onCustomerSelect={handleCustomerSelect}
+                onAddItem={handleAddItem}
+                onUpdateTransactionDate={handleTransactionDateChange}
+              />
+            </Suspense>
           </div>
         </div>
 
         {/* Modals */}
-        <TicketDetailsModal
-          open={isTicketDetailsOpen}
-          onClose={() => setIsTicketDetailsOpen(false)}
-          ticket={ticket}
-          totals={totals}
-          onUpdateItem={updateLineItem}
-          onRemoveItem={removeLineItem}
-          onAddDiscount={addDiscount}
-          onAddTip={addTip}
-          onPayment={() => {
-            setIsTicketDetailsOpen(false)
-            setIsPaymentOpen(true)
-          }}
-          organizationId={effectiveOrgId!}
-          {...(selectedBranchId ? { branchId: selectedBranchId } : {})}
-          {...(availableBranches?.find(b => b.id === selectedBranchId)?.entity_name
-            ? { branchName: availableBranches.find(b => b.id === selectedBranchId)!.entity_name }
-            : {})}
-          onCustomerSelect={handleCustomerSelect}
-          availableBranches={availableBranches || []}
-          onBranchChange={branchId => setSelectedBranchId(branchId)}
-        />
+        <Suspense fallback={null}>
+          <TicketDetailsModal
+            open={isTicketDetailsOpen}
+            onClose={() => setIsTicketDetailsOpen(false)}
+            ticket={ticket}
+            totals={totals}
+            onUpdateItem={updateLineItem}
+            onRemoveItem={removeLineItem}
+            onAddDiscount={addDiscount}
+            onAddTip={addTip}
+            onPayment={() => {
+              setIsTicketDetailsOpen(false)
+              setIsPaymentOpen(true)
+            }}
+            organizationId={effectiveOrgId!}
+            {...(selectedBranchId ? { branchId: selectedBranchId } : {})}
+            {...(availableBranches?.find(b => b.id === selectedBranchId)?.entity_name
+              ? { branchName: availableBranches.find(b => b.id === selectedBranchId)!.entity_name }
+              : {})}
+            onCustomerSelect={handleCustomerSelect}
+            availableBranches={availableBranches || []}
+            onBranchChange={branchId => setSelectedBranchId(branchId)}
+          />
+        </Suspense>
 
-        <PaymentDialog
-          open={isPaymentOpen}
-          onClose={() => setIsPaymentOpen(false)}
-          ticket={ticket}
-          totals={totals}
-          organizationId={effectiveOrgId!}
-          organizationName={organization?.name}
-          branchId={selectedBranchId}
-          branchName={availableBranches?.find(b => b.id === selectedBranchId)?.entity_name}
-          onComplete={handlePaymentComplete}
-        />
+        <Suspense fallback={null}>
+          <PaymentDialog
+            open={isPaymentOpen}
+            onClose={() => setIsPaymentOpen(false)}
+            ticket={ticket}
+            totals={totals}
+            organizationId={effectiveOrgId!}
+            organizationName={organization?.name}
+            branchId={selectedBranchId}
+            branchName={availableBranches?.find(b => b.id === selectedBranchId)?.entity_name}
+            onComplete={handlePaymentComplete}
+          />
+        </Suspense>
 
-        <Receipt
-          open={isReceiptOpen}
-          onClose={() => setIsReceiptOpen(false)}
-          saleData={completedSale}
-        />
+        <Suspense fallback={null}>
+          <Receipt
+            open={isReceiptOpen}
+            onClose={() => setIsReceiptOpen(false)}
+            saleData={completedSale}
+          />
+        </Suspense>
 
         {/* Bill Setup Modal - Unified Branch, Customer, Stylist Selection */}
-        <BillSetupModal
-          open={isBillSetupOpen}
-          onClose={() => {
-            setIsBillSetupOpen(false)
-            setPendingItem(null)
-          }}
-          onComplete={handleBillSetupComplete}
-          organizationId={effectiveOrgId!}
-          currentBranchId={selectedBranchId}
-          currentCustomerId={ticket.customer_id}
-          currentStylistId={defaultStylistId}
-          lineItems={ticket.lineItems} // ✅ Pass line items to check for services
-          pendingItem={pendingItem} // ✅ Pass pending item to check type (service vs product)
-          title="Bill Setup"
-          description="All three fields are required for every sale"
-        />
+        <Suspense fallback={null}>
+          <BillSetupModal
+            open={isBillSetupOpen}
+            onClose={() => {
+              setIsBillSetupOpen(false)
+              setPendingItem(null)
+            }}
+            onComplete={handleBillSetupComplete}
+            organizationId={effectiveOrgId!}
+            currentBranchId={selectedBranchId}
+            currentCustomerId={ticket.customer_id}
+            currentStylistId={defaultStylistId}
+            lineItems={ticket.lineItems} // ✅ Pass line items to check for services
+            pendingItem={pendingItem} // ✅ Pass pending item to check type (service vs product)
+            title="Bill Setup"
+            description="All three fields are required for every sale"
+          />
+        </Suspense>
 
         {/* Validation Error Modal */}
         <SalonLuxeModal
@@ -1024,22 +1103,8 @@ function POSContent() {
           </div>
         </SalonLuxeModal>
 
-        {/* Mobile Cart Floating Button */}
-        <div className="lg:hidden fixed bottom-6 right-6 z-50">
-          <Button
-            size="lg"
-            className="rounded-full shadow-2xl py-7 px-8 font-bold transition-all hover:scale-110"
-            style={{
-              background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-              color: COLORS.charcoal,
-              boxShadow: `0 8px 32px ${COLORS.gold}50`,
-              border: `1px solid ${COLORS.gold}80`
-            }}
-          >
-            <ShoppingCart className="w-6 h-6 mr-2" />
-            {ticket.lineItems.length}
-          </Button>
-        </div>
+        {/* Bottom spacing for mobile comfortable scrolling */}
+        <div className="h-24 md:h-0" />
       </div>
     </div>
   )

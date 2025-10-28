@@ -151,7 +151,7 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
       transaction_type: 'SALE',
       date_from: options?.filters?.date_from,
       date_to: options?.filters?.date_to,
-      include_lines: false, // Sales don't use universal_transaction_lines pattern
+      include_lines: true, // ✅ FIX: Sales DO use universal_transaction_lines pattern
       limit: options?.filters?.limit || 100,
       offset: options?.filters?.offset || 0
     }
@@ -217,6 +217,23 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
       const taxAmount = metadata.tax_amount || 0
       const calculatedTotal = subtotal - discountAmount + taxAmount + tipAmount
 
+      // ✅ FIX: Extract line items from universal_transaction_lines (txn.lines)
+      // Map database lines to SaleLineItem format for UI consumption
+      const lineItems: SaleLineItem[] = (txn.lines || [])
+        .filter((line: any) => ['service', 'product'].includes(line.line_type))
+        .map((line: any) => ({
+          entity_id: line.entity_id || '',
+          entity_type: line.line_type as 'service' | 'product',
+          entity_name: line.description || '',
+          quantity: line.quantity || 1,
+          unit_price: line.unit_amount || 0,
+          line_amount: line.line_amount || 0,
+          stylist_id: line.metadata?.staff_id,
+          stylist_name: line.metadata?.staff_name,
+          commission_rate: line.metadata?.commission_rate,
+          commission_amount: line.metadata?.commission_amount
+        }))
+
       return {
         id: txn.id,
         transaction_code: txn.transaction_code,
@@ -225,9 +242,9 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
         customer_name: txn.source_entity_id
           ? customerMap.get(txn.source_entity_id) || 'Walk-in Customer'
           : 'Walk-in Customer',
-        branch_id: txn.target_entity_id,
-        branch_name: txn.target_entity_id
-          ? branchMap.get(txn.target_entity_id) || 'Main Branch'
+        branch_id: metadata.branch_id || txn.target_entity_id, // ✅ FIX: Get branch from metadata
+        branch_name: metadata.branch_id
+          ? branchMap.get(metadata.branch_id) || 'Main Branch'
           : 'Main Branch',
         status: (txn.transaction_status || metadata.status || 'completed') as SaleStatus,
         subtotal,
@@ -235,7 +252,7 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
         tip_amount: tipAmount,
         tax_amount: taxAmount,
         total_amount: calculatedTotal,
-        line_items: metadata.line_items || [],
+        line_items: lineItems, // ✅ FIX: Use extracted lines from database
         payment_methods: metadata.payment_methods || [],
         discounts: metadata.discounts || [],
         tips: metadata.tips || [],

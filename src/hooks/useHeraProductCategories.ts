@@ -10,9 +10,9 @@
  * - Follows staff/role pattern exactly
  */
 
-import { useUniversalEntity } from './useUniversalEntity'
+import { useUniversalEntityV1 } from './useUniversalEntityV1'
 import { CATEGORY_PRESET } from './entityPresets'
-import type { DynamicFieldDef } from './useUniversalEntity'
+import type { DynamicFieldDef } from './useUniversalEntityV1'
 
 export interface ProductCategory {
   id: string
@@ -58,7 +58,7 @@ export function useHeraProductCategories(options?: UseHeraProductCategoriesOptio
     isCreating,
     isUpdating,
     isDeleting
-  } = useUniversalEntity({
+  } = useUniversalEntityV1({
     entity_type: 'product_category',
     organizationId: options?.organizationId,
     filters: {

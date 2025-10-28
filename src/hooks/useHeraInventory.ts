@@ -13,8 +13,8 @@
  */
 
 import { useMemo } from 'react'
-import { useUniversalEntity } from './useUniversalEntity'
-import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntity'
+import { useUniversalEntityV1 } from './useUniversalEntityV1'
+import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntityV1'
 import {
   getProductInventory,
   recordStockMovement,
@@ -157,7 +157,7 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     isCreating,
     isUpdating,
     isDeleting
-  } = useUniversalEntity({
+  } = useUniversalEntityV1({
     entity_type: 'PRODUCT',
     organizationId: options?.organizationId,
     filters: {
@@ -483,7 +483,7 @@ export function useHeraStockMovements(options?: UseHeraInventoryOptions) {
     error,
     refetch,
     create: baseCreate
-  } = useUniversalEntity({
+  } = useUniversalEntityV1({
     entity_type: 'STOCK_MOVEMENT',
     organizationId: options?.organizationId,
     filters: {

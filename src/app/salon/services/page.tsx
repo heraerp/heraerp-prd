@@ -258,7 +258,8 @@ function SalonServicesPageContent() {
 
       // Apply branch filter (if selected)
       if (localBranchFilter) {
-        const availableAt = service.relationships?.available_at || service.relationships?.AVAILABLE_AT
+        // ✅ HERA STANDARD: Use UPPERCASE relationship keys only
+        const availableAt = service.relationships?.AVAILABLE_AT
         if (!availableAt) return false
 
         if (Array.isArray(availableAt)) {
@@ -915,7 +916,8 @@ function SalonServicesPageContent() {
       // Data rows
       const rows = allServicesForKPIs.map(service => {
         // Extract branch names from relationships
-        const availableAt = service.relationships?.available_at || service.relationships?.AVAILABLE_AT || []
+        // ✅ HERA STANDARD: Use UPPERCASE relationship keys only
+        const availableAt = service.relationships?.AVAILABLE_AT || []
         const branchNames = Array.isArray(availableAt)
           ? availableAt
               .map(rel => {

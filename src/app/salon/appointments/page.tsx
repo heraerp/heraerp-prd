@@ -2,7 +2,7 @@
 
 // Removed force-dynamic for better client-side navigation performance
 
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, Suspense, lazy } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import {
@@ -16,8 +16,16 @@ import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
 import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
+import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
-import { AppointmentModal } from '@/components/salon/appointments/AppointmentModal'
+import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+
+// 🚀 LAZY LOADING: Split code for faster initial load
+const AppointmentModal = lazy(() =>
+  import('@/components/salon/appointments/AppointmentModal').then(module => ({
+    default: module.AppointmentModal
+  }))
+)
 import {
   Plus,
   Clock,
@@ -79,6 +87,60 @@ const LUXE_COLORS = {
   spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
   ease: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
   smooth: 'cubic-bezier(0.4, 0, 0.2, 1)'
+}
+
+// Loading fallback for Suspense boundaries
+function TabLoader() {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <div
+        className="animate-spin rounded-full h-8 w-8 border-b-2"
+        style={{ borderColor: LUXE_COLORS.gold }}
+      />
+      <span className="ml-3" style={{ color: LUXE_COLORS.bronze }}>
+        Loading...
+      </span>
+    </div>
+  )
+}
+
+// Skeleton loaders for initial page load
+function AppointmentListSkeleton({ viewMode }: { viewMode: 'grid' | 'list' }) {
+  if (viewMode === 'grid') {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="h-48 rounded-lg"
+            style={{
+              backgroundColor: LUXE_COLORS.charcoalLight + '95',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+            }}
+          >
+            <div className="p-6 space-y-4">
+              <div className="w-12 h-12 rounded-lg" style={{ backgroundColor: LUXE_COLORS.gold + '20' }} />
+              <div className="h-4 rounded" style={{ backgroundColor: LUXE_COLORS.bronze + '30', width: '80%' }} />
+              <div className="h-3 rounded" style={{ backgroundColor: LUXE_COLORS.bronze + '20', width: '60%' }} />
+              <div className="h-8 rounded" style={{ backgroundColor: LUXE_COLORS.gold + '10' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-2 animate-pulse">
+      {[...Array(5)].map((_, i) => (
+        <div
+          key={i}
+          className="h-20 rounded-lg"
+          style={{ backgroundColor: LUXE_COLORS.charcoalLight + '95' }}
+        />
+      ))}
+    </div>
+  )
 }
 
 interface AppointmentStats {
@@ -154,6 +216,12 @@ function AppointmentsContent() {
     }
   })
   const { staff } = useHeraStaff({ organizationId: organizationId || '' })
+  const { products } = useHeraProducts({
+    filters: {
+      include_dynamic: true,
+      include_relationships: false
+    }
+  })
 
   // 🕐 ENTERPRISE: Generate time slots for reschedule (9 AM - 9 PM, 30-min intervals)
   const generateTimeSlots = useCallback((): Array<{ start: string; end: string }> => {
@@ -568,17 +636,40 @@ function AppointmentsContent() {
 
   return (
     <div className="min-h-screen p-6" style={{ backgroundColor: LUXE_COLORS.black }}>
+      {/* ✅ MOBILE: iOS-style status bar spacer */}
+      <div className="h-11 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
+
+      {/* 📱 PREMIUM MOBILE HEADER */}
+      <PremiumMobileHeader
+        title="Appointments"
+        subtitle={`${stats.totalAppointments} appointments`}
+        showNotifications={false}
+        shrinkOnScroll
+        rightAction={
+          <button
+            onClick={() => {
+              router.push('/salon/appointments/new')
+            }}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#D4AF37] active:scale-90 transition-transform duration-200 shadow-lg"
+            aria-label="Add new appointment"
+            style={{ boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)' }}
+          >
+            <Plus className="w-5 h-5 text-black" strokeWidth={2.5} />
+          </button>
+        }
+      />
+
       {/* Main Container with Glassmorphism */}
       <div
-        className="rounded-2xl p-8 backdrop-blur-xl"
+        className="rounded-2xl p-4 md:p-8 backdrop-blur-xl"
         style={{
           background: 'linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%)',
           border: `1px solid ${LUXE_COLORS.gold}15`,
           boxShadow: '0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.1)'
         }}
       >
-        {/* Header with Gradient Title */}
-        <div className="flex justify-between items-start mb-8">
+        {/* Header with Gradient Title - DESKTOP ONLY */}
+        <div className="hidden md:flex justify-between items-start mb-8">
           <div>
             <h1
               className="text-4xl font-bold mb-2"
@@ -859,11 +950,42 @@ function AppointmentsContent() {
           ))}
         </div>
 
-        {/* Search and Filters with Enhanced Styling */}
+        {/* 📱 MOBILE QUICK ACTIONS */}
+        <div className="md:hidden mb-6 space-y-2">
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setIsNavigating(true)
+                showLoading('Loading Calendar View...')
+                router.push('/salon/appointments/calendar')
+              }}
+              disabled={isNavigating}
+              className="flex-1 min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
+              style={{
+                backgroundColor: isNavigating ? `${LUXE_COLORS.emerald}80` : LUXE_COLORS.emerald,
+                color: LUXE_COLORS.champagne
+              }}
+            >
+              {isNavigating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <Calendar className="w-4 h-4" />
+                  Calendar View
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Search and Filters with Enhanced Styling - MOBILE RESPONSIVE */}
         <div className="mb-8 space-y-4">
-          <div className="flex items-center gap-4 flex-wrap">
-            {/* Search Input */}
-            <div className="relative flex-1 min-w-[300px]">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4">
+            {/* Search Input - Full width on mobile */}
+            <div className="relative flex-1 md:min-w-[300px]">
               <Search
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none"
                 style={{ color: LUXE_COLORS.bronze }}
@@ -893,9 +1015,9 @@ function AppointmentsContent() {
               />
             </div>
 
-            {/* Branch Filter - Truncate long names */}
+            {/* Branch Filter - Truncate long names - Full width on mobile */}
             {hasMultipleBranches && (
-              <div className="w-64">
+              <div className="w-full md:w-64">
                 <Select
                   value={branchId || '__ALL__'}
                   onValueChange={value => setBranchId(value === '__ALL__' ? '' : value)}
@@ -943,8 +1065,8 @@ function AppointmentsContent() {
               </div>
             )}
 
-            {/* Status Filter */}
-            <div className="w-48">
+            {/* Status Filter - Full width on mobile */}
+            <div className="w-full md:w-48">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger
                   className="border-0 outline-none py-6 transition-all duration-300"
@@ -960,17 +1082,24 @@ function AppointmentsContent() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All statuses</SelectItem>
-                  {Object.entries(STATUS_CONFIG).map(([status, config]) => (
-                    <SelectItem key={status} value={status}>
-                      {config.label}
-                    </SelectItem>
-                  ))}
+                  {/* ✅ Only show: draft, booked, checked_in, payment_pending, completed, cancelled */}
+                  {['draft', 'booked', 'checked_in', 'payment_pending', 'completed', 'cancelled']
+                    .map(status => STATUS_CONFIG[status as AppointmentStatus])
+                    .filter(Boolean)
+                    .map((config, index) => {
+                      const status = ['draft', 'booked', 'checked_in', 'payment_pending', 'completed', 'cancelled'][index]
+                      return (
+                        <SelectItem key={status} value={status}>
+                          {config.label}
+                        </SelectItem>
+                      )
+                    })}
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Date Filter */}
-            <div className="w-48">
+            {/* Date Filter - Full width on mobile */}
+            <div className="w-full md:w-48">
               <Select value={dateFilter} onValueChange={setDateFilter}>
                 <SelectTrigger
                   className="border-0 outline-none py-6 transition-all duration-300"
@@ -2304,18 +2433,20 @@ function AppointmentsContent() {
         </DialogContent>
       </Dialog>
 
-      {/* ✨ ENTERPRISE: Appointment View/Edit Modal */}
-      <AppointmentModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        appointment={selectedAppointment}
-        customers={customers || []}
-        stylists={staff || []}
-        services={services || []}
-        branches={branches}
-        existingAppointments={appointments || []}
-        currencySymbol={organization?.currencySymbol || 'AED'}
-        onSave={async data => {
+      {/* ✨ ENTERPRISE: Appointment View/Edit Modal - LAZY LOADED */}
+      {modalOpen && (
+        <Suspense fallback={null}>
+          <AppointmentModal
+            open={modalOpen}
+            onOpenChange={setModalOpen}
+            appointment={selectedAppointment}
+            customers={customers || []}
+            stylists={staff || []}
+            services={services || []}
+            branches={branches}
+            existingAppointments={appointments || []}
+            currencySymbol={organization?.currencySymbol || 'AED'}
+            onSave={async data => {
           if (!selectedAppointment) return
 
           const loadingId = showLoading('Saving changes...', 'Please wait')
@@ -2336,6 +2467,11 @@ function AppointmentsContent() {
           }
         }}
       />
+        </Suspense>
+      )}
+
+      {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}
+      <div className="h-20 md:h-0" />
     </div>
   )
 }
