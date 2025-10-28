@@ -11,7 +11,7 @@
 
 'use client'
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react'
 import './kanban-luxe-theme.css'
 import { format, startOfToday, addDays, startOfDay, endOfDay } from 'date-fns'
 import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -38,8 +38,18 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
-import { Board } from '@/components/salon/kanban/Board'
-import { ReschedulePanel } from '@/components/salon/kanban/ReschedulePanel'
+
+// ✅ LAZY LOADING: Heavy kanban components
+const Board = lazy(() =>
+  import('@/components/salon/kanban/Board').then(module => ({
+    default: module.Board
+  }))
+)
+const ReschedulePanel = lazy(() =>
+  import('@/components/salon/kanban/ReschedulePanel').then(module => ({
+    default: module.ReschedulePanel
+  }))
+)
 import {
   useHeraAppointments,
   AppointmentStatus,
@@ -51,12 +61,12 @@ import {
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { useHeraServices } from '@/hooks/useHeraServices'
+import { useStaffAvailability } from '@/hooks/useStaffAvailability'
 import { KanbanCard, KanbanStatus } from '@/schemas/kanban'
 import { getNextAllowedStates } from '@/lib/salon/kanbanLifecycleRules'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useMemo } from 'react'
-import { useUniversalEntity } from '@/hooks/useUniversalEntity'
 
 // Luxury color palette
 const LUXE_COLORS = {
@@ -199,6 +209,15 @@ export default function KanbanPage() {
   const { staff } = useHeraStaff({ organizationId })
   const { services } = useHeraServices({ organizationId })
 
+  // ✅ LAYER 1: Staff availability checking based on leave requests
+  const {
+    checkStaffAvailability,
+    isLoading: availabilityLoading
+  } = useStaffAvailability({
+    organizationId,
+    branchId: branchId || undefined
+  })
+
   // 🎯 ENTERPRISE: Transform appointments to kanban cards with runtime lookup (same as /appointments page)
   const cards: KanbanCard[] = useMemo(() => {
     return appointments.map(apt => {
@@ -260,11 +279,17 @@ export default function KanbanPage() {
       const service_name = serviceNames.length > 0 ? serviceNames[0] : 'Service'
       const price = servicePrices.length > 0 ? servicePrices[0] : apt.price || apt.total_amount || apt.metadata?.price || 0
 
+      // ✅ Check staff availability for the appointment date
+      const appointmentDate = format(new Date(apt.start_time), 'yyyy-MM-dd')
+      const staffAvailability = apt.stylist_id
+        ? checkStaffAvailability(apt.stylist_id, appointmentDate, 'full_day')
+        : { isAvailable: true }
+
       return {
         id: apt.id,
         organization_id: apt.organization_id || organizationId || '',
         branch_id: apt.branch_id || '',
-        date: format(new Date(apt.start_time), 'yyyy-MM-dd'),
+        date: appointmentDate,
         rank: apt.rank || '',
         customer_name: customerName,  // ✅ Runtime lookup
         customer_id: apt.customer_id,
@@ -279,7 +304,8 @@ export default function KanbanPage() {
         status: apt.status.toUpperCase() as KanbanStatus,
         flags: {
           vip: apt.metadata?.vip || false,
-          new: apt.metadata?.new_customer || false
+          new: apt.metadata?.new_customer || false,
+          staff_on_leave: !staffAvailability.isAvailable  // ✅ Add leave flag
         },
         cancellation_reason: apt.metadata?.cancellation_reason || null,
         metadata: {
@@ -287,11 +313,13 @@ export default function KanbanPage() {
           // Preserve all service arrays for POS page
           service_ids: serviceIds,
           service_names: serviceNames,
-          service_prices: servicePrices
+          service_prices: servicePrices,
+          // Add leave information for card display
+          staff_leave_status: staffAvailability.leaveStatus || null
         }
       }
     })
-  }, [appointments, customers, staff, services, organizationId])
+  }, [appointments, customers, staff, services, organizationId, checkStaffAvailability])
 
   // 🎯 ENTERPRISE: Group cards by status column
   const cardsByColumn: Record<KanbanStatus, KanbanCard[]> = useMemo(() => {
@@ -1070,38 +1098,61 @@ export default function KanbanPage() {
 
       {/* Kanban board */}
       <div className="flex-1 overflow-hidden">
-        <Board
-          cardsByColumn={cardsByColumn}
-          onMove={moveCard}
-          onCardAction={handleCardAction}
-          onMoveToNext={handleMoveToNext}
-          loading={loading}
-          isMoving={isMoving}
-          onScrollStateChange={setScrollState}
-        />
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center animate-fadeIn">
+                <div
+                  className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.gold}40 0%, ${LUXE_COLORS.goldDark}40 100%)`,
+                    boxShadow: `0 8px 32px ${LUXE_COLORS.gold}20`
+                  }}
+                >
+                  <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
+                </div>
+                <p className="mt-4" style={{ color: LUXE_COLORS.bronze }}>
+                  Loading kanban board...
+                </p>
+              </div>
+            </div>
+          }
+        >
+          <Board
+            cardsByColumn={cardsByColumn}
+            onMove={moveCard}
+            onCardAction={handleCardAction}
+            onMoveToNext={handleMoveToNext}
+            loading={loading}
+            isMoving={isMoving}
+            onScrollStateChange={setScrollState}
+          />
+        </Suspense>
       </div>
 
       {/* Reschedule panel */}
-      <ReschedulePanel
-        open={rescheduleOpen}
-        onOpenChange={setRescheduleOpen}
-        appointment={selectedCard}
-        organization_id={SALON_ORG_ID}
-        branch_id={
-          branchId && branchId !== 'all'
-            ? branchId
-            : branches.length > 0
-              ? branches[0].id
-              : undefined
-        }
-        branches={branches}
-        staff={[
-          { id: 'staff1', name: 'Sarah' },
-          { id: 'staff2', name: 'Emma' },
-          { id: 'staff3', name: 'Lisa' }
-        ]}
-        currentUserId={userId || 'demo-user'}
-      />
+      <Suspense fallback={null}>
+        <ReschedulePanel
+          open={rescheduleOpen}
+          onOpenChange={setRescheduleOpen}
+          appointment={selectedCard}
+          organization_id={SALON_ORG_ID}
+          branch_id={
+            branchId && branchId !== 'all'
+              ? branchId
+              : branches.length > 0
+                ? branches[0].id
+                : undefined
+          }
+          branches={branches}
+          staff={[
+            { id: 'staff1', name: 'Sarah' },
+            { id: 'staff2', name: 'Emma' },
+            { id: 'staff3', name: 'Lisa' }
+          ]}
+          currentUserId={userId || 'demo-user'}
+        />
+      </Suspense>
 
       {/* New Draft Modal */}
       <Dialog open={draftModalOpen} onOpenChange={setDraftModalOpen}>

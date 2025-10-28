@@ -110,6 +110,7 @@ function DashboardContent() {
     selectedPeriod: globalPeriod
   })
 
+  // ⚡ PERFORMANCE: No blocking - let progressive loading work
   const isLoading = orgLoading || securityLoading || dashboardLoading
 
   // Refresh all data with animation
@@ -139,31 +140,8 @@ function DashboardContent() {
     }
   }
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: LUXE_COLORS.charcoal }}
-      >
-        <div className="text-center">
-          <div className="relative inline-block">
-            <Loader2
-              className="h-12 w-12 animate-spin"
-              style={{ color: LUXE_COLORS.gold }}
-            />
-            <div
-              className="absolute inset-0 blur-xl opacity-50"
-              style={{ background: LUXE_COLORS.gold }}
-            />
-          </div>
-          <p className="mt-4 text-lg font-medium" style={{ color: LUXE_COLORS.bronze }}>
-            Loading dashboard...
-          </p>
-        </div>
-      </div>
-    )
-  }
+  // ⚡ REMOVED BLOCKING LOADER: Page now loads instantly with progressive sections
+  // The 5-stage progressive loading system (Lines 81-91, 557-603) now visible immediately!
 
   // Auth check
   if (!isAuthenticated || !role) {
@@ -221,12 +199,12 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
-      {/* 📱 PREMIUM MOBILE HEADER */}
+      {/* ⚡ STAGE 1: PREMIUM MOBILE HEADER - Instant load (no blocking) */}
       <PremiumMobileHeader
         title={organization?.entity_name || organization?.name || 'Dashboard'}
-        subtitle={`${role ? role.charAt(0).toUpperCase() + role.slice(1) : ''} • ${kpis.totalCustomers || 0} customers`}
+        subtitle={isLoading ? 'Loading data...' : `${role ? role.charAt(0).toUpperCase() + role.slice(1) : ''} • ${kpis.totalCustomers || 0} customers`}
         showNotifications={true}
-        notificationCount={kpis.appointmentsByStatus?.pending || 0}
+        notificationCount={isLoading ? 0 : (kpis.appointmentsByStatus?.pending || 0)}
         shrinkOnScroll={true}
         rightAction={
           <div className="flex items-center gap-2">

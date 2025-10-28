@@ -17,7 +17,7 @@ import { SalesTable } from '@/components/reports/SalesTable'
 import { DrilldownDrawer } from '@/components/reports/DrilldownDrawer'
 import { ExportButtons } from '@/components/reports/ExportButtons'
 import { PrintHeader, PrintLayout } from '@/components/reports/PrintHeader'
-import { useUniversalReports } from '@/hooks/useUniversalReports'
+import { useDailySalesReport } from '@/hooks/useSalonSalesReports'
 import { SalesFilters, SalesRow, DrillDownResponse, TransactionDetail } from '@/lib/schemas/reports'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
 
@@ -48,94 +48,31 @@ export default function DailySalesReportPage() {
 
   const { filters, updateFilters } = useReportFilters(initialFilters)
 
-  // Main report data using useUniversalReports hook
-  const { isLoading, error, data: reportData, getTodayMetrics, clearError } = useUniversalReports()
+  // ✅ PRODUCTION: Use real GL-based sales data from useDailySalesReport hook
+  const reportDate = filters.date ? new Date(filters.date + 'T00:00:00') : new Date()
+  const {
+    summary,
+    hourlyData,
+    isLoading,
+    error,
+    refetch
+  } = useDailySalesReport(reportDate)
 
-  // Load daily sales data
-  React.useEffect(() => {
-    if (currentOrganization?.id && filters.date) {
-      getTodayMetrics()
-    }
-  }, [currentOrganization?.id, filters.date, filters.branch_id, getTodayMetrics])
-
-  // Mock data transformation (in production, this would come from the API)
+  // Transform data to expected format
   const transformedData = React.useMemo(() => {
-    if (!reportData) return null
-
-    // Transform universal report data to daily sales format
-    // This is where you'd map the useUniversalReports data to the expected format
-    const mockSummary = {
-      total_gross: 4147.5,
-      total_net: 3950,
-      total_vat: 197.5,
-      total_tips: 340,
-      total_service: 3375,
-      total_product: 575,
-      transaction_count: 22,
-      average_ticket: 188.52,
-      service_mix_percent: 85.44,
-      product_mix_percent: 14.56
-    }
-
-    const mockHourlyData: SalesRow[] = [
-      {
-        hour: '09:00',
-        service_net: 450,
-        product_net: 75,
-        tips: 45,
-        vat: 26.25,
-        gross: 551.25,
-        txn_count: 3,
-        avg_ticket: 183.75
-      },
-      {
-        hour: '10:00',
-        service_net: 600,
-        product_net: 100,
-        tips: 60,
-        vat: 35,
-        gross: 735,
-        txn_count: 4,
-        avg_ticket: 183.75
-      },
-      {
-        hour: '11:00',
-        service_net: 750,
-        product_net: 125,
-        tips: 75,
-        vat: 43.75,
-        gross: 918.75,
-        txn_count: 5,
-        avg_ticket: 183.75
-      },
-      {
-        hour: '14:00',
-        service_net: 900,
-        product_net: 150,
-        tips: 90,
-        vat: 52.5,
-        gross: 1102.5,
-        txn_count: 6,
-        avg_ticket: 183.75
-      },
-      {
-        hour: '15:00',
-        service_net: 675,
-        product_net: 125,
-        tips: 70,
-        vat: 40,
-        gross: 840,
-        txn_count: 4,
-        avg_ticket: 210
-      }
-    ]
+    if (!summary) return null
 
     return {
-      summary: mockSummary,
-      hourly_breakdown: mockHourlyData,
+      summary,
+      hourly_breakdown: hourlyData,
       currency: filters.currency || 'AED'
     }
-  }, [reportData, filters.currency])
+  }, [summary, hourlyData, filters.currency])
+
+  // Clear error function
+  const clearError = () => {
+    refetch()
+  }
 
   // Handle drill-down clicks
   const handleDrillDown = async (
@@ -340,7 +277,7 @@ export default function DailySalesReportPage() {
         <Alert className="border-red-200 bg-red-50">
           <AlertCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
-            Failed to load daily sales report: {error}
+            Failed to load daily sales report: {String(error)}
             <button onClick={clearError} className="ml-2 underline hover:no-underline">
               Retry
             </button>

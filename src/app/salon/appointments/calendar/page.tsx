@@ -6,11 +6,18 @@
 
 'use client'
 
-import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
+import { lazy, Suspense } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { Loader2, AlertCircle, ArrowLeft, List } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+
+// ✅ LAZY LOADING: Heavy calendar component
+const SalonResourceCalendar = lazy(() =>
+  import('@/components/salon/SalonResourceCalendar').then(module => ({
+    default: module.SalonResourceCalendar
+  }))
+)
 
 const LUXE_COLORS = {
   black: '#0B0B0B',
@@ -158,7 +165,28 @@ export default function SalonAppointmentsCalendarPage() {
           </div>
 
           {/* Calendar Component */}
-          <SalonResourceCalendar organizations={salonOrganizations} canViewAllBranches={false} />
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center p-12">
+                <div className="text-center animate-fadeIn">
+                  <div
+                    className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                    style={{
+                      background: `linear-gradient(135deg, ${LUXE_COLORS.gold}40 0%, #B8860B40 100%)`,
+                      boxShadow: `0 8px 32px ${LUXE_COLORS.gold}20`
+                    }}
+                  >
+                    <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
+                  </div>
+                  <p className="mt-4 text-sm" style={{ color: `${LUXE_COLORS.gold}80` }}>
+                    Loading calendar view...
+                  </p>
+                </div>
+              </div>
+            }
+          >
+            <SalonResourceCalendar organizations={salonOrganizations} canViewAllBranches={false} />
+          </Suspense>
         </div>
       </div>
     </div>

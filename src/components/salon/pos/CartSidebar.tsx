@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import {
   ShoppingCart,
   Plus,
@@ -24,7 +24,9 @@ import {
   Users,
   Edit3,
   Check,
-  FileText
+  FileText,
+  Calendar as CalendarIcon,
+  History
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -33,9 +35,12 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { DatePicker } from '@/components/ui/date-picker'
+import { Calendar } from '@/components/ui/calendar'
 import { cn } from '@/lib/utils'
 import { salonButtonThemes } from '@/styles/salon-button-themes'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
+import { format, isFuture, startOfDay } from 'date-fns'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -97,6 +102,7 @@ interface PosTicket {
   customer_id?: string
   customer_name?: string
   appointment_id?: string
+  transaction_date?: string
 }
 
 interface Totals {
@@ -122,6 +128,7 @@ interface CartSidebarProps {
   selectedCustomer: any | null
   onCustomerSelect: (customer: any | null) => void
   onAddItem?: (item: any, staffId?: string, staffName?: string) => void
+  onUpdateTransactionDate?: (date: string | undefined) => void
 }
 
 export function CartSidebar({
@@ -138,7 +145,8 @@ export function CartSidebar({
   organizationId,
   selectedCustomer,
   onCustomerSelect,
-  onAddItem
+  onAddItem,
+  onUpdateTransactionDate
 }: CartSidebarProps) {
   const [showDiscountSection, setShowDiscountSection] = useState(false)
   const [showTipSection, setShowTipSection] = useState(false)
@@ -156,6 +164,42 @@ export function CartSidebar({
   // State for discount mode toggle
   const [discountMode, setDiscountMode] = useState<'percent' | 'amount'>('percent')
   const [customDiscountAmount, setCustomDiscountAmount] = useState('')
+
+  // State for transaction date - defaults to current date
+  const [transactionDate, setTransactionDate] = useState<Date | undefined>(() => new Date())
+  const [dateValidationError, setDateValidationError] = useState<string | null>(null)
+  const [showDatePicker, setShowDatePicker] = useState(false)
+
+  // Memoize date comparisons to prevent infinite loops
+  const isToday = useMemo(() => {
+    const selected = startOfDay(transactionDate || new Date()).getTime()
+    const today = startOfDay(new Date()).getTime()
+    return selected === today
+  }, [transactionDate])
+
+  // Handle transaction date changes
+  const handleDateChange = useCallback((date: Date | undefined) => {
+    if (!date) {
+      setTransactionDate(new Date())
+      setDateValidationError(null)
+      onUpdateTransactionDate?.(undefined)
+      return
+    }
+
+    const selectedDate = startOfDay(date)
+    const today = startOfDay(new Date())
+
+    // Validate: No future dates
+    if (isFuture(selectedDate)) {
+      setDateValidationError('Cannot enter bills dated in the future')
+      return
+    }
+
+    setTransactionDate(date)
+    setDateValidationError(null)
+    onUpdateTransactionDate?.(date.toISOString())
+    setShowDatePicker(false) // Auto-close after selection
+  }, [onUpdateTransactionDate])
 
   // Load staff members using proper hook
   const { staff, isLoading: staffLoading } = useHeraStaff({
@@ -493,6 +537,197 @@ export function CartSidebar({
             <p className="text-[10px] flex-1" style={{ color: COLORS.champagne }}>
               Customer will be selected in Bill Setup
             </p>
+          </div>
+        )}
+      </div>
+
+      {/* Bill Date Selector - Compact Design */}
+      <div
+        className="px-4 py-2.5 border-b flex-shrink-0"
+        style={{ borderColor: `${COLORS.gold}20`, background: `${COLORS.charcoalDark}40` }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 flex-1">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+              style={{
+                background: isToday
+                  ? `${COLORS.gold}20`
+                  : `${COLORS.bronze}20`,
+                border: `1px solid ${
+                  isToday
+                    ? COLORS.gold
+                    : COLORS.bronze
+                }40`
+              }}
+            >
+              {isToday ? (
+                <CalendarIcon className="w-4 h-4" style={{ color: COLORS.gold }} />
+              ) : (
+                <History className="w-4 h-4" style={{ color: COLORS.bronze }} />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px]" style={{ color: COLORS.bronze }}>
+                Bill Date
+              </p>
+              <p className="text-xs font-medium truncate" style={{ color: COLORS.champagne }}>
+                {transactionDate ? format(transactionDate, 'dd MMM yyyy') : format(new Date(), 'dd MMM yyyy')}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowDatePicker(!showDatePicker)}
+            className="h-8 px-2 text-xs"
+            style={{
+              background: showDatePicker ? `${COLORS.gold}20` : 'transparent',
+              borderColor: `${COLORS.gold}40`,
+              color: COLORS.gold,
+              border: '1px solid'
+            }}
+          >
+            <CalendarIcon className="w-3.5 h-3.5 mr-1" />
+            Change
+          </Button>
+        </div>
+
+        {/* Date Picker Dropdown */}
+        {showDatePicker && (
+          <div
+            className="mt-3 p-3 rounded-lg animate-fadeIn"
+            style={{
+              background: `linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.charcoalDark} 100%)`,
+              border: `1px solid ${COLORS.gold}40`,
+              boxShadow: `0 4px 12px ${COLORS.black}50`
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <Label className="text-xs font-semibold" style={{ color: COLORS.champagne }}>
+                Select Bill Date
+              </Label>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowDatePicker(false)}
+                className="h-5 w-5 p-0"
+                style={{ color: COLORS.bronze }}
+              >
+                <X className="w-3 h-3" />
+              </Button>
+            </div>
+
+            {/* Custom Calendar with Salon Colors */}
+            <Calendar
+              mode="single"
+              selected={transactionDate}
+              onSelect={handleDateChange}
+              disabled={(date) => isFuture(date)}
+              className="salon-calendar"
+              classNames={{
+                months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
+                month: 'space-y-4',
+                caption: 'flex justify-center pt-1 relative items-center',
+                caption_label: 'text-sm font-medium text-champagne',
+                nav: 'space-x-1 flex items-center',
+                nav_button: cn(
+                  'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 border border-gold/30 hover:border-gold/60 rounded'
+                ),
+                nav_button_previous: 'absolute left-1',
+                nav_button_next: 'absolute right-1',
+                table: 'w-full border-collapse space-y-1',
+                head_row: 'flex',
+                head_cell: 'rounded-md w-9 font-normal text-[0.8rem] text-bronze',
+                row: 'flex w-full mt-2',
+                cell: 'h-9 w-9 text-center text-sm p-0 relative',
+                day: cn(
+                  'h-9 w-9 p-0 font-normal rounded hover:bg-gold/10 text-champagne transition-colors'
+                ),
+                day_selected:
+                  'bg-gold/30 text-champagne hover:bg-gold/40 border border-gold',
+                day_today: 'bg-gold/20 text-gold font-bold border border-gold/50',
+                day_outside: 'text-bronze/30 opacity-30',
+                day_disabled: 'text-bronze/20 opacity-20 hover:bg-transparent cursor-not-allowed',
+                day_range_middle: 'aria-selected:bg-gold/20',
+                day_hidden: 'invisible'
+              }}
+              style={{
+                backgroundColor: COLORS.charcoalDark,
+                color: COLORS.champagne
+              }}
+            />
+
+            {dateValidationError && (
+              <div
+                className="mt-2 p-2 rounded text-xs"
+                style={{
+                  background: `#EF444420`,
+                  border: `1px solid #EF4444`,
+                  color: '#EF4444'
+                }}
+              >
+                {dateValidationError}
+              </div>
+            )}
+
+            {/* Old Bill Indicator */}
+            {transactionDate && !isToday && (
+                <div
+                  className="mt-2 flex items-start gap-2 p-2 rounded text-xs"
+                  style={{
+                    background: `${COLORS.bronze}15`,
+                    border: `1px solid ${COLORS.bronze}40`,
+                    color: COLORS.bronze
+                  }}
+                >
+                  <History className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                  <p>
+                    Bill dated <span className="font-medium" style={{ color: COLORS.champagne }}>{format(transactionDate, 'dd MMM yyyy')}</span>. Entry timestamp will be today for audit.
+                  </p>
+                </div>
+              )}
+
+            {/* Quick Date Buttons */}
+            <div className="grid grid-cols-2 gap-2 mt-3">
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date()
+                  setTransactionDate(today)
+                  handleDateChange(today)
+                  setShowDatePicker(false)
+                }}
+                className="text-xs py-2"
+                style={{
+                  background: `${COLORS.gold}30`,
+                  color: COLORS.champagne,
+                  borderColor: `${COLORS.gold}60`,
+                  border: '1px solid'
+                }}
+              >
+                Today
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const yesterday = new Date()
+                  yesterday.setDate(yesterday.getDate() - 1)
+                  setTransactionDate(yesterday)
+                  handleDateChange(yesterday)
+                  setShowDatePicker(false)
+                }}
+                className="text-xs py-2"
+                style={{
+                  background: `${COLORS.bronze}30`,
+                  color: COLORS.champagne,
+                  borderColor: `${COLORS.bronze}60`,
+                  border: '1px solid'
+                }}
+              >
+                Yesterday
+              </Button>
+            </div>
           </div>
         )}
       </div>

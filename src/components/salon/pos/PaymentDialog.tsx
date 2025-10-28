@@ -6,7 +6,6 @@ import {
   Banknote,
   Gift,
   Plus,
-  Minus,
   X,
   Check,
   AlertCircle,
@@ -14,7 +13,6 @@ import {
   Receipt
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -25,7 +23,6 @@ import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { SalonLuxeInput } from '@/components/salon/shared/SalonLuxeInput'
 import { ValidationWarningModal } from './ValidationWarningModal'
-import { cn } from '@/lib/utils'
 
 // Salon Luxe Color Palette
 const COLORS = {
@@ -83,6 +80,9 @@ export function PaymentDialog({
   const [actualOrgName, setActualOrgName] = useState<string | null>(null)
   const [currency, setCurrency] = useState<string>('AED') // Default to AED
 
+  // ✅ REMOVED: Old bill / backdate functionality moved to cart date picker
+  // Transaction date is now set in the cart, not in payment dialog
+
   // ✅ LAYER 2: Use usePosCheckout hook (which uses useUniversalTransaction RPC API v2)
   const { processCheckout, isProcessing, error, clearError } = usePosCheckout()
 
@@ -129,6 +129,8 @@ export function PaymentDialog({
       setChangeAmount(0)
     }
   }, [cashAmount, payments, totals?.total])
+
+  // ✅ REMOVED: Date validation moved to cart date picker
 
   // ✅ ENTERPRISE: Fetch actual organization name and currency from database
   useEffect(() => {
@@ -330,6 +332,10 @@ export function PaymentDialog({
         customer_id: ticket.customer_id,
         appointment_id: ticket.appointment_id,
         branch_id: branchId, // ✅ Include branch for enterprise tracking
+        // ✅ Use transaction_date from ticket (set in cart)
+        ...(ticket.transaction_date ? {
+          transaction_date: ticket.transaction_date
+        } : {}),
         items: ticket.lineItems.map((item: any) => ({
           id: item.id || item.entity_id,
           entity_id: item.entity_id,
@@ -358,7 +364,8 @@ export function PaymentDialog({
       const saleData = {
         transaction_id: result.transaction_id,
         transaction_code: result.transaction_code,
-        timestamp: new Date().toISOString(),
+        // ✅ Use transaction date from ticket (selected in cart) or result, fallback to current time
+        timestamp: ticket.transaction_date || result.transaction_date || new Date().toISOString(),
         customer_name: ticket.customer_name,
         appointment_id: ticket.appointment_id,
         organization_name: actualOrgName || 'Salon', // ✅ ENTERPRISE: Actual organization name from database
@@ -375,6 +382,16 @@ export function PaymentDialog({
         changeAmount,
         lines: result.lines
       }
+
+      // ✅ Clear payment dialog state after successful checkout
+      setPayments([])
+      setCashAmount('')
+      setCardAmount('')
+      setCardReference('')
+      setVoucherAmount('')
+      setVoucherCode('')
+      setChangeAmount(0)
+      clearError()
 
       onComplete(saleData)
     } catch (err) {

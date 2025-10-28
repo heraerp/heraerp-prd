@@ -104,8 +104,8 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
       if (service) {
         // ✅ ENTERPRISE FIX: Extract branch IDs from AVAILABLE_AT relationships
         // Relationships have to_entity_id (UUID), not populated to_entity object
-        const availableAtRels = (service as any).relationships?.available_at ||
-                                 (service as any).relationships?.AVAILABLE_AT
+        // ✅ HERA STANDARD: Use UPPERCASE relationship keys only
+        const availableAtRels = (service as any).relationships?.AVAILABLE_AT
         let branchIds: string[] = []
 
         if (Array.isArray(availableAtRels)) {
@@ -117,11 +117,8 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
         }
 
         // Extract category ID from HAS_CATEGORY relationship
-        // Note: useUniversalEntity stores relationships as lowercase keys
-        const categoryRels =
-          (service as any).relationships?.has_category ||
-          (service as any).relationships?.HAS_CATEGORY ||
-          (service as any).relationships?.category
+        // ✅ HERA STANDARD: Use UPPERCASE relationship keys only
+        const categoryRels = (service as any).relationships?.HAS_CATEGORY
         let categoryId = ''
 
         if (Array.isArray(categoryRels) && categoryRels.length > 0) {

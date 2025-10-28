@@ -36,6 +36,7 @@ import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
 import { useHeraServices } from '@/hooks/useHeraServices'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
+import { useStaffAvailability } from '@/hooks/useStaffAvailability'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -214,6 +215,38 @@ export function SalonResourceCalendar({
     }
   })
 
+  // Debug: Log appointments data
+  useEffect(() => {
+    if (rawAppointments && rawAppointments.length > 0) {
+      const firstApt = rawAppointments[0]
+      console.log('[SalonResourceCalendar] ✅ Appointments loaded:', {
+        count: rawAppointments.length,
+        firstAppointmentDetails: {
+          id: firstApt.id,
+          customer_id: firstApt.customer_id,
+          customer_name: firstApt.customer_name,
+          stylist_id: firstApt.stylist_id,
+          stylist_name: firstApt.stylist_name,
+          start_time: firstApt.start_time,
+          branch_id: firstApt.branch_id,
+          status: firstApt.status,
+          duration_minutes: firstApt.duration_minutes
+        },
+        dateRange: {
+          startDate: dateRange.startDate,
+          endDate: dateRange.endDate
+        },
+        currentBranchId: branchId
+      })
+    } else if (!appointmentsLoading) {
+      console.log('[SalonResourceCalendar] ⚠️ No appointments in date range:', {
+        dateRange,
+        organizationId,
+        branchId
+      })
+    }
+  }, [rawAppointments, appointmentsLoading, appointmentsError, dateRange, organizationId, branchId])
+
   const { staff, isLoading: staffLoading } = useHeraStaff({
     organizationId,
     filters: {
@@ -228,6 +261,43 @@ export function SalonResourceCalendar({
   const { services, isLoading: servicesLoading } = useHeraServices({
     organizationId
   })
+
+  // ✅ LAYER 1: Staff availability checking based on leave requests
+  const {
+    checkStaffAvailability,
+    getUnavailableDates,
+    isLoading: availabilityLoading,
+    approvedLeaveRequests
+  } = useStaffAvailability({
+    organizationId,
+    branchId: branchId || undefined
+  })
+
+  // Debug: Log leave requests with detailed staff information
+  useEffect(() => {
+    if (approvedLeaveRequests && approvedLeaveRequests.length > 0) {
+      console.log('[SalonResourceCalendar] ✅ Leave requests loaded:', {
+        count: approvedLeaveRequests.length,
+        leaves: approvedLeaveRequests.map(leave => ({
+          staff_id: leave.staff_id,
+          staff_name: leave.staff_name,
+          leave_type: leave.leave_type,
+          start_date: leave.start_date,
+          end_date: leave.end_date,
+          period: leave.period,
+          status: leave.status
+        })),
+        organizationId,
+        branchId
+      })
+    } else if (!availabilityLoading) {
+      console.log('[SalonResourceCalendar] ⚠️ No approved leave requests found:', {
+        organizationId,
+        branchId,
+        availabilityLoading
+      })
+    }
+  }, [approvedLeaveRequests, availabilityLoading, organizationId, branchId])
 
   const loading = appointmentsLoading || staffLoading || customersLoading || servicesLoading
   const error = appointmentsError
@@ -332,8 +402,11 @@ export function SalonResourceCalendar({
 
   // ✅ Transform HERA appointments to calendar format with staff colors and service names
   const transformedAppointments = useMemo(() => {
+    console.log('[SalonResourceCalendar] Transform - rawAppointments:', rawAppointments.length, 'mounted:', mounted, 'customers:', customers.length, 'staff:', staff.length, 'services:', services.length)
+
     if (!rawAppointments.length || !mounted) {
       // Return empty array for initial render to prevent hydration mismatch
+      console.log('[SalonResourceCalendar] Transform - returning empty (no appointments or not mounted)')
       return []
     }
 
@@ -395,8 +468,25 @@ export function SalonResourceCalendar({
 
     // 🔍 Apply filters (status, service, date range) if any are active
     // For now, just return all appointments - filters can be added in future
+    if (appointments.length > 0) {
+      console.log('[SalonResourceCalendar] ✅ Transform result:', {
+        totalTransformed: appointments.length,
+        firstAppointment: {
+          id: appointments[0].id,
+          date: appointments[0].date.toISOString(),
+          dateString: appointments[0].date.toDateString(),
+          time: appointments[0].time,
+          client: appointments[0].client,
+          stylist: appointments[0].stylist,
+          branchId: appointments[0].branchId,
+          status: appointments[0].status
+        }
+      })
+    } else {
+      console.log('[SalonResourceCalendar] ⚠️ Transform returned 0 appointments despite', rawAppointments.length, 'raw appointments')
+    }
     return appointments
-  }, [rawAppointments, mounted, allStylists, services])
+  }, [rawAppointments, mounted, allStylists, services, customers])
 
   // 🔍 Search filtered appointments (MUST come after transformedAppointments)
   const searchResults = useMemo(() => {
@@ -1379,11 +1469,40 @@ export function SalonResourceCalendar({
 
                     // Get appointments for this day
                     const dayAppointments = transformedAppointments.filter(
-                      (apt: Appointment) =>
-                        apt.date.toDateString() === date.toDateString() &&
-                        (selectedStylists.includes('all') || selectedStylists.includes(apt.stylist || 'unassigned')) &&
-                        (!hasMultipleBranches || !branchId || branchId === '' || branchId === '__ALL__' || apt.branchId === branchId)
+                      (apt: Appointment) => {
+                        const dateMatch = apt.date.toDateString() === date.toDateString()
+                        const stylistMatch = selectedStylists.includes('all') || selectedStylists.includes(apt.stylist || 'unassigned')
+                        const branchMatch = !hasMultipleBranches || !branchId || branchId === '' || branchId === '__ALL__' || apt.branchId === branchId
+
+                        // Debug EVERY date comparison for the first appointment to see all days being checked
+                        if (apt === transformedAppointments[0]) {
+                          console.log('[Calendar Filter] Checking date:', {
+                            calendarDate: date.toDateString(),
+                            appointmentDate: apt.date.toDateString(),
+                            dateMatch,
+                            stylistMatch,
+                            branchMatch,
+                            willShow: dateMatch && stylistMatch && branchMatch
+                          })
+                        }
+
+                        return dateMatch && stylistMatch && branchMatch
+                      }
                     )
+
+                    // Debug: Log filtered appointments count for today's date
+                    if (isToday && dayAppointments.length === 0 && transformedAppointments.length > 0) {
+                      console.log('[Calendar Filter] ⚠️ No appointments passed filter for today:', {
+                        date: date.toDateString(),
+                        totalAppointments: transformedAppointments.length,
+                        dayAppointmentsCount: dayAppointments.length
+                      })
+                    } else if (isToday && dayAppointments.length > 0) {
+                      console.log('[Calendar Filter] ✅ Appointments visible for today:', {
+                        date: date.toDateString(),
+                        dayAppointmentsCount: dayAppointments.length
+                      })
+                    }
 
                     return (
                       <div
@@ -1733,32 +1852,53 @@ export function SalonResourceCalendar({
                     )
                   })
                 : // Resource view headers (stylists)
-                  displayedStylists.map((stylist, idx) => (
-                    <div
-                      key={stylist.id}
-                      className="sticky top-0 z-10 px-2 py-2"
-                      style={{
-                        gridColumn: `${idx + 2}`,
-                        backgroundColor: `${COLORS.charcoal}DD`,
-                        borderRight: `1px solid ${COLORS.gold}33`,
-                        borderBottom: `1px solid ${COLORS.gold}33`,
-                        height: '80px'
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Avatar className={cn('h-10 w-10', stylist.color)}>
-                          <AvatarFallback className="text-foreground font-semibold">
-                            {stylist.avatar}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
-                            {stylist.name}
-                          </p>
+                  displayedStylists.map((stylist, idx) => {
+                    // ✅ Check if staff is on leave for the selected date
+                    const dateToCheck = viewMode === 'resource' && viewDates.length > 0
+                      ? viewDates[0].toISOString().split('T')[0]
+                      : selectedDate.toISOString().split('T')[0]
+                    const availability = checkStaffAvailability(stylist.id, dateToCheck, 'full_day')
+                    const isOnLeave = !availability.isAvailable
+
+                    return (
+                      <div
+                        key={stylist.id}
+                        className="sticky top-0 z-10 px-2 py-2"
+                        style={{
+                          gridColumn: `${idx + 2}`,
+                          backgroundColor: `${COLORS.charcoal}DD`,
+                          borderRight: `1px solid ${COLORS.gold}33`,
+                          borderBottom: `1px solid ${COLORS.gold}33`,
+                          height: '80px'
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Avatar className={cn('h-10 w-10', stylist.color)}>
+                            <AvatarFallback className="text-foreground font-semibold">
+                              {stylist.avatar}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                              {stylist.name}
+                            </p>
+                            {isOnLeave && (
+                              <Badge
+                                className="text-[9px] px-1.5 py-0 mt-1"
+                                style={{
+                                  background: 'rgba(239, 68, 68, 0.2)',
+                                  color: '#EF4444',
+                                  border: '1px solid rgba(239, 68, 68, 0.3)'
+                                }}
+                              >
+                                ON LEAVE
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
 
               {/* Time Slots Grid - Each row contains time cell + resource cells */}
               {timeSlots.map((slot, slotIdx) => (

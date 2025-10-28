@@ -109,10 +109,8 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
 
     return (services as ServiceEntity[]).map(service => {
       // ✅ ENTERPRISE FIX: Extract category ID from relationship, then lookup name
-      const categoryRels =
-        service.relationships?.has_category ||
-        service.relationships?.HAS_CATEGORY ||
-        service.relationships?.category
+      // ✅ HERA STANDARD: Use UPPERCASE relationship keys only
+      const categoryRels = service.relationships?.HAS_CATEGORY
 
       let categoryName = null
       let categoryId = null
@@ -162,8 +160,11 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
       filtered = filtered.filter(s => {
         // Check if service has AVAILABLE_AT relationship with the specified branch
         // Smart Code: HERA.SALON.SERVICE.REL.AVAILABLE_AT.v1
-        const availableAtRelationships = s.relationships?.available_at
-        if (!availableAtRelationships) return false
+        // ✅ HERA STANDARD: Use UPPERCASE relationship keys only
+        const availableAtRelationships = s.relationships?.AVAILABLE_AT
+        if (!availableAtRelationships) {
+          return false
+        }
 
         // Handle both array and single relationship formats
         // Check both rel.to_entity?.id (populated) and rel.to_entity_id (raw) for compatibility
@@ -181,10 +182,8 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     // Filter by HAS_CATEGORY relationship if category filter provided
     if (options?.filters?.category_id) {
       filtered = filtered.filter(s => {
-        const categoryRelationship =
-          s.relationships?.has_category ||
-          s.relationships?.HAS_CATEGORY ||
-          s.relationships?.category
+        // ✅ HERA STANDARD: Use UPPERCASE relationship keys only
+        const categoryRelationship = s.relationships?.HAS_CATEGORY
         if (!categoryRelationship) return false
 
         // Handle both array and single relationship formats

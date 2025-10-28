@@ -347,6 +347,13 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         lines: transaction.lines || []
       }
 
+      console.log('🚀 [useUniversalTransactionV1] CREATE Payload:', {
+        header_smart_code: createPayload.header.smart_code,
+        line_count: createPayload.lines.length,
+        line_smart_codes: createPayload.lines.map((l: any) => l.smart_code),
+        full_payload: createPayload
+      })
+
       // 🌟 TRANSACTION CRUD - CREATE action
       const { data, error } = await transactionCRUD({
         p_action: 'CREATE',
@@ -369,6 +376,13 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
 
       // ✅ Check function level (common for validation errors)
       if (!data?.data?.success) {
+        console.error('[useUniversalTransactionV1] CREATE VALIDATION ERROR:', {
+          error: data?.data?.error,
+          header_smart_code: createPayload.header.smart_code,
+          line_smart_codes: createPayload.lines.map((l: any) => l.smart_code),
+          header_segments: createPayload.header.smart_code?.split('.'),
+          line_segments: createPayload.lines.map((l: any) => l.smart_code?.split('.')),
+        })
         throw new Error(data?.data?.error || 'CREATE function failed')
       }
 

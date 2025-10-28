@@ -44,11 +44,11 @@ export const PRODUCT_PRESET = isDev
 
 // Example usage in a component
 /*
-import { useUniversalEntity } from '@/hooks/useUniversalEntity';
+import { useUniversalEntityV1 } from '@/hooks/useUniversalEntityV1';
 import { PRODUCT_PRESET } from '@/presets/modular-example';
 
 export function ProductList() {
-  const { entities, create, update, delete: destroy } = useUniversalEntity({
+  const { entities, create, update, delete: destroy } = useUniversalEntityV1({
     entity_type: PRODUCT_PRESET.entity_type,
     dynamicFields: PRODUCT_PRESET.dynamicFields,
     relationships: PRODUCT_PRESET.relationships,
