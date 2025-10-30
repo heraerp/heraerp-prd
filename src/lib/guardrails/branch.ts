@@ -116,14 +116,46 @@ export async function getOrganizationBranches(
     })
 
     // Map to expected format with dynamic fields
-    return branches.map((branch: any) => ({
-      id: branch.id,
-      name: branch.entity_name,
-      code: branch.entity_code,
-      metadata: branch.metadata,
-      opening_time: branch.opening_time,
-      closing_time: branch.closing_time
-    }))
+    return branches.map((branch: any) => {
+      const result: any = {
+        id: branch.id,
+        name: branch.entity_name,
+        code: branch.entity_code,
+        metadata: branch.metadata
+      }
+
+      // ✅ Transform dynamic_fields array to top-level properties
+      if (Array.isArray(branch.dynamic_fields)) {
+        console.log('[getOrganizationBranches] 🔧 Transforming dynamic_fields for branch:', branch.entity_name)
+        branch.dynamic_fields.forEach((field: any) => {
+          const value = field.field_value_text ||
+                       field.field_value_number ||
+                       field.field_value_boolean ||
+                       field.field_value_date ||
+                       field.field_value_json ||
+                       null
+
+          if (field.field_name && value !== null) {
+            result[field.field_name] = value
+            console.log(`[getOrganizationBranches]   - ${field.field_name} = ${value}`)
+          }
+        })
+      }
+      // ✅ FALLBACK: Check metadata for opening/closing times (legacy support)
+      else if (branch.metadata && typeof branch.metadata === 'object') {
+        console.log('[getOrganizationBranches] ⚠️ No dynamic_fields array, checking metadata')
+        if (branch.metadata.opening_time) {
+          result.opening_time = branch.metadata.opening_time
+          console.log(`[getOrganizationBranches]   - opening_time from metadata = ${branch.metadata.opening_time}`)
+        }
+        if (branch.metadata.closing_time) {
+          result.closing_time = branch.metadata.closing_time
+          console.log(`[getOrganizationBranches]   - closing_time from metadata = ${branch.metadata.closing_time}`)
+        }
+      }
+
+      return result
+    })
   } catch (error) {
     console.error('[getOrganizationBranches] Error fetching branches:', error)
     return []
