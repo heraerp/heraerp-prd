@@ -220,15 +220,15 @@ export const SALON_PAGE_ACCESS: PageAccessRule[] = [
     description: 'Products (Universal)'
   },
 
-  // Staff management - Owner and Manager only
+  // Staff management - Owner, Manager, and Receptionist can view
   {
     path: '/salon/staffs',
-    allowedRoles: ['owner', 'manager'],
+    allowedRoles: ['owner', 'manager', 'receptionist'],
     description: 'Staff Management'
   },
   {
     path: '/salon/staff-v2',
-    allowedRoles: ['owner', 'manager'],
+    allowedRoles: ['owner', 'manager', 'receptionist'],
     description: 'Staff Management (v2)'
   },
 

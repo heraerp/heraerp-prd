@@ -26,40 +26,8 @@ console.log('App Data:')
 console.log(`  entity_code: ${app.entity_code}`)
 console.log(`  smart_code:  ${app.smart_code}\n`)
 
-// Test the regex in PostgreSQL via a simple RPC
-// We'll create a test function inline
-const testSQL = `
-DO $$
-DECLARE
-  v_smart_code text := 'HERA.PLATFORM.APP.ENTITY.SALON.v1';
-  v_expected_code text := 'SALON';
-  v_extracted text;
-BEGIN
-  -- Test extraction
-  v_extracted := REGEXP_REPLACE(v_smart_code, '^HERA\\.PLATFORM\\.APP\\.ENTITY\\.([A-Z0-9]+)\\.(v[0-9]+)$', '\\1');
-
-  RAISE NOTICE 'Smart Code: %', v_smart_code;
-  RAISE NOTICE 'Extracted: %', v_extracted;
-  RAISE NOTICE 'Expected: %', v_expected_code;
-  RAISE NOTICE 'Match: %', (v_extracted = v_expected_code);
-
-  -- Also test if the regex matches at all
-  IF v_smart_code ~ '^HERA\\.PLATFORM\\.APP\\.ENTITY\\.([A-Z0-9]+)\\.(v[0-9]+)$' THEN
-    RAISE NOTICE 'Regex pattern MATCHES';
-  ELSE
-    RAISE NOTICE 'Regex pattern DOES NOT MATCH';
-  END IF;
-END $$;
-`
-
-// Execute the test
-const { error: sqlError } = await supabase.rpc('exec_sql', { sql: testSQL }).catch(() => {
-  // Function doesn't exist, we'll try alternative approach
-  return { error: { message: 'exec_sql function not available' } }
-})
-
-console.log('📝 PostgreSQL Regex Test Results:')
-console.log('(Check Supabase logs for NOTICE messages)\n')
+// Skip PostgreSQL test - we'll use JavaScript to verify the logic
+console.log('📝 Testing extraction logic:\n')
 
 // Test with split approach
 console.log('🧪 Testing split approach (segment extraction):')
