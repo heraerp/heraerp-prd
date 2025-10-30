@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Service, ServiceFormValues, ServiceFormSchema } from '@/types/salon-service'
 import { useHeraServiceCategories } from '@/hooks/useHeraServiceCategories'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeModal, ValidationError } from '@/components/salon/shared/SalonLuxeModal'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import {
   Form,
@@ -59,6 +59,8 @@ const COLORS = {
 export function ServiceModal({ open, onClose, service, onSave }: ServiceModalProps) {
   const { organization, currency, availableBranches } = useSecuredSalonContext()
   const organizationId = organization?.id
+  const [showValidationSummary, setShowValidationSummary] = useState(false)
+  const [shakeButton, setShakeButton] = useState(false)
 
   // Fetch categories for dropdown
   const { categories: categoryList, isLoading: categoriesLoading } = useHeraServiceCategories({
@@ -165,6 +167,8 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
 
   const handleSubmit = async (data: ServiceFormValues) => {
     try {
+      // Hide validation summary on successful submission attempt
+      setShowValidationSummary(false)
       await onSave(data)
       form.reset()
     } catch (error) {
@@ -174,8 +178,26 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
 
   const handleClose = () => {
     form.reset()
+    setShowValidationSummary(false)
     onClose()
   }
+
+  // Convert react-hook-form errors to ValidationError array for SalonLuxeModal
+  const validationErrors: ValidationError[] = Object.entries(form.formState.errors).map(
+    ([field, error]) => ({
+      field,
+      message: error?.message || 'Invalid value'
+    })
+  )
+
+  // Show validation summary when there are errors and user tried to submit
+  useEffect(() => {
+    if (form.formState.isSubmitted && Object.keys(form.formState.errors).length > 0) {
+      setShowValidationSummary(true)
+      setShakeButton(true)
+      setTimeout(() => setShakeButton(false), 500)
+    }
+  }, [form.formState.isSubmitted, form.formState.errors])
 
   // Format duration display
   const formatDuration = (minutes?: number) => {
@@ -188,18 +210,31 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
   }
 
   return (
-    <SalonLuxeModal
-      open={open}
-      onClose={handleClose}
-      title={service ? 'Edit Service' : 'Create New Service'}
-      description={
-        service
-          ? 'Update service details and pricing'
-          : 'Add a premium service to elevate your offerings'
-      }
-      icon={<Sparkles className="w-7 h-7" />}
-      size="lg"
-      footer={
+    <>
+      <style jsx global>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+          20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+      `}</style>
+      <SalonLuxeModal
+        open={open}
+        onClose={handleClose}
+        title={service ? 'Edit Service' : 'Create New Service'}
+        description={
+          service
+            ? 'Update service details and pricing'
+            : 'Add a premium service to elevate your offerings'
+        }
+        icon={<Sparkles className="w-7 h-7" />}
+        size="lg"
+        validationErrors={validationErrors}
+        showValidationSummary={showValidationSummary}
+        footer={
         <div className="flex items-center justify-between w-full">
           {/* Helper Text */}
           <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.6 }}>
@@ -221,7 +256,7 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
               type="submit"
               disabled={form.formState.isSubmitting}
               onClick={form.handleSubmit(handleSubmit)}
-              className="h-11 px-8 rounded-lg font-semibold primary-button"
+              className={`h-11 px-8 rounded-lg font-semibold primary-button ${shakeButton ? 'animate-shake' : ''}`}
             >
               {form.formState.isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -935,5 +970,6 @@ export function ServiceModal({ open, onClose, service, onSave }: ServiceModalPro
           </Form>
       </div>
     </SalonLuxeModal>
+    </>
   )
 }

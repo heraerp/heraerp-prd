@@ -553,12 +553,30 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
 
   // 🎯 ENTERPRISE: Delete Appointment - Uses useUniversalTransactionV1.delete
   // ✅ V1: Hook automatically removes from cache - NO REFETCH NEEDED (follows services/leave pattern)
+  // 🛡️ BUSINESS RULE: Only empty DRAFT transactions can be deleted. Others must be VOIDED/CANCELLED.
   const deleteAppointmentFunc = async (id: string) => {
     console.log('[useHeraAppointments] Deleting appointment:', id)
 
     if (!options?.organizationId) throw new Error('Organization ID required')
 
-    // ✅ V1: Use deleteTransaction from useUniversalTransactionV1
+    // Find the appointment to check its status and lines
+    const appointment = enrichedAppointments.find(a => a.id === id)
+    if (!appointment) {
+      throw new Error('Appointment not found')
+    }
+
+    // 🛡️ BUSINESS RULE: Check if appointment can be deleted
+    const serviceIds = appointment.metadata?.service_ids || []
+    const hasLines = Array.isArray(serviceIds) && serviceIds.length > 0
+    const isDraft = appointment.status === 'draft'
+
+    // If appointment has lines or is not draft, use archive (cancel) instead
+    if (hasLines || !isDraft) {
+      console.log('[useHeraAppointments] Appointment has lines or is not draft, using archive instead')
+      return archiveAppointment(id)
+    }
+
+    // ✅ V1: Use deleteTransaction from useUniversalTransactionV1 for empty drafts
     const result = await deleteTransaction({
       transaction_id: id,
       hard_delete: true // ✅ V1: force → hard_delete (RPC parameter name)
