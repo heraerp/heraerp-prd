@@ -683,7 +683,7 @@ function NewAppointmentContent() {
         target_entity_id: selectedStylist.id, // Stylist
         transaction_date: startAt,
         total_amount: totalAmount,
-        status, // Sets transaction_status field (lowercase)
+        transaction_status: status, // ✅ CORRECT FIELD NAME: transaction_status (not status)
         metadata: {
           status, // Also in metadata for compatibility
           start_time: startAt,
