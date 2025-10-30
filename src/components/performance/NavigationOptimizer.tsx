@@ -18,7 +18,7 @@ export function NavigationOptimizer() {
       '/salon/appointments',
       '/salon/customers',
       '/salon/services',
-      '/salon/staff',
+      '/salon/staffs',
       '/salon/reports',
       '/test-auth'
     ]

@@ -32,7 +32,8 @@ const routeConfigs: RouteConfig[] = [
   // Owner routes
   { path: '/salon/dashboard', allowedRoles: ['owner', 'admin'] },
   { path: '/salon/owner', allowedRoles: ['owner', 'admin'] },
-  { path: '/salon/staff', allowedRoles: ['owner', 'admin'] },
+  { path: '/salon/staffs', allowedRoles: ['owner', 'admin'] },
+  { path: '/salon/staff-v2', allowedRoles: ['owner', 'admin'] },
   { path: '/salon/settings', allowedRoles: ['owner', 'admin'] },
 
   // Receptionist routes

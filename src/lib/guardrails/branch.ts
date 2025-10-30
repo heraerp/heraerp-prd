@@ -126,7 +126,6 @@ export async function getOrganizationBranches(
 
       // ✅ Transform dynamic_fields array to top-level properties
       if (Array.isArray(branch.dynamic_fields)) {
-        console.log('[getOrganizationBranches] 🔧 Transforming dynamic_fields for branch:', branch.entity_name)
         branch.dynamic_fields.forEach((field: any) => {
           const value = field.field_value_text ||
                        field.field_value_number ||
@@ -137,20 +136,16 @@ export async function getOrganizationBranches(
 
           if (field.field_name && value !== null) {
             result[field.field_name] = value
-            console.log(`[getOrganizationBranches]   - ${field.field_name} = ${value}`)
           }
         })
       }
       // ✅ FALLBACK: Check metadata for opening/closing times (legacy support)
       else if (branch.metadata && typeof branch.metadata === 'object') {
-        console.log('[getOrganizationBranches] ⚠️ No dynamic_fields array, checking metadata')
         if (branch.metadata.opening_time) {
           result.opening_time = branch.metadata.opening_time
-          console.log(`[getOrganizationBranches]   - opening_time from metadata = ${branch.metadata.opening_time}`)
         }
         if (branch.metadata.closing_time) {
           result.closing_time = branch.metadata.closing_time
-          console.log(`[getOrganizationBranches]   - closing_time from metadata = ${branch.metadata.closing_time}`)
         }
       }
 
