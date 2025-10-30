@@ -108,29 +108,94 @@ export function SalonRouteGuard({ children, fallback }: SalonRouteGuardProps) {
     const defaultPath = getDefaultPath(userRole)
 
     return (
-      <div className="min-h-screen bg-charcoal flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
+      <div
+        className="min-h-screen relative flex items-center justify-center p-4"
+        style={{
+          backgroundColor: '#1A1A1A',
+          backgroundImage: `
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 50% at 0% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 50% at 100% 100%, rgba(212, 175, 55, 0.08) 0%, transparent 50%)
+          `
+        }}
+      >
+        {/* Animated gradient overlay */}
+        <div
+          className="fixed inset-0 pointer-events-none opacity-30"
+          style={{
+            background: `
+              radial-gradient(ellipse 80% 60% at 30% 20%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
+              radial-gradient(ellipse 70% 50% at 70% 80%, rgba(212, 175, 55, 0.15) 0%, transparent 50%)
+            `,
+            animation: 'gradient-slow 20s cubic-bezier(0.4, 0, 0.2, 1) infinite'
+          }}
+        />
+
+        <div className="max-w-lg w-full relative z-10">
           {/* Access Denied Card */}
-          <div className="bg-gradient-to-br from-rose/20 to-rose/5 rounded-2xl p-8 border-2 border-rose/30">
-            {/* Icon */}
-            <div className="w-20 h-20 bg-rose/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ShieldOff className="w-10 h-10 text-rose" />
+          <div
+            className="rounded-3xl p-10 backdrop-blur-xl"
+            style={{
+              background: 'linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.2)',
+              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1)'
+            }}
+          >
+            {/* Shield Icon with Premium Styling */}
+            <div
+              className="w-24 h-24 mx-auto mb-8 rounded-2xl flex items-center justify-center relative"
+              style={{
+                background: 'linear-gradient(135deg, rgba(232, 180, 184, 0.15) 0%, rgba(232, 180, 184, 0.08) 100%)',
+                border: '2px solid rgba(232, 180, 184, 0.3)',
+                boxShadow: '0 8px 24px rgba(232, 180, 184, 0.2)'
+              }}
+            >
+              <ShieldOff className="w-12 h-12" style={{ color: '#E8B4B8' }} />
+
+              {/* Pulsing ring effect */}
+              <div
+                className="absolute inset-0 rounded-2xl animate-pulse"
+                style={{
+                  border: '2px solid rgba(232, 180, 184, 0.2)',
+                  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                }}
+              />
             </div>
 
-            {/* Title */}
-            <h1 className="text-2xl font-bold text-champagne text-center mb-4">
-              Access Denied
+            {/* Title with Gold Gradient */}
+            <h1
+              className="text-3xl font-bold text-center mb-3"
+              style={{
+                background: 'linear-gradient(135deg, #F5E6D3 0%, #D4AF37 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              Access Restricted
             </h1>
 
-            {/* Message */}
-            <div className="bg-charcoal/50 rounded-xl p-4 mb-6">
+            <p className="text-center text-base mb-8" style={{ color: '#C9A961' }}>
+              This page requires elevated permissions
+            </p>
+
+            {/* Message Box */}
+            <div
+              className="rounded-2xl p-6 mb-8"
+              style={{
+                background: 'linear-gradient(135deg, rgba(26,26,26,0.6) 0%, rgba(15,15,15,0.6) 100%)',
+                border: '1px solid rgba(212, 175, 55, 0.15)',
+                boxShadow: 'inset 0 1px 0 rgba(212, 175, 55, 0.1)'
+              }}
+            >
               <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-rose flex-shrink-0 mt-0.5" />
+                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#D4AF37' }} />
                 <div>
-                  <p className="text-bronze text-sm mb-2">
+                  <p className="text-sm mb-2" style={{ color: '#F5E6D3' }}>
                     You don't have permission to access this page.
                   </p>
-                  <p className="text-champagne/70 text-xs">
+                  <p className="text-xs leading-relaxed" style={{ color: '#C9A961' }}>
                     {message}
                   </p>
                 </div>
@@ -138,33 +203,77 @@ export function SalonRouteGuard({ children, fallback }: SalonRouteGuardProps) {
             </div>
 
             {/* Role Badge */}
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="text-bronze text-xs uppercase tracking-wider">Your Role:</span>
-              <span className="px-3 py-1 bg-gold/20 text-gold rounded-full text-xs font-bold uppercase">
-                {userRole}
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <span className="text-xs font-medium uppercase tracking-wider" style={{ color: '#C9A961' }}>
+                Your Role
               </span>
+              <div
+                className="px-4 py-2 rounded-full"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  boxShadow: '0 2px 8px rgba(212, 175, 55, 0.15)'
+                }}
+              >
+                <span className="text-sm font-bold uppercase tracking-wide" style={{ color: '#D4AF37' }}>
+                  {userRole}
+                </span>
+              </div>
             </div>
 
-            {/* Redirect Message */}
-            <p className="text-center text-bronze text-sm mb-6">
-              Redirecting to your dashboard in <span className="text-gold font-bold">3 seconds</span>...
-            </p>
+            {/* Redirect Timer */}
+            <div
+              className="rounded-xl p-4 mb-6 text-center"
+              style={{
+                background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.04) 100%)',
+                border: '1px solid rgba(212, 175, 55, 0.1)'
+              }}
+            >
+              <p className="text-sm" style={{ color: '#C9A961' }}>
+                Redirecting to your dashboard in{' '}
+                <span className="font-bold" style={{ color: '#D4AF37' }}>3 seconds</span>
+              </p>
+            </div>
 
-            {/* Action Button */}
+            {/* Action Button - SalonLuxe Style */}
             <button
               onClick={() => router.replace(defaultPath)}
-              className="w-full min-h-[48px] bg-gold hover:bg-gold/90 text-black rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95"
+              className="w-full min-h-[56px] rounded-xl font-bold text-base flex items-center justify-center gap-3 transition-all duration-200 active:scale-95 hover:shadow-2xl"
+              style={{
+                background: 'linear-gradient(135deg, #D4AF37 0%, #B8941F 100%)',
+                color: '#1A1A1A',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 4px 16px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+              }}
             >
               <ArrowLeft className="w-5 h-5" />
-              Go to Dashboard
+              Return to Dashboard
             </button>
           </div>
 
           {/* Help Text */}
-          <p className="text-center text-bronze text-xs mt-6">
-            If you believe this is an error, please contact your administrator.
+          <p className="text-center text-xs mt-6" style={{ color: '#8B7355' }}>
+            If you believe this is an error, please contact your administrator
           </p>
         </div>
+
+        {/* Animation styles */}
+        <style jsx>{`
+          @keyframes gradient-slow {
+            0%, 100% {
+              opacity: 0.3;
+              transform: scale(1) rotate(0deg);
+            }
+            33% {
+              opacity: 0.4;
+              transform: scale(1.1) rotate(2deg);
+            }
+            66% {
+              opacity: 0.25;
+              transform: scale(0.95) rotate(-2deg);
+            }
+          }
+        `}</style>
       </div>
     )
   }
