@@ -67,7 +67,7 @@ export default function DailySalesReportPage() {
           <AlertDescription style={{ color: LUXE_COLORS.champagne }}>
             {!isAuthenticated ? 'Please log in to access reports.' : 'No role assigned.'}
             <button
-              onClick={() => router.push('/salon-access')}
+              onClick={() => router.push('/salon/auth')}
               className="ml-2 underline hover:no-underline"
               style={{ color: LUXE_COLORS.gold }}
             >

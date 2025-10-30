@@ -60,7 +60,7 @@ export default function MonthlySalesReportPage() {
               ? 'Please log in to access reports.'
               : 'No role assigned. Please contact your administrator.'}
             <button
-              onClick={() => router.push('/salon-access')}
+              onClick={() => router.push('/salon/auth')}
               className="ml-2 underline hover:no-underline"
             >
               Go to Login
