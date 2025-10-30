@@ -144,15 +144,6 @@ function calculateSummary(glJournalTransactions: any[]): SalesSummary {
   const totalCredit = extractTotalCredit(glJournalTransactions)
   const totalDebit = extractTotalDebit(glJournalTransactions)
 
-  console.log('💰 GL Metadata Extraction Results:', {
-    netRevenue,
-    vat,
-    tips,
-    totalCredit,
-    totalDebit,
-    transactionCount: glJournalTransactions.length
-  })
-
   // Total gross = Total credit side (what customer actually paid)
   const totalGross = totalCredit
 
@@ -295,13 +286,7 @@ export function useDailySalesReport(date: Date) {
 
   // Calculate summary and hourly breakdown
   const { summary, hourlyData } = useMemo(() => {
-    console.log('🔍 Daily Sales Report - GL Transactions:', {
-      count: glJournalTransactions?.length || 0,
-      transactions: glJournalTransactions
-    })
-
     if (!glJournalTransactions || glJournalTransactions.length === 0) {
-      console.log('❌ No GL transactions found')
       return {
         summary: {
           total_gross: 0,
@@ -319,18 +304,8 @@ export function useDailySalesReport(date: Date) {
       }
     }
 
-    // Sample first transaction to see structure
-    if (glJournalTransactions.length > 0) {
-      console.log('📋 Sample GL Transaction:', glJournalTransactions[0])
-      console.log('📋 Metadata:', glJournalTransactions[0]?.metadata)
-      console.log('📋 Lines:', glJournalTransactions[0]?.lines)
-    }
-
     const calculatedSummary = calculateSummary(glJournalTransactions)
     const calculatedHourly = calculateHourlyRows(glJournalTransactions)
-
-    console.log('✅ Calculated Summary:', calculatedSummary)
-    console.log('✅ Hourly Data:', calculatedHourly)
 
     return {
       summary: calculatedSummary,

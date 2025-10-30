@@ -47,10 +47,8 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Products', href: '/salon/products', icon: Package },
     { title: 'Staff', href: '/salon/staffs', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users },
-    { title: 'Branches', href: '/salon/branches', icon: Building2 },
-    { title: 'Finance', href: '/salon/finance', icon: DollarSign },
-    { title: 'Reports', href: '/salon/reports', icon: BarChart3 }
-    // Inventory moved to More modal
+    { title: 'Branches', href: '/salon/branches', icon: Building2 }
+    // Finance, Reports, and Inventory moved to More modal or bottom section
   ],
 
   receptionist: [

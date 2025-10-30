@@ -1,10 +1,15 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { X } from 'lucide-react'
+import { X, AlertCircle } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { SALON_LUXE_COLORS, SALON_LUXE_STYLES } from '@/lib/constants/salon-luxe-colors'
+import { SALON_LUXE_COLORS, SALON_LUXE_STYLES, SALON_LUXE_GRADIENTS } from '@/lib/constants/salon-luxe-colors'
 import { cn } from '@/lib/utils'
+
+export interface ValidationError {
+  field: string
+  message: string
+}
 
 interface SalonLuxeModalProps {
   open: boolean
@@ -17,6 +22,9 @@ interface SalonLuxeModalProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
   showCloseButton?: boolean
   className?: string
+  // ✅ NEW: Built-in validation support
+  validationErrors?: ValidationError[]
+  showValidationSummary?: boolean
 }
 
 /**
@@ -32,6 +40,7 @@ interface SalonLuxeModalProps {
  * - Optional footer area
  * - Multiple size options
  * - Automatic scroll handling
+ * - ✅ NEW: Built-in validation error display with vibrant pink/red colors
  *
  * @example
  * <SalonLuxeModal
@@ -40,6 +49,8 @@ interface SalonLuxeModalProps {
  *   title="Select Staff Member"
  *   icon={<Sparkles className="w-6 h-6" />}
  *   footer={<SalonLuxeButton>Confirm</SalonLuxeButton>}
+ *   validationErrors={[{ field: 'name', message: 'Name is required' }]}
+ *   showValidationSummary={true}
  * >
  *   <div>Modal content here</div>
  * </SalonLuxeModal>
@@ -55,6 +66,8 @@ export function SalonLuxeModal({
   size = 'md',
   showCloseButton = true,
   className,
+  validationErrors = [],
+  showValidationSummary = false,
 }: SalonLuxeModalProps) {
   const sizeClasses = {
     sm: 'max-w-md',
@@ -224,6 +237,54 @@ export function SalonLuxeModal({
             color: SALON_LUXE_COLORS.text.primary,
           }}
         >
+          {/* ✅ ENTERPRISE VALIDATION SUMMARY */}
+          {showValidationSummary && validationErrors.length > 0 && (
+            <div
+              className="mb-6 mt-6 p-5 rounded-xl border-2 animate-in fade-in-0 slide-in-from-top-2 duration-300 shadow-lg"
+              style={{
+                background: SALON_LUXE_GRADIENTS.error,
+                borderColor: SALON_LUXE_COLORS.error.border,
+                boxShadow: `0 8px 24px ${SALON_LUXE_COLORS.error.lighter}, 0 0 0 1px ${SALON_LUXE_COLORS.error.border}`
+              }}
+            >
+              <div className="flex items-start gap-4">
+                <div
+                  className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{
+                    backgroundColor: SALON_LUXE_COLORS.error.base,
+                    boxShadow: `0 4px 12px ${SALON_LUXE_COLORS.error.lighter}`
+                  }}
+                >
+                  <AlertCircle className="h-5 w-5" style={{ color: '#000' }} />
+                </div>
+                <div className="flex-1">
+                  <h4
+                    className="text-base font-bold mb-3"
+                    style={{ color: SALON_LUXE_COLORS.error.text }}
+                  >
+                    Please fix the following errors to continue:
+                  </h4>
+                  <ul className="space-y-2">
+                    {validationErrors.map(({ field, message }, index) => (
+                      <li key={`${field}-${index}`} className="flex items-start gap-3">
+                        <span
+                          className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5"
+                          style={{ backgroundColor: SALON_LUXE_COLORS.error.base }}
+                        />
+                        <span className="text-sm" style={{ color: SALON_LUXE_COLORS.text.primary }}>
+                          <strong className="capitalize font-semibold" style={{ color: SALON_LUXE_COLORS.error.text }}>
+                            {field}:
+                          </strong>{' '}
+                          {message}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div style={{ color: SALON_LUXE_COLORS.text.primary }}>
             {children}
           </div>

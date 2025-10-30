@@ -2,13 +2,14 @@
  * Customer Modal Component
  * ✅ UPGRADED: Now using SalonLuxeModal and SalonLuxeButton
  * ✅ Enhanced phone validation for UAE format
+ * ✅ Enhanced validation feedback with summary alert and animations
  * Enterprise-grade customer add/edit modal with salon luxe theme
  */
 
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeModal, ValidationError } from '@/components/salon/shared/SalonLuxeModal'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,6 +22,7 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { User, Mail, Phone, MapPin, Calendar, Star, FileText, AlertCircle } from 'lucide-react'
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import type { CustomerEntity } from '@/hooks/useHeraCustomers'
 
 const COLORS = {
@@ -123,6 +125,8 @@ export function CustomerModal({
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
+  const [showValidationSummary, setShowValidationSummary] = useState(false)
+  const [shakeButton, setShakeButton] = useState(false)
 
   // Initialize form with customer data when editing
   useEffect(() => {
@@ -154,6 +158,7 @@ export function CustomerModal({
       })
     }
     setErrors({})
+    setShowValidationSummary(false)
   }, [customer, open])
 
   const validateForm = (): boolean => {
@@ -183,11 +188,34 @@ export function CustomerModal({
     return Object.keys(newErrors).length === 0
   }
 
+  // Convert errors object to ValidationError array for SalonLuxeModal
+  const validationErrors: ValidationError[] = Object.entries(errors).map(([field, message]) => ({
+    field,
+    message
+  }))
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!validateForm()) return
+    if (!validateForm()) {
+      // Show validation summary if form is invalid
+      setShowValidationSummary(true)
 
+      // Trigger button shake animation
+      setShakeButton(true)
+      setTimeout(() => setShakeButton(false), 500)
+
+      // Scroll to first error field
+      const firstErrorField = Object.keys(errors)[0]
+      if (firstErrorField) {
+        const element = document.getElementById(firstErrorField)
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        element?.focus()
+      }
+      return
+    }
+
+    setShowValidationSummary(false)
     setSubmitting(true)
     try {
       await onSubmit(formData)
@@ -200,7 +228,18 @@ export function CustomerModal({
   }
 
   return (
-    <SalonLuxeModal
+    <>
+      <style jsx global>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+          20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+      `}</style>
+      <SalonLuxeModal
       open={open}
       onClose={onClose}
       title={customer ? 'Edit Customer' : 'Add New Customer'}
@@ -211,6 +250,8 @@ export function CustomerModal({
       }
       icon={<User className="h-6 w-6" />}
       size="lg"
+      validationErrors={validationErrors}
+      showValidationSummary={showValidationSummary}
       footer={
         <>
           <SalonLuxeButton variant="outline" onClick={onClose} disabled={submitting}>
@@ -220,6 +261,7 @@ export function CustomerModal({
             type="submit"
             loading={submitting || isLoading}
             onClick={handleSubmit}
+            className={shakeButton ? 'animate-shake' : ''}
           >
             {customer ? 'Update Customer' : 'Add Customer'}
           </SalonLuxeButton>
@@ -496,5 +538,6 @@ export function CustomerModal({
         </div>
       </form>
     </SalonLuxeModal>
+    </>
   )
 }

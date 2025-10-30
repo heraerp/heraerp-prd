@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Product, ProductForm, ProductFormSchema } from '@/types/salon-product'
 import { useHeraProductCategories } from '@/hooks/useHeraProductCategories'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeModal, ValidationError } from '@/components/salon/shared/SalonLuxeModal'
 import {
   Form,
   FormControl,
@@ -52,6 +52,8 @@ interface ProductModalProps {
 
 export function ProductModal({ open, onClose, product, onSave }: ProductModalProps) {
   const { organizationId, availableBranches } = useSecuredSalonContext()
+  const [showValidationSummary, setShowValidationSummary] = useState(false)
+  const [shakeButton, setShakeButton] = useState(false)
 
   // Fetch product categories for dropdown
   const { categories: categoryList, isLoading: categoriesLoading } = useHeraProductCategories({
@@ -147,6 +149,9 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
 
   const handleSubmit = async (data: ProductForm) => {
     try {
+      // Hide validation summary on successful submission attempt
+      setShowValidationSummary(false)
+
       // 🎯 ENTERPRISE DEFAULT: If no branches selected, default to ALL branches
       // This ensures products are visible across all locations unless specifically restricted
       const dataWithDefaults = {
@@ -173,8 +178,26 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
 
   const handleClose = () => {
     form.reset()
+    setShowValidationSummary(false)
     onClose()
   }
+
+  // Convert react-hook-form errors to ValidationError array for SalonLuxeModal
+  const validationErrors: ValidationError[] = Object.entries(form.formState.errors).map(
+    ([field, error]) => ({
+      field,
+      message: error?.message || 'Invalid value'
+    })
+  )
+
+  // Show validation summary when there are errors and user tried to submit
+  useEffect(() => {
+    if (form.formState.isSubmitted && Object.keys(form.formState.errors).length > 0) {
+      setShowValidationSummary(true)
+      setShakeButton(true)
+      setTimeout(() => setShakeButton(false), 500)
+    }
+  }, [form.formState.isSubmitted, form.formState.errors])
 
   // Calculate margin
   const costPrice = form.watch('cost_price')
@@ -188,18 +211,31 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
   const hasNegativeMargin = costPrice && sellingPrice && costPrice > sellingPrice
 
   return (
-    <SalonLuxeModal
-      open={open}
-      onClose={handleClose}
-      title={product ? 'Edit Product' : 'Create New Product'}
-      description={
-        product
-          ? 'Update product details, pricing and branch availability'
-          : 'Add a premium product with pricing and branch availability'
-      }
-      icon={<Package className="w-7 h-7" />}
-      size="xl"
-      footer={
+    <>
+      <style jsx global>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+          20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+      `}</style>
+      <SalonLuxeModal
+        open={open}
+        onClose={handleClose}
+        title={product ? 'Edit Product' : 'Create New Product'}
+        description={
+          product
+            ? 'Update product details, pricing and branch availability'
+            : 'Add a premium product with pricing and branch availability'
+        }
+        icon={<Package className="w-7 h-7" />}
+        size="xl"
+        validationErrors={validationErrors}
+        showValidationSummary={showValidationSummary}
+        footer={
         <div className="flex items-center justify-between w-full">
           <p className="text-xs" style={{ color: SALON_LUXE_COLORS.text.secondary, opacity: 0.7 }}>
             <span style={{ color: SALON_LUXE_COLORS.gold.base }}>*</span> Required fields
@@ -217,7 +253,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
               type="submit"
               disabled={form.formState.isSubmitting}
               onClick={form.handleSubmit(handleSubmit)}
-              className="primary-button"
+              className={`primary-button ${shakeButton ? 'animate-shake' : ''}`}
             >
               {form.formState.isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -838,5 +874,6 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
         </form>
       </Form>
     </SalonLuxeModal>
+    </>
   )
 }

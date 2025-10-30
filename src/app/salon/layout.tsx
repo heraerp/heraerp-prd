@@ -11,6 +11,7 @@ import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { NavigationProvider } from './navigation-provider'
 import { PrefetchLinks } from './prefetch-links'
 import { useSecuredSalonContext } from './SecuredSalonProvider'
+import { SalonRouteGuard } from '@/components/auth/SalonRouteGuard'
 
 // Import global salon luxe theme
 import '@/styles/salon-luxe.css'
@@ -64,8 +65,12 @@ function SalonLayoutContent({ children }: { children: React.ReactNode }) {
 export default function SalonLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
-  // Don't show sidebar on public pages
-  const isPublicPage = pathname === '/salon' || pathname === '/salon/auth'
+  // Don't show sidebar or auth guard on public/auth pages
+  const isPublicPage = pathname === '/salon' ||
+                       pathname === '/salon/auth' ||
+                       pathname === '/salon/auth' ||
+                       pathname === '/salon/login' ||
+                       pathname === '/salon/reset-password'
 
   if (isPublicPage) {
     return <>{children}</>
@@ -75,12 +80,15 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
     <NavigationProvider>
       <SalonQueryWrapper>
         <SecuredSalonProvider>
-          {/* Prefetch common routes for better performance */}
-          <PrefetchLinks />
-          {/* Enterprise navigation progress bar */}
-          <NavigationProgress />
-          {/* Layout with role-based navigation */}
-          <SalonLayoutContent>{children}</SalonLayoutContent>
+          {/* 🛡️ RBAC: Route guard protects all salon pages */}
+          <SalonRouteGuard>
+            {/* Prefetch common routes for better performance */}
+            <PrefetchLinks />
+            {/* Enterprise navigation progress bar */}
+            <NavigationProgress />
+            {/* Layout with role-based navigation */}
+            <SalonLayoutContent>{children}</SalonLayoutContent>
+          </SalonRouteGuard>
         </SecuredSalonProvider>
       </SalonQueryWrapper>
     </NavigationProvider>

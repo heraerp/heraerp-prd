@@ -354,7 +354,7 @@ export default function SalonRoleBasedSidebar() {
     localStorage.removeItem('organizationId')
     localStorage.removeItem('salonRole')
     localStorage.removeItem('salonUserName')
-    router.push('/salon-access')
+    router.push('/salon/auth')
   }
 
   // Get role-specific welcome message

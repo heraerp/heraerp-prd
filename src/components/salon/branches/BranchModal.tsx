@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeModal, ValidationError } from '@/components/salon/shared/SalonLuxeModal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -80,6 +80,9 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
   const [isGeocoding, setIsGeocoding] = useState(false)
   const [geocodingStatus, setGeocodingStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [geocodingMessage, setGeocodingMessage] = useState('')
+  const [showValidationSummary, setShowValidationSummary] = useState(false)
+  const [shakeButton, setShakeButton] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [formData, setFormData] = useState<BranchFormValues>({
     name: '',
     code: '',
@@ -138,10 +141,62 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
     }
     setGeocodingStatus('idle')
     setGeocodingMessage('')
+    setErrors({})
+    setShowValidationSummary(false)
   }, [branch, open])
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {}
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Branch name is required'
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Branch name must be at least 2 characters'
+    }
+
+    // Email validation
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email format (e.g., branch@salon.ae)'
+    }
+
+    // Phone validation (basic)
+    if (formData.phone && formData.phone.length > 0 && formData.phone.length < 7) {
+      newErrors.phone = 'Phone number should be at least 7 digits'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  // Convert errors object to ValidationError array for SalonLuxeModal
+  const validationErrors: ValidationError[] = Object.entries(errors).map(([field, message]) => ({
+    field,
+    message
+  }))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!validateForm()) {
+      // Show validation summary if form is invalid
+      setShowValidationSummary(true)
+
+      // Trigger button shake animation
+      setShakeButton(true)
+      setTimeout(() => setShakeButton(false), 500)
+
+      // Scroll to first error field
+      const firstErrorField = Object.keys(errors)[0]
+      if (firstErrorField) {
+        const element = document.getElementById(firstErrorField)
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        element?.focus()
+      }
+      return
+    }
+
+    setShowValidationSummary(false)
     setIsSubmitting(true)
 
     try {
@@ -156,6 +211,14 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
 
   const updateField = (field: keyof BranchFormValues, value: string | number | undefined) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+    // Clear error on change
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[field]
+        return newErrors
+      })
+    }
   }
 
   // 🎯 ENTERPRISE FEATURE: Auto-geocode with proper error handling
@@ -257,14 +320,27 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
                      (formData.city && formData.city.trim().length > 0)
 
   return (
-    <SalonLuxeModal
-      open={open}
-      onClose={onClose}
-      title={branch ? 'Edit Branch' : 'Create New Branch'}
-      description={branch ? 'Update branch location details' : 'Add a new luxury salon location'}
-      icon={<Building2 className="w-6 h-6" />}
-      size="xl"
-    >
+    <>
+      <style jsx global>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+          20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+      `}</style>
+      <SalonLuxeModal
+        open={open}
+        onClose={onClose}
+        title={branch ? 'Edit Branch' : 'Create New Branch'}
+        description={branch ? 'Update branch location details' : 'Add a new luxury salon location'}
+        icon={<Building2 className="w-6 h-6" />}
+        size="xl"
+        validationErrors={validationErrors}
+        showValidationSummary={showValidationSummary}
+      >
       <form onSubmit={handleSubmit} className="space-y-5">
           {/* Basic Information */}
           <div
@@ -288,6 +364,7 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
                   Branch Name *
                 </Label>
                 <Input
+                  id="name"
                   value={formData.name}
                   onChange={e => updateField('name', e.target.value)}
                   placeholder="Downtown Salon"
@@ -626,6 +703,7 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
                   Phone Number
                 </Label>
                 <Input
+                  id="phone"
                   value={formData.phone}
                   onChange={e => updateField('phone', e.target.value)}
                   placeholder="+971 4 123 4567"
@@ -646,6 +724,7 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
                   Email Address
                 </Label>
                 <Input
+                  id="email"
                   value={formData.email}
                   onChange={e => updateField('email', e.target.value)}
                   placeholder="branch@salon.ae"
@@ -839,7 +918,7 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
             <Button
               type="submit"
               disabled={isSubmitting || !formData.name}
-              className="salon-submit-button px-8 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+              className={`salon-submit-button px-8 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ${shakeButton ? 'animate-shake' : ''}`}
               style={{
                 background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%) !important`,
                 color: '#000000 !important',
@@ -893,6 +972,7 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
             z-index: 99999 !important;
           }
         `}</style>
-    </SalonLuxeModal>
+      </SalonLuxeModal>
+    </>
   )
 }

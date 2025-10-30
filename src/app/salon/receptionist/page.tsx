@@ -323,10 +323,10 @@ export default function ReceptionistDashboard() {
       localStorage.removeItem('salonUserName')
       localStorage.removeItem('salonUserEmail')
       localStorage.removeItem('salonRole')
-      router.push('/salon-access')
+      router.push('/salon/auth')
     } catch (error) {
       console.error('Logout error:', error)
-      router.push('/salon-access')
+      router.push('/salon/auth')
     }
   }
 

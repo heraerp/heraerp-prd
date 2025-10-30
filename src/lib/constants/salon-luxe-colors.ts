@@ -59,6 +59,17 @@ export const SALON_LUXE_COLORS = {
     borderLight: 'rgba(232, 180, 184, 0.4)', // 40% opacity
   },
 
+  // Validation Error Colors (More vibrant for visibility)
+  error: {
+    base: '#FF6B93',       // Vibrant pink/red for errors
+    dark: '#F43F5E',       // Deeper rose
+    light: '#FFB4C8',      // Light pink
+    lighter: 'rgba(255, 107, 147, 0.15)', // 15% opacity
+    background: 'rgba(255, 107, 147, 0.12)', // Background tint
+    border: 'rgba(255, 107, 147, 0.5)',  // Border color
+    text: '#FFB4C8',       // Text color for errors
+  },
+
   // Extended Luxe Palette for Visual Balance
   emerald: {
     base: '#10B981',       // Vibrant emerald
@@ -127,6 +138,8 @@ export const SALON_LUXE_GRADIENTS = {
   goldAccent: `linear-gradient(to bottom right, ${withOpacity(SALON_LUXE_COLORS.gold.base, 0.2)} 0%, ${withOpacity(SALON_LUXE_COLORS.gold.base, 0.1)} 100%)`,
   success: `linear-gradient(to bottom right, ${withOpacity(SALON_LUXE_COLORS.success.base, 0.15)} 0%, ${withOpacity(SALON_LUXE_COLORS.success.base, 0.05)} 100%)`,
   danger: `linear-gradient(to bottom right, ${withOpacity(SALON_LUXE_COLORS.danger.base, 0.15)} 0%, ${withOpacity(SALON_LUXE_COLORS.danger.base, 0.05)} 100%)`,
+  error: `linear-gradient(to bottom right, ${withOpacity('#FF6B93', 0.15)} 0%, ${withOpacity('#FF6B93', 0.05)} 100%)`,
+  errorStrong: `linear-gradient(135deg, #FF6B93 0%, #F43F5E 100%)`,
   emerald: `linear-gradient(135deg, ${SALON_LUXE_COLORS.emerald?.base || '#10B981'} 0%, ${SALON_LUXE_COLORS.emerald?.dark || '#0F6F5C'} 100%)`,
   emeraldSubtle: `linear-gradient(to bottom right, ${SALON_LUXE_COLORS.emerald?.lighter || 'rgba(16, 185, 129, 0.15)'} 0%, ${withOpacity(SALON_LUXE_COLORS.emerald?.dark || '#0F6F5C', 0.05)} 100%)`,
   rose: `linear-gradient(135deg, ${SALON_LUXE_COLORS.rose?.base || '#E8B4B8'} 0%, ${SALON_LUXE_COLORS.rose?.dark || '#F43F5E'} 100%)`,

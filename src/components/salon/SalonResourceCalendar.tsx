@@ -215,34 +215,20 @@ export function SalonResourceCalendar({
     }
   })
 
-  // Debug: Log appointments data
+  // Debug: Log appointments data ONCE when loaded
   useEffect(() => {
     if (rawAppointments && rawAppointments.length > 0) {
       const firstApt = rawAppointments[0]
-      console.log('[SalonResourceCalendar] ✅ Appointments loaded:', {
-        count: rawAppointments.length,
-        firstAppointmentDetails: {
-          id: firstApt.id,
-          customer_id: firstApt.customer_id,
-          customer_name: firstApt.customer_name,
-          stylist_id: firstApt.stylist_id,
-          stylist_name: firstApt.stylist_name,
-          start_time: firstApt.start_time,
-          branch_id: firstApt.branch_id,
-          status: firstApt.status,
-          duration_minutes: firstApt.duration_minutes
-        },
-        dateRange: {
-          startDate: dateRange.startDate,
-          endDate: dateRange.endDate
-        },
-        currentBranchId: branchId
+      console.log('📅 [Calendar] Appointments loaded:', rawAppointments.length, 'appointment(s)')
+      console.log('📍 [Calendar] First appointment:', {
+        date: new Date(firstApt.start_time).toDateString(),
+        time: new Date(firstApt.start_time).toLocaleTimeString(),
+        customer: firstApt.customer_name,
+        stylist: firstApt.stylist_name
       })
-    } else if (!appointmentsLoading) {
-      console.log('[SalonResourceCalendar] ⚠️ No appointments in date range:', {
-        dateRange,
-        organizationId,
-        branchId
+      console.log('📆 [Calendar] Date range:', {
+        from: dateRange.startDate,
+        to: dateRange.endDate
       })
     }
   }, [rawAppointments, appointmentsLoading, appointmentsError, dateRange, organizationId, branchId])
@@ -273,29 +259,10 @@ export function SalonResourceCalendar({
     branchId: branchId || undefined
   })
 
-  // Debug: Log leave requests with detailed staff information
+  // Debug: Log leave requests ONCE when loaded
   useEffect(() => {
     if (approvedLeaveRequests && approvedLeaveRequests.length > 0) {
-      console.log('[SalonResourceCalendar] ✅ Leave requests loaded:', {
-        count: approvedLeaveRequests.length,
-        leaves: approvedLeaveRequests.map(leave => ({
-          staff_id: leave.staff_id,
-          staff_name: leave.staff_name,
-          leave_type: leave.leave_type,
-          start_date: leave.start_date,
-          end_date: leave.end_date,
-          period: leave.period,
-          status: leave.status
-        })),
-        organizationId,
-        branchId
-      })
-    } else if (!availabilityLoading) {
-      console.log('[SalonResourceCalendar] ⚠️ No approved leave requests found:', {
-        organizationId,
-        branchId,
-        availabilityLoading
-      })
+      console.log('🏖️ [Calendar] Leave requests loaded:', approvedLeaveRequests.length, 'staff on leave')
     }
   }, [approvedLeaveRequests, availabilityLoading, organizationId, branchId])
 
@@ -402,11 +369,8 @@ export function SalonResourceCalendar({
 
   // ✅ Transform HERA appointments to calendar format with staff colors and service names
   const transformedAppointments = useMemo(() => {
-    console.log('[SalonResourceCalendar] Transform - rawAppointments:', rawAppointments.length, 'mounted:', mounted, 'customers:', customers.length, 'staff:', staff.length, 'services:', services.length)
-
     if (!rawAppointments.length || !mounted) {
       // Return empty array for initial render to prevent hydration mismatch
-      console.log('[SalonResourceCalendar] Transform - returning empty (no appointments or not mounted)')
       return []
     }
 
@@ -468,23 +432,6 @@ export function SalonResourceCalendar({
 
     // 🔍 Apply filters (status, service, date range) if any are active
     // For now, just return all appointments - filters can be added in future
-    if (appointments.length > 0) {
-      console.log('[SalonResourceCalendar] ✅ Transform result:', {
-        totalTransformed: appointments.length,
-        firstAppointment: {
-          id: appointments[0].id,
-          date: appointments[0].date.toISOString(),
-          dateString: appointments[0].date.toDateString(),
-          time: appointments[0].time,
-          client: appointments[0].client,
-          stylist: appointments[0].stylist,
-          branchId: appointments[0].branchId,
-          status: appointments[0].status
-        }
-      })
-    } else {
-      console.log('[SalonResourceCalendar] ⚠️ Transform returned 0 appointments despite', rawAppointments.length, 'raw appointments')
-    }
     return appointments
   }, [rawAppointments, mounted, allStylists, services, customers])
 
@@ -1474,35 +1421,14 @@ export function SalonResourceCalendar({
                         const stylistMatch = selectedStylists.includes('all') || selectedStylists.includes(apt.stylist || 'unassigned')
                         const branchMatch = !hasMultipleBranches || !branchId || branchId === '' || branchId === '__ALL__' || apt.branchId === branchId
 
-                        // Debug EVERY date comparison for the first appointment to see all days being checked
-                        if (apt === transformedAppointments[0]) {
-                          console.log('[Calendar Filter] Checking date:', {
-                            calendarDate: date.toDateString(),
-                            appointmentDate: apt.date.toDateString(),
-                            dateMatch,
-                            stylistMatch,
-                            branchMatch,
-                            willShow: dateMatch && stylistMatch && branchMatch
-                          })
+                        // Debug: Log when appointment SHOULD show
+                        if (apt === transformedAppointments[0] && dateMatch && stylistMatch && branchMatch) {
+                          console.log('✅ [Calendar] Appointment will show on:', date.toDateString())
                         }
 
                         return dateMatch && stylistMatch && branchMatch
                       }
                     )
-
-                    // Debug: Log filtered appointments count for today's date
-                    if (isToday && dayAppointments.length === 0 && transformedAppointments.length > 0) {
-                      console.log('[Calendar Filter] ⚠️ No appointments passed filter for today:', {
-                        date: date.toDateString(),
-                        totalAppointments: transformedAppointments.length,
-                        dayAppointmentsCount: dayAppointments.length
-                      })
-                    } else if (isToday && dayAppointments.length > 0) {
-                      console.log('[Calendar Filter] ✅ Appointments visible for today:', {
-                        date: date.toDateString(),
-                        dayAppointmentsCount: dayAppointments.length
-                      })
-                    }
 
                     return (
                       <div

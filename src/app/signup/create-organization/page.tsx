@@ -22,7 +22,7 @@ const AVAILABLE_APPS = [
     name: 'Salon & Beauty',
     icon: '💇',
     description: 'Appointments, inventory & POS',
-    href: '/salon-access',
+    href: '/salon/auth',
     color: 'from-amber-500 to-orange-600'
   },
   {
