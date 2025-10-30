@@ -133,10 +133,10 @@ function DashboardContent() {
       localStorage.removeItem('salonUserName')
       localStorage.removeItem('salonUserEmail')
       localStorage.removeItem('salonRole')
-      router.push('/salon-access')
+      router.push('/salon/auth')
     } catch (error) {
       console.error('Logout error:', error)
-      router.push('/salon-access')
+      router.push('/salon/auth')
     }
   }
 
@@ -165,7 +165,7 @@ function DashboardContent() {
                 : 'No role assigned. Please contact your administrator.'}
             </p>
             <Button
-              onClick={() => router.push('/salon-access')}
+              onClick={() => router.push('/salon/auth')}
               className="w-full"
               style={{
                 backgroundColor: LUXE_COLORS.gold,
@@ -368,10 +368,10 @@ function DashboardContent() {
                     localStorage.removeItem('salonUserName')
                     localStorage.removeItem('salonUserEmail')
                     localStorage.removeItem('salonRole')
-                    router.push('/salon-access')
+                    router.push('/salon/auth')
                   } catch (error) {
                     console.error('Logout error:', error)
-                    router.push('/salon-access')
+                    router.push('/salon/auth')
                   }
                 }}
                 variant="outline"

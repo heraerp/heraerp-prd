@@ -68,7 +68,7 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
   // Don't show sidebar or auth guard on public/auth pages
   const isPublicPage = pathname === '/salon' ||
                        pathname === '/salon/auth' ||
-                       pathname === '/salon-access' ||
+                       pathname === '/salon/auth' ||
                        pathname === '/salon/login' ||
                        pathname === '/salon/reset-password'
 
