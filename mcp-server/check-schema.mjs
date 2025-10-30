@@ -1,41 +1,35 @@
-#!/usr/bin/env node
+import { createClient } from '@supabase/supabase-js'
+import 'dotenv/config'
 
-import { createClient } from '@supabase/supabase-js';
-import 'dotenv/config';
+const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 async function checkSchema() {
-  console.log('🔍 Checking core_relationships schema...');
-  
+  console.log('🔍 Checking core_organizations schema...\n')
+
+  // Try to fetch one row to see the structure
   const { data, error } = await supabase
-    .from('core_relationships')
+    .from('core_organizations')
     .select('*')
-    .limit(1);
-    
+    .limit(1)
+
   if (error) {
-    console.log('❌ Error:', error.message);
-    
-    // Try to get more info
-    console.log('\n🔍 Checking available tables...');
-    const { data: tables, error: tablesError } = await supabase
-      .from('information_schema.tables')
-      .select('table_name')
-      .eq('table_schema', 'public')
-      .like('table_name', '%relationship%');
-      
-    if (tables) {
-      console.log('📋 Found relationship tables:', tables.map(t => t.table_name));
-    }
+    console.error('❌ Error:', error.message)
+    return
+  }
+
+  if (data && data.length > 0) {
+    console.log('✅ Table structure (columns):')
+    Object.keys(data[0]).forEach(key => {
+      console.log(`   - ${key}: ${typeof data[0][key]}`)
+    })
+    console.log('\n📋 Sample row:')
+    console.log(data[0])
   } else {
-    console.log('✅ core_relationships table accessible');
-    if (data && data.length > 0) {
-      console.log('📋 Available columns:', Object.keys(data[0]));
-    }
+    console.log('⚠️ Table is empty')
   }
 }
 
-await checkSchema();
+checkSchema()
