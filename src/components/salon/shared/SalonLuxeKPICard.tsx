@@ -66,7 +66,11 @@ export function SalonLuxeKPICard({
 
   return (
     <div
-      className="group relative p-3 md:p-4 lg:p-5 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] active:scale-95 hover:shadow-2xl cursor-pointer animate-in fade-in slide-in-from-bottom-2"
+      className={`group relative p-3 md:p-4 lg:p-5 rounded-xl overflow-hidden transition-all duration-500 animate-in fade-in slide-in-from-bottom-2 ${
+        onClick
+          ? 'hover:scale-[1.02] active:scale-95 hover:shadow-2xl cursor-pointer'
+          : 'cursor-default'
+      }`}
       style={{
         background: finalGradient,
         border: `2px solid ${color}70`,

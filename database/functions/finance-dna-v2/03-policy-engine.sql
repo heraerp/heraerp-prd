@@ -205,6 +205,9 @@ $$;
 -- POLICY EXECUTION ENGINE
 -- =============================================================================
 
+-- Drop existing type if it exists
+DROP TYPE IF EXISTS policy_execution_result CASCADE;
+
 CREATE TYPE policy_execution_result AS (
     success BOOLEAN,
     policies_applied INTEGER,
@@ -386,6 +389,9 @@ $$;
 -- =============================================================================
 -- POLICY TESTING FUNCTION
 -- =============================================================================
+
+-- Drop existing type if it exists
+DROP TYPE IF EXISTS policy_test_result CASCADE;
 
 CREATE TYPE policy_test_result AS (
     test_passed BOOLEAN,

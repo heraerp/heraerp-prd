@@ -41,7 +41,7 @@ export type KanbanCard = {
   stylist_id?: string
   duration?: number
   price?: number
-  flags?: { vip?: boolean; new?: boolean; late?: boolean }
+  flags?: { vip?: boolean; new?: boolean; late?: boolean; staff_on_leave?: boolean }
   cancellation_reason?: CancellationReason // Track why appointment was cancelled
   metadata?: any
 }

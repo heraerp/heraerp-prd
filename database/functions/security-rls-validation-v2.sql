@@ -291,9 +291,9 @@ BEGIN
         SELECT 
             ut.id,
             ut.smart_code,
-            COALESCE(SUM(utl.debit_amount), 0) as total_debits,
-            COALESCE(SUM(utl.credit_amount), 0) as total_credits,
-            ABS(COALESCE(SUM(utl.debit_amount), 0) - COALESCE(SUM(utl.credit_amount), 0)) < 0.01 as is_balanced
+            COALESCE(SUM(CASE WHEN utl.unit_amount > 0 THEN utl.unit_amount ELSE 0 END), 0) as total_debits,
+            COALESCE(SUM(CASE WHEN utl.unit_amount < 0 THEN ABS(utl.unit_amount) ELSE 0 END), 0) as total_credits,
+            ABS(COALESCE(SUM(utl.unit_amount), 0)) < 0.01 as is_balanced
         FROM universal_transactions ut
         LEFT JOIN universal_transaction_lines utl ON ut.id = utl.transaction_id
         WHERE ut.organization_id = p_organization_id
@@ -326,7 +326,7 @@ BEGIN
         FROM (
             SELECT 
                 ut.smart_code,
-                ABS(COALESCE(SUM(utl.debit_amount), 0) - COALESCE(SUM(utl.credit_amount), 0)) < 0.01 as is_balanced
+                ABS(COALESCE(SUM(utl.unit_amount), 0)) < 0.01 as is_balanced
             FROM universal_transactions ut
             LEFT JOIN universal_transaction_lines utl ON ut.id = utl.transaction_id
             WHERE ut.organization_id = p_organization_id

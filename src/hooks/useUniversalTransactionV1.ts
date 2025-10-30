@@ -82,6 +82,75 @@ function normalizeTransactionType(transactionType?: string): string | undefined 
   return transactionType.toUpperCase()
 }
 
+/**
+ * Transform RPC response to flat transaction format
+ * Similar to transformRPCResponseToEntity in useUniversalEntityV1
+ *
+ * RPC returns nested structure: { header: {...}, lines: [...] }
+ * We need flat structure: { id, transaction_code, source_entity_id, ..., lines: [...] }
+ */
+function transformRPCResponseToTransaction(rpcTransaction: any): any {
+  if (!rpcTransaction) return null
+
+  // ✅ CRITICAL FIX: RPC returns nested structure { header: {}, lines: [] }
+  // Check if this is a nested format
+  const isNestedFormat = rpcTransaction.header !== undefined
+
+  console.log('🔄 [transformRPCResponseToTransaction] Input:', {
+    isNestedFormat,
+    rpcTransaction,
+    hasHeader: !!rpcTransaction.header,
+    hasDirectFields: !!(rpcTransaction.id || rpcTransaction.transaction_code)
+  })
+
+  let transaction: any
+  let lines: any[]
+
+  if (isNestedFormat) {
+    // Nested format from QUERY operations
+    transaction = rpcTransaction.header || {}
+    lines = rpcTransaction.lines || []
+  } else {
+    // Flat format (already has all fields at top level)
+    transaction = rpcTransaction
+    lines = rpcTransaction.lines || []
+  }
+
+  // ✅ Flatten all fields to top level + add lines
+  const transformedTransaction: any = {
+    id: transaction.id,
+    transaction_type: transaction.transaction_type,
+    transaction_code: transaction.transaction_code,
+    smart_code: transaction.smart_code,
+    transaction_date: transaction.transaction_date,
+    source_entity_id: transaction.source_entity_id,
+    target_entity_id: transaction.target_entity_id,
+    total_amount: transaction.total_amount,
+    transaction_status: transaction.transaction_status,
+    metadata: transaction.metadata,
+    business_context: transaction.business_context,
+    created_at: transaction.created_at,
+    updated_at: transaction.updated_at,
+    created_by: transaction.created_by,
+    updated_by: transaction.updated_by,
+    deleted_at: transaction.deleted_at,  // For soft delete filtering
+    lines: lines
+  }
+
+  console.log('🔄 [transformRPCResponseToTransaction] Output:', {
+    id: transformedTransaction.id,
+    transaction_code: transformedTransaction.transaction_code,
+    source_entity_id: transformedTransaction.source_entity_id,
+    target_entity_id: transformedTransaction.target_entity_id,
+    metadata: transformedTransaction.metadata,
+    transaction_status: transformedTransaction.transaction_status,
+    deleted_at: transformedTransaction.deleted_at,
+    allKeys: Object.keys(transformedTransaction)
+  })
+
+  return transformedTransaction
+}
+
 // ============================================================================
 // MAIN HOOK
 // ============================================================================
@@ -152,8 +221,6 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         throw new Error('Organization ID and User ID required')
       }
 
-      console.log('[useUniversalTransactionV1] 📖 Fetching transactions via QUERY action')
-
       // Build query payload
       const queryPayload: any = {}
 
@@ -211,13 +278,34 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         throw new Error(data?.data?.error || 'QUERY function failed')
       }
 
-      console.log('[useUniversalTransactionV1] 📖 QUERY response:', {
-        count: data?.data?.data?.items?.length || 0,
-        action: data?.action
+      // ✅ Extract transactions from NESTED response (data.data.data.items)
+      const transactionsArray = data?.data?.data?.items || []
+
+      console.log('📊 [useUniversalTransactionV1] QUERY Raw RPC Response:', {
+        fullResponse: data,
+        dataPath: data?.data,
+        dataDataPath: data?.data?.data,
+        itemsPath: data?.data?.data?.items,
+        itemsCount: transactionsArray.length,
+        firstItem: transactionsArray[0]
       })
 
-      // ✅ Extract transactions from NESTED response (data.data.data.items)
-      return data?.data?.data?.items || []
+      // ✅ Transform RPC response to flat format (similar to useUniversalEntityV1)
+      const transformed = transactionsArray.map(transformRPCResponseToTransaction)
+
+      console.log('📊 [useUniversalTransactionV1] Transformed Transactions:', {
+        count: transformed.length,
+        firstTransformed: transformed[0],
+        sampleFields: transformed[0] ? {
+          id: transformed[0].id,
+          source_entity_id: transformed[0].source_entity_id,
+          target_entity_id: transformed[0].target_entity_id,
+          metadata: transformed[0].metadata,
+          transaction_status: transformed[0].transaction_status
+        } : null
+      })
+
+      return transformed
     },
     enabled: !!organizationId && !!actorUserId,
     staleTime: 30 * 60 * 1000, // 30 minutes
@@ -237,8 +325,6 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       if (!organizationId || !actorUserId) {
         throw new Error('Organization ID and User ID required')
       }
-
-      console.log('[useUniversalTransactionV1] 🚀 Creating transaction via orchestrator RPC')
 
       // Normalize transaction_type to UPPERCASE
       const normalizedType = normalizeTransactionType(transaction.transaction_type) || transaction.transaction_type
@@ -261,7 +347,12 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         lines: transaction.lines || []
       }
 
-      console.log('[useUniversalTransactionV1] 📤 CREATE payload:', createPayload)
+      console.log('🚀 [useUniversalTransactionV1] CREATE Payload:', {
+        header_smart_code: createPayload.header.smart_code,
+        line_count: createPayload.lines.length,
+        line_smart_codes: createPayload.lines.map((l: any) => l.smart_code),
+        full_payload: createPayload
+      })
 
       // 🌟 TRANSACTION CRUD - CREATE action
       const { data, error } = await transactionCRUD({
@@ -285,23 +376,24 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
 
       // ✅ Check function level (common for validation errors)
       if (!data?.data?.success) {
-        console.error('[useUniversalTransactionV1] CREATE function error:', data?.data?.error)
-        console.error('Error hint:', data?.data?.error_hint)
-        console.error('Error context:', data?.data?.error_context)
+        console.error('[useUniversalTransactionV1] CREATE VALIDATION ERROR:', {
+          error: data?.data?.error,
+          header_smart_code: createPayload.header.smart_code,
+          line_smart_codes: createPayload.lines.map((l: any) => l.smart_code),
+          header_segments: createPayload.header.smart_code?.split('.'),
+          line_segments: createPayload.lines.map((l: any) => l.smart_code?.split('.')),
+        })
         throw new Error(data?.data?.error || 'CREATE function failed')
       }
 
-      console.log('[useUniversalTransactionV1] ✅ Transaction created:', {
-        transaction_id: data.transaction_id,
-        action: data.action
-      })
-
       // ✅ Extract transaction from NESTED response (data.data.data.header + lines)
-      return {
-        id: data.transaction_id,
-        ...data?.data?.data?.header,
+      // Use transformation function for consistency
+      const createdTransaction = {
+        header: data?.data?.data?.header,
         lines: data?.data?.data?.lines
       }
+
+      return transformRPCResponseToTransaction(createdTransaction)
     },
     onSuccess: async (newTransaction) => {
       // ⚡ OPTIMISTIC UPDATE: Add new transaction to cache
@@ -330,39 +422,40 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         throw new Error('Organization ID and User ID required')
       }
 
-      console.log('[useUniversalTransactionV1] 🚀 Updating transaction via orchestrator RPC')
-
-      // Build UPDATE payload
-      const updatePayload: any = {
-        transaction_id
-      }
+      // Build UPDATE payload - MUST use 'patch' wrapper for hera_txn_crud_v1
+      const patch: any = {}
 
       if (updates.transaction_type) {
-        updatePayload.transaction_type = normalizeTransactionType(updates.transaction_type)
+        patch.transaction_type = normalizeTransactionType(updates.transaction_type)
       }
       if (updates.transaction_code !== undefined) {
-        updatePayload.transaction_code = updates.transaction_code
+        patch.transaction_code = updates.transaction_code
       }
       if (updates.smart_code) {
-        updatePayload.smart_code = updates.smart_code
+        patch.smart_code = updates.smart_code
       }
       if (updates.transaction_date) {
-        updatePayload.transaction_date = updates.transaction_date
+        patch.transaction_date = updates.transaction_date
       }
       if (updates.source_entity_id !== undefined) {
-        updatePayload.source_entity_id = updates.source_entity_id
+        patch.source_entity_id = updates.source_entity_id
       }
       if (updates.target_entity_id !== undefined) {
-        updatePayload.target_entity_id = updates.target_entity_id
+        patch.target_entity_id = updates.target_entity_id
       }
       if (updates.total_amount !== undefined) {
-        updatePayload.total_amount = updates.total_amount
+        patch.total_amount = updates.total_amount
       }
       if (updates.transaction_status) {
-        updatePayload.transaction_status = updates.transaction_status
+        patch.transaction_status = updates.transaction_status
       }
       if (updates.metadata) {
-        updatePayload.metadata = updates.metadata
+        patch.metadata = updates.metadata
+      }
+
+      const updatePayload = {
+        transaction_id,
+        patch
       }
 
       // 🌟 TRANSACTION CRUD - UPDATE action
@@ -385,28 +478,49 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       }
 
       if (!data?.data?.success) {
-        console.error('[useUniversalTransactionV1] UPDATE function error:', data?.data?.error)
         throw new Error(data?.data?.error || 'UPDATE function failed')
       }
 
-      console.log('[useUniversalTransactionV1] ✅ Transaction updated')
-
       // ✅ Extract updated transaction from NESTED response
-      return {
-        id: transaction_id,
-        ...data?.data?.data?.header,
-        lines: data?.data?.data?.lines
-      }
-    },
-    onSuccess: (updatedTransaction) => {
-      // ⚡ OPTIMISTIC UPDATE: Update transaction in cache
-      queryClient.setQueryData(queryKey, (old: any) => {
-        if (!old || !Array.isArray(old)) return [updatedTransaction]
-        return old.map((txn: any) =>
-          txn.id === updatedTransaction.id ? updatedTransaction : txn
-        )
+      // RPC UPDATE returns: { action: 'UPDATE', data: { action: 'READ', data: { header, lines } } }
+      console.log('🔄 [useUniversalTransactionV1] UPDATE Response Structure:', {
+        outerAction: data?.action,
+        innerAction: data?.data?.action,
+        hasData: !!data?.data?.data,
+        dataKeys: data?.data?.data ? Object.keys(data?.data?.data) : null,
+        fullData: data?.data?.data
       })
 
+      // Use transformation function for consistency
+      const updatedTransaction = {
+        header: data?.data?.data?.header || {},
+        lines: data?.data?.data?.lines || []
+      }
+
+      console.log('🔄 [useUniversalTransactionV1] Extracted Updated Transaction:', {
+        hasHeader: !!updatedTransaction.header,
+        headerKeys: updatedTransaction.header ? Object.keys(updatedTransaction.header) : null,
+        transaction_status: updatedTransaction.header?.transaction_status,
+        metadata: updatedTransaction.header?.metadata
+      })
+
+      return transformRPCResponseToTransaction(updatedTransaction)
+    },
+    onSuccess: (updatedTransaction, variables) => {
+      // ✅ UPDATE now returns FRESH data with correct patch payload structure
+      console.log('✅ [useUniversalTransactionV1] UPDATE returned fresh data:', {
+        transaction_id: updatedTransaction.id,
+        returned_status: updatedTransaction.transaction_status,
+        requested_status: variables.transaction_status
+      })
+
+      // ⚡ OPTIMISTIC UPDATE: Update the transaction in cache
+      queryClient.setQueryData(queryKey, (old: any) => {
+        if (!old || !Array.isArray(old)) return [updatedTransaction]
+        return old.map((txn: any) => txn.id === updatedTransaction.id ? updatedTransaction : txn)
+      })
+
+      // Invalidate to refetch in background
       queryClient.invalidateQueries({ queryKey: ['transactions-v1'] })
 
       console.log('✅ [useUniversalTransactionV1] Updated transaction in cache')
@@ -428,8 +542,6 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       if (!organizationId || !actorUserId) {
         throw new Error('Organization ID and User ID required')
       }
-
-      console.log('[useUniversalTransactionV1] 🚀 Deleting transaction via orchestrator RPC')
 
       // 🌟 TRANSACTION CRUD - DELETE action (hard delete only for empty drafts)
       const { data, error } = await transactionCRUD({

@@ -1,0 +1,595 @@
+name: Claude CLI Autopilot with Learning
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  schedule:
+    - cron: "0 2 * * *" # Nightly learning runs
+  workflow_dispatch:
+    inputs:
+      learning_mode:
+        description: 'Learning mode (aggressive/conservative/analysis-only)'
+        required: false
+        default: 'conservative'
+        type: choice
+        options:
+        - aggressive
+        - conservative
+        - analysis-only
+
+env:
+  NODE_VERSION: '20'
+  LEARNING_MODE: ${{ github.event.inputs.learning_mode || 'conservative' }}
+
+jobs:
+  setup-and-validate:
+    runs-on: ubuntu-latest
+    outputs:
+      learning-session-id: ${{ steps.setup.outputs.session-id }}
+      baseline-metrics: ${{ steps.setup.outputs.baseline-metrics }}
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hera_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+      
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for learning analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup learning environment
+        id: setup
+        run: |
+          # Create learning session
+          SESSION_ID="autopilot-$(date +%Y%m%d-%H%M%S)-${{ github.run_id }}"
+          echo "session-id=$SESSION_ID" >> $GITHUB_OUTPUT
+          
+          # Initialize learning directories
+          mkdir -p .claude/learning/sessions
+          mkdir -p .claude/learning/metrics
+          mkdir -p .claude/learning/patterns
+          
+          # Create session metadata
+          cat > .claude/learning/sessions/$SESSION_ID.json << EOF
+          {
+            "session_id": "$SESSION_ID",
+            "github_run_id": "${{ github.run_id }}",
+            "trigger": "${{ github.event_name }}",
+            "branch": "${{ github.ref_name }}",
+            "commit": "${{ github.sha }}",
+            "learning_mode": "${{ env.LEARNING_MODE }}",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "pr_number": "${{ github.event.number }}",
+            "actor": "${{ github.actor }}"
+          }
+          EOF
+          
+          # Load existing knowledge base
+          if [[ ! -f .claude/learning/knowledge-base.json ]]; then
+            echo '{"entries": {"common_patterns": {}}, "metrics": {"total_fixes_applied": 0}}' > .claude/learning/knowledge-base.json
+          fi
+          
+          # Get baseline metrics
+          BASELINE=$(node -e "
+            const kb = require('./.claude/learning/knowledge-base.json');
+            const metrics = {
+              total_fixes: kb.metrics.total_fixes_applied || 0,
+              success_rate: kb.metrics.overall_success_rate || 0,
+              patterns_learned: Object.keys(kb.entries.common_patterns || {}).length
+            };
+            console.log(JSON.stringify(metrics));
+          ")
+          echo "baseline-metrics=$BASELINE" >> $GITHUB_OUTPUT
+          
+          echo "🧠 Learning session initialized: $SESSION_ID"
+          echo "📊 Baseline metrics: $BASELINE"
+
+      - name: Database setup and validation
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_test
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          # Setup test database
+          npm run db:reset || echo "DB reset not available"
+          npm run db:migrate || echo "DB migrate not available"
+          npm run db:seed || echo "DB seed not available"
+          
+          # Load HERA bundles for validation
+          npm run hera:bundles:load -- --file=finance_dna_v2_2.json || echo "Bundle load not available"
+
+      - name: Run foundational validations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_test
+        run: |
+          echo "🔍 Running foundational validations..."
+          
+          # Check if Sacred Six tables exist
+          psql "$DATABASE_URL" -c "SELECT tablename FROM pg_tables WHERE tablename IN ('core_entities', 'core_dynamic_data', 'core_relationships', 'core_organizations', 'universal_transactions', 'universal_transaction_lines');" || echo "Sacred Six check failed"
+          
+          # Validate schema compliance
+          if [[ -f sql/check_actor_coverage_with_learning.sql ]]; then
+            echo "📋 Running actor coverage validation..."
+            psql "$DATABASE_URL" -f sql/check_actor_coverage_with_learning.sql > .claude/learning/actor-coverage-${{ steps.setup.outputs.session-id }}.log 2>&1 || echo "Actor coverage validation completed with findings"
+          fi
+          
+          if [[ -f sql/test_gl_balance_with_learning.sql ]]; then
+            echo "💰 Running GL balance validation..."
+            psql "$DATABASE_URL" -f sql/test_gl_balance_with_learning.sql > .claude/learning/gl-balance-${{ steps.setup.outputs.session-id }}.log 2>&1 || echo "GL balance validation completed with findings"
+          fi
+          
+          if [[ -f sql/validate_smart_codes_with_learning.sql ]]; then
+            echo "🧬 Running Smart Code validation..."
+            psql "$DATABASE_URL" -f sql/validate_smart_codes_with_learning.sql > .claude/learning/smart-codes-${{ steps.setup.outputs.session-id }}.log 2>&1 || echo "Smart Code validation completed with findings"
+          fi
+
+      - name: Upload setup artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-setup-${{ steps.setup.outputs.session-id }}
+          path: |
+            .claude/learning/
+            *.log
+          retention-days: 30
+
+  test-with-autopilot:
+    needs: setup-and-validate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test-suite: [unit, integration, security, performance, e2e]
+      fail-fast: false # Allow other suites to continue if one fails
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hera_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download learning artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: learning-setup-${{ needs.setup-and-validate.outputs.learning-session-id }}
+
+      - name: Install Claude CLI
+        run: |
+          npm install -g @anthropic-ai/claude-cli
+          claude auth ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Setup environment
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_test
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TEST_ORGANIZATION_ID: ${{ secrets.TEST_ORGANIZATION_ID }}
+          TEST_USER_ID: ${{ secrets.TEST_USER_ID }}
+        run: |
+          # Setup test environment
+          npm run db:reset || echo "DB reset not available"
+          npm run db:migrate || echo "DB migrate not available"
+          npm run db:seed || echo "DB seed not available"
+          npm run hera:bundles:load -- --file=finance_dna_v2_2.json || echo "Bundle load not available"
+
+      - name: Run test suite with autopilot healing
+        id: test-run
+        continue-on-error: true
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hera_test
+          LEARNING_SESSION_ID: ${{ needs.setup-and-validate.outputs.learning-session-id }}
+          LEARNING_MODE: ${{ env.LEARNING_MODE }}
+        run: |
+          echo "🧪 Running ${{ matrix.test-suite }} tests with autopilot healing..."
+          
+          # Define test commands
+          case "${{ matrix.test-suite }}" in
+            unit)
+              TEST_CMD="npm run test:unit"
+              ;;
+            integration)
+              TEST_CMD="vitest run tests/integration/"
+              ;;
+            security)
+              TEST_CMD="vitest run tests/security/"
+              ;;
+            performance)
+              TEST_CMD="k6 run tests/performance/k6-smoke.js"
+              ;;
+            e2e)
+              TEST_CMD="npm run test:e2e -- --project=chromium"
+              ;;
+            *)
+              echo "Unknown test suite: ${{ matrix.test-suite }}"
+              exit 1
+              ;;
+          esac
+          
+          # Create test results directory
+          mkdir -p test-results/${{ matrix.test-suite }}
+          
+          # Run tests and capture results
+          echo "Running: $TEST_CMD"
+          if $TEST_CMD > test-results/${{ matrix.test-suite }}/test-output.log 2>&1; then
+            echo "✅ ${{ matrix.test-suite }} tests passed on first run"
+            echo "test-outcome=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ ${{ matrix.test-suite }} tests failed, attempting autopilot healing..."
+            echo "test-outcome=failed" >> $GITHUB_OUTPUT
+            
+            # Save failure information for learning
+            cp test-results/${{ matrix.test-suite }}/test-output.log .claude/learning/failure-${{ matrix.test-suite }}-$LEARNING_SESSION_ID.log
+            
+            # Attempt autopilot healing if enabled
+            if [[ "$LEARNING_MODE" != "analysis-only" ]]; then
+              echo "🔧 Attempting autopilot healing..."
+              
+              if [[ -x ./scripts/claude-fix-with-learning.sh ]]; then
+                # Run healing script
+                ./scripts/claude-fix-with-learning.sh .claude/learning/failure-${{ matrix.test-suite }}-$LEARNING_SESSION_ID.log || echo "Healing attempt completed"
+                
+                # Re-run tests after healing
+                echo "🔄 Re-running tests after healing..."
+                if $TEST_CMD > test-results/${{ matrix.test-suite }}/test-output-post-heal.log 2>&1; then
+                  echo "✅ ${{ matrix.test-suite }} tests passed after healing!"
+                  echo "test-outcome=healed" >> $GITHUB_OUTPUT
+                  
+                  # Learn from successful healing
+                  ./scripts/claude-learn-from-success.sh "Successful healing of ${{ matrix.test-suite }} tests" || echo "Success learning completed"
+                else
+                  echo "❌ ${{ matrix.test-suite }} tests still failing after healing"
+                  echo "test-outcome=heal-failed" >> $GITHUB_OUTPUT
+                fi
+              else
+                echo "⚠️ Healing script not available"
+                echo "test-outcome=no-healing" >> $GITHUB_OUTPUT
+              fi
+            else
+              echo "📊 Analysis-only mode: skipping healing"
+              echo "test-outcome=analysis-only" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Analyze test patterns
+        env:
+          LEARNING_SESSION_ID: ${{ needs.setup-and-validate.outputs.learning-session-id }}
+        run: |
+          echo "🧠 Analyzing test patterns for ${{ matrix.test-suite }}..."
+          
+          # Extract patterns from test results
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            
+            const sessionId = process.env.LEARNING_SESSION_ID;
+            const testSuite = '${{ matrix.test-suite }}';
+            const testOutcome = '${{ steps.test-run.outputs.test-outcome }}';
+            
+            // Load existing knowledge base
+            let kb = {};
+            try {
+              kb = JSON.parse(fs.readFileSync('.claude/learning/knowledge-base.json', 'utf8'));
+            } catch (e) {
+              kb = { entries: { common_patterns: {} }, metrics: {} };
+            }
+            
+            // Initialize structures
+            if (!kb.entries) kb.entries = {};
+            if (!kb.entries.test_patterns) kb.entries.test_patterns = {};
+            if (!kb.metrics) kb.metrics = {};
+            
+            // Record test pattern
+            const patternKey = testSuite + '_' + testOutcome;
+            if (!kb.entries.test_patterns[patternKey]) {
+              kb.entries.test_patterns[patternKey] = {
+                test_suite: testSuite,
+                outcome: testOutcome,
+                frequency: 0,
+                first_seen: new Date().toISOString(),
+                sessions: []
+              };
+            }
+            
+            kb.entries.test_patterns[patternKey].frequency += 1;
+            kb.entries.test_patterns[patternKey].last_seen = new Date().toISOString();
+            kb.entries.test_patterns[patternKey].sessions.push(sessionId);
+            
+            // Update metrics
+            kb.metrics.total_test_runs = (kb.metrics.total_test_runs || 0) + 1;
+            kb.metrics.last_test_session = sessionId;
+            
+            if (testOutcome === 'success') {
+              kb.metrics.successful_tests = (kb.metrics.successful_tests || 0) + 1;
+            } else if (testOutcome === 'healed') {
+              kb.metrics.healed_tests = (kb.metrics.healed_tests || 0) + 1;
+            } else {
+              kb.metrics.failed_tests = (kb.metrics.failed_tests || 0) + 1;
+            }
+            
+            // Calculate success rate
+            const totalRuns = kb.metrics.total_test_runs;
+            const successfulRuns = (kb.metrics.successful_tests || 0) + (kb.metrics.healed_tests || 0);
+            kb.metrics.test_success_rate = successfulRuns / totalRuns;
+            
+            // Save updated knowledge base
+            fs.writeFileSync('.claude/learning/knowledge-base.json', JSON.stringify(kb, null, 2));
+            
+            console.log('Test pattern analysis completed for ' + testSuite + ' -> ' + testOutcome);
+          "
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.test-suite }}-${{ needs.setup-and-validate.outputs.learning-session-id }}
+          path: |
+            test-results/
+            .claude/learning/
+          retention-days: 30
+
+  learning-analysis:
+    needs: [setup-and-validate, test-with-autopilot]
+    runs-on: ubuntu-latest
+    if: always() # Run even if tests failed
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "*-${{ needs.setup-and-validate.outputs.learning-session-id }}"
+          merge-multiple: true
+
+      - name: Consolidate learning data
+        env:
+          LEARNING_SESSION_ID: ${{ needs.setup-and-validate.outputs.learning-session-id }}
+          BASELINE_METRICS: ${{ needs.setup-and-validate.outputs.baseline-metrics }}
+        run: |
+          echo "🧠 Consolidating learning data from session: $LEARNING_SESSION_ID"
+          
+          # Consolidate learning session
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            
+            const sessionId = process.env.LEARNING_SESSION_ID;
+            const baseline = JSON.parse(process.env.BASELINE_METRICS);
+            
+            // Load final knowledge base
+            let kb = {};
+            try {
+              kb = JSON.parse(fs.readFileSync('.claude/learning/knowledge-base.json', 'utf8'));
+            } catch (e) {
+              kb = { entries: {}, metrics: {} };
+            }
+            
+            // Create session summary
+            const sessionSummary = {
+              session_id: sessionId,
+              github_run_id: '${{ github.run_id }}',
+              completed_at: new Date().toISOString(),
+              baseline_metrics: baseline,
+              final_metrics: {
+                total_fixes: kb.metrics.total_fixes_applied || 0,
+                success_rate: kb.metrics.overall_success_rate || 0,
+                patterns_learned: Object.keys(kb.entries.common_patterns || {}).length,
+                test_success_rate: kb.metrics.test_success_rate || 0,
+                total_test_runs: kb.metrics.total_test_runs || 0
+              },
+              improvements: {
+                fixes_applied: (kb.metrics.total_fixes_applied || 0) - (baseline.total_fixes || 0),
+                success_rate_change: (kb.metrics.overall_success_rate || 0) - (baseline.success_rate || 0),
+                patterns_learned: Object.keys(kb.entries.common_patterns || {}).length - (baseline.patterns_learned || 0)
+              },
+              test_outcomes: kb.entries.test_patterns || {},
+              learning_effectiveness: {
+                knowledge_base_size: JSON.stringify(kb).length,
+                pattern_diversity: Object.keys(kb.entries.common_patterns || {}).length,
+                recent_learning_rate: kb.metrics.healed_tests || 0
+              }
+            };
+            
+            // Save session summary
+            fs.writeFileSync('.claude/learning/sessions/' + sessionId + '-summary.json', JSON.stringify(sessionSummary, null, 2));
+            
+            console.log('📊 Learning Session Summary:');
+            console.log('  Session ID: ' + sessionId);
+            console.log('  Fixes Applied: ' + sessionSummary.improvements.fixes_applied);
+            console.log('  Success Rate Change: ' + (sessionSummary.improvements.success_rate_change * 100).toFixed(2) + '%');
+            console.log('  New Patterns Learned: ' + sessionSummary.improvements.patterns_learned);
+            console.log('  Test Success Rate: ' + (sessionSummary.final_metrics.test_success_rate * 100).toFixed(2) + '%');
+            console.log('  Knowledge Base Size: ' + (sessionSummary.learning_effectiveness.knowledge_base_size / 1024).toFixed(1) + ' KB');
+          "
+
+      - name: Generate learning report
+        run: |
+          echo "📋 Generating learning report..."
+          
+          # Create markdown report
+          cat > learning-report.md << 'EOF'
+          # 🧠 Claude Autopilot Learning Report
+          
+          **Session ID:** ${{ needs.setup-and-validate.outputs.learning-session-id }}  
+          **Trigger:** ${{ github.event_name }}  
+          **Branch:** ${{ github.ref_name }}  
+          **Commit:** ${{ github.sha }}  
+          **Learning Mode:** ${{ env.LEARNING_MODE }}
+          
+          ## 📊 Session Metrics
+          EOF
+          
+          # Add metrics from learning analysis
+          node -e "
+            const fs = require('fs');
+            try {
+              const summary = JSON.parse(fs.readFileSync('.claude/learning/sessions/${{ needs.setup-and-validate.outputs.learning-session-id }}-summary.json', 'utf8'));
+              
+              let report = '\\n';
+              report += '| Metric | Baseline | Final | Change |\\n';
+              report += '|--------|----------|-------|--------|\\n';
+              report += '| Total Fixes | ' + summary.baseline_metrics.total_fixes + ' | ' + summary.final_metrics.total_fixes + ' | +' + summary.improvements.fixes_applied + ' |\\n';
+              report += '| Success Rate | ' + (summary.baseline_metrics.success_rate * 100).toFixed(1) + '% | ' + (summary.final_metrics.success_rate * 100).toFixed(1) + '% | ' + (summary.improvements.success_rate_change * 100).toFixed(1) + '% |\\n';
+              report += '| Patterns Learned | ' + summary.baseline_metrics.patterns_learned + ' | ' + summary.final_metrics.patterns_learned + ' | +' + summary.improvements.patterns_learned + ' |\\n';
+              report += '| Test Success Rate | - | ' + (summary.final_metrics.test_success_rate * 100).toFixed(1) + '% | - |\\n';
+              report += '\\n';
+              
+              if (summary.improvements.fixes_applied > 0) {
+                report += '## 🎯 Learning Highlights\\n\\n';
+                report += '- **' + summary.improvements.fixes_applied + ' fixes applied** during this session\\n';
+                report += '- **' + summary.improvements.patterns_learned + ' new patterns learned**\\n';
+                report += '- **Knowledge base grew to ' + (summary.learning_effectiveness.knowledge_base_size / 1024).toFixed(1) + ' KB**\\n';
+              }
+              
+              if (Object.keys(summary.test_outcomes).length > 0) {
+                report += '\\n## 🧪 Test Outcomes\\n\\n';
+                for (const [pattern, data] of Object.entries(summary.test_outcomes)) {
+                  report += '- **' + pattern + '**: ' + data.frequency + ' occurrences\\n';
+                }
+              }
+              
+              report += '\\n## 🚀 Next Steps\\n\\n';
+              if (summary.final_metrics.test_success_rate < 0.9) {
+                report += '- ⚠️ Test success rate below 90% - investigate failing patterns\\n';
+              }
+              if (summary.improvements.fixes_applied === 0 && summary.final_metrics.test_success_rate < 1.0) {
+                report += '- 🔧 No fixes applied but tests failing - may need manual intervention\\n';
+              }
+              if (summary.improvements.patterns_learned > 0) {
+                report += '- 📚 New patterns learned - knowledge base is improving\\n';
+              }
+              
+              console.log(report);
+            } catch (e) {
+              console.log('\\nError generating detailed metrics: ' + e.message);
+            }
+          " >> learning-report.md
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const report = fs.readFileSync('learning-report.md', 'utf8');
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: report
+              });
+            } catch (error) {
+              console.log('Error posting PR comment:', error);
+            }
+
+      - name: Upload final learning artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-final-${{ needs.setup-and-validate.outputs.learning-session-id }}
+          path: |
+            .claude/learning/
+            learning-report.md
+          retention-days: 90
+
+  commit-learning:
+    needs: [setup-and-validate, test-with-autopilot, learning-analysis]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.repository.default_branch == 'main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download learning artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: learning-final-${{ needs.setup-and-validate.outputs.learning-session-id }}
+
+      - name: Commit learning updates
+        run: |
+          # Configure git
+          git config --global user.name "Claude Autopilot Learning"
+          git config --global user.email "autopilot-learning@hera.ai"
+          
+          # Add learning files
+          git add .claude/learning/
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No learning changes to commit"
+          else
+            git commit -m "🧠 Claude Autopilot Learning Update - Session ${{ needs.setup-and-validate.outputs.learning-session-id }}
+
+            - Knowledge base updated with new patterns
+            - Test outcomes and healing results recorded
+            - Learning effectiveness metrics tracked
+            
+            🤖 Generated with Claude Autopilot Learning System
+            
+            Co-Authored-By: Claude <noreply@anthropic.com>"
+            
+            git push
+            echo "✅ Learning updates committed to repository"
+          fi

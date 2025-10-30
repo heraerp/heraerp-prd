@@ -62,11 +62,24 @@ export class MasterCrudV2ServiceImpl implements MasterCrudV2Service {
       // Step 1: Create entity
       transaction.add('create_entity', async () => {
         const sql = `
-          SELECT hera_entity_upsert_v1(
-            $1::uuid, $2::text, $3::text, $4::text,
-            $5::uuid, $6::text, $7::text, $8::uuid, $9::text, $10::text[],
-            $11::text, $12::jsonb, $13::jsonb, $14::numeric, $15::text, $16::jsonb, $17::jsonb, $18::uuid
-          ) as entity_id
+          SELECT entity_id FROM hera_entities_crud_v1(
+            'CREATE'::text,
+            $18::uuid,
+            $1::uuid,
+            jsonb_build_object(
+              'entity_type', $2::text,
+              'entity_name', $3::text,
+              'entity_code', $6::text,
+              'entity_description', $7::text,
+              'smart_code', $4::text,
+              'parent_entity_id', $8::uuid,
+              'status', $9::text,
+              'metadata', $13::jsonb
+            ),
+            $17::jsonb,
+            '[]'::jsonb,
+            '{}'::jsonb
+          )
         `
         
         const params = [

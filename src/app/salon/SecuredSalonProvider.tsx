@@ -56,6 +56,7 @@ interface SalonSecurityContext extends SecurityContext {
   selectedBranchId: string | null
   selectedBranch: Branch | null
   availableBranches: Branch[]
+  isLoadingBranches: boolean // ✅ Track branch loading state
   setSelectedBranchId: (branchId: string) => void
 }
 
@@ -133,6 +134,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     return null
   })
   const [availableBranches, setAvailableBranches] = useState<Branch[]>([])
+  const [isLoadingBranches, setIsLoadingBranches] = useState(false)
 
   // Initialize context - ALWAYS start with loading state to force JWT validation
   // This ensures we never use cached org ID that doesn't match JWT
@@ -156,6 +158,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       selectedBranchId: null,
       selectedBranch: null,
       availableBranches: [],
+      isLoadingBranches: false, // ✅ Branch loading state
       setSelectedBranchId: () => {}
     }
   })
@@ -758,7 +761,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
   /**
    * Load organization details securely
-   * ✅ ENTERPRISE: Loads currency from dynamic data for universal currency support
+   * ✅ ENTERPRISE: Loads ALL organization settings from dynamic data (HERA DNA pattern)
    */
   const loadOrganizationDetails = async (orgId: string) => {
     try {
@@ -777,28 +780,49 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             .eq('id', orgId)
             .single()
 
-          // ✅ ENTERPRISE: Fetch currency from dynamic data
-          const { data: dynamicData } = await client
+          // ✅ ENTERPRISE: Fetch ALL organization settings from dynamic data
+          // Organization entity stores its settings as dynamic fields (HERA DNA pattern)
+          const { data: allDynamicData } = await client
             .from('core_dynamic_data')
             .select('*')
             .eq('organization_id', orgId)
             .eq('entity_id', orgId) // Organization's own dynamic data
-            .eq('field_name', 'currency')
-            .maybeSingle()
 
-          const currency = dynamicData?.field_value_text || org?.metadata?.currency || 'AED'
+          // Transform dynamic data array to object for easy access
+          const settingsFromDynamic: Record<string, any> = {}
+          if (allDynamicData && Array.isArray(allDynamicData)) {
+            allDynamicData.forEach((field: any) => {
+              const value = field.field_value_text ||
+                            field.field_value_number ||
+                            field.field_value_boolean ||
+                            field.field_value_date ||
+                            field.field_value_json
+              settingsFromDynamic[field.field_name] = value
+            })
+          }
+
+          // Extract settings with fallbacks
+          const currency = settingsFromDynamic.currency || org?.metadata?.currency || 'AED'
+          const organization_name = settingsFromDynamic.organization_name || org?.organization_name || 'HairTalkz'
+          const legal_name = settingsFromDynamic.legal_name
+          const address = settingsFromDynamic.address
+          const phone = settingsFromDynamic.phone
+          const email = settingsFromDynamic.email
+          const trn = settingsFromDynamic.trn
+          const fiscal_year_start = settingsFromDynamic.fiscal_year_start
+          const logo_url = settingsFromDynamic.logo_url
 
           // ✅ ENTERPRISE: Currency symbol mapping
           const currencySymbolMap: Record<string, string> = {
-            'AED': 'AED',
+            'AED': 'د.إ',
             'USD': '$',
             'EUR': '€',
             'GBP': '£',
-            'SAR': 'SAR',
-            'QAR': 'QAR',
-            'KWD': 'KWD',
-            'BHD': 'BHD',
-            'OMR': 'OMR',
+            'SAR': 'ر.س',
+            'QAR': 'ر.ق',
+            'KWD': 'د.ك',
+            'BHD': 'د.ب',
+            'OMR': 'ر.ع.',
             'INR': '₹',
             'PKR': 'Rs'
           }
@@ -807,20 +831,31 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
           const orgData = {
             id: orgId,
-            name: org?.organization_name || 'HairTalkz',
+            name: organization_name,
+            legal_name,
+            address,
+            phone,
+            email,
+            trn,
             currency,
             currencySymbol,
-            settings: org?.metadata || {}
+            fiscal_year_start,
+            logo_url,
+            settings: {
+              ...org?.metadata,
+              ...settingsFromDynamic
+            }
           }
 
-          console.log('[SecuredSalonProvider] ✅ Loaded organization:', {
+          console.log('[SecuredSalonProvider] ✅ Loaded organization with full settings:', {
             orgId,
-            orgData,
-            hasOrganizationName: !!org?.organization_name,
-            rawOrganizationName: org?.organization_name,
+            hasName: !!organization_name,
+            hasAddress: !!address,
+            hasPhone: !!phone,
+            hasEmail: !!email,
+            hasTRN: !!trn,
             currency,
-            currencySymbol,
-            source: dynamicData ? 'dynamic_data' : 'metadata'
+            dynamicFieldsCount: allDynamicData?.length || 0
           })
 
           return orgData
@@ -832,7 +867,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         id: orgId,
         name: 'HairTalkz',
         currency: 'AED',
-        currencySymbol: 'AED',
+        currencySymbol: 'د.إ',
         settings: {}
       }
     }
@@ -841,52 +876,160 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   /**
    * Load branches for organization
    * ✅ Uses RPC API v2 (client-safe, no direct Supabase queries)
+   * ✅ GRACEFUL ERROR HANDLING: 401 errors are logged but don't block page load
    */
   const loadBranches = async (orgId: string): Promise<Branch[]> => {
-    try {
-      const { getEntities } = await import('@/lib/universal-api-v2-client')
+    console.log('[loadBranches] 🚀 Starting to load branches for orgId:', orgId)
 
+    try {
+      setIsLoadingBranches(true) // ✅ Set loading state
+      console.log('[loadBranches] ⏳ Loading state set to true')
+
+      console.log('[loadBranches] 📦 Importing universal-api-v2-client...')
+      const { getEntities } = await import('@/lib/universal-api-v2-client')
+      console.log('[loadBranches] ✅ Import successful')
+
+      console.log('[loadBranches] 🌐 Calling getEntities API...')
       const branches = await getEntities('', {
         p_organization_id: orgId,
         p_entity_type: 'BRANCH',
-        p_status: 'active'
+        p_status: 'active',
+        p_include_dynamic: true // ✅ Include dynamic fields (opening_time, closing_time, etc.)
+      })
+      console.log('[loadBranches] ✅ API call completed successfully')
+
+      console.log('[loadBranches] 🔍 RAW API Response:', {
+        branchesCount: branches?.length || 0,
+        isArray: Array.isArray(branches),
+        firstBranchKeys: branches?.[0] ? Object.keys(branches[0]) : [],
+        hasDynamicFields: branches?.[0] ? ('dynamic_fields' in branches[0]) : false,
+        dynamicFieldsIsArray: Array.isArray(branches?.[0]?.dynamic_fields),
+        hasMetadata: branches?.[0] ? ('metadata' in branches[0]) : false
       })
 
-      console.log('[loadBranches] Fetched branches via RPC API v2:', {
-        count: branches.length,
-        orgId
+      // ✅ Log full first branch separately to avoid JSON.stringify issues
+      if (branches?.[0]) {
+        console.log('[loadBranches] 📋 First Branch Full Object:', branches[0])
+      }
+
+      // ✅ Transform branches to flatten dynamic fields to top-level properties
+      const transformedBranches = (branches || []).map((branch: any) => {
+        console.log('[loadBranches] 🔧 Transforming branch:', {
+          id: branch.id,
+          name: branch.entity_name || branch.name,
+          hasDynamicFields: !!branch.dynamic_fields,
+          dynamicFieldsIsArray: Array.isArray(branch.dynamic_fields),
+          hasMetadata: !!branch.metadata,
+          metadataKeys: branch.metadata ? Object.keys(branch.metadata) : []
+        })
+
+        // Start with the base branch entity
+        const transformed: any = {
+          id: branch.id,
+          entity_name: branch.entity_name || branch.name,
+          entity_code: branch.entity_code || branch.code,
+          ...branch
+        }
+
+        // ✅ Flatten dynamic_fields ARRAY to top-level properties
+        // RPC returns dynamic_fields as an array of objects: [{ field_name: 'opening_time', field_value_text: '10:00' }, ...]
+        if (Array.isArray(branch.dynamic_fields)) {
+          console.log('[loadBranches] ✅ Found dynamic_fields array, extracting values')
+          branch.dynamic_fields.forEach((field: any) => {
+            // Extract the actual value from the appropriate typed column
+            const value = field.field_value_text ||
+                         field.field_value_number ||
+                         field.field_value_boolean ||
+                         field.field_value_date ||
+                         field.field_value_json ||
+                         null
+
+            // Set as top-level property using field_name (e.g., opening_time, closing_time)
+            if (field.field_name && value !== null) {
+              transformed[field.field_name] = value
+              console.log(`[loadBranches]   - ${field.field_name} = ${value}`)
+            }
+          })
+        }
+        // ✅ FALLBACK: If no dynamic_fields, check metadata for opening/closing times
+        else if (branch.metadata && typeof branch.metadata === 'object') {
+          console.log('[loadBranches] ⚠️ No dynamic_fields found, checking metadata')
+
+          // Extract opening_time and closing_time from metadata if they exist
+          if (branch.metadata.opening_time) {
+            transformed.opening_time = branch.metadata.opening_time
+            console.log(`[loadBranches]   - opening_time from metadata = ${branch.metadata.opening_time}`)
+          }
+          if (branch.metadata.closing_time) {
+            transformed.closing_time = branch.metadata.closing_time
+            console.log(`[loadBranches]   - closing_time from metadata = ${branch.metadata.closing_time}`)
+          }
+        }
+
+        return transformed
       })
 
-      setAvailableBranches(branches || [])
+      console.log('[loadBranches] ✅ Fetched branches via RPC API v2:', {
+        count: transformedBranches.length,
+        orgId,
+        firstBranch: transformedBranches[0],
+        hasOpeningTime: !!transformedBranches[0]?.opening_time,
+        hasClosingTime: !!transformedBranches[0]?.closing_time
+      })
+
+      setAvailableBranches(transformedBranches || [])
 
       // Set default branch if not already selected
-      if (!selectedBranchId && branches && branches.length > 0) {
-        const defaultBranch = branches.find((b: any) => b.entity_code === 'BR-001') || branches[0]
+      if (!selectedBranchId && transformedBranches && transformedBranches.length > 0) {
+        const defaultBranch = transformedBranches.find((b: any) => b.entity_code === 'BR-001') || transformedBranches[0]
         setSelectedBranchIdState(defaultBranch.id)
         localStorage.setItem('selectedBranchId', defaultBranch.id)
       }
 
-      return branches || []
-    } catch (error) {
-      console.error('Failed to load branches:', error)
+      return transformedBranches || []
+    } catch (error: any) {
+      // ✅ GRACEFUL ERROR HANDLING: Don't block page load if branches fail to load
+      console.warn('[loadBranches] ⚠️ Failed to load branches (non-critical):', {
+        error: error.message || error,
+        orgId,
+        note: 'Branch loading is optional - page will continue without branches'
+      })
+
+      // Return empty array instead of throwing - branches are not critical for most pages
+      setAvailableBranches([])
       return []
+    } finally {
+      setIsLoadingBranches(false) // ✅ Clear loading state
     }
   }
 
   /**
    * Handle branch selection
    */
-  const handleSetBranch = (branchId: string) => {
+  const handleSetBranch = useCallback((branchId: string) => {
+    console.log('[handleSetBranch] 🔄 Changing branch to:', branchId)
     setSelectedBranchIdState(branchId)
     localStorage.setItem('selectedBranchId', branchId)
 
-    // Update context with new branch
-    setContext(prev => ({
-      ...prev,
-      selectedBranchId: branchId,
-      selectedBranch: availableBranches.find(b => b.id === branchId) || null
-    }))
-  }
+    // Update context with new branch - use context.availableBranches which has the transformed data
+    setContext(prev => {
+      const selectedBranch = prev.availableBranches.find(b => b.id === branchId) || null
+      console.log('[handleSetBranch] ✅ Selected branch:', {
+        id: selectedBranch?.id,
+        name: selectedBranch?.entity_name,
+        hasOpeningTime: !!selectedBranch?.opening_time,
+        hasClosingTime: !!selectedBranch?.closing_time,
+        opening_time: selectedBranch?.opening_time,
+        closing_time: selectedBranch?.closing_time
+      })
+
+      return {
+        ...prev,
+        selectedBranchId: branchId,
+        selectedBranch
+      }
+    })
+  }, [])
 
   /**
    * Clear security context
@@ -924,7 +1067,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const isPublicPage = (): boolean => {
     if (typeof window === 'undefined') return false
     const pathname = window.location.pathname
-    return pathname === '/salon' || pathname === '/salon-access'
+    return pathname === '/salon' || pathname === '/salon/auth'
   }
 
   /**
@@ -932,7 +1075,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    */
   const redirectToAuth = () => {
     if (typeof window !== 'undefined' && !isPublicPage()) {
-      router.push('/salon-access')
+      router.push('/salon/auth')
     }
   }
 
@@ -985,12 +1128,13 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const enhancedContext = useMemo(
     () => ({
       ...context,
+      isLoadingBranches, // ✅ Add branch loading state from local state
       executeSecurely,
       hasPermission,
       hasAnyPermission,
       retry: initializeSecureContext
     }),
-    [context, hasPermission, hasAnyPermission]
+    [context, isLoadingBranches, hasPermission, hasAnyPermission]
   )
 
   // Loading state - only show if not already initialized

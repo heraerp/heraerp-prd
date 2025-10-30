@@ -205,7 +205,7 @@ function LoginForm() {
                           required
                           disabled={isLoading}
                           autoComplete="email"
-                          className="pl-12 h-14 text-base bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all rounded-lg"
+                          className="pl-12 h-14 text-base bg-background dark:bg-muted border-input dark:border-input text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all rounded-lg"
                         />
                       </div>
                     </div>
@@ -233,7 +233,7 @@ function LoginForm() {
                           required
                           disabled={isLoading}
                           autoComplete="current-password"
-                          className="pl-12 pr-12 h-14 text-base bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all rounded-lg"
+                          className="pl-12 pr-12 h-14 text-base bg-background dark:bg-muted border-input dark:border-input text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all rounded-lg"
                         />
                         <button
                           type="button"

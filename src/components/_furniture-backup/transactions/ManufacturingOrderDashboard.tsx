@@ -1,30 +1,25 @@
 'use client'
 
-import React, { useState, useEffect }
-from 'react'
-import { Button }
-from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle }
-from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow
-}
-from '@/components/ui/table'
-import { Badge }
-from '@/components/ui/badge'
-import { Progress }
-from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger }
-from '@/components/ui/tabs'
-import { Factory, Package, Clock, CheckCircle, AlertCircle, ChevronRight, Wrench, TrendingUp, Calendar
-}
-from 'lucide-react'
-import { universalApi }
-from '@/lib/universal-api'
-import { Alert, AlertDescription }
-from '@/components/ui/alert'
-import { formatDate }
-from '@/lib/date-utils'
-
+import React, { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { 
+  Factory, 
+  Package, 
+  Clock, 
+  CheckCircle, 
+  AlertCircle, 
+  ChevronRight, 
+  Wrench, 
+  TrendingUp, 
+  Calendar 
+} from 'lucide-react'
+import { universalApi } from '@/lib/universal-api'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface ManufacturingOrder {
   id: string
@@ -48,49 +43,371 @@ interface ProductionStatus {
   total: number
 }
 
-export function ManufacturingOrderDashboard() {
-  const [orders, setOrders] = useState<ManufacturingOrder[]>([])
-
-const [selectedOrder, setSelectedOrder] = useState<ManufacturingOrder | null>(null)
-
-const [loading, setLoading] = useState(true)
-
-const [error, setError] = useState('')
-
-const [activeTab, setActiveTab] = useState('all')
-
-const [productionStatus, setProductionStatus] = useState<ProductionStatus>({ planned: 0, in_progress: 0, quality_check: 0, completed: 0, total: 0 })
-
-useEffect(() => { 
-  loadManufacturingOrders()
-}, [])
-
-const loadManufacturingOrders = async () => { 
-  try { 
-    setLoading(true) 
-    // Load manufacturing orders 
-    const ordersData = await universalApi.read({ 
-      table: 'universal_transactions', 
-      filter: { transaction_type: 'manufacturing_order' } 
-    })
-  const formattedOrders: ManufacturingOrder[] = [] const statusCounts: ProductionStatus = { planned: 0, in_progress: 0, quality_check: 0, completed: 0, total: 0 } for (const order of ordersData.data || []) { // Get product details const productData = await universalApi.read({ table: 'core_entities', filter: { id: order.reference_entity_id } })
-  const product = productData.data?.[0] const metadata = order.metadata || {}
-
-const status = metadata.status || 'planned' const quantityCompleted = metadata.quantity_completed || 0 const quantityToProduced = metadata.quantity_to_produce || 0 // Count by status statusCounts[status as keyof ProductionStatus]++ statusCounts.total++ formattedOrders.push({ id: order.id, transaction_code: order.transaction_code, product_id: order.reference_entity_id, product_name: product?.entity_name || 'Unknown Product', quantity_to_produce: quantityToProduced, quantity_completed: quantityCompleted, target_completion_date: metadata.target_completion_date, status: status, progress_percent: quantityToProduced > 0 ? (quantityCompleted / quantityToProduced) * 100 : 0, material_status: await checkMaterialAvailability(order.id), sales_order_id: metadata.sales_order_id }  ) setOrders(formattedOrders) setProductionStatus(statusCounts)   } catch (err) {
-  console.error('Error loading manufacturing orders:', err) setError('Failed to load manufacturing orders')   } finally {
-    setLoading(false)
-  }
+interface ManufacturingOrderDashboardProps {
+  organizationId?: string
 }
 
-const checkMaterialAvailability = async ( orderId: string ): Promise<'available' | 'partial' | 'shortage'> => { // In a real implementation, this would check inventory levels against BOM requirements // For demo purposes, we'll return a random status const statuses: ('available' | 'partial' | 'shortage')[] = ['available', 'partial', 'shortage'] return statuses[Math.floor(Math.random() * statuses.length)] }
-  const getStatusBadgeColor = (status: string) => { switch (status) {
-  case 'planned': return 'secondary' case 'in_progress': return 'default' case 'quality_check': return 'outline' case 'completed': return 'success' default: return 'secondary' } }
+export default function ManufacturingOrderDashboard({ organizationId }: ManufacturingOrderDashboardProps) {
+  const [orders, setOrders] = useState<ManufacturingOrder[]>([])
+  const [selectedOrder, setSelectedOrder] = useState<ManufacturingOrder | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [activeTab, setActiveTab] = useState('all')
+  const [productionStatus, setProductionStatus] = useState<ProductionStatus>({ 
+    planned: 0, 
+    in_progress: 0, 
+    quality_check: 0, 
+    completed: 0, 
+    total: 0 
+  })
 
-const getMaterialStatusBadge = (status: string) => { switch (status) {
-  case 'available': return <Badge variant="success">Materials Available</Badge> case 'partial': return <Badge variant="secondary">Partial Materials</Badge> case 'shortage': return <Badge variant="destructive">Material Shortage</Badge> default: return <Badge variant="outline">Unknown</Badge> } }
+  useEffect(() => {
+    loadManufacturingOrders()
+  }, [])
 
-const updateOrderStatus = async (orderId: string, newStatus: string) => { try { // In a real implementation, this would update the order status via API await universalApi.update({ table: 'universal_transactions', id: orderId, data: { metadata: { ...orders.find(o => o.id === orderId)?.status, status: newStatus } } }) // Refresh the list await loadManufacturingOrders()   } catch (err) {
-  console.error('Error updating order status:', err  ) }
+  const loadManufacturingOrders = async () => {
+    try {
+      setLoading(true)
+      
+      if (organizationId) {
+        universalApi.setOrganizationId(organizationId)
+      }
+      
+      // Load manufacturing orders
+      const ordersData = await universalApi.read({
+        table: 'core_transactions',
+        filter: { transaction_type: 'manufacturing_order' }
+      })
+      
+      const formattedOrders: ManufacturingOrder[] = []
+      const statusCounts: ProductionStatus = {
+        planned: 0,
+        in_progress: 0,
+        quality_check: 0,
+        completed: 0,
+        total: 0
+      }
+      
+      for (const order of ordersData.data || []) {
+        // Get product details
+        const productData = await universalApi.read({
+          table: 'core_entities',
+          filter: { id: order.source_entity_id }
+        })
+        
+        const product = productData.data?.[0]
+        const metadata = order.metadata || {}
 
-const filteredOrders = orders.filter(order => { if (activeTab === 'all') return true return order.status === activeTab }) return ( <div className="bg-[var(--color-body)] space-y-6"> {/* Summary Cards */} <div className="grid grid-cols-4 gap-4"> <Card> <CardHeader className="pb-3"> <CardTitle className="text-sm font-medium">Total Orders</CardTitle> </CardHeader> <CardContent> <div className="bg-[var(--color-body)] text-2xl font-bold">{productionStatus.total}</div> <p className="text-xs text-[var(--color-text-secondary)] mt-1"> <TrendingUp className="w-3 h-3 inline mr-1" /> Active production orders </p> </CardContent> </Card> <Card> <CardHeader className="pb-3"> <CardTitle className="text-sm font-medium">In Progress</CardTitle> </CardHeader> <CardContent> <div className="bg-[var(--color-body)] text-2xl font-bold text-primary">{productionStatus.in_progress}</div> <Progress value={(productionStatus.in_progress / productionStatus.total) * 100} className="bg-[var(--color-body)] mt-2" /> </CardContent> </Card> <Card> <CardHeader className="pb-3"> <CardTitle className="text-sm font-medium">Quality Check</CardTitle> </CardHeader> <CardContent> <div className="bg-[var(--color-body)] text-2xl font-bold text-[var(--color-text-primary)]"> {productionStatus.quality_check} </div> <p className="text-xs text-[var(--color-text-secondary)] mt-1"> <AlertCircle className="w-3 h-3 inline mr-1" /> Awaiting inspection </p> </CardContent> </Card> <Card> <CardHeader className="pb-3"> <CardTitle className="text-sm font-medium">Completed</CardTitle> </CardHeader> <CardContent> <div className="bg-[var(--color-body)] text-2xl font-bold text-green-600">{productionStatus.completed}</div> <p className="text-xs text-[var(--color-text-secondary)] mt-1"> <CheckCircle className="w-3 h-3 inline mr-1" /> Ready for delivery </p> </CardContent> </Card> </div> {/* Manufacturing Orders Table */} <Card> <CardHeader> <CardTitle className="flex items-center gap-2"> <Factory className="w-5 h-5" /> Manufacturing Orders </CardTitle> </CardHeader> <CardContent> <Tabs value={activeTab} onValueChange={setActiveTab}> <TabsList className="mb-4"> <TabsTrigger value="all">All Orders</TabsTrigger> <TabsTrigger value="planned">Planned</TabsTrigger> <TabsTrigger value="in_progress">In Progress</TabsTrigger> <TabsTrigger value="quality_check">Quality Check</TabsTrigger> <TabsTrigger value="completed">Completed</TabsTrigger> </TabsList> <TabsContent value={activeTab}> {loading ? ( <div className="bg-[var(--color-body)] text-center py-8 text-[var(--color-text-secondary)]"> Loading manufacturing orders... </div> ) : filteredOrders.length === 0 ? ( <div className="bg-[var(--color-body)] text-center py-8 text-[var(--color-text-secondary)]"> No orders found in this status </div> ) : ( <Table> <TableHeader> <TableRow> <TableHead>Order Number</TableHead> <TableHead>Product</TableHead> <TableHead>Quantity</TableHead> <TableHead>Progress</TableHead> <TableHead>Target Date</TableHead> <TableHead>Material Status</TableHead> <TableHead>Status</TableHead> <TableHead>Actions</TableHead> </TableRow> </TableHeader> <TableBody> {filteredOrders.map(order => ( <TableRow key={order.id}> <TableCell className="font-mono text-sm"> {order.transaction_code} </TableCell> <TableCell>{order.product_name}</TableCell> <TableCell> <div className="bg-[var(--color-body)] text-sm"> {order.quantity_completed} / {order.quantity_to_produce} </div> <Progress value={order.progress_percent} className="bg-[var(--color-body)] w-20 h-2 mt-1" /> </TableCell> <TableCell> <span className="text-sm font-medium"> {order.progress_percent.toFixed(0)}% </span> </TableCell> <TableCell> <div className="bg-[var(--color-body)] flex items-center gap-1"> <Calendar className="w-4 h-4 text-[var(--color-text-secondary)]" /> <span className="text-sm"> {formatDate(new Date(order.target_completion_date), 'PP')} </span> </div> </TableCell> <TableCell>{getMaterialStatusBadge(order.material_status)}</TableCell> <TableCell> <Badge variant={getStatusBadgeColor(order.status)}> {order.status.replace('_', ' ')} </Badge> </TableCell> <TableCell> <div className="bg-[var(--color-body)] flex gap-1"> {order.status === 'planned' && ( <Button size="sm" variant="outline" onClick={() => updateOrderStatus(order.id, 'in_progress')} > Start </Button> )} {order.status === 'in_progress' && ( <Button size="sm" variant="outline" onClick={() => updateOrderStatus(order.id, 'quality_check')} > QC </Button> )} {order.status === 'quality_check' && ( <Button size="sm" variant="outline" onClick={() => updateOrderStatus(order.id, 'completed')} > Complete </Button> )} <Button size="sm" variant="ghost" onClick={() => setSelectedOrder(order)} > <ChevronRight className="w-4 h-4" /> </Button> </div> </TableCell> </TableRow> ))} </TableBody> </Table> )} </TabsContent> </Tabs> {error && ( <Alert variant="destructive" className="bg-[var(--color-body)] mt-4"> <AlertCircle className="h-4 w-4" /> <AlertDescription>{error}</AlertDescription> </Alert> )} </CardContent> </Card> {/* Selected Order Details */} {selectedOrder && ( <Card> <CardHeader> <CardTitle className="flex items-center gap-2"> <Wrench className="w-5 h-5" /> Order Details: {selectedOrder.transaction_code} </CardTitle> </CardHeader> <CardContent className="space-y-4"> <div className="bg-[var(--color-body)] grid grid-cols-2 gap-4"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Product</p> <p className="font-medium">{selectedOrder.product_name}</p> </div> <div> <p className="text-sm text-[var(--color-text-secondary)]">Quantity</p> <p className="font-medium"> {selectedOrder.quantity_completed} / {selectedOrder.quantity_to_produce} </p> </div> <div> <p className="text-sm text-[var(--color-text-secondary)]">Target Completion</p> <p className="font-medium"> {formatDate(new Date(selectedOrder.target_completion_date), 'PPP')} </p> </div> <div> <p className="text-sm text-[var(--color-text-secondary)]">Sales Order</p> <p className="font-medium">{selectedOrder.sales_order_id || 'Stock Production'}</p> </div> </div> <div className="bg-[var(--color-body)] pt-4 border-t"> <h4 className="bg-[var(--color-body)] font-medium mb-2">Production Timeline</h4> <div className="space-y-2"> <div className="flex items-center gap-2"> <CheckCircle className="w-4 h-4 text-green-600" /> <span className="text-sm">Order Created</span> </div> {selectedOrder.status !== 'planned' && ( <div className="flex items-center gap-2"> <CheckCircle className="w-4 h-4 text-green-600" /> <span className="text-sm">Production Started</span> </div> )} {['quality_check', 'completed'].includes(selectedOrder.status) && ( <div className="flex items-center gap-2"> <CheckCircle className="w-4 h-4 text-green-600" /> <span className="text-sm">Quality Check</span> </div> )} {selectedOrder.status === 'completed' && ( <div className="flex items-center gap-2"> <CheckCircle className="w-4 h-4 text-green-600" /> <span className="text-sm">Production Completed</span> </div> )} </div> </div> </CardContent> </Card> )} </div> )
+        const status = metadata.status || 'planned'
+        const quantityCompleted = metadata.quantity_completed || 0
+        const quantityToProduce = metadata.quantity_to_produce || order.total_amount || 0
+        
+        // Count by status
+        if (status in statusCounts) {
+          statusCounts[status as keyof ProductionStatus]++
+        }
+        statusCounts.total++
+        
+        // Calculate progress percentage
+        const progressPercent = quantityToProduce > 0 
+          ? Math.round((quantityCompleted / quantityToProduce) * 100)
+          : 0
+
+        // Check material availability
+        const materialStatus = await checkMaterialAvailability(order.source_entity_id)
+        
+        formattedOrders.push({
+          id: order.id,
+          transaction_code: order.transaction_code || `MO-${order.id.slice(-6)}`,
+          product_id: order.source_entity_id,
+          product_name: product?.entity_name || 'Unknown Product',
+          quantity_to_produce: quantityToProduce,
+          quantity_completed: quantityCompleted,
+          target_completion_date: metadata.target_completion_date || order.transaction_date,
+          status: status,
+          progress_percent: progressPercent,
+          material_status: materialStatus,
+          sales_order_id: metadata.sales_order_id
+        })
+      }
+      
+      setOrders(formattedOrders)
+      setProductionStatus(statusCounts)
+      
+    } catch (err) {
+      console.error('Error loading manufacturing orders:', err)
+      setError('Failed to load manufacturing orders')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const checkMaterialAvailability = async (productId: string): Promise<'available' | 'partial' | 'shortage'> => {
+    try {
+      // This is a simplified check - in practice, you'd check the BOM and inventory levels
+      const bomData = await universalApi.read({
+        table: 'core_relationships',
+        filter: { 
+          source_entity_id: productId,
+          relationship_type: 'BOM_COMPONENT'
+        }
+      })
+
+      if (!bomData.data || bomData.data.length === 0) {
+        return 'available' // No BOM defined, assume materials available
+      }
+
+      // For demo purposes, randomly assign status
+      const random = Math.random()
+      if (random < 0.7) return 'available'
+      if (random < 0.9) return 'partial'
+      return 'shortage'
+    } catch (err) {
+      console.error('Error checking material availability:', err)
+      return 'available'
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'planned': return 'bg-blue-100 text-blue-800'
+      case 'in_progress': return 'bg-yellow-100 text-yellow-800'
+      case 'quality_check': return 'bg-purple-100 text-purple-800'
+      case 'completed': return 'bg-green-100 text-green-800'
+      default: return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const getMaterialStatusColor = (status: string) => {
+    switch (status) {
+      case 'available': return 'text-green-600'
+      case 'partial': return 'text-yellow-600'
+      case 'shortage': return 'text-red-600'
+      default: return 'text-gray-600'
+    }
+  }
+
+  const filteredOrders = orders.filter(order => {
+    if (activeTab === 'all') return true
+    return order.status === activeTab
+  })
+
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const order = orders.find(o => o.id === orderId)
+      if (!order) return
+
+      const updatedMetadata = {
+        ...order,
+        status: newStatus
+      }
+
+      await universalApi.update({
+        table: 'core_transactions',
+        id: orderId,
+        data: {
+          metadata: updatedMetadata
+        }
+      })
+
+      // Reload orders
+      await loadManufacturingOrders()
+    } catch (err) {
+      console.error('Error updating order status:', err)
+      setError('Failed to update order status')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span className="ml-2">Loading manufacturing orders...</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Manufacturing Orders
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Monitor and manage production orders
+          </p>
+        </div>
+      </div>
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Production Status Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Planned</p>
+                <p className="text-2xl font-bold text-blue-600">{productionStatus.planned}</p>
+              </div>
+              <Calendar className="h-8 w-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">In Progress</p>
+                <p className="text-2xl font-bold text-yellow-600">{productionStatus.in_progress}</p>
+              </div>
+              <Wrench className="h-8 w-8 text-yellow-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Quality Check</p>
+                <p className="text-2xl font-bold text-purple-600">{productionStatus.quality_check}</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-purple-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Completed</p>
+                <p className="text-2xl font-bold text-green-600">{productionStatus.completed}</p>
+              </div>
+              <Package className="h-8 w-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{productionStatus.total}</p>
+              </div>
+              <Factory className="h-8 w-8 text-gray-600" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Manufacturing Orders Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Manufacturing Orders</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="planned">Planned</TabsTrigger>
+              <TabsTrigger value="in_progress">In Progress</TabsTrigger>
+              <TabsTrigger value="quality_check">Quality Check</TabsTrigger>
+              <TabsTrigger value="completed">Completed</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value={activeTab} className="mt-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Order #</TableHead>
+                    <TableHead>Product</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Progress</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Materials</TableHead>
+                    <TableHead>Target Date</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredOrders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell className="font-medium">{order.transaction_code}</TableCell>
+                      <TableCell>{order.product_name}</TableCell>
+                      <TableCell>
+                        {order.quantity_completed} / {order.quantity_to_produce}
+                      </TableCell>
+                      <TableCell className="w-32">
+                        <div className="space-y-1">
+                          <Progress value={order.progress_percent} className="h-2" />
+                          <span className="text-xs text-gray-600">{order.progress_percent}%</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(order.status)}>
+                          {order.status.replace('_', ' ')}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className={getMaterialStatusColor(order.material_status)}>
+                          {order.material_status}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        {new Date(order.target_completion_date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          {order.status === 'planned' && (
+                            <Button
+                              size="sm"
+                              onClick={() => updateOrderStatus(order.id, 'in_progress')}
+                            >
+                              Start
+                            </Button>
+                          )}
+                          {order.status === 'in_progress' && (
+                            <Button
+                              size="sm"
+                              onClick={() => updateOrderStatus(order.id, 'quality_check')}
+                            >
+                              QC
+                            </Button>
+                          )}
+                          {order.status === 'quality_check' && (
+                            <Button
+                              size="sm"
+                              onClick={() => updateOrderStatus(order.id, 'completed')}
+                            >
+                              Complete
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              {filteredOrders.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  No manufacturing orders found for the selected status
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }

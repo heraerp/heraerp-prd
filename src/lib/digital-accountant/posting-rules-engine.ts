@@ -551,13 +551,15 @@ export class PostingRulesEngine implements IPostingRulesEngine {
 
       const line: Partial<JournalLine> = {
         gl_account_id: glAccount.id,
-        debit_amount: action.debit_credit === 'debit' ? amount : 0,
-        credit_amount: action.debit_credit === 'credit' ? amount : 0,
+        unit_amount: amount, // ✅ Use unit_amount as per database schema
+        debit_credit: action.debit_credit, // ✅ Store debit/credit flag separately
         description,
         smart_code: this.processTemplate(action.smart_code_template, transaction),
         metadata: {
           source_document_type: transaction.transaction_type,
-          source_document_id: transaction.id
+          source_document_id: transaction.id,
+          debit_amount: action.debit_credit === 'debit' ? amount : 0, // ✅ Keep for compatibility
+          credit_amount: action.debit_credit === 'credit' ? amount : 0 // ✅ Keep for compatibility
         }
       }
 

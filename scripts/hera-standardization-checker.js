@@ -20,7 +20,8 @@ class HeraStandardizationChecker {
   // 1. Smart Code Pattern Validation
   validateSmartCodes() {
     console.log('🧬 Validating Smart Code patterns...')
-    const smartCodePattern = /['"]HERA\.[A-Z0-9]+\.[^'"]*\.v[0-9]+['"]/g
+    // Look for UPPERCASE version patterns that should be lowercase
+    const smartCodePattern = /['"]HERA\.[A-Z0-9]+\.[^'"]*\.V[0-9]+['"]/g
     
     const files = this.getFilesToCheck(['.sql', '.ts', '.js'])
     
@@ -33,11 +34,11 @@ class HeraStandardizationChecker {
         if (matches) {
           matches.forEach(match => {
             this.violations.push({
-              type: 'SMART_CODE_LOWERCASE',
+              type: 'SMART_CODE_UPPERCASE',
               file,
               line: index + 1,
               content: match,
-              fix: match.replace(/\.v([0-9]+)/, '.V$1'),
+              fix: match.replace(/\.V([0-9]+)/, '.v$1'),
               severity: 'ERROR'
             })
           })
@@ -212,7 +213,7 @@ class HeraStandardizationChecker {
     console.log('🔧 Applying automatic fixes...')
     
     const fixableViolations = this.violations.filter(v => 
-      v.type === 'SMART_CODE_LOWERCASE' && v.fix
+      v.type === 'SMART_CODE_UPPERCASE' && v.fix
     )
     
     const fileChanges = {}

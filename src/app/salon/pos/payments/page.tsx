@@ -2,12 +2,14 @@
 
 // Removed force-dynamic for better client-side navigation performance
 
-import { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, Suspense, lazy } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useHeraSales } from '@/hooks/useHeraSales'
 import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
-import { SaleDetailsDialog } from '@/components/salon/pos/SaleDetailsDialog'
+import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
+import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
+import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -29,16 +31,18 @@ import {
   ArrowLeft,
   RefreshCw,
   Download,
-  Filter
+  X
 } from 'lucide-react'
 import { format } from 'date-fns'
 
-// Luxury salon color palette
-const LUXE_COLORS = {
+// 🚀 LAZY LOADING: Split code for faster initial load
+const SaleDetailsDialog = lazy(() =>
+  import('@/components/salon/pos/SaleDetailsDialog').then(module => ({ default: module.SaleDetailsDialog }))
+)
+
+const COLORS = {
   black: '#0B0B0B',
   charcoal: '#1A1A1A',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323',
   gold: '#D4AF37',
   goldDark: '#B8860B',
   champagne: '#F5E6C8',
@@ -46,9 +50,9 @@ const LUXE_COLORS = {
   emerald: '#0F6F5C',
   plum: '#B794F4',
   rose: '#E8B4B8',
-  spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-  ease: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
-  smooth: 'cubic-bezier(0.4, 0, 0.2, 1)'
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323'
 }
 
 function PaymentsContent() {
@@ -133,301 +137,209 @@ function PaymentsContent() {
 
   if (!organizationId) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: LUXE_COLORS.black }}
-      >
-        <div
-          className="text-center p-10 rounded-2xl"
-          style={{
-            backgroundColor: LUXE_COLORS.charcoal,
-            boxShadow: '0 8px 32px rgba(212, 175, 55, 0.1)',
-            border: `1px solid ${LUXE_COLORS.gold}20`
-          }}
-        >
-          <Sparkles className="w-16 h-16 mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
-          <h2 className="text-2xl font-bold mb-2" style={{ color: LUXE_COLORS.champagne }}>
-            Loading Payment History
-          </h2>
-          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-            Please wait while we fetch your transactions...
-          </p>
+      <SalonLuxePage title="Payment History" description="Loading..." maxWidth="full" padding="lg">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-2 border-gold/30 border-t-gold mx-auto mb-4" />
+            <p className="text-sm" style={{ color: COLORS.bronze }}>
+              Loading payment history...
+            </p>
+          </div>
         </div>
-      </div>
+      </SalonLuxePage>
     )
   }
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: LUXE_COLORS.black }}>
-      {/* Enhanced gradient background with animation */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 60% at 10% 20%, ${LUXE_COLORS.gold}08 0%, transparent 50%),
-            radial-gradient(ellipse 70% 50% at 90% 80%, ${LUXE_COLORS.plum}06 0%, transparent 50%),
-            radial-gradient(ellipse 90% 70% at 50% 50%, ${LUXE_COLORS.emerald}04 0%, transparent 60%)
-          `,
-          opacity: 0.7,
-          animation: 'gradient 8s ease-in-out infinite'
-        }}
+    <SalonLuxePage
+      title="Payment History"
+      description="View and manage all completed transactions"
+      maxWidth="full"
+      padding="lg"
+      actions={
+        <>
+          {/* Back to POS */}
+          <button
+            onClick={() => router.push('/salon/pos')}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.charcoal,
+              color: COLORS.gold,
+              border: `1px solid ${COLORS.gold}40`
+            }}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to POS
+          </button>
+          {/* Refresh */}
+          <button
+            onClick={() => refetch()}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.emerald,
+              color: COLORS.champagne,
+              border: `1px solid ${COLORS.emerald}`
+            }}
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </button>
+          {/* Export */}
+          <button
+            onClick={() => {/* TODO: Add export logic */}}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: COLORS.gold,
+              color: COLORS.black,
+              border: `1px solid ${COLORS.gold}`
+            }}
+          >
+            <Download className="w-4 h-4" />
+            Export
+          </button>
+        </>
+      }
+    >
+      {/* 📱 PREMIUM MOBILE HEADER */}
+      <PremiumMobileHeader
+        title="Payments"
+        subtitle={`${filteredSales.length} transactions`}
+        showNotifications={false}
+        shrinkOnScroll
+        rightAction={
+          <button
+            onClick={() => refetch()}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0F6F5C] active:scale-90 transition-transform duration-200 shadow-lg"
+            aria-label="Refresh payments"
+            style={{ boxShadow: '0 4px 12px rgba(15, 111, 92, 0.4)' }}
+          >
+            <RefreshCw className="w-5 h-5 text-white" strokeWidth={2.5} />
+          </button>
+        }
       />
 
-      <style jsx>{`
-        @keyframes gradient {
-          0%,
-          100% {
-            opacity: 0.7;
-          }
-          50% {
-            opacity: 0.85;
-          }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-      `}</style>
+      <div className="p-4 md:p-6 lg:p-8">
 
-      {/* Main Container */}
-      <div
-        className="rounded-2xl p-8 backdrop-blur-xl relative"
-        style={{
-          background: 'linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(15,15,15,0.95) 100%)',
-          border: `1px solid ${LUXE_COLORS.gold}15`,
-          boxShadow: '0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.1)',
-          animation: 'slideUp 0.5s ease-out'
-        }}
-      >
-        {/* Header */}
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <div className="flex items-center gap-4 mb-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push('/salon/pos')}
-                className="transition-all duration-300"
-                style={{
-                  color: LUXE_COLORS.gold,
-                  border: `1px solid ${LUXE_COLORS.gold}30`
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.background = `${LUXE_COLORS.gold}20`
-                  e.currentTarget.style.transform = 'translateX(-4px)'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.background = 'transparent'
-                  e.currentTarget.style.transform = 'translateX(0)'
-                }}
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to POS
-              </Button>
-            </div>
-            <h1
-              className="text-4xl font-bold mb-2"
-              style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.champagne} 0%, ${LUXE_COLORS.gold} 100%)`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.02em'
-              }}
-            >
-              Payment History
-            </h1>
-            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-              View and manage all completed transactions
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Button
-              onClick={() => refetch()}
-              variant="outline"
-              className="transition-all duration-300"
-              style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}20 0%, ${LUXE_COLORS.emerald}10 100%)`,
-                color: LUXE_COLORS.emerald,
-                border: `1px solid ${LUXE_COLORS.emerald}40`
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(15,111,92,0.3)'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = 'none'
-              }}
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Refresh
-            </Button>
-            <Button
-              variant="outline"
-              className="transition-all duration-300"
-              style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.gold}20 0%, ${LUXE_COLORS.gold}10 100%)`,
-                color: LUXE_COLORS.gold,
-                border: `1px solid ${LUXE_COLORS.gold}40`
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(212,175,55,0.3)'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = 'none'
-              }}
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
-          </div>
+        {/* 📊 KPI CARDS - Responsive Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
+          <SalonLuxeKPICard
+            title="Total Sales"
+            value={stats.totalSales}
+            icon={Receipt}
+            color={COLORS.gold}
+            description="All time"
+            animationDelay={0}
+          />
+          <SalonLuxeKPICard
+            title="Total Revenue"
+            value={`${currency} ${stats.totalRevenue.toFixed(2)}`}
+            icon={DollarSign}
+            color={COLORS.emerald}
+            description="All transactions"
+            animationDelay={100}
+          />
+          <SalonLuxeKPICard
+            title="Today Sales"
+            value={stats.todaySales}
+            icon={Calendar}
+            color={COLORS.plum}
+            description="Today"
+            animationDelay={200}
+          />
+          <SalonLuxeKPICard
+            title="Today Revenue"
+            value={`${currency} ${stats.todayRevenue.toFixed(2)}`}
+            icon={CreditCard}
+            color={COLORS.bronze}
+            description="Daily earnings"
+            animationDelay={300}
+          />
+          <SalonLuxeKPICard
+            title="Avg Transaction"
+            value={`${currency} ${stats.avgTransaction.toFixed(2)}`}
+            icon={Sparkles}
+            color={COLORS.champagne}
+            description="Per sale"
+            animationDelay={400}
+          />
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          {[
-            {
-              title: 'Total Sales',
-              value: stats.totalSales,
-              desc: 'All time',
-              icon: Receipt,
-              color: LUXE_COLORS.gold
-            },
-            {
-              title: 'Total Revenue',
-              value: `${currency} ${stats.totalRevenue.toFixed(2)}`,
-              desc: 'All transactions',
-              icon: DollarSign,
-              color: LUXE_COLORS.emerald
-            },
-            {
-              title: 'Today Sales',
-              value: stats.todaySales,
-              desc: 'Today',
-              icon: Calendar,
-              color: LUXE_COLORS.plum
-            },
-            {
-              title: 'Today Revenue',
-              value: `${currency} ${stats.todayRevenue.toFixed(2)}`,
-              desc: 'Daily earnings',
-              icon: CreditCard,
-              color: LUXE_COLORS.bronze
-            },
-            {
-              title: 'Avg Transaction',
-              value: `${currency} ${stats.avgTransaction.toFixed(2)}`,
-              desc: 'Per sale',
-              icon: Sparkles,
-              color: LUXE_COLORS.champagne
-            }
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className="rounded-xl p-6 transition-all duration-500 cursor-pointer"
+        {/* 📱 MOBILE QUICK ACTIONS */}
+        <div className="md:hidden mb-6 space-y-2">
+          <div className="flex gap-2">
+            <button
+              onClick={() => router.push('/salon/pos')}
+              className="flex-1 min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
               style={{
-                background: `linear-gradient(135deg, ${stat.color}15 0%, ${stat.color}05 100%)`,
-                border: `1px solid ${stat.color}20`,
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                transitionTimingFunction: LUXE_COLORS.spring,
-                animation: `fadeIn 0.6s ease-out ${index * 0.1}s backwards`
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)'
-                e.currentTarget.style.boxShadow = '0 16px 32px rgba(0,0,0,0.2)'
-                e.currentTarget.style.borderColor = `${stat.color}50`
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)'
-                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)'
-                e.currentTarget.style.borderColor = `${stat.color}20`
+                backgroundColor: COLORS.charcoal,
+                color: COLORS.gold,
+                border: `1px solid ${COLORS.gold}40`
               }}
             >
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-medium" style={{ color: LUXE_COLORS.bronze }}>
-                  {stat.title}
-                </p>
-                <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
-              </div>
-              <div className="text-3xl font-bold mb-1" style={{ color: LUXE_COLORS.champagne }}>
-                {stat.value}
-              </div>
-              <p className="text-xs" style={{ color: LUXE_COLORS.bronze, opacity: 0.7 }}>
-                {stat.desc}
-              </p>
-            </div>
-          ))}
+              <ArrowLeft className="w-4 h-4" />
+              Back to POS
+            </button>
+            <button
+              onClick={() => refetch()}
+              className="min-w-[48px] min-h-[48px] rounded-xl transition-all duration-200 active:scale-95 flex items-center justify-center"
+              style={{
+                backgroundColor: COLORS.emerald,
+                color: COLORS.champagne
+              }}
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
-        <div className="mb-8 space-y-4">
-          <div className="flex items-center gap-4 flex-wrap">
+        <div className="mb-6 md:mb-8 space-y-4">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
             {/* Search */}
-            <div className="relative flex-1 min-w-[300px]">
+            <div className="relative flex-1 md:min-w-[300px]">
               <Search
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none"
-                style={{ color: LUXE_COLORS.bronze }}
+                style={{ color: COLORS.bronze }}
               />
               <Input
                 placeholder="Search by transaction code or customer..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-6 border-0"
+                className="pl-12 pr-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2"
                 style={{
-                  background: 'rgba(245,230,200,0.05)',
-                  border: `1px solid ${LUXE_COLORS.gold}20`,
-                  color: LUXE_COLORS.champagne,
-                  borderRadius: '0.75rem',
-                  transition: `all 0.3s ${LUXE_COLORS.smooth}`
-                }}
-                onFocus={e => {
-                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}50`
-                  e.currentTarget.style.background = 'rgba(245,230,200,0.08)'
-                  e.currentTarget.style.boxShadow = `0 0 0 4px ${LUXE_COLORS.gold}10`
-                }}
-                onBlur={e => {
-                  e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}20`
-                  e.currentTarget.style.background = 'rgba(245,230,200,0.05)'
-                  e.currentTarget.style.boxShadow = 'none'
+                  backgroundColor: COLORS.charcoalLight,
+                  color: COLORS.champagne,
+                  border: `1px solid ${COLORS.bronze}30`
                 }}
               />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-bronze/20 transition-colors"
+                  style={{ color: COLORS.bronze }}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
             {/* Status Filter */}
-            <div className="w-48">
+            <div className="w-full md:w-48">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger
-                  className="border-0 py-6"
+                  className="transition-all duration-200"
                   style={{
-                    background: 'rgba(245,230,200,0.05)',
-                    border: `1px solid ${LUXE_COLORS.gold}20`,
-                    color: LUXE_COLORS.champagne,
-                    borderRadius: '0.75rem'
+                    backgroundColor: COLORS.charcoalLight + '80',
+                    borderColor: COLORS.bronze + '40',
+                    color: COLORS.champagne
                   }}
                 >
                   <SelectValue placeholder="All statuses" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All statuses</SelectItem>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="all" className="hera-select-item">All statuses</SelectItem>
                   {Object.entries(SALE_STATUS_CONFIG).map(([status, config]) => (
-                    <SelectItem key={status} value={status}>
+                    <SelectItem key={status} value={status} className="hera-select-item">
                       {config.label}
                     </SelectItem>
                   ))}
@@ -436,24 +348,23 @@ function PaymentsContent() {
             </div>
 
             {/* Date Filter */}
-            <div className="w-48">
+            <div className="w-full md:w-48">
               <Select value={dateFilter} onValueChange={setDateFilter}>
                 <SelectTrigger
-                  className="border-0 py-6"
+                  className="transition-all duration-200"
                   style={{
-                    background: 'rgba(245,230,200,0.05)',
-                    border: `1px solid ${LUXE_COLORS.gold}20`,
-                    color: LUXE_COLORS.champagne,
-                    borderRadius: '0.75rem'
+                    backgroundColor: COLORS.charcoalLight + '80',
+                    borderColor: COLORS.bronze + '40',
+                    color: COLORS.champagne
                   }}
                 >
                   <SelectValue placeholder="All dates" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All dates</SelectItem>
-                  <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="week">Last 7 days</SelectItem>
-                  <SelectItem value="month">Last 30 days</SelectItem>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="all" className="hera-select-item">All dates</SelectItem>
+                  <SelectItem value="today" className="hera-select-item">Today</SelectItem>
+                  <SelectItem value="week" className="hera-select-item">Last 7 days</SelectItem>
+                  <SelectItem value="month" className="hera-select-item">Last 30 days</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -466,17 +377,17 @@ function PaymentsContent() {
             className="text-center py-20 rounded-xl"
             style={{
               background: 'rgba(245,230,200,0.03)',
-              border: `1px solid ${LUXE_COLORS.gold}10`
+              border: `1px solid ${COLORS.gold}10`
             }}
           >
             <Receipt
               className="w-12 h-12 mx-auto mb-4"
-              style={{ color: LUXE_COLORS.bronze, opacity: 0.5 }}
+              style={{ color: COLORS.bronze, opacity: 0.5 }}
             />
-            <h3 className="text-xl font-medium mb-2" style={{ color: LUXE_COLORS.champagne }}>
+            <h3 className="text-xl font-medium mb-2" style={{ color: COLORS.champagne }}>
               No transactions found
             </h3>
-            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+            <p className="text-sm" style={{ color: COLORS.bronze }}>
               {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
                 ? 'Try adjusting your filters'
                 : 'No sales have been completed yet'}
@@ -492,53 +403,26 @@ function PaymentsContent() {
               return (
                 <div
                   key={sale.id}
-                  className="rounded-xl p-6 transition-all duration-500 cursor-pointer relative overflow-hidden group"
+                  className="rounded-xl p-4 md:p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer border animate-in fade-in slide-in-from-bottom-2"
                   style={{
-                    background:
-                      'linear-gradient(135deg, rgba(245,230,200,0.08) 0%, rgba(212,175,55,0.05) 50%, rgba(184,134,11,0.03) 100%)',
-                    border: `1px solid ${LUXE_COLORS.gold}25`,
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-                    transitionTimingFunction: LUXE_COLORS.spring,
-                    backdropFilter: 'blur(8px)',
-                    animation: `fadeIn 0.4s ease-out ${index * 0.05}s backwards`
+                    backgroundColor: COLORS.charcoal,
+                    borderColor: `${COLORS.gold}25`,
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                    animationDelay: `${index * 50}ms`
                   }}
-                  onMouseMove={e => {
-                    const rect = e.currentTarget.getBoundingClientRect()
-                    const x = ((e.clientX - rect.left) / rect.width) * 100
-                    const y = ((e.clientY - rect.top) / rect.height) * 100
-                    e.currentTarget.style.background = `
-                      radial-gradient(circle at ${x}% ${y}%,
-                        rgba(212,175,55,0.15) 0%,
-                        rgba(212,175,55,0.08) 30%,
-                        rgba(245,230,200,0.05) 60%,
-                        rgba(184,134,11,0.03) 100%
-                      )
-                    `
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = 'translateX(6px)'
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(212,175,55,0.25)'
-                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}60`
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = 'translateX(0)'
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'
-                    e.currentTarget.style.borderColor = `${LUXE_COLORS.gold}25`
-                    e.currentTarget.style.background =
-                      'linear-gradient(135deg, rgba(245,230,200,0.08) 0%, rgba(212,175,55,0.05) 50%, rgba(184,134,11,0.03) 100%)'
-                  }}
+                  onClick={() => setSelectedSaleId(sale.id)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-6 flex-1">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 flex-1">
                       {/* Transaction Code */}
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <Receipt className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
-                          <span className="font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                          <Receipt className="w-4 h-4" style={{ color: COLORS.gold }} />
+                          <span className="font-semibold" style={{ color: COLORS.champagne }}>
                             {sale.transaction_code}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                        <div className="flex items-center gap-2 text-sm" style={{ color: COLORS.bronze }}>
                           <Calendar className="w-3 h-3" />
                           <span>{format(saleDate, 'MMM d, yyyy • h:mm a')}</span>
                         </div>
@@ -546,12 +430,12 @@ function PaymentsContent() {
 
                       {/* Customer */}
                       <div className="flex items-center gap-2">
-                        <User className="w-4 h-4" style={{ color: LUXE_COLORS.bronze }} />
-                        <span style={{ color: LUXE_COLORS.champagne }}>{sale.customer_name}</span>
+                        <User className="w-4 h-4" style={{ color: COLORS.bronze }} />
+                        <span style={{ color: COLORS.champagne }}>{sale.customer_name}</span>
                       </div>
 
                       {/* Amount */}
-                      <div className="flex items-center gap-2 font-bold text-lg" style={{ color: LUXE_COLORS.gold }}>
+                      <div className="flex items-center gap-2 font-bold text-lg" style={{ color: COLORS.gold }}>
                         <DollarSign className="w-5 h-5" />
                         <span>{currency} {sale.total_amount.toFixed(2)}</span>
                       </div>
@@ -570,50 +454,43 @@ function PaymentsContent() {
                       </Badge>
                     </div>
 
-                    {/* View Details Button */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSelectedSaleId(sale.id)}
-                      className="group-hover:scale-105 transition-all duration-300"
+                    {/* View Details Badge - Hidden on mobile (click card instead) */}
+                    <Badge
+                      className="hidden md:inline-flex transition-all duration-300 hover:scale-105"
                       style={{
-                        color: LUXE_COLORS.gold,
-                        border: `1px solid ${LUXE_COLORS.gold}30`,
-                        background: `${LUXE_COLORS.gold}10`,
-                        opacity: 0.7
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.opacity = '1'
-                        e.currentTarget.style.background = `${LUXE_COLORS.gold}20`
-                        e.currentTarget.style.transform = 'scale(1.05)'
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.opacity = '0.7'
-                        e.currentTarget.style.background = `${LUXE_COLORS.gold}10`
-                        e.currentTarget.style.transform = 'scale(1)'
+                        backgroundColor: `${COLORS.gold}20`,
+                        color: COLORS.gold,
+                        border: `1px solid ${COLORS.gold}40`,
+                        fontWeight: '500',
+                        cursor: 'pointer'
                       }}
                     >
-                      View Details
-                    </Button>
+                      View Details →
+                    </Badge>
                   </div>
                 </div>
               )
             })}
           </div>
         )}
+
+        {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}
+        <div className="h-20 md:h-0" />
       </div>
 
-      {/* Sale Details Dialog */}
+      {/* Sale Details Dialog - Lazy Loaded */}
       {selectedSaleId && organizationId && (
-        <SaleDetailsDialog
-          open={!!selectedSaleId}
-          onClose={() => setSelectedSaleId(null)}
-          saleId={selectedSaleId}
-          organizationId={organizationId}
-          currency={currency}
-        />
+        <Suspense fallback={null}>
+          <SaleDetailsDialog
+            open={!!selectedSaleId}
+            onClose={() => setSelectedSaleId(null)}
+            saleId={selectedSaleId}
+            organizationId={organizationId}
+            currency={currency}
+          />
+        </Suspense>
       )}
-    </div>
+    </SalonLuxePage>
   )
 }
 

@@ -7,8 +7,55 @@ const __dirname = path.dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // REMOVE standalone - using Next.js built-in server via 'next start'
-  // output: 'standalone',
+  // Build Performance Optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn']
+    } : false,
+  },
+  
+  // Experimental optimizations  
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      '@tanstack/react-query',
+      'recharts',
+      'date-fns',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-alert-dialog',
+      '@radix-ui/react-avatar',
+      '@radix-ui/react-button',
+      '@radix-ui/react-card',
+      '@radix-ui/react-checkbox',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-form',
+      '@radix-ui/react-input',
+      '@radix-ui/react-label',
+      '@radix-ui/react-navigation-menu',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-progress',
+      '@radix-ui/react-radio-group',
+      '@radix-ui/react-scroll-area',
+      '@radix-ui/react-select',
+      '@radix-ui/react-separator',
+      '@radix-ui/react-sheet',
+      '@radix-ui/react-slider',
+      '@radix-ui/react-switch',
+      '@radix-ui/react-table',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-textarea',
+      '@radix-ui/react-toast',
+      '@radix-ui/react-toggle',
+      '@radix-ui/react-tooltip'
+    ],
+    webVitalsAttribution: ['CLS', 'LCP'],
+    optimizeCss: true,
+    scrollRestoration: true
+  },
+  
+  // Production build optimizations for Docker
+  
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 
@@ -25,7 +72,10 @@ const nextConfig = {
     },
   ],
 
-  images: { domains: ['localhost'], formats: ['image/avif', 'image/webp'] },
+  images: { 
+    domains: ['localhost', 'images.unsplash.com'], 
+    formats: ['image/avif', 'image/webp'] 
+  },
   reactStrictMode: true,
 
   // No health rewrites needed - using App Router /api/health
@@ -33,12 +83,106 @@ const nextConfig = {
     return { beforeFiles: [], afterFiles: [], fallback: [] }
   },
 
-  // 🔧 Force @ to resolve to ./src (works regardless of tsconfig during CI)
-  webpack(config) {
+  // Redirect old enterprise/salon routes to standalone salon
+  async redirects() {
+    return [
+      {
+        source: '/enterprise/salon/:path*',
+        destination: '/salon/:path*',
+        permanent: true
+      }
+    ]
+  },
+
+  // 🔧 Webpack optimizations and alias resolution
+  webpack(config, { dev, isServer }) {
+    // Alias resolution
     config.resolve.alias = {
       ...(config.resolve.alias ?? {}),
       '@': path.join(__dirname, 'src'),
     }
+
+    // ✅ SSR FIX: Prevent browser-only libraries from being bundled on server
+    // This prevents "self is not defined" errors during build
+    if (isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Alias browser-only libraries to false on server to prevent bundling
+        'xlsx': false,
+        'file-saver': false,
+        'html2canvas': false,
+        'downloadjs': false,
+        'chart.js': false,
+        // 🚨 CRITICAL: Prevent browser deps from being bundled (fixes build timeout)
+        'puppeteer': false,
+        'playwright': false,
+        '@playwright/test': false,
+        'playwright-core': false,
+      }
+    }
+
+    // ✅ SSR FIX: Only apply optimizations to client bundle
+    if (!dev && !isServer) {
+      // Enable aggressive chunk splitting for CLIENT only
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            vendor: {
+              chunks: 'all',
+              name: 'vendor',
+              test: /[\\/]node_modules[\\/]/,
+              priority: 20
+            },
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              priority: 10,
+              reuseExistingChunk: true,
+              enforce: true
+            },
+            lib: {
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              name: 'lib',
+              chunks: 'all',
+              priority: 30
+            },
+            ui: {
+              test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
+              name: 'ui',
+              chunks: 'all',
+              priority: 25
+            }
+          }
+        },
+        usedExports: true,
+        sideEffects: false
+      }
+    }
+
+    // Faster builds
+    if (dev) {
+      config.optimization = {
+        ...config.optimization,
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: false,
+      }
+    }
+
+    // Exclude heavy packages from server bundle when possible
+    if (isServer) {
+      config.externals = [...(config.externals || []), {
+        'canvas': 'canvas',
+        'jsdom': 'jsdom',
+        'puppeteer': 'puppeteer'
+      }]
+    }
+
     return config
   },
 }

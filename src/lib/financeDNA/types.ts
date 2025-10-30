@@ -9,11 +9,15 @@
 export interface GLEntry {
   account_code: string
   account_name: string
-  debit_amount: number
-  credit_amount: number
+  unit_amount: number // ✅ Use actual database field
+  debit_credit: 'debit' | 'credit' // ✅ Direction flag
   smart_code: string
   line_reference: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, any> & {
+    // ✅ Legacy compatibility fields
+    debit_amount?: number
+    credit_amount?: number
+  }
 }
 
 /**

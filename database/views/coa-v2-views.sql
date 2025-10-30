@@ -37,8 +37,8 @@ WITH RECURSIVE coa_hierarchy AS (
     dd_display_number.field_value_text as display_number,
     dd_presentation_group.field_value_text as presentation_group,
     dd_consolidation_group.field_value_text as consolidation_group,
-    dd_effective_from.field_value_timestamp as effective_from,
-    dd_effective_to.field_value_timestamp as effective_to,
+    dd_effective_from.field_value_text::TIMESTAMPTZ as effective_from,
+    dd_effective_to.field_value_text::TIMESTAMPTZ as effective_to,
     
     -- Hierarchy fields
     NULL::uuid as parent_id,
@@ -114,8 +114,8 @@ WITH RECURSIVE coa_hierarchy AS (
     dd_display_number.field_value_text as display_number,
     dd_presentation_group.field_value_text as presentation_group,
     dd_consolidation_group.field_value_text as consolidation_group,
-    dd_effective_from.field_value_timestamp as effective_from,
-    dd_effective_to.field_value_timestamp as effective_to,
+    dd_effective_from.field_value_text::TIMESTAMPTZ as effective_from,
+    dd_effective_to.field_value_text::TIMESTAMPTZ as effective_to,
     
     -- Hierarchy fields
     cr.from_entity_id as parent_id,

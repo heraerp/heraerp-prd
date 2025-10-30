@@ -3,7 +3,7 @@
  * Provides a consistent interface for calling PostgreSQL functions
  */
 
-import { getSupabase } from '@/lib/supabase'
+import { getSupabase } from '../supabase'
 
 /**
  * Call a PostgreSQL RPC function with parameters

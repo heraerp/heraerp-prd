@@ -302,19 +302,19 @@ export class DigitalAccountantService implements IDigitalAccountantService {
         organization_id: this.organizationId,
         transaction_id: (reversalEntry.metadata as any)?.transaction_id,
         line_number: line.line_number,
-        line_entity_id: line.line_entity_id,
+        entity_id: line.entity_id, // ✅ Use entity_id as per schema
         line_description: `Reversal: ${line.line_description}`,
         quantity: 1,
-        unit_price:
-          (line.metadata as any)?.credit_amount || (line.metadata as any)?.debit_amount || 0,
-        line_amount:
-          (line.metadata as any)?.credit_amount || (line.metadata as any)?.debit_amount || 0,
+        unit_amount: line.unit_amount || 0, // ✅ Use unit_amount as per schema
+        line_amount: line.line_amount || line.unit_amount || 0,
         smart_code: ACCOUNTANT_SMART_CODES.JOURNAL_REVERSAL + '.LINE',
         metadata: {
           gl_account_id: (line.metadata as any)?.gl_account_id,
           gl_account_code: (line.metadata as any)?.gl_account_code,
+          // ✅ Keep for compatibility but use consistent field names
           debit_amount: (line.metadata as any)?.credit_amount || 0,
-          credit_amount: (line.metadata as any)?.debit_amount || 0
+          credit_amount: (line.metadata as any)?.debit_amount || 0,
+          reversed_from_line_id: line.id
         }
       }))
 
@@ -394,8 +394,10 @@ export class DigitalAccountantService implements IDigitalAccountantService {
       )
 
       // Calculate totals
-      const totalDebits = journalLines.reduce((sum, line) => sum + (line.debit_amount || 0), 0)
-      const totalCredits = journalLines.reduce((sum, line) => sum + (line.credit_amount || 0), 0)
+      const totalDebits = journalLines.reduce((sum, line) => 
+        sum + (line.metadata?.debit_amount || (line.debit_credit === 'debit' ? line.unit_amount : 0) || 0), 0)
+      const totalCredits = journalLines.reduce((sum, line) => 
+        sum + (line.metadata?.credit_amount || (line.debit_credit === 'credit' ? line.unit_amount : 0) || 0), 0)
 
       // Create journal entry
       const journal = await this.createJournalEntry({
@@ -417,12 +419,12 @@ export class DigitalAccountantService implements IDigitalAccountantService {
       const lineData = journalLines.map((line, index) => ({
         organization_id: this.organizationId,
         transaction_id: (journal.metadata as any)?.transaction_id,
-        line_number: index + 1,
-        line_entity_id: line.gl_account_id,
+        line_order: index + 1, // ✅ Use line_order as per schema
+        entity_id: line.gl_account_id, // ✅ Use entity_id as per schema
         line_description: line.description,
         quantity: 1,
-        unit_price: line.debit_amount || line.credit_amount || 0,
-        line_amount: line.debit_amount || line.credit_amount || 0,
+        unit_amount: line.unit_amount || line.metadata?.debit_amount || line.metadata?.credit_amount || 0, // ✅ Use unit_amount
+        line_amount: line.unit_amount || line.metadata?.debit_amount || line.metadata?.credit_amount || 0,
         smart_code: line.smart_code,
         metadata: line.metadata
       }))

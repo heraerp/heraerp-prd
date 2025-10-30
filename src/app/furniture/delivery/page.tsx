@@ -68,7 +68,6 @@ import {
   TrendingUp,
   TrendingDown,
   Car,
-  Motorcycle,
   Bus,
   Train,
   Plane,
@@ -126,6 +125,7 @@ import {
   Frown,
   Meh
 } from 'lucide-react'
+import { Motorcycle } from '@/icons/lucide-shims'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'

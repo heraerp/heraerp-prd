@@ -1,0 +1,426 @@
+---
+# HERA Enterprise Customer Master Data Template
+# Smart Code: HERA.ENTERPRISE.CUSTOMER.TEMPLATE.v1
+
+version: "1.0"
+template: "MasterDataForm"
+description: |
+  Comprehensive customer master data form for enterprise CRM.
+  Includes contact information, business details, relationships, 
+  and workflow automation for customer onboarding.
+
+entityName: "Customer"
+smartCode: "HERA.ENTERPRISE.CUSTOMER.v1"
+
+fields:
+  # Basic Information Tab
+  - name: "customerName"
+    type: "string"
+    label: "Customer Name"
+    required: true
+    tab: "basicInfo"
+    placeholder: "Enter customer or company name"
+    validation:
+      minLength: 2
+      maxLength: 100
+      message: "Customer name must be between 2 and 100 characters"
+
+  - name: "customerType"
+    type: "select"
+    label: "Customer Type"
+    required: true
+    tab: "basicInfo"
+    options:
+      - label: "Individual"
+        value: "INDIVIDUAL"
+      - label: "Business"
+        value: "BUSINESS"
+      - label: "Government"
+        value: "GOVERNMENT"
+      - label: "Non-Profit"
+        value: "NON_PROFIT"
+
+  - name: "companyName"
+    type: "string"
+    label: "Company Name"
+    required: false
+    tab: "basicInfo"
+    placeholder: "Company or organization name"
+    validation:
+      maxLength: 150
+
+  - name: "industry"
+    type: "select"
+    label: "Industry"
+    required: false
+    tab: "basicInfo"
+    options:
+      - label: "Technology"
+        value: "TECHNOLOGY"
+      - label: "Healthcare"
+        value: "HEALTHCARE"
+      - label: "Financial Services"
+        value: "FINANCIAL"
+      - label: "Manufacturing"
+        value: "MANUFACTURING"
+      - label: "Retail"
+        value: "RETAIL"
+      - label: "Education"
+        value: "EDUCATION"
+      - label: "Government"
+        value: "GOVERNMENT"
+      - label: "Other"
+        value: "OTHER"
+
+  - name: "taxId"
+    type: "string"
+    label: "Tax ID / Registration Number"
+    required: false
+    tab: "basicInfo"
+    placeholder: "Tax identification number"
+    validation:
+      pattern: "^[A-Z0-9-]{5,20}$"
+      message: "Tax ID must be 5-20 characters (letters, numbers, hyphens only)"
+
+  # Contact Information Tab
+  - name: "primaryContactName"
+    type: "string"
+    label: "Primary Contact Name"
+    required: true
+    tab: "contact"
+    placeholder: "Full name of primary contact"
+    validation:
+      minLength: 2
+      maxLength: 100
+
+  - name: "email"
+    type: "email"
+    label: "Email Address"
+    required: true
+    tab: "contact"
+    placeholder: "primary@example.com"
+    validation:
+      pattern: "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+      message: "Please enter a valid email address"
+
+  - name: "phone"
+    type: "phone"
+    label: "Phone Number"
+    required: true
+    tab: "contact"
+    placeholder: "+1 (555) 123-4567"
+    validation:
+      pattern: "^[\\+]?[1-9][\\d]{0,15}$"
+      message: "Please enter a valid phone number"
+
+  - name: "alternatePhone"
+    type: "phone"
+    label: "Alternate Phone"
+    required: false
+    tab: "contact"
+    placeholder: "Secondary phone number"
+
+  - name: "website"
+    type: "string"
+    label: "Website"
+    required: false
+    tab: "contact"
+    placeholder: "https://www.example.com"
+    validation:
+      pattern: "^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
+      message: "Please enter a valid URL"
+
+  # Address Information Tab
+  - name: "addressLine1"
+    type: "string"
+    label: "Address Line 1"
+    required: true
+    tab: "address"
+    placeholder: "Street address"
+    validation:
+      maxLength: 100
+
+  - name: "addressLine2"
+    type: "string"
+    label: "Address Line 2"
+    required: false
+    tab: "address"
+    placeholder: "Apartment, suite, unit, etc."
+    validation:
+      maxLength: 100
+
+  - name: "city"
+    type: "string"
+    label: "City"
+    required: true
+    tab: "address"
+    placeholder: "City name"
+    validation:
+      maxLength: 50
+
+  - name: "state"
+    type: "string"
+    label: "State/Province"
+    required: true
+    tab: "address"
+    placeholder: "State or province"
+    validation:
+      maxLength: 50
+
+  - name: "postalCode"
+    type: "string"
+    label: "Postal Code"
+    required: true
+    tab: "address"
+    placeholder: "ZIP or postal code"
+    validation:
+      pattern: "^[A-Z0-9\\s-]{3,10}$"
+      message: "Please enter a valid postal code"
+
+  - name: "country"
+    type: "select"
+    label: "Country"
+    required: true
+    tab: "address"
+    defaultValue: "US"
+    options:
+      - label: "United States"
+        value: "US"
+      - label: "Canada"
+        value: "CA"
+      - label: "United Kingdom"
+        value: "GB"
+      - label: "Australia"
+        value: "AU"
+      - label: "Germany"
+        value: "DE"
+      - label: "France"
+        value: "FR"
+      - label: "India"
+        value: "IN"
+      - label: "Other"
+        value: "OTHER"
+
+  # Business Information Tab
+  - name: "creditLimit"
+    type: "number"
+    label: "Credit Limit"
+    required: false
+    tab: "business"
+    placeholder: "0.00"
+    validation:
+      min: 0
+      max: 10000000
+
+  - name: "paymentTerms"
+    type: "select"
+    label: "Payment Terms"
+    required: false
+    tab: "business"
+    defaultValue: "NET_30"
+    options:
+      - label: "Net 15 Days"
+        value: "NET_15"
+      - label: "Net 30 Days"
+        value: "NET_30"
+      - label: "Net 45 Days"
+        value: "NET_45"
+      - label: "Net 60 Days"
+        value: "NET_60"
+      - label: "Cash on Delivery"
+        value: "COD"
+      - label: "Prepaid"
+        value: "PREPAID"
+
+  - name: "currency"
+    type: "select"
+    label: "Currency"
+    required: true
+    tab: "business"
+    defaultValue: "USD"
+    options:
+      - label: "US Dollar (USD)"
+        value: "USD"
+      - label: "Euro (EUR)"
+        value: "EUR"
+      - label: "British Pound (GBP)"
+        value: "GBP"
+      - label: "Canadian Dollar (CAD)"
+        value: "CAD"
+      - label: "Australian Dollar (AUD)"
+        value: "AUD"
+      - label: "Indian Rupee (INR)"
+        value: "INR"
+
+  - name: "customerPriority"
+    type: "select"
+    label: "Customer Priority"
+    required: false
+    tab: "business"
+    defaultValue: "MEDIUM"
+    options:
+      - label: "Low"
+        value: "LOW"
+      - label: "Medium"
+        value: "MEDIUM"
+      - label: "High"
+        value: "HIGH"
+      - label: "Strategic"
+        value: "STRATEGIC"
+
+  - name: "notes"
+    type: "textarea"
+    label: "Notes"
+    required: false
+    tab: "business"
+    placeholder: "Additional notes about this customer"
+    validation:
+      maxLength: 1000
+
+# Relationships define links to other entities
+relationships:
+  - name: "assignedSalesRep"
+    type: "manyToOne"
+    targetEntity: "User"
+    label: "Assigned Sales Representative"
+    uiComponent: "select"
+    tab: "business"
+    required: false
+    searchFields: ["display_name", "email"]
+    displayField: "display_name"
+    valueField: "user_id"
+    filters:
+      role: "SALES_REP"
+
+  - name: "territoryId"
+    type: "manyToOne"
+    targetEntity: "Territory"
+    label: "Sales Territory"
+    uiComponent: "select"
+    tab: "business"
+    required: false
+    searchFields: ["territory_name", "territory_code"]
+    displayField: "territory_name"
+    valueField: "territory_id"
+
+  - name: "parentCustomer"
+    type: "manyToOne"
+    targetEntity: "Customer"
+    label: "Parent Customer"
+    uiComponent: "select"
+    tab: "business"
+    required: false
+    searchFields: ["customer_name", "company_name"]
+    displayField: "customer_name"
+    valueField: "customer_id"
+
+# Workflow defines post-creation processes
+workflow:
+  name: "CustomerOnboardingWorkflow"
+  description: "Automated workflow for new customer onboarding and setup"
+  trigger: "onCreate"
+  steps:
+    - id: "validate"
+      description: "Validate customer data and check for duplicates"
+      action: "validate"
+      next: "createAccount"
+      parameters:
+        validateDuplicates: true
+        requiredFields: ["customerName", "email", "phone"]
+
+    - id: "createAccount"
+      description: "Create customer account in the system"
+      action: "persist"
+      next: "assignTerritory"
+      parameters:
+        generateCustomerCode: true
+        createDefaultContacts: true
+
+    - id: "assignTerritory"
+      description: "Auto-assign to territory based on address"
+      action: "executeRule"
+      next: "sendWelcome"
+      parameters:
+        ruleType: "TERRITORY_ASSIGNMENT"
+        basedOn: "address"
+
+    - id: "sendWelcome"
+      description: "Send welcome email to customer"
+      action: "sendNotification"
+      next: "notifyTeam"
+      parameters:
+        templateId: "CUSTOMER_WELCOME"
+        recipients: ["email"]
+        includeAttachments: true
+
+    - id: "notifyTeam"
+      description: "Notify sales team about new customer"
+      action: "sendNotification"
+      next: null
+      parameters:
+        templateId: "NEW_CUSTOMER_ALERT"
+        recipients: ["assignedSalesRep", "territoryManager"]
+        urgency: "normal"
+
+ui:
+  tabs:
+    - id: "basicInfo"
+      title: "Basic Information"
+      icon: "user"
+      description: "Essential customer details and identification"
+      order: 1
+
+    - id: "contact"
+      title: "Contact Details"
+      icon: "phone"
+      description: "Communication and contact information"
+      order: 2
+
+    - id: "address"
+      title: "Address"
+      icon: "map-pin"
+      description: "Physical address and location details"
+      order: 3
+
+    - id: "business"
+      title: "Business Information"
+      icon: "briefcase"
+      description: "Commercial terms, credit, and business details"
+      order: 4
+
+  progressIndicator:
+    type: "stepper"
+    labels: true
+    icons: true
+    consistent: true
+    colourScheme:
+      completed: "#00b388"
+      active: "#0073e6"
+      upcoming: "#bdbdbd"
+      error: "#e74c3c"
+    autoUpdate: true
+    showPercentage: true
+
+behaviour:
+  validation:
+    invalidColour: "#e74c3c"
+    validColour: "#00b388"
+    showErrorMessages: true
+    validateOnChange: true
+    validateOnBlur: true
+    showRequiredIndicator: true
+  navigation:
+    showNextButton: true
+    showPreviousButton: true
+    disableNextUntilValid: true
+    saveOnNavigate: true
+    allowSkipOptionalTabs: false
+    confirmOnExit: true
+
+metadata:
+  author: "HERA Enterprise Team"
+  created: "2025-01-15"
+  category: "CRM"
+  tags: ["customer", "crm", "sales", "master-data"]
+  description: "Standard customer master data template for enterprise CRM operations"
+---

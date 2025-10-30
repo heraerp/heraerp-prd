@@ -39,13 +39,14 @@ interface LeaveRequestsTabProps {
 // Status badge component
 function StatusBadge({ status }: { status: string }) {
   const statusConfig = {
-    submitted: { label: 'Pending', icon: Clock, color: COLORS.bronze, bgColor: `${COLORS.bronze}20` },
+    draft: { label: 'Draft', icon: Edit2, color: COLORS.gold, bgColor: `${COLORS.gold}20` },
+    submitted: { label: 'Submitted', icon: Clock, color: COLORS.bronze, bgColor: `${COLORS.bronze}20` },
     approved: { label: 'Approved', icon: CheckCircle, color: COLORS.emerald, bgColor: `${COLORS.emerald}20` },
     rejected: { label: 'Rejected', icon: XCircle, color: COLORS.rose, bgColor: `${COLORS.rose}20` },
     cancelled: { label: 'Cancelled', icon: Ban, color: '#666', bgColor: '#66666620' }
   }
 
-  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.submitted
+  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft
   const Icon = config.icon
 
   return (
@@ -168,7 +169,7 @@ function DesktopTableRow({
       </td>
       <td className="px-4 py-4">
         <div className="flex items-center gap-2">
-          {/* ✅ Quick Actions for Pending Requests */}
+          {/* ✅ Quick Actions for Submitted Requests (NOT for drafts) */}
           {request.status === 'submitted' && (
             <>
               <button
@@ -194,6 +195,21 @@ function DesktopTableRow({
             </>
           )}
 
+          {/* ✅ Quick Actions for Draft Requests */}
+          {request.status === 'draft' && onEdit && (
+            <button
+              onClick={() => onEdit(request)}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+              style={{
+                backgroundColor: `${COLORS.gold}20`,
+                color: COLORS.gold
+              }}
+            >
+              <Edit2 className="w-3.5 h-3.5 inline mr-1" />
+              Edit Draft
+            </button>
+          )}
+
           {/* ✅ CRUD Actions Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -214,40 +230,53 @@ function DesktopTableRow({
                 border: `1px solid ${COLORS.bronze}30`
               }}
             >
-              {/* Edit - Only for submitted requests */}
-              {request.status === 'submitted' && onEdit && (
+              {/* Edit - For draft and submitted requests */}
+              {(request.status === 'draft' || request.status === 'submitted') && onEdit && (
                 <DropdownMenuItem
                   onClick={() => onEdit(request)}
                   style={{ color: COLORS.champagne }}
+                  className="cursor-pointer hover:bg-gold/10"
                 >
                   <Edit2 className="w-4 h-4 mr-2" />
                   Edit Request
                 </DropdownMenuItem>
               )}
 
-              {/* Withdraw - For submitted or approved requests */}
+              {/* Withdraw - For submitted or approved requests (NOT drafts) */}
               {(request.status === 'submitted' || request.status === 'approved') && onWithdraw && (
                 <DropdownMenuItem
                   onClick={() => onWithdraw(request.id)}
                   style={{ color: COLORS.bronze }}
+                  className="cursor-pointer hover:bg-gold/10"
                 >
                   <Ban className="w-4 h-4 mr-2" />
                   Withdraw Request
                 </DropdownMenuItem>
               )}
 
-              {/* Delete - Only for rejected/cancelled requests */}
-              {(request.status === 'rejected' || request.status === 'cancelled') && onDelete && (
+              {/* Delete - For drafts, rejected, and cancelled requests */}
+              {(request.status === 'draft' || request.status === 'rejected' || request.status === 'cancelled') && onDelete && (
                 <>
-                  <DropdownMenuSeparator style={{ backgroundColor: `${COLORS.bronze}30` }} />
+                  {request.status === 'draft' && <DropdownMenuSeparator style={{ backgroundColor: `${COLORS.bronze}30` }} />}
                   <DropdownMenuItem
                     onClick={() => onDelete(request.id)}
                     style={{ color: COLORS.rose }}
+                    className="cursor-pointer hover:bg-rose/10"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete Request
                   </DropdownMenuItem>
                 </>
+              )}
+
+              {/* 🔍 FALLBACK: Show info message if no actions available */}
+              {!((request.status === 'draft' && (onEdit || onDelete)) ||
+                 (request.status === 'submitted' && (onEdit || onWithdraw)) ||
+                 ((request.status === 'submitted' || request.status === 'approved') && onWithdraw) ||
+                 ((request.status === 'rejected' || request.status === 'cancelled') && onDelete)) && (
+                <DropdownMenuItem disabled style={{ color: COLORS.bronze, opacity: 0.6, fontSize: '12px' }}>
+                  No actions for "{request.status}" status
+                </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -326,40 +355,53 @@ function MobileCard({
                 border: `1px solid ${COLORS.bronze}30`
               }}
             >
-              {/* Edit - Only for submitted requests */}
-              {request.status === 'submitted' && onEdit && (
+              {/* Edit - For draft and submitted requests */}
+              {(request.status === 'draft' || request.status === 'submitted') && onEdit && (
                 <DropdownMenuItem
                   onClick={() => onEdit(request)}
                   style={{ color: COLORS.champagne }}
+                  className="cursor-pointer hover:bg-gold/10"
                 >
                   <Edit2 className="w-4 h-4 mr-2" />
                   Edit Request
                 </DropdownMenuItem>
               )}
 
-              {/* Withdraw - For submitted or approved requests */}
+              {/* Withdraw - For submitted or approved requests (NOT drafts) */}
               {(request.status === 'submitted' || request.status === 'approved') && onWithdraw && (
                 <DropdownMenuItem
                   onClick={() => onWithdraw(request.id)}
                   style={{ color: COLORS.bronze }}
+                  className="cursor-pointer hover:bg-gold/10"
                 >
                   <Ban className="w-4 h-4 mr-2" />
                   Withdraw Request
                 </DropdownMenuItem>
               )}
 
-              {/* Delete - Only for rejected/cancelled requests */}
-              {(request.status === 'rejected' || request.status === 'cancelled') && onDelete && (
+              {/* Delete - For drafts, rejected, and cancelled requests */}
+              {(request.status === 'draft' || request.status === 'rejected' || request.status === 'cancelled') && onDelete && (
                 <>
-                  <DropdownMenuSeparator style={{ backgroundColor: `${COLORS.bronze}30` }} />
+                  {request.status === 'draft' && <DropdownMenuSeparator style={{ backgroundColor: `${COLORS.bronze}30` }} />}
                   <DropdownMenuItem
                     onClick={() => onDelete(request.id)}
                     style={{ color: COLORS.rose }}
+                    className="cursor-pointer hover:bg-rose/10"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete Request
                   </DropdownMenuItem>
                 </>
+              )}
+
+              {/* 🔍 FALLBACK: Show info message if no actions available */}
+              {!((request.status === 'draft' && (onEdit || onDelete)) ||
+                 (request.status === 'submitted' && (onEdit || onWithdraw)) ||
+                 ((request.status === 'submitted' || request.status === 'approved') && onWithdraw) ||
+                 ((request.status === 'rejected' || request.status === 'cancelled') && onDelete)) && (
+                <DropdownMenuItem disabled style={{ color: COLORS.bronze, opacity: 0.6, fontSize: '12px' }}>
+                  No actions for "{request.status}" status
+                </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -467,6 +509,40 @@ function MobileCard({
       )}
 
       {/* Action Buttons */}
+      {/* Draft Status Actions */}
+      {request.status === 'draft' && (
+        <div className="mt-3 flex flex-col gap-2">
+          {onEdit && (
+            <button
+              onClick={() => onEdit(request)}
+              className="w-full min-h-[44px] rounded-lg text-sm font-semibold transition-all duration-300 active:scale-95 flex items-center justify-center gap-2"
+              style={{
+                backgroundColor: COLORS.gold,
+                color: COLORS.black
+              }}
+            >
+              <Edit2 className="w-4 h-4" />
+              Edit Draft
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={() => onDelete(request.id)}
+              className="w-full min-h-[44px] rounded-lg text-sm font-medium transition-all duration-300 active:scale-95 flex items-center justify-center gap-2"
+              style={{
+                backgroundColor: `${COLORS.rose}20`,
+                color: COLORS.rose,
+                border: `1px solid ${COLORS.rose}40`
+              }}
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete Draft
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Submitted/Approved Status Actions */}
       {(request.status === 'submitted' ||
         request.status === 'approved') && (
         <div className="mt-3 flex flex-col gap-2">
@@ -592,7 +668,8 @@ export function LeaveRequestsTab({
           }}
         >
           <option value="all">All Statuses</option>
-          <option value="submitted">Pending</option>
+          <option value="draft">Draft</option>
+          <option value="submitted">Submitted</option>
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
@@ -624,7 +701,8 @@ export function LeaveRequestsTab({
           }}
         >
           <option value="all">All Statuses</option>
-          <option value="submitted">Pending</option>
+          <option value="draft">Draft</option>
+          <option value="submitted">Submitted</option>
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>

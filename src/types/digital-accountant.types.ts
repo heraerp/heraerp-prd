@@ -79,8 +79,8 @@ export interface JournalEntry extends Partial<CoreEntities> {
  */
 export interface JournalLine extends Partial<UniversalTransactionLines> {
   gl_account_id: string
-  debit_amount: number
-  credit_amount: number
+  unit_amount: number // ✅ Primary amount field as per schema
+  debit_credit: 'debit' | 'credit' // ✅ Flag to indicate direction
   description: string
   cost_center_id?: string
   project_id?: string
@@ -91,6 +91,9 @@ export interface JournalLine extends Partial<UniversalTransactionLines> {
     source_document_type?: string
     source_document_id?: string
     analytics_dimensions?: Record<string, string>
+    // ✅ Keep legacy fields for compatibility
+    debit_amount?: number
+    credit_amount?: number
   }
 }
 

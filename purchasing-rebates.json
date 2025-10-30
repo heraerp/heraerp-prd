@@ -1,0 +1,328 @@
+{
+  "app": {
+    "id": "purchasing-rebates",
+    "name": "Purchasing Rebate Processing", 
+    "version": "1.0.0",
+    "description": "End-to-end supplier rebate management — agreements, accruals, settlements",
+    "smart_code": "HERA.PURCHASE.REBATE.APPLICATION.MAIN.v1"
+  },
+  "entities": [
+    {
+      "entity_type": "VENDOR",
+      "entity_name": "Vendor",
+      "description": "Supplier vendor master data",
+      "smart_code": "HERA.PURCHASE.MASTER.VENDOR.ENTITY.v1",
+      "icon": "building2",
+      "fields": [
+        {
+          "name": "vendor_name",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.MASTER.VENDOR.FIELD.NAME.v1"
+        },
+        {
+          "name": "tax_id",
+          "type": "text",
+          "required": false,
+          "smart_code": "HERA.PURCHASE.MASTER.VENDOR.FIELD.TAX_ID.v1"
+        },
+        {
+          "name": "payment_terms",
+          "type": "text",
+          "required": false,
+          "smart_code": "HERA.PURCHASE.MASTER.VENDOR.FIELD.PAYMENT_TERMS.v1"
+        },
+        {
+          "name": "is_active",
+          "type": "boolean",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.MASTER.VENDOR.FIELD.IS_ACTIVE.v1"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "entity_type": "REBATE_AGREEMENT",
+      "entity_name": "Rebate Agreement",
+      "description": "Supplier rebate agreement header",
+      "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.ENTITY.v1",
+      "icon": "file-contract",
+      "fields": [
+        {
+          "name": "agreement_name",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.NAME.v1"
+        },
+        {
+          "name": "agreement_type",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.TYPE.v1"
+        },
+        {
+          "name": "valid_from",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.VALID_FROM.v1"
+        },
+        {
+          "name": "valid_to",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.VALID_TO.v1"
+        },
+        {
+          "name": "base_rate",
+          "type": "number",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.BASE_RATE.v1"
+        },
+        {
+          "name": "target_volume",
+          "type": "number",
+          "required": false,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.TARGET_VOLUME.v1"
+        },
+        {
+          "name": "settlement_method",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.SETTLEMENT_METHOD.v1"
+        },
+        {
+          "name": "settlement_frequency",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.SETTLEMENT_FREQUENCY.v1"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.AGREEMENT.FIELD.STATUS.v1"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "entity_type": "REBATE_TIER",
+      "entity_name": "Rebate Tier",
+      "description": "Volume-based rebate tier/slab definition",
+      "smart_code": "HERA.PURCHASE.REBATE.TIER.ENTITY.v1",
+      "icon": "layers",
+      "fields": [
+        {
+          "name": "min_volume",
+          "type": "number",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.TIER.FIELD.MIN_VOLUME.v1"
+        },
+        {
+          "name": "max_volume",
+          "type": "number",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.TIER.FIELD.MAX_VOLUME.v1"
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "required": true,
+          "smart_code": "HERA.PURCHASE.REBATE.TIER.FIELD.RATE.v1"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "entity_type": "PRODUCT",
+      "entity_name": "Product",
+      "description": "Product master for rebate eligibility",
+      "smart_code": "HERA.PROCURE.MASTER.PRODUCT.ENTITY.v1",
+      "icon": "package",
+      "fields": [
+        {
+          "name": "product_name",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PROCURE.MASTER.PRODUCT.FIELD.NAME.v1"
+        },
+        {
+          "name": "product_code",
+          "type": "text",
+          "required": true,
+          "smart_code": "HERA.PROCURE.MASTER.PRODUCT.FIELD.CODE.v1"
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "required": false,
+          "smart_code": "HERA.PROCURE.MASTER.PRODUCT.FIELD.CATEGORY.v1"
+        },
+        {
+          "name": "unit_price",
+          "type": "number",
+          "required": false,
+          "smart_code": "HERA.PROCURE.MASTER.PRODUCT.FIELD.UNIT_PRICE.v1"
+        }
+      ],
+      "relationships": []
+    }
+  ],
+  "transactions": [
+    {
+      "transaction_type": "REBATE_ACCRUAL",
+      "transaction_name": "Rebate Accrual",
+      "description": "Periodic rebate accrual calculation and posting",
+      "smart_code": "HERA.FINANCE.TXN.REBATE.ACCRUAL.MAIN.v1",
+      "category": "finance",
+      "lines": [
+        {
+          "name": "Rebate Expense",
+          "description": "Rebate expense recognition",
+          "required": true,
+          "smart_code": "HERA.FINANCE.TXN.REBATE.ACCRUAL.LINE.EXPENSE.v1",
+          "line_type": "GL",
+          "account_type": "EXPENSE",
+          "side": "DR"
+        },
+        {
+          "name": "Rebate Liability",
+          "description": "Rebate liability accrual",
+          "required": true,
+          "smart_code": "HERA.FINANCE.TXN.REBATE.ACCRUAL.LINE.LIABILITY.v1",
+          "line_type": "GL",
+          "account_type": "LIABILITY",
+          "side": "CR"
+        }
+      ]
+    },
+    {
+      "transaction_type": "REBATE_SETTLEMENT",
+      "transaction_name": "Rebate Settlement",
+      "description": "Final rebate settlement with vendor credit",
+      "smart_code": "HERA.FINANCE.TXN.REBATE.SETTLEMENT.MAIN.v1",
+      "category": "finance",
+      "lines": [
+        {
+          "name": "Clear Liability",
+          "description": "Clear accrued rebate liability",
+          "required": true,
+          "smart_code": "HERA.FINANCE.TXN.REBATE.SETTLEMENT.LINE.CLEAR_LIABILITY.v1",
+          "line_type": "GL",
+          "account_type": "LIABILITY",
+          "side": "DR"
+        },
+        {
+          "name": "Vendor Credit",
+          "description": "Credit to vendor accounts payable",
+          "required": true,
+          "smart_code": "HERA.FINANCE.TXN.REBATE.SETTLEMENT.LINE.VENDOR_CREDIT.v1",
+          "line_type": "GL",
+          "account_type": "LIABILITY",
+          "side": "CR"
+        }
+      ]
+    }
+  ],
+  "ui": {
+    "dashboard": {
+      "title": "Rebate Management Dashboard",
+      "widgets": [
+        {
+          "type": "metric",
+          "title": "Active Agreements",
+          "entity": "REBATE_AGREEMENT",
+          "calculation": "count",
+          "color": "blue"
+        },
+        {
+          "type": "metric",
+          "title": "Total Vendors",
+          "entity": "VENDOR",
+          "calculation": "count",
+          "color": "green"
+        },
+        {
+          "type": "metric",
+          "title": "Rebate Tiers",
+          "entity": "REBATE_TIER",
+          "calculation": "count",
+          "color": "purple"
+        }
+      ]
+    },
+    "navigation": [
+      {
+        "section": "Master Data",
+        "items": [
+          {
+            "label": "Vendors",
+            "entity": "VENDOR",
+            "view": "list",
+            "icon": "building2"
+          },
+          {
+            "label": "Products",
+            "entity": "PRODUCT",
+            "view": "list",
+            "icon": "package"
+          }
+        ]
+      },
+      {
+        "section": "Rebate Management",
+        "items": [
+          {
+            "label": "Rebate Agreements",
+            "entity": "REBATE_AGREEMENT",
+            "view": "list",
+            "icon": "file-contract"
+          },
+          {
+            "label": "Rebate Tiers",
+            "entity": "REBATE_TIER",
+            "view": "list",
+            "icon": "layers"
+          }
+        ]
+      },
+      {
+        "section": "Transactions",
+        "items": [
+          {
+            "label": "Rebate Accruals",
+            "transaction": "REBATE_ACCRUAL",
+            "view": "create",
+            "icon": "calculator"
+          },
+          {
+            "label": "Rebate Settlements",
+            "transaction": "REBATE_SETTLEMENT",
+            "view": "create",
+            "icon": "credit-card"
+          }
+        ]
+      }
+    ]
+  },
+  "deployment": {
+    "api": {
+      "base_path": "/api/v2",
+      "version": "2.0"
+    },
+    "permissions": {
+      "roles": [
+        {
+          "role": "procurement_manager",
+          "permissions": ["create", "read", "update"],
+          "entities": ["VENDOR", "REBATE_AGREEMENT", "REBATE_TIER", "PRODUCT"]
+        },
+        {
+          "role": "finance_user",
+          "permissions": ["create", "read"],
+          "entities": ["REBATE_ACCRUAL", "REBATE_SETTLEMENT"]
+        }
+      ]
+    }
+  }
+}

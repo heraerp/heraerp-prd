@@ -38,7 +38,6 @@ import {
   Archive,
   Sparkles,
   Bell,
-  FileSpreadsheet,
   ChevronDown
 } from 'lucide-react'
 
@@ -193,11 +192,27 @@ function SalonProductsPageContent() {
   )
 
   // ✅ ENTERPRISE IMPORT/EXPORT: Declarative configuration replaces 280+ lines of manual code
-  const productImportExportConfig: ImportExportConfig<Product> = {
+  // 💰 Dynamic currency support from organization context
+  const productImportExportConfig: ImportExportConfig<Product> = useMemo(() => ({
     entityName: 'Product',
     entityNamePlural: 'Products',
     filePrefix: 'HERA_Products',
     templateSheetName: 'Products Data',
+
+    // 💰 MULTI-CURRENCY: Organization-specific currency configuration
+    currency: currency || 'AED',
+    currencySymbol: currency || 'AED',
+
+    // 🎯 ENTERPRISE CUSTOMIZATION: Page-specific instructions and formatting
+    customWarning: '⚠️ IMPORTANT: CREATE CATEGORIES FIRST',
+    customInstructions: [
+      'Category must match existing category names exactly (case-insensitive)',
+      'Selling Price must be greater than Cost Price',
+      'Stock quantities cannot be negative',
+      'Status: Enter "active", "inactive", or "archived" (defaults to active)'
+    ],
+    exampleNote: 'Professional salon product example',
+    columnWidths: [25, 12, 15, 12, 12, 15, 15, 20, 18, 15, 12, 40, 10], // Custom widths for each field
 
     fields: [
       {
@@ -205,7 +220,7 @@ function SalonProductsPageContent() {
         fieldName: 'name',
         type: 'text',
         required: true,
-        example: 'Premium Shampoo',
+        example: 'L\'Oreal Professional Shampoo 500ml',
         description: 'Product name (required)'
       },
       {
@@ -213,7 +228,7 @@ function SalonProductsPageContent() {
         fieldName: 'code',
         type: 'text',
         required: false,
-        example: 'PROD001',
+        example: 'LOREAL-SHP-500',
         description: 'Optional product code/SKU'
       },
       {
@@ -225,27 +240,27 @@ function SalonProductsPageContent() {
         description: 'Category name (must match existing category)'
       },
       {
-        headerName: 'Cost Price (AED)',
+        headerName: `Cost Price (${currency || 'AED'})`,
         fieldName: 'cost_price',
         type: 'number',
         required: true,
-        example: 50,
-        description: 'Product cost price in AED'
+        example: 75,
+        description: `Product cost price in ${currency || 'AED'}`
       },
       {
-        headerName: 'Selling Price (AED)',
+        headerName: `Selling Price (${currency || 'AED'})`,
         fieldName: 'selling_price',
         type: 'number',
         required: true,
-        example: 100,
-        description: 'Product selling price in AED'
+        example: 150,
+        description: `Product selling price in ${currency || 'AED'}`
       },
       {
         headerName: 'Stock Quantity',
         fieldName: 'stock_level',
         type: 'number',
         required: false,
-        example: 10,
+        example: 25,
         description: 'Current stock quantity'
       },
       {
@@ -253,7 +268,7 @@ function SalonProductsPageContent() {
         fieldName: 'reorder_level',
         type: 'number',
         required: false,
-        example: 5,
+        example: 10,
         description: 'Minimum stock level before reordering'
       },
       {
@@ -261,7 +276,7 @@ function SalonProductsPageContent() {
         fieldName: 'brand',
         type: 'text',
         required: false,
-        example: 'L\'Oreal',
+        example: 'L\'Oreal Professional',
         description: 'Product brand name'
       },
       {
@@ -269,7 +284,7 @@ function SalonProductsPageContent() {
         fieldName: 'barcode',
         type: 'text',
         required: false,
-        example: '1234567890123',
+        example: '3474636391813',
         description: 'Product barcode'
       },
       {
@@ -277,7 +292,7 @@ function SalonProductsPageContent() {
         fieldName: 'barcode_primary',
         type: 'text',
         required: false,
-        example: '1234567890123',
+        example: '3474636391813',
         description: 'Primary barcode identifier'
       },
       {
@@ -293,7 +308,7 @@ function SalonProductsPageContent() {
         fieldName: 'gtin',
         type: 'text',
         required: false,
-        example: '1234567890123',
+        example: '03474636391813',
         description: 'Global Trade Item Number'
       },
       {
@@ -301,7 +316,7 @@ function SalonProductsPageContent() {
         fieldName: 'sku',
         type: 'text',
         required: false,
-        example: 'SKU-001',
+        example: 'LOREAL-PRO-SHP-500',
         description: 'Stock Keeping Unit'
       },
       {
@@ -317,7 +332,7 @@ function SalonProductsPageContent() {
         fieldName: 'description',
         type: 'text',
         required: false,
-        example: 'Professional salon shampoo',
+        example: 'Professional salon shampoo for color-treated hair. Sulfate-free formula with UV protection.',
         description: 'Product description'
       },
       {
@@ -349,8 +364,8 @@ function SalonProductsPageContent() {
       'Product Name': product.entity_name || '',
       'Product Code': product.entity_code || '',
       'Category': product.category || '',
-      'Cost Price (AED)': product.price_cost || product.cost_price || 0,
-      'Selling Price (AED)': product.price_market || product.selling_price || 0,
+      [`Cost Price (${currency || 'AED'})`]: product.price_cost || product.cost_price || 0,
+      [`Selling Price (${currency || 'AED'})`]: product.price_market || product.selling_price || 0,
       'Stock Quantity': product.stock_quantity || product.stock_level || 0,
       'Reorder Level': product.reorder_level || 0,
       'Brand': product.brand || '',
@@ -377,7 +392,7 @@ function SalonProductsPageContent() {
       }
       return null
     }
-  }
+  }), [productCategories, products, currency, createProduct]) // ✅ Dependencies for useMemo
 
   // ✅ ENTERPRISE HOOK: Replaces 280+ lines of manual import/export code
   const {
@@ -391,11 +406,35 @@ function SalonProductsPageContent() {
     resetImport
   } = useHeraImportExport(productImportExportConfig)
 
-  // ✅ ENTERPRISE PATTERN: Filter and sort products - memoized for performance
+  // ✅ ENTERPRISE PATTERN: Filter, deduplicate, and sort products - memoized for performance
   const filteredAndSortedProducts = useMemo(
     () => {
-      // Step 1: Filter products
-      let filtered = products.filter(product => {
+      // Step 1: Deduplicate products by ID (prevent React duplicate key warnings)
+      const uniqueProductsMap = new Map()
+      const duplicateCount = products.length
+
+      products.forEach(product => {
+        if (product && product.id) {
+          if (uniqueProductsMap.has(product.id)) {
+            // Log duplicate detection in development
+            if (process.env.NODE_ENV === 'development') {
+              console.warn(`[Products] 🔄 Duplicate product detected: ${product.entity_name} (${product.id})`)
+            }
+          } else {
+            uniqueProductsMap.set(product.id, product)
+          }
+        }
+      })
+
+      const uniqueProducts = Array.from(uniqueProductsMap.values())
+
+      // Log deduplication stats if duplicates were found
+      if (uniqueProducts.length < duplicateCount && process.env.NODE_ENV === 'development') {
+        console.warn(`[Products] 🔄 Removed ${duplicateCount - uniqueProducts.length} duplicate(s) from ${duplicateCount} total products`)
+      }
+
+      // Step 2: Filter products
+      let filtered = uniqueProducts.filter(product => {
         // Skip invalid products
         if (!product || !product.entity_name) {
           return false
@@ -423,7 +462,7 @@ function SalonProductsPageContent() {
         return true
       })
 
-      // Step 2: Sort products
+      // Step 3: Sort products
       const sorted = [...filtered].sort((a, b) => {
         switch (sortBy) {
           case 'name_asc':
@@ -822,19 +861,6 @@ function SalonProductsPageContent() {
             <Plus className="w-4 h-4" />
             New Product
           </button>
-          {/* Template - Bronze */}
-          <button
-            onClick={handleDownloadTemplate}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.bronze,
-              color: COLORS.champagne,
-              border: `1px solid ${COLORS.bronze}`
-            }}
-          >
-            <FileSpreadsheet className="w-4 h-4" />
-            Template
-          </button>
           {/* Import - Rose */}
           <button
             onClick={() => setImportModalOpen(true)}
@@ -914,14 +940,6 @@ function SalonProductsPageContent() {
             New Category
           </button>
           <button
-            onClick={handleDownloadTemplate}
-            className="px-4 py-2 bg-bronze text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
-            style={{ backgroundColor: COLORS.bronze }}
-          >
-            <FileSpreadsheet className="w-4 h-4" />
-            Template
-          </button>
-          <button
             onClick={() => setImportModalOpen(true)}
             className="px-4 py-2 text-charcoal rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
             style={{ backgroundColor: COLORS.rose }}
@@ -995,180 +1013,190 @@ function SalonProductsPageContent() {
           {/* Top Control Bar - Branch Filter & View Controls */}
           <div className="mx-6 mt-6">
             <div
-              className="p-4 rounded-xl flex items-center justify-between"
+              className="p-4 rounded-xl"
               style={{
                 backgroundColor: COLORS.charcoalLight + 'ee',
                 border: `1px solid ${COLORS.bronze}30`,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
               }}
             >
-              {/* Left: Branch Filter */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
-                  <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                    Location:
-                  </span>
-                </div>
-                <Select
-                  value={localBranchFilter || '__ALL__'}
-                  onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
-                >
-                  <SelectTrigger
-                    className="w-52 border"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" style={{ color: COLORS.gold }} />
-                      <SelectValue placeholder="All Locations" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent
-                    className="salon-luxe-select"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40'
-                    }}
-                  >
-                    <SelectItem
-                      value="__ALL__"
-                      className="salon-luxe-select-item"
-                      style={{ color: COLORS.champagne }}
-                    >
-                      All Locations
-                    </SelectItem>
-                    {isLoadingBranches ? (
-                      <div
-                        className="px-2 py-3 text-center text-sm"
-                        style={{ color: COLORS.bronze }}
-                      >
-                        Loading...
-                      </div>
-                    ) : availableBranches.length === 0 ? (
-                      <div
-                        className="px-2 py-3 text-center text-sm"
-                        style={{ color: COLORS.bronze }}
-                      >
-                        No branches
-                      </div>
-                    ) : (
-                      availableBranches.map(branch => (
-                        <SelectItem
-                          key={branch.id}
-                          value={branch.id}
-                          className="salon-luxe-select-item"
-                          style={{ color: COLORS.champagne }}
-                        >
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
-                            <div className="flex flex-col">
-                              <span className="font-medium">{branch.name}</span>
-                              {branch.code && (
-                                <span className="text-xs opacity-60">{branch.code}</span>
-                              )}
-                            </div>
-                          </div>
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-
-                {/* Active Branch Badge */}
-                {localBranchFilter && (
-                  <div
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      borderColor: COLORS.gold + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                    <span>{availableBranches.find(b => b.id === localBranchFilter)?.name || 'Branch'}</span>
-                    <X
-                      className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
-                      onClick={() => setLocalBranchFilter(null)}
-                      style={{ color: COLORS.gold }}
-                    />
+              {/* ✅ MOBILE: Stack vertically on mobile, side-by-side on desktop */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                {/* Left: Branch Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
+                    <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                      Location:
+                    </span>
                   </div>
-                )}
-              </div>
+                  <Select
+                    value={localBranchFilter || '__ALL__'}
+                    onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
+                  >
+                    <SelectTrigger
+                      className="w-full sm:w-52 border"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" style={{ color: COLORS.gold }} />
+                        <SelectValue placeholder="All Locations" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent
+                      className="salon-luxe-select"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40'
+                      }}
+                    >
+                      <SelectItem
+                        value="__ALL__"
+                        className="salon-luxe-select-item"
+                        style={{ color: COLORS.champagne }}
+                      >
+                        All Locations
+                      </SelectItem>
+                      {isLoadingBranches ? (
+                        <div
+                          className="px-2 py-3 text-center text-sm"
+                          style={{ color: COLORS.bronze }}
+                        >
+                          Loading...
+                        </div>
+                      ) : availableBranches.length === 0 ? (
+                        <div
+                          className="px-2 py-3 text-center text-sm"
+                          style={{ color: COLORS.bronze }}
+                        >
+                          No branches
+                        </div>
+                      ) : (
+                        availableBranches.map(branch => (
+                          <SelectItem
+                            key={branch.id}
+                            value={branch.id}
+                            className="salon-luxe-select-item"
+                            style={{ color: COLORS.champagne }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
+                              <div className="flex flex-col">
+                                <span className="font-medium">{branch.entity_name}</span>
+                                {branch.entity_code && (
+                                  <span className="text-xs opacity-60">{branch.entity_code}</span>
+                                )}
+                              </div>
+                            </div>
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
 
-              {/* Right: View Mode & Sort */}
-              <div className="flex items-center gap-3">
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger
-                    className="w-44 border"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent
-                    className="salon-luxe-select"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40'
-                    }}
-                  >
-                    <SelectItem value="name_asc" className="salon-luxe-select-item">
-                      Name (A-Z)
-                    </SelectItem>
-                    <SelectItem value="name_desc" className="salon-luxe-select-item">
-                      Name (Z-A)
-                    </SelectItem>
-                    <SelectItem value="updated_desc" className="salon-luxe-select-item">
-                      Updated (Newest)
-                    </SelectItem>
-                    <SelectItem value="updated_asc" className="salon-luxe-select-item">
-                      Updated (Oldest)
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                  {/* Active Branch Badge */}
+                  {localBranchFilter && (
+                    <div
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity"
+                      style={{
+                        backgroundColor: COLORS.charcoalLight,
+                        borderColor: COLORS.gold + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
+                      <span className="hidden sm:inline">{availableBranches.find(b => b.id === localBranchFilter)?.entity_name || 'Branch'}</span>
+                      <X
+                        className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
+                        onClick={() => setLocalBranchFilter(null)}
+                        style={{ color: COLORS.gold }}
+                      />
+                    </div>
+                  )}
+                </div>
 
-                {/* Include Archived Toggle */}
-                <button
-                  onClick={() => setIncludeArchived(!includeArchived)}
-                  className={`px-3 py-2 rounded-lg transition-all flex items-center gap-2 ${
-                    includeArchived
-                      ? 'bg-gold/20 border-gold/40'
-                      : 'hover:bg-white/10 border-bronze/30'
-                  } border`}
-                  style={{
-                    color: includeArchived ? COLORS.gold : COLORS.lightText,
-                    borderColor: includeArchived ? COLORS.gold + '40' : COLORS.bronze + '30'
-                  }}
-                  title={includeArchived ? 'Hide archived products' : 'Show archived products'}
-                >
-                  <Archive className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    {includeArchived ? 'Hide Archived' : 'Show Archived'}
-                  </span>
-                </button>
+                {/* Right: View Mode & Sort */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  {/* Sort Dropdown */}
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger
+                      className="w-full sm:w-44 border"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent
+                      className="salon-luxe-select"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40'
+                      }}
+                    >
+                      <SelectItem value="name_asc" className="salon-luxe-select-item">
+                        Name (A-Z)
+                      </SelectItem>
+                      <SelectItem value="name_desc" className="salon-luxe-select-item">
+                        Name (Z-A)
+                      </SelectItem>
+                      <SelectItem value="updated_desc" className="salon-luxe-select-item">
+                        Updated (Newest)
+                      </SelectItem>
+                      <SelectItem value="updated_asc" className="salon-luxe-select-item">
+                        Updated (Oldest)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
-                    style={{ color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText }}
-                  >
-                    <Grid3X3 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
-                    style={{ color: viewMode === 'list' ? COLORS.gold : COLORS.lightText }}
-                  >
-                    <List className="w-4 h-4" />
-                  </button>
+                  {/* Include Archived Toggle & View Mode */}
+                  <div className="flex items-center gap-3">
+                    {/* Include Archived Toggle */}
+                    <button
+                      onClick={() => setIncludeArchived(!includeArchived)}
+                      className={`px-3 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                        includeArchived
+                          ? 'bg-gold/20 border-gold/40'
+                          : 'hover:bg-white/10 border-bronze/30'
+                      } border`}
+                      style={{
+                        color: includeArchived ? COLORS.gold : COLORS.lightText,
+                        borderColor: includeArchived ? COLORS.gold + '40' : COLORS.bronze + '30'
+                      }}
+                      title={includeArchived ? 'Hide archived products' : 'Show archived products'}
+                    >
+                      <Archive className="w-4 h-4" />
+                      <span className="text-sm font-medium hidden sm:inline">
+                        {includeArchived ? 'Hide Archived' : 'Show Archived'}
+                      </span>
+                    </button>
+
+                    {/* Grid/List Toggle */}
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setViewMode('grid')}
+                        className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
+                        style={{ color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText }}
+                        title="Grid view"
+                      >
+                        <Grid3X3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setViewMode('list')}
+                        className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
+                        style={{ color: viewMode === 'list' ? COLORS.gold : COLORS.lightText }}
+                        title="List view"
+                      >
+                        <List className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1267,7 +1295,7 @@ function SalonProductsPageContent() {
             />
             <SalonLuxeKPICard
               title="Average Price"
-              value={`AED ${avgPrice.toFixed(0)}`}
+              value={`${currency || 'AED'} ${avgPrice.toFixed(0)}`}
               icon={DollarSign}
               color={COLORS.gold}
               description="Catalog pricing"
@@ -1448,6 +1476,7 @@ function SalonProductsPageContent() {
               organizationId={organizationId}
               loading={isLoading}
               viewMode={viewMode}
+              selectedBranchId={selectedBranchId} // ✅ Pass from context to prevent infinite loop
               onEdit={handleEdit}
               onDelete={handleDelete}
               onArchive={handleArchive}

@@ -71,10 +71,16 @@ export {
   useDnaEntityValidation,
   useDnaOrganizationContext,
   useDnaMemoryPersistence,
-  useDnaViolationReporting,
+  useDnaViolationReporting
+} from './hooks/use-dna-compliance'
+
+export type { DnaComplianceContextType } from './hooks/use-dna-compliance'
+
+// React Providers
+export {
   DnaComplianceProvider,
   useDnaComplianceContext
-} from './hooks/use-dna-compliance'
+} from './providers/dna-compliance-provider'
 
 // ============================================================================
 // DNA COMPLIANCE COMPONENTS EXPORTS

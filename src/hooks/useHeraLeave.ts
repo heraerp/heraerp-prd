@@ -33,15 +33,19 @@ export interface LeaveRequest {
   start_date: string
   end_date: string
   total_days: number
+  isHalfDay?: boolean // ✅ Half-day leave flag
+  halfDayPeriod?: 'morning' | 'afternoon' // ✅ Which half of the day
   reason: string
   notes?: string
-  status: 'submitted' | 'approved' | 'rejected' | 'cancelled'
+  status: 'draft' | 'submitted' | 'approved' | 'rejected' | 'cancelled' // ✅ Removed 'pending'
   submitted_at: string
   approved_at?: string
   approved_by?: string
+  approved_by_name?: string // ✅ Stored approver name (for reports)
   approval_notes?: string
   rejected_at?: string
   rejected_by?: string
+  rejected_by_name?: string // ✅ Stored rejector name (for reports)
   rejection_reason?: string
   smart_code: string
 }
@@ -90,6 +94,10 @@ export interface CreateLeaveRequestInput {
   end_date: string
   reason: string
   notes?: string
+  status?: 'draft' | 'submitted' // ✅ Removed 'pending'
+  isHalfDay?: boolean // ✅ Half-day leave flag
+  halfDayPeriod?: 'morning' | 'afternoon' // ✅ Which half of the day (morning/afternoon)
+  totalDays?: number // ✅ Pre-calculated total days (respects half-day = 0.5)
 }
 
 interface UseHeraLeaveOptions {
@@ -211,30 +219,22 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'READ',
-        p_actor_user_id: user?.id || '',  // ✅ Added required actor_user_id
+        p_actor_user_id: user?.id || '',
         p_organization_id: organizationId,
         p_entity: entityFilter,
         p_options: {
-          include_dynamic: true,  // ✅ CORRECT: include_dynamic
+          include_dynamic: true,
           include_relationships: false
         }
-      })
-
-      console.log('🔍 [useHeraLeave] Policies RPC result:', {
-        hasError: !!result.error,
-        hasData: !!result.data,
-        dataKeys: result.data ? Object.keys(result.data) : [],
-        listLength: result.data?.list?.length,
-        itemsLength: result.data?.items?.length,
-        firstItem: result.data?.list?.[0] || result.data?.items?.[0],
-        fullResultKeys: result ? Object.keys(result) : [],
-        resultDataStructure: result ? JSON.stringify(result, null, 2).substring(0, 500) : 'null'
       })
 
       if (result.error) throw new Error(result.error.message)
       return result.data
     },
-    enabled: !!organizationId && !!user?.id
+    enabled: !!organizationId && !!user?.id,
+    // ✅ PERFORMANCE: Smart caching for policies (changes infrequently)
+    staleTime: 30000, // 30 seconds - policies don't change often
+    gcTime: 5 * 60 * 1000 // 5 minutes in cache
   })
 
   // ============================================================================
@@ -248,39 +248,27 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
   } = useQuery({
     queryKey: ['staff', organizationId],
     queryFn: async () => {
-      console.log('🔍 [useHeraLeave] Fetching staff:', {
-        organizationId,
-        userId: user?.id,
-        enabled: !!organizationId && !!user?.id
-      })
-
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'READ',
-        p_actor_user_id: user?.id || '',  // ✅ Added required actor_user_id
+        p_actor_user_id: user?.id || '',
         p_organization_id: organizationId,
         p_entity: {
-          entity_type: 'STAFF',  // ✅ CORRECT: Inside p_entity
-          status: 'active'  // ✅ Filter by status
+          entity_type: 'STAFF',
+          status: 'active'
         },
         p_options: {
-          include_dynamic: true,  // ✅ CORRECT: include_dynamic
+          include_dynamic: true,
           include_relationships: false
         }
-      })
-
-      console.log('🔍 [useHeraLeave] Staff RPC result:', {
-        hasError: !!result.error,
-        hasData: !!result.data,
-        dataKeys: result.data ? Object.keys(result.data) : [],
-        listLength: result.data?.list?.length,
-        itemsLength: result.data?.items?.length,
-        firstItem: result.data?.list?.[0] || result.data?.items?.[0]
       })
 
       if (result.error) throw new Error(result.error.message)
       return result.data
     },
-    enabled: !!organizationId && !!user?.id
+    enabled: !!organizationId && !!user?.id,
+    // ✅ PERFORMANCE: Smart caching for staff (changes infrequently)
+    staleTime: 30000, // 30 seconds - staff roster doesn't change often
+    gcTime: 5 * 60 * 1000 // 5 minutes in cache
   })
 
   // ============================================================================
@@ -311,27 +299,8 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
   // ============================================================================
 
   const policies: LeavePolicy[] = React.useMemo(() => {
-    console.log('🔍 [useHeraLeave] Transforming policies:', {
-      hasPoliciesData: !!policiesData,
-      policiesDataKeys: policiesData ? Object.keys(policiesData) : [],
-      listLength: policiesData?.list?.length || 0,
-      itemsLength: policiesData?.items?.length || 0,
-      policiesDataStructure: policiesData ? JSON.stringify(policiesData, null, 2).substring(0, 800) : 'null'
-    })
-
-    // ✅ FIXED: Response structure is data.list, each item has {entity, dynamic_data, relationships}
-    // Try multiple paths: data.list (RPC wrapper), list (direct), items (fallback)
     const list = policiesData?.data?.list || policiesData?.list || policiesData?.items || []
-    if (!list.length) {
-      console.log('⚠️ [useHeraLeave] No policies in list', {
-        hasDataList: !!policiesData?.data?.list,
-        hasList: !!policiesData?.list,
-        hasItems: !!policiesData?.items
-      })
-      return []
-    }
-
-    console.log('🔍 [useHeraLeave] Processing', list.length, 'policies')
+    if (!list.length) return []
 
     // Transform to LeavePolicy objects (return ALL, filtering happens in UI)
     return list.map((item: any) => {
@@ -374,26 +343,8 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
   }, [policiesData])
 
   const staff = React.useMemo(() => {
-    console.log('🔍 [useHeraLeave] Transforming staff:', {
-      hasStaffData: !!staffData,
-      staffDataKeys: staffData ? Object.keys(staffData) : [],
-      listLength: staffData?.list?.length || 0,
-      itemsLength: staffData?.items?.length || 0
-    })
-
-    // ✅ FIXED: Response structure is data.list, each item has {entity, dynamic_data, relationships}
-    // Try multiple paths: data.list (RPC wrapper), list (direct), items (fallback)
     const list = staffData?.data?.list || staffData?.list || staffData?.items || []
-    if (!list.length) {
-      console.log('⚠️ [useHeraLeave] No staff in list', {
-        hasDataList: !!staffData?.data?.list,
-        hasList: !!staffData?.list,
-        hasItems: !!staffData?.items
-      })
-      return []
-    }
-
-    console.log('🔍 [useHeraLeave] Processing', list.length, 'staff members')
+    if (!list.length) return []
 
     return list.map((item: any) => {
       // Extract entity and dynamic_data from the item
@@ -429,7 +380,14 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
     const staffMap = new Map(staff.map(s => [s.id, s.entity_name]))
 
-    return requestsData.items.map((txn: any) => ({
+    // ✅ FILTER: Exclude soft-deleted transactions AND enforce LEAVE transaction type
+    // 🐛 WORKAROUND: RPC hera_txn_crud_v1 QUERY action ignores transaction_type filter
+    // Filter client-side until RPC is fixed
+    const activeTransactions = requestsData.items.filter((txn: any) =>
+      !txn.deleted_at && txn.transaction_type === 'LEAVE'
+    )
+
+    return activeTransactions.map((txn: any) => ({
       id: txn.id,
       transaction_code: txn.transaction_code,
       transaction_date: txn.transaction_date,
@@ -441,15 +399,19 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
       start_date: txn.metadata?.start_date,
       end_date: txn.metadata?.end_date,
       total_days: txn.metadata?.total_days || txn.total_amount,
+      isHalfDay: txn.metadata?.isHalfDay || false,
+      halfDayPeriod: txn.metadata?.halfDayPeriod || undefined,
       reason: txn.metadata?.reason || '',
       notes: txn.metadata?.notes,
       status: txn.transaction_status || 'submitted',
       submitted_at: txn.metadata?.submitted_at || txn.created_at,
       approved_at: txn.metadata?.approved_at,
       approved_by: txn.metadata?.approved_by,
+      approved_by_name: txn.metadata?.approved_by_name, // ✅ Extract stored approver name
       approval_notes: txn.metadata?.approval_notes,
       rejected_at: txn.metadata?.rejected_at,
       rejected_by: txn.metadata?.rejected_by,
+      rejected_by_name: txn.metadata?.rejected_by_name, // ✅ Extract stored rejector name
       rejection_reason: txn.metadata?.rejection_reason,
       smart_code: txn.smart_code
     }))
@@ -553,14 +515,6 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         throw new Error('User ID required for policy creation')
       }
 
-      // ✅ Use callRPC with correct parameter format (entity_type inside p_entity)
-      console.log('🔍 [useHeraLeave] Creating policy with params:', {
-        actor: user.id,
-        org: organizationId,
-        policy_name: data.policy_name,
-        leave_type: data.leave_type
-      })
-
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'CREATE',
         p_actor_user_id: user.id,
@@ -650,23 +604,11 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         }
       })
 
-      console.log('🔍 [useHeraLeave] CREATE result:', {
-        hasError: !!result.error,
-        hasData: !!result.data,
-        success: result.data?.success,
-        action: result.data?.action,
-        entityId: result.data?.entity_id,
-        fullResult: JSON.stringify(result, null, 2)
-      })
-
       if (result.error) {
-        console.error('❌ [useHeraLeave] RPC error:', result.error)
         throw new Error(result.error.message || 'Failed to create policy')
       }
 
-      // Check if the RPC returned success
       if (result.data && !result.data.success) {
-        console.error('❌ [useHeraLeave] RPC returned failure:', result.data)
         throw new Error(result.data.error || 'RPC returned failure')
       }
 
@@ -701,14 +643,6 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         active?: boolean
       }
     }) => {
-      console.log('🚀 [useHeraLeave] UPDATE POLICY MUTATION TRIGGERED:', {
-        id,
-        dataKeys: Object.keys(data),
-        hasUser: !!user?.id,
-        userId: user?.id,
-        organizationId
-      })
-
       if (!user?.id) {
         throw new Error('User ID required for policy update')
       }
@@ -848,20 +782,13 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         throw new Error('User ID required for policy archive')
       }
 
-      console.log('🔍 [useHeraLeave] Archiving policy:', {
-        id,
-        actor: user.id,
-        org: organizationId
-      })
-
-      // ✅ SIMPLE: Only update entity.status (like services page) - no dynamic fields needed
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'UPDATE',
         p_actor_user_id: user.id,
         p_organization_id: organizationId,
         p_entity: {
           entity_id: id,
-          status: 'archived'  // ✅ Only update status at entity level
+          status: 'archived'
         },
         p_options: {
           include_dynamic: true,
@@ -869,15 +796,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         }
       })
 
-      console.log('🔍 [useHeraLeave] Archive result:', {
-        hasError: !!result.error,
-        hasData: !!result.data,
-        success: result.data?.success,
-        fullResult: JSON.stringify(result, null, 2)
-      })
-
       if (result.error) {
-        console.error('❌ [useHeraLeave] Archive RPC error:', result.error)
         throw new Error(result.error.message || 'Failed to archive policy')
       }
 
@@ -988,7 +907,8 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
   const createRequestMutation = useMutation({
     mutationFn: async (data: CreateLeaveRequestInput) => {
-      const totalDays = calculateDays(data.start_date, data.end_date)
+      // ✅ Use provided totalDays (respects half-day = 0.5) or calculate if not provided
+      const totalDays = data.totalDays ?? calculateDays(data.start_date, data.end_date)
       const transactionCode = generateTransactionCode(year)
 
       // Use the createTransaction function from useUniversalTransactionV1
@@ -999,13 +919,15 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         transaction_date: new Date().toISOString(),
         source_entity_id: data.staff_id, // Who is taking leave
         target_entity_id: data.manager_id, // Manager approving
-        total_amount: totalDays,
-        transaction_status: 'submitted',
+        total_amount: totalDays, // ✅ Now respects half-day (0.5)
+        transaction_status: data.status || 'submitted', // ✅ Use provided status or default to submitted
         metadata: {
           leave_type: data.leave_type,
           start_date: data.start_date,
           end_date: data.end_date,
-          total_days: totalDays,
+          total_days: totalDays, // ✅ Store correct value (0.5 for half-day)
+          isHalfDay: data.isHalfDay || false, // ✅ Store half-day flag for audit trail
+          halfDayPeriod: data.halfDayPeriod || null, // ✅ Store morning/afternoon selection
           reason: data.reason,
           notes: data.notes,
           submitted_at: new Date().toISOString()
@@ -1014,10 +936,10 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
           {
             line_number: 1,
             line_type: 'LEAVE',
-            description: `${data.leave_type} Leave: ${totalDays} days`,
-            quantity: totalDays,
+            description: `${data.leave_type} Leave: ${totalDays} day${totalDays !== 1 ? 's' : ''}`,
+            quantity: totalDays, // ✅ Correct quantity (0.5 for half-day)
             unit_amount: 1,
-            line_amount: totalDays,
+            line_amount: totalDays, // ✅ Correct amount (0.5 for half-day)
             smart_code: `HERA.SALON.HR.LINE.${data.leave_type}.v1`
           }
         ]
@@ -1033,14 +955,37 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ requestId, status, notes }: { requestId: string; status: string; notes?: string }) => {
-      // Build updated metadata
-      const updatedMetadata: Record<string, any> = {}
+      // ✅ CRITICAL FIX: Find existing request to merge metadata (don't lose existing data)
+      const existingRequest = requests.find(r => r.id === requestId)
+      if (!existingRequest) {
+        throw new Error('Request not found')
+      }
+
+      // Build updated metadata - MERGE with existing metadata
+      const updatedMetadata: Record<string, any> = {
+        // ✅ Preserve existing metadata fields
+        leave_type: existingRequest.leave_type,
+        start_date: existingRequest.start_date,
+        end_date: existingRequest.end_date,
+        total_days: existingRequest.total_days,
+        reason: existingRequest.reason,
+        notes: existingRequest.notes,
+        submitted_at: existingRequest.submitted_at
+      }
+
+      // Add status-specific fields
       if (status === 'approved') {
         updatedMetadata.approved_at = new Date().toISOString()
         updatedMetadata.approval_notes = notes
+        updatedMetadata.approved_by = user?.id
+        // ✅ Store approver name for reports (eliminates need for USER entity lookup)
+        updatedMetadata.approved_by_name = user?.entity_name || user?.name || 'Unknown User'
       } else if (status === 'rejected') {
         updatedMetadata.rejected_at = new Date().toISOString()
         updatedMetadata.rejection_reason = notes
+        updatedMetadata.rejected_by = user?.id
+        // ✅ Store rejector name for reports (eliminates need for USER entity lookup)
+        updatedMetadata.rejected_by_name = user?.entity_name || user?.name || 'Unknown User'
       }
 
       // Use the updateTransaction function from useUniversalTransactionV1
@@ -1061,38 +1006,46 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
   // ✅ NEW: Update leave request mutation (edit request details)
   const updateRequestMutation = useMutation({
     mutationFn: async ({ requestId, data }: { requestId: string; data: Partial<CreateLeaveRequestInput> }) => {
-      console.log('📝 [useHeraLeave] UPDATE REQUEST MUTATION:', { requestId, dataKeys: Object.keys(data) })
-
       // Find existing request to merge data
       const existingRequest = requests.find(r => r.id === requestId)
       if (!existingRequest) {
         throw new Error('Request not found')
       }
 
-      // Recalculate total days if dates changed
+      // ✅ Use provided totalDays (respects half-day = 0.5) or calculate if not provided
       const startDate = data.start_date || existingRequest.start_date
       const endDate = data.end_date || existingRequest.end_date
-      const totalDays = calculateDays(startDate, endDate)
+      const totalDays = data.totalDays ?? calculateDays(startDate, endDate)
 
       // Build updated metadata
       const updatedMetadata: Record<string, any> = {
         leave_type: data.leave_type || existingRequest.leave_type,
         start_date: startDate,
         end_date: endDate,
-        total_days: totalDays,
+        total_days: totalDays, // ✅ Store correct value (0.5 for half-day)
+        isHalfDay: data.isHalfDay ?? false, // ✅ Store half-day flag for audit trail
+        halfDayPeriod: data.halfDayPeriod || null, // ✅ Store morning/afternoon selection
         reason: data.reason || existingRequest.reason,
         notes: data.notes !== undefined ? data.notes : existingRequest.notes,
         submitted_at: existingRequest.submitted_at
       }
 
-      // Use the updateTransaction function from useUniversalTransactionV1
-      const result = await updateTransaction({
+      // ✅ CRITICAL FIX: Update transaction_status if status is provided (draft → submitted)
+      const updatePayload: any = {
         transaction_id: requestId,
         source_entity_id: data.staff_id || existingRequest.staff_id,
         target_entity_id: data.manager_id || existingRequest.manager_id,
-        total_amount: totalDays,
+        total_amount: totalDays, // ✅ Now respects half-day (0.5)
         metadata: updatedMetadata
-      })
+      }
+
+      // If status is changing (e.g., draft → submitted), include it
+      if (data.status && data.status !== existingRequest.status) {
+        updatePayload.transaction_status = data.status
+      }
+
+      // Use the updateTransaction function from useUniversalTransactionV1
+      const result = await updateTransaction(updatePayload)
 
       return result
     },
@@ -1105,26 +1058,48 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
   // ✅ NEW: Delete leave request mutation (hard delete)
   const deleteRequestMutation = useMutation({
     mutationFn: async (requestId: string) => {
-      console.log('🗑️ [useHeraLeave] DELETE REQUEST MUTATION:', { requestId })
-
       if (!user?.id) {
         throw new Error('User ID required for request deletion')
       }
 
-      // Call the hera_txn_crud_v1 RPC with DELETE action
+      console.log('🗑️ [useHeraLeave] Deleting leave request:', { requestId, userId: user.id, organizationId })
+
       const result = await callRPC('hera_txn_crud_v1', {
         p_action: 'DELETE',
         p_actor_user_id: user.id,
         p_organization_id: organizationId,
-        p_transaction: {
+        p_payload: {
           transaction_id: requestId
-        },
-        p_options: {}
+        }
       })
 
+      console.log('🗑️ [useHeraLeave] DELETE RPC Response:', {
+        hasError: !!result.error,
+        error: result.error,
+        hasData: !!result.data,
+        data: result.data,
+        fullResult: result
+      })
+
+      // ✅ CRITICAL: Check response format (orchestrator pattern)
       if (result.error) {
+        console.error('❌ [useHeraLeave] DELETE RPC client error:', result.error)
         throw new Error(result.error.message || 'Failed to delete request')
       }
+
+      // Check orchestrator success
+      if (result.data && !result.data.success) {
+        console.error('❌ [useHeraLeave] DELETE orchestrator error:', result.data.error)
+        throw new Error(result.data.error || 'DELETE operation failed')
+      }
+
+      // Check inner success (data.data.success)
+      if (result.data?.data && !result.data.data.success) {
+        console.error('❌ [useHeraLeave] DELETE function error:', result.data.data.error)
+        throw new Error(result.data.data.error || 'DELETE function failed')
+      }
+
+      console.log('✅ [useHeraLeave] Leave request deleted successfully')
 
       return result.data
     },

@@ -17,11 +17,13 @@ import {
   Sparkles,
   Calendar,
   TrendingUp,
-  Filter
+  Filter,
+  LogOut
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import { lazy, Suspense } from 'react'
+import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 
 // Fix: Use lazy instead of dynamic to avoid conflicts
 const HeroMetrics = lazy(() => import('@/components/salon/dashboard/HeroMetrics').then(mod => ({ default: mod.HeroMetrics })))
@@ -108,6 +110,7 @@ function DashboardContent() {
     selectedPeriod: globalPeriod
   })
 
+  // ⚡ PERFORMANCE: No blocking - let progressive loading work
   const isLoading = orgLoading || securityLoading || dashboardLoading
 
   // Refresh all data with animation
@@ -122,31 +125,23 @@ function DashboardContent() {
     }
   }
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: LUXE_COLORS.charcoal }}
-      >
-        <div className="text-center">
-          <div className="relative inline-block">
-            <Loader2
-              className="h-12 w-12 animate-spin"
-              style={{ color: LUXE_COLORS.gold }}
-            />
-            <div
-              className="absolute inset-0 blur-xl opacity-50"
-              style={{ background: LUXE_COLORS.gold }}
-            />
-          </div>
-          <p className="mt-4 text-lg font-medium" style={{ color: LUXE_COLORS.bronze }}>
-            Loading dashboard...
-          </p>
-        </div>
-      </div>
-    )
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      const { supabase } = await import('@/lib/supabase/client')
+      await supabase.auth.signOut()
+      localStorage.removeItem('salonUserName')
+      localStorage.removeItem('salonUserEmail')
+      localStorage.removeItem('salonRole')
+      router.push('/salon/auth')
+    } catch (error) {
+      console.error('Logout error:', error)
+      router.push('/salon/auth')
+    }
   }
+
+  // ⚡ REMOVED BLOCKING LOADER: Page now loads instantly with progressive sections
+  // The 5-stage progressive loading system (Lines 81-91, 557-603) now visible immediately!
 
   // Auth check
   if (!isAuthenticated || !role) {
@@ -170,7 +165,7 @@ function DashboardContent() {
                 : 'No role assigned. Please contact your administrator.'}
             </p>
             <Button
-              onClick={() => router.push('/salon-access')}
+              onClick={() => router.push('/salon/auth')}
               className="w-full"
               style={{
                 backgroundColor: LUXE_COLORS.gold,
@@ -204,6 +199,45 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
+      {/* ⚡ STAGE 1: PREMIUM MOBILE HEADER - Instant load (no blocking) */}
+      <PremiumMobileHeader
+        title={organization?.entity_name || organization?.name || 'Dashboard'}
+        subtitle={isLoading ? 'Loading data...' : `${role ? role.charAt(0).toUpperCase() + role.slice(1) : ''} • ${kpis.totalCustomers || 0} customers`}
+        showNotifications={true}
+        notificationCount={isLoading ? 0 : (kpis.appointmentsByStatus?.pending || 0)}
+        shrinkOnScroll={true}
+        rightAction={
+          <div className="flex items-center gap-2">
+            {/* Refresh Icon */}
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90 transition-transform duration-200"
+              style={{
+                background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}30 0%, ${LUXE_COLORS.emerald}20 100%)`,
+                border: `1px solid ${LUXE_COLORS.emerald}40`
+              }}
+              aria-label="Refresh"
+            >
+              <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} style={{ color: LUXE_COLORS.emerald }} />
+            </button>
+
+            {/* Logout Icon */}
+            <button
+              onClick={handleLogout}
+              className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90 transition-transform duration-200"
+              style={{
+                background: `linear-gradient(135deg, ${LUXE_COLORS.ruby}30 0%, ${LUXE_COLORS.ruby}20 100%)`,
+                border: `1px solid ${LUXE_COLORS.ruby}40`
+              }}
+              aria-label="Logout"
+            >
+              <LogOut className="w-5 h-5" style={{ color: LUXE_COLORS.ruby }} />
+            </button>
+          </div>
+        }
+      />
+
       {/* Elegant gradient background overlay */}
       <div
         className="fixed inset-0 pointer-events-none"
@@ -217,9 +251,9 @@ function DashboardContent() {
         }}
       />
 
-      {/* Premium Header */}
+      {/* Premium Desktop Header - Hidden on Mobile */}
       <div
-        className="sticky top-0 z-30 mb-8"
+        className="hidden md:block sticky top-0 z-30 mb-8"
         style={{
           background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`,
           border: `1px solid ${LUXE_COLORS.gold}20`,
@@ -334,10 +368,10 @@ function DashboardContent() {
                     localStorage.removeItem('salonUserName')
                     localStorage.removeItem('salonUserEmail')
                     localStorage.removeItem('salonRole')
-                    router.push('/salon-access')
+                    router.push('/salon/auth')
                   } catch (error) {
                     console.error('Logout error:', error)
-                    router.push('/salon-access')
+                    router.push('/salon/auth')
                   }
                 }}
                 variant="outline"
@@ -357,9 +391,9 @@ function DashboardContent() {
         </div>
       </div>
 
-      {/* ✅ ENTERPRISE: Global Period Filter Bar */}
+      {/* ✅ ENTERPRISE: Global Period Filter Bar - Desktop Only */}
       <div
-        className="sticky top-[120px] z-20 mb-6"
+        className="hidden md:block sticky top-[120px] z-20 mb-6"
         style={{
           background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark}F0 0%, ${LUXE_COLORS.charcoal}F0 100%)`,
           border: `1px solid ${LUXE_COLORS.gold}15`,
@@ -462,6 +496,37 @@ function DashboardContent() {
         </div>
       </div>
 
+      {/* 📱 MOBILE PERIOD FILTER */}
+      <div className="md:hidden px-4 mb-6">
+        {/* Mobile Period Filter - Horizontal Scroll */}
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+          {(['today', 'last7Days', 'last30Days', 'yearToDate', 'allTime'] as TimePeriod[]).map((period) => (
+            <button
+              key={period}
+              onClick={() => setGlobalPeriod(period)}
+              className="flex-shrink-0 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 active:scale-95"
+              style={{
+                background:
+                  globalPeriod === period
+                    ? `linear-gradient(135deg, ${LUXE_COLORS.gold}50 0%, ${LUXE_COLORS.gold}30 100%)`
+                    : `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}60 0%, ${LUXE_COLORS.charcoal}60 100%)`,
+                border:
+                  globalPeriod === period
+                    ? `1px solid ${LUXE_COLORS.gold}80`
+                    : `1px solid ${LUXE_COLORS.bronze}20`,
+                color: globalPeriod === period ? LUXE_COLORS.champagne : LUXE_COLORS.bronze,
+                boxShadow:
+                  globalPeriod === period
+                    ? `0 0 16px ${LUXE_COLORS.gold}30`
+                    : undefined
+              }}
+            >
+              {getPeriodLabel(period)}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Compliance Alert Banner - 30-Day Expiry Notifications */}
@@ -535,10 +600,21 @@ function DashboardContent() {
 
         {/* Footer Spacer */}
         <div className="h-8" />
+
+        {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}
+        <div className="h-24 md:h-0" />
       </div>
 
       {/* Global animations */}
       <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+
         @keyframes fadeInUp {
           from {
             opacity: 0;

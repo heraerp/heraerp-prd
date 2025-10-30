@@ -25,11 +25,162 @@ import {
   ArrowRight
 } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
+import { useToast } from '@/hooks/use-toast'
+import { entityCRUD } from '@/lib/universal-api-v2-client'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function SalonSettingsPage() {
   const router = useRouter()
-  const { organizationId, role, user } = useSecuredSalonContext()
+  const { organizationId, role, user: contextUser, organizationDetails } = useSecuredSalonContext()
+  const { user } = useHERAAuth()  // Get actor user ID for RPC
+  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState('general')
+
+  // Form state for organization settings
+  const [organizationName, setOrganizationName] = useState('')
+  const [legalName, setLegalName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [address, setAddress] = useState('')
+  const [trn, setTrn] = useState('')
+  const [currency, setCurrency] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+
+  // Initialize form state from context when data loads
+  useEffect(() => {
+    if (organizationDetails) {
+      setOrganizationName(organizationDetails.name || '')
+      setLegalName(organizationDetails.legal_name || '')
+      setPhone(organizationDetails.phone || '')
+      setEmail(organizationDetails.email || '')
+      setAddress(organizationDetails.address || '')
+      setTrn(organizationDetails.trn || '')
+      setCurrency(organizationDetails.currency || 'AED')
+    }
+  }, [organizationDetails])
+
+  // Save organization settings using direct RPC call
+  const handleSaveOrganizationSettings = async () => {
+    if (!organizationId) {
+      toast({
+        title: 'Error',
+        description: 'No organization context found',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    if (!user?.id) {
+      toast({
+        title: 'Error',
+        description: 'User session not found',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    setIsSaving(true)
+
+    // Build dynamic fields in SIMPLE RPC format (matches useUniversalEntityV1 pattern)
+    // ✅ FIXED: Use simple { value, type, smart_code } format that matches hera_entities_crud_v1
+    const p_dynamic = {
+      organization_name: {
+        value: organizationName,
+        type: 'text',
+        smart_code: 'HERA.SALON.ORGANIZATION.FIELD.NAME.v1'
+      },
+      legal_name: {
+        value: legalName,
+        type: 'text',
+        smart_code: 'HERA.SALON.ORGANIZATION.FIELD.LEGAL_NAME.v1'
+      },
+      phone: {
+        value: phone,
+        type: 'text',
+        smart_code: 'HERA.SALON.ORGANIZATION.FIELD.PHONE.v1'
+      },
+      email: {
+        value: email,
+        type: 'text',
+        smart_code: 'HERA.SALON.ORGANIZATION.FIELD.EMAIL.v1'
+      },
+      address: {
+        value: address,
+        type: 'text',
+        smart_code: 'HERA.SALON.ORGANIZATION.FIELD.ADDRESS.v1'
+      },
+      trn: {
+        value: trn,
+        type: 'text',
+        smart_code: 'HERA.SALON.ORGANIZATION.FIELD.TRN.v1'
+      },
+      currency: {
+        value: currency,
+        type: 'text',
+        smart_code: 'HERA.SALON.ORGANIZATION.FIELD.CURRENCY.v1'
+      }
+    }
+
+    try {
+      console.log('[Settings] 🔍 Calling entityCRUD UPDATE with:', {
+        entity_id: organizationId,
+        actor_user_id: user.id,
+        organization_id: organizationId,
+        dynamic_fields_count: Object.keys(p_dynamic).length
+      })
+
+      // Call RPC directly with SIMPLE format (matches useUniversalEntityV1's transformDynamicFieldsToRPCSimple)
+      const { data, error } = await entityCRUD({
+        p_action: 'UPDATE',
+        p_actor_user_id: user.id,
+        p_organization_id: organizationId,
+        p_entity: {
+          entity_id: organizationId
+        },
+        p_dynamic,
+        p_options: {
+          include_dynamic: true
+        }
+      })
+
+      if (error) {
+        console.error('[Settings] RPC Error:', error)
+        throw new Error(typeof error === 'string' ? error : JSON.stringify(error))
+      }
+
+      console.log('[Settings] Save successful:', data)
+
+      toast({
+        title: 'Success',
+        description: 'Organization settings saved successfully',
+        variant: 'default'
+      })
+
+      // ✅ FIXED: Don't reload the page (services page pattern)
+      // The form already has the updated values (user just entered them)
+      // Changes are persisted to database and will be loaded on next visit
+      // SecuredSalonProvider will load latest data when context is reinitialized
+
+      console.log('[Settings] ✅ Settings saved successfully - no page reload needed')
+    } catch (error: any) {
+      console.error('[Settings] Error saving organization settings:', {
+        error,
+        errorMessage: error.message,
+        errorString: String(error),
+        organizationId,
+        userId: user?.id,
+        dynamicFields: Object.keys(p_dynamic || {})
+      })
+
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to save organization settings',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
@@ -68,17 +219,19 @@ export default function SalonSettingsPage() {
                 }}
               >
                 <CardHeader>
-                  <CardTitle style={{ color: LUXE_COLORS.gold }}>Salon Information</CardTitle>
+                  <CardTitle style={{ color: LUXE_COLORS.gold }}>Organization Information</CardTitle>
                   <CardDescription style={{ color: LUXE_COLORS.bronze }}>
-                    Basic information about your salon
+                    Basic information about your organization
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label style={{ color: LUXE_COLORS.bronze }}>Salon Name</Label>
+                      <Label style={{ color: LUXE_COLORS.bronze }}>Organization Name</Label>
                       <Input
-                        defaultValue="HairTalkz"
+                        value={organizationName}
+                        onChange={(e) => setOrganizationName(e.target.value)}
+                        placeholder="Enter organization name"
                         style={{
                           backgroundColor: LUXE_COLORS.charcoal,
                           border: `1px solid ${LUXE_COLORS.bronze}30`,
@@ -87,9 +240,11 @@ export default function SalonSettingsPage() {
                       />
                     </div>
                     <div>
-                      <Label style={{ color: LUXE_COLORS.bronze }}>Phone Number</Label>
+                      <Label style={{ color: LUXE_COLORS.bronze }}>Legal Name</Label>
                       <Input
-                        defaultValue="+971 4 123 4567"
+                        value={legalName}
+                        onChange={(e) => setLegalName(e.target.value)}
+                        placeholder="Enter legal name (optional)"
                         style={{
                           backgroundColor: LUXE_COLORS.charcoal,
                           border: `1px solid ${LUXE_COLORS.bronze}30`,
@@ -98,10 +253,43 @@ export default function SalonSettingsPage() {
                       />
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label style={{ color: LUXE_COLORS.bronze }}>Phone Number</Label>
+                      <Input
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+971 4 123 4567"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal,
+                          border: `1px solid ${LUXE_COLORS.bronze}30`,
+                          color: LUXE_COLORS.champagne
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label style={{ color: LUXE_COLORS.bronze }}>Email Address</Label>
+                      <Input
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="info@example.com"
+                        type="email"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal,
+                          border: `1px solid ${LUXE_COLORS.bronze}30`,
+                          color: LUXE_COLORS.champagne
+                        }}
+                      />
+                    </div>
+                  </div>
+
                   <div>
                     <Label style={{ color: LUXE_COLORS.bronze }}>Address</Label>
                     <Input
-                      defaultValue="123 Sheikh Zayed Road, Dubai, UAE"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="Enter complete address"
                       style={{
                         backgroundColor: LUXE_COLORS.charcoal,
                         border: `1px solid ${LUXE_COLORS.bronze}30`,
@@ -109,10 +297,56 @@ export default function SalonSettingsPage() {
                       }}
                     />
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label style={{ color: LUXE_COLORS.bronze }}>Tax Registration Number (TRN)</Label>
+                      <Input
+                        value={trn}
+                        onChange={(e) => setTrn(e.target.value)}
+                        placeholder="Enter TRN"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal,
+                          border: `1px solid ${LUXE_COLORS.bronze}30`,
+                          color: LUXE_COLORS.champagne
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label style={{ color: LUXE_COLORS.bronze }}>Currency</Label>
+                      <Input
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        placeholder="AED"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal,
+                          border: `1px solid ${LUXE_COLORS.bronze}30`,
+                          color: LUXE_COLORS.champagne
+                        }}
+                      />
+                      <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                        Current symbol: {organizationDetails?.currencySymbol || 'AED'}
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="flex justify-end">
-                    <Button style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
-                      <Save className="h-4 w-4 mr-2" />
-                      Save Changes
+                    <Button
+                      onClick={handleSaveOrganizationSettings}
+                      disabled={isSaving}
+                      style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}
+                    >
+                      {isSaving ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4 mr-2" />
+                          Save Changes
+                        </>
+                      )}
                     </Button>
                   </div>
                 </CardContent>

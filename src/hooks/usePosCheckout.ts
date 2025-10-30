@@ -4,27 +4,28 @@
 // Maps POS cart to universal_transaction payload with auto-journal posting
 //
 // ARCHITECTURE:
-// - Uses UNIVERSAL HOOKS: useUniversalTransaction (RPC API v2)
+// - Uses UNIVERSAL HOOKS: useUniversalTransactionV1 (hera_txn_crud_v1 RPC)
 // - Layer 2: Business logic for POS checkout
 // - Handles cart calculation, line item building, payment validation
+// - ✅ ENTERPRISE: Atomic transaction creation (header + lines in one call)
 // ================================================================================
 
 'use client'
 
 import { useState } from 'react'
-import { useUniversalTransaction } from './useUniversalTransaction'
+import { useUniversalTransactionV1 } from './useUniversalTransactionV1'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
 import { FinanceDNAServiceV2, FinanceGuardrails } from '@/lib/dna/integration/finance-integration-dna-v2'
 import type { UniversalFinanceEventV2 } from '@/lib/dna/integration/finance-integration-dna-v2'
 
 // Smart code templates for POS transactions
 const SMART_CODES = {
-  POS_SALE: 'HERA.SALON.TXN.SALE.CREATE.V1',
-  SERVICE_COMPLETE: 'HERA.SALON.TXN.SERVICE.COMPLETE.V1',
-  PRODUCT_SALE: 'HERA.SALON.TXN.PRODUCT.SALE.V1',
-  CASH_PAYMENT: 'HERA.SALON.POS.PAYMENT.CASH.V1',
-  CARD_PAYMENT: 'HERA.SALON.POS.PAYMENT.CARD.V1',
-  STAFF_COMMISSION: 'HERA.SALON.POS.LINE.COMMISSION.EXPENSE.V1'
+  POS_SALE: 'HERA.SALON.TXN.SALE.CREATE.v1',
+  SERVICE_COMPLETE: 'HERA.SALON.SVC.LINE.STANDARD.v1',
+  PRODUCT_SALE: 'HERA.SALON.RETAIL.LINE.PRODUCT.v1',
+  CASH_PAYMENT: 'HERA.SALON.PAYMENT.CAPTURE.CASH.v1',
+  CARD_PAYMENT: 'HERA.SALON.PAYMENT.CAPTURE.CARD.v1',
+  STAFF_COMMISSION: 'HERA.SALON.POS.LINE.COMMISSION.EXPENSE.v1'
 } as const
 
 // Generate transaction code
@@ -55,6 +56,7 @@ interface PosCheckoutData {
   customer_id?: string
   appointment_id?: string
   branch_id?: string // Branch where sale occurred
+  transaction_date?: string // ✅ NEW: ISO string for custom transaction date (for old bills)
   items: PosCartItem[]
   payments: PosPayment[]
   tax_rate?: number
@@ -74,12 +76,12 @@ export function usePosCheckout(): UsePosCheckoutReturn {
   const [isProcessing, setIsProcessing] = useState(false)
   const { currentOrganization } = useOrganization()
 
-  // ✅ LAYER 1: Use useUniversalTransaction (RPC API v2)
+  // ✅ LAYER 1: Use useUniversalTransactionV1 (RPC hera_txn_crud_v1)
   const {
     create: createTransaction,
     isCreating,
     error: txnError
-  } = useUniversalTransaction({
+  } = useUniversalTransactionV1({
     organizationId: currentOrganization?.id
   })
 
@@ -102,6 +104,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         customer_id,
         appointment_id,
         branch_id,
+        transaction_date, // ✅ NEW: Custom date for old bills
         items,
         payments,
         tax_rate = 0.05,
@@ -197,7 +200,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           quantity: 1,
           unit_amount: -discount_total,
           line_amount: -discount_total,
-          smart_code: 'HERA.SALON.DISCOUNT.TXN.V1'
+          smart_code: 'HERA.SALON.POS.ADJUST.DISCOUNT.CART.v1'
         })
       }
 
@@ -211,7 +214,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           quantity: 1,
           unit_amount: tip_total,
           line_amount: tip_total,
-          smart_code: 'HERA.SALON.TIP.TXN.V1'
+          smart_code: 'HERA.SALON.POS.TIP.CARD.v1'
         })
       }
 
@@ -225,7 +228,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           quantity: 1,
           unit_amount: tax_amount,
           line_amount: tax_amount,
-          smart_code: 'HERA.SALON.TAX.VAT.TXN.V1'
+          smart_code: 'HERA.SALON.TAX.AE.VAT.STANDARD.v1'
         })
       }
 
@@ -323,15 +326,20 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         }
       }
 
-      // ✅ LAYER 1: Use createTransaction from useUniversalTransaction (RPC API v2)
+      // ✅ NEW: Determine if this is a backdated transaction
+      const actualTransactionDate = transaction_date || new Date().toISOString()
+      const isBackdated = !!transaction_date
+      const entryDate = new Date().toISOString()
+
+      // ✅ LAYER 1: Use createTransaction from useUniversalTransactionV1 (RPC hera_txn_crud_v1)
       const result = await createTransaction({
         transaction_type: 'SALE', // ✅ UPPERCASE - matches HERA DNA standard
-        smart_code: 'HERA.SALON.TXN.SALE.CREATE.V1',
-        transaction_date: new Date().toISOString(),
+        smart_code: 'HERA.SALON.TXN.SALE.CREATE.v1', // ✅ lowercase 'v' required by RPC validation
+        transaction_date: actualTransactionDate, // ✅ Use custom date if provided, else current date
         source_entity_id: customer_id || null,
         target_entity_id: primaryStaffId, // ✅ Set to staff entity ID (like appointments)
         total_amount,
-        status: 'completed', // POS sales are immediately completed
+        transaction_status: 'completed', // ✅ FIX: Use transaction_status (not status)
         metadata: {
           subtotal,
           discount_total,
@@ -343,6 +351,13 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           pos_session: Date.now().toString(),
           appointment_id, // Store appointment ID in metadata
           branch_id, // ✅ Store branch ID for location tracking
+          // ✅ NEW: Backdated transaction audit trail
+          ...(isBackdated ? {
+            is_backdated: true,
+            transaction_date: actualTransactionDate, // Historical date
+            entry_date: entryDate, // When it was actually entered
+            backdated_reason: 'Historical bill entry via POS'
+          } : {}),
           // Enterprise-grade tracking: link to all entities (filter out custom temporary IDs)
           customer_entity_id: customer_id,
           staff_entity_id: primaryStaffId,
@@ -356,59 +371,179 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         lines
       })
 
-      // Extract transaction ID from RPC response
-      const transactionId = typeof result.data === 'string' ? result.data : result.data?.transaction_id || result.data?.id
+      // ✅ FIX: Extract transaction ID from hera_txn_crud_v1 response
+      // useUniversalTransactionV1 returns the transformed transaction directly
+      const transactionId = result?.id || result?.data?.id
 
-      // ✅ LAYER 2: Finance DNA v2 Auto-Journal Processing
-      let autoJournalResult = null
-      if (financeDNA && transactionId && currentOrganization?.id) {
-        try {
-          // Create Finance DNA v2 event
-          const financeEvent: UniversalFinanceEventV2 = {
-            organization_id: currentOrganization.id,
-            transaction_id: transactionId,
-            transaction_type: 'SALE',
-            smart_code: 'HERA.SALON.FINANCE.TXN.REVENUE.SERVICE.V1', // Use Finance DNA v2 smart code
-            transaction_date: new Date().toISOString(),
-            total_amount,
-            transaction_currency_code: 'AED',
-            metadata: {
-              subtotal,
-              discount_total,
-              tax_amount,
-              tax_rate,
-              payment_methods: payments.map(p => p.method),
-              pos_session: Date.now().toString(),
-              original_smart_code: 'HERA.SALON.TXN.SALE.CREATE.V1'
-            },
-            business_context: {
-              industry: 'salon',
-              transaction_source: 'pos',
-              payment_immediate: true,
-              vat_applicable: tax_amount > 0,
-              vat_rate: tax_rate
-            },
-            v2_enhancements: {
-              view_optimized: true,
-              rpc_processed: true,
-              performance_tier: 'standard',
-              real_time_insights: true
-            }
+      // ═══════════════════════════════════════════════════════════════════════════
+      // ✅ GL JOURNAL AUTO-POSTING via hera_txn_crud_v1
+      // Creates balanced GL entries using same RPC as POS sale
+      // ═══════════════════════════════════════════════════════════════════════════
+
+      let glJournalId = null
+      try {
+        // Build GL lines with proper debit/credit balance
+        const glLines = []
+        let glLineNum = 1
+
+        // ──────────────────────────────────────────────────────────────────────────
+        // DEBIT SIDE
+        // ──────────────────────────────────────────────────────────────────────────
+
+        // DR: Cash/Card (net amount collected)
+        glLines.push({
+          line_number: glLineNum++,
+          line_type: 'gl',
+          description: `Cash/Card received - Sale ${result.transaction_code || 'POS'}`,
+          line_amount: total_amount,
+          smart_code: 'HERA.SALON.FINANCE.GL.LINE.CASH.v1',
+          line_data: {
+            side: 'DR',
+            account: payments[0]?.method === 'cash' ? '110000' : '110100',
+            currency: 'AED',
+            payment_method: payments[0]?.method
           }
+        })
 
-          // Process the event through Finance DNA v2
-          autoJournalResult = await financeDNA.processEvent(financeEvent)
-
-          console.log('[Finance DNA v2] Auto-journal result:', {
-            success: autoJournalResult.success,
-            outcome: autoJournalResult.outcome,
-            performance: autoJournalResult.performance_metrics
+        // DR: Discount Given (promotional expense)
+        if (discount_total > 0) {
+          glLines.push({
+            line_number: glLineNum++,
+            line_type: 'gl',
+            description: 'Promotional discount given to customer',
+            line_amount: discount_total,
+            smart_code: 'HERA.SALON.FINANCE.GL.LINE.DISCOUNT.v1',
+            line_data: {
+              side: 'DR',
+              account: '550000',
+              currency: 'AED',
+              discount_percentage: ((discount_total / subtotal) * 100).toFixed(2)
+            }
           })
-
-        } catch (autoJournalError) {
-          console.warn('[Finance DNA v2] Auto-journal failed (non-blocking):', autoJournalError)
-          // Don't fail the POS transaction if auto-journal fails
         }
+
+        // ──────────────────────────────────────────────────────────────────────────
+        // CREDIT SIDE
+        // ──────────────────────────────────────────────────────────────────────────
+
+        // CR: Service Revenue (GROSS amount before discount)
+        glLines.push({
+          line_number: glLineNum++,
+          line_type: 'gl',
+          description: 'Service revenue (gross)',
+          line_amount: subtotal,
+          smart_code: 'HERA.SALON.FINANCE.GL.LINE.REVENUE.v1',
+          line_data: {
+            side: 'CR',
+            account: '410000',
+            currency: 'AED',
+            revenue_type: 'service'
+          }
+        })
+
+        // CR: VAT Payable
+        if (tax_amount > 0) {
+          glLines.push({
+            line_number: glLineNum++,
+            line_type: 'gl',
+            description: `VAT payable (${(tax_rate * 100).toFixed(1)}%)`,
+            line_amount: tax_amount,
+            smart_code: 'HERA.SALON.FINANCE.GL.LINE.VAT.v1',
+            line_data: {
+              side: 'CR',
+              account: '230000',
+              currency: 'AED',
+              tax_rate,
+              tax_base: subtotal - discount_total
+            }
+          })
+        }
+
+        // CR: Tips Payable
+        if (tip_total > 0) {
+          glLines.push({
+            line_number: glLineNum++,
+            line_type: 'gl',
+            description: 'Tips payable to staff',
+            line_amount: tip_total,
+            smart_code: 'HERA.SALON.FINANCE.GL.LINE.TIPS.v1',
+            line_data: {
+              side: 'CR',
+              account: '240000',
+              currency: 'AED'
+            }
+          })
+        }
+
+        // ──────────────────────────────────────────────────────────────────────────
+        // BALANCE VALIDATION (Critical!)
+        // ──────────────────────────────────────────────────────────────────────────
+
+        const totalDR = glLines
+          .filter(l => l.line_data.side === 'DR')
+          .reduce((sum, l) => sum + l.line_amount, 0)
+        const totalCR = glLines
+          .filter(l => l.line_data.side === 'CR')
+          .reduce((sum, l) => sum + l.line_amount, 0)
+
+        console.log('[GL Auto-Post] Balance Check:', {
+          total_dr: totalDR.toFixed(2),
+          total_cr: totalCR.toFixed(2),
+          difference: Math.abs(totalDR - totalCR).toFixed(2),
+          is_balanced: Math.abs(totalDR - totalCR) < 0.01
+        })
+
+        if (Math.abs(totalDR - totalCR) > 0.01) {
+          throw new Error(
+            `GL Entry not balanced: DR ${totalDR.toFixed(2)} != CR ${totalCR.toFixed(2)}`
+          )
+        }
+
+        // ──────────────────────────────────────────────────────────────────────────
+        // CREATE GL JOURNAL TRANSACTION
+        // ──────────────────────────────────────────────────────────────────────────
+
+        const glResult = await createTransaction({
+          transaction_type: 'GL_JOURNAL',
+          smart_code: 'HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v1',
+          transaction_date: actualTransactionDate,
+          source_entity_id: customer_id || null, // ✅ FIX: Must reference core_entities (customer), not transaction
+          target_entity_id: primaryStaffId || null, // Staff entity from core_entities
+          total_amount: 0, // GL journals net to zero
+          transaction_status: 'posted',
+          metadata: {
+            origin_transaction_id: transactionId, // ✅ Link to sale transaction via metadata
+            origin_transaction_code: result.transaction_code,
+            origin_transaction_type: 'SALE',
+            posting_source: 'pos_auto_post',
+            gl_balanced: true,
+            total_dr: totalDR,
+            total_cr: totalCR,
+            gross_revenue: subtotal,
+            discount_given: discount_total,
+            net_revenue: subtotal - discount_total,
+            vat_collected: tax_amount,
+            tips_collected: tip_total,
+            cash_received: total_amount,
+            branch_id // Include branch for tracking
+          },
+          lines: glLines
+        })
+
+        glJournalId = glResult?.id || glResult?.data?.id
+
+        console.log('[GL Auto-Post] ✅ GL Journal Entry created:', {
+          journal_id: glJournalId,
+          gl_lines: glLines.length,
+          gross_revenue: subtotal,
+          discount_expense: discount_total,
+          net_revenue: subtotal - discount_total,
+          cash_received: total_amount
+        })
+
+      } catch (glError) {
+        console.error('[GL Auto-Post] ⚠️ GL posting failed (non-blocking):', glError)
+        // Sale still succeeds - GL posting failure is logged for manual review
       }
 
       return {
@@ -416,13 +551,9 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         transaction_code: generateTransactionCode('SALE'),
         total_amount,
         lines: lines.length,
-        auto_journal_triggered: true,
-        finance_dna_v2: {
-          enabled: !!financeDNA,
-          validation_passed: true,
-          auto_journal_result: autoJournalResult,
-          performance_metrics: autoJournalResult?.performance_metrics
-        }
+        gl_journal_id: glJournalId,
+        gl_posting_status: glJournalId ? 'posted' : 'failed',
+        auto_journal_triggered: true
       }
     } catch (err) {
       console.error('POS checkout error:', err)

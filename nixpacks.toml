@@ -1,17 +1,33 @@
-# nixpacks.toml
-providers = ["node"]
+# HERA ERP Nixpacks Configuration
+# Prevents Chromium/browser installation that was causing build timeouts
+# Updated: Force new deployment trigger
 
-[variables]
-NODE_ENV = "production"
-NEXT_TELEMETRY_DISABLED = "1"
-OTEL_TRACES_EXPORTER = "none"
-OTEL_METRICS_EXPORTER = "none"
+[phases.setup]
+nixPkgs = ["nodejs_20", "openssl"]
 
 [phases.install]
-cmds = ["npm ci"]
+cmds = ["npm ci --omit=dev"]
 
 [phases.build]
 cmds = ["npm run build"]
 
-[start]
-cmd = "next start -H 0.0.0.0 -p $PORT"
+[phases.start]
+cmd = "npm start"
+
+[variables]
+# Next.js optimizations
+NEXT_TELEMETRY_DISABLED = "1"
+NODE_ENV = "production"
+
+# 🚨 CRITICAL: Skip browser downloads (fixes timeout issue)
+PUPPETEER_SKIP_DOWNLOAD = "1"
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "1" 
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
+PLAYWRIGHT_BROWSERS_PATH = "0"
+
+# Prevent GUI dependencies
+DISPLAY = ""
+HEADLESS = "true"
+
+# Performance optimizations
+NODE_OPTIONS = "--max-old-space-size=4096"

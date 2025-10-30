@@ -71,7 +71,6 @@ import {
   Train,
   Car,
   Bus,
-  Motorcycle,
   Fuel,
   Container,
   Warehouse,
@@ -110,6 +109,7 @@ import {
   CornerDownRight,
   CornerUpRight
 } from 'lucide-react'
+import { Motorcycle } from '@/icons/lucide-shims'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'

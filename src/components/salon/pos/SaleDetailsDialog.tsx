@@ -1,7 +1,8 @@
 // ================================================================================
 // SALE DETAILS DIALOG
 // Smart Code: HERA.SALON.POS.DIALOG.SALE.DETAILS.V1
-// Shows complete transaction details with line items using RPC API v2
+// Shows complete transaction details using hera_txn_crud_v1 RPC (Production Standard)
+// ✅ OPTIMIZED: Lazy loaded component for better performance
 // ================================================================================
 
 'use client'
@@ -62,43 +63,55 @@ export function SaleDetailsDialog({
   const [staff, setStaff] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // ✅ OPTIMIZED: Fetch transaction details when dialog opens
+  // ✅ OPTIMIZED: Fetch transaction details using hera_txn_crud_v1 RPC
   useEffect(() => {
     async function fetchTransactionDetails() {
       if (!open || !saleId || !organizationId) return
 
       setIsLoading(true)
       try {
-        // Step 1: Fetch the transaction using RPC API v2
-        const response = await fetch(
-          `/api/v2/transactions/${saleId}?organization_id=${organizationId}`,
-          {
-            headers: {
-              'x-hera-api-version': 'v2'
-            }
-          }
+        // Step 1: Fetch transaction using hera_txn_crud_v1 RPC (production standard)
+        const { createClient } = await import('@supabase/supabase-js')
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         )
 
-        if (!response.ok) {
+        // ✅ Use hera_txn_crud_v1 RPC - Production standard
+        const { data: rpcData, error: rpcError } = await supabase.rpc('hera_txn_crud_v1', {
+          p_action: 'READ',
+          p_actor_user_id: '00000000-0000-0000-0000-000000000000', // System read
+          p_organization_id: organizationId,
+          p_transaction: {
+            transaction_id: saleId
+          },
+          p_lines: [],
+          p_options: {
+            include_lines: true,
+            limit: 1
+          }
+        })
+
+        if (rpcError) {
+          console.error('[SaleDetailsDialog] RPC error:', rpcError)
           throw new Error('Failed to fetch transaction details')
         }
 
-        const data = await response.json()
-        console.log('[SaleDetailsDialog] Fetched transaction:', {
-          fullData: data,
-          transaction: data.transaction,
-          lines: data.lines,
-          linesCount: data.lines?.length || 0,
-          transaction_number: data.transaction?.transaction_number,
-          transaction_code: data.transaction?.transaction_code,
-          total_amount: data.transaction?.total_amount
+        console.log('[SaleDetailsDialog] ✅ Fetched via hera_txn_crud_v1:', {
+          success: rpcData?.success,
+          transaction: rpcData?.data?.items?.[0],
+          lines: rpcData?.data?.lines,
+          linesCount: rpcData?.data?.lines?.length || 0
         })
 
-        setTransaction(data.transaction || data)
-        setLines(data.lines || [])
+        const transactionData = rpcData?.data?.items?.[0]
+        const linesData = rpcData?.data?.lines || []
+
+        setTransaction(transactionData)
+        setLines(linesData)
 
         // ✅ OPTIMIZED: Parallel fetch customer and staff entities using Promise.all
-        const customerPromise = data.transaction?.source_entity_id
+        const customerPromise = transactionData?.source_entity_id
           ? getEntities('', {
               p_organization_id: organizationId,
               p_entity_type: 'CUSTOMER',
@@ -107,7 +120,7 @@ export function SaleDetailsDialog({
             })
               .then((customerData: any[]) => {
                 const foundCustomer = customerData.find(
-                  (c: any) => c.id === data.transaction.source_entity_id
+                  (c: any) => c.id === transactionData.source_entity_id
                 )
                 return foundCustomer || null
               })
@@ -117,7 +130,7 @@ export function SaleDetailsDialog({
               })
           : Promise.resolve(null)
 
-        const staffPromise = data.transaction?.target_entity_id
+        const staffPromise = transactionData?.target_entity_id
           ? getEntities('', {
               p_organization_id: organizationId,
               p_entity_type: 'STAFF',
@@ -126,7 +139,7 @@ export function SaleDetailsDialog({
             })
               .then((staffData: any[]) => {
                 const foundStaff = staffData.find(
-                  (s: any) => s.id === data.transaction.target_entity_id
+                  (s: any) => s.id === transactionData.target_entity_id
                 )
                 return foundStaff || null
               })
@@ -223,8 +236,69 @@ export function SaleDetailsDialog({
     >
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
+          // ✅ OPTIMIZED: Enhanced loading skeleton for better UX
+          <div className="space-y-6 animate-pulse">
+            {/* Transaction Header Skeleton */}
+            <div
+              className="rounded-xl p-6"
+              style={{
+                background: `linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(212,175,55,0.04) 100%)`,
+                border: `1px solid ${LUXE_COLORS.gold}20`
+              }}
+            >
+              <div className="grid grid-cols-3 gap-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i}>
+                    <div className="h-4 bg-gold/20 rounded w-24 mb-2" style={{ backgroundColor: `${LUXE_COLORS.gold}20` }} />
+                    <div className="h-6 bg-champagne/20 rounded w-32" style={{ backgroundColor: `${LUXE_COLORS.champagne}20` }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Line Items Skeleton */}
+            <div>
+              <div className="h-6 bg-champagne/20 rounded w-48 mb-4" style={{ backgroundColor: `${LUXE_COLORS.champagne}20` }} />
+              <div className="space-y-2">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="rounded-lg p-4"
+                    style={{
+                      background: `rgba(26,26,26,0.95)`,
+                      border: `1px solid ${LUXE_COLORS.gold}20`
+                    }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="w-5 h-5 bg-gold/20 rounded" style={{ backgroundColor: `${LUXE_COLORS.gold}20` }} />
+                        <div className="h-5 bg-champagne/20 rounded w-48" style={{ backgroundColor: `${LUXE_COLORS.champagne}20` }} />
+                      </div>
+                      <div className="h-6 bg-gold/20 rounded w-24" style={{ backgroundColor: `${LUXE_COLORS.gold}20` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Payment Summary Skeleton */}
+            <div
+              className="rounded-xl p-6"
+              style={{
+                background: `linear-gradient(135deg, rgba(15,111,92,0.08) 0%, rgba(15,111,92,0.04) 100%)`,
+                border: `1px solid ${LUXE_COLORS.emerald}20`
+              }}
+            >
+              <div className="h-6 bg-champagne/20 rounded w-40 mb-4" style={{ backgroundColor: `${LUXE_COLORS.champagne}20` }} />
+              <div className="space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex justify-between">
+                    <div className="h-4 bg-bronze/20 rounded w-20" style={{ backgroundColor: `${LUXE_COLORS.bronze}20` }} />
+                    <div className="h-4 bg-champagne/20 rounded w-24" style={{ backgroundColor: `${LUXE_COLORS.champagne}20` }} />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         ) : !transaction ? (
           <div className="text-center py-12" style={{ color: LUXE_COLORS.bronze }}>

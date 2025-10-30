@@ -931,10 +931,15 @@ export class FinanceDNAServiceV2 {
           glLines.push({
             account_code: account.accountCode,
             account_name: account.accountName,
-            debit_amount: lineRule.derive.startsWith('DR') ? amount : undefined,
-            credit_amount: lineRule.derive.startsWith('CR') ? amount : undefined,
+            unit_amount: amount, // ✅ Use unit_amount as per database schema
+            debit_credit: lineRule.derive.startsWith('DR') ? 'debit' : 'credit', // ✅ Store debit/credit flag
             description: `${lineRule.derive}: ${event.smart_code}`,
-            confidence: account.confidence
+            confidence: account.confidence,
+            metadata: {
+              // ✅ Keep original fields for compatibility
+              debit_amount: lineRule.derive.startsWith('DR') ? amount : undefined,
+              credit_amount: lineRule.derive.startsWith('CR') ? amount : undefined
+            }
           })
         }
       } catch (error) {
@@ -1084,15 +1089,19 @@ export class FinanceDNAServiceV2 {
       const line = glLines[i]
       await apiV2.post('transactions/lines', {
         transaction_id: transaction.id,
-        line_number: i + 1,
-        line_entity_id: line.account_id || line.account_code, // Use account code if no ID
-        line_amount: line.debit_amount || -line.credit_amount,
+        line_order: i + 1, // ✅ Use line_order as per schema
+        entity_id: line.account_id || line.account_code, // ✅ Use entity_id as per schema
+        unit_amount: line.unit_amount, // ✅ Use unit_amount as per schema
+        line_amount: line.unit_amount * (line.debit_credit === 'debit' ? 1 : -1), // ✅ Signed amount for accounting
         metadata: {
-          line_type: line.debit_amount ? 'debit' : 'credit',
+          line_type: line.debit_credit,
           account_code: line.account_code,
           account_name: line.account_name,
           description: line.description,
-          confidence: line.confidence
+          confidence: line.confidence,
+          // ✅ Keep original fields for compatibility
+          debit_amount: line.metadata?.debit_amount,
+          credit_amount: line.metadata?.credit_amount
         }
       })
     }

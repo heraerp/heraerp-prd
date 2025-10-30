@@ -361,10 +361,14 @@ function processJobworkReceipt(
       glEntries.push({
         account_code: '1300', // Inventory
         account_name: 'Jewelry Inventory',
-        debit_amount: finishedValue,
-        credit_amount: 0,
+        unit_amount: finishedValue,
+        debit_credit: 'debit',
         smart_code: line.smart_code,
-        line_reference: `Receipt Line ${line.line_number}`
+        line_reference: `Receipt Line ${line.line_number}`,
+        metadata: {
+          debit_amount: finishedValue,
+          credit_amount: 0
+        }
       })
     } else if (line.smart_code.includes('MAKING.CHARGE')) {
       totalLabourCost += line.line_amount
@@ -375,8 +379,8 @@ function processJobworkReceipt(
   glEntries.push({
     account_code: '1320', // Job Work Inventory
     account_name: 'Materials Issued for Job Work',
-    debit_amount: 0,
-    credit_amount: totalMaterialValue,
+    unit_amount: totalMaterialValue,
+    debit_credit: 'credit',
     smart_code: header.smart_code,
     line_reference: 'Clear Issued Materials'
   })

@@ -1,0 +1,330 @@
+# Customer Master Data Template
+# Smart Code: HERA.ENTERPRISE.MASTER_DATA.CUSTOMER.v1
+
+entityName: Customer
+smartCode: HERA.CRM.CUSTOMER.v1
+description: Customer master data management with comprehensive CRM fields
+
+# Tab organization for multi-step form
+tabs:
+  basic:
+    label: Basic Information
+    description: Core customer identification details
+    order: 1
+    
+  contact:
+    label: Contact Details
+    description: Communication preferences and contact information
+    order: 2
+    
+  business:
+    label: Business Profile
+    description: Business relationship and financial details
+    order: 3
+    
+  preferences:
+    label: Preferences
+    description: Communication and service preferences
+    order: 4
+
+# Field definitions
+fields:
+  # Basic Information Tab
+  - name: customer_name
+    label: Customer Name
+    type: string
+    required: true
+    tab: basic
+    placeholder: Enter full customer name
+    validation:
+      minLength: 2
+      maxLength: 100
+    help: Legal name or preferred business name
+    
+  - name: customer_code
+    label: Customer Code
+    type: string
+    required: false
+    tab: basic
+    placeholder: AUTO (will be generated)
+    help: Unique identifier for this customer
+    
+  - name: customer_type
+    label: Customer Type
+    type: select
+    required: true
+    tab: basic
+    options:
+      - value: individual
+        label: Individual
+      - value: business
+        label: Business
+      - value: government
+        label: Government
+      - value: nonprofit
+        label: Non-Profit
+    defaultValue: individual
+    
+  - name: customer_status
+    label: Status
+    type: select
+    required: true
+    tab: basic
+    options:
+      - value: active
+        label: Active
+      - value: inactive
+        label: Inactive
+      - value: prospect
+        label: Prospect
+      - value: suspended
+        label: Suspended
+    defaultValue: prospect
+    
+  # Contact Details Tab
+  - name: primary_email
+    label: Primary Email
+    type: email
+    required: true
+    tab: contact
+    placeholder: customer@example.com
+    validation:
+      format: email
+    
+  - name: secondary_email
+    label: Secondary Email
+    type: email
+    required: false
+    tab: contact
+    placeholder: alternate@example.com
+    
+  - name: primary_phone
+    label: Primary Phone
+    type: phone
+    required: true
+    tab: contact
+    placeholder: +1 (555) 123-4567
+    
+  - name: mobile_phone
+    label: Mobile Phone
+    type: phone
+    required: false
+    tab: contact
+    placeholder: +1 (555) 987-6543
+    
+  - name: billing_address
+    label: Billing Address
+    type: textarea
+    required: true
+    tab: contact
+    placeholder: Street address, city, state, postal code
+    rows: 3
+    
+  - name: shipping_address
+    label: Shipping Address
+    type: textarea
+    required: false
+    tab: contact
+    placeholder: Leave blank to use billing address
+    rows: 3
+    
+  - name: website
+    label: Website
+    type: string
+    required: false
+    tab: contact
+    placeholder: https://www.example.com
+    validation:
+      format: url
+      
+  # Business Profile Tab
+  - name: industry
+    label: Industry
+    type: select
+    required: false
+    tab: business
+    options:
+      - value: technology
+        label: Technology
+      - value: healthcare
+        label: Healthcare
+      - value: finance
+        label: Financial Services
+      - value: retail
+        label: Retail
+      - value: manufacturing
+        label: Manufacturing
+      - value: education
+        label: Education
+      - value: government
+        label: Government
+      - value: nonprofit
+        label: Non-Profit
+      - value: other
+        label: Other
+        
+  - name: annual_revenue
+    label: Annual Revenue
+    type: number
+    required: false
+    tab: business
+    placeholder: 0
+    help: Estimated annual revenue in USD
+    
+  - name: employee_count
+    label: Employee Count
+    type: number
+    required: false
+    tab: business
+    placeholder: 0
+    
+  - name: credit_limit
+    label: Credit Limit
+    type: number
+    required: false
+    tab: business
+    placeholder: 0
+    help: Maximum credit allowed for this customer
+    
+  - name: payment_terms
+    label: Payment Terms
+    type: select
+    required: false
+    tab: business
+    options:
+      - value: net_15
+        label: Net 15 Days
+      - value: net_30
+        label: Net 30 Days
+      - value: net_45
+        label: Net 45 Days
+      - value: net_60
+        label: Net 60 Days
+      - value: cod
+        label: Cash on Delivery
+      - value: prepaid
+        label: Prepaid
+    defaultValue: net_30
+    
+  - name: tax_id
+    label: Tax ID / EIN
+    type: string
+    required: false
+    tab: business
+    placeholder: XX-XXXXXXX
+    help: Federal Tax ID or Employer Identification Number
+    
+  # Preferences Tab
+  - name: preferred_contact_method
+    label: Preferred Contact Method
+    type: select
+    required: false
+    tab: preferences
+    options:
+      - value: email
+        label: Email
+      - value: phone
+        label: Phone
+      - value: sms
+        label: SMS/Text
+      - value: mail
+        label: Postal Mail
+    defaultValue: email
+    
+  - name: marketing_consent
+    label: Marketing Communications
+    type: boolean
+    required: false
+    tab: preferences
+    defaultValue: false
+    help: Customer agrees to receive marketing communications
+    
+  - name: newsletter_subscription
+    label: Newsletter Subscription
+    type: boolean
+    required: false
+    tab: preferences
+    defaultValue: false
+    
+  - name: preferred_language
+    label: Preferred Language
+    type: select
+    required: false
+    tab: preferences
+    options:
+      - value: en
+        label: English
+      - value: es
+        label: Spanish
+      - value: fr
+        label: French
+      - value: de
+        label: German
+      - value: it
+        label: Italian
+      - value: pt
+        label: Portuguese
+    defaultValue: en
+    
+  - name: notes
+    label: Notes
+    type: textarea
+    required: false
+    tab: preferences
+    placeholder: Additional notes about this customer...
+    rows: 4
+    help: Internal notes - not visible to customer
+
+# Relationships
+relationships:
+  - name: assigned_sales_rep
+    label: Assigned Sales Representative
+    type: manyToOne
+    targetEntity: User
+    required: false
+    tab: business
+    help: Primary sales contact for this customer
+    
+  - name: account_manager
+    label: Account Manager
+    type: manyToOne
+    targetEntity: User
+    required: false
+    tab: business
+    help: Customer success or account management contact
+
+# Behavior configuration
+behaviour:
+  navigation:
+    showProgress: true
+    allowSkip: false
+    disableNextUntilValid: true
+    
+  validation:
+    validateOnSubmit: true
+    validateOnTabChange: true
+    showErrorSummary: true
+    
+  autoSave:
+    enabled: true
+    interval: 30000
+    onTabChange: true
+
+# Workflow configuration
+workflow:
+  enabled: true
+  name: customer_onboarding
+  triggerOn: create
+  states:
+    - name: prospect
+      label: Prospect
+      color: orange
+    - name: active
+      label: Active Customer
+      color: green
+    - name: inactive
+      label: Inactive
+      color: gray
+    - name: suspended
+      label: Suspended
+      color: red

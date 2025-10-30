@@ -17,7 +17,7 @@ import { SalesTable } from '@/components/reports/SalesTable'
 import { DrilldownDrawer } from '@/components/reports/DrilldownDrawer'
 import { ExportButtons } from '@/components/reports/ExportButtons'
 import { PrintHeader, PrintLayout } from '@/components/reports/PrintHeader'
-import { useUniversalReports } from '@/hooks/useUniversalReports'
+import { useMonthlySalesReport } from '@/hooks/useSalonSalesReports'
 import { SalesFilters, SalesRow, DrillDownResponse, TransactionDetail } from '@/lib/schemas/reports'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
 
@@ -53,78 +53,32 @@ export default function MonthlySalesReportPage() {
 
   const { filters, updateFilters } = useReportFilters(initialFilters)
 
-  // Main report data using useUniversalReports hook
-  const { isLoading, error, data: reportData, getMonthMetrics, clearError } = useUniversalReports()
+  // ✅ PRODUCTION: Use real GL-based sales data from useMonthlySalesReport hook
+  const currentMonth = filters.month || getCurrentMonth()
+  const [year, month] = currentMonth.split('-')
+  const {
+    summary,
+    dailyData,
+    isLoading,
+    error,
+    refetch
+  } = useMonthlySalesReport(parseInt(month), parseInt(year))
 
-  // Load monthly sales data
-  React.useEffect(() => {
-    if (currentOrganization?.id && filters.month) {
-      getMonthMetrics()
-    }
-  }, [currentOrganization?.id, filters.month, filters.branch_id, getMonthMetrics])
-
-  // Mock data transformation (in production, this would come from the API)
+  // Transform data to expected format
   const transformedData = React.useMemo(() => {
-    if (!reportData) return null
-
-    // Transform universal report data to monthly sales format
-    const mockSummary = {
-      total_gross: 68472.5,
-      total_net: 65212.5,
-      total_vat: 3260.0,
-      total_tips: 5420,
-      total_service: 55687.5,
-      total_product: 9525.0,
-      transaction_count: 347,
-      average_ticket: 197.4,
-      average_daily: 2209.11, // Total / 31 days
-      working_days: 26,
-      service_mix_percent: 85.4,
-      product_mix_percent: 14.6,
-      growth_vs_previous: 12.5
-    }
-
-    // Generate daily breakdown for the month
-    const generateDailyData = (): SalesRow[] => {
-      const currentMonth = filters.month || getCurrentMonth()
-      const [year, month] = currentMonth.split('-')
-      const daysInMonth = new Date(parseInt(year), parseInt(month), 0).getDate()
-      const dailyData: SalesRow[] = []
-
-      for (let day = 1; day <= Math.min(daysInMonth, 15); day++) {
-        const date = `${year}-${month.padStart(2, '0')}-${day.toString().padStart(2, '0')}`
-
-        // Simulate varying daily performance
-        const baseRevenue = 1800 + Math.random() * 800
-        const serviceMix = 0.82 + Math.random() * 0.06
-        const serviceNet = baseRevenue * serviceMix
-        const productNet = baseRevenue * (1 - serviceMix)
-        const tips = serviceNet * 0.08
-        const vat = (serviceNet + productNet) * 0.05
-        const gross = serviceNet + productNet + vat
-        const txnCount = Math.floor(8 + Math.random() * 8)
-
-        dailyData.push({
-          date,
-          service_net: Math.round(serviceNet * 100) / 100,
-          product_net: Math.round(productNet * 100) / 100,
-          tips: Math.round(tips * 100) / 100,
-          vat: Math.round(vat * 100) / 100,
-          gross: Math.round(gross * 100) / 100,
-          txn_count: txnCount,
-          avg_ticket: Math.round((gross / txnCount) * 100) / 100
-        })
-      }
-
-      return dailyData.sort((a, b) => (a.date || '').localeCompare(b.date || ''))
-    }
+    if (!summary) return null
 
     return {
-      summary: mockSummary,
-      daily_breakdown: generateDailyData(),
+      summary,
+      daily_breakdown: dailyData,
       currency: filters.currency || 'AED'
     }
-  }, [reportData, filters.currency, filters.month])
+  }, [summary, dailyData, filters.currency])
+
+  // Clear error function
+  const clearError = () => {
+    refetch()
+  }
 
   // Handle drill-down clicks
   const handleDrillDown = async (
@@ -332,7 +286,7 @@ export default function MonthlySalesReportPage() {
         <Alert className="border-red-200 bg-red-50">
           <AlertCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
-            Failed to load monthly sales report: {error}
+            Failed to load monthly sales report: {String(error)}
             <button onClick={clearError} className="ml-2 underline hover:no-underline">
               Retry
             </button>

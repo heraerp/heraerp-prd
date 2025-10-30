@@ -440,55 +440,13 @@ function calculateComplianceScore(violations: HeraDnaViolation[]): number {
 }
 
 // ============================================================================
-// DNA COMPLIANCE PROVIDER COMPONENT
+// CONTEXT TYPE EXPORT (for provider component)
 // ============================================================================
 
-import React, { createContext, useContext, ReactNode } from 'react'
-
-interface DnaComplianceContextType {
+export interface DnaComplianceContextType {
   dnaStatus: 'COMPLIANT' | 'VIOLATIONS' | 'UNKNOWN'
   complianceScore: number
   violations: HeraDnaViolation[]
   isCompliant: boolean
   checkCompliance: () => Promise<void>
-}
-
-const DnaComplianceContext = createContext<DnaComplianceContextType | undefined>(undefined)
-
-export function DnaComplianceProvider({ 
-  children, 
-  componentSmartCode 
-}: { 
-  children: ReactNode
-  componentSmartCode?: string 
-}) {
-  const {
-    dnaStatus,
-    violations,
-    complianceScore,
-    checkDnaCompliance,
-    isCompliant
-  } = useDnaCompliance(componentSmartCode)
-
-  const contextValue: DnaComplianceContextType = {
-    dnaStatus,
-    complianceScore,
-    violations,
-    isCompliant,
-    checkCompliance: checkDnaCompliance
-  }
-
-  return (
-    <DnaComplianceContext.Provider value={contextValue}>
-      {children}
-    </DnaComplianceContext.Provider>
-  )
-}
-
-export function useDnaComplianceContext(): DnaComplianceContextType {
-  const context = useContext(DnaComplianceContext)
-  if (context === undefined) {
-    throw new Error('useDnaComplianceContext must be used within a DnaComplianceProvider')
-  }
-  return context
 }

@@ -52,17 +52,9 @@ WITH account_transactions AS (
         
         -- All-time balance calculation with multi-currency support
         COALESCE(SUM(
-            CASE 
-                WHEN utl.metadata->>'side' = 'DEBIT' THEN 
-                    CASE WHEN ut.currency_code = 'USD' 
-                         THEN utl.line_amount
-                         ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                    END
-                ELSE 
-                    -CASE WHEN ut.currency_code = 'USD' 
-                          THEN utl.line_amount
-                          ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                    END
+            CASE WHEN ut.currency_code = 'USD' 
+                 THEN utl.line_amount
+                 ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
             END
         ), 0) as current_balance_usd,
         
@@ -70,17 +62,9 @@ WITH account_transactions AS (
         COALESCE(SUM(
             CASE 
                 WHEN ut.transaction_date >= DATE_TRUNC('month', CURRENT_DATE) THEN
-                    CASE 
-                        WHEN utl.metadata->>'side' = 'DEBIT' THEN 
-                            CASE WHEN ut.currency_code = 'USD' 
-                                 THEN utl.line_amount
-                                 ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                            END
-                        ELSE 
-                            -CASE WHEN ut.currency_code = 'USD' 
-                                  THEN utl.line_amount
-                                  ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                            END
+                    CASE WHEN ut.currency_code = 'USD' 
+                         THEN utl.line_amount
+                         ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
                     END
                 ELSE 0
             END
@@ -90,17 +74,9 @@ WITH account_transactions AS (
         COALESCE(SUM(
             CASE 
                 WHEN ut.transaction_date >= DATE_TRUNC('quarter', CURRENT_DATE) THEN
-                    CASE 
-                        WHEN utl.metadata->>'side' = 'DEBIT' THEN 
-                            CASE WHEN ut.currency_code = 'USD' 
-                                 THEN utl.line_amount
-                                 ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                            END
-                        ELSE 
-                            -CASE WHEN ut.currency_code = 'USD' 
-                                  THEN utl.line_amount
-                                  ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                            END
+                    CASE WHEN ut.currency_code = 'USD' 
+                         THEN utl.line_amount
+                         ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
                     END
                 ELSE 0
             END
@@ -110,17 +86,9 @@ WITH account_transactions AS (
         COALESCE(SUM(
             CASE 
                 WHEN ut.transaction_date >= DATE_TRUNC('year', CURRENT_DATE) THEN
-                    CASE 
-                        WHEN utl.metadata->>'side' = 'DEBIT' THEN 
-                            CASE WHEN ut.currency_code = 'USD' 
-                                 THEN utl.line_amount
-                                 ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                            END
-                        ELSE 
-                            -CASE WHEN ut.currency_code = 'USD' 
-                                  THEN utl.line_amount
-                                  ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                            END
+                    CASE WHEN ut.currency_code = 'USD' 
+                         THEN utl.line_amount
+                         ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
                     END
                 ELSE 0
             END
@@ -149,7 +117,7 @@ WITH account_transactions AS (
         ) as is_reconciled
 
     FROM core_entities coa
-    LEFT JOIN universal_transaction_lines utl ON utl.metadata->>'gl_account_code' = coa.entity_code
+    LEFT JOIN universal_transaction_lines utl ON utl.gl_account_code = coa.entity_code
     LEFT JOIN universal_transactions ut ON ut.id = utl.transaction_id AND ut.organization_id = coa.organization_id
     WHERE coa.entity_type = 'GL_ACCOUNT'
       AND coa.metadata->>'status' = 'ACTIVE'
@@ -224,42 +192,38 @@ WITH monthly_data AS (
         DATE_TRUNC('month', ut.transaction_date) as period_month,
         EXTRACT(YEAR FROM ut.transaction_date) as fiscal_year,
         EXTRACT(MONTH FROM ut.transaction_date) as fiscal_month,
-        utl.metadata->>'gl_account_code' as account_code,
+        utl.gl_account_code as account_code,
         
         -- Account categorization
         CASE 
-            WHEN utl.metadata->>'gl_account_code' LIKE '4%' THEN 'REVENUE'
-            WHEN utl.metadata->>'gl_account_code' LIKE '5%' THEN 'COST_OF_GOODS_SOLD'
-            WHEN utl.metadata->>'gl_account_code' LIKE '6%' THEN 'OPERATING_EXPENSES'
-            WHEN utl.metadata->>'gl_account_code' LIKE '7%' THEN 'OTHER_INCOME'
-            WHEN utl.metadata->>'gl_account_code' LIKE '8%' THEN 'OTHER_EXPENSES'
-            WHEN utl.metadata->>'gl_account_code' LIKE '1%' THEN 'ASSETS'
-            WHEN utl.metadata->>'gl_account_code' LIKE '2%' THEN 'LIABILITIES'
-            WHEN utl.metadata->>'gl_account_code' LIKE '3%' THEN 'EQUITY'
+            WHEN utl.gl_account_code LIKE '4%' THEN 'REVENUE'
+            WHEN utl.gl_account_code LIKE '5%' THEN 'COST_OF_GOODS_SOLD'
+            WHEN utl.gl_account_code LIKE '6%' THEN 'OPERATING_EXPENSES'
+            WHEN utl.gl_account_code LIKE '7%' THEN 'OTHER_INCOME'
+            WHEN utl.gl_account_code LIKE '8%' THEN 'OTHER_EXPENSES'
+            WHEN utl.gl_account_code LIKE '1%' THEN 'ASSETS'
+            WHEN utl.gl_account_code LIKE '2%' THEN 'LIABILITIES'
+            WHEN utl.gl_account_code LIKE '3%' THEN 'EQUITY'
             ELSE 'OTHER'
         END as account_category,
         
         -- Currency handling
         ut.currency_code,
         
-        -- Activity summaries
+        -- Activity summaries (simplified without debit/credit sides)
         SUM(
-            CASE WHEN utl.metadata->>'side' = 'DEBIT' THEN 
-                CASE WHEN ut.currency_code = 'USD' 
-                     THEN utl.line_amount
-                     ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                END
-            ELSE 0 END
-        ) as total_debits_usd,
+            CASE WHEN ut.currency_code = 'USD' 
+                 THEN ABS(utl.line_amount)
+                 ELSE ABS(utl.line_amount) * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
+            END
+        ) as total_activity_usd,
         
         SUM(
-            CASE WHEN utl.metadata->>'side' = 'CREDIT' THEN 
-                CASE WHEN ut.currency_code = 'USD' 
-                     THEN utl.line_amount
-                     ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
-                END
-            ELSE 0 END
-        ) as total_credits_usd,
+            CASE WHEN ut.currency_code = 'USD' 
+                 THEN utl.line_amount
+                 ELSE utl.line_amount * COALESCE((ut.metadata->>'exchange_rate')::NUMERIC, 1.0)
+            END
+        ) as net_activity_usd,
         
         -- Transaction counts
         COUNT(DISTINCT ut.id) as transaction_count,
@@ -272,22 +236,22 @@ WITH monthly_data AS (
     FROM universal_transactions ut
     JOIN universal_transaction_lines utl ON ut.id = utl.transaction_id
     WHERE ut.transaction_date >= '2020-01-01'  -- Reasonable data range
-      AND utl.metadata->>'gl_account_code' IS NOT NULL
+      AND utl.gl_account_code IS NOT NULL
     GROUP BY 
         ut.organization_id,
         DATE_TRUNC('month', ut.transaction_date),
         EXTRACT(YEAR FROM ut.transaction_date),
         EXTRACT(MONTH FROM ut.transaction_date),
-        utl.metadata->>'gl_account_code',
+        utl.gl_account_code,
         CASE 
-            WHEN utl.metadata->>'gl_account_code' LIKE '4%' THEN 'REVENUE'
-            WHEN utl.metadata->>'gl_account_code' LIKE '5%' THEN 'COST_OF_GOODS_SOLD'
-            WHEN utl.metadata->>'gl_account_code' LIKE '6%' THEN 'OPERATING_EXPENSES'
-            WHEN utl.metadata->>'gl_account_code' LIKE '7%' THEN 'OTHER_INCOME'
-            WHEN utl.metadata->>'gl_account_code' LIKE '8%' THEN 'OTHER_EXPENSES'
-            WHEN utl.metadata->>'gl_account_code' LIKE '1%' THEN 'ASSETS'
-            WHEN utl.metadata->>'gl_account_code' LIKE '2%' THEN 'LIABILITIES'
-            WHEN utl.metadata->>'gl_account_code' LIKE '3%' THEN 'EQUITY'
+            WHEN utl.gl_account_code LIKE '4%' THEN 'REVENUE'
+            WHEN utl.gl_account_code LIKE '5%' THEN 'COST_OF_GOODS_SOLD'
+            WHEN utl.gl_account_code LIKE '6%' THEN 'OPERATING_EXPENSES'
+            WHEN utl.gl_account_code LIKE '7%' THEN 'OTHER_INCOME'
+            WHEN utl.gl_account_code LIKE '8%' THEN 'OTHER_EXPENSES'
+            WHEN utl.gl_account_code LIKE '1%' THEN 'ASSETS'
+            WHEN utl.gl_account_code LIKE '2%' THEN 'LIABILITIES'
+            WHEN utl.gl_account_code LIKE '3%' THEN 'EQUITY'
             ELSE 'OTHER'
         END,
         ut.currency_code
@@ -300,29 +264,28 @@ SELECT
     account_code,
     account_category,
     currency_code,
-    total_debits_usd,
-    total_credits_usd,
-    (total_debits_usd - total_credits_usd) as net_activity_usd,
+    total_activity_usd,
+    net_activity_usd,
     transaction_count,
     line_count,
     period_start_date,
     period_end_date,
     
     -- Running totals and comparisons
-    SUM(total_debits_usd - total_credits_usd) OVER (
+    SUM(net_activity_usd) OVER (
         PARTITION BY organization_id, account_code 
         ORDER BY period_month
         ROWS UNBOUNDED PRECEDING
     ) as running_balance_usd,
     
     -- Previous month comparison
-    LAG(total_debits_usd - total_credits_usd) OVER (
+    LAG(net_activity_usd) OVER (
         PARTITION BY organization_id, account_code 
         ORDER BY period_month
     ) as previous_month_activity,
     
     -- Year-over-year comparison
-    LAG(total_debits_usd - total_credits_usd, 12) OVER (
+    LAG(net_activity_usd, 12) OVER (
         PARTITION BY organization_id, account_code 
         ORDER BY period_month
     ) as same_month_last_year,
@@ -347,7 +310,7 @@ SELECT
     CURRENT_TIMESTAMP as last_updated
     
 FROM monthly_data
-WHERE total_debits_usd > 0 OR total_credits_usd > 0;  -- Only include periods with activity
+WHERE total_activity_usd > 0;  -- Only include periods with activity
 
 -- Unique index for monthly summaries
 CREATE UNIQUE INDEX idx_mv_monthly_summaries_v2_unique 
@@ -805,21 +768,25 @@ COMMENT ON MATERIALIZED VIEW mv_currency_exchange_rates_v2 IS
 COMMENT ON FUNCTION refresh_all_financial_views_v2 IS 
 'Refreshes all Finance DNA v2 materialized views with performance timing and error handling.';
 
--- Success message
-\echo 'Finance DNA v2 Materialized Views Created Successfully!'
-\echo 'Available Views:'
-\echo '  ✓ mv_account_balances_v2 - Real-time account balances'
-\echo '  ✓ mv_monthly_period_summaries_v2 - Monthly activity summaries'
-\echo '  ✓ mv_account_hierarchy_v2 - Complete account hierarchy'
-\echo '  ✓ mv_currency_exchange_rates_v2 - Exchange rate history'
-\echo ''
-\echo 'Cache & Refresh Functions:'
-\echo '  ✓ refresh_all_financial_views_v2() - Refresh all views'
-\echo '  ✓ clean_financial_reports_cache() - Clean expired cache'
-\echo '  ✓ get_cache_statistics() - Cache performance metrics'
-\echo ''
-\echo 'Performance Features:'
-\echo '  ✓ 10x+ faster report generation'
-\echo '  ✓ Intelligent caching with TTL'
-\echo '  ✓ Concurrent refresh capabilities'
-\echo '  ✓ Comprehensive performance monitoring'
+-- ============================================================================
+-- DEPLOYMENT SUCCESS
+-- ============================================================================
+-- Finance DNA v2 Materialized Views Created Successfully!
+-- 
+-- Available Views:
+--   ✓ mv_account_balances_v2 - Real-time account balances
+--   ✓ mv_monthly_period_summaries_v2 - Monthly activity summaries
+--   ✓ mv_account_hierarchy_v2 - Complete account hierarchy
+--   ✓ mv_currency_exchange_rates_v2 - Exchange rate history
+-- 
+-- Cache & Refresh Functions:
+--   ✓ refresh_all_financial_views_v2() - Refresh all views
+--   ✓ clean_financial_reports_cache() - Clean expired cache
+--   ✓ get_cache_statistics() - Cache performance metrics
+-- 
+-- Performance Features:
+--   ✓ 10x+ faster report generation
+--   ✓ Intelligent caching with TTL
+--   ✓ Concurrent refresh capabilities
+--   ✓ Comprehensive performance monitoring
+-- ============================================================================

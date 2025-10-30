@@ -93,50 +93,19 @@ const featuredApps = [
 export default function JewelryDashboard() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
-  const [organizationId, setOrganizationId] = useState<string | null>(null)
-  const [currentRole, setCurrentRole] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [organizationId, setOrganizationId] = useState<string | null>('demo-org')
+  const [currentRole, setCurrentRole] = useState<string | null>('Demo User')
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Check for organization context
+  // Demo mode - skip authorization checks
   useEffect(() => {
-    // Allow some time for auth to settle
-    const timer = setTimeout(() => {
-      const orgId = localStorage.getItem('organizationId')
-      const jewelryRole = localStorage.getItem('jewelryRole')
-
-      if (!orgId || !jewelryRole) {
-        // No organization context, redirect to demo
-        router.push('/jewelry/demo')
-        return
-      }
-
-      setOrganizationId(orgId)
-      setCurrentRole(jewelryRole)
-      setIsLoading(false)
-    }, 100)
-
-    return () => clearTimeout(timer)
-  }, [router])
-
-  // Show loading while checking auth
-  if (isLoading) {
-    return (
-      <div className="min-h-screen jewelry-gradient-bg flex items-center justify-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          className="jewelry-glass-card p-6"
-        >
-          <Crown className="h-12 w-12 jewelry-text-gold" />
-        </motion.div>
-      </div>
-    )
-  }
-
-  // Don't render dashboard if no org context
-  if (!organizationId) {
-    return null
-  }
+    // Set demo values for display purposes
+    const orgId = localStorage.getItem('organizationId') || 'demo-org'
+    const jewelryRole = localStorage.getItem('jewelryRole') || 'Demo User'
+    
+    setOrganizationId(orgId)
+    setCurrentRole(jewelryRole)
+  }, [])
 
   const stats = [
     {

@@ -270,8 +270,23 @@ const CardComponent = ({
 
         {/* Stylist */}
         {card.stylist_name && (
-          <div className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
-            with {card.stylist_name}
+          <div className="flex items-center gap-2">
+            <div className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+              with {card.stylist_name}
+            </div>
+            {card.flags?.staff_on_leave && (
+              <Badge
+                className="text-[9px] px-1.5 py-0"
+                style={{
+                  background: 'rgba(239, 68, 68, 0.2)',
+                  color: '#EF4444',
+                  border: '1px solid rgba(239, 68, 68, 0.3)'
+                }}
+                aria-label="Staff member is on leave"
+              >
+                ON LEAVE
+              </Badge>
+            )}
           </div>
         )}
 

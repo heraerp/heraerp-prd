@@ -47,6 +47,8 @@ interface HERAAuthContext {
   role?: 'owner' | 'manager' | 'staff'
 
   // Actions
+  login: (email: string, password: string) => Promise<void>
+  register: (email: string, password: string, metadata?: any) => Promise<any>
   logout: () => Promise<void>
   refreshAuth: () => Promise<void>
 
@@ -147,6 +149,11 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             // This handles the case where the provider re-mounts but session is still valid
             if (session && !ctxRef.current.user) {
               console.log('🔄 Session exists but context missing, re-resolving...')
+              didResolveRef.current = false
+              // Fall through to resolution logic below
+            } else if (session && ctxRef.current.user && !ctxRef.current.organization) {
+              // Session and user exist but organization missing - allow re-resolution
+              console.log('🔄 Session and user exist but organization missing, re-resolving...')
               didResolveRef.current = false
               // Fall through to resolution logic below
             } else {
@@ -271,11 +278,52 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   // Remove handleSignOut - handled in useEffect
 
+  const login = async (email: string, password: string) => {
+    try {
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (error) throw error
+
+      // Auth state change handler will update context automatically
+      console.log('✅ Login successful, auth state will update automatically')
+    } catch (error) {
+      console.error('❌ Login error:', error)
+      throw error
+    }
+  }
+
+  const register = async (email: string, password: string, metadata?: any) => {
+    try {
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: metadata }
+      })
+
+      if (error) throw error
+
+      console.log('✅ Registration successful')
+      return data
+    } catch (error) {
+      console.error('❌ Registration error:', error)
+      throw error
+    }
+  }
+
   const logout = async () => {
     try {
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
-      
+
       await supabase.auth.signOut()
       didResolveRef.current = false
       router.push('/auth/login')
@@ -295,6 +343,8 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const contextValue: HERAAuthContext = useMemo(() => ({
     ...ctx,
+    login,
+    register,
     logout,
     refreshAuth,
     hasScope,

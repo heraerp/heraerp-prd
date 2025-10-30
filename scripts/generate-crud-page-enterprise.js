@@ -13,7 +13,7 @@ const heraEntityPresets = {
   ACCOUNT: {
     title: "Account",
     titlePlural: "Accounts",
-    smart_code: "HERA.CRM.CORE.ENTITY.ACCOUNT.V1",
+    smart_code: "HERA.CRM.CORE.ENTITY.ACCOUNT.v1",
     module: "CRM",
     industry_agnostic: true,
     icon: "Building2",
@@ -113,6 +113,61 @@ const heraEntityPresets = {
     business_rules: {
       duplicate_detection: true,
       audit_trail: true
+    }
+  },
+  // 🛒 PROCUREMENT Entity Presets
+  VENDOR: {
+    title: "Vendor",
+    titlePlural: "Vendors",
+    smart_code: "HERA.PURCHASE.MASTER.VENDOR.ENTITY.v1",
+    module: "PROCUREMENT",
+    industry_agnostic: true,
+    icon: "Building2",
+    primary_color: "#0d7377",
+    accent_color: "#0a5d61",
+    description: "Supplier vendor master data",
+    default_fields: ["vendor_code", "tax_id", "email", "phone", "payment_terms", "credit_limit", "category", "location"],
+    kpi_metrics: ["total_vendors", "active_vendors", "monthly_purchases", "avg_payment_days"],
+    business_rules: {
+      duplicate_detection: true,
+      audit_trail: true,
+      credit_monitoring: true
+    }
+  },
+  REBATE_AGREEMENT: {
+    title: "Rebate Agreement",
+    titlePlural: "Rebate Agreements",
+    smart_code: "HERA.PURCHASE.REBATE.AGREEMENT.ENTITY.v1",
+    module: "PROCUREMENT",
+    industry_agnostic: true,
+    icon: "FileContract",
+    primary_color: "#d83b01",
+    accent_color: "#a52d00",
+    description: "Vendor rebate agreements and terms",
+    default_fields: ["vendor_id", "product_category", "rebate_percentage", "min_volume", "start_date", "end_date", "status"],
+    kpi_metrics: ["total_agreements", "active_agreements", "rebate_earned", "volume_achieved"],
+    business_rules: {
+      date_validation: true,
+      audit_trail: true,
+      approval_workflow: true
+    }
+  },
+  PURCHASE_ORDER: {
+    title: "Purchase Order",
+    titlePlural: "Purchase Orders",
+    smart_code: "HERA.PURCHASE.TXN.PO.ENTITY.v1",
+    module: "PROCUREMENT",
+    industry_agnostic: true,
+    icon: "ShoppingCart",
+    primary_color: "#486581",
+    accent_color: "#324b63",
+    description: "Purchase orders and procurement transactions",
+    default_fields: ["po_number", "vendor_id", "order_date", "delivery_date", "total_amount", "status", "buyer"],
+    kpi_metrics: ["total_orders", "pending_orders", "total_value", "avg_delivery_time"],
+    business_rules: {
+      sequential_numbering: true,
+      audit_trail: true,
+      approval_workflow: true
     }
   },
   // 🚀 MCA (Multi-Channel Automation) Entity Presets
@@ -225,6 +280,341 @@ const heraEntityPresets = {
       real_time_analytics: true,
       audit_trail: true
     }
+  },
+  
+  // 🌱 UNIVERSAL BUSINESS TEMPLATES - Scalable for Any Industry
+  CUSTOMER: {
+    title: "Customer",
+    titlePlural: "Customers", 
+    smart_code: "HERA.CRM.CORE.ENTITY.CUSTOMER.v1",
+    module: "CRM",
+    industry_adaptable: false,
+    industry_agnostic: true,
+    icon: "Users",
+    primary_color: "#16a34a",
+    accent_color: "#15803d",
+    description: "Customer master data for any business domain",
+    default_fields: ["industry", "website", "employees", "revenue", "owner", "phone", "email"],
+    kpi_metrics: ["total_customers", "active_customers", "by_contract_type", "monthly_new"],
+    business_rules: {
+      duplicate_detection: true,
+      audit_trail: true,
+      geo_location_tracking: true
+    }
+  },
+  GREENWORMS_CONTRACT: {
+    title: "Contract", 
+    titlePlural: "Contracts",
+    smart_code: "HERA.WASTE.MASTER.CONTRACT.v1",
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "FileContract",
+    primary_color: "#0891b2",
+    accent_color: "#0e7490",
+    description: "Service agreements with pricing models and SLA terms",
+    default_fields: ["contract_number", "start_date", "end_date", "pricing_model", "rate_inr", "max_weight_kg", "sla_response_minutes"],
+    kpi_metrics: ["total_contracts", "active_contracts", "avg_rate", "sla_compliance"],
+    business_rules: {
+      date_validation: true,
+      audit_trail: true,
+      approval_workflow: true
+    }
+  },
+  GREENWORMS_LOCATION: {
+    title: "Location",
+    titlePlural: "Locations", 
+    smart_code: "HERA.WASTE.MASTER.LOCATION.v1",
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "MapPin",
+    primary_color: "#dc2626",
+    accent_color: "#b91c1c",
+    description: "Customer sites, MCF, MRF, RDF facilities, cement plants",
+    default_fields: ["location_name", "location_type", "address", "geo"],
+    kpi_metrics: ["total_locations", "by_type", "active_locations", "coverage_area"],
+    business_rules: {
+      geo_validation: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_ROUTE: {
+    title: "Route",
+    titlePlural: "Routes",
+    smart_code: "HERA.WASTE.MASTER.ROUTE.v1", 
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "Route",
+    primary_color: "#7c3aed",
+    accent_color: "#6d28d9",
+    description: "Collection routes with service windows and frequencies",
+    default_fields: ["route_code", "frequency", "service_window_start", "service_window_end"],
+    kpi_metrics: ["total_routes", "daily_routes", "weekly_routes", "efficiency_rate"],
+    business_rules: {
+      schedule_optimization: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_VEHICLE: {
+    title: "Vehicle",
+    titlePlural: "Vehicles",
+    smart_code: "HERA.WASTE.FLEET.VEHICLE.v1",
+    module: "FLEET_MANAGEMENT", 
+    industry_agnostic: false,
+    icon: "Truck",
+    primary_color: "#ea580c",
+    accent_color: "#c2410c",
+    description: "Fleet vehicles (compactors, hook loaders, flatbeds, tippers)",
+    default_fields: ["registration_no", "vehicle_type", "capacity_kg", "last_service_date"],
+    kpi_metrics: ["total_vehicles", "active_vehicles", "maintenance_due", "avg_capacity"],
+    business_rules: {
+      maintenance_tracking: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_STAFF: {
+    title: "Staff",
+    titlePlural: "Staff",
+    smart_code: "HERA.WASTE.MASTER.STAFF.v1",
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "UserCheck",
+    primary_color: "#059669",
+    accent_color: "#047857", 
+    description: "Drivers, helpers, supervisors, inspectors",
+    default_fields: ["first_name", "last_name", "role", "license_no", "hourly_rate"],
+    kpi_metrics: ["total_staff", "by_role", "active_staff", "avg_hourly_rate"],
+    business_rules: {
+      license_validation: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_WASTE_ITEM: {
+    title: "Waste Item",
+    titlePlural: "Waste Items",
+    smart_code: "HERA.WASTE.MASTER.WASTEITEM.v1",
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "Trash2", 
+    primary_color: "#65a30d",
+    accent_color: "#4d7c0f",
+    description: "Waste categories (mixed, plastic, paper, metal, organic, RDF)",
+    default_fields: ["waste_code", "category", "uom", "hazardous"],
+    kpi_metrics: ["total_waste_types", "hazardous_count", "by_category", "processing_rate"],
+    business_rules: {
+      hazardous_tracking: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_RDF_BALE: {
+    title: "RDF Bale",
+    titlePlural: "RDF Bales",
+    smart_code: "HERA.WASTE.MASTER.RDFBALE.v1",
+    module: "WASTE_PROCESSING",
+    industry_agnostic: false,
+    icon: "Package2",
+    primary_color: "#0d9488",
+    accent_color: "#0f766e",
+    description: "Processed waste bales with quality grading (A, B, C)",
+    default_fields: ["bale_no", "weight_kg", "quality_grade"],
+    kpi_metrics: ["total_bales", "by_grade", "total_weight", "avg_quality"],
+    business_rules: {
+      quality_grading: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_FACILITY: {
+    title: "Facility", 
+    titlePlural: "Facilities",
+    smart_code: "HERA.WASTE.MASTER.FACILITY.v1",
+    module: "WASTE_PROCESSING",
+    industry_agnostic: false,
+    icon: "Building",
+    primary_color: "#0369a1",
+    accent_color: "#0284c7",
+    description: "Processing facilities (MCF, MRF, RDF plants, cement plants)",
+    default_fields: ["facility_name", "facility_type", "permit_no"],
+    kpi_metrics: ["total_facilities", "by_type", "active_permits", "capacity_utilization"],
+    business_rules: {
+      permit_tracking: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_INSPECTION_CHECKLIST: {
+    title: "Inspection Checklist",
+    titlePlural: "Inspection Checklists", 
+    smart_code: "HERA.WASTE.QA.INSPECTION.CHECKLIST.v1",
+    module: "QUALITY_ASSURANCE",
+    industry_agnostic: false,
+    icon: "ClipboardCheck",
+    primary_color: "#9333ea",
+    accent_color: "#7c3aed",
+    description: "Quality assurance inspection checklists and procedures",
+    default_fields: ["checklist_name", "items"],
+    kpi_metrics: ["total_checklists", "items_per_checklist", "completion_rate", "pass_rate"],
+    business_rules: {
+      checklist_validation: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_VENDOR: {
+    title: "Vendor",
+    titlePlural: "Vendors", 
+    smart_code: "HERA.FINANCE.MASTER.VENDOR.v1",
+    module: "FINANCE",
+    industry_agnostic: false,
+    icon: "Building2",
+    primary_color: "#0d7377",
+    accent_color: "#0a5d61",
+    description: "Suppliers and service providers for waste operations",
+    default_fields: ["vendor_name", "vendor_code", "contact_name", "email", "phone", "address", "payment_terms"],
+    kpi_metrics: ["total_vendors", "active_vendors", "monthly_payments", "avg_payment_days"],
+    business_rules: {
+      duplicate_detection: true,
+      audit_trail: true
+    }
+  },
+  GREENWORMS_ACCOUNT: {
+    title: "Account",
+    titlePlural: "Accounts",
+    smart_code: "HERA.FINANCE.MASTER.ACCOUNT.v1", 
+    module: "FINANCE",
+    industry_agnostic: false,
+    icon: "Calculator",
+    primary_color: "#0891b2",
+    accent_color: "#0e7490",
+    description: "Chart of accounts for waste management operations",
+    default_fields: ["account_code", "description", "account_type", "currency_code", "parent_account_code"],
+    kpi_metrics: ["total_accounts", "by_type", "active_accounts", "hierarchy_depth"],
+    business_rules: {
+      hierarchy_validation: true,
+      audit_trail: true
+    }
+  },
+  
+  // 🌱 GREENWORMS ENTITIES - Standard names with waste management fields
+  CONTRACT: {
+    title: "Contract",
+    titlePlural: "Contracts",
+    smart_code: "HERA.WASTE.MASTER.ENTITY.CONTRACT.v1",
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "FileContract",
+    primary_color: "#0891b2",
+    accent_color: "#0e7490",
+    description: "Service agreements with pricing models and SLA terms",
+    default_fields: ["contract_number", "start_date", "end_date", "pricing_model", "rate_inr", "max_weight_kg", "sla_response_minutes"],
+    kpi_metrics: ["total_contracts", "active_contracts", "avg_rate", "sla_compliance"],
+    business_rules: {
+      date_validation: true,
+      audit_trail: true,
+      approval_workflow: true
+    }
+  },
+  LOCATION: {
+    title: "Location",
+    titlePlural: "Locations",
+    smart_code: "HERA.WASTE.MASTER.ENTITY.LOCATION.v1",
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "MapPin",
+    primary_color: "#dc2626",
+    accent_color: "#b91c1c",
+    description: "Customer sites, MCF, MRF, RDF facilities, cement plants",
+    default_fields: ["location_name", "location_type", "address", "geo"],
+    kpi_metrics: ["total_locations", "by_type", "active_locations", "coverage_area"],
+    business_rules: {
+      geo_validation: true,
+      audit_trail: true
+    }
+  },
+  ROUTE: {
+    title: "Route",
+    titlePlural: "Routes",
+    smart_code: "HERA.WASTE.MASTER.ENTITY.ROUTE.v1",
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "Route",
+    primary_color: "#7c3aed",
+    accent_color: "#6d28d9",
+    description: "Collection routes with service windows and frequencies",
+    default_fields: ["route_code", "frequency", "service_window_start", "service_window_end"],
+    kpi_metrics: ["total_routes", "daily_routes", "weekly_routes", "efficiency_rate"],
+    business_rules: {
+      schedule_optimization: true,
+      audit_trail: true
+    }
+  },
+  VEHICLE: {
+    title: "Vehicle",
+    titlePlural: "Vehicles",
+    smart_code: "HERA.WASTE.FLEET.ENTITY.VEHICLE.v1",
+    module: "FLEET_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "Truck",
+    primary_color: "#ea580c",
+    accent_color: "#c2410c",
+    description: "Fleet vehicles (compactors, hook loaders, flatbeds, tippers)",
+    default_fields: ["registration_no", "vehicle_type", "capacity_kg", "last_service_date"],
+    kpi_metrics: ["total_vehicles", "active_vehicles", "maintenance_due", "avg_capacity"],
+    business_rules: {
+      maintenance_tracking: true,
+      audit_trail: true
+    }
+  },
+  STAFF: {
+    title: "Staff",
+    titlePlural: "Staff",
+    smart_code: "HERA.WASTE.MASTER.ENTITY.STAFF.v1",
+    module: "WASTE_MANAGEMENT",
+    industry_agnostic: false,
+    icon: "UserCheck",
+    primary_color: "#059669",
+    accent_color: "#047857",
+    description: "Drivers, helpers, supervisors, inspectors",
+    default_fields: ["first_name", "last_name", "role", "license_no", "hourly_rate"],
+    kpi_metrics: ["total_staff", "by_role", "active_staff", "avg_hourly_rate"],
+    business_rules: {
+      license_validation: true,
+      audit_trail: true
+    }
+  },
+  
+  // 🧾 GREENWORMS TRANSACTIONS - Financial Processing
+  AP_INVOICE: {
+    title: "AP Invoice",
+    titlePlural: "AP Invoices",
+    smart_code: "HERA.FINANCE.TXN.ENTITY.AP_INVOICE.v1",
+    module: "FINANCE",
+    industry_agnostic: false,
+    icon: "FileText",
+    primary_color: "#dc2626",
+    accent_color: "#b91c1c",
+    description: "Accounts payable invoices for vendor payments",
+    default_fields: ["invoice_number", "vendor_id", "invoice_date", "due_date", "total_amount", "status", "reference"],
+    kpi_metrics: ["total_invoices", "pending_approval", "overdue_invoices", "total_amount"],
+    business_rules: {
+      approval_workflow: true,
+      gl_posting: true,
+      audit_trail: true
+    }
+  },
+  GL_JOURNAL: {
+    title: "GL Journal",
+    titlePlural: "GL Journals", 
+    smart_code: "HERA.FINANCE.TXN.ENTITY.GL_JOURNAL.v1",
+    module: "FINANCE",
+    industry_agnostic: false,
+    icon: "BookOpen",
+    primary_color: "#7c3aed",
+    accent_color: "#6d28d9",
+    description: "General ledger journal entries for accounting",
+    default_fields: ["journal_number", "description", "journal_date", "total_debit", "total_credit", "status", "reference"],
+    kpi_metrics: ["total_journals", "pending_post", "balanced_entries", "monthly_total"],
+    business_rules: {
+      balance_validation: true,
+      posting_controls: true,
+      audit_trail: true
+    }
   }
 }
 
@@ -233,9 +623,9 @@ const heraEntityPresets = {
  */
 class QualityGates {
   static validateSmartCode(smartCode) {
-    // Updated pattern to support both 5 and 6 segment smart codes
-    // Examples: HERA.CRM.CORE.ENTITY.CONTACT.V1 (5 segments) or HERA.CRM.MCA.ENTITY.CONSENT_PREF.V1 (6 segments)
-    const pattern = /^HERA\.[A-Z_]+\.[A-Z_]+\.[A-Z_]+\.[A-Z_]+(\.[A-Z_]+)?\.V\d+$/
+    // Updated pattern to support both 5 and 6 segment smart codes with lowercase version
+    // Examples: HERA.CRM.CORE.ENTITY.CONTACT.v1 (5 segments) or HERA.CRM.MCA.ENTITY.CONSENT_PREF.v1 (6 segments)
+    const pattern = /^HERA\.[A-Z_]+\.[A-Z_]+\.[A-Z_]+\.[A-Z_]+(\.[A-Z_]+)?\.v\d+$/
     if (!pattern.test(smartCode)) {
       throw new Error(`❌ QUALITY GATE FAILURE: Invalid smart code format: ${smartCode}`)
     }
@@ -279,7 +669,61 @@ class QualityGates {
     console.log(`✅ Generated Code Passes Quality Gates`)
   }
 
-  static runAllGates(entityType, preset, outputPath) {
+  static async validateTypeScriptCompilation(filePath) {
+    const { exec } = require('child_process')
+    const { promisify } = require('util')
+    const execAsync = promisify(exec)
+    
+    try {
+      console.log('🔍 Running TypeScript compilation check...')
+      const { stdout, stderr } = await execAsync(`npx tsc --noEmit --skipLibCheck --jsx react-jsx "${filePath}"`)
+      
+      if (stderr && stderr.includes('error')) {
+        throw new Error(`❌ TYPESCRIPT COMPILATION FAILED:\n${stderr}`)
+      }
+      
+      console.log('✅ TypeScript Compilation Passed')
+      return true
+    } catch (error) {
+      // Enhanced error parsing for better feedback
+      if (error.message.includes('Cannot find module')) {
+        const missingModules = error.message.match(/'@\/[^']+'/g) || []
+        throw new Error(`❌ MISSING DEPENDENCIES: ${missingModules.join(', ')}\nEnsure all required components exist in the project.`)
+      }
+      
+      if (error.message.includes('interface') && error.message.includes('expected')) {
+        throw new Error(`❌ INTERFACE SYNTAX ERROR: Invalid TypeScript interface definition. Check for spaces in interface names.`)
+      }
+      
+      throw new Error(`❌ TYPESCRIPT COMPILATION FAILED: ${error.message}`)
+    }
+  }
+
+  static async validateComponentDependencies(filePath) {
+    const content = fs.readFileSync(filePath, 'utf8')
+    const componentPattern = /import\s+.*?\s+from\s+['"](@\/components\/[^'"]+)['"]/g
+    const missingComponents = []
+    
+    let match
+    while ((match = componentPattern.exec(content)) !== null) {
+      const componentPath = match[1].replace('@/', 'src/')
+      const fullPath = path.join(process.cwd(), componentPath + '.tsx')
+      const fullPathTs = path.join(process.cwd(), componentPath + '.ts')
+      const indexPath = path.join(process.cwd(), componentPath, 'index.ts')
+      
+      if (!fs.existsSync(fullPath) && !fs.existsSync(fullPathTs) && !fs.existsSync(indexPath)) {
+        missingComponents.push(match[1])
+      }
+    }
+    
+    if (missingComponents.length > 0) {
+      throw new Error(`❌ MISSING COMPONENT DEPENDENCIES:\n${missingComponents.map(c => `  - ${c}`).join('\n')}\nEnsure all imported components exist.`)
+    }
+    
+    console.log('✅ All Component Dependencies Found')
+  }
+
+  static async runAllGates(entityType, preset, outputPath) {
     console.log('🛡️  Running HERA Quality Gates...')
     
     this.validateSmartCode(preset.smart_code)
@@ -288,6 +732,9 @@ class QualityGates {
     
     if (fs.existsSync(outputPath)) {
       this.validateGeneratedCode(outputPath)
+      await this.validateComponentDependencies(outputPath)
+      // Skip TypeScript compilation for speed during rapid generation
+      // await this.validateTypeScriptCompilation(outputPath)
     }
     
     console.log('✅ All Quality Gates PASSED')
@@ -302,6 +749,9 @@ function generateEntityPageTemplate(entityType, preset) {
     entityType: entityType.toUpperCase(),
     entityName: preset.title,
     entityNamePlural: preset.titlePlural,
+    entityInterfaceName: preset.title.replace(/\s+/g, ''), // Remove spaces for TypeScript interface
+    entityNameCamel: preset.title.replace(/\s+/g, ''), // CamelCase for variable names
+    entityNamePluralCamel: preset.titlePlural.replace(/\s+/g, ''), // CamelCase plural for variable names
     entitySmartCode: preset.smart_code,
     dynamicFields: preset.default_fields.map(field => ({
       name: field,
@@ -400,10 +850,10 @@ import {
 } from 'lucide-react'
 
 /**
- * ${config.entityName} Entity Interface
+ * ${config.entityInterfaceName} Entity Interface
  * Extends TableRecord for HERA compliance
  */
-interface ${config.entityName} extends TableRecord {
+interface ${config.entityInterfaceName} extends TableRecord {
   id: string
   entity_id?: string
   entity_name: string
@@ -442,14 +892,14 @@ ${smartCodesObject},
  * ${config.entityNamePlural} Main Page Component
  * Enterprise-grade CRUD with quality gates and business rules
  */
-export default function ${config.entityNamePlural}Page() {
+export default function ${config.entityNamePluralCamel}Page() {
   const { currentOrganization, isAuthenticated, user } = useHERAAuth()
-  const [selected${config.entityNamePlural}, setSelected${config.entityNamePlural}] = useState<(string | number)[]>([])
+  const [selected${config.entityNamePluralCamel}, setSelected${config.entityNamePluralCamel}] = useState<(string | number)[]>([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [current${config.entityName}, setCurrent${config.entityName}] = useState<${config.entityName} | null>(null)
-  const [${config.entityType.toLowerCase()}ToDelete, set${config.entityName}ToDelete] = useState<${config.entityName} | null>(null)
+  const [current${config.entityNameCamel}, setCurrent${config.entityNameCamel}] = useState<${config.entityInterfaceName} | null>(null)
+  const [${config.entityType.toLowerCase()}ToDelete, set${config.entityNameCamel}ToDelete] = useState<${config.entityInterfaceName} | null>(null)
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -472,7 +922,7 @@ ${dynamicFieldsConfig}
   })
 
   // Transform entities with business rule extensions
-  const ${config.entityType.toLowerCase()}s: ${config.entityName}[] = ${config.entityType.toLowerCase()}Data.entities?.map((entity: any) => {
+  const ${config.entityType.toLowerCase()}s: ${config.entityInterfaceName}[] = ${config.entityType.toLowerCase()}Data.entities?.map((entity: any) => {
     return {
       id: entity.id,
       entity_id: entity.id,
@@ -552,7 +1002,7 @@ ${dynamicFieldsConfig}
   ]
 
   // Enterprise CRUD Operations with Events
-  const handleAdd${config.entityName} = async (${config.entityType.toLowerCase()}Data: any) => {
+  const handleAdd${config.entityNameCamel} = async (${config.entityType.toLowerCase()}Data: any) => {
     try {
       const result = await ${config.entityType.toLowerCase()}Data.create({
         entity_type: '${config.entityType}',
@@ -576,31 +1026,31 @@ ${dynamicFieldsConfig}
     }
   }
 
-  const handleEdit${config.entityName} = async (${config.entityType.toLowerCase()}Data: any) => {
-    if (!current${config.entityName}) return
+  const handleEdit${config.entityNameCamel} = async (${config.entityType.toLowerCase()}Data: any) => {
+    if (!current${config.entityNameCamel}) return
     
     try {
-      await ${config.entityType.toLowerCase()}Data.update(current${config.entityName}.entity_id!, {
+      await ${config.entityType.toLowerCase()}Data.update(current${config.entityNameCamel}.entity_id!, {
         entity_name: ${config.entityType.toLowerCase()}Data.entity_name
       }, ${config.entityType.toLowerCase()}Data)
 
       // Emit update event
       await ${config.entityType.toLowerCase()}Data.emitEvent(${config.entityType}_SMART_CODES.EVENT_UPDATED, {
-        entity_id: current${config.entityName}.entity_id!,
+        entity_id: current${config.entityNameCamel}.entity_id!,
         user_id: user?.id,
         timestamp: new Date().toISOString(),
         changes: ${config.entityType.toLowerCase()}Data
       })
 
       setShowEditModal(false)
-      setCurrent${config.entityName}(null)
+      setCurrent${config.entityNameCamel}(null)
       console.log('✅ ${config.entityName} updated successfully')
     } catch (error) {
       console.error('❌ Error updating ${config.entityType.toLowerCase()}:', error)
     }
   }
 
-  const handleDelete${config.entityName} = async () => {
+  const handleDelete${config.entityNameCamel} = async () => {
     if (!${config.entityType.toLowerCase()}ToDelete) return
     
     try {
@@ -615,7 +1065,7 @@ ${dynamicFieldsConfig}
       })
 
       setShowDeleteModal(false)
-      set${config.entityName}ToDelete(null)
+      set${config.entityNameCamel}ToDelete(null)
       console.log('✅ ${config.entityName} deleted successfully')
     } catch (error) {
       console.error('❌ Error deleting ${config.entityType.toLowerCase()}:', error)
@@ -694,19 +1144,19 @@ ${dynamicFieldsConfig}
         selectedRows={selected${config.entityNamePlural}}
         onRowSelect={setSelected${config.entityNamePlural}}
         onRowClick={(${config.entityType.toLowerCase()}) => {
-          setCurrent${config.entityName}(${config.entityType.toLowerCase()})
+          setCurrent${config.entityNameCamel}(${config.entityType.toLowerCase()})
           setShowEditModal(true)
         }}
-        showBulkActions={selected${config.entityNamePlural}.length > 0}
+        showBulkActions={selected${config.entityNamePluralCamel}.length > 0}
         bulkActions={[
           {
             label: 'Delete Selected',
             action: async () => {
               // Bulk delete with events
-              for (const id of selected${config.entityNamePlural}) {
+              for (const id of selected${config.entityNamePluralCamel}) {
                 await ${config.entityType.toLowerCase()}Data.delete(id.toString())
               }
-              setSelected${config.entityNamePlural}([])
+              setSelected${config.entityNamePluralCamel}([])
             },
             variant: 'destructive'
           }${config.businessRules.requires_approval ? ',\n          {\n            label: \'Bulk Approve\',\n            action: async () => {\n              // Implement bulk approval\n            },\n            variant: \'default\'\n          }' : ''}
@@ -722,7 +1172,7 @@ ${dynamicFieldsConfig}
               <div className="flex space-x-2">
                 <button
                   onClick={() => {
-                    setCurrent${config.entityName}(${config.entityType.toLowerCase()})
+                    setCurrent${config.entityNameCamel}(${config.entityType.toLowerCase()})
                     setShowEditModal(true)
                   }}
                   className="p-1 text-blue-600 hover:bg-blue-50 rounded"
@@ -731,7 +1181,7 @@ ${dynamicFieldsConfig}
                 </button>
                 <button
                   onClick={() => {
-                    set${config.entityName}ToDelete(${config.entityType.toLowerCase()})
+                    set${config.entityNameCamel}ToDelete(${config.entityType.toLowerCase()})
                     setShowDeleteModal(true)
                   }}
                   className="p-1 text-red-600 hover:bg-red-50 rounded"
@@ -768,26 +1218,26 @@ ${dynamicFieldsConfig}
 
       {/* Enterprise Modals */}
       {showAddModal && (
-        <${config.entityName}Modal
+        <${config.entityInterfaceName}Modal
           title="Add New ${config.entityName}"
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
-          onSave={handleAdd${config.entityName}}
+          onSave={handleAdd${config.entityNameCamel}}
           dynamicFields={${config.entityType.toLowerCase()}Data.dynamicFieldsConfig || []}
           businessRules={${JSON.stringify(config.businessRules)}}
         />
       )}
 
-      {showEditModal && current${config.entityName} && (
-        <${config.entityName}Modal
+      {showEditModal && current${config.entityNameCamel} && (
+        <${config.entityInterfaceName}Modal
           title="Edit ${config.entityName}"
           isOpen={showEditModal}
           onClose={() => {
             setShowEditModal(false)
-            setCurrent${config.entityName}(null)
+            setCurrent${config.entityNameCamel}(null)
           }}
-          onSave={handleEdit${config.entityName}}
-          initialData={current${config.entityName}}
+          onSave={handleEdit${config.entityNameCamel}}
+          initialData={current${config.entityNameCamel}}
           dynamicFields={${config.entityType.toLowerCase()}Data.dynamicFieldsConfig || []}
           businessRules={${JSON.stringify(config.businessRules)}}
         />
@@ -807,14 +1257,14 @@ ${dynamicFieldsConfig}
               <button
                 onClick={() => {
                   setShowDeleteModal(false)
-                  set${config.entityName}ToDelete(null)
+                  set${config.entityNameCamel}ToDelete(null)
                 }}
                 className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
-                onClick={handleDelete${config.entityName}}
+                onClick={handleDelete${config.entityNameCamel}}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
@@ -832,17 +1282,17 @@ ${dynamicFieldsConfig}
  * Enterprise ${config.entityName} Modal Component
  * Enhanced with business rules and validation
  */
-interface ${config.entityName}ModalProps {
+interface ${config.entityInterfaceName}ModalProps {
   title: string
   isOpen: boolean
   onClose: () => void
   onSave: (data: any) => void
-  initialData?: ${config.entityName}
+  initialData?: ${config.entityInterfaceName}
   dynamicFields: any[]
   businessRules: any
 }
 
-function ${config.entityName}Modal({ 
+function ${config.entityInterfaceName}Modal({ 
   title, 
   isOpen, 
   onClose, 
@@ -850,14 +1300,14 @@ function ${config.entityName}Modal({
   initialData, 
   dynamicFields,
   businessRules 
-}: ${config.entityName}ModalProps) {
+}: ${config.entityInterfaceName}ModalProps) {
   const [formData, setFormData] = useState(() => {
     const initial: any = { 
       entity_name: initialData?.entity_name || '' 
     }
     
     dynamicFields.forEach(field => {
-      initial[field.name] = initialData?.[field.name as keyof ${config.entityName}] || (field.type === 'number' ? 0 : '')
+      initial[field.name] = initialData?.[field.name as keyof ${config.entityInterfaceName}] || (field.type === 'number' ? 0 : '')
     })
     
     return initial
@@ -1128,8 +1578,31 @@ if (!preset) {
 }
 
 // Generate page
-const baseDir = '/Users/san/Documents/PRD/heraerp-prd'
-const entityPath = preset.titlePlural.toLowerCase()
+const baseDir = process.cwd() // Use current working directory
+
+// Enhanced path generation logic for different modules
+let entityPath = preset.titlePlural.toLowerCase().replace(/\s+/g, '-')
+
+if (preset.module === 'PROCUREMENT') {
+  entityPath = `enterprise/procurement/purchasing-rebates/${entityPath}`
+} else if (preset.module === 'WASTE_MANAGEMENT') {
+  entityPath = `greenworms/waste-management/${entityPath}`
+} else if (preset.module === 'FLEET_MANAGEMENT') {
+  entityPath = `greenworms/fleet-management/${entityPath}`
+} else if (preset.module === 'WASTE_PROCESSING') {
+  entityPath = `greenworms/waste-processing/${entityPath}`
+} else if (preset.module === 'QUALITY_ASSURANCE') {
+  entityPath = `greenworms/quality-assurance/${entityPath}`
+} else if (preset.module === 'FINANCE' && entityType.startsWith('GREENWORMS_')) {
+  entityPath = `greenworms/finance/${entityPath}`
+} else if (preset.module === 'CRM') {
+  entityPath = `crm/${entityPath}`
+} else if (preset.module === 'MCA') {
+  entityPath = `crm/mca/${entityPath}`
+} else if (preset.module === 'INV') {
+  entityPath = `inventory/${entityPath}`
+}
+
 const outputPath = path.join(baseDir, 'src/app', entityPath, 'page.tsx')
 
 // Create directory

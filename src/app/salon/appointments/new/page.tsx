@@ -13,13 +13,16 @@ import { format, addMinutes } from 'date-fns'
 import { useQueryClient } from '@tanstack/react-query'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
+import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 import { universalApi } from '@/lib/universal-api-v2'
-import { useUniversalTransaction } from '@/hooks/useUniversalTransaction'
+import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
 import { useHeraServices } from '@/hooks/useHeraServices'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
+import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { useHeraAppointments } from '@/hooks/useHeraAppointments'
+import { useStaffAvailability } from '@/hooks/useStaffAvailability'
 import {
   Dialog,
   DialogContent,
@@ -220,6 +223,16 @@ function NewAppointmentContent() {
     }
   })
 
+  // ✅ LAYER 1: Staff availability checking based on leave requests
+  const {
+    checkStaffAvailability,
+    getUnavailableStaff,
+    isLoading: availabilityLoading
+  } = useStaffAvailability({
+    organizationId,
+    branchId: branchId || undefined
+  })
+
   // ⚡ PERFORMANCE: Fetch existing appointments for conflict detection
   const { appointments, isLoading: appointmentsLoading } = useHeraAppointments({
     organizationId,
@@ -229,8 +242,16 @@ function NewAppointmentContent() {
     }
   })
 
-  // ✅ Use Universal Transaction Hook for RPC-based appointment creation
-  const { create: createAppointmentTransaction } = useUniversalTransaction({
+  // 🛍️ Load products for retail sales during appointments
+  const { products } = useHeraProducts({
+    filters: {
+      include_dynamic: true,
+      include_relationships: false
+    }
+  })
+
+  // ✅ Use Universal Transaction V1 Hook for RPC-based appointment creation
+  const { create: createAppointmentTransaction } = useUniversalTransactionV1({
     organizationId,
     filters: { transaction_type: 'APPOINTMENT' }
   })
@@ -246,7 +267,7 @@ function NewAppointmentContent() {
   const [saving, setSaving] = useState(false)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const [createdAppointmentId, setCreatedAppointmentId] = useState<string | null>(null)
-  const [savedStatus, setSavedStatus] = useState<'DRAFT' | 'BOOKED'>('BOOKED')
+  const [savedStatus, setSavedStatus] = useState<'draft' | 'booked'>('booked')
 
   // Search state
   const [customerSearch, setCustomerSearch] = useState('')
@@ -579,7 +600,7 @@ function NewAppointmentContent() {
   }
 
   // Save appointment with status (DRAFT or BOOKED)
-  const handleSave = async (status: 'DRAFT' | 'BOOKED') => {
+  const handleSave = async (intentStatus: 'DRAFT' | 'BOOKED') => {
     if (!organizationId) {
       toast({
         title: 'Error',
@@ -612,6 +633,17 @@ function NewAppointmentContent() {
       return
     }
 
+    // ✅ VALIDATION: Check if selected stylist is on leave
+    const staffAvailability = checkStaffAvailability(selectedStylist.id, selectedDate, 'full_day')
+    if (!staffAvailability.isAvailable) {
+      toast({
+        title: 'Staff Unavailable',
+        description: `${selectedStylist.entity_name} is on ${staffAvailability.leaveStatus?.leave_type.toLowerCase()} leave from ${staffAvailability.leaveStatus?.start_date} to ${staffAvailability.leaveStatus?.end_date}. Please select another staff member.`,
+        variant: 'destructive'
+      })
+      return
+    }
+
     if (!selectedTime) {
       toast({
         title: 'Error',
@@ -637,18 +669,21 @@ function NewAppointmentContent() {
       // Extract service IDs for metadata
       const serviceIds = cart.map(item => item.service.id)
 
+      // ✅ Convert to lowercase for database
+      const status = intentStatus === 'DRAFT' ? 'draft' : 'booked'
+
       // Create appointment using Universal Transaction Hook (RPC-based)
       const result = await createAppointmentTransaction({
         transaction_type: 'APPOINTMENT',
         smart_code:
-          status === 'DRAFT'
-            ? 'HERA.SALON.APPOINTMENT.TXN.DRAFT.V1'
-            : 'HERA.SALON.APPOINTMENT.TXN.BOOKED.V1',
+          intentStatus === 'DRAFT'
+            ? 'HERA.SALON.TXN.APPOINTMENT.DRAFT.v1' // ✅ lowercase v + 6 segments
+            : 'HERA.SALON.TXN.APPOINTMENT.BOOKED.v1', // ✅ lowercase v + 6 segments
         source_entity_id: selectedCustomer.id, // Customer
         target_entity_id: selectedStylist.id, // Stylist
         transaction_date: startAt,
         total_amount: totalAmount,
-        status, // Sets transaction_status field
+        status, // Sets transaction_status field (lowercase)
         metadata: {
           status, // Also in metadata for compatibility
           start_time: startAt,
@@ -658,31 +693,23 @@ function NewAppointmentContent() {
           notes: notes || null,
           service_ids: serviceIds // Store service IDs for modal display
         },
-        lines: cart.map(item => ({
+        lines: cart.map((item, index) => ({
+          line_number: index + 1,
           line_type: 'service',
           entity_id: item.service.id,
           quantity: item.quantity,
           unit_amount: item.price,
           line_amount: item.price * item.quantity,
-          description: item.service.entity_name
+          description: item.service.entity_name,
+          smart_code: 'HERA.SALON.SVC.LINE.STANDARD.v1' // ✅ Matches POS pattern
         }))
       })
 
       const appointmentId = result.id
 
-      // 🎯 CRITICAL FIX: Invalidate AND refetch React Query cache to auto-refresh appointments list
-      // Use predicate to match all transactions queries (used by useUniversalTransaction)
-      await queryClient.invalidateQueries({
-        predicate: query => query.queryKey[0] === 'transactions'
-      })
-      // Force immediate refetch to ensure appointments list updates
-      await queryClient.refetchQueries({
-        predicate: query => query.queryKey[0] === 'transactions'
-      })
-      // Invalidate all entity queries for customers and staff
-      await queryClient.invalidateQueries({
-        predicate: query => query.queryKey[0] === 'entities'
-      })
+      // ✅ NO REFETCH NEEDED: hera_txn_crud_v1 returns updated data
+      // The useUniversalTransactionV1 hook automatically updates the cache
+      // (follows services/leave pattern)
 
       // Show success dialog instead of immediate redirect
       setSavedStatus(status) // 🎯 CRITICAL: Track which status was saved
@@ -721,9 +748,29 @@ function NewAppointmentContent() {
       className="min-h-screen"
       style={{ background: 'linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 50%, #0F0F0F 100%)' }}
     >
-      {/* Header with enterprise depth */}
+      {/* ✅ MOBILE: iOS-style status bar spacer */}
+      <div className="h-11 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
+
+      {/* 📱 PREMIUM MOBILE HEADER */}
+      <PremiumMobileHeader
+        title="New Appointment"
+        subtitle={selectedCustomer ? `${selectedCustomer.entity_name} • ${cart.length} services` : 'Select customer & services'}
+        showNotifications={false}
+        shrinkOnScroll
+        leftAction={
+          <button
+            onClick={() => router.push('/salon/appointments')}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1A1A1A] active:scale-90 transition-transform duration-200"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="w-5 h-5 text-[#D4AF37]" />
+          </button>
+        }
+      />
+
+      {/* Header with enterprise depth - DESKTOP ONLY */}
       <div
-        className="border-b relative overflow-hidden"
+        className="hidden md:block border-b relative overflow-hidden"
         style={{
           background:
             'linear-gradient(135deg, rgba(212,175,55,0.03) 0%, rgba(184,134,11,0.02) 100%)',
@@ -837,8 +884,8 @@ function NewAppointmentContent() {
           </div>
         </div>
       ) : (
-        <div className="container mx-auto px-6 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="container mx-auto px-4 md:px-6 py-4 md:py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Left Column - Branch, Customer & Time Selection */}
             <div className="space-y-4">
               {/* Branch Location Selector - Enterprise Grade */}
@@ -1161,15 +1208,39 @@ function NewAppointmentContent() {
                       border: '1px solid rgba(245,230,200,0.15)'
                     }}
                   >
-                    {stylists.map(stylist => (
-                      <SelectItem
-                        key={stylist.id}
-                        value={stylist.id}
-                        className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
-                      >
-                        {stylist.entity_name}
-                      </SelectItem>
-                    ))}
+                    {stylists.map(stylist => {
+                      // ✅ Check if staff is on leave for selected date
+                      const availability = checkStaffAvailability(stylist.id, selectedDate, 'full_day')
+                      const isOnLeave = !availability.isAvailable
+
+                      return (
+                        <SelectItem
+                          key={stylist.id}
+                          value={stylist.id}
+                          className={cn(
+                            "text-[#F5E6C8] hover:bg-[#D4AF37]/10",
+                            isOnLeave && "opacity-50 cursor-not-allowed"
+                          )}
+                          disabled={isOnLeave}
+                        >
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span>{stylist.entity_name}</span>
+                            {isOnLeave && (
+                              <Badge
+                                className="text-[10px] px-1.5 py-0.5"
+                                style={{
+                                  background: 'rgba(239, 68, 68, 0.2)',
+                                  color: '#EF4444',
+                                  border: '1px solid rgba(239, 68, 68, 0.3)'
+                                }}
+                              >
+                                ON LEAVE
+                              </Badge>
+                            )}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
               </Card>
@@ -2171,11 +2242,11 @@ function NewAppointmentContent() {
                     backgroundClip: 'text'
                   }}
                 >
-                  {savedStatus === 'DRAFT' ? 'Draft Saved!' : 'Appointment Confirmed!'}
+                  {savedStatus === 'draft' ? 'Draft Saved!' : 'Appointment Confirmed!'}
                 </span>
               </DialogTitle>
               <DialogDescription className="text-[#F5E6C8]/70 text-base">
-                {savedStatus === 'DRAFT'
+                {savedStatus === 'draft'
                   ? 'Your appointment has been saved as a draft and can be confirmed later'
                   : 'Your appointment has been successfully scheduled'}
               </DialogDescription>
@@ -2293,15 +2364,9 @@ function NewAppointmentContent() {
             {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
               <Button
-                onClick={async () => {
-                  // 🎯 CRITICAL FIX: Wait for all queries to invalidate before navigation
-                  await queryClient.invalidateQueries({
-                    predicate: query => query.queryKey[0] === 'appointment-transactions'
-                  })
-                  // Small delay to ensure cache propagation
-                  await new Promise(resolve => setTimeout(resolve, 100))
+                onClick={() => {
+                  // ✅ NO REFETCH NEEDED: Cache already updated by RPC
                   router.push('/salon/appointments')
-                  // Removed router.refresh() for better client-side navigation
                 }}
                 className="flex-1 transition-all duration-240"
                 style={{
@@ -2358,6 +2423,9 @@ function NewAppointmentContent() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}
+      <div className="h-20 md:h-0" />
     </div>
   )
 }
