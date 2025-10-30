@@ -304,11 +304,13 @@ async function test_hera_org_link_app_v1_reinstall() {
 }
 
 /**
- * Test 8: hera_organizations_crud_v1 - Read organization
+ * Test 8: hera_organizations_crud_v1 - Get organization
+ * NOTE: Function uses 'GET' action (not 'READ')
+ * GET = fetch single org, LIST = fetch multiple orgs
  */
-async function test_hera_organizations_crud_v1_read() {
+async function test_hera_organizations_crud_v1_get() {
   const result = await callRPC('hera_organizations_crud_v1', {
-    p_action: 'READ',
+    p_action: 'GET', // CORRECTED: Use 'GET' (not 'READ')
     p_actor_user_id: TEST_USER_ID,
     p_payload: {
       id: TEST_ORG_ID
@@ -317,7 +319,7 @@ async function test_hera_organizations_crud_v1_read() {
     p_offset: 0
   })
 
-  printResult('hera_organizations_crud_v1 - Read organization', result)
+  printResult('hera_organizations_crud_v1 - Get organization (single)', result)
   return result
 }
 
@@ -389,7 +391,7 @@ async function runAllTests() {
     await test_hera_org_link_app_v1()
     await test_hera_org_set_default_app_v1()
     await test_hera_auth_introspect_v1()
-    await test_hera_organizations_crud_v1_read()
+    await test_hera_organizations_crud_v1_get() // CORRECTED: Renamed function
     await test_hera_org_unlink_app_v1_soft()
     await test_hera_org_link_app_v1_reinstall()
 
