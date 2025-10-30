@@ -119,7 +119,7 @@ export default function CompliancePage() {
                 </div>
               </div>
 
-              <Link href="/salon/staff">
+              <Link href="/salon/staffs">
                 <button
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105"
                   style={{
@@ -370,7 +370,7 @@ export default function CompliancePage() {
                       </div>
 
                       {/* Action Button */}
-                      <Link href={`/salon/staff`}>
+                      <Link href={`/salon/staffs`}>
                         <button
                           className="px-4 py-2 rounded-lg text-sm font-medium transition-all hover:scale-105"
                           style={{

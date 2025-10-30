@@ -97,7 +97,7 @@ export default function FastSalonDashboard() {
     { label: 'New Appointment', href: '/salon/appointments/new', icon: Calendar },
     { label: 'Walk-in Customer', href: '/salon/customers/new', icon: Users },
     { label: 'Process Payment', href: '/salon/pos', icon: CreditCard },
-    { label: 'Staff Schedule', href: '/salon/staff', icon: Clock }
+    { label: 'Staff Schedule', href: '/salon/staffs', icon: Clock }
   ]
 
   return (
@@ -282,7 +282,7 @@ export default function FastSalonDashboard() {
               {[
                 { href: '/salon/appointments', icon: Calendar, label: 'Appointments' },
                 { href: '/salon/customers', icon: Users, label: 'Customers' },
-                { href: '/salon/staff', icon: Users, label: 'Staff Management' },
+                { href: '/salon/staffs', icon: Users, label: 'Staff Management' },
                 { href: '/salon/services', icon: Scissors, label: 'Services' },
                 { href: '/salon/pos', icon: CreditCard, label: 'Point of Sale' },
                 { href: '/salon/inventory', icon: Package, label: 'Inventory' },

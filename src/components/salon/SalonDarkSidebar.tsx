@@ -97,7 +97,7 @@ const sidebarItems: SidebarItem[] = [
     badge: '5',
     badgeColor: COLORS.gold
   },
-  { title: 'Staff', href: '/salon/staff', icon: UserPlus }
+  { title: 'Staff', href: '/salon/staffs', icon: UserPlus }
 ]
 
 // All apps for the modal (production ready - only existing pages)
