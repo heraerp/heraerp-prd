@@ -36,7 +36,7 @@ const AVAILABLE_APPS = [
     id: 'salon',
     name: 'Salon & Beauty',
     icon: '💇',
-    href: '/salon-access',
+    href: '/salon/auth',
     color: 'from-amber-500 to-orange-600'
   },
   {

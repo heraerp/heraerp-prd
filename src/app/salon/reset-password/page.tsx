@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
 
       // Redirect to login after 3 seconds
       setTimeout(() => {
-        router.push('/salon-access')
+        router.push('/salon/auth')
       }, 3000)
 
     } catch (err: any) {
@@ -391,7 +391,7 @@ export default function ResetPasswordPage() {
         <div className="mt-6 text-center">
           <button
             type="button"
-            onClick={() => router.push('/salon-access')}
+            onClick={() => router.push('/salon/auth')}
             className="text-sm font-medium hover:underline transition-colors"
             style={{ color: SALON_LUXE_COLORS.bronze }}
           >

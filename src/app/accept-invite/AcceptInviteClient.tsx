@@ -229,14 +229,14 @@ export default function AcceptInviteClient() {
       // Redirect to app after short delay
       setTimeout(() => {
         const appRedirectMap: { [key: string]: string } = {
-          'salon': '/salon-access',
+          'salon': '/salon/auth',
           'jewelry': '/jewelry-access',
           'crm': '/crm-access',
           'isp': '/isp-access',
           'civicflow': '/civicflow-auth'
         }
 
-        const redirectPath = appRedirectMap[invitationData.app_type] || '/salon-access'
+        const redirectPath = appRedirectMap[invitationData.app_type] || '/salon/auth'
         console.log('✅ Redirecting to:', redirectPath)
         router.push(redirectPath)
       }, 2000)
@@ -488,7 +488,7 @@ export default function AcceptInviteClient() {
             <div className="text-center mt-6">
               <p className="ink-muted text-sm">
                 Already have an account?{' '}
-                <Link href="/salon-access" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+                <Link href="/salon/auth" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
                   Sign In
                 </Link>
               </p>

@@ -37,8 +37,8 @@ export function SalonRouteGuard({ children, fallback }: SalonRouteGuardProps) {
 
       // Not authenticated - redirect to login
       if (!isAuthenticated || !user) {
-        console.log('[RouteGuard] Not authenticated, redirecting to /salon-access')
-        router.replace('/salon-access')
+        console.log('[RouteGuard] Not authenticated, redirecting to /salon/auth')
+        router.replace('/salon/auth')
         return
       }
 
