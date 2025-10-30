@@ -11,6 +11,7 @@ import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
+import '@/styles/radix-overrides.css' // Radix UI global overrides for HERA modals
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
 
 const inter = Inter({

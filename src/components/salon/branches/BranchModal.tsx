@@ -947,31 +947,6 @@ export function BranchModal({ open, onClose, branch, onSave }: BranchModalProps)
             </Button>
           </div>
         </form>
-
-        {/* Global Styles for Dropdown Items */}
-        <style jsx global>{`
-          /* Override global CSS for select items */
-          .hera-select-item[data-radix-collection-item] {
-            cursor: pointer !important;
-            padding: 0.5rem 0.75rem !important;
-            transition: all 0.2s ease !important;
-          }
-
-          .hera-select-item[data-radix-collection-item]:hover {
-            background-color: ${COLORS.gold}20 !important;
-            color: ${COLORS.champagne} !important;
-          }
-
-          .hera-select-item[data-radix-collection-item][data-state="checked"] {
-            background-color: ${COLORS.gold}30 !important;
-            color: ${COLORS.champagne} !important;
-          }
-
-          /* Ensure dropdown content is above everything */
-          [role="listbox"] {
-            z-index: 99999 !important;
-          }
-        `}</style>
       </SalonLuxeModal>
     </>
   )

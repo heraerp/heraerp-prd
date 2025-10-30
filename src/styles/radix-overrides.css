@@ -1,0 +1,26 @@
+/**
+ * HERA RADIX UI OVERRIDES
+ * Global styles for Radix UI components across all modals
+ */
+
+/* Override global CSS for select items */
+.hera-select-item[data-radix-collection-item] {
+  cursor: pointer !important;
+  padding: 0.5rem 0.75rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.hera-select-item[data-radix-collection-item]:hover {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  color: #f5e6c8 !important;
+}
+
+.hera-select-item[data-radix-collection-item][data-state="checked"] {
+  background-color: rgba(212, 175, 55, 0.3) !important;
+  color: #f5e6c8 !important;
+}
+
+/* Ensure dropdown content is above everything */
+[role="listbox"] {
+  z-index: 99999 !important;
+}
