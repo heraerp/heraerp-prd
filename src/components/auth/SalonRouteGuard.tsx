@@ -49,10 +49,11 @@ export function SalonRouteGuard({ children, fallback }: SalonRouteGuardProps) {
         return
       }
 
-      // Get user role from localStorage (set during login)
-      const storedRole = localStorage.getItem('userRole')
+      // Get user role from localStorage (set during login as 'salonRole')
+      const storedRole = localStorage.getItem('salonRole') || localStorage.getItem('userRole')
       const role = (storedRole?.toLowerCase() || 'receptionist') as SalonRole
 
+      console.log('[RouteGuard] Role from localStorage:', { storedRole, normalized: role })
       setUserRole(role)
 
       // Check if user has access to current path
