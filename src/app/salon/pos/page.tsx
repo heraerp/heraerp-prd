@@ -652,8 +652,8 @@ function POSContent() {
     [clearTicket, ticket.appointment_id, updateAppointmentStatus, toast]
   )
 
-  // Memoize totals calculation for performance - FIXED: Use ticket as dependency instead of function
-  const totals = useMemo(() => calculateTotals(), [ticket])
+  // Get totals from the hook's memoized calculation
+  const totals = calculateTotals()
 
   if (!effectiveOrgId) {
     return (

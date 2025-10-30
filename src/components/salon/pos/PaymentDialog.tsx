@@ -463,7 +463,7 @@ export function PaymentDialog({
       description={`Total amount: AED ${(totals?.total || 0).toFixed(2)}`}
       icon={<Receipt className="w-6 h-6" />}
       size="md"
-      className="max-w-xl max-h-[95vh] overflow-x-auto"
+      className="max-w-xl max-h-[95vh]"
       footer={
         <div className="flex gap-3 w-full">
           <SalonLuxeButton

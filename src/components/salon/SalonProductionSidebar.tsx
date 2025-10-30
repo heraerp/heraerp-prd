@@ -130,7 +130,7 @@ export function SalonProductionSidebar() {
       id: 'staff',
       label: 'Staff',
       icon: <User className="w-5 h-5" />,
-      href: '/salon/staff',
+      href: '/salon/staffs',
       color: 'hover:bg-orange-100'
     },
     {

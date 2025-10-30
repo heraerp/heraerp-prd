@@ -231,7 +231,7 @@ export function SalonLuxeModal({
 
         {/* Content with enhanced styling and text color enforcement */}
         <div
-          className="overflow-y-auto px-6 pb-4 flex-1 relative z-10 custom-scrollbar min-h-0"
+          className="overflow-y-auto overflow-x-hidden px-6 pb-4 flex-1 relative z-10 custom-scrollbar min-h-0"
           style={{
             background: 'linear-gradient(to bottom, rgba(212, 175, 55, 0.02) 0%, transparent 20%)',
             color: SALON_LUXE_COLORS.text.primary,

@@ -203,7 +203,7 @@ export function SalonMobileLayout({
                 { href: '/salon/pos', label: 'POS', icon: <ShoppingBag className="w-5 h-5" /> },
                 { href: '/salon/services', label: 'Services', icon: <Sparkles className="w-5 h-5" /> },
                 { href: '/salon/products', label: 'Products', icon: <ShoppingBag className="w-5 h-5" /> },
-                { href: '/salon/staff', label: 'Staff', icon: <Users className="w-5 h-5" /> },
+                { href: '/salon/staffs', label: 'Staff', icon: <Users className="w-5 h-5" /> },
                 { href: '/salon/reports', label: 'Reports', icon: <BarChart3 className="w-5 h-5" /> }
               ].map((item) => {
                 const isActive = pathname === item.href || pathname.startsWith(item.href + '/')

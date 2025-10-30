@@ -879,50 +879,20 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    * ✅ GRACEFUL ERROR HANDLING: 401 errors are logged but don't block page load
    */
   const loadBranches = async (orgId: string): Promise<Branch[]> => {
-    console.log('[loadBranches] 🚀 Starting to load branches for orgId:', orgId)
-
     try {
       setIsLoadingBranches(true) // ✅ Set loading state
-      console.log('[loadBranches] ⏳ Loading state set to true')
 
-      console.log('[loadBranches] 📦 Importing universal-api-v2-client...')
       const { getEntities } = await import('@/lib/universal-api-v2-client')
-      console.log('[loadBranches] ✅ Import successful')
 
-      console.log('[loadBranches] 🌐 Calling getEntities API...')
       const branches = await getEntities('', {
         p_organization_id: orgId,
         p_entity_type: 'BRANCH',
         p_status: 'active',
         p_include_dynamic: true // ✅ Include dynamic fields (opening_time, closing_time, etc.)
       })
-      console.log('[loadBranches] ✅ API call completed successfully')
-
-      console.log('[loadBranches] 🔍 RAW API Response:', {
-        branchesCount: branches?.length || 0,
-        isArray: Array.isArray(branches),
-        firstBranchKeys: branches?.[0] ? Object.keys(branches[0]) : [],
-        hasDynamicFields: branches?.[0] ? ('dynamic_fields' in branches[0]) : false,
-        dynamicFieldsIsArray: Array.isArray(branches?.[0]?.dynamic_fields),
-        hasMetadata: branches?.[0] ? ('metadata' in branches[0]) : false
-      })
-
-      // ✅ Log full first branch separately to avoid JSON.stringify issues
-      if (branches?.[0]) {
-        console.log('[loadBranches] 📋 First Branch Full Object:', branches[0])
-      }
 
       // ✅ Transform branches to flatten dynamic fields to top-level properties
       const transformedBranches = (branches || []).map((branch: any) => {
-        console.log('[loadBranches] 🔧 Transforming branch:', {
-          id: branch.id,
-          name: branch.entity_name || branch.name,
-          hasDynamicFields: !!branch.dynamic_fields,
-          dynamicFieldsIsArray: Array.isArray(branch.dynamic_fields),
-          hasMetadata: !!branch.metadata,
-          metadataKeys: branch.metadata ? Object.keys(branch.metadata) : []
-        })
-
         // Start with the base branch entity
         const transformed: any = {
           id: branch.id,
@@ -934,7 +904,6 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         // ✅ Flatten dynamic_fields ARRAY to top-level properties
         // RPC returns dynamic_fields as an array of objects: [{ field_name: 'opening_time', field_value_text: '10:00' }, ...]
         if (Array.isArray(branch.dynamic_fields)) {
-          console.log('[loadBranches] ✅ Found dynamic_fields array, extracting values')
           branch.dynamic_fields.forEach((field: any) => {
             // Extract the actual value from the appropriate typed column
             const value = field.field_value_text ||
@@ -947,34 +916,21 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             // Set as top-level property using field_name (e.g., opening_time, closing_time)
             if (field.field_name && value !== null) {
               transformed[field.field_name] = value
-              console.log(`[loadBranches]   - ${field.field_name} = ${value}`)
             }
           })
         }
         // ✅ FALLBACK: If no dynamic_fields, check metadata for opening/closing times
         else if (branch.metadata && typeof branch.metadata === 'object') {
-          console.log('[loadBranches] ⚠️ No dynamic_fields found, checking metadata')
-
           // Extract opening_time and closing_time from metadata if they exist
           if (branch.metadata.opening_time) {
             transformed.opening_time = branch.metadata.opening_time
-            console.log(`[loadBranches]   - opening_time from metadata = ${branch.metadata.opening_time}`)
           }
           if (branch.metadata.closing_time) {
             transformed.closing_time = branch.metadata.closing_time
-            console.log(`[loadBranches]   - closing_time from metadata = ${branch.metadata.closing_time}`)
           }
         }
 
         return transformed
-      })
-
-      console.log('[loadBranches] ✅ Fetched branches via RPC API v2:', {
-        count: transformedBranches.length,
-        orgId,
-        firstBranch: transformedBranches[0],
-        hasOpeningTime: !!transformedBranches[0]?.opening_time,
-        hasClosingTime: !!transformedBranches[0]?.closing_time
       })
 
       setAvailableBranches(transformedBranches || [])
@@ -1007,21 +963,12 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    * Handle branch selection
    */
   const handleSetBranch = useCallback((branchId: string) => {
-    console.log('[handleSetBranch] 🔄 Changing branch to:', branchId)
     setSelectedBranchIdState(branchId)
     localStorage.setItem('selectedBranchId', branchId)
 
     // Update context with new branch - use context.availableBranches which has the transformed data
     setContext(prev => {
       const selectedBranch = prev.availableBranches.find(b => b.id === branchId) || null
-      console.log('[handleSetBranch] ✅ Selected branch:', {
-        id: selectedBranch?.id,
-        name: selectedBranch?.entity_name,
-        hasOpeningTime: !!selectedBranch?.opening_time,
-        hasClosingTime: !!selectedBranch?.closing_time,
-        opening_time: selectedBranch?.opening_time,
-        closing_time: selectedBranch?.closing_time
-      })
 
       return {
         ...prev,

@@ -518,13 +518,49 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
 
       if (error) {
         console.error('[useUniversalEntityV1] Orchestrator RPC create error:', error)
-        throw new Error(error)
+        // ✅ ENTERPRISE ERROR: Parse and surface detailed error information
+        const errorMessage = typeof error === 'string' ? error : error?.message || JSON.stringify(error)
+        throw new Error(errorMessage)
+      }
+
+      // ✅ CRITICAL FIX: Check if the response is an error response (success: false)
+      if (data?.success === false || data?.error) {
+        const errorCode = data?.error || 'UNKNOWN_ERROR'
+        const errorAction = data?.action || 'CREATE'
+        const errorSqlState = data?.sqlstate || ''
+
+        console.error('[useUniversalEntityV1] ❌ RPC returned error response:', {
+          error: errorCode,
+          action: errorAction,
+          sqlstate: errorSqlState,
+          full_response: data
+        })
+
+        // Provide user-friendly error messages for common cases
+        let errorMessage = `Failed to ${errorAction.toLowerCase()} entity: ${errorCode}`
+
+        if (errorCode === 'HERA_ACTOR_NOT_MEMBER') {
+          errorMessage = 'Authentication error: Your account is not properly linked to this organization. Please try logging out and logging back in.'
+        } else if (errorCode === 'HERA_ORG_MISMATCH') {
+          errorMessage = 'Organization mismatch error. Please ensure you are in the correct organization context.'
+        } else if (errorCode.includes('SMART_CODE')) {
+          errorMessage = 'Invalid service configuration. Please contact support.'
+        }
+
+        throw new Error(errorMessage)
       }
 
       console.log('[useUniversalEntityV1] ✅ Created:', data?.entity_id || data?.data?.entity?.id)
 
       // Extract full entity from response - try multiple formats
       let createdEntity = null
+
+      // ✅ CRITICAL FIX: Log the full response for debugging
+      console.log('[useUniversalEntityV1] 📦 Raw CREATE response:', {
+        has_data: !!data,
+        data_keys: data ? Object.keys(data) : [],
+        data_structure: JSON.stringify(data, null, 2).substring(0, 500)
+      })
 
       // ✅ CRITICAL FIX: Check for nested wrapper format from orchestrator RPC
       // Format 0: { data: { data: { entity: {...}, dynamic_data: [...], relationships: [...] } } }
@@ -548,6 +584,20 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         console.log('[useUniversalEntityV1] 📦 Format 1: Direct entity')
         createdEntity = data.entity
       }
+      // ✅ NEW Format 7: { data: { success: true, entity_id: 'uuid', ...rest } } - RPC success response with entity_id
+      else if (data?.data?.success && data?.data?.entity_id) {
+        console.log('[useUniversalEntityV1] 📦 Format 7: RPC success with entity_id - will refetch')
+        // Return minimal entity object and trigger refetch in onSuccess
+        createdEntity = {
+          id: data.data.entity_id,
+          entity_type: entity_type,
+          entity_name: entity.entity_name,
+          smart_code: entity.smart_code,
+          status: entity.status || 'active',
+          // Mark as incomplete so we know to refetch
+          _incomplete: true
+        }
+      }
       // Format 3: { data: { data: {...} } } - nested data (entity is the data itself)
       else if (data?.data?.data && data.data.data.id) {
         console.log('[useUniversalEntityV1] 📦 Format 3: data.data with id')
@@ -563,9 +613,23 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         console.log('[useUniversalEntityV1] 📦 Format 5: data is entity with id')
         createdEntity = data.data
       }
-      // ✅ NEW Format 6: { entity_id: 'uuid' } - minimal response, need to refetch
+      // ✅ Format 6: { entity_id: 'uuid' } - minimal response, need to refetch
       else if (data?.entity_id) {
         console.log('[useUniversalEntityV1] 📦 Format 6: Minimal response with entity_id only - will refetch')
+        // Return minimal entity object and trigger refetch in onSuccess
+        createdEntity = {
+          id: data.entity_id,
+          entity_type: entity_type,
+          entity_name: entity.entity_name,
+          smart_code: entity.smart_code,
+          status: entity.status || 'active',
+          // Mark as incomplete so we know to refetch
+          _incomplete: true
+        }
+      }
+      // ✅ NEW Format 8: { success: true, entity_id: 'uuid' } - bare RPC success response
+      else if (data?.success && data?.entity_id) {
+        console.log('[useUniversalEntityV1] 📦 Format 8: Bare RPC success with entity_id - will refetch')
         // Return minimal entity object and trigger refetch in onSuccess
         createdEntity = {
           id: data.entity_id,
