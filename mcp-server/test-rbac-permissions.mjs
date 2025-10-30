@@ -14,6 +14,7 @@ const SALON_PAGE_ACCESS = [
   { path: '/salon/pos', allowedRoles: ['owner', 'manager', 'receptionist'], description: 'POS' },
   { path: '/salon/appointments', allowedRoles: ['owner', 'manager', 'receptionist'], description: 'Appointments' },
   { path: '/salon/customers', allowedRoles: ['owner', 'manager', 'receptionist'], description: 'Customers' },
+  { path: '/salon/staffs', allowedRoles: ['owner', 'manager', 'receptionist'], description: 'Staff' },
   { path: '/salon/receptionist', allowedRoles: ['owner', 'manager', 'receptionist', 'accountant'], description: 'Receptionist' },
 ]
 
@@ -124,6 +125,11 @@ function testRolePermissions() {
   const accountantPOS = !hasPageAccess('accountant', '/salon/pos')
   console.log(`  Result: ${accountantPOS ? '✅ PASS' : '❌ FAIL'}\n`)
 
+  // Scenario 9: Receptionist SHOULD access staff pages
+  console.log('Test 9: Receptionist SHOULD access staff pages')
+  const receptionistStaff = hasPageAccess('receptionist', '/salon/staffs')
+  console.log(`  Result: ${receptionistStaff ? '✅ PASS' : '❌ FAIL'}\n`)
+
   // Summary
   const allTests = [
     ownerTests,
@@ -133,7 +139,8 @@ function testRolePermissions() {
     receptionistPOS,
     receptionistAppointments,
     accountantFinance,
-    accountantPOS
+    accountantPOS,
+    receptionistStaff
   ]
 
   const passedTests = allTests.filter(t => t).length
