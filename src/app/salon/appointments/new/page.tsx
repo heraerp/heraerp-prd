@@ -23,6 +23,8 @@ import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { useHeraAppointments } from '@/hooks/useHeraAppointments'
 import { useStaffAvailability } from '@/hooks/useStaffAvailability'
+import { useAppointmentValidation } from '@/hooks/useAppointmentValidation'
+import { BookingChecklist } from '@/components/salon/appointments/BookingChecklist'
 import {
   Dialog,
   DialogContent,
@@ -284,6 +286,19 @@ function NewAppointmentContent() {
 
   // Combined loading state
   const loading = customersLoading || servicesLoading || staffLoading
+
+  // ✅ Real-time validation tracking for booking checklist
+  const validation = useAppointmentValidation({
+    hasMultipleBranches,
+    branchId,
+    branchName: branches.find(b => b.id === branchId)?.entity_name,
+    selectedCustomer,
+    selectedStylist,
+    selectedTime,
+    selectedDate,
+    cart,
+    checkStaffAvailability
+  })
 
   // Helper function to convert 24-hour format to 12-hour format
   const formatTime12Hour = (time24: string): string => {
@@ -1892,6 +1907,12 @@ function NewAppointmentContent() {
                     </div>
                   </div>
                 </div>
+
+                {/* ✅ Enterprise-Grade Booking Checklist */}
+                <BookingChecklist
+                  validation={validation}
+                  className="mt-6"
+                />
 
                 <div className="mt-6 space-y-3">
                   {/* Book Appointment Button (Primary) */}
