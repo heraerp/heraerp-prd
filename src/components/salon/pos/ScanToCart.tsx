@@ -278,10 +278,20 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
   // Handle keyboard scanner input (USB/Bluetooth barcode scanners)
   function handleKeyboardInput(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
+      event.preventDefault() // Prevent form submission
       const barcode = (event.target as HTMLInputElement).value.trim()
-      ;(event.target as HTMLInputElement).value = ''
+
+      console.log('🔍🔍🔍 KEYBOARD SCANNER - Enter pressed:', {
+        barcode,
+        barcodeLength: barcode.length,
+        mode,
+        organizationId
+      })
 
       if (barcode) {
+        // Clear input first
+        ;(event.target as HTMLInputElement).value = ''
+        // Then lookup
         lookupBarcode(barcode)
       }
     }
