@@ -69,16 +69,22 @@ export const SalonLuxeButton = forwardRef<HTMLButtonElement, SalonLuxeButtonProp
           return isHovered
             ? {
                 ...baseStyle,
-                background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.light} 0%, ${SALON_LUXE_COLORS.gold.base} 100%)`,
-                color: SALON_LUXE_COLORS.text.onGold,
-                boxShadow: `0 4px 20px ${SALON_LUXE_COLORS.shadow.gold}`,
-                transform: 'scale(1.02)',
+                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(184, 134, 11, 0.30) 100%)`,
+                borderWidth: '2px',
+                borderStyle: 'solid',
+                borderColor: 'rgba(212, 175, 55, 0.60)',
+                color: SALON_LUXE_COLORS.champagne.light,
+                boxShadow: `0 4px 16px rgba(212, 175, 55, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)`,
+                transform: 'translateY(-1px) scale(1.01)',
               }
             : {
                 ...baseStyle,
-                background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.gold.dark} 100%)`,
-                color: SALON_LUXE_COLORS.text.onGold,
-                boxShadow: `0 2px 12px ${SALON_LUXE_COLORS.shadow.goldLight}`,
+                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.20) 100%)`,
+                borderWidth: '2px',
+                borderStyle: 'solid',
+                borderColor: 'rgba(212, 175, 55, 0.40)',
+                color: SALON_LUXE_COLORS.champagne.base,
+                boxShadow: `0 2px 8px rgba(212, 175, 55, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.10)`,
               }
 
         case 'danger':

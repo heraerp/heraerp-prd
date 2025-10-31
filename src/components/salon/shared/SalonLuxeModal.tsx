@@ -13,7 +13,7 @@ export interface ValidationError {
 
 interface SalonLuxeModalProps {
   open: boolean
-  onClose: () => void
+  onClose: (open?: boolean) => void
   title: string
   description?: string
   icon?: ReactNode
@@ -135,7 +135,7 @@ export function SalonLuxeModal({
         {/* Close Button - Always Visible */}
         {showCloseButton && (
           <button
-            onClick={onClose}
+            onClick={() => onClose(false)}
             className="absolute right-4 top-4 rounded-lg p-2 hover:scale-110 transition-all"
             style={{
               zIndex: 999,

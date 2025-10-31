@@ -330,7 +330,7 @@ export default function MonthlySalesReportPage() {
                     Total Transactions
                   </p>
                   <p className="text-3xl font-bold mb-1" style={{ color: LUXE_COLORS.champagne }}>
-                    {summary.total_transactions || 0}
+                    {summary.transaction_count || 0}
                   </p>
                   <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
                     Avg Ticket: AED {summary.average_ticket?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
@@ -535,10 +535,10 @@ export default function MonthlySalesReportPage() {
                               </p>
                             </td>
                             <td className="px-6 py-4 text-right font-mono" style={{ color: LUXE_COLORS.emeraldLight }}>
-                              {day.service_revenue?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                              {day.service_net?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                             </td>
                             <td className="px-6 py-4 text-right font-mono" style={{ color: LUXE_COLORS.plum }}>
-                              {day.product_revenue?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                              {day.product_net?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                             </td>
                             <td className="px-6 py-4 text-right font-mono" style={{ color: LUXE_COLORS.bronzeLight }}>
                               {day.tips?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
@@ -547,7 +547,7 @@ export default function MonthlySalesReportPage() {
                               {day.vat?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                             </td>
                             <td className="px-6 py-4 text-right font-bold font-mono" style={{ color: LUXE_COLORS.goldLight }}>
-                              {day.gross_total?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                              {day.gross?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                             </td>
                             <td className="px-6 py-4 text-center">
                               <span
@@ -557,7 +557,7 @@ export default function MonthlySalesReportPage() {
                                   color: LUXE_COLORS.champagne
                                 }}
                               >
-                                {day.transaction_count || 0}
+                                {day.txn_count || 0}
                               </span>
                             </td>
                           </tr>
@@ -573,10 +573,10 @@ export default function MonthlySalesReportPage() {
                             TOTAL
                           </td>
                           <td className="px-6 py-4 text-right font-bold font-mono" style={{ color: LUXE_COLORS.emerald }}>
-                            {summary.service_revenue?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                            {summary.total_service?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                           </td>
                           <td className="px-6 py-4 text-right font-bold font-mono" style={{ color: LUXE_COLORS.plum }}>
-                            {summary.product_revenue?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                            {summary.total_product?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                           </td>
                           <td className="px-6 py-4 text-right font-bold font-mono" style={{ color: LUXE_COLORS.bronze }}>
                             {summary.total_tips?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
@@ -588,7 +588,7 @@ export default function MonthlySalesReportPage() {
                             {summary.total_gross?.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                           </td>
                           <td className="px-6 py-4 text-center font-bold" style={{ color: LUXE_COLORS.champagne }}>
-                            {summary.total_transactions || 0}
+                            {summary.transaction_count || 0}
                           </td>
                         </tr>
                       </>
