@@ -67,18 +67,6 @@ function calculatePaymentBreakdown(
       })
     : transactions
 
-  // ✅ DEBUG: Log first transaction structure to verify lines are included
-  if (filteredTransactions.length > 0) {
-    const firstTxn = filteredTransactions[0]
-    console.log('[calculatePaymentBreakdown] 🔍 DEBUG - First transaction structure:', {
-      id: firstTxn.id?.substring(0, 8),
-      has_lines: !!firstTxn.lines,
-      lines_count: firstTxn.lines?.length || 0,
-      payment_lines_count: firstTxn.lines?.filter((l: any) => l.line_type === 'payment').length || 0,
-      first_payment_line: firstTxn.lines?.find((l: any) => l.line_type === 'payment'),
-      transaction_metadata: firstTxn.metadata
-    })
-  }
 
   return filteredTransactions.reduce(
     (acc, t) => {
@@ -96,18 +84,6 @@ function calculatePaymentBreakdown(
             ''
           ).toLowerCase()
           const amount = Math.abs(line.line_amount || 0)
-
-          // ✅ DEBUG: Log payment line details
-          console.log('[calculatePaymentBreakdown] 💳 Payment line:', {
-            line_type: line.line_type,
-            method_found: method || 'NONE',
-            amount,
-            has_metadata: !!line.metadata,
-            has_line_data: !!line.line_data,
-            raw_metadata: line.metadata,
-            raw_line_data: line.line_data,
-            description: line.description
-          })
 
           if (!method || method === 'cash' || method.includes('cash')) {
             acc.cash += amount
@@ -133,12 +109,6 @@ function calculatePaymentBreakdown(
           // (For split payments, we'd need line-level data which isn't available)
           const method = paymentMethods[0]?.toLowerCase() || ''
 
-          console.log('[calculatePaymentBreakdown] 💰 Fallback - Using metadata payment_methods:', {
-            payment_methods_array: paymentMethods,
-            selected_method: method,
-            amount
-          })
-
           if (!method || method === 'cash' || method.includes('cash')) {
             acc.cash += amount
           } else if (method === 'card' || method === 'credit_card' || method === 'debit_card' || method.includes('card')) {
@@ -159,11 +129,6 @@ function calculatePaymentBreakdown(
             t.paymentMethod ||
             ''
           ).toLowerCase()
-
-          console.log('[calculatePaymentBreakdown] 💰 Fallback - Using legacy payment_method:', {
-            method_found: method || 'NONE',
-            amount
-          })
 
           if (!method || method === 'cash' || method.includes('cash')) {
             acc.cash += amount
@@ -433,15 +398,6 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     }
   })
 
-  // 🔍 DEBUG: Log GL_JOURNAL transaction data
-  console.log('📊 [useSalonDashboard] GL_JOURNAL Transactions:', {
-    transactionCount: tickets?.length || 0,
-    isLoading: ticketsLoading,
-    organizationId,
-    firstTransaction: tickets?.[0],
-    sampleMetadata: tickets?.[0]?.metadata
-  })
-
   // Fetch appointments using Universal Transaction V1 hook (RPC-based)
   const {
     transactions: appointments,
@@ -578,12 +534,6 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     // They are automatically posted and represent completed financial transactions
     const completedTickets = tickets || []
 
-    console.log('📊 [useSalonDashboard] Completed Tickets:', {
-      totalTickets: tickets?.length || 0,
-      completedTickets: completedTickets.length,
-      sampleTicket: completedTickets[0]
-    })
-
     // ═══════════════════════════════════════════════════════════════
     // BASE METRICS
     // ═══════════════════════════════════════════════════════════════
@@ -598,15 +548,6 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
 
     // ✅ ALIGNED WITH REPORTS: Total revenue from GL_JOURNAL metadata
     const totalRevenue = extractGrossRevenue(completedTickets)
-
-    console.log('📊 [useSalonDashboard] Revenue Calculation:', {
-      completedTicketsCount: completedTickets.length,
-      totalRevenue,
-      sampleTransaction: completedTickets[0],
-      sampleMetadata: completedTickets[0]?.metadata,
-      sampleTotalCr: completedTickets[0]?.metadata?.total_cr,
-      allTotalCr: completedTickets.map(t => t.metadata?.total_cr).slice(0, 10)
-    })
 
     // Low stock products
     const lowStockProducts = activeProducts.filter(p => {
