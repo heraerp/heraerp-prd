@@ -17,6 +17,14 @@ import { useUniversalTransactionV1 } from './useUniversalTransactionV1'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
 import { FinanceDNAServiceV2, FinanceGuardrails } from '@/lib/dna/integration/finance-integration-dna-v2'
 import type { UniversalFinanceEventV2 } from '@/lib/dna/integration/finance-integration-dna-v2'
+import {
+  calculateRevenueBreakdown,
+  allocateTipsByStaff,
+  generateEnhancedGLLines,
+  validateGLBalance,
+  generateEnhancedMetadata,
+  GL_SMART_CODES
+} from '@/lib/finance/gl-posting-engine'
 
 // Smart code templates for POS transactions
 const SMART_CODES = {
@@ -35,7 +43,7 @@ function generateTransactionCode(type: string): string {
   return `${type.toUpperCase()}-${timestamp}-${random}`
 }
 
-interface PosCartItem {
+export interface PosCartItem {
   id: string
   entity_id: string
   name: string
@@ -46,7 +54,7 @@ interface PosCartItem {
   staff_id?: string // For commission calculation
 }
 
-interface PosPayment {
+export interface PosPayment {
   method: 'cash' | 'card' | 'bank_transfer'
   amount: number
   reference?: string
@@ -376,174 +384,147 @@ export function usePosCheckout(): UsePosCheckoutReturn {
       const transactionId = result?.id || result?.data?.id
 
       // ═══════════════════════════════════════════════════════════════════════════
-      // ✅ GL JOURNAL AUTO-POSTING via hera_txn_crud_v1
-      // Creates balanced GL entries using same RPC as POS sale
+      // ✅ ENTERPRISE GL JOURNAL AUTO-POSTING V2 - PRODUCTION GRADE
+      // Split revenue by service/product, discounts, VAT, tips allocation
       // ═══════════════════════════════════════════════════════════════════════════
 
       let glJournalId = null
       try {
-        // Build GL lines with proper debit/credit balance
-        const glLines = []
-        let glLineNum = 1
+        console.log('[GL Auto-Post V2] 🚀 Starting enterprise GL posting engine...')
 
-        // ──────────────────────────────────────────────────────────────────────────
-        // DEBIT SIDE
-        // ──────────────────────────────────────────────────────────────────────────
+        // ✅ STEP 1: Calculate comprehensive revenue breakdown
+        const revenueBreakdown = calculateRevenueBreakdown(
+          items,
+          discount_total,
+          tax_rate
+        )
 
-        // DR: Cash/Card (net amount collected)
-        glLines.push({
-          line_number: glLineNum++,
-          line_type: 'gl',
-          description: `Cash/Card received - Sale ${result.transaction_code || 'POS'}`,
-          line_amount: total_amount,
-          smart_code: 'HERA.SALON.FINANCE.GL.LINE.CASH.v1',
-          line_data: {
-            side: 'DR',
-            account: payments[0]?.method === 'cash' ? '110000' : '110100',
-            currency: 'AED',
-            payment_method: payments[0]?.method
+        console.log('[GL Auto-Post V2] 📊 Revenue Breakdown:', {
+          service: {
+            gross: revenueBreakdown.service.gross.toFixed(2),
+            discount: revenueBreakdown.service.total_discount.toFixed(2),
+            net: revenueBreakdown.service.net.toFixed(2),
+            vat: revenueBreakdown.service.vat.toFixed(2),
+            count: revenueBreakdown.service.item_count
+          },
+          product: {
+            gross: revenueBreakdown.product.gross.toFixed(2),
+            discount: revenueBreakdown.product.total_discount.toFixed(2),
+            net: revenueBreakdown.product.net.toFixed(2),
+            vat: revenueBreakdown.product.vat.toFixed(2),
+            count: revenueBreakdown.product.item_count
+          },
+          totals: {
+            gross: revenueBreakdown.totals.gross.toFixed(2),
+            discount: revenueBreakdown.totals.discount.toFixed(2),
+            net: revenueBreakdown.totals.net.toFixed(2),
+            vat: revenueBreakdown.totals.vat.toFixed(2)
           }
         })
 
-        // DR: Discount Given (promotional expense)
-        if (discount_total > 0) {
-          glLines.push({
-            line_number: glLineNum++,
-            line_type: 'gl',
-            description: 'Promotional discount given to customer',
-            line_amount: discount_total,
-            smart_code: 'HERA.SALON.FINANCE.GL.LINE.DISCOUNT.v1',
-            line_data: {
-              side: 'DR',
-              account: '550000',
-              currency: 'AED',
-              discount_percentage: ((discount_total / subtotal) * 100).toFixed(2)
-            }
-          })
-        }
+        // ✅ STEP 2: Allocate tips to staff members
+        const tipAllocation = allocateTipsByStaff(items, tip_total)
 
-        // ──────────────────────────────────────────────────────────────────────────
-        // CREDIT SIDE
-        // ──────────────────────────────────────────────────────────────────────────
+        console.log('[GL Auto-Post V2] 💰 Tip Allocation:', tipAllocation.map(a => ({
+          staff_id: a.staff_id === 'UNALLOCATED' ? 'Pool (Unallocated)' : a.staff_id.substring(0, 8),
+          tip_amount: a.tip_amount.toFixed(2),
+          service_count: a.service_count
+        })))
 
-        // CR: Service Revenue (GROSS amount before discount)
-        glLines.push({
-          line_number: glLineNum++,
-          line_type: 'gl',
-          description: 'Service revenue (gross)',
-          line_amount: subtotal,
-          smart_code: 'HERA.SALON.FINANCE.GL.LINE.REVENUE.v1',
-          line_data: {
-            side: 'CR',
-            account: '410000',
-            currency: 'AED',
-            revenue_type: 'service'
+        // ✅ STEP 3: Generate enhanced GL lines with full dimensions
+        const glLines = generateEnhancedGLLines(
+          revenueBreakdown,
+          payments,
+          tipAllocation,
+          total_amount,
+          {
+            branch_id,
+            customer_id,
+            sale_code: result.transaction_code,
+            tax_rate
           }
+        )
+
+        console.log('[GL Auto-Post V2] 📝 Generated GL Lines:', {
+          total_lines: glLines.length,
+          dr_lines: glLines.filter(l => l.line_data.side === 'DR').length,
+          cr_lines: glLines.filter(l => l.line_data.side === 'CR').length
         })
 
-        // CR: VAT Payable
-        if (tax_amount > 0) {
-          glLines.push({
-            line_number: glLineNum++,
-            line_type: 'gl',
-            description: `VAT payable (${(tax_rate * 100).toFixed(1)}%)`,
-            line_amount: tax_amount,
-            smart_code: 'HERA.SALON.FINANCE.GL.LINE.VAT.v1',
-            line_data: {
-              side: 'CR',
-              account: '230000',
-              currency: 'AED',
-              tax_rate,
-              tax_base: subtotal - discount_total
-            }
-          })
-        }
+        // ✅ STEP 4: Validate GL balance (DR = CR)
+        const glBalance = validateGLBalance(glLines)
 
-        // CR: Tips Payable
-        if (tip_total > 0) {
-          glLines.push({
-            line_number: glLineNum++,
-            line_type: 'gl',
-            description: 'Tips payable to staff',
-            line_amount: tip_total,
-            smart_code: 'HERA.SALON.FINANCE.GL.LINE.TIPS.v1',
-            line_data: {
-              side: 'CR',
-              account: '240000',
-              currency: 'AED'
-            }
-          })
-        }
-
-        // ──────────────────────────────────────────────────────────────────────────
-        // BALANCE VALIDATION (Critical!)
-        // ──────────────────────────────────────────────────────────────────────────
-
-        const totalDR = glLines
-          .filter(l => l.line_data.side === 'DR')
-          .reduce((sum, l) => sum + l.line_amount, 0)
-        const totalCR = glLines
-          .filter(l => l.line_data.side === 'CR')
-          .reduce((sum, l) => sum + l.line_amount, 0)
-
-        console.log('[GL Auto-Post] Balance Check:', {
-          total_dr: totalDR.toFixed(2),
-          total_cr: totalCR.toFixed(2),
-          difference: Math.abs(totalDR - totalCR).toFixed(2),
-          is_balanced: Math.abs(totalDR - totalCR) < 0.01
+        console.log('[GL Auto-Post V2] ⚖️ Balance Validation:', {
+          total_dr: glBalance.totalDR.toFixed(2),
+          total_cr: glBalance.totalCR.toFixed(2),
+          difference: glBalance.difference.toFixed(2),
+          is_balanced: glBalance.isBalanced ? '✅ BALANCED' : '❌ UNBALANCED'
         })
 
-        if (Math.abs(totalDR - totalCR) > 0.01) {
+        if (!glBalance.isBalanced) {
           throw new Error(
-            `GL Entry not balanced: DR ${totalDR.toFixed(2)} != CR ${totalCR.toFixed(2)}`
+            `GL Entry not balanced: DR ${glBalance.totalDR.toFixed(2)} != CR ${glBalance.totalCR.toFixed(2)} (diff: ${glBalance.difference.toFixed(2)})`
           )
         }
 
-        // ──────────────────────────────────────────────────────────────────────────
-        // CREATE GL JOURNAL TRANSACTION
-        // ──────────────────────────────────────────────────────────────────────────
+        // ✅ STEP 5: Generate enhanced metadata for fast reporting
+        const enhancedMetadata = generateEnhancedMetadata(
+          revenueBreakdown,
+          tipAllocation,
+          payments,
+          glBalance,
+          {
+            origin_transaction_id: transactionId,
+            origin_transaction_code: result.transaction_code,
+            branch_id,
+            customer_id,
+            tax_rate
+          }
+        )
 
+        console.log('[GL Auto-Post V2] 📋 Enhanced Metadata Generated:', {
+          service_revenue_net: enhancedMetadata.service_revenue_net.toFixed(2),
+          product_revenue_net: enhancedMetadata.product_revenue_net.toFixed(2),
+          vat_split: `${enhancedMetadata.vat_on_services.toFixed(2)} (svc) + ${enhancedMetadata.vat_on_products.toFixed(2)} (prd)`,
+          tips_allocated: enhancedMetadata.tips_by_staff.length,
+          gl_engine_version: enhancedMetadata.gl_engine_version
+        })
+
+        // ✅ STEP 6: Create GL_JOURNAL transaction with enhanced lines + metadata
         const glResult = await createTransaction({
           transaction_type: 'GL_JOURNAL',
-          smart_code: 'HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v1',
+          smart_code: GL_SMART_CODES.GL_JOURNAL, // v2 smart code
           transaction_date: actualTransactionDate,
-          source_entity_id: customer_id || null, // ✅ FIX: Must reference core_entities (customer), not transaction
-          target_entity_id: primaryStaffId || null, // Staff entity from core_entities
+          source_entity_id: customer_id || null,
+          target_entity_id: primaryStaffId || null,
           total_amount: 0, // GL journals net to zero
           transaction_status: 'posted',
-          metadata: {
-            origin_transaction_id: transactionId, // ✅ Link to sale transaction via metadata
-            origin_transaction_code: result.transaction_code,
-            origin_transaction_type: 'SALE',
-            posting_source: 'pos_auto_post',
-            gl_balanced: true,
-            total_dr: totalDR,
-            total_cr: totalCR,
-            gross_revenue: subtotal,
-            discount_given: discount_total,
-            net_revenue: subtotal - discount_total,
-            vat_collected: tax_amount,
-            tips_collected: tip_total,
-            cash_received: total_amount,
-            branch_id // Include branch for tracking
-          },
+          metadata: enhancedMetadata,
           lines: glLines
         })
 
         glJournalId = glResult?.id || glResult?.data?.id
 
-        console.log('[GL Auto-Post] ✅ GL Journal Entry created:', {
+        console.log('[GL Auto-Post V2] ✅ ENTERPRISE GL Journal Entry Created:', {
           journal_id: glJournalId,
           gl_lines: glLines.length,
-          gross_revenue: subtotal,
-          discount_expense: discount_total,
-          net_revenue: subtotal - discount_total,
-          cash_received: total_amount
+          service_revenue: enhancedMetadata.service_revenue_net.toFixed(2),
+          product_revenue: enhancedMetadata.product_revenue_net.toFixed(2),
+          total_revenue: enhancedMetadata.net_revenue.toFixed(2),
+          vat_collected: enhancedMetadata.vat_collected.toFixed(2),
+          tips_collected: enhancedMetadata.tips_collected.toFixed(2),
+          gl_balanced: enhancedMetadata.gl_balanced,
+          engine_version: enhancedMetadata.gl_engine_version
         })
 
       } catch (glError) {
-        console.error('[GL Auto-Post] ⚠️ GL posting failed (non-blocking):', glError)
-        // Sale still succeeds - GL posting failure is logged for manual review
+        console.error('[GL Auto-Post V2] ⚠️ GL posting failed (non-blocking):', glError)
+        console.error('[GL Auto-Post V2] Error details:', {
+          error_message: glError instanceof Error ? glError.message : 'Unknown error',
+          error_stack: glError instanceof Error ? glError.stack : undefined
+        })
+        // ✅ PRODUCTION SAFETY: Sale still succeeds - GL posting failure is logged for manual review
+        // This ensures POS operations are never blocked by GL issues
       }
 
       return {
