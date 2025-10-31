@@ -79,36 +79,41 @@ export function CatalogPane({
   // Use composition hook for POS data
   const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS(posOptions)
 
-  // ✅ FIXED: Initialize branch from context ONCE on mount or when context changes
-  // Use useRef to track if we're internally changing the branch to prevent ping-pong
-  const isInternalChange = useRef(false)
-  const prevContextBranchId = useRef(contextBranchId)
+  // ✅ FIXED: Track previous values to detect actual changes and prevent loops
+  const prevContextBranchIdRef = useRef(contextBranchId)
+  const prevBranchIdRef = useRef(branchId)
 
+  // Effect 1: Sync FROM context TO local state (when context changes externally, e.g., from appointment)
   useEffect(() => {
-    // Only update if contextBranchId actually changed (not from our own onBranchChange call)
-    if (contextBranchId && contextBranchId !== prevContextBranchId.current && branches.length > 0) {
+    // Only update if contextBranchId actually changed externally (not as a result of our onBranchChange)
+    if (
+      contextBranchId &&
+      contextBranchId !== prevContextBranchIdRef.current &&
+      contextBranchId !== branchId &&
+      branches.length > 0
+    ) {
       const branchExists = branches.some(b => b.id === contextBranchId)
-      if (branchExists && contextBranchId !== branchId) {
+      if (branchExists) {
         console.log('[CatalogPane] 🏢 Setting branch from context (appointment):', contextBranchId)
-        isInternalChange.current = true
         setBranchId(contextBranchId)
-        prevContextBranchId.current = contextBranchId
+        prevContextBranchIdRef.current = contextBranchId
+        prevBranchIdRef.current = contextBranchId
       }
     }
   }, [contextBranchId, branchId, branches, setBranchId])
 
-  // ✅ FIXED: Only sync to parent if user manually changed the branch (not from context)
+  // Effect 2: Sync FROM local state TO parent (when user manually changes branch via dropdown)
   useEffect(() => {
-    // Skip if this was an internal change from context
-    if (isInternalChange.current) {
-      isInternalChange.current = false
-      return
-    }
-
-    // Only notify parent if branch actually changed and it's different from context
-    if (branchId && onBranchChange && branchId !== contextBranchId) {
+    // Only notify parent if branchId changed AND it's different from context
+    if (
+      branchId &&
+      branchId !== prevBranchIdRef.current &&
+      branchId !== contextBranchId &&
+      onBranchChange
+    ) {
       console.log('[CatalogPane] ✅ Branch changed by user, syncing to context:', branchId)
       onBranchChange(branchId)
+      prevBranchIdRef.current = branchId
     }
   }, [branchId, contextBranchId, onBranchChange])
 
