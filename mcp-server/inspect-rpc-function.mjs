@@ -1,6 +1,6 @@
-#!/usr/bin/env node
 /**
- * Inspect the hera_entities_crud_v1 RPC function definition
+ * Inspect RPC Function Definition
+ * Query Supabase to see the actual SQL of hera_txn_crud_v1
  */
 
 import { createClient } from '@supabase/supabase-js'
@@ -11,56 +11,41 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-async function inspectRPC() {
-  console.log('🔍 Inspecting hera_entities_crud_v1 RPC function\n')
+async function inspectRPCFunction() {
+  console.log('\n🔍 Inspecting hera_txn_crud_v1 RPC Function')
+  console.log('=' .repeat(60))
 
-  // Query PostgreSQL system catalogs to get function definition
-  const { data, error } = await supabase.rpc('sql', {
-    query: `
-      SELECT
-        p.proname as function_name,
-        pg_get_functiondef(p.oid) as function_definition
-      FROM pg_proc p
-      JOIN pg_namespace n ON p.pronamespace = n.oid
-      WHERE n.nspname = 'public'
-        AND p.proname = 'hera_entities_crud_v1'
-      LIMIT 1;
-    `
-  })
+  try {
+    // Just try to call the function with minimal payload
+    console.log('\n📋 Testing with minimal READ payload...')
 
-  if (error) {
-    console.log('❌ Error querying function:', error.message)
+    const { data, error } = await supabase.rpc('hera_txn_crud_v1', {
+      p_action: 'READ',
+      p_actor_user_id: 'f0f4ced2-877a-4a0c-8860-f5bc574652f6',
+      p_organization_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
+      p_transaction: {
+        transaction_type: 'appointment'
+      },
+      p_lines: [],
+      p_options: {
+        limit: 1
+      }
+    })
 
-    // Try alternative approach - check if function exists
-    console.log('\nTrying alternative approach...')
+    console.log('\n📦 Response:', JSON.stringify({ data, error }, null, 2))
 
-    const { data: funcData, error: funcError } = await supabase
-      .rpc('hera_entities_crud_v1', {
-        p_action: 'READ',
-        p_actor_user_id: '09b0b92a-d797-489e-bc03-5ca0a6272674',
-        p_organization_id: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
-        p_entity: { entity_type: 'CUSTOMER' },
-        p_dynamic: {},
-        p_relationships: {},
-        p_options: { limit: 1 }
-      })
-
-    if (funcError) {
-      console.log('❌ Function call failed:', funcError.message)
-    } else {
-      console.log('✅ Function exists and returns:')
-      console.log(JSON.stringify(funcData, null, 2))
+    if (error) {
+      console.error('\n❌ RPC Error Details:')
+      console.error('  - Message:', error.message)
+      console.error('  - Details:', error.details)
+      console.error('  - Hint:', error.hint)
+      console.error('  - Code:', error.code)
     }
-    return
-  }
 
-  if (data && data.length > 0) {
-    console.log('✅ Function found!\n')
-    console.log('Function Definition:')
-    console.log(data[0].function_definition)
-  } else {
-    console.log('❌ Function not found in public schema')
+  } catch (error) {
+    console.error('\n❌ Inspection Failed:', error)
   }
 }
 
-inspectRPC().catch(console.error)
+// Run the inspection
+inspectRPCFunction()

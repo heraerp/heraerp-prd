@@ -27,8 +27,9 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 import { Loader2, Shield, AlertTriangle, Clock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
-import { useSalonSecurityStore } from '@/lib/salon/security-store'
+import { useSalonSecurityStore, SOFT_TTL, HARD_TTL } from '@/lib/salon/security-store'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { ReconnectingBanner } from '@/components/salon/auth/ReconnectingBanner'
 
 interface Branch {
   id: string
@@ -52,6 +53,7 @@ interface SalonSecurityContext extends SecurityContext {
   user: any
   isLoading: boolean
   isAuthenticated: boolean
+  isReconnecting: boolean // ✅ ENTERPRISE: Degraded state during auth recovery
   // Branch context
   selectedBranchId: string | null
   selectedBranch: Branch | null
@@ -155,6 +157,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       user: null,
       isLoading: true, // 🔒 ALWAYS start with loading to force JWT validation
       isAuthenticated: false,
+      isReconnecting: false, // ✅ ENTERPRISE: Start with stable state
       selectedBranchId: null,
       selectedBranch: null,
       availableBranches: [],
@@ -166,8 +169,18 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const [authError, setAuthError] = useState<SalonAuthError | null>(null)
   const [retryCount, setRetryCount] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false)
+  const [isReconnecting, setIsReconnecting] = useState(false) // ✅ ENTERPRISE: Track reconnecting state
   const authCheckDoneRef = React.useRef(false) // 🎯 Track if initial auth check is complete
   const initializedForUser = React.useRef<string | null>(null) // 🎯 Track user-specific initialization
+
+  // ✅ ENTERPRISE: Single-flight re-init guard to prevent stampede
+  // Smart Code: HERA.SECURITY.AUTH.SINGLE_FLIGHT.v1
+  const reinitPromiseRef = React.useRef<Promise<void> | null>(null)
+  const isReinitializingRef = React.useRef(false)
+
+  // ✅ ENTERPRISE: Heartbeat timer ref for background refresh
+  // Smart Code: HERA.SECURITY.AUTH.HEARTBEAT.v1
+  const heartbeatTimerRef = React.useRef<NodeJS.Timeout | null>(null)
 
   // 🎯 ENTERPRISE FIX: Sync context with security store AND HERAAuth
   // SECURITY: organizationId comes from HERAAuth (JWT), not from store cache
@@ -262,6 +275,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       user,
       isLoading: false, // ✅ CRITICAL: Set loading to false
       isAuthenticated: true,
+      isReconnecting: false, // ✅ ENTERPRISE: Stable state
       selectedBranchId,
       selectedBranch: null,
       availableBranches: [],
@@ -331,7 +345,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     // Only initialize if not already cached or if we need to reinitialize
     if (!securityStore.isInitialized || securityStore.shouldReinitialize()) {
       console.log('🔄 Initializing security context...')
-      initializeSecureContext().then(() => {
+      // ✅ ENTERPRISE: Use single-flight wrapper to prevent concurrent re-init stampede
+      runReinitSingleFlight().then(() => {
         authCheckDoneRef.current = true // ✅ Mark auth check as complete
         console.log('✅ Auth check complete and cached')
       })
@@ -388,6 +403,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         user,
         isLoading: false, // ✅ CRITICAL: Set loading to false
         isAuthenticated: true,
+        isReconnecting: false, // ✅ ENTERPRISE: Stable state
         selectedBranchId,
         selectedBranch: null,
         availableBranches: [],
@@ -429,7 +445,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
           console.log('🔐 SIGNED_IN event - new user, resetting auth check')
           authCheckDoneRef.current = false
           securityStore.clearState()
-          await initializeSecureContext()
+          // ✅ ENTERPRISE: Use single-flight wrapper
+          await runReinitSingleFlight()
           authCheckDoneRef.current = true
         } else {
           // Same user - just verify session is valid, don't clear data
@@ -443,12 +460,17 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         clearContext()
         redirectToAuth()
       } else if (event === 'TOKEN_REFRESHED') {
-        console.log('🔐 TOKEN_REFRESHED event')
-        // Only reinitialize if needed (cache expired)
+        console.log('🔐 TOKEN_REFRESHED event - token auto-refreshed')
+        // ✅ ENTERPRISE FIX: Do NOT force reinit on token refresh
+        // Token refresh is automatic and doesn't invalidate cache
+        // Only reinit if cache has ACTUALLY expired (HARD_TTL exceeded)
         if (securityStore.shouldReinitialize()) {
-          console.log('🔄 Cache expired, reinitializing...')
-          await initializeSecureContext()
+          console.log('🔄 Cache hard expired (60+ min), reinitializing...')
+          // ✅ ENTERPRISE: Use single-flight wrapper
+          await runReinitSingleFlight()
           authCheckDoneRef.current = true
+        } else {
+          console.log('✅ Cache still valid, no reinit needed')
         }
       }
     })
@@ -457,25 +479,148 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   }, []) // ✅ Empty deps - use refs to prevent re-initialization
 
   /**
+   * ✅ ENTERPRISE: Heartbeat mechanism for proactive session refresh
+   * Runs every 4 minutes to refresh context before SOFT_TTL (10 min) expires
+   * Smart Code: HERA.SECURITY.AUTH.HEARTBEAT.v1
+   */
+  useEffect(() => {
+    // Only start heartbeat after successful initialization
+    if (!hasInitialized || !context.isAuthenticated) {
+      return
+    }
+
+    // Clear any existing heartbeat
+    if (heartbeatTimerRef.current) {
+      clearInterval(heartbeatTimerRef.current)
+    }
+
+    console.log('💓 Starting heartbeat mechanism (4-minute interval)')
+
+    // Start heartbeat: check and refresh every 4 minutes
+    const HEARTBEAT_INTERVAL = 4 * 60 * 1000 // 4 minutes
+
+    heartbeatTimerRef.current = setInterval(() => {
+      const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
+
+      // If approaching SOFT_TTL (10 min), do background refresh
+      if (timeSinceInit > SOFT_TTL - 60000) {
+        // Within 1 minute of SOFT_TTL
+        console.log('💓 Heartbeat: Proactive background refresh (approaching SOFT_TTL)')
+
+        // Background refresh without showing banner (silent)
+        runReinitSingleFlight().catch(error => {
+          console.warn('💓 Heartbeat: Background refresh failed (non-critical):', error)
+          // Don't show error to user - this is proactive maintenance
+        })
+      } else {
+        console.log(`💓 Heartbeat: Session healthy (${Math.round(timeSinceInit / 60000)} min old)`)
+      }
+    }, HEARTBEAT_INTERVAL)
+
+    // Cleanup on unmount
+    return () => {
+      if (heartbeatTimerRef.current) {
+        console.log('💓 Stopping heartbeat mechanism')
+        clearInterval(heartbeatTimerRef.current)
+        heartbeatTimerRef.current = null
+      }
+    }
+  }, [hasInitialized, context.isAuthenticated]) // Re-run when auth state changes
+
+  /**
+   * ✅ ENTERPRISE: Single-flight re-initialization wrapper
+   * Prevents concurrent re-init stampede by deduplicating parallel calls
+   * Smart Code: HERA.SECURITY.AUTH.SINGLE_FLIGHT_REINIT.v1
+   *
+   * @returns Promise that resolves when re-init completes
+   */
+  const runReinitSingleFlight = async (): Promise<void> => {
+    // If already re-initializing, return existing promise
+    if (isReinitializingRef.current && reinitPromiseRef.current) {
+      console.log('⏳ Re-initialization already in progress, waiting for completion...')
+      return reinitPromiseRef.current
+    }
+
+    // Mark as re-initializing and create new promise
+    isReinitializingRef.current = true
+
+    // ✅ ENTERPRISE: Show reconnecting banner to user
+    setIsReconnecting(true)
+    setContext(prev => ({ ...prev, isReconnecting: true }))
+
+    const reinitPromise = (async () => {
+      try {
+        await initializeSecureContext()
+      } finally {
+        // Clear refs when done
+        isReinitializingRef.current = false
+        reinitPromiseRef.current = null
+
+        // ✅ ENTERPRISE: Hide reconnecting banner
+        setIsReconnecting(false)
+        setContext(prev => ({ ...prev, isReconnecting: false }))
+      }
+    })()
+
+    reinitPromiseRef.current = reinitPromise
+    return reinitPromise
+  }
+
+  /**
+   * ✅ ENTERPRISE: Wait for stable session with exponential backoff + jitter
+   * Handles race condition where getSession() returns null during token refresh
+   * Smart Code: HERA.SECURITY.AUTH.STABLE_SESSION.v1
+   *
+   * @param maxAttempts Maximum retry attempts (default: 5)
+   * @returns Session object or null if all attempts fail
+   */
+  const waitForStableSession = async (maxAttempts = 5): Promise<any | null> => {
+    const baseDelay = 5000 // 5 seconds
+    const jitterFactor = 0.2 // ±20% jitter
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const { data: { session }, error } = await supabase.auth.getSession()
+
+      if (error) {
+        console.warn(`⚠️ Session retrieval error (attempt ${attempt}/${maxAttempts}):`, error.message)
+      }
+
+      if (session?.user) {
+        console.log(`✅ Stable session found (attempt ${attempt}/${maxAttempts})`)
+        return session
+      }
+
+      if (attempt === maxAttempts) {
+        console.error('❌ Failed to get stable session after max attempts')
+        return null
+      }
+
+      // Exponential backoff with jitter
+      const exponentialDelay = baseDelay * Math.pow(2, attempt - 1)
+      const jitter = 1 + (Math.random() * 2 - 1) * jitterFactor
+      const delay = Math.min(exponentialDelay * jitter, 30000) // Cap at 30 seconds
+
+      console.log(`⏳ Session not ready, waiting ${Math.round(delay)}ms (attempt ${attempt}/${maxAttempts})...`)
+      await new Promise(resolve => setTimeout(resolve, delay))
+    }
+
+    return null
+  }
+
+  /**
    * Initialize secure authentication context
    */
   const initializeSecureContext = async () => {
     try {
       setAuthError(null)
-      
-      // Get current session first to check user
-      const {
-        data: { session },
-        error: sessionError
-      } = await supabase.auth.getSession()
 
-      if (sessionError) {
-        throw new Error(`Session error: ${sessionError.message}`)
-      }
+      // ✅ ENTERPRISE: Use waitForStableSession() instead of direct getSession()
+      // This handles token refresh race condition with patient exponential backoff
+      const session = await waitForStableSession()
 
       const uid = session?.user?.id
       if (!uid) {
-        console.log('🚪 No session user, redirecting to auth')
+        console.log('🚪 No stable session found, redirecting to auth')
         return
       }
 
@@ -498,29 +643,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         return
       }
 
+      // ✅ ENTERPRISE: waitForStableSession() already handles retries, no need for additional recovery logic
       if (!session?.user) {
-        // Try to recover from localStorage for a brief moment
-        const storedRole = localStorage.getItem('salonRole')
-        const storedOrgId = localStorage.getItem('organizationId')
-
-        if (storedRole && storedOrgId && retryCount < 2) {
-          console.log('🔄 Attempting session recovery...')
-          setRetryCount(prev => prev + 1)
-
-          // Try refreshing the session
-          const { data: refreshData } = await supabase.auth.refreshSession()
-          if (refreshData?.session) {
-            console.log('✅ Session recovered via refresh')
-            await initializeSecureContext()
-            return
-          }
-
-          // Give it one more chance
-          setTimeout(() => initializeSecureContext(), 1500)
-          return
-        }
-
-        throw new Error('No active session found')
+        throw new Error('No active session found after stable session wait')
       }
 
       // Create request-like object for auth resolver
@@ -596,6 +721,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         user: session.user,
         isLoading: false,
         isAuthenticated: true,
+        isReconnecting: false, // ✅ ENTERPRISE: Stable state after successful init
         selectedBranchId,
         selectedBranch: branches.find(b => b.id === selectedBranchId) || null,
         availableBranches: branches,
@@ -761,7 +887,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
   /**
    * Load organization details securely
-   * ✅ ENTERPRISE: Loads ALL organization settings from dynamic data (HERA DNA pattern)
+   * ✅ ENTERPRISE: Uses hera_entities_crud_v1 RPC with actor stamping (HERA DNA pattern)
+   * ✅ HERA v2.2: Consistent with Universal API V1 pattern used in settings save
    */
   const loadOrganizationDetails = async (orgId: string) => {
     try {
@@ -771,98 +898,310 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         throw new Error('Invalid organization ID from JWT token')
       }
 
-      return await dbContext.executeWithContext(
-        { orgId, userId: 'system', role: 'service', authMode: 'service' },
-        async client => {
-          const { data: org } = await client
-            .from('core_organizations')
-            .select('*')
-            .eq('id', orgId)
-            .single()
+      // ✅ HERA v2.2: Use entityCRUD RPC for READ operation (consistent with SAVE)
+      const { entityCRUD } = await import('@/lib/universal-api-v2-client')
 
-          // ✅ ENTERPRISE: Fetch ALL organization settings from dynamic data
-          // Organization entity stores its settings as dynamic fields (HERA DNA pattern)
-          const { data: allDynamicData } = await client
-            .from('core_dynamic_data')
-            .select('*')
-            .eq('organization_id', orgId)
-            .eq('entity_id', orgId) // Organization's own dynamic data
+      // Get current user ID for actor stamping
+      const {
+        data: { user }
+      } = await supabase.auth.getUser()
 
-          // Transform dynamic data array to object for easy access
-          const settingsFromDynamic: Record<string, any> = {}
-          if (allDynamicData && Array.isArray(allDynamicData)) {
-            allDynamicData.forEach((field: any) => {
-              const value = field.field_value_text ||
-                            field.field_value_number ||
-                            field.field_value_boolean ||
-                            field.field_value_date ||
-                            field.field_value_json
-              settingsFromDynamic[field.field_name] = value
-            })
-          }
+      if (!user?.id) {
+        console.warn('[loadOrganizationDetails] ⚠️ No user session, using system actor')
+        // For initial load before auth completes, use system actor
+      }
 
-          // Extract settings with fallbacks
-          const currency = settingsFromDynamic.currency || org?.metadata?.currency || 'AED'
-          const organization_name = settingsFromDynamic.organization_name || org?.organization_name || 'HairTalkz'
-          const legal_name = settingsFromDynamic.legal_name
-          const address = settingsFromDynamic.address
-          const phone = settingsFromDynamic.phone
-          const email = settingsFromDynamic.email
-          const trn = settingsFromDynamic.trn
-          const fiscal_year_start = settingsFromDynamic.fiscal_year_start
-          const logo_url = settingsFromDynamic.logo_url
+      const actorUserId = user?.id || 'system'
 
-          // ✅ ENTERPRISE: Currency symbol mapping
-          const currencySymbolMap: Record<string, string> = {
-            'AED': 'د.إ',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
-            'SAR': 'ر.س',
-            'QAR': 'ر.ق',
-            'KWD': 'د.ك',
-            'BHD': 'د.ب',
-            'OMR': 'ر.ع.',
-            'INR': '₹',
-            'PKR': 'Rs'
-          }
+      console.log('[SecuredSalonProvider] 📖 Loading organization via RPC:', {
+        orgId,
+        actorUserId
+      })
 
-          const currencySymbol = currencySymbolMap[currency] || currency
-
-          const orgData = {
-            id: orgId,
-            name: organization_name,
-            legal_name,
-            address,
-            phone,
-            email,
-            trn,
-            currency,
-            currencySymbol,
-            fiscal_year_start,
-            logo_url,
-            settings: {
-              ...org?.metadata,
-              ...settingsFromDynamic
-            }
-          }
-
-          console.log('[SecuredSalonProvider] ✅ Loaded organization with full settings:', {
-            orgId,
-            hasName: !!organization_name,
-            hasAddress: !!address,
-            hasPhone: !!phone,
-            hasEmail: !!email,
-            hasTRN: !!trn,
-            currency,
-            dynamicFieldsCount: allDynamicData?.length || 0
-          })
-
-          return orgData
+      // ✅ READ organization entity with ALL dynamic fields
+      // Organizations are stored as entities with entity_type = 'ORG'
+      const { data, error } = await entityCRUD({
+        p_action: 'READ',
+        p_actor_user_id: actorUserId,
+        p_organization_id: orgId,
+        p_entity: {
+          entity_type: 'ORG', // ✅ CORRECTED: Organizations use 'ORG' not 'ORGANIZATION'
+          entity_id: orgId // Specific organization ID to read
+        },
+        p_dynamic: {}, // Empty = fetch all dynamic fields
+        p_options: {
+          include_dynamic: true, // Include all dynamic fields
+          include_relationships: false // Organization doesn't need relationships
         }
-      )
+      })
+
+      console.log('[SecuredSalonProvider] 🔍 RPC Response received:', {
+        hasError: !!error,
+        error,
+        hasData: !!data,
+        dataKeys: data ? Object.keys(data) : null,
+        fullData: data
+      })
+
+      if (error) {
+        console.error('[SecuredSalonProvider] RPC error loading organization:', error)
+
+        // ✅ FALLBACK: If RPC fails (e.g., organization not stored as entity), use direct query
+        console.log('[SecuredSalonProvider] ⚠️ RPC failed, falling back to direct core_organizations query')
+
+        const { data: orgFromTable, error: tableError } = await supabase
+          .from('core_organizations')
+          .select('*')
+          .eq('id', orgId)
+          .single()
+
+        if (tableError || !orgFromTable) {
+          console.error('[SecuredSalonProvider] ❌ Failed to load organization from table:', tableError)
+          throw new Error('Organization not found in database')
+        }
+
+        // Query dynamic data directly
+        const { data: dynamicFields } = await supabase
+          .from('core_dynamic_data')
+          .select('*')
+          .eq('organization_id', orgId)
+          .eq('entity_id', orgId)
+
+        // Transform direct query results to expected format
+        const settingsFromDynamic: Record<string, any> = {}
+        if (dynamicFields && Array.isArray(dynamicFields)) {
+          dynamicFields.forEach((field: any) => {
+            const value =
+              field.field_value_text ||
+              field.field_value_number ||
+              field.field_value_boolean ||
+              field.field_value_date ||
+              field.field_value_json
+            settingsFromDynamic[field.field_name] = value
+          })
+        }
+
+        console.log('[SecuredSalonProvider] ✅ Loaded from direct query:', {
+          orgId,
+          dynamicFieldCount: dynamicFields?.length || 0,
+          fields: Object.keys(settingsFromDynamic),
+          settingsFromDynamic
+        })
+
+        // Extract settings with detailed logging
+        const currency = settingsFromDynamic.currency || orgFromTable.metadata?.currency || 'AED'
+        const organization_name =
+          settingsFromDynamic.organization_name || orgFromTable.organization_name || 'HairTalkz'
+
+        console.log('[SecuredSalonProvider] 📋 Extracted organization data:', {
+          organization_name,
+          legal_name: settingsFromDynamic.legal_name,
+          address: settingsFromDynamic.address,
+          phone: settingsFromDynamic.phone,
+          email: settingsFromDynamic.email,
+          trn: settingsFromDynamic.trn,
+          currency
+        })
+
+        // Currency mapping
+        const currencySymbolMap: Record<string, string> = {
+          AED: 'د.إ',
+          USD: '$',
+          EUR: '€',
+          GBP: '£',
+          SAR: 'ر.س',
+          QAR: 'ر.ق',
+          KWD: 'د.ك',
+          BHD: 'د.ب',
+          OMR: 'ر.ع.',
+          INR: '₹',
+          PKR: 'Rs'
+        }
+
+        return {
+          id: orgId,
+          name: organization_name,
+          legal_name: settingsFromDynamic.legal_name,
+          address: settingsFromDynamic.address,
+          phone: settingsFromDynamic.phone,
+          email: settingsFromDynamic.email,
+          trn: settingsFromDynamic.trn,
+          currency,
+          currencySymbol: currencySymbolMap[currency] || currency,
+          fiscal_year_start: settingsFromDynamic.fiscal_year_start,
+          logo_url: settingsFromDynamic.logo_url,
+          settings: {
+            ...orgFromTable.metadata,
+            ...settingsFromDynamic
+          }
+        }
+      }
+
+      // ✅ Extract organization data from RPC response
+      // RPC returns: { data: { entity: {...}, dynamic_data: [...] } } or { entity: {...}, dynamic_data: [...] }
+      let orgEntity = null
+      let dynamicDataArray: any[] = []
+
+      if (data?.data?.entity) {
+        // Nested format
+        orgEntity = data.data.entity
+        dynamicDataArray = data.data.dynamic_data || []
+      } else if (data?.entity) {
+        // Flat format
+        orgEntity = data.entity
+        dynamicDataArray = data.dynamic_data || []
+      } else if (data?.items && data.items.length > 0) {
+        // List format with single item
+        const firstItem = data.items[0]
+        orgEntity = firstItem.entity || firstItem
+        dynamicDataArray = firstItem.dynamic_data || firstItem.dynamic_fields || []
+      }
+
+      if (!orgEntity) {
+        console.warn('[SecuredSalonProvider] ⚠️ No organization entity in RPC response, using fallback')
+
+        // Fallback to direct query (same as error case above)
+        const { data: orgFromTable, error: tableError } = await supabase
+          .from('core_organizations')
+          .select('*')
+          .eq('id', orgId)
+          .single()
+
+        if (tableError || !orgFromTable) {
+          throw new Error('Organization not found')
+        }
+
+        const { data: dynamicFields } = await supabase
+          .from('core_dynamic_data')
+          .select('*')
+          .eq('organization_id', orgId)
+          .eq('entity_id', orgId)
+
+        const settingsFromDynamic: Record<string, any> = {}
+        if (dynamicFields && Array.isArray(dynamicFields)) {
+          dynamicFields.forEach((field: any) => {
+            const value =
+              field.field_value_text ||
+              field.field_value_number ||
+              field.field_value_boolean ||
+              field.field_value_date ||
+              field.field_value_json
+            settingsFromDynamic[field.field_name] = value
+          })
+        }
+
+        const currency = settingsFromDynamic.currency || orgFromTable.metadata?.currency || 'AED'
+        const organization_name =
+          settingsFromDynamic.organization_name || orgFromTable.organization_name || 'HairTalkz'
+
+        const currencySymbolMap: Record<string, string> = {
+          AED: 'د.إ',
+          USD: '$',
+          EUR: '€',
+          GBP: '£',
+          SAR: 'ر.س',
+          QAR: 'ر.ق',
+          KWD: 'د.ك',
+          BHD: 'د.ب',
+          OMR: 'ر.ع.',
+          INR: '₹',
+          PKR: 'Rs'
+        }
+
+        return {
+          id: orgId,
+          name: organization_name,
+          legal_name: settingsFromDynamic.legal_name,
+          address: settingsFromDynamic.address,
+          phone: settingsFromDynamic.phone,
+          email: settingsFromDynamic.email,
+          trn: settingsFromDynamic.trn,
+          currency,
+          currencySymbol: currencySymbolMap[currency] || currency,
+          fiscal_year_start: settingsFromDynamic.fiscal_year_start,
+          logo_url: settingsFromDynamic.logo_url,
+          settings: {
+            ...orgFromTable.metadata,
+            ...settingsFromDynamic
+          }
+        }
+      }
+
+      // ✅ Transform dynamic data array to object for easy access
+      const settingsFromDynamic: Record<string, any> = {}
+      if (dynamicDataArray && Array.isArray(dynamicDataArray)) {
+        dynamicDataArray.forEach((field: any) => {
+          const value =
+            field.field_value_text ||
+            field.field_value_number ||
+            field.field_value_boolean ||
+            field.field_value_date ||
+            field.field_value_json
+          settingsFromDynamic[field.field_name] = value
+        })
+      }
+
+      // Extract settings with fallbacks
+      const currency = settingsFromDynamic.currency || orgEntity.metadata?.currency || 'AED'
+      const organization_name =
+        settingsFromDynamic.organization_name || orgEntity.entity_name || orgEntity.organization_name || 'HairTalkz'
+      const legal_name = settingsFromDynamic.legal_name
+      const address = settingsFromDynamic.address
+      const phone = settingsFromDynamic.phone
+      const email = settingsFromDynamic.email
+      const trn = settingsFromDynamic.trn
+      const fiscal_year_start = settingsFromDynamic.fiscal_year_start
+      const logo_url = settingsFromDynamic.logo_url
+
+      // ✅ ENTERPRISE: Currency symbol mapping
+      const currencySymbolMap: Record<string, string> = {
+        AED: 'د.إ',
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        SAR: 'ر.س',
+        QAR: 'ر.ق',
+        KWD: 'د.ك',
+        BHD: 'د.ب',
+        OMR: 'ر.ع.',
+        INR: '₹',
+        PKR: 'Rs'
+      }
+
+      const currencySymbol = currencySymbolMap[currency] || currency
+
+      const orgData = {
+        id: orgId,
+        name: organization_name,
+        legal_name,
+        address,
+        phone,
+        email,
+        trn,
+        currency,
+        currencySymbol,
+        fiscal_year_start,
+        logo_url,
+        settings: {
+          ...orgEntity.metadata,
+          ...settingsFromDynamic
+        }
+      }
+
+      console.log('[SecuredSalonProvider] ✅ Loaded organization via RPC with full settings:', {
+        orgId,
+        hasName: !!organization_name,
+        hasAddress: !!address,
+        hasPhone: !!phone,
+        hasEmail: !!email,
+        hasTRN: !!trn,
+        currency,
+        dynamicFieldsCount: dynamicDataArray.length
+      })
+
+      return orgData
     } catch (error) {
-      console.error('Failed to load organization details:', error)
+      console.error('[SecuredSalonProvider] Failed to load organization details:', error)
       return {
         id: orgId,
         name: 'HairTalkz',
@@ -1196,7 +1535,19 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   }
 
   return (
-    <SecuredSalonContext.Provider value={enhancedContext}>{children}</SecuredSalonContext.Provider>
+    <SecuredSalonContext.Provider value={enhancedContext}>
+      {children}
+
+      {/* ✅ ENTERPRISE: Luxury reconnecting banner for graceful degradation */}
+      <ReconnectingBanner
+        isReconnecting={isReconnecting}
+        message="Reconnecting to secure session..."
+        onRetry={() => {
+          console.log('🔄 User requested manual retry')
+          runReinitSingleFlight()
+        }}
+      />
+    </SecuredSalonContext.Provider>
   )
 }
 

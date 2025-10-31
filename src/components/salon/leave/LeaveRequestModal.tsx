@@ -17,6 +17,7 @@ import { format, differenceInDays } from 'date-fns'
 import { calculateWorkingDays } from '@/lib/playbook/hr_leave'
 import type { LeaveRequest } from '@/schemas/hr_leave'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
 interface LeaveRequestModalProps {
@@ -139,22 +140,21 @@ export function LeaveRequestModal({
       size="lg"
       footer={
         <>
-          <Button
+          <SalonLuxeButton
             variant="outline"
             onClick={onClose}
             disabled={loading}
-            className="outline-button"
           >
             Cancel
-          </Button>
-          <Button
+          </SalonLuxeButton>
+          <SalonLuxeButton
             type="submit"
             onClick={handleSubmit}
             disabled={loading || !staffId || !from || !to}
-            className="primary-button"
+            loading={loading}
           >
-            {loading ? 'Submitting...' : 'Submit Request'}
-          </Button>
+            Submit Request
+          </SalonLuxeButton>
         </>
       }
     >

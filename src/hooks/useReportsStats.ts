@@ -4,6 +4,7 @@
 // Fetches real-time dashboard statistics for reports page
 // ✅ UPDATED: Uses useUniversalEntityV1 and useUniversalTransactionV1 hooks
 // ✅ UPDATED: Uses hera_entities_crud_v1 and hera_txn_crud_v1 orchestrator RPCs
+// ✅ ALIGNED: Uses GL_JOURNAL transactions with metadata.total_cr (matches sales reports)
 // ================================================================================
 
 'use client'
@@ -11,10 +12,29 @@
 import { useMemo } from 'react'
 import { useUniversalEntityV1 } from '@/hooks/useUniversalEntityV1'
 import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
+import { startOfMonth, endOfMonth, parseISO } from 'date-fns'
 
 // ============================================================================
 // TYPES
 // ============================================================================
+
+/**
+ * ✅ ALIGNED WITH SALES REPORTS: Extract gross revenue from GL_JOURNAL metadata
+ * Uses same calculation method as /salon/reports/sales for consistency
+ * Reads from metadata.total_cr (total credit = gross revenue)
+ */
+function extractGrossRevenue(glJournalTransactions: any[]): number {
+  let total = 0
+
+  glJournalTransactions.forEach(txn => {
+    if (txn.metadata && typeof txn.metadata === 'object') {
+      // total_cr = Total credit (gross revenue including VAT and tips)
+      total += txn.metadata.total_cr || 0
+    }
+  })
+
+  return total
+}
 
 export interface ReportStats {
   totalRevenue: number
@@ -52,6 +72,8 @@ export interface UseReportsStatsReturn {
  * - ✅ Orchestrator RPC pattern (hera_entities_crud_v1, hera_txn_crud_v1)
  * - ✅ React Query caching and automatic refetch
  * - ✅ Combined loading states
+ * - ✅ ALIGNED: Uses GL_JOURNAL with metadata.total_cr (matches /salon/reports/sales)
+ * - ✅ Month filtering for "This month" revenue display
  *
  * @example
  * const { stats, isLoading, refetch } = useReportsStats({
@@ -94,18 +116,25 @@ export function useReportsStats(
     }
   })
 
-  // ✅ Fetch sales transactions for revenue calculation
+  // ✅ ALIGNED WITH SALES REPORTS: Fetch GL_JOURNAL for revenue (same as /salon/reports/sales)
+  // This ensures dashboard revenue matches sales reports page exactly
   const {
-    transactions: sales,
+    transactions: glJournalTransactions,
     isLoading: salesLoading,
     error: salesError,
     refetch: refetchSales
   } = useUniversalTransactionV1({
     organizationId,
     filters: {
-      transaction_type: 'SALE',
+      transaction_type: 'GL_JOURNAL',
+      smart_code: 'HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v1',
       limit: 10000,
-      include_lines: false
+      include_lines: true // Need lines for GL validation
+    },
+    // Disable caching to ensure fresh data
+    cacheConfig: {
+      staleTime: 0,
+      refetchOnMount: 'always'
     }
   })
 
@@ -113,14 +142,24 @@ export function useReportsStats(
   const stats = useMemo<ReportStats>(() => {
     const totalCustomers = customers?.length || 0
     const totalAppointments = appointments?.length || 0
-    const totalSalesCount = sales?.length || 0
 
-    // Calculate total revenue from sales transactions
-    const totalRevenue = sales?.reduce((sum, sale) => {
-      return sum + (sale.total_amount || 0)
-    }, 0) || 0
+    // ✅ ALIGNED WITH SALES REPORTS: Filter GL_JOURNAL for current month
+    // This matches the "This month" label shown on the reports page
+    const now = new Date()
+    const monthStart = startOfMonth(now)
+    const monthEnd = endOfMonth(now)
 
-    // Calculate average ticket (revenue / number of sales transactions)
+    const currentMonthTransactions = (glJournalTransactions || []).filter(t => {
+      const txDate = parseISO(t.transaction_date)
+      return txDate >= monthStart && txDate <= monthEnd
+    })
+
+    // ✅ ALIGNED WITH SALES REPORTS: Revenue from GL_JOURNAL metadata.total_cr
+    // Uses same calculation as /salon/reports/sales for consistency
+    const totalRevenue = extractGrossRevenue(currentMonthTransactions)
+
+    // Calculate average ticket (revenue / number of GL transactions)
+    const totalSalesCount = currentMonthTransactions.length
     const averageTicket = totalSalesCount > 0 ? totalRevenue / totalSalesCount : 0
 
     return {
@@ -129,7 +168,7 @@ export function useReportsStats(
       totalAppointments,
       averageTicket: Math.round(averageTicket * 100) / 100 // Round to 2 decimals
     }
-  }, [customers, appointments, sales])
+  }, [customers, appointments, glJournalTransactions])
 
   // ✅ Combined loading state
   const isLoading = customersLoading || appointmentsLoading || salesLoading

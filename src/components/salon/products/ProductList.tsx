@@ -33,6 +33,7 @@ import {
 import { cn } from '@/lib/utils'
 import { InventoryChip } from './InventoryChip'
 import { useInventorySettings, shouldDisplayInventoryChip } from '@/hooks/useInventorySettings'
+import { SalonLuxeTooltip } from '@/components/salon/shared/SalonLuxeTooltip'
 
 interface ProductListProps {
   products: Product[]
@@ -243,12 +244,42 @@ export function ProductList({
                     >
                       <Package className="w-4 h-4" style={{ color: COLORS.gold }} />
                     </div>
-                    <div>
-                      <p style={{ color: COLORS.champagne }}>{product.entity_name}</p>
-                      {product.entity_code && (
-                        <p className="text-sm mt-0.5" style={{ color: COLORS.lightText }}>
-                          {product.entity_code}
+                    <div className="min-w-0 flex-1">
+                      {/* ✅ ENTERPRISE UX: Premium Salon Luxe tooltip in list view */}
+                      <SalonLuxeTooltip
+                        content={product.entity_name}
+                        position="right"
+                        delay={400}
+                        maxWidth="400px"
+                      >
+                        <p
+                          className="truncate cursor-help"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          {product.entity_name}
+                          {product.entity_name.length > 40 && (
+                            <span
+                              className="ml-1 opacity-60 text-xs"
+                              style={{ color: COLORS.gold }}
+                            >
+                              •••
+                            </span>
+                          )}
                         </p>
+                      </SalonLuxeTooltip>
+                      {product.entity_code && (
+                        <SalonLuxeTooltip
+                          content={`Product Code: ${product.entity_code}`}
+                          position="right"
+                          delay={500}
+                        >
+                          <p
+                            className="text-sm mt-0.5 truncate cursor-help"
+                            style={{ color: COLORS.lightText }}
+                          >
+                            {product.entity_code}
+                          </p>
+                        </SalonLuxeTooltip>
                       )}
                     </div>
                   </div>
@@ -513,24 +544,46 @@ function ProductCard({
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3
-            className="font-bold text-base mb-1 leading-tight truncate"
-            style={{ color: COLORS.champagne }}
+          {/* ✅ ENTERPRISE UX: Premium Salon Luxe tooltip for full product name */}
+          <SalonLuxeTooltip
+            content={product.entity_name}
+            position="top"
+            delay={400}
+            maxWidth="400px"
           >
-            {product.entity_name}
-          </h3>
-          {product.entity_code && (
-            <code
-              className="text-[9px] font-mono px-1.5 py-0.5 rounded inline-block truncate max-w-full"
-              style={{
-                backgroundColor: COLORS.bronze + '15',
-                color: COLORS.bronze,
-                border: `1px solid ${COLORS.bronze}30`
-              }}
-              title={product.entity_code}
+            <h3
+              className="font-bold text-base mb-1 leading-tight line-clamp-2 cursor-help group/title"
+              style={{ color: COLORS.champagne }}
             >
-              {product.entity_code}
-            </code>
+              {product.entity_name}
+              {/* Show info indicator if name is likely truncated (more than 40 chars) */}
+              {product.entity_name.length > 40 && (
+                <span
+                  className="ml-1 opacity-60 group-hover/title:opacity-100 transition-opacity inline-flex text-xs"
+                  style={{ color: COLORS.gold }}
+                >
+                  •••
+                </span>
+              )}
+            </h3>
+          </SalonLuxeTooltip>
+          {product.entity_code && (
+            <SalonLuxeTooltip
+              content={`Product Code: ${product.entity_code}`}
+              position="bottom"
+              delay={500}
+            >
+              <code
+                className="text-[9px] font-mono px-1.5 py-0.5 rounded inline-block truncate max-w-full cursor-help"
+                style={{
+                  backgroundColor: COLORS.bronze + '15',
+                  color: COLORS.bronze,
+                  border: `1px solid ${COLORS.bronze}30`
+                }}
+              >
+                {product.entity_code}
+              </code>
+            </SalonLuxeTooltip>
           )}
         </div>
 

@@ -100,6 +100,14 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
 
       const data = await response.json()
 
+      console.log('🔍🔍🔍 BARCODE API RESPONSE:', {
+        status: response.status,
+        ok: response.ok,
+        data: data,
+        found: data?.found,
+        itemsCount: data?.items?.length || 0
+      })
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to search barcode')
       }

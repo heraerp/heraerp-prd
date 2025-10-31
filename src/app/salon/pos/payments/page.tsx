@@ -63,12 +63,16 @@ function PaymentsContent() {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [dateFilter, setDateFilter] = useState<string>('all')
+  const [dateFilter, setDateFilter] = useState<string>('today') // ✅ DEFAULT: Today
+  const [branchFilter, setBranchFilter] = useState<string>('all')
   const [selectedSaleId, setSelectedSaleId] = useState<string | null>(null)
 
-  // Fetch sales data
-  const { sales, isLoading, refetch, SALE_STATUS_CONFIG } = useHeraSales({
-    organizationId: organizationId || ''
+  // Fetch sales data with branch filter
+  const { sales, isLoading, refetch, SALE_STATUS_CONFIG, branches } = useHeraSales({
+    organizationId: organizationId || '',
+    filters: {
+      branch_id: branchFilter !== 'all' ? branchFilter : undefined
+    }
   })
 
   // ⚡ PERFORMANCE: Memoize filtered sales
@@ -368,6 +372,30 @@ function PaymentsContent() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Branch Filter */}
+            <div className="w-full md:w-48">
+              <Select value={branchFilter} onValueChange={setBranchFilter}>
+                <SelectTrigger
+                  className="transition-all duration-200"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight + '80',
+                    borderColor: COLORS.bronze + '40',
+                    color: COLORS.champagne
+                  }}
+                >
+                  <SelectValue placeholder="All branches" />
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="all" className="hera-select-item">All branches</SelectItem>
+                  {branches?.map(branch => (
+                    <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
+                      {branch.entity_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -388,7 +416,7 @@ function PaymentsContent() {
               No transactions found
             </h3>
             <p className="text-sm" style={{ color: COLORS.bronze }}>
-              {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
+              {searchTerm || statusFilter !== 'all' || dateFilter !== 'all' || branchFilter !== 'all'
                 ? 'Try adjusting your filters'
                 : 'No sales have been completed yet'}
             </p>
