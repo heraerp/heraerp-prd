@@ -46,16 +46,17 @@ export async function GET(request: NextRequest) {
 
     const barcodeClean = barcode.trim()
 
-    // 🎯 RPC-BASED SEARCH: Use hera_entity_read_v1 with dynamic field filters
+    // 🎯 RPC-BASED SEARCH: Use hera_entity_read_v1 with correct parameters
     // This searches: barcode_primary, barcodes_alt, gtin, and sku fields
     const result = await callRPC('hera_entity_read_v1', {
       p_organization_id: orgId,
+      p_entity_id: null,
       p_entity_type: 'product',
-      p_filters: {
-        status: 'active',
-        include_dynamic: true
-      },
-      p_limit: 50 // Get all products with dynamic data
+      p_status: 'active',
+      p_include_relationships: false,
+      p_include_dynamic_data: true,
+      p_limit: 50,
+      p_offset: 0
     })
 
     if (result.error) {
@@ -69,39 +70,78 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Extract products from RPC response
+    // hera_entity_read_v1 returns { success: true, data: [...] }
+    const allProducts = result.data?.data || result.data || []
+
+    console.log('🔍🔍🔍 BARCODE SEARCH - RPC Response:', {
+      productsCount: allProducts.length,
+      barcodeSearched: barcodeClean
+    })
+
     // Filter products matching the barcode in dynamic fields
-    const products = (result.data || []).filter((product: any) => {
+    const products = allProducts.filter((product: any) => {
+      // Dynamic fields might be in product.dynamic_fields array or flattened
+      const dynamicFields = product.dynamic_fields || []
+
+      // Helper to get dynamic field value
+      const getDynamicValue = (fieldName: string) => {
+        const field = dynamicFields.find((f: any) => f.field_name === fieldName)
+        if (!field) return product[fieldName] // Fallback to direct property
+        return field.field_value_text || field.field_value_number || field.field_value_json
+      }
+
       // Check primary barcode
-      if (product.barcode_primary === barcodeClean) {
+      const barcodePrimary = getDynamicValue('barcode_primary')
+      console.log(`🔍🔍🔍 BARCODE SEARCH - Checking Product: ${product.entity_name}`, {
+        barcodePrimary,
+        barcode: getDynamicValue('barcode'),
+        gtin: getDynamicValue('gtin'),
+        sku: getDynamicValue('sku'),
+        searchingFor: barcodeClean,
+        dynamicFieldNames: dynamicFields.map((f: any) => f.field_name)
+      })
+      if (barcodePrimary === barcodeClean) {
         product._match_source = 'primary_barcode'
         return true
       }
 
       // Check alternate barcodes (array)
-      if (Array.isArray(product.barcodes_alt) && product.barcodes_alt.includes(barcodeClean)) {
+      const barcodesAlt = getDynamicValue('barcodes_alt')
+      if (Array.isArray(barcodesAlt) && barcodesAlt.includes(barcodeClean)) {
         product._match_source = 'alternate_barcode'
         return true
       }
 
       // Check GTIN
-      if (product.gtin === barcodeClean) {
+      const gtin = getDynamicValue('gtin')
+      if (gtin === barcodeClean) {
         product._match_source = 'gtin'
         return true
       }
 
       // Check SKU
-      if (product.sku === barcodeClean) {
+      const sku = getDynamicValue('sku')
+      if (sku === barcodeClean) {
         product._match_source = 'sku'
         return true
       }
 
       // Check legacy barcode field for backward compatibility
-      if (product.barcode === barcodeClean) {
+      const barcode = getDynamicValue('barcode')
+      if (barcode === barcodeClean) {
         product._match_source = 'legacy_barcode'
         return true
       }
 
       return false
+    })
+
+    console.log('🔍🔍🔍 BARCODE SEARCH - RESULT:', {
+      found: products.length > 0,
+      matchCount: products.length,
+      barcode: barcodeClean,
+      matchedProducts: products.map(p => p.entity_name)
     })
 
     if (products.length > 0) {

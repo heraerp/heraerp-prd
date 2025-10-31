@@ -17,13 +17,14 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Scan, Camera, Keyboard, Loader2, CheckCircle2, XCircle, Plus, Package } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Scan, Camera, Keyboard, Loader2, CheckCircle2, XCircle, Plus, Package, Barcode, Sparkles } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { Label } from '@/components/ui/label'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
 const COLORS = {
   gold: '#D4AF37',
@@ -277,10 +278,20 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
   // Handle keyboard scanner input (USB/Bluetooth barcode scanners)
   function handleKeyboardInput(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
+      event.preventDefault() // Prevent form submission
       const barcode = (event.target as HTMLInputElement).value.trim()
-      ;(event.target as HTMLInputElement).value = ''
+
+      console.log('🔍🔍🔍 KEYBOARD SCANNER - Enter pressed:', {
+        barcode,
+        barcodeLength: barcode.length,
+        mode,
+        organizationId
+      })
 
       if (barcode) {
+        // Clear input first
+        ;(event.target as HTMLInputElement).value = ''
+        // Then lookup
         lookupBarcode(barcode)
       }
     }
@@ -292,50 +303,39 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
       <div className="flex items-center gap-2">
         {mode === 'idle' && (
           <>
-            <Button
+            <SalonLuxeButton
               onClick={startCameraScan}
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.gold} 0%, #B8860B 100%)`,
-                color: COLORS.charcoal
-              }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:opacity-90"
+              variant="primary"
+              size="md"
+              icon={<Camera className="w-4 h-4" />}
             >
-              <Camera className="w-4 h-4" />
-              <span>Scan with Camera</span>
-            </Button>
+              Scan with Camera
+            </SalonLuxeButton>
 
-            <Button
+            <SalonLuxeButton
               onClick={() => setMode('keyboard')}
               variant="outline"
-              style={{
-                borderColor: COLORS.gold + '60',
-                color: COLORS.champagne
-              }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
+              size="md"
+              icon={<Keyboard className="w-4 h-4" />}
             >
-              <Keyboard className="w-4 h-4" />
-              <span>Keyboard Scanner</span>
-            </Button>
+              Keyboard Scanner
+            </SalonLuxeButton>
           </>
         )}
 
         {mode === 'camera' && (
-          <Button
+          <SalonLuxeButton
             onClick={stopCameraScan}
-            variant="outline"
-            style={{
-              borderColor: COLORS.error + '60',
-              color: COLORS.error
-            }}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
+            variant="danger"
+            size="md"
+            icon={<XCircle className="w-4 h-4" />}
           >
-            <XCircle className="w-4 h-4" />
-            <span>Stop Camera</span>
-          </Button>
+            Stop Camera
+          </SalonLuxeButton>
         )}
 
         {mode === 'keyboard' && (
-          <Button
+          <SalonLuxeButton
             onClick={() => {
               setMode('idle')
               if (inputRef.current) {
@@ -343,15 +343,11 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
               }
             }}
             variant="outline"
-            style={{
-              borderColor: COLORS.gold + '60',
-              color: COLORS.champagne
-            }}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
+            size="md"
+            icon={<XCircle className="w-4 h-4" />}
           >
-            <XCircle className="w-4 h-4" />
-            <span>Cancel</span>
-          </Button>
+            Cancel
+          </SalonLuxeButton>
         )}
 
         {mode === 'searching' && (
@@ -439,151 +435,184 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
       )}
 
       {/* Quick-Add Product Modal */}
-      <Dialog open={showQuickAddModal} onOpenChange={setShowQuickAddModal}>
-        <DialogContent
-          className="sm:max-w-[500px]"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            borderColor: COLORS.gold + '40',
-            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)'
-          }}
-        >
-          <DialogHeader>
-            <div className="flex items-center gap-3 mb-2">
-              <div
-                className="p-2 rounded-lg"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
-                  border: `1px solid ${COLORS.gold}30`
-                }}
+      <SalonLuxeModal
+        open={showQuickAddModal}
+        onClose={() => setShowQuickAddModal(false)}
+        title="Quick-Add Product"
+        description="Product not found. Create it now and add to cart."
+        icon={<Package className="w-7 h-7" />}
+        size="lg"
+        footer={
+          <div className="flex items-center justify-between w-full">
+            <p className="text-xs" style={{ color: SALON_LUXE_COLORS.text.secondary, opacity: 0.7 }}>
+              <span style={{ color: SALON_LUXE_COLORS.gold.base }}>*</span> Required fields
+            </p>
+            <div className="flex items-center gap-3">
+              <SalonLuxeButton
+                variant="outline"
+                size="md"
+                onClick={() => setShowQuickAddModal(false)}
+                disabled={isCreating}
               >
-                <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
-              </div>
-              <DialogTitle style={{ color: COLORS.champagne }}>Quick-Add Product</DialogTitle>
+                Cancel
+              </SalonLuxeButton>
+              <SalonLuxeButton
+                variant="primary"
+                size="md"
+                onClick={handleQuickAddProduct}
+                disabled={isCreating || !quickAddForm.name || !quickAddForm.selling_price}
+                loading={isCreating}
+                icon={!isCreating ? <Sparkles className="w-4 h-4" /> : undefined}
+              >
+                {isCreating ? 'Creating...' : 'Create & Add to Cart'}
+              </SalonLuxeButton>
             </div>
-            <DialogDescription style={{ color: COLORS.champagne, opacity: 0.7 }}>
-              Product not found. Create it now and add to cart.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            {/* Scanned Barcode (Read-only) */}
-            <div>
-              <Label htmlFor="barcode" style={{ color: COLORS.champagne }}>
+          </div>
+        }
+      >
+        <div className="space-y-6 pt-4">
+          {/* Barcode Information Section */}
+          <div
+            className="relative p-6 rounded-xl border backdrop-blur-sm"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.dark + 'E6',
+              borderColor: SALON_LUXE_COLORS.gold.base + '30',
+              boxShadow: `0 4px 12px rgba(0,0,0,0.4)`
+            }}
+          >
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-1 h-6 rounded-full" style={{ backgroundColor: SALON_LUXE_COLORS.gold.base }} />
+              <h3 className="text-lg font-semibold tracking-wide" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
                 Scanned Barcode
-              </Label>
-              <Input
-                id="barcode"
-                value={scannedBarcode}
-                readOnly
-                className="mt-1.5"
-                style={{
-                  backgroundColor: COLORS.charcoal + 'CC',
-                  borderColor: COLORS.gold + '40',
-                  color: COLORS.gold,
-                  opacity: 0.8
-                }}
-              />
+              </h3>
             </div>
-
-            {/* Product Name */}
-            <div>
-              <Label htmlFor="name" style={{ color: COLORS.champagne }}>
-                Product Name <span style={{ color: COLORS.gold }}>*</span>
-              </Label>
-              <Input
-                id="name"
-                placeholder="Enter product name"
-                value={quickAddForm.name}
-                onChange={e => setQuickAddForm({ ...quickAddForm, name: e.target.value })}
-                className="mt-1.5"
-                style={{
-                  backgroundColor: COLORS.charcoal + 'CC',
-                  borderColor: COLORS.gold + '40',
-                  color: COLORS.champagne
-                }}
-                autoFocus
-              />
-            </div>
-
-            {/* Selling Price */}
-            <div>
-              <Label htmlFor="selling_price" style={{ color: COLORS.champagne }}>
-                Selling Price (AED) <span style={{ color: COLORS.gold }}>*</span>
-              </Label>
-              <Input
-                id="selling_price"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={quickAddForm.selling_price}
-                onChange={e => setQuickAddForm({ ...quickAddForm, selling_price: e.target.value })}
-                className="mt-1.5"
-                style={{
-                  backgroundColor: COLORS.charcoal + 'CC',
-                  borderColor: COLORS.gold + '40',
-                  color: COLORS.champagne
-                }}
-              />
-            </div>
-
-            {/* Cost Price (Optional) */}
-            <div>
-              <Label htmlFor="cost_price" style={{ color: COLORS.champagne }}>
-                Cost Price (AED) <span className="text-xs opacity-60">Optional</span>
-              </Label>
-              <Input
-                id="cost_price"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={quickAddForm.cost_price}
-                onChange={e => setQuickAddForm({ ...quickAddForm, cost_price: e.target.value })}
-                className="mt-1.5"
-                style={{
-                  backgroundColor: COLORS.charcoal + 'CC',
-                  borderColor: COLORS.gold + '40',
-                  color: COLORS.champagne
-                }}
-              />
+            <div className="flex items-center gap-3 p-4 rounded-lg" style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '50',
+              border: `1px solid ${SALON_LUXE_COLORS.gold.base}40`
+            }}>
+              <Barcode className="w-6 h-6" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+              <span className="text-lg font-mono font-semibold" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+                {scannedBarcode}
+              </span>
             </div>
           </div>
 
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowQuickAddModal(false)}
-              disabled={isCreating}
-              style={{
-                borderColor: COLORS.gold + '60',
-                color: COLORS.champagne
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleQuickAddProduct}
-              disabled={isCreating || !quickAddForm.name || !quickAddForm.selling_price}
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.gold} 0%, #B8860B 100%)`,
-                color: COLORS.charcoal
-              }}
-            >
-              {isCreating ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create & Add to Cart
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          {/* Product Information Section */}
+          <div
+            className="relative p-6 rounded-xl border backdrop-blur-sm"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.dark + 'E6',
+              borderColor: '#8C7853' + '30',
+              boxShadow: `0 4px 12px rgba(0,0,0,0.4)`
+            }}
+          >
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-1 h-6 rounded-full" style={{ backgroundColor: SALON_LUXE_COLORS.gold.base }} />
+              <h3 className="text-lg font-semibold tracking-wide" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                Product Information
+              </h3>
+            </div>
+
+            <div className="space-y-5">
+              {/* Product Name */}
+              <div>
+                <Label
+                  htmlFor="name"
+                  className="text-sm font-medium tracking-wide"
+                  style={{ color: SALON_LUXE_COLORS.champagne.base }}
+                >
+                  Product Name <span style={{ color: SALON_LUXE_COLORS.gold.base }}>*</span>
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="e.g., Premium Shampoo"
+                  value={quickAddForm.name}
+                  onChange={e => setQuickAddForm({ ...quickAddForm, name: e.target.value })}
+                  className="mt-1.5 h-11 rounded-lg"
+                  style={{
+                    backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '80',
+                    borderColor: '#8C7853' + '40',
+                    color: SALON_LUXE_COLORS.champagne.base
+                  }}
+                  autoFocus
+                />
+              </div>
+
+              {/* Selling Price */}
+              <div>
+                <Label
+                  htmlFor="selling_price"
+                  className="text-sm font-medium tracking-wide"
+                  style={{ color: SALON_LUXE_COLORS.champagne.base }}
+                >
+                  Selling Price (AED) <span style={{ color: SALON_LUXE_COLORS.gold.base }}>*</span>
+                </Label>
+                <div className="relative mt-1.5">
+                  <span
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold"
+                    style={{ color: SALON_LUXE_COLORS.gold.base }}
+                  >
+                    AED
+                  </span>
+                  <Input
+                    id="selling_price"
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={quickAddForm.selling_price}
+                    onChange={e => setQuickAddForm({ ...quickAddForm, selling_price: e.target.value })}
+                    className="h-12 rounded-lg pl-20 text-lg font-semibold"
+                    style={{
+                      backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '80',
+                      borderColor: SALON_LUXE_COLORS.gold.base + '40',
+                      color: SALON_LUXE_COLORS.champagne.base
+                    }}
+                  />
+                </div>
+                <p className="text-xs mt-1.5" style={{ color: SALON_LUXE_COLORS.gold.base, opacity: 0.7 }}>
+                  Customer retail price
+                </p>
+              </div>
+
+              {/* Cost Price (Optional) */}
+              <div>
+                <Label
+                  htmlFor="cost_price"
+                  className="text-sm font-medium tracking-wide"
+                  style={{ color: SALON_LUXE_COLORS.champagne.base }}
+                >
+                  Cost Price (AED) <span className="text-xs opacity-60">Optional</span>
+                </Label>
+                <div className="relative mt-1.5">
+                  <span
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold"
+                    style={{ color: '#8C7853' }}
+                  >
+                    AED
+                  </span>
+                  <Input
+                    id="cost_price"
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={quickAddForm.cost_price}
+                    onChange={e => setQuickAddForm({ ...quickAddForm, cost_price: e.target.value })}
+                    className="h-12 rounded-lg pl-20 text-lg font-semibold"
+                    style={{
+                      backgroundColor: SALON_LUXE_COLORS.charcoal.lighter + '80',
+                      borderColor: '#8C7853' + '40',
+                      color: SALON_LUXE_COLORS.champagne.base
+                    }}
+                  />
+                </div>
+                <p className="text-xs mt-1.5" style={{ color: '#8C7853', opacity: 0.7 }}>
+                  Your purchase/wholesale cost
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SalonLuxeModal>
     </div>
   )
 }
