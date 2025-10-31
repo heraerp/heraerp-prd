@@ -151,7 +151,6 @@ export function TicketDetailsModal({
   // ✅ FIXED: Only update selected branch if it's actually different to prevent infinite loops
   useEffect(() => {
     if (branchId && branchId !== selectedBranchForBill) {
-      console.log('[TicketDetailsModal] Branch prop changed:', branchId)
       setSelectedBranchForBill(branchId)
     }
   }, [branchId]) // Intentionally NOT including selectedBranchForBill to prevent loop

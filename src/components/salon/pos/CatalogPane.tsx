@@ -85,7 +85,6 @@ export function CatalogPane({
     if (contextBranchId && contextBranchId !== branchId && branches.length > 0) {
       const branchExists = branches.some(b => b.id === contextBranchId)
       if (branchExists) {
-        console.log('[CatalogPane] 🏢 Setting branch from context:', contextBranchId)
         setBranchId(contextBranchId)
       }
     }
@@ -93,7 +92,6 @@ export function CatalogPane({
 
   // When user manually changes branch via dropdown, notify parent immediately
   const handleBranchChange = (newBranchId: string) => {
-    console.log('[CatalogPane] ✅ User changed branch:', newBranchId)
     setBranchId(newBranchId)
     if (onBranchChange) {
       onBranchChange(newBranchId)
