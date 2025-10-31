@@ -74,12 +74,8 @@ export async function GET(request: NextRequest) {
     // hera_entity_read_v1 returns { success: true, data: [...] }
     const allProducts = result.data?.data || result.data || []
 
-    console.log('[Barcode Search] RPC Response:', {
-      resultKeys: Object.keys(result),
-      hasData: !!result.data,
-      dataKeys: result.data ? Object.keys(result.data) : null,
+    console.log('🔍🔍🔍 BARCODE SEARCH - RPC Response:', {
       productsCount: allProducts.length,
-      firstProduct: allProducts[0],
       barcodeSearched: barcodeClean
     })
 
@@ -97,11 +93,13 @@ export async function GET(request: NextRequest) {
 
       // Check primary barcode
       const barcodePrimary = getDynamicValue('barcode_primary')
-      console.log(`[Barcode Search] Product ${product.entity_name}:`, {
+      console.log(`🔍🔍🔍 BARCODE SEARCH - Checking Product: ${product.entity_name}`, {
         barcodePrimary,
-        dynamicFieldsCount: dynamicFields.length,
-        dynamicFieldNames: dynamicFields.map((f: any) => f.field_name),
-        barcodeSearched: barcodeClean
+        barcode: getDynamicValue('barcode'),
+        gtin: getDynamicValue('gtin'),
+        sku: getDynamicValue('sku'),
+        searchingFor: barcodeClean,
+        dynamicFieldNames: dynamicFields.map((f: any) => f.field_name)
       })
       if (barcodePrimary === barcodeClean) {
         product._match_source = 'primary_barcode'
@@ -137,6 +135,13 @@ export async function GET(request: NextRequest) {
       }
 
       return false
+    })
+
+    console.log('🔍🔍🔍 BARCODE SEARCH - RESULT:', {
+      found: products.length > 0,
+      matchCount: products.length,
+      barcode: barcodeClean,
+      matchedProducts: products.map(p => p.entity_name)
     })
 
     if (products.length > 0) {
