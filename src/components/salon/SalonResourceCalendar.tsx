@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import '@/styles/microsoft-calendar.css'
 import '@/styles/salon-calendar-animations.css'
 import {
@@ -113,9 +112,9 @@ interface Appointment {
 }
 
 const BUSINESS_HOURS = {
-  start: 9,
+  start: 10, // Salon hours: 10 AM to 9 PM
   end: 21,
-  slotDuration: 30 // minutes
+  slotDuration: 15 // 15-minute slots to match booking system
 }
 
 // Helper to assert UUID format
@@ -149,7 +148,7 @@ export function SalonResourceCalendar({
 
   // All hooks must be called before any conditional returns
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [selectedView, setSelectedView] = useState<'day' | 'week' | 'month'>('week')
+  const [selectedView, setSelectedView] = useState<'day' | 'week' | 'month'>('day')
   const [viewMode, setViewMode] = useState<'single' | 'resource'>('resource')
   const [selectedStylists, setSelectedStylists] = useState<string[]>(['all'])
   const [selectedBranches, setSelectedBranches] = useState<string[]>(['all'])
@@ -160,6 +159,28 @@ export function SalonResourceCalendar({
     time: string
     stylistId: string
   } | null>(null)
+
+  // Scroll container ref for horizontal navigation
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  // Horizontal scroll functions for calendar navigation
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      console.log('📍 Scroll Left - Current scrollLeft:', scrollContainerRef.current.scrollLeft)
+      scrollContainerRef.current.scrollBy({ left: -400, behavior: 'smooth' })
+    } else {
+      console.log('❌ Scroll container ref not found')
+    }
+  }
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      console.log('📍 Scroll Right - Current scrollLeft:', scrollContainerRef.current.scrollLeft)
+      scrollContainerRef.current.scrollBy({ left: 400, behavior: 'smooth' })
+    } else {
+      console.log('❌ Scroll container ref not found')
+    }
+  }
 
   // 🔍 Search state
   const [showSearchModal, setShowSearchModal] = useState(false)
@@ -1241,105 +1262,99 @@ export function SalonResourceCalendar({
       )}
 
       {/* Main Calendar Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Calendar Header */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Calendar Header - Fixed to Viewport Width */}
         <div
-          className="p-4 border-b"
+          className="p-4 border-b sticky top-0 z-30 flex-shrink-0"
           style={{
             backgroundColor: COLORS.charcoal,
             borderColor: `${COLORS.gold}33`
           }}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          {/* Top Row: Date Navigation - Prevent Overflow */}
+          <div className="flex items-center justify-between mb-3 min-w-0">
+            <div className="flex items-center gap-2 overflow-hidden flex-1 min-w-0">
               {!showSidebar && (
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowSidebar(true)}
-                  className="hover:opacity-80"
+                  className="hover:opacity-80 flex-shrink-0"
                   style={{ color: COLORS.bronze }}
                 >
                   <Grid3x3 className="w-5 h-5" />
                 </Button>
               )}
 
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground dark:text-gray-300"
-                  style={{ color: COLORS.bronze }}
-                  onClick={() => {
-                    const newDate = new Date(selectedDate)
-                    if (selectedView === 'day') {
-                      newDate.setDate(newDate.getDate() - 1)
-                    } else if (selectedView === 'week') {
-                      newDate.setDate(newDate.getDate() - 7)
-                    } else {
-                      newDate.setMonth(newDate.getMonth() - 1)
-                    }
-                    setSelectedDate(newDate)
-                  }}
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="text-sm font-medium min-w-[120px]"
-                  style={{
-                    color: COLORS.champagne,
-                    borderColor: COLORS.bronze
-                  }}
-                  onClick={() => setSelectedDate(new Date())}
-                >
-                  Today
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:opacity-80"
-                  style={{ color: COLORS.bronze }}
-                  onClick={() => {
-                    const newDate = new Date(selectedDate)
-                    if (selectedView === 'day') {
-                      newDate.setDate(newDate.getDate() + 1)
-                    } else if (selectedView === 'week') {
-                      newDate.setDate(newDate.getDate() + 7)
-                    } else {
-                      newDate.setMonth(newDate.getMonth() + 1)
-                    }
-                    setSelectedDate(newDate)
-                  }}
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground dark:text-gray-300 flex-shrink-0"
+                style={{ color: COLORS.bronze }}
+                onClick={() => {
+                  const newDate = new Date(selectedDate)
+                  if (selectedView === 'day') {
+                    newDate.setDate(newDate.getDate() - 1)
+                  } else if (selectedView === 'week') {
+                    newDate.setDate(newDate.getDate() - 7)
+                  } else {
+                    newDate.setMonth(newDate.getMonth() - 1)
+                  }
+                  setSelectedDate(newDate)
+                }}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+              <Button
+                variant="outline"
+                className="text-sm font-medium min-w-[100px] flex-shrink-0"
+                style={{
+                  color: COLORS.champagne,
+                  borderColor: COLORS.bronze
+                }}
+                onClick={() => setSelectedDate(new Date())}
+              >
+                Today
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:opacity-80 flex-shrink-0"
+                style={{ color: COLORS.bronze }}
+                onClick={() => {
+                  const newDate = new Date(selectedDate)
+                  if (selectedView === 'day') {
+                    newDate.setDate(newDate.getDate() + 1)
+                  } else if (selectedView === 'week') {
+                    newDate.setDate(newDate.getDate() + 7)
+                  } else {
+                    newDate.setMonth(newDate.getMonth() + 1)
+                  }
+                  setSelectedDate(newDate)
+                }}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
 
-              <div className="flex flex-col">
-                <h2 className="text-xl font-semibold" style={{ color: COLORS.champagne }}>
-                  {selectedView === 'day'
-                    ? selectedDate.toLocaleDateString('en-US', {
-                        weekday: 'long',
+              <h2 className="text-base font-semibold ml-2 truncate" style={{ color: COLORS.champagne }}>
+                {selectedView === 'day'
+                  ? selectedDate.toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })
+                  : selectedView === 'week'
+                    ? `Week of ${selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+                    : selectedDate.toLocaleDateString('en-US', {
                         month: 'long',
-                        day: 'numeric',
                         year: 'numeric'
-                      })
-                    : selectedView === 'week'
-                      ? `Week of ${selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
-                      : selectedDate.toLocaleDateString('en-US', {
-                          month: 'long',
-                          year: 'numeric'
-                        })}
-                </h2>
-                <p className="text-sm" style={{ color: COLORS.bronze }}>
-                  {selectedView.charAt(0).toUpperCase() + selectedView.slice(1)} view •{' '}
-                  {viewDates.length} day{viewDates.length > 1 ? 's' : ''} • Hair Talkz Salon
-                </p>
-              </div>
+                      })}
+              </h2>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Right Side Controls - Always Visible, Never Shrink */}
+            <div className="flex items-center gap-2 flex-shrink-0 ml-4">
               <Tabs value={selectedView} onValueChange={v => setSelectedView(v as any)}>
                 <TabsList
                   style={{ backgroundColor: `${COLORS.charcoal}DD`, borderColor: COLORS.bronze }}
@@ -1356,37 +1371,74 @@ export function SalonResourceCalendar({
                 </TabsList>
               </Tabs>
 
-              <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:opacity-80"
+                style={{ color: COLORS.bronze }}
+                onClick={() => setShowSearchModal(true)}
+                title="Search appointments"
+              >
+                <Search className="w-5 h-5" />
+              </Button>
+
+              {/* Horizontal Scroll Buttons - Always Visible */}
+              <div className="flex items-center gap-1 px-2 py-1.5 rounded-lg border-2" style={{
+                backgroundColor: COLORS.charcoal,
+                borderColor: COLORS.gold
+              }}>
                 <Button
+                  onClick={scrollLeft}
                   variant="ghost"
                   size="icon"
-                  className="hover:opacity-80"
-                  style={{ color: COLORS.bronze }}
-                  onClick={() => setShowSearchModal(true)}
-                  title="Search appointments"
+                  className="h-8 w-8 rounded-md hover:bg-gold/30 transition-all"
+                  style={{ color: COLORS.gold }}
+                  title="Scroll Calendar Left"
                 >
-                  <Search className="w-5 h-5" />
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+                <div className="h-6 w-px bg-gold/40" />
+                <Button
+                  onClick={scrollRight}
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-md hover:bg-gold/30 transition-all"
+                  style={{ color: COLORS.gold }}
+                  title="Scroll Calendar Right"
+                >
+                  <ChevronRight className="h-5 w-5" />
                 </Button>
               </div>
             </div>
           </div>
+
+          {/* Bottom Row: Info */}
+          <p className="text-sm" style={{ color: COLORS.bronze }}>
+            {selectedView.charAt(0).toUpperCase() + selectedView.slice(1)} view •{' '}
+            {viewDates.length} day{viewDates.length > 1 ? 's' : ''} • Hair Talkz Salon
+          </p>
         </div>
 
-        {/* Calendar Grid - Single Scroll Container */}
-        <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full w-full calendar-scrollbar">
+        {/* Calendar Grid with Overlay Scroll Buttons */}
+        <div className="flex-1 overflow-hidden relative">
+          <div
+            ref={scrollContainerRef}
+            className="h-full w-full overflow-x-auto calendar-scrollbar"
+            style={{ scrollBehavior: 'smooth' }}
+          >
             <div
               className="grid"
               style={{
                 gridTemplateColumns:
                   selectedView === 'month'
-                    ? `repeat(7, 1fr)` // Month view: 7 equal columns for days of week
+                    ? `repeat(7, 180px)` // Month view: 180px per day
                     : selectedView === 'week'
-                      ? `80px repeat(7, 1fr)` // Week view: time column + 7 day columns
+                      ? `80px repeat(7, 200px)` // Week view: 200px per day
                       : viewMode === 'single'
-                        ? `80px repeat(${viewDates.length}, 1fr)`
-                        : `80px repeat(${displayedStylists.length}, 1fr)`,
-                minHeight: selectedView === 'month' ? 'auto' : `${timeSlots.length * 64}px`
+                        ? `80px repeat(${viewDates.length}, 200px)` // Single resource: 200px per date
+                        : `80px repeat(${displayedStylists.length}, 200px)`, // Resource view: 200px per stylist (optimized)
+                minHeight: selectedView === 'month' ? 'auto' : `${timeSlots.length * 64}px`,
+                minWidth: selectedView === 'month' ? '1260px' : selectedView === 'week' ? '1480px' : 'auto' // Ensure horizontal scrolling
               }}
             >
               {/* ✨ ENTERPRISE MONTH VIEW GRID */}
@@ -2192,7 +2244,7 @@ export function SalonResourceCalendar({
                 </>
               )}
             </div>
-          </ScrollArea>
+          </div>
         </div>
       </div>
 
