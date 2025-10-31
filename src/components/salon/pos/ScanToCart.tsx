@@ -18,11 +18,11 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Scan, Camera, Keyboard, Loader2, CheckCircle2, XCircle, Plus, Package } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
 
 const COLORS = {
@@ -292,50 +292,39 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
       <div className="flex items-center gap-2">
         {mode === 'idle' && (
           <>
-            <Button
+            <SalonLuxeButton
               onClick={startCameraScan}
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.gold} 0%, #B8860B 100%)`,
-                color: COLORS.charcoal
-              }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:opacity-90"
+              variant="primary"
+              size="md"
+              icon={<Camera className="w-4 h-4" />}
             >
-              <Camera className="w-4 h-4" />
-              <span>Scan with Camera</span>
-            </Button>
+              Scan with Camera
+            </SalonLuxeButton>
 
-            <Button
+            <SalonLuxeButton
               onClick={() => setMode('keyboard')}
               variant="outline"
-              style={{
-                borderColor: COLORS.gold + '60',
-                color: COLORS.champagne
-              }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
+              size="md"
+              icon={<Keyboard className="w-4 h-4" />}
             >
-              <Keyboard className="w-4 h-4" />
-              <span>Keyboard Scanner</span>
-            </Button>
+              Keyboard Scanner
+            </SalonLuxeButton>
           </>
         )}
 
         {mode === 'camera' && (
-          <Button
+          <SalonLuxeButton
             onClick={stopCameraScan}
-            variant="outline"
-            style={{
-              borderColor: COLORS.error + '60',
-              color: COLORS.error
-            }}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
+            variant="danger"
+            size="md"
+            icon={<XCircle className="w-4 h-4" />}
           >
-            <XCircle className="w-4 h-4" />
-            <span>Stop Camera</span>
-          </Button>
+            Stop Camera
+          </SalonLuxeButton>
         )}
 
         {mode === 'keyboard' && (
-          <Button
+          <SalonLuxeButton
             onClick={() => {
               setMode('idle')
               if (inputRef.current) {
@@ -343,15 +332,11 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
               }
             }}
             variant="outline"
-            style={{
-              borderColor: COLORS.gold + '60',
-              color: COLORS.champagne
-            }}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
+            size="md"
+            icon={<XCircle className="w-4 h-4" />}
           >
-            <XCircle className="w-4 h-4" />
-            <span>Cancel</span>
-          </Button>
+            Cancel
+          </SalonLuxeButton>
         )}
 
         {mode === 'searching' && (
@@ -550,37 +535,24 @@ export function ScanToCart({ organizationId, onProductFound, onError }: ScanToCa
           </div>
 
           <DialogFooter>
-            <Button
+            <SalonLuxeButton
               variant="outline"
+              size="md"
               onClick={() => setShowQuickAddModal(false)}
               disabled={isCreating}
-              style={{
-                borderColor: COLORS.gold + '60',
-                color: COLORS.champagne
-              }}
             >
               Cancel
-            </Button>
-            <Button
+            </SalonLuxeButton>
+            <SalonLuxeButton
+              variant="primary"
+              size="md"
               onClick={handleQuickAddProduct}
               disabled={isCreating || !quickAddForm.name || !quickAddForm.selling_price}
-              style={{
-                background: `linear-gradient(135deg, ${COLORS.gold} 0%, #B8860B 100%)`,
-                color: COLORS.charcoal
-              }}
+              loading={isCreating}
+              icon={!isCreating ? <Plus className="w-4 h-4" /> : undefined}
             >
-              {isCreating ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create & Add to Cart
-                </>
-              )}
-            </Button>
+              {isCreating ? 'Creating...' : 'Create & Add to Cart'}
+            </SalonLuxeButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>
