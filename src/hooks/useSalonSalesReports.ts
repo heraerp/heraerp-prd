@@ -606,11 +606,20 @@ export function useMonthlySalesReport(month: number, year: number, branchId?: st
   const startDate = startOfMonth(monthDate).toISOString()
   const endDate = endOfMonth(monthDate).toISOString()
 
+  // ✅ GROWTH CALCULATION: Calculate previous month dates
+  const prevMonthDate = new Date(year, month - 2, 1) // month - 2 because month is 1-indexed
+  const prevStartDate = startOfMonth(prevMonthDate).toISOString()
+  const prevEndDate = endOfMonth(prevMonthDate).toISOString()
+
   console.log('📊 [useMonthlySalesReport] Filter params:', {
     month,
     year,
     startDate,
     endDate,
+    prevMonth: prevMonthDate.getMonth() + 1,
+    prevYear: prevMonthDate.getFullYear(),
+    prevStartDate,
+    prevEndDate,
     branchId,
     hasBranch: !!branchId
   })
@@ -621,7 +630,7 @@ export function useMonthlySalesReport(month: number, year: number, branchId?: st
     end: endOfMonth(monthDate)
   })
 
-  // Query GL_JOURNAL transactions for the month
+  // Query GL_JOURNAL transactions for the current month
   // ⚠️ IMPORTANT: Branch ID is stored in metadata.branch_id, NOT target_entity_id
   // We fetch all transactions for the month and filter by branch client-side
   // ✅ BACKWARD COMPATIBLE: Fetch without smart_code filter to get BOTH v1 and v2 GL entries
@@ -646,6 +655,24 @@ export function useMonthlySalesReport(month: number, year: number, branchId?: st
     }
   })
 
+  // ✅ GROWTH CALCULATION: Query previous month's transactions
+  const {
+    transactions: allPrevGlTransactions,
+    isLoading: isPrevLoading
+  } = useUniversalTransactionV1({
+    filters: {
+      transaction_type: 'GL_JOURNAL',
+      date_from: prevStartDate,
+      date_to: prevEndDate,
+      include_lines: true,
+      limit: 5000
+    },
+    cacheConfig: {
+      staleTime: 0,
+      refetchOnMount: 'always'
+    }
+  })
+
   // ✅ FIX: Client-side branch filtering using metadata.branch_id
   const glJournalTransactions = useMemo(() => {
     if (!branchId || !allGlTransactions) {
@@ -656,6 +683,17 @@ export function useMonthlySalesReport(month: number, year: number, branchId?: st
       txn.metadata?.branch_id === branchId
     )
   }, [allGlTransactions, branchId])
+
+  // ✅ GROWTH CALCULATION: Filter previous month's transactions by branch
+  const prevGlJournalTransactions = useMemo(() => {
+    if (!branchId || !allPrevGlTransactions) {
+      return allPrevGlTransactions
+    }
+
+    return allPrevGlTransactions.filter(txn =>
+      txn.metadata?.branch_id === branchId
+    )
+  }, [allPrevGlTransactions, branchId])
 
   // Calculate summary, daily breakdown, and dimensional analysis
   const { summary, dailyData, dimensionalBreakdown } = useMemo(() => {
@@ -673,7 +711,8 @@ export function useMonthlySalesReport(month: number, year: number, branchId?: st
           service_mix_percent: 0,
           product_mix_percent: 0,
           average_daily: 0,
-          working_days: daysInMonth.length
+          working_days: daysInMonth.length,
+          growth_vs_previous: 0
         },
         dailyData: [],
         dimensionalBreakdown: null
@@ -685,16 +724,42 @@ export function useMonthlySalesReport(month: number, year: number, branchId?: st
     const averageDaily = workingDays > 0 ? baseSummary.total_gross / workingDays : 0
     const calculatedDimensional = extractDimensionalBreakdown(glJournalTransactions)
 
+    // ✅ GROWTH CALCULATION: Calculate growth vs previous month
+    let growthVsPrevious: number | undefined = undefined
+    if (prevGlJournalTransactions && prevGlJournalTransactions.length > 0) {
+      const prevSummary = calculateSummary(prevGlJournalTransactions)
+      if (prevSummary.total_gross > 0) {
+        // Normal case: previous month has revenue
+        growthVsPrevious = ((baseSummary.total_gross - prevSummary.total_gross) / prevSummary.total_gross) * 100
+      } else if (baseSummary.total_gross > 0) {
+        // Edge case: previous month was 0, current month has revenue = infinite growth
+        // Display as undefined (UI will show "N/A" instead of percentage)
+        growthVsPrevious = undefined
+      } else {
+        // Both months are 0
+        growthVsPrevious = 0
+      }
+    }
+
+    console.log('📊 [useMonthlySalesReport] Growth calculation:', {
+      currentGross: baseSummary.total_gross,
+      prevGross: prevGlJournalTransactions?.length > 0
+        ? calculateSummary(prevGlJournalTransactions).total_gross
+        : 0,
+      growthVsPrevious: growthVsPrevious !== undefined ? `${growthVsPrevious.toFixed(1)}%` : 'N/A'
+    })
+
     return {
       summary: {
         ...baseSummary,
         average_daily: averageDaily,
-        working_days: workingDays
+        working_days: workingDays,
+        growth_vs_previous: growthVsPrevious
       },
       dailyData: calculateDailyRows(glJournalTransactions, daysInMonth),
       dimensionalBreakdown: calculatedDimensional
     }
-  }, [glJournalTransactions, daysInMonth])
+  }, [glJournalTransactions, prevGlJournalTransactions, daysInMonth])
 
   return {
     summary,

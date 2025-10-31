@@ -436,26 +436,38 @@ export default function MonthlySalesReportPage() {
                 className="rounded-2xl p-6"
                 style={{
                   backgroundColor: LUXE_COLORS.charcoal,
-                  border: `1px solid ${summary.growth_vs_previous && summary.growth_vs_previous > 0 ? LUXE_COLORS.emerald : LUXE_COLORS.ruby}40`,
-                  boxShadow: `0 4px 16px ${summary.growth_vs_previous && summary.growth_vs_previous > 0 ? LUXE_COLORS.emerald : LUXE_COLORS.ruby}10`
+                  border: `1px solid ${summary.growth_vs_previous !== undefined && summary.growth_vs_previous > 0 ? LUXE_COLORS.emerald : summary.growth_vs_previous !== undefined ? LUXE_COLORS.ruby : LUXE_COLORS.gold}40`,
+                  boxShadow: `0 4px 16px ${summary.growth_vs_previous !== undefined && summary.growth_vs_previous > 0 ? LUXE_COLORS.emerald : summary.growth_vs_previous !== undefined ? LUXE_COLORS.ruby : LUXE_COLORS.gold}10`
                 }}
               >
-                <p className="text-sm font-medium mb-2" style={{ color: summary.growth_vs_previous && summary.growth_vs_previous > 0 ? LUXE_COLORS.emeraldLight : LUXE_COLORS.ruby }}>
+                <p className="text-sm font-medium mb-2" style={{ color: summary.growth_vs_previous !== undefined && summary.growth_vs_previous > 0 ? LUXE_COLORS.emeraldLight : summary.growth_vs_previous !== undefined ? LUXE_COLORS.ruby : LUXE_COLORS.bronze }}>
                   Revenue Growth
                 </p>
                 <div className="flex items-center gap-2">
-                  {summary.growth_vs_previous && summary.growth_vs_previous > 0 ? (
-                    <TrendingUp className="w-6 h-6" style={{ color: LUXE_COLORS.emerald }} />
+                  {summary.growth_vs_previous !== undefined ? (
+                    summary.growth_vs_previous > 0 ? (
+                      <TrendingUp className="w-6 h-6" style={{ color: LUXE_COLORS.emerald }} />
+                    ) : (
+                      <TrendingDown className="w-6 h-6" style={{ color: LUXE_COLORS.ruby }} />
+                    )
                   ) : (
-                    <TrendingDown className="w-6 h-6" style={{ color: LUXE_COLORS.ruby }} />
+                    <BarChart3 className="w-6 h-6" style={{ color: LUXE_COLORS.bronze }} />
                   )}
                   <p className="text-2xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
-                    {summary.growth_vs_previous && summary.growth_vs_previous > 0 ? '+' : ''}
-                    {summary.growth_vs_previous?.toFixed(1) || '0.0'}%
+                    {summary.growth_vs_previous !== undefined ? (
+                      <>
+                        {summary.growth_vs_previous > 0 ? '+' : ''}
+                        {summary.growth_vs_previous.toFixed(1)}%
+                      </>
+                    ) : (
+                      'N/A'
+                    )}
                   </p>
                 </div>
                 <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
-                  vs previous month
+                  {summary.growth_vs_previous !== undefined
+                    ? 'vs previous month'
+                    : 'No previous month data'}
                 </p>
               </div>
             </div>
