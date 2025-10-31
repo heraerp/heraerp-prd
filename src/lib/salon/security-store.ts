@@ -51,7 +51,13 @@ interface SalonSecurityState {
   shouldReinitialize: () => boolean
 }
 
-const REINIT_INTERVAL = 30 * 60 * 1000 // 30 minutes
+// ✅ ENTERPRISE: Soft TTL for background refresh, Hard TTL for forced re-auth
+// Smart Code: HERA.SECURITY.AUTH.CACHE_TTL.v1
+const SOFT_TTL = 10 * 60 * 1000 // 10 minutes - trigger background refresh
+const HARD_TTL = 60 * 60 * 1000 // 60 minutes - force re-authentication
+const REINIT_INTERVAL = HARD_TTL // Backward compatibility
+
+export { SOFT_TTL, HARD_TTL }
 
 export const useSalonSecurityStore = create<SalonSecurityState>()(
   persist(
@@ -93,9 +99,10 @@ export const useSalonSecurityStore = create<SalonSecurityState>()(
         const state = get()
         if (!state.isInitialized || !state.lastInitialized) return true
 
-        // Re-initialize if more than 30 minutes have passed
+        // ✅ ENTERPRISE: Only force reinit after HARD_TTL (60 min), not SOFT_TTL
+        // SOFT_TTL (10 min) is used for background refresh in heartbeat
         const timeSinceInit = Date.now() - state.lastInitialized
-        return timeSinceInit > REINIT_INTERVAL
+        return timeSinceInit > HARD_TTL
       }
     }),
     {
