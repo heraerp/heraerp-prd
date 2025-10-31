@@ -148,11 +148,13 @@ export function TicketDetailsModal({
   const [showBranchWarning, setShowBranchWarning] = useState(false)
   const [addingStaffToItem, setAddingStaffToItem] = useState<string | null>(null)
 
-  // Update selected branch when prop changes - ALWAYS sync with prop
+  // ✅ FIXED: Only update selected branch if it's actually different to prevent infinite loops
   useEffect(() => {
-    console.log('[TicketDetailsModal] Branch prop changed:', branchId)
-    setSelectedBranchForBill(branchId || '')
-  }, [branchId])
+    if (branchId && branchId !== selectedBranchForBill) {
+      console.log('[TicketDetailsModal] Branch prop changed:', branchId)
+      setSelectedBranchForBill(branchId)
+    }
+  }, [branchId]) // Intentionally NOT including selectedBranchForBill to prevent loop
 
   // Load staff for the selected branch
   const { staff, isLoading: isLoadingStaff } = useHeraStaff({

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import {
   Search,
   Plus,
@@ -79,23 +79,35 @@ export function CatalogPane({
   // Use composition hook for POS data
   const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS(posOptions)
 
-  // ✅ CRITICAL FIX: Initialize branch from context (e.g., from appointment)
-  // This ensures the correct branch is selected when redirecting from appointments
+  // ✅ FIXED: Initialize branch from context ONCE on mount or when context changes
+  // Use useRef to track if we're internally changing the branch to prevent ping-pong
+  const isInternalChange = useRef(false)
+  const prevContextBranchId = useRef(contextBranchId)
+
   useEffect(() => {
-    if (contextBranchId && contextBranchId !== branchId && branches.length > 0) {
-      // Verify the contextBranchId exists in the branches list
+    // Only update if contextBranchId actually changed (not from our own onBranchChange call)
+    if (contextBranchId && contextBranchId !== prevContextBranchId.current && branches.length > 0) {
       const branchExists = branches.some(b => b.id === contextBranchId)
-      if (branchExists) {
+      if (branchExists && contextBranchId !== branchId) {
         console.log('[CatalogPane] 🏢 Setting branch from context (appointment):', contextBranchId)
+        isInternalChange.current = true
         setBranchId(contextBranchId)
+        prevContextBranchId.current = contextBranchId
       }
     }
   }, [contextBranchId, branchId, branches, setBranchId])
 
-  // ✅ FIX: Sync branch changes to parent context (only if different)
+  // ✅ FIXED: Only sync to parent if user manually changed the branch (not from context)
   useEffect(() => {
+    // Skip if this was an internal change from context
+    if (isInternalChange.current) {
+      isInternalChange.current = false
+      return
+    }
+
+    // Only notify parent if branch actually changed and it's different from context
     if (branchId && onBranchChange && branchId !== contextBranchId) {
-      console.log('[CatalogPane] ✅ Branch changed, syncing to context:', branchId, 'was:', contextBranchId)
+      console.log('[CatalogPane] ✅ Branch changed by user, syncing to context:', branchId)
       onBranchChange(branchId)
     }
   }, [branchId, contextBranchId, onBranchChange])
