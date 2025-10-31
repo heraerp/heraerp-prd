@@ -263,17 +263,28 @@ function calculateDailyRows(glJournalTransactions: any[], daysInMonth: Date[]): 
 // DAILY SALES REPORT HOOK
 // ============================================================================
 
-export function useDailySalesReport(date: Date) {
+export function useDailySalesReport(date: Date, branchId?: string | null) {
   const startDate = startOfDay(date).toISOString()
   const endDate = endOfDay(date).toISOString()
 
+  console.log('📊 [useDailySalesReport] Filter params:', {
+    date: date.toISOString(),
+    startDate,
+    endDate,
+    branchId,
+    hasBranch: !!branchId
+  })
+
   // Query GL_JOURNAL transactions for the day
+  // ⚠️ IMPORTANT: Branch ID is stored in metadata.branch_id, NOT target_entity_id
+  // We fetch all transactions for the date and filter by branch client-side
   const {
-    transactions: glJournalTransactions,
+    transactions: allGlTransactions,
     isLoading,
     error,
     refetch
   } = useUniversalTransactionV1({
+    organizationId: undefined, // Let hook use context
     filters: {
       transaction_type: 'GL_JOURNAL',
       smart_code: 'HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v1',
@@ -281,11 +292,53 @@ export function useDailySalesReport(date: Date) {
       date_to: endDate,
       include_lines: true,
       limit: 1000
+    },
+    // ✅ FIX: Disable aggressive caching for sales reports - filters change frequently
+    cacheConfig: {
+      staleTime: 0, // Always consider data stale - refetch when filters change
+      refetchOnMount: 'always' // Always refetch when component re-renders with new filters
     }
+  })
+
+  // ✅ FIX: Client-side branch filtering using metadata.branch_id
+  const glJournalTransactions = useMemo(() => {
+    if (!branchId || !allGlTransactions) {
+      return allGlTransactions
+    }
+
+    const filtered = allGlTransactions.filter(txn =>
+      txn.metadata?.branch_id === branchId
+    )
+
+    console.log('📊 [useDailySalesReport] Branch filter applied:', {
+      branchId,
+      allCount: allGlTransactions.length,
+      filteredCount: filtered.length,
+      sampleBranchIds: allGlTransactions.slice(0, 3).map(t => t.metadata?.branch_id)
+    })
+
+    return filtered
+  }, [allGlTransactions, branchId])
+
+  console.log('📊 [useDailySalesReport] useUniversalTransactionV1 response:', {
+    transactionCount: glJournalTransactions?.length || 0,
+    isLoading,
+    error,
+    dates: glJournalTransactions?.map(t => t.transaction_date).slice(0, 5)
   })
 
   // Calculate summary and hourly breakdown
   const { summary, hourlyData } = useMemo(() => {
+    console.log('📊 [useDailySalesReport] Calculating summary from transactions:', {
+      transactionCount: glJournalTransactions?.length || 0,
+      firstTransaction: glJournalTransactions?.[0],
+      dateRange: glJournalTransactions?.length > 0 ? {
+        first: glJournalTransactions[0]?.transaction_date,
+        last: glJournalTransactions[glJournalTransactions.length - 1]?.transaction_date
+      } : null,
+      branchIds: glJournalTransactions?.map(t => t.target_entity_id).filter((v, i, a) => a.indexOf(v) === i)
+    })
+
     if (!glJournalTransactions || glJournalTransactions.length === 0) {
       return {
         summary: {
@@ -307,6 +360,8 @@ export function useDailySalesReport(date: Date) {
     const calculatedSummary = calculateSummary(glJournalTransactions)
     const calculatedHourly = calculateHourlyRows(glJournalTransactions)
 
+    console.log('📊 [useDailySalesReport] Calculated summary:', calculatedSummary)
+
     return {
       summary: calculatedSummary,
       hourlyData: calculatedHourly
@@ -326,10 +381,19 @@ export function useDailySalesReport(date: Date) {
 // MONTHLY SALES REPORT HOOK
 // ============================================================================
 
-export function useMonthlySalesReport(month: number, year: number) {
+export function useMonthlySalesReport(month: number, year: number, branchId?: string | null) {
   const monthDate = new Date(year, month - 1, 1)
   const startDate = startOfMonth(monthDate).toISOString()
   const endDate = endOfMonth(monthDate).toISOString()
+
+  console.log('📊 [useMonthlySalesReport] Filter params:', {
+    month,
+    year,
+    startDate,
+    endDate,
+    branchId,
+    hasBranch: !!branchId
+  })
 
   // Get all days in month for daily breakdown
   const daysInMonth = eachDayOfInterval({
@@ -338,8 +402,10 @@ export function useMonthlySalesReport(month: number, year: number) {
   })
 
   // Query GL_JOURNAL transactions for the month
+  // ⚠️ IMPORTANT: Branch ID is stored in metadata.branch_id, NOT target_entity_id
+  // We fetch all transactions for the month and filter by branch client-side
   const {
-    transactions: glJournalTransactions,
+    transactions: allGlTransactions,
     isLoading,
     error,
     refetch
@@ -351,8 +417,24 @@ export function useMonthlySalesReport(month: number, year: number) {
       date_to: endDate,
       include_lines: true,
       limit: 5000
+    },
+    // ✅ FIX: Disable aggressive caching for sales reports - filters change frequently
+    cacheConfig: {
+      staleTime: 0, // Always consider data stale - refetch when filters change
+      refetchOnMount: 'always' // Always refetch when component re-renders with new filters
     }
   })
+
+  // ✅ FIX: Client-side branch filtering using metadata.branch_id
+  const glJournalTransactions = useMemo(() => {
+    if (!branchId || !allGlTransactions) {
+      return allGlTransactions
+    }
+
+    return allGlTransactions.filter(txn =>
+      txn.metadata?.branch_id === branchId
+    )
+  }, [allGlTransactions, branchId])
 
   // Calculate summary and daily breakdown
   const { summary, dailyData } = useMemo(() => {

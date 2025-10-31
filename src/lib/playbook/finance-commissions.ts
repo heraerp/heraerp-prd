@@ -80,8 +80,8 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
       smart_code: heraCode(transactionData.smart_code), // Ensure .v1 format
       total_amount: Number(transactionData.total_amount) || 0,
       transaction_code: generateTransactionCode(transactionData.transaction_type),
-      source_entity_id: resolvedBranchId, // Valid branch entity or null
-      target_entity_id: transactionData.business_context.customer_id || null,
+      source_entity_id: transactionData.business_context.customer_id || null, // ✅ Customer (FROM)
+      target_entity_id: resolvedBranchId, // ✅ Branch (TO) - enables branch filtering in reports
       business_context: {
         branch_id: resolvedBranchId || transactionData.business_context.branch_id,
         ticket_id: transactionData.business_context.ticket_id,

@@ -26,21 +26,21 @@ import {
 } from 'date-fns'
 
 /**
- * Calculate transaction revenue from service/product lines only
- * Excludes tax and payment lines to prevent double-counting
+ * ✅ ALIGNED WITH REPORTS: Extract gross revenue from GL_JOURNAL metadata
+ * Uses same calculation method as /salon/reports/sales for consistency
+ * Reads from metadata.total_cr (total credit = gross revenue)
  */
-function calculateTransactionRevenue(transaction: any): number {
-  if (transaction.lines && Array.isArray(transaction.lines) && transaction.lines.length > 0) {
-    const revenueLines = transaction.lines.filter((line: any) =>
-      line.line_type === 'service' ||
-      line.line_type === 'product' ||
-      line.line_type === 'item'
-    )
-    return revenueLines.reduce((sum: number, line: any) => {
-      return sum + (line.line_amount || 0)
-    }, 0)
-  }
-  return transaction.total_amount || 0
+function extractGrossRevenue(glJournalTransactions: any[]): number {
+  let total = 0
+
+  glJournalTransactions.forEach(txn => {
+    if (txn.metadata && typeof txn.metadata === 'object') {
+      // total_cr = Total credit (gross revenue including VAT and tips)
+      total += txn.metadata.total_cr || 0
+    }
+  })
+
+  return total
 }
 
 export interface AppointmentByStatus {
@@ -96,6 +96,7 @@ export function useReceptionistDashboard(config: UseReceptionistDashboardConfig)
   })
 
   // Fetch services using Universal Entity V1 hook (RPC-based)
+  // ✅ FIXED: include_dynamic=true to load price_market and duration_min for appointment modal
   const {
     entities: services,
     isLoading: servicesLoading,
@@ -104,9 +105,9 @@ export function useReceptionistDashboard(config: UseReceptionistDashboardConfig)
     entity_type: 'SERVICE',
     organizationId,
     filters: {
-      include_dynamic: false,
+      include_dynamic: true, // ✅ REQUIRED for AppointmentModal to display service prices
       include_relationships: false,
-      list_mode: 'HEADERS'
+      list_mode: 'FULL' // ✅ REQUIRED to get dynamic data
     }
   })
 
@@ -139,23 +140,30 @@ export function useReceptionistDashboard(config: UseReceptionistDashboardConfig)
     }
   })
 
-  // Fetch sales (for revenue) using Universal Transaction V1 hook (RPC-based)
+  // ✅ ALIGNED WITH REPORTS: Fetch GL_JOURNAL for revenue (same as /salon/reports/sales)
+  // This ensures dashboard revenue matches reports page exactly
   const {
-    transactions: sales,
+    transactions: glJournalTransactions,
     isLoading: salesLoading,
     refetch: refetchSales
   } = useUniversalTransactionV1({
     organizationId,
     filters: {
-      transaction_type: 'SALE',
+      transaction_type: 'GL_JOURNAL',
+      smart_code: 'HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v1',
       limit: 1000,
-      include_lines: true // Need lines for accurate revenue calculation
+      include_lines: true // Need lines for GL validation
+    },
+    // Disable caching to ensure fresh data
+    cacheConfig: {
+      staleTime: 0,
+      refetchOnMount: 'always'
     }
   })
 
   // Calculate receptionist-focused KPIs
   const kpis: ReceptionistDashboardKPIs = useMemo(() => {
-    if (!appointments || !customers || !services || !staff || !sales) {
+    if (!appointments || !customers || !services || !staff || !glJournalTransactions) {
       return {
         todayAppointments: 0,
         todayRevenue: 0,
@@ -204,17 +212,14 @@ export function useReceptionistDashboard(config: UseReceptionistDashboardConfig)
       { completed: 0, in_progress: 0, pending: 0, cancelled: 0, no_show: 0 }
     )
 
-    // Today's revenue (from completed sales)
-    const completedSales = (sales || []).filter(t =>
-      t.transaction_status === 'completed' || t.metadata?.status === 'completed'
-    )
-
-    const todaySales = completedSales.filter(t => {
-      const txDate = parseISO(t.transaction_date || t.created_at)
+    // ✅ ALIGNED WITH REPORTS: Today's revenue from GL_JOURNAL transactions
+    // Uses same calculation as /salon/reports/sales for consistency
+    const todayGlTransactions = (glJournalTransactions || []).filter(t => {
+      const txDate = parseISO(t.transaction_date)
       return txDate >= todayStart && txDate <= todayEnd
     })
 
-    const todayRevenue = todaySales.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+    const todayRevenue = extractGrossRevenue(todayGlTransactions)
 
     return {
       todayAppointments: todayAppointments.length,
@@ -224,7 +229,7 @@ export function useReceptionistDashboard(config: UseReceptionistDashboardConfig)
       activeServices: activeServices.length,
       activeStaff: activeStaff.length
     }
-  }, [customers, services, staff, appointments, sales])
+  }, [customers, services, staff, appointments, glJournalTransactions])
 
   // Loading state
   const isLoading =

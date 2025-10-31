@@ -46,17 +46,22 @@ export async function GET(request: NextRequest) {
 
     const barcodeClean = barcode.trim()
 
-    // 🎯 RPC-BASED SEARCH: Use hera_entity_read_v1 with correct parameters
+    // 🎯 RPC-BASED SEARCH: Use hera_entities_crud_v1 with correct parameters
     // This searches: barcode_primary, barcodes_alt, gtin, and sku fields
-    const result = await callRPC('hera_entity_read_v1', {
+    const result = await callRPC('hera_entities_crud_v1', {
+      p_action: 'READ',
+      p_actor_user_id: '09b0b92a-d797-489e-bc03-5ca0a6272674', // TODO: Get from auth context
       p_organization_id: orgId,
-      p_entity_id: null,
-      p_entity_type: 'product',
-      p_status: 'active',
-      p_include_relationships: false,
-      p_include_dynamic_data: true,
-      p_limit: 50,
-      p_offset: 0
+      p_entity: {
+        entity_type: 'PRODUCT',
+        status: 'active'
+      },
+      p_dynamic: {},
+      p_relationships: {},
+      p_options: {
+        include_dynamic: true,
+        limit: 100
+      }
     })
 
     if (result.error) {
@@ -71,8 +76,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Extract products from RPC response
-    // hera_entity_read_v1 returns { success: true, data: [...] }
-    const allProducts = result.data?.data || result.data || []
+    // hera_entities_crud_v1 returns { data: { list: [...] } }
+    const allProducts = result.data?.data?.list || result.data?.list || result.data?.data || result.data || []
 
     console.log('🔍🔍🔍 BARCODE SEARCH - RPC Response:', {
       productsCount: allProducts.length,
@@ -81,25 +86,37 @@ export async function GET(request: NextRequest) {
 
     // Filter products matching the barcode in dynamic fields
     const products = allProducts.filter((product: any) => {
-      // Dynamic fields might be in product.dynamic_fields array or flattened
-      const dynamicFields = product.dynamic_fields || []
+      // Extract entity and dynamic_data from the nested structure
+      const entity = product.entity || product
+      const dynamicData = product.dynamic_data || []
 
-      // Helper to get dynamic field value
+      const productName = entity.entity_name || 'Unknown'
+      const entityCode = entity.entity_code || null
+
+      // Helper to get dynamic field value from dynamic_data array
       const getDynamicValue = (fieldName: string) => {
-        const field = dynamicFields.find((f: any) => f.field_name === fieldName)
-        if (!field) return product[fieldName] // Fallback to direct property
+        const field = dynamicData.find((f: any) => f.field_name === fieldName)
+        if (!field) return null
         return field.field_value_text || field.field_value_number || field.field_value_json
+      }
+
+      // Check entity_code first (often stores primary barcode)
+      if (entityCode === barcodeClean) {
+        console.log(`🔍🔍🔍 BARCODE MATCH - ${productName}: entity_code matched`)
+        product._match_source = 'entity_code'
+        return true
       }
 
       // Check primary barcode
       const barcodePrimary = getDynamicValue('barcode_primary')
-      console.log(`🔍🔍🔍 BARCODE SEARCH - Checking Product: ${product.entity_name}`, {
+      console.log(`🔍🔍🔍 BARCODE SEARCH - Checking Product: ${productName}`, {
+        entityCode,
         barcodePrimary,
         barcode: getDynamicValue('barcode'),
         gtin: getDynamicValue('gtin'),
         sku: getDynamicValue('sku'),
         searchingFor: barcodeClean,
-        dynamicFieldNames: dynamicFields.map((f: any) => f.field_name)
+        dynamicFieldNames: dynamicData.map((f: any) => f.field_name)
       })
       if (barcodePrimary === barcodeClean) {
         product._match_source = 'primary_barcode'
@@ -141,15 +158,37 @@ export async function GET(request: NextRequest) {
       found: products.length > 0,
       matchCount: products.length,
       barcode: barcodeClean,
-      matchedProducts: products.map(p => p.entity_name)
+      matchedProducts: products.map(p => (p.entity || p).entity_name)
     })
 
     if (products.length > 0) {
+      // Flatten product structure for POS compatibility
+      const flattenedProducts = products.map((product: any) => {
+        const entity = product.entity || product
+        const dynamicData = product.dynamic_data || []
+
+        // Build flattened product with all dynamic fields at top level
+        const flattened: any = {
+          ...entity,
+          _match_source: product._match_source
+        }
+
+        // Flatten dynamic_data into top-level properties
+        dynamicData.forEach((field: any) => {
+          const value = field.field_value_text || field.field_value_number || field.field_value_json || field.field_value_boolean
+          if (value !== null && value !== undefined) {
+            flattened[field.field_name] = value
+          }
+        })
+
+        return flattened
+      })
+
       return NextResponse.json({
         success: true,
         found: true,
         source: products[0]._match_source,
-        items: products,
+        items: flattenedProducts,
         barcode_searched: barcodeClean
       })
     }

@@ -887,7 +887,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
   /**
    * Load organization details securely
-   * ✅ ENTERPRISE: Loads ALL organization settings from dynamic data (HERA DNA pattern)
+   * ✅ ENTERPRISE: Uses hera_entities_crud_v1 RPC with actor stamping (HERA DNA pattern)
+   * ✅ HERA v2.2: Consistent with Universal API V1 pattern used in settings save
    */
   const loadOrganizationDetails = async (orgId: string) => {
     try {
@@ -897,98 +898,310 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         throw new Error('Invalid organization ID from JWT token')
       }
 
-      return await dbContext.executeWithContext(
-        { orgId, userId: 'system', role: 'service', authMode: 'service' },
-        async client => {
-          const { data: org } = await client
-            .from('core_organizations')
-            .select('*')
-            .eq('id', orgId)
-            .single()
+      // ✅ HERA v2.2: Use entityCRUD RPC for READ operation (consistent with SAVE)
+      const { entityCRUD } = await import('@/lib/universal-api-v2-client')
 
-          // ✅ ENTERPRISE: Fetch ALL organization settings from dynamic data
-          // Organization entity stores its settings as dynamic fields (HERA DNA pattern)
-          const { data: allDynamicData } = await client
-            .from('core_dynamic_data')
-            .select('*')
-            .eq('organization_id', orgId)
-            .eq('entity_id', orgId) // Organization's own dynamic data
+      // Get current user ID for actor stamping
+      const {
+        data: { user }
+      } = await supabase.auth.getUser()
 
-          // Transform dynamic data array to object for easy access
-          const settingsFromDynamic: Record<string, any> = {}
-          if (allDynamicData && Array.isArray(allDynamicData)) {
-            allDynamicData.forEach((field: any) => {
-              const value = field.field_value_text ||
-                            field.field_value_number ||
-                            field.field_value_boolean ||
-                            field.field_value_date ||
-                            field.field_value_json
-              settingsFromDynamic[field.field_name] = value
-            })
-          }
+      if (!user?.id) {
+        console.warn('[loadOrganizationDetails] ⚠️ No user session, using system actor')
+        // For initial load before auth completes, use system actor
+      }
 
-          // Extract settings with fallbacks
-          const currency = settingsFromDynamic.currency || org?.metadata?.currency || 'AED'
-          const organization_name = settingsFromDynamic.organization_name || org?.organization_name || 'HairTalkz'
-          const legal_name = settingsFromDynamic.legal_name
-          const address = settingsFromDynamic.address
-          const phone = settingsFromDynamic.phone
-          const email = settingsFromDynamic.email
-          const trn = settingsFromDynamic.trn
-          const fiscal_year_start = settingsFromDynamic.fiscal_year_start
-          const logo_url = settingsFromDynamic.logo_url
+      const actorUserId = user?.id || 'system'
 
-          // ✅ ENTERPRISE: Currency symbol mapping
-          const currencySymbolMap: Record<string, string> = {
-            'AED': 'د.إ',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
-            'SAR': 'ر.س',
-            'QAR': 'ر.ق',
-            'KWD': 'د.ك',
-            'BHD': 'د.ب',
-            'OMR': 'ر.ع.',
-            'INR': '₹',
-            'PKR': 'Rs'
-          }
+      console.log('[SecuredSalonProvider] 📖 Loading organization via RPC:', {
+        orgId,
+        actorUserId
+      })
 
-          const currencySymbol = currencySymbolMap[currency] || currency
-
-          const orgData = {
-            id: orgId,
-            name: organization_name,
-            legal_name,
-            address,
-            phone,
-            email,
-            trn,
-            currency,
-            currencySymbol,
-            fiscal_year_start,
-            logo_url,
-            settings: {
-              ...org?.metadata,
-              ...settingsFromDynamic
-            }
-          }
-
-          console.log('[SecuredSalonProvider] ✅ Loaded organization with full settings:', {
-            orgId,
-            hasName: !!organization_name,
-            hasAddress: !!address,
-            hasPhone: !!phone,
-            hasEmail: !!email,
-            hasTRN: !!trn,
-            currency,
-            dynamicFieldsCount: allDynamicData?.length || 0
-          })
-
-          return orgData
+      // ✅ READ organization entity with ALL dynamic fields
+      // Organizations are stored as entities with entity_type = 'ORG'
+      const { data, error } = await entityCRUD({
+        p_action: 'READ',
+        p_actor_user_id: actorUserId,
+        p_organization_id: orgId,
+        p_entity: {
+          entity_type: 'ORG', // ✅ CORRECTED: Organizations use 'ORG' not 'ORGANIZATION'
+          entity_id: orgId // Specific organization ID to read
+        },
+        p_dynamic: {}, // Empty = fetch all dynamic fields
+        p_options: {
+          include_dynamic: true, // Include all dynamic fields
+          include_relationships: false // Organization doesn't need relationships
         }
-      )
+      })
+
+      console.log('[SecuredSalonProvider] 🔍 RPC Response received:', {
+        hasError: !!error,
+        error,
+        hasData: !!data,
+        dataKeys: data ? Object.keys(data) : null,
+        fullData: data
+      })
+
+      if (error) {
+        console.error('[SecuredSalonProvider] RPC error loading organization:', error)
+
+        // ✅ FALLBACK: If RPC fails (e.g., organization not stored as entity), use direct query
+        console.log('[SecuredSalonProvider] ⚠️ RPC failed, falling back to direct core_organizations query')
+
+        const { data: orgFromTable, error: tableError } = await supabase
+          .from('core_organizations')
+          .select('*')
+          .eq('id', orgId)
+          .single()
+
+        if (tableError || !orgFromTable) {
+          console.error('[SecuredSalonProvider] ❌ Failed to load organization from table:', tableError)
+          throw new Error('Organization not found in database')
+        }
+
+        // Query dynamic data directly
+        const { data: dynamicFields } = await supabase
+          .from('core_dynamic_data')
+          .select('*')
+          .eq('organization_id', orgId)
+          .eq('entity_id', orgId)
+
+        // Transform direct query results to expected format
+        const settingsFromDynamic: Record<string, any> = {}
+        if (dynamicFields && Array.isArray(dynamicFields)) {
+          dynamicFields.forEach((field: any) => {
+            const value =
+              field.field_value_text ||
+              field.field_value_number ||
+              field.field_value_boolean ||
+              field.field_value_date ||
+              field.field_value_json
+            settingsFromDynamic[field.field_name] = value
+          })
+        }
+
+        console.log('[SecuredSalonProvider] ✅ Loaded from direct query:', {
+          orgId,
+          dynamicFieldCount: dynamicFields?.length || 0,
+          fields: Object.keys(settingsFromDynamic),
+          settingsFromDynamic
+        })
+
+        // Extract settings with detailed logging
+        const currency = settingsFromDynamic.currency || orgFromTable.metadata?.currency || 'AED'
+        const organization_name =
+          settingsFromDynamic.organization_name || orgFromTable.organization_name || 'HairTalkz'
+
+        console.log('[SecuredSalonProvider] 📋 Extracted organization data:', {
+          organization_name,
+          legal_name: settingsFromDynamic.legal_name,
+          address: settingsFromDynamic.address,
+          phone: settingsFromDynamic.phone,
+          email: settingsFromDynamic.email,
+          trn: settingsFromDynamic.trn,
+          currency
+        })
+
+        // Currency mapping
+        const currencySymbolMap: Record<string, string> = {
+          AED: 'د.إ',
+          USD: '$',
+          EUR: '€',
+          GBP: '£',
+          SAR: 'ر.س',
+          QAR: 'ر.ق',
+          KWD: 'د.ك',
+          BHD: 'د.ب',
+          OMR: 'ر.ع.',
+          INR: '₹',
+          PKR: 'Rs'
+        }
+
+        return {
+          id: orgId,
+          name: organization_name,
+          legal_name: settingsFromDynamic.legal_name,
+          address: settingsFromDynamic.address,
+          phone: settingsFromDynamic.phone,
+          email: settingsFromDynamic.email,
+          trn: settingsFromDynamic.trn,
+          currency,
+          currencySymbol: currencySymbolMap[currency] || currency,
+          fiscal_year_start: settingsFromDynamic.fiscal_year_start,
+          logo_url: settingsFromDynamic.logo_url,
+          settings: {
+            ...orgFromTable.metadata,
+            ...settingsFromDynamic
+          }
+        }
+      }
+
+      // ✅ Extract organization data from RPC response
+      // RPC returns: { data: { entity: {...}, dynamic_data: [...] } } or { entity: {...}, dynamic_data: [...] }
+      let orgEntity = null
+      let dynamicDataArray: any[] = []
+
+      if (data?.data?.entity) {
+        // Nested format
+        orgEntity = data.data.entity
+        dynamicDataArray = data.data.dynamic_data || []
+      } else if (data?.entity) {
+        // Flat format
+        orgEntity = data.entity
+        dynamicDataArray = data.dynamic_data || []
+      } else if (data?.items && data.items.length > 0) {
+        // List format with single item
+        const firstItem = data.items[0]
+        orgEntity = firstItem.entity || firstItem
+        dynamicDataArray = firstItem.dynamic_data || firstItem.dynamic_fields || []
+      }
+
+      if (!orgEntity) {
+        console.warn('[SecuredSalonProvider] ⚠️ No organization entity in RPC response, using fallback')
+
+        // Fallback to direct query (same as error case above)
+        const { data: orgFromTable, error: tableError } = await supabase
+          .from('core_organizations')
+          .select('*')
+          .eq('id', orgId)
+          .single()
+
+        if (tableError || !orgFromTable) {
+          throw new Error('Organization not found')
+        }
+
+        const { data: dynamicFields } = await supabase
+          .from('core_dynamic_data')
+          .select('*')
+          .eq('organization_id', orgId)
+          .eq('entity_id', orgId)
+
+        const settingsFromDynamic: Record<string, any> = {}
+        if (dynamicFields && Array.isArray(dynamicFields)) {
+          dynamicFields.forEach((field: any) => {
+            const value =
+              field.field_value_text ||
+              field.field_value_number ||
+              field.field_value_boolean ||
+              field.field_value_date ||
+              field.field_value_json
+            settingsFromDynamic[field.field_name] = value
+          })
+        }
+
+        const currency = settingsFromDynamic.currency || orgFromTable.metadata?.currency || 'AED'
+        const organization_name =
+          settingsFromDynamic.organization_name || orgFromTable.organization_name || 'HairTalkz'
+
+        const currencySymbolMap: Record<string, string> = {
+          AED: 'د.إ',
+          USD: '$',
+          EUR: '€',
+          GBP: '£',
+          SAR: 'ر.س',
+          QAR: 'ر.ق',
+          KWD: 'د.ك',
+          BHD: 'د.ب',
+          OMR: 'ر.ع.',
+          INR: '₹',
+          PKR: 'Rs'
+        }
+
+        return {
+          id: orgId,
+          name: organization_name,
+          legal_name: settingsFromDynamic.legal_name,
+          address: settingsFromDynamic.address,
+          phone: settingsFromDynamic.phone,
+          email: settingsFromDynamic.email,
+          trn: settingsFromDynamic.trn,
+          currency,
+          currencySymbol: currencySymbolMap[currency] || currency,
+          fiscal_year_start: settingsFromDynamic.fiscal_year_start,
+          logo_url: settingsFromDynamic.logo_url,
+          settings: {
+            ...orgFromTable.metadata,
+            ...settingsFromDynamic
+          }
+        }
+      }
+
+      // ✅ Transform dynamic data array to object for easy access
+      const settingsFromDynamic: Record<string, any> = {}
+      if (dynamicDataArray && Array.isArray(dynamicDataArray)) {
+        dynamicDataArray.forEach((field: any) => {
+          const value =
+            field.field_value_text ||
+            field.field_value_number ||
+            field.field_value_boolean ||
+            field.field_value_date ||
+            field.field_value_json
+          settingsFromDynamic[field.field_name] = value
+        })
+      }
+
+      // Extract settings with fallbacks
+      const currency = settingsFromDynamic.currency || orgEntity.metadata?.currency || 'AED'
+      const organization_name =
+        settingsFromDynamic.organization_name || orgEntity.entity_name || orgEntity.organization_name || 'HairTalkz'
+      const legal_name = settingsFromDynamic.legal_name
+      const address = settingsFromDynamic.address
+      const phone = settingsFromDynamic.phone
+      const email = settingsFromDynamic.email
+      const trn = settingsFromDynamic.trn
+      const fiscal_year_start = settingsFromDynamic.fiscal_year_start
+      const logo_url = settingsFromDynamic.logo_url
+
+      // ✅ ENTERPRISE: Currency symbol mapping
+      const currencySymbolMap: Record<string, string> = {
+        AED: 'د.إ',
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        SAR: 'ر.س',
+        QAR: 'ر.ق',
+        KWD: 'د.ك',
+        BHD: 'د.ب',
+        OMR: 'ر.ع.',
+        INR: '₹',
+        PKR: 'Rs'
+      }
+
+      const currencySymbol = currencySymbolMap[currency] || currency
+
+      const orgData = {
+        id: orgId,
+        name: organization_name,
+        legal_name,
+        address,
+        phone,
+        email,
+        trn,
+        currency,
+        currencySymbol,
+        fiscal_year_start,
+        logo_url,
+        settings: {
+          ...orgEntity.metadata,
+          ...settingsFromDynamic
+        }
+      }
+
+      console.log('[SecuredSalonProvider] ✅ Loaded organization via RPC with full settings:', {
+        orgId,
+        hasName: !!organization_name,
+        hasAddress: !!address,
+        hasPhone: !!phone,
+        hasEmail: !!email,
+        hasTRN: !!trn,
+        currency,
+        dynamicFieldsCount: dynamicDataArray.length
+      })
+
+      return orgData
     } catch (error) {
-      console.error('Failed to load organization details:', error)
+      console.error('[SecuredSalonProvider] Failed to load organization details:', error)
       return {
         id: orgId,
         name: 'HairTalkz',

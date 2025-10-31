@@ -12,9 +12,11 @@
  * ARCHITECTURE:
  * - Sales are TRANSACTIONS (not entities)
  * - Transaction type: 'SALE'
- * - Customer ID: source_entity_id
- * - Branch ID: target_entity_id
- * - Metadata contains: payment_methods, line_items, discounts, tips, etc.
+ * - ✅ Entity ID Pattern (aligned with GL_JOURNAL):
+ *   - source_entity_id: Customer ID
+ *   - target_entity_id: Staff ID (cashier/stylist)
+ *   - metadata.branch_id: Branch ID
+ * - Metadata contains: payment_methods, line_items, discounts, tips, branch_id, etc.
  * - ✅ MIGRATED: Uses useUniversalTransactionV1 and useUniversalEntityV1 hooks
  * - ✅ NO DIRECT SUPABASE CALLS: All operations through RPC and API v2
  */
@@ -341,20 +343,26 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
     console.log('[useHeraSales] 🚀 Creating sale via useUniversalTransactionV1:', {
       customerId: data.customer_id,
       branchId: data.branch_id,
+      cashierId: data.cashier_id,
       totalAmount: data.total_amount,
       lineItemsCount: data.line_items.length
     })
 
+    // ✅ FIX: Align with GL_JOURNAL pattern
+    // - source_entity_id: Customer ID
+    // - target_entity_id: Staff ID (cashier/stylist)
+    // - metadata.branch_id: Branch ID
     return createTransaction({
       transaction_type: 'SALE', // ✅ UPPERCASE - hook normalizes automatically
       smart_code: 'HERA.SALON.TXN.SALE.CREATE.v1', // ✅ HERA DNA pattern
       transaction_date: new Date().toISOString(),
-      source_entity_id: data.customer_id || null,
-      target_entity_id: data.branch_id || null,
+      source_entity_id: data.customer_id || null, // ✅ Customer
+      target_entity_id: data.cashier_id || null, // ✅ FIX: Staff (cashier) instead of branch
       total_amount: data.total_amount,
       transaction_status: 'completed',
       metadata: {
         status: 'completed',
+        branch_id: data.branch_id, // ✅ FIX: Branch ID now in metadata (matches GL pattern)
         line_items: data.line_items,
         payment_methods: data.payment_methods,
         discounts: data.discounts || [],
@@ -386,6 +394,7 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
     // ✅ FIX: Reconstruct metadata from Sale object (enriched format doesn't have raw metadata)
     const existingMetadata = {
       status: sale.status,
+      branch_id: sale.branch_id, // ✅ FIX: Preserve branch_id in metadata (GL pattern)
       line_items: sale.line_items,
       payment_methods: sale.payment_methods,
       discounts: sale.discounts,

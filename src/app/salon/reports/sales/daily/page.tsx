@@ -31,22 +31,26 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import Link from 'next/link'
 import { LUXE_COLORS } from '@/lib/constants/salon'
+import { BranchSelector } from '@/components/salon/reports/BranchSelector'
+import { EnterpriseDatePicker } from '@/components/salon/reports/EnterpriseDatePicker'
+import { SalesReportExportButtons } from '@/components/salon/reports/SalesReportExportButtons'
 
 export default function DailySalesReportPage() {
   const { organizationId, organization } = useSecuredSalonContext()
   const { isAuthenticated, role } = useSalonSecurity()
   const router = useRouter()
   const [selectedDate, setSelectedDate] = useState(new Date())
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null) // null = "All Branches"
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  // ✅ PRODUCTION: Use real GL-based sales data
+  // ✅ PRODUCTION: Use real GL-based sales data with branch filtering
   const {
     summary,
     hourlyData,
     isLoading,
     error,
     refetch
-  } = useDailySalesReport(selectedDate)
+  } = useDailySalesReport(selectedDate, selectedBranchId)
 
   // Handle refresh
   const handleRefresh = async () => {
@@ -104,11 +108,28 @@ export default function DailySalesReportPage() {
   })
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
-      {/* Premium Header */}
-      <div
-        className="sticky top-0 z-30 border-b"
-        style={{
+    <>
+      {/* ✅ Print Styles */}
+      <style jsx global>{`
+        @media print {
+          body {
+            background: white !important;
+          }
+          .print\\:hidden {
+            display: none !important;
+          }
+          @page {
+            size: landscape;
+            margin: 1cm;
+          }
+        }
+      `}</style>
+
+      <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
+        {/* Premium Header */}
+        <div
+          className="sticky top-0 z-30 border-b print:relative print:border-b-2 print:border-black"
+          style={{
           background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}F0 0%, ${LUXE_COLORS.charcoal}F0 100%)`,
           border: `1px solid ${LUXE_COLORS.gold}20`,
           backdropFilter: 'blur(20px)',
@@ -119,7 +140,7 @@ export default function DailySalesReportPage() {
           <div className="flex items-center justify-between">
             {/* Left: Back button + Title */}
             <div className="flex items-center gap-4">
-              <Link href="/salon/reports">
+              <Link href="/salon/reports" className="print:hidden">
                 <button
                   className="p-2 rounded-lg transition-all hover:scale-110"
                   style={{
@@ -155,7 +176,7 @@ export default function DailySalesReportPage() {
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:scale-105"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:scale-105 print:hidden"
                 style={{
                   background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}20 0%, ${LUXE_COLORS.emerald}10 100%)`,
                   border: `1px solid ${LUXE_COLORS.emerald}30`,
@@ -166,37 +187,61 @@ export default function DailySalesReportPage() {
                 Refresh
               </button>
 
-              <button
-                onClick={() => window.print()}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:scale-105"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.bronze}20 0%, ${LUXE_COLORS.bronze}10 100%)`,
-                  border: `1px solid ${LUXE_COLORS.bronze}30`,
-                  color: LUXE_COLORS.champagne
-                }}
-              >
-                <Printer className="w-4 h-4" />
-                Print
-              </button>
-
-              <button
-                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:scale-105"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold}50 0%, ${LUXE_COLORS.gold}30 100%)`,
-                  border: `1px solid ${LUXE_COLORS.gold}60`,
-                  color: LUXE_COLORS.black
-                }}
-              >
-                <Download className="w-4 h-4" />
-                Export
-              </button>
+              {/* ✅ HERA Professional Export Buttons (Excel + PDF) */}
+              {summary && hourlyData && (
+                <div className="print:hidden">
+                  <SalesReportExportButtons
+                    reportType="daily"
+                    reportTitle="Daily Sales Report"
+                    reportPeriod={reportPeriod}
+                    reportDate={selectedDate.toLocaleDateString('en-AE')}
+                    branchName={selectedBranchId ? 'Selected Branch' : 'All Branches'}
+                    currency="AED"
+                    summary={summary}
+                    hourlyData={hourlyData}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+          {/* ✅ ENTERPRISE: Filter Controls */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 print:hidden">
+          {/* Date Picker */}
+          <div>
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: LUXE_COLORS.bronze }}
+            >
+              Report Date
+            </label>
+            <EnterpriseDatePicker
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+              maxDate={new Date()} // Prevent future dates
+            />
+          </div>
+
+          {/* Branch Selector */}
+          <div>
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: LUXE_COLORS.bronze }}
+            >
+              Branch Filter
+            </label>
+            <BranchSelector
+              organizationId={organizationId}
+              selectedBranchId={selectedBranchId}
+              onBranchChange={setSelectedBranchId}
+            />
+          </div>
+        </div>
+
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Total Revenue */}
@@ -317,7 +362,7 @@ export default function DailySalesReportPage() {
           </div>
 
           {/* Table Content */}
-          <div className="overflow-x-auto">
+          <div className="overflow-auto max-w-full">
             {isLoading ? (
               <div className="flex items-center justify-center py-16">
                 <RefreshCw className="w-8 h-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
@@ -457,9 +502,10 @@ export default function DailySalesReportPage() {
           </div>
         </div>
 
-        {/* Bottom Spacing */}
-        <div className="h-8" />
+          {/* Bottom Spacing */}
+          <div className="h-8" />
+        </div>
       </div>
-    </div>
+    </>
   )
 }

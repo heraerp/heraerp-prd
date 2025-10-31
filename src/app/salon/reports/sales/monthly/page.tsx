@@ -27,6 +27,9 @@ import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useMonthlySalesReport } from '@/hooks/useSalonSalesReports'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { BranchSelector } from '@/components/salon/reports/BranchSelector'
+import { EnterpriseMonthYearPicker } from '@/components/salon/reports/EnterpriseMonthYearPicker'
+import { SalesReportExportButtons } from '@/components/salon/reports/SalesReportExportButtons'
 
 export default function MonthlySalesReportPage() {
   const { organizationId } = useSecuredSalonContext()
@@ -40,6 +43,7 @@ export default function MonthlySalesReportPage() {
   }
 
   const [selectedPeriod, setSelectedPeriod] = useState(getCurrentMonth())
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null) // null = "All Branches"
 
   const {
     summary,
@@ -47,7 +51,7 @@ export default function MonthlySalesReportPage() {
     isLoading,
     error,
     refetch
-  } = useMonthlySalesReport(selectedPeriod.month, selectedPeriod.year)
+  } = useMonthlySalesReport(selectedPeriod.month, selectedPeriod.year, selectedBranchId)
 
   // Auth check (matching dashboard pattern)
   if (!isAuthenticated || !role) {
@@ -135,21 +139,29 @@ export default function MonthlySalesReportPage() {
     })
   }
 
-  const handleExport = () => {
-    console.log('Exporting monthly sales report...')
-    // TODO: Implement CSV export
-  }
-
-  const handlePrint = () => {
-    window.print()
-  }
-
   return (
-    <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
-      {/* Premium Header - Sticky */}
-      <div
-        className="sticky top-0 z-50 border-b"
-        style={{
+    <>
+      {/* ✅ Print Styles */}
+      <style jsx global>{`
+        @media print {
+          body {
+            background: white !important;
+          }
+          .print\\:hidden {
+            display: none !important;
+          }
+          @page {
+            size: landscape;
+            margin: 1cm;
+          }
+        }
+      `}</style>
+
+      <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.black }}>
+        {/* Premium Header - Sticky */}
+        <div
+          className="sticky top-0 z-50 border-b print:relative print:border-b-2 print:border-black"
+          style={{
           background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}F0 0%, ${LUXE_COLORS.charcoal}F0 100%)`,
           border: `1px solid ${LUXE_COLORS.gold}20`,
           backdropFilter: 'blur(20px)',
@@ -195,7 +207,7 @@ export default function MonthlySalesReportPage() {
               <button
                 onClick={() => refetch()}
                 disabled={isLoading}
-                className="px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 hover:scale-105"
+                className="px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 hover:scale-105 print:hidden"
                 style={{
                   backgroundColor: `${LUXE_COLORS.charcoalLight}`,
                   color: LUXE_COLORS.champagne,
@@ -205,82 +217,59 @@ export default function MonthlySalesReportPage() {
                 <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 Refresh
               </button>
-              <button
-                onClick={handlePrint}
-                className="px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 hover:scale-105"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.charcoalLight}`,
-                  color: LUXE_COLORS.champagne,
-                  border: `1px solid ${LUXE_COLORS.gold}30`
-                }}
-              >
-                <Printer className="w-4 h-4" />
-                Print
-              </button>
-              <button
-                onClick={handleExport}
-                className="px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 hover:scale-105"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
-                  color: LUXE_COLORS.black,
-                  fontWeight: 600
-                }}
-              >
-                <Download className="w-4 h-4" />
-                Export
-              </button>
+
+              {/* ✅ HERA Professional Export Buttons (Excel + PDF) */}
+              {summary && dailyData && (
+                <div className="print:hidden">
+                  <SalesReportExportButtons
+                    reportType="monthly"
+                    reportTitle="Monthly Sales Report"
+                    reportPeriod={reportPeriod}
+                    branchName={selectedBranchId ? 'Selected Branch' : 'All Branches'}
+                    currency="AED"
+                    summary={summary}
+                    dailyData={dailyData}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        {/* Month Selector */}
-        <div
-          className="rounded-2xl p-6"
-          style={{
-            backgroundColor: LUXE_COLORS.charcoal,
-            border: `1px solid ${LUXE_COLORS.gold}20`,
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Calendar className="w-6 h-6" style={{ color: LUXE_COLORS.gold }} />
-              <div>
-                <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-                  Reporting Period
-                </p>
-                <p className="text-2xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
-                  {reportPeriod}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handlePreviousMonth}
-                className="p-2 rounded-lg transition-all duration-200 hover:scale-105"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.charcoalLight}`,
-                  color: LUXE_COLORS.champagne,
-                  border: `1px solid ${LUXE_COLORS.gold}30`
-                }}
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={handleNextMonth}
-                className="p-2 rounded-lg transition-all duration-200 hover:scale-105"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.charcoalLight}`,
-                  color: LUXE_COLORS.champagne,
-                  border: `1px solid ${LUXE_COLORS.gold}30`
-                }}
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+          {/* ✅ ENTERPRISE: Filter Controls */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 print:hidden">
+          {/* Month/Year Picker */}
+          <div>
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: LUXE_COLORS.bronze }}
+            >
+              Reporting Period
+            </label>
+            <EnterpriseMonthYearPicker
+              selectedPeriod={selectedPeriod}
+              onPeriodChange={setSelectedPeriod}
+              minYear={2020}
+              maxYear={new Date().getFullYear()}
+            />
+          </div>
+
+          {/* Branch Selector */}
+          <div>
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: LUXE_COLORS.bronze }}
+            >
+              Branch Filter
+            </label>
+            <BranchSelector
+              organizationId={organizationId}
+              selectedBranchId={selectedBranchId}
+              onBranchChange={setSelectedBranchId}
+            />
           </div>
         </div>
 
@@ -490,7 +479,7 @@ export default function MonthlySalesReportPage() {
                 </p>
               </div>
 
-              <div className="overflow-x-auto">
+              <div className="overflow-auto max-w-full">
                 <table className="w-full">
                   <thead>
                     <tr style={{ backgroundColor: `${LUXE_COLORS.gold}15` }}>
@@ -630,5 +619,6 @@ export default function MonthlySalesReportPage() {
         )}
       </div>
     </div>
+    </>
   )
 }

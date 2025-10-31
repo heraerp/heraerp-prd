@@ -77,35 +77,44 @@ export function SaleDetailsDialog({
           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         )
 
-        // ✅ Use hera_txn_crud_v1 RPC - Production standard
+        // ✅ Use hera_txn_crud_v1 RPC with CORRECT payload format (matching deployed RPC)
         const { data: rpcData, error: rpcError } = await supabase.rpc('hera_txn_crud_v1', {
           p_action: 'READ',
           p_actor_user_id: '00000000-0000-0000-0000-000000000000', // System read
           p_organization_id: organizationId,
-          p_transaction: {
-            transaction_id: saleId
-          },
-          p_lines: [],
-          p_options: {
-            include_lines: true,
-            limit: 1
+          p_payload: {
+            transaction_id: saleId,
+            include_lines: true
           }
         })
 
         if (rpcError) {
-          console.error('[SaleDetailsDialog] RPC error:', rpcError)
+          console.error('[SaleDetailsDialog] ❌ RPC error:', rpcError)
           throw new Error('Failed to fetch transaction details')
         }
 
-        console.log('[SaleDetailsDialog] ✅ Fetched via hera_txn_crud_v1:', {
+        console.log('[SaleDetailsDialog] 📦 RPC Response Structure:', {
           success: rpcData?.success,
-          transaction: rpcData?.data?.items?.[0],
-          lines: rpcData?.data?.lines,
-          linesCount: rpcData?.data?.lines?.length || 0
+          hasData: !!rpcData?.data,
+          dataKeys: rpcData?.data ? Object.keys(rpcData.data) : [],
+          fullResponse: rpcData
         })
 
-        const transactionData = rpcData?.data?.items?.[0]
-        const linesData = rpcData?.data?.lines || []
+        // ✅ CORRECT: Access transaction data using proper response structure
+        // Response structure: rpcData.data.data.header (transaction) + rpcData.data.data.lines (line items)
+        const responseData = rpcData?.data?.data
+        const transactionData = responseData?.header || null
+        const linesData = responseData?.lines || []
+
+        console.log('[SaleDetailsDialog] ✅ Fetched via hera_txn_crud_v1:', {
+          success: rpcData?.success,
+          hasHeader: !!responseData?.header,
+          hasLines: !!responseData?.lines,
+          transaction: transactionData,
+          linesCount: linesData.length,
+          transactionCode: transactionData?.transaction_code,
+          transactionDate: transactionData?.transaction_date
+        })
 
         setTransaction(transactionData)
         setLines(linesData)
@@ -342,7 +351,9 @@ export function SaleDetailsDialog({
                     </span>
                   </div>
                   <p className="text-lg font-bold" style={{ color: LUXE_COLORS.champagne }}>
-                    {format(new Date(transaction.transaction_date), 'MMM d, yyyy • h:mm a')}
+                    {transaction.transaction_date
+                      ? format(new Date(transaction.transaction_date), 'MMM d, yyyy • h:mm a')
+                      : 'N/A'}
                   </p>
                 </div>
                 <div>
