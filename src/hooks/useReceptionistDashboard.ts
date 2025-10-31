@@ -269,7 +269,7 @@ export function useReceptionistDashboard(config: UseReceptionistDashboardConfig)
     services,
     staff,
     appointments,
-    sales,
+    glJournalTransactions,
 
     // Loading state
     isLoading,

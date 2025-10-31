@@ -33,34 +33,21 @@ import {
 } from 'date-fns'
 
 /**
- * 🔧 ENTERPRISE FIX: Calculate actual revenue from service/product lines only
- * CRITICAL: Excludes tax and payment lines to prevent double-counting
- *
- * SALE transactions have:
- * - Service lines (line_type: 'service') ← COUNT THIS
- * - Product lines (line_type: 'product') ← COUNT THIS
- * - Tax lines (line_type: 'tax') ← EXCLUDE
- * - Payment lines (line_type: 'payment') ← EXCLUDE
- *
- * Revenue = Sum of service + product lines ONLY
+ * ✅ ALIGNED WITH REPORTS: Extract gross revenue from GL_JOURNAL metadata
+ * Uses same calculation method as /salon/reports/sales for consistency
+ * Reads from metadata.total_cr (total credit = gross revenue)
  */
-function calculateTransactionRevenue(transaction: any): number {
-  // If transaction has lines, calculate from service/product lines only
-  if (transaction.lines && Array.isArray(transaction.lines) && transaction.lines.length > 0) {
-    const revenueLines = transaction.lines.filter((line: any) =>
-      line.line_type === 'service' ||
-      line.line_type === 'product' ||
-      line.line_type === 'item' // Legacy line type
-    )
+function extractGrossRevenue(glJournalTransactions: any[]): number {
+  let total = 0
 
-    // Sum line amounts (includes quantity * unit_amount)
-    return revenueLines.reduce((sum: number, line: any) => {
-      return sum + (line.line_amount || 0)
-    }, 0)
-  }
+  glJournalTransactions.forEach(txn => {
+    if (txn.metadata && typeof txn.metadata === 'object') {
+      // total_cr = Total credit (gross revenue including VAT and tips)
+      total += txn.metadata.total_cr || 0
+    }
+  })
 
-  // Fallback: Use transaction total_amount for transactions without proper line structure
-  return transaction.total_amount || 0
+  return total
 }
 
 /**
@@ -138,7 +125,8 @@ function calculatePaymentBreakdown(
         // Fallback: Check transaction-level metadata (current implementation)
         // ✅ FIX: Handle payment_methods array from transaction metadata
         const paymentMethods = t.metadata?.payment_methods || []
-        const amount = calculateTransactionRevenue(t)
+        // For GL_JOURNAL, use metadata.total_cr as the transaction amount
+        const amount = t.metadata?.total_cr || 0
 
         if (Array.isArray(paymentMethods) && paymentMethods.length > 0) {
           // If payment_methods is an array, use the first method
@@ -216,8 +204,8 @@ function calculateFinancialMetrics(
       })
     : transactions
 
-  // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-  const revenue = filteredTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+  // ✅ ALIGNED WITH REPORTS: Extract revenue from GL_JOURNAL metadata
+  const revenue = extractGrossRevenue(filteredTransactions)
   const transactionCount = filteredTransactions.length
   const grossProfit = revenue * profitMarginRate
   const profitMargin = profitMarginRate * 100
@@ -424,8 +412,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     }
   })
 
-  // Fetch transactions (tickets/sales) using Universal Transaction V1 hook (RPC-based)
-  // ✅ ENTERPRISE FIX: Include lines to get payment method details
+  // ✅ ALIGNED WITH REPORTS: Fetch GL_JOURNAL for revenue (same as /salon/reports/sales)
+  // This ensures dashboard revenue matches reports page exactly
   const {
     transactions: tickets,
     isLoading: ticketsLoading,
@@ -433,10 +421,25 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
   } = useUniversalTransactionV1({
     organizationId,
     filters: {
-      transaction_type: 'SALE',
+      transaction_type: 'GL_JOURNAL',
+      smart_code: 'HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v1',
       limit: 1000,
-      include_lines: true // ✅ CRITICAL: Include lines for payment method breakdown
+      include_lines: true // Need lines for GL validation
+    },
+    // Disable caching to ensure fresh data
+    cacheConfig: {
+      staleTime: 0,
+      refetchOnMount: 'always'
     }
+  })
+
+  // 🔍 DEBUG: Log GL_JOURNAL transaction data
+  console.log('📊 [useSalonDashboard] GL_JOURNAL Transactions:', {
+    transactionCount: tickets?.length || 0,
+    isLoading: ticketsLoading,
+    organizationId,
+    firstTransaction: tickets?.[0],
+    sampleMetadata: tickets?.[0]?.metadata
   })
 
   // Fetch appointments using Universal Transaction V1 hook (RPC-based)
@@ -571,11 +574,15 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     const activeProducts = products?.filter(p => p.status !== 'archived' && p.status !== 'deleted') || []
     const activeStaff = staff?.filter(s => s.status === 'active' || !s.status) || []
 
-    // Filter completed transactions
-    const completedTickets = tickets?.filter(t =>
-      t.transaction_status === 'completed' ||
-      t.metadata?.status === 'completed'
-    ) || []
+    // ✅ ALIGNED WITH REPORTS: GL_JOURNAL transactions don't need status filtering
+    // They are automatically posted and represent completed financial transactions
+    const completedTickets = tickets || []
+
+    console.log('📊 [useSalonDashboard] Completed Tickets:', {
+      totalTickets: tickets?.length || 0,
+      completedTickets: completedTickets.length,
+      sampleTicket: completedTickets[0]
+    })
 
     // ═══════════════════════════════════════════════════════════════
     // BASE METRICS
@@ -589,11 +596,17 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       c.metadata?.vip === true
     ).length
 
-    // Total revenue from completed tickets
-    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-    const totalRevenue = completedTickets.reduce((sum, ticket) => {
-      return sum + calculateTransactionRevenue(ticket)
-    }, 0)
+    // ✅ ALIGNED WITH REPORTS: Total revenue from GL_JOURNAL metadata
+    const totalRevenue = extractGrossRevenue(completedTickets)
+
+    console.log('📊 [useSalonDashboard] Revenue Calculation:', {
+      completedTicketsCount: completedTickets.length,
+      totalRevenue,
+      sampleTransaction: completedTickets[0],
+      sampleMetadata: completedTickets[0]?.metadata,
+      sampleTotalCr: completedTickets[0]?.metadata?.total_cr,
+      allTotalCr: completedTickets.map(t => t.metadata?.total_cr).slice(0, 10)
+    })
 
     // Low stock products
     const lowStockProducts = activeProducts.filter(p => {
@@ -624,9 +637,9 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       return txDate >= yesterdayStart && txDate <= yesterdayEnd
     })
 
-    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-    const todayRevenue = todayTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
-    const yesterdayRevenue = yesterdayTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+    // ✅ ALIGNED WITH REPORTS: Today's revenue from GL_JOURNAL metadata
+    const todayRevenue = extractGrossRevenue(todayTransactions)
+    const yesterdayRevenue = extractGrossRevenue(yesterdayTransactions)
 
     const todayAppointments = todayTransactions.length
     const yesterdayAppointments = yesterdayTransactions.length
@@ -682,10 +695,10 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       const status = apt.transaction_status?.toLowerCase() || apt.metadata?.status?.toLowerCase()
       return status === 'completed'
     })
-    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-    const appointmentRevenue = completedAppointments.reduce((sum, apt) => sum + calculateTransactionRevenue(apt), 0)
+    // Note: Using tickets (GL_JOURNAL) revenue divided by completed appointments count
+    // This approximates average appointment value from financial records
     const averageAppointmentValue =
-      completedAppointments.length > 0 ? appointmentRevenue / completedAppointments.length : 0
+      completedAppointments.length > 0 ? totalRevenue / completedAppointments.length : 0
 
     const noShowRate = totalAppointments > 0 ? (appointmentsByStatus.no_show / totalAppointments) * 100 : 0
     const cancellationRate =
@@ -695,7 +708,7 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     // REVENUE TRENDS
     // ═══════════════════════════════════════════════════════════════
 
-    // Last 7 days revenue
+    // ✅ ALIGNED WITH REPORTS: Last 7 days revenue from GL_JOURNAL metadata
     const last7DaysRevenue: DailyRevenue[] = Array.from({ length: 7 }, (_, i) => {
       const date = subDays(now, 6 - i)
       const dayStart = startOfDay(date)
@@ -706,8 +719,7 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
         return txDate >= dayStart && txDate <= dayEnd
       })
 
-      // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-      const revenue = dayTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+      const revenue = extractGrossRevenue(dayTransactions)
 
       return {
         date: format(date, 'MMM dd'),
@@ -717,7 +729,7 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       }
     })
 
-    // Last 30 days revenue
+    // ✅ ALIGNED WITH REPORTS: Last 30 days revenue from GL_JOURNAL metadata
     const last30DaysRevenue: DailyRevenue[] = Array.from({ length: 30 }, (_, i) => {
       const date = subDays(now, 29 - i)
       const dayStart = startOfDay(date)
@@ -728,8 +740,7 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
         return txDate >= dayStart && txDate <= dayEnd
       })
 
-      // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-      const revenue = dayTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+      const revenue = extractGrossRevenue(dayTransactions)
 
       return {
         date: format(date, 'MMM dd'),
@@ -739,23 +750,21 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       }
     })
 
-    // Month-to-date revenue
+    // ✅ ALIGNED WITH REPORTS: Month-to-date revenue from GL_JOURNAL metadata
     const monthTransactions = completedTickets.filter(t => {
       const txDate = parseISO(t.transaction_date || t.created_at)
       return txDate >= monthStart
     })
 
-    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-    const monthToDateRevenue = monthTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+    const monthToDateRevenue = extractGrossRevenue(monthTransactions)
 
     // Revenue vs last month (simplified)
     const revenueVsLastMonth = 0
 
-    // Average transaction value
-    // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
+    // ✅ ALIGNED WITH REPORTS: Average transaction value from GL_JOURNAL metadata
     const averageTransactionValue =
       completedTickets.length > 0
-        ? completedTickets.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0) / completedTickets.length
+        ? extractGrossRevenue(completedTickets) / completedTickets.length
         : 0
 
     // ═══════════════════════════════════════════════════════════════
@@ -781,8 +790,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
           t.target_entity_id === s.id    // Staff as target entity
       )
 
-      // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-      const revenue = staffTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+      // ✅ ALIGNED WITH REPORTS: Staff revenue from GL_JOURNAL metadata
+      const revenue = extractGrossRevenue(staffTransactions)
       const servicesCompleted = staffTransactions.length
 
       // Get staff rating
@@ -907,8 +916,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       )
 
       const bookings = serviceTransactions.length
-      // ✅ ENTERPRISE FIX: Use calculateTransactionRevenue to prevent double-counting
-      const revenue = serviceTransactions.reduce((sum, t) => sum + calculateTransactionRevenue(t), 0)
+      // ✅ ALIGNED WITH REPORTS: Service revenue from GL_JOURNAL metadata
+      const revenue = extractGrossRevenue(serviceTransactions)
       const averagePrice = bookings > 0 ? revenue / bookings : 0
 
       return {
