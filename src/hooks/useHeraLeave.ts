@@ -991,6 +991,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
       // Use the updateTransaction function from useUniversalTransactionV1
       const result = await updateTransaction({
         transaction_id: requestId,
+        smart_code: existingRequest.smart_code || 'HERA.SALON.HR.LEAVE.UPDATE.v1', // 🚨 REQUIRED: Guardrails enforce smart_code on UPDATE
         transaction_status: status,
         metadata: updatedMetadata
       })
@@ -1033,6 +1034,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
       // ✅ CRITICAL FIX: Update transaction_status if status is provided (draft → submitted)
       const updatePayload: any = {
         transaction_id: requestId,
+        smart_code: existingRequest.smart_code || 'HERA.SALON.HR.LEAVE.UPDATE.v1', // 🚨 REQUIRED: Guardrails enforce smart_code on UPDATE
         source_entity_id: data.staff_id || existingRequest.staff_id,
         target_entity_id: data.manager_id || existingRequest.manager_id,
         total_amount: totalDays, // ✅ Now respects half-day (0.5)

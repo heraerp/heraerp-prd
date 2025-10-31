@@ -17,7 +17,7 @@
 
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useUniversalEntityV1 } from './useUniversalEntityV1'
 import { useUniversalTransactionV1 } from './useUniversalTransactionV1'
 import {
@@ -67,11 +67,43 @@ function calculatePaymentBreakdown(
       })
     : transactions
 
+  // 🔍 DEBUG: Log first transaction to inspect structure
+  if (filteredTransactions.length > 0) {
+    console.log('🔍 [Payment Breakdown Debug] First Transaction:', {
+      id: filteredTransactions[0].id,
+      has_lines: !!filteredTransactions[0].lines,
+      lines_count: filteredTransactions[0].lines?.length || 0,
+      lines_sample: filteredTransactions[0].lines?.slice(0, 3),
+      metadata_payment_methods: filteredTransactions[0].metadata?.payment_methods,
+      metadata_payment_method: filteredTransactions[0].metadata?.payment_method
+    })
+  }
 
   return filteredTransactions.reduce(
     (acc, t) => {
       // ✅ ENTERPRISE FIX: Handle split payments by reading from transaction lines
       const paymentLines = t.lines?.filter((line: any) => line.line_type === 'payment') || []
+
+      // 🔍 DEBUG: Log payment lines found
+      if (paymentLines.length > 0) {
+        console.log('🔍 [Payment Lines Found]', {
+          transaction_id: t.id,
+          payment_lines_count: paymentLines.length,
+          payment_lines_sample: paymentLines.map((line: any) => ({
+            line_type: line.line_type,
+            line_amount: line.line_amount,
+            has_metadata: !!line.metadata,
+            has_line_data: !!line.line_data,
+            metadata_keys: line.metadata ? Object.keys(line.metadata) : [],
+            line_data_keys: line.line_data ? Object.keys(line.line_data) : [],
+            payment_method_locations: {
+              metadata_payment_method: line.metadata?.payment_method,
+              line_data_payment_method: line.line_data?.payment_method,
+              direct_payment_method: line.payment_method
+            }
+          }))
+        })
+      }
 
       if (paymentLines.length > 0) {
         // Process each payment line separately (handles split payments correctly)
@@ -84,6 +116,13 @@ function calculatePaymentBreakdown(
             ''
           ).toLowerCase()
           const amount = Math.abs(line.line_amount || 0)
+
+          // 🔍 DEBUG: Log extracted payment method
+          console.log('🔍 [Payment Method Extracted]', {
+            method,
+            amount,
+            paymentMethodData
+          })
 
           if (!method || method === 'cash' || method.includes('cash')) {
             acc.cash += amount
@@ -397,6 +436,24 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       refetchOnMount: 'always'
     }
   })
+
+  // 🔍 DEBUG: Log tickets structure when loaded
+  useEffect(() => {
+    if (tickets && tickets.length > 0) {
+      console.log('🔍 [useSalonDashboard] GL_JOURNAL Transactions Loaded:', {
+        count: tickets.length,
+        first_transaction: {
+          id: tickets[0].id,
+          has_lines: !!tickets[0].lines,
+          lines_count: tickets[0].lines?.length || 0,
+          lines_sample: tickets[0].lines?.slice(0, 3),
+          metadata: tickets[0].metadata
+        },
+        all_have_lines: tickets.every((t: any) => t.lines && t.lines.length > 0),
+        transactions_without_lines: tickets.filter((t: any) => !t.lines || t.lines.length === 0).length
+      })
+    }
+  }, [tickets])
 
   // Fetch appointments using Universal Transaction V1 hook (RPC-based)
   const {
