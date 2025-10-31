@@ -152,7 +152,7 @@ function StaffsPageContent() {
   }, [organizationId])
 
   // 🚀 UPGRADED: Now using useHeraStaff hook (60% fewer API calls)
-  // Fetch only active staff to match services pattern (deleted staff won't reappear)
+  // ✅ DYNAMIC FETCH: Fetches archived staff when viewMode='all', active only when viewMode='active'
   const {
     staff: allStaff,
     isLoading: isLoadingStaff,
@@ -167,19 +167,17 @@ function StaffsPageContent() {
     isDeleting
   } = useHeraStaff({
     organizationId: organizationId || '',
-    includeArchived: false, // ✅ FIX: Only fetch active staff (matches services pattern)
+    includeArchived: viewMode === 'all', // ✅ FIX: Fetch archived staff when viewing "All"
     enabled: !!organizationId && activeTab === 'staff' // Only fetch when tab is active
   })
 
-  // ✅ FIX: Filter staff based on view mode (client-side filtering)
-  // Note: Since includeArchived=false, allStaff already contains only active staff
-  // viewMode='all' would need a separate query with includeArchived=true
+  // ✅ FIX: Staff data already filtered by hook based on viewMode
+  // When viewMode='active': only active staff
+  // When viewMode='all': both active and archived staff
   const staff = React.useMemo(() => {
     if (!allStaff) return []
-    // For now, both viewMode values show the same data (active only)
-    // To support 'all' view, we'd need to fetch archived staff separately
     return allStaff
-  }, [allStaff, viewMode])
+  }, [allStaff])
 
   // Fetch roles for the staff modal
   const { roles } = useHeraRoles({
