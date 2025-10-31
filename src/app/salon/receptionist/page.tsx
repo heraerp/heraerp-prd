@@ -37,6 +37,7 @@ import { useReceptionistDashboard } from '@/hooks/useReceptionistDashboard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
+import { AppointmentModal } from '@/components/salon/appointments/AppointmentModal'
 
 // ⚡ PROGRESSIVE LAZY LOADING: Split page into 5 stages for instant load (Services page pattern)
 // Stage 1: Header & Welcome Card (instant - inline below)
@@ -119,8 +120,20 @@ const StatsOverviewSection = lazy(() => Promise.resolve({
 }))
 
 // Stage 4: Appointments List (lazy - heavy data section)
-const AppointmentsListSection = lazy(() => Promise.resolve({
-  default: ({ appointments, router }: { appointments: any[], router: any }) => {
+// ✨ UPGRADED: Uses AppointmentCard component with sophisticated card design
+// ✨ UPGRADED: Opens AppointmentModal instead of navigating to page
+const AppointmentsListSection = lazy(() => import('@/components/salon/appointments/AppointmentCard').then(mod => ({
+  default: ({ appointments, customers, staff, services, branches, organization, router, onAppointmentClick, onRefresh }: {
+    appointments: any[]
+    customers: any[]
+    staff: any[]
+    services: any[]
+    branches: any[]
+    organization: any
+    router: any
+    onAppointmentClick: (apt: any) => void
+    onRefresh?: () => void
+  }) => {
     // Get today's appointments for display
     const todayAppointments = (appointments || [])
       .filter(apt => {
@@ -130,16 +143,21 @@ const AppointmentsListSection = lazy(() => Promise.resolve({
       })
       .slice(0, 5) // Show first 5
 
-    const getStatusColor = (status: string) => {
-      const s = status.toLowerCase()
-      if (s === 'completed') return { bg: `${LUXE_COLORS.emerald}30`, text: LUXE_COLORS.emerald, label: 'Completed' }
-      if (s === 'in_progress' || s === 'in_service') return { bg: `${LUXE_COLORS.plum}30`, text: LUXE_COLORS.plum, label: 'In Service' }
-      if (s === 'checked_in') return { bg: `${LUXE_COLORS.gold}30`, text: LUXE_COLORS.gold, label: 'Checked In' }
-      if (s === 'booked' || s === 'confirmed') return { bg: `${LUXE_COLORS.emerald}30`, text: LUXE_COLORS.emerald, label: 'Confirmed' }
-      if (s === 'cancelled') return { bg: `${LUXE_COLORS.ruby}30`, text: LUXE_COLORS.ruby, label: 'Cancelled' }
-      if (s === 'no_show') return { bg: `${LUXE_COLORS.bronze}30`, text: LUXE_COLORS.bronze, label: 'No Show' }
-      return { bg: `${LUXE_COLORS.bronze}30`, text: LUXE_COLORS.bronze, label: 'Pending' }
-    }
+    // Map transaction data to AppointmentCard format
+    const mapToAppointmentCard = (apt: any) => ({
+      id: apt.id,
+      customer_id: apt.source_entity_id, // Transaction source is customer
+      stylist_id: apt.target_entity_id, // Transaction target is staff/stylist
+      branch_id: apt.metadata?.branch_id,
+      start_time: apt.transaction_date || apt.created_at,
+      duration_minutes: apt.metadata?.duration_minutes,
+      price: apt.total_amount,
+      notes: apt.metadata?.notes,
+      status: apt.transaction_status || apt.metadata?.status || 'pending',
+      metadata: {
+        service_ids: apt.metadata?.service_ids || []
+      }
+    })
 
     return (
       <Card className="border-0 animate-in fade-in duration-300" style={{ background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight}E6 0%, ${LUXE_COLORS.charcoal}E6 100%)`, border: `1px solid ${LUXE_COLORS.gold}20` }}>
@@ -152,49 +170,25 @@ const AppointmentsListSection = lazy(() => Promise.resolve({
         <CardContent>
           <div className="space-y-3">
             {todayAppointments.length > 0 ? (
-              todayAppointments.map((apt, index) => {
-                const aptTime = apt.transaction_date
-                  ? new Date(apt.transaction_date).toLocaleTimeString('en-US', {
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      hour12: true
-                    })
-                  : 'Time TBD'
-
-                const customerName = apt.metadata?.customer_name || 'Walk-in Customer'
-                const serviceNames = apt.metadata?.service_names || apt.metadata?.services || 'Service details pending'
-                const status = apt.transaction_status || apt.metadata?.status || 'pending'
-                const statusDisplay = getStatusColor(status)
-
-                return (
-                  <div key={apt.id || index} className="p-4 rounded-lg animate-in fade-in slide-in-from-left-2" style={{ background: `${LUXE_COLORS.charcoalDark}80`, border: `1px solid ${LUXE_COLORS.bronze}20`, animationDelay: `${index * 50}ms` }}>
-                    <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                      <p className="font-semibold text-sm md:text-base" style={{ color: LUXE_COLORS.champagne }}>
-                        {aptTime} - {customerName}
-                      </p>
-                      <span
-                        className="px-2 py-1 rounded text-xs font-medium"
-                        style={{ background: statusDisplay.bg, color: statusDisplay.text }}
-                      >
-                        {statusDisplay.label}
-                      </span>
-                    </div>
-                    <p className="text-xs md:text-sm mb-2" style={{ color: LUXE_COLORS.bronze }}>
-                      {serviceNames}
-                    </p>
-                    {status.toLowerCase() !== 'completed' && status.toLowerCase() !== 'cancelled' && (
-                      <Button
-                        size="sm"
-                        className="w-full min-h-[44px] active:scale-95 transition-transform"
-                        onClick={() => router.push(`/salon/appointments/${apt.id}`)}
-                        style={{ background: LUXE_COLORS.gold, color: LUXE_COLORS.charcoal }}
-                      >
-                        View Details
-                      </Button>
-                    )}
-                  </div>
-                )
-              })
+              todayAppointments.map((apt, index) => (
+                <div
+                  key={apt.id || index}
+                  className="animate-in fade-in slide-in-from-left-2"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <mod.AppointmentCard
+                    appointment={mapToAppointmentCard(apt)}
+                    customers={customers}
+                    staff={staff}
+                    services={services}
+                    branches={branches}
+                    organization={organization}
+                    viewMode="list"
+                    onClick={() => onAppointmentClick(mapToAppointmentCard(apt))}
+                    showNotes={false}
+                  />
+                </div>
+              ))
             ) : (
               <div
                 className="p-8 rounded-lg text-center"
@@ -227,7 +221,7 @@ const AppointmentsListSection = lazy(() => Promise.resolve({
       </Card>
     )
   }
-}))
+})))
 
 // ⚡ PERFORMANCE: Section-specific skeleton loaders
 const QuickActionsSkeleton = () => (
@@ -284,9 +278,13 @@ const AppointmentsSkeleton = () => (
 
 export default function ReceptionistDashboard() {
   const router = useRouter()
-  const { organization, organizationId } = useSecuredSalonContext()
+  const { organization, organizationId, availableBranches } = useSecuredSalonContext()
   const { user, role } = useSalonSecurity()
   const [isRefreshing, setIsRefreshing] = useState(false)
+
+  // ✨ MODAL STATE: For AppointmentModal
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null)
+  const [modalOpen, setModalOpen] = useState(false)
 
   // Redirect owner to their own dashboard
   React.useEffect(() => {
@@ -300,7 +298,10 @@ export default function ReceptionistDashboard() {
     kpis,
     isLoading: dashboardLoading,
     refreshAll,
-    appointments
+    appointments,
+    customers,
+    staff,
+    services
   } = useReceptionistDashboard({
     organizationId: organizationId || '',
     currency: 'AED'
@@ -312,6 +313,30 @@ export default function ReceptionistDashboard() {
       await refreshAll()
     } finally {
       setTimeout(() => setIsRefreshing(false), 800)
+    }
+  }
+
+  // Appointment click handler - Opens modal instead of navigating
+  const handleAppointmentClick = (appointment: any) => {
+    setSelectedAppointment(appointment)
+    setModalOpen(true)
+  }
+
+  // Appointment save handler - Updates appointment and refreshes
+  const handleAppointmentSave = async (data: any) => {
+    try {
+      // TODO: Implement appointment update via API
+      console.log('Saving appointment:', data)
+
+      // Refresh appointments after save
+      await refreshAll()
+
+      // Close modal
+      setModalOpen(false)
+      setSelectedAppointment(null)
+    } catch (error) {
+      console.error('Error saving appointment:', error)
+      throw error
     }
   }
 
@@ -456,13 +481,37 @@ export default function ReceptionistDashboard() {
           </div>
         ) : (
           <Suspense fallback={<AppointmentsSkeleton />}>
-            <AppointmentsListSection appointments={appointments || []} router={router} />
+            <AppointmentsListSection
+              appointments={appointments || []}
+              customers={customers || []}
+              staff={staff || []}
+              services={services || []}
+              branches={availableBranches || []}
+              organization={organization}
+              router={router}
+              onAppointmentClick={handleAppointmentClick}
+              onRefresh={refreshAll}
+            />
           </Suspense>
         )}
 
         {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}
         <div className="h-24 md:h-0" />
       </div>
+
+      {/* ✨ APPOINTMENT MODAL: Opens when clicking appointments */}
+      <AppointmentModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        appointment={selectedAppointment}
+        customers={customers || []}
+        stylists={staff || []}
+        services={services || []}
+        branches={availableBranches || []}
+        onSave={handleAppointmentSave}
+        existingAppointments={appointments || []}
+        currencySymbol={organization?.currencySymbol || 'AED'}
+      />
     </SalonLuxePage>
   )
 }

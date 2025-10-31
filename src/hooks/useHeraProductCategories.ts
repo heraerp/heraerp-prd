@@ -185,12 +185,34 @@ export function useHeraProductCategories(options?: UseHeraProductCategoriesOptio
     })
   }
 
-  // Helper to delete category (hard delete)
-  const deleteCategory = async (id: string, hardDelete = false) => {
-    if (!hardDelete) {
+  // Helper to delete category (HARD DELETE by default - matches services pattern)
+  const deleteCategory = async (id: string, options?: { hard_delete?: boolean; reason?: string }) => {
+    const category = (categories as ProductCategory[])?.find(c => c.id === id)
+    if (!category) throw new Error('Category not found')
+
+    // Check if category has products
+    const productCount = (category as any).product_count || 0
+    if (productCount > 0) {
+      throw new Error(
+        `Cannot delete category "${category.entity_name}" because it has ${productCount} product(s). Please reassign or delete those products first.`
+      )
+    }
+
+    // 🎯 CHANGED: Default to HARD DELETE (permanent removal) - matches services pattern
+    // Use { hard_delete: false } to archive instead
+    if (options?.hard_delete === false) {
       return archiveCategory(id)
     }
-    return baseDelete({ entity_id: id, hard_delete: true })
+
+    const result = await baseDelete({
+      entity_id: id,
+      hard_delete: true,
+      reason: options?.reason || 'Category deleted by user'
+    })
+
+    // ✅ NO REFETCH NEEDED: deleteMutation.onSuccess handles cache removal automatically
+
+    return result
   }
 
   // console.log('[useHeraProductCategories] Categories loaded:', {

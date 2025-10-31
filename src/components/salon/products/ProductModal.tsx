@@ -103,17 +103,21 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
   // Reset form when product changes
   useEffect(() => {
     if (product) {
-      // Extract branch IDs from STOCK_AT relationships
+      // ✅ ENTERPRISE FIX: Extract branch IDs from STOCK_AT relationships
+      // Relationships have to_entity_id (UUID), not populated to_entity object
+      // ✅ HERA STANDARD: Use UPPERCASE relationship keys only
       const stockAtRels =
-        (product as any).relationships?.stock_at ||
         (product as any).relationships?.STOCK_AT ||
+        (product as any).relationships?.stock_at ||
         (product as any).relationships?.stockAt
       let branchIds: string[] = []
 
       if (Array.isArray(stockAtRels)) {
-        branchIds = stockAtRels.filter(rel => rel?.to_entity?.id).map(rel => rel.to_entity.id)
-      } else if (stockAtRels?.to_entity?.id) {
-        branchIds = [stockAtRels.to_entity.id]
+        branchIds = stockAtRels
+          .filter(rel => rel?.to_entity_id || rel?.to_entity?.id)
+          .map(rel => rel.to_entity_id || rel.to_entity?.id)
+      } else if (stockAtRels?.to_entity_id || stockAtRels?.to_entity?.id) {
+        branchIds = [stockAtRels.to_entity_id || stockAtRels.to_entity?.id]
       }
 
       form.reset({

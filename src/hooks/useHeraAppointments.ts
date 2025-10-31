@@ -88,6 +88,7 @@ export interface Appointment {
   created_at: string
   updated_at: string
   transaction_status: string
+  smart_code: string // 🚨 REQUIRED: Guardrails enforce smart_code on all transactions
 }
 
 export interface CreateAppointmentData {
@@ -382,7 +383,8 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
         metadata: enrichedMetadata, // ✅ Use enriched metadata
         created_at: txn.created_at,
         updated_at: txn.updated_at,
-        transaction_status: txn.transaction_status
+        transaction_status: txn.transaction_status,
+        smart_code: txn.smart_code || 'HERA.SALON.TXN.APPOINTMENT.v1' // 🚨 REQUIRED: Include smart_code from transaction
       }
 
       return appointment
@@ -511,14 +513,27 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       ...(data.end_time && { end_time: data.end_time }),
       ...(data.duration_minutes && { duration_minutes: data.duration_minutes }),
       ...(data.notes !== undefined && { notes: data.notes }),
-      ...(data.branch_id !== undefined && { branch_id: data.branch_id })
-      // ✅ V1: Removed service_ids from metadata (handled by lines)
+      ...(data.branch_id !== undefined && { branch_id: data.branch_id }),
+      ...(data.service_ids && { service_ids: data.service_ids }) // ✅ CRITICAL FIX: Include service_ids in metadata
     }
 
+    console.log('[useHeraAppointments] 🔍 Built updated metadata:', {
+      original: appointment.metadata,
+      updates: data,
+      updated: updatedMetadata,
+      service_ids_changed: data.service_ids ? 'YES' : 'NO'
+    })
+
     // ✅ V1: Use updateTransaction from useUniversalTransactionV1
+    console.log('[useHeraAppointments] 🚨 DEBUG smart_code:', {
+      appointmentSmartCode: appointment.smart_code,
+      fallbackSmartCode: 'HERA.SALON.TXN.APPOINTMENT.UPDATE.v1',
+      willUse: appointment.smart_code || 'HERA.SALON.TXN.APPOINTMENT.UPDATE.v1'
+    })
+
     const result = await updateTransaction({
       transaction_id: id,
-      // ✅ V1: Removed smart_code from update (not needed for UPDATE action)
+      smart_code: appointment.smart_code || 'HERA.SALON.TXN.APPOINTMENT.UPDATE.v1', // 🚨 REQUIRED: Guardrails enforce smart_code on UPDATE
       ...(data.customer_id && { source_entity_id: data.customer_id }),
       ...(data.stylist_id !== undefined && { target_entity_id: data.stylist_id }),
       ...(data.price && { total_amount: data.price }),
@@ -528,6 +543,9 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     })
 
     console.log('[useHeraAppointments] ✅ Appointment updated:', result)
+    console.log('[useHeraAppointments] 🔍 Updated metadata:', result?.metadata)
+    console.log('[useHeraAppointments] 🔍 Updated start_time:', result?.metadata?.start_time)
+    console.log('[useHeraAppointments] 🔍 Updated end_time:', result?.metadata?.end_time)
 
     // ✅ V1: Hook automatically updates cache with returned data (optimistic update)
     // ✅ NO manual refetch needed - cache already updated by useUniversalTransactionV1

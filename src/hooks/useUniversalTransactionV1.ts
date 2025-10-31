@@ -68,6 +68,11 @@ export interface UseUniversalTransactionV1Config {
     include_lines?: boolean
     include_deleted?: boolean // For audit mode - includes voided transactions
   }
+  // ✅ CACHE CONTROL: Allow consumers to override default cache behavior
+  cacheConfig?: {
+    staleTime?: number // How long data is considered fresh (default: 30 minutes)
+    refetchOnMount?: boolean | 'always' // Refetch when component mounts (default: false)
+  }
 }
 
 // ============================================================================
@@ -165,30 +170,46 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
   // ✅ HERA v2.2 ACTOR STAMPING: Extract user ID for audit tracking
   const actorUserId = user?.id
 
-  const { filters = {} } = config
+  const { filters = {}, cacheConfig = {} } = config
+
+  // ✅ CACHE CONTROL: Extract cache configuration with defaults
+  const staleTime = cacheConfig.staleTime !== undefined ? cacheConfig.staleTime : 30 * 60 * 1000
+  const refetchOnMount = cacheConfig.refetchOnMount !== undefined ? cacheConfig.refetchOnMount : false
 
   // ✅ ENTERPRISE PATTERN: Normalize transaction_type filter to UPPERCASE
   const normalizedTransactionType = normalizeTransactionType(filters.transaction_type)
 
   // Build query key
   const queryKey = useMemo(
-    () => [
-      'transactions-v1',
-      organizationId,
-      {
-        transaction_type: normalizedTransactionType || null,
-        smart_code: filters.smart_code || null,
-        source_entity_id: filters.source_entity_id || null,
-        target_entity_id: filters.target_entity_id || null,
-        transaction_status: filters.transaction_status || null,
-        date_from: filters.date_from || null,
-        date_to: filters.date_to || null,
-        limit: filters.limit || 100,
-        offset: filters.offset || 0,
-        include_lines: filters.include_lines !== false,
-        include_deleted: !!filters.include_deleted
-      }
-    ],
+    () => {
+      const key = [
+        'transactions-v1',
+        organizationId,
+        {
+          transaction_type: normalizedTransactionType || null,
+          smart_code: filters.smart_code || null,
+          source_entity_id: filters.source_entity_id || null,
+          target_entity_id: filters.target_entity_id || null,
+          transaction_status: filters.transaction_status || null,
+          date_from: filters.date_from || null,
+          date_to: filters.date_to || null,
+          limit: filters.limit || 100,
+          offset: filters.offset || 0,
+          include_lines: filters.include_lines !== false,
+          include_deleted: !!filters.include_deleted
+        }
+      ]
+
+      console.log('🔑 [useUniversalTransactionV1] queryKey computed:', {
+        key,
+        filterObject: key[2],
+        date_from: filters.date_from,
+        date_to: filters.date_to,
+        target_entity_id: filters.target_entity_id
+      })
+
+      return key
+    },
     [
       organizationId,
       normalizedTransactionType,
@@ -217,6 +238,13 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
   } = useQuery({
     queryKey,
     queryFn: async () => {
+      console.log('🔍 [useUniversalTransactionV1] queryFn EXECUTING - NEW QUERY:', {
+        date_from: filters.date_from,
+        date_to: filters.date_to,
+        target_entity_id: filters.target_entity_id,
+        timestamp: new Date().toISOString()
+      })
+
       if (!organizationId || !actorUserId) {
         throw new Error('Organization ID and User ID required')
       }
@@ -247,7 +275,7 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       }
 
       // 🌟 TRANSACTION CRUD - QUERY action
-      const { data, error } = await transactionCRUD({
+      const rpcPayload = {
         p_action: 'QUERY',
         p_actor_user_id: actorUserId,
         p_organization_id: organizationId,
@@ -258,7 +286,18 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
           include_lines: filters.include_lines !== false,
           include_deleted: !!filters.include_deleted
         }
+      }
+
+      console.log('🚀 [useUniversalTransactionV1] RPC PAYLOAD BEING SENT:', {
+        p_action: rpcPayload.p_action,
+        p_organization_id: rpcPayload.p_organization_id,
+        p_payload: rpcPayload.p_payload,
+        date_from_in_payload: rpcPayload.p_payload.date_from,
+        date_to_in_payload: rpcPayload.p_payload.date_to,
+        full_rpc_payload: JSON.stringify(rpcPayload, null, 2)
       })
+
+      const { data, error } = await transactionCRUD(rpcPayload)
 
       // ✅ Check Supabase client error first
       if (error) {
@@ -305,13 +344,30 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         } : null
       })
 
+      // ✅ CRITICAL DEBUG: Show actual transaction dates returned vs requested filter
+      const transactionDates = transformed.map(t => t.transaction_date).sort()
+      console.log('📅 [useUniversalTransactionV1] QUERY COMPLETED - Date Verification:', {
+        requested_date_from: filters.date_from,
+        requested_date_to: filters.date_to,
+        returned_transaction_count: transformed.length,
+        all_transaction_dates_sorted: transactionDates,
+        date_range_check: {
+          earliest: transactionDates[0],
+          latest: transactionDates[transactionDates.length - 1]
+        },
+        dates_match_filter: transactionDates.every(d =>
+          (!filters.date_from || d >= filters.date_from) &&
+          (!filters.date_to || d <= filters.date_to)
+        )
+      })
+
       return transformed
     },
     enabled: !!organizationId && !!actorUserId,
-    staleTime: 30 * 60 * 1000, // 30 minutes
-    gcTime: 60 * 60 * 1000, // 60 minutes
+    staleTime, // ✅ CONFIGURABLE: Default 30 minutes, but can be overridden via cacheConfig
+    gcTime: 60 * 60 * 1000, // 60 minutes - cache cleanup
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount, // ✅ CONFIGURABLE: Default false, but can be overridden via cacheConfig
     refetchOnReconnect: false,
     retry: 1
   })
@@ -422,7 +478,11 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         throw new Error('Organization ID and User ID required')
       }
 
-      // Build UPDATE payload - MUST use 'patch' wrapper for hera_txn_crud_v1
+      // ✅ BUILD UPDATE PAYLOAD - Deployed RPC expects:
+      // - header: { smart_code (required), organization_id (required) }
+      // - patch: { fields to update }
+      // - transaction_id: at root level
+
       const patch: any = {}
 
       if (updates.transaction_type) {
@@ -430,9 +490,6 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       }
       if (updates.transaction_code !== undefined) {
         patch.transaction_code = updates.transaction_code
-      }
-      if (updates.smart_code) {
-        patch.smart_code = updates.smart_code
       }
       if (updates.transaction_date) {
         patch.transaction_date = updates.transaction_date
@@ -455,8 +512,21 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
 
       const updatePayload = {
         transaction_id,
+        header: {
+          smart_code: updates.smart_code, // ✅ Required for guardrail
+          organization_id: organizationId  // ✅ Required for guardrail
+        },
         patch
       }
+
+      console.log('🚀 [useUniversalTransactionV1] UPDATE Payload:', {
+        transaction_id,
+        header: updatePayload.header,
+        patch: updatePayload.patch,
+        header_smart_code: updatePayload.header.smart_code,
+        updates_smart_code: updates.smart_code,
+        full_payload: JSON.stringify(updatePayload, null, 2)
+      })
 
       // 🌟 TRANSACTION CRUD - UPDATE action
       const { data, error } = await transactionCRUD({
@@ -474,6 +544,20 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
 
       if (!data?.success) {
         console.error('[useUniversalTransactionV1] UPDATE orchestrator error:', data?.error)
+        console.error('[useUniversalTransactionV1] Full Response:', JSON.stringify(data, null, 2))
+
+        // 🚨 GUARDRAIL VIOLATIONS: Show detailed error message
+        if (data?.error === 'guardrail_violations' && data?.violations) {
+          console.error('[useUniversalTransactionV1] Violations Array:', data.violations)
+          console.error('[useUniversalTransactionV1] First Violation:', data.violations[0])
+          console.error('[useUniversalTransactionV1] Violation JSON:', JSON.stringify(data.violations, null, 2))
+
+          const violationMessages = data.violations.map((v: any) =>
+            `${v.rule || 'Unknown rule'}: ${v.message || v.description || 'No details'}`
+          ).join('; ')
+          throw new Error(`Guardrail violations: ${violationMessages}`)
+        }
+
         throw new Error(data?.error || 'Orchestrator failed')
       }
 

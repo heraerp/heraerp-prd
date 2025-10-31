@@ -5,7 +5,13 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@supabase/supabase-js'
+
+// ✅ Use server-side Supabase client with service role key for RPC calls
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function POST(
   request: NextRequest,
@@ -47,7 +53,10 @@ export async function POST(
       // 🔍 DEEP DIVE: Check if dynamic_data exists in nested structure
       firstListItem: (data as any)?.data?.list?.[0],
       firstListItemKeys: (data as any)?.data?.list?.[0] ? Object.keys((data as any).data.list[0]) : null,
-      hasDynamicDataInFirst: !!(data as any)?.data?.list?.[0]?.dynamic_data
+      hasDynamicDataInFirst: !!(data as any)?.data?.list?.[0]?.dynamic_data,
+      // 🚨 GUARDRAIL VIOLATIONS: Show full violations if present
+      hasViolations: !!(data as any)?.violations,
+      violations: (data as any)?.violations ? JSON.stringify((data as any).violations, null, 2) : null
     })
 
     return NextResponse.json(data)

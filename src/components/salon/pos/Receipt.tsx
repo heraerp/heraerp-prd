@@ -242,6 +242,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
     if (saleData.branch_phone) {
       lines.push(saleData.branch_phone)
     }
+    lines.push('TRN: 104668987100003')
     lines.push('='.repeat(40))
     lines.push(`Receipt #: ${saleData.transaction_code}`)
     lines.push(`Date: ${formatDateTime(saleData.timestamp)}`)
@@ -354,6 +355,10 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
                 )}
               </div>
             )}
+            {/* TRN - Tax Registration Number */}
+            <div className="text-xs font-semibold text-muted-foreground mt-2">
+              TRN: 104668987100003
+            </div>
           </div>
 
           <Separator />

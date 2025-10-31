@@ -38,8 +38,10 @@ import {
   Archive,
   Sparkles,
   Bell,
-  ChevronDown
+  ChevronDown,
+  Scan
 } from 'lucide-react'
+import { ScanToCart } from '@/components/salon/pos/ScanToCart'
 
 // ✅ LAZY LOADING: Split heavy components for better performance
 const ProductList = lazy(() => import('@/components/salon/products/ProductList').then(mod => ({ default: mod.ProductList })))
@@ -148,6 +150,14 @@ function SalonProductsPageContent() {
 
   // Import/Export state
   const [importModalOpen, setImportModalOpen] = useState(false)
+
+  // Barcode scanner state
+  const [showScanner, setShowScanner] = useState(false)
+
+  // Debug: Log scanner state changes
+  useEffect(() => {
+    console.log('🔍🔍🔍 SCANNER STATE CHANGED:', showScanner)
+  }, [showScanner])
 
   // Fetch products using new Universal API v2
   const {
@@ -695,6 +705,19 @@ function SalonProductsPageContent() {
     }
   }, [exportData, products, showSuccess, showError, logError])
 
+  // Handle barcode scanned product - open in edit mode
+  const handleProductScanned = useCallback(
+    (product: any) => {
+      setShowScanner(false)
+      showSuccess('Product found', `Found: ${product.entity_name}`)
+
+      // Open product in edit modal
+      setEditingProduct(product)
+      setModalOpen(true)
+    },
+    [showSuccess]
+  )
+
   // Category CRUD handlers
   const handleSaveCategory = async (data: ProductCategoryFormValues) => {
     const loadingId = showLoading(
@@ -835,6 +858,22 @@ function SalonProductsPageContent() {
       padding="lg"
       actions={
         <>
+          {/* Scan Barcode - Bronze */}
+          <button
+            onClick={() => {
+              console.log('🔍🔍🔍 SCAN BUTTON CLICKED - Desktop', { currentState: showScanner })
+              setShowScanner(!showScanner)
+            }}
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: showScanner ? COLORS.gold : COLORS.bronze,
+              color: COLORS.champagne,
+              border: `1px solid ${showScanner ? COLORS.gold : COLORS.bronze}`
+            }}
+          >
+            <Scan className="w-4 h-4" />
+            {showScanner ? 'Close Scanner' : 'Scan Barcode'}
+          </button>
           {/* New Category - Emerald */}
           <button
             onClick={() => {
@@ -936,6 +975,17 @@ function SalonProductsPageContent() {
         <div className="flex gap-2 overflow-x-auto pb-1">
           <button
             onClick={() => {
+              console.log('🔍🔍🔍 SCAN BUTTON CLICKED - Mobile', { currentState: showScanner })
+              setShowScanner(!showScanner)
+            }}
+            className="px-4 py-2 text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
+            style={{ backgroundColor: showScanner ? COLORS.gold : COLORS.bronze }}
+          >
+            <Scan className="w-4 h-4" />
+            {showScanner ? 'Close' : 'Scan'}
+          </button>
+          <button
+            onClick={() => {
               setEditingCategory(null)
               setCategoryModalOpen(true)
             }}
@@ -964,6 +1014,41 @@ function SalonProductsPageContent() {
           </button>
         </div>
       </div>
+
+      {/* Barcode Scanner - Collapsible (Both Mobile & Desktop) */}
+      {showScanner && (
+        <div className="mx-6 mt-4">
+          <div
+            className="p-4 rounded-xl border animate-in fade-in slide-in-from-top-2 duration-300"
+            style={{
+              backgroundColor: COLORS.charcoalLight + 'ee',
+              borderColor: COLORS.gold + '40',
+              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.2)'
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Scan className="w-5 h-5" style={{ color: COLORS.gold }} />
+                <h3 className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                  Barcode Scanner
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowScanner(false)}
+                className="p-1 rounded-lg hover:bg-gold/10 transition-colors"
+                title="Close scanner"
+              >
+                <X className="w-4 h-4" style={{ color: COLORS.gold }} />
+              </button>
+            </div>
+            <ScanToCart
+              organizationId={organizationId}
+              onProductFound={handleProductScanned}
+              onError={(message) => showError('Scanner error', message)}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Error Banner */}
           {error && (
@@ -1048,9 +1133,11 @@ function SalonProductsPageContent() {
                         color: COLORS.champagne
                       }}
                     >
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4" style={{ color: COLORS.gold }} />
-                        <SelectValue placeholder="All Locations" />
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <MapPin className="h-4 w-4 flex-shrink-0" style={{ color: COLORS.gold }} />
+                        <span className="truncate">
+                          <SelectValue placeholder="All Locations" />
+                        </span>
                       </div>
                     </SelectTrigger>
                     <SelectContent
