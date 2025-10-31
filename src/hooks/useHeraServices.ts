@@ -368,7 +368,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         await baseUpdate({
           entity_id: id,
           entity_name: service.entity_name,
-          status: 'deleted'  // ✅ FIX: Use 'deleted' status instead of 'archived'
+          status: 'deleted'  // ✅ CORRECT: Use 'deleted' status for hard delete fallback (distinct from archive)
         })
 
         // ✅ NO REFETCH NEEDED: updateMutation.onSuccess handles cache update automatically
