@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import {
   Search,
   Plus,
@@ -79,26 +79,24 @@ export function CatalogPane({
   // Use composition hook for POS data
   const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS(posOptions)
 
-  // ✅ CRITICAL FIX: Initialize branch from context (e.g., from appointment)
-  // This ensures the correct branch is selected when redirecting from appointments
+  // ✅ SIMPLIFIED FIX: One-way sync FROM context TO local (no bidirectional sync)
+  // Initialize from context on mount or when context changes
   useEffect(() => {
     if (contextBranchId && contextBranchId !== branchId && branches.length > 0) {
-      // Verify the contextBranchId exists in the branches list
       const branchExists = branches.some(b => b.id === contextBranchId)
       if (branchExists) {
-        console.log('[CatalogPane] 🏢 Setting branch from context (appointment):', contextBranchId)
         setBranchId(contextBranchId)
       }
     }
-  }, [contextBranchId, branchId, branches, setBranchId])
+  }, [contextBranchId]) // Only depend on contextBranchId to prevent loops
 
-  // ✅ FIX: Sync branch changes to parent context (only if different)
-  useEffect(() => {
-    if (branchId && onBranchChange && branchId !== contextBranchId) {
-      console.log('[CatalogPane] ✅ Branch changed, syncing to context:', branchId, 'was:', contextBranchId)
-      onBranchChange(branchId)
+  // When user manually changes branch via dropdown, notify parent immediately
+  const handleBranchChange = (newBranchId: string) => {
+    setBranchId(newBranchId)
+    if (onBranchChange) {
+      onBranchChange(newBranchId)
     }
-  }, [branchId, contextBranchId, onBranchChange])
+  }
 
   // Filter items by tab and category
   const filteredItems = useMemo(() => {
@@ -234,7 +232,7 @@ export function CatalogPane({
             <div className="flex-1">
               <Select
                 value={branchId || ''}
-                onValueChange={value => value && setBranchId(value)}
+                onValueChange={value => value && handleBranchChange(value)}
               >
                 <SelectTrigger
                   className="h-[42px] transition-all duration-300"

@@ -178,6 +178,7 @@ function SalonProductsPageContent() {
     updateCategory,
     deleteCategory,
     archiveCategory,
+    refetch: refetchCategories, // ✅ Get refetch function for manual refresh
     isCreating: isCreatingCategory,
     isUpdating: isUpdatingCategory
   } = useHeraProductCategories({
@@ -739,6 +740,11 @@ function SalonProductsPageContent() {
 
     try {
       await deleteCategory(categoryToDelete.id)
+
+      // ✅ CRITICAL FIX: Manually refetch categories to ensure deleted category is removed from UI
+      // React Query cache update might not be instant, so we force a refetch
+      await refetchCategories()
+
       removeToast(loadingId)
       showSuccess('Category deleted', `${categoryToDelete.entity_name} has been removed`)
       setCategoryDeleteDialogOpen(false)

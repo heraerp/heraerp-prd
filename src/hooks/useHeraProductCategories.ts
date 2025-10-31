@@ -203,7 +203,7 @@ export function useHeraProductCategories(options?: UseHeraProductCategoriesOptio
     categories: (categories as ProductCategory[]) || [],
     isLoading,
     error,
-    refetch,
+    refetch, // ✅ Expose refetch for manual cache refresh
     createCategory,
     updateCategory,
     archiveCategory,

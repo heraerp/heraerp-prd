@@ -390,24 +390,24 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
         errorMessage.includes('cannot delete')
 
       if (is409Conflict) {
-        // Product is referenced - fallback to archive with warning
+        // Product is referenced - fallback to soft delete (status='deleted') with warning
         try {
           await baseUpdate({
             entity_id: id,
             entity_name: product.entity_name,
-            status: 'archived'
+            status: 'deleted'  // ✅ CORRECT: Use 'deleted' status for hard delete fallback (distinct from archive)
           })
 
           return {
             success: true,
             archived: true,
             message:
-              'Product is used in transactions and cannot be deleted. It has been archived instead.'
+              'Product is used in transactions and cannot be deleted. It has been marked as deleted instead.'
           }
-        } catch (archiveError: any) {
-          // If archive also fails, throw a clear error
+        } catch (deleteError: any) {
+          // If soft delete also fails, throw a clear error
           throw new Error(
-            `Failed to delete and archive: ${archiveError.message || 'Unknown error'}`
+            `Failed to delete product: ${deleteError.message || 'Unknown error'}`
           )
         }
       }

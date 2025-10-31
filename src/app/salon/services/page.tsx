@@ -244,7 +244,7 @@ function SalonServicesPageContent() {
       branch_id: undefined,
       category_id: undefined,
       status: undefined, // Get everything - filtering happens client-side
-      limit: 20 // ✅ FIXED: Reduced limit for faster load (typical salon has 5-20 services)
+      limit: 100 // ✅ CRITICAL FIX: Increased limit to ensure KPIs show correct counts (was 20, too small!)
     }
   })
 

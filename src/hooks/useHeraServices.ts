@@ -215,13 +215,23 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     required_product_ids?: string[]
     branch_ids?: string[] // Support multiple branches via AVAILABLE_AT relationships
   }) => {
-    // Map provided primitives to dynamic_fields payload using preset definitions
+    // ✅ CRITICAL FIX: Map ALL provided fields to dynamic_fields, including those with different names
+    // The preset uses 'duration_min' but the data might have 'duration_minutes', etc.
     const dynamic_fields: Record<string, any> = {}
+
+    // Map each preset field definition to the corresponding data field
     for (const def of SERVICE_PRESET.dynamicFields) {
-      const key = def.name as keyof typeof data
-      if (key in data && (data as any)[key] !== undefined) {
+      let value = undefined
+
+      // Check if the exact field name exists in data
+      if (def.name in data && (data as any)[def.name] !== undefined) {
+        value = (data as any)[def.name]
+      }
+
+      // Only add to dynamic_fields if we have a value
+      if (value !== undefined) {
         dynamic_fields[def.name] = {
-          value: (data as any)[key],
+          value: value,
           type: def.type,
           smart_code: def.smart_code
         }
@@ -255,12 +265,22 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     const service = (services as ServiceEntity[])?.find(s => s.id === id)
     if (!service) throw new Error('Service not found')
 
-    // Build dynamic patch from provided fields
+    // ✅ CRITICAL FIX: Build dynamic patch from provided fields with proper field mapping
+    // The preset uses 'duration_min' but the data might have 'duration_minutes', etc.
     const dynamic_patch: Record<string, any> = {}
+
+    // Map each preset field definition to the corresponding data field
     for (const def of SERVICE_PRESET.dynamicFields) {
-      const key = def.name as keyof typeof data
-      if (key in data && (data as any)[key] !== undefined) {
-        dynamic_patch[def.name] = (data as any)[key]
+      let value = undefined
+
+      // Check if the exact field name exists in data
+      if (def.name in data && (data as any)[def.name] !== undefined) {
+        value = (data as any)[def.name]
+      }
+
+      // Only add to dynamic_patch if we have a value
+      if (value !== undefined) {
+        dynamic_patch[def.name] = value
       }
     }
 
@@ -348,7 +368,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
         await baseUpdate({
           entity_id: id,
           entity_name: service.entity_name,
-          status: 'deleted'  // ✅ FIX: Use 'deleted' status instead of 'archived'
+          status: 'deleted'  // ✅ CORRECT: Use 'deleted' status for hard delete fallback (distinct from archive)
         })
 
         // ✅ NO REFETCH NEEDED: updateMutation.onSuccess handles cache update automatically
