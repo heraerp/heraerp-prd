@@ -219,6 +219,12 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     // The preset uses 'duration_min' but the data might have 'duration_minutes', etc.
     const dynamic_fields: Record<string, any> = {}
 
+    // 🔍 DEBUG: Log incoming data
+    console.log('[useHeraServices] 🔍 createService data:', {
+      data,
+      preset_fields: SERVICE_PRESET.dynamicFields.map(f => f.name)
+    })
+
     // Map each preset field definition to the corresponding data field
     for (const def of SERVICE_PRESET.dynamicFields) {
       let value = undefined
@@ -235,8 +241,14 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
           type: def.type,
           smart_code: def.smart_code
         }
+        console.log(`[useHeraServices] ✅ Mapped field: ${def.name} = ${value} (type: ${def.type})`)
+      } else {
+        console.log(`[useHeraServices] ⚠️  Skipped field: ${def.name} (not in data or undefined)`)
       }
     }
+
+    // 🔍 DEBUG: Log final dynamic_fields
+    console.log('[useHeraServices] 📦 Final dynamic_fields:', dynamic_fields)
 
     // Relationships map according to preset relationship types
     const relationships: Record<string, string[] | undefined> = {

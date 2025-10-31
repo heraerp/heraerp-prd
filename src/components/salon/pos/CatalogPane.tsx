@@ -79,43 +79,26 @@ export function CatalogPane({
   // Use composition hook for POS data
   const { items, staff, branchId, branches, isLoading, setBranchId } = useSalonPOS(posOptions)
 
-  // ✅ FIXED: Track previous values to detect actual changes and prevent loops
-  const prevContextBranchIdRef = useRef(contextBranchId)
-  const prevBranchIdRef = useRef(branchId)
-
-  // Effect 1: Sync FROM context TO local state (when context changes externally, e.g., from appointment)
+  // ✅ SIMPLIFIED FIX: One-way sync FROM context TO local (no bidirectional sync)
+  // Initialize from context on mount or when context changes
   useEffect(() => {
-    // Only update if contextBranchId actually changed externally (not as a result of our onBranchChange)
-    if (
-      contextBranchId &&
-      contextBranchId !== prevContextBranchIdRef.current &&
-      contextBranchId !== branchId &&
-      branches.length > 0
-    ) {
+    if (contextBranchId && contextBranchId !== branchId && branches.length > 0) {
       const branchExists = branches.some(b => b.id === contextBranchId)
       if (branchExists) {
-        console.log('[CatalogPane] 🏢 Setting branch from context (appointment):', contextBranchId)
+        console.log('[CatalogPane] 🏢 Setting branch from context:', contextBranchId)
         setBranchId(contextBranchId)
-        prevContextBranchIdRef.current = contextBranchId
-        prevBranchIdRef.current = contextBranchId
       }
     }
-  }, [contextBranchId, branchId, branches, setBranchId])
+  }, [contextBranchId]) // Only depend on contextBranchId to prevent loops
 
-  // Effect 2: Sync FROM local state TO parent (when user manually changes branch via dropdown)
-  useEffect(() => {
-    // Only notify parent if branchId changed AND it's different from context
-    if (
-      branchId &&
-      branchId !== prevBranchIdRef.current &&
-      branchId !== contextBranchId &&
-      onBranchChange
-    ) {
-      console.log('[CatalogPane] ✅ Branch changed by user, syncing to context:', branchId)
-      onBranchChange(branchId)
-      prevBranchIdRef.current = branchId
+  // When user manually changes branch via dropdown, notify parent immediately
+  const handleBranchChange = (newBranchId: string) => {
+    console.log('[CatalogPane] ✅ User changed branch:', newBranchId)
+    setBranchId(newBranchId)
+    if (onBranchChange) {
+      onBranchChange(newBranchId)
     }
-  }, [branchId, contextBranchId, onBranchChange])
+  }
 
   // Filter items by tab and category
   const filteredItems = useMemo(() => {
@@ -251,7 +234,7 @@ export function CatalogPane({
             <div className="flex-1">
               <Select
                 value={branchId || ''}
-                onValueChange={value => value && setBranchId(value)}
+                onValueChange={value => value && handleBranchChange(value)}
               >
                 <SelectTrigger
                   className="h-[42px] transition-all duration-300"
