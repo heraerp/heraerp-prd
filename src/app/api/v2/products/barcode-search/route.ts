@@ -74,6 +74,15 @@ export async function GET(request: NextRequest) {
     // hera_entity_read_v1 returns { success: true, data: [...] }
     const allProducts = result.data?.data || result.data || []
 
+    console.log('[Barcode Search] RPC Response:', {
+      resultKeys: Object.keys(result),
+      hasData: !!result.data,
+      dataKeys: result.data ? Object.keys(result.data) : null,
+      productsCount: allProducts.length,
+      firstProduct: allProducts[0],
+      barcodeSearched: barcodeClean
+    })
+
     // Filter products matching the barcode in dynamic fields
     const products = allProducts.filter((product: any) => {
       // Dynamic fields might be in product.dynamic_fields array or flattened
@@ -88,6 +97,12 @@ export async function GET(request: NextRequest) {
 
       // Check primary barcode
       const barcodePrimary = getDynamicValue('barcode_primary')
+      console.log(`[Barcode Search] Product ${product.entity_name}:`, {
+        barcodePrimary,
+        dynamicFieldsCount: dynamicFields.length,
+        dynamicFieldNames: dynamicFields.map((f: any) => f.field_name),
+        barcodeSearched: barcodeClean
+      })
       if (barcodePrimary === barcodeClean) {
         product._match_source = 'primary_barcode'
         return true
