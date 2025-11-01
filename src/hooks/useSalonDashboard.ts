@@ -53,6 +53,9 @@ function extractGrossRevenue(glJournalTransactions: any[]): number {
 /**
  * ✅ ENTERPRISE HELPER: Calculate payment method breakdown for any date range
  * Load data once, calculate instantly based on filter - no reloading needed
+ *
+ * ✅ FIXED: Now uses enhanced metadata format from GL_JOURNAL v2
+ * GL_JOURNAL metadata.payment_methods = [{method: 'cash', amount: 100}, {method: 'card', amount: 50}]
  */
 function calculatePaymentBreakdown(
   transactions: any[],
@@ -67,120 +70,69 @@ function calculatePaymentBreakdown(
       })
     : transactions
 
-  // 🔍 DEBUG: Log first transaction to inspect structure
-  if (filteredTransactions.length > 0) {
-    console.log('🔍 [Payment Breakdown Debug] First Transaction:', {
-      id: filteredTransactions[0].id,
-      has_lines: !!filteredTransactions[0].lines,
-      lines_count: filteredTransactions[0].lines?.length || 0,
-      lines_sample: filteredTransactions[0].lines?.slice(0, 3),
-      metadata_payment_methods: filteredTransactions[0].metadata?.payment_methods,
-      metadata_payment_method: filteredTransactions[0].metadata?.payment_method
-    })
-  }
-
   return filteredTransactions.reduce(
     (acc, t) => {
-      // ✅ ENTERPRISE FIX: Handle split payments by reading from transaction lines
-      const paymentLines = t.lines?.filter((line: any) => line.line_type === 'payment') || []
+      // ✅ STRATEGY 1: Try enhanced metadata first (v2 GL_JOURNAL)
+      const paymentMethodsMetadata = t.metadata?.payment_methods || []
 
-      // 🔍 DEBUG: Log payment lines found
-      if (paymentLines.length > 0) {
-        console.log('🔍 [Payment Lines Found]', {
-          transaction_id: t.id,
-          payment_lines_count: paymentLines.length,
-          payment_lines_sample: paymentLines.map((line: any) => ({
-            line_type: line.line_type,
-            line_amount: line.line_amount,
-            has_metadata: !!line.metadata,
-            has_line_data: !!line.line_data,
-            metadata_keys: line.metadata ? Object.keys(line.metadata) : [],
-            line_data_keys: line.line_data ? Object.keys(line.line_data) : [],
-            payment_method_locations: {
-              metadata_payment_method: line.metadata?.payment_method,
-              line_data_payment_method: line.line_data?.payment_method,
-              direct_payment_method: line.payment_method
+      if (Array.isArray(paymentMethodsMetadata) && paymentMethodsMetadata.length > 0) {
+        // Check if enhanced format (array of objects with {method, amount})
+        const firstElement = paymentMethodsMetadata[0]
+        const isEnhancedFormat = typeof firstElement === 'object' && firstElement !== null && 'method' in firstElement
+
+        if (isEnhancedFormat) {
+          // ✅ V2 FORMAT: Use exact amounts from metadata
+          paymentMethodsMetadata.forEach((payment: any) => {
+            const method = (payment.method || '').toLowerCase()
+            const amount = payment.amount || 0
+
+            if (method === 'cash' || method.includes('cash')) {
+              acc.cash += amount
+            } else if (method === 'card' || method.includes('card')) {
+              acc.card += amount
+            } else if (method === 'bank_transfer' || method.includes('bank')) {
+              acc.bank_transfer += amount
+            } else if (method === 'voucher' || method.includes('voucher')) {
+              acc.voucher += amount
             }
-          }))
-        })
+          })
+          return acc // Found enhanced metadata, done!
+        }
       }
 
+      // ✅ STRATEGY 2: Extract from GL lines (v1 GL_JOURNAL and v2)
+      // GL lines have line_data.payment_method for debit lines (DR side = cash/card received)
+      const glLines = t.lines || []
+      const paymentLines = glLines.filter((line: any) =>
+        line.line_type === 'gl' &&
+        line.line_data?.side === 'DR' &&
+        line.line_data?.payment_method
+      )
+
       if (paymentLines.length > 0) {
-        // Process each payment line separately (handles split payments correctly)
+        // ✅ Extract from GL line_data.payment_method
         paymentLines.forEach((line: any) => {
-          // ✅ FIX: Check both metadata and line_data (API returns line_data)
-          const paymentMethodData = line.metadata || line.line_data || {}
-          const method = (
-            paymentMethodData.payment_method ||
-            line.payment_method ||
-            ''
-          ).toLowerCase()
+          const method = (line.line_data.payment_method || '').toLowerCase()
           const amount = Math.abs(line.line_amount || 0)
 
-          // 🔍 DEBUG: Log extracted payment method
-          console.log('🔍 [Payment Method Extracted]', {
-            method,
-            amount,
-            paymentMethodData
-          })
-
-          if (!method || method === 'cash' || method.includes('cash')) {
+          if (method === 'cash' || method.includes('cash')) {
             acc.cash += amount
-          } else if (method === 'card' || method === 'credit_card' || method === 'debit_card' || method.includes('card')) {
+          } else if (method === 'card' || method.includes('card')) {
             acc.card += amount
-          } else if (method === 'bank_transfer' || method === 'transfer' || method.includes('bank')) {
+          } else if (method === 'bank_transfer' || method.includes('bank')) {
             acc.bank_transfer += amount
-          } else if (method === 'voucher' || method === 'gift_card' || method.includes('voucher')) {
+          } else if (method === 'voucher' || method.includes('voucher')) {
             acc.voucher += amount
-          } else {
-            acc.cash += amount // Default to cash
           }
         })
-      } else {
-        // Fallback: Check transaction-level metadata (current implementation)
-        // ✅ FIX: Handle payment_methods array from transaction metadata
-        const paymentMethods = t.metadata?.payment_methods || []
-        // For GL_JOURNAL, use metadata.total_cr as the transaction amount
-        const amount = t.metadata?.total_cr || 0
+        return acc // Found payment lines, done!
+      }
 
-        if (Array.isArray(paymentMethods) && paymentMethods.length > 0) {
-          // If payment_methods is an array, use the first method
-          // (For split payments, we'd need line-level data which isn't available)
-          const method = paymentMethods[0]?.toLowerCase() || ''
-
-          if (!method || method === 'cash' || method.includes('cash')) {
-            acc.cash += amount
-          } else if (method === 'card' || method === 'credit_card' || method === 'debit_card' || method.includes('card')) {
-            acc.card += amount
-          } else if (method === 'bank_transfer' || method === 'transfer' || method.includes('bank')) {
-            acc.bank_transfer += amount
-          } else if (method === 'voucher' || method === 'gift_card' || method.includes('voucher')) {
-            acc.voucher += amount
-          } else {
-            acc.cash += amount // Default to cash
-          }
-        } else {
-          // Legacy: Single payment_method field
-          const method = (
-            t.metadata?.payment_method ||
-            t.payment_method ||
-            t.metadata?.paymentMethod ||
-            t.paymentMethod ||
-            ''
-          ).toLowerCase()
-
-          if (!method || method === 'cash' || method.includes('cash')) {
-            acc.cash += amount
-          } else if (method === 'card' || method === 'credit_card' || method === 'debit_card' || method.includes('card')) {
-            acc.card += amount
-          } else if (method === 'bank_transfer' || method === 'transfer' || method.includes('bank')) {
-            acc.bank_transfer += amount
-          } else if (method === 'voucher' || method === 'gift_card' || method.includes('voucher')) {
-            acc.voucher += amount
-          } else {
-            acc.cash += amount // Default to cash
-          }
-        }
+      // ❌ STRATEGY 3: Fallback - default to cash
+      // This happens for very old transactions without proper GL structure
+      const amount = t.metadata?.total_cr || t.metadata?.cash_received || 0
+      if (amount > 0) {
+        acc.cash += amount
       }
 
       return acc
@@ -418,6 +370,7 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
 
   // ✅ ALIGNED WITH REPORTS: Fetch GL_JOURNAL for revenue (same as /salon/reports/sales)
   // This ensures dashboard revenue matches reports page exactly
+  // ✅ FIXED: Fetch ALL GL_JOURNAL transactions (both v1 and v2) by removing smart_code filter
   const {
     transactions: tickets,
     isLoading: ticketsLoading,
@@ -426,9 +379,11 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     organizationId,
     filters: {
       transaction_type: 'GL_JOURNAL',
-      smart_code: 'HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v1',
+      // ✅ REMOVED smart_code filter to include both v1 and v2 GL_JOURNAL transactions
+      // v1: HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v1 (old, no enhanced metadata)
+      // v2: HERA.SALON.FINANCE.TXN.JOURNAL.POSSALE.v2 (new, with payment_methods array)
       limit: 1000,
-      include_lines: true // Need lines for GL validation
+      include_lines: true // Need lines for payment method extraction from v1 transactions
     },
     // Disable caching to ensure fresh data
     cacheConfig: {
@@ -437,23 +392,6 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     }
   })
 
-  // 🔍 DEBUG: Log tickets structure when loaded
-  useEffect(() => {
-    if (tickets && tickets.length > 0) {
-      console.log('🔍 [useSalonDashboard] GL_JOURNAL Transactions Loaded:', {
-        count: tickets.length,
-        first_transaction: {
-          id: tickets[0].id,
-          has_lines: !!tickets[0].lines,
-          lines_count: tickets[0].lines?.length || 0,
-          lines_sample: tickets[0].lines?.slice(0, 3),
-          metadata: tickets[0].metadata
-        },
-        all_have_lines: tickets.every((t: any) => t.lines && t.lines.length > 0),
-        transactions_without_lines: tickets.filter((t: any) => !t.lines || t.lines.length === 0).length
-      })
-    }
-  }, [tickets])
 
   // Fetch appointments using Universal Transaction V1 hook (RPC-based)
   const {

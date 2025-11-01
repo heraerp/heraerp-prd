@@ -69,13 +69,16 @@ export const SalonLuxeButton = forwardRef<HTMLButtonElement, SalonLuxeButtonProp
           return isHovered
             ? {
                 ...baseStyle,
-                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(184, 134, 11, 0.30) 100%)`,
+                // Very subtle hover - minimal brightness change
+                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(184, 134, 11, 0.22) 100%)`,
                 borderWidth: '2px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(212, 175, 55, 0.60)',
-                color: SALON_LUXE_COLORS.champagne.light,
-                boxShadow: `0 4px 16px rgba(212, 175, 55, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)`,
-                transform: 'translateY(-1px) scale(1.01)',
+                borderColor: 'rgba(212, 175, 55, 0.50)',
+                // Darker text for better readability - using darker bronze
+                color: SALON_LUXE_COLORS.bronze.base,
+                fontWeight: 700,
+                boxShadow: `0 3px 12px rgba(212, 175, 55, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.10)`,
+                transform: 'translateY(-1px)',
               }
             : {
                 ...baseStyle,
@@ -140,18 +143,20 @@ export const SalonLuxeButton = forwardRef<HTMLButtonElement, SalonLuxeButtonProp
           return isHovered
             ? {
                 ...baseStyle,
-                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(184, 134, 11, 0.22) 100%)`,
+                // Very subtle hover - minimal brightness change
+                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.13) 0%, rgba(184, 134, 11, 0.17) 100%)`,
                 backdropFilter: 'blur(16px)',
                 WebkitBackdropFilter: 'blur(16px)',
                 borderWidth: '2px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(212, 175, 55, 0.70)',
+                borderColor: 'rgba(212, 175, 55, 0.55)',
                 borderRadius: '16px',
-                color: SALON_LUXE_COLORS.champagne.light,
+                // Darker text for better readability - using darker bronze
+                color: SALON_LUXE_COLORS.bronze.base,
                 fontWeight: 700,
                 letterSpacing: '0.02em',
-                boxShadow: '0 12px 36px rgba(212, 175, 55, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.20)',
-                transform: 'translateY(-2px) scale(1.01)',
+                boxShadow: '0 10px 30px rgba(212, 175, 55, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+                transform: 'translateY(-1px)',
                 transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)', // spring animation
                 position: 'relative' as const,
                 overflow: 'hidden' as const,

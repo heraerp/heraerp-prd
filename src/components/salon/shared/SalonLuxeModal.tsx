@@ -448,55 +448,40 @@ export function SalonLuxeModal({
             outline: none !important;
           }
 
-          /* Enhanced Primary Button Styling - Luxury Theme */
+          /* Enhanced Primary Button Styling - Subtle Luxury Theme */
           .salon-luxe-modal button[type="submit"],
           .salon-luxe-modal button.primary-button {
             position: relative !important;
-            background: linear-gradient(135deg, #F0D06B 0%, #E5C158 50%, ${SALON_LUXE_COLORS.gold.base} 100%) !important;
-            color: #000000 !important;
-            font-weight: 800 !important;
-            border: none !important;
+            /* Subtle background - semi-transparent gold */
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.20) 100%) !important;
+            /* Readable text color - champagne instead of black */
+            color: ${SALON_LUXE_COLORS.champagne.base} !important;
+            font-weight: 700 !important;
+            border: 2px solid rgba(212, 175, 55, 0.40) !important;
             box-shadow:
-              0 4px 16px rgba(212, 175, 55, 0.4),
-              0 2px 8px rgba(212, 175, 55, 0.3),
-              inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.4) !important;
+              0 2px 8px rgba(212, 175, 55, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+            transition: all 0.3s ease !important;
             overflow: hidden !important;
           }
 
-          /* Shine effect overlay */
+          /* Removed shine effect for subtlety */
           .salon-luxe-modal button[type="submit"]::before,
           .salon-luxe-modal button.primary-button::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: -100% !important;
-            width: 100% !important;
-            height: 100% !important;
-            background: linear-gradient(
-              90deg,
-              transparent,
-              rgba(255, 255, 255, 0.3),
-              transparent
-            ) !important;
-            transition: left 0.5s ease !important;
-          }
-
-          .salon-luxe-modal button[type="submit"]:hover:not(:disabled)::before,
-          .salon-luxe-modal button.primary-button:hover:not(:disabled)::before {
-            left: 100% !important;
+            display: none !important;
           }
 
           .salon-luxe-modal button[type="submit"]:hover:not(:disabled),
           .salon-luxe-modal button.primary-button:hover:not(:disabled) {
-            background: linear-gradient(135deg, #F5D98F 0%, #F0D06B 50%, #E5C158 100%) !important;
+            /* Very subtle hover - minimal brightness change */
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(184, 134, 11, 0.22) 100%) !important;
+            border-color: rgba(212, 175, 55, 0.50) !important;
+            /* Darker text for better contrast */
+            color: ${SALON_LUXE_COLORS.bronze.base} !important;
             box-shadow:
-              0 6px 24px rgba(212, 175, 55, 0.6),
-              0 3px 12px rgba(212, 175, 55, 0.4),
-              inset 0 1px 0 rgba(255, 255, 255, 0.4),
-              0 0 40px rgba(212, 175, 55, 0.3) !important;
-            transform: translateY(-2px) scale(1.02) !important;
+              0 3px 12px rgba(212, 175, 55, 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+            transform: translateY(-1px) !important;
           }
 
           .salon-luxe-modal button[type="submit"]:active:not(:disabled),
@@ -520,24 +505,30 @@ export function SalonLuxeModal({
 
           .salon-luxe-modal button[type="submit"] *,
           .salon-luxe-modal button.primary-button * {
-            color: #000000 !important;
-            font-weight: 800 !important;
+            /* Readable text - champagne instead of black */
+            color: ${SALON_LUXE_COLORS.champagne.base} !important;
+            font-weight: 700 !important;
             position: relative !important;
             z-index: 1 !important;
           }
 
-          .salon-luxe-modal button[type="submit"]:disabled *,
-          .salon-luxe-modal button.primary-button:disabled * {
-            color: rgba(15, 15, 15, 0.95) !important;
-            font-weight: 800 !important;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.15) !important;
+          /* On hover, use darker bronze for better contrast */
+          .salon-luxe-modal button[type="submit"]:hover:not(:disabled) *,
+          .salon-luxe-modal button.primary-button:hover:not(:disabled) * {
+            color: ${SALON_LUXE_COLORS.bronze.base} !important;
           }
 
-          /* Animate icons on hover */
+          .salon-luxe-modal button[type="submit"]:disabled *,
+          .salon-luxe-modal button.primary-button:disabled * {
+            color: rgba(224, 224, 224, 0.4) !important;
+            font-weight: 700 !important;
+          }
+
+          /* Subtle icon animation on hover */
           .salon-luxe-modal button[type="submit"]:hover:not(:disabled) svg,
           .salon-luxe-modal button.primary-button:hover:not(:disabled) svg {
-            transform: scale(1.1) rotate(5deg) !important;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            transform: scale(1.05) !important;
+            transition: transform 0.3s ease !important;
           }
 
           /* Enhanced Outline/Secondary Button Styling */
@@ -656,17 +647,17 @@ export function SalonLuxeModal({
             opacity: 0.6 !important;
           }
 
-          /* Extra emphasis for footer buttons */
+          /* Footer buttons - same subtle style, no extra brightness */
           .salon-luxe-modal [class*="footer"] button[type="submit"],
           .salon-luxe-modal [class*="footer"] button.primary-button,
           .salon-luxe-modal > div > div > div:last-child button[type="submit"],
           .salon-luxe-modal > div > div > div:last-child button.primary-button {
-            background: linear-gradient(135deg, #F5D98F 0%, #F0D06B 40%, #E5C158 70%, ${SALON_LUXE_COLORS.gold.base} 100%) !important;
+            /* Use same subtle style as above - no extra brightness */
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.20) 100%) !important;
+            border: 2px solid rgba(212, 175, 55, 0.40) !important;
             box-shadow:
-              0 6px 20px rgba(212, 175, 55, 0.5),
-              0 3px 10px rgba(212, 175, 55, 0.3),
-              inset 0 1px 0 rgba(255, 255, 255, 0.4),
-              0 0 0 1px rgba(212, 175, 55, 0.4) !important;
+              0 2px 8px rgba(212, 175, 55, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
           }
 
           /* Focus states for accessibility */
@@ -717,6 +708,104 @@ export function SalonLuxeModal({
               transform: scale(4);
               opacity: 0;
             }
+          }
+
+          /* ===== DATE INPUT CALENDAR ICON VISIBILITY FIX ===== */
+          /* Make entire date input field clickable to open calendar picker */
+          .salon-luxe-modal input[type="date"] {
+            position: relative !important;
+            color: ${SALON_LUXE_COLORS.text.primary} !important;
+            background-color: ${SALON_LUXE_COLORS.charcoal.darker} !important;
+            border: 1px solid ${SALON_LUXE_COLORS.border.base} !important;
+            cursor: pointer !important;
+          }
+
+          /* Make the calendar icon cover entire field for full clickability (Webkit) */
+          .salon-luxe-modal input[type="date"]::-webkit-calendar-picker-indicator {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>') !important;
+            cursor: pointer !important;
+            opacity: 1 !important;
+            filter: none !important;
+            /* Make the clickable area cover the entire input field */
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            /* Position the icon on the right side */
+            background-position: right 0.75rem center !important;
+            background-repeat: no-repeat !important;
+            background-size: 20px 20px !important;
+          }
+
+          /* Hover effect for date input calendar icon */
+          .salon-luxe-modal input[type="date"]:hover::-webkit-calendar-picker-indicator {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23F0D06B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>') !important;
+            opacity: 1 !important;
+          }
+
+          /* Firefox - Make entire field clickable */
+          .salon-luxe-modal input[type="date"]::-moz-calendar-picker-indicator {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>') !important;
+            cursor: pointer !important;
+            opacity: 1 !important;
+            filter: none !important;
+            width: 100% !important;
+            height: 100% !important;
+          }
+
+          /* Make the left-side decorative calendar icons gold/visible */
+          .salon-luxe-modal [class*="lucide-calendar"],
+          .salon-luxe-modal svg[class*="calendar"] {
+            color: ${SALON_LUXE_COLORS.gold.base} !important;
+            stroke: ${SALON_LUXE_COLORS.gold.base} !important;
+          }
+
+          /* Ensure calendar icon container is clickable and passes clicks through to input */
+          .salon-luxe-modal .relative svg[class*="calendar"] {
+            pointer-events: none !important;
+          }
+
+          /* Date input wrapper should allow click-through */
+          .salon-luxe-modal input[type="date"] + svg,
+          .salon-luxe-modal input[type="date"] ~ svg {
+            pointer-events: none !important;
+            color: ${SALON_LUXE_COLORS.gold.base} !important;
+          }
+
+          /* Focus state for date inputs */
+          .salon-luxe-modal input[type="date"]:focus {
+            border-color: ${SALON_LUXE_COLORS.gold.base} !important;
+            box-shadow: 0 0 0 2px ${SALON_LUXE_COLORS.gold.base}30 !important;
+            outline: none !important;
+          }
+
+          /* Hover state for date inputs */
+          .salon-luxe-modal input[type="date"]:hover {
+            border-color: ${SALON_LUXE_COLORS.gold.base}50 !important;
+            box-shadow: 0 0 0 1px ${SALON_LUXE_COLORS.gold.base}20 !important;
+          }
+
+          /* Date input placeholder text color */
+          .salon-luxe-modal input[type="date"]::-webkit-datetime-edit-text,
+          .salon-luxe-modal input[type="date"]::-webkit-datetime-edit-month-field,
+          .salon-luxe-modal input[type="date"]::-webkit-datetime-edit-day-field,
+          .salon-luxe-modal input[type="date"]::-webkit-datetime-edit-year-field {
+            color: ${SALON_LUXE_COLORS.text.primary} !important;
+          }
+
+          /* Date input placeholder when empty */
+          .salon-luxe-modal input[type="date"]::-webkit-datetime-edit {
+            color: ${SALON_LUXE_COLORS.text.secondary} !important;
+          }
+
+          /* When date input has a value */
+          .salon-luxe-modal input[type="date"]:not(:placeholder-shown) {
+            color: ${SALON_LUXE_COLORS.text.primary} !important;
           }
         `}</style>
       </DialogContent>
