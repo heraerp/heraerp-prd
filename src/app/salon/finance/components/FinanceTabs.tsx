@@ -20,7 +20,9 @@ import {
   ArrowDownRight,
   AlertCircle,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Edit2,
+  Trash2
 } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import {
@@ -1678,20 +1680,31 @@ function ExpenseRow({ expense, onEdit, onDelete }: any) {
         <span className="font-medium" style={{ color: SALON_LUXE_COLORS.ruby.base }}>
           AED {(expense.amount || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
         </span>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* ✅ ENTERPRISE-GRADE ACTION BUTTONS: Always visible, clear icons, mobile-friendly */}
+        <div className="flex gap-2">
           <button
             onClick={onEdit}
-            className="p-2 rounded hover:bg-charcoal-lighter transition-colors"
-            style={{ color: SALON_LUXE_COLORS.gold.base }}
+            className="min-w-[44px] min-h-[44px] p-2.5 rounded-lg transition-all active:scale-95 hover:scale-105"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.gold.base}20`,
+              color: SALON_LUXE_COLORS.gold.base,
+              border: `1px solid ${SALON_LUXE_COLORS.gold.base}40`
+            }}
+            title="Edit expense"
           >
-            <FileText className="w-4 h-4" />
+            <Edit2 className="w-5 h-5" />
           </button>
           <button
             onClick={onDelete}
-            className="p-2 rounded hover:bg-charcoal-lighter transition-colors"
-            style={{ color: SALON_LUXE_COLORS.ruby.base }}
+            className="min-w-[44px] min-h-[44px] p-2.5 rounded-lg transition-all active:scale-95 hover:scale-105"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.ruby.base}20`,
+              color: SALON_LUXE_COLORS.ruby.base,
+              border: `1px solid ${SALON_LUXE_COLORS.ruby.base}40`
+            }}
+            title="Delete expense"
           >
-            <AlertCircle className="w-4 h-4" />
+            <Trash2 className="w-5 h-5" />
           </button>
         </div>
       </div>

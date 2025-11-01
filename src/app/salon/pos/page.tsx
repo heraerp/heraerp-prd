@@ -192,9 +192,11 @@ function POSContent() {
           setDefaultStylistName(appointmentData.stylist_name)
         }
 
-        // Set branch if available
+        // ✅ FIX: Set branch in both context AND ticket
         if (appointmentData.branch_id) {
           setSelectedBranchId(appointmentData.branch_id)
+          // Also add branch to ticket so BillSetupModal can access it
+          updateTicketInfo({ branch_id: appointmentData.branch_id })
         }
 
         // 🎯 ENTERPRISE PATTERN: Read service data from TOP LEVEL (same as customer_name/stylist_name)

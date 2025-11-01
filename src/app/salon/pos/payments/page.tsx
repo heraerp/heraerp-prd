@@ -25,7 +25,7 @@ import {
   Search,
   Receipt,
   Calendar,
-  DollarSign,
+  Banknote,
   User,
   Sparkles,
   ArrowLeft,
@@ -237,7 +237,7 @@ function PaymentsContent() {
           <SalonLuxeKPICard
             title="Total Revenue"
             value={`${currency} ${stats.totalRevenue.toFixed(2)}`}
-            icon={DollarSign}
+            icon={Banknote}
             color={COLORS.emerald}
             description="All transactions"
             animationDelay={100}
@@ -464,7 +464,7 @@ function PaymentsContent() {
 
                       {/* Amount */}
                       <div className="flex items-center gap-2 font-bold text-lg" style={{ color: COLORS.gold }}>
-                        <DollarSign className="w-5 h-5" />
+                        <Banknote className="w-5 h-5" />
                         <span>{currency} {sale.total_amount.toFixed(2)}</span>
                       </div>
 

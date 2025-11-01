@@ -177,21 +177,6 @@ function NewAppointmentContent() {
     selectedBranch // ✅ Add selectedBranch from the hook
   } = useBranchFilter(null, 'salon-appointments', organizationId)
 
-  // 🔍 DEBUG: Log selectedBranch to check if operating hours are loaded
-  useEffect(() => {
-    if (selectedBranch) {
-      console.log('[NewAppointment] 🔍 selectedBranch DEBUG:', {
-        id: selectedBranch.id,
-        name: selectedBranch.name,
-        has_opening_time: !!selectedBranch.opening_time,
-        has_closing_time: !!selectedBranch.closing_time,
-        opening_time: selectedBranch.opening_time,
-        closing_time: selectedBranch.closing_time,
-        all_keys: Object.keys(selectedBranch),
-        full_branch: selectedBranch
-      })
-    }
-  }, [selectedBranch])
 
   // Form state - MUST be declared before hooks that use these values
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
@@ -241,11 +226,15 @@ function NewAppointmentContent() {
   })
 
   // ⚡ PERFORMANCE: Fetch existing appointments for conflict detection
+  // ✅ FIX: Use full ISO timestamp format to match calendar query format
+  const dateFromISO = selectedDate ? `${selectedDate}T00:00:00.000Z` : undefined
+  const dateToISO = selectedDate ? `${selectedDate}T23:59:59.999Z` : undefined
+
   const { appointments, isLoading: appointmentsLoading } = useHeraAppointments({
     organizationId,
     filters: {
-      date_from: selectedDate,
-      date_to: selectedDate
+      date_from: dateFromISO,
+      date_to: dateToISO
     }
   })
 
@@ -508,11 +497,21 @@ function NewAppointmentContent() {
 
   // ⚡ PERFORMANCE: Memoize available time slots (filter out conflicts)
   const availableTimeSlots = useMemo(() => {
+    // ✅ FIX: If appointments are still loading, don't calculate conflicts yet
+    // This ensures booked slots are properly detected when navigating from calendar
+    if (appointmentsLoading) {
+      return timeSlots.map(slot => ({
+        ...slot,
+        hasConflict: false,
+        conflictingAppointment: null
+      }))
+    }
+
     return timeSlots.map(slot => ({
       ...slot,
       ...checkTimeSlotConflict(slot.start)
     }))
-  }, [timeSlots, checkTimeSlotConflict])
+  }, [timeSlots, checkTimeSlotConflict, selectedStylist, selectedDate, appointments, appointmentsLoading])
 
   const totalAmount = useMemo(
     () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
