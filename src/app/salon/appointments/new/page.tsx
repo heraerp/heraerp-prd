@@ -226,11 +226,15 @@ function NewAppointmentContent() {
   })
 
   // ⚡ PERFORMANCE: Fetch existing appointments for conflict detection
+  // ✅ FIX: Use full ISO timestamp format to match calendar query format
+  const dateFromISO = selectedDate ? `${selectedDate}T00:00:00.000Z` : undefined
+  const dateToISO = selectedDate ? `${selectedDate}T23:59:59.999Z` : undefined
+
   const { appointments, isLoading: appointmentsLoading } = useHeraAppointments({
     organizationId,
     filters: {
-      date_from: selectedDate,
-      date_to: selectedDate
+      date_from: dateFromISO,
+      date_to: dateToISO
     }
   })
 
@@ -289,22 +293,6 @@ function NewAppointmentContent() {
     cart,
     checkStaffAvailability
   })
-
-  // 🔍 DEBUG: Log appointments query to diagnose calendar pre-fill issue
-  useEffect(() => {
-    if (!appointmentsLoading && selectedStylist) {
-      console.log('[NewAppointment] 📊 Appointments query result:', {
-        selectedDate,
-        selectedStylist: selectedStylist.entity_name,
-        totalAppointments: appointments?.length || 0,
-        appointmentsForStylist: appointments?.filter(apt => apt.stylist_id === selectedStylist.id).length || 0,
-        blockingAppointments: appointments?.filter(apt =>
-          apt.stylist_id === selectedStylist.id &&
-          BLOCKING_STATUSES.includes(apt.status)
-        ).length || 0
-      })
-    }
-  }, [appointments, appointmentsLoading, selectedStylist, selectedDate])
 
   // 🚀 ENTERPRISE: Auto-fill form from URL params (calendar click-to-book)
   // Use ref to track if params have been applied (avoid re-applying)
