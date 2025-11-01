@@ -1728,10 +1728,24 @@ export function SalonResourceCalendar({
               </Button>
               <Button
                 variant="outline"
-                className="text-sm font-medium min-w-[100px] flex-shrink-0"
+                className="text-sm font-medium min-w-[100px] flex-shrink-0 transition-all duration-200"
                 style={{
                   color: COLORS.champagne,
-                  borderColor: COLORS.bronze
+                  borderColor: `${COLORS.gold}40`,
+                  backgroundColor: `rgba(212, 175, 55, 0.08)`,
+                  borderWidth: '2px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = `rgba(212, 175, 55, 0.18)`
+                  e.currentTarget.style.borderColor = `${COLORS.gold}60`
+                  e.currentTarget.style.color = COLORS.champagne
+                  e.currentTarget.style.boxShadow = `0 2px 8px rgba(212, 175, 55, 0.25)`
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = `rgba(212, 175, 55, 0.08)`
+                  e.currentTarget.style.borderColor = `${COLORS.gold}40`
+                  e.currentTarget.style.color = COLORS.champagne
+                  e.currentTarget.style.boxShadow = 'none'
                 }}
                 onClick={() => setSelectedDate(new Date())}
               >
@@ -3018,34 +3032,122 @@ export function SalonResourceCalendar({
               </div>
             </div>
 
-            {/* Mark as Completed - Only show if not completed */}
-            {lateMenuAppointment.status !== 'completed' && (
+            {/* Payment - Only show if not completed or cancelled */}
+            {lateMenuAppointment.status !== 'completed' &&
+             lateMenuAppointment.status !== 'cancelled' && (
               <div className="px-2 pb-2 pt-1 border-t" style={{ borderColor: `${COLORS.bronze}30` }}>
                 <button
                   onClick={() => {
-                    handleToggleCompletion(lateMenuAppointment)
+                    // Find the original raw appointment with all data
+                    const originalAppointment = rawAppointments?.find(
+                      apt => apt.id === lateMenuAppointment.id
+                    )
+
+                    if (originalAppointment) {
+                      // 🎯 ENTERPRISE PATTERN: Extract service data (same as appointments page)
+                      const serviceIds = originalAppointment.metadata?.service_ids || []
+                      const serviceNames: string[] = []
+                      const servicePrices: number[] = []
+
+                      // Extract service names and prices from loaded services
+                      serviceIds.forEach((serviceId: string) => {
+                        const service = services?.find((s: any) => s.id === serviceId)
+                        if (service) {
+                          serviceNames.push(service.entity_name || service.name || 'Unknown Service')
+
+                          // 🎯 ENTERPRISE: dynamic_fields can be ARRAY or OBJECT with numeric keys
+                          let price = 0
+                          if (service.dynamic_fields) {
+                            // Convert to array if it's an object with numeric keys
+                            const fieldsArray = Array.isArray(service.dynamic_fields)
+                              ? service.dynamic_fields
+                              : Object.values(service.dynamic_fields)
+
+                            // Extract actual field objects (unwrap {value: {...}})
+                            const unwrappedFields = fieldsArray.map((f: any) => f.value || f)
+
+                            // Find price field
+                            const priceField = unwrappedFields.find((f: any) => f.field_name === 'price_market')
+                            price = priceField?.field_value_number || 0
+
+                            // Fallback: check nested structure
+                            if (!price && service.dynamic_fields.price_market?.value) {
+                              price = service.dynamic_fields.price_market.value
+                            }
+                          }
+
+                          // Final fallback
+                          if (!price && service.price) {
+                            price = service.price
+                          }
+
+                          servicePrices.push(price)
+                        } else {
+                          serviceNames.push('Unknown Service')
+                          servicePrices.push(0)
+                        }
+                      })
+
+                      // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL (same as appointments page)
+                      // This ensures POS can access service data directly without nested metadata drilling
+                      const appointmentData = {
+                        id: originalAppointment.id,
+                        organization_id: organizationId,
+                        branch_id: originalAppointment.branch_id,
+                        customer_id: originalAppointment.customer_id,
+                        customer_name: originalAppointment.customer_name,
+                        stylist_id: originalAppointment.stylist_id,
+                        stylist_name: originalAppointment.stylist_name,
+                        // ✅ SERVICE DATA AT TOP LEVEL (same pattern as appointments page)
+                        service_ids: serviceIds,
+                        service_names: serviceNames,
+                        service_prices: servicePrices,
+                        start_time: originalAppointment.start_time,
+                        end_time: originalAppointment.end_time,
+                        duration: originalAppointment.duration_minutes,
+                        price: originalAppointment.price || originalAppointment.total_amount || 0,
+                        status: originalAppointment.status,
+                        flags: {
+                          vip: originalAppointment.metadata?.vip || false,
+                          new: originalAppointment.metadata?.new_customer || false
+                        },
+                        metadata: originalAppointment.metadata,
+                        _source: 'calendar',
+                        _timestamp: new Date().toISOString()
+                      }
+
+                      // Store appointment details in sessionStorage for POS page
+                      sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))
+
+                      // Navigate to POS with appointment ID
+                      router.push(`/salon/pos?appointment=${originalAppointment.id}`)
+                    }
+
                     setLateMenuAppointment(null)
                     setLateMenuPosition(null)
                   }}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-95"
                   style={{
-                    backgroundColor: `${COLORS.gold}10`,
+                    background: 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)',
+                    border: '1px solid rgba(147,51,234,0.5)',
                     color: COLORS.champagne
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.backgroundColor = `${COLORS.gold}20`
+                    e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.5) 0%, rgba(192,132,252,0.35) 100%)'
+                    e.currentTarget.style.borderColor = 'rgba(147,51,234,0.8)'
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.backgroundColor = `${COLORS.gold}10`
+                    e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147,51,234,0.35) 0%, rgba(192,132,252,0.25) 100%)'
+                    e.currentTarget.style.borderColor = 'rgba(147,51,234,0.5)'
                   }}
                 >
-                  <span className="text-xl">✅</span>
+                  <span className="text-xl">💳</span>
                   <div className="flex-1 text-left">
                     <p className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                      Mark as Completed
+                      Process Payment
                     </p>
                     <p className="text-xs" style={{ color: COLORS.bronze }}>
-                      Finish this appointment
+                      Complete checkout at POS
                     </p>
                   </div>
                 </button>
