@@ -24,7 +24,7 @@ import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
 import { useMonthlySalesReport } from '@/hooks/useSalonSalesReports'
 import { useHeraExpenses } from '@/hooks/useHeraExpenses'
-import { ExpenseModal } from '../ExpenseModal'
+import { ExpenseModal } from '@/components/salon/finance/ExpenseModal'
 import { startOfMonth, endOfMonth } from 'date-fns'
 
 interface FinanceTabsProps {
