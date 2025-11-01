@@ -1051,7 +1051,12 @@ export function SalonResourceCalendar({
   const handleConflictProceed = useCallback(() => {
     if (!conflictDetails) return
 
-    const formattedDate = conflictDetails.date.toISOString().split('T')[0]
+    // ✅ FIX: Format date in local timezone to avoid off-by-one day error
+    const year = conflictDetails.date.getFullYear()
+    const month = String(conflictDetails.date.getMonth() + 1).padStart(2, '0')
+    const day = String(conflictDetails.date.getDate()).padStart(2, '0')
+    const formattedDate = `${year}-${month}-${day}`
+
     const params = new URLSearchParams({
       date: formattedDate,
       time: conflictDetails.time,
@@ -1085,7 +1090,11 @@ export function SalonResourceCalendar({
         return
       }
 
-      const formattedDate = date.toISOString().split('T')[0] // YYYY-MM-DD format
+      // ✅ FIX: Format date in local timezone to avoid off-by-one day error
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      const formattedDate = `${year}-${month}-${day}` // YYYY-MM-DD format
 
       // Build query params for /appointments/new
       const params = new URLSearchParams({
@@ -1672,7 +1681,14 @@ export function SalonResourceCalendar({
                 boxShadow: '0 6px 20px rgba(212,175,55,0.25)'
               }}
               onClick={() => {
-                window.location.href = '/salon/appointments/new'
+                // ✅ FIX: Format date in local timezone to avoid off-by-one day error
+                const year = selectedDate.getFullYear()
+                const month = String(selectedDate.getMonth() + 1).padStart(2, '0')
+                const day = String(selectedDate.getDate()).padStart(2, '0')
+                const formattedDate = `${year}-${month}-${day}`
+
+                const params = new URLSearchParams({ date: formattedDate })
+                router.push(`/salon/appointments/new?${params.toString()}`)
               }}
             >
               <Plus className="w-4 h-4 mr-2 calendar-icon" />
@@ -2268,9 +2284,12 @@ export function SalonResourceCalendar({
                 : // Resource view headers (stylists)
                   displayedStylists.map((stylist, idx) => {
                     // ✅ Check if staff is on leave for the selected date
-                    const dateToCheck = viewMode === 'resource' && viewDates.length > 0
-                      ? viewDates[0].toISOString().split('T')[0]
-                      : selectedDate.toISOString().split('T')[0]
+                    // ✅ FIX: Format date in local timezone
+                    const checkDate = viewMode === 'resource' && viewDates.length > 0 ? viewDates[0] : selectedDate
+                    const year = checkDate.getFullYear()
+                    const month = String(checkDate.getMonth() + 1).padStart(2, '0')
+                    const day = String(checkDate.getDate()).padStart(2, '0')
+                    const dateToCheck = `${year}-${month}-${day}`
                     const availability = checkStaffAvailability(stylist.id, dateToCheck, 'full_day')
                     const isOnLeave = !availability.isAvailable
 
@@ -3205,8 +3224,14 @@ export function SalonResourceCalendar({
                   setLateMenuPosition(null)
 
                   // Navigate to new appointment with pre-filled data
+                  // ✅ FIX: Format date in local timezone to avoid off-by-one day error
+                  const year = appointmentDate.getFullYear()
+                  const month = String(appointmentDate.getMonth() + 1).padStart(2, '0')
+                  const day = String(appointmentDate.getDate()).padStart(2, '0')
+                  const formattedDate = `${year}-${month}-${day}`
+
                   const params = new URLSearchParams({
-                    date: appointmentDate.toISOString().split('T')[0],
+                    date: formattedDate,
                     time: appointmentTime,
                     stylist_id: stylistId
                   })
