@@ -374,6 +374,7 @@ function SalonServicesPageContent() {
         // Map form data to hook's expected format
         const serviceData = {
           name: data.name,
+          code: data.code, // ✅ FIX: Include service code in the payload
           price_market: data.price || 0,
           duration_min: data.duration_minutes || 0,
           commission_rate: 0.5, // Default commission rate
