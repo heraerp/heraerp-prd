@@ -234,22 +234,6 @@ function NewAppointmentContent() {
     }
   })
 
-  // 🔍 DEBUG: Log appointments query to diagnose calendar pre-fill issue
-  useEffect(() => {
-    if (!appointmentsLoading && selectedStylist) {
-      console.log('[NewAppointment] 📊 Appointments loaded for conflict check:', {
-        selectedDate,
-        selectedStylist: selectedStylist.entity_name,
-        totalAppointments: appointments?.length || 0,
-        appointmentsForThisStylist: appointments?.filter(apt => apt.stylist_id === selectedStylist.id).length || 0,
-        blockingAppointments: appointments?.filter(apt =>
-          apt.stylist_id === selectedStylist.id &&
-          BLOCKING_STATUSES.includes(apt.status)
-        ).length || 0
-      })
-    }
-  }, [appointments, appointmentsLoading, selectedStylist, selectedDate])
-
   // 🛍️ Load products for retail sales during appointments
   const { products } = useHeraProducts({
     filters: {
@@ -305,6 +289,22 @@ function NewAppointmentContent() {
     cart,
     checkStaffAvailability
   })
+
+  // 🔍 DEBUG: Log appointments query to diagnose calendar pre-fill issue
+  useEffect(() => {
+    if (!appointmentsLoading && selectedStylist) {
+      console.log('[NewAppointment] 📊 Appointments query result:', {
+        selectedDate,
+        selectedStylist: selectedStylist.entity_name,
+        totalAppointments: appointments?.length || 0,
+        appointmentsForStylist: appointments?.filter(apt => apt.stylist_id === selectedStylist.id).length || 0,
+        blockingAppointments: appointments?.filter(apt =>
+          apt.stylist_id === selectedStylist.id &&
+          BLOCKING_STATUSES.includes(apt.status)
+        ).length || 0
+      })
+    }
+  }, [appointments, appointmentsLoading, selectedStylist, selectedDate])
 
   // 🚀 ENTERPRISE: Auto-fill form from URL params (calendar click-to-book)
   // Use ref to track if params have been applied (avoid re-applying)

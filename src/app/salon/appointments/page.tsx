@@ -171,7 +171,7 @@ function AppointmentsContent() {
   const [postponeDate, setPostponeDate] = useState('')
   const [postponeTime, setPostponeTime] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [dateFilter, setDateFilter] = useState<string>('all')
+  const [dateFilter, setDateFilter] = useState<string>('next7days')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [isNavigating, setIsNavigating] = useState(false)
 
