@@ -18,7 +18,7 @@ import {
   Receipt,
   User,
   Calendar,
-  DollarSign,
+  Banknote,
   CreditCard,
   Package,
   Scissors,
@@ -386,7 +386,7 @@ export function SaleDetailsDialog({
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <DollarSign className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+                    <Banknote className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
                     <span
                       className="text-sm font-medium"
                       style={{ color: LUXE_COLORS.bronze }}

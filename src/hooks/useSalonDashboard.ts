@@ -392,6 +392,24 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     }
   })
 
+  // ✅ NEW: Fetch original SALE transactions for service analytics
+  // GL_JOURNAL references SALE via metadata.origin_transaction_id
+  const {
+    transactions: saleTransactions,
+    isLoading: saleTransactionsLoading
+  } = useUniversalTransactionV1({
+    organizationId,
+    filters: {
+      transaction_type: 'SALE',
+      limit: 1000,
+      include_lines: true // Need lines to see which services were purchased
+    },
+    cacheConfig: {
+      staleTime: 0,
+      refetchOnMount: 'always'
+    }
+  })
+
 
   // Fetch appointments using Universal Transaction V1 hook (RPC-based)
   const {
@@ -843,17 +861,28 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     // SERVICE ANALYTICS
     // ═══════════════════════════════════════════════════════════════
 
+    // ✅ PROPER SOLUTION: Use SALE transactions to get service data
+    // GL_JOURNAL lines have entity_id=null, but SALE transaction lines have the actual service IDs
     const serviceStats = activeServices.map(service => {
-      // Use period-filtered tickets for service analytics
-      const serviceTransactions = periodCompletedTickets.filter(
-        t =>
-          t.metadata?.service_id === service.id ||
-          t.metadata?.service_ids?.includes(service.id)
+      // Match SALE transactions that have this service in their lines
+      const serviceSales = (saleTransactions || []).filter(sale => {
+        const lines = sale.lines || []
+        return lines.some((line: any) =>
+          line.entity_id === service.id &&
+          line.line_type === 'service'
+        )
+      })
+
+      const bookings = serviceSales.length
+
+      // For each matching SALE, find its corresponding GL_JOURNAL to get revenue
+      const serviceSaleIds = new Set(serviceSales.map(s => s.id))
+      const correspondingGLJournals = periodCompletedTickets.filter(glj =>
+        serviceSaleIds.has(glj.metadata?.origin_transaction_id)
       )
 
-      const bookings = serviceTransactions.length
       // ✅ ALIGNED WITH REPORTS: Service revenue from GL_JOURNAL metadata
-      const revenue = extractGrossRevenue(serviceTransactions)
+      const revenue = extractGrossRevenue(correspondingGLJournals)
       const averagePrice = bookings > 0 ? revenue / bookings : 0
 
       return {
@@ -865,6 +894,33 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
         popularityRank: 0
       }
     }).filter(s => s.bookings > 0)
+
+    // 🔍 DEBUG: Log service analytics data
+    console.log('[useSalonDashboard] Service Analytics Debug:', {
+      activeServicesCount: activeServices.length,
+      activeServiceNames: activeServices.map(s => s.entity_name).slice(0, 5),
+      saleTransactionsCount: saleTransactions?.length || 0,
+      sampleSaleTransaction: saleTransactions?.[0] ? {
+        id: saleTransactions[0].id,
+        linesCount: saleTransactions[0].lines?.length || 0,
+        sampleLines: saleTransactions[0].lines?.slice(0, 3).map((l: any) => ({
+          line_type: l.line_type,
+          entity_id: l.entity_id,
+          line_amount: l.line_amount
+        }))
+      } : null,
+      periodCompletedTicketsCount: periodCompletedTickets.length,
+      sampleGLJournal: periodCompletedTickets[0] ? {
+        id: periodCompletedTickets[0].id,
+        origin_transaction_id: periodCompletedTickets[0].metadata?.origin_transaction_id
+      } : null,
+      serviceStatsCount: serviceStats.length,
+      topServices: serviceStats.slice(0, 3).map(s => ({
+        name: s.serviceName,
+        bookings: s.bookings,
+        revenue: s.revenue
+      }))
+    })
 
     const sortedServices = serviceStats.sort((a, b) => b.bookings - a.bookings)
     sortedServices.forEach((s, index) => {
@@ -966,7 +1022,7 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       paymentMethodSplitAnalysis, // ✅ ENTERPRISE: Payment method split by time periods
       financialMetricsSplitAnalysis // ✅ ENTERPRISE: Revenue/profit metrics by time periods
     }
-  }, [customers, services, products, staff, tickets, appointments, selectedPeriod])
+  }, [customers, services, products, staff, tickets, appointments, saleTransactions, selectedPeriod])
 
   // Loading state
   const isLoading =
@@ -975,7 +1031,8 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     productsLoading ||
     staffLoading ||
     ticketsLoading ||
-    appointmentsLoading
+    appointmentsLoading ||
+    saleTransactionsLoading
 
   // Refresh all data
   const refreshAll = async () => {

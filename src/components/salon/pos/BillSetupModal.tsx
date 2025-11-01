@@ -78,20 +78,7 @@ export function BillSetupModal({
     // Check if pending item (being added) is a service
     const pendingIsService = pendingItem?.item?.__kind === 'SERVICE'
 
-    const result = cartHasServices || pendingIsService
-
-    console.log('[BillSetupModal] hasServices check:', {
-      lineItems,
-      lineItemCount: lineItems.length,
-      entityTypes: lineItems.map(item => item.entity_type),
-      pendingItem: pendingItem?.item,
-      pendingItemKind: pendingItem?.item?.__kind,
-      cartHasServices,
-      pendingIsService,
-      finalResult: result
-    })
-
-    return result
+    return cartHasServices || pendingIsService
   }, [lineItems, pendingItem])
 
   // Filter staff by selected branch
@@ -105,7 +92,10 @@ export function BillSetupModal({
   // Pre-select current values when modal opens
   useEffect(() => {
     if (open) {
-      setSelectedBranch(currentBranchId)
+      // ✅ FIX: Always update branch when currentBranchId changes (reflects catalog dropdown selection)
+      if (currentBranchId) {
+        setSelectedBranch(currentBranchId)
+      }
 
       if (currentCustomerId) {
         // Customer will be handled by CustomerSearchInline

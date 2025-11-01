@@ -691,7 +691,7 @@ function DashboardContent() {
  */
 export default function SalonDashboard() {
   return (
-    <DashboardFilterProvider defaultPeriod="allTime">
+    <DashboardFilterProvider defaultPeriod="last30Days">
       <DashboardContent />
     </DashboardFilterProvider>
   )

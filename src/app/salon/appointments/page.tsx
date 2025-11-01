@@ -171,7 +171,7 @@ function AppointmentsContent() {
   const [postponeDate, setPostponeDate] = useState('')
   const [postponeTime, setPostponeTime] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [dateFilter, setDateFilter] = useState<string>('all')
+  const [dateFilter, setDateFilter] = useState<string>('next7days')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [isNavigating, setIsNavigating] = useState(false)
 
@@ -548,9 +548,41 @@ function AppointmentsContent() {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
 
+        const tomorrow = new Date(today)
+        tomorrow.setDate(tomorrow.getDate() + 1)
+
+        const next7Days = new Date(today)
+        next7Days.setDate(next7Days.getDate() + 7)
+
+        const next30Days = new Date(today)
+        next30Days.setDate(next30Days.getDate() + 30)
+
+        const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1)
+        const thisMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+        thisMonthEnd.setHours(23, 59, 59, 999)
+
+        const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+        const nextMonthEnd = new Date(today.getFullYear(), today.getMonth() + 2, 0)
+        nextMonthEnd.setHours(23, 59, 59, 999)
+
         switch (dateFilter) {
           case 'today':
             matchesDate = appointmentDate.toDateString() === today.toDateString()
+            break
+          case 'tomorrow':
+            matchesDate = appointmentDate.toDateString() === tomorrow.toDateString()
+            break
+          case 'next7days':
+            matchesDate = appointmentDate >= today && appointmentDate < next7Days
+            break
+          case 'next30days':
+            matchesDate = appointmentDate >= today && appointmentDate < next30Days
+            break
+          case 'thisMonth':
+            matchesDate = appointmentDate >= thisMonthStart && appointmentDate <= thisMonthEnd
+            break
+          case 'nextMonth':
+            matchesDate = appointmentDate >= nextMonthStart && appointmentDate <= nextMonthEnd
             break
           case 'upcoming':
             matchesDate = appointmentDate >= today
@@ -1121,7 +1153,7 @@ function AppointmentsContent() {
               </Select>
             </div>
 
-            {/* Date Filter - Full width on mobile */}
+            {/* Date Filter - Dropdown with enterprise styling */}
             <div className="w-full md:w-48">
               <Select value={dateFilter} onValueChange={setDateFilter}>
                 <SelectTrigger
@@ -1139,7 +1171,11 @@ function AppointmentsContent() {
                 <SelectContent>
                   <SelectItem value="all">All dates</SelectItem>
                   <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="upcoming">Upcoming</SelectItem>
+                  <SelectItem value="tomorrow">Tomorrow</SelectItem>
+                  <SelectItem value="next7days">Next 7 days</SelectItem>
+                  <SelectItem value="next30days">Next 30 days</SelectItem>
+                  <SelectItem value="thisMonth">This month</SelectItem>
+                  <SelectItem value="nextMonth">Next month</SelectItem>
                   <SelectItem value="past">Past</SelectItem>
                 </SelectContent>
               </Select>

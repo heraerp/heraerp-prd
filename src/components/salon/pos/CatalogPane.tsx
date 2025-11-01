@@ -88,7 +88,7 @@ export function CatalogPane({
         setBranchId(contextBranchId)
       }
     }
-  }, [contextBranchId]) // Only depend on contextBranchId to prevent loops
+  }, [contextBranchId, branches.length]) // Depend on both context and branches loaded
 
   // When user manually changes branch via dropdown, notify parent immediately
   const handleBranchChange = (newBranchId: string) => {

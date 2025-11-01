@@ -143,11 +143,9 @@ export function PaymentDialog({
         // ✅ ALWAYS fetch from database for most current organization name
         const result = await universalApi.getOrganization(organizationId)
         if (result.success && result.data) {
-          console.log('[PaymentDialog] ✅ Fetched organization name:', result.data.organization_name)
           setActualOrgName(result.data.organization_name)
         } else {
           // Use provided name as fallback
-          console.log('[PaymentDialog] Using provided organization name:', organizationName)
           setActualOrgName(organizationName || 'Salon')
         }
 
@@ -155,7 +153,6 @@ export function PaymentDialog({
         const currencyResult = await universalApi.getDynamicData(organizationId, 'currency')
 
         if (currencyResult.success && currencyResult.data?.field_value_text) {
-          console.log('[PaymentDialog] ✅ Fetched currency:', currencyResult.data.field_value_text)
           setCurrency(currencyResult.data.field_value_text)
         }
       } catch (err) {
@@ -173,36 +170,47 @@ export function PaymentDialog({
     const fetchBranchDetails = async () => {
       // ✅ FIX: Ensure branchId is a valid UUID string, not null/undefined
       if (!branchId || branchId === 'null' || branchId === 'undefined' || !organizationId) {
-        console.log('[PaymentDialog] Skipping branch details fetch - no branch selected:', { branchId })
         return
       }
 
       try {
-        const { getDynamicData } = await import('@/lib/universal-api-v2-client')
+        const { getEntities } = await import('@/lib/universal-api-v2-client')
 
-        console.log('[PaymentDialog] Fetching branch details for:', { branchId, organizationId })
-
-        // ✅ FIX: Use getDynamicData to fetch ALL fields for the branch entity
-        const dynamicFields = await getDynamicData('', {
+        // ✅ FIX: Fetch complete branch entity with dynamic fields included
+        const branches = await getEntities('', {
           p_organization_id: organizationId,
-          p_entity_id: branchId
+          p_entity_type: 'BRANCH',
+          p_include_dynamic: true,
+          p_status: null // Include all statuses to ensure we get the branch
         })
 
-        if (dynamicFields && Array.isArray(dynamicFields)) {
-          const addressField = dynamicFields.find((f: any) => f.field_name === 'address')
-          const phoneField = dynamicFields.find((f: any) => f.field_name === 'phone')
+        // Find the specific branch
+        const branch = branches.find((b: any) => b.id === branchId)
+
+        if (branch) {
+          let address = undefined
+          let phone = undefined
+
+          // Extract address and phone from dynamic_fields array
+          if (Array.isArray(branch.dynamic_fields)) {
+            const addressField = branch.dynamic_fields.find((f: any) => f.field_name === 'address')
+            const phoneField = branch.dynamic_fields.find((f: any) => f.field_name === 'phone')
+
+            address = addressField?.field_value_text || undefined
+            phone = phoneField?.field_value_text || undefined
+          }
+
+          // ✅ FALLBACK: Check metadata for address/phone (legacy support)
+          if (!address && branch.metadata?.address) {
+            address = branch.metadata.address
+          }
+          if (!phone && branch.metadata?.phone) {
+            phone = branch.metadata.phone
+          }
 
           setBranchDetails({
-            address: addressField?.field_value_text || undefined,
-            phone: phoneField?.field_value_text || undefined
-          })
-
-          console.log('[PaymentDialog] ✅ Branch details loaded:', {
-            branchId,
-            hasAddress: !!addressField,
-            hasPhone: !!phoneField,
-            address: addressField?.field_value_text,
-            phone: phoneField?.field_value_text
+            address,
+            phone
           })
         }
       } catch (err) {
