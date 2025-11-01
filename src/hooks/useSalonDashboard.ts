@@ -870,6 +870,28 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       }
     }).filter(s => s.bookings > 0)
 
+    // 🔍 DEBUG: Log service analytics data
+    console.log('[useSalonDashboard] Service Analytics Debug:', {
+      activeServicesCount: activeServices.length,
+      activeServiceNames: activeServices.map(s => s.entity_name).slice(0, 5),
+      periodCompletedTicketsCount: periodCompletedTickets.length,
+      sampleTransactionWithLines: periodCompletedTickets[0] ? {
+        id: periodCompletedTickets[0].id,
+        linesCount: periodCompletedTickets[0].lines?.length || 0,
+        sampleLines: periodCompletedTickets[0].lines?.slice(0, 3).map((l: any) => ({
+          line_type: l.line_type,
+          entity_id: l.entity_id,
+          line_amount: l.line_amount
+        }))
+      } : null,
+      serviceStatsCount: serviceStats.length,
+      topServices: serviceStats.slice(0, 3).map(s => ({
+        name: s.serviceName,
+        bookings: s.bookings,
+        revenue: s.revenue
+      }))
+    })
+
     const sortedServices = serviceStats.sort((a, b) => b.bookings - a.bookings)
     sortedServices.forEach((s, index) => {
       s.popularityRank = index + 1
