@@ -844,12 +844,16 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     // ═══════════════════════════════════════════════════════════════
 
     const serviceStats = activeServices.map(service => {
-      // Use period-filtered tickets for service analytics
-      const serviceTransactions = periodCompletedTickets.filter(
-        t =>
-          t.metadata?.service_id === service.id ||
-          t.metadata?.service_ids?.includes(service.id)
-      )
+      // ✅ FIX: Extract service data from GL_JOURNAL transaction lines
+      // Service info is stored in lines with entity_id, not in transaction metadata
+      const serviceTransactions = periodCompletedTickets.filter(t => {
+        const lines = t.lines || []
+        // Check if any line references this service
+        return lines.some((line: any) =>
+          line.entity_id === service.id &&
+          (line.line_type === 'service' || line.line_type === 'gl')
+        )
+      })
 
       const bookings = serviceTransactions.length
       // ✅ ALIGNED WITH REPORTS: Service revenue from GL_JOURNAL metadata
