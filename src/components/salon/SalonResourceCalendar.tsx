@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, useRef, lazy, Suspense } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import '@/styles/microsoft-calendar.css'
@@ -26,7 +27,8 @@ import {
   Columns,
   Loader2,
   AlertCircle,
-  Building2
+  Building2,
+  Clock
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
@@ -56,8 +58,19 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 
+// 🚀 LAZY LOADING: Appointment modal component
+const AppointmentModal = lazy(() =>
+  import('@/components/salon/appointments/AppointmentModal').then(module => ({
+    default: module.AppointmentModal
+  }))
+)
+
+// 🎨 LUXE: Import Salon theme components
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
+
 // 🎯 Debug flag - set to false for production
-const DEBUG_MODE = false
+const DEBUG_MODE = true
 
 interface SalonResourceCalendarProps {
   className?: string
@@ -134,8 +147,9 @@ export function SalonResourceCalendar({
   organizations = [],
   canViewAllBranches = false
 }: SalonResourceCalendarProps) {
-  const { organizationId } = useSecuredSalonContext()
+  const { organizationId, organization } = useSecuredSalonContext()
   const mounted = useIsMounted()
+  const router = useRouter()
 
   // ✅ Branch filter hook (same as appointments page)
   const {
@@ -154,6 +168,8 @@ export function SalonResourceCalendar({
   const [selectedBranches, setSelectedBranches] = useState<string[]>(['all'])
   const [showSidebar, setShowSidebar] = useState(true)
   const [draggedAppointment, setDraggedAppointment] = useState<Appointment | null>(null)
+  const [lateMenuAppointment, setLateMenuAppointment] = useState<Appointment | null>(null)
+  const [lateMenuPosition, setLateMenuPosition] = useState<{ x: number; y: number } | null>(null)
   const [dropTarget, setDropTarget] = useState<{
     date: Date
     time: string
@@ -186,11 +202,55 @@ export function SalonResourceCalendar({
   const [showSearchModal, setShowSearchModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
+  // 🚀 ENTERPRISE: Appointment modal state
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+
+  // 🚀 ENTERPRISE: New booking context (for passing to /appointments/new)
+  const [newBookingContext, setNewBookingContext] = useState<{
+    branchId?: string
+    stylistId?: string
+    date?: string
+    time?: string
+  } | null>(null)
+
+  // 🚀 LUXE: Conflict warning modal state
+  const [conflictWarningOpen, setConflictWarningOpen] = useState(false)
+  const [conflictDetails, setConflictDetails] = useState<{
+    date: Date
+    time: string
+    stylistId: string
+    conflictingAppointments: Appointment[]
+  } | null>(null)
+
+  // 🚀 LUXE: Cancel confirmation modal state
+  const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false)
+  const [appointmentToCancel, setAppointmentToCancel] = useState<Appointment | null>(null)
+
   // 🕐 Current time state for timeline and past slot detection
   const [currentTime, setCurrentTime] = useState(new Date())
 
-  // Calculate date range based on selected view
-  const dateRange = useMemo(() => {
+  // ⚡ PERFORMANCE: Always load full month of data for instant filtering & no refetching
+  const monthDateRange = useMemo(() => {
+    const start = new Date(selectedDate)
+    const end = new Date(selectedDate)
+
+    // Always load full month
+    start.setDate(1)
+    end.setMonth(end.getMonth() + 1)
+    end.setDate(0)
+
+    start.setHours(0, 0, 0, 0)
+    end.setHours(23, 59, 59, 999)
+
+    return {
+      fromISO: start.toISOString(),
+      toISO: end.toISOString()
+    }
+  }, [selectedDate.getMonth(), selectedDate.getFullYear()]) // Only recompute when month/year changes
+
+  // Calculate visible range for current view (for UI display, not data fetching)
+  const visibleDateRange = useMemo(() => {
     const start = new Date(selectedDate)
     const end = new Date(selectedDate)
 
@@ -215,44 +275,117 @@ export function SalonResourceCalendar({
     start.setHours(0, 0, 0, 0)
     end.setHours(23, 59, 59, 999)
 
+    if (DEBUG_MODE) {
+      console.log('📅 [Calendar] Visible date range:', {
+        view: selectedView,
+        selected: selectedDate.toDateString(),
+        start: start.toDateString(),
+        end: end.toDateString()
+      })
+    }
+
     return {
-      fromISO: start.toISOString(),
-      toISO: end.toISOString()
+      start,
+      end,
+      startDate: start.toDateString(),
+      endDate: end.toDateString()
     }
   }, [selectedDate, selectedView])
 
-  // ✅ Use HERA RPC hooks for data fetching (same as appointments page)
+  // ⚡ PERFORMANCE: Fetch full month of appointments (cached for instant view switching)
   const {
-    appointments: rawAppointments,
+    appointments: allMonthAppointments,
     isLoading: appointmentsLoading,
     error: appointmentsError,
-    updateAppointment // ✨ Get update method for drag-and-drop
+    updateAppointment, // ✨ Get update method for drag-and-drop
+    refetch: refetchAppointments // ✨ Get refetch method for manual refresh
   } = useHeraAppointments({
     organizationId,
     filters: {
       ...(branchId && !canViewAllBranches ? { branch_id: branchId } : {}),
-      date_from: dateRange.fromISO,
-      date_to: dateRange.toISO
+      date_from: monthDateRange.fromISO,
+      date_to: monthDateRange.toISO
     }
+    // ✅ REMOVED refetchOnMount: Uses standard cache (30min stale time)
+    // This eliminates slow loading while still showing fresh data via cache invalidation
   })
 
-  // Debug: Log appointments data ONCE when loaded
+  // ⚡ CLIENT-SIDE FILTER: Filter appointments to visible date range
+  const rawAppointments = useMemo(() => {
+    if (!allMonthAppointments) return []
+
+    // Filter to visible range based on current view
+    return allMonthAppointments.filter(apt => {
+      const aptDate = new Date(apt.start_time)
+      return aptDate >= visibleDateRange.start && aptDate <= visibleDateRange.end
+    })
+  }, [allMonthAppointments, visibleDateRange.start, visibleDateRange.end])
+
+  // 🔄 REFRESH: Refetch appointments when page becomes visible (e.g., returning from booking page)
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && refetchAppointments) {
+        console.log('📡 [Calendar] Page became visible - refetching appointments...')
+        refetchAppointments()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    // Also refetch on focus (when user clicks back to tab/window)
+    window.addEventListener('focus', () => {
+      if (refetchAppointments) {
+        console.log('📡 [Calendar] Window focused - refetching appointments...')
+        refetchAppointments()
+      }
+    })
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('focus', handleVisibilityChange)
+    }
+  }, [refetchAppointments])
+
+  // 🐛 DEBUG: Comprehensive logging for appointment loading
+  useEffect(() => {
+    if (DEBUG_MODE) {
+      console.log('⚡ [Calendar] PERFORMANCE MODE - Month data with client-side filtering:', {
+        loading: appointmentsLoading,
+        hasError: !!appointmentsError,
+        error: appointmentsError,
+        totalMonthAppointments: allMonthAppointments?.length || 0,
+        visibleAppointments: rawAppointments?.length || 0,
+        selectedDate: selectedDate.toDateString(),
+        monthRange: {
+          from: monthDateRange.fromISO,
+          to: monthDateRange.toISO
+        },
+        visibleRange: {
+          from: visibleDateRange.startDate,
+          to: visibleDateRange.endDate
+        },
+        organizationId,
+        branchId
+      })
+    }
+
     if (rawAppointments && rawAppointments.length > 0) {
       const firstApt = rawAppointments[0]
-      console.log('📅 [Calendar] Appointments loaded:', rawAppointments.length, 'appointment(s)')
+      console.log('📅 [Calendar] Appointments visible:', rawAppointments.length, 'in current view (', allMonthAppointments?.length, 'total in month)')
       console.log('📍 [Calendar] First appointment:', {
         date: new Date(firstApt.start_time).toDateString(),
         time: new Date(firstApt.start_time).toLocaleTimeString(),
         customer: firstApt.customer_name,
         stylist: firstApt.stylist_name
       })
-      console.log('📆 [Calendar] Date range:', {
-        from: dateRange.startDate,
-        to: dateRange.endDate
+      console.log('📆 [Calendar] Visible range:', {
+        from: visibleDateRange.startDate,
+        to: visibleDateRange.endDate
       })
+    } else if (!appointmentsLoading && DEBUG_MODE) {
+      console.log('⚠️ [Calendar] No appointments found for current filters')
     }
-  }, [rawAppointments, appointmentsLoading, appointmentsError, dateRange, organizationId, branchId])
+  }, [rawAppointments, allMonthAppointments, appointmentsLoading, appointmentsError, monthDateRange, visibleDateRange, organizationId, branchId, selectedDate])
 
   const { staff, isLoading: staffLoading } = useHeraStaff({
     organizationId,
@@ -396,7 +529,32 @@ export function SalonResourceCalendar({
     }
 
     const appointments = rawAppointments.map((apt: any) => {
-      const startDate = new Date(apt.start_time)
+      // ✅ CRITICAL FIX: Handle timezone properly - parse as local date
+      // If start_time is already in format "YYYY-MM-DD HH:MM:SS", parse as local
+      // Otherwise use Date constructor
+      let startDate: Date
+      if (typeof apt.start_time === 'string' && apt.start_time.includes('T')) {
+        // ISO format with timezone - parse and convert to local
+        startDate = new Date(apt.start_time)
+      } else if (typeof apt.start_time === 'string') {
+        // Postgres format "YYYY-MM-DD HH:MM:SS" - parse as local
+        const parts = apt.start_time.match(/(\d{4})-(\d{2})-(\d{2})[\sT](\d{2}):(\d{2}):(\d{2})/)
+        if (parts) {
+          startDate = new Date(
+            parseInt(parts[1]), // year
+            parseInt(parts[2]) - 1, // month (0-indexed)
+            parseInt(parts[3]), // day
+            parseInt(parts[4]), // hour
+            parseInt(parts[5]), // minute
+            parseInt(parts[6]) // second
+          )
+        } else {
+          startDate = new Date(apt.start_time)
+        }
+      } else {
+        startDate = new Date(apt.start_time)
+      }
+
       const time = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`
 
       // Customer and stylist info - use runtime lookup
@@ -453,6 +611,21 @@ export function SalonResourceCalendar({
 
     // 🔍 Apply filters (status, service, date range) if any are active
     // For now, just return all appointments - filters can be added in future
+
+    // 🐛 DEBUG: Log appointments to check date parsing
+    if (DEBUG_MODE && appointments.length > 0) {
+      console.log('📅 [Calendar] Transformed appointments:', {
+        total: appointments.length,
+        sample: appointments.slice(0, 3).map(apt => ({
+          id: apt.id,
+          client: apt.client,
+          date: apt.date.toDateString(),
+          time: apt.time,
+          originalStartTime: rawAppointments.find(r => r.id === apt.id)?.start_time
+        }))
+      })
+    }
+
     return appointments
   }, [rawAppointments, mounted, allStylists, services, customers])
 
@@ -616,6 +789,8 @@ export function SalonResourceCalendar({
     if (e.currentTarget instanceof HTMLElement) {
       e.currentTarget.style.opacity = '0.5'
       e.currentTarget.style.cursor = 'grabbing'
+      // Disable transitions during drag for instant response
+      e.currentTarget.style.transition = 'none'
     }
   }, [])
 
@@ -634,7 +809,9 @@ export function SalonResourceCalendar({
     // Reset opacity on drag end
     if (e.currentTarget instanceof HTMLElement) {
       e.currentTarget.style.opacity = '1'
-      e.currentTarget.style.cursor = 'move'
+      e.currentTarget.style.cursor = 'pointer'
+      // Re-enable transitions after drag
+      e.currentTarget.style.transition = ''
     }
     setDraggedAppointment(null)
     setDropTarget(null)
@@ -682,6 +859,250 @@ export function SalonResourceCalendar({
       }
     },
     [draggedAppointment, stylists, updateAppointment]
+  )
+
+  // 🚀 ENTERPRISE: Handle "Client Late" - Quick delay appointment
+  const handleClientLate = useCallback(
+    async (appointment: Appointment, delayMinutes: number) => {
+      if (!updateAppointment) return
+
+      try {
+        const currentStart = new Date(appointment.date)
+        const [hours, minutes] = appointment.time.split(':').map(Number)
+        currentStart.setHours(hours, minutes, 0, 0)
+
+        // Calculate new start time with delay
+        const newStartTime = new Date(currentStart.getTime() + delayMinutes * 60000)
+
+        // ✅ Update appointment with delay reason in metadata
+        await updateAppointment({
+          id: appointment.id,
+          data: {
+            start_time: newStartTime.toISOString(),
+            duration_minutes: appointment.duration,
+            metadata: {
+              ...((appointment as any).metadata || {}),
+              late_arrival: {
+                original_time: currentStart.toISOString(),
+                delay_minutes: delayMinutes,
+                delayed_at: new Date().toISOString(),
+                reason: 'CLIENT_LATE'
+              }
+            }
+          }
+        })
+
+        setLateMenuAppointment(null)
+        setLateMenuPosition(null)
+
+        // Only log in debug mode
+        if (DEBUG_MODE) {
+          console.log('✅ Appointment delayed:', {
+            appointmentId: appointment.id,
+            delayMinutes,
+            newTime: newStartTime.toLocaleString()
+          })
+        }
+      } catch (error) {
+        console.error('❌ Failed to delay appointment:', error)
+        alert('Failed to delay appointment. Please try again.')
+      }
+    },
+    [updateAppointment]
+  )
+
+  // 🚀 ENTERPRISE: Toggle appointment completion status
+  const handleToggleCompletion = useCallback(
+    async (appointment: Appointment) => {
+      if (!updateAppointment) return
+
+      try {
+        const newStatus = appointment.status === 'completed' ? 'confirmed' : 'completed'
+
+        // ✅ Update appointment status
+        await updateAppointment({
+          id: appointment.id,
+          data: {
+            status: newStatus,
+            metadata: {
+              ...((appointment as any).metadata || {}),
+              completion_toggled: {
+                previous_status: appointment.status,
+                new_status: newStatus,
+                toggled_at: new Date().toISOString()
+              }
+            }
+          }
+        })
+
+        // Only log in debug mode
+        if (DEBUG_MODE) {
+          console.log('✅ Appointment status toggled:', {
+            appointmentId: appointment.id,
+            previousStatus: appointment.status,
+            newStatus
+          })
+        }
+      } catch (error) {
+        console.error('❌ Failed to toggle appointment status:', error)
+        alert('Failed to update appointment status. Please try again.')
+      }
+    },
+    [updateAppointment]
+  )
+
+  // Handle context menu for quick actions with smart positioning
+  const handleAppointmentRightClick = useCallback((e: React.MouseEvent, appointment: Appointment) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // ✅ ENTERPRISE UX: Smart positioning - ensure menu stays in viewport
+    const viewportHeight = window.innerHeight
+    const viewportWidth = window.innerWidth
+    const clickY = e.clientY
+    const clickX = e.clientX
+    const menuHeight = 550 // Approximate menu height with all options
+    const menuWidth = 280
+
+    // Calculate if menu would overflow viewport
+    const wouldOverflowBottom = clickY + menuHeight > viewportHeight
+    const wouldOverflowRight = clickX + menuWidth > viewportWidth
+
+    // Position menu to stay within viewport
+    const finalY = wouldOverflowBottom
+      ? Math.max(10, clickY - menuHeight) // Show above, with 10px min from top
+      : clickY
+
+    const finalX = wouldOverflowRight
+      ? Math.max(10, clickX - menuWidth) // Show to left, with 10px min from left
+      : clickX
+
+    setLateMenuAppointment(appointment)
+    setLateMenuPosition({
+      x: finalX,
+      y: finalY
+    })
+  }, [])
+
+  // 🚀 ENTERPRISE: Handle appointment click to view/edit
+  const handleAppointmentClick = useCallback(
+    (e: React.MouseEvent, appointment: Appointment) => {
+      // Don't trigger if right-clicking or dragging
+      if (e.button !== 0) return
+
+      e.stopPropagation()
+
+      // Find the original raw appointment data (not transformed)
+      const originalAppointment = rawAppointments?.find(apt => apt.id === appointment.id)
+      if (originalAppointment) {
+        setSelectedAppointment(originalAppointment as any)
+        setModalOpen(true)
+      }
+    },
+    [rawAppointments]
+  )
+
+  // 🚀 ENTERPRISE: Check for time slot conflicts (excluding completed appointments)
+  const checkTimeSlotConflict = useCallback(
+    (date: Date, time: string, stylistId: string, durationMinutes: number = 60) => {
+      if (!transformedAppointments || transformedAppointments.length === 0) {
+        return { hasConflict: false, conflictingAppointments: [] }
+      }
+
+      const [hours, minutes] = time.split(':').map(Number)
+      const slotStart = new Date(date)
+      slotStart.setHours(hours, minutes, 0, 0)
+      const slotEnd = new Date(slotStart.getTime() + durationMinutes * 60000)
+
+      // Filter for active appointments only (exclude completed/cancelled)
+      const conflictingAppointments = transformedAppointments.filter((apt: Appointment) => {
+        // Skip if different date
+        if (apt.date.toDateString() !== date.toDateString()) return false
+
+        // Skip if different stylist (and stylist is specified)
+        if (stylistId && apt.stylist !== stylistId) return false
+
+        // ✅ ENTERPRISE RULE: Completed or cancelled appointments free up the slot
+        if (apt.status === 'completed' || apt.status === 'cancelled') return false
+
+        // Check time overlap
+        const [aptHours, aptMinutes] = apt.time.split(':').map(Number)
+        const aptStart = new Date(date)
+        aptStart.setHours(aptHours, aptMinutes, 0, 0)
+        const aptEnd = new Date(aptStart.getTime() + (apt.duration || 60) * 60000)
+
+        // Check if times overlap
+        return (
+          (slotStart >= aptStart && slotStart < aptEnd) || // Slot starts during appointment
+          (slotEnd > aptStart && slotEnd <= aptEnd) || // Slot ends during appointment
+          (slotStart <= aptStart && slotEnd >= aptEnd) // Slot contains appointment
+        )
+      })
+
+      return {
+        hasConflict: conflictingAppointments.length > 0,
+        conflictingAppointments
+      }
+    },
+    [transformedAppointments]
+  )
+
+  // 🚀 LUXE: Handle conflict warning - proceed with booking
+  const handleConflictProceed = useCallback(() => {
+    if (!conflictDetails) return
+
+    const formattedDate = conflictDetails.date.toISOString().split('T')[0]
+    const params = new URLSearchParams({
+      date: formattedDate,
+      time: conflictDetails.time,
+      stylist_id: conflictDetails.stylistId
+    })
+
+    if (branchId && branchId !== 'all') {
+      params.append('branch_id', branchId)
+    }
+
+    setConflictWarningOpen(false)
+    setConflictDetails(null)
+    router.push(`/salon/appointments/new?${params.toString()}`)
+  }, [conflictDetails, branchId, router])
+
+  // 🚀 ENTERPRISE: Handle empty slot click to book new appointment
+  const handleEmptySlotClick = useCallback(
+    (date: Date, time: string, stylistId: string) => {
+      // ✅ ENTERPRISE: Check for conflicts before allowing booking
+      const conflict = checkTimeSlotConflict(date, time, stylistId, 60)
+
+      if (conflict.hasConflict) {
+        // 🎨 LUXE: Show custom conflict warning modal
+        setConflictDetails({
+          date,
+          time,
+          stylistId,
+          conflictingAppointments: conflict.conflictingAppointments
+        })
+        setConflictWarningOpen(true)
+        return
+      }
+
+      const formattedDate = date.toISOString().split('T')[0] // YYYY-MM-DD format
+
+      // Build query params for /appointments/new
+      const params = new URLSearchParams({
+        date: formattedDate,
+        time: time,
+        stylist_id: stylistId
+      })
+
+      // Add branch if selected
+      if (branchId && branchId !== 'all') {
+        params.append('branch_id', branchId)
+      }
+
+      // Navigate to new appointment page with pre-filled data
+      router.push(`/salon/appointments/new?${params.toString()}`)
+    },
+    [branchId, router, checkTimeSlotConflict]
   )
 
   // Handle keyboard navigation
@@ -1636,9 +2057,7 @@ export function SalonResourceCalendar({
                           <div
                             key={`${dayIdx}-${slotIdx}`}
                             className={cn(
-                              'h-16 border-b border-r relative group calendar-time-slot transition-all duration-200',
-                              !isPast && 'cursor-pointer',
-                              isPast && 'pointer-events-none'
+                              'h-16 border-b border-r relative group calendar-time-slot transition-all duration-200 cursor-pointer'
                             )}
                             style={{
                               gridColumn: `${dayIdx + 2}`,
@@ -1654,7 +2073,8 @@ export function SalonResourceCalendar({
                             }}
                             onClick={() => {
                               if (!slotAppointments.length && !isPast) {
-                                window.location.href = '/salon/appointments/new'
+                                // Week/Day view - no specific stylist selected
+                                handleEmptySlotClick(date, slot.time, '')
                               }
                             }}
                             onMouseEnter={e => {
@@ -1721,7 +2141,9 @@ export function SalonResourceCalendar({
                                     border: `1px solid ${apt.colorBorder || `${apt.color}40`}`,
                                     height: `${durationSlots * 64 - 8}px`,
                                     zIndex: 5 + aptIdx,
-                                    boxShadow: `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`
+                                    boxShadow: `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`,
+                                    opacity: apt.status === 'completed' ? 0.75 : 1,
+                                    filter: apt.status === 'completed' ? 'grayscale(0.3)' : 'none'
                                   }}
                                   onClick={() => {
                                     setSelectedDate(apt.date)
@@ -1920,9 +2342,7 @@ export function SalonResourceCalendar({
                           <div
                             key={`${dayIdx}-${slotIdx}`}
                             className={cn(
-                              'h-16 border-b relative group calendar-time-slot transition-all duration-200',
-                              !isPast && 'cursor-pointer',
-                              isPast && 'pointer-events-none'
+                              'h-16 border-b relative group calendar-time-slot transition-all duration-200 cursor-pointer'
                             )}
                             style={{
                               gridColumn: `${dayIdx + 2}`,
@@ -1936,7 +2356,8 @@ export function SalonResourceCalendar({
                             }}
                             onClick={() => {
                               if (!slotAppointments.length && !isPast) {
-                                window.location.href = '/salon/appointments/new'
+                                // Single day view - no specific stylist
+                                handleEmptySlotClick(date, slot.time, '')
                               }
                             }}
                             onMouseEnter={e => {
@@ -1996,17 +2417,22 @@ export function SalonResourceCalendar({
                                   draggable
                                   onDragStart={e => handleDragStart(e, apt)}
                                   onDragEnd={handleDragEnd}
+                                  onClick={e => handleAppointmentClick(e, apt)}
+                                  onContextMenu={e => handleAppointmentRightClick(e, apt)}
                                   className={cn(
-                                    'absolute inset-x-1 top-1 mx-1 rounded-lg p-2.5 cursor-move',
-                                    'calendar-appointment-card transition-all duration-200'
+                                    'absolute inset-x-1 top-1 mx-1 rounded-lg p-2.5 cursor-pointer',
+                                    'calendar-appointment-card'
                                   )}
                                   style={{
+                                    transition: 'transform 150ms ease-out, box-shadow 150ms ease-out',
                                     backgroundColor: apt.colorLight || `${apt.color}15`,
                                     borderLeft: `4px solid ${apt.color}`,
                                     border: `1px solid ${apt.colorBorder || `${apt.color}40`}`,
                                     height: `${durationSlots * 64 - 8}px`,
                                     zIndex: 5 + aptIdx,
-                                    boxShadow: `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`
+                                    boxShadow: `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`,
+                                    opacity: apt.status === 'completed' ? 0.75 : 1,
+                                    filter: apt.status === 'completed' ? 'grayscale(0.3)' : 'none'
                                   }}
                                   onMouseEnter={e => {
                                     e.currentTarget.style.transform = 'translateY(-2px)'
@@ -2018,11 +2444,28 @@ export function SalonResourceCalendar({
                                   }}
                                 >
                                   <div className="flex items-start gap-2">
-                                    <div
-                                      className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
-                                      style={{ backgroundColor: apt.color }}
-                                    >
-                                      {apt.icon}
+                                    <div className="relative">
+                                      <div
+                                        className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
+                                        style={{
+                                          backgroundColor: apt.color,
+                                          opacity: apt.status === 'completed' ? 0.6 : 1
+                                        }}
+                                      >
+                                        {apt.icon}
+                                      </div>
+                                      {/* ✅ Completion Badge */}
+                                      {apt.status === 'completed' && (
+                                        <div
+                                          className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+                                          style={{
+                                            backgroundColor: COLORS.gold,
+                                            boxShadow: `0 0 8px ${COLORS.gold}`
+                                          }}
+                                        >
+                                          <span className="text-xs">✓</span>
+                                        </div>
+                                      )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <p
@@ -2109,9 +2552,8 @@ export function SalonResourceCalendar({
                             key={`${stylist.id}-${slotIdx}`}
                             className={cn(
                               'h-16 border-b relative group calendar-time-slot transition-all duration-200',
-                              isBusinessHour && !isPast && 'cursor-pointer',
-                              isDropTarget && 'calendar-drop-target ring-2',
-                              isPast && 'pointer-events-none'
+                              isBusinessHour && 'cursor-pointer',
+                              isDropTarget && 'calendar-drop-target ring-2'
                             )}
                             style={{
                               gridColumn: `${stylistIdx + 2}`,
@@ -2126,16 +2568,19 @@ export function SalonResourceCalendar({
                               opacity: isPast ? 0.4 : 1
                             }}
                             onClick={() => {
+                              // ✅ CLEAR UX: Only allow click on empty slots to book
                               if (!slotAppointments.length && isBusinessHour && !isPast) {
-                                window.location.href = '/salon/appointments/new'
+                                handleEmptySlotClick(selectedDate, slot.time, stylist.id)
                               }
+                              // Note: Click on appointments handled by appointment card itself
                             }}
                             onMouseEnter={e => {
+                              // Only show hover effect for empty slots
                               if (isBusinessHour && !slotAppointments.length && !isPast) {
                                 e.currentTarget.style.backgroundColor = `${COLORS.gold}08`
                                 e.currentTarget.style.borderLeft = `2px solid ${COLORS.gold}60`
                                 e.currentTarget.style.boxShadow = `inset 0 0 12px ${COLORS.gold}15, 0 2px 8px ${COLORS.gold}10`
-                                e.currentTarget.style.transform = 'scale(1.01)'
+                                e.currentTarget.style.cursor = 'pointer'
                               }
                             }}
                             onMouseLeave={e => {
@@ -2143,7 +2588,7 @@ export function SalonResourceCalendar({
                                 e.currentTarget.style.backgroundColor = 'transparent'
                                 e.currentTarget.style.borderLeft = 'none'
                                 e.currentTarget.style.boxShadow = 'none'
-                                e.currentTarget.style.transform = 'scale(1)'
+                                e.currentTarget.style.cursor = 'default'
                               }
                             }}
                             onDragOver={e =>
@@ -2204,17 +2649,22 @@ export function SalonResourceCalendar({
                                   draggable
                                   onDragStart={e => handleDragStart(e, apt)}
                                   onDragEnd={handleDragEnd}
+                                  onClick={e => handleAppointmentClick(e, apt)}
+                                  onContextMenu={e => handleAppointmentRightClick(e, apt)}
                                   className={cn(
-                                    'absolute inset-x-1 top-1 mx-1 rounded-lg p-2.5 cursor-move',
-                                    'calendar-appointment-card transition-all duration-200'
+                                    'absolute inset-x-1 top-1 mx-1 rounded-lg p-2.5 cursor-pointer',
+                                    'calendar-appointment-card'
                                   )}
                                   style={{
+                                    transition: 'transform 150ms ease-out, box-shadow 150ms ease-out',
                                     backgroundColor: apt.colorLight || `${apt.color}15`,
                                     borderLeft: `4px solid ${apt.color}`,
                                     border: `1px solid ${apt.colorBorder || `${apt.color}40`}`,
                                     height: `${durationSlots * 64 - 8}px`,
                                     zIndex: 5 + aptIdx,
-                                    boxShadow: `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`
+                                    boxShadow: `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`,
+                                    opacity: apt.status === 'completed' ? 0.75 : 1,
+                                    filter: apt.status === 'completed' ? 'grayscale(0.3)' : 'none'
                                   }}
                                   onMouseEnter={e => {
                                     e.currentTarget.style.transform = 'translateY(-2px)'
@@ -2411,6 +2861,552 @@ export function SalonResourceCalendar({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* 🚀 ENTERPRISE: "Client Late" Quick Action Menu */}
+      {lateMenuAppointment && lateMenuPosition && (
+        <>
+          {/* Backdrop to close menu */}
+          <div
+            className="fixed inset-0 z-[100]"
+            onClick={() => {
+              setLateMenuAppointment(null)
+              setLateMenuPosition(null)
+            }}
+          />
+
+          {/* 🎨 LUXE Enhanced Context Menu */}
+          <div
+            className="fixed z-[101] rounded-xl shadow-2xl border-2 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
+            style={{
+              top: `${lateMenuPosition.y}px`,
+              left: `${lateMenuPosition.x}px`,
+              backgroundColor: COLORS.charcoal,
+              borderColor: `${COLORS.gold}60`,
+              minWidth: '280px',
+              boxShadow: `0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px ${COLORS.gold}40, 0 0 40px ${COLORS.gold}20`,
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)'
+            }}
+          >
+            {/* Gradient Header */}
+            <div
+              className="px-4 py-3 border-b relative"
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
+                borderColor: `${COLORS.gold}30`
+              }}
+            >
+              {/* Gold accent line */}
+              <div
+                className="absolute top-0 left-0 right-0 h-1"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${COLORS.gold}, transparent)`
+                }}
+              />
+
+              <div className="flex items-center gap-2 mb-1">
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center"
+                  style={{
+                    backgroundColor: `${COLORS.gold}20`,
+                    border: `1px solid ${COLORS.gold}60`
+                  }}
+                >
+                  <Clock className="w-3 h-3" style={{ color: COLORS.gold }} />
+                </div>
+                <span className="text-sm font-bold tracking-wide" style={{ color: COLORS.champagne }}>
+                  Quick Actions
+                </span>
+              </div>
+              <p className="text-xs font-medium" style={{ color: COLORS.bronze }}>
+                {lateMenuAppointment.client} • {lateMenuAppointment.time}
+              </p>
+            </div>
+
+            {/* View/Edit Option - Primary Action */}
+            <div className="p-2 border-b" style={{ borderColor: `${COLORS.bronze}30` }}>
+              <button
+                onClick={() => {
+                  // Find raw appointment and open edit modal
+                  const originalAppointment = rawAppointments?.find(
+                    apt => apt.id === lateMenuAppointment.id
+                  )
+                  if (originalAppointment) {
+                    setSelectedAppointment(originalAppointment as any)
+                    setModalOpen(true)
+                  }
+                  setLateMenuAppointment(null)
+                  setLateMenuPosition(null)
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-95"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                  border: `1px solid ${COLORS.gold}40`,
+                  color: COLORS.champagne,
+                  boxShadow: `0 2px 8px ${COLORS.gold}10`
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.gold}30 0%, ${COLORS.gold}20 100%)`
+                  e.currentTarget.style.borderColor = `${COLORS.gold}60`
+                  e.currentTarget.style.boxShadow = `0 4px 12px ${COLORS.gold}20`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`
+                  e.currentTarget.style.borderColor = `${COLORS.gold}40`
+                  e.currentTarget.style.boxShadow = `0 2px 8px ${COLORS.gold}10`
+                }}
+              >
+                <span className="text-xl">✏️</span>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                    View / Edit Appointment
+                  </p>
+                  <p className="text-xs" style={{ color: COLORS.bronze }}>
+                    Modify details, services, or notes
+                  </p>
+                </div>
+              </button>
+            </div>
+
+            {/* Quick Delay Options */}
+            <div className="px-2 pt-2 pb-1">
+              <p className="text-xs font-semibold px-2 mb-2" style={{ color: COLORS.bronze }}>
+                CLIENT RUNNING LATE
+              </p>
+              <div className="space-y-1">
+                {[
+                  { label: 'Delay 15 minutes', minutes: 15, icon: '⏱️' },
+                  { label: 'Delay 30 minutes', minutes: 30, icon: '⏰' },
+                  { label: 'Delay 45 minutes', minutes: 45, icon: '⏲️' }
+                ].map(option => (
+                <button
+                  key={option.minutes}
+                  onClick={() => handleClientLate(lateMenuAppointment, option.minutes)}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-95"
+                  style={{
+                    backgroundColor: `${COLORS.gold}10`,
+                    color: COLORS.champagne
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.backgroundColor = `${COLORS.gold}20`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.backgroundColor = `${COLORS.gold}10`
+                  }}
+                >
+                  <span className="text-xl">{option.icon}</span>
+                  <div className="flex-1 text-left">
+                    <p className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                      {option.label}
+                    </p>
+                    <p className="text-xs" style={{ color: COLORS.bronze }}>
+                      Move to{' '}
+                      {(() => {
+                        const current = new Date(lateMenuAppointment.date)
+                        const [hours, minutes] = lateMenuAppointment.time.split(':').map(Number)
+                        current.setHours(hours, minutes, 0, 0)
+                        const newTime = new Date(current.getTime() + option.minutes * 60000)
+                        const displayHours = newTime.getHours() % 12 || 12
+                        const displayMinutes = newTime.getMinutes().toString().padStart(2, '0')
+                        const period = newTime.getHours() >= 12 ? 'PM' : 'AM'
+                        return `${displayHours}:${displayMinutes} ${period}`
+                      })()}
+                    </p>
+                  </div>
+                </button>
+              ))}
+              </div>
+            </div>
+
+            {/* Mark as Completed - Only show if not completed */}
+            {lateMenuAppointment.status !== 'completed' && (
+              <div className="px-2 pb-2 pt-1 border-t" style={{ borderColor: `${COLORS.bronze}30` }}>
+                <button
+                  onClick={() => {
+                    handleToggleCompletion(lateMenuAppointment)
+                    setLateMenuAppointment(null)
+                    setLateMenuPosition(null)
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-95"
+                  style={{
+                    backgroundColor: `${COLORS.gold}10`,
+                    color: COLORS.champagne
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.backgroundColor = `${COLORS.gold}20`
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.backgroundColor = `${COLORS.gold}10`
+                  }}
+                >
+                  <span className="text-xl">✅</span>
+                  <div className="flex-1 text-left">
+                    <p className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                      Mark as Completed
+                    </p>
+                    <p className="text-xs" style={{ color: COLORS.bronze }}>
+                      Finish this appointment
+                    </p>
+                  </div>
+                </button>
+              </div>
+            )}
+
+            {/* Cancel Appointment */}
+            <div className="px-2 pb-2 pt-1 border-t" style={{ borderColor: `${COLORS.bronze}30` }}>
+              <button
+                onClick={() => {
+                  // Open LUXE cancel confirmation modal
+                  setAppointmentToCancel(lateMenuAppointment)
+                  setCancelConfirmOpen(true)
+                  setLateMenuAppointment(null)
+                  setLateMenuPosition(null)
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-95"
+                style={{
+                  backgroundColor: `rgba(239, 68, 68, 0.1)`,
+                  border: `1px solid rgba(239, 68, 68, 0.3)`,
+                  color: COLORS.champagne
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = `rgba(239, 68, 68, 0.2)`
+                  e.currentTarget.style.borderColor = `rgba(239, 68, 68, 0.5)`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = `rgba(239, 68, 68, 0.1)`
+                  e.currentTarget.style.borderColor = `rgba(239, 68, 68, 0.3)`
+                }}
+              >
+                <span className="text-xl">🚫</span>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-medium" style={{ color: '#ef4444' }}>
+                    Cancel Appointment
+                  </p>
+                  <p className="text-xs" style={{ color: COLORS.bronze }}>
+                    Mark this appointment as cancelled
+                  </p>
+                </div>
+              </button>
+            </div>
+
+            {/* Book New Appointment */}
+            <div className="px-2 pb-2 pt-1 border-t" style={{ borderColor: `${COLORS.bronze}30` }}>
+              <button
+                onClick={() => {
+                  // Extract appointment details for pre-filling
+                  const appointmentDate = lateMenuAppointment.date
+                  const appointmentTime = lateMenuAppointment.time
+                  const stylistId = lateMenuAppointment.stylist
+
+                  // Close menu
+                  setLateMenuAppointment(null)
+                  setLateMenuPosition(null)
+
+                  // Navigate to new appointment with pre-filled data
+                  const params = new URLSearchParams({
+                    date: appointmentDate.toISOString().split('T')[0],
+                    time: appointmentTime,
+                    stylist_id: stylistId
+                  })
+
+                  if (branchId && branchId !== 'all') {
+                    params.append('branch_id', branchId)
+                  }
+
+                  router.push(`/salon/appointments/new?${params.toString()}`)
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-95"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`,
+                  border: `1px solid ${COLORS.gold}40`,
+                  color: COLORS.champagne
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.gold}30 0%, ${COLORS.gold}20 100%)`
+                  e.currentTarget.style.borderColor = `${COLORS.gold}60`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = `linear-gradient(135deg, ${COLORS.gold}20 0%, ${COLORS.gold}10 100%)`
+                  e.currentTarget.style.borderColor = `${COLORS.gold}40`
+                }}
+              >
+                <span className="text-xl">➕</span>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+                    Book New Appointment
+                  </p>
+                  <p className="text-xs" style={{ color: COLORS.bronze }}>
+                    Schedule another appointment
+                  </p>
+                </div>
+              </button>
+            </div>
+
+            {/* Close Menu */}
+            <div className="px-2 pb-2 pt-1 border-t" style={{ borderColor: `${COLORS.bronze}30` }}>
+              <button
+                onClick={() => {
+                  setLateMenuAppointment(null)
+                  setLateMenuPosition(null)
+                }}
+                className="w-full px-4 py-2 rounded-lg text-sm transition-all duration-200"
+                style={{
+                  backgroundColor: 'transparent',
+                  color: COLORS.bronze
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = `${COLORS.bronze}10`
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                }}
+              >
+                Close Menu
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* 🎨 LUXE: Cancel Confirmation Modal */}
+      <SalonLuxeModal
+        open={cancelConfirmOpen}
+        onClose={() => {
+          setCancelConfirmOpen(false)
+          setAppointmentToCancel(null)
+        }}
+        title="Cancel Appointment"
+        description="Are you sure you want to cancel this appointment?"
+        icon={<AlertCircle className="w-6 h-6" />}
+        size="sm"
+        footer={
+          <>
+            <SalonLuxeButton
+              variant="outline"
+              onClick={() => {
+                setCancelConfirmOpen(false)
+                setAppointmentToCancel(null)
+              }}
+            >
+              Keep Appointment
+            </SalonLuxeButton>
+            <SalonLuxeButton
+              variant="danger"
+              onClick={async () => {
+                if (!updateAppointment || !appointmentToCancel) return
+
+                try {
+                  await updateAppointment({
+                    id: appointmentToCancel.id,
+                    data: { status: 'cancelled' }
+                  })
+                  setCancelConfirmOpen(false)
+                  setAppointmentToCancel(null)
+                } catch (error) {
+                  console.error('❌ Failed to cancel appointment:', error)
+                }
+              }}
+            >
+              Yes, Cancel Appointment
+            </SalonLuxeButton>
+          </>
+        }
+      >
+        {appointmentToCancel && (
+          <div className="space-y-4 py-4">
+            <div
+              className="p-4 rounded-lg border"
+              style={{
+                backgroundColor: `${COLORS.charcoalLight}`,
+                borderColor: `${COLORS.bronze}30`
+              }}
+            >
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                    Client:
+                  </span>
+                  <span className="text-sm" style={{ color: COLORS.bronze }}>
+                    {appointmentToCancel.client}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                    Date & Time:
+                  </span>
+                  <span className="text-sm" style={{ color: COLORS.bronze }}>
+                    {appointmentToCancel.date.toLocaleDateString()} at {appointmentToCancel.time}
+                  </span>
+                </div>
+                {appointmentToCancel.serviceNames && appointmentToCancel.serviceNames.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                      Services:
+                    </span>
+                    <span className="text-sm" style={{ color: COLORS.bronze }}>
+                      {appointmentToCancel.serviceNames.join(', ')}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div
+              className="p-3 rounded-lg text-xs"
+              style={{
+                backgroundColor: `rgba(239, 68, 68, 0.1)`,
+                color: '#ef4444',
+                border: `1px solid rgba(239, 68, 68, 0.3)`
+              }}
+            >
+              ⚠️ <strong>Warning:</strong> This action will mark the appointment as cancelled. The time
+              slot will become available for new bookings.
+            </div>
+          </div>
+        )}
+      </SalonLuxeModal>
+
+      {/* 🎨 LUXE: Conflict Warning Modal */}
+      <SalonLuxeModal
+        open={conflictWarningOpen}
+        onClose={() => {
+          setConflictWarningOpen(false)
+          setConflictDetails(null)
+        }}
+        title="Time Slot Conflict"
+        description="This time slot already has appointments scheduled"
+        icon={<AlertCircle className="w-6 h-6" />}
+        size="md"
+        footer={
+          <>
+            <SalonLuxeButton
+              variant="outline"
+              onClick={() => {
+                setConflictWarningOpen(false)
+                setConflictDetails(null)
+              }}
+            >
+              Cancel
+            </SalonLuxeButton>
+            <SalonLuxeButton variant="primary" onClick={handleConflictProceed}>
+              Proceed Anyway
+            </SalonLuxeButton>
+          </>
+        }
+      >
+        {conflictDetails && (
+          <div className="space-y-4 py-4">
+            {/* Requested Booking Details */}
+            <div
+              className="p-4 rounded-lg border"
+              style={{
+                backgroundColor: `${COLORS.black}40`,
+                borderColor: `${COLORS.bronze}30`
+              }}
+            >
+              <p className="text-sm mb-3 font-semibold" style={{ color: COLORS.champagne }}>
+                Requested Booking:
+              </p>
+              <div className="space-y-1 text-sm" style={{ color: COLORS.bronze }}>
+                <p>
+                  📅{' '}
+                  {conflictDetails.date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+                <p>🕐 {conflictDetails.time}</p>
+              </div>
+            </div>
+
+            {/* Existing Appointments */}
+            <div
+              className="p-4 rounded-lg border"
+              style={{
+                backgroundColor: `${COLORS.gold}10`,
+                borderColor: `${COLORS.gold}30`
+              }}
+            >
+              <p className="text-sm mb-3 font-semibold" style={{ color: COLORS.champagne }}>
+                ⚠️ Existing Appointments:
+              </p>
+              <div className="space-y-2">
+                {conflictDetails.conflictingAppointments.map((apt, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 p-2 rounded"
+                    style={{
+                      backgroundColor: `${COLORS.charcoal}80`,
+                      borderLeft: `3px solid ${apt.color}`
+                    }}
+                  >
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: apt.color }}
+                    >
+                      {apt.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate" style={{ color: COLORS.champagne }}>
+                        {apt.client}
+                      </p>
+                      <p className="text-xs truncate" style={{ color: COLORS.bronze }}>
+                        {apt.time} • {apt.price}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Enterprise Notice */}
+            <div
+              className="p-3 rounded-lg text-xs"
+              style={{
+                backgroundColor: `${COLORS.bronze}15`,
+                color: COLORS.bronze
+              }}
+            >
+              💡 <strong>Note:</strong> You can still proceed with this booking. Our system allows
+              overlapping appointments to accommodate special circumstances.
+            </div>
+          </div>
+        )}
+      </SalonLuxeModal>
+
+      {/* 🚀 ENTERPRISE: Appointment View/Edit Modal */}
+      {modalOpen && selectedAppointment && (
+        <Suspense fallback={null}>
+          <AppointmentModal
+            open={modalOpen}
+            onOpenChange={setModalOpen}
+            appointment={selectedAppointment}
+            customers={customers || []}
+            stylists={staff || []}
+            services={services || []}
+            branches={filterBranches || []}
+            onSave={async (data: any) => {
+              if (!updateAppointment) return
+
+              try {
+                await updateAppointment({
+                  id: selectedAppointment.id,
+                  data
+                })
+                setModalOpen(false)
+                setSelectedAppointment(null)
+              } catch (error) {
+                console.error('❌ Failed to update appointment:', error)
+                throw error
+              }
+            }}
+            existingAppointments={rawAppointments || []}
+            currencySymbol={organization?.currency_symbol || 'AED'}
+          />
+        </Suspense>
+      )}
     </div>
   )
 }

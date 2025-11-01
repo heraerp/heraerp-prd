@@ -458,10 +458,14 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         return [newTransaction, ...old]
       })
 
-      // Invalidate all transaction queries
-      queryClient.invalidateQueries({ queryKey: ['transactions-v1'] })
+      // ✅ CRITICAL FIX: Invalidate all transaction queries with predicate matching
+      // This ensures queries with date filters are also invalidated
+      queryClient.invalidateQueries({
+        queryKey: ['transactions-v1'],
+        exact: false // Match all queries starting with ['transactions-v1']
+      })
 
-      console.log('✅ [useUniversalTransactionV1] Added new transaction to cache')
+      console.log('✅ [useUniversalTransactionV1] Added new transaction to cache and invalidated all queries')
     }
   })
 
@@ -604,10 +608,14 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         return old.map((txn: any) => txn.id === updatedTransaction.id ? updatedTransaction : txn)
       })
 
-      // Invalidate to refetch in background
-      queryClient.invalidateQueries({ queryKey: ['transactions-v1'] })
+      // ✅ CRITICAL FIX: Invalidate all transaction queries with predicate matching
+      // This ensures queries with date filters are also invalidated
+      queryClient.invalidateQueries({
+        queryKey: ['transactions-v1'],
+        exact: false // Match all queries starting with ['transactions-v1']
+      })
 
-      console.log('✅ [useUniversalTransactionV1] Updated transaction in cache')
+      console.log('✅ [useUniversalTransactionV1] Updated transaction in cache and invalidated all queries')
     }
   })
 
@@ -664,9 +672,13 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         return old.filter((txn: any) => txn.id !== variables.transaction_id)
       })
 
-      queryClient.invalidateQueries({ queryKey: ['transactions-v1'] })
+      // ✅ CRITICAL FIX: Invalidate all transaction queries with predicate matching
+      queryClient.invalidateQueries({
+        queryKey: ['transactions-v1'],
+        exact: false // Match all queries starting with ['transactions-v1']
+      })
 
-      console.log('✅ [useUniversalTransactionV1] Removed deleted transaction from cache')
+      console.log('✅ [useUniversalTransactionV1] Removed deleted transaction from cache and invalidated all queries')
     }
   })
 
@@ -729,9 +741,13 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         })
       }
 
-      queryClient.invalidateQueries({ queryKey: ['transactions-v1'] })
+      // ✅ CRITICAL FIX: Invalidate all transaction queries with predicate matching
+      queryClient.invalidateQueries({
+        queryKey: ['transactions-v1'],
+        exact: false // Match all queries starting with ['transactions-v1']
+      })
 
-      console.log('✅ [useUniversalTransactionV1] Removed voided transaction from cache')
+      console.log('✅ [useUniversalTransactionV1] Removed voided transaction from cache and invalidated all queries')
     }
   })
 

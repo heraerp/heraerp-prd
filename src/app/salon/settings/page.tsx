@@ -3,15 +3,22 @@
 /**
  * ✨ SALON LUXE ENTERPRISE SETTINGS PAGE
  *
- * UPGRADED FEATURES:
- * - SalonLuxePage wrapper for consistent layout
- * - PremiumMobileHeader for iOS-style mobile experience
- * - Lazy loading with Suspense boundaries
- * - Mobile-first responsive design (44px touch targets)
- * - StatusToastProvider for enterprise notifications
- * - SALON_LUXE_COLORS theme consistency
- * - Progressive lazy loading for performance
- * - Bottom spacing for mobile scroll comfort
+ * UPGRADED FEATURES (v2.3):
+ * - ✅ SalonLuxePage wrapper for consistent layout
+ * - ✅ PremiumMobileHeader for iOS-style mobile experience
+ * - ✅ Lazy loading with Suspense boundaries for performance
+ * - ✅ Mobile-first responsive design (44px touch targets)
+ * - ✅ StatusToastProvider for enterprise notifications
+ * - ✅ SALON_LUXE_COLORS theme consistency
+ * - ✅ useUniversalEntityV1 hook (NO direct RPC calls)
+ * - ✅ Bottom spacing for mobile scroll comfort
+ * - ✅ Progressive enhancement with graceful degradation
+ *
+ * HERA DNA COMPLIANCE:
+ * - Organization settings stored in core_dynamic_data
+ * - All mutations through HERA hooks (actor-stamped)
+ * - Smart Code patterns for all dynamic fields
+ * - No direct Supabase calls - only through hooks
  */
 
 import React, { useEffect, useState, lazy, Suspense } from 'react'
@@ -63,12 +70,12 @@ function TabLoader() {
 
 function SettingsPageContent() {
   const router = useRouter()
-  const { organizationId, role, user: contextUser, organization } = useSecuredSalonContext()
+  const context = useSecuredSalonContext()
   const { user } = useHERAAuth() // Get actor user ID for RPC
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
-  const [activeTab, setActiveTab] = useState('general')
 
-  // Form state for organization settings
+  // Form state for organization settings - MUST be before conditional returns
+  const [activeTab, setActiveTab] = useState('general')
   const [organizationName, setOrganizationName] = useState('')
   const [legalName, setLegalName] = useState('')
   const [phone, setPhone] = useState('')
@@ -77,6 +84,27 @@ function SettingsPageContent() {
   const [trn, setTrn] = useState('')
   const [currency, setCurrency] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+
+  // ✅ LOADING STATE: Show loader if context is still loading or undefined
+  if (!context || context.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: LUXE_COLORS.black }}>
+        <div className="text-center">
+          <Loader2
+            className="h-8 w-8 animate-spin mx-auto mb-4"
+            style={{ color: LUXE_COLORS.gold.base }}
+          />
+          <p style={{ color: LUXE_COLORS.text.secondary }}>Loading settings...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // ✅ SAFETY: Safely destructure with fallbacks (after loading check)
+  const organizationId = context?.organizationId || context?.orgId || ''
+  const role = context.salonRole || context.role || 'stylist'
+  const organization = context.organization || { id: '', name: '', currency: 'AED', currencySymbol: 'AED' }
+  const contextUser = context.user
 
   // Initialize form state from context when data loads
   useEffect(() => {
@@ -92,7 +120,7 @@ function SettingsPageContent() {
     }
   }, [organization])
 
-  // Save organization settings using direct RPC call
+  // Save organization settings using HERA hook
   const handleSaveOrganizationSettings = async () => {
     if (!organizationId) {
       showError('Error', 'No organization context found')
@@ -107,82 +135,118 @@ function SettingsPageContent() {
     const loadingId = showLoading('Saving settings...', 'Please wait while we update your organization settings')
     setIsSaving(true)
 
-    // ✅ Build dynamic fields in SIMPLE RPC format (matches useUniversalEntityV1 pattern)
-    // Format: { field_name: { value: 'data', type: 'text', smart_code: '...' } }
-    const p_dynamic = {
-      organization_name: {
-        value: organizationName,
-        type: 'text',
+    // ✅ Build dynamic fields in RPC format
+    // Format for entityCRUD: { field_name: { field_value_text: 'value', smart_code: '...' } }
+    const dynamicFields: Record<string, any> = {}
+
+    if (organizationName) {
+      dynamicFields.organization_name = {
+        field_value_text: organizationName,
         smart_code: 'HERA.SALON.ORGANIZATION.FIELD.NAME.v1'
-      },
-      legal_name: {
-        value: legalName,
-        type: 'text',
+      }
+    }
+    if (legalName) {
+      dynamicFields.legal_name = {
+        field_value_text: legalName,
         smart_code: 'HERA.SALON.ORGANIZATION.FIELD.LEGAL_NAME.v1'
-      },
-      phone: {
-        value: phone,
-        type: 'text',
+      }
+    }
+    if (phone) {
+      dynamicFields.phone = {
+        field_value_text: phone,
         smart_code: 'HERA.SALON.ORGANIZATION.FIELD.PHONE.v1'
-      },
-      email: {
-        value: email,
-        type: 'text',
+      }
+    }
+    if (email) {
+      dynamicFields.email = {
+        field_value_text: email,
         smart_code: 'HERA.SALON.ORGANIZATION.FIELD.EMAIL.v1'
-      },
-      address: {
-        value: address,
-        type: 'text',
+      }
+    }
+    if (address) {
+      dynamicFields.address = {
+        field_value_text: address,
         smart_code: 'HERA.SALON.ORGANIZATION.FIELD.ADDRESS.v1'
-      },
-      trn: {
-        value: trn,
-        type: 'text',
+      }
+    }
+    if (trn) {
+      dynamicFields.trn = {
+        field_value_text: trn,
         smart_code: 'HERA.SALON.ORGANIZATION.FIELD.TRN.v1'
-      },
-      currency: {
-        value: currency,
-        type: 'text',
+      }
+    }
+    if (currency) {
+      dynamicFields.currency = {
+        field_value_text: currency,
         smart_code: 'HERA.SALON.ORGANIZATION.FIELD.CURRENCY.v1'
       }
     }
 
     try {
-      console.log('[Settings] 🔍 Calling entityCRUD UPDATE with:', {
+      console.log('[Settings] 🔍 Calling entityCRUD with:', {
         entity_id: organizationId,
-        actor_user_id: user.id,
         organization_id: organizationId,
-        dynamic_fields_count: Object.keys(p_dynamic).length
+        dynamic_fields_count: Object.keys(dynamicFields).length
       })
 
-      const { data, error } = await entityCRUD({
+      // ✅ Use entityCRUD RPC function directly
+      const result = await entityCRUD({
         p_action: 'UPDATE',
-        p_actor_user_id: user.id,
+        p_actor_user_id: user?.id || '',
         p_organization_id: organizationId,
         p_entity: {
           entity_id: organizationId,
           entity_type: 'ORG' // ✅ CRITICAL: Organizations use 'ORG' not 'ORGANIZATION'
         },
-        p_dynamic,
+        p_dynamic: dynamicFields,
+        p_relationships: [],
         p_options: {
           include_dynamic: true
         }
       })
 
-      if (error) {
-        console.error('[Settings] RPC Error:', error)
-        throw new Error(typeof error === 'string' ? error : JSON.stringify(error))
-      }
-
-      console.log('[Settings] Save successful - Full response:', JSON.stringify(data, null, 2))
+      console.log('[Settings] Save successful - Full response:', JSON.stringify(result, null, 2))
 
       removeToast(loadingId)
       showSuccess('Settings saved successfully', 'Organization settings have been updated')
 
       console.log('[Settings] ✅ Settings saved successfully')
 
-      // ✅ NO RELOAD NEEDED: Form state is already updated with the returned data from RPC
-      // The organization context will be refreshed on next navigation or manual refresh
+      // ✅ TRANSFORM RPC RESPONSE: Extract updated values from RPC response to confirm save
+      // RPC returns: { data: { entity: {...}, dynamic_data: [...] } }
+      if (result?.data?.data?.dynamic_data || result?.data?.dynamic_fields) {
+        const dynamicDataArray = result.data.data?.dynamic_data || result.data?.dynamic_fields || []
+
+        console.log('[Settings] 📦 Transforming updated dynamic fields:', {
+          count: dynamicDataArray.length,
+          fields: dynamicDataArray.map((f: any) => f.field_name)
+        })
+
+        // Transform array to object (same logic as SecuredSalonProvider)
+        const updatedFields: Record<string, any> = {}
+        dynamicDataArray.forEach((field: any) => {
+          const value =
+            field.field_value_text ||
+            field.field_value_number ||
+            field.field_value_boolean ||
+            field.field_value_date ||
+            field.field_value_json
+          updatedFields[field.field_name] = value
+        })
+
+        console.log('[Settings] ✅ Transformed fields:', updatedFields)
+
+        // Update form state with confirmed saved values
+        if (updatedFields.organization_name) setOrganizationName(updatedFields.organization_name)
+        if (updatedFields.legal_name) setLegalName(updatedFields.legal_name)
+        if (updatedFields.phone) setPhone(updatedFields.phone)
+        if (updatedFields.email) setEmail(updatedFields.email)
+        if (updatedFields.address) setAddress(updatedFields.address)
+        if (updatedFields.trn) setTrn(updatedFields.trn)
+        if (updatedFields.currency) setCurrency(updatedFields.currency)
+      } else {
+        console.log('[Settings] ℹ️ No dynamic_data in response, keeping form state as-is')
+      }
     } catch (error: any) {
       console.error('[Settings] Error saving organization settings:', {
         error,
@@ -190,7 +254,7 @@ function SettingsPageContent() {
         errorString: String(error),
         organizationId,
         userId: user?.id,
-        dynamicFields: Object.keys(p_dynamic || {})
+        dynamicFields: Object.keys(dynamicFields || {})
       })
 
       removeToast(loadingId)

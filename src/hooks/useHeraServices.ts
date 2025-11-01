@@ -204,6 +204,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
   // Helper to create service with proper smart codes and relationships
   const createService = async (data: {
     name: string
+    code?: string // ✅ FIX: Add optional service code field
     price_market: number
     duration_min: number
     commission_rate?: number
@@ -250,6 +251,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     return baseCreate({
       entity_type: 'SERVICE',
       entity_name: data.name,
+      entity_code: data.code, // ✅ FIX: Include service code in entity creation
       smart_code: 'HERA.SALON.SERVICE.ENTITY.SERVICE.v1',
       dynamic_fields,
       relationships
@@ -300,6 +302,7 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     const payload: any = {
       entity_id: id,
       entity_name: data.name || service.entity_name, // Always include entity_name
+      ...(data.code !== undefined && { entity_code: data.code }), // ✅ FIX: Include service code in updates
       ...(Object.keys(dynamic_patch).length ? { dynamic_patch } : {}),
       ...(Object.keys(relationships_patch).length ? { relationships_patch } : {}),
       // 🎯 CRITICAL: Status at entity level (NOT dynamic field) - same as archive/restore

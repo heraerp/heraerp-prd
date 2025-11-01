@@ -132,6 +132,10 @@ export interface UseHeraAppointmentsOptions {
     offset?: number
     search?: string
   }
+  cacheConfig?: {
+    staleTime?: number
+    refetchOnMount?: boolean | 'always'
+  }
 }
 
 // 🎯 ENTERPRISE: Status workflow order (for forward flow validation)
@@ -217,8 +221,8 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       date_to: options?.filters?.date_to,
       transaction_status: options?.filters?.status, // ✅ RENAMED: status → transaction_status (RPC parameter)
       include_lines: true // ✅ V1: Include transaction lines for service details
-    }
-    // ✅ V1: Removed staleTime, refetchOnWindowFocus, etc. - V1 has optimized defaults
+    },
+    cacheConfig: options?.cacheConfig // ✅ Pass through cache configuration
   })
 
   // ✅ LAYER 1: Fetch customers using useUniversalEntityV1 (RPC API v2 Orchestrator)

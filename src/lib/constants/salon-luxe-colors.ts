@@ -92,6 +92,27 @@ export const SALON_LUXE_COLORS = {
     lighter: 'rgba(183, 148, 244, 0.15)', // 15% opacity
   },
 
+  bronze: {
+    base: '#8C7853',       // Bronze/Muted gold
+    dark: '#6B5D41',       // Darker bronze
+    light: '#A8956B',      // Lighter bronze
+    lighter: 'rgba(140, 120, 83, 0.15)', // 15% opacity
+  },
+
+  ruby: {
+    base: '#E8384F',       // Ruby red
+    dark: '#C41E3A',       // Deep ruby
+    light: '#FF6B7A',      // Light ruby
+    lighter: 'rgba(232, 56, 79, 0.15)', // 15% opacity
+  },
+
+  orange: {
+    base: '#F97316',       // Orange
+    dark: '#EA580C',       // Dark orange
+    light: '#FB923C',      // Light orange
+    lighter: 'rgba(249, 115, 22, 0.15)', // 15% opacity
+  },
+
   // Border Colors
   border: {
     base: 'rgba(212, 175, 55, 0.3)',    // Gold border base
