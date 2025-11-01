@@ -296,21 +296,44 @@ function AppointmentsContent() {
     [appointments]
   )
 
-  // ✅ FIX: Clear selected time when date changes (forces time slot reload in reschedule modal)
-  useEffect(() => {
-    if (postponeDialogOpen && postponeDate) {
-      // Keep existing time if modal just opened with pre-populated date
-      // But clear time if user actively changes the date
-      const appointmentDate = appointmentToPostpone?.start_time
-        ? format(new Date(appointmentToPostpone.start_time), 'yyyy-MM-dd')
-        : null
+  // 🕐 ENTERPRISE: Memoize available time slots for reschedule modal
+  const rescheduleAvailableTimeSlots = useMemo(() => {
+    if (!postponeDate || !appointmentToPostpone?.stylist_id) return []
 
-      // Only clear time if date changed from original appointment date
-      if (appointmentDate && postponeDate !== appointmentDate && postponeTime) {
-        setPostponeTime('')
-      }
-    }
-  }, [postponeDate, postponeDialogOpen, appointmentToPostpone, postponeTime])
+    const today = format(new Date(), 'yyyy-MM-dd')
+    const isToday = postponeDate === today
+    const now = new Date()
+
+    return generateTimeSlots()
+      .filter(slot => {
+        // If selected date is today, only show future time slots
+        if (isToday) {
+          const [slotHour, slotMinute] = slot.start.split(':').map(Number)
+          // Add 30 minute buffer for booking
+          if (
+            slotHour < now.getHours() ||
+            (slotHour === now.getHours() && slotMinute <= now.getMinutes() + 30)
+          ) {
+            return false
+          }
+        }
+        return true
+      })
+      .map(slot => {
+        const conflict = checkTimeSlotConflict(
+          slot.start,
+          postponeDate,
+          appointmentToPostpone?.stylist_id || null,
+          appointmentToPostpone?.duration_minutes || 60,
+          appointmentToPostpone?.id
+        )
+        return {
+          ...slot,
+          hasConflict: conflict.hasConflict,
+          conflictingAppointment: conflict.conflictingAppointment
+        }
+      })
+  }, [postponeDate, appointmentToPostpone, generateTimeSlots, checkTimeSlotConflict])
 
   // ⚡ PERFORMANCE: Memoize stats calculation
   const stats: AppointmentStats = useMemo(() => {
@@ -2242,77 +2265,51 @@ function AppointmentsContent() {
                     <SelectValue placeholder="Select time slot" />
                   </SelectTrigger>
                   <SelectContent className="hera-select-content max-h-[300px]">
-                    {generateTimeSlots()
-                      .filter(slot => {
-                        // If selected date is today, only show future time slots
-                        const today = format(new Date(), 'yyyy-MM-dd')
-                        const isToday = postponeDate === today
-                        if (isToday) {
-                          const now = new Date()
-                          const [slotHour, slotMinute] = slot.start.split(':').map(Number)
-                          // Add 30 minute buffer for booking
-                          if (
-                            slotHour < now.getHours() ||
-                            (slotHour === now.getHours() && slotMinute <= now.getMinutes() + 30)
-                          ) {
-                            return false
-                          }
-                        }
-                        return true
-                      })
-                      .map(slot => {
-                        const conflict = checkTimeSlotConflict(
-                          slot.start,
-                          postponeDate,
-                          appointmentToPostpone?.stylist_id || null,
-                          appointmentToPostpone?.duration_minutes || 60,
-                          appointmentToPostpone?.id
-                        )
+                    {rescheduleAvailableTimeSlots.map(slot => {
+                      const [hours, minutes] = slot.start.split(':').map(Number)
+                      const period = hours >= 12 ? 'PM' : 'AM'
+                      const displayHours = hours % 12 || 12
+                      const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
 
-                        const [hours, minutes] = slot.start.split(':').map(Number)
-                        const period = hours >= 12 ? 'PM' : 'AM'
-                        const displayHours = hours % 12 || 12
-                        const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
+                      const conflictInfo =
+                        slot.hasConflict && slot.conflictingAppointment
+                          ? `${slot.conflictingAppointment.customer_name} (${slot.conflictingAppointment.status})`
+                          : ''
 
-                        const conflictInfo =
-                          conflict.hasConflict && conflict.conflictingAppointment
-                            ? `${conflict.conflictingAppointment.customer_name} (${conflict.conflictingAppointment.status})`
-                            : ''
-
-                        return (
-                          <SelectItem
-                            key={slot.start}
-                            value={slot.start}
-                            disabled={conflict.hasConflict}
-                            className={cn(conflict.hasConflict && 'opacity-50 cursor-not-allowed')}
-                            title={conflictInfo}
-                          >
-                            <div className="flex items-center justify-between w-full gap-2">
-                              <span>{displayTime}</span>
-                              {conflict.hasConflict && (
-                                <div className="flex items-center gap-1">
-                                  <Badge
-                                    variant="destructive"
-                                    className="text-[10px] px-1.5 py-0"
-                                    style={{
-                                      background: 'rgba(239, 68, 68, 0.2)',
-                                      color: '#F87171',
-                                      border: '1px solid rgba(239, 68, 68, 0.3)'
-                                    }}
-                                  >
-                                    {conflict.conflictingAppointment?.status || 'Booked'}
-                                  </Badge>
-                                  {conflict.conflictingAppointment?.customer_name && (
-                                    <span className="text-[10px] text-gray-500 truncate max-w-[100px]">
-                                      {conflict.conflictingAppointment.customer_name}
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </SelectItem>
-                        )
-                      })}
+                      return (
+                        <SelectItem
+                          key={slot.start}
+                          value={slot.start}
+                          disabled={slot.hasConflict}
+                          className={cn(slot.hasConflict && 'opacity-50 cursor-not-allowed')}
+                          title={conflictInfo}
+                        >
+                          <div className="flex items-center justify-between w-full gap-2">
+                            <span>{displayTime}</span>
+                            {slot.hasConflict && (
+                              <div className="flex items-center gap-1">
+                                <Badge
+                                  variant="destructive"
+                                  className="text-[10px] px-1.5 py-0"
+                                  style={{
+                                    background: 'rgba(239, 68, 68, 0.2)',
+                                    color: '#F87171',
+                                    border: '1px solid rgba(239, 68, 68, 0.3)'
+                                  }}
+                                >
+                                  {slot.conflictingAppointment?.status || 'Booked'}
+                                </Badge>
+                                {slot.conflictingAppointment?.customer_name && (
+                                  <span className="text-[10px] text-gray-500 truncate max-w-[100px]">
+                                    {slot.conflictingAppointment.customer_name}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
               ) : (

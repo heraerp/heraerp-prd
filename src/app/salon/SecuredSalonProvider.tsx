@@ -285,9 +285,32 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     setHasInitialized(true)
     authCheckDoneRef.current = true
 
-    // Load branches in background
-    loadBranches(orgId)
-      .then(branches => {
+    // ✅ CRITICAL FIX: Load organization details AND branches in background
+    // This ensures we get the FULL organization object with dynamic fields (phone, email, etc.)
+    // even when using cached security context
+    Promise.all([
+      loadOrganizationDetails(orgId).then(fullOrg => {
+        console.log('[SecuredSalonProvider] 📥 Background org load complete:', {
+          hasPhone: !!fullOrg.phone,
+          hasEmail: !!fullOrg.email,
+          hasAddress: !!fullOrg.address
+        })
+        // Update context with FULL organization data
+        setContext(prev => ({
+          ...prev,
+          organization: fullOrg
+        }))
+        // Also update security store
+        securityStore.setInitialized({
+          salonRole: securityStore.salonRole || 'stylist',
+          organizationId: orgId,
+          permissions: securityStore.permissions || [],
+          userId: securityStore.userId || '',
+          user: securityStore.user,
+          organization: fullOrg  // ✅ Update with full org data
+        })
+      }),
+      loadBranches(orgId).then(branches => {
         setAvailableBranches(branches)
         setContext(prev => ({
           ...prev,
@@ -295,9 +318,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
           selectedBranch: branches.find(b => b.id === selectedBranchId) || null
         }))
       })
-      .catch(error => {
-        console.error('Failed to load branches:', error)
-      })
+    ]).catch(error => {
+      console.error('Failed to load organization/branches:', error)
+    })
   }, [
     securityStore.isInitialized,
     auth.currentOrganization?.id,
@@ -346,7 +369,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     if (!securityStore.isInitialized || securityStore.shouldReinitialize()) {
       console.log('🔄 Initializing security context...')
       // ✅ ENTERPRISE: Use single-flight wrapper to prevent concurrent re-init stampede
-      runReinitSingleFlight().then(() => {
+      // Use silent mode if store is initializing (prevents banner flash on page load)
+      const useSilentMode = !hasInitialized && securityStore.isInitialized
+      runReinitSingleFlight({ silent: useSilentMode }).then(() => {
         authCheckDoneRef.current = true // ✅ Mark auth check as complete
         console.log('✅ Auth check complete and cached')
       })
@@ -413,9 +438,32 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       setHasInitialized(true)
       authCheckDoneRef.current = true
 
-      // Load branches in background
-      loadBranches(orgId)
-        .then(branches => {
+      // ✅ CRITICAL FIX: Load organization details AND branches in background
+      // This ensures we get the FULL organization object with dynamic fields (phone, email, etc.)
+      // even when using cached security context
+      Promise.all([
+        loadOrganizationDetails(orgId).then(fullOrg => {
+          console.log('[SecuredSalonProvider] 📥 Background org load complete (cached path):', {
+            hasPhone: !!fullOrg.phone,
+            hasEmail: !!fullOrg.email,
+            hasAddress: !!fullOrg.address
+          })
+          // Update context with FULL organization data
+          setContext(prev => ({
+            ...prev,
+            organization: fullOrg
+          }))
+          // Also update security store
+          securityStore.setInitialized({
+            salonRole: securityStore.salonRole || 'stylist',
+            organizationId: orgId,
+            permissions: securityStore.permissions || [],
+            userId: securityStore.userId || '',
+            user: securityStore.user,
+            organization: fullOrg  // ✅ Update with full org data
+          })
+        }),
+        loadBranches(orgId).then(branches => {
           setAvailableBranches(branches)
           setContext(prev => ({
             ...prev,
@@ -423,7 +471,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             selectedBranch: branches.find(b => b.id === selectedBranchId) || null
           }))
         })
-        .catch(() => {})
+      ]).catch(error => {
+        console.error('Failed to load organization/branches (cached path):', error)
+      })
     }
 
     // Listen for auth state changes
@@ -507,8 +557,8 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         // Within 1 minute of SOFT_TTL
         console.log('💓 Heartbeat: Proactive background refresh (approaching SOFT_TTL)')
 
-        // Background refresh without showing banner (silent)
-        runReinitSingleFlight().catch(error => {
+        // Background refresh without showing banner (silent mode)
+        runReinitSingleFlight({ silent: true }).catch(error => {
           console.warn('💓 Heartbeat: Background refresh failed (non-critical):', error)
           // Don't show error to user - this is proactive maintenance
         })
@@ -534,7 +584,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
    *
    * @returns Promise that resolves when re-init completes
    */
-  const runReinitSingleFlight = async (): Promise<void> => {
+  const runReinitSingleFlight = async (options?: { silent?: boolean }): Promise<void> => {
     // If already re-initializing, return existing promise
     if (isReinitializingRef.current && reinitPromiseRef.current) {
       console.log('⏳ Re-initialization already in progress, waiting for completion...')
@@ -544,9 +594,11 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     // Mark as re-initializing and create new promise
     isReinitializingRef.current = true
 
-    // ✅ ENTERPRISE: Show reconnecting banner to user
-    setIsReconnecting(true)
-    setContext(prev => ({ ...prev, isReconnecting: true }))
+    // ✅ ENTERPRISE: Show reconnecting banner to user (unless silent mode)
+    if (!options?.silent) {
+      setIsReconnecting(true)
+      setContext(prev => ({ ...prev, isReconnecting: true }))
+    }
 
     const reinitPromise = (async () => {
       try {
@@ -940,7 +992,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         error,
         hasData: !!data,
         dataKeys: data ? Object.keys(data) : null,
-        fullData: data
+        dataType: typeof data,
+        isArray: Array.isArray(data),
+        fullData: JSON.stringify(data, null, 2)
       })
 
       if (error) {
@@ -1042,19 +1096,31 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       let orgEntity = null
       let dynamicDataArray: any[] = []
 
-      if (data?.data?.entity) {
-        // Nested format
-        orgEntity = data.data.entity
-        dynamicDataArray = data.data.dynamic_data || []
-      } else if (data?.entity) {
-        // Flat format
+      console.log('[SecuredSalonProvider] 🔍 Checking response structure:', {
+        hasDataProperty: !!data?.data,
+        hasEntityInData: !!data?.data?.entity,
+        hasEntityDirect: !!data?.entity,
+        hasItems: !!data?.items,
+        topLevelKeys: data ? Object.keys(data) : [],
+        dataDataKeys: data?.data ? Object.keys(data.data) : []
+      })
+
+      // ✅ CRITICAL FIX: entityCRUD returns { data: { entity, dynamic_data }, error }
+      // So we need to check data.entity (not data.data.entity)
+      if (data?.entity) {
+        // Direct format from entityCRUD RPC: { data: { entity: {...}, dynamic_data: [...] }, error }
+        console.log('[SecuredSalonProvider] 📦 Using RPC format (data.entity)')
         orgEntity = data.entity
-        dynamicDataArray = data.dynamic_data || []
-      } else if (data?.items && data.items.length > 0) {
-        // List format with single item
+        dynamicDataArray = data.dynamic_data || data.dynamic_fields || []
+      } else if (data?.items && Array.isArray(data.items) && data.items.length > 0) {
+        // List format with single item: { items: [{ entity: {...}, dynamic_data: [...] }] }
+        console.log('[SecuredSalonProvider] 📦 Using list format (data.items[0])')
         const firstItem = data.items[0]
         orgEntity = firstItem.entity || firstItem
         dynamicDataArray = firstItem.dynamic_data || firstItem.dynamic_fields || []
+      } else {
+        // ✅ Fallback: Log structure for debugging
+        console.warn('[SecuredSalonProvider] ⚠️ Unexpected data structure:', JSON.stringify(data, null, 2))
       }
 
       if (!orgEntity) {

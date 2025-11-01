@@ -6,7 +6,7 @@
 
 'use client'
 
-import React, { useState, useEffect, Suspense, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, Suspense, useMemo, useCallback, useRef } from 'react'
 import '@/styles/dialog-overrides.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format, addMinutes } from 'date-fns'
@@ -158,10 +158,15 @@ function NewAppointmentContent() {
   // Use demo org ID if available, otherwise use authenticated org
   const organizationId = demoOrganizationId || organization?.id
 
-  // Get customerId from URL if provided
+  // 🚀 ENTERPRISE: Get URL params for pre-filling form from calendar
   const customerIdFromUrl = searchParams.get('customerId')
+  const dateFromUrl = searchParams.get('date')
+  const timeFromUrl = searchParams.get('time')
+  const stylistIdFromUrl = searchParams.get('stylist_id')
+  const branchIdFromUrl = searchParams.get('branch_id')
 
-  // Branch filter hook - initialize with selected branch from context
+  // Branch filter hook - initialize with NO branch (user must select)
+  // Only pre-fill from URL if coming from calendar
   const {
     branchId,
     branches,
@@ -170,7 +175,7 @@ function NewAppointmentContent() {
     setBranchId,
     hasMultipleBranches,
     selectedBranch // ✅ Add selectedBranch from the hook
-  } = useBranchFilter(selectedBranchId, 'salon-appointments', organizationId)
+  } = useBranchFilter(null, 'salon-appointments', organizationId)
 
   // 🔍 DEBUG: Log selectedBranch to check if operating hours are loaded
   useEffect(() => {
@@ -299,6 +304,49 @@ function NewAppointmentContent() {
     cart,
     checkStaffAvailability
   })
+
+  // 🚀 ENTERPRISE: Auto-fill form from URL params (calendar click-to-book)
+  // Use ref to track if params have been applied (avoid re-applying)
+  const urlParamsAppliedRef = useRef(false)
+
+  useEffect(() => {
+    // Only run once when data is loaded and params haven't been applied yet
+    if (!stylists || stylists.length === 0 || urlParamsAppliedRef.current) return
+
+    let hasParams = false
+
+    // Set date from URL (override default today)
+    if (dateFromUrl) {
+      setSelectedDate(dateFromUrl)
+      hasParams = true
+    }
+
+    // Set time from URL
+    if (timeFromUrl) {
+      setSelectedTime(timeFromUrl)
+      hasParams = true
+    }
+
+    // Set stylist from URL
+    if (stylistIdFromUrl && stylists) {
+      const stylist = stylists.find((s: any) => s.id === stylistIdFromUrl)
+      if (stylist) {
+        setSelectedStylist(stylist)
+        hasParams = true
+      }
+    }
+
+    // Set branch from URL
+    if (branchIdFromUrl && setBranchId) {
+      setBranchId(branchIdFromUrl)
+      hasParams = true
+    }
+
+    // Mark params as applied if we found any
+    if (hasParams) {
+      urlParamsAppliedRef.current = true
+    }
+  }, [dateFromUrl, timeFromUrl, stylistIdFromUrl, branchIdFromUrl, stylists, setBranchId])
 
   // Helper function to convert 24-hour format to 12-hour format
   const formatTime12Hour = (time24: string): string => {
@@ -487,8 +535,11 @@ function NewAppointmentContent() {
   }, [customerIdFromUrl, customers])
 
   // Clear selected time when date changes (time slots will be regenerated)
+  // BUT: Don't clear if URL params were just applied (coming from calendar)
   useEffect(() => {
-    setSelectedTime('')
+    if (!urlParamsAppliedRef.current) {
+      setSelectedTime('')
+    }
   }, [selectedDate])
 
   // ⚡ PERFORMANCE: Memoize cart operations with useCallback
@@ -774,7 +825,7 @@ function NewAppointmentContent() {
         shrinkOnScroll
         leftAction={
           <button
-            onClick={() => router.push('/salon/appointments')}
+            onClick={() => router.back()}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1A1A1A] active:scale-90 transition-transform duration-200"
             aria-label="Go back"
           >
@@ -806,7 +857,7 @@ function NewAppointmentContent() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => router.push('/salon/appointments')}
+              onClick={() => router.back()}
               className="hover:bg-[#D4AF37]/10 transition-all duration-300"
               style={{
                 boxShadow: 'inset 0 1px 0 rgba(245,230,200,0.1), 0 4px 6px rgba(0,0,0,0.3)',
@@ -1989,7 +2040,7 @@ function NewAppointmentContent() {
                     className="w-full"
                     variant="ghost"
                     size="lg"
-                    onClick={() => router.push('/salon/appointments')}
+                    onClick={() => router.back()}
                     disabled={saving}
                     style={{
                       background: 'transparent',
@@ -2383,31 +2434,59 @@ function NewAppointmentContent() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 pt-4">
-              <Button
-                onClick={() => {
-                  // ✅ NO REFETCH NEEDED: Cache already updated by RPC
-                  router.push('/salon/appointments')
-                }}
-                className="flex-1 transition-all duration-240"
-                style={{
-                  background: 'rgba(245,230,200,0.1)',
-                  border: '1px solid rgba(245,230,200,0.2)',
-                  color: '#F5E6C8',
-                  transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.background = 'rgba(245,230,200,0.15)'
-                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.3)'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.background = 'rgba(245,230,200,0.1)'
-                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.2)'
-                }}
-              >
-                View All Appointments
-              </Button>
+            <div className="space-y-3 pt-4">
+              {/* Primary Actions - Two columns */}
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  onClick={() => {
+                    // ✅ NO REFETCH NEEDED: Cache already updated by RPC
+                    router.push('/salon/appointments')
+                  }}
+                  className="transition-all duration-240"
+                  style={{
+                    background: 'rgba(245,230,200,0.1)',
+                    border: '1px solid rgba(245,230,200,0.2)',
+                    color: '#F5E6C8',
+                    transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'rgba(245,230,200,0.15)'
+                    e.currentTarget.style.borderColor = 'rgba(245,230,200,0.3)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'rgba(245,230,200,0.1)'
+                    e.currentTarget.style.borderColor = 'rgba(245,230,200,0.2)'
+                  }}
+                >
+                  View All Appointments
+                </Button>
 
+                <Button
+                  onClick={() => {
+                    router.push('/salon/appointments/calendar')
+                  }}
+                  className="transition-all duration-240"
+                  style={{
+                    background: 'rgba(212,175,55,0.1)',
+                    border: '1px solid rgba(212,175,55,0.3)',
+                    color: '#D4AF37',
+                    transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'rgba(212,175,55,0.15)'
+                    e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'rgba(212,175,55,0.1)'
+                    e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'
+                  }}
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  View Calendar
+                </Button>
+              </div>
+
+              {/* Secondary Action - Full width */}
               <Button
                 onClick={() => {
                   setShowSuccessDialog(false)
@@ -2419,7 +2498,7 @@ function NewAppointmentContent() {
                   setNotes('')
                   setSelectedDate(format(new Date(), 'yyyy-MM-dd'))
                 }}
-                className="flex-1 transition-all duration-240"
+                className="w-full transition-all duration-240"
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
                   color: '#0B0B0B',
@@ -2438,7 +2517,7 @@ function NewAppointmentContent() {
                 }}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Book Another
+                Book Another Appointment
               </Button>
             </div>
           </div>

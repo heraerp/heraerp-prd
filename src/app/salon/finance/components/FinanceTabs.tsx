@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   PieChart,
   BarChart3,
@@ -18,13 +18,25 @@ import {
   Printer,
   ArrowUpRight,
   ArrowDownRight,
-  AlertCircle
+  AlertCircle,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
 import { useMonthlySalesReport } from '@/hooks/useSalonSalesReports'
+import { useQuarterlyVATReport } from '@/hooks/useQuarterlyVATReport'
+import type { VATPeriodSelection } from '@/hooks/useQuarterlyVATReport'
 import { useHeraExpenses } from '@/hooks/useHeraExpenses'
 import { ExpenseModal } from '@/components/salon/finance/ExpenseModal'
+import { VATPeriodSelector } from '@/components/salon/reports/VATPeriodSelector'
 import { startOfMonth, endOfMonth } from 'date-fns'
 
 interface FinanceTabsProps {
@@ -49,19 +61,22 @@ export default function FinanceTabs({
 }: FinanceTabsProps) {
   const [activeTab, setActiveTab] = useState('overview')
 
-  // Current month date range
+  // ✅ ENTERPRISE: Flexible date range selection
   const currentMonth = new Date()
-  const currentMonthNumber = currentMonth.getMonth() + 1
-  const currentYear = currentMonth.getFullYear()
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth.getMonth() + 1)
+  const [selectedYear, setSelectedYear] = useState(currentMonth.getFullYear())
+  const [viewMode, setViewMode] = useState<'monthly' | 'quarterly'>('monthly')
+  const [selectedQuarter, setSelectedQuarter] = useState(Math.ceil(currentMonth.getMonth() / 3))
 
   // ✅ Fetch monthly sales report (uses GL_JOURNAL transactions)
   const {
     summary: salesSummary,
     dimensionalBreakdown,
     isLoading: salesLoading
-  } = useMonthlySalesReport(currentMonthNumber, currentYear)
+  } = useMonthlySalesReport(selectedMonth, selectedYear)
 
   // ✅ Fetch GL transactions for detailed views
+  const selectedMonthDate = new Date(selectedYear, selectedMonth - 1, 1)
   const {
     transactions: glTransactions,
     isLoading: glLoading
@@ -69,8 +84,8 @@ export default function FinanceTabs({
     organizationId,
     filters: {
       transaction_type: 'GL_JOURNAL',
-      date_from: startOfMonth(currentMonth).toISOString(),
-      date_to: endOfMonth(currentMonth).toISOString(),
+      date_from: startOfMonth(selectedMonthDate).toISOString(),
+      date_to: endOfMonth(selectedMonthDate).toISOString(),
       include_lines: true,
       limit: 1000
     }
@@ -78,37 +93,536 @@ export default function FinanceTabs({
 
   // ✅ Extract revenue breakdown from dimensional data or GL metadata
   const revenueBreakdown = useMemo(() => {
+    // 🔍 DEBUG: Log actual data structure to understand why revenue is 0
+    console.log('[P&L Debug] Revenue Breakdown Analysis:', {
+      dimensionalBreakdown,
+      salesSummary,
+      hasServiceNet: !!dimensionalBreakdown?.service_net,
+      hasProductNet: !!dimensionalBreakdown?.product_net,
+      hasTotalService: !!salesSummary?.total_service,
+      hasTotalProduct: !!salesSummary?.total_product,
+      totalRevenue: salesSummary?.total_net
+    })
+
     if (dimensionalBreakdown) {
       // v2.0 GL data available
       return {
-        services: dimensionalBreakdown.service_net,
-        products: dimensionalBreakdown.product_net
+        services: dimensionalBreakdown.service_net || 0,
+        products: dimensionalBreakdown.product_net || 0
       }
     } else if (salesSummary) {
       // Fallback to summary data
       return {
-        services: salesSummary.total_service,
-        products: salesSummary.total_product
+        services: salesSummary.total_service || 0,
+        products: salesSummary.total_product || 0
       }
     }
     return { services: 0, products: 0 }
   }, [dimensionalBreakdown, salesSummary])
 
-  // ✅ Extract expense breakdown (placeholder - will be enhanced with expense entities)
-  const expenseBreakdown = useMemo(() => {
-    const totalRevenue = salesSummary?.total_gross || 0
-    return {
-      staffSalaries: totalRevenue * 0.36, // 36% estimate
-      rentUtilities: totalRevenue * 0.12, // 12% estimate
-      supplies: totalRevenue * 0.08,       // 8% estimate
-      marketing: totalRevenue * 0.04        // 4% estimate
+  // ✅ Fetch real expenses from useHeraExpenses
+  const { expenses: realExpenses, isLoading: expensesLoading } = useHeraExpenses({
+    organizationId,
+    filters: {
+      limit: 1000,
+      date_from: startOfMonth(selectedMonthDate).toISOString(),
+      date_to: endOfMonth(selectedMonthDate).toISOString()
     }
-  }, [salesSummary])
+  })
 
-  const isLoading = salesLoading || glLoading
+  // ✅ Calculate real expense breakdown by category
+  const expenseBreakdown = useMemo(() => {
+    if (!realExpenses || realExpenses.length === 0) {
+      // Fallback to estimates if no expenses recorded
+      const totalRevenue = salesSummary?.total_gross || 0
+      return {
+        staffSalaries: totalRevenue * 0.36,
+        rentUtilities: totalRevenue * 0.12,
+        supplies: totalRevenue * 0.08,
+        marketing: totalRevenue * 0.04,
+        other: 0,
+        totalExpenses: totalRevenue * 0.6
+      }
+    }
+
+    // Calculate from real expense data
+    const breakdown: Record<string, number> = {
+      staffSalaries: 0,
+      rentUtilities: 0,
+      supplies: 0,
+      marketing: 0,
+      inventory: 0,
+      maintenance: 0,
+      other: 0
+    }
+
+    realExpenses.forEach(expense => {
+      const amount = expense.amount || 0
+      const category = expense.category || 'Other'
+
+      // Map expense categories to P&L categories
+      if (category === 'Salaries') {
+        breakdown.staffSalaries += amount
+      } else if (category === 'Rent' || category === 'Utilities') {
+        breakdown.rentUtilities += amount
+      } else if (category === 'Inventory') {
+        breakdown.supplies += amount
+      } else if (category === 'Marketing') {
+        breakdown.marketing += amount
+      } else if (category === 'Maintenance') {
+        breakdown.maintenance += amount
+      } else {
+        breakdown.other += amount
+      }
+    })
+
+    // Calculate total
+    breakdown.totalExpenses = Object.values(breakdown).reduce((sum, val) => sum + val, 0)
+
+    return breakdown
+  }, [realExpenses, salesSummary])
+
+  const isLoading = salesLoading || glLoading || expensesLoading
+
+  // Month names for display
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
+  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i)
 
   return (
     <div className="space-y-4">
+      {/* Enterprise Date Range Selector - Global for All Tabs */}
+      <div
+        className="rounded-xl border p-4 md:p-6"
+        style={{
+          backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+          borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+        }}
+      >
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold mb-1" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+              Reporting Period
+            </h3>
+            <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+              {viewMode === 'monthly'
+                ? `${monthNames[selectedMonth - 1]} ${selectedYear}`
+                : `Q${selectedQuarter} ${selectedYear} (${
+                    selectedQuarter === 1 ? 'Jan-Mar' :
+                    selectedQuarter === 2 ? 'Apr-Jun' :
+                    selectedQuarter === 3 ? 'Jul-Sep' : 'Oct-Dec'
+                  })`
+              }
+              {salesSummary?.growth_vs_previous !== undefined && (
+                <span
+                  className="ml-2 text-xs font-medium"
+                  style={{
+                    color: salesSummary.growth_vs_previous >= 0
+                      ? SALON_LUXE_COLORS.emerald.base
+                      : SALON_LUXE_COLORS.ruby.base
+                  }}
+                >
+                  {salesSummary.growth_vs_previous >= 0 ? '↑' : '↓'} {Math.abs(salesSummary.growth_vs_previous).toFixed(1)}% vs previous period
+                </span>
+              )}
+            </p>
+          </div>
+
+          {/* View Mode Toggle */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode('monthly')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all min-h-[44px] ${
+                viewMode === 'monthly' ? 'scale-105' : 'hover:scale-105'
+              } active:scale-95`}
+              style={{
+                backgroundColor: viewMode === 'monthly'
+                  ? `${SALON_LUXE_COLORS.gold.base}30`
+                  : SALON_LUXE_COLORS.charcoal.dark,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: viewMode === 'monthly'
+                  ? `${SALON_LUXE_COLORS.gold.base}60`
+                  : `${SALON_LUXE_COLORS.bronze.base}40`,
+                color: viewMode === 'monthly'
+                  ? SALON_LUXE_COLORS.gold.base
+                  : SALON_LUXE_COLORS.champagne.base
+              }}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setViewMode('quarterly')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all min-h-[44px] ${
+                viewMode === 'quarterly' ? 'scale-105' : 'hover:scale-105'
+              } active:scale-95`}
+              style={{
+                backgroundColor: viewMode === 'quarterly'
+                  ? `${SALON_LUXE_COLORS.gold.base}30`
+                  : SALON_LUXE_COLORS.charcoal.dark,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: viewMode === 'quarterly'
+                  ? `${SALON_LUXE_COLORS.gold.base}60`
+                  : `${SALON_LUXE_COLORS.bronze.base}40`,
+                color: viewMode === 'quarterly'
+                  ? SALON_LUXE_COLORS.gold.base
+                  : SALON_LUXE_COLORS.champagne.base
+              }}
+            >
+              Quarterly
+            </button>
+          </div>
+        </div>
+
+        {/* Conditional Selector: Monthly or Quarterly */}
+        <div className="mt-4">
+          {viewMode === 'monthly' ? (
+            <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
+            {/* Month Selector */}
+            <div className="min-w-[160px]">
+              <label
+                className="block text-xs font-medium mb-1.5"
+                style={{ color: SALON_LUXE_COLORS.bronze.base }}
+              >
+                Month
+              </label>
+              <Select
+                value={selectedMonth.toString()}
+                onValueChange={(value) => setSelectedMonth(parseInt(value))}
+              >
+                <SelectTrigger
+                  className="w-full transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+                  style={{
+                    backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+                    borderColor: `${SALON_LUXE_COLORS.gold.base}60`,
+                    color: SALON_LUXE_COLORS.champagne.base,
+                    minHeight: '44px'
+                  }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  {monthNames.map((month, index) => (
+                    <SelectItem key={index + 1} value={(index + 1).toString()} className="hera-select-item">
+                      {month}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Year Selector */}
+            <div className="min-w-[120px]">
+              <label
+                className="block text-xs font-medium mb-1.5"
+                style={{ color: SALON_LUXE_COLORS.bronze.base }}
+              >
+                Year
+              </label>
+              <Select
+                value={selectedYear.toString()}
+                onValueChange={(value) => setSelectedYear(parseInt(value))}
+              >
+                <SelectTrigger
+                  className="w-full transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+                  style={{
+                    backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+                    borderColor: `${SALON_LUXE_COLORS.gold.base}60`,
+                    color: SALON_LUXE_COLORS.champagne.base,
+                    minHeight: '44px'
+                  }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year.toString()} className="hera-select-item">
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          ) : (
+            /* Quarterly Selector */
+            <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
+              <div className="min-w-[160px]">
+                <label
+                  className="block text-xs font-medium mb-1.5"
+                  style={{ color: SALON_LUXE_COLORS.bronze.base }}
+                >
+                  Quarter
+                </label>
+                <Select
+                  value={selectedQuarter.toString()}
+                  onValueChange={(value) => setSelectedQuarter(parseInt(value))}
+                >
+                  <SelectTrigger
+                    className="w-full transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+                    style={{
+                      backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+                      borderColor: `${SALON_LUXE_COLORS.gold.base}60`,
+                      color: SALON_LUXE_COLORS.champagne.base,
+                      minHeight: '44px'
+                    }}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="hera-select-content">
+                    <SelectItem value="1" className="hera-select-item">Q1 (Jan-Mar)</SelectItem>
+                    <SelectItem value="2" className="hera-select-item">Q2 (Apr-Jun)</SelectItem>
+                    <SelectItem value="3" className="hera-select-item">Q3 (Jul-Sep)</SelectItem>
+                    <SelectItem value="4" className="hera-select-item">Q4 (Oct-Dec)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="min-w-[120px]">
+                <label
+                  className="block text-xs font-medium mb-1.5"
+                  style={{ color: SALON_LUXE_COLORS.bronze.base }}
+                >
+                  Year
+                </label>
+                <Select
+                  value={selectedYear.toString()}
+                  onValueChange={(value) => setSelectedYear(parseInt(value))}
+                >
+                  <SelectTrigger
+                    className="w-full transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+                    style={{
+                      backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+                      borderColor: `${SALON_LUXE_COLORS.gold.base}60`,
+                      color: SALON_LUXE_COLORS.champagne.base,
+                      minHeight: '44px'
+                    }}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="hera-select-content">
+                    {years.map((year) => (
+                      <SelectItem key={year} value={year.toString()} className="hera-select-item">
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Quick Period Shortcuts */}
+        <div className="flex gap-2 mt-4 flex-wrap">
+          {viewMode === 'monthly' ? (
+            <>
+              <button
+                onClick={() => {
+                  const now = new Date()
+                  setViewMode('monthly')
+                  setSelectedMonth(now.getMonth() + 1)
+                  setSelectedYear(now.getFullYear())
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105 active:scale-95 ${
+                  selectedMonth === currentMonth.getMonth() + 1 && selectedYear === currentMonth.getFullYear()
+                    ? 'scale-105'
+                    : ''
+                }`}
+                style={{
+                  backgroundColor: selectedMonth === currentMonth.getMonth() + 1 && selectedYear === currentMonth.getFullYear()
+                    ? `${SALON_LUXE_COLORS.emerald.base}30`
+                    : `${SALON_LUXE_COLORS.emerald.base}20`,
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: selectedMonth === currentMonth.getMonth() + 1 && selectedYear === currentMonth.getFullYear()
+                    ? `${SALON_LUXE_COLORS.emerald.base}60`
+                    : `${SALON_LUXE_COLORS.emerald.base}40`,
+                  color: SALON_LUXE_COLORS.emerald.base
+                }}
+              >
+                Current Month
+              </button>
+              <button
+                onClick={() => {
+                  const lastMonth = new Date()
+                  lastMonth.setMonth(lastMonth.getMonth() - 1)
+                  setViewMode('monthly')
+                  setSelectedMonth(lastMonth.getMonth() + 1)
+                  setSelectedYear(lastMonth.getFullYear())
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105 active:scale-95 ${
+                  (() => {
+                    const lastMonth = new Date()
+                    lastMonth.setMonth(lastMonth.getMonth() - 1)
+                    return selectedMonth === lastMonth.getMonth() + 1 && selectedYear === lastMonth.getFullYear()
+                  })()
+                    ? 'scale-105'
+                    : ''
+                }`}
+                style={{
+                  backgroundColor: (() => {
+                    const lastMonth = new Date()
+                    lastMonth.setMonth(lastMonth.getMonth() - 1)
+                    return selectedMonth === lastMonth.getMonth() + 1 && selectedYear === lastMonth.getFullYear()
+                      ? `${SALON_LUXE_COLORS.gold.base}30`
+                      : `${SALON_LUXE_COLORS.gold.base}20`
+                  })(),
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: (() => {
+                    const lastMonth = new Date()
+                    lastMonth.setMonth(lastMonth.getMonth() - 1)
+                    return selectedMonth === lastMonth.getMonth() + 1 && selectedYear === lastMonth.getFullYear()
+                      ? `${SALON_LUXE_COLORS.gold.base}60`
+                      : `${SALON_LUXE_COLORS.gold.base}40`
+                  })(),
+                  color: SALON_LUXE_COLORS.gold.base
+                }}
+              >
+                Last Month
+              </button>
+              <button
+                onClick={() => {
+                  const threeMonthsAgo = new Date()
+                  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+                  setViewMode('monthly')
+                  setSelectedMonth(threeMonthsAgo.getMonth() + 1)
+                  setSelectedYear(threeMonthsAgo.getFullYear())
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105 active:scale-95 ${
+                  (() => {
+                    const threeMonthsAgo = new Date()
+                    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+                    return selectedMonth === threeMonthsAgo.getMonth() + 1 && selectedYear === threeMonthsAgo.getFullYear()
+                  })()
+                    ? 'scale-105'
+                    : ''
+                }`}
+                style={{
+                  backgroundColor: (() => {
+                    const threeMonthsAgo = new Date()
+                    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+                    return selectedMonth === threeMonthsAgo.getMonth() + 1 && selectedYear === threeMonthsAgo.getFullYear()
+                      ? `${SALON_LUXE_COLORS.bronze.base}30`
+                      : `${SALON_LUXE_COLORS.bronze.base}20`
+                  })(),
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: (() => {
+                    const threeMonthsAgo = new Date()
+                    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+                    return selectedMonth === threeMonthsAgo.getMonth() + 1 && selectedYear === threeMonthsAgo.getFullYear()
+                      ? `${SALON_LUXE_COLORS.bronze.base}60`
+                      : `${SALON_LUXE_COLORS.bronze.base}40`
+                  })(),
+                  color: SALON_LUXE_COLORS.bronze.base
+                }}
+              >
+                3 Months Ago
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => {
+                  const now = new Date()
+                  setViewMode('quarterly')
+                  setSelectedQuarter(Math.ceil((now.getMonth() + 1) / 3))
+                  setSelectedYear(now.getFullYear())
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105 active:scale-95 ${
+                  selectedQuarter === Math.ceil((currentMonth.getMonth() + 1) / 3) && selectedYear === currentMonth.getFullYear()
+                    ? 'scale-105'
+                    : ''
+                }`}
+                style={{
+                  backgroundColor: selectedQuarter === Math.ceil((currentMonth.getMonth() + 1) / 3) && selectedYear === currentMonth.getFullYear()
+                    ? `${SALON_LUXE_COLORS.emerald.base}30`
+                    : `${SALON_LUXE_COLORS.emerald.base}20`,
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: selectedQuarter === Math.ceil((currentMonth.getMonth() + 1) / 3) && selectedYear === currentMonth.getFullYear()
+                    ? `${SALON_LUXE_COLORS.emerald.base}60`
+                    : `${SALON_LUXE_COLORS.emerald.base}40`,
+                  color: SALON_LUXE_COLORS.emerald.base
+                }}
+              >
+                Current Quarter
+              </button>
+              <button
+                onClick={() => {
+                  const lastQ = selectedQuarter - 1
+                  if (lastQ < 1) {
+                    setSelectedQuarter(4)
+                    setSelectedYear(selectedYear - 1)
+                  } else {
+                    setSelectedQuarter(lastQ)
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105 active:scale-95 ${
+                  (() => {
+                    const prevQuarter = selectedQuarter - 1
+                    const prevYear = prevQuarter < 1 ? selectedYear - 1 : selectedYear
+                    const prevQ = prevQuarter < 1 ? 4 : prevQuarter
+                    return selectedQuarter === prevQ && selectedYear === prevYear ? 'scale-105' : ''
+                  })()
+                }`}
+                style={{
+                  backgroundColor: (() => {
+                    const prevQuarter = selectedQuarter - 1
+                    const prevYear = prevQuarter < 1 ? selectedYear - 1 : selectedYear
+                    const prevQ = prevQuarter < 1 ? 4 : prevQuarter
+                    return selectedQuarter === prevQ && selectedYear === prevYear
+                      ? `${SALON_LUXE_COLORS.gold.base}30`
+                      : `${SALON_LUXE_COLORS.bronze.base}20`
+                  })(),
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: (() => {
+                    const prevQuarter = selectedQuarter - 1
+                    const prevYear = prevQuarter < 1 ? selectedYear - 1 : selectedYear
+                    const prevQ = prevQuarter < 1 ? 4 : prevQuarter
+                    return selectedQuarter === prevQ && selectedYear === prevYear
+                      ? `${SALON_LUXE_COLORS.gold.base}60`
+                      : `${SALON_LUXE_COLORS.bronze.base}40`
+                  })(),
+                  color: SALON_LUXE_COLORS.bronze.base
+                }}
+              >
+                Previous Quarter
+              </button>
+              <button
+                onClick={() => {
+                  setViewMode('quarterly')
+                  setSelectedQuarter(1)
+                  setSelectedYear(selectedYear)
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105 active:scale-95 ${
+                  selectedQuarter === 1 ? 'scale-105' : ''
+                }`}
+                style={{
+                  backgroundColor: selectedQuarter === 1
+                    ? `${SALON_LUXE_COLORS.bronze.base}30`
+                    : `${SALON_LUXE_COLORS.bronze.base}20`,
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: selectedQuarter === 1
+                    ? `${SALON_LUXE_COLORS.bronze.base}60`
+                    : `${SALON_LUXE_COLORS.bronze.base}40`,
+                  color: SALON_LUXE_COLORS.bronze.base
+                }}
+              >
+                Q1 (YTD Start)
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
       {/* Tab Navigation - Mobile Horizontal Scroll */}
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
         <TabButton
@@ -165,9 +679,12 @@ export default function FinanceTabs({
       <div className="min-h-[400px]">
         {activeTab === 'overview' && (
           <OverviewTab
+            salesSummary={salesSummary}
             revenueBreakdown={revenueBreakdown}
             expenseBreakdown={expenseBreakdown}
             isLoading={isLoading}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
           />
         )}
 
@@ -177,35 +694,63 @@ export default function FinanceTabs({
             revenueBreakdown={revenueBreakdown}
             expenseBreakdown={expenseBreakdown}
             isLoading={isLoading}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
+            onMonthChange={setSelectedMonth}
+            onYearChange={setSelectedYear}
           />
         )}
 
         {activeTab === 'vat' && (
           <VATTab
-            salesSummary={salesSummary}
-            dimensionalBreakdown={dimensionalBreakdown}
-            isLoading={isLoading}
+            organizationId={organizationId}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
           />
         )}
 
         {activeTab === 'expenses' && (
-          <ExpensesTab isLoading={isLoading} organizationId={organizationId} />
+          <ExpensesTab
+            isLoading={isLoading}
+            organizationId={organizationId}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
+          />
         )}
 
         {activeTab === 'invoices' && (
-          <InvoicesTab isLoading={isLoading} />
+          <InvoicesTab
+            isLoading={isLoading}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
+          />
         )}
 
         {activeTab === 'cashflow' && (
-          <CashFlowTab salesSummary={salesSummary} isLoading={isLoading} />
+          <CashFlowTab
+            salesSummary={salesSummary}
+            isLoading={isLoading}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
+          />
         )}
 
         {activeTab === 'payroll' && (
-          <PayrollTab dimensionalBreakdown={dimensionalBreakdown} isLoading={isLoading} />
+          <PayrollTab
+            dimensionalBreakdown={dimensionalBreakdown}
+            isLoading={isLoading}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
+          />
         )}
 
         {activeTab === 'transactions' && (
-          <TransactionsTab glTransactions={glTransactions} isLoading={isLoading} />
+          <TransactionsTab
+            glTransactions={glTransactions}
+            isLoading={isLoading}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
+          />
         )}
       </div>
     </div>
@@ -248,23 +793,126 @@ function TabButton({ label, icon: Icon, active, onClick }: TabButtonProps) {
 // OVERVIEW TAB
 // ============================================================================
 
-function OverviewTab({ revenueBreakdown, expenseBreakdown, isLoading }: any) {
+interface OverviewTabProps {
+  salesSummary: any
+  revenueBreakdown: any
+  expenseBreakdown: any
+  isLoading: boolean
+  selectedMonth: number
+  selectedYear: number
+}
+
+function OverviewTab({
+  salesSummary,
+  revenueBreakdown,
+  expenseBreakdown,
+  isLoading,
+  selectedMonth,
+  selectedYear
+}: OverviewTabProps) {
   if (isLoading) return <LoadingCard />
+
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
+
+  const totalRevenue = (revenueBreakdown.services || 0) + (revenueBreakdown.products || 0)
+  const totalExpenses = (
+    (expenseBreakdown.staffSalaries || 0) +
+    (expenseBreakdown.rentUtilities || 0) +
+    (expenseBreakdown.supplies || 0) +
+    (expenseBreakdown.marketing || 0) +
+    (expenseBreakdown.inventory || 0) +
+    (expenseBreakdown.maintenance || 0) +
+    (expenseBreakdown.other || 0)
+  )
 
   return (
     <div
       className="rounded-xl border p-4 md:p-6"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
-      <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
-        Financial Overview
-      </h2>
-      <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-        Monthly financial performance summary
-      </p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold mb-1" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+            Financial Overview
+          </h2>
+          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+            {monthNames[selectedMonth - 1]} {selectedYear}
+            {salesSummary?.growth_vs_previous !== undefined && (
+              <span
+                className="ml-2 text-xs font-medium"
+                style={{
+                  color: salesSummary.growth_vs_previous >= 0
+                    ? SALON_LUXE_COLORS.emerald.base
+                    : SALON_LUXE_COLORS.ruby.base
+                }}
+              >
+                {salesSummary.growth_vs_previous >= 0 ? '↑' : '↓'} {Math.abs(salesSummary.growth_vs_previous).toFixed(1)}% vs prev
+              </span>
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* Key Metrics Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div
+          className="p-4 rounded-lg border"
+          style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.emerald.base}40`
+          }}
+        >
+          <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            Total Revenue
+          </p>
+          <p className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+            AED {totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </p>
+        </div>
+
+        <div
+          className="p-4 rounded-lg border"
+          style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.ruby.base}40`
+          }}
+        >
+          <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            Total Expenses
+          </p>
+          <p className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.ruby.base }}>
+            AED {totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </p>
+        </div>
+
+        <div
+          className="p-4 rounded-lg border"
+          style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.gold.base}40`
+          }}
+        >
+          <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            Net Profit
+          </p>
+          <p
+            className="text-2xl font-bold"
+            style={{
+              color: totalRevenue - totalExpenses >= 0
+                ? SALON_LUXE_COLORS.emerald.base
+                : SALON_LUXE_COLORS.ruby.base
+            }}
+          >
+            AED {(totalRevenue - totalExpenses).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Revenue Breakdown */}
@@ -324,10 +972,13 @@ function OverviewTab({ revenueBreakdown, expenseBreakdown, isLoading }: any) {
 function BreakdownRow({ label, icon: Icon, amount }: any) {
   return (
     <div
-      className="flex justify-between items-center p-3 rounded-lg"
-      style={{ backgroundColor: SALON_LUXE_COLORS.charcoal.dark }}
+      className="flex justify-between items-center p-3 rounded-lg border"
+      style={{
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+        borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+      }}
     >
-      <span className="flex items-center gap-2" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+      <span className="flex items-center gap-2" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
         <Icon className="w-4 h-4" />
         {label}
       </span>
@@ -342,25 +993,66 @@ function BreakdownRow({ label, icon: Icon, amount }: any) {
 // P&L TAB
 // ============================================================================
 
-function PLTab({ salesSummary, revenueBreakdown, expenseBreakdown, isLoading }: any) {
+interface PLTabProps {
+  salesSummary: any
+  revenueBreakdown: any
+  expenseBreakdown: any
+  isLoading: boolean
+  selectedMonth: number
+  selectedYear: number
+  onMonthChange: (month: number) => void
+  onYearChange: (year: number) => void
+}
+
+function PLTab({
+  salesSummary,
+  revenueBreakdown,
+  expenseBreakdown,
+  isLoading,
+  selectedMonth,
+  selectedYear,
+  onMonthChange,
+  onYearChange
+}: PLTabProps) {
   if (isLoading) return <LoadingCard />
 
-  const totalExpenses = Object.values(expenseBreakdown).reduce((sum: number, val: any) => sum + val, 0)
-  const netProfit = (salesSummary?.total_gross || 0) - totalExpenses
+  // ✅ FIX: Calculate total from individual categories only (exclude totalExpenses field)
+  const totalExpenses = (
+    (expenseBreakdown.staffSalaries || 0) +
+    (expenseBreakdown.rentUtilities || 0) +
+    (expenseBreakdown.supplies || 0) +
+    (expenseBreakdown.marketing || 0) +
+    (expenseBreakdown.inventory || 0) +
+    (expenseBreakdown.maintenance || 0) +
+    (expenseBreakdown.other || 0)
+  )
+
+  // ✅ ENTERPRISE ACCOUNTING: Use net revenue (excluding VAT) for P&L
+  // VAT is a liability, not revenue. Tips are also excluded from operating profit.
+  const totalRevenue = salesSummary?.total_net || 0
+  const netProfit = totalRevenue - totalExpenses
+
+  // Enterprise date selection
+  const currentDate = new Date(selectedYear, selectedMonth - 1, 1)
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
+  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i)
 
   return (
     <div
       className="rounded-xl border p-4 md:p-6"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
       <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
         Profit & Loss Statement
       </h2>
-      <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-        For the period ending {new Date().toLocaleDateString()}
+      <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+        Detailed breakdown of revenue and expenses for {monthNames[selectedMonth - 1]} {selectedYear}
       </p>
 
       <div className="space-y-4">
@@ -369,8 +1061,8 @@ function PLTab({ salesSummary, revenueBreakdown, expenseBreakdown, isLoading }: 
           <PLRow label="Service Revenue" amount={revenueBreakdown.services} />
           <PLRow label="Product Revenue" amount={revenueBreakdown.products} />
           <PLRow
-            label="Total Revenue"
-            amount={salesSummary?.total_gross || 0}
+            label="Total Revenue (Net)"
+            amount={totalRevenue}
             bold
             color={SALON_LUXE_COLORS.gold.base}
           />
@@ -378,10 +1070,27 @@ function PLTab({ salesSummary, revenueBreakdown, expenseBreakdown, isLoading }: 
 
         {/* Expenses Section */}
         <PLSection title="Operating Expenses" color={SALON_LUXE_COLORS.ruby.base}>
-          <PLRow label="Staff Salaries" amount={expenseBreakdown.staffSalaries} />
-          <PLRow label="Rent & Utilities" amount={expenseBreakdown.rentUtilities} />
-          <PLRow label="Supplies" amount={expenseBreakdown.supplies} />
-          <PLRow label="Marketing" amount={expenseBreakdown.marketing} />
+          {expenseBreakdown.staffSalaries > 0 && (
+            <PLRow label="Staff Salaries" amount={expenseBreakdown.staffSalaries} />
+          )}
+          {expenseBreakdown.rentUtilities > 0 && (
+            <PLRow label="Rent & Utilities" amount={expenseBreakdown.rentUtilities} />
+          )}
+          {expenseBreakdown.supplies > 0 && (
+            <PLRow label="Supplies" amount={expenseBreakdown.supplies} />
+          )}
+          {expenseBreakdown.marketing > 0 && (
+            <PLRow label="Marketing" amount={expenseBreakdown.marketing} />
+          )}
+          {expenseBreakdown.inventory > 0 && (
+            <PLRow label="Inventory" amount={expenseBreakdown.inventory} />
+          )}
+          {expenseBreakdown.maintenance > 0 && (
+            <PLRow label="Maintenance" amount={expenseBreakdown.maintenance} />
+          )}
+          {expenseBreakdown.other > 0 && (
+            <PLRow label="Other Expenses" amount={expenseBreakdown.other} />
+          )}
           <PLRow
             label="Total Expenses"
             amount={totalExpenses}
@@ -442,83 +1151,309 @@ function PLRow({ label, amount, bold, large, color }: any) {
 }
 
 // ============================================================================
-// VAT TAB
+// VAT TAB (QUARTERLY/MONTHLY UAE FTA COMPLIANT)
 // ============================================================================
 
-function VATTab({ salesSummary, dimensionalBreakdown, isLoading }: any) {
+interface VATTabProps {
+  organizationId?: string
+  selectedMonth: number
+  selectedYear: number
+}
+
+function VATTab({ organizationId, selectedMonth, selectedYear }: VATTabProps) {
+  // Use the globally selected month/year for VAT reporting
+  const currentQuarter = Math.ceil(selectedMonth / 3)
+
+  const [vatPeriod, setVatPeriod] = useState<VATPeriodSelection>({
+    period: 'monthly',
+    month: selectedMonth,
+    year: selectedYear
+  })
+
+  // Update VAT period when global selection changes
+  useEffect(() => {
+    setVatPeriod({
+      period: 'monthly',
+      month: selectedMonth,
+      year: selectedYear
+    })
+  }, [selectedMonth, selectedYear])
+
+  // Collapsible period selector state
+  const [isPeriodSelectorOpen, setIsPeriodSelectorOpen] = useState(false)
+
+  // Fetch quarterly/monthly VAT report with GL v2.0 filtering
+  const {
+    vatSummary,
+    isLoading,
+    refetch,
+    dateRange,
+    periodLabel
+  } = useQuarterlyVATReport({
+    organizationId,
+    period: vatPeriod.period,
+    quarter: vatPeriod.quarter,
+    month: vatPeriod.month,
+    year: vatPeriod.year
+  })
+
   if (isLoading) return <LoadingCard />
 
-  const vatOnServices = dimensionalBreakdown?.service_vat || 0
-  const vatOnProducts = dimensionalBreakdown?.product_vat || 0
-  const vatOnPurchases = (salesSummary?.total_gross || 0) * 0.04 // 4% estimate
-  const netVATPayable = (salesSummary?.total_vat || 0) - vatOnPurchases
+  // Calculate due date (28 days after period end)
+  const periodEndDate = new Date(dateRange.end)
+  const dueDate = new Date(periodEndDate)
+  dueDate.setDate(dueDate.getDate() + 28)
+
+  const hasDetailedBreakdown = vatSummary.gl_version === 'v2.0' && vatSummary.total_vat_output > 0
 
   return (
     <div
       className="rounded-xl border p-4 md:p-6"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
-      <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
-        VAT Compliance Reports
-      </h2>
-      <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-        VAT returns and compliance documentation
-      </p>
+      {/* Header with GL Version Badge */}
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+            VAT Compliance Reports
+          </h2>
+          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+            UAE FTA quarterly/monthly VAT returns
+          </p>
+        </div>
+        <div
+          className="px-3 py-1 rounded-lg text-xs font-medium"
+          style={{
+            backgroundColor: vatSummary.gl_version === 'v2.0'
+              ? `${SALON_LUXE_COLORS.emerald.base}20`
+              : `${SALON_LUXE_COLORS.bronze.base}20`,
+            color: vatSummary.gl_version === 'v2.0'
+              ? SALON_LUXE_COLORS.emerald.base
+              : SALON_LUXE_COLORS.bronze.base
+          }}
+        >
+          GL {vatSummary.gl_version}
+        </div>
+      </div>
 
-      {/* Alert */}
+      {/* Collapsible Period Selector - Enterprise Grade */}
+      <div className="mb-6">
+        <button
+          onClick={() => setIsPeriodSelectorOpen(!isPeriodSelectorOpen)}
+          className="flex items-center justify-between w-full p-4 rounded-lg border transition-all hover:scale-[1.01] active:scale-[0.99]"
+          style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.bronze.base}30`,
+            color: SALON_LUXE_COLORS.champagne.base
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <Calendar className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+            <div className="text-left">
+              <span className="font-medium block">Change Reporting Period</span>
+              <span className="text-xs block mt-1" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+                Current: {periodLabel}
+              </span>
+            </div>
+          </div>
+          {isPeriodSelectorOpen ? (
+            <ChevronUp className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+          ) : (
+            <ChevronDown className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+          )}
+        </button>
+
+        {isPeriodSelectorOpen && (
+          <div className="mt-4 p-4 rounded-lg border" style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+          }}>
+            <VATPeriodSelector
+              selected={vatPeriod}
+              onChange={setVatPeriod}
+              minYear={2020}
+              maxYear={currentYear}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Due Date Alert */}
       <div
         className="flex items-start gap-2 p-3 rounded-lg mb-6"
         style={{ backgroundColor: `${SALON_LUXE_COLORS.orange.base}20` }}
       >
         <AlertCircle className="w-4 h-4 mt-0.5" style={{ color: SALON_LUXE_COLORS.orange.base }} />
         <div>
-          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
-            Next VAT return due:{' '}
-            {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+          <p className="text-sm font-medium" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+            VAT Return Due: {dueDate.toLocaleDateString('en-AE', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </p>
+          <p className="text-xs mt-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            Period: {vatSummary.period_start} to {vatSummary.period_end} ({vatSummary.transaction_count} transactions)
           </p>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <VATRow label="VAT on Services" amount={vatOnServices} />
-        <VATRow label="VAT on Products" amount={vatOnProducts} />
-        <VATRow label="Total VAT Collected" amount={salesSummary?.total_vat || 0} highlight />
-        <VATRow label="VAT on Purchases" amount={vatOnPurchases} />
-        <VATRow
-          label="Net VAT Payable"
-          amount={netVATPayable}
-          highlight
-          color={SALON_LUXE_COLORS.emerald.base}
-        />
-      </div>
-    </div>
-  )
-}
 
-function VATRow({ label, amount, highlight, color }: any) {
-  return (
-    <div
-      className={`flex justify-between items-center p-4 rounded-lg ${highlight ? 'border' : ''}`}
-      style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
-        borderColor: highlight ? `${SALON_LUXE_COLORS.gold.base}30` : 'transparent'
-      }}
-    >
-      <span
-        className={highlight ? 'font-semibold' : ''}
-        style={{ color: SALON_LUXE_COLORS.champagne.base }}
+      {/* VAT Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {/* Output VAT (Collected) */}
+        <div
+          className="p-4 rounded-lg border"
+          style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.emerald.base}50`
+          }}
+        >
+          <p className="text-sm mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            VAT Output (Collected)
+          </p>
+          <p className="text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+            AED {vatSummary.total_vat_output.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </p>
+          {hasDetailedBreakdown && (
+            <div className="space-y-1 text-xs" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              <div className="flex justify-between">
+                <span>Services:</span>
+                <span>AED {vatSummary.service_vat_output.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Products:</span>
+                <span>AED {vatSummary.product_vat_output.toLocaleString()}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Input VAT (Paid) */}
+        <div
+          className="p-4 rounded-lg border"
+          style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.ruby.base}50`
+          }}
+        >
+          <p className="text-sm mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            VAT Input (Paid)
+          </p>
+          <p className="text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.ruby.base }}>
+            AED {vatSummary.total_vat_input.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </p>
+          <p className="text-xs" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            From purchases & expenses
+          </p>
+        </div>
+
+        {/* Net VAT Payable */}
+        <div
+          className="p-4 rounded-lg border"
+          style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.gold.base}60`
+          }}
+        >
+          <p className="text-sm mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            Net VAT Payable
+          </p>
+          <p className="text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+            AED {vatSummary.net_vat_payable.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </p>
+          <p className="text-xs" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            Due to FTA by {dueDate.toLocaleDateString('en-AE', { day: 'numeric', month: 'short' })}
+          </p>
+        </div>
+      </div>
+
+      {/* Detailed Breakdown Table (GL v2.0 only) */}
+      {hasDetailedBreakdown && (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+            <Receipt className="w-5 h-5" />
+            Revenue & VAT Breakdown
+          </h3>
+          <div className="overflow-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr style={{ borderBottom: `1px solid ${SALON_LUXE_COLORS.bronze.base}30` }}>
+                  <th className="px-3 py-2 text-left" style={{ color: SALON_LUXE_COLORS.bronze.base }}>Type</th>
+                  <th className="px-3 py-2 text-right" style={{ color: SALON_LUXE_COLORS.bronze.base }}>Gross</th>
+                  <th className="px-3 py-2 text-right" style={{ color: SALON_LUXE_COLORS.bronze.base }}>Net</th>
+                  <th className="px-3 py-2 text-right" style={{ color: SALON_LUXE_COLORS.bronze.base }}>VAT @ 5%</th>
+                  <th className="px-3 py-2 text-right" style={{ color: SALON_LUXE_COLORS.bronze.base }}>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ borderBottom: `1px solid ${SALON_LUXE_COLORS.bronze.base}10` }}>
+                  <td className="px-3 py-2" style={{ color: SALON_LUXE_COLORS.champagne.base }}>Services</td>
+                  <td className="px-3 py-2 text-right" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                    {vatSummary.service_revenue_gross.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right font-medium" style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+                    {vatSummary.service_revenue_net.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+                    {vatSummary.service_vat_output.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right font-medium" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                    {(vatSummary.service_revenue_net + vatSummary.service_vat_output).toLocaleString()}
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: `1px solid ${SALON_LUXE_COLORS.bronze.base}10` }}>
+                  <td className="px-3 py-2" style={{ color: SALON_LUXE_COLORS.champagne.base }}>Products</td>
+                  <td className="px-3 py-2 text-right" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                    {vatSummary.product_revenue_gross.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right font-medium" style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+                    {vatSummary.product_revenue_net.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+                    {vatSummary.product_vat_output.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right font-medium" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                    {(vatSummary.product_revenue_net + vatSummary.product_vat_output).toLocaleString()}
+                  </td>
+                </tr>
+                <tr style={{
+                  borderTop: `2px solid ${SALON_LUXE_COLORS.gold.base}30`,
+                  backgroundColor: `${SALON_LUXE_COLORS.gold.base}10`
+                }}>
+                  <td className="px-3 py-2 font-bold" style={{ color: SALON_LUXE_COLORS.gold.base }}>TOTAL</td>
+                  <td className="px-3 py-2 text-right font-bold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                    {vatSummary.total_revenue_gross.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right font-bold" style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+                    {vatSummary.total_revenue_net.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right font-bold" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+                    {vatSummary.total_vat_output.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-right font-bold" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+                    {(vatSummary.total_revenue_net + vatSummary.total_vat_output).toLocaleString()}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* FTA Compliance Note */}
+      <div
+        className="mt-6 p-4 rounded-lg"
+        style={{ backgroundColor: `${SALON_LUXE_COLORS.gold.base}10` }}
       >
-        {label}
-      </span>
-      <span
-        className={highlight ? 'font-bold text-lg' : ''}
-        style={{ color: color || SALON_LUXE_COLORS.gold.base }}
-      >
-        AED {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-      </span>
+        <p className="text-sm font-medium mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+          UAE Federal Tax Authority (FTA) Compliance
+        </p>
+        <p className="text-xs" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+          This VAT report is prepared in accordance with UAE VAT regulations.
+          Ensure all amounts are accurately reported in your periodic VAT return filing.
+          Standard rate: 5% on taxable supplies. Return due within 28 days of period end.
+        </p>
+      </div>
     </div>
   )
 }
@@ -527,7 +1462,18 @@ function VATRow({ label, amount, highlight, color }: any) {
 // EXPENSES TAB (Enterprise Expense Management with useHeraExpenses)
 // ============================================================================
 
-function ExpensesTab({ isLoading: parentLoading, organizationId }: any) {
+interface ExpensesTabProps {
+  isLoading: boolean
+  organizationId?: string
+  selectedMonth: number
+  selectedYear: number
+}
+
+function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, selectedYear }: ExpensesTabProps) {
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedExpense, setSelectedExpense] = useState<any>(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -609,7 +1555,7 @@ function ExpensesTab({ isLoading: parentLoading, organizationId }: any) {
       <div
         className="rounded-xl border p-4 md:p-6"
         style={{
-          backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+          backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
           borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
         }}
       >
@@ -618,8 +1564,8 @@ function ExpensesTab({ isLoading: parentLoading, organizationId }: any) {
             <h2 className="text-xl md:text-2xl font-bold mb-1" style={{ color: SALON_LUXE_COLORS.gold.base }}>
               Expense Management
             </h2>
-            <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-              Track and categorize all business expenses
+            <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+              Track and categorize all business expenses for {monthNames[selectedMonth - 1]} {selectedYear}
             </p>
           </div>
           <div className="flex gap-2">
@@ -691,8 +1637,11 @@ function ExpensesTab({ isLoading: parentLoading, organizationId }: any) {
 function ExpenseRow({ expense, onEdit, onDelete }: any) {
   return (
     <div
-      className="p-3 md:p-4 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3 group"
-      style={{ backgroundColor: SALON_LUXE_COLORS.charcoal.dark }}
+      className="p-3 md:p-4 rounded-lg border flex flex-col md:flex-row md:items-center justify-between gap-3 group"
+      style={{
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+        borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+      }}
     >
       <div className="flex-1">
         <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>{expense.vendor || 'Unknown Vendor'}</p>
@@ -754,17 +1703,34 @@ function ExpenseRow({ expense, onEdit, onDelete }: any) {
 // INVOICES TAB (Placeholder - will use useUniversalEntityV1)
 // ============================================================================
 
-function InvoicesTab({ isLoading }: any) {
+interface InvoicesTabProps {
+  isLoading: boolean
+  selectedMonth: number
+  selectedYear: number
+}
+
+function InvoicesTab({ isLoading, selectedMonth, selectedYear }: InvoicesTabProps) {
   if (isLoading) return <LoadingCard />
+
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
 
   return (
     <div
       className="rounded-xl border p-4 md:p-6"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
+      <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+        Invoices
+      </h2>
+      <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+        {monthNames[selectedMonth - 1]} {selectedYear}
+      </p>
       <div className="text-center py-8">
         <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: SALON_LUXE_COLORS.bronze.base }} />
         <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>
@@ -779,7 +1745,18 @@ function InvoicesTab({ isLoading }: any) {
 // CASH FLOW TAB
 // ============================================================================
 
-function CashFlowTab({ salesSummary, isLoading }: any) {
+interface CashFlowTabProps {
+  salesSummary: any
+  isLoading: boolean
+  selectedMonth: number
+  selectedYear: number
+}
+
+function CashFlowTab({ salesSummary, isLoading, selectedMonth, selectedYear }: CashFlowTabProps) {
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
   if (isLoading) return <LoadingCard />
 
   const cashInflows = salesSummary?.total_gross || 0
@@ -791,20 +1768,23 @@ function CashFlowTab({ salesSummary, isLoading }: any) {
     <div
       className="rounded-xl border p-4 md:p-6"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
       <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
         Cash Flow Statement
       </h2>
-      <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-        Monitor cash inflows and outflows
+      <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+        Monitor cash inflows and outflows for {monthNames[selectedMonth - 1]} {selectedYear}
       </p>
 
       <div
-        className="p-4 rounded-lg space-y-3"
-        style={{ backgroundColor: SALON_LUXE_COLORS.charcoal.dark }}
+        className="p-4 rounded-lg border space-y-3"
+        style={{
+          backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+          borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+        }}
       >
         <CashFlowRow label="Opening Balance" amount={openingBalance} />
         <CashFlowRow
@@ -856,8 +1836,20 @@ function CashFlowRow({ label, amount, positive, negative, icon, highlight }: any
 // PAYROLL TAB
 // ============================================================================
 
-function PayrollTab({ dimensionalBreakdown, isLoading }: any) {
+interface PayrollTabProps {
+  dimensionalBreakdown: any
+  isLoading: boolean
+  selectedMonth: number
+  selectedYear: number
+}
+
+function PayrollTab({ dimensionalBreakdown, isLoading, selectedMonth, selectedYear }: PayrollTabProps) {
   if (isLoading) return <LoadingCard />
+
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
 
   // Extract tips by staff from dimensional breakdown
   const staffTips = dimensionalBreakdown?.tips_by_staff || []
@@ -866,7 +1858,7 @@ function PayrollTab({ dimensionalBreakdown, isLoading }: any) {
     <div
       className="rounded-xl border p-4 md:p-6"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
@@ -875,8 +1867,8 @@ function PayrollTab({ dimensionalBreakdown, isLoading }: any) {
           <h2 className="text-xl md:text-2xl font-bold mb-1" style={{ color: SALON_LUXE_COLORS.gold.base }}>
             Payroll Management
           </h2>
-          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-            Staff salaries and commission tracking
+          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+            Staff salaries and commission tracking for {monthNames[selectedMonth - 1]} {selectedYear}
           </p>
         </div>
         <button
@@ -896,8 +1888,11 @@ function PayrollTab({ dimensionalBreakdown, isLoading }: any) {
           {staffTips.map((staff: any, idx: number) => (
             <div
               key={idx}
-              className="p-3 rounded-lg flex justify-between items-center"
-              style={{ backgroundColor: SALON_LUXE_COLORS.charcoal.dark }}
+              className="p-3 rounded-lg border flex justify-between items-center"
+              style={{
+                backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+                borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+              }}
             >
               <div>
                 <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>
@@ -929,14 +1924,26 @@ function PayrollTab({ dimensionalBreakdown, isLoading }: any) {
 // TRANSACTIONS TAB
 // ============================================================================
 
-function TransactionsTab({ glTransactions, isLoading }: any) {
+interface TransactionsTabProps {
+  glTransactions: any
+  isLoading: boolean
+  selectedMonth: number
+  selectedYear: number
+}
+
+function TransactionsTab({ glTransactions, isLoading, selectedMonth, selectedYear }: TransactionsTabProps) {
   if (isLoading) return <LoadingCard />
+
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
 
   return (
     <div
       className="rounded-xl border p-4 md:p-6"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
@@ -945,8 +1952,8 @@ function TransactionsTab({ glTransactions, isLoading }: any) {
           <h2 className="text-xl md:text-2xl font-bold mb-1" style={{ color: SALON_LUXE_COLORS.gold.base }}>
             Transaction History
           </h2>
-          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-            All financial transactions and payments
+          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+            All financial transactions and payments for {monthNames[selectedMonth - 1]} {selectedYear}
           </p>
         </div>
         <div className="flex gap-2">
@@ -992,8 +1999,11 @@ function TransactionRow({ transaction }: any) {
 
   return (
     <div
-      className="p-3 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3"
-      style={{ backgroundColor: SALON_LUXE_COLORS.charcoal.dark }}
+      className="p-3 rounded-lg border flex flex-col md:flex-row md:items-center justify-between gap-3"
+      style={{
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+        borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+      }}
     >
       <div className="flex items-center gap-3">
         <div
@@ -1040,15 +2050,31 @@ function LoadingCard() {
     <div
       className="rounded-xl border p-6 animate-pulse"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
-      <div className="h-6 w-48 bg-charcoal rounded mb-4" />
-      <div className="h-4 w-32 bg-charcoal rounded mb-6" />
+      <div
+        className="h-6 w-48 rounded-lg mb-4"
+        style={{
+          backgroundColor: `${SALON_LUXE_COLORS.bronze.base}20`
+        }}
+      />
+      <div
+        className="h-4 w-32 rounded-lg mb-6"
+        style={{
+          backgroundColor: `${SALON_LUXE_COLORS.bronze.base}20`
+        }}
+      />
       <div className="space-y-3">
         {[1, 2, 3].map(i => (
-          <div key={i} className="h-16 bg-charcoal rounded" />
+          <div
+            key={i}
+            className="h-16 rounded-lg"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.bronze.base}20`
+            }}
+          />
         ))}
       </div>
     </div>

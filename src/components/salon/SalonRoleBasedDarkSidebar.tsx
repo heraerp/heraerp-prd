@@ -14,7 +14,7 @@ import {
   FolderOpen,
   MessageCircle,
   UserPlus,
-  DollarSign,
+  Banknote,
   BarChart3,
   Receipt,
   FileText,
@@ -47,8 +47,9 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Products', href: '/salon/products', icon: Package },
     { title: 'Staff', href: '/salon/staffs', icon: UserPlus },
     { title: 'Customers', href: '/salon/customers', icon: Users },
-    { title: 'Branches', href: '/salon/branches', icon: Building2 }
-    // Finance, Reports, and Inventory moved to More modal or bottom section
+    { title: 'Branches', href: '/salon/branches', icon: Building2 },
+    { title: 'Finance', href: '/salon/finance', icon: Banknote }
+    // Reports and Inventory remain in More modal
   ],
 
   receptionist: [
@@ -68,7 +69,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
 
   accountant: [
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
-    { title: 'Finance', href: '/salon/finance', icon: DollarSign },
+    { title: 'Finance', href: '/salon/finance', icon: Banknote },
     { title: 'P&L Report', href: '/salon/finance#pnl', icon: BarChart3 },
     { title: 'VAT Reports', href: '/salon/finance#vat', icon: Clipboard },
     { title: 'Expenses', href: '/salon/finance#expenses', icon: Receipt },
