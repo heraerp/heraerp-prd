@@ -3,15 +3,22 @@
 /**
  * ✨ SALON LUXE ENTERPRISE SETTINGS PAGE
  *
- * UPGRADED FEATURES:
- * - SalonLuxePage wrapper for consistent layout
- * - PremiumMobileHeader for iOS-style mobile experience
- * - Lazy loading with Suspense boundaries
- * - Mobile-first responsive design (44px touch targets)
- * - StatusToastProvider for enterprise notifications
- * - SALON_LUXE_COLORS theme consistency
- * - Progressive lazy loading for performance
- * - Bottom spacing for mobile scroll comfort
+ * UPGRADED FEATURES (v2.3):
+ * - ✅ SalonLuxePage wrapper for consistent layout
+ * - ✅ PremiumMobileHeader for iOS-style mobile experience
+ * - ✅ Lazy loading with Suspense boundaries for performance
+ * - ✅ Mobile-first responsive design (44px touch targets)
+ * - ✅ StatusToastProvider for enterprise notifications
+ * - ✅ SALON_LUXE_COLORS theme consistency
+ * - ✅ useUniversalEntityV1 hook (NO direct RPC calls)
+ * - ✅ Bottom spacing for mobile scroll comfort
+ * - ✅ Progressive enhancement with graceful degradation
+ *
+ * HERA DNA COMPLIANCE:
+ * - Organization settings stored in core_dynamic_data
+ * - All mutations through HERA hooks (actor-stamped)
+ * - Smart Code patterns for all dynamic fields
+ * - No direct Supabase calls - only through hooks
  */
 
 import React, { useEffect, useState, lazy, Suspense } from 'react'
@@ -43,7 +50,7 @@ import {
   Sparkles
 } from 'lucide-react'
 import { SALON_LUXE_COLORS as LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
-import { entityCRUD } from '@/lib/universal-api-v2-client'
+import { useUniversalEntityV1 } from '@/hooks/useUniversalEntityV1'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 // 🚀 PERFORMANCE: Skeleton loader for tabs
@@ -66,6 +73,7 @@ function SettingsPageContent() {
   const { organizationId, role, user: contextUser, organization } = useSecuredSalonContext()
   const { user } = useHERAAuth() // Get actor user ID for RPC
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
+  const { updateEntity } = useUniversalEntityV1() // HERA hook for entity updates
   const [activeTab, setActiveTab] = useState('general')
 
   // Form state for organization settings
@@ -92,7 +100,7 @@ function SettingsPageContent() {
     }
   }, [organization])
 
-  // Save organization settings using direct RPC call
+  // Save organization settings using HERA hook
   const handleSaveOrganizationSettings = async () => {
     if (!organizationId) {
       showError('Error', 'No organization context found')
@@ -107,9 +115,9 @@ function SettingsPageContent() {
     const loadingId = showLoading('Saving settings...', 'Please wait while we update your organization settings')
     setIsSaving(true)
 
-    // ✅ Build dynamic fields in SIMPLE RPC format (matches useUniversalEntityV1 pattern)
+    // ✅ Build dynamic fields in HERA hook format
     // Format: { field_name: { value: 'data', type: 'text', smart_code: '...' } }
-    const p_dynamic = {
+    const dynamicFields = {
       organization_name: {
         value: organizationName,
         type: 'text',
@@ -148,40 +156,31 @@ function SettingsPageContent() {
     }
 
     try {
-      console.log('[Settings] 🔍 Calling entityCRUD UPDATE with:', {
+      console.log('[Settings] 🔍 Calling useUniversalEntityV1.updateEntity with:', {
         entity_id: organizationId,
-        actor_user_id: user.id,
         organization_id: organizationId,
-        dynamic_fields_count: Object.keys(p_dynamic).length
+        dynamic_fields_count: Object.keys(dynamicFields).length
       })
 
-      const { data, error } = await entityCRUD({
-        p_action: 'UPDATE',
-        p_actor_user_id: user.id,
-        p_organization_id: organizationId,
-        p_entity: {
-          entity_id: organizationId,
-          entity_type: 'ORG' // ✅ CRITICAL: Organizations use 'ORG' not 'ORGANIZATION'
-        },
-        p_dynamic,
-        p_options: {
+      // ✅ Use HERA hook instead of direct RPC call
+      const result = await updateEntity({
+        entity_id: organizationId,
+        entity_type: 'ORG', // ✅ CRITICAL: Organizations use 'ORG' not 'ORGANIZATION'
+        organization_id: organizationId,
+        dynamic_fields: dynamicFields,
+        options: {
           include_dynamic: true
         }
       })
 
-      if (error) {
-        console.error('[Settings] RPC Error:', error)
-        throw new Error(typeof error === 'string' ? error : JSON.stringify(error))
-      }
-
-      console.log('[Settings] Save successful - Full response:', JSON.stringify(data, null, 2))
+      console.log('[Settings] Save successful - Full response:', JSON.stringify(result, null, 2))
 
       removeToast(loadingId)
       showSuccess('Settings saved successfully', 'Organization settings have been updated')
 
       console.log('[Settings] ✅ Settings saved successfully')
 
-      // ✅ NO RELOAD NEEDED: Form state is already updated with the returned data from RPC
+      // ✅ NO RELOAD NEEDED: Form state is already updated with the returned data from hook
       // The organization context will be refreshed on next navigation or manual refresh
     } catch (error: any) {
       console.error('[Settings] Error saving organization settings:', {
@@ -190,7 +189,7 @@ function SettingsPageContent() {
         errorString: String(error),
         organizationId,
         userId: user?.id,
-        dynamicFields: Object.keys(p_dynamic || {})
+        dynamicFields: Object.keys(dynamicFields || {})
       })
 
       removeToast(loadingId)

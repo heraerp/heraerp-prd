@@ -35,7 +35,7 @@ const COLORS = {
   emerald: '#0F6F5C'
 }
 
-export default function HairTalkzLanding() {
+export default function HERASalonLanding() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.black }}>
       {/* Hero Section with Luxe Theme */}
@@ -77,14 +77,14 @@ export default function HairTalkzLanding() {
                 textShadow: '0 0 40px rgba(212, 175, 55, 0.3)'
               }}
             >
-              HAIRTALKZ
+              HERA SALON
             </h1>
 
             <p
               className="text-2xl md:text-3xl font-light mb-12 tracking-widest uppercase"
               style={{ color: COLORS.bronze }}
             >
-              Where Luxury Meets Excellence
+              Where Beauty Meets Innovation
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -161,21 +161,21 @@ export default function HairTalkzLanding() {
             {[
               {
                 icon: Scissors,
-                title: 'Precision Styling',
-                description: 'Master stylists creating bespoke looks tailored to your lifestyle',
-                price: 'From AED 350'
+                title: 'Professional Styling',
+                description: 'Expert stylists creating personalized looks that match your unique style and preferences',
+                price: 'Pricing Available'
               },
               {
                 icon: Sparkles,
-                title: 'Color Excellence',
-                description: 'Revolutionary color techniques with premium European products',
-                price: 'From AED 450'
+                title: 'Color Services',
+                description: 'Advanced color techniques using premium products for stunning, long-lasting results',
+                price: 'Pricing Available'
               },
               {
                 icon: Heart,
-                title: 'Luxury Treatments',
-                description: 'Rejuvenating hair therapies with exclusive organic ingredients',
-                price: 'From AED 600'
+                title: 'Hair Treatments',
+                description: 'Restorative treatments designed to nourish, strengthen, and revitalize your hair',
+                price: 'Pricing Available'
               }
             ].map((service, index) => (
               <div
@@ -236,13 +236,13 @@ export default function HairTalkzLanding() {
               className="text-5xl font-light mb-4 transition-all duration-300 group-hover:scale-110"
               style={{ color: COLORS.gold }}
             >
-              15+
+              <Award className="w-12 h-12 mx-auto" />
             </div>
             <div
               className="text-sm uppercase tracking-widest font-light"
               style={{ color: COLORS.bronze }}
             >
-              Years of Excellence
+              Professional Excellence
             </div>
           </div>
           <div className="group cursor-pointer">
@@ -250,13 +250,13 @@ export default function HairTalkzLanding() {
               className="text-5xl font-light mb-4 transition-all duration-300 group-hover:scale-110"
               style={{ color: COLORS.gold }}
             >
-              50K+
+              <Users className="w-12 h-12 mx-auto" />
             </div>
             <div
               className="text-sm uppercase tracking-widest font-light"
               style={{ color: COLORS.bronze }}
             >
-              Satisfied Clients
+              Expert Team
             </div>
           </div>
           <div className="group cursor-pointer">
@@ -264,13 +264,13 @@ export default function HairTalkzLanding() {
               className="text-5xl font-light mb-4 transition-all duration-300 group-hover:scale-110"
               style={{ color: COLORS.gold }}
             >
-              4.9
+              <Star className="w-12 h-12 mx-auto" />
             </div>
             <div
               className="text-sm uppercase tracking-widest font-light"
               style={{ color: COLORS.bronze }}
             >
-              Premium Rating
+              Quality Service
             </div>
           </div>
           <div className="group cursor-pointer">
@@ -278,13 +278,13 @@ export default function HairTalkzLanding() {
               className="text-5xl font-light mb-4 transition-all duration-300 group-hover:scale-110"
               style={{ color: COLORS.gold }}
             >
-              40+
+              <Calendar className="w-12 h-12 mx-auto" />
             </div>
             <div
               className="text-sm uppercase tracking-widest font-light"
               style={{ color: COLORS.bronze }}
             >
-              Award-Winning Stylists
+              Easy Booking
             </div>
           </div>
         </div>
@@ -297,12 +297,12 @@ export default function HairTalkzLanding() {
             className="text-5xl font-light mb-16 tracking-wider uppercase"
             style={{ color: COLORS.champagne }}
           >
-            Visit Our Sanctuary
+            Get Started Today
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
             <div className="group">
-              <MapPin
+              <Calendar
                 className="w-10 h-10 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
                 style={{ color: COLORS.gold }}
               />
@@ -310,19 +310,19 @@ export default function HairTalkzLanding() {
                 className="text-xl font-light mb-4 tracking-wide"
                 style={{ color: COLORS.champagne }}
               >
-                Location
+                Easy Booking
               </h3>
               <p style={{ color: COLORS.bronze }} className="font-light">
-                The Palm Tower, Level 42
+                Schedule appointments online
                 <br />
-                Palm Jumeirah
+                24/7 availability
                 <br />
-                Dubai, UAE
+                Instant confirmation
               </p>
             </div>
 
             <div className="group">
-              <Clock
+              <Users
                 className="w-10 h-10 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
                 style={{ color: COLORS.gold }}
               />
@@ -330,19 +330,19 @@ export default function HairTalkzLanding() {
                 className="text-xl font-light mb-4 tracking-wide"
                 style={{ color: COLORS.champagne }}
               >
-                Hours
+                Expert Stylists
               </h3>
               <p style={{ color: COLORS.bronze }} className="font-light">
-                Monday - Saturday: 10AM - 10PM
+                Certified professionals
                 <br />
-                Sunday: 12PM - 8PM
+                Personalized service
                 <br />
-                By Appointment Only
+                Latest techniques
               </p>
             </div>
 
             <div className="group">
-              <Phone
+              <Shield
                 className="w-10 h-10 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
                 style={{ color: COLORS.gold }}
               />
@@ -350,14 +350,14 @@ export default function HairTalkzLanding() {
                 className="text-xl font-light mb-4 tracking-wide"
                 style={{ color: COLORS.champagne }}
               >
-                Contact
+                Quality Guaranteed
               </h3>
               <p style={{ color: COLORS.bronze }} className="font-light">
-                +971 4 888 LUXE
+                Premium products
                 <br />
-                concierge@hairtalkz.ae
+                Satisfaction guaranteed
                 <br />
-                WhatsApp Available
+                Professional standards
               </p>
             </div>
           </div>
@@ -373,7 +373,7 @@ export default function HairTalkzLanding() {
             asChild
           >
             <Link href="/salon/auth">
-              Reserve Your Experience
+              Start Your Journey
               <ChevronRight className="w-5 h-5 ml-3" />
             </Link>
           </Button>
@@ -390,7 +390,7 @@ export default function HairTalkzLanding() {
       >
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-sm font-light tracking-wider" style={{ color: COLORS.bronze }}>
-            © 2025 HAIRTALKZ. A Luxury Experience by HERA ERP.
+            © 2025 HERA SALON. Powered by HERA ERP - Enterprise Salon Management.
           </p>
         </div>
       </footer>
