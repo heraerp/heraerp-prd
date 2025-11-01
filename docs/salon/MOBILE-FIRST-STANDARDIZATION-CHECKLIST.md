@@ -9,6 +9,194 @@ Transform all HERA Salon pages to mobile-first, enterprise-grade experiences wit
 - **Standardized filter/search patterns**
 - **Touch-optimized interactions**
 
+## ⚡ CRITICAL HERA DEVELOPMENT STANDARDS (UPDATED 2025-11)
+
+### 🔴 MANDATORY PATTERNS - NEVER VIOLATE
+
+**1. Data Access Layer**
+- ✅ **ALWAYS** use `useUniversalEntityV1` for entity CRUD operations
+- ✅ **ALWAYS** use `useUniversalTransactionV1` for transaction operations
+- ✅ **ALWAYS** use RPC functions: `hera_entities_crud_v1` and `hera_txn_crud_v1`
+- ❌ **NEVER** use direct Supabase calls (no `supabase.from()` in components)
+- ❌ **NEVER** use demo/mock APIs in production components
+- ❌ **NEVER** bypass API v2 endpoints
+
+**2. Component Architecture**
+- ✅ **ALWAYS** use `SalonLuxePage` wrapper for page layout
+- ✅ **ALWAYS** use `SalonLuxeKPICard` for KPI metrics
+- ✅ **ALWAYS** use lazy loading with `Suspense` for major sections
+- ✅ **ALWAYS** provide skeleton loaders during loading states
+- ❌ **NEVER** use plain shadcn/ui Card components (use SalonLuxe variants)
+
+**3. Mobile-First Design**
+- ✅ **ALWAYS** include iOS-style mobile header (`h-11 status bar + sticky header`)
+- ✅ **ALWAYS** use responsive grids (`grid-cols-2 md:grid-cols-4`)
+- ✅ **ALWAYS** ensure 44px minimum touch targets
+- ✅ **ALWAYS** add `active:scale-95` for touch feedback
+- ✅ **ALWAYS** add bottom spacing (`h-24 md:h-0`) for mobile nav clearance
+
+**4. Data Extraction Patterns**
+- ✅ **ALWAYS** extract GL data from `metadata` object (not direct fields)
+- ✅ **ALWAYS** use GL v2.0 enhanced fields when available (`service_revenue_net`, `product_revenue_net`)
+- ✅ **ALWAYS** handle both v1 and v2 GL formats with fallbacks
+- ✅ **ALWAYS** use `useMemo` for data transformations to prevent re-renders
+
+### 📋 Standard Page Structure Template
+
+```tsx
+'use client'
+
+import { lazy, Suspense } from 'react'
+import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
+import { useSecuredSalonContext } from '../SecuredSalonProvider'
+
+// Lazy load major sections
+const PageHeader = lazy(() => import('./components/PageHeader'))
+const PageKPIs = lazy(() => import('./components/PageKPIs'))
+const PageContent = lazy(() => import('./components/PageContent'))
+
+export default function SalonPage() {
+  const { organizationId, role, user, isLoading, isAuthenticated } = useSecuredSalonContext()
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <SalonLuxePage title="Page Title" description="Loading...">
+        <LoadingSpinner />
+      </SalonLuxePage>
+    )
+  }
+
+  // Access control
+  if (!isAuthenticated) {
+    return <AccessDenied />
+  }
+
+  return (
+    <SalonLuxePage title="Page Title" description="Page description" maxWidth="full" padding="lg">
+      {/* iOS-style status bar spacer - MOBILE ONLY */}
+      <div className="h-11 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
+
+      {/* Mobile App Header */}
+      <Suspense fallback={<div className="h-16 md:hidden" />}>
+        <PageHeader user={user} organizationId={organizationId} />
+      </Suspense>
+
+      {/* KPI Cards */}
+      <Suspense fallback={<KPISkeleton />}>
+        <PageKPIs organizationId={organizationId} />
+      </Suspense>
+
+      {/* Main Content */}
+      <Suspense fallback={<ContentSkeleton />}>
+        <PageContent organizationId={organizationId} />
+      </Suspense>
+
+      {/* Bottom spacing for mobile navigation */}
+      <div className="h-24 md:h-0" />
+    </SalonLuxePage>
+  )
+}
+```
+
+### 📊 KPI Component Pattern (Real Data)
+
+```tsx
+'use client'
+
+import { useMemo } from 'react'
+import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
+import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
+import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
+import { startOfMonth, endOfMonth } from 'date-fns'
+
+export default function PageKPIs({ organizationId }: { organizationId?: string }) {
+  const currentMonth = new Date()
+
+  // ✅ Fetch real data using HERA hooks
+  const { transactions, isLoading } = useUniversalTransactionV1({
+    organizationId,
+    filters: {
+      transaction_type: 'GL_JOURNAL',
+      date_from: startOfMonth(currentMonth).toISOString(),
+      date_to: endOfMonth(currentMonth).toISOString(),
+      include_lines: true
+    }
+  })
+
+  // ✅ Calculate metrics from real data
+  const metrics = useMemo(() => {
+    if (!transactions) return { revenue: 0, vat: 0 }
+
+    let revenue = 0
+    let vat = 0
+
+    transactions.forEach(txn => {
+      const meta = txn.metadata || {}
+      revenue += meta.total_cr || 0
+      vat += (meta.vat_on_services || 0) + (meta.vat_on_products || 0)
+    })
+
+    return { revenue, vat }
+  }, [transactions])
+
+  if (isLoading) return <KPISkeleton />
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6">
+      <SalonLuxeKPICard
+        title="Revenue"
+        value={`AED ${metrics.revenue.toLocaleString()}`}
+        icon={DollarSign}
+        color={SALON_LUXE_COLORS.gold.base}
+        description="Current month"
+      />
+      {/* More KPIs... */}
+    </div>
+  )
+}
+```
+
+### 🔧 Common Hooks Reference
+
+```typescript
+// Entity operations (services, products, staff, etc.)
+import { useUniversalEntityV1 } from '@/hooks/useUniversalEntityV1'
+
+// Transaction operations (appointments, sales, GL journals)
+import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
+
+// Sales reports with GL data extraction
+import { useMonthlySalesReport, useDailySalesReport } from '@/hooks/useSalonSalesReports'
+
+// Dashboard stats
+import { useReportsStats } from '@/hooks/useReportsStats'
+```
+
+### 📁 Standard File Organization
+
+```
+/src/app/salon/[module]/
+├── page.tsx                    # Main page (lazy loads components)
+├── components/
+│   ├── [Module]Header.tsx     # Mobile + desktop header
+│   ├── [Module]KPIs.tsx       # KPI cards with real data
+│   ├── [Module]Content.tsx    # Main content section
+│   └── [Module]Modal.tsx      # CRUD modal (if needed)
+```
+
+### ✅ Reference Implementation
+
+**Enterprise-grade finance page**: `/src/app/salon/finance/page.tsx`
+- ✅ Uses `SalonLuxePage` wrapper
+- ✅ Uses `useUniversalTransactionV1` for GL data
+- ✅ Uses `SalonLuxeKPICard` for metrics
+- ✅ Lazy loading with Suspense boundaries
+- ✅ Mobile-first responsive design
+- ✅ iOS-style mobile header
+- ✅ No direct Supabase calls
+- ✅ Real data from GL metadata extraction
+
 ---
 
 ## ✅ Phase 1: Component Architecture (FOUNDATION)

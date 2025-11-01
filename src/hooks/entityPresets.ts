@@ -1439,6 +1439,137 @@ export const LEAVE_POLICY_PRESET = {
   relationships: []
 }
 
+// Expense configuration
+export const EXPENSE_PRESET = {
+  entity_type: 'EXPENSE',
+  labels: {
+    singular: 'Expense',
+    plural: 'Expenses'
+  },
+  permissions: {
+    create: (role: Role) => ['owner', 'manager'].includes(role),
+    edit: (role: Role) => ['owner', 'manager'].includes(role),
+    delete: (role: Role) => ['owner', 'manager'].includes(role),
+    view: (role: Role) => ['owner', 'manager'].includes(role)
+  },
+  dynamicFields: [
+    {
+      name: 'vendor',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.VENDOR.v1',
+      required: true,
+      ui: {
+        label: 'Vendor',
+        placeholder: 'Vendor name',
+        helpText: 'Expense vendor or supplier',
+        required: true
+      }
+    },
+    {
+      name: 'amount',
+      type: 'number' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.AMOUNT.v1',
+      required: true,
+      ui: {
+        label: 'Amount (AED)',
+        placeholder: '0.00',
+        helpText: 'Expense amount',
+        decimals: 2,
+        min: 0,
+        required: true
+      }
+    },
+    {
+      name: 'expense_date',
+      type: 'date' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.DATE.v1',
+      required: true,
+      ui: {
+        label: 'Expense Date',
+        widget: 'date',
+        helpText: 'Date of the expense',
+        required: true
+      }
+    },
+    {
+      name: 'category',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.CATEGORY.v1',
+      required: true,
+      ui: {
+        label: 'Category',
+        widget: 'select',
+        helpText: 'Expense category (Inventory, Utilities, Marketing, Salaries, Rent, Maintenance, Other)',
+        required: true
+      }
+    },
+    {
+      name: 'payment_method',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.PAYMENT_METHOD.v1',
+      ui: {
+        label: 'Payment Method',
+        widget: 'select',
+        helpText: 'How the expense was paid (Cash, Card, Bank Transfer, Other)'
+      }
+    },
+    {
+      name: 'status',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.STATUS.v1',
+      defaultValue: 'pending',
+      ui: {
+        label: 'Status',
+        widget: 'select',
+        helpText: 'Payment status'
+      }
+    },
+    {
+      name: 'description',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.DESCRIPTION.v1',
+      ui: {
+        label: 'Description',
+        widget: 'textarea',
+        placeholder: 'Expense details and notes...',
+        helpText: 'Additional notes about this expense'
+      }
+    },
+    {
+      name: 'receipt_url',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.RECEIPT_URL.v1',
+      ui: {
+        label: 'Receipt URL',
+        placeholder: 'https://...',
+        helpText: 'Link to uploaded receipt or invoice'
+      }
+    },
+    {
+      name: 'reference_number',
+      type: 'text' as const,
+      smart_code: 'HERA.SALON.EXPENSE.DYN.REFERENCE.v1',
+      ui: {
+        label: 'Reference Number',
+        placeholder: 'Invoice or receipt number',
+        helpText: 'External reference number'
+      }
+    }
+  ],
+  relationships: [
+    {
+      type: 'HAS_CATEGORY',
+      smart_code: 'HERA.SALON.EXPENSE.REL.CATEGORY.v1',
+      cardinality: 'one' as const
+    },
+    {
+      type: 'PAID_TO_VENDOR',
+      smart_code: 'HERA.SALON.EXPENSE.REL.VENDOR.v1',
+      cardinality: 'one' as const
+    }
+  ]
+}
+
 // Preset registry for easy access
 export const ENTITY_PRESETS = {
   PRODUCT: PRODUCT_PRESET,
@@ -1453,7 +1584,8 @@ export const ENTITY_PRESETS = {
   BRAND: BRAND_PRESET,
   ROLE: ROLE_PRESET,
   BRANCH: BRANCH_PRESET,
-  LEAVE_POLICY: LEAVE_POLICY_PRESET
+  LEAVE_POLICY: LEAVE_POLICY_PRESET,
+  EXPENSE: EXPENSE_PRESET
 } as const
 
 // Jewelry-specific entity presets

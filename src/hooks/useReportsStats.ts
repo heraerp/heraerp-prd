@@ -141,14 +141,22 @@ export function useReportsStats(
   // ✅ Calculate stats from data
   const stats = useMemo<ReportStats>(() => {
     const totalCustomers = customers?.length || 0
-    const totalAppointments = appointments?.length || 0
 
-    // ✅ ALIGNED WITH SALES REPORTS: Filter GL_JOURNAL for current month
+    // ✅ ALIGNED WITH SALES REPORTS: Filter for current month
     // This matches the "This month" label shown on the reports page
     const now = new Date()
     const monthStart = startOfMonth(now)
     const monthEnd = endOfMonth(now)
 
+    // ✅ FIX: Filter appointments by transaction_date for current month
+    const currentMonthAppointments = (appointments || []).filter(appt => {
+      if (!appt.transaction_date) return false
+      const apptDate = parseISO(appt.transaction_date)
+      return apptDate >= monthStart && apptDate <= monthEnd
+    })
+    const totalAppointments = currentMonthAppointments.length
+
+    // ✅ ALIGNED WITH SALES REPORTS: Filter GL_JOURNAL for current month
     const currentMonthTransactions = (glJournalTransactions || []).filter(t => {
       const txDate = parseISO(t.transaction_date)
       return txDate >= monthStart && txDate <= monthEnd

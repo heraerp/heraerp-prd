@@ -347,7 +347,7 @@ export function PaymentDialog({
           staff_id: item.stylist_entity_id || item.stylist_id || item.performer_entity_id
         })),
         payments: payments.map(payment => ({
-          method: payment.type === 'voucher' ? 'bank_transfer' : payment.type, // Map voucher to bank_transfer
+          method: payment.type, // ✅ FIX: Keep voucher as voucher (not bank_transfer)
           amount: payment.amount,
           reference: payment.reference
         })),

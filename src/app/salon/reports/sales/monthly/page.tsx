@@ -48,6 +48,7 @@ export default function MonthlySalesReportPage() {
   const {
     summary,
     dailyData,
+    dimensionalBreakdown,
     isLoading,
     error,
     refetch

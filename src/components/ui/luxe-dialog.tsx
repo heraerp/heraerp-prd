@@ -88,6 +88,66 @@ const DialogContent = React.forwardRef<
         <X className="h-5 w-5" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
+
+      {/* ===== DATE INPUT CALENDAR ICON STYLING ===== */}
+      <style jsx global>{`
+        /* Make entire date input field clickable to open calendar picker */
+        input[type="date"] {
+          cursor: pointer !important;
+          position: relative !important;
+        }
+
+        /* Webkit browsers (Chrome, Safari, Edge) - Make calendar icon cover entire field */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>') !important;
+          cursor: pointer !important;
+          opacity: 1 !important;
+          filter: none !important;
+          /* Make the clickable area cover the entire input field */
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          /* Position the icon on the right side */
+          background-position: right 0.75rem center !important;
+          background-repeat: no-repeat !important;
+          background-size: 20px 20px !important;
+        }
+
+        /* Hover effect for calendar icon */
+        input[type="date"]:hover::-webkit-calendar-picker-indicator {
+          background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23F0D06B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>') !important;
+          opacity: 1 !important;
+        }
+
+        /* Firefox - Make entire field clickable */
+        input[type="date"]::-moz-calendar-picker-indicator {
+          background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>') !important;
+          cursor: pointer !important;
+          opacity: 1 !important;
+          filter: none !important;
+          width: 100% !important;
+          height: 100% !important;
+        }
+
+        /* Focus state for date inputs */
+        input[type="date"]:focus {
+          border-color: ${COLORS.gold} !important;
+          box-shadow: 0 0 0 2px ${COLORS.gold}30 !important;
+          outline: none !important;
+        }
+
+        /* Hover state for date inputs */
+        input[type="date"]:hover {
+          border-color: ${COLORS.gold}50 !important;
+          box-shadow: 0 0 0 1px ${COLORS.gold}20 !important;
+        }
+      `}</style>
     </DialogPrimitive.Content>
   </DialogPortal>
 ))

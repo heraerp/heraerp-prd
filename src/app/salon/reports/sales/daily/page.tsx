@@ -47,6 +47,7 @@ export default function DailySalesReportPage() {
   const {
     summary,
     hourlyData,
+    dimensionalBreakdown,
     isLoading,
     error,
     refetch
@@ -501,6 +502,259 @@ export default function DailySalesReportPage() {
             )}
           </div>
         </div>
+
+        {/* VAT Detailed Breakdown */}
+        {dimensionalBreakdown && (
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoal} 100%)`,
+              border: `1px solid ${LUXE_COLORS.plum}30`,
+              boxShadow: `0 8px 32px rgba(0, 0, 0, 0.4)`
+            }}
+          >
+            {/* Header */}
+            <div className="px-6 py-4 border-b" style={{ borderColor: `${LUXE_COLORS.plum}20` }}>
+              <h2 className="text-xl font-bold flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                <Receipt className="w-5 h-5" style={{ color: LUXE_COLORS.plum }} />
+                VAT Compliance Report
+                <Badge
+                  style={{
+                    backgroundColor: `${LUXE_COLORS.emerald}20`,
+                    color: LUXE_COLORS.emerald,
+                    border: `1px solid ${LUXE_COLORS.emerald}30`,
+                    fontSize: '0.75rem'
+                  }}
+                >
+                  GL v2.0
+                </Badge>
+              </h2>
+              <p className="text-sm mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                Detailed VAT breakdown by revenue type (5% UAE VAT)
+              </p>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {/* VAT Collection Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Service VAT */}
+                <div
+                  className="rounded-xl p-4"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}10 0%, ${LUXE_COLORS.emerald}05 100%)`,
+                    border: `1px solid ${LUXE_COLORS.emerald}20`
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="w-4 h-4" style={{ color: LUXE_COLORS.emerald }} />
+                    <span className="text-sm font-medium" style={{ color: LUXE_COLORS.bronze }}>
+                      VAT on Services
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
+                    AED {dimensionalBreakdown.service_vat.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-xs mt-1" style={{ color: LUXE_COLORS.emerald, opacity: 0.7 }}>
+                    Net: AED {dimensionalBreakdown.service_net.toLocaleString('en-AE', { minimumFractionDigits: 0 })}
+                  </div>
+                </div>
+
+                {/* Product VAT */}
+                <div
+                  className="rounded-xl p-4"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.plum}10 0%, ${LUXE_COLORS.plum}05 100%)`,
+                    border: `1px solid ${LUXE_COLORS.plum}20`
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <ShoppingBag className="w-4 h-4" style={{ color: LUXE_COLORS.plum }} />
+                    <span className="text-sm font-medium" style={{ color: LUXE_COLORS.bronze }}>
+                      VAT on Products
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
+                    AED {dimensionalBreakdown.product_vat.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-xs mt-1" style={{ color: LUXE_COLORS.plum, opacity: 0.7 }}>
+                    Net: AED {dimensionalBreakdown.product_net.toLocaleString('en-AE', { minimumFractionDigits: 0 })}
+                  </div>
+                </div>
+
+                {/* Total VAT */}
+                <div
+                  className="rounded-xl p-4"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.gold}15 0%, ${LUXE_COLORS.gold}05 100%)`,
+                    border: `1px solid ${LUXE_COLORS.gold}30`
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Receipt className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+                    <span className="text-sm font-medium" style={{ color: LUXE_COLORS.bronze }}>
+                      Total VAT Collected
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold" style={{ color: LUXE_COLORS.gold }}>
+                    AED {(dimensionalBreakdown.service_vat + dimensionalBreakdown.product_vat).toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-xs mt-1" style={{ color: LUXE_COLORS.gold, opacity: 0.7 }}>
+                    Payable to FTA
+                  </div>
+                </div>
+              </div>
+
+              {/* Revenue Breakdown Table */}
+              <div className="overflow-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr style={{ borderBottom: `1px solid ${LUXE_COLORS.plum}10` }}>
+                      <th className="px-4 py-3 text-left text-sm font-semibold" style={{ color: LUXE_COLORS.plum }}>
+                        Revenue Type
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold" style={{ color: LUXE_COLORS.plum }}>
+                        Gross Amount
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold" style={{ color: LUXE_COLORS.plum }}>
+                        Discount
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold" style={{ color: LUXE_COLORS.plum }}>
+                        Net Amount
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold" style={{ color: LUXE_COLORS.plum }}>
+                        VAT @ 5%
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold" style={{ color: LUXE_COLORS.plum }}>
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* Service Revenue */}
+                    <tr style={{ borderBottom: `1px solid ${LUXE_COLORS.plum}05` }}>
+                      <td className="px-4 py-3 font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="w-4 h-4" style={{ color: LUXE_COLORS.emerald }} />
+                          Services
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-right" style={{ color: LUXE_COLORS.champagne }}>
+                        AED {dimensionalBreakdown.service_gross.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-3 text-right" style={{ color: LUXE_COLORS.ruby, opacity: 0.7 }}>
+                        -{dimensionalBreakdown.service_discount.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-3 text-right font-medium" style={{ color: LUXE_COLORS.emerald }}>
+                        AED {dimensionalBreakdown.service_net.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-3 text-right" style={{ color: LUXE_COLORS.plum }}>
+                        AED {dimensionalBreakdown.service_vat.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-3 text-right font-bold" style={{ color: LUXE_COLORS.champagne }}>
+                        AED {(dimensionalBreakdown.service_net + dimensionalBreakdown.service_vat).toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                    </tr>
+
+                    {/* Product Revenue */}
+                    <tr style={{ borderBottom: `1px solid ${LUXE_COLORS.plum}05` }}>
+                      <td className="px-4 py-3 font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                        <div className="flex items-center gap-2">
+                          <ShoppingBag className="w-4 h-4" style={{ color: LUXE_COLORS.plum }} />
+                          Products
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-right" style={{ color: LUXE_COLORS.champagne }}>
+                        AED {dimensionalBreakdown.product_gross.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-3 text-right" style={{ color: LUXE_COLORS.ruby, opacity: 0.7 }}>
+                        -{dimensionalBreakdown.product_discount.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-3 text-right font-medium" style={{ color: LUXE_COLORS.plum }}>
+                        AED {dimensionalBreakdown.product_net.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-3 text-right" style={{ color: LUXE_COLORS.plum }}>
+                        AED {dimensionalBreakdown.product_vat.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-3 text-right font-bold" style={{ color: LUXE_COLORS.champagne }}>
+                        AED {(dimensionalBreakdown.product_net + dimensionalBreakdown.product_vat).toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                    </tr>
+
+                    {/* Totals */}
+                    <tr
+                      style={{
+                        borderTop: `2px solid ${LUXE_COLORS.plum}30`,
+                        background: `linear-gradient(135deg, ${LUXE_COLORS.gold}10 0%, ${LUXE_COLORS.gold}05 100%)`
+                      }}
+                    >
+                      <td className="px-4 py-4 font-bold" style={{ color: LUXE_COLORS.gold }}>
+                        TOTAL
+                      </td>
+                      <td className="px-4 py-4 text-right font-bold" style={{ color: LUXE_COLORS.champagne }}>
+                        AED {(dimensionalBreakdown.service_gross + dimensionalBreakdown.product_gross).toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-4 text-right font-bold" style={{ color: LUXE_COLORS.ruby }}>
+                        -{(dimensionalBreakdown.service_discount + dimensionalBreakdown.product_discount).toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-4 text-right font-bold" style={{ color: LUXE_COLORS.emerald }}>
+                        AED {(dimensionalBreakdown.service_net + dimensionalBreakdown.product_net).toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-4 text-right font-bold" style={{ color: LUXE_COLORS.plum }}>
+                        AED {(dimensionalBreakdown.service_vat + dimensionalBreakdown.product_vat).toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-4 text-right font-bold text-lg" style={{ color: LUXE_COLORS.gold }}>
+                        AED {summary?.total_gross.toLocaleString('en-AE', { minimumFractionDigits: 2 })}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Compliance Note */}
+              <div
+                className="flex items-start gap-3 p-4 rounded-lg"
+                style={{
+                  background: `${LUXE_COLORS.plum}10`,
+                  border: `1px solid ${LUXE_COLORS.plum}20`
+                }}
+              >
+                <AlertCircle className="w-5 h-5 mt-0.5" style={{ color: LUXE_COLORS.plum }} />
+                <div>
+                  <p className="text-sm font-medium mb-1" style={{ color: LUXE_COLORS.champagne }}>
+                    UAE VAT Compliance Note
+                  </p>
+                  <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                    This report shows VAT collected at the standard 5% rate on taxable supplies. Ensure all amounts are reported to the Federal Tax Authority (FTA) in your periodic VAT return.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* GL v1.0 Notice (when dimensional breakdown is not available) */}
+        {!dimensionalBreakdown && summary && summary.total_gross > 0 && (
+          <div
+            className="rounded-2xl p-6"
+            style={{
+              background: `linear-gradient(135deg, ${LUXE_COLORS.orange}10 0%, ${LUXE_COLORS.orange}05 100%)`,
+              border: `1px solid ${LUXE_COLORS.orange}30`
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 mt-0.5" style={{ color: LUXE_COLORS.orange }} />
+              <div>
+                <p className="text-sm font-medium mb-1" style={{ color: LUXE_COLORS.champagne }}>
+                  Enhanced VAT Reporting Available
+                </p>
+                <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                  Your transactions are using GL v1.0. To see detailed VAT breakdown by service and product, transactions must be posted using GL v2.0 engine with enhanced metadata.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
           {/* Bottom Spacing */}
           <div className="h-8" />
