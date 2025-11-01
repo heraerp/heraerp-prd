@@ -23,6 +23,8 @@ import {
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
 import { useMonthlySalesReport } from '@/hooks/useSalonSalesReports'
+import { useHeraExpenses } from '@/hooks/useHeraExpenses'
+import { ExpenseModal } from '../ExpenseModal'
 import { startOfMonth, endOfMonth } from 'date-fns'
 
 interface FinanceTabsProps {
@@ -187,7 +189,7 @@ export default function FinanceTabs({
         )}
 
         {activeTab === 'expenses' && (
-          <ExpensesTab isLoading={isLoading} />
+          <ExpensesTab isLoading={isLoading} organizationId={organizationId} />
         )}
 
         {activeTab === 'invoices' && (
@@ -522,87 +524,186 @@ function VATRow({ label, amount, highlight, color }: any) {
 }
 
 // ============================================================================
-// EXPENSES TAB (Placeholder - will use useUniversalEntityV1)
+// EXPENSES TAB (Enterprise Expense Management with useHeraExpenses)
 // ============================================================================
 
-function ExpensesTab({ isLoading }: any) {
-  if (isLoading) return <LoadingCard />
+function ExpensesTab({ isLoading: parentLoading, organizationId }: any) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedExpense, setSelectedExpense] = useState<any>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<string>('')
 
-  const mockExpenses = [
-    {
-      date: new Date().toISOString().split('T')[0],
-      vendor: 'Beauty Supplies Co.',
-      category: 'Inventory',
-      amount: 2500,
-      status: 'paid'
-    },
-    {
-      date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-      vendor: 'DEWA',
-      category: 'Utilities',
-      amount: 850,
-      status: 'pending'
+  const {
+    expenses,
+    isLoading,
+    createExpense,
+    updateExpense,
+    deleteExpense,
+    refetch,
+    isCreating,
+    isUpdating
+  } = useHeraExpenses({
+    organizationId,
+    filters: {
+      limit: 100,
+      search: searchTerm
     }
-  ]
+  })
+
+  // Filter expenses by category and search
+  const filteredExpenses = useMemo(() => {
+    if (!expenses) return []
+
+    let filtered = expenses
+
+    if (categoryFilter) {
+      filtered = filtered.filter(e => e.category === categoryFilter)
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(e =>
+        e.vendor?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        e.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        e.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    return filtered
+  }, [expenses, categoryFilter, searchTerm])
+
+  const handleSave = async (data: any) => {
+    try {
+      if (selectedExpense) {
+        await updateExpense(selectedExpense.id, data)
+      } else {
+        await createExpense(data)
+      }
+      setIsModalOpen(false)
+      setSelectedExpense(null)
+      await refetch()
+    } catch (error) {
+      console.error('Failed to save expense:', error)
+    }
+  }
+
+  const handleEdit = (expense: any) => {
+    setSelectedExpense(expense)
+    setIsModalOpen(true)
+  }
+
+  const handleDelete = async (expenseId: string) => {
+    if (confirm('Are you sure you want to delete this expense?')) {
+      try {
+        await deleteExpense(expenseId)
+        await refetch()
+      } catch (error) {
+        console.error('Failed to delete expense:', error)
+      }
+    }
+  }
+
+  if (parentLoading || isLoading) return <LoadingCard />
 
   return (
-    <div
-      className="rounded-xl border p-4 md:p-6"
-      style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.light,
-        borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
-      }}
-    >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold mb-1" style={{ color: SALON_LUXE_COLORS.gold.base }}>
-            Expense Management
-          </h2>
-          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-            Track and categorize all business expenses
-          </p>
+    <>
+      <div
+        className="rounded-xl border p-4 md:p-6"
+        style={{
+          backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+          borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+        }}
+      >
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold mb-1" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+              Expense Management
+            </h2>
+            <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              Track and categorize all business expenses
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Search expenses..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="px-4 py-2 rounded-lg border text-sm min-h-[44px] bg-charcoal-dark"
+              style={{
+                borderColor: SALON_LUXE_COLORS.bronze.base,
+                color: SALON_LUXE_COLORS.champagne.base
+              }}
+            />
+            <button
+              onClick={() => {
+                setSelectedExpense(null)
+                setIsModalOpen(true)
+              }}
+              className="px-4 py-2 rounded-lg text-sm min-h-[44px] active:scale-95 transition-transform"
+              style={{
+                backgroundColor: SALON_LUXE_COLORS.gold.base,
+                color: SALON_LUXE_COLORS.charcoal.dark
+              }}
+            >
+              <Receipt className="w-4 h-4 inline mr-2" />
+              Add Expense
+            </button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <button
-            className="px-4 py-2 rounded-lg border text-sm min-h-[44px] active:scale-95 transition-transform"
-            style={{ borderColor: SALON_LUXE_COLORS.bronze.base }}
-          >
-            <Search className="w-4 h-4 inline mr-2" />
-            Search
-          </button>
-          <button
-            className="px-4 py-2 rounded-lg text-sm min-h-[44px] active:scale-95 transition-transform"
-            style={{
-              backgroundColor: SALON_LUXE_COLORS.gold.base,
-              color: SALON_LUXE_COLORS.charcoal.dark
-            }}
-          >
-            <Receipt className="w-4 h-4 inline mr-2" />
-            Add Expense
-          </button>
+
+        <div className="space-y-2">
+          {filteredExpenses.length > 0 ? (
+            filteredExpenses.map(expense => (
+              <ExpenseRow
+                key={expense.id}
+                expense={expense}
+                onEdit={() => handleEdit(expense)}
+                onDelete={() => handleDelete(expense.id)}
+              />
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <Receipt className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: SALON_LUXE_COLORS.bronze.base }} />
+              <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                {searchTerm || categoryFilter ? 'No expenses found matching your criteria' : 'No expenses recorded yet. Click "Add Expense" to get started.'}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="space-y-2">
-        {mockExpenses.map((expense, idx) => (
-          <ExpenseRow key={idx} expense={expense} />
-        ))}
-      </div>
-    </div>
+      {/* Expense Modal */}
+      {isModalOpen && (
+        <ExpenseModal
+          open={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false)
+            setSelectedExpense(null)
+          }}
+          expense={selectedExpense}
+          onSave={handleSave}
+        />
+      )}
+    </>
   )
 }
 
-function ExpenseRow({ expense }: any) {
+function ExpenseRow({ expense, onEdit, onDelete }: any) {
   return (
     <div
-      className="p-3 md:p-4 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3"
+      className="p-3 md:p-4 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3 group"
       style={{ backgroundColor: SALON_LUXE_COLORS.charcoal.dark }}
     >
-      <div>
-        <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>{expense.vendor}</p>
+      <div className="flex-1">
+        <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>{expense.vendor || 'Unknown Vendor'}</p>
         <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-          {expense.date} • {expense.category}
+          {expense.expense_date ? new Date(expense.expense_date).toLocaleDateString() : 'No date'} • {expense.category || 'Uncategorized'}
         </p>
+        {expense.description && (
+          <p className="text-xs mt-1 opacity-70" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+            {expense.description}
+          </p>
+        )}
       </div>
       <div className="flex items-center gap-3">
         <span
@@ -623,11 +724,27 @@ function ExpenseRow({ expense }: any) {
           ) : (
             <Clock className="w-3 h-3" />
           )}
-          {expense.status}
+          {expense.status || 'pending'}
         </span>
-        <span style={{ color: SALON_LUXE_COLORS.gold.base }}>
-          AED {expense.amount.toLocaleString()}
+        <span className="font-medium" style={{ color: SALON_LUXE_COLORS.ruby.base }}>
+          AED {(expense.amount || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
         </span>
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={onEdit}
+            className="p-2 rounded hover:bg-charcoal-lighter transition-colors"
+            style={{ color: SALON_LUXE_COLORS.gold.base }}
+          >
+            <FileText className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onDelete}
+            className="p-2 rounded hover:bg-charcoal-lighter transition-colors"
+            style={{ color: SALON_LUXE_COLORS.ruby.base }}
+          >
+            <AlertCircle className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   )

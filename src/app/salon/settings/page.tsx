@@ -70,13 +70,20 @@ function TabLoader() {
 
 function SettingsPageContent() {
   const router = useRouter()
-  const { organizationId, role, user: contextUser, organization } = useSecuredSalonContext()
+  const context = useSecuredSalonContext()
   const { user } = useHERAAuth() // Get actor user ID for RPC
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
-  const { updateEntity } = useUniversalEntityV1() // HERA hook for entity updates
-  const [activeTab, setActiveTab] = useState('general')
 
-  // Form state for organization settings
+  // ✅ CRITICAL FIX: Pass organizationId to hook to prevent undefined access
+  // The hook will use this instead of trying to access organization from HERAAuth
+  const safeOrgId = context?.organizationId || context?.orgId || ''
+  const { updateEntity } = useUniversalEntityV1({
+    entity_type: 'ORG',
+    organizationId: safeOrgId // Provide explicit orgId to prevent undefined errors
+  })
+
+  // Form state for organization settings - MUST be before conditional returns
+  const [activeTab, setActiveTab] = useState('general')
   const [organizationName, setOrganizationName] = useState('')
   const [legalName, setLegalName] = useState('')
   const [phone, setPhone] = useState('')
@@ -84,7 +91,28 @@ function SettingsPageContent() {
   const [address, setAddress] = useState('')
   const [trn, setTrn] = useState('')
   const [currency, setCurrency] = useState('')
-  const [isSaving, setIsSaving] = useState(false)
+  const [isSaving] = useState(false)
+
+  // ✅ LOADING STATE: Show loader if context is still loading or undefined
+  if (!context || context.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: LUXE_COLORS.black }}>
+        <div className="text-center">
+          <Loader2
+            className="h-8 w-8 animate-spin mx-auto mb-4"
+            style={{ color: LUXE_COLORS.gold.base }}
+          />
+          <p style={{ color: LUXE_COLORS.text.secondary }}>Loading settings...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // ✅ SAFETY: Safely destructure with fallbacks (after loading check)
+  const organizationId = safeOrgId
+  const role = context.salonRole || context.role || 'stylist'
+  const organization = context.organization || { id: '', name: '', currency: 'AED', currencySymbol: 'AED' }
+  const contextUser = context.user
 
   // Initialize form state from context when data loads
   useEffect(() => {
