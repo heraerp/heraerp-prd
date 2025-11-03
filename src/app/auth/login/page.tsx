@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, AlertCircle, Eye, EyeOff, Mail, Lock, ChevronRight } from 'lucide-react'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useHERAAuth } from '@/lib/auth/hera-universal-auth'
 import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
 import Navbar from '@/app/components/Navbar'
 import Footer from '@/app/components/Footer'
@@ -20,7 +20,7 @@ import Footer from '@/app/components/Footer'
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, isAuthenticated, organizations } = useHERAAuth()
+  const { signIn, isAuthenticated, organizations } = useHERAAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -97,8 +97,12 @@ function LoginForm() {
         }
       }
 
-      // For other users, use normal auth flow
-      await login(email, password)
+      // For other users, use HERA Universal Auth
+      const result = await signIn(email, password)
+      if (!result.success) {
+        setError(result.error || 'Login failed')
+        return
+      }
       // Redirect will be handled by useEffect
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login')

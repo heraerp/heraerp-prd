@@ -7,8 +7,9 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Head from 'next/head'
 import { useRouter } from 'next/navigation'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSafeHERAAuth } from '@/components/auth/SafeHERAAuth'
 import { 
   Leaf,
   Mail,
@@ -24,8 +25,38 @@ import {
 } from 'lucide-react'
 
 export default function GreenwormLoginPage() {
+  // Ensure critical CSS is loaded
+  useEffect(() => {
+    // Force reload CSS if Tailwind isn't working
+    if (!document.querySelector('style[data-tailwind]')) {
+      const style = document.createElement('style')
+      style.setAttribute('data-tailwind', 'emergency')
+      style.textContent = `
+        .min-h-screen { min-height: 100vh; }
+        .flex { display: flex; }
+        .hidden { display: none; }
+        .bg-gradient-to-br { background: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+        .from-green-50 { --tw-gradient-from: rgb(240 253 244); }
+        .to-green-50 { --tw-gradient-to: rgb(240 253 244); }
+        .via-white { --tw-gradient-via: rgb(255 255 255); }
+        .text-white { color: rgb(255 255 255); }
+        .bg-green-600 { background-color: rgb(22 163 74); }
+        .bg-green-800 { background-color: rgb(22 101 52); }
+        .p-12 { padding: 3rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .w-12 { width: 3rem; }
+        .h-12 { height: 3rem; }
+        .gap-3 { gap: 0.75rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .font-bold { font-weight: 700; }
+        @media (min-width: 1024px) { .lg\\:flex { display: flex; } .lg\\:w-1\\/2 { width: 50%; } }
+      `
+      document.head.appendChild(style)
+    }
+  }, [])
   const router = useRouter()
-  const { login, isAuthenticated, isLoading: authLoading } = useHERAAuth()
+  const { login, isAuthenticated, isLoading: authLoading } = useSafeHERAAuth()
   const [formData, setFormData] = useState({
     email: 'team@hanaset.com',
     password: 'HERA2025!'
@@ -37,9 +68,17 @@ export default function GreenwormLoginPage() {
   // Redirect to dashboard if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/greenworms')
+      // Check for cashew demo mode or cashew user
+      const urlParams = new URLSearchParams(window.location.search)
+      const isCashewUser = formData.email === 'admin@keralacashew.com'
+      
+      if (urlParams.get('demo') === 'cashew' || isCashewUser) {
+        router.push('/cashew')
+      } else {
+        router.push('/greenworms')
+      }
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, router, formData.email])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -79,7 +118,17 @@ export default function GreenwormLoginPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
+    <>
+      {/* Emergency CSS Fallback */}
+      <link rel="stylesheet" href="/emergency-login-styles.css" />
+      
+      <div 
+        className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 emergency-login-container"
+        style={{
+          minHeight: '100vh',
+          background: 'linear-gradient(to bottom right, rgb(240 253 244), rgb(255 255 255), rgb(240 253 244))'
+        }}
+      >
       {/* Mobile Status Bar Spacer */}
       <div className="h-11 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
 
@@ -292,5 +341,6 @@ export default function GreenwormLoginPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

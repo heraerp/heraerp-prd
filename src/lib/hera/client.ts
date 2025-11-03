@@ -19,6 +19,16 @@ export interface HeraApiError {
   details?: any;
 }
 
+// Command interface types for "one-go build" generator
+export type CommandBody =
+  | { op: "entities"; p_operation: "CREATE" | "UPDATE" | "DELETE"; p_data: any }
+  | { op: "transactions"; p_operation: "CREATE" | "UPDATE" | "APPROVE" | "REVERSE"; p_data: { header: any; lines: any[] } }
+
+export interface HeraCommandOptions {
+  orgId?: string
+  token?: string
+}
+
 export class HeraClient {
   constructor(
     private baseUrl: string,
@@ -262,6 +272,59 @@ export async function createEnvironmentAwareHeraClient(
 export type CreateEntityPayload = Parameters<HeraClient['createEntity']>[0];
 export type PostTransactionPayload = Parameters<HeraClient['postTransaction']>[0];
 export type CommandPayload = Parameters<HeraClient['command']>[0];
+
+/**
+ * Simplified command interface for hook-driven generator
+ * Centralizes JWT + X-Organization-Id injection
+ */
+export async function heraCommand(
+  body: CommandBody, 
+  opts: HeraCommandOptions = {}
+): Promise<HeraApiResponse> {
+  const token = opts.token ?? await getJwtToken(); // Will implement getJwtToken
+  const orgId = opts.orgId ?? await getOrgId(); // Will implement getOrgId
+  
+  const response = await fetch("/api/v2/command", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+      "X-Organization-Id": orgId,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errorData: HeraApiError = await response.json().catch(() => ({
+      error: `HTTP ${response.status}: ${response.statusText}`,
+    }));
+    throw new Error(
+      `HERA command failed: ${errorData.error}${errorData.rid ? ` (${errorData.rid})` : ''}`
+    );
+  }
+
+  return response.json();
+}
+
+/**
+ * Utility functions for token and org resolution
+ * These will be implemented based on the existing auth provider
+ */
+async function getJwtToken(): Promise<string> {
+  // TODO: Integrate with useHERAAuth or other auth provider
+  if (typeof window !== 'undefined') {
+    return (window as any).__HERA_JWT__ || '';
+  }
+  return '';
+}
+
+async function getOrgId(): Promise<string> {
+  // TODO: Integrate with useOrg hook
+  if (typeof window !== 'undefined') {
+    return (window as any).__ORG_ID__ || '';
+  }
+  return '';
+}
 
 /**
  * Error class for HERA API v2 specific errors

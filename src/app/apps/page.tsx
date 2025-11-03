@@ -129,6 +129,18 @@ const apps: AppCard[] = [
     gradient: 'from-purple-500 to-indigo-600',
     features: ['Custom Orders', 'Repair Tracking', 'Precious Metal Management', 'Certification']
   },
+  {
+    id: 'cashew',
+    title: 'Cashew Manufacturing',
+    description:
+      'Complete cashew processing ERP from raw nuts to graded kernels for export markets',
+    icon: Package, // Will show as 🥜 in the icon, using Package for now
+    href: '/cashew',
+    category: 'industry',
+    status: 'production',
+    gradient: 'from-orange-500 to-amber-600',
+    features: ['Batch Processing', 'Quality Control', 'Cost Tracking', 'Export Management']
+  },
 
   // Universal Apps
   {

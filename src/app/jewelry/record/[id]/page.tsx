@@ -1,4 +1,4 @@
-'use client'
+
 import React from 'react'
 // Temporarily disable ui-binder imports to fix missing module
 import { RecordPage } from '@/components/uikit/RecordPage'

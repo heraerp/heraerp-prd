@@ -2,20 +2,63 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 🚀 HERA ENHANCED AUTOBUILD SYSTEM - PRODUCTION READY
+## 🚨 CRITICAL: NO EMERGENCY FIXES OR SIMPLIFICATIONS - SACRED RULE
 
-**🎯 NEW CLAUDE SESSIONS**: For complete system overview, see `/HERA-ENHANCED-AUTOBUILD-SYSTEM-GUIDE.md`
+**⛔ ABSOLUTE PROHIBITION - NEVER VIOLATE THESE RULES:**
 
-**Quick Start**: `npm run generate:entity ENTITY_NAME` - Generates enterprise CRUD with enhanced quality gates
+### 🔒 **WORKING CODE IS SACRED**
+- ❌ **NEVER** remove authentication providers from working layouts
+- ❌ **NEVER** create "emergency" or "simplified" versions of working code  
+- ❌ **NEVER** bypass complex but functional systems
+- ❌ **NEVER** make "temporary fixes" that break existing functionality
+- ❌ **NEVER** simplify working authentication flows
+- ❌ **NEVER** remove working imports, providers, or components
 
-**Key Achievement**: Enhanced system catches build errors DURING generation (not after deployment)
-- ✅ TypeScript compilation checking
-- ✅ Component dependency validation  
-- ✅ HERA DNA Smart Code enforcement
-- ✅ Mobile-first responsive design
-- ✅ 100% UAT success rate
+### ✅ **MANDATORY APPROACH FOR ALL ISSUES**
+- Fix specific issues WITHOUT affecting working systems
+- Preserve ALL existing functionality during any changes
+- Debug and resolve root causes properly - no shortcuts
+- Ask user before making ANY structural changes to working code
+- If something breaks, fix ONLY the broken part
 
-**Reference Implementation**: Procurement Rebates MVP (complete and production-ready)
+### 🛡️ **PRE-CHANGE VALIDATION (MANDATORY)**
+Before ANY code modification, validate these questions:
+1. **Will this change break any existing working functionality?** ✅/❌
+2. **Am I removing or simplifying working code?** ✅/❌  
+3. **Is this an emergency fix or proper solution?** ✅/❌
+4. **Will this require users to rebuild working features?** ✅/❌
+
+**IF ANY ANSWER IS ❌, STOP AND FIND A DIFFERENT APPROACH**
+
+### 🚫 **FORBIDDEN PHRASES/ACTIONS**
+- "Let me create an emergency fix"
+- "Let me simplify this temporarily" 
+- "Let me bypass the complex system"
+- "Let me create a minimal version"
+- Removing HERAAuthProvider from any layout
+- Creating emergency pages that bypass authentication
+
+### 🎯 **USER CONSULTATION REQUIREMENT**
+For changes affecting authentication, layouts, providers, or working functionality:
+**MUST ASK USER**: "This change will affect [X]. Should I proceed or find an alternative approach?"
+
+**CORE PRINCIPLE: PRESERVE WORKING FUNCTIONALITY AT ALL COSTS**
+
+---
+
+## 🎨 FIORI++ KIT - ENTERPRISE UI SYSTEM (PRODUCTION READY)
+
+**🚀 ONE-COMMAND ENTERPRISE MODULES**: `node scripts/generate-hera-module.js ENTITY_NAME`
+
+**Key Achievement**: Complete SAP Fiori-quality interfaces with glassmorphism design generated instantly
+- ✅ **Enterprise Data Grids** - TanStack Table with sorting, filtering, selection, export
+- ✅ **Glassmorphism Design** - Backdrop blur, translucent backgrounds, soft animations
+- ✅ **Responsive Templates** - Mobile cards, desktop tables, 44px touch targets
+- ✅ **Floorplan Library** - List Report, Object Page, Flexible Columns, Worklist, Wizard, Dashboard
+- ✅ **Zero Design Decisions** - Professional UX patterns built-in
+- ✅ **15-minute MVP** - From concept to production-ready enterprise interface
+
+**Available Templates**: List Report (master data), Object Page (details), Flexible Columns (master-detail), Worklist (tasks), Wizard (guided flows), Dashboard (KPIs), Fullscreen (immersive)
 
 ## 🛡️ HERA PLAYBOOK GUARDRAIL SYSTEM - MANDATORY FIRST STEP
 

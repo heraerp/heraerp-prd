@@ -1,4 +1,4 @@
-'use client'
+
 
 /**
  * Demo Organization Home

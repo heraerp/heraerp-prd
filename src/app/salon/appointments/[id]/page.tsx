@@ -4,7 +4,7 @@
 // POS-style appointment viewing page with service details
 // ================================================================================
 
-'use client'
+
 
 import React, { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'

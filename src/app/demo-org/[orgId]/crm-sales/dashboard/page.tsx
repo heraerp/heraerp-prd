@@ -1,4 +1,4 @@
-'use client'
+
 
 /**
  * CRM Sales Dashboard

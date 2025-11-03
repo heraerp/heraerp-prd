@@ -4,7 +4,7 @@
 // Edit existing appointment details
 // ================================================================================
 
-'use client'
+
 
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'

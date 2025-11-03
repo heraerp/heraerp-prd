@@ -48,8 +48,9 @@ const LOCAL_STORAGE_RETURN_URL = 'hera_return_url'
  */
 const DEFAULT_LOGIN_PATHS = {
   salon: '/salon/auth',
+  cashew: '/cashew/login',
   admin: '/auth/login',
-  default: '/auth/login'
+  default: '/cashew/login'
 } as const
 
 /**

@@ -4,7 +4,7 @@
 // Appointment detail view with actions and metadata
 // ================================================================================
 
-'use client'
+
 
 import React from 'react'
 import { useRouter, useParams } from 'next/navigation'
