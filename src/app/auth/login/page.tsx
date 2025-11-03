@@ -14,8 +14,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, AlertCircle, Eye, EyeOff, Mail, Lock, ChevronRight } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { AppSwitcher } from '@/components/navigation/AppSwitcher'
-import Navbar from '@/app/components/Navbar'
-import Footer from '@/app/components/Footer'
 
 function LoginForm() {
   const router = useRouter()
@@ -231,13 +229,8 @@ function LoginForm() {
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/8 via-purple-500/8 to-cyan-500/8 animate-gradient-shift" />
       </div>
 
-      {/* Header */}
-      <div className="relative z-10">
-        <Navbar />
-      </div>
-
       {/* Scrollable Content Container */}
-      <div className="relative z-10 flex flex-col">
+      <div className="relative z-10 flex flex-col min-h-screen">
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="w-full max-w-md mx-auto px-4 py-6 sm:py-8">
@@ -489,11 +482,6 @@ function LoginForm() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <div className="relative z-10">
-        <Footer showGradient={false} />
-      </div>
     </div>
   )
 }
@@ -520,22 +508,14 @@ export default function CentralLoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 relative">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 relative flex items-center justify-center">
           {/* Force full viewport background */}
           <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 -z-20" />
-          <div className="relative z-10">
-            <Navbar />
-          </div>
-          <div className="flex items-center justify-center min-h-[80vh]">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-20 h-20 card-glass backdrop-blur-xl rounded-2xl mb-4 shadow-xl border border-border">
-                <Loader2 className="w-10 h-10 animate-spin text-blue-400" />
-              </div>
-              <p className="ink-muted">Loading...</p>
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 card-glass backdrop-blur-xl rounded-2xl mb-4 shadow-xl border border-border">
+              <Loader2 className="w-10 h-10 animate-spin text-blue-400" />
             </div>
-          </div>
-          <div className="relative z-10">
-            <Footer showGradient={false} />
+            <p className="ink-muted">Loading...</p>
           </div>
         </div>
       }
