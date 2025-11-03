@@ -84,7 +84,7 @@ export default function RootLayout({
                   "/contact", "/partners", "/solutions", "/features",
                   "/terms", "/policy", "/whatsapp-desktop", "/discover",
                   "/how-it-works", "/pricing", "/get-started", "/book-a-meeting",
-                  "/about"
+                  "/about", "/auth/login"
                 ];
 
               const pathname = window.location.pathname;

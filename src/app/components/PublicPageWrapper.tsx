@@ -24,7 +24,8 @@ export const PUBLIC_ROUTES = [
   '/pricing',
   '/get-started',
   '/book-a-meeting',
-  '/about'
+  '/about',
+  '/auth/login'
 ]
 
 export function isPublicRoute(pathname: string | null): boolean {
