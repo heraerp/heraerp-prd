@@ -33,16 +33,38 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
     }
 
-    const userId = user.id
+    const authUserId = user.id
     const userEmail = user.email
 
-    console.log(`[resolve-membership] Resolving membership for user ${userId} (${userEmail})`)
+    console.log(`[resolve-membership] Resolving membership for auth user ${authUserId} (${userEmail})`)
 
     const supabaseService = getSupabaseService()
 
+    // ✅ FIX: Map auth UID to user entity ID by looking up metadata->supabase_user_id
+    console.log(`[resolve-membership] Looking up USER entity by supabase_user_id...`)
+    const { data: userEntities, error: lookupError } = await supabaseService
+      .from('core_entities')
+      .select('id, entity_name')
+      .eq('entity_type', 'USER')
+      .contains('metadata', { supabase_user_id: authUserId })
+      .limit(1)
+
+    if (lookupError) {
+      console.error('[resolve-membership] User entity lookup error:', lookupError)
+    }
+
+    // Use user entity ID if found, otherwise fall back to auth UID
+    const userEntityId = userEntities?.[0]?.id || authUserId
+
+    if (userEntities?.[0]) {
+      console.log(`[resolve-membership] ✅ Mapped auth UID to user entity: ${userEntityId} (${userEntities[0].entity_name})`)
+    } else {
+      console.log(`[resolve-membership] ⚠️ No USER entity found with supabase_user_id, using auth UID: ${authUserId}`)
+    }
+
     // ✅ OPTIMIZED: Single RPC call gets ALL organizations with roles and metadata
     const { data: authContext, error: introspectError } = await supabaseService.rpc('hera_auth_introspect_v1', {
-      p_actor_user_id: userId
+      p_actor_user_id: userEntityId
     })
 
     if (introspectError) {
@@ -73,18 +95,19 @@ export async function GET(request: NextRequest) {
       is_owner: org.is_owner,
       is_admin: org.is_admin,
       relationship_id: null, // Not available in introspect, but not critical
-      org_entity_id: org.id // Use org ID as fallback
+      org_entity_id: org.id, // Use org ID as fallback
+      apps: org.apps || [] // ✅ FIX: Include apps array from introspection
     }))
 
     const defaultOrg = validOrgs[0] // First organization (sorted by joined_at DESC)
 
-    console.log(`[resolve-membership] ⚡ OPTIMIZED: Single RPC resolved ${validOrgs.length} organization(s) for user ${userId}`)
+    console.log(`[resolve-membership] ⚡ OPTIMIZED: Single RPC resolved ${validOrgs.length} organization(s) for user ${userEntityId}`)
     console.log(`[resolve-membership] Default org: ${defaultOrg.id} (${defaultOrg.name}) - Role: ${defaultOrg.primary_role}`)
 
     return NextResponse.json({
       success: true,
-      user_id: userId,
-      user_entity_id: userId, // Platform USER entity id = auth.users.id
+      user_id: authUserId, // Auth UID from Supabase auth
+      user_entity_id: userEntityId, // USER entity ID from core_entities
       organization_count: authContext.organization_count,
       default_organization_id: authContext.default_organization_id,
       organizations: validOrgs,

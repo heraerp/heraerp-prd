@@ -60,7 +60,7 @@ const apps: AppCard[] = [
     description:
       'Complete beauty salon and spa management with appointments, inventory, and client management',
     icon: Scissors,
-    href: '/salon',
+    href: '/salon/auth',
     category: 'industry',
     status: 'production',
     gradient: 'from-pink-500 to-purple-600',
@@ -131,15 +131,15 @@ const apps: AppCard[] = [
   },
   {
     id: 'cashew',
-    title: 'Cashew Manufacturing',
+    title: 'HERA Cashew Trading',
     description:
-      'Complete cashew processing ERP from raw nuts to graded kernels for export markets',
-    icon: Package, // Will show as 🥜 in the icon, using Package for now
-    href: '/cashew',
+      'Cashew nut trading and processing management with grading, inventory, and quality control',
+    icon: Package,
+    href: '/cashew/dashboard',
     category: 'industry',
     status: 'production',
-    gradient: 'from-orange-500 to-amber-600',
-    features: ['Batch Processing', 'Quality Control', 'Cost Tracking', 'Export Management']
+    gradient: 'from-amber-500 to-orange-600',
+    features: ['Grading Management', 'Inventory Tracking', 'Quality Control', 'Trading Operations']
   },
 
   // Universal Apps
@@ -210,7 +210,7 @@ const apps: AppCard[] = [
 
 export default function AppsPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading, currentOrganization, contextLoading, logout, user } = useHERAAuth()
+  const { isAuthenticated, isLoading, currentOrganization, contextLoading, logout, user, availableApps } = useHERAAuth()
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'industry' | 'universal' | 'ai'>(
     'all'
   )
@@ -250,7 +250,7 @@ export default function AppsPage() {
     }
   }, [isAuthenticated, isLoading, contextLoading, router])
 
-  // Fetch user's installed apps
+  // Fetch user's installed apps from HERAAuthProvider
   useEffect(() => {
     async function fetchUserApps() {
       if (!isAuthenticated || !currentOrganization) {
@@ -259,22 +259,68 @@ export default function AppsPage() {
       }
 
       try {
-        // TODO: Fetch from API /api/v2/apps/installed
-        // For now, show salon app as default for all users
-        // This will be replaced with actual API call
-        const installedApps = apps.filter(app => app.id === 'salon')
-        setUserApps(installedApps)
+        console.log('🎯 Available apps from HERAAuthProvider:', availableApps)
+
+        // ✅ FULLY DYNAMIC - Create app cards from database apps only
+        if (availableApps && availableApps.length > 0) {
+          const dynamicApps: AppCard[] = availableApps.map(heraApp => {
+            // Get app-specific icon and styling
+            const appCode = heraApp.code.toUpperCase()
+            const appIcons: Record<string, any> = {
+              SALON: { icon: Scissors, gradient: 'from-pink-500 to-purple-600' },
+              CASHEW: { icon: Package, gradient: 'from-amber-500 to-orange-600' },
+              CRM: { icon: Users, gradient: 'from-blue-500 to-indigo-600' },
+              FINANCIAL: { icon: DollarSign, gradient: 'from-emerald-500 to-teal-600' },
+              RESTAURANT: { icon: Utensils, gradient: 'from-orange-500 to-red-600' },
+              RETAIL: { icon: ShoppingBag, gradient: 'from-yellow-500 to-orange-600' },
+              HEALTHCARE: { icon: Stethoscope, gradient: 'from-green-500 to-emerald-600' },
+              JEWELRY: { icon: Gem, gradient: 'from-purple-500 to-indigo-600' },
+              ICECREAM: { icon: Snowflake, gradient: 'from-cyan-500 to-blue-600' }
+            }
+
+            const appStyle = appIcons[appCode] || { icon: Briefcase, gradient: 'from-blue-500 to-indigo-600' }
+
+            // 🔧 CRITICAL: Use role-based routing for apps (especially salon)
+            // Instead of hardcoding /dashboard, route to /auth which handles role-based redirect
+            const appHref = `/${heraApp.code.toLowerCase()}/auth`
+
+            return {
+              id: heraApp.code.toLowerCase(),
+              title: heraApp.name,
+              description: `${heraApp.name} - Enterprise management system`,
+              icon: appStyle.icon,
+              href: appHref,
+              category: 'industry' as const,
+              status: 'production' as const,
+              gradient: appStyle.gradient,
+              features: heraApp.config?.features || ['Enterprise Ready', 'Multi-tenant', 'Role-based Access']
+            }
+          })
+
+          console.log('✅ Dynamic apps created:', dynamicApps)
+          setUserApps(dynamicApps)
+
+          // 🚀 AUTO-REDIRECT: If only one app, redirect directly
+          if (dynamicApps.length === 1) {
+            console.log('🚀 Only one app available, auto-redirecting to:', dynamicApps[0].href)
+            setTimeout(() => {
+              router.push(dynamicApps[0].href)
+            }, 500)
+          }
+        } else {
+          console.warn('⚠️ No apps available from HERAAuthProvider')
+          setUserApps([])
+        }
       } catch (error) {
         console.error('Failed to fetch user apps:', error)
-        // Fallback to showing all apps
-        setUserApps(apps)
+        setUserApps([])
       } finally {
         setLoadingApps(false)
       }
     }
 
     fetchUserApps()
-  }, [isAuthenticated, currentOrganization])
+  }, [isAuthenticated, currentOrganization, availableApps, router])
 
   const handleLogout = async () => {
     try {
@@ -298,8 +344,8 @@ export default function AppsPage() {
     }
   }
 
-  // Use userApps if loaded, otherwise show all apps
-  const appsToDisplay = loadingApps ? [] : (userApps.length > 0 ? userApps : apps)
+  // ✅ ONLY show user's linked apps (no fallback to hardcoded apps)
+  const appsToDisplay = loadingApps ? [] : userApps
   const filteredApps =
     selectedCategory === 'all' ? appsToDisplay : appsToDisplay.filter(app => app.category === selectedCategory)
 
@@ -482,6 +528,19 @@ export default function AppsPage() {
               <Link href="/auth/organizations/new" className="ml-2 text-indigo-400 hover:text-indigo-300 font-medium underline">
                 Create Organization
               </Link>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* No Apps Message */}
+        {!loadingApps && filteredApps.length === 0 && (
+          <Alert className="mb-8 max-w-2xl mx-auto card-glass border-blue-500/30 backdrop-blur-sm">
+            <AlertCircle className="h-4 w-4 text-blue-400" />
+            <AlertDescription className="text-slate-300">
+              <p className="font-medium text-white mb-2">No applications available for {currentOrganization?.name}</p>
+              <p className="text-sm">
+                Your organization doesn't have any apps installed yet. Contact your administrator to add apps to your organization.
+              </p>
             </AlertDescription>
           </Alert>
         )}

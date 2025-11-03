@@ -31,6 +31,12 @@ interface HERAOrganization {
   industry: string
 }
 
+interface HERAApp {
+  code: string           // App code (SALON, CASHEW, CRM, etc.)
+  name: string           // Display name
+  config: Record<string, any>  // App configuration
+}
+
 interface HERAAuthContext {
   // Authentication state
   user: HERAUser | null
@@ -46,11 +52,21 @@ interface HERAAuthContext {
   hasScope: (scope: string) => boolean
   role?: 'owner' | 'manager' | 'staff'
 
+  // Dynamic Apps (NEW)
+  availableApps: HERAApp[]
+  defaultApp: string | null
+  currentApp: string | null
+
   // Actions
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string, options?: { clearFirst?: boolean }) => Promise<void>
   register: (email: string, password: string, metadata?: any) => Promise<any>
   logout: () => Promise<void>
   refreshAuth: () => Promise<void>
+  clearSession: () => Promise<void>  // NEW
+
+  // App Helpers (NEW)
+  hasApp: (appCode: string) => boolean
+  getAppConfig: (appCode: string) => Record<string, any> | null
 
   // Legacy compatibility helpers
   currentOrganization: HERAOrganization | null
@@ -66,8 +82,7 @@ interface HERAAuthProviderProps {
 
 export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const router = useRouter()
-  const didResolveRef = useRef(false)
-  const isResolvingRef = useRef(false) // prevents double work in dev StrictMode
+  const didResolveRef = useRef(false) // prevents double work in dev StrictMode
   const subRef = useRef<ReturnType<any> | null>(null)
   const ctxRef = useRef<{
     user: HERAUser | null
@@ -89,6 +104,9 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     userEntityId?: string
     organizationId?: string
     role?: 'owner' | 'manager' | 'staff'
+    availableApps: HERAApp[]
+    defaultApp: string | null
+    currentApp: string | null
   }>({
     status: 'idle',
     user: null,
@@ -98,7 +116,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     scopes: [],
     userEntityId: undefined,
     organizationId: undefined,
-    role: undefined
+    role: undefined,
+    availableApps: [],
+    defaultApp: null,
+    currentApp: null
   })
 
   // Keep ref in sync with state
@@ -129,9 +150,19 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
           // Handle session state changes
           if (didResolveRef.current) {
-            // If session disappeared, reset context
+            // If session disappeared, reset context AND clear salon cache
             if (!session) {
               console.log('🔐 Session disappeared, resetting context')
+
+              // ✅ CLEAR SALON CACHE when session ends (prevents stale role)
+              if (typeof window !== 'undefined') {
+                const salonKeys = ['salonRole', 'salonUserName', 'salonUserEmail', 'salonOrgId']
+                salonKeys.forEach(key => {
+                  localStorage.removeItem(key)
+                })
+                console.log('🧹 Cleared salon cache on session end')
+              }
+
               didResolveRef.current = false
               setCtx({
                 status: 'idle',
@@ -142,15 +173,17 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                 scopes: [],
                 userEntityId: undefined,
                 organizationId: undefined,
-                role: undefined
+                role: undefined,
+                availableApps: [],
+                defaultApp: null,
+                currentApp: null
               })
               return
             }
             // If session exists but context is missing (page navigation/reload), allow re-resolution
             // This handles the case where the provider re-mounts but session is still valid
-            if (session && !ctxRef.current.user && !isResolvingRef.current) {
+            if (session && !ctxRef.current.user) {
               console.log('🔄 Session exists but context missing, re-resolving...')
-              isResolvingRef.current = true
               didResolveRef.current = false
               // Fall through to resolution logic below
             } else if (session && ctxRef.current.user && !ctxRef.current.organization) {
@@ -178,60 +211,94 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             try {
               const { user } = session
               
-              // Get safe config as fallback
+              // Get safe config first
               const safeConfig = getSafeOrgConfig()
               
-              // Use our clean session API for authentication context
-              let defaultOrganization: any = null
-              let userContext: any = null
-              
+              // Fetch membership data from API v2
+              let res = {}
               try {
-                console.log('🏢 [HERA_AUTH] Getting auth context from session API...')
-                const response = await fetch('/api/v2/auth/session', {
+                const response = await fetch('/api/v2/auth/resolve-membership', {
                   headers: { Authorization: `Bearer ${session.access_token}` },
                   cache: 'no-store',
                 })
-                
                 if (response.ok) {
-                  const sessionData = await response.json()
-                  console.log('✅ [HERA_AUTH] Session API successful')
-                  
-                  defaultOrganization = sessionData.organization
-                  userContext = {
-                    user_entity_id: sessionData.user.entity_id,
-                    user_name: sessionData.user.name,
-                    primary_role: sessionData.user.role
-                  }
-                  
-                  console.log(`✅ [HERA_AUTH] Organization: ${defaultOrganization.name}`)
+                  const apiResponse = await response.json()
+                  // Handle HERA standard response format
+                  res = apiResponse.success ? apiResponse : apiResponse
+                  console.log('✅ Membership resolved from v2 API:', res)
                 } else {
-                  console.error('🚨 [HERA_AUTH] Session API failed:', response.status, response.statusText)
-                  throw new Error(`Session API failed: ${response.status}`)
+                  console.warn('🚨 Membership API v2 failed, using fallback')
+                  res = { organization_id: safeConfig.organizationId }
                 }
               } catch (error) {
-                console.error('🚨 [HERA_AUTH] Authentication failed:', error)
-                throw error
+                console.warn('🚨 Membership API v2 error, using fallback:', error)
+                res = { organization_id: safeConfig.organizationId }
               }
+              // Parse v2 API response structure
+              const normalizedOrgId =
+                res.membership?.organization_id ??
+                res.organization_id ??
+                res.org_entity_id ??
+                safeConfig.organizationId
 
               // Set safe context as backup
               setSafeOrgContext()
 
-              // Prepare HERA user object
-              const heraUser: HERAUser = {
-                id: user.id,
-                entity_id: userContext?.user_entity_id || user.id,
-                name: userContext?.user_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-                email: user.email || '',
-                role: userContext?.primary_role || 'USER'
+              // Extract role from v2 response
+              const role = (
+                res.membership?.roles?.[0] ??
+                res.role ??
+                'member'
+              ).toLowerCase()
+
+              const userEntityId = res.user_entity_id ?? user?.id
+
+              // Extract available apps from introspection response (NEW)
+              const availableApps: HERAApp[] = []
+              const defaultApp = res.default_app || null
+
+              // Get apps from organizations array
+              if (res.organizations && res.organizations.length > 0) {
+                const currentOrg = res.organizations.find((o: any) => o.id === normalizedOrgId) || res.organizations[0]
+                if (currentOrg?.apps && Array.isArray(currentOrg.apps)) {
+                  currentOrg.apps.forEach((app: any) => {
+                    availableApps.push({
+                      code: app.code,
+                      name: app.name,
+                      config: app.config || {}
+                    })
+                  })
+                }
               }
 
-              // Prepare HERA organization object
+              // Detect current app from URL (NEW)
+              let currentApp: string | null = null
+              if (typeof window !== 'undefined') {
+                const pathname = window.location.pathname
+                const pathSegments = pathname.split('/').filter(Boolean)
+                if (pathSegments.length > 0) {
+                  const firstSegment = pathSegments[0].toUpperCase()
+                  const matchedApp = availableApps.find(app => app.code.toUpperCase() === firstSegment)
+                  if (matchedApp) {
+                    currentApp = matchedApp.code
+                  }
+                }
+              }
+
+              const heraUser: HERAUser = {
+                id: user.id,
+                entity_id: userEntityId,
+                name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+                email: user.email || '',
+                role: res.membership?.roles?.[0] || 'USER'
+              }
+
               const heraOrg: HERAOrganization = {
-                id: defaultOrganization?.id || safeConfig.organizationId,
-                entity_id: defaultOrganization?.entity_id || defaultOrganization?.id || safeConfig.organizationId,
-                name: defaultOrganization?.name || safeConfig.fallbackName,
-                type: defaultOrganization?.org_type || 'salon',
-                industry: defaultOrganization?.industry_type || 'beauty'
+                id: normalizedOrgId,
+                entity_id: res.membership?.org_entity_id || normalizedOrgId,
+                name: res.membership?.organization_name || safeConfig.fallbackName,
+                type: 'salon',
+                industry: 'beauty'
               }
 
               setCtx({
@@ -240,26 +307,29 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                 organization: heraOrg,
                 isAuthenticated: true,
                 isLoading: false,
-                scopes: userContext?.roles || [heraUser.role] || [],
-                userEntityId: heraUser.entity_id,
-                organizationId: heraOrg.id,
-                role: (userContext?.primary_role?.toLowerCase() || 'staff') as 'owner' | 'manager' | 'staff'
+                scopes: res.membership?.roles || [],
+                userEntityId,
+                organizationId: normalizedOrgId,
+                role: role as 'owner' | 'manager' | 'staff',
+                availableApps,
+                defaultApp,
+                currentApp
               })
 
               didResolveRef.current = true
-              isResolvingRef.current = false
               console.debug('✅ HERA normalized context', {
-                userEntityId: heraUser.entity_id,
-                organizationId: heraOrg.id,
-                role: userContext?.primary_role,
+                userEntityId,
+                organizationId: normalizedOrgId,
+                role,
                 heraOrg,
-                currentOrganization: heraOrg
+                currentOrganization: heraOrg,
+                availableApps,
+                defaultApp,
+                currentApp
               })
             } catch (e) {
               console.error('HERA resolve error', e)
               setCtx(prev => ({ ...prev, status: 'error', isLoading: false }))
-              // If authentication fails, redirect to cashew login
-              router.push('/cashew/login')
             }
           }
         })
@@ -275,14 +345,34 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     }
   }, [])
 
-  // Remove initializeAuth - handled in useEffect
+  // Clear session with event-based cleanup
+  const clearSession = async () => {
+    console.log('🧹 Clearing session...')
 
-  // Remove handleSignIn - handled in useEffect
+    // 1. Emit cleanup event (apps listen and clean their own stores)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hera:session:clear'))
+    }
 
-  // Remove handleSignOut - handled in useEffect
+    // 2. Clear browser storage
+    localStorage.clear()
+    sessionStorage.clear()
 
-  const login = async (email: string, password: string) => {
+    // 3. Sign out
+    const { createClient } = await import('@/lib/supabase/client')
+    const supabase = createClient()
+    await supabase.auth.signOut()
+
+    didResolveRef.current = false
+  }
+
+  const login = async (email: string, password: string, options?: { clearFirst?: boolean }) => {
     try {
+      // Optional cleanup before login
+      if (options?.clearFirst) {
+        await clearSession()
+      }
+
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
 
@@ -324,14 +414,43 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const logout = async () => {
     try {
+      console.log('🔓 Logging out...')
+
+      // 1. Reset context immediately (don't wait for auth state change)
+      didResolveRef.current = false
+      setCtx({
+        status: 'idle',
+        user: null,
+        organization: null,
+        isAuthenticated: false,
+        isLoading: false,
+        scopes: [],
+        userEntityId: undefined,
+        organizationId: undefined,
+        role: undefined,
+        availableApps: [],
+        defaultApp: null,
+        currentApp: null
+      })
+
+      // 2. Sign out from Supabase
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
-
       await supabase.auth.signOut()
-      didResolveRef.current = false
-      router.push('/cashew/login')
+
+      // 3. Clear browser storage
+      if (typeof window !== 'undefined') {
+        localStorage.clear()
+        sessionStorage.clear()
+      }
+
+      // 4. Redirect to login
+      console.log('✅ Logged out, redirecting to login...')
+      router.push('/auth/login')
     } catch (error) {
       console.error('💥 Logout error:', error)
+      // Even if signout fails, still redirect
+      router.push('/auth/login')
     }
   }
 
@@ -344,13 +463,26 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     return ctx.scopes.includes('OWNER') || ctx.scopes.includes(scope)
   }
 
+  // App helper methods
+  const hasApp = (appCode: string): boolean => {
+    return ctx.availableApps.some(app => app.code.toUpperCase() === appCode.toUpperCase())
+  }
+
+  const getAppConfig = (appCode: string): Record<string, any> | null => {
+    const app = ctx.availableApps.find(app => app.code.toUpperCase() === appCode.toUpperCase())
+    return app?.config || null
+  }
+
   const contextValue: HERAAuthContext = useMemo(() => ({
     ...ctx,
     login,
     register,
     logout,
     refreshAuth,
+    clearSession,
     hasScope,
+    hasApp,
+    getAppConfig,
     // Legacy compatibility
     currentOrganization: ctx.organization,
     organizations: ctx.organization ? [ctx.organization] : [],

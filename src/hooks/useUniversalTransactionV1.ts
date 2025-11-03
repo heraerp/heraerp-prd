@@ -452,20 +452,47 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       return transformRPCResponseToTransaction(createdTransaction)
     },
     onSuccess: async (newTransaction) => {
-      // ⚡ OPTIMISTIC UPDATE: Add new transaction to cache
-      queryClient.setQueryData(queryKey, (old: any) => {
-        if (!old || !Array.isArray(old)) return [newTransaction]
-        return [newTransaction, ...old]
+      console.log('🎯 [useUniversalTransactionV1] CREATE onSuccess - Updating ALL transaction caches:', {
+        transaction_id: newTransaction.id,
+        transaction_date: newTransaction.transaction_date,
+        transaction_type: newTransaction.transaction_type
       })
 
-      // ✅ CRITICAL FIX: Invalidate all transaction queries with predicate matching
-      // This ensures queries with date filters are also invalidated
+      // ⚡ OPTIMISTIC UPDATE: Add new transaction to ALL matching transaction-v1 caches
+      // This is more aggressive than just updating the specific queryKey
+      queryClient.setQueriesData(
+        {
+          queryKey: ['transactions-v1'],
+          exact: false // Match all queries starting with ['transactions-v1']
+        },
+        (old: any) => {
+          if (!old || !Array.isArray(old)) return [newTransaction]
+
+          // Check if this transaction already exists in this cache
+          const exists = old.some((txn: any) => txn.id === newTransaction.id)
+          if (exists) {
+            console.log('🔄 [useUniversalTransactionV1] Transaction already in cache, skipping duplicate')
+            return old
+          }
+
+          // Add to beginning of array (most recent first)
+          const updated = [newTransaction, ...old]
+          console.log('✅ [useUniversalTransactionV1] Added new transaction to cache:', {
+            previous_count: old.length,
+            new_count: updated.length
+          })
+          return updated
+        }
+      )
+
+      // ✅ CRITICAL FIX: Invalidate all transaction queries to trigger background refetch
+      // This ensures queries with date filters are refreshed in the background
       queryClient.invalidateQueries({
         queryKey: ['transactions-v1'],
         exact: false // Match all queries starting with ['transactions-v1']
       })
 
-      console.log('✅ [useUniversalTransactionV1] Added new transaction to cache and invalidated all queries')
+      console.log('✅ [useUniversalTransactionV1] Updated ALL transaction caches and invalidated queries')
     }
   })
 

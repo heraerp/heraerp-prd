@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, AlertCircle, Eye, EyeOff, Mail, Lock, ChevronRight } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
+import { AppSwitcher } from '@/components/navigation/AppSwitcher'
 import Navbar from '@/app/components/Navbar'
 import Footer from '@/app/components/Footer'
 
@@ -30,7 +31,16 @@ function LoginForm() {
 
   const returnTo = searchParams.get('return_to')
 
-  // Redirect if already authenticated
+  // Log available apps for testing
+  useEffect(() => {
+    if (isAuthenticated && availableApps.length > 0) {
+      console.log('🎯 Available Apps:', availableApps)
+      console.log('⭐ Default App:', defaultApp)
+      console.log('📍 Current App:', currentApp)
+    }
+  }, [isAuthenticated, availableApps, defaultApp, currentApp])
+
+  // Redirect if already authenticated with smart app-based routing
   useEffect(() => {
     if (isAuthenticated && organizations !== null) {
       const redirectUrl = localStorage.getItem('redirectAfterLogin')
@@ -49,22 +59,58 @@ function LoginForm() {
       if (organizations.length === 0) {
         // New user - redirect to create organization
         router.push('/auth/organizations/new')
-      } else if (organizations.length === 1) {
-        // Single organization - go to apps
-        if (redirectUrl) {
-          localStorage.removeItem('redirectAfterLogin')
-          router.push(redirectUrl)
-        } else if (returnTo) {
-          router.push(returnTo)
-        } else {
-          router.push('/apps')
-        }
-      } else {
-        // Multiple organizations - let them choose
-        router.push('/auth/organizations')
+        return
       }
+
+      // 🚀 SMART APP-BASED ROUTING
+      console.log('🎯 Smart routing with apps:', availableApps)
+
+      // Priority 1: If there's a specific redirect URL, use it
+      if (redirectUrl) {
+        localStorage.removeItem('redirectAfterLogin')
+        router.push(redirectUrl)
+        return
+      }
+
+      // Priority 2: If there's a return_to parameter, use it
+      if (returnTo) {
+        router.push(returnTo)
+        return
+      }
+
+      // Priority 3: If only ONE app is available, redirect to that app's dashboard
+      if (availableApps && availableApps.length === 1) {
+        const appCode = availableApps[0].code.toLowerCase()
+        console.log('🚀 Only one app available, auto-redirecting to:', `/${appCode}/dashboard`)
+        router.push(`/${appCode}/dashboard`)
+        return
+      }
+
+      // Priority 4: If defaultApp is set, redirect to default app's dashboard
+      if (defaultApp && availableApps && availableApps.length > 0) {
+        const appCode = defaultApp.toLowerCase()
+        console.log('🚀 Using default app:', `/${appCode}/dashboard`)
+        router.push(`/${appCode}/dashboard`)
+        return
+      }
+
+      // Priority 5: If multiple apps, show app selector
+      if (availableApps && availableApps.length > 1) {
+        console.log('📋 Multiple apps available, showing selector')
+        router.push('/apps')
+        return
+      }
+
+      // Fallback: Multiple organizations - let them choose
+      if (organizations.length > 1) {
+        router.push('/auth/organizations')
+        return
+      }
+
+      // Final fallback: Show apps page
+      router.push('/apps')
     }
-  }, [isAuthenticated, organizations, returnTo, router])
+  }, [isAuthenticated, organizations, returnTo, router, availableApps, defaultApp, currentApp])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -288,6 +334,56 @@ function LoginForm() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Debug: Show Available Apps After Login */}
+            {isAuthenticated && availableApps.length > 0 && (
+              <div className="mt-8 mb-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-2xl blur-xl" />
+                  <Card className="relative card-glass backdrop-blur-xl border border-emerald-500/20">
+                    <CardHeader>
+                      <CardTitle className="text-xl text-emerald-400">
+                        🎯 Available Apps ({availableApps.length})
+                      </CardTitle>
+                      <CardDescription className="text-sm ink-muted">
+                        Default: {defaultApp || 'None'} | Current: {currentApp || 'None'}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-sm font-medium text-white mb-2">App Switcher:</h3>
+                          <AppSwitcher />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-white mb-2">App Details:</h3>
+                          <div className="space-y-2">
+                            {availableApps.map(app => (
+                              <div
+                                key={app.code}
+                                className="p-3 rounded-lg bg-slate-800/50 border border-slate-700"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <p className="font-medium text-white">{app.name}</p>
+                                    <p className="text-xs text-slate-400">Code: {app.code}</p>
+                                  </div>
+                                  {defaultApp === app.code && (
+                                    <span className="px-2 py-1 text-xs bg-emerald-500/20 text-emerald-400 rounded">
+                                      Default
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
 
             {/* Enhanced Demo Section */}
             <div id="demo-section" className="mt-16 mb-8">
