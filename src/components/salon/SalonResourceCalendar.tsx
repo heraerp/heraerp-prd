@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useMemo, useCallback, useEffect, useRef, lazy, Suspense } from 'react'
+import ReactDOM from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -27,6 +28,8 @@ import {
   Columns,
   Loader2,
   AlertCircle,
+  AlertTriangle,
+  Info,
   Building2,
   Clock
 } from 'lucide-react'
@@ -38,6 +41,7 @@ import { useHeraCustomers } from '@/hooks/useHeraCustomers'
 import { useHeraServices } from '@/hooks/useHeraServices'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useStaffAvailability } from '@/hooks/useStaffAvailability'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -66,7 +70,6 @@ const AppointmentModal = lazy(() =>
 )
 
 // 🎨 LUXE: Import Salon theme components
-import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 
 // 🎯 Debug flag - set to false for production
@@ -115,6 +118,7 @@ interface Appointment {
   service: string
   serviceNames?: string[] // ✨ Service names for display
   status: string
+  rawStatus?: string // ✅ Original database status
   price: string
   color: string
   colorLight?: string
@@ -583,6 +587,10 @@ export function SalonResourceCalendar({
             .filter(Boolean)
         : []
 
+      // ✅ ENTERPRISE: Map database status to calendar status
+      // Database statuses: 'booked', 'checked_in', 'payment_done', 'completed', 'cancelled'
+      const calendarStatus = apt.status || 'booked'
+
       return {
         id: apt.id,
         title: apt.entity_name || 'Appointment',
@@ -593,12 +601,8 @@ export function SalonResourceCalendar({
         duration: apt.duration_minutes || 60,
         service: apt.metadata?.service_type || 'default',
         serviceNames, // ✨ Include service names for display
-        status:
-          apt.status === 'completed'
-            ? 'completed'
-            : apt.status === 'cancelled'
-              ? 'tentative'
-              : 'confirmed',
+        status: calendarStatus, // ✅ Use actual database status
+        rawStatus: apt.status, // Keep original for reference
         price: `AED ${apt.total_amount || 0}`,
         color: staffColor.bg, // ✨ Use staff color instead of service color
         colorLight: staffColor.light,
@@ -949,6 +953,298 @@ export function SalonResourceCalendar({
       }
     },
     [updateAppointment]
+  )
+
+  // ✨ ENTERPRISE: Status Transition Rules & Validation
+  const STATUS_TRANSITIONS = {
+    // Define allowed transitions for each status
+    booked: ['checked_in', 'cancelled'], // Can only check-in or cancel
+    checked_in: ['booked', 'completed', 'cancelled'], // Can go back, complete, or cancel
+    completed: ['booked'], // Can reopen (with confirmation) - e.g., customer returns with issue
+    cancelled: ['booked'] // Can rebook (with confirmation)
+  } as const
+
+  // Define transitions that require confirmation with optional reason input
+  const REQUIRES_CONFIRMATION = {
+    completed_to_booked: {
+      title: 'Reopen Completed Appointment?',
+      message:
+        'This appointment is already completed. Reopening will reset the status to "Booked". This action should only be used if the service needs to be redone or if there was an error.',
+      confirmText: 'Reopen Appointment',
+      cancelText: 'Cancel',
+      type: 'warning' as const,
+      showReasonInput: true,
+      reasonLabel: 'Reason for Reopening (Optional)',
+      reasonPlaceholder: 'e.g., Customer complaint, service issue, billing error...'
+    },
+    cancelled_to_booked: {
+      title: 'Rebook Cancelled Appointment?',
+      message:
+        'This appointment was cancelled. Are you sure you want to rebook it? This will reset the status to "Booked".',
+      confirmText: 'Rebook Appointment',
+      cancelText: 'Cancel',
+      type: 'info' as const,
+      showReasonInput: true,
+      reasonLabel: 'Reason for Rebooking (Optional)',
+      reasonPlaceholder: 'e.g., Customer changed mind, scheduling error...'
+    },
+    checked_in_to_booked: {
+      title: 'Move Back to Booked?',
+      message:
+        'The customer has already checked in. Moving back to "Booked" status will require them to check in again. Are you sure?',
+      confirmText: 'Move to Booked',
+      cancelText: 'Cancel',
+      type: 'warning' as const,
+      showReasonInput: true,
+      reasonLabel: 'Reason for Moving Back (Optional)',
+      reasonPlaceholder: 'e.g., Wrong customer checked in, timing issue...'
+    },
+    booked_to_cancelled: {
+      title: 'Cancel Appointment?',
+      message:
+        'Are you sure you want to cancel this appointment? The customer will need to rebook if they want to reschedule.',
+      confirmText: 'Cancel Appointment',
+      cancelText: 'Keep Appointment',
+      type: 'warning' as const,
+      showReasonInput: true,
+      reasonLabel: 'Cancellation Reason (Optional)',
+      reasonPlaceholder: 'e.g., Customer request, no-show, emergency...'
+    },
+    checked_in_to_cancelled: {
+      title: 'Cancel Checked-In Appointment?',
+      message:
+        'The customer has already checked in. Cancelling now may require additional follow-up. Are you sure?',
+      confirmText: 'Cancel Appointment',
+      cancelText: 'Keep Appointment',
+      type: 'warning' as const,
+      showReasonInput: true,
+      reasonLabel: 'Cancellation Reason (Optional)',
+      reasonPlaceholder: 'e.g., Emergency, customer left, service unavailable...'
+    }
+  } as const
+
+  // ✨ ENTERPRISE: Validate status transition with business rules
+  const validateStatusTransition = useCallback(
+    (currentStatus: string, newStatus: string): { valid: boolean; reason?: string } => {
+      // Same status - no change needed
+      if (currentStatus === newStatus) {
+        return { valid: false, reason: 'Status is already set to this value' }
+      }
+
+      // Check if transition is allowed
+      const allowedTransitions =
+        STATUS_TRANSITIONS[currentStatus as keyof typeof STATUS_TRANSITIONS]
+      if (!allowedTransitions || !allowedTransitions.includes(newStatus as any)) {
+        return {
+          valid: false,
+          reason: `Cannot change status from "${currentStatus}" to "${newStatus}". Not allowed by business rules.`
+        }
+      }
+
+      return { valid: true }
+    },
+    []
+  )
+
+  // ✨ ENTERPRISE: Get confirmation requirement for transition
+  const getConfirmationRequirement = useCallback(
+    (currentStatus: string, newStatus: string) => {
+      const transitionKey = `${currentStatus}_to_${newStatus}` as keyof typeof REQUIRES_CONFIRMATION
+      return REQUIRES_CONFIRMATION[transitionKey]
+    },
+    []
+  )
+
+  // ✨ ENTERPRISE: Confirmation dialog state with optional reason input
+  const [confirmationDialog, setConfirmationDialog] = useState<{
+    open: boolean
+    title: string
+    message: string
+    confirmText: string
+    cancelText: string
+    type: 'warning' | 'info'
+    showReasonInput: boolean
+    reasonLabel?: string
+    reasonPlaceholder?: string
+    onConfirm: (reason?: string) => void
+  } | null>(null)
+
+  // State for optional reason input in confirmation dialogs
+  const [confirmationReason, setConfirmationReason] = useState('')
+
+  // ✨ ENTERPRISE: Handle appointment status change with validation & confirmation
+  const handleStatusChange = useCallback(
+    async (appointmentId: string, newStatus: string, currentStatus: string) => {
+      if (!updateAppointment) return
+
+      // ✅ STEP 1: Validate transition
+      const validation = validateStatusTransition(currentStatus, newStatus)
+      if (!validation.valid) {
+        alert(validation.reason || 'Invalid status transition')
+        return
+      }
+
+      // ✅ STEP 2: Check if confirmation required
+      const confirmationConfig = getConfirmationRequirement(currentStatus, newStatus)
+
+      // Function to actually perform the status update
+      const performUpdate = async (reason?: string) => {
+        try {
+          // ✅ RPC UPDATE: Returns updated data and automatically updates React Query cache
+          // The useUniversalTransactionV1 hook's onSuccess handler:
+          // 1. Updates the specific transaction in cache (instant UI update)
+          // 2. Invalidates all transaction queries (ensures consistency)
+          // No manual cache manipulation needed!
+
+          // ✅ CRITICAL: Skip validation for transitions that required user confirmation
+          // If user confirmed via dialog, we trust their decision and bypass hook validation
+          await updateAppointment({
+            id: appointmentId,
+            data: {
+              status: newStatus,
+              metadata: {
+                status_changed_at: new Date().toISOString(),
+                status_changed_via: 'calendar_badge',
+                previous_status: currentStatus,
+                status_transition: `${currentStatus} → ${newStatus}`,
+                requires_confirmation: !!confirmationConfig,
+                changed_by_user: true,
+                ...(reason && { status_change_reason: reason }) // ✅ Store optional reason
+              }
+            },
+            skipValidation: !!confirmationConfig // Skip validation if user confirmed
+          })
+
+          // Only log in debug mode
+          if (DEBUG_MODE) {
+            console.log('✅ Appointment status changed:', {
+              appointmentId,
+              transition: `${currentStatus} → ${newStatus}`,
+              timestamp: new Date().toISOString(),
+              confirmed: !!confirmationConfig
+            })
+          }
+        } catch (error) {
+          console.error('❌ Failed to change appointment status:', error)
+          alert('Failed to update appointment status. Please try again.')
+        }
+      }
+
+      // If confirmation required, show luxe modal
+      if (confirmationConfig) {
+        setConfirmationReason('') // Reset reason input
+        setConfirmationDialog({
+          open: true,
+          title: confirmationConfig.title,
+          message: confirmationConfig.message,
+          confirmText: confirmationConfig.confirmText,
+          cancelText: confirmationConfig.cancelText,
+          type: confirmationConfig.type,
+          showReasonInput: confirmationConfig.showReasonInput,
+          reasonLabel: confirmationConfig.reasonLabel,
+          reasonPlaceholder: confirmationConfig.reasonPlaceholder,
+          onConfirm: (reason?: string) => {
+            setConfirmationDialog(null)
+            performUpdate(reason)
+          }
+        })
+      } else {
+        // No confirmation needed, update directly
+        await performUpdate()
+      }
+    },
+    [updateAppointment, validateStatusTransition, getConfirmationRequirement]
+  )
+
+  // ✨ ENTERPRISE: Handle Process Payment from status badge
+  const handleProcessPayment = useCallback(
+    (appointment: any) => {
+      // Find the original raw appointment with all data
+      const originalAppointment = rawAppointments?.find(apt => apt.id === appointment.id)
+
+      if (!originalAppointment) {
+        alert('Appointment data not found. Please try again.')
+        return
+      }
+
+      // 🎯 ENTERPRISE PATTERN: Extract service data (same as quick action menu)
+      const serviceIds = originalAppointment.metadata?.service_ids || []
+      const serviceNames: string[] = []
+      const servicePrices: number[] = []
+
+      // Extract service names and prices from loaded services
+      serviceIds.forEach((serviceId: string) => {
+        const service = services?.find((s: any) => s.id === serviceId)
+        if (service) {
+          serviceNames.push(service.entity_name || service.name || 'Unknown Service')
+
+          // 🎯 ENTERPRISE: dynamic_fields can be ARRAY or OBJECT with numeric keys
+          let price = 0
+          if (service.dynamic_fields) {
+            // Convert to array if it's an object with numeric keys
+            const fieldsArray = Array.isArray(service.dynamic_fields)
+              ? service.dynamic_fields
+              : Object.values(service.dynamic_fields)
+
+            // Extract actual field objects (unwrap {value: {...}})
+            const unwrappedFields = fieldsArray.map((f: any) => f.value || f)
+
+            // Find price field
+            const priceField = unwrappedFields.find((f: any) => f.field_name === 'price_market')
+            price = priceField?.field_value_number || 0
+
+            // Fallback: check nested structure
+            if (!price && service.dynamic_fields.price_market?.value) {
+              price = service.dynamic_fields.price_market.value
+            }
+          }
+
+          // Final fallback
+          if (!price && service.price) {
+            price = service.price
+          }
+
+          servicePrices.push(price)
+        } else {
+          serviceNames.push('Unknown Service')
+          servicePrices.push(0)
+        }
+      })
+
+      // 🎯 ENTERPRISE PATTERN: Extract service data to TOP LEVEL
+      const appointmentData = {
+        id: originalAppointment.id,
+        organization_id: organizationId,
+        branch_id: originalAppointment.branch_id,
+        customer_id: originalAppointment.customer_id,
+        customer_name: originalAppointment.customer_name,
+        stylist_id: originalAppointment.stylist_id,
+        stylist_name: originalAppointment.stylist_name,
+        // ✅ SERVICE DATA AT TOP LEVEL
+        service_ids: serviceIds,
+        service_names: serviceNames,
+        service_prices: servicePrices,
+        start_time: originalAppointment.start_time,
+        end_time: originalAppointment.end_time,
+        duration: originalAppointment.duration_minutes,
+        price: originalAppointment.price || originalAppointment.total_amount || 0,
+        status: originalAppointment.status,
+        flags: {
+          vip: originalAppointment.metadata?.vip || false,
+          new: originalAppointment.metadata?.new_customer || false
+        },
+        metadata: originalAppointment.metadata,
+        _source: 'calendar_status_badge',
+        _timestamp: new Date().toISOString()
+      }
+
+      // Store appointment details in sessionStorage for POS page
+      sessionStorage.setItem('pos_appointment', JSON.stringify(appointmentData))
+
+      // Navigate to POS with appointment ID
+      router.push(`/salon/pos?appointment=${originalAppointment.id}`)
+    },
+    [rawAppointments, services, organizationId, router]
   )
 
   // Handle context menu for quick actions with smart positioning
@@ -1306,6 +1602,46 @@ export function SalonResourceCalendar({
       glow: 'rgba(107, 114, 128, 0.1)'
     }
   }
+
+  // ✨ ENTERPRISE: Appointment Status Configuration (Dual Color Coding)
+  // Staff colors remain primary, status adds secondary visual cue
+  // 🎨 BRIGHTER colors - distinct from staff colors (Violet/Blue/Pink/Amber/Teal/Rose/Indigo/Emerald/Purple/Cyan)
+  // Workflow: Booked → Checked In → Process Payment (POS) → Completed (automatic)
+  const APPOINTMENT_STATUSES = {
+    booked: {
+      label: 'Booked',
+      color: '#FBBF24', // Bright Amber (distinct from staff colors)
+      bg: 'rgba(251, 191, 36, 0.25)', // Brighter background
+      border: 'rgba(251, 191, 36, 0.7)', // Brighter border
+      icon: '📅',
+      description: 'Appointment confirmed, awaiting check-in'
+    },
+    checked_in: {
+      label: 'Checked In',
+      color: '#60A5FA', // Bright Blue (distinct from staff colors)
+      bg: 'rgba(96, 165, 250, 0.25)', // Brighter background
+      border: 'rgba(96, 165, 250, 0.7)', // Brighter border
+      icon: '✓',
+      description: 'Customer has arrived and checked in',
+      action: 'process_payment' // ✅ Next action: Process Payment at POS → Auto-complete
+    },
+    completed: {
+      label: 'Completed',
+      color: '#9CA3AF', // Light Gray (distinct from staff colors)
+      bg: 'rgba(156, 163, 175, 0.25)', // Brighter background
+      border: 'rgba(156, 163, 175, 0.7)', // Brighter border
+      icon: '✅',
+      description: 'Appointment finished and closed'
+    },
+    cancelled: {
+      label: 'Cancelled',
+      color: '#F87171', // Bright Red (distinct from staff colors)
+      bg: 'rgba(248, 113, 113, 0.25)', // Brighter background
+      border: 'rgba(248, 113, 113, 0.7)', // Brighter border
+      icon: '✕',
+      description: 'Appointment cancelled'
+    }
+  } as const
 
   return (
     <div
@@ -2708,7 +3044,13 @@ export function SalonResourceCalendar({
                                     e.currentTarget.style.boxShadow = `0 2px 8px ${apt.colorLight || 'rgba(0,0,0,0.1)'}`
                                   }}
                                 >
-                                  <AppointmentCard appointment={apt} stylist={stylist} compact />
+                                  <AppointmentCard
+                                    appointment={apt}
+                                    stylist={stylist}
+                                    compact
+                                    onStatusChange={handleStatusChange}
+                                    onProcessPayment={handleProcessPayment}
+                                  />
                                 </div>
                               )
                             })}
@@ -3518,10 +3860,13 @@ export function SalonResourceCalendar({
               if (!updateAppointment) return
 
               try {
+                // ✅ RPC returns updated data and automatically updates React Query cache
+                // No need for manual refetch - the hook handles cache updates
                 await updateAppointment({
                   id: selectedAppointment.id,
                   data
                 })
+
                 setModalOpen(false)
                 setSelectedAppointment(null)
               } catch (error) {
@@ -3534,7 +3879,411 @@ export function SalonResourceCalendar({
           />
         </Suspense>
       )}
+
+      {/* ✨ ENTERPRISE: Salon Luxe Confirmation Dialog for Status Changes with Optional Reason */}
+      {confirmationDialog && (
+        <SalonLuxeModal
+          open={confirmationDialog.open}
+          onClose={() => {
+            setConfirmationDialog(null)
+            setConfirmationReason('') // Reset reason on close
+          }}
+          title={confirmationDialog.title}
+          icon={
+            confirmationDialog.type === 'warning' ? (
+              <AlertTriangle className="w-6 h-6" />
+            ) : (
+              <Info className="w-6 h-6" />
+            )
+          }
+          size="sm"
+          footer={
+            <div className="flex items-center gap-3 w-full justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setConfirmationDialog(null)
+                  setConfirmationReason('')
+                }}
+                className="min-w-[120px]"
+              >
+                {confirmationDialog.cancelText}
+              </Button>
+              <Button
+                type="submit"
+                onClick={() => confirmationDialog.onConfirm(confirmationReason || undefined)}
+                className="min-w-[120px] primary-button"
+              >
+                {confirmationDialog.confirmText}
+              </Button>
+            </div>
+          }
+        >
+          <div className="py-6 space-y-4">
+            <p
+              className="text-base leading-relaxed"
+              style={{
+                color: '#F5E6C8'
+              }}
+            >
+              {confirmationDialog.message}
+            </p>
+
+            {/* ✨ ENTERPRISE: Optional Reason Input for Audit Trail */}
+            {confirmationDialog.showReasonInput && (
+              <div className="space-y-2 pt-2">
+                <label
+                  className="text-sm font-medium block"
+                  style={{ color: '#D4AF37' }}
+                >
+                  {confirmationDialog.reasonLabel}
+                </label>
+                <textarea
+                  value={confirmationReason}
+                  onChange={e => setConfirmationReason(e.target.value)}
+                  placeholder={confirmationDialog.reasonPlaceholder}
+                  rows={3}
+                  className="w-full px-3 py-2 rounded-lg border text-sm resize-none focus:outline-none focus:ring-2 transition-all"
+                  style={{
+                    backgroundColor: '#0F0F0F',
+                    borderColor: 'rgba(212, 175, 55, 0.3)',
+                    color: '#F5E6C8'
+                  }}
+                  onFocus={e => {
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.6)'
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1)'
+                  }}
+                  onBlur={e => {
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
+                />
+                <p
+                  className="text-xs italic"
+                  style={{ color: 'rgba(212, 175, 55, 0.6)' }}
+                >
+                  This information helps maintain a complete audit trail
+                </p>
+              </div>
+            )}
+          </div>
+        </SalonLuxeModal>
+      )}
     </div>
+  )
+}
+
+// ✨ ENTERPRISE: Appointment Status Badge Component
+function AppointmentStatusBadge({
+  status,
+  appointment,
+  onStatusChange,
+  onProcessPayment,
+  compact = false
+}: {
+  status: string
+  appointment?: any
+  onStatusChange?: (newStatus: string, currentStatus: string) => void
+  onProcessPayment?: (appointment: any) => void
+  compact?: boolean
+}) {
+  const [showStatusMenu, setShowStatusMenu] = useState(false)
+  const [badgePosition, setBadgePosition] = useState<{ top: number; left: number; maxHeight: number } | null>(null)
+  const badgeRef = useRef<HTMLButtonElement>(null)
+
+  // ✨ ENTERPRISE: Smart positioning - detects available space and adjusts
+  useEffect(() => {
+    if (showStatusMenu && badgeRef.current) {
+      const rect = badgeRef.current.getBoundingClientRect()
+      const dropdownHeight = 450 // Max height of dropdown
+      const viewportHeight = window.innerHeight
+      const spaceBelow = viewportHeight - rect.bottom
+      const spaceAbove = rect.top
+
+      // Determine if dropdown should appear above or below badge
+      const shouldPositionAbove = spaceBelow < dropdownHeight && spaceAbove > spaceBelow
+
+      setBadgePosition({
+        top: shouldPositionAbove
+          ? rect.top - Math.min(dropdownHeight, spaceAbove - 20) // Position above with padding
+          : rect.bottom + 8, // Position below with gap
+        left: rect.right - 220, // Align dropdown right edge with badge
+        maxHeight: shouldPositionAbove
+          ? Math.min(dropdownHeight, spaceAbove - 20)
+          : Math.min(dropdownHeight, spaceBelow - 20)
+      })
+    }
+  }, [showStatusMenu])
+
+  // Status configuration - VERY BRIGHT colors to stand out from stylist background
+  // Workflow: Booked → Checked In → Process Payment (POS) → Completed (automatic)
+  const STATUSES = {
+    booked: {
+      label: 'Booked',
+      color: '#FCD34D', // Very Bright Gold/Yellow - highly visible
+      bg: 'rgba(252, 211, 77, 0.45)', // Increased opacity for more prominence
+      border: 'rgba(252, 211, 77, 0.9)', // Much stronger border
+      icon: '📅',
+      action: null
+    },
+    checked_in: {
+      label: 'Checked In',
+      color: '#38BDF8', // Electric Cyan/Sky Blue - very bright
+      bg: 'rgba(56, 189, 248, 0.4)', // Increased opacity
+      border: 'rgba(56, 189, 248, 0.9)', // Much stronger border
+      icon: '✓',
+      action: 'process_payment' // ✅ Show "Process Payment" button → Auto-complete after payment
+    },
+    completed: {
+      label: 'Completed',
+      color: '#86EFAC', // Bright Mint Green - much brighter than gray
+      bg: 'rgba(134, 239, 172, 0.35)', // Increased opacity
+      border: 'rgba(134, 239, 172, 0.85)', // Much stronger border
+      icon: '✅',
+      action: null
+    },
+    cancelled: {
+      label: 'Cancelled',
+      color: '#FCA5A5', // Bright Coral/Salmon - softer but still visible
+      bg: 'rgba(252, 165, 165, 0.35)', // Increased opacity
+      border: 'rgba(252, 165, 165, 0.85)', // Much stronger border
+      icon: '✕',
+      action: null
+    }
+  }
+
+  // ✨ ENTERPRISE: Status transition rules (must match main component)
+  const ALLOWED_TRANSITIONS = {
+    booked: ['checked_in', 'cancelled'],
+    checked_in: ['booked', 'completed', 'cancelled'],
+    completed: ['booked'], // Requires confirmation
+    cancelled: ['booked'] // Requires confirmation
+  } as const
+
+  // Transitions requiring confirmation (visual indicator)
+  const NEEDS_CONFIRMATION = [
+    'completed_to_booked',
+    'cancelled_to_booked',
+    'checked_in_to_booked',
+    'booked_to_cancelled',
+    'checked_in_to_cancelled'
+  ]
+
+  // Get allowed status transitions for current status
+  const allowedStatuses =
+    ALLOWED_TRANSITIONS[status as keyof typeof ALLOWED_TRANSITIONS] || []
+
+  // Check if a transition requires confirmation
+  const requiresConfirmation = (fromStatus: string, toStatus: string): boolean => {
+    return NEEDS_CONFIRMATION.includes(`${fromStatus}_to_${toStatus}`)
+  }
+
+  const currentStatus = STATUSES[status as keyof typeof STATUSES] || STATUSES.booked
+
+  return (
+    <>
+      {/* ✨ ENTERPRISE GRADE: Aesthetic Status Badge */}
+      <button
+        ref={badgeRef}
+        onClick={e => {
+          e.stopPropagation()
+          setShowStatusMenu(!showStatusMenu)
+        }}
+        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all duration-200"
+        style={{
+          backgroundColor: currentStatus.color,
+          border: `1.5px solid #D4AF37`, // Gold border - salon luxe theme
+          color: '#000000',
+          fontWeight: '600',
+          fontSize: '11px',
+          boxShadow: `0 2px 6px ${currentStatus.color}60, 0 0 0 2px rgba(212, 175, 55, 0.2)`, // Gold glow
+          cursor: 'pointer',
+          position: 'relative',
+          zIndex: showStatusMenu ? 9999 : 'auto'
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.boxShadow = `0 3px 10px ${currentStatus.color}80, 0 0 0 3px rgba(212, 175, 55, 0.4)` // Brighter gold glow on hover
+          e.currentTarget.style.transform = 'scale(1.05)'
+          e.currentTarget.style.borderColor = '#E3C75F' // Lighter gold on hover
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.boxShadow = `0 2px 6px ${currentStatus.color}60, 0 0 0 2px rgba(212, 175, 55, 0.2)`
+          e.currentTarget.style.transform = 'scale(1)'
+          e.currentTarget.style.borderColor = '#D4AF37' // Reset to base gold
+        }}
+      >
+        <span style={{ fontSize: '13px' }}>{currentStatus.icon}</span>
+        {!compact && <span className="font-semibold">{currentStatus.label}</span>}
+      </button>
+
+      {/* ✨ ENTERPRISE GRADE: Portal-Based Dropdown - BREAKS OUT OF PARENT BOUNDARIES */}
+      {showStatusMenu && onStatusChange && badgePosition && ReactDOM.createPortal(
+        <>
+          {/* Invisible backdrop to close dropdown */}
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 9998,
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              backdropFilter: 'blur(2px)'
+            }}
+            onClick={e => {
+              e.stopPropagation()
+              setShowStatusMenu(false)
+            }}
+          />
+
+          {/* Dropdown menu */}
+          <div
+            style={{
+              position: 'fixed',
+              top: badgePosition.top,
+              left: badgePosition.left,
+              zIndex: 9999,
+              backgroundColor: '#1A1A1A',
+              border: `2px solid #D4AF37`, // Gold border - salon luxe theme
+              borderRadius: '12px',
+              minWidth: '220px',
+              maxHeight: `${badgePosition.maxHeight}px`, // Smart dynamic height
+              overflow: 'auto',
+              boxShadow: `
+                0 20px 40px rgba(0, 0, 0, 0.9),
+                0 0 0 1px #D4AF37,
+                0 0 30px rgba(212, 175, 55, 0.5)
+              `,
+              animation: 'fadeIn 0.2s ease-out'
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+          {/* ✨ ENTERPRISE: Process Payment Action (when status is checked_in) */}
+          {status === 'checked_in' && onProcessPayment && appointment && (
+            <div className="p-2 border-b" style={{ borderColor: 'rgba(212, 175, 55, 0.2)' }}>
+              <button
+                onClick={e => {
+                  e.stopPropagation()
+                  onProcessPayment(appointment)
+                  setShowStatusMenu(false)
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg transition-all duration-150 hover:scale-[1.02]"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(147,51,234,0.3) 0%, rgba(192,132,252,0.2) 100%)',
+                  border: '1px solid rgba(147,51,234,0.5)',
+                  color: '#C084FC'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background =
+                    'linear-gradient(135deg, rgba(147,51,234,0.4) 0%, rgba(192,132,252,0.3) 100%)'
+                  e.currentTarget.style.borderColor = 'rgba(147,51,234,0.7)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background =
+                    'linear-gradient(135deg, rgba(147,51,234,0.3) 0%, rgba(192,132,252,0.2) 100%)'
+                  e.currentTarget.style.borderColor = 'rgba(147,51,234,0.5)'
+                }}
+              >
+                <span className="text-base">💳</span>
+                <div className="flex-1 text-left">
+                  <p className="text-xs font-semibold">Process Payment</p>
+                  <p className="text-[10px] opacity-80">Go to POS</p>
+                </div>
+              </button>
+            </div>
+          )}
+
+          {/* ✨ ENTERPRISE GRADE: Beautiful Status Options - ALL VISIBLE */}
+          <div className="p-2" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {Object.entries(STATUSES).map(([key, statusConfig]) => {
+              // Check if this transition is allowed
+              const isAllowed = allowedStatuses.includes(key as any) || status === key
+              const isCurrent = status === key
+              const needsConfirm = requiresConfirmation(status, key)
+
+              // Skip disallowed transitions
+              if (!isAllowed) return null
+
+              return (
+                <button
+                  key={key}
+                  onClick={e => {
+                    e.stopPropagation()
+                    if (!isCurrent && onStatusChange) {
+                      onStatusChange(key, status)
+                    }
+                    setShowStatusMenu(false)
+                  }}
+                  disabled={isCurrent}
+                  className="w-full transition-all duration-150"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    backgroundColor: isCurrent ? statusConfig.color : `${statusConfig.color}25`,
+                    border: `1.5px solid ${isCurrent ? statusConfig.color : `${statusConfig.color}60`}`,
+                    color: isCurrent ? '#000000' : statusConfig.color,
+                    fontWeight: isCurrent ? '700' : '600',
+                    fontSize: '13px',
+                    cursor: isCurrent ? 'default' : 'pointer',
+                    opacity: 1,
+                    boxShadow: isCurrent ? `0 2px 8px ${statusConfig.color}40` : 'none'
+                  }}
+                  onMouseEnter={e => {
+                    if (!isCurrent) {
+                      e.currentTarget.style.backgroundColor = `${statusConfig.color}40`
+                      e.currentTarget.style.borderColor = `${statusConfig.color}90`
+                      e.currentTarget.style.transform = 'translateX(3px)'
+                      e.currentTarget.style.boxShadow = `0 3px 10px ${statusConfig.color}50`
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isCurrent) {
+                      e.currentTarget.style.backgroundColor = `${statusConfig.color}25`
+                      e.currentTarget.style.borderColor = `${statusConfig.color}60`
+                      e.currentTarget.style.transform = 'translateX(0)'
+                      e.currentTarget.style.boxShadow = 'none'
+                    }
+                  }}
+                >
+                  <span style={{ fontSize: '16px', lineHeight: 1 }}>{statusConfig.icon}</span>
+                  <span style={{ flex: 1, textAlign: 'left', fontWeight: isCurrent ? '700' : '600' }}>
+                    {statusConfig.label}
+                    {needsConfirm && !isCurrent && (
+                      <span style={{ marginLeft: '6px', fontSize: '11px', opacity: 0.8 }}>⚠️</span>
+                    )}
+                  </span>
+                  {isCurrent && (
+                    <span style={{ fontSize: '18px', opacity: 0.6, fontWeight: '700' }}>•</span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* ✨ ENTERPRISE: Help text for confirmation indicators */}
+          {allowedStatuses.some((s: string) => requiresConfirmation(status, s)) && (
+            <div
+              style={{
+                padding: '10px 14px',
+                fontSize: '11px',
+                color: '#D4AF37',
+                borderTop: `1px solid ${currentStatus.color}40`,
+                backgroundColor: `${currentStatus.color}10`,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span style={{ fontSize: '13px' }}>⚠️</span>
+              <span>Requires confirmation</span>
+            </div>
+          )}
+        </div>
+      </>,
+      document.body
+    )}
+    </>
   )
 }
 
@@ -3542,11 +4291,15 @@ export function SalonResourceCalendar({
 function AppointmentCard({
   appointment,
   stylist,
-  compact = false
+  compact = false,
+  onStatusChange,
+  onProcessPayment
 }: {
   appointment: Appointment
   stylist?: Stylist
   compact?: boolean
+  onStatusChange?: (appointmentId: string, newStatus: string, currentStatus: string) => void
+  onProcessPayment?: (appointment: any) => void
 }) {
   // Access COLORS from parent scope
   const COLORS = {
@@ -3556,14 +4309,35 @@ function AppointmentCard({
   }
 
   return (
-    <div className="flex items-start gap-2">
+    <div className="flex items-start gap-2 relative">
+      {/* ✨ ENTERPRISE: Status Badge - Smart Positioning (Inside Card Boundaries) */}
+      <div
+        className="absolute top-0 right-0 z-50"
+        onClick={(e) => {
+          e.stopPropagation() // Prevent opening appointment when clicking status badge
+        }}
+      >
+        <AppointmentStatusBadge
+          status={appointment.status}
+          appointment={appointment}
+          onStatusChange={
+            onStatusChange
+              ? (newStatus, currentStatus) => onStatusChange(appointment.id, newStatus, currentStatus)
+              : undefined
+          }
+          onProcessPayment={onProcessPayment}
+          compact={compact}
+        />
+      </div>
+
       <div
         className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
         style={{ backgroundColor: appointment.color }}
       >
         {appointment.icon}
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pr-20">
+        {/* Added pr-20 to ensure enough space for status badge without overlap */}
         <p className="text-xs font-semibold truncate" style={{ color: COLORS.champagne }}>
           {appointment.title}
         </p>
@@ -3601,13 +4375,6 @@ function AppointmentCard({
           </div>
         )}
       </div>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <MoreVertical className="w-3 h-3" />
-      </Button>
     </div>
   )
 }

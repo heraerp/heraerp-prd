@@ -122,3 +122,15 @@ export const useSalonSecurityStore = create<SalonSecurityState>()(
     }
   )
 )
+
+// Listen for global session clear event from HERAAuthProvider
+if (typeof window !== 'undefined') {
+  window.addEventListener('hera:session:clear', () => {
+    console.log('🧹 Salon store: Received session clear event')
+    const state = useSalonSecurityStore.getState()
+    if (state.clearState) {
+      state.clearState()
+      console.log('✅ Salon store: State cleared')
+    }
+  })
+}

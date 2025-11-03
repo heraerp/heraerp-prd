@@ -351,16 +351,12 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     }
 
     // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (ONLY after loading completes)
+    // ✅ PATIENCE FIX: Don't show error immediately - wait for context to be ready
     if (!auth.isAuthenticated) {
       console.log('🚪 Not authenticated, redirecting to auth...')
       authCheckDoneRef.current = false // Reset for next login
-      // Show unauthenticated state briefly before redirect
-      setContext(prev => ({
-        ...prev,
-        isLoading: false,
-        isAuthenticated: false
-      }))
-      // Redirect after a brief moment
+      // DON'T update context here - prevents "Access Denied" flash
+      // Just redirect silently
       const timer = setTimeout(() => redirectToAuth(), 500)
       return () => clearTimeout(timer)
     }
@@ -868,12 +864,17 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       const storedRole = typeof window !== 'undefined' ? localStorage.getItem('salonRole') : null
       if (storedRole) {
         const normalizedStoredRole = String(storedRole).toLowerCase().trim()
-        console.log('✅ Using role from localStorage (database source):', normalizedStoredRole)
+        console.log('✅ Using role from localStorage (auth page mapped):', normalizedStoredRole)
 
         // Validate it's a known role
         if (['owner', 'manager', 'receptionist', 'stylist', 'accountant', 'admin'].includes(normalizedStoredRole)) {
+          console.log('✅ Valid salon role confirmed:', normalizedStoredRole)
           return normalizedStoredRole as SalonSecurityContext['salonRole']
+        } else {
+          console.warn('⚠️ Invalid role in localStorage:', normalizedStoredRole, '- using default')
         }
+      } else {
+        console.log('⚠️ No salonRole in localStorage, using fallback detection')
       }
 
       // 🔒 FALLBACK: For salon demo, use email-based role detection
@@ -1489,28 +1490,62 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     [context, isLoadingBranches, hasPermission, hasAnyPermission]
   )
 
-  // Loading state - only show if not already initialized
-  if (context.isLoading && (!securityStore.isInitialized || !hasInitialized)) {
+  // ✅ ENTERPRISE: Enhanced loading state with better transition handling
+  // Show loading during:
+  // 1. Initial authentication (isLoading && !initialized)
+  // 2. Post-login initialization (isAuthenticated from HERAAuth but SecuredSalon not ready)
+  // 3. Role resolution (has auth but no role yet)
+  // 4. PATIENCE: During first 5 seconds after login, ALWAYS show loading (not error)
+  const timeSincePageLoad = typeof window !== 'undefined' ? Date.now() - (window.performance?.timing?.navigationStart || 0) : Infinity
+  const isInGracePeriod = timeSincePageLoad < 5000 // First 5 seconds after page load
+
+  const isInitializing =
+    (context.isLoading && (!securityStore.isInitialized || !hasInitialized)) ||
+    (auth.isAuthenticated && !context.isAuthenticated) || // ✅ REMOVED && !authError check
+    (auth.isAuthenticated && auth.isLoading) ||
+    (auth.isAuthenticated && !context.organization?.id) || // ✅ REMOVED && !authError check
+    (auth.isAuthenticated && !hasInitialized && isInGracePeriod) // ✅ NEW: Grace period after login
+
+  if (isInitializing) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.charcoal }}
       >
         <div className="text-center">
-          <Loader2
-            className="h-6 w-6 animate-spin mx-auto mb-2"
-            style={{ color: LUXE_COLORS.gold }}
-          />
+          <div className="relative mb-6">
+            {/* Animated glow effect */}
+            <div
+              className="absolute inset-0 blur-2xl animate-pulse"
+              style={{
+                background: `radial-gradient(circle, ${LUXE_COLORS.gold}40 0%, transparent 70%)`
+              }}
+            />
+            <Loader2
+              className="h-12 w-12 animate-spin mx-auto relative"
+              style={{ color: LUXE_COLORS.gold }}
+            />
+          </div>
+          <h3 className="text-lg font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+            {auth.isAuthenticated && !context.isAuthenticated
+              ? 'Setting up your workspace...'
+              : auth.isAuthenticated && !context.organization?.id
+              ? 'Loading organization details...'
+              : 'Verifying permissions...'}
+          </h3>
           <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-            Loading...
+            Please wait a moment
           </p>
         </div>
       </div>
     )
   }
 
-  // Error state
-  if (authError && !isPublicPage()) {
+  // Error state (BUT NOT during grace period - show loading instead)
+  // ✅ PATIENCE: Suppress error display during first 5 seconds after page load
+  const shouldShowError = authError && !isPublicPage() && !isInGracePeriod
+
+  if (shouldShowError) {
     const errorIcon =
       authError.type === 'network'
         ? Clock

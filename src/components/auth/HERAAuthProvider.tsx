@@ -31,6 +31,12 @@ interface HERAOrganization {
   industry: string
 }
 
+interface HERAApp {
+  code: string           // App code (SALON, CASHEW, CRM, etc.)
+  name: string           // Display name
+  config: Record<string, any>  // App configuration
+}
+
 interface HERAAuthContext {
   // Authentication state
   user: HERAUser | null
@@ -46,11 +52,21 @@ interface HERAAuthContext {
   hasScope: (scope: string) => boolean
   role?: 'owner' | 'manager' | 'staff'
 
+  // Dynamic Apps (NEW)
+  availableApps: HERAApp[]
+  defaultApp: string | null
+  currentApp: string | null
+
   // Actions
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string, options?: { clearFirst?: boolean }) => Promise<void>
   register: (email: string, password: string, metadata?: any) => Promise<any>
   logout: () => Promise<void>
   refreshAuth: () => Promise<void>
+  clearSession: () => Promise<void>  // NEW
+
+  // App Helpers (NEW)
+  hasApp: (appCode: string) => boolean
+  getAppConfig: (appCode: string) => Record<string, any> | null
 
   // Legacy compatibility helpers
   currentOrganization: HERAOrganization | null
@@ -88,6 +104,9 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     userEntityId?: string
     organizationId?: string
     role?: 'owner' | 'manager' | 'staff'
+    availableApps: HERAApp[]
+    defaultApp: string | null
+    currentApp: string | null
   }>({
     status: 'idle',
     user: null,
@@ -97,7 +116,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     scopes: [],
     userEntityId: undefined,
     organizationId: undefined,
-    role: undefined
+    role: undefined,
+    availableApps: [],
+    defaultApp: null,
+    currentApp: null
   })
 
   // Keep ref in sync with state
@@ -128,9 +150,19 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
           // Handle session state changes
           if (didResolveRef.current) {
-            // If session disappeared, reset context
+            // If session disappeared, reset context AND clear salon cache
             if (!session) {
               console.log('🔐 Session disappeared, resetting context')
+
+              // ✅ CLEAR SALON CACHE when session ends (prevents stale role)
+              if (typeof window !== 'undefined') {
+                const salonKeys = ['salonRole', 'salonUserName', 'salonUserEmail', 'salonOrgId']
+                salonKeys.forEach(key => {
+                  localStorage.removeItem(key)
+                })
+                console.log('🧹 Cleared salon cache on session end')
+              }
+
               didResolveRef.current = false
               setCtx({
                 status: 'idle',
@@ -141,7 +173,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                 scopes: [],
                 userEntityId: undefined,
                 organizationId: undefined,
-                role: undefined
+                role: undefined,
+                availableApps: [],
+                defaultApp: null,
+                currentApp: null
               })
               return
             }
@@ -218,6 +253,38 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
               const userEntityId = res.user_entity_id ?? user?.id
 
+              // Extract available apps from introspection response (NEW)
+              const availableApps: HERAApp[] = []
+              const defaultApp = res.default_app || null
+
+              // Get apps from organizations array
+              if (res.organizations && res.organizations.length > 0) {
+                const currentOrg = res.organizations.find((o: any) => o.id === normalizedOrgId) || res.organizations[0]
+                if (currentOrg?.apps && Array.isArray(currentOrg.apps)) {
+                  currentOrg.apps.forEach((app: any) => {
+                    availableApps.push({
+                      code: app.code,
+                      name: app.name,
+                      config: app.config || {}
+                    })
+                  })
+                }
+              }
+
+              // Detect current app from URL (NEW)
+              let currentApp: string | null = null
+              if (typeof window !== 'undefined') {
+                const pathname = window.location.pathname
+                const pathSegments = pathname.split('/').filter(Boolean)
+                if (pathSegments.length > 0) {
+                  const firstSegment = pathSegments[0].toUpperCase()
+                  const matchedApp = availableApps.find(app => app.code.toUpperCase() === firstSegment)
+                  if (matchedApp) {
+                    currentApp = matchedApp.code
+                  }
+                }
+              }
+
               const heraUser: HERAUser = {
                 id: user.id,
                 entity_id: userEntityId,
@@ -243,7 +310,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                 scopes: res.membership?.roles || [],
                 userEntityId,
                 organizationId: normalizedOrgId,
-                role: role as 'owner' | 'manager' | 'staff'
+                role: role as 'owner' | 'manager' | 'staff',
+                availableApps,
+                defaultApp,
+                currentApp
               })
 
               didResolveRef.current = true
@@ -252,7 +322,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                 organizationId: normalizedOrgId,
                 role,
                 heraOrg,
-                currentOrganization: heraOrg
+                currentOrganization: heraOrg,
+                availableApps,
+                defaultApp,
+                currentApp
               })
             } catch (e) {
               console.error('HERA resolve error', e)
@@ -272,14 +345,34 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     }
   }, [])
 
-  // Remove initializeAuth - handled in useEffect
+  // Clear session with event-based cleanup
+  const clearSession = async () => {
+    console.log('🧹 Clearing session...')
 
-  // Remove handleSignIn - handled in useEffect
+    // 1. Emit cleanup event (apps listen and clean their own stores)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hera:session:clear'))
+    }
 
-  // Remove handleSignOut - handled in useEffect
+    // 2. Clear browser storage
+    localStorage.clear()
+    sessionStorage.clear()
 
-  const login = async (email: string, password: string) => {
+    // 3. Sign out
+    const { createClient } = await import('@/lib/supabase/client')
+    const supabase = createClient()
+    await supabase.auth.signOut()
+
+    didResolveRef.current = false
+  }
+
+  const login = async (email: string, password: string, options?: { clearFirst?: boolean }) => {
     try {
+      // Optional cleanup before login
+      if (options?.clearFirst) {
+        await clearSession()
+      }
+
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
 
@@ -321,14 +414,43 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const logout = async () => {
     try {
+      console.log('🔓 Logging out...')
+
+      // 1. Reset context immediately (don't wait for auth state change)
+      didResolveRef.current = false
+      setCtx({
+        status: 'idle',
+        user: null,
+        organization: null,
+        isAuthenticated: false,
+        isLoading: false,
+        scopes: [],
+        userEntityId: undefined,
+        organizationId: undefined,
+        role: undefined,
+        availableApps: [],
+        defaultApp: null,
+        currentApp: null
+      })
+
+      // 2. Sign out from Supabase
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
-
       await supabase.auth.signOut()
-      didResolveRef.current = false
+
+      // 3. Clear browser storage
+      if (typeof window !== 'undefined') {
+        localStorage.clear()
+        sessionStorage.clear()
+      }
+
+      // 4. Redirect to login
+      console.log('✅ Logged out, redirecting to login...')
       router.push('/auth/login')
     } catch (error) {
       console.error('💥 Logout error:', error)
+      // Even if signout fails, still redirect
+      router.push('/auth/login')
     }
   }
 
@@ -341,13 +463,26 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     return ctx.scopes.includes('OWNER') || ctx.scopes.includes(scope)
   }
 
+  // App helper methods
+  const hasApp = (appCode: string): boolean => {
+    return ctx.availableApps.some(app => app.code.toUpperCase() === appCode.toUpperCase())
+  }
+
+  const getAppConfig = (appCode: string): Record<string, any> | null => {
+    const app = ctx.availableApps.find(app => app.code.toUpperCase() === appCode.toUpperCase())
+    return app?.config || null
+  }
+
   const contextValue: HERAAuthContext = useMemo(() => ({
     ...ctx,
     login,
     register,
     logout,
     refreshAuth,
+    clearSession,
     hasScope,
+    hasApp,
+    getAppConfig,
     // Legacy compatibility
     currentOrganization: ctx.organization,
     organizations: ctx.organization ? [ctx.organization] : [],

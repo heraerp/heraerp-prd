@@ -29,11 +29,13 @@
 
 'use client'
 
-import { useState } from 'react'
-import { Mail, Lock, Sparkles, ShieldAlert, AlertCircle, Wifi, Building2, XCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { Mail, Lock, Sparkles, ShieldAlert, AlertCircle, Wifi, Building2, XCircle, Eye, EyeOff } from 'lucide-react'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { SalonLuxeInput } from '@/components/salon/shared/SalonLuxeInput'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 type ErrorType = 'validation' | 'auth' | 'network' | 'organization' | 'unknown'
 
@@ -44,8 +46,12 @@ interface ErrorState {
 }
 
 export default function SalonAuthPage() {
+  const router = useRouter()
+  const { login, isAuthenticated, role, organization, user } = useHERAAuth()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState<ErrorState | null>(null)
@@ -120,6 +126,78 @@ export default function SalonAuthPage() {
     }
   }
 
+  // ✅ Redirect after successful authentication (using HERAAuthProvider context)
+  useEffect(() => {
+    if (isAuthenticated && role) {
+      console.log('✅ Authenticated with role:', role)
+
+      // 🔧 CRITICAL: Normalize HERA role values to expected format
+      // HERA roles: ORG_OWNER, ORG_EMPLOYEE, etc.
+      // Expected: owner, receptionist, manager, accountant, stylist
+      const normalizedRole = String(role).toLowerCase().trim()
+
+      // Map HERA role values to salon roles
+      let salonRole = normalizedRole
+
+      // Handle HERA role format (ORG_OWNER, ORG_EMPLOYEE, etc.)
+      if (normalizedRole.includes('owner') || normalizedRole === 'org_owner') {
+        salonRole = 'owner'
+      } else if (normalizedRole.includes('employee') || normalizedRole === 'org_employee') {
+        salonRole = 'receptionist' // Default employees to receptionist role
+      } else if (normalizedRole.includes('manager') || normalizedRole === 'org_manager') {
+        salonRole = 'manager'
+      } else if (normalizedRole.includes('accountant') || normalizedRole === 'org_accountant') {
+        salonRole = 'accountant'
+      } else if (normalizedRole.includes('stylist') || normalizedRole === 'org_stylist') {
+        salonRole = 'stylist'
+      } else if (normalizedRole.includes('receptionist') || normalizedRole === 'org_receptionist') {
+        salonRole = 'receptionist'
+      }
+
+      console.log('🔧 Role mapping:', { originalRole: role, normalizedRole, salonRole })
+
+      // 🔒 CRITICAL: Store mapped role in localStorage BEFORE redirect
+      // This ensures SecuredSalonProvider can read the correct role
+      localStorage.setItem('salonRole', salonRole)
+      console.log('✅ Stored salonRole in localStorage:', salonRole)
+
+      // 🎯 Enterprise-grade role display names
+      const roleDisplayNames: Record<string, string> = {
+        'owner': 'Salon Owner',
+        'manager': 'Salon Manager',
+        'receptionist': 'Front Desk',
+        'accountant': 'Accountant',
+        'stylist': 'Stylist'
+      }
+
+      const displayName = roleDisplayNames[salonRole] || 'Team Member'
+      setMessage(`🎉 Welcome! Signing you in as ${displayName}...`)
+
+      // Role-based routing
+      setTimeout(() => {
+        if (salonRole === 'owner') {
+          console.log('✅ Redirecting owner to dashboard')
+          router.push('/salon/dashboard')
+        } else if (salonRole === 'receptionist') {
+          console.log('✅ Redirecting receptionist to receptionist page')
+          router.push('/salon/receptionist')
+        } else if (salonRole === 'manager') {
+          console.log('✅ Redirecting manager to receptionist page')
+          router.push('/salon/receptionist')
+        } else if (salonRole === 'accountant') {
+          console.log('✅ Redirecting accountant to receptionist page')
+          router.push('/salon/receptionist')
+        } else if (salonRole === 'stylist') {
+          console.log('✅ Redirecting stylist to receptionist page')
+          router.push('/salon/receptionist')
+        } else {
+          console.log('⚠️ Unknown role, using default receptionist redirect')
+          router.push('/salon/receptionist')
+        }
+      }, 1500) // 1.5 second delay for smooth UX
+    }
+  }, [isAuthenticated, role, router])
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -133,313 +211,54 @@ export default function SalonAuthPage() {
     setMessage('🔐 Signing in...')
 
     try {
-      // 🔒 CRITICAL: Clear ALL cached data before new login
-      console.log('🧹 Clearing all cached data before login...')
-      localStorage.clear()
+      // ✅ Use HERAAuthProvider login (handles everything automatically)
+      // - Clears all caches (via clearFirst option)
+      // - Authenticates with Supabase
+      // - Calls /api/v2/auth/resolve-membership
+      // - Sets localStorage
+      // - Updates context
+      await login(email, password, { clearFirst: true })
 
-      // Clear Zustand store
-      try {
-        const { useSalonSecurityStore } = await import('@/lib/salon/security-store')
-        const securityStore = useSalonSecurityStore.getState()
-        securityStore.clearState()
-        console.log('✅ Zustand store cleared')
-      } catch (e) {
-        console.warn('⚠️ Could not clear security store:', e)
-      }
-
-      // Import supabase client
-      const { supabase } = await import('@/lib/supabase/client')
-
-      // Sign out any existing session first
-      await supabase.auth.signOut()
-      console.log('✅ Previous session cleared')
-
-      // Authenticate with Supabase
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password: password
-      })
-
-      if (authError) {
-        console.error('🚨 Authentication error details:', {
-          message: authError.message,
-          status: authError.status,
-          name: authError.name,
-          email: email.trim()
-        })
-
-        // User-friendly error messages based on error type
-        if (authError.message.toLowerCase().includes('invalid login credentials')) {
-          showError(
-            'Invalid email or password',
-            'auth',
-            'Please check your credentials and try again.'
-          )
-        } else if (authError.message.toLowerCase().includes('email not confirmed')) {
-          showError(
-            'Email not verified',
-            'auth',
-            'Please check your inbox for the verification email.'
-          )
-        } else if (authError.message.toLowerCase().includes('too many requests')) {
-          showError(
-            'Too many login attempts',
-            'auth',
-            'Please wait a few minutes before trying again.'
-          )
-        } else if (authError.message.toLowerCase().includes('network')) {
-          showError(
-            'Network connection issue',
-            'network',
-            'Please check your internet connection and try again.'
-          )
-        } else {
-          showError(
-            'Sign-in failed',
-            'auth',
-            authError.message
-          )
-        }
-        return
-      }
-
-      if (data.session && data.user) {
-        setMessage('✅ Authentication successful! Loading your role...')
-
-        // Fetch role from database via API
-        let userRole = 'receptionist' // Default fallback
-        let organizationId: string | undefined // ✅ Declare at function scope
-
-        try {
-          const response = await fetch('/api/v2/auth/resolve-membership', {
-            headers: {
-              'Authorization': `Bearer ${data.session.access_token}`
-            }
-          })
-
-          if (response.ok) {
-            const membershipData = await response.json()
-
-            console.log('📊 Full API response:', JSON.stringify(membershipData, null, 2))
-
-            // Check if user has organization membership
-            if (!membershipData.membership && !membershipData.success) {
-              showError(
-                'No organization access',
-                'organization',
-                'Your account is not associated with any salon. Please contact your administrator.'
-              )
-              return
-            }
-
-            // ✅ Extract organization ID from API response (NO HARDCODING)
-            organizationId =
-              membershipData.membership?.organization_id ||
-              membershipData.organization_id ||
-              membershipData.membership?.org_entity_id
-
-            if (!organizationId) {
-              console.error('🚨 No organization ID in API response:', membershipData)
-              showError(
-                'Organization not found',
-                'organization',
-                'Could not determine your organization. Please contact support.'
-              )
-              return
-            }
-
-            console.log('✅ Organization ID from API:', organizationId)
-
-            // Extract role from API response with multiple fallback paths
-            console.log('🔍 DEBUG - Checking role paths:')
-            console.log('  - membershipData.membership?.roles:', membershipData.membership?.roles)
-            console.log('  - membershipData.membership?.roles?.[0]:', membershipData.membership?.roles?.[0])
-            console.log('  - membershipData.role:', membershipData.role)
-            console.log('  - membershipData.membership?.role:', membershipData.membership?.role)
-
-            let roleFromDB =
-              membershipData.membership?.roles?.[0] ||
-              membershipData.role ||
-              membershipData.membership?.role
-
-            console.log('🔍 DEBUG - roleFromDB (before normalization):', roleFromDB)
-            console.log('🔍 DEBUG - roleFromDB type:', typeof roleFromDB)
-            console.log('🔍 DEBUG - roleFromDB as JSON:', JSON.stringify(roleFromDB))
-
-            // 🔒 CRITICAL: Normalize role to lowercase and trim whitespace
-            // This ensures OWNER, Owner, owner, ORG_OWNER, RECEPTIONIST, etc. all work
-            if (roleFromDB) {
-              const rawRole = roleFromDB
-              // Map HERA RBAC roles (ORG_OWNER, ORG_ADMIN, ORG_EMPLOYEE) to salon roles
-              const roleMapping: Record<string, string> = {
-                'org_owner': 'owner',
-                'org_admin': 'manager',
-                'org_manager': 'manager',
-                'org_accountant': 'accountant',
-                'org_employee': 'receptionist',
-                'owner': 'owner',
-                'manager': 'manager',
-                'receptionist': 'receptionist',
-                'accountant': 'accountant',
-                'member': 'receptionist'
-              }
-
-              const normalizedRaw = String(roleFromDB).toLowerCase().trim()
-              roleFromDB = roleMapping[normalizedRaw] || normalizedRaw
-              userRole = roleFromDB
-
-              console.log('✅ Role fetched from database (raw):', rawRole)
-              console.log('✅ Role after normalization (trimmed, lowercase):', JSON.stringify(normalizedRaw))
-              console.log('✅ Role after mapping:', JSON.stringify(roleFromDB))
-              console.log('✅ userRole variable set to:', userRole)
-              console.log('✅ userRole === "owner":', userRole === 'owner')
-              console.log('✅ userRole === "receptionist":', userRole === 'receptionist')
-              console.log('✅ userRole === "manager":', userRole === 'manager')
-              console.log('✅ userRole === "accountant":', userRole === 'accountant')
-            } else {
-              console.warn('⚠️ No role in API response, using fallback:', userRole)
-              console.warn('⚠️ API response structure:', membershipData)
-              showError(
-                'Role not found',
-                'organization',
-                'Could not determine your role in the organization. Please contact support.'
-              )
-              return
-            }
-          } else if (response.status === 401) {
-            showError(
-              'Session expired',
-              'auth',
-              'Your session has expired. Please sign in again.'
-            )
-            return
-          } else {
-            const errorText = await response.text()
-            console.warn('⚠️ Failed to fetch role from API:', response.status, errorText)
-            showError(
-              'Unable to load organization',
-              'organization',
-              'Could not connect to the organization server. Please try again.'
-            )
-            return
-          }
-        } catch (apiError: any) {
-          console.warn('⚠️ Error fetching role from API, using fallback:', apiError)
-          showError(
-            'Connection error',
-            'network',
-            'Unable to verify your organization membership. Please check your connection.'
-          )
-          return
-        }
-
-        console.log('🔍 DEBUG - Email:', data.user.email || email)
-        console.log('🔍 DEBUG - Final Role:', userRole)
-        console.log('🔍 DEBUG - Role type:', typeof userRole)
-        console.log('🔍 DEBUG - Role length:', userRole?.length)
-
-        // ✅ SAFETY CHECK: Ensure organizationId is defined before proceeding
-        if (!organizationId) {
-          console.error('🚨 CRITICAL: organizationId is undefined after API call')
-          showError(
-            'Configuration error',
-            'organization',
-            'Unable to determine organization. Please try again or contact support.'
-          )
-          return
-        }
-
-        // 🔒 CRITICAL: Set organization and role in localStorage AFTER fetching from API
-        console.log('💾 Setting fresh data in localStorage:')
-        console.log('  - organizationId:', organizationId)
-        console.log('  - salonRole:', userRole)
-        console.log('  - userEmail:', data.user.email || email)
-        console.log('  - userId:', data.user.id)
-
-        localStorage.setItem('organizationId', organizationId)
-        localStorage.setItem('safeOrganizationId', organizationId)
-        localStorage.setItem('salonRole', userRole) // Fresh role from database
-        localStorage.setItem('userEmail', data.user.email || email)
-        localStorage.setItem('userId', data.user.id)
-        // Store user display info for dashboard header
-        localStorage.setItem('salonUserEmail', data.user.email || email)
-        localStorage.setItem('salonUserName', data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User')
-
-        console.log('✅ LocalStorage updated with fresh role from database')
-
-        // 🎯 Enterprise-grade role display names
-        const roleDisplayNames: Record<string, string> = {
-          'owner': 'Salon Owner',
-          'manager': 'Salon Manager',
-          'receptionist': 'Front Desk',
-          'accountant': 'Accountant',
-          'stylist': 'Stylist'
-        }
-
-        const displayName = roleDisplayNames[userRole] || 'Team Member'
-        setMessage(`🎉 Welcome! Signing you in as ${displayName}...`)
-
-        // Redirect based on role (with detailed logging)
-        let redirectPath
-        console.log('🔍 === REDIRECT LOGIC START ===')
-        console.log('🔍 userRole value:', userRole)
-        console.log('🔍 userRole type:', typeof userRole)
-        console.log('🔍 userRole JSON:', JSON.stringify(userRole))
-        console.log('🔍 userRole length:', userRole?.length)
-        console.log('🔍 userRole === "owner":', userRole === 'owner')
-        console.log('🔍 userRole === "receptionist":', userRole === 'receptionist')
-
-        // CRITICAL: Force exact string comparison
-        const normalizedRole = String(userRole).toLowerCase().trim()
-        console.log('🔍 normalizedRole after force normalization:', normalizedRole)
-        console.log('🔍 normalizedRole === "owner":', normalizedRole === 'owner')
-
-        // Direct salon routing - enterprise wrapper removed
-        if (normalizedRole === 'owner') {
-          redirectPath = '/salon/dashboard'
-          console.log('✅ OWNER detected - redirecting to dashboard')
-          console.log('✅ Redirect path set to:', redirectPath)
-        } else if (normalizedRole === 'receptionist') {
-          redirectPath = '/salon/receptionist'
-          console.log('✅ RECEPTIONIST detected - redirecting to receptionist page')
-          console.log('✅ Redirect path set to:', redirectPath)
-        } else {
-          redirectPath = '/salon/receptionist' // default fallback
-          console.log('⚠️ Unknown role - using default receptionist redirect')
-          console.log('⚠️ Role was:', normalizedRole)
-        }
-
-        console.log('🔍 === REDIRECT LOGIC END ===')
-        console.log('🎯 FINAL REDIRECT PATH:', redirectPath)
-        console.log('🎯 Redirecting in 1.5 seconds...')
-
-        setTimeout(() => {
-          console.log('🚀 EXECUTING REDIRECT NOW to:', redirectPath)
-          window.location.href = redirectPath
-        }, 1500)
-      } else {
-        showError(
-          'Authentication failed',
-          'auth',
-          'No session was created. Please try again or contact support.'
-        )
-      }
+      // Update message - redirect will be handled by useEffect
+      setMessage('✅ Authentication successful! Loading your dashboard...')
 
     } catch (err: any) {
       console.error('Sign-in error:', err)
-      if (err.message?.toLowerCase().includes('network') || err.message?.toLowerCase().includes('fetch')) {
+
+      // Enhanced error handling
+      if (err.message?.toLowerCase().includes('invalid login credentials')) {
         showError(
-          'Network error',
+          'Invalid email or password',
+          'auth',
+          'Please check your credentials and try again.'
+        )
+      } else if (err.message?.toLowerCase().includes('email not confirmed')) {
+        showError(
+          'Email not verified',
+          'auth',
+          'Please check your inbox for the verification email.'
+        )
+      } else if (err.message?.toLowerCase().includes('too many requests')) {
+        showError(
+          'Too many login attempts',
+          'auth',
+          'Please wait a few minutes before trying again.'
+        )
+      } else if (err.message?.toLowerCase().includes('network') || err.message?.toLowerCase().includes('fetch')) {
+        showError(
+          'Network connection issue',
           'network',
-          'Unable to connect to the server. Please check your internet connection.'
+          'Please check your internet connection and try again.'
         )
       } else {
         showError(
-          'Unexpected error',
-          'unknown',
+          'Sign-in failed',
+          'auth',
           err.message || 'An unexpected error occurred. Please try again.'
         )
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -621,16 +440,31 @@ export default function SalonAuthPage() {
                   Forgot password?
                 </button>
               </div>
-              <SalonLuxeInput
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                leftIcon={<Lock className="w-4 h-4" />}
-                required
-                disabled={loading}
-              />
+              <div className="relative">
+                <SalonLuxeInput
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  leftIcon={<Lock className="w-4 h-4" />}
+                  required
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-white/5 transition-colors"
+                  style={{ color: SALON_LUXE_COLORS.bronze }}
+                  disabled={loading}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <SalonLuxeButton

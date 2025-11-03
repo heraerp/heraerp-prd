@@ -143,8 +143,10 @@ function DashboardContent() {
   // ⚡ REMOVED BLOCKING LOADER: Page now loads instantly with progressive sections
   // The 5-stage progressive loading system (Lines 81-91, 557-603) now visible immediately!
 
-  // Auth check
-  if (!isAuthenticated || !role) {
+  // ✅ ENTERPRISE: Show loading while role is being resolved (not error)
+  // This prevents "Authentication Required" flash during role resolution after login
+  if (!isAuthenticated) {
+    // Not authenticated at all - redirect to login
     return (
       <div
         className="min-h-screen flex items-center justify-center"
@@ -160,9 +162,7 @@ function DashboardContent() {
               Authentication Required
             </h3>
             <p className="mb-6" style={{ color: LUXE_COLORS.bronze }}>
-              {!isAuthenticated
-                ? 'Please log in to access the dashboard.'
-                : 'No role assigned. Please contact your administrator.'}
+              Please log in to access the dashboard.
             </p>
             <Button
               onClick={() => router.push('/salon/auth')}
@@ -176,6 +176,38 @@ function DashboardContent() {
             </Button>
           </CardContent>
         </Card>
+      </div>
+    )
+  }
+
+  // ✅ PATIENCE: Show loading (not error) while role is being resolved after login
+  if (!role) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.black }}
+      >
+        <div className="text-center">
+          <div className="relative mb-6">
+            {/* Animated glow effect */}
+            <div
+              className="absolute inset-0 blur-2xl animate-pulse"
+              style={{
+                background: `radial-gradient(circle, ${LUXE_COLORS.gold}40 0%, transparent 70%)`
+              }}
+            />
+            <Loader2
+              className="h-12 w-12 animate-spin mx-auto relative"
+              style={{ color: LUXE_COLORS.gold }}
+            />
+          </div>
+          <h3 className="text-lg font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+            Loading your dashboard...
+          </h3>
+          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+            Setting up your workspace
+          </p>
+        </div>
       </div>
     )
   }
