@@ -1,0 +1,351 @@
+# Retail Customers Module Configuration
+# Base configuration for customer entities in retail vertical
+# Orgs can override fields via core_organizations.settings.ui_overrides.CUSTOMER
+
+name: retail_customers
+version: 1.0.0
+entity_type: CUSTOMER
+smart_code_base: HERA.RETAIL.CUSTOMER
+
+# Module metadata
+metadata:
+  title: Retail Customers
+  description: Customer management for retail organizations
+  icon: users
+  category: crm
+  requires_auth: true
+  multi_tenant: true
+
+# Base field definitions (all orgs get these by default)
+fields:
+  # Core customer fields
+  - name: entity_name
+    label: Customer Name
+    type: text
+    required: true
+    field_order: 1
+    validation_rules:
+      required: true
+      minLength: 2
+      maxLength: 255
+      message: Customer name is required and must be 2-255 characters
+    smart_code: HERA.RETAIL.CUSTOMER.DYN.NAME.v1
+    placeholder: Enter customer full name
+    help_text: Full legal name or business name of the customer
+    section: basic
+
+  - name: email
+    label: Email Address
+    type: email
+    required: true
+    field_order: 2
+    validation_rules:
+      required: true
+      regex: "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+      message: Valid email address is required
+    smart_code: HERA.RETAIL.CUSTOMER.DYN.EMAIL.v1
+    placeholder: customer@example.com
+    help_text: Primary email for communications and receipts
+    section: contact
+
+  - name: phone
+    label: Phone Number
+    type: phone
+    required: false
+    field_order: 3
+    validation_rules:
+      regex: "^[+]?[1-9]?[0-9]{7,15}$"
+      message: Enter a valid phone number
+    smart_code: HERA.RETAIL.CUSTOMER.DYN.PHONE.v1
+    placeholder: "+1 (555) 123-4567"
+    help_text: Primary contact phone number
+    section: contact
+
+  - name: date_of_birth
+    label: Date of Birth
+    type: date
+    required: false
+    field_order: 4
+    validation_rules:
+      message: Enter a valid date of birth
+    smart_code: HERA.RETAIL.CUSTOMER.DYN.DOB.v1
+    help_text: Optional for age-restricted products or birthday promotions
+    section: demographics
+
+  - name: preferred_contact_method
+    label: Preferred Contact Method
+    type: select
+    required: false
+    field_order: 5
+    validation_rules:
+      enum: ["email", "phone", "sms", "mail"]
+    smart_code: HERA.RETAIL.CUSTOMER.DYN.CONTACT_PREF.v1
+    default_value: email
+    help_text: How the customer prefers to be contacted
+    section: preferences
+
+# Form sections for organization
+sections:
+  - id: basic
+    label: Basic Information
+    description: Essential customer details
+    icon: user
+    order: 1
+
+  - id: contact
+    label: Contact Information
+    description: Phone, email, and address details
+    icon: phone
+    order: 2
+
+  - id: demographics
+    label: Demographics
+    description: Age, preferences, and segmentation data
+    icon: users
+    order: 3
+
+  - id: preferences
+    label: Preferences
+    description: Communication and service preferences
+    icon: settings
+    order: 4
+
+  - id: financial
+    label: Financial Information
+    description: Credit, payment terms, and billing details
+    icon: credit-card
+    order: 5
+
+# UI layout configuration
+layout:
+  type: form  # form | tabs | accordion
+  columns: 1  # Number of form columns on desktop
+  mobile_columns: 1
+  section_spacing: lg
+  field_spacing: md
+  show_section_headers: true
+  collapsible_sections: false
+
+# Validation rules
+validation:
+  enforce_unique_email: true
+  enforce_unique_phone: false
+  require_consent: false
+  validate_on_blur: true
+  show_validation_summary: true
+
+# Organization override examples (for documentation)
+# These would be stored in core_organizations.settings.ui_overrides.CUSTOMER
+organization_overrides:
+  # MatrixIT example - loyalty program focus
+  matrix_it_example:
+    loyalty_tier:
+      label: Loyalty Tier
+      type: select
+      required: true
+      field_order: 6
+      validation_rules:
+        enum: ["VIP", "REGULAR", "NEW"]
+        required: true
+        message: Loyalty tier is required
+      smart_code: HERA.RETAIL.CUSTOMER.DYN.LOYALTY_TIER.v1
+      default_value: NEW
+      help_text: Customer loyalty program level
+      section: preferences
+
+    vip_status:
+      label: VIP Status
+      type: boolean
+      required: false
+      field_order: 7
+      smart_code: HERA.RETAIL.CUSTOMER.DYN.VIP_STATUS.v1
+      default_value: false
+      help_text: Mark as VIP for special treatment
+      section: preferences
+
+    preferred_branch:
+      label: Preferred Branch
+      type: select
+      required: false
+      field_order: 8
+      validation_rules:
+        enum: ["downtown", "mall", "online"]
+      smart_code: HERA.RETAIL.CUSTOMER.DYN.PREFERRED_BRANCH.v1
+      help_text: Customer's preferred shopping location
+      section: preferences
+
+  # JewelsGalaxy example - consent and credit focus
+  jewels_galaxy_example:
+    preferred_branch:
+      label: Preferred Showroom
+      type: select
+      required: true
+      field_order: 6
+      validation_rules:
+        enum: ["flagship", "mall_north", "mall_south", "online"]
+        required: true
+      smart_code: HERA.RETAIL.CUSTOMER.DYN.PREFERRED_BRANCH.v1
+      help_text: Primary showroom for appointments and services
+      section: preferences
+
+    consent_flags:
+      label: Marketing Consent
+      type: multiselect
+      required: false
+      field_order: 7
+      validation_rules:
+        enum: ["email_marketing", "sms_marketing", "phone_calls", "postal_mail"]
+      smart_code: HERA.RETAIL.CUSTOMER.DYN.CONSENT_FLAGS.v1
+      help_text: Marketing communication permissions
+      section: preferences
+
+    credit_rating:
+      label: Credit Rating
+      type: select
+      required: false
+      field_order: 8
+      validation_rules:
+        enum: ["excellent", "good", "fair", "poor", "unknown"]
+      smart_code: HERA.RETAIL.CUSTOMER.DYN.CREDIT_RATING.v1
+      default_value: unknown
+      help_text: Internal credit assessment for financing options
+      section: financial
+
+# Branding customization per org
+branding:
+  allow_custom_colors: true
+  allow_custom_logo: true
+  allow_custom_fonts: false
+  
+  # Default retail theme
+  default_theme:
+    primary_color: "#3B82F6"      # Blue-500
+    secondary_color: "#64748B"    # Slate-500
+    accent_color: "#10B981"       # Emerald-500
+    background_color: "#F8FAFC"   # Slate-50
+    text_color: "#1E293B"         # Slate-800
+    border_color: "#E2E8F0"       # Slate-200
+    
+  # Theme variations organizations can choose from
+  theme_presets:
+    - name: professional_blue
+      primary_color: "#2563EB"
+      secondary_color: "#475569"
+      accent_color: "#059669"
+      
+    - name: luxury_gold
+      primary_color: "#D97706"
+      secondary_color: "#78716C"
+      accent_color: "#DC2626"
+      
+    - name: modern_purple
+      primary_color: "#7C3AED"
+      secondary_color: "#6B7280"
+      accent_color: "#EC4899"
+
+# API configuration
+api:
+  endpoints:
+    list: /api/v2/customers
+    create: /api/v2/command
+    update: /api/v2/command
+    delete: /api/v2/command
+    search: /api/v2/customers/search
+    
+  default_pagination:
+    limit: 50
+    max_limit: 100
+    
+  search_fields:
+    - entity_name
+    - email
+    - phone
+    
+  sort_fields:
+    - entity_name
+    - email
+    - created_at
+    - updated_at
+
+# Security and compliance
+security:
+  require_org_membership: true
+  enforce_rls: true
+  audit_all_changes: true
+  mask_sensitive_fields: ["phone", "date_of_birth"]
+  
+  # Smart code validation
+  smart_codes:
+    entity_pattern: "^HERA\\.RETAIL\\.CUSTOMER\\.v1$"
+    field_pattern: "^HERA\\.RETAIL\\.CUSTOMER\\.DYN\\.[A-Z_]+\\.v1$"
+    enforce_format: true
+    
+  # Actor requirements
+  actor:
+    require_stamping: true
+    coverage_threshold: 95
+    validate_membership: true
+
+# Performance optimization
+performance:
+  cache_field_config: true
+  cache_ttl: 300  # 5 minutes
+  cache_invalidation:
+    - org_settings_change
+    - yaml_config_update
+    
+  pagination:
+    default_page_size: 50
+    max_page_size: 100
+    prefetch_next_page: true
+    
+  search:
+    enable_full_text: true
+    min_search_length: 2
+    debounce_ms: 300
+
+# Testing configuration
+testing:
+  demo_data:
+    create_sample_customers: true
+    sample_count: 25
+    include_different_field_configs: true
+    
+  rls_tests:
+    - cross_org_read_denied
+    - cross_org_write_denied
+    - same_org_access_allowed
+    
+  actor_tests:
+    - verify_created_by_stamped
+    - verify_updated_by_stamped
+    - verify_membership_required
+    
+  guardrails_tests:
+    - smart_code_required
+    - smart_code_format_valid
+    - org_filter_required
+
+# Documentation
+documentation:
+  user_guide: docs/retail-customers-user-guide.md
+  api_reference: docs/retail-customers-api.md
+  customization_guide: docs/retail-customers-customization.md
+  
+# Module dependencies
+dependencies:
+  - core_auth
+  - core_organizations
+  - api_v2_gateway
+  - hera_client_sdk
+
+# Version history
+changelog:
+  - version: 1.0.0
+    date: 2025-01-15
+    changes:
+      - Initial retail customers module
+      - Multi-tenant field configuration
+      - Organization override support
+      - Full API v2 integration
+      - Comprehensive validation system

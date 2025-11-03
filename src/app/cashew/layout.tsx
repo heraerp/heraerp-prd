@@ -7,7 +7,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { HERAUniversalAuthProvider } from '@/components/auth/HERAUniversalAuthProvider'
+import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
 
 interface CashewLayoutProps {
   children: ReactNode
@@ -15,12 +15,8 @@ interface CashewLayoutProps {
 
 export default function CashewLayout({ children }: CashewLayoutProps) {
   return (
-    <HERAUniversalAuthProvider
-      appName="cashew"
-      requireOrganization={true}
-      redirectTo="/auth/login"
-    >
+    <HERAAuthProvider>
       {children}
-    </HERAUniversalAuthProvider>
+    </HERAAuthProvider>
   )
 }

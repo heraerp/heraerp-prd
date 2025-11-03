@@ -1,0 +1,178 @@
+{
+  "name": "HERA Guardrails v2.0",
+  "version": "2.0.0",
+  "description": "Runtime validation rules enforced by API v2 Edge gateway",
+  "
+": {
+    "ORG_FILTER_REQUIRED": {
+      "description": "Every payload must include organization_id matching request header",
+      "severity": "CRITICAL",
+      "enforcement": "EDGE_GATEWAY",
+      "rules": [
+        {
+          "condition": "payload missing organization_id",
+          "action": "REJECT",
+          "error_code": "ORG_FILTER_MISSING",
+          "http_status": 400
+        },
+        {
+          "condition": "payload.organization_id != X-Organization-Id header",
+          "action": "REJECT", 
+          "error_code": "ORG_FILTER_MISMATCH",
+          "http_status": 400
+        },
+        {
+          "condition": "actor not member of organization_id",
+          "action": "REJECT",
+          "error_code": "ACTOR_NOT_MEMBER", 
+          "http_status": 403
+        }
+      ]
+    },
+    "SMARTCODE_REQUIRED": {
+      "description": "All entities and dynamic fields must have valid HERA DNA Smart Codes",
+      "severity": "CRITICAL",
+      "enforcement": "EDGE_GATEWAY",
+      "regex": "^HERA\\.[A-Z]+\\.[A-Z]+\\.[A-Z_]+\\.v\\d+$",
+      "rules": [
+        {
+          "condition": "entity missing smart_code",
+          "action": "REJECT",
+          "error_code": "SMARTCODE_MISSING_ENTITY",
+          "http_status": 400
+        },
+        {
+          "condition": "dynamic_field missing smart_code",
+          "action": "REJECT",
+          "error_code": "SMARTCODE_MISSING_FIELD", 
+          "http_status": 400
+        },
+        {
+          "condition": "smart_code format invalid",
+          "action": "REJECT",
+          "error_code": "SMARTCODE_INVALID_FORMAT",
+          "http_status": 400
+        }
+      ]
+    },
+    "GL_BALANCED_PER_CURRENCY": {
+      "description": "Financial transactions with .GL. Smart Codes must balance per currency",
+      "severity": "CRITICAL", 
+      "enforcement": "EDGE_GATEWAY",
+      "applies_to": "transactions with .GL. smart codes",
+      "rules": [
+        {
+          "condition": "GL lines present but not balanced by currency",
+          "action": "REJECT",
+          "error_code": "GL_UNBALANCED",
+          "http_status": 400,
+          "details": "Sum of DR amounts must equal sum of CR amounts per currency"
+        },
+        {
+          "condition": "GL line missing side (DR/CR)",
+          "action": "REJECT", 
+          "error_code": "GL_SIDE_MISSING",
+          "http_status": 400
+        },
+        {
+          "condition": "GL line missing currency",
+          "action": "REJECT",
+          "error_code": "GL_CURRENCY_MISSING", 
+          "http_status": 400
+        }
+      ]
+    },
+    "ACTOR_STAMPING": {
+      "description": "All writes must include valid actor information",
+      "severity": "HIGH",
+      "enforcement": "EDGE_GATEWAY",
+      "rules": [
+        {
+          "condition": "p_actor_user_id missing from RPC call",
+          "action": "REJECT",
+          "error_code": "ACTOR_MISSING",
+          "http_status": 400
+        },
+        {
+          "condition": "actor_user_id not found in core_entities",
+          "action": "REJECT",
+          "error_code": "ACTOR_NOT_FOUND",
+          "http_status": 404
+        }
+      ]
+    }
+  },
+  "enforcement_points": {
+    "edge_gateway": {
+      "path": "/functions/v1/api-v2/*",
+      "validates": ["ORG_FILTER_REQUIRED", "SMARTCODE_REQUIRED", "GL_BALANCED_PER_CURRENCY", "ACTOR_STAMPING"],
+      "order": ["auth", "org_context", "guardrails", "rpc_forward"]
+    },
+    "rpc_layer": {
+      "functions": ["hera_entities_crud_v1", "hera_txn_crud_v1"],
+      "validates": ["business_rules", "referential_integrity"],
+      "audit_stamps": ["created_by", "updated_by", "created_at", "updated_at"]
+    },
+    "database": {
+      "policies": ["RLS by organization_id", "audit triggers"],
+      "constraints": ["smart_code format", "required fields"]
+    }
+  },
+  "error_responses": {
+    "format": {
+      "error": "string",
+      "error_code": "string", 
+      "rid": "request_id",
+      "details": "object|null",
+      "timestamp": "ISO8601"
+    },
+    "examples": {
+      "ORG_FILTER_MISSING": {
+        "error": "Organization filter required",
+        "error_code": "ORG_FILTER_MISSING",
+        "rid": "req_123456789",
+        "details": {
+          "required_header": "X-Organization-Id",
+          "payload_field": "organization_id"
+        },
+        "timestamp": "2025-01-15T10:30:00Z"
+      },
+      "SMARTCODE_INVALID_FORMAT": {
+        "error": "Smart Code format invalid",
+        "error_code": "SMARTCODE_INVALID_FORMAT", 
+        "rid": "req_123456790",
+        "details": {
+          "provided": "invalid.format",
+          "expected_pattern": "HERA.{MODULE}.{TYPE}.{SUBTYPE}.v{VERSION}",
+          "examples": ["HERA.RETAIL.CUSTOMER.v1", "HERA.RETAIL.CUSTOMER.DYN.LOYALTY_TIER.v1"]
+        },
+        "timestamp": "2025-01-15T10:31:00Z"
+      }
+    }
+  },
+  "performance_targets": {
+    "validation_latency": "< 50ms p95",
+    "error_response_time": "< 100ms p95", 
+    "cache_hit_rate": "> 90% for org context resolution"
+  },
+  "monitoring": {
+    "metrics": [
+      "guardrails_validations_total",
+      "guardrails_violations_total", 
+      "guardrails_latency_seconds",
+      "actor_resolution_cache_hits_total"
+    ],
+    "alerts": [
+      {
+        "name": "GuardrailViolationSpike",
+        "condition": "violations > 10% of total validations",
+        "severity": "WARNING"
+      },
+      {
+        "name": "GuardrailLatencyHigh", 
+        "condition": "p95 validation latency > 100ms",
+        "severity": "CRITICAL"
+      }
+    ]
+  }
+}

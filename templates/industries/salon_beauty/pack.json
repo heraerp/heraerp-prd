@@ -1,0 +1,216 @@
+{
+  "pack_id": "salon_beauty_v1",
+  "pack_version": "1.0.0",
+  "pack_name": "Salon & Beauty Solution",
+  "description": "Complete management system for hair salons, spas, and beauty services",
+  "industry": "salon_beauty",
+  "author": "HERA Core Team",
+  "license": "MIT",
+  "created_at": "2025-01-01T00:00:00Z",
+  "updated_at": "2025-01-01T00:00:00Z",
+  
+  "entities": [
+    "customer_salon_v1",
+    "staff_v1",
+    "service_v1",
+    "product_v1",
+    "appointment_v1",
+    "treatment_package_v1",
+    "loyalty_program_v1",
+    "room_v1",
+    "supplier_v1",
+    "promotion_v1"
+  ],
+  
+  "transactions": [
+    "appointment_booking_v1",
+    "pos_sale_v1",
+    "staff_commission_v1",
+    "inventory_adjustment_v1",
+    "loyalty_redemption_v1",
+    "gift_card_transaction_v1",
+    "expense_salon_v1"
+  ],
+  
+  "relationships": [
+    "customer_has_appointment",
+    "staff_assigned_to_appointment",
+    "appointment_includes_service",
+    "appointment_uses_product",
+    "customer_enrolled_in_loyalty",
+    "staff_specializes_in_service",
+    "product_supplied_by_vendor"
+  ],
+  
+  "dashboards": [
+    "daily_bookings_v1",
+    "staff_performance_v1",
+    "revenue_analytics_v1",
+    "inventory_tracking_v1",
+    "customer_insights_v1"
+  ],
+  
+  "workflows": [
+    "appointment_booking_flow_v1",
+    "customer_checkin_flow_v1",
+    "inventory_reorder_flow_v1",
+    "staff_commission_calculation_v1",
+    "loyalty_points_calculation_v1"
+  ],
+  
+  "posting_bundle": "salon_beauty_finance_v1",
+  
+  "chart_of_accounts": "salon_beauty_coa_v1",
+  
+  "navigation": {
+    "sections": [
+      {
+        "id": "dashboard",
+        "label": "Dashboard",
+        "icon": "LayoutDashboard",
+        "order": 1,
+        "items": [
+          {"label": "Today's Schedule", "route": "/dashboard/schedule", "icon": "Calendar"},
+          {"label": "Revenue", "route": "/dashboard/revenue", "icon": "DollarSign"},
+          {"label": "Staff Performance", "route": "/dashboard/staff", "icon": "Users"},
+          {"label": "Customer Insights", "route": "/dashboard/customers", "icon": "UserCheck"}
+        ]
+      },
+      {
+        "id": "appointments",
+        "label": "Appointments",
+        "icon": "Calendar",
+        "order": 2,
+        "items": [
+          {"label": "Schedule", "route": "/appointments/schedule", "icon": "Calendar"},
+          {"label": "Book New", "route": "/appointments/new", "icon": "Plus"},
+          {"label": "Walk-ins", "route": "/appointments/walkins", "icon": "UserPlus"},
+          {"label": "History", "route": "/appointments/history", "icon": "Clock"}
+        ]
+      },
+      {
+        "id": "customers",
+        "label": "Customers",
+        "icon": "Users",
+        "order": 3,
+        "items": [
+          {"label": "All Customers", "route": "/entities/customer_salon", "icon": "Users"},
+          {"label": "Loyalty Members", "route": "/customers/loyalty", "icon": "Star"},
+          {"label": "Birthday Club", "route": "/customers/birthdays", "icon": "Gift"},
+          {"label": "Preferences", "route": "/customers/preferences", "icon": "Heart"}
+        ]
+      },
+      {
+        "id": "staff",
+        "label": "Staff",
+        "icon": "UserCheck",
+        "order": 4,
+        "items": [
+          {"label": "All Staff", "route": "/entities/staff", "icon": "Users"},
+          {"label": "Schedules", "route": "/staff/schedules", "icon": "Calendar"},
+          {"label": "Commission", "route": "/transactions/staff_commission", "icon": "DollarSign"},
+          {"label": "Performance", "route": "/staff/performance", "icon": "TrendingUp"}
+        ]
+      },
+      {
+        "id": "services",
+        "label": "Services",
+        "icon": "Sparkles",
+        "order": 5,
+        "items": [
+          {"label": "All Services", "route": "/entities/service", "icon": "Sparkles"},
+          {"label": "Treatment Packages", "route": "/entities/treatment_package", "icon": "Package"},
+          {"label": "Pricing", "route": "/services/pricing", "icon": "DollarSign"},
+          {"label": "Categories", "route": "/services/categories", "icon": "FolderOpen"}
+        ]
+      },
+      {
+        "id": "inventory",
+        "label": "Inventory",
+        "icon": "Package",
+        "order": 6,
+        "items": [
+          {"label": "Products", "route": "/entities/product", "icon": "Package"},
+          {"label": "Stock Levels", "route": "/inventory/stock", "icon": "BarChart"},
+          {"label": "Reorder", "route": "/inventory/reorder", "icon": "ShoppingCart"},
+          {"label": "Suppliers", "route": "/entities/supplier", "icon": "Truck"}
+        ]
+      },
+      {
+        "id": "pos",
+        "label": "Point of Sale",
+        "icon": "CreditCard",
+        "order": 7,
+        "items": [
+          {"label": "New Sale", "route": "/pos/new", "icon": "Plus"},
+          {"label": "Sales History", "route": "/transactions/pos_sale", "icon": "FileText"},
+          {"label": "Gift Cards", "route": "/transactions/gift_card", "icon": "Gift"},
+          {"label": "Refunds", "route": "/pos/refunds", "icon": "RotateCcw"}
+        ]
+      },
+      {
+        "id": "marketing",
+        "label": "Marketing",
+        "icon": "Megaphone",
+        "order": 8,
+        "items": [
+          {"label": "Promotions", "route": "/entities/promotion", "icon": "Tag"},
+          {"label": "Loyalty Program", "route": "/entities/loyalty_program", "icon": "Star"},
+          {"label": "Email Campaigns", "route": "/marketing/email", "icon": "Mail"},
+          {"label": "Reviews", "route": "/marketing/reviews", "icon": "MessageSquare"}
+        ]
+      },
+      {
+        "id": "reports",
+        "label": "Reports",
+        "icon": "BarChart",
+        "order": 9,
+        "items": [
+          {"label": "Daily Sales", "route": "/reports/daily", "icon": "Calendar"},
+          {"label": "Staff Reports", "route": "/reports/staff", "icon": "Users"},
+          {"label": "Service Analysis", "route": "/reports/services", "icon": "Sparkles"},
+          {"label": "Customer Reports", "route": "/reports/customers", "icon": "UserCheck"}
+        ]
+      }
+    ]
+  },
+  
+  "branding": {
+    "primary_color": "#d946ef",
+    "secondary_color": "#c026d3",
+    "accent_color": "#f59e0b",
+    "font_family": "Inter",
+    "theme": "light"
+  },
+  
+  "features": {
+    "appointment_booking": true,
+    "staff_commission": true,
+    "inventory_tracking": true,
+    "customer_loyalty": true,
+    "pos_system": true,
+    "gift_cards": true,
+    "email_reminders": true,
+    "online_booking": true,
+    "mobile_app": true,
+    "payment_processing": true
+  },
+  
+  "configuration": {
+    "currencies": ["USD", "EUR", "GBP", "CAD", "AUD"],
+    "appointment_duration_units": ["15min", "30min", "45min", "1hr", "1.5hr", "2hr"],
+    "commission_types": ["percentage", "fixed", "tiered"],
+    "languages": ["en", "es", "fr", "de"],
+    "timezone_default": "UTC",
+    "fiscal_year": "calendar",
+    "booking_advance_days": 90
+  },
+  
+  "dependencies": [],
+  
+  "compatibility": {
+    "hera_version": ">=3.0.0",
+    "required_modules": ["calendar", "payments", "communications"],
+    "optional_modules": ["marketing", "analytics", "mobile"]
+  }
+}

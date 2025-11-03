@@ -1,0 +1,16 @@
+public	core_dynamic_data
+public	core_entities
+public	core_organizations
+public	core_relationships
+public	entity_approval_requests
+public	entity_business_rules
+public	entity_workflow_configs
+public	entity_workflow_notifications
+public	hera_onboarding_recent_v1
+public	universal_transaction_lines
+public	universal_transactions
+public	v_current_dynamic_data
+public	v_hera_accounts
+public	v_period_close_dashboard
+public	v_universal_transaction_lines_drcr
+public	v_universal_transaction_lines_with_base

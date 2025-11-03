@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, AlertCircle, Eye, EyeOff, Mail, Lock, ChevronRight } from 'lucide-react'
-import { useHERAAuth } from '@/lib/auth/hera-universal-auth'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
 import Navbar from '@/app/components/Navbar'
 import Footer from '@/app/components/Footer'
@@ -20,7 +20,7 @@ import Footer from '@/app/components/Footer'
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { signIn, isAuthenticated, organizations } = useHERAAuth()
+  const { login, isAuthenticated, organizations, availableApps, defaultApp, currentApp } = useHERAAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

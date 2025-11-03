@@ -1,0 +1,303 @@
+# --- append under seeds: in audit_system.yaml ---
+
+# Tenant-specific branding/labels can live in core_organizations.settings,
+# but for convenience we seed a few “starter” records tied to that org.
+
+org_overrides:
+  - org_code: FINOVEST
+    name: "Finovest Group"
+    branding:
+      theme: "professional"
+      primary_color: "#0b4f71"
+      logo_url: "https://assets.example.com/finovest/logo.png"   # swap if you have
+    labels:
+      ASSET.asset_name: "Host / VM Name"
+      APPLICATION.app_name: "Business App"
+    defaults:
+      environment: "PROD"
+
+seeds:
+  - entity_type: ENVIRONMENT
+    organization: FINOVEST
+    records:
+      - env_name: PROD
+        region: "PI Cloud - Ernakulam"
+        notes: "Primary hosting"
+      - env_name: UAT
+        region: "PI Cloud - Ernakulam"
+      - env_name: DR
+        region: "PI Cloud - Secondary"
+
+  - entity_type: APPLICATION
+    organization: FINOVEST
+    records:
+      - app_name: "Core Banking Software (CBS)"
+        business_criticality: CRITICAL
+        data_classification: RESTRICTED
+        supports_erp: true
+
+  - entity_type: ASSET
+    organization: FINOVEST
+    records:
+      - asset_name: "pi-cbs-vm-01"
+        asset_type: VM
+        host_platform: PI_CLOUD
+        os_family: LINUX
+        ip_address: "10.22.16.41"     # replace with actual
+        criticality: CRITICAL
+        owner_team: "IT Operations"
+        tags: { purpose: "CBS App Host", patch_window: "Sun 02:00-03:00" }
+        is_in_scope: true
+
+  # Relationships for the above asset (attach to APP + ENV)
+  - relationships:
+      - type: ASSET_RUNS_APPLICATION
+        from: { entity_type: ASSET, lookup: { asset_name: "pi-cbs-vm-01" }, organization: FINOVEST }
+        to:   { entity_type: APPLICATION, lookup: { app_name: "Core Banking Software (CBS)" }, organization: FINOVEST }
+      - type: ASSET_IN_ENVIRONMENT
+        from: { entity_type: ASSET, lookup: { asset_name: "pi-cbs-vm-01" }, organization: FINOVEST }
+        to:   { entity_type: ENVIRONMENT, lookup: { env_name: "PROD" }, organization: FINOVEST }
+
+  # Finovest baseline checklist (mix of CIS + ISO controls)
+  - entity_type: CHECKLIST
+    organization: FINOVEST
+    records:
+      - name: "Finovest – Server Security (Baseline)"
+        framework: CIS_BENCHMARKS
+        scope_tags: { os: "LINUX", platform: "PI_CLOUD", app: "CBS" }
+
+  - entity_type: CONTROL
+    organization: FINOVEST
+    records:
+      - framework: CIS_BENCHMARKS
+        control_id: "CIS-LNX-SSH-01"
+        title: "Harden SSH (Protocol 2, no root login, key-based auth)"
+        severity: HIGH
+        test_procedure: "Review /etc/ssh/sshd_config; ensure PermitRootLogin no, PasswordAuthentication no"
+      - framework: CIS_BENCHMARKS
+        control_id: "CIS-LNX-PATCH-01"
+        title: "Automated security updates enabled"
+        severity: HIGH
+        test_procedure: "Check unattended-upgrades or equivalent; verify last patch date < 30 days"
+      - framework: ISO27001
+        control_id: "A.9.2.3"
+        title: "Privileged access management"
+        severity: HIGH
+        test_procedure: "Enumerate sudoers, PAM configs; evidence of periodic review"
+      - framework: CIS_BENCHMARKS
+        control_id: "CIS-LNX-FW-01"
+        title: "Host firewall policy (deny by default)"
+        severity: MEDIUM
+        test_procedure: "Check nftables/ufw rules; inbound allow-list only"
+
+  # Link the baseline checklist to its controls
+  - relationships:
+      - type: CHECKLIST_CONTAINS_CONTROL
+        from: { entity_type: CHECKLIST, lookup: { name: "Finovest – Server Security (Baseline)" }, organization: FINOVEST }
+        to:   { entity_type: CONTROL,   lookup: { control_id: "CIS-LNX-SSH-01" }, organization: FINOVEST }
+      - type: CHECKLIST_CONTAINS_CONTROL
+        from: { entity_type: CHECKLIST, lookup: { name: "Finovest – Server Security (Baseline)" }, organization: FINOVEST }
+        to:   { entity_type: CONTROL,   lookup: { control_id: "CIS-LNX-PATCH-01" }, organization: FINOVEST }
+      - type: CHECKLIST_CONTAINS_CONTROL
+        from: { entity_type: CHECKLIST, lookup: { name: "Finovest – Server Security (Baseline)" }, organization: FINOVEST }
+        to:   { entity_type: CONTROL,   lookup: { control_id: "A.9.2.3" }, organization: FINOVEST }
+      - type: CHECKLIST_CONTAINS_CONTROL
+        from: { entity_type: CHECKLIST, lookup: { name: "Finovest – Server Security (Baseline)" }, organization: FINOVEST }
+        to:   { entity_type: CONTROL,   lookup: { control_id: "CIS-LNX-FW-01" }, organization: FINOVEST }
+
+  # A quarterly audit plan that scopes the CBS VM and uses the baseline checklist
+  - entity_type: AUDIT_PLAN
+    organization: FINOVEST
+    records:
+      - period_start: "2025-10-01"
+        period_end:   "2025-12-31"
+        objectives: "Security posture review of CBS production VM"
+        scope_notes: "Focus on SSH hardening, patches, privileged access, firewall"
+        risk_categories: ["Access Control","Configuration","Vulnerability Management"]
+
+  # Link plan → asset + checklist
+  - relationships:
+      - type: PLAN_COVERS_ASSET
+        from: { entity_type: AUDIT_PLAN, lookup: { objectives: "Security posture review of CBS production VM" }, organization: FINOVEST }
+        to:   { entity_type: ASSET,      lookup: { asset_name: "pi-cbs-vm-01" }, organization: FINOVEST }
+      - type: PLAN_USES_CHECKLIST
+        from: { entity_type: AUDIT_PLAN, lookup: { objectives: "Security posture review of CBS production VM" }, organization: FINOVEST }
+        to:   { entity_type: CHECKLIST,  lookup: { name: "Finovest – Server Security (Baseline)" }, organization: FINOVEST }
+
+
+
+# --- add near the bottom of audit_system.yaml ---
+
+reports:
+  - report_id: AUDIT_REPORT_V1
+    name: "System Audit Report"
+    description: "Executive summary, findings, remediation status, signoffs"
+    input:
+      params:
+        - name: audit_id
+          type: entity_ref
+          entity_type: AUDIT
+          required: true
+    dataset:
+      queries:
+        # Header & context
+        - id: q_audit
+          select:
+            - AUDIT.entity_code as audit_code
+            - AUDIT.audit_type
+            - AUDIT.start_date
+            - AUDIT.end_date
+            - AUDIT.status
+            - AUDIT.lead_auditor_user_id
+          where:
+            - AUDIT.id = :audit_id
+        - id: q_assets
+          select:
+            - ASSET.entity_code
+            - ASSET.asset_name
+            - ASSET.asset_type
+            - ASSET.os_family
+            - ENVIRONMENT.env_name as environment
+          join:
+            - { type: many_to_many, via: AUDIT_COVERS_ASSET, from: AUDIT, to: ASSET }
+            - { type: many_to_one,   via: ASSET_IN_ENVIRONMENT, from: ASSET, to: ENVIRONMENT }
+          where:
+            - AUDIT.id = :audit_id
+        - id: q_findings
+          select:
+            - FINDING.entity_code
+            - FINDING.title
+            - FINDING.severity
+            - FINDING.likelihood
+            - FINDING.risk_score
+            - FINDING.status
+            - CONTROL.control_id
+            - CONTROL.title as control_title
+            - ASSET.asset_name
+          join:
+            - { type: many_to_one, via: FINDING_RELATES_TO_CONTROL, from: FINDING, to: CONTROL }
+            - { type: many_to_one, via: FINDING_RELATES_TO_ASSET,   from: FINDING, to: ASSET }
+            - { type: many_to_one, via: FINDING_BELONGS_TO_AUDIT,   from: FINDING, to: AUDIT }
+          where:
+            - AUDIT.id = :audit_id
+        - id: q_tasks
+          select:
+            - REMEDIATION_TASK.entity_code
+            - REMEDIATION_TASK.title
+            - REMEDIATION_TASK.owner_user_id
+            - REMEDIATION_TASK.status
+            - REMEDIATION_TASK.due_date
+            - FINDING.entity_code as finding_code
+          join:
+            - { type: many_to_one, via: TASK_FOR_FINDING, from: REMEDIATION_TASK, to: FINDING }
+          where:
+            - FINDING.audit_id = :audit_id
+        - id: q_kpis
+          compute:
+            open_findings: "count(FINDING where FINDING.audit_id = :audit_id and FINDING.status != 'CLOSED')"
+            high_or_crit:  "count(FINDING where FINDING.audit_id = :audit_id and FINDING.severity in ['HIGH','CRITICAL'])"
+            tasks_due_7d:  "count(REMEDIATION_TASK where FINDING.audit_id = :audit_id and REMEDIATION_TASK.status not in ['VERIFIED','CLOSED'] and REMEDIATION_TASK.due_date <= today()+7)"
+
+    layout:
+      format: PDF        # also supports HTML
+      pages:
+        - section: cover
+          components:
+            - type: title
+              text: "System Audit Report"
+            - type: subtitle
+              text: "{{ q_audit.audit_code }} — {{ q_audit.audit_type }}"
+            - type: keyvalue
+              items:
+                Period: "{{ q_audit.start_date }} → {{ q_audit.end_date }}"
+                Status: "{{ q_audit.status }}"
+                Lead Auditor: "{{ q_audit.lead_auditor_user_id }}"
+            - type: spacer
+            - type: chips
+              items:
+                - "Client: {{ organization.name }}"
+                - "Environment(s): {{ join(q_assets.environment, ', ') }}"
+
+        - section: executive_summary
+          components:
+            - type: h2
+              text: "Executive Summary"
+            - type: kpi_row
+              items:
+                - label: "Open Findings"         ; value: "{{ q_kpis.open_findings }}"
+                - label: "High/Critical"         ; value: "{{ q_kpis.high_or_crit }}"
+                - label: "Tasks due ≤ 7 days"    ; value: "{{ q_kpis.tasks_due_7d }}"
+            - type: paragraph
+              text: >
+                This report summarizes the results of the system audit on in-scope assets and
+                controls. High-level risks and recommended actions are outlined below.
+
+        - section: assets_in_scope
+          components:
+            - type: h2
+              text: "Assets In Scope"
+            - type: table
+              source: q_assets
+              columns:
+                - { header: "Code",        field: "entity_code" }
+                - { header: "Name",        field: "asset_name" }
+                - { header: "Type",        field: "asset_type" }
+                - { header: "OS",          field: "os_family" }
+                - { header: "Environment", field: "environment" }
+
+        - section: findings
+          components:
+            - type: h2
+              text: "Findings"
+            - type: table
+              source: q_findings
+              sort: [{ field: "severity", dir: "desc" }, { field: "risk_score", dir: "desc" }]
+              columns:
+                - { header: "Finding",   field: "entity_code" }
+                - { header: "Title",     field: "title", wrap: true }
+                - { header: "Severity",  field: "severity", badge: true }
+                - { header: "Likelihood",field: "likelihood" }
+                - { header: "Risk",      field: "risk_score" }
+                - { header: "Control",   field: "control_id" }
+                - { header: "Asset",     field: "asset_name" }
+                - { header: "Status",    field: "status", badge: true }
+            - type: heatmap
+              title: "Risk Heatmap"
+              rows:    ["HIGH","MEDIUM","LOW"]
+              columns: ["CRITICAL","HIGH","MEDIUM","LOW"]
+              source: q_findings
+              x_field: severity
+              y_field: likelihood
+              value: "count"
+
+        - section: remediation
+          components:
+            - type: h2
+              text: "Remediation Status"
+            - type: table
+              source: q_tasks
+              columns:
+                - { header: "Task",     field: "entity_code" }
+                - { header: "Title",    field: "title", wrap: true }
+                - { header: "Finding",  field: "finding_code" }
+                - { header: "Owner",    field: "owner_user_id" }
+                - { header: "Status",   field: "status", badge: true }
+                - { header: "Due",      field: "due_date" }
+
+        - section: signoff
+          components:
+            - type: h2
+              text: "Signoff"
+            - type: signature_block
+              roles:
+                - "LEAD_AUDITOR"
+                - "IT_OWNER"
+                - "MANAGEMENT"
+
+    actions:
+      - id: print_pdf
+        label: "Generate PDF"
+        output: PDF
+      - id: share_link
+        label: "Share (Org-secure Link)"
+        output: URL

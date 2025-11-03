@@ -1,0 +1,1 @@
+notification_id,entity_id,organization_id,notification_type,recipient_user_id,title,message,notification_data,channels,status,scheduled_for,sent_at,delivered_at,created_at,error_message

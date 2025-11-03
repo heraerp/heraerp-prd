@@ -1,0 +1,349 @@
+{
+  "schema_version": "2.0",
+  "title": "HERA Enterprise Navigation - Industry-Aware Dynamic System",
+  "base_modules": {
+    "FIN": {
+      "name": "Finance",
+      "code": "FIN",
+      "route": "/enterprise/finance",
+      "icon": "banknote",
+      "color": "bg-blue-600",
+      "smart_code_prefix": "HERA.FIN",
+      "areas": [
+        {
+          "name": "General Ledger",
+          "code": "GL",
+          "route": "/enterprise/finance/gl",
+          "icon": "book-open",
+          "operations": [
+            {"name": "Create Journal", "code": "CREATE", "route": "/enterprise/finance/gl/create", "permissions": ["FIN.WRITE"]},
+            {"name": "List Journals", "code": "LIST", "route": "/enterprise/finance/gl/list", "permissions": ["FIN.READ"]},
+            {"name": "Approvals", "code": "APPROVE", "route": "/enterprise/finance/gl/approvals", "permissions": ["FIN.APPROVE"]},
+            {"name": "Analytics", "code": "ANALYTICS", "route": "/enterprise/finance/gl/analytics", "permissions": ["FIN.READ"]},
+            {"name": "Settings", "code": "SETTINGS", "route": "/enterprise/finance/gl/settings", "permissions": ["FIN.ADMIN"]}
+          ]
+        },
+        {
+          "name": "Accounts Payable",
+          "code": "AP",
+          "route": "/enterprise/finance/ap",
+          "icon": "credit-card",
+          "operations": [
+            {"name": "Create Invoice", "code": "CREATE", "route": "/enterprise/finance/ap/create", "permissions": ["FIN.WRITE"]},
+            {"name": "Open Items", "code": "LIST", "route": "/enterprise/finance/ap/list", "permissions": ["FIN.READ"]},
+            {"name": "Payments Run", "code": "PAYMENTS", "route": "/enterprise/finance/ap/payments", "permissions": ["FIN.WRITE"]},
+            {"name": "Approvals", "code": "APPROVE", "route": "/enterprise/finance/ap/approvals", "permissions": ["FIN.APPROVE"]},
+            {"name": "Analytics", "code": "ANALYTICS", "route": "/enterprise/finance/ap/analytics", "permissions": ["FIN.READ"]}
+          ]
+        },
+        {
+          "name": "Accounts Receivable",
+          "code": "AR",
+          "route": "/enterprise/finance/ar",
+          "icon": "wallet",
+          "operations": [
+            {"name": "Create Invoice", "code": "CREATE", "route": "/enterprise/finance/ar/create", "permissions": ["FIN.WRITE"]},
+            {"name": "Open Items", "code": "LIST", "route": "/enterprise/finance/ar/list", "permissions": ["FIN.READ"]},
+            {"name": "Cash Application", "code": "CASH_APP", "route": "/enterprise/finance/ar/cash-application", "permissions": ["FIN.WRITE"]},
+            {"name": "Analytics", "code": "ANALYTICS", "route": "/enterprise/finance/ar/analytics", "permissions": ["FIN.READ"]}
+          ]
+        },
+        {
+          "name": "Treasury Management",
+          "code": "TREASURY",
+          "route": "/enterprise/finance/treasury",
+          "icon": "piggy-bank",
+          "operations": [
+            {"name": "Cash Position", "code": "CASH_POS", "route": "/enterprise/finance/treasury/cash-position", "permissions": ["FIN.READ"]},
+            {"name": "FX & Hedging", "code": "FX", "route": "/enterprise/finance/treasury/fx-hedge", "permissions": ["FIN.READ"]},
+            {"name": "Risk Analytics", "code": "ANALYTICS", "route": "/enterprise/finance/treasury/analytics", "permissions": ["FIN.READ"]}
+          ]
+        }
+      ]
+    },
+    "PROC": {
+      "name": "Procurement",
+      "code": "PROC",
+      "route": "/enterprise/procurement",
+      "icon": "shopping-cart",
+      "color": "bg-green-600",
+      "smart_code_prefix": "HERA.PROC",
+      "areas": [
+        {
+          "name": "Purchase Orders",
+          "code": "PO",
+          "route": "/enterprise/procurement/po",
+          "icon": "file-text",
+          "operations": [
+            {"name": "Create PO", "code": "CREATE", "route": "/enterprise/procurement/po/create", "permissions": ["PROC.WRITE"]},
+            {"name": "PO List", "code": "LIST", "route": "/enterprise/procurement/po/list", "permissions": ["PROC.READ"]},
+            {"name": "Approvals", "code": "APPROVE", "route": "/enterprise/procurement/po/approvals", "permissions": ["PROC.APPROVE"]},
+            {"name": "Analytics", "code": "ANALYTICS", "route": "/enterprise/procurement/po/analytics", "permissions": ["PROC.READ"]},
+            {"name": "Settings", "code": "SETTINGS", "route": "/enterprise/procurement/po/settings", "permissions": ["PROC.ADMIN"]}
+          ]
+        },
+        {
+          "name": "Requisitions",
+          "code": "REQ",
+          "route": "/enterprise/procurement/requisitions",
+          "icon": "clipboard-list",
+          "operations": [
+            {"name": "Create Requisition", "code": "CREATE", "route": "/enterprise/procurement/requisitions/create", "permissions": ["PROC.WRITE"]},
+            {"name": "Requisition List", "code": "LIST", "route": "/enterprise/procurement/requisitions/list", "permissions": ["PROC.READ"]},
+            {"name": "Approvals", "code": "APPROVE", "route": "/enterprise/procurement/requisitions/approvals", "permissions": ["PROC.APPROVE"]}
+          ]
+        },
+        {
+          "name": "Vendors",
+          "code": "VENDORS",
+          "route": "/enterprise/procurement/vendors",
+          "icon": "users",
+          "operations": [
+            {"name": "Create Vendor", "code": "CREATE", "route": "/enterprise/procurement/vendors/create", "permissions": ["PROC.WRITE"]},
+            {"name": "Vendor List", "code": "LIST", "route": "/enterprise/procurement/vendors/list", "permissions": ["PROC.READ"]},
+            {"name": "Performance Analytics", "code": "ANALYTICS", "route": "/enterprise/procurement/vendors/analytics", "permissions": ["PROC.READ"]}
+          ]
+        }
+      ]
+    },
+    "SALES": {
+      "name": "Sales",
+      "code": "SALES",
+      "route": "/enterprise/sales",
+      "icon": "trending-up",
+      "color": "bg-purple-600",
+      "smart_code_prefix": "HERA.SALES",
+      "areas": [
+        {
+          "name": "Sales Orders",
+          "code": "SO",
+          "route": "/enterprise/sales/orders",
+          "icon": "shopping-bag",
+          "operations": [
+            {"name": "Create Sales Order", "code": "CREATE", "route": "/enterprise/sales/orders/create", "permissions": ["SALES.WRITE"]},
+            {"name": "Order List", "code": "LIST", "route": "/enterprise/sales/orders/list", "permissions": ["SALES.READ"]},
+            {"name": "Analytics", "code": "ANALYTICS", "route": "/enterprise/sales/orders/analytics", "permissions": ["SALES.READ"]}
+          ]
+        },
+        {
+          "name": "Quotes & Proposals",
+          "code": "QUOTES",
+          "route": "/enterprise/sales/quotes",
+          "icon": "file-text",
+          "operations": [
+            {"name": "Create Quote", "code": "CREATE", "route": "/enterprise/sales/quotes/create", "permissions": ["SALES.WRITE"]},
+            {"name": "Quote List", "code": "LIST", "route": "/enterprise/sales/quotes/list", "permissions": ["SALES.READ"]}
+          ]
+        }
+      ]
+    }
+  },
+  "industries": {
+    "JEWELRY": {
+      "name": "Jewelry & Precious Metals",
+      "code": "JEWELRY",
+      "route_prefix": "/jewelry",
+      "theme": {
+        "primary_color": "#D4AF37",
+        "secondary_color": "#C0C0C0",
+        "hero_background": "gradient-to-br from-amber-50 to-yellow-100"
+      },
+      "specialized_modules": {
+        "PRECIOUS_METALS": {
+          "name": "Precious Metal Management",
+          "code": "PRECIOUS_METALS",
+          "route": "/jewelry/precious-metals",
+          "icon": "coins",
+          "color": "bg-yellow-600",
+          "areas": [
+            {
+              "name": "Metal Price Tracking",
+              "code": "PRICE_TRACK",
+              "route": "/jewelry/precious-metals/pricing",
+              "icon": "trending-up",
+              "operations": [
+                {"name": "Live Price Monitor", "code": "MONITOR", "route": "/jewelry/precious-metals/pricing/monitor", "permissions": ["JEWELRY.READ"]},
+                {"name": "Price Revaluation", "code": "REVALUE", "route": "/jewelry/precious-metals/pricing/revalue", "permissions": ["JEWELRY.WRITE"]},
+                {"name": "Market Analytics", "code": "ANALYTICS", "route": "/jewelry/precious-metals/pricing/analytics", "permissions": ["JEWELRY.READ"]}
+              ]
+            },
+            {
+              "name": "Purity & Testing",
+              "code": "PURITY",
+              "route": "/jewelry/precious-metals/purity",
+              "icon": "shield-check",
+              "operations": [
+                {"name": "Purity Testing", "code": "TEST", "route": "/jewelry/precious-metals/purity/test", "permissions": ["JEWELRY.WRITE"]},
+                {"name": "Test Records", "code": "RECORDS", "route": "/jewelry/precious-metals/purity/records", "permissions": ["JEWELRY.READ"]},
+                {"name": "Compliance Reports", "code": "COMPLIANCE", "route": "/jewelry/precious-metals/purity/compliance", "permissions": ["JEWELRY.READ"]}
+              ]
+            },
+            {
+              "name": "Hallmark Compliance",
+              "code": "HALLMARK",
+              "route": "/jewelry/precious-metals/hallmark",
+              "icon": "award",
+              "operations": [
+                {"name": "Hallmark Registration", "code": "REGISTER", "route": "/jewelry/precious-metals/hallmark/register", "permissions": ["JEWELRY.WRITE"]},
+                {"name": "Compliance Dashboard", "code": "DASHBOARD", "route": "/jewelry/precious-metals/hallmark/dashboard", "permissions": ["JEWELRY.READ"]}
+              ]
+            }
+          ]
+        },
+        "GEMSTONE_OPS": {
+          "name": "Gemstone Operations",
+          "code": "GEMSTONE_OPS",
+          "route": "/jewelry/gemstones",
+          "icon": "gem",
+          "color": "bg-indigo-600",
+          "areas": [
+            {
+              "name": "Diamond Certification",
+              "code": "DIAMOND_CERT",
+              "route": "/jewelry/gemstones/certification",
+              "icon": "certificate",
+              "operations": [
+                {"name": "GIA Certification", "code": "GIA", "route": "/jewelry/gemstones/certification/gia", "permissions": ["JEWELRY.WRITE"]},
+                {"name": "AGS Certification", "code": "AGS", "route": "/jewelry/gemstones/certification/ags", "permissions": ["JEWELRY.WRITE"]},
+                {"name": "Certificate Tracking", "code": "TRACK", "route": "/jewelry/gemstones/certification/track", "permissions": ["JEWELRY.READ"]}
+              ]
+            },
+            {
+              "name": "4C Classification",
+              "code": "FOUR_C",
+              "route": "/jewelry/gemstones/classification",
+              "icon": "layers",
+              "operations": [
+                {"name": "Carat Weight", "code": "CARAT", "route": "/jewelry/gemstones/classification/carat", "permissions": ["JEWELRY.READ"]},
+                {"name": "Cut Grading", "code": "CUT", "route": "/jewelry/gemstones/classification/cut", "permissions": ["JEWELRY.READ"]},
+                {"name": "Color Grading", "code": "COLOR", "route": "/jewelry/gemstones/classification/color", "permissions": ["JEWELRY.READ"]},
+                {"name": "Clarity Assessment", "code": "CLARITY", "route": "/jewelry/gemstones/classification/clarity", "permissions": ["JEWELRY.READ"]}
+              ]
+            },
+            {
+              "name": "Conflict-Free Verification",
+              "code": "KIMBERLEY",
+              "route": "/jewelry/gemstones/conflict-free",
+              "icon": "shield",
+              "operations": [
+                {"name": "Kimberley Process", "code": "KIMBERLEY_PROC", "route": "/jewelry/gemstones/conflict-free/kimberley", "permissions": ["JEWELRY.WRITE"]},
+                {"name": "Source Verification", "code": "SOURCE_VERIFY", "route": "/jewelry/gemstones/conflict-free/source", "permissions": ["JEWELRY.WRITE"]},
+                {"name": "Chain of Custody", "code": "CUSTODY", "route": "/jewelry/gemstones/conflict-free/custody", "permissions": ["JEWELRY.READ"]}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "WASTE_MGMT": {
+      "name": "Waste Management & Recycling",
+      "code": "WASTE_MGMT",
+      "route_prefix": "/waste-management",
+      "theme": {
+        "primary_color": "#22C55E",
+        "secondary_color": "#059669",
+        "hero_background": "gradient-to-br from-green-50 to-emerald-100"
+      },
+      "specialized_modules": {
+        "ROUTE_OPS": {
+          "name": "Route Operations",
+          "code": "ROUTE_OPS",
+          "route": "/waste-management/routes",
+          "icon": "map",
+          "color": "bg-green-600",
+          "areas": [
+            {
+              "name": "Collection Scheduling",
+              "code": "SCHEDULING",
+              "route": "/waste-management/routes/scheduling",
+              "icon": "calendar",
+              "operations": [
+                {"name": "Route Planning", "code": "PLAN", "route": "/waste-management/routes/scheduling/plan", "permissions": ["WASTE.WRITE"]},
+                {"name": "Schedule Optimization", "code": "OPTIMIZE", "route": "/waste-management/routes/scheduling/optimize", "permissions": ["WASTE.WRITE"]},
+                {"name": "Customer Scheduling", "code": "CUSTOMERS", "route": "/waste-management/routes/scheduling/customers", "permissions": ["WASTE.READ"]}
+              ]
+            },
+            {
+              "name": "Vehicle Tracking",
+              "code": "TRACKING",
+              "route": "/waste-management/routes/tracking",
+              "icon": "truck",
+              "operations": [
+                {"name": "Live GPS Tracking", "code": "GPS", "route": "/waste-management/routes/tracking/gps", "permissions": ["WASTE.READ"]},
+                {"name": "Route Progress", "code": "PROGRESS", "route": "/waste-management/routes/tracking/progress", "permissions": ["WASTE.READ"]},
+                {"name": "Driver Performance", "code": "PERFORMANCE", "route": "/waste-management/routes/tracking/performance", "permissions": ["WASTE.READ"]}
+              ]
+            },
+            {
+              "name": "Fuel Optimization",
+              "code": "FUEL",
+              "route": "/waste-management/routes/fuel",
+              "icon": "fuel",
+              "operations": [
+                {"name": "Fuel Consumption", "code": "CONSUMPTION", "route": "/waste-management/routes/fuel/consumption", "permissions": ["WASTE.READ"]},
+                {"name": "Cost Analysis", "code": "COST", "route": "/waste-management/routes/fuel/cost", "permissions": ["WASTE.READ"]},
+                {"name": "Efficiency Reports", "code": "EFFICIENCY", "route": "/waste-management/routes/fuel/efficiency", "permissions": ["WASTE.READ"]}
+              ]
+            }
+          ]
+        },
+        "ENV_COMPLIANCE": {
+          "name": "Environmental Compliance",
+          "code": "ENV_COMPLIANCE",
+          "route": "/waste-management/compliance",
+          "icon": "shield-check",
+          "color": "bg-emerald-600",
+          "areas": [
+            {
+              "name": "EPA Reporting",
+              "code": "EPA",
+              "route": "/waste-management/compliance/epa",
+              "icon": "file-text",
+              "operations": [
+                {"name": "Waste Tracking", "code": "TRACKING", "route": "/waste-management/compliance/epa/tracking", "permissions": ["WASTE.WRITE"]},
+                {"name": "Automated Reports", "code": "REPORTS", "route": "/waste-management/compliance/epa/reports", "permissions": ["WASTE.READ"]},
+                {"name": "Compliance Dashboard", "code": "DASHBOARD", "route": "/waste-management/compliance/epa/dashboard", "permissions": ["WASTE.READ"]}
+              ]
+            },
+            {
+              "name": "Waste Classification",
+              "code": "CLASSIFICATION",
+              "route": "/waste-management/compliance/classification",
+              "icon": "layers",
+              "operations": [
+                {"name": "Material Classification", "code": "CLASSIFY", "route": "/waste-management/compliance/classification/classify", "permissions": ["WASTE.WRITE"]},
+                {"name": "Hazardous Materials", "code": "HAZMAT", "route": "/waste-management/compliance/classification/hazmat", "permissions": ["WASTE.WRITE"]},
+                {"name": "Disposal Methods", "code": "DISPOSAL", "route": "/waste-management/compliance/classification/disposal", "permissions": ["WASTE.READ"]}
+              ]
+            },
+            {
+              "name": "Disposal Certificates",
+              "code": "CERTIFICATES",
+              "route": "/waste-management/compliance/certificates",
+              "icon": "certificate",
+              "operations": [
+                {"name": "Certificate Generation", "code": "GENERATE", "route": "/waste-management/compliance/certificates/generate", "permissions": ["WASTE.WRITE"]},
+                {"name": "Certificate Tracking", "code": "TRACK", "route": "/waste-management/compliance/certificates/track", "permissions": ["WASTE.READ"]},
+                {"name": "Compliance Audit", "code": "AUDIT", "route": "/waste-management/compliance/certificates/audit", "permissions": ["WASTE.READ"]}
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "security": {
+    "permission_sets": [
+      {"code": "READ", "description": "Read-only access"},
+      {"code": "WRITE", "description": "Create/modify objects"},
+      {"code": "APPROVE", "description": "Approve workflow items"},
+      {"code": "ADMIN", "description": "Configure module settings"}
+    ],
+    "industry_permissions": [
+      {"code": "JEWELRY.READ", "description": "View jewelry operations"},
+      {"code": "JEWELRY.WRITE", "description": "Manage jewelry operations"},
+      {"code": "WASTE.READ", "description": "View waste management operations"},
+      {"code": "WASTE.WRITE", "description": "Manage waste management operations"}
+    ]
+  }
+}

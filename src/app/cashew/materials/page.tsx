@@ -9,7 +9,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useCashewAuth } from '@/components/auth/HERAUniversalAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import HERAMasterDataTemplate from '@/components/hera/HERAMasterDataTemplate'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -128,7 +128,7 @@ const MATERIAL_FIELDS = [
 
 export default function CashewMaterialsPage() {
   const router = useRouter()
-  const { user, organization, isAuthenticated, accessToken, isLoading } = useCashewAuth()
+  const { user, organization, isAuthenticated, isLoading } = useHERAAuth()
   const [showCreateForm, setShowCreateForm] = useState(false)
 
   // Authentication checks using HERA Universal Auth

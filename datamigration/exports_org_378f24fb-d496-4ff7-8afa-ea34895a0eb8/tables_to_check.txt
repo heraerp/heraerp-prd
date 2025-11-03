@@ -1,0 +1,11 @@
+public	core_dynamic_data
+public	core_entities
+public	core_organizations
+public	core_relationships
+public	universal_transaction_lines
+public	universal_transactions
+public	v_current_dynamic_data
+public	v_hera_accounts
+public	v_period_close_dashboard
+public	v_universal_gl_lines
+public	v_universal_transaction_lines_with_base

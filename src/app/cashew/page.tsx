@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import CashewNavigation from '@/components/navigation/CashewNavigation'
-import { useCashewAuth } from '@/components/auth/HERAUniversalAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { 
   TrendingUp, 
   Package, 
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 
 export default function CashewDashboard() {
-  const { user, organization, isAuthenticated, isLoading } = useCashewAuth()
+  const { user, organization, isAuthenticated, isLoading } = useHERAAuth()
   const [dashboardStats, setDashboardStats] = useState({
     activeBatches: 5,
     completedBatches: 12,

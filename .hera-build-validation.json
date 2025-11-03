@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-10-29T15:29:13.490Z",
+  "overall_status": "FAILED",
+  "total_duration": 70259,
+  "results": [
+    {
+      "step": "TypeScript Type Check",
+      "status": "FAILED",
+      "duration": 30000,
+      "required": true,
+      "error": "Command failed: npx tsc --noEmit\nnpm warn config cache-max This option has been deprecated in favor of `--prefer-online`\n",
+      "stdout": "docs/integration-hub/templates/vendor-adapter.template.ts(19,1): error TS1128: Declaration or statement expected.\ndocs/integration-hub/templates/vendor-adapter.template.ts(19,18): error TS1438: Interface must be given a name.\ndocs/integration-hub/templates/vendor-adapter.template.ts(19,26): error TS1434: Unexpected keyword or identifier.\ndocs/integration-hub/templates/vendor-adapter.template.ts(25,1): error TS1128: Declaration or statement expected.\ndocs/integration-hub/templates/vendor-adapter.",
+      "stderr": "npm warn config cache-max This option has been deprecated in favor of `--prefer-online`\n"
+    },
+    {
+      "step": "ESLint Check",
+      "status": "FAILED",
+      "duration": 20000,
+      "required": false,
+      "error": "Command failed: npm run lint\nnpm warn config cache-max This option has been deprecated in favor of `--prefer-online`\n`next lint` is deprecated and will be removed in Next.js 16.\nFor new projects, use create-next-app to choose your preferred linter.\nFor existing projects, migrate to the ESLint CLI:\nnpx @next/codemod@canary next-lint-to-eslint-cli .\n\nInvalid Options:\n- Unknown options: useEslintrc, extensions, resolvePluginsRelativeTo, rulePaths, ignorePath, reportUnusedDisableDirectives\n- 'extensions' has been removed.\n- 'resolvePluginsRelativeTo' has been removed.\n- 'ignorePath' has been removed.\n- 'rulePaths' has been removed. Please define your rules using plugins.\n- 'reportUnusedDisableDirectives' has been removed. Please use the 'overrideConfig.linterOptions.reportUnusedDisableDirectives' option instead.\n",
+      "stdout": "\n> heraerp@1.2.2 lint\n> next lint\n\n",
+      "stderr": "npm warn config cache-max This option has been deprecated in favor of `--prefer-online`\n`next lint` is deprecated and will be removed in Next.js 16.\nFor new projects, use create-next-app to choose your preferred linter.\nFor existing projects, migrate to the ESLint CLI:\nnpx @next/codemod@canary next-lint-to-eslint-cli .\n\nInvalid Options:\n- Unknown options: useEslintrc, extensions, resolvePluginsRelativeTo, rulePaths, ignorePath, reportUnusedDisableDirectives\n- 'extensions' has been removed.\n- 're"
+    },
+    {
+      "step": "Next.js Build",
+      "status": "PASSED",
+      "duration": 20259,
+      "required": true
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "passed": 1,
+    "failed": 2,
+    "required_failures": 1
+  }
+}

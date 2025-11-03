@@ -1,0 +1,95 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-10-29T11:35:00.000Z",
+  "learning_patterns": {
+    "health_endpoint_auth_fix": {
+      "discovered": "2025-10-29",
+      "problem": "Health endpoints requiring authentication when they should be unauthenticated",
+      "solution": "Use isHealthCheckPath() for early bypass before authentication pipeline",
+      "key_insight": "Supabase Edge Functions have JWT verification at runtime level - need --no-verify-jwt=true",
+      "prevention": "Always test health endpoints after API changes",
+      "confidence": "high",
+      "reusable": true
+    },
+    "supabase_path_format": {
+      "discovered": "2025-10-29", 
+      "problem": "Route paths in Supabase Edge Functions use /api-v2/ format, not /api/v2/",
+      "solution": "Register both formats in route registry or use dual registration helper",
+      "key_insight": "Supabase transforms URL paths - need to account for both formats",
+      "prevention": "Always test route resolution after deployment",
+      "confidence": "high",
+      "reusable": true
+    },
+    "api_v2_enterprise_deployment": {
+      "discovered": "2025-10-29",
+      "problem": "Complex enterprise modules need coordinated deployment",
+      "solution": "Deploy to both environments (dev + prod) with comprehensive testing",
+      "key_insight": "Enterprise features require testing across environments for consistency",
+      "prevention": "Always deploy to both environments and test key endpoints",
+      "confidence": "high", 
+      "reusable": true
+    }
+  },
+  "success_patterns": {
+    "systematic_deployment": {
+      "pattern": "Deploy to dev → Test → Deploy to prod → Test → Update todos",
+      "success_rate": "100%",
+      "last_used": "2025-10-29",
+      "notes": "Consistent deployment pattern prevents environment drift"
+    },
+    "health_check_validation": {
+      "pattern": "Test health endpoints after any API gateway changes",
+      "success_rate": "100%",
+      "last_used": "2025-10-29", 
+      "notes": "Catches authentication boundary issues early"
+    },
+    "todo_driven_development": {
+      "pattern": "Use TodoWrite at start → Track progress → Mark complete when done",
+      "success_rate": "100%",
+      "last_used": "2025-10-29",
+      "notes": "Provides transparency and prevents task abandonment"
+    }
+  },
+  "failure_patterns_to_avoid": {
+    "assuming_schema_fields": {
+      "pattern": "Using field names without checking schema reference",
+      "last_failed": "Previous sessions",
+      "prevention": "Always check /docs/schema/hera-sacred-six-schema.yaml first"
+    },
+    "incomplete_deployment": {
+      "pattern": "Deploying to only one environment",
+      "last_failed": "Previous sessions",
+      "prevention": "Always deploy to both dev and production"
+    },
+    "bypassing_organization_context": {
+      "pattern": "API calls without organization_id",
+      "last_failed": "Previous sessions", 
+      "prevention": "Every API call needs organization context"
+    }
+  },
+  "environmental_knowledge": {
+    "supabase_projects": {
+      "development": {
+        "id": "qqagokigwuujyeyrgdkq",
+        "name": "HERA-DEV",
+        "api_url": "https://qqagokigwuujyeyrgdkq.supabase.co/functions/v1"
+      },
+      "production": {
+        "id": "awfcrncxngqwbhqapffb", 
+        "name": "HERA",
+        "api_url": "https://awfcrncxngqwbhqapffb.supabase.co/functions/v1"
+      }
+    },
+    "deployment_commands": {
+      "dev": "supabase link --project-ref qqagokigwuujyeyrgdkq && supabase functions deploy api-v2",
+      "prod": "supabase link --project-ref awfcrncxngqwbhqapffb && supabase functions deploy api-v2"
+    }
+  },
+  "session_metrics": {
+    "total_tasks_completed": 16,
+    "successful_deployments": 6,
+    "issues_resolved": 4,
+    "patterns_learned": 3,
+    "last_session_date": "2025-10-29"
+  }
+}
