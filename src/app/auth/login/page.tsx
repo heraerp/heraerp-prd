@@ -13,7 +13,6 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, AlertCircle, Eye, EyeOff, Mail, Lock, ChevronRight } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
 import { AppSwitcher } from '@/components/navigation/AppSwitcher'
 import Navbar from '@/app/components/Navbar'
 import Footer from '@/app/components/Footer'
@@ -28,8 +27,22 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   const returnTo = searchParams.get('return_to')
+
+  // Mouse movement tracking for gradient effects
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100
+      })
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
   // Log available apps for testing
   useEffect(() => {
@@ -112,6 +125,22 @@ function LoginForm() {
     }
   }, [isAuthenticated, organizations, returnTo, router, availableApps, defaultApp, currentApp])
 
+  const handleDemoLogin = async () => {
+    setError(null)
+    setIsLoading(true)
+    setEmail('demo@heraerp.com')
+    setPassword('demo2025!')
+
+    try {
+      await login('demo@heraerp.com', 'demo2025!')
+      // Redirect will be handled by useEffect
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Demo login failed')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -157,18 +186,49 @@ function LoginForm() {
     <div className="min-h-screen h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 w-full relative overflow-auto">
       {/* Force full viewport background */}
       <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 -z-20" />
-      {/* Animated background gradients - match partners page style */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        {/* Large floating gradient orbs */}
-        <div className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-blue-500/15 to-cyan-400/10 rounded-full blur-3xl animate-float-glow" />
-        <div className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-gradient-to-br from-purple-500/15 to-pink-400/10 rounded-full blur-3xl animate-float-glow animation-delay-2000" />
-        <div className="absolute top-1/3 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-indigo-500/15 to-violet-400/10 rounded-full blur-3xl animate-pulse-glow animation-delay-4000" />
-        <div className="absolute top-1/3 -right-40 w-[600px] h-[600px] bg-gradient-to-br from-rose-500/15 to-amber-400/10 rounded-full blur-3xl animate-pulse-glow animation-delay-1000" />
-        <div className="absolute -bottom-40 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-500/15 to-emerald-400/10 rounded-full blur-3xl animate-float-glow animation-delay-3000" />
-        <div className="absolute -bottom-40 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-violet-500/15 to-purple-400/10 rounded-full blur-3xl animate-float-glow animation-delay-5000" />
 
-        {/* Subtle animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/8 via-purple-500/8 to-pink-500/8 animate-gradient-shift" />
+      {/* Enhanced animated background gradients with mouse tracking */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        {/* Large floating gradient orbs with mouse-reactive positioning */}
+        <div
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-indigo-500/20 to-purple-500/15 rounded-full blur-3xl transition-transform duration-1000 ease-out"
+          style={{
+            transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`
+          }}
+        />
+        <div
+          className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 to-blue-500/15 rounded-full blur-3xl transition-transform duration-1000 ease-out"
+          style={{
+            transform: `translate(${-mousePosition.x * 0.015}px, ${mousePosition.y * 0.015}px)`
+          }}
+        />
+        <div
+          className="absolute top-1/3 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-purple-500/15 to-pink-500/10 rounded-full blur-3xl transition-transform duration-1000 ease-out"
+          style={{
+            transform: `translate(${mousePosition.x * 0.025}px, ${-mousePosition.y * 0.02}px)`
+          }}
+        />
+        <div
+          className="absolute top-1/3 -right-40 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/15 to-teal-500/10 rounded-full blur-3xl transition-transform duration-1000 ease-out"
+          style={{
+            transform: `translate(${-mousePosition.x * 0.02}px, ${-mousePosition.y * 0.025}px)`
+          }}
+        />
+        <div
+          className="absolute -bottom-40 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-500/15 to-indigo-500/10 rounded-full blur-3xl transition-transform duration-1000 ease-out"
+          style={{
+            transform: `translate(${mousePosition.x * 0.018}px, ${mousePosition.y * 0.018}px)`
+          }}
+        />
+        <div
+          className="absolute -bottom-40 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-violet-500/15 to-purple-500/10 rounded-full blur-3xl transition-transform duration-1000 ease-out"
+          style={{
+            transform: `translate(${-mousePosition.x * 0.022}px, ${mousePosition.y * 0.022}px)`
+          }}
+        />
+
+        {/* Animated gradient overlay with subtle pulse */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/8 via-purple-500/8 to-cyan-500/8 animate-gradient-shift" />
       </div>
 
       {/* Header */}
@@ -181,37 +241,20 @@ function LoginForm() {
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="w-full max-w-md mx-auto px-4 py-6 sm:py-8">
-            {/* Welcome Badge */}
-            <div className="text-center mb-8">
+            {/* Welcome Badge with fade-in animation */}
+            <div className="text-center mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
               <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-indigo-500/15 to-purple-500/15 border border-indigo-500/30 backdrop-blur-sm shadow-lg mb-4">
                 <Lock className="w-4 h-4 text-indigo-400" />
                 <span className="text-indigo-300 dark:text-indigo-300 text-sm font-semibold tracking-wide">
-                  BETA • Invited Customers Only
+                  Enterprise-Grade Authentication
                 </span>
               </div>
             </div>
 
-            {/* Sign In / Demo Tabs */}
-            <div className="mb-8">
-              <div className="flex rounded-xl card-glass border border-border p-1">
-                <button className="flex-1 py-2.5 px-4 rounded-lg bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-sm font-medium text-white">
-                  Sign In
-                </button>
-                <button
-                  onClick={() =>
-                    document.getElementById('demo-section')?.scrollIntoView({ behavior: 'smooth' })
-                  }
-                  className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium ink-muted hover:text-white hover:bg-white/5 transition-all"
-                >
-                  Try Demo
-                </button>
-              </div>
-            </div>
-
-            {/* Enhanced Glassmorphic login card */}
-            <div className="relative group mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-2xl blur-2xl group-hover:from-indigo-500/20 group-hover:to-purple-500/20 transition-all" />
-              <Card className="relative card-glass backdrop-blur-xl border border-indigo-500/20 shadow-2xl">
+            {/* Enhanced Glassmorphic login card with animations */}
+            <div className="relative group mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-150">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-2xl blur-2xl group-hover:from-indigo-500/20 group-hover:to-purple-500/20 transition-all duration-500" />
+              <Card className="relative card-glass backdrop-blur-xl border border-indigo-500/20 shadow-2xl hover:shadow-indigo-500/10 transition-shadow duration-500">
                 <CardHeader className="text-center pb-4 pt-8">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                     <Lock className="w-8 h-8 text-white" />
@@ -326,6 +369,34 @@ function LoginForm() {
                         </Link>
                       </span>
                     </div>
+
+                    {/* Demo Login Button */}
+                    <div className="relative mt-8 pt-6 border-t border-border">
+                      <div className="text-center mb-4">
+                        <span className="text-xs ink-muted uppercase tracking-wider">Quick Access</span>
+                      </div>
+                      <button
+                        onClick={handleDemoLogin}
+                        disabled={isLoading}
+                        className="w-full h-12 rounded-xl border-2 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
+                      >
+                        {isLoading && email === 'demo@heraerp.com' ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>Logging in as Demo...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-lg">🚀</span>
+                            <span>Login as Demo User</span>
+                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </>
+                        )}
+                      </button>
+                      <p className="text-xs text-center ink-muted mt-2">
+                        Explore HERA with full access • No signup required
+                      </p>
+                    </div>
                   </form>
                 </CardContent>
               </Card>
@@ -381,30 +452,8 @@ function LoginForm() {
               </div>
             )}
 
-            {/* Enhanced Demo Section */}
-            <div id="demo-section" className="mt-16 mb-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 mb-4">
-                  <span className="text-emerald-400 text-sm font-medium">🎮 Interactive Demos</span>
-                </div>
-                <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-3">
-                  Experience HERA
-                </h2>
-                <p className="text-base ink-muted max-w-md mx-auto">
-                  Explore fully-functional industry solutions with sample data. No signup required.
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-cyan-500/5 rounded-2xl blur-xl" />
-                <div className="relative card-glass rounded-2xl p-6 border border-emerald-500/20">
-                  <DemoModuleSelector />
-                </div>
-              </div>
-            </div>
-
             {/* Enhanced Enterprise features */}
-            <div className="mt-12 mb-8">
+            <div className="mt-12 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl blur-xl group-hover:from-blue-500/20 group-hover:to-cyan-500/20 transition-all" />
