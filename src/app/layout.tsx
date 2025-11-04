@@ -9,6 +9,7 @@ import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
 import { ToastProvider } from '@/components/ui/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'
+import { GlobalLoadingOverlay } from '@/components/salon/shared/GlobalLoadingOverlay'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
 import '@/styles/radix-overrides.css' // Radix UI global overrides for HERA modals
@@ -84,7 +85,7 @@ export default function RootLayout({
                   "/contact", "/partners", "/solutions", "/features",
                   "/terms", "/policy", "/whatsapp-desktop", "/discover",
                   "/how-it-works", "/pricing", "/get-started", "/book-a-meeting",
-                  "/about", "/auth/login"
+                  "/about", "/auth/login", "/auth/organizations"
                 ];
 
               const pathname = window.location.pathname;
@@ -162,6 +163,7 @@ export default function RootLayout({
                   {children}
                   <Toaster />
                   <CookieBanner />
+                  <GlobalLoadingOverlay />
                 </ToastProvider>
               </HERAAuthProvider>
             </QueryProvider>

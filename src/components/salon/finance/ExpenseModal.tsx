@@ -77,13 +77,18 @@ const PAYMENT_STATUSES = [
   { value: 'cancelled', label: 'Cancelled' }
 ]
 
+// ✅ Updated to match transaction-based expense format
 export interface ExpenseEntity {
   id: string
-  entity_name: string
+  entity_name?: string  // For backward compat (will map to transaction_code or metadata.notes)
+  transaction_code?: string  // NEW: Transaction code
+  transaction_date?: string  // NEW: Transaction date
   vendor?: string
   amount?: number
+  total_amount?: number  // NEW: Transaction total
   expense_date?: string
-  category?: string
+  expense_category?: string  // NEW: Category in metadata
+  category?: string  // For backward compat
   payment_method?: string
   status?: string
   description?: string
@@ -122,13 +127,13 @@ export function ExpenseModal({ open, onClose, expense, onSave }: ExpenseModalPro
   useEffect(() => {
     if (expense) {
       form.reset({
-        name: expense.entity_name || '',
+        name: expense.entity_name || expense.transaction_code || '',
         vendor: expense.vendor || '',
-        amount: expense.amount || undefined,
-        expense_date: expense.expense_date
-          ? new Date(expense.expense_date).toISOString().split('T')[0]
+        amount: expense.amount || expense.total_amount || undefined,
+        expense_date: (expense.expense_date || expense.transaction_date)
+          ? new Date(expense.expense_date || expense.transaction_date!).toISOString().split('T')[0]
           : new Date().toISOString().split('T')[0],
-        category: expense.category || '',
+        category: expense.category || expense.expense_category || '',
         payment_method: expense.payment_method || 'Cash',
         status: expense.status || 'pending',
         description: expense.description || '',

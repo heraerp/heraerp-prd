@@ -97,9 +97,9 @@ export default function SalonAppointmentsCalendarPage() {
   ]
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--hera-black)' }}>
+    <div style={{ backgroundColor: 'var(--hera-black)' }}>
       {/* Main content wrapper with charcoal background for depth */}
-      <div className="relative" style={{ minHeight: '100vh' }}>
+      <div className="relative">
         {/* Subtle gradient overlay for depth - matching dashboard */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -115,7 +115,6 @@ export default function SalonAppointmentsCalendarPage() {
           className="relative"
           style={{
             backgroundColor: '#1A1A1A',
-            minHeight: '100vh',
             boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
           }}
         >

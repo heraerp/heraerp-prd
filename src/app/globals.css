@@ -49,6 +49,16 @@
   scrollbar-color: rgba(212, 175, 55, 0.4) #232323;
 }
 
+/* Hide scrollbar utility for horizontal scroll containers */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
 /* Animation utilities for ISP module */
 @layer utilities {
   .animate-reverse {
@@ -70,6 +80,81 @@
   100% {
     transform: translateX(100%);
   }
+}
+
+/* HERA Theme - Public Page Animations */
+@keyframes hera-gradient-flow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  33% {
+    opacity: 0.5;
+    transform: scale(1.1) rotate(5deg);
+  }
+  66% {
+    opacity: 0.4;
+    transform: scale(0.95) rotate(-5deg);
+  }
+}
+
+@keyframes hera-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes hera-pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+  }
+}
+
+@keyframes hera-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes hera-gradient-shift {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* HERA Animation Utilities */
+.animate-hera-gradient-flow {
+  animation: hera-gradient-flow 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-hera-shimmer {
+  animation: hera-shimmer 2s linear infinite;
+}
+
+.animate-hera-pulse-glow {
+  animation: hera-pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-hera-float {
+  animation: hera-float 3s ease-in-out infinite;
+}
+
+.animate-hera-gradient-shift {
+  animation: hera-gradient-shift 20s ease-in-out infinite;
 }
 
 @layer utilities {

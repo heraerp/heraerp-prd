@@ -22,7 +22,9 @@ import {
   ChevronDown,
   ChevronUp,
   Edit2,
-  Trash2
+  Trash2,
+  Plus,
+  DollarSign
 } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import {
@@ -37,7 +39,13 @@ import { useMonthlySalesReport } from '@/hooks/useSalonSalesReports'
 import { useQuarterlyVATReport } from '@/hooks/useQuarterlyVATReport'
 import type { VATPeriodSelection } from '@/hooks/useQuarterlyVATReport'
 import { useHeraExpenses } from '@/hooks/useHeraExpenses'
+import { useCashFlow, useOpeningBalance } from '@/hooks/useCashFlow'
+import { useHeraPayroll } from '@/hooks/useHeraPayroll'
+import { useHeraInvoice } from '@/hooks/useHeraInvoice'
 import { ExpenseModal } from '@/components/salon/finance/ExpenseModal'
+import { PayrollModal } from '@/components/salon/finance/PayrollModal'
+import { InvoiceModal } from '@/components/salon/finance/InvoiceModal'
+import { InvoicePaymentModal } from '@/components/salon/finance/InvoicePaymentModal'
 import { VATPeriodSelector } from '@/components/salon/reports/VATPeriodSelector'
 import { startOfMonth, endOfMonth } from 'date-fns'
 
@@ -132,7 +140,7 @@ export default function FinanceTabs({
     }
   })
 
-  // ✅ Calculate real expense breakdown by category
+  // ✅ Calculate real expense breakdown by category (FROM TRANSACTIONS)
   const expenseBreakdown = useMemo(() => {
     if (!realExpenses || realExpenses.length === 0) {
       // Fallback to estimates if no expenses recorded
@@ -147,7 +155,7 @@ export default function FinanceTabs({
       }
     }
 
-    // Calculate from real expense data
+    // Calculate from real expense data (transaction-based)
     const breakdown: Record<string, number> = {
       staffSalaries: 0,
       rentUtilities: 0,
@@ -159,8 +167,10 @@ export default function FinanceTabs({
     }
 
     realExpenses.forEach(expense => {
-      const amount = expense.amount || 0
-      const category = expense.category || 'Other'
+      // ✅ Use total_amount from transactions (not amount from entities)
+      const amount = expense.total_amount || expense.amount || 0
+      // ✅ Use expense_category from transaction metadata
+      const category = expense.expense_category || expense.category || 'Other'
 
       // Map expense categories to P&L categories
       if (category === 'Salaries') {
@@ -625,55 +635,81 @@ export default function FinanceTabs({
         </div>
       </div>
 
-      {/* Tab Navigation - Mobile Horizontal Scroll */}
-      <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
-        <TabButton
-          label="Overview"
-          icon={PieChart}
-          active={activeTab === 'overview'}
-          onClick={() => setActiveTab('overview')}
+      {/* Tab Navigation - Mobile Horizontal Scroll with Fade Edges */}
+      <div className="relative -mx-4 md:mx-0">
+        {/* Left fade */}
+        <div
+          className="absolute left-0 top-0 bottom-2 w-8 z-10 pointer-events-none md:hidden"
+          style={{
+            background: `linear-gradient(to right, ${SALON_LUXE_COLORS.charcoal.dark} 0%, transparent 100%)`
+          }}
         />
-        <TabButton
-          label="P&L Report"
-          icon={BarChart3}
-          active={activeTab === 'pnl'}
-          onClick={() => setActiveTab('pnl')}
-        />
-        <TabButton
-          label="VAT Reports"
-          icon={Clipboard}
-          active={activeTab === 'vat'}
-          onClick={() => setActiveTab('vat')}
-        />
-        <TabButton
-          label="Expenses"
-          icon={Receipt}
-          active={activeTab === 'expenses'}
-          onClick={() => setActiveTab('expenses')}
-        />
-        <TabButton
-          label="Invoices"
-          icon={FileText}
-          active={activeTab === 'invoices'}
-          onClick={() => setActiveTab('invoices')}
-        />
-        <TabButton
-          label="Cash Flow"
-          icon={LineChart}
-          active={activeTab === 'cashflow'}
-          onClick={() => setActiveTab('cashflow')}
-        />
-        <TabButton
-          label="Payroll"
-          icon={Users}
-          active={activeTab === 'payroll'}
-          onClick={() => setActiveTab('payroll')}
-        />
-        <TabButton
-          label="Transactions"
-          icon={CreditCard}
-          active={activeTab === 'transactions'}
-          onClick={() => setActiveTab('transactions')}
+
+        {/* Tab container with horizontal scroll */}
+        <div
+          className="flex gap-2 overflow-x-auto pb-2 px-4 md:px-0 scrollbar-hide snap-x snap-mandatory scroll-smooth"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
+          <TabButton
+            label="Overview"
+            icon={PieChart}
+            active={activeTab === 'overview'}
+            onClick={() => setActiveTab('overview')}
+          />
+          <TabButton
+            label="P&L Report"
+            icon={BarChart3}
+            active={activeTab === 'pnl'}
+            onClick={() => setActiveTab('pnl')}
+          />
+          <TabButton
+            label="VAT Reports"
+            icon={Clipboard}
+            active={activeTab === 'vat'}
+            onClick={() => setActiveTab('vat')}
+          />
+          <TabButton
+            label="Expenses"
+            icon={Receipt}
+            active={activeTab === 'expenses'}
+            onClick={() => setActiveTab('expenses')}
+          />
+          <TabButton
+            label="Invoices"
+            icon={FileText}
+            active={activeTab === 'invoices'}
+            onClick={() => setActiveTab('invoices')}
+          />
+          <TabButton
+            label="Cash Flow"
+            icon={LineChart}
+            active={activeTab === 'cashflow'}
+            onClick={() => setActiveTab('cashflow')}
+          />
+          <TabButton
+            label="Payroll"
+            icon={Users}
+            active={activeTab === 'payroll'}
+            onClick={() => setActiveTab('payroll')}
+          />
+          <TabButton
+            label="Transactions"
+            icon={CreditCard}
+            active={activeTab === 'transactions'}
+            onClick={() => setActiveTab('transactions')}
+          />
+        </div>
+
+        {/* Right fade */}
+        <div
+          className="absolute right-0 top-0 bottom-2 w-8 z-10 pointer-events-none md:hidden"
+          style={{
+            background: `linear-gradient(to left, ${SALON_LUXE_COLORS.charcoal.dark} 0%, transparent 100%)`
+          }}
         />
       </div>
 
@@ -722,6 +758,7 @@ export default function FinanceTabs({
 
         {activeTab === 'invoices' && (
           <InvoicesTab
+            organizationId={organizationId}
             isLoading={isLoading}
             selectedMonth={selectedMonth}
             selectedYear={selectedYear}
@@ -730,7 +767,7 @@ export default function FinanceTabs({
 
         {activeTab === 'cashflow' && (
           <CashFlowTab
-            salesSummary={salesSummary}
+            organizationId={organizationId}
             isLoading={isLoading}
             selectedMonth={selectedMonth}
             selectedYear={selectedYear}
@@ -739,6 +776,7 @@ export default function FinanceTabs({
 
         {activeTab === 'payroll' && (
           <PayrollTab
+            organizationId={organizationId}
             dimensionalBreakdown={dimensionalBreakdown}
             isLoading={isLoading}
             selectedMonth={selectedMonth}
@@ -773,7 +811,7 @@ interface TabButtonProps {
 function TabButton({ label, icon: Icon, active, onClick }: TabButtonProps) {
   return (
     <button
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap min-h-[44px] active:scale-95 ${
+      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap min-h-[44px] active:scale-95 snap-start flex-shrink-0 ${
         active ? 'scale-105' : ''
       }`}
       style={{
@@ -1637,6 +1675,11 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
 }
 
 function ExpenseRow({ expense, onEdit, onDelete }: any) {
+  // ✅ Support both entity-based and transaction-based expenses
+  const amount = expense.total_amount || expense.amount || 0
+  const expenseDate = expense.transaction_date || expense.expense_date
+  const category = expense.expense_category || expense.category || 'Uncategorized'
+
   return (
     <div
       className="p-3 md:p-4 rounded-lg border flex flex-col md:flex-row md:items-center justify-between gap-3 group"
@@ -1648,7 +1691,7 @@ function ExpenseRow({ expense, onEdit, onDelete }: any) {
       <div className="flex-1">
         <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>{expense.vendor || 'Unknown Vendor'}</p>
         <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-          {expense.expense_date ? new Date(expense.expense_date).toLocaleDateString() : 'No date'} • {expense.category || 'Uncategorized'}
+          {expenseDate ? new Date(expenseDate).toLocaleDateString() : 'No date'} • {category}
         </p>
         {expense.description && (
           <p className="text-xs mt-1 opacity-70" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
@@ -1678,7 +1721,7 @@ function ExpenseRow({ expense, onEdit, onDelete }: any) {
           {expense.status || 'pending'}
         </span>
         <span className="font-medium" style={{ color: SALON_LUXE_COLORS.ruby.base }}>
-          AED {(expense.amount || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          AED {amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
         </span>
         {/* ✅ ENTERPRISE-GRADE ACTION BUTTONS: Always visible, clear icons, mobile-friendly */}
         <div className="flex gap-2">
@@ -1717,39 +1760,467 @@ function ExpenseRow({ expense, onEdit, onDelete }: any) {
 // ============================================================================
 
 interface InvoicesTabProps {
+  organizationId?: string
   isLoading: boolean
   selectedMonth: number
   selectedYear: number
 }
 
-function InvoicesTab({ isLoading, selectedMonth, selectedYear }: InvoicesTabProps) {
-  if (isLoading) return <LoadingCard />
+function InvoicesTab({ organizationId, isLoading: parentLoading, selectedMonth, selectedYear }: InvoicesTabProps) {
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [selectedInvoice, setSelectedInvoice] = useState<any>(null)
+
+  // ✅ Use real invoice hook with GL data
+  const { invoiceSummary, isLoading: invoiceLoading, refetch } = useHeraInvoice({
+    organizationId,
+    month: selectedMonth,
+    year: selectedYear
+  })
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ]
 
+  const isLoading = parentLoading || invoiceLoading
+
+  if (isLoading) return <LoadingCard />
+
+  const handleRecordPayment = (invoice: any) => {
+    setSelectedInvoice(invoice)
+    setShowPaymentModal(true)
+  }
+
+  return (
+    <>
+      <div
+        className="rounded-xl border p-4 md:p-6"
+        style={{
+          backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+          borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+        }}
+      >
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-xl md:text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+            Invoices & Receivables
+          </h2>
+          {/* ✅ GL Data Badge */}
+          <div
+            className="px-3 py-1 rounded-lg text-xs font-medium"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.emerald.base}20`,
+              color: SALON_LUXE_COLORS.emerald.base
+            }}
+          >
+            Real GL Data
+          </div>
+        </div>
+        <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+          Track invoices and customer payments for {monthNames[selectedMonth - 1]} {selectedYear}
+        </p>
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          {/* Total Invoiced */}
+          <div
+            className="p-4 rounded-lg border"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+              borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <FileText className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.bronze.base }} />
+              <span className="text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                Total Invoiced
+              </span>
+            </div>
+            <div className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              AED {invoiceSummary.total_invoiced.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </div>
+            <div className="text-xs mt-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              {invoiceSummary.invoice_count} invoices
+            </div>
+          </div>
+
+          {/* Total Paid */}
+          <div
+            className="p-4 rounded-lg border"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+              borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.emerald.base }} />
+              <span className="text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                Paid
+              </span>
+            </div>
+            <div className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+              AED {invoiceSummary.total_paid.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </div>
+            <div className="text-xs mt-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              {invoiceSummary.paid_count} paid
+            </div>
+          </div>
+
+          {/* Total Outstanding */}
+          <div
+            className="p-4 rounded-lg border"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+              borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.orange.base }} />
+              <span className="text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                Outstanding
+              </span>
+            </div>
+            <div className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.orange.base }}>
+              AED {invoiceSummary.total_outstanding.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </div>
+            <div className="text-xs mt-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              {invoiceSummary.invoice_count - invoiceSummary.paid_count} unpaid
+            </div>
+          </div>
+
+          {/* Overdue Count */}
+          <div
+            className="p-4 rounded-lg border"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+              borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <AlertCircle className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.ruby.base }} />
+              <span className="text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                Overdue
+              </span>
+            </div>
+            <div className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.ruby.base }}>
+              {invoiceSummary.overdue_count}
+            </div>
+            <div className="text-xs mt-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              requiring attention
+            </div>
+          </div>
+        </div>
+
+        {/* Aging Analysis */}
+        <div
+          className="p-4 rounded-lg border mb-6"
+          style={{
+            backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+            borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+          }}
+        >
+          <h3 className="text-lg font-semibold mb-4" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+            Aging Analysis
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <AgingBucket label="Current" amount={invoiceSummary.aging_current} color="emerald" />
+            <AgingBucket label="1-30 Days" amount={invoiceSummary.aging_1_30} color="blue" />
+            <AgingBucket label="31-60 Days" amount={invoiceSummary.aging_31_60} color="yellow" />
+            <AgingBucket label="61-90 Days" amount={invoiceSummary.aging_61_90} color="orange" />
+            <AgingBucket label="90+ Days" amount={invoiceSummary.aging_90_plus} color="ruby" />
+          </div>
+        </div>
+
+        {/* Create Invoice Button */}
+        <div className="mb-6">
+          <button
+            onClick={() => setShowInvoiceModal(true)}
+            className="w-full md:w-auto px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 min-h-[48px] active:scale-95 transition-transform"
+            style={{
+              background: `linear-gradient(to right, ${SALON_LUXE_COLORS.gold.base}, ${SALON_LUXE_COLORS.champagne.base})`,
+              color: '#000'
+            }}
+          >
+            <Plus className="w-5 h-5" />
+            Create Invoice
+          </button>
+        </div>
+
+        {/* Invoice List - Desktop Table */}
+        <div className="hidden md:block">
+          <div
+            className="rounded-lg border overflow-hidden"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+              borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+            }}
+          >
+            <table className="w-full">
+              <thead>
+                <tr style={{ backgroundColor: `${SALON_LUXE_COLORS.bronze.base}10` }}>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                    Invoice #
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                    Customer
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                    Date
+                  </th>
+                  <th className="text-right px-4 py-3 text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                    Amount
+                  </th>
+                  <th className="text-right px-4 py-3 text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                    Outstanding
+                  </th>
+                  <th className="text-center px-4 py-3 text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                    Status
+                  </th>
+                  <th className="text-center px-4 py-3 text-xs uppercase tracking-wider" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {invoiceSummary.invoices.length > 0 ? (
+                  invoiceSummary.invoices.map((invoice, index) => (
+                    <InvoiceRow
+                      key={invoice.invoice_id}
+                      invoice={invoice}
+                      onRecordPayment={handleRecordPayment}
+                    />
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="text-center py-8">
+                      <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" style={{ color: SALON_LUXE_COLORS.bronze.base }} />
+                      <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>No invoices found</p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Invoice List - Mobile Cards */}
+        <div className="md:hidden space-y-3">
+          {invoiceSummary.invoices.length > 0 ? (
+            invoiceSummary.invoices.map((invoice) => (
+              <InvoiceCard
+                key={invoice.invoice_id}
+                invoice={invoice}
+                onRecordPayment={handleRecordPayment}
+              />
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" style={{ color: SALON_LUXE_COLORS.bronze.base }} />
+              <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>No invoices found</p>
+            </div>
+          )}
+        </div>
+
+        {/* Transaction Counts */}
+        <div className="mt-6 flex items-center gap-4 text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+          <div className="flex items-center gap-2">
+            <Receipt className="w-4 h-4" />
+            <span>{invoiceSummary.invoice_count} invoices</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4" />
+            <span>{invoiceSummary.paid_count} paid</span>
+          </div>
+        </div>
+      </div>
+
+      <InvoiceModal
+        isOpen={showInvoiceModal}
+        onClose={() => setShowInvoiceModal(false)}
+        onSuccess={() => {
+          refetch()
+          setShowInvoiceModal(false)
+        }}
+      />
+
+      {selectedInvoice && (
+        <InvoicePaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => {
+            setShowPaymentModal(false)
+            setSelectedInvoice(null)
+          }}
+          onSuccess={() => {
+            refetch()
+            setShowPaymentModal(false)
+            setSelectedInvoice(null)
+          }}
+          invoice={selectedInvoice}
+        />
+      )}
+    </>
+  )
+}
+
+function AgingBucket({ label, amount, color }: { label: string; amount: number; color: string }) {
+  const colorMap: any = {
+    emerald: SALON_LUXE_COLORS.emerald.base,
+    blue: '#3B82F6',
+    yellow: '#EAB308',
+    orange: SALON_LUXE_COLORS.orange.base,
+    ruby: SALON_LUXE_COLORS.ruby.base
+  }
+
+  return (
+    <div className="text-center">
+      <div className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+        {label}
+      </div>
+      <div className="text-lg font-bold" style={{ color: colorMap[color] }}>
+        AED {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+      </div>
+    </div>
+  )
+}
+
+function InvoiceRow({ invoice, onRecordPayment }: any) {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'PAID':
+        return SALON_LUXE_COLORS.emerald.base
+      case 'SENT':
+        return '#3B82F6'
+      case 'OVERDUE':
+        return SALON_LUXE_COLORS.ruby.base
+      case 'PARTIAL':
+        return '#EAB308'
+      default:
+        return SALON_LUXE_COLORS.bronze.base
+    }
+  }
+
+  return (
+    <tr style={{ borderBottom: `1px solid ${SALON_LUXE_COLORS.bronze.base}30` }}>
+      <td className="px-4 py-3" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+        {invoice.invoice_number}
+      </td>
+      <td className="px-4 py-3" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+        {invoice.customer_name}
+      </td>
+      <td className="px-4 py-3" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+        {new Date(invoice.invoice_date).toLocaleDateString()}
+      </td>
+      <td className="px-4 py-3 text-right" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+        {invoice.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+      </td>
+      <td className="px-4 py-3 text-right font-semibold" style={{ color: SALON_LUXE_COLORS.orange.base }}>
+        {invoice.amount_outstanding.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+      </td>
+      <td className="px-4 py-3 text-center">
+        <span
+          className="px-2 py-1 rounded text-xs font-medium"
+          style={{
+            backgroundColor: `${getStatusColor(invoice.status)}20`,
+            color: getStatusColor(invoice.status)
+          }}
+        >
+          {invoice.status}
+        </span>
+      </td>
+      <td className="px-4 py-3 text-center">
+        {invoice.status !== 'PAID' && (
+          <button
+            onClick={() => onRecordPayment(invoice)}
+            className="px-3 py-1 rounded-lg text-xs font-medium active:scale-95 transition-transform"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.gold.base}20`,
+              color: SALON_LUXE_COLORS.gold.base
+            }}
+          >
+            Record Payment
+          </button>
+        )}
+      </td>
+    </tr>
+  )
+}
+
+function InvoiceCard({ invoice, onRecordPayment }: any) {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'PAID':
+        return SALON_LUXE_COLORS.emerald.base
+      case 'SENT':
+        return '#3B82F6'
+      case 'OVERDUE':
+        return SALON_LUXE_COLORS.ruby.base
+      case 'PARTIAL':
+        return '#EAB308'
+      default:
+        return SALON_LUXE_COLORS.bronze.base
+    }
+  }
+
   return (
     <div
-      className="rounded-xl border p-4 md:p-6"
+      className="p-4 rounded-lg border"
       style={{
         backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
-      <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
-        Invoices
-      </h2>
-      <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
-        {monthNames[selectedMonth - 1]} {selectedYear}
-      </p>
-      <div className="text-center py-8">
-        <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: SALON_LUXE_COLORS.bronze.base }} />
-        <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-          Invoice management coming soon
-        </p>
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <div className="font-semibold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+            {invoice.invoice_number}
+          </div>
+          <div className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+            {invoice.customer_name}
+          </div>
+        </div>
+        <span
+          className="px-2 py-1 rounded text-xs font-medium"
+          style={{
+            backgroundColor: `${getStatusColor(invoice.status)}20`,
+            color: getStatusColor(invoice.status)
+          }}
+        >
+          {invoice.status}
+        </span>
       </div>
+
+      <div className="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <div className="text-xs" style={{ color: SALON_LUXE_COLORS.bronze.base }}>Total</div>
+          <div className="font-semibold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+            AED {invoice.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs" style={{ color: SALON_LUXE_COLORS.bronze.base }}>Outstanding</div>
+          <div className="font-semibold" style={{ color: SALON_LUXE_COLORS.orange.base }}>
+            AED {invoice.amount_outstanding.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          </div>
+        </div>
+      </div>
+
+      <div className="text-xs mb-3" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+        Date: {new Date(invoice.invoice_date).toLocaleDateString()} | Due: {new Date(invoice.due_date).toLocaleDateString()}
+      </div>
+
+      {invoice.status !== 'PAID' && (
+        <button
+          onClick={() => onRecordPayment(invoice)}
+          className="w-full min-h-[44px] px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 active:scale-95 transition-transform"
+          style={{
+            backgroundColor: `${SALON_LUXE_COLORS.gold.base}20`,
+            color: SALON_LUXE_COLORS.gold.base
+          }}
+        >
+          <DollarSign className="w-4 h-4" />
+          Record Payment
+        </button>
+      )}
     </div>
   )
 }
@@ -1759,23 +2230,36 @@ function InvoicesTab({ isLoading, selectedMonth, selectedYear }: InvoicesTabProp
 // ============================================================================
 
 interface CashFlowTabProps {
-  salesSummary: any
+  organizationId?: string
   isLoading: boolean
   selectedMonth: number
   selectedYear: number
 }
 
-function CashFlowTab({ salesSummary, isLoading, selectedMonth, selectedYear }: CashFlowTabProps) {
+function CashFlowTab({ organizationId, isLoading: parentLoading, selectedMonth, selectedYear }: CashFlowTabProps) {
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ]
-  if (isLoading) return <LoadingCard />
 
-  const cashInflows = salesSummary?.total_gross || 0
-  const cashOutflows = cashInflows * 0.6 // Estimate
-  const openingBalance = 45000
-  const closingBalance = openingBalance + cashInflows - cashOutflows
+  // ✅ Get opening balance from previous period's closing balance
+  const { openingBalance, isLoading: openingBalanceLoading } = useOpeningBalance({
+    organizationId,
+    month: selectedMonth,
+    year: selectedYear
+  })
+
+  // ✅ Use real cash flow hook with GL data (no more estimates!)
+  const { cashFlow, isLoading: cashFlowLoading } = useCashFlow({
+    organizationId,
+    month: selectedMonth,
+    year: selectedYear,
+    openingBalance: openingBalance  // ✅ Automatic from previous period!
+  })
+
+  const isLoading = parentLoading || cashFlowLoading || openingBalanceLoading
+
+  if (isLoading) return <LoadingCard />
 
   return (
     <div
@@ -1785,38 +2269,155 @@ function CashFlowTab({ salesSummary, isLoading, selectedMonth, selectedYear }: C
         borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
       }}
     >
-      <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
-        Cash Flow Statement
-      </h2>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-xl md:text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+          Cash Flow Statement
+        </h2>
+        {/* ✅ GL Data Badge */}
+        <div
+          className="px-3 py-1 rounded-lg text-xs font-medium"
+          style={{
+            backgroundColor: `${SALON_LUXE_COLORS.emerald.base}20`,
+            color: SALON_LUXE_COLORS.emerald.base
+          }}
+        >
+          Real GL Data
+        </div>
+      </div>
       <p className="text-sm mb-6" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
         Monitor cash inflows and outflows for {monthNames[selectedMonth - 1]} {selectedYear}
       </p>
 
+      {/* Main Cash Flow Summary */}
       <div
-        className="p-4 rounded-lg border space-y-3"
+        className="p-4 rounded-lg border space-y-3 mb-6"
         style={{
           backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
           borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
         }}
       >
-        <CashFlowRow label="Opening Balance" amount={openingBalance} />
+        <CashFlowRow label="Opening Balance" amount={cashFlow.opening_balance} />
         <CashFlowRow
           label="Cash Inflows"
-          amount={cashInflows}
+          amount={cashFlow.total_inflows}
           positive
           icon={<ArrowUpRight className="w-4 h-4" />}
         />
         <CashFlowRow
           label="Cash Outflows"
-          amount={cashOutflows}
+          amount={cashFlow.total_outflows}
           negative
           icon={<ArrowDownRight className="w-4 h-4" />}
+        />
+        <CashFlowRow
+          label="Net Cash Flow"
+          amount={cashFlow.net_cash_flow}
+          highlight={false}
+          positive={cashFlow.net_cash_flow >= 0}
+          negative={cashFlow.net_cash_flow < 0}
         />
         <div
           className="border-t pt-3"
           style={{ borderColor: `${SALON_LUXE_COLORS.bronze.base}30` }}
         >
-          <CashFlowRow label="Closing Balance" amount={closingBalance} highlight />
+          <CashFlowRow label="Closing Balance" amount={cashFlow.closing_balance} highlight />
+        </div>
+      </div>
+
+      {/* Detailed Breakdown */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Inflows Breakdown */}
+        <div>
+          <h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+            <ArrowUpRight className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.emerald.base }} />
+            Cash Inflows Breakdown
+          </h3>
+          <div className="space-y-2">
+            {cashFlow.inflow_from_sales > 0 && (
+              <BreakdownRow
+                label="Cash Sales"
+                icon={Receipt}
+                amount={cashFlow.inflow_from_sales}
+              />
+            )}
+            {cashFlow.inflow_from_card > 0 && (
+              <BreakdownRow
+                label="Card Payments"
+                icon={CreditCard}
+                amount={cashFlow.inflow_from_card}
+              />
+            )}
+            {cashFlow.inflow_from_bank > 0 && (
+              <BreakdownRow
+                label="Bank Transfers"
+                icon={LineChart}
+                amount={cashFlow.inflow_from_bank}
+              />
+            )}
+            {cashFlow.inflow_from_other > 0 && (
+              <BreakdownRow
+                label="Other Inflows"
+                icon={ArrowUpRight}
+                amount={cashFlow.inflow_from_other}
+              />
+            )}
+          </div>
+          <div
+            className="mt-2 p-2 rounded text-xs"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.emerald.base}10`,
+              color: SALON_LUXE_COLORS.bronze.base
+            }}
+          >
+            {cashFlow.inflow_transaction_count} transactions
+          </div>
+        </div>
+
+        {/* Outflows Breakdown */}
+        <div>
+          <h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+            <ArrowDownRight className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.ruby.base }} />
+            Cash Outflows Breakdown
+          </h3>
+          <div className="space-y-2">
+            {cashFlow.outflow_for_expenses > 0 && (
+              <BreakdownRow
+                label="Operating Expenses"
+                icon={Receipt}
+                amount={cashFlow.outflow_for_expenses}
+              />
+            )}
+            {cashFlow.outflow_for_salaries > 0 && (
+              <BreakdownRow
+                label="Salaries & Wages"
+                icon={Users}
+                amount={cashFlow.outflow_for_salaries}
+              />
+            )}
+            {cashFlow.outflow_for_tips > 0 && (
+              <BreakdownRow
+                label="Tips Paid"
+                icon={Users}
+                amount={cashFlow.outflow_for_tips}
+              />
+            )}
+            {cashFlow.outflow_for_other > 0 && (
+              <BreakdownRow
+                label="Other Outflows"
+                icon={ArrowDownRight}
+                amount={cashFlow.outflow_for_other}
+              />
+            )}
+          </div>
+          <div
+            className="mt-2 p-2 rounded text-xs"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.ruby.base}10`,
+              color: SALON_LUXE_COLORS.bronze.base
+            }}
+          >
+            {cashFlow.outflow_transaction_count} transactions
+          </div>
         </div>
       </div>
     </div>
@@ -1850,86 +2451,348 @@ function CashFlowRow({ label, amount, positive, negative, icon, highlight }: any
 // ============================================================================
 
 interface PayrollTabProps {
+  organizationId?: string
   dimensionalBreakdown: any
   isLoading: boolean
   selectedMonth: number
   selectedYear: number
 }
 
-function PayrollTab({ dimensionalBreakdown, isLoading, selectedMonth, selectedYear }: PayrollTabProps) {
-  if (isLoading) return <LoadingCard />
+function PayrollTab({ organizationId, dimensionalBreakdown, isLoading: parentLoading, selectedMonth, selectedYear }: PayrollTabProps) {
+  const [showPayrollModal, setShowPayrollModal] = useState(false)
+
+  // ✅ Use real payroll hook with GL data
+  const { payrollSummary, isLoading: payrollLoading, refetch } = useHeraPayroll({
+    organizationId,
+    month: selectedMonth,
+    year: selectedYear
+  })
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ]
 
-  // Extract tips by staff from dimensional breakdown
+  // Extract tips by staff from dimensional breakdown (for display alongside salaries)
   const staffTips = dimensionalBreakdown?.tips_by_staff || []
 
-  return (
-    <div
-      className="rounded-xl border p-4 md:p-6"
-      style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
-        borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
-      }}
-    >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold mb-1" style={{ color: SALON_LUXE_COLORS.gold.base }}>
-            Payroll Management
-          </h2>
-          <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
-            Staff salaries and commission tracking for {monthNames[selectedMonth - 1]} {selectedYear}
-          </p>
-        </div>
-        <button
-          className="px-4 py-2 rounded-lg text-sm min-h-[44px] active:scale-95 transition-transform self-start md:self-auto"
-          style={{
-            backgroundColor: SALON_LUXE_COLORS.gold.base,
-            color: SALON_LUXE_COLORS.charcoal.dark
-          }}
-        >
-          <Users className="w-4 h-4 inline mr-2" />
-          Calculate Payroll
-        </button>
-      </div>
+  // Combine salary and tips data for complete staff view
+  const combinedStaffData = useMemo(() => {
+    const staffMap = new Map()
 
-      {staffTips.length > 0 ? (
-        <div className="space-y-2">
-          {staffTips.map((staff: any, idx: number) => (
-            <div
-              key={idx}
-              className="p-3 rounded-lg border flex justify-between items-center"
+    // Add salary data
+    payrollSummary.staff_payroll.forEach(staff => {
+      staffMap.set(staff.staff_entity_id, {
+        staff_entity_id: staff.staff_entity_id,
+        staff_name: staff.staff_name,
+        gross_salary: staff.gross_salary,
+        tax_withheld: staff.tax_withheld,
+        net_salary: staff.net_salary,
+        tips_collected: 0, // Will be filled from staffTips
+        tips_paid: staff.tips_paid
+      })
+    })
+
+    // Add tips collected data
+    staffTips.forEach((tip: any) => {
+      if (staffMap.has(tip.staff_id)) {
+        const existing = staffMap.get(tip.staff_id)
+        existing.tips_collected = tip.tip_amount
+      } else {
+        // Staff with tips only (no salary this period)
+        staffMap.set(tip.staff_id, {
+          staff_entity_id: tip.staff_id,
+          staff_name: tip.staff_name || `Staff ${tip.staff_id.substring(0, 8)}`,
+          gross_salary: 0,
+          tax_withheld: 0,
+          net_salary: 0,
+          tips_collected: tip.tip_amount,
+          tips_paid: 0
+        })
+      }
+    })
+
+    return Array.from(staffMap.values())
+  }, [payrollSummary, staffTips])
+
+  const isLoading = parentLoading || payrollLoading
+
+  if (isLoading) return <LoadingCard />
+
+  return (
+    <>
+      <div
+        className="rounded-xl border p-4 md:p-6"
+        style={{
+          backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+          borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+        }}
+      >
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold mb-1 flex items-center gap-2" style={{ color: SALON_LUXE_COLORS.gold.base }}>
+              Payroll Management
+              {/* ✅ GL Data Badge */}
+              <span
+                className="text-xs px-2 py-1 rounded-full"
+                style={{
+                  backgroundColor: `${SALON_LUXE_COLORS.emerald.base}20`,
+                  color: SALON_LUXE_COLORS.emerald.base
+                }}
+              >
+                Real GL Data
+              </span>
+            </h2>
+            <p className="text-sm" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+              Staff salaries and tips for {monthNames[selectedMonth - 1]} {selectedYear}
+            </p>
+          </div>
+          <button
+            onClick={() => setShowPayrollModal(true)}
+            className="px-4 py-2 rounded-lg text-sm font-medium min-h-[44px] active:scale-95 transition-transform self-start md:self-auto"
+            style={{
+              backgroundColor: SALON_LUXE_COLORS.gold.base,
+              color: SALON_LUXE_COLORS.charcoal.dark
+            }}
+          >
+            <Users className="w-4 h-4 inline mr-2" />
+            Create Payroll
+          </button>
+        </div>
+
+        {/* Payroll Summary Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          {/* Total Gross Salary */}
+          <div
+            className="p-4 rounded-xl"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.gold.base}10`,
+              borderLeft: `4px solid ${SALON_LUXE_COLORS.gold.base}`
+            }}
+          >
+            <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              Gross Salary
+            </p>
+            <p className="text-xl font-bold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              AED {payrollSummary.total_gross_salary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </p>
+          </div>
+
+          {/* Total Tax */}
+          <div
+            className="p-4 rounded-xl"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.ruby.base}10`,
+              borderLeft: `4px solid ${SALON_LUXE_COLORS.ruby.base}`
+            }}
+          >
+            <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              Tax Withheld
+            </p>
+            <p className="text-xl font-bold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              AED {payrollSummary.total_tax_withholding.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </p>
+          </div>
+
+          {/* Total Net Pay */}
+          <div
+            className="p-4 rounded-xl"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.emerald.base}10`,
+              borderLeft: `4px solid ${SALON_LUXE_COLORS.emerald.base}`
+            }}
+          >
+            <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              Net Pay
+            </p>
+            <p className="text-xl font-bold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              AED {payrollSummary.total_net_salary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </p>
+          </div>
+
+          {/* Tips Paid */}
+          <div
+            className="p-4 rounded-xl"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.champagne.base}10`,
+              borderLeft: `4px solid ${SALON_LUXE_COLORS.champagne.base}`
+            }}
+          >
+            <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              Tips Paid
+            </p>
+            <p className="text-xl font-bold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              AED {payrollSummary.total_tips_paid.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </p>
+          </div>
+        </div>
+
+        {/* Staff Breakdown */}
+        {combinedStaffData.length > 0 ? (
+          <div className="space-y-3">
+            <h3 className="text-lg font-medium mb-3 flex items-center gap-2" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              <Users className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+              Staff Breakdown ({combinedStaffData.length})
+            </h3>
+
+            {/* Desktop: Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr
+                    className="border-b"
+                    style={{ borderColor: `${SALON_LUXE_COLORS.bronze.base}30` }}
+                  >
+                    <th className="text-left py-2 px-3 text-sm font-medium" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                      Staff Member
+                    </th>
+                    <th className="text-right py-2 px-3 text-sm font-medium" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                      Gross Salary
+                    </th>
+                    <th className="text-right py-2 px-3 text-sm font-medium" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                      Tax
+                    </th>
+                    <th className="text-right py-2 px-3 text-sm font-medium" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                      Net Pay
+                    </th>
+                    <th className="text-right py-2 px-3 text-sm font-medium" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+                      Tips
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {combinedStaffData.map((staff, idx) => (
+                    <tr
+                      key={idx}
+                      className="border-b"
+                      style={{ borderColor: `${SALON_LUXE_COLORS.bronze.base}20` }}
+                    >
+                      <td className="py-3 px-3" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                        {staff.staff_name}
+                      </td>
+                      <td className="py-3 px-3 text-right" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                        AED {staff.gross_salary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </td>
+                      <td className="py-3 px-3 text-right" style={{ color: SALON_LUXE_COLORS.ruby.base }}>
+                        AED {staff.tax_withheld.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </td>
+                      <td className="py-3 px-3 text-right font-medium" style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+                        AED {staff.net_salary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </td>
+                      <td className="py-3 px-3 text-right" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                        AED {staff.tips_collected.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile: Card View */}
+            <div className="md:hidden space-y-2">
+              {combinedStaffData.map((staff, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 rounded-lg border"
+                  style={{
+                    backgroundColor: SALON_LUXE_COLORS.charcoal.light,
+                    borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+                  }}
+                >
+                  <p className="font-medium mb-3" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                    {staff.staff_name}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>Gross:</p>
+                      <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                        AED {staff.gross_salary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </p>
+                    </div>
+                    <div>
+                      <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>Net:</p>
+                      <p style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+                        AED {staff.net_salary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </p>
+                    </div>
+                    <div>
+                      <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>Tax:</p>
+                      <p style={{ color: SALON_LUXE_COLORS.ruby.base }}>
+                        AED {staff.tax_withheld.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </p>
+                    </div>
+                    <div>
+                      <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>Tips:</p>
+                      <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                        AED {staff.tips_collected.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <Users className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: SALON_LUXE_COLORS.bronze.base }} />
+            <p className="mb-2" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              No payroll data available for this period
+            </p>
+            <button
+              onClick={() => setShowPayrollModal(true)}
+              className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-95"
               style={{
-                backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
-                borderColor: `${SALON_LUXE_COLORS.bronze.base}30`
+                backgroundColor: `${SALON_LUXE_COLORS.gold.base}20`,
+                color: SALON_LUXE_COLORS.gold.base
               }}
             >
-              <div>
-                <p style={{ color: SALON_LUXE_COLORS.champagne.base }}>
-                  {staff.staff_name || `Staff ${staff.staff_id.substring(0, 8)}`}
-                </p>
-                <p className="text-sm" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-                  {staff.service_count} services
-                </p>
-              </div>
-              <span style={{ color: SALON_LUXE_COLORS.emerald.base }}>
-                Tips: AED {staff.tip_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-              </span>
-            </div>
-          ))}
+              Create First Payroll
+            </button>
+          </div>
+        )}
+
+        {/* Transaction Counts */}
+        <div className="grid grid-cols-2 gap-4 mt-6">
+          <div
+            className="p-3 rounded-lg text-center"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.emerald.base}10`
+            }}
+          >
+            <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              Salary Transactions
+            </p>
+            <p className="text-lg font-bold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              {payrollSummary.salary_transaction_count}
+            </p>
+          </div>
+          <div
+            className="p-3 rounded-lg text-center"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.champagne.base}10`
+            }}
+          >
+            <p className="text-xs mb-1" style={{ color: SALON_LUXE_COLORS.bronze.base }}>
+              Tips Transactions
+            </p>
+            <p className="text-lg font-bold" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+              {payrollSummary.tips_transaction_count}
+            </p>
+          </div>
         </div>
-      ) : (
-        <div className="text-center py-8">
-          <Users className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: SALON_LUXE_COLORS.bronze.base }} />
-          <p style={{ color: SALON_LUXE_COLORS.bronze.base }}>
-            No payroll data available for current period
-          </p>
-        </div>
-      )}
-    </div>
+      </div>
+
+      {/* Payroll Modal */}
+      <PayrollModal
+        isOpen={showPayrollModal}
+        onClose={() => setShowPayrollModal(false)}
+        onSuccess={() => {
+          refetch()
+          setShowPayrollModal(false)
+        }}
+      />
+    </>
   )
 }
 

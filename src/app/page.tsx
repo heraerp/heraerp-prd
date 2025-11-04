@@ -15,6 +15,9 @@ import {
   Clock,
   Award
 } from 'lucide-react'
+import { HeraPage } from '@/components/hera/shared/HeraPage'
+import { HeraCard } from '@/components/hera/shared/HeraCard'
+import { HeraButton } from '@/components/hera/shared/HeraButton'
 
 export const metadata: Metadata = {
   title: 'HERA ERP - Enterprise Business Platform That Scales',

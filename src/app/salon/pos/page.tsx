@@ -627,6 +627,17 @@ function POSContent() {
             status: 'completed'
           })
 
+          // 🚀 ENTERPRISE: Set localStorage flag to trigger calendar refresh
+          // This ensures the calendar updates when user navigates back
+          localStorage.setItem('appointment_status_updated', JSON.stringify({
+            appointment_id: ticket.appointment_id,
+            status: 'completed',
+            timestamp: new Date().toISOString(),
+            source: 'pos_payment_complete'
+          }))
+
+          console.log('✅ [POS] Appointment status updated and calendar refresh flag set')
+
           toast({
             title: '✅ Appointment Completed',
             description: 'Appointment status has been updated to completed.',

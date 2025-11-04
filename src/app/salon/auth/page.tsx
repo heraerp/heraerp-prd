@@ -36,6 +36,8 @@ import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { SalonLuxeInput } from '@/components/salon/shared/SalonLuxeInput'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { getRoleDisplayName, getRoleRedirectPath, type AppRole } from '@/lib/auth/role-normalizer'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 
 type ErrorType = 'validation' | 'auth' | 'network' | 'organization' | 'unknown'
 
@@ -46,8 +48,9 @@ interface ErrorState {
 }
 
 export default function SalonAuthPage() {
+  const { login } = useHERAAuth()
   const router = useRouter()
-  const { login, isAuthenticated, role, organization, user } = useHERAAuth()
+  const { startLoading, updateProgress, reset } = useLoadingStore()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -57,8 +60,11 @@ export default function SalonAuthPage() {
   const [error, setError] = useState<ErrorState | null>(null)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [resetEmailSent, setResetEmailSent] = useState(false)
-  const [isRedirecting, setIsRedirecting] = useState(false)
-  const [redirectProgress, setRedirectProgress] = useState(0)
+
+  // ✅ Reset global loading on mount (in case of back navigation)
+  useEffect(() => {
+    reset()
+  }, [])
 
   const showError = (message: string, type: ErrorType = 'unknown', details?: string) => {
     setError({ message, type, details })
@@ -128,100 +134,8 @@ export default function SalonAuthPage() {
     }
   }
 
-  // ✅ Redirect after successful authentication (using HERAAuthProvider context)
-  useEffect(() => {
-    if (isAuthenticated && role) {
-      console.log('✅ Authenticated with role:', role)
-
-      // 🔧 CRITICAL: Normalize HERA role values to expected format
-      // HERA roles: ORG_OWNER, ORG_EMPLOYEE, etc.
-      // Expected: owner, receptionist, manager, accountant, stylist
-      const normalizedRole = String(role).toLowerCase().trim()
-
-      // Map HERA role values to salon roles
-      let salonRole = normalizedRole
-
-      // Handle HERA role format (ORG_OWNER, ORG_EMPLOYEE, etc.)
-      if (normalizedRole.includes('owner') || normalizedRole === 'org_owner') {
-        salonRole = 'owner'
-      } else if (normalizedRole.includes('employee') || normalizedRole === 'org_employee') {
-        salonRole = 'receptionist' // Default employees to receptionist role
-      } else if (normalizedRole.includes('manager') || normalizedRole === 'org_manager') {
-        salonRole = 'manager'
-      } else if (normalizedRole.includes('accountant') || normalizedRole === 'org_accountant') {
-        salonRole = 'accountant'
-      } else if (normalizedRole.includes('stylist') || normalizedRole === 'org_stylist') {
-        salonRole = 'stylist'
-      } else if (normalizedRole.includes('receptionist') || normalizedRole === 'org_receptionist') {
-        salonRole = 'receptionist'
-      }
-
-      console.log('🔧 Role mapping:', { originalRole: role, normalizedRole, salonRole })
-
-      // 🔒 CRITICAL: Store mapped role in localStorage BEFORE redirect
-      // This ensures SecuredSalonProvider can read the correct role
-      localStorage.setItem('salonRole', salonRole)
-      console.log('✅ Stored salonRole in localStorage:', salonRole)
-
-      // 🎯 Enterprise-grade role display names
-      const roleDisplayNames: Record<string, string> = {
-        'owner': 'Salon Owner',
-        'manager': 'Salon Manager',
-        'receptionist': 'Front Desk',
-        'accountant': 'Accountant',
-        'stylist': 'Stylist'
-      }
-
-      const displayName = roleDisplayNames[salonRole] || 'Team Member'
-      setMessage(`🎉 Welcome! Signing you in as ${displayName}...`)
-
-      // ⚡ ENTERPRISE LOADING EXPERIENCE - Instant redirect with smooth transition
-      setIsRedirecting(true)
-
-      // Smooth progress animation (0-90% over 400ms)
-      const progressInterval = setInterval(() => {
-        setRedirectProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval)
-            return 90
-          }
-          return prev + 15
-        })
-      }, 60)
-
-      // Role-based routing with minimal delay (300ms for smooth visual transition)
-      setTimeout(() => {
-        setRedirectProgress(100) // Complete progress
-
-        // Immediate redirect after progress completes
-        setTimeout(() => {
-          if (salonRole === 'owner') {
-            console.log('✅ Redirecting owner to dashboard')
-            router.push('/salon/dashboard')
-          } else if (salonRole === 'receptionist') {
-            console.log('✅ Redirecting receptionist to receptionist page')
-            router.push('/salon/receptionist')
-          } else if (salonRole === 'manager') {
-            console.log('✅ Redirecting manager to receptionist page')
-            router.push('/salon/receptionist')
-          } else if (salonRole === 'accountant') {
-            console.log('✅ Redirecting accountant to receptionist page')
-            router.push('/salon/receptionist')
-          } else if (salonRole === 'stylist') {
-            console.log('✅ Redirecting stylist to receptionist page')
-            router.push('/salon/receptionist')
-          } else {
-            console.log('⚠️ Unknown role, using default receptionist redirect')
-            router.push('/salon/receptionist')
-          }
-        }, 150) // 150ms for progress completion animation
-      }, 400) // Total time: 550ms (much faster than 1500ms)
-
-      return () => {
-        clearInterval(progressInterval)
-      }
-    }
-  }, [isAuthenticated, role, router])
+  // ❌ REMOVED: useEffect watching auth state (caused login loops)
+  // Auth redirect now happens synchronously in handleSignIn after login() completes
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -236,16 +150,93 @@ export default function SalonAuthPage() {
     setMessage('🔐 Signing in...')
 
     try {
-      // ✅ Use HERAAuthProvider login (handles everything automatically)
+      // ✅ ENTERPRISE FIX: Clear ALL localStorage BEFORE login to prevent org ID mismatch
+      // This prevents stale cache (e.g., from Hairtalkz) contaminating new session (HERA Salon Demo)
+      // Without this, SecuredSalonProvider detects mismatch and triggers logout
+      console.log('🧹 Clearing ALL localStorage before login...')
+      if (typeof window !== 'undefined') {
+        const keysToRemove = [
+          'organizationId',
+          'salonOrgId',
+          'salonRole',
+          'userPermissions',
+          'selectedBranchId',
+          'userId',
+          'userEntityId',
+          'userEmail',
+          'userName',
+          'salonUserName',
+          'defaultBranchId',
+          'organizationName',
+          'primaryRole'
+        ]
+
+        keysToRemove.forEach(key => localStorage.removeItem(key))
+        console.log(`✅ Cleared ${keysToRemove.length} localStorage keys:`, keysToRemove)
+      }
+
+      // ✅ Use enhanced HERAAuthProvider login (now synchronous, returns data)
       // - Clears all caches (via clearFirst option)
       // - Authenticates with Supabase
       // - Calls /api/v2/auth/resolve-membership
-      // - Sets localStorage
-      // - Updates context
-      await login(email, password, { clearFirst: true })
+      // - Stores ALL 9 localStorage keys
+      // - Returns resolved membership data
+      const result = await login(email, password, { clearFirst: true })
 
-      // Update message - redirect will be handled by useEffect
-      setMessage('✅ Authentication successful! Loading your dashboard...')
+      console.log('✅ Login successful, received data:', {
+        role: result.role,
+        organizationId: result.organizationId,
+        userEntityId: result.userEntityId
+      })
+
+      // ✅ ENTERPRISE: Role already normalized by HERAAuthProvider
+      const salonRole = result.role as AppRole
+
+      console.log('✅ Using normalized role:', {
+        salonRole,
+        source: 'HERAAuthProvider (already normalized)'
+      })
+
+      // Update salonRole in localStorage (for backwards compatibility)
+      // Note: HERAAuthProvider already did this, but we do it again for safety
+      localStorage.setItem('salonRole', salonRole)
+
+      // Get enterprise-grade display name using helper (app-aware)
+      const displayName = getRoleDisplayName(salonRole, 'salon')
+      setMessage(`🎉 Welcome! Signing you in as ${displayName}...`)
+
+      // ⚡ ENTERPRISE LOADING EXPERIENCE - Use global loading overlay
+      // This will persist across the route change for seamless UX
+      startLoading(`Welcome! Signing you in as ${displayName}...`, 'Setting up your session...')
+
+      // Smooth progress animation (0-60% during navigation)
+      let currentProgress = 0
+      const progressInterval = setInterval(() => {
+        currentProgress += 10
+        if (currentProgress <= 60) {
+          updateProgress(currentProgress)
+        } else {
+          clearInterval(progressInterval)
+        }
+      }, 50)
+
+      // Navigate to dashboard (global loading will continue)
+      setTimeout(async () => {
+        updateProgress(70, undefined, 'Loading your workspace...')
+
+        // ✅ ENTERPRISE: Use centralized role redirect helper with app context
+        const redirectPath = getRoleRedirectPath(salonRole, 'salon')
+
+        console.log('✅ Navigating to:', {
+          role: salonRole,
+          path: redirectPath,
+          source: 'getRoleRedirectPath()'
+        })
+
+        // ✅ Use router.push with initializing flag
+        // Dashboard will continue progress to 100% then hide overlay
+        await router.push(redirectPath + '?initializing=true')
+      }, 300)
 
     } catch (err: any) {
       console.error('Sign-in error:', err)
@@ -287,174 +278,7 @@ export default function SalonAuthPage() {
     }
   }
 
-  // ⚡ ENTERPRISE LOADING OVERLAY (shown during redirect)
-  if (isRedirecting) {
-    return (
-      <div
-        className="min-h-screen relative flex items-center justify-center overflow-hidden"
-        style={{
-          backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
-          backgroundImage: `
-            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
-            radial-gradient(ellipse 60% 50% at 0% 100%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
-            radial-gradient(ellipse 60% 50% at 100% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)
-          `
-        }}
-      >
-        {/* Animated gradient pulse */}
-        <div
-          className="fixed inset-0 pointer-events-none"
-          style={{
-            background: `
-              radial-gradient(ellipse 100% 80% at 50% 50%, rgba(212, 175, 55, 0.3) 0%, transparent 60%)
-            `,
-            animation: 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-          }}
-        />
-
-        {/* Loading Card */}
-        <div
-          className="relative z-10 rounded-3xl p-12 backdrop-blur-xl max-w-md w-full mx-4 animate-in fade-in zoom-in-95 duration-500"
-          style={{
-            background: 'linear-gradient(135deg, rgba(26,26,26,0.98) 0%, rgba(15,15,15,0.98) 100%)',
-            border: `2px solid ${SALON_LUXE_COLORS.gold.base}`,
-            boxShadow: `
-              0 30px 60px rgba(0, 0, 0, 0.6),
-              0 0 0 1px rgba(212, 175, 55, 0.3),
-              0 0 40px rgba(212, 175, 55, 0.4)
-            `
-          }}
-        >
-          {/* Logo with pulse animation */}
-          <div className="text-center mb-8">
-            <div
-              className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center shadow-2xl animate-pulse"
-              style={{
-                background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.gold.dark} 100%)`,
-                boxShadow: `0 12px 32px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.3)`
-              }}
-            >
-              <Sparkles className="h-10 w-10" style={{ color: SALON_LUXE_COLORS.charcoal.dark }} />
-            </div>
-
-            {/* Title */}
-            <h1
-              className="text-3xl font-bold mb-3"
-              style={{
-                background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.champagne.light} 0%, ${SALON_LUXE_COLORS.gold.base} 100%)`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.02em'
-              }}
-            >
-              Loading Your Dashboard
-            </h1>
-
-            {/* Message */}
-            <p className="text-base" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
-              {message || 'Preparing your workspace...'}
-            </p>
-          </div>
-
-          {/* Progress Bar Container */}
-          <div
-            className="relative h-2 rounded-full overflow-hidden mb-6"
-            style={{
-              backgroundColor: 'rgba(212, 175, 55, 0.1)',
-              border: `1px solid ${SALON_LUXE_COLORS.border.base}`
-            }}
-          >
-            {/* Progress Bar */}
-            <div
-              className="absolute inset-y-0 left-0 rounded-full transition-all duration-300 ease-out"
-              style={{
-                width: `${redirectProgress}%`,
-                background: `linear-gradient(90deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.champagne.light} 100%)`,
-                boxShadow: `0 0 20px ${SALON_LUXE_COLORS.gold.base}80`
-              }}
-            >
-              {/* Shimmer effect */}
-              <div
-                className="absolute inset-0 animate-shimmer"
-                style={{
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%)',
-                  backgroundSize: '200% 100%'
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Progress Percentage */}
-          <div className="text-center">
-            <p
-              className="text-2xl font-bold tabular-nums"
-              style={{ color: SALON_LUXE_COLORS.gold.base }}
-            >
-              {redirectProgress}%
-            </p>
-            <p className="text-xs mt-1" style={{ color: SALON_LUXE_COLORS.bronze }}>
-              Setting up your session...
-            </p>
-          </div>
-
-          {/* Animated dots */}
-          <div className="flex justify-center gap-2 mt-6">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-2 h-2 rounded-full"
-                style={{
-                  backgroundColor: SALON_LUXE_COLORS.gold.base,
-                  animation: `bounce 1.4s infinite ease-in-out both`,
-                  animationDelay: `${i * 0.16}s`
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Animation styles for loading overlay */}
-        <style jsx>{`
-          @keyframes pulse-glow {
-            0%, 100% {
-              opacity: 0.3;
-              transform: scale(1);
-            }
-            50% {
-              opacity: 0.5;
-              transform: scale(1.05);
-            }
-          }
-
-          @keyframes shimmer {
-            0% {
-              background-position: -200% 0;
-            }
-            100% {
-              background-position: 200% 0;
-            }
-          }
-
-          @keyframes bounce {
-            0%, 80%, 100% {
-              transform: scale(0);
-              opacity: 0.3;
-            }
-            40% {
-              transform: scale(1);
-              opacity: 1;
-            }
-          }
-
-          .animate-shimmer {
-            animation: shimmer 2s linear infinite;
-          }
-        `}</style>
-      </div>
-    )
-  }
-
+  // ✅ No local loading overlay - using GlobalLoadingOverlay instead
   return (
     <div
       className="min-h-screen relative flex items-center justify-center p-4"

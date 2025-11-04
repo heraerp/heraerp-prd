@@ -11,15 +11,15 @@ async function compareUsers() {
   console.log('🔍 Comparing WORKING vs NOT WORKING users...\n');
 
   const users = [
-    { 
-      email: 'hairtalkz01@gmail.com', 
+    {
+      email: 'hairtalkz01@gmail.com',
       authUid: '4e1340cf-fefc-4d21-92ee-a8c4a244364b',
-      label: '✅ WORKING' 
+      label: '✅ WORKING'
     },
-    { 
-      email: 'demo@heraerp.com', 
-      authUid: 'a55cc033-e909-4c59-b974-8ff3e098f2bf',
-      label: '❌ NOT WORKING' 
+    {
+      email: 'salon@heraerp.com',
+      authUid: 'ebd0e099-e25a-476b-b6dc-4b3c26fae4a7',
+      label: '❌ NOT WORKING'
     }
   ];
 

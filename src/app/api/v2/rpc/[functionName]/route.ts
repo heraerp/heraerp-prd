@@ -20,7 +20,23 @@ export async function POST(
   try {
     // ✅ Next.js 15: Await params before using
     const { functionName } = await params
-    const body = await request.json()
+
+    // ✅ ENTERPRISE FIX: Handle empty body gracefully
+    let body = {}
+    try {
+      const text = await request.text()
+      if (text && text.trim().length > 0) {
+        body = JSON.parse(text)
+      } else {
+        console.warn(`[RPC] Empty body received for ${functionName}, using empty object`)
+      }
+    } catch (parseError) {
+      console.error(`[RPC] JSON parse error for ${functionName}:`, parseError)
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' },
+        { status: 400 }
+      )
+    }
 
     console.log(`[RPC] Calling function: ${functionName}`, {
       params: Object.keys(body),

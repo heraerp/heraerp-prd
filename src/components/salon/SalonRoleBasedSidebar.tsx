@@ -25,8 +25,8 @@ import {
   CalendarCheck,
   Building2
 } from 'lucide-react'
-import { supabase } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export interface SidebarItem {
   title: string
@@ -332,9 +332,11 @@ function AppsModal({
 export default function SalonRoleBasedSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { logout } = useHERAAuth()
   const [appsModalOpen, setAppsModalOpen] = useState(false)
   const [userRole, setUserRole] = useState<string>('Staff')
   const [userName, setUserName] = useState<string>('User')
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   useEffect(() => {
     // Get user role from localStorage
@@ -350,11 +352,18 @@ export default function SalonRoleBasedSidebar() {
   const allApps = getAllApps(userRole)
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    localStorage.removeItem('organizationId')
-    localStorage.removeItem('salonRole')
-    localStorage.removeItem('salonUserName')
-    router.push('/salon/auth')
+    if (isLoggingOut) return // Prevent double-clicks
+
+    setIsLoggingOut(true)
+    try {
+      // ✅ ENTERPRISE: Use HERAAuthProvider logout (proper cleanup + no race conditions)
+      await logout()
+      // HERAAuthProvider handles redirect to /auth/login automatically
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Even if logout fails, force redirect
+      router.push('/auth/login')
+    }
   }
 
   // Get role-specific welcome message
@@ -469,13 +478,28 @@ export default function SalonRoleBasedSidebar() {
           <div className="relative w-full group">
             <button
               onClick={handleSignOut}
-              className="w-full p-3 rounded-xl flex items-center justify-center transition-all hover:bg-accent"
+              disabled={isLoggingOut}
+              className={cn(
+                "w-full p-3 rounded-xl flex items-center justify-center transition-all",
+                isLoggingOut
+                  ? "bg-accent cursor-wait"
+                  : "hover:bg-accent"
+              )}
             >
-              <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-red-400" />
+              <LogOut
+                className={cn(
+                  "w-5 h-5 transition-all",
+                  isLoggingOut
+                    ? "text-red-400 animate-pulse"
+                    : "text-muted-foreground group-hover:text-red-400"
+                )}
+              />
             </button>
             {/* Tooltip - outside button to not affect centering */}
             <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-              <span className="text-xs text-foreground">Sign Out</span>
+              <span className="text-xs text-foreground">
+                {isLoggingOut ? 'Logging out...' : 'Sign Out'}
+              </span>
             </div>
           </div>
         </div>

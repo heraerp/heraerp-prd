@@ -724,30 +724,15 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       console.log('✅ Using organization from user auth:', securityContext.orgId)
 
-      // 🔒 SECURITY: Clear all caches if org ID doesn't match JWT
-      const cachedOrgId = localStorage.getItem('organizationId')
-      const storeOrgId = securityStore.organizationId
-
-      if (
-        (cachedOrgId && cachedOrgId !== securityContext.orgId) ||
-        (storeOrgId && storeOrgId !== securityContext.orgId)
-      ) {
-        console.warn('🚨 Cached organization ID mismatch - clearing ALL stale caches')
-        console.warn(`   localStorage: ${cachedOrgId}`)
-        console.warn(`   Zustand store: ${storeOrgId}`)
-        console.warn(`   JWT (correct): ${securityContext.orgId}`)
-
-        // Clear localStorage
-        localStorage.removeItem('organizationId')
-        localStorage.removeItem('salonRole')
-        localStorage.removeItem('userPermissions')
-        localStorage.removeItem('selectedBranchId')
-
-        // Clear Zustand persisted store
-        securityStore.clearState()
-
-        console.log('✅ All caches cleared - using JWT organization ID')
-      }
+      // ✅ ENTERPRISE FIX: Remove org ID mismatch check during initialization
+      // Reason: Login page already clears localStorage BEFORE login
+      // This check was causing logout because SecuredSalonProvider runs
+      // DURING dashboard load, BEFORE HERAAuthProvider finishes storing new org ID
+      // Result: It saw "no match" → cleared everything → invalidated session → logout
+      //
+      // The org ID mismatch check is now ONLY in onAuthStateChange SIGNED_IN event
+      // where it checks if USER changed (not org), which is the correct validation
+      console.log('✅ Skipping org ID mismatch check during init (login page already cleared cache)')
 
       // Get salon-specific role and permissions
       const salonRole = await getSalonRole(securityContext)
@@ -1490,21 +1475,18 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     [context, isLoadingBranches, hasPermission, hasAnyPermission]
   )
 
-  // ✅ ENTERPRISE: Enhanced loading state with better transition handling
-  // Show loading during:
-  // 1. Initial authentication (isLoading && !initialized)
-  // 2. Post-login initialization (isAuthenticated from HERAAuth but SecuredSalon not ready)
-  // 3. Role resolution (has auth but no role yet)
-  // 4. PATIENCE: During first 5 seconds after login, ALWAYS show loading (not error)
+  // ✅ ENTERPRISE UX: Optimized loading state - only show when cache is stale
+  // Show loading ONLY during:
+  // 1. Initial load when cache doesn't exist
+  // 2. Cache invalidation (HARD_TTL exceeded or manual reinit)
+  // 3. First 500ms after page load (grace period for smooth transition)
   const timeSincePageLoad = typeof window !== 'undefined' ? Date.now() - (window.performance?.timing?.navigationStart || 0) : Infinity
-  const isInGracePeriod = timeSincePageLoad < 5000 // First 5 seconds after page load
+  const isInGracePeriod = timeSincePageLoad < 500 // 500ms grace period for smooth transition
 
   const isInitializing =
-    (context.isLoading && (!securityStore.isInitialized || !hasInitialized)) ||
-    (auth.isAuthenticated && !context.isAuthenticated) || // ✅ REMOVED && !authError check
-    (auth.isAuthenticated && auth.isLoading) ||
-    (auth.isAuthenticated && !context.organization?.id) || // ✅ REMOVED && !authError check
-    (auth.isAuthenticated && !hasInitialized && isInGracePeriod) // ✅ NEW: Grace period after login
+    (!securityStore.isInitialized || securityStore.shouldReinitialize()) &&
+    (context.isLoading || !hasInitialized || isInGracePeriod) &&
+    auth.isAuthenticated
 
   if (isInitializing) {
     return (
@@ -1527,11 +1509,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             />
           </div>
           <h3 className="text-lg font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
-            {auth.isAuthenticated && !context.isAuthenticated
-              ? 'Setting up your workspace...'
-              : auth.isAuthenticated && !context.organization?.id
-              ? 'Loading organization details...'
-              : 'Verifying permissions...'}
+            Loading your dashboard...
           </h3>
           <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
             Please wait a moment

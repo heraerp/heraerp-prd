@@ -235,48 +235,62 @@ export async function GET(request: NextRequest) {
 
     console.log('📋 [GET ORGS] Fetching organizations for user:', userId)
 
-    // Get organizations where user is a member
-    const { data: memberships, error: memberError } = await supabase
-      .from('core_relationships')
-      .select(`
-        organization_id,
-        relationship_data,
-        created_at,
-        core_organizations!core_relationships_organization_id_fkey (
-          id,
-          organization_name,
-          organization_code,
-          organization_type,
-          industry_classification,
-          settings,
-          status,
-          created_at,
-          updated_at
-        )
-      `)
-      .eq('from_entity_id', userId)
-      .eq('relationship_type', 'MEMBER_OF')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1)
+    // Step 1: Find user entity ID (try PLATFORM USER first, then metadata lookup)
+    let userEntityId = userId
 
-    if (memberError) {
-      console.error('❌ [GET ORGS] Failed to fetch organizations:', memberError)
+    const { data: userEntityByMetadata } = await supabase
+      .from('core_entities')
+      .select('id')
+      .eq('entity_type', 'USER')
+      .eq('organization_id', '00000000-0000-0000-0000-000000000000')
+      .contains('metadata', { supabase_user_id: userId })
+      .maybeSingle()
+
+    if (userEntityByMetadata) {
+      userEntityId = userEntityByMetadata.id
+      console.log('✅ [GET ORGS] Found user entity via metadata:', userEntityId)
+    } else {
+      console.log('ℹ️ [GET ORGS] Using auth UID as entity ID:', userId)
+    }
+
+    // Step 2: Call hera_auth_introspect_v1 to get all organizations
+    const { data: introspection, error: introspectError } = await supabase.rpc(
+      'hera_auth_introspect_v1',
+      { p_actor_user_id: userEntityId }
+    )
+
+    if (introspectError) {
+      console.error('❌ [GET ORGS] Introspection failed:', introspectError)
       return NextResponse.json(
-        { error: 'Failed to fetch organizations', details: memberError.message },
+        { error: 'Failed to fetch organizations', details: introspectError.message },
         { status: 500 }
       )
     }
 
-    // Transform the response
-    const organizations = memberships?.map(m => ({
-      ...m.core_organizations,
-      user_role: m.relationship_data?.role,
-      user_label: m.relationship_data?.label,
-      joined_at: m.created_at
-    })) || []
+    console.log('✅ [GET ORGS] Introspection successful, found', introspection?.organization_count || 0, 'organizations')
 
-    console.log('✅ [GET ORGS] Found', organizations.length, 'organizations')
+    // Step 3: Transform introspection response to API format
+    const organizations = (introspection?.organizations || []).map((org: any) => ({
+      id: org.id,
+      organization_name: org.name,
+      organization_code: org.code,
+      organization_type: 'business_unit', // Default type
+      industry_classification: null,
+      settings: org.settings || {},
+      status: org.status,
+      created_at: org.joined_at,
+      updated_at: org.last_updated,
+      user_role: org.primary_role,
+      user_label: null,
+      joined_at: org.joined_at,
+      // Additional introspection data
+      apps: org.apps || [],
+      roles: org.roles || [],
+      is_owner: org.is_owner || false,
+      is_admin: org.is_admin || false
+    }))
+
+    console.log('✅ [GET ORGS] Returning', organizations.length, 'organizations')
 
     return NextResponse.json({
       success: true,

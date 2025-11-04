@@ -38,6 +38,7 @@ import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHead
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { AppointmentModal } from '@/components/salon/appointments/AppointmentModal'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 
 // ⚡ PROGRESSIVE LAZY LOADING: Split page into 5 stages for instant load (Services page pattern)
 // Stage 1: Header & Welcome Card (instant - inline below)
@@ -280,6 +281,7 @@ export default function ReceptionistDashboard() {
   const router = useRouter()
   const { organization, organizationId, availableBranches } = useSecuredSalonContext()
   const { user, role } = useSalonSecurity()
+  const { reset: resetLoading } = useLoadingStore()
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   // ✨ MODAL STATE: For AppointmentModal
@@ -343,6 +345,9 @@ export default function ReceptionistDashboard() {
   // Logout handler
   const handleLogout = async () => {
     try {
+      // ✅ CRITICAL: Reset global loading state before logout
+      resetLoading()
+
       const { supabase } = await import('@/lib/supabase/client')
       await supabase.auth.signOut()
       localStorage.removeItem('salonUserName')
@@ -351,6 +356,7 @@ export default function ReceptionistDashboard() {
       router.push('/salon/auth')
     } catch (error) {
       console.error('Logout error:', error)
+      resetLoading() // Reset even on error
       router.push('/salon/auth')
     }
   }
