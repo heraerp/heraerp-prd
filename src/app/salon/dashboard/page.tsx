@@ -81,7 +81,9 @@ function DashboardContent() {
     const isInitializing = searchParams?.get('initializing') === 'true'
     const isReceptionist = role && role.toLowerCase() === 'receptionist'
 
-    if (isInitializing && isAuthenticated && !orgLoading && !securityLoading) {
+    // ✅ FIXED: Don't wait for orgLoading/securityLoading - those are for DATA, not the loading animation!
+    // Start the 70-100% progression as soon as we're authenticated and initializing
+    if (isInitializing && isAuthenticated) {
       // Continue progress from 70% to 100%
       let currentProgress = 70
       const progressInterval = setInterval(() => {
@@ -107,7 +109,7 @@ function DashboardContent() {
 
       return () => clearInterval(progressInterval)
     }
-  }, [searchParams, isAuthenticated, orgLoading, securityLoading, role, updateProgress, finishLoading, router])
+  }, [searchParams, isAuthenticated, role, updateProgress, finishLoading, router])
 
   // ✅ PERFORMANCE: Progressive component loading
   useEffect(() => {
