@@ -235,6 +235,9 @@ function DashboardContent() {
   if (role && role.toLowerCase() === 'receptionist') {
     // Use useEffect for smooth redirect without render warnings
     React.useEffect(() => {
+      // ✅ CRITICAL: Finish loading before redirecting to prevent stuck at 70%
+      finishLoading()
+
       const timer = setTimeout(() => {
         router.push('/salon/receptionist')
       }, 100) // Small delay prevents race conditions
