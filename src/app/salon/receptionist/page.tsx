@@ -281,12 +281,43 @@ export default function ReceptionistDashboard() {
   const router = useRouter()
   const { organization, organizationId, availableBranches } = useSecuredSalonContext()
   const { user, role } = useSalonSecurity()
-  const { reset: resetLoading } = useLoadingStore()
+  const { reset: resetLoading, updateProgress, finishLoading } = useLoadingStore()
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   // ✨ MODAL STATE: For AppointmentModal
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null)
   const [modalOpen, setModalOpen] = useState(false)
+
+  // ✅ ENTERPRISE LOADING: Complete loading animation from login page
+  React.useEffect(() => {
+    // Check if we're coming from login (initializing=true parameter)
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+
+    if (isInitializing) {
+      console.log('🎯 Dashboard loaded, completing loading animation from 70% → 100%')
+
+      // Animate from 70% to 100% smoothly
+      let progress = 70
+      const progressInterval = setInterval(() => {
+        progress += 5
+        if (progress <= 100) {
+          updateProgress(progress, undefined, progress === 100 ? 'Ready!' : 'Loading your workspace...')
+        }
+        if (progress >= 100) {
+          clearInterval(progressInterval)
+          // Complete and hide overlay after brief delay
+          setTimeout(() => {
+            finishLoading()
+            // Clean up URL parameter
+            window.history.replaceState({}, '', window.location.pathname)
+          }, 500)
+        }
+      }, 50)
+
+      return () => clearInterval(progressInterval)
+    }
+  }, [updateProgress, finishLoading])
 
   // Redirect owner to their own dashboard
   React.useEffect(() => {

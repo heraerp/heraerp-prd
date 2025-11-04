@@ -467,20 +467,24 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         console.log('🛡️ ENTERPRISE: Clearing browser storage before login (secure + no race condition)')
 
         if (typeof window !== 'undefined') {
-          // 1. Clear ALL localStorage (security ✅)
+          // 1. Emit cleanup event to clear app-specific stores (e.g., salon security store)
+          window.dispatchEvent(new CustomEvent('hera:session:clear'))
+          console.log('✅ ENTERPRISE: Emitted hera:session:clear event for app stores')
+
+          // 2. Clear ALL localStorage (security ✅)
           localStorage.clear()
 
-          // 2. Clear ALL sessionStorage (security ✅)
+          // 3. Clear ALL sessionStorage (security ✅)
           sessionStorage.clear()
 
-          // 3. Clear ALL cookies that might contain sensitive data (security ✅)
+          // 4. Clear ALL cookies that might contain sensitive data (security ✅)
           document.cookie.split(";").forEach(c => {
             document.cookie = c
               .replace(/^ +/, "")
               .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`)
           })
 
-          // 4. Reset resolution flag
+          // 5. Reset resolution flag
           didResolveRef.current = false
 
           console.log('✅ ENTERPRISE: Browser storage cleared (localStorage + sessionStorage + cookies)')

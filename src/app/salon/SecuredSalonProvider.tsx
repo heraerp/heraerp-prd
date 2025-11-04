@@ -1091,11 +1091,18 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         dataDataKeys: data?.data ? Object.keys(data.data) : []
       })
 
-      // ✅ CRITICAL FIX: entityCRUD returns { data: { entity, dynamic_data }, error }
-      // So we need to check data.entity (not data.data.entity)
-      if (data?.entity) {
-        // Direct format from entityCRUD RPC: { data: { entity: {...}, dynamic_data: [...] }, error }
-        console.log('[SecuredSalonProvider] 📦 Using RPC format (data.entity)')
+      // ✅ CRITICAL FIX: entityCRUD can return data in multiple formats
+      // Format 1: { data: { data: { entity, dynamic_data } } } (nested double data)
+      // Format 2: { data: { entity, dynamic_data } } (single data wrapper)
+      // Format 3: { entity, dynamic_data } (direct)
+      if (data?.data?.entity) {
+        // Nested format: { data: { data: { entity: {...}, dynamic_data: [...] } } }
+        console.log('[SecuredSalonProvider] 📦 Using nested RPC format (data.data.entity)')
+        orgEntity = data.data.entity
+        dynamicDataArray = data.data.dynamic_data || data.data.dynamic_fields || []
+      } else if (data?.entity) {
+        // Direct format: { data: { entity: {...}, dynamic_data: [...] }, error }
+        console.log('[SecuredSalonProvider] 📦 Using direct RPC format (data.entity)')
         orgEntity = data.entity
         dynamicDataArray = data.dynamic_data || data.dynamic_fields || []
       } else if (data?.items && Array.isArray(data.items) && data.items.length > 0) {
