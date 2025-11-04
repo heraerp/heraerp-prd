@@ -73,18 +73,13 @@ function DashboardContent() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [loadStage, setLoadStage] = useState(1) // Progressive loading stages
 
-  // ✅ ROLE-BASED REDIRECT: Redirect receptionist to their dashboard
-  useEffect(() => {
-    if (role && role.toLowerCase() === 'receptionist') {
-      // ✅ CRITICAL: Finish loading before redirecting
-      finishLoading()
-      router.push('/salon/receptionist')
-    }
-  }, [role, router, finishLoading])
+  // ✅ REMOVED DUPLICATE: Receptionist redirect now handled in conditional render below (line ~235)
+  // This prevents race condition between two redirect mechanisms
 
   // ✅ GLOBAL LOADING: Continue progress from login (70-100%)
   useEffect(() => {
     const isInitializing = searchParams?.get('initializing') === 'true'
+    const isReceptionist = role && role.toLowerCase() === 'receptionist'
 
     if (isInitializing && isAuthenticated && !orgLoading && !securityLoading) {
       // Continue progress from 70% to 100%
@@ -98,15 +93,21 @@ function DashboardContent() {
           // Finish loading when dashboard is ready
           setTimeout(() => {
             finishLoading()
-            // Remove query parameter for clean URL
-            router.replace('/salon/dashboard', { scroll: false })
+
+            // ✅ ENTERPRISE: Redirect receptionist AFTER loading completes
+            if (isReceptionist) {
+              router.push('/salon/receptionist')
+            } else {
+              // Remove query parameter for clean URL (non-receptionist roles)
+              router.replace('/salon/dashboard', { scroll: false })
+            }
           }, 200)
         }
       }, 100)
 
       return () => clearInterval(progressInterval)
     }
-  }, [searchParams, isAuthenticated, orgLoading, securityLoading, updateProgress, finishLoading, router])
+  }, [searchParams, isAuthenticated, orgLoading, securityLoading, role, updateProgress, finishLoading, router])
 
   // ✅ PERFORMANCE: Progressive component loading
   useEffect(() => {
@@ -232,12 +233,13 @@ function DashboardContent() {
   }
 
   // ✅ ENTERPRISE STATE 3: Redirect receptionist with smooth transition
-  if (role && role.toLowerCase() === 'receptionist') {
-    // Use useEffect for smooth redirect without render warnings
-    React.useEffect(() => {
-      // ✅ CRITICAL: Finish loading before redirecting to prevent stuck at 70%
-      finishLoading()
+  // BUT: Let global loading complete first if initializing=true
+  const isInitializing = searchParams?.get('initializing') === 'true'
+  const isReceptionist = role && role.toLowerCase() === 'receptionist'
 
+  if (isReceptionist && !isInitializing) {
+    // Only redirect if NOT in initializing mode (loading already completed)
+    React.useEffect(() => {
       const timer = setTimeout(() => {
         router.push('/salon/receptionist')
       }, 100) // Small delay prevents race conditions
