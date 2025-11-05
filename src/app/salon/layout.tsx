@@ -12,7 +12,7 @@ import { NavigationProvider } from './navigation-provider'
 import { PrefetchLinks } from './prefetch-links'
 import { useSecuredSalonContext } from './SecuredSalonProvider'
 import { SalonRouteGuard } from '@/components/auth/SalonRouteGuard'
-import { GlobalLoadingOverlay } from '@/components/auth/GlobalLoadingOverlay'
+import { SalonLuxeLoadingOverlay } from '@/components/salon/shared/SalonLuxeLoadingOverlay'
 
 // Import global salon luxe theme
 import '@/styles/salon-luxe.css'
@@ -76,7 +76,7 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
   if (isPublicPage) {
     return (
       <>
-        <GlobalLoadingOverlay />
+        <SalonLuxeLoadingOverlay />
         {children}
       </>
     )
@@ -84,7 +84,7 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
 
   return (
     <>
-      <GlobalLoadingOverlay />
+      <SalonLuxeLoadingOverlay />
       <NavigationProvider>
       <SalonQueryWrapper>
         <SecuredSalonProvider>

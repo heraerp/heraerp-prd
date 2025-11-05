@@ -9,7 +9,8 @@ import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
 import { ToastProvider } from '@/components/ui/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'
-import { GlobalLoadingOverlay } from '@/components/auth/GlobalLoadingOverlay'
+import { ConditionalLoadingOverlay } from '@/components/auth/ConditionalLoadingOverlay'
+import { HMRRecoveryHelper } from '@/components/dev/HMRRecoveryHelper'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
 import '@/styles/radix-overrides.css' // Radix UI global overrides for HERA modals
@@ -155,6 +156,9 @@ export default function RootLayout({
         }}
         suppressHydrationWarning={true}
       >
+        {/* Smart HMR Recovery Helper (development only) */}
+        {process.env.NODE_ENV === 'development' && <HMRRecoveryHelper />}
+
         <ThemeProvider>
           <PublicPageWrapper>
             <QueryProvider>
@@ -163,7 +167,7 @@ export default function RootLayout({
                   {children}
                   <Toaster />
                   <CookieBanner />
-                  <GlobalLoadingOverlay />
+                  <ConditionalLoadingOverlay />
                 </ToastProvider>
               </HERAAuthProvider>
             </QueryProvider>

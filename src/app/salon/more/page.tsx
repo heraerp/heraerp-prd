@@ -1,12 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 import { PremiumCard, PremiumListItem } from '@/components/salon/mobile/PremiumCard'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
+import { supabase } from '@/lib/supabase/client'
 import {
   Scissors,
   Package,
@@ -19,7 +20,9 @@ import {
   FolderOpen,
   ChevronRight,
   Sparkles,
-  Home
+  Home,
+  LogOut,
+  Loader2
 } from 'lucide-react'
 
 interface MoreItem {
@@ -109,6 +112,7 @@ const moreItems: MoreItem[] = [
 export default function MorePage() {
   const router = useRouter()
   const { salonRole } = useSecuredSalonContext()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const userRole = salonRole?.toLowerCase() || 'owner'
 
@@ -117,6 +121,27 @@ export default function MorePage() {
 
   const handleNavigation = (href: string) => {
     router.push(href)
+  }
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true)
+
+      // Clear localStorage
+      localStorage.removeItem('salonRole')
+      localStorage.removeItem('organizationId')
+      localStorage.removeItem('userPermissions')
+      localStorage.removeItem('selectedBranchId')
+
+      // Sign out from Supabase
+      await supabase.auth.signOut()
+
+      // Redirect to auth page
+      router.push('/salon/auth')
+    } catch (error) {
+      console.error('Logout error:', error)
+      setIsLoggingOut(false)
+    }
   }
 
   return (
@@ -169,6 +194,37 @@ export default function MorePage() {
             </div>
           </PremiumCard>
         )}
+
+        {/* Logout Button - Premium Danger Style */}
+        <div className="mt-6">
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="w-full min-h-[56px] rounded-xl font-bold text-base flex items-center justify-center gap-3 transition-all duration-200 active:scale-95 hover:shadow-2xl"
+            style={{
+              background: isLoggingOut
+                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(220, 38, 38, 0.3) 100%)'
+                : 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 100%)',
+              color: isLoggingOut ? '#FCA5A5' : '#EF4444',
+              border: isLoggingOut ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(239, 68, 68, 0.5)',
+              boxShadow: '0 4px 16px rgba(239, 68, 68, 0.25)',
+              cursor: isLoggingOut ? 'not-allowed' : 'pointer',
+              opacity: isLoggingOut ? 0.7 : 1
+            }}
+          >
+            {isLoggingOut ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Logging Out...</span>
+              </>
+            ) : (
+              <>
+                <LogOut className="w-5 h-5" />
+                <span>Log Out</span>
+              </>
+            )}
+          </button>
+        </div>
 
         {/* Bottom spacing for mobile nav */}
         <div className="h-24" />
