@@ -12,7 +12,7 @@ import {
 
 export default function RetailHomePage() {
   const { client, auth } = useHera()
-  const { updateProgress, completeLoading } = useLoadingStore()
+  const { updateProgress, finishLoading } = useLoadingStore()
   const now = useMemo(() => new Date(), [])
   const from = new Date(now)
   from.setHours(0, 0, 0, 0)
@@ -41,7 +41,7 @@ export default function RetailHomePage() {
           clearInterval(progressInterval)
           // Complete and hide overlay after brief delay
           setTimeout(() => {
-            completeLoading()
+            finishLoading()
             // Clean up URL parameter
             window.history.replaceState({}, '', window.location.pathname)
             console.log('✅ Retail Home: Loading complete!')
@@ -51,7 +51,7 @@ export default function RetailHomePage() {
 
       return () => clearInterval(progressInterval)
     }
-  }, [updateProgress, completeLoading])
+  }, [updateProgress, finishLoading])
 
   React.useEffect(() => {
     let mounted = true

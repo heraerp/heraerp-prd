@@ -37,13 +37,41 @@ export function PremiumBottomNav({ userRole = 'owner', badges = {} }: PremiumBot
   const router = useRouter()
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const navItems: NavItem[] = [
-    { title: 'Home', href: '/salon/dashboard', icon: Home },
-    { title: 'Bookings', href: '/salon/appointments', icon: Calendar },
-    { title: 'POS', href: '/salon/pos', icon: CreditCard },
-    { title: 'Clients', href: '/salon/customers', icon: Users },
-    { title: 'More', href: '/salon/more', icon: MoreHorizontal }
-  ]
+  // Role-based navigation items (matches SalonRoleBasedDarkSidebar)
+  const navItems: NavItem[] = React.useMemo(() => {
+    const roleBasedItems: Record<string, NavItem[]> = {
+      owner: [
+        { title: 'Home', href: '/salon/dashboard', icon: Home },
+        { title: 'Bookings', href: '/salon/appointments', icon: Calendar },
+        { title: 'POS', href: '/salon/pos', icon: CreditCard },
+        { title: 'Clients', href: '/salon/customers', icon: Users },
+        { title: 'More', href: '/salon/more', icon: MoreHorizontal }
+      ],
+      receptionist: [
+        { title: 'Home', href: '/salon/receptionist', icon: Home },
+        { title: 'Bookings', href: '/salon/appointments', icon: Calendar },
+        { title: 'POS', href: '/salon/pos', icon: CreditCard },
+        { title: 'Clients', href: '/salon/customers', icon: Users },
+        { title: 'More', href: '/salon/more', icon: MoreHorizontal }
+      ],
+      manager: [
+        { title: 'Home', href: '/salon/receptionist', icon: Home },
+        { title: 'Bookings', href: '/salon/appointments', icon: Calendar },
+        { title: 'POS', href: '/salon/pos', icon: CreditCard },
+        { title: 'Clients', href: '/salon/customers', icon: Users },
+        { title: 'More', href: '/salon/more', icon: MoreHorizontal }
+      ],
+      accountant: [
+        { title: 'Home', href: '/salon/dashboard', icon: Home },
+        { title: 'Finance', href: '/salon/finance', icon: CreditCard },
+        { title: 'Reports', href: '/salon/reports', icon: Calendar },
+        { title: 'Clients', href: '/salon/customers', icon: Users },
+        { title: 'More', href: '/salon/more', icon: MoreHorizontal }
+      ]
+    }
+
+    return roleBasedItems[userRole] || roleBasedItems.owner
+  }, [userRole])
 
   useEffect(() => {
     const index = navItems.findIndex(
