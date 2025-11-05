@@ -106,7 +106,7 @@ const apps: AppCard[] = [
     title: 'Retail',
     description: 'Multi-channel retail management with inventory, POS, and customer loyalty',
     icon: ShoppingBag,
-    href: '/retail',
+    href: '/retail/home',
     category: 'industry',
     status: 'coming-soon',
     gradient: 'from-yellow-500 to-orange-600',
@@ -280,9 +280,17 @@ export default function AppsPage() {
 
             const appStyle = appIcons[appCode] || { icon: Briefcase, gradient: 'from-blue-500 to-indigo-600' }
 
-            // 🔧 CRITICAL: Use role-based routing for apps (especially salon)
-            // Instead of hardcoding /dashboard, route to /auth which handles role-based redirect
-            const appHref = `/${heraApp.code.toLowerCase()}/auth`
+            // 🔧 CRITICAL: Use correct landing page for each app
+            // - SALON: /auth (role-based routing)
+            // - RETAIL: /home (fixed landing page)
+            // - CASHEW: /dashboard (fixed landing page)
+            // - Others: /auth (default role-based routing)
+            let appHref = `/${heraApp.code.toLowerCase()}/auth`
+            if (appCode === 'RETAIL') {
+              appHref = '/retail/home'
+            } else if (appCode === 'CASHEW') {
+              appHref = '/cashew/dashboard'
+            }
 
             return {
               id: heraApp.code.toLowerCase(),
