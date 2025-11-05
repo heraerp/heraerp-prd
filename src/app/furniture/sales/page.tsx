@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 import {
   ShoppingCart,
   TrendingUp,
@@ -90,12 +91,44 @@ interface RegionalPerformance {
 }
 
 export default function SalesDashboard() {
+  const { updateProgress, finishLoading } = useLoadingStore()
   const [salesOrders, setSalesOrders] = useState<SalesOrder[]>([])
   const [metrics, setMetrics] = useState<SalesMetrics | null>(null)
   const [targets, setTargets] = useState<SalesTarget[]>([])
   const [regionalData, setRegionalData] = useState<RegionalPerformance[]>([])
   const [selectedPeriod, setSelectedPeriod] = useState('month')
   const [filterStatus, setFilterStatus] = useState('all')
+
+  // ⚡ ENTERPRISE: Complete loading animation on mount (if coming from login)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+
+    if (isInitializing) {
+      console.log('🪑 Furniture Sales: Completing loading animation from 70% → 100%')
+
+      // Animate from 70% to 100% smoothly
+      let progress = 70
+      const progressInterval = setInterval(() => {
+        progress += 5
+        if (progress <= 100) {
+          updateProgress(progress, undefined, progress === 100 ? 'Ready!' : 'Loading your workspace...')
+        }
+        if (progress >= 100) {
+          clearInterval(progressInterval)
+          // Complete and hide overlay after brief delay
+          setTimeout(() => {
+            finishLoading()
+            // Clean up URL parameter
+            window.history.replaceState({}, '', window.location.pathname)
+            console.log('✅ Furniture Sales: Loading complete!')
+          }, 500)
+        }
+      }, 50)
+
+      return () => clearInterval(progressInterval)
+    }
+  }, [updateProgress, finishLoading])
 
   // Kerala furniture sales sample data
   const sampleOrders: SalesOrder[] = [
