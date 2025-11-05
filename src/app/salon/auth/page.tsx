@@ -383,46 +383,46 @@ export default function SalonAuthPage() {
         {/* Status Messages */}
         {(message || error) && (
           <div
-            className="rounded-xl p-5 mb-6 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-300"
+            className="rounded-xl p-6 mb-6 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-300"
             style={{
               background: error
-                ? 'linear-gradient(135deg, rgba(232, 180, 184, 0.15) 0%, rgba(232, 180, 184, 0.08) 100%)'
+                ? 'linear-gradient(135deg, rgba(255, 107, 147, 0.18) 0%, rgba(244, 63, 94, 0.12) 100%)'
                 : 'linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%)',
-              border: `1px solid ${error ? SALON_LUXE_COLORS.danger.border : SALON_LUXE_COLORS.border.base}`,
+              border: `2px solid ${error ? SALON_LUXE_COLORS.error.border : SALON_LUXE_COLORS.border.base}`,
               boxShadow: error
-                ? `0 4px 16px ${SALON_LUXE_COLORS.shadow.danger}, inset 0 1px 0 rgba(255, 255, 255, 0.05)`
+                ? `0 8px 24px rgba(255, 107, 147, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08)`
                 : `0 4px 16px ${SALON_LUXE_COLORS.shadow.goldLighter}, inset 0 1px 0 rgba(212, 175, 55, 0.1)`
             }}
           >
             {error ? (
-              <div className="flex items-start gap-3">
-                {/* Error Icon */}
+              <div className="flex items-start gap-4">
+                {/* Error Icon - Enhanced with solid gradient */}
                 <div
-                  className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
+                  className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
                   style={{
-                    background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.danger.base}20 0%, ${SALON_LUXE_COLORS.danger.base}10 100%)`,
-                    border: `1px solid ${SALON_LUXE_COLORS.danger.border}`
+                    background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.error.base} 0%, ${SALON_LUXE_COLORS.error.dark} 100%)`,
+                    boxShadow: `0 4px 12px rgba(255, 107, 147, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)`
                   }}
                 >
-                  {error.type === 'auth' && <ShieldAlert className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.danger.base }} />}
-                  {error.type === 'network' && <Wifi className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.danger.base }} />}
-                  {error.type === 'organization' && <Building2 className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.danger.base }} />}
-                  {error.type === 'validation' && <AlertCircle className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.danger.base }} />}
-                  {error.type === 'unknown' && <XCircle className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.danger.base }} />}
+                  {error.type === 'auth' && <ShieldAlert className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                  {error.type === 'network' && <Wifi className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                  {error.type === 'organization' && <Building2 className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                  {error.type === 'validation' && <AlertCircle className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                  {error.type === 'unknown' && <XCircle className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
                 </div>
 
-                {/* Error Text */}
+                {/* Error Text - Enhanced typography */}
                 <div className="flex-1 min-w-0">
                   <p
-                    className="text-base font-semibold mb-1"
-                    style={{ color: SALON_LUXE_COLORS.danger.base }}
+                    className="text-lg font-bold mb-2"
+                    style={{ color: SALON_LUXE_COLORS.error.base, letterSpacing: '-0.01em' }}
                   >
                     {error.message}
                   </p>
                   {error.details && (
                     <p
                       className="text-sm leading-relaxed"
-                      style={{ color: SALON_LUXE_COLORS.danger.text }}
+                      style={{ color: SALON_LUXE_COLORS.champagne.base, opacity: 0.95 }}
                     >
                       {error.details}
                     </p>
