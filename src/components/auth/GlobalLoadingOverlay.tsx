@@ -1,15 +1,15 @@
 /**
- * Global Loading Overlay
- * Persistent loading screen that stays visible across route changes
- * Smart Code: HERA.UI.LOADING.OVERLAY.v1
+ * Global Loading Overlay - HERA Theme
+ * Enterprise-grade loading screen with premium animations
+ * Smart Code: HERA.UI.LOADING.OVERLAY.v2
  */
 
 'use client'
 
 import { useEffect } from 'react'
 import { useLoadingStore } from '@/lib/stores/loading-store'
-import { Sparkles } from 'lucide-react'
-import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
+import { Loader2, Lock, Zap } from 'lucide-react'
+import { HERA_THEME_COLORS, HERA_THEME_GRADIENTS, withOpacity } from '@/lib/constants/hera-theme-colors'
 
 export function GlobalLoadingOverlay() {
   const { isLoading, progress, message, subtitle } = useLoadingStore()
@@ -32,121 +32,228 @@ export function GlobalLoadingOverlay() {
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
       style={{
-        backgroundColor: SALON_LUXE_COLORS.charcoal.dark,
+        backgroundColor: HERA_THEME_COLORS.background.darkest,
         backgroundImage: `
-          radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
-          radial-gradient(ellipse 60% 50% at 0% 100%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
-          radial-gradient(ellipse 60% 50% at 100% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)
+          radial-gradient(ellipse 80% 50% at 50% -20%, ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.15)} 0%, transparent 50%),
+          radial-gradient(ellipse 60% 50% at 0% 100%, ${withOpacity(HERA_THEME_COLORS.primary.purple.base, 0.1)} 0%, transparent 50%),
+          radial-gradient(ellipse 60% 50% at 100% 100%, ${withOpacity(HERA_THEME_COLORS.primary.cyan.base, 0.08)} 0%, transparent 50%)
         `
       }}
     >
-      {/* Animated gradient pulse */}
+      {/* Animated gradient orbs */}
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 100% 80% at 50% 50%, rgba(212, 175, 55, 0.3) 0%, transparent 60%)
+            radial-gradient(ellipse 100% 80% at 50% 50%, ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.25)} 0%, transparent 60%)
           `,
-          animation: 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          animation: 'pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+        }}
+      />
+
+      {/* Rotating gradient ring */}
+      <div
+        className="absolute w-[500px] h-[500px] rounded-full opacity-30"
+        style={{
+          background: `conic-gradient(from 0deg, ${HERA_THEME_COLORS.primary.indigo.base}, ${HERA_THEME_COLORS.primary.purple.base}, ${HERA_THEME_COLORS.primary.cyan.base}, ${HERA_THEME_COLORS.primary.indigo.base})`,
+          filter: 'blur(60px)',
+          animation: 'spin-slow 20s linear infinite'
         }}
       />
 
       {/* Loading Card */}
       <div
-        className="relative z-10 rounded-3xl p-12 backdrop-blur-xl max-w-md w-full mx-4 animate-in fade-in zoom-in-95 duration-500"
+        className="relative z-10 rounded-3xl p-10 backdrop-blur-2xl max-w-md w-full mx-4 animate-in fade-in zoom-in-95 duration-500"
         style={{
-          background: 'linear-gradient(135deg, rgba(26,26,26,0.98) 0%, rgba(15,15,15,0.98) 100%)',
-          border: `2px solid ${SALON_LUXE_COLORS.gold.base}`,
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%)',
+          border: `2px solid ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.3)}`,
           boxShadow: `
-            0 30px 60px rgba(0, 0, 0, 0.6),
-            0 0 0 1px rgba(212, 175, 55, 0.3),
-            0 0 40px rgba(212, 175, 55, 0.4)
+            0 30px 60px rgba(0, 0, 0, 0.7),
+            0 0 0 1px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.2)},
+            0 0 60px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.3)},
+            inset 0 1px 0 rgba(255, 255, 255, 0.05)
           `
         }}
       >
-        {/* Logo with pulse animation */}
-        <div className="text-center mb-8">
-          <div
-            className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center shadow-2xl animate-pulse"
-            style={{
-              background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.gold.dark} 100%)`,
-              boxShadow: `0 12px 32px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.3)`
-            }}
-          >
-            <Sparkles className="h-10 w-10" style={{ color: SALON_LUXE_COLORS.charcoal.dark }} />
+        {/* Floating particles background */}
+        <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                backgroundColor: [
+                  HERA_THEME_COLORS.primary.indigo.light,
+                  HERA_THEME_COLORS.primary.purple.light,
+                  HERA_THEME_COLORS.primary.cyan.light
+                ][i % 3],
+                opacity: 0.4,
+                animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Icon with rotating ring */}
+        <div className="relative text-center mb-8">
+          {/* Rotating outer ring */}
+          <div className="relative w-24 h-24 mx-auto mb-6">
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: `conic-gradient(from 0deg, ${HERA_THEME_COLORS.primary.indigo.base}, ${HERA_THEME_COLORS.primary.purple.base}, ${HERA_THEME_COLORS.primary.cyan.base}, ${HERA_THEME_COLORS.primary.indigo.base})`,
+                padding: '3px',
+                animation: 'spin-smooth 3s linear infinite'
+              }}
+            >
+              <div
+                className="w-full h-full rounded-full flex items-center justify-center"
+                style={{
+                  background: HERA_THEME_COLORS.background.darkest,
+                }}
+              >
+                {/* Inner icon */}
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                  style={{
+                    background: HERA_THEME_GRADIENTS.buttonPrimary,
+                    boxShadow: `0 8px 24px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.4)}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+                  }}
+                >
+                  <Loader2 className="h-8 w-8 text-white animate-spin" />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Title */}
+          {/* Title with gradient text */}
           <h1
             className="text-3xl font-bold mb-3"
             style={{
-              background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.champagne.light} 0%, ${SALON_LUXE_COLORS.gold.base} 100%)`,
+              background: `linear-gradient(135deg, ${HERA_THEME_COLORS.primary.indigo.light} 0%, ${HERA_THEME_COLORS.primary.purple.light} 50%, ${HERA_THEME_COLORS.primary.cyan.light} 100%)`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               letterSpacing: '-0.02em'
             }}
           >
-            Loading Your Dashboard
+            Loading Experience
           </h1>
 
           {/* Message */}
-          <p className="text-base" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+          <p className="text-base" style={{ color: HERA_THEME_COLORS.text.secondary }}>
             {message || 'Preparing your workspace...'}
           </p>
         </div>
 
-        {/* Progress Bar Container */}
-        <div
-          className="relative h-2 rounded-full overflow-hidden mb-6"
-          style={{
-            backgroundColor: 'rgba(212, 175, 55, 0.1)',
-            border: `1px solid ${SALON_LUXE_COLORS.border.base}`
-          }}
-        >
-          {/* Progress Bar */}
+        {/* Enhanced Progress Bar */}
+        <div className="relative mb-8">
+          {/* Track */}
           <div
-            className="absolute inset-y-0 left-0 rounded-full transition-all duration-300 ease-out"
+            className="relative h-3 rounded-full overflow-hidden"
             style={{
-              width: `${progress}%`,
-              background: `linear-gradient(90deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.champagne.light} 100%)`,
-              boxShadow: `0 0 20px ${SALON_LUXE_COLORS.gold.base}80`
+              background: withOpacity(HERA_THEME_COLORS.background.base, 0.5),
+              border: `1px solid ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.2)}`,
+              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
             }}
           >
-            {/* Shimmer effect */}
+            {/* Progress fill with gradient */}
             <div
-              className="absolute inset-0 animate-shimmer"
+              className="absolute inset-y-0 left-0 rounded-full transition-all duration-300 ease-out"
               style={{
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%)',
-                backgroundSize: '200% 100%'
+                width: `${progress}%`,
+                background: HERA_THEME_GRADIENTS.buttonPrimary,
+                boxShadow: `0 0 24px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.6)}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
               }}
-            />
+            >
+              {/* Animated shimmer */}
+              <div
+                className="absolute inset-0 animate-shimmer"
+                style={{
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%)',
+                  backgroundSize: '200% 100%'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Progress percentage badge */}
+          <div className="absolute -top-10 left-1/2 transform -translate-x-1/2">
+            <div
+              className="px-4 py-1.5 rounded-full text-sm font-bold"
+              style={{
+                background: HERA_THEME_GRADIENTS.buttonPrimary,
+                color: 'white',
+                boxShadow: `0 4px 12px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.4)}`,
+                border: `1px solid ${withOpacity(HERA_THEME_COLORS.primary.indigo.light, 0.3)}`
+              }}
+            >
+              {Math.round(progress)}%
+            </div>
           </div>
         </div>
 
-        {/* Progress Percentage */}
-        <div className="text-center">
-          <p
-            className="text-2xl font-bold tabular-nums"
-            style={{ color: SALON_LUXE_COLORS.gold.base }}
-          >
-            {Math.round(progress)}%
-          </p>
-          <p className="text-xs mt-1" style={{ color: SALON_LUXE_COLORS.bronze }}>
+        {/* Subtitle */}
+        <div className="text-center mb-6">
+          <p className="text-xs" style={{ color: HERA_THEME_COLORS.text.muted }}>
             {subtitle || 'Setting up your session...'}
           </p>
         </div>
 
-        {/* Animated dots */}
-        <div className="flex justify-center gap-2 mt-6">
+        {/* Feature indicators with icons */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <div
+            className="flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300"
+            style={{
+              background: withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.1),
+              border: `1px solid ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.2)}`
+            }}
+          >
+            <Lock className="w-4 h-4" style={{ color: HERA_THEME_COLORS.primary.indigo.light }} />
+            <span className="text-[10px] font-medium" style={{ color: HERA_THEME_COLORS.text.muted }}>
+              Secure
+            </span>
+          </div>
+          <div
+            className="flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300"
+            style={{
+              background: withOpacity(HERA_THEME_COLORS.primary.purple.base, 0.1),
+              border: `1px solid ${withOpacity(HERA_THEME_COLORS.primary.purple.base, 0.2)}`
+            }}
+          >
+            <Zap className="w-4 h-4" style={{ color: HERA_THEME_COLORS.primary.purple.light }} />
+            <span className="text-[10px] font-medium" style={{ color: HERA_THEME_COLORS.text.muted }}>
+              Fast
+            </span>
+          </div>
+          <div
+            className="flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300"
+            style={{
+              background: withOpacity(HERA_THEME_COLORS.primary.cyan.base, 0.1),
+              border: `1px solid ${withOpacity(HERA_THEME_COLORS.primary.cyan.base, 0.2)}`
+            }}
+          >
+            <Loader2 className="w-4 h-4 animate-spin" style={{ color: HERA_THEME_COLORS.primary.cyan.light }} />
+            <span className="text-[10px] font-medium" style={{ color: HERA_THEME_COLORS.text.muted }}>
+              Smart
+            </span>
+          </div>
+        </div>
+
+        {/* Animated pulse dots */}
+        <div className="flex justify-center gap-2">
           {[0, 1, 2].map((i) => (
             <div
               key={i}
               className="w-2 h-2 rounded-full"
               style={{
-                backgroundColor: SALON_LUXE_COLORS.gold.base,
+                background: HERA_THEME_GRADIENTS.buttonPrimary,
                 animation: `bounce 1.4s infinite ease-in-out both`,
-                animationDelay: `${i * 0.16}s`
+                animationDelay: `${i * 0.16}s`,
+                boxShadow: `0 0 8px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.5)}`
               }}
             />
           ))}
@@ -157,12 +264,30 @@ export function GlobalLoadingOverlay() {
       <style jsx>{`
         @keyframes pulse-glow {
           0%, 100% {
-            opacity: 0.3;
+            opacity: 0.25;
             transform: scale(1);
           }
           50% {
-            opacity: 0.5;
-            transform: scale(1.05);
+            opacity: 0.4;
+            transform: scale(1.1);
+          }
+        }
+
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes spin-smooth {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
           }
         }
 
@@ -183,6 +308,17 @@ export function GlobalLoadingOverlay() {
           40% {
             transform: scale(1);
             opacity: 1;
+          }
+        }
+
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) translateX(0px);
+            opacity: 0.3;
+          }
+          50% {
+            transform: translateY(-20px) translateX(10px);
+            opacity: 0.6;
           }
         }
 

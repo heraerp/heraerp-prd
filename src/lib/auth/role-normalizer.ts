@@ -312,13 +312,13 @@ const APP_ROUTING_RULES: Record<AppCode, Record<AppRole, string>> = {
   // RETAIL APP (Generic)
   // ========================
   retail: {
-    owner: '/retail/dashboard',          // Business analytics
-    manager: '/retail/manager',          // Store management
+    owner: '/retail/home',               // Business home & analytics
+    manager: '/retail/home',             // Store management
     receptionist: '/retail/pos',         // Point of sale
     accountant: '/retail/accounting',    // Financial management
     stylist: '/retail/sales',            // Sales associate
     staff: '/retail/operations',         // Store operations
-    user: '/retail'                      // Customer portal
+    user: '/retail/home'                 // Customer portal
   }
 }
 

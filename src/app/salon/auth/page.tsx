@@ -407,40 +407,112 @@ export default function SalonAuthPage() {
             }}
           >
             {error ? (
-              <div className="flex items-start gap-4">
-                {/* Error Icon - Enhanced with solid gradient */}
-                <div
-                  className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.error.base} 0%, ${SALON_LUXE_COLORS.error.dark} 100%)`,
-                    boxShadow: `0 4px 12px rgba(255, 107, 147, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)`
-                  }}
-                >
-                  {error.type === 'auth' && <ShieldAlert className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
-                  {error.type === 'network' && <Wifi className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
-                  {error.type === 'organization' && <Building2 className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
-                  {error.type === 'validation' && <AlertCircle className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
-                  {error.type === 'unknown' && <XCircle className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+              <>
+                <div className="flex items-start gap-4">
+                  {/* Error Icon - Enhanced with solid gradient */}
+                  <div
+                    className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
+                    style={{
+                      background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.error.base} 0%, ${SALON_LUXE_COLORS.error.dark} 100%)`,
+                      boxShadow: `0 4px 12px rgba(255, 107, 147, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+                    }}
+                  >
+                    {error.type === 'auth' && <ShieldAlert className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                    {error.type === 'network' && <Wifi className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                    {error.type === 'organization' && <Building2 className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                    {error.type === 'validation' && <AlertCircle className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                    {error.type === 'unknown' && <XCircle className="w-6 h-6" style={{ color: '#FFFFFF' }} />}
+                  </div>
+
+                  {/* Error Text - Enhanced typography */}
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className="text-lg font-bold mb-2"
+                      style={{ color: SALON_LUXE_COLORS.error.base, letterSpacing: '-0.01em' }}
+                    >
+                      {error.message}
+                    </p>
+                    {error.details && (
+                      <p
+                        className="text-sm leading-relaxed"
+                        style={{ color: SALON_LUXE_COLORS.champagne.base, opacity: 0.95 }}
+                      >
+                        {error.details}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                {/* Error Text - Enhanced typography */}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="text-lg font-bold mb-2"
-                    style={{ color: SALON_LUXE_COLORS.error.base, letterSpacing: '-0.01em' }}
-                  >
-                    {error.message}
-                  </p>
-                  {error.details && (
-                    <p
-                      className="text-sm leading-relaxed"
-                      style={{ color: SALON_LUXE_COLORS.champagne.base, opacity: 0.95 }}
+                {/* Purchase Button for Owners - Enhanced Premium CTA */}
+                {showAppPurchaseButton && (
+                  <div className="mt-6">
+                    <div
+                      className="rounded-xl p-4"
+                      style={{
+                        background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base}15 0%, ${SALON_LUXE_COLORS.gold.dark}10 100%)`,
+                        border: `1px solid ${SALON_LUXE_COLORS.gold.base}40`,
+                        boxShadow: `0 4px 16px ${SALON_LUXE_COLORS.gold.base}20`
+                      }}
                     >
-                      {error.details}
-                    </p>
-                  )}
-                </div>
-              </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          router.push('/apps?mode=store&highlight=SALON')
+                        }}
+                        className="w-full relative group overflow-hidden rounded-lg px-6 py-4 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                        style={{
+                          background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.gold.dark} 100%)`,
+                          boxShadow: `0 8px 24px ${SALON_LUXE_COLORS.gold.base}60, inset 0 1px 0 rgba(255, 255, 255, 0.3)`,
+                          border: 'none'
+                        }}
+                      >
+                        {/* Shine effect on hover */}
+                        <div
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                        />
+
+                        {/* Button content */}
+                        <div className="relative flex items-center justify-center gap-3">
+                          <div
+                            className="w-8 h-8 rounded-lg flex items-center justify-center"
+                            style={{
+                              backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)'
+                            }}
+                          >
+                            <ShoppingBag className="w-4 h-4" style={{ color: SALON_LUXE_COLORS.charcoal.dark }} />
+                          </div>
+                          <div className="text-left">
+                            <div
+                              className="text-base font-bold tracking-wide"
+                              style={{ color: SALON_LUXE_COLORS.charcoal.dark }}
+                            >
+                              Purchase SALON App
+                            </div>
+                            <div
+                              className="text-xs font-medium opacity-90"
+                              style={{ color: SALON_LUXE_COLORS.charcoal.dark }}
+                            >
+                              Unlock full salon management features
+                            </div>
+                          </div>
+                          <div className="ml-auto">
+                            <svg
+                              className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                              style={{ color: SALON_LUXE_COLORS.charcoal.dark }}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="flex items-center gap-3">
                 <Sparkles className="w-5 h-5 animate-pulse" style={{ color: SALON_LUXE_COLORS.gold.base }} />
