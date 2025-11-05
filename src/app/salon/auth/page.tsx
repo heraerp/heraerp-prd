@@ -31,7 +31,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Mail, Lock, Sparkles, ShieldAlert, AlertCircle, Wifi, Building2, XCircle, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, Sparkles, ShieldAlert, AlertCircle, Wifi, Building2, XCircle, Eye, EyeOff, ShoppingBag } from 'lucide-react'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { SalonLuxeInput } from '@/components/salon/shared/SalonLuxeInput'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
@@ -60,6 +60,7 @@ export default function SalonAuthPage() {
   const [error, setError] = useState<ErrorState | null>(null)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [resetEmailSent, setResetEmailSent] = useState(false)
+  const [showAppPurchaseButton, setShowAppPurchaseButton] = useState(false)
 
   // ✅ Reset global loading on mount (in case of back navigation)
   useEffect(() => {
@@ -207,16 +208,27 @@ export default function SalonAuthPage() {
       const hasSalonApp = userApps.some((app: any) => app.code.toUpperCase() === 'SALON')
 
       if (!hasSalonApp) {
-        showError(
-          'SALON app not purchased',
-          'organization',
-          `Your organization (${firstOrg?.name || 'Unknown'}) does not have the SALON app. Redirecting to app store...`
-        )
+        // ✅ ENTERPRISE: Role-based handling for app not purchased
+        const userRole = result.role
+        const isOwner = userRole === 'owner'
 
-        // Redirect to app store after brief delay
-        setTimeout(() => {
-          router.push('/apps?mode=store&highlight=SALON')
-        }, 2000)
+        if (isOwner) {
+          // Owner: Show purchase option with button
+          setShowAppPurchaseButton(true)
+          showError(
+            'SALON app not purchased',
+            'organization',
+            `Your organization (${firstOrg?.name || 'Unknown'}) does not have the SALON app.`
+          )
+        } else {
+          // Non-owner: Show contact admin message (no button)
+          setShowAppPurchaseButton(false)
+          showError(
+            'SALON app not available',
+            'organization',
+            `Your organization does not have the SALON app. Please contact your organization owner to purchase this app.`
+          )
+        }
         return
       }
 
