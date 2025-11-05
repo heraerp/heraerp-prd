@@ -982,21 +982,8 @@ function SalonProductsPageContent() {
         }
       />
 
-      {/* ✅ MOBILE: Search bar and quick actions */}
-      <div className="md:hidden px-4 pb-4 space-y-3 overflow-hidden">
-        {/* Mobile search bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bronze" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search products..."
-            className="w-full pl-10 pr-4 py-2.5 bg-charcoalLight border border-bronze/30 rounded-xl text-champagne placeholder-bronze focus:outline-none focus:border-gold/50"
-          />
-        </div>
-
-        {/* Mobile quick actions - Icon Buttons */}
+      {/* ✅ MOBILE: Quick actions - Icon Buttons */}
+      <div className="md:hidden px-4 pb-4 overflow-hidden">
         <div className="flex gap-2 overflow-x-auto pb-16 -mb-14 scrollbar-hide">
           <SalonIconButtonGroup spacing="md">
             {/* Navigation to Inventory - HIDDEN until inventory system is complete */}
@@ -1254,7 +1241,7 @@ function SalonProductsPageContent() {
             />
           </div>
 
-          {/* Top Control Bar - Tabs, Branch Filter & View Controls */}
+          {/* Top Control Bar - Search, Tabs, Filters & View Controls */}
           <div className="mx-6 mt-6">
             <div
               className="p-4 rounded-xl"
@@ -1264,7 +1251,35 @@ function SalonProductsPageContent() {
                 boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
               }}
             >
-              {/* ✅ MOBILE: Stack vertically on mobile, side-by-side on desktop */}
+              {/* Row 1: Search Bar (Full Width) */}
+              <div className="mb-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: COLORS.gold }} />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products by name or code..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border focus:outline-none focus:ring-2 transition-all"
+                    style={{
+                      backgroundColor: COLORS.charcoal,
+                      borderColor: COLORS.bronze + '40',
+                      color: COLORS.champagne
+                    }}
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-white/10 transition-colors"
+                      title="Clear search"
+                    >
+                      <X className="w-4 h-4" style={{ color: COLORS.bronze }} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Row 2: Filters and View Controls */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 {/* Left: Status Tabs, Location Filter & Category Filter */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">

@@ -15,6 +15,7 @@
 import { useState } from 'react'
 import { useUniversalTransactionV1 } from './useUniversalTransactionV1'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { FinanceDNAServiceV2, FinanceGuardrails } from '@/lib/dna/integration/finance-integration-dna-v2'
 import type { UniversalFinanceEventV2 } from '@/lib/dna/integration/finance-integration-dna-v2'
 import {
@@ -25,6 +26,7 @@ import {
   generateEnhancedMetadata,
   GL_SMART_CODES
 } from '@/lib/finance/gl-posting-engine'
+import { updateCustomerLTV } from '@/lib/salon/customer-ltv-service'
 
 // Smart code templates for POS transactions
 const SMART_CODES = {
@@ -83,6 +85,7 @@ interface UsePosCheckoutReturn {
 export function usePosCheckout(): UsePosCheckoutReturn {
   const [isProcessing, setIsProcessing] = useState(false)
   const { currentOrganization } = useOrganization()
+  const { user, organization } = useHERAAuth() // ✅ Get actor user ID and organization for LTV updates
 
   // ✅ LAYER 1: Use useUniversalTransactionV1 (RPC hera_txn_crud_v1)
   const {
@@ -135,30 +138,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
 
       // Allow overpayment (for cash change), but not underpayment
       if (payment_total < total_amount - 0.01) {
-        console.error('[usePosCheckout] Payment validation failed - UNDERPAID:', {
-          subtotal: subtotal.toFixed(2),
-          discount_total: discount_total.toFixed(2),
-          tax_amount: tax_amount.toFixed(2),
-          tip_total: tip_total.toFixed(2),
-          total_amount: total_amount.toFixed(2),
-          payment_total: payment_total.toFixed(2),
-          shortfall: (total_amount - payment_total).toFixed(2)
-        })
         throw new Error(`Payment amount (${payment_total.toFixed(2)}) is less than total (${total_amount.toFixed(2)})`)
-      }
-
-      // Log successful validation
-      if (payment_total > total_amount + 0.01) {
-        console.log('[usePosCheckout] ✅ Overpayment detected (change due):', {
-          total_amount: total_amount.toFixed(2),
-          payment_total: payment_total.toFixed(2),
-          change_due: (payment_total - total_amount).toFixed(2)
-        })
-      } else {
-        console.log('[usePosCheckout] ✅ Exact payment:', {
-          total_amount: total_amount.toFixed(2),
-          payment_total: payment_total.toFixed(2)
-        })
       }
 
       // Build transaction lines
@@ -286,17 +266,6 @@ export function usePosCheckout(): UsePosCheckoutReturn {
 
       // Determine primary staff ID (first staff from items)
       const primaryStaffId = items.find(item => item.staff_id)?.staff_id || null
-
-      // ✅ ENTERPRISE TRACKING - Log all entity relationships
-      console.log('[usePosCheckout] ENTERPRISE TRACKING - All entities linked:', {
-        branch_id,
-        customer_id,
-        primary_staff: primaryStaffId,
-        appointment_id,
-        service_count: items.filter(i => i.type === 'service').length,
-        product_count: items.filter(i => i.type === 'product').length,
-        staff_assigned_count: items.filter(i => i.staff_id).length
-      })
 
       // ✅ LAYER 2: Finance DNA v2 Pre-transaction Validation
       if (financeDNA && currentOrganization?.id) {
@@ -525,6 +494,33 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         })
         // ✅ PRODUCTION SAFETY: Sale still succeeds - GL posting failure is logged for manual review
         // This ensures POS operations are never blocked by GL issues
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // ✅ ENTERPRISE LTV TRACKING - AUTOMATIC LIFETIME VALUE UPDATE
+      // Updates customer's lifetime_value field after successful sale
+      // ═══════════════════════════════════════════════════════════════════════════
+
+      // ✅ Use organization from useHERAAuth (fallback to currentOrganization for compatibility)
+      const effectiveOrgId = organization?.id || currentOrganization?.id
+
+      if (customer_id && effectiveOrgId && user?.id) {
+        try {
+          await updateCustomerLTV({
+            customerId: customer_id,
+            saleAmount: total_amount,
+            organizationId: effectiveOrgId,
+            actorUserId: user.id
+          })
+
+          console.log('[LTV] ✅ Updated:', {
+            customer: customer_id.substring(0, 8),
+            amount: total_amount.toFixed(2)
+          })
+        } catch (ltvError) {
+          // 🛡️ NON-BLOCKING: LTV failure doesn't block sale
+          console.error('[LTV] ⚠️ Update failed:', ltvError instanceof Error ? ltvError.message : 'Unknown error')
+        }
       }
 
       return {

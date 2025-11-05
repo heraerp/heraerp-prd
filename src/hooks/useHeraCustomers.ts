@@ -9,7 +9,7 @@
  * Provides customer-specific helpers and relationship management
  */
 
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useUniversalEntityV1 } from './useUniversalEntityV1'
 import { CUSTOMER_PRESET } from './entityPresets'
 import type { DynamicFieldDef, RelationshipDef } from './useUniversalEntityV1'
@@ -111,6 +111,21 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
     dynamicFields: CUSTOMER_PRESET.dynamicFields as DynamicFieldDef[],
     relationships: CUSTOMER_PRESET.relationships as RelationshipDef[]
   })
+
+  // ✅ ENTERPRISE LTV CACHE INVALIDATION: Listen for LTV updates and refetch
+  useEffect(() => {
+    const handleLTVUpdate = (event: CustomEvent) => {
+      const { organizationId } = event.detail
+      if (organizationId === options?.organizationId) {
+        refetch()
+      }
+    }
+
+    window.addEventListener('hera:customer:ltv:updated', handleLTVUpdate as EventListener)
+    return () => {
+      window.removeEventListener('hera:customer:ltv:updated', handleLTVUpdate as EventListener)
+    }
+  }, [options?.organizationId, refetch])
 
   // Filter customers by branch and other criteria
   const filteredCustomers = useMemo(() => {
@@ -236,8 +251,6 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
     id: string,
     data: Partial<Parameters<typeof createCustomer>[0]>
   ) => {
-    console.log('[useHeraCustomers] 🚀 Updating customer:', { id, data })
-
     try {
       // Build dynamic patch from provided fields
       const dynamic_patch: Record<string, any> = {}
@@ -246,30 +259,12 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
         if (key in data) {
           const value = (data as any)[key]
 
-          console.log(`[useHeraCustomers] 🔍 Processing field: ${def.name}`, {
-            type: def.type,
-            value,
-            valueType: typeof value,
-            isEmpty: value === '',
-            isNull: value === null,
-            isUndefined: value === undefined
-          })
-
           // ✅ FIX: Handle date fields - convert empty string to null and format for database
           if (def.type === 'date') {
-            // Convert yyyy-MM-dd (HTML input) to database format
             const dbDate = formatDateForDatabase(value)
             dynamic_patch[def.name] = dbDate
-
-            if (dbDate === null) {
-              console.log(`[useHeraCustomers] 📅 Date field ${def.name} → null (clearing)`)
-            } else {
-              console.log(`[useHeraCustomers] 📅 Date field ${def.name} → ${dbDate} (from input: ${value})`)
-            }
           } else if (value !== undefined) {
-            // For non-date fields, include if not undefined
             dynamic_patch[def.name] = value
-            console.log(`[useHeraCustomers] 📝 Field ${def.name} → ${value}`)
           }
         }
       }
@@ -288,15 +283,10 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
         ...(Object.keys(relationships_patch).length ? { relationships_patch } : {})
       }
 
-      console.log('[useHeraCustomers] 📤 Sending update payload:', payload)
-
       const result = await baseUpdate(payload)
-
-      console.log('[useHeraCustomers] ✅ Update completed:', result)
-
       return result
     } catch (error: any) {
-      console.error('[useHeraCustomers] ❌ Update failed:', error)
+      console.error('[useHeraCustomers] Update failed:', error)
       throw error
     }
   }
@@ -306,26 +296,13 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
     const customer = (customers as CustomerEntity[])?.find(c => c.id === id)
     if (!customer) throw new Error('Customer not found')
 
-    console.log('[useHeraCustomers] 📦 Archiving customer:', { id, name: customer.entity_name })
+    const result = await baseUpdate({
+      entity_id: id,
+      entity_name: customer.entity_name,
+      status: 'archived'
+    })
 
-    try {
-      // ⚡ OPTIMISTIC UPDATE: useUniversalEntityV1 automatically updates cache
-      const result = await baseUpdate({
-        entity_id: id,
-        entity_name: customer.entity_name,
-        status: 'archived'
-      })
-
-      console.log('[useHeraCustomers] ✅ Customer archived successfully:', result)
-
-      // ✅ The query filter (status: 'active') will automatically exclude archived customers
-      // The cache update in useUniversalEntityV1 will trigger a re-render with filtered results
-
-      return result
-    } catch (error: any) {
-      console.error('[useHeraCustomers] ❌ Archive failed:', error)
-      throw error
-    }
+    return result
   }
 
   // Helper to restore archived customer
@@ -333,9 +310,6 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
     const customer = (customers as CustomerEntity[])?.find(c => c.id === id)
     if (!customer) throw new Error('Customer not found')
 
-    console.log('[useHeraCustomers] Restoring customer:', { id })
-
-    // ⚡ OPTIMISTIC UPDATE: useUniversalEntityV1 automatically updates cache
     const result = await baseUpdate({
       entity_id: id,
       entity_name: customer.entity_name,
@@ -368,8 +342,7 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
         // ✅ FIX: Remove smart_code - not a valid parameter for delete mutation
       })
 
-      // If we reach here, hard delete succeeded
-      console.log('[useHeraCustomers] ✅ Customer permanently deleted:', id)
+      // Hard delete succeeded
       return {
         success: true,
         archived: false
@@ -385,13 +358,7 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
         error.message?.includes('constraint')
 
       if (isFKConstraint) {
-        // ✅ FK constraint is EXPECTED for customers with transactions
-        // This is NOT an error - it's the normal flow for referenced entities
-        console.log('[useHeraCustomers] ℹ️ Customer has transactions, archiving instead of deleting:', {
-          id,
-          name: customer.entity_name
-        })
-
+        // FK constraint - fallback to archive
         try {
           await baseUpdate({
             entity_id: id,
@@ -399,9 +366,6 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
             status: 'archived'
           })
 
-          console.log('[useHeraCustomers] ✅ Customer archived successfully (FK fallback):', id)
-
-          // ✅ Return success - this is the EXPECTED outcome for customers with history
           return {
             success: true,
             archived: true,
@@ -409,14 +373,13 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
               'Customer is used in appointments or transactions and cannot be deleted. It has been archived instead.'
           }
         } catch (archiveError: any) {
-          // ❌ Archive fallback failed - THIS is an actual error
-          console.error('[useHeraCustomers] ❌ Archive fallback failed:', archiveError)
+          console.error('[useHeraCustomers] Archive fallback failed:', archiveError)
           throw new Error(`Failed to delete or archive customer: ${archiveError.message}`)
         }
       }
 
-      // ❌ Different error - not FK constraint - re-throw it
-      console.error('[useHeraCustomers] ❌ Delete failed with unexpected error:', error)
+      // Different error - re-throw it
+      console.error('[useHeraCustomers] Delete failed:', error)
       throw error
     }
   }
@@ -481,7 +444,7 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
   // Helper to get customer statistics
   const getCustomerStats = () => {
     const allCustomers = (customers as CustomerEntity[]) || []
-    // Check both flattened vip property and dynamic_fields.vip.value
+
     const vipCount = allCustomers.filter(
       c => c.vip === true || c.dynamic_fields?.vip?.value === true
     ).length

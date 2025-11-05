@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 import { format, formatDistanceToNow } from 'date-fns'
-import { Search, Edit, Trash2, Archive, ArchiveRestore, User, UserCircle, Plus, Grid3X3, List, MoreVertical, Building2, X, Filter } from 'lucide-react'
+import { Search, Edit, Trash2, Archive, ArchiveRestore, User, UserCircle, Plus, Grid3X3, List, MoreVertical, Building2, X, Filter, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -93,7 +93,18 @@ export function StaffListTab({
   const [sortBy, setSortBy] = useState('name_asc')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [branchFilter, setBranchFilter] = useState<string | null>(null)
-  const [showFilters, setShowFilters] = useState(false)
+  const [roleFilter, setRoleFilter] = useState<string | null>(null)
+
+  // Extract unique roles from staff data for filter dropdown
+  const uniqueRoles = useMemo(() => {
+    const roles = new Set<string>()
+    staff?.forEach(s => {
+      if (s.role_title) {
+        roles.add(s.role_title)
+      }
+    })
+    return Array.from(roles).sort()
+  }, [staff])
 
   const filteredAndSortedStaff = useMemo(
     () => {
@@ -115,11 +126,22 @@ export function StaffListTab({
           return branchIds.includes(branchFilter)
         })()
 
-        return matchesStatus && matchesSearch && matchesBranch
+        // Role filtering
+        const matchesRole = !roleFilter || s.role_title === roleFilter
+
+        return matchesStatus && matchesSearch && matchesBranch && matchesRole
       }) || []
 
       // Apply sorting
       const sorted = [...filtered].sort((a, b) => {
+        // Sort by archived status first (active first, archived last)
+        const aArchived = a.status === 'archived'
+        const bArchived = b.status === 'archived'
+        if (aArchived !== bArchived) {
+          return aArchived ? 1 : -1
+        }
+
+        // Then apply normal sorting
         switch (sortBy) {
           case 'name_asc':
             return (a.entity_name || '').localeCompare(b.entity_name || '')
@@ -140,23 +162,56 @@ export function StaffListTab({
 
       return sorted
     },
-    [staff, searchTerm, includeArchived, sortBy, branchFilter]
+    [staff, searchTerm, includeArchived, sortBy, branchFilter, roleFilter]
   )
 
   return (
     <div className="space-y-6">
-      {/* Search and Filters - SINGLE ROW LAYOUT */}
+      {/* 🔍 UNIFIED FILTER BANNER - Matching Products/Services Page Pattern */}
       <div
         className="p-4 rounded-xl"
         style={{
-          background: `linear-gradient(135deg, ${COLORS.charcoalLight}90 0%, ${COLORS.charcoal}90 100())`,
-          border: `1px solid ${COLORS.gold}20`
+          backgroundColor: COLORS.charcoalLight + 'ee',
+          border: `1px solid ${COLORS.bronze}30`,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
         }}
       >
-        {/* Main Control Row */}
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          {/* Left Side: Tabs, Filters Button, Branch Badge, Search */}
-          <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+        {/* Row 1: Search Bar (Full Width) */}
+        <div className="mb-4">
+          <div className="relative">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+              style={{ color: COLORS.gold }}
+            />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              placeholder="Search staff by name, role..."
+              className="w-full pl-10 pr-10 py-2.5 rounded-lg border focus:outline-none focus:ring-2 transition-all"
+              style={{
+                backgroundColor: COLORS.charcoal,
+                borderColor: COLORS.bronze + '40',
+                color: COLORS.champagne
+              }}
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-white/10 transition-colors"
+                title="Clear search"
+              >
+                <X className="w-4 h-4" style={{ color: COLORS.bronze }} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Row 2: Filters and View Controls */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          {/* Left: Status Tabs & Branch Filter */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 flex-wrap">
+            {/* Status Tabs */}
             <Tabs
               value={includeArchived ? 'all' : 'active'}
               onValueChange={v => setIncludeArchived(v === 'all')}
@@ -176,70 +231,82 @@ export function StaffListTab({
               </TabsList>
             </Tabs>
 
+            {/* Branch Filter */}
             {branches.length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="min-h-[44px] transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{
-                  color: showFilters ? COLORS.gold : COLORS.lightText,
-                  backgroundColor: showFilters ? `${COLORS.gold}20` : 'transparent'
-                }}
+              <Select
+                value={branchFilter || '__ALL__'}
+                onValueChange={value => setBranchFilter(value === '__ALL__' ? null : value)}
               >
-                <Filter className="h-4 w-4 mr-1" />
-                <span className="hidden md:inline font-medium">Filters</span>
-              </Button>
-            )}
-
-            {branchFilter && (
-              <div
-                className="inline-flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg border text-xs md:text-sm font-medium"
-                style={{
-                  backgroundColor: COLORS.gold + '20',
-                  borderColor: COLORS.gold + '40',
-                  color: COLORS.champagne
-                }}
-              >
-                <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                <span className="hidden md:inline">
-                  {branches.find(b => b.id === branchFilter)?.entity_name || 'Branch'}
-                </span>
-                <button
-                  onClick={() => setBranchFilter(null)}
-                  className="hover:scale-110 active:scale-95 transition-all duration-200"
-                  aria-label="Clear branch filter"
+                <SelectTrigger
+                  className="w-[180px] h-9 text-sm"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight + '80',
+                    borderColor: COLORS.bronze + '40',
+                    color: COLORS.champagne
+                  }}
                 >
-                  <X className="h-3 w-3" style={{ color: COLORS.gold }} />
-                </button>
-              </div>
+                  <Building2 className="w-4 h-4 mr-2 inline" style={{ color: COLORS.gold }} />
+                  <SelectValue placeholder="All branches" />
+                </SelectTrigger>
+                <SelectContent
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.charcoalDark} 100())`,
+                    border: `1px solid ${COLORS.gold}40`
+                  }}
+                >
+                  <SelectItem value="__ALL__" style={{ color: COLORS.champagne }}>
+                    All branches
+                  </SelectItem>
+                  {branches.map(branch => (
+                    <SelectItem key={branch.id} value={branch.id} style={{ color: COLORS.champagne }}>
+                      {branch.entity_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
 
-            <div className="relative flex-1 max-w-xs">
-              <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
-                style={{ color: COLORS.gold }}
-              />
-              <Input
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="pl-9 pr-3 py-2 h-9 md:h-10 text-sm"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100())`,
-                  border: `1px solid ${COLORS.gold}30`,
-                  color: COLORS.champagne,
-                  borderRadius: '0.5rem'
-                }}
-              />
-            </div>
+            {/* Role Filter */}
+            {uniqueRoles.length > 0 && (
+              <Select
+                value={roleFilter || '__ALL__'}
+                onValueChange={value => setRoleFilter(value === '__ALL__' ? null : value)}
+              >
+                <SelectTrigger
+                  className="w-[180px] h-9 text-sm"
+                  style={{
+                    backgroundColor: COLORS.charcoalLight + '80',
+                    borderColor: COLORS.bronze + '40',
+                    color: COLORS.champagne
+                  }}
+                >
+                  <Shield className="w-4 h-4 mr-2 inline" style={{ color: COLORS.gold }} />
+                  <SelectValue placeholder="All roles" />
+                </SelectTrigger>
+                <SelectContent
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.charcoalDark} 100())`,
+                    border: `1px solid ${COLORS.gold}40`
+                  }}
+                >
+                  <SelectItem value="__ALL__" style={{ color: COLORS.champagne }}>
+                    All roles
+                  </SelectItem>
+                  {uniqueRoles.map(role => (
+                    <SelectItem key={role} value={role} style={{ color: COLORS.champagne }}>
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
-          {/* Right Side: Sort & View Controls */}
+          {/* Right: Sort & View Mode */}
           <div className="flex items-center gap-2">
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger
-                className="w-32 md:w-44 h-9 md:h-10 text-xs md:text-sm"
+                className="w-40 h-9 text-sm"
                 style={{
                   background: `linear-gradient(135deg, ${COLORS.charcoalDark} 0%, ${COLORS.black} 100())`,
                   border: `1px solid ${COLORS.gold}30`,
@@ -301,53 +368,6 @@ export function StaffListTab({
             </button>
           </div>
         </div>
-
-        {/* Expandable Filters (Branch Filter) */}
-        {showFilters && branches.length > 0 && (
-          <div
-            className="mt-4 pt-4 border-t animate-in fade-in slide-in-from-top-2 duration-300"
-            style={{ borderColor: COLORS.bronze + '30' }}
-          >
-            <div className="flex items-center gap-4">
-              <span
-                className="text-xs font-medium uppercase tracking-wider opacity-70 shrink-0"
-                style={{ color: COLORS.bronze }}
-              >
-                Branch
-              </span>
-              <Select
-                value={branchFilter || '__ALL__'}
-                onValueChange={value => setBranchFilter(value === '__ALL__' ? null : value)}
-              >
-                <SelectTrigger
-                  className="w-[180px] h-9 text-sm"
-                  style={{
-                    backgroundColor: COLORS.charcoalLight + '80',
-                    borderColor: COLORS.bronze + '40',
-                    color: COLORS.champagne
-                  }}
-                >
-                  <SelectValue placeholder="All branches" />
-                </SelectTrigger>
-                <SelectContent
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.charcoal} 0%, ${COLORS.charcoalDark} 100())`,
-                    border: `1px solid ${COLORS.gold}40`
-                  }}
-                >
-                  <SelectItem value="__ALL__" style={{ color: COLORS.champagne }}>
-                    All branches
-                  </SelectItem>
-                  {branches.map(branch => (
-                    <SelectItem key={branch.id} value={branch.id} style={{ color: COLORS.champagne }}>
-                      {branch.entity_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Staff List */}
@@ -386,20 +406,6 @@ export function StaffListTab({
                   }}
                 />
 
-                {isArchived && (
-                  <div className="absolute top-3 right-3 z-10">
-                    <Badge
-                      style={{
-                        backgroundColor: `${COLORS.bronze}30`,
-                        color: COLORS.bronze,
-                        border: `1px solid ${COLORS.bronze}60`
-                      }}
-                    >
-                      Archived
-                    </Badge>
-                  </div>
-                )}
-
                 {/* 📱 MOBILE-FIRST: Responsive padding */}
                 <CardContent className="p-4 md:p-5 lg:p-6 relative z-10">
                   <div className="flex items-start space-x-4">
@@ -414,12 +420,29 @@ export function StaffListTab({
                       <User className="h-8 w-8" style={{ color: avatarColor.icon }} />
                     </div>
                     <div className="flex-1">
-                      <h3
-                        className="font-bold text-lg transition-transform duration-300 group-hover:translate-x-1"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        {member.entity_name}
-                      </h3>
+                      {/* Name and ARC Badge - Horizontally aligned */}
+                      <div className="flex items-center gap-2">
+                        <h3
+                          className="font-bold text-lg transition-transform duration-300 group-hover:translate-x-1"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          {member.entity_name}
+                        </h3>
+                        {isArchived && (
+                          <Badge
+                            variant="secondary"
+                            className="text-[9px] font-bold tracking-tight px-1.5 py-0.5"
+                            style={{
+                              backgroundColor: COLORS.bronze + '25',
+                              color: COLORS.champagne,
+                              border: `1.5px solid ${COLORS.gold}`,
+                              boxShadow: `0 0 6px ${COLORS.gold}30`
+                            }}
+                          >
+                            ARC
+                          </Badge>
+                        )}
+                      </div>
                       <Badge
                         className="mt-2 transition-all duration-300 group-hover:scale-105"
                         style={{

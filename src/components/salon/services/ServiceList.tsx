@@ -69,6 +69,16 @@ export function ServiceList({
     return `${mins}m`
   }
 
+  // Sort services: active first, archived last (matching Products page pattern)
+  const sortedServices = React.useMemo(() => {
+    return [...services].sort((a, b) => {
+      const aArchived = a.status === 'archived'
+      const bArchived = b.status === 'archived'
+      if (aArchived === bArchived) return 0
+      return aArchived ? 1 : -1
+    })
+  }, [services])
+
   if (loading) {
     return (
       <div className="space-y-2">
@@ -82,7 +92,7 @@ export function ServiceList({
   if (viewMode === 'grid') {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {services.map(service => (
+        {sortedServices.map(service => (
           <ServiceCard
             key={service.id}
             service={service}
@@ -122,7 +132,7 @@ export function ServiceList({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {services.map((service, index) => {
+          {sortedServices.map((service, index) => {
             const isArchived = service.status === 'archived'
 
             return (
@@ -281,7 +291,7 @@ export function ServiceList({
             )
           })}
 
-          {services.length === 0 && (
+          {sortedServices.length === 0 && (
             <TableRow>
               <TableCell
                 colSpan={9}
@@ -326,20 +336,6 @@ function ServiceCard({
       opacity={isArchived ? 0.6 : 1}
       onClick={() => onEdit(service)}
     >
-      {/* Status Badge */}
-      {isArchived && (
-        <Badge
-          variant="secondary"
-          className="absolute top-2 right-2 text-xs"
-          style={{
-            backgroundColor: COLORS.bronze + '20',
-            color: COLORS.bronze
-          }}
-        >
-          Archived
-        </Badge>
-      )}
-
       {/* Icon and Actions */}
       <div className="flex items-start justify-between mb-4">
         <div
@@ -352,16 +348,33 @@ function ServiceCard({
           <Sparkles className="w-6 h-6" style={{ color: COLORS.gold }} />
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              onClick={(e) => e.stopPropagation()}
-              className="p-1 rounded hover:bg-black/20 transition-colors"
-              style={{ color: COLORS.lightText }}
+        {/* Actions: Archived Badge + Dropdown Menu - Horizontally aligned */}
+        <div className="flex items-center gap-2 shrink-0">
+          {isArchived && (
+            <Badge
+              variant="secondary"
+              className="text-[9px] font-bold tracking-tight px-1.5 py-0.5"
+              style={{
+                backgroundColor: COLORS.bronze + '25',
+                color: COLORS.champagne,
+                border: `1.5px solid ${COLORS.gold}`,
+                boxShadow: `0 0 6px ${COLORS.gold}30`
+              }}
             >
-              <MoreVertical className="h-4 w-4" />
-            </button>
-          </DropdownMenuTrigger>
+              ARC
+            </Badge>
+          )}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                onClick={(e) => e.stopPropagation()}
+                className="p-1 rounded hover:bg-black/20 transition-colors"
+                style={{ color: COLORS.lightText }}
+              >
+                <MoreVertical className="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
             style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
@@ -421,6 +434,7 @@ function ServiceCard({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
 
       {/* Service Name */}

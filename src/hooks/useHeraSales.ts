@@ -25,6 +25,8 @@ import { useMemo } from 'react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
 import { useUniversalEntityV1 } from '@/hooks/useUniversalEntityV1'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { updateCustomerLTV } from '@/lib/salon/customer-ltv-service'
 
 // 🎯 ENTERPRISE: Sale Status Workflow
 export type SaleStatus =
@@ -133,6 +135,7 @@ export const SALE_STATUS_CONFIG: Record<
 
 export function useHeraSales(options?: UseHeraSalesOptions) {
   const queryClient = useQueryClient()
+  const { user } = useHERAAuth() // ✅ Get actor user ID for LTV updates
 
   // ✅ MIGRATED: Use useUniversalTransactionV1 hook instead of direct API calls
   // Benefits: RPC-first, API v2 compliance, no direct Supabase calls
@@ -426,9 +429,10 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
     })
   }
 
-  // ✅ MIGRATED: Refund Sale using update
+  // ✅ MIGRATED: Refund Sale using update + LTV adjustment
   const refundSale = async ({ id, amount, reason }: { id: string; amount: number; reason: string }) => {
-    return updateSale({
+    // First, process the refund
+    const result = await updateSale({
       id,
       data: {
         status: 'refunded',
@@ -436,6 +440,29 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
         refund_reason: reason
       }
     })
+
+    // ✅ ENTERPRISE LTV ADJUSTMENT: Subtract refunded amount from customer's lifetime value
+    const sale = enrichedSales.find(s => s.id === id)
+    if (sale?.customer_id && options?.organizationId && user?.id) {
+      try {
+        await updateCustomerLTV({
+          customerId: sale.customer_id,
+          saleAmount: -amount, // ✅ Negative amount for refund
+          organizationId: options.organizationId,
+          actorUserId: user.id
+        })
+
+        console.log('[LTV] ✅ Adjusted for refund:', {
+          customer: sale.customer_id.substring(0, 8),
+          refund: amount.toFixed(2)
+        })
+      } catch (ltvError) {
+        // 🛡️ NON-BLOCKING: LTV adjustment failure doesn't block refund
+        console.error('[LTV] ⚠️ Refund adjustment failed:', ltvError instanceof Error ? ltvError.message : 'Unknown error')
+      }
+    }
+
+    return result
   }
 
   // ✅ MIGRATED: Cancel Sale using update

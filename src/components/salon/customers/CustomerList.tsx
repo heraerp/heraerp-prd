@@ -369,42 +369,54 @@ function CustomerGridView({
           return (
             <Card
               key={customer.id || `customer-${index}`}
-              className="group relative overflow-hidden transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+              className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.02] cursor-pointer ${isArchived ? 'opacity-60' : ''}`}
               style={{
                 backgroundColor: COLORS.charcoal + 'f5',
                 border: `1px solid ${isVIP ? COLORS.gold : COLORS.bronze}40`,
                 boxShadow: `0 4px 16px rgba(0,0,0,0.3), 0 0 20px ${isVIP ? COLORS.gold : COLORS.bronze}10`
               }}
             >
-              {/* VIP/Status Badge */}
-              {isDeleted ? (
-                <Badge
-                  variant="secondary"
-                  className="absolute top-2 right-2 text-xs bg-red-500/20 text-red-400 border-red-500/30"
-                >
-                  Deleted
-                </Badge>
-              ) : isArchived ? (
-                <Badge
-                  variant="secondary"
-                  className="absolute top-2 right-2 text-xs bg-muted/50 text-muted-foreground border-border"
-                >
-                  Archived
-                </Badge>
-              ) : isVIP ? (
-                <Badge
-                  variant="secondary"
-                  className="absolute top-2 right-2 text-xs"
-                  style={{
-                    backgroundColor: COLORS.gold + '20',
-                    color: COLORS.gold,
-                    border: `1px solid ${COLORS.gold}40`
-                  }}
-                >
-                  <Star className="h-3 w-3 mr-1" />
-                  VIP
-                </Badge>
-              ) : null}
+              {/* Top Right: Status Badges */}
+              <div className="absolute top-2 right-2 flex items-center gap-2">
+                {/* VIP Badge */}
+                {isVIP && !isDeleted && !isArchived && (
+                  <Badge
+                    variant="secondary"
+                    className="text-xs"
+                    style={{
+                      backgroundColor: COLORS.gold + '20',
+                      color: COLORS.gold,
+                      border: `1px solid ${COLORS.gold}40`
+                    }}
+                  >
+                    <Star className="h-3 w-3 mr-1" />
+                    VIP
+                  </Badge>
+                )}
+
+                {/* Status Badges */}
+                {isDeleted ? (
+                  <Badge
+                    variant="secondary"
+                    className="text-xs bg-red-500/20 text-red-400 border-red-500/30"
+                  >
+                    Deleted
+                  </Badge>
+                ) : isArchived ? (
+                  <Badge
+                    variant="secondary"
+                    className="text-[9px] font-bold tracking-tight px-1.5 py-0.5"
+                    style={{
+                      backgroundColor: COLORS.bronze + '25',
+                      color: COLORS.champagne,
+                      border: `1.5px solid ${COLORS.gold}`,
+                      boxShadow: `0 0 6px ${COLORS.gold}30`
+                    }}
+                  >
+                    ARC
+                  </Badge>
+                ) : null}
+              </div>
 
               <CardContent className="p-4">
                 {/* Avatar & Name */}
