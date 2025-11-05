@@ -1,16 +1,20 @@
 "use client"
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { useHera } from '@/lib/hooks/hera'
-import { 
-  TrendingUp, Package, Wrench, CreditCard, Users, BarChart3, 
+import { useLoadingStore } from '@/lib/stores/loading-store'
+import {
+  TrendingUp, Package, Wrench, CreditCard, Users, BarChart3,
   Settings, ShoppingCart, AlertTriangle, CheckCircle, Clock,
   ArrowUpRight, DollarSign, Star, Truck
 } from 'lucide-react'
 
 export default function RetailHomePage() {
   const { client, auth } = useHera()
+  const searchParams = useSearchParams()
+  const { updateProgress, completeLoading } = useLoadingStore()
   const now = useMemo(() => new Date(), [])
   const from = new Date(now)
   from.setHours(0, 0, 0, 0)
@@ -18,6 +22,33 @@ export default function RetailHomePage() {
   const [tiles, setTiles] = React.useState<any>(null)
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
+
+  // ⚡ ENTERPRISE: Complete loading animation on mount (if coming from login)
+  useEffect(() => {
+    const isInitializing = searchParams?.get('initializing') === 'true'
+
+    if (isInitializing) {
+      console.log('🏠 Retail Home: Completing loading animation...')
+
+      // Simulate final data loading phase (70% → 100%)
+      let progress = 70
+      const finalInterval = setInterval(() => {
+        progress += 10
+        updateProgress(progress, undefined, progress < 100 ? 'Loading application...' : 'Ready!')
+
+        if (progress >= 100) {
+          clearInterval(finalInterval)
+          // Complete and hide overlay after brief delay
+          setTimeout(() => {
+            completeLoading()
+            console.log('✅ Retail Home: Loading complete!')
+          }, 300)
+        }
+      }, 100)
+
+      return () => clearInterval(finalInterval)
+    }
+  }, [searchParams, updateProgress, completeLoading])
 
   React.useEffect(() => {
     let mounted = true

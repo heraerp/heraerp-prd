@@ -140,12 +140,12 @@ export function GlobalLoadingOverlay() {
               letterSpacing: '-0.02em'
             }}
           >
-            Loading Experience
+            HERA
           </h1>
 
           {/* Message */}
           <p className="text-base" style={{ color: HERA_THEME_COLORS.text.secondary }}>
-            {message || 'Preparing your workspace...'}
+            {message || 'Initializing your session...'}
           </p>
         </div>
 
