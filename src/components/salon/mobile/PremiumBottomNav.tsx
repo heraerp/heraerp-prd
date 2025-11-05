@@ -62,7 +62,7 @@ export function PremiumBottomNav({ userRole = 'owner', badges = {} }: PremiumBot
         { title: 'More', href: '/salon/more', icon: MoreHorizontal }
       ],
       accountant: [
-        { title: 'Home', href: '/salon/dashboard', icon: Home },
+        { title: 'Home', href: '/salon/accountant', icon: Home },
         { title: 'Finance', href: '/salon/finance', icon: CreditCard },
         { title: 'Reports', href: '/salon/reports', icon: Calendar },
         { title: 'Clients', href: '/salon/customers', icon: Users },

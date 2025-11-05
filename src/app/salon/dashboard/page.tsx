@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useSalonDashboard } from '@/hooks/useSalonDashboard'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useLoadingStore } from '@/lib/stores/loading-store'
 import { Button } from '@/components/ui/button'
 import { ComplianceAlertBanner } from '@/components/salon/ComplianceAlertBanner'
@@ -67,7 +67,6 @@ function DashboardContent() {
     isAuthenticated
   } = useSalonSecurity()
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { updateProgress, finishLoading, reset: resetLoading } = useLoadingStore()
   const [lastRefresh, setLastRefresh] = useState(new Date())
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -78,7 +77,9 @@ function DashboardContent() {
 
   // ✅ GLOBAL LOADING: Continue progress from login (70-100%)
   useEffect(() => {
-    const isInitializing = searchParams?.get('initializing') === 'true'
+    // ✅ FIXED: Use window.location.search for reliability (not useSearchParams hook)
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
     const isReceptionist = role && role.toLowerCase() === 'receptionist'
 
     // ✅ FIXED: Don't wait for orgLoading/securityLoading - those are for DATA, not the loading animation!
@@ -109,7 +110,7 @@ function DashboardContent() {
 
       return () => clearInterval(progressInterval)
     }
-  }, [searchParams, isAuthenticated, role, updateProgress, finishLoading, router])
+  }, [isAuthenticated, role, updateProgress, finishLoading, router])
 
   // ✅ PERFORMANCE: Progressive component loading
   useEffect(() => {
@@ -236,7 +237,8 @@ function DashboardContent() {
 
   // ✅ ENTERPRISE STATE 3: Redirect receptionist with smooth transition
   // BUT: Let global loading complete first if initializing=true
-  const isInitializing = searchParams?.get('initializing') === 'true'
+  const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
+  const isInitializing = urlParams?.get('initializing') === 'true'
   const isReceptionist = role && role.toLowerCase() === 'receptionist'
 
   if (isReceptionist && !isInitializing) {
