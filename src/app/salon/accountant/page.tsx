@@ -27,6 +27,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase/client'
+import { useLoadingCompletion } from '@/lib/hooks/useLoadingCompletion'
 
 // Luxe color palette
 const COLORS = {
@@ -167,6 +168,9 @@ export default function AccountantDashboard() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [currentPeriod, setCurrentPeriod] = useState('December 2024')
+
+  // ⚡ ENTERPRISE: Automatic loading completion using HERA hook
+  useLoadingCompletion()
 
   const financialMetrics: FinancialMetric[] = [
     {
