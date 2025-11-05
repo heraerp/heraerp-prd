@@ -2,7 +2,6 @@
 
 import React, { useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { useHera } from '@/lib/hooks/hera'
 import { useLoadingStore } from '@/lib/stores/loading-store'
 import {
@@ -13,7 +12,6 @@ import {
 
 export default function RetailHomePage() {
   const { client, auth } = useHera()
-  const searchParams = useSearchParams()
   const { updateProgress, completeLoading } = useLoadingStore()
   const now = useMemo(() => new Date(), [])
   const from = new Date(now)
@@ -24,31 +22,37 @@ export default function RetailHomePage() {
   const [error, setError] = React.useState<string | null>(null)
 
   // ⚡ ENTERPRISE: Complete loading animation on mount (if coming from login)
+  // ✅ FIXED: Use window.location.search instead of useSearchParams() for reliability
   useEffect(() => {
-    const isInitializing = searchParams?.get('initializing') === 'true'
+    // Check if we're coming from login (initializing=true parameter)
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
 
     if (isInitializing) {
-      console.log('🏠 Retail Home: Completing loading animation...')
+      console.log('🏠 Retail Home: Completing loading animation from 70% → 100%')
 
-      // Simulate final data loading phase (70% → 100%)
+      // Animate from 70% to 100% smoothly
       let progress = 70
-      const finalInterval = setInterval(() => {
-        progress += 10
-        updateProgress(progress, undefined, progress < 100 ? 'Loading application...' : 'Ready!')
-
+      const progressInterval = setInterval(() => {
+        progress += 5
+        if (progress <= 100) {
+          updateProgress(progress, undefined, progress === 100 ? 'Ready!' : 'Loading your workspace...')
+        }
         if (progress >= 100) {
-          clearInterval(finalInterval)
+          clearInterval(progressInterval)
           // Complete and hide overlay after brief delay
           setTimeout(() => {
             completeLoading()
+            // Clean up URL parameter
+            window.history.replaceState({}, '', window.location.pathname)
             console.log('✅ Retail Home: Loading complete!')
-          }, 300)
+          }, 500)
         }
-      }, 100)
+      }, 50)
 
-      return () => clearInterval(finalInterval)
+      return () => clearInterval(progressInterval)
     }
-  }, [searchParams, updateProgress, completeLoading])
+  }, [updateProgress, completeLoading])
 
   React.useEffect(() => {
     let mounted = true
