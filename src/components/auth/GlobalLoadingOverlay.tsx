@@ -8,7 +8,7 @@
 
 import { useEffect } from 'react'
 import { useLoadingStore } from '@/lib/stores/loading-store'
-import { Loader2, Lock, Zap } from 'lucide-react'
+import { Loader2, Lock, Zap, Sparkles } from 'lucide-react'
 import { HERA_THEME_COLORS, HERA_THEME_GRADIENTS, withOpacity } from '@/lib/constants/hera-theme-colors'
 
 export function GlobalLoadingOverlay() {
@@ -150,7 +150,22 @@ export function GlobalLoadingOverlay() {
         </div>
 
         {/* Enhanced Progress Bar */}
-        <div className="relative mb-8">
+        <div className="relative mb-8 mt-6">
+          {/* Progress percentage badge - positioned above */}
+          <div className="flex justify-center mb-3">
+            <div
+              className="px-5 py-2 rounded-full text-lg font-bold tabular-nums"
+              style={{
+                background: HERA_THEME_GRADIENTS.buttonPrimary,
+                color: 'white',
+                boxShadow: `0 4px 16px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.5)}, inset 0 1px 0 rgba(255, 255, 255, 0.3)`,
+                border: `1px solid ${withOpacity(HERA_THEME_COLORS.primary.indigo.light, 0.3)}`
+              }}
+            >
+              {Math.round(progress)}%
+            </div>
+          </div>
+
           {/* Track */}
           <div
             className="relative h-3 rounded-full overflow-hidden"
@@ -177,21 +192,6 @@ export function GlobalLoadingOverlay() {
                   backgroundSize: '200% 100%'
                 }}
               />
-            </div>
-          </div>
-
-          {/* Progress percentage badge */}
-          <div className="absolute -top-10 left-1/2 transform -translate-x-1/2">
-            <div
-              className="px-4 py-1.5 rounded-full text-sm font-bold"
-              style={{
-                background: HERA_THEME_GRADIENTS.buttonPrimary,
-                color: 'white',
-                boxShadow: `0 4px 12px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.4)}`,
-                border: `1px solid ${withOpacity(HERA_THEME_COLORS.primary.indigo.light, 0.3)}`
-              }}
-            >
-              {Math.round(progress)}%
             </div>
           </div>
         </div>
@@ -236,7 +236,7 @@ export function GlobalLoadingOverlay() {
               border: `1px solid ${withOpacity(HERA_THEME_COLORS.primary.cyan.base, 0.2)}`
             }}
           >
-            <Loader2 className="w-4 h-4 animate-spin" style={{ color: HERA_THEME_COLORS.primary.cyan.light }} />
+            <Sparkles className="w-4 h-4" style={{ color: HERA_THEME_COLORS.primary.cyan.light }} />
             <span className="text-[10px] font-medium" style={{ color: HERA_THEME_COLORS.text.muted }}>
               Smart
             </span>

@@ -10,7 +10,6 @@ import { ToastProvider } from '@/components/ui/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'
 import { GlobalLoadingOverlay } from '@/components/auth/GlobalLoadingOverlay'
-import { DevReconnectHandler } from '@/components/dev/DevReconnectHandler'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
 import '@/styles/radix-overrides.css' // Radix UI global overrides for HERA modals
@@ -156,9 +155,6 @@ export default function RootLayout({
         }}
         suppressHydrationWarning={true}
       >
-        {/* Development-only auto-reconnect handler (removed in production) */}
-        {process.env.NODE_ENV === 'development' && <DevReconnectHandler />}
-
         <ThemeProvider>
           <PublicPageWrapper>
             <QueryProvider>
