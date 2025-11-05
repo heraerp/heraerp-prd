@@ -3,7 +3,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -212,7 +212,8 @@ const apps: AppCard[] = [
   }
 ]
 
-export default function AppsPage() {
+// Separate component that uses useSearchParams
+function AppsPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { isAuthenticated, isLoading, currentOrganization, contextLoading, logout, user, availableApps, role, hasScope } = useHERAAuth()
@@ -807,5 +808,26 @@ export default function AppsPage() {
         />
       )}
     </div>
+  )
+}
+
+// Main export wrapped in Suspense
+export default function AppsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 relative">
+        <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 -z-20" />
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 card-glass backdrop-blur-xl rounded-2xl mb-4 shadow-xl border border-border">
+              <Loader2 className="w-10 h-10 animate-spin text-indigo-400" />
+            </div>
+            <p className="text-slate-300">Loading apps...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <AppsPageContent />
+    </Suspense>
   )
 }
