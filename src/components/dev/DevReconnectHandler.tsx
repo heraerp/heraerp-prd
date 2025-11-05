@@ -1,5 +1,30 @@
 /**
- * 🏢 ENTERPRISE-GRADE Development Reconnect Handler v2.0
+ * ⚠️⚠️⚠️ DISABLED - DO NOT USE ⚠️⚠️⚠️
+ *
+ * This component has been REMOVED from layout.tsx due to false positive issues.
+ *
+ * **History**:
+ * - Added: 2025-11-05 (commit 2182dc58f)
+ * - Removed: 2025-11-05 (same day) due to causing more problems than it solved
+ *
+ * **Problems It Caused**:
+ * - False positive reconnections on normal tab switching
+ * - False positive reconnections on window switching
+ * - Interrupted normal development workflow
+ * - Created issues where none existed before
+ *
+ * **Why Keeping File**:
+ * - Historical reference
+ * - Learning experience
+ * - May be useful to study for future improvements
+ *
+ * **Recommendation**:
+ * Do NOT re-enable without solving the false positive issue completely.
+ * Let Next.js handle HMR reconnection natively.
+ *
+ * ---
+ *
+ * 🏢 ENTERPRISE-GRADE Development Reconnect Handler v2.0 (DISABLED)
  *
  * Handles Next.js Fast Refresh / HMR WebSocket reconnection with intelligent detection.
  *
@@ -20,7 +45,8 @@
  * 3. Wait 15 seconds before auto-reload (user can dismiss)
  * 4. Show persistent toast notification with countdown
  *
- * @version 2.0.0
+ * @version 2.0.0 (DISABLED)
+ * @deprecated Removed from layout.tsx on 2025-11-05
  * @see https://nextjs.org/docs/architecture/fast-refresh
  */
 
