@@ -10,7 +10,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install ALL dependencies (including dev dependencies for TypeScript build)
-RUN npm ci
+# Use --legacy-peer-deps to handle puppeteer version conflict
+RUN npm ci --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -29,7 +30,7 @@ ENV PLAYWRIGHT_BROWSERS_PATH=0
 RUN npm run build
 
 # Prune to production dependencies only (after build)
-RUN npm prune --omit=dev
+RUN npm prune --omit=dev --legacy-peer-deps
 
 # ---- Runtime Stage ----
 FROM node:20.12.2-bullseye AS runner
