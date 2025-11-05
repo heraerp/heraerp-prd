@@ -19,7 +19,7 @@ interface SalonLuxeButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * Uses inline styles to prevent global CSS overrides.
  *
  * Variants:
- * - primary: Gold background with dark text
+ * - primary: Solid gold gradient with dark text (high visibility, primary CTA)
  * - danger: Rose/pink for destructive actions
  * - outline: Transparent with border
  * - ghost: Minimal styling
@@ -69,25 +69,28 @@ export const SalonLuxeButton = forwardRef<HTMLButtonElement, SalonLuxeButtonProp
           return isHovered
             ? {
                 ...baseStyle,
-                // Very subtle hover - minimal brightness change
-                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(184, 134, 11, 0.22) 100%)`,
+                // ✨ ENHANCED: Brighter gold gradient with excellent visibility
+                background: `linear-gradient(135deg, #E3C75F 0%, #D4AF37 100%)`,
                 borderWidth: '2px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(212, 175, 55, 0.50)',
-                // Darker text for better readability - using darker bronze
-                color: SALON_LUXE_COLORS.bronze.base,
+                borderColor: '#F0D584',
+                // Dark text for maximum contrast on bright gold
+                color: '#0F0F0F',
                 fontWeight: 700,
-                boxShadow: `0 3px 12px rgba(212, 175, 55, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.10)`,
-                transform: 'translateY(-1px)',
+                boxShadow: `0 4px 16px rgba(212, 175, 55, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25)`,
+                transform: 'translateY(-2px) scale(1.02)',
               }
             : {
                 ...baseStyle,
-                background: `linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.20) 100%)`,
+                // ✨ ENHANCED: Strong gold presence for primary CTA
+                background: `linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)`,
                 borderWidth: '2px',
                 borderStyle: 'solid',
-                borderColor: 'rgba(212, 175, 55, 0.40)',
-                color: SALON_LUXE_COLORS.champagne.base,
-                boxShadow: `0 2px 8px rgba(212, 175, 55, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.10)`,
+                borderColor: 'rgba(212, 175, 55, 0.70)',
+                // Dark text for excellent readability
+                color: '#0F0F0F',
+                fontWeight: 700,
+                boxShadow: `0 2px 12px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.20)`,
               }
 
         case 'danger':

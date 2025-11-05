@@ -1672,16 +1672,16 @@ export function SalonResourceCalendar({
     booked: {
       label: 'Booked',
       color: '#FCD34D', // Enhanced Gold - matches badge color
-      bg: 'rgba(252, 211, 77, 0.35)', // Enhanced background opacity
-      border: 'rgba(252, 211, 77, 0.85)', // Stronger border
+      bg: 'rgba(252, 211, 77, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#FCD34D', // ✨ ENHANCED: Solid border for crisp edges
       icon: '📅',
       description: 'Appointment confirmed, awaiting check-in'
     },
     checked_in: {
       label: 'Checked In',
       color: '#60A5FA', // Bright Blue - matches badge color
-      bg: 'rgba(96, 165, 250, 0.35)', // Enhanced background opacity
-      border: 'rgba(96, 165, 250, 0.85)', // Stronger border
+      bg: 'rgba(96, 165, 250, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#60A5FA', // ✨ ENHANCED: Solid border for crisp edges
       icon: '✓',
       description: 'Customer has arrived and checked in',
       action: 'process_payment' // ✅ Next action: Process Payment at POS → Auto-complete
@@ -1689,16 +1689,16 @@ export function SalonResourceCalendar({
     completed: {
       label: 'Completed',
       color: '#34D399', // Enhanced Emerald Green - matches badge color
-      bg: 'rgba(52, 211, 153, 0.35)', // Enhanced background opacity
-      border: 'rgba(52, 211, 153, 0.85)', // Stronger border
+      bg: 'rgba(52, 211, 153, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#34D399', // ✨ ENHANCED: Solid border for crisp edges
       icon: '✅',
       description: 'Appointment finished and closed'
     },
     cancelled: {
       label: 'Cancelled',
       color: '#F87171', // Enhanced Red - matches badge color
-      bg: 'rgba(248, 113, 113, 0.35)', // Enhanced background opacity
-      border: 'rgba(248, 113, 113, 0.85)', // Stronger border
+      bg: 'rgba(248, 113, 113, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#F87171', // ✨ ENHANCED: Solid border for crisp edges
       icon: '✕',
       description: 'Appointment cancelled'
     }
@@ -4126,8 +4126,8 @@ function AppointmentStatusBadge({
       label: 'Booked',
       color: '#FCD34D', // Brighter Gold - stronger contrast
       textColor: '#1A1A1A', // Dark text for better readability
-      bg: 'rgba(252, 211, 77, 0.35)', // More opaque background
-      border: 'rgba(252, 211, 77, 0.85)', // Stronger border
+      bg: 'rgba(252, 211, 77, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#FCD34D', // ✨ ENHANCED: Solid border for crisp edges
       icon: (
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
           <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/>
@@ -4139,8 +4139,8 @@ function AppointmentStatusBadge({
       label: 'Checked In',
       color: '#60A5FA', // Bright Blue - professional
       textColor: '#FFFFFF', // White text for contrast
-      bg: 'rgba(96, 165, 250, 0.35)', // More opaque background
-      border: 'rgba(96, 165, 250, 0.85)', // Stronger border
+      bg: 'rgba(96, 165, 250, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#60A5FA', // ✨ ENHANCED: Solid border for crisp edges
       icon: (
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -4152,8 +4152,8 @@ function AppointmentStatusBadge({
       label: 'Completed',
       color: '#34D399', // Brighter Emerald Green - success
       textColor: '#1A1A1A', // Dark text for better readability
-      bg: 'rgba(52, 211, 153, 0.35)', // More opaque background
-      border: 'rgba(52, 211, 153, 0.85)', // Stronger border
+      bg: 'rgba(52, 211, 153, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#34D399', // ✨ ENHANCED: Solid border for crisp edges
       icon: (
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
           <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
@@ -4165,8 +4165,8 @@ function AppointmentStatusBadge({
       label: 'Cancelled',
       color: '#F87171', // Brighter Red - cancelled
       textColor: '#FFFFFF', // White text for contrast
-      bg: 'rgba(248, 113, 113, 0.35)', // More opaque background
-      border: 'rgba(248, 113, 113, 0.85)', // Stronger border
+      bg: 'rgba(248, 113, 113, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#F87171', // ✨ ENHANCED: Solid border for crisp edges
       icon: (
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
           <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -4216,30 +4216,30 @@ function AppointmentStatusBadge({
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200"
         style={{
           backgroundColor: currentStatus.bg,
-          border: `1.5px solid ${currentStatus.border}`,
+          border: `2px solid ${currentStatus.border}`,
           color: currentStatus.textColor,
           fontWeight: '700',
           fontSize: '11px',
           letterSpacing: '0.02em',
-          boxShadow: `0 2px 12px ${currentStatus.color}40, inset 0 1px 0 rgba(255,255,255,0.15)`,
+          boxShadow: `0 3px 16px ${currentStatus.color}60, inset 0 1px 0 rgba(255,255,255,0.20)`, // ✨ ENHANCED: Stronger glow (40% → 60%)
           cursor: 'pointer',
           position: 'relative',
           zIndex: showStatusMenu ? 9999 : 'auto',
           backdropFilter: 'blur(12px)'
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = currentStatus.color + '45'
-          e.currentTarget.style.boxShadow = `0 4px 16px ${currentStatus.color}60, inset 0 1px 0 rgba(255,255,255,0.25)`
-          e.currentTarget.style.transform = 'scale(1.05) translateY(-1px)'
+          e.currentTarget.style.backgroundColor = currentStatus.color + '60' // ✨ ENHANCED: Brighter hover (45% → 60%)
+          e.currentTarget.style.boxShadow = `0 6px 24px ${currentStatus.color}80, inset 0 1px 0 rgba(255,255,255,0.30)` // ✨ ENHANCED: Stronger glow (60% → 80%)
+          e.currentTarget.style.transform = 'scale(1.08) translateY(-2px)' // ✨ ENHANCED: More pronounced lift
           e.currentTarget.style.borderColor = currentStatus.color
-          e.currentTarget.style.borderWidth = '2px'
+          e.currentTarget.style.borderWidth = '2.5px' // ✨ ENHANCED: Thicker border on hover
         }}
         onMouseLeave={e => {
           e.currentTarget.style.backgroundColor = currentStatus.bg
-          e.currentTarget.style.boxShadow = `0 2px 12px ${currentStatus.color}40, inset 0 1px 0 rgba(255,255,255,0.15)`
+          e.currentTarget.style.boxShadow = `0 3px 16px ${currentStatus.color}60, inset 0 1px 0 rgba(255,255,255,0.20)`
           e.currentTarget.style.transform = 'scale(1) translateY(0)'
           e.currentTarget.style.borderColor = currentStatus.border
-          e.currentTarget.style.borderWidth = '1.5px'
+          e.currentTarget.style.borderWidth = '2px'
         }}
       >
         {currentStatus.icon}

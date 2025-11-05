@@ -64,13 +64,37 @@ function LoginForm() {
       console.log('✅ Demo login successful, received data:', {
         role: result.role,
         organizationId: result.organizationId,
-        userEntityId: result.userEntityId
+        userEntityId: result.userEntityId,
+        organizations: result.membershipData?.organizations
       })
 
-      // ✅ ENTERPRISE: Detect app context from available apps or organization
-      const appCode = (availableApps && availableApps.length > 0)
-        ? availableApps[0].code.toLowerCase()
-        : 'salon'
+      // ✅ ENTERPRISE: Validate user has organizations (from membershipData, not context)
+      const userOrganizations = result.membershipData?.organizations || []
+      if (userOrganizations.length === 0) {
+        setError('No organizations found for demo account. Please contact support.')
+        setIsLoading(false)
+        return
+      }
+
+      // ✅ ENTERPRISE: Get apps from first organization
+      const firstOrg = userOrganizations[0]
+      const userApps = firstOrg?.apps || []
+
+      if (userApps.length === 0) {
+        // ✅ ENTERPRISE: Redirect to app store for purchase
+        console.log('No apps available for demo account, redirecting to app store...')
+        setError(`No applications available for ${firstOrg?.name || 'your organization'}.`)
+        setIsLoading(false)
+
+        // Redirect to app store after brief delay
+        setTimeout(() => {
+          router.push('/apps?mode=store')
+        }, 2000)
+        return
+      }
+
+      // ✅ ENTERPRISE: Detect app context from user's apps
+      const appCode = userApps[0].code.toLowerCase()
 
       // ✅ ENTERPRISE: Use role-based redirect helper with app context
       const role = result.role as AppRole
@@ -127,13 +151,37 @@ function LoginForm() {
       console.log('✅ Login successful, received data:', {
         role: result.role,
         organizationId: result.organizationId,
-        userEntityId: result.userEntityId
+        userEntityId: result.userEntityId,
+        organizations: result.membershipData?.organizations
       })
 
-      // ✅ ENTERPRISE: Detect app context from available apps or organization
-      const appCode = (availableApps && availableApps.length > 0)
-        ? availableApps[0].code.toLowerCase()
-        : 'salon'
+      // ✅ ENTERPRISE: Validate user has organizations (from membershipData, not context)
+      const userOrganizations = result.membershipData?.organizations || []
+      if (userOrganizations.length === 0) {
+        setError('No organizations found for your account. Please contact support.')
+        setIsLoading(false)
+        return
+      }
+
+      // ✅ ENTERPRISE: Get apps from first organization
+      const firstOrg = userOrganizations[0]
+      const userApps = firstOrg?.apps || []
+
+      if (userApps.length === 0) {
+        // ✅ ENTERPRISE: Redirect to app store for purchase
+        console.log('No apps available, redirecting to app store...')
+        setError(`No applications available for ${firstOrg?.name || 'your organization'}.`)
+        setIsLoading(false)
+
+        // Redirect to app store after brief delay
+        setTimeout(() => {
+          router.push('/apps?mode=store')
+        }, 2000)
+        return
+      }
+
+      // ✅ ENTERPRISE: Detect app context from user's apps
+      const appCode = userApps[0].code.toLowerCase()
 
       // ✅ ENTERPRISE: Use role-based redirect helper with app context
       const role = result.role as AppRole

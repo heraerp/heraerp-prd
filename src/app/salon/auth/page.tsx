@@ -186,8 +186,39 @@ export default function SalonAuthPage() {
       console.log('✅ Login successful, received data:', {
         role: result.role,
         organizationId: result.organizationId,
-        userEntityId: result.userEntityId
+        userEntityId: result.userEntityId,
+        organizations: result.membershipData?.organizations
       })
+
+      // ✅ ENTERPRISE: Validate user has organizations (from membershipData, not context)
+      const userOrganizations = result.membershipData?.organizations || []
+      if (userOrganizations.length === 0) {
+        showError(
+          'No organizations found',
+          'organization',
+          'Your account is not linked to any organization. Please contact support.'
+        )
+        return
+      }
+
+      // ✅ ENTERPRISE: Validate user has SALON app access
+      const firstOrg = userOrganizations[0]
+      const userApps = firstOrg?.apps || []
+      const hasSalonApp = userApps.some((app: any) => app.code.toUpperCase() === 'SALON')
+
+      if (!hasSalonApp) {
+        showError(
+          'SALON app not purchased',
+          'organization',
+          `Your organization (${firstOrg?.name || 'Unknown'}) does not have the SALON app. Redirecting to app store...`
+        )
+
+        // Redirect to app store after brief delay
+        setTimeout(() => {
+          router.push('/apps?mode=store&highlight=SALON')
+        }, 2000)
+        return
+      }
 
       // ✅ ENTERPRISE: Role already normalized by HERAAuthProvider
       const salonRole = result.role as AppRole

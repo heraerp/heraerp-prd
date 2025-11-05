@@ -448,19 +448,19 @@ export function SalonLuxeModal({
             outline: none !important;
           }
 
-          /* Enhanced Primary Button Styling - Subtle Luxury Theme */
+          /* Enhanced Primary Button Styling - High Visibility Solid Gold */
           .salon-luxe-modal button[type="submit"],
           .salon-luxe-modal button.primary-button {
             position: relative !important;
-            /* Subtle background - semi-transparent gold */
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.20) 100%) !important;
-            /* Readable text color - champagne instead of black */
-            color: ${SALON_LUXE_COLORS.champagne.base} !important;
+            /* ✨ ENHANCED: Solid gold gradient for maximum visibility */
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%) !important;
+            /* Dark text for maximum contrast on bright gold */
+            color: #0F0F0F !important;
             font-weight: 700 !important;
-            border: 2px solid rgba(212, 175, 55, 0.40) !important;
+            border: 2px solid rgba(212, 175, 55, 0.70) !important;
             box-shadow:
-              0 2px 8px rgba(212, 175, 55, 0.15),
-              inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+              0 2px 12px rgba(212, 175, 55, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
             transition: all 0.3s ease !important;
             overflow: hidden !important;
           }
@@ -473,15 +473,15 @@ export function SalonLuxeModal({
 
           .salon-luxe-modal button[type="submit"]:hover:not(:disabled),
           .salon-luxe-modal button.primary-button:hover:not(:disabled) {
-            /* Very subtle hover - minimal brightness change */
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(184, 134, 11, 0.22) 100%) !important;
-            border-color: rgba(212, 175, 55, 0.50) !important;
-            /* Darker text for better contrast */
-            color: ${SALON_LUXE_COLORS.bronze.base} !important;
+            /* ✨ ENHANCED: Brighter gold gradient on hover */
+            background: linear-gradient(135deg, #E3C75F 0%, #D4AF37 100%) !important;
+            border-color: #F0D584 !important;
+            /* Keep dark text for contrast */
+            color: #0F0F0F !important;
             box-shadow:
-              0 3px 12px rgba(212, 175, 55, 0.18),
-              inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-            transform: translateY(-1px) !important;
+              0 4px 16px rgba(212, 175, 55, 0.50),
+              inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+            transform: translateY(-2px) scale(1.02) !important;
           }
 
           .salon-luxe-modal button[type="submit"]:active:not(:disabled),
@@ -505,17 +505,17 @@ export function SalonLuxeModal({
 
           .salon-luxe-modal button[type="submit"] *,
           .salon-luxe-modal button.primary-button * {
-            /* Readable text - champagne instead of black */
-            color: ${SALON_LUXE_COLORS.champagne.base} !important;
+            /* Dark text for maximum contrast on gold background */
+            color: #0F0F0F !important;
             font-weight: 700 !important;
             position: relative !important;
             z-index: 1 !important;
           }
 
-          /* On hover, use darker bronze for better contrast */
+          /* Keep dark text on hover for consistent contrast */
           .salon-luxe-modal button[type="submit"]:hover:not(:disabled) *,
           .salon-luxe-modal button.primary-button:hover:not(:disabled) * {
-            color: ${SALON_LUXE_COLORS.bronze.base} !important;
+            color: #0F0F0F !important;
           }
 
           .salon-luxe-modal button[type="submit"]:disabled *,
@@ -647,17 +647,18 @@ export function SalonLuxeModal({
             opacity: 0.6 !important;
           }
 
-          /* Footer buttons - same subtle style, no extra brightness */
+          /* Footer buttons - enhanced solid gold (consistent with main button style) */
           .salon-luxe-modal [class*="footer"] button[type="submit"],
           .salon-luxe-modal [class*="footer"] button.primary-button,
           .salon-luxe-modal > div > div > div:last-child button[type="submit"],
           .salon-luxe-modal > div > div > div:last-child button.primary-button {
-            /* Use same subtle style as above - no extra brightness */
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.20) 100%) !important;
-            border: 2px solid rgba(212, 175, 55, 0.40) !important;
+            /* ✨ ENHANCED: Same solid gold as main button style */
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%) !important;
+            border: 2px solid rgba(212, 175, 55, 0.70) !important;
+            color: #0F0F0F !important;
             box-shadow:
-              0 2px 8px rgba(212, 175, 55, 0.15),
-              inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+              0 2px 12px rgba(212, 175, 55, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
           }
 
           /* Focus states for accessibility */
