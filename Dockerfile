@@ -11,10 +11,14 @@ COPY package*.json ./
 
 # Install ALL dependencies (including dev dependencies for TypeScript build)
 # Use --legacy-peer-deps to handle puppeteer version conflict
-RUN npm ci --legacy-peer-deps
+# Use --ignore-scripts to skip postinstall hooks that require source code
+RUN npm ci --legacy-peer-deps --ignore-scripts
 
 # Copy source code
 COPY . .
+
+# Now run postinstall scripts (if needed) after source code is available
+RUN npm rebuild --if-present
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
