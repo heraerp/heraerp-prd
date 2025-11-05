@@ -144,7 +144,7 @@ export function GlobalLoadingOverlay() {
           </h1>
 
           {/* Message */}
-          <p className="text-base" style={{ color: HERA_THEME_COLORS.text.secondary }}>
+          <p className="text-base font-medium" style={{ color: HERA_THEME_COLORS.text.primary }}>
             {message || 'Initializing your session...'}
           </p>
         </div>
@@ -198,7 +198,7 @@ export function GlobalLoadingOverlay() {
 
         {/* Subtitle */}
         <div className="text-center mb-6">
-          <p className="text-xs" style={{ color: HERA_THEME_COLORS.text.muted }}>
+          <p className="text-sm" style={{ color: HERA_THEME_COLORS.text.secondary }}>
             {subtitle || 'Setting up your session...'}
           </p>
         </div>

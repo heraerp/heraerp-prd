@@ -112,7 +112,7 @@ function LoginForm() {
       })
 
       // ⚡ ENTERPRISE LOADING EXPERIENCE - Use global loading overlay
-      startLoading(`Authenticated successfully`, 'Initializing your workspace...')
+      startLoading(`Welcome! Authenticating as ${displayName}...`, 'Verifying credentials and permissions...')
 
       // Smooth progress animation (0-60% during navigation)
       let currentProgress = 0
@@ -127,7 +127,7 @@ function LoginForm() {
 
       // Navigate to dashboard (global loading will continue)
       setTimeout(async () => {
-        updateProgress(70, undefined, 'Loading application...')
+        updateProgress(70, undefined, 'Configuring your workspace...')
 
         // ✅ Use router.push with initializing flag
         await router.push(redirectPath + '?initializing=true')
@@ -200,7 +200,7 @@ function LoginForm() {
 
       // ⚡ ENTERPRISE LOADING EXPERIENCE - Use global loading overlay
       // This will persist across the route change for seamless UX
-      startLoading(`Authentication successful`, 'Preparing your session...')
+      startLoading(`Welcome! Authenticating as ${displayName}...`, 'Verifying credentials and permissions...')
 
       // Smooth progress animation (0-60% during navigation)
       let currentProgress = 0
@@ -215,7 +215,7 @@ function LoginForm() {
 
       // Navigate to dashboard (global loading will continue)
       setTimeout(async () => {
-        updateProgress(70, undefined, 'Loading application...')
+        updateProgress(70, undefined, 'Configuring your workspace...')
 
         // ✅ Use router.push with initializing flag
         // Dashboard will continue progress to 100% then hide overlay
