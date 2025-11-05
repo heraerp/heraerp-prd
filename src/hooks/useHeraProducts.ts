@@ -91,8 +91,7 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
       include_dynamic: true,
       include_relationships: true,
       limit: options?.filters?.limit || 50, // ✅ Reduced default, configurable
-      // Only filter by 'active' status when not including archived
-      ...(options?.includeArchived ? {} : { status: 'active' }),
+      status: undefined, // ✅ Fetch all products (active + archived + deleted), filter client-side
       ...options?.filters
     },
     dynamicFields: PRODUCT_PRESET.dynamicFields as DynamicFieldDef[],

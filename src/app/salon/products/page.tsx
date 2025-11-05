@@ -12,6 +12,12 @@ import { ProductCategory, ProductCategoryFormValues } from '@/types/salon-produc
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import {
+  SalonIconButton,
+  SalonIconButtonGroup,
+  SalonIconButtonDivider
+} from '@/components/salon/shared/SalonIconButton'
+import Link from 'next/link'
 // ✅ ENTERPRISE IMPORT/EXPORT: Reusable system for all HERA apps
 import {
   useHeraImportExport,
@@ -23,6 +29,7 @@ import {
   Grid3X3,
   List,
   Package,
+  Package2,
   Search,
   Download,
   Upload,
@@ -57,6 +64,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -136,7 +144,6 @@ function SalonProductsPageContent() {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const [categoryFilter, setCategoryFilter] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState('name_asc')
   // Local branch filter state (separate from global context) - matches services page pattern
   const [localBranchFilter, setLocalBranchFilter] = useState<string | null>(null)
@@ -451,6 +458,19 @@ function SalonProductsPageContent() {
           return false
         }
 
+        // 🎯 NEW: Tab-based status filtering (exclude 'deleted' from both tabs)
+        if (!includeArchived) {
+          // Active tab: Show only status='active'
+          if (product.status === 'archived' || product.status === 'deleted') {
+            return false
+          }
+        } else {
+          // All tab: Show 'active' and 'archived' (exclude 'deleted')
+          if (product.status === 'deleted') {
+            return false
+          }
+        }
+
         // Search filter
         if (searchQuery) {
           const query = searchQuery.toLowerCase()
@@ -473,8 +493,17 @@ function SalonProductsPageContent() {
         return true
       })
 
-      // Step 3: Sort products
+      // Step 3: Sort products - Active products first, then archived
       const sorted = [...filtered].sort((a, b) => {
+        // Primary sort: Active products before archived products
+        const aIsArchived = a.status === 'archived'
+        const bIsArchived = b.status === 'archived'
+
+        if (aIsArchived !== bIsArchived) {
+          return aIsArchived ? 1 : -1 // Active products (false) come first
+        }
+
+        // Secondary sort: Apply user-selected sorting within each group
         switch (sortBy) {
           case 'name_asc':
             return a.entity_name.localeCompare(b.entity_name)
@@ -507,7 +536,7 @@ function SalonProductsPageContent() {
 
       return sorted
     },
-    [products, searchQuery, categoryFilter, sortBy]
+    [products, searchQuery, categoryFilter, sortBy, includeArchived]
   )
 
   // For backward compatibility, keep filteredProducts reference
@@ -857,83 +886,79 @@ function SalonProductsPageContent() {
       maxWidth="full"
       padding="lg"
       actions={
-        <>
-          {/* Scan Barcode - Bronze */}
-          <button
-            onClick={() => {
-              console.log('🔍🔍🔍 SCAN BUTTON CLICKED - Desktop', { currentState: showScanner })
-              setShowScanner(!showScanner)
-            }}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: showScanner ? COLORS.gold : COLORS.bronze,
-              color: COLORS.champagne,
-              border: `1px solid ${showScanner ? COLORS.gold : COLORS.bronze}`
-            }}
-          >
-            <Scan className="w-4 h-4" />
-            {showScanner ? 'Close Scanner' : 'Scan Barcode'}
-          </button>
-          {/* New Category - Emerald */}
-          <button
-            onClick={() => {
-              setEditingCategory(null)
-              setCategoryModalOpen(true)
-            }}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.emerald,
-              color: COLORS.champagne,
-              border: `1px solid ${COLORS.emerald}`
-            }}
-          >
-            <FolderPlus className="w-4 h-4" />
-            New Category
-          </button>
-          {/* New Product - Gold */}
-          <button
-            onClick={() => {
-              setEditingProduct(null)
-              setModalOpen(true)
-            }}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.gold,
-              color: COLORS.black,
-              border: `1px solid ${COLORS.gold}`
-            }}
-          >
-            <Plus className="w-4 h-4" />
-            New Product
-          </button>
-          {/* Import - Rose */}
-          <button
-            onClick={() => setImportModalOpen(true)}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.rose,
-              color: COLORS.charcoal,
-              border: `1px solid ${COLORS.rose}`
-            }}
-          >
-            <Upload className="w-4 h-4" />
-            Import
-          </button>
-          {/* Export - Plum */}
-          <button
-            onClick={handleExport}
-            disabled={isExporting}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.plum,
-              color: COLORS.champagne,
-              border: `1px solid ${COLORS.plum}`
-            }}
-          >
-            <Download className="w-4 h-4" />
-            {isExporting ? 'Exporting...' : 'Export'}
-          </button>
-        </>
+        <div className="hidden md:block">
+          <SalonIconButtonGroup spacing="md">
+            {/* Navigation to Inventory - HIDDEN until inventory system is complete */}
+            {false && (
+              <>
+                <Link href="/salon/inventory">
+                  <SalonIconButton
+                    icon={Package2}
+                    label="View Inventory"
+                    onClick={() => {}}
+                    color="#3B82F6"
+                    textColor={COLORS.champagne}
+                  />
+                </Link>
+                <SalonIconButtonDivider />
+              </>
+            )}
+
+            {/* Primary Actions */}
+            <SalonIconButton
+              icon={Plus}
+              label="New Product"
+              onClick={() => {
+                setEditingProduct(null)
+                setModalOpen(true)
+              }}
+              color="#D4AF37"
+              textColor={COLORS.black}
+            />
+
+            <SalonIconButton
+              icon={FolderPlus}
+              label="New Category"
+              onClick={() => {
+                setEditingCategory(null)
+                setCategoryModalOpen(true)
+              }}
+              color="#0F6F5C"
+              textColor={COLORS.champagne}
+            />
+
+            <SalonIconButton
+              icon={Scan}
+              label={showScanner ? 'Close Scanner' : 'Scan Barcode'}
+              onClick={() => {
+                console.log('🔍🔍🔍 SCAN BUTTON CLICKED - Desktop', { currentState: showScanner })
+                setShowScanner(!showScanner)
+              }}
+              color={showScanner ? '#D4AF37' : '#B794F4'}
+              textColor={COLORS.champagne}
+            />
+
+            <SalonIconButtonDivider />
+
+            {/* Import/Export */}
+            <SalonIconButton
+              icon={Upload}
+              label="Import Products"
+              onClick={() => setImportModalOpen(true)}
+              color="#E8B4B8"
+              textColor={COLORS.charcoal}
+            />
+
+            <SalonIconButton
+              icon={Download}
+              label="Export Products"
+              onClick={handleExport}
+              color="#10B981"
+              textColor={COLORS.champagne}
+              loading={isExporting}
+            />
+          </SalonIconButtonGroup>
+        </div>
       }
     >
       {/* ✅ ENTERPRISE: Premium Mobile Header */}
@@ -958,7 +983,7 @@ function SalonProductsPageContent() {
       />
 
       {/* ✅ MOBILE: Search bar and quick actions */}
-      <div className="md:hidden px-4 pb-4 space-y-3">
+      <div className="md:hidden px-4 pb-4 space-y-3 overflow-hidden">
         {/* Mobile search bar */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bronze" />
@@ -971,47 +996,73 @@ function SalonProductsPageContent() {
           />
         </div>
 
-        {/* Mobile quick actions */}
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          <button
-            onClick={() => {
-              console.log('🔍🔍🔍 SCAN BUTTON CLICKED - Mobile', { currentState: showScanner })
-              setShowScanner(!showScanner)
-            }}
-            className="px-4 py-2 text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
-            style={{ backgroundColor: showScanner ? COLORS.gold : COLORS.bronze }}
-          >
-            <Scan className="w-4 h-4" />
-            {showScanner ? 'Close' : 'Scan'}
-          </button>
-          <button
-            onClick={() => {
-              setEditingCategory(null)
-              setCategoryModalOpen(true)
-            }}
-            className="px-4 py-2 bg-emerald text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
-            style={{ backgroundColor: COLORS.emerald }}
-          >
-            <FolderPlus className="w-4 h-4" />
-            New Category
-          </button>
-          <button
-            onClick={() => setImportModalOpen(true)}
-            className="px-4 py-2 text-charcoal rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
-            style={{ backgroundColor: COLORS.rose }}
-          >
-            <Upload className="w-4 h-4" />
-            Import
-          </button>
-          <button
-            onClick={handleExport}
-            disabled={isExporting}
-            className="px-4 py-2 bg-plum text-champagne rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-2 active:scale-95 transition-transform"
-            style={{ backgroundColor: COLORS.plum }}
-          >
-            <Download className="w-4 h-4" />
-            {isExporting ? 'Exporting...' : 'Export'}
-          </button>
+        {/* Mobile quick actions - Icon Buttons */}
+        <div className="flex gap-2 overflow-x-auto pb-16 -mb-14 scrollbar-hide">
+          <SalonIconButtonGroup spacing="md">
+            {/* Navigation to Inventory - HIDDEN until inventory system is complete */}
+            {false && (
+              <>
+                <Link href="/salon/inventory">
+                  <SalonIconButton
+                    icon={Package2}
+                    label="View Inventory"
+                    onClick={() => {}}
+                    color="#3B82F6"
+                    textColor={COLORS.champagne}
+                    size="md"
+                  />
+                </Link>
+                <SalonIconButtonDivider />
+              </>
+            )}
+
+            {/* Primary Actions */}
+            <SalonIconButton
+              icon={Scan}
+              label={showScanner ? 'Close Scanner' : 'Scan Barcode'}
+              onClick={() => {
+                console.log('🔍🔍🔍 SCAN BUTTON CLICKED - Mobile', { currentState: showScanner })
+                setShowScanner(!showScanner)
+              }}
+              color={showScanner ? '#D4AF37' : '#B794F4'}
+              textColor={COLORS.champagne}
+              size="md"
+            />
+
+            <SalonIconButton
+              icon={FolderPlus}
+              label="New Category"
+              onClick={() => {
+                setEditingCategory(null)
+                setCategoryModalOpen(true)
+              }}
+              color="#0F6F5C"
+              textColor={COLORS.champagne}
+              size="md"
+            />
+
+            <SalonIconButtonDivider />
+
+            {/* Import/Export */}
+            <SalonIconButton
+              icon={Upload}
+              label="Import Products"
+              onClick={() => setImportModalOpen(true)}
+              color="#E8B4B8"
+              textColor={COLORS.charcoal}
+              size="md"
+            />
+
+            <SalonIconButton
+              icon={Download}
+              label="Export Products"
+              onClick={handleExport}
+              color="#10B981"
+              textColor={COLORS.champagne}
+              loading={isExporting}
+              size="md"
+            />
+          </SalonIconButtonGroup>
         </div>
       </div>
 
@@ -1100,200 +1151,6 @@ function SalonProductsPageContent() {
               </div>
             </div>
           )}
-
-          {/* Top Control Bar - Branch Filter & View Controls */}
-          <div className="mx-6 mt-6">
-            <div
-              className="p-4 rounded-xl"
-              style={{
-                backgroundColor: COLORS.charcoalLight + 'ee',
-                border: `1px solid ${COLORS.bronze}30`,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-              }}
-            >
-              {/* ✅ MOBILE: Stack vertically on mobile, side-by-side on desktop */}
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                {/* Left: Branch Filter */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" style={{ color: COLORS.gold }} />
-                    <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                      Location:
-                    </span>
-                  </div>
-                  <Select
-                    value={localBranchFilter || '__ALL__'}
-                    onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
-                  >
-                    <SelectTrigger
-                      className="w-full sm:w-52 border"
-                      style={{
-                        backgroundColor: COLORS.charcoal,
-                        borderColor: COLORS.bronze + '40',
-                        color: COLORS.champagne
-                      }}
-                    >
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <MapPin className="h-4 w-4 flex-shrink-0" style={{ color: COLORS.gold }} />
-                        <span className="truncate">
-                          <SelectValue placeholder="All Locations" />
-                        </span>
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent
-                      className="salon-luxe-select"
-                      style={{
-                        backgroundColor: COLORS.charcoal,
-                        borderColor: COLORS.bronze + '40'
-                      }}
-                    >
-                      <SelectItem
-                        value="__ALL__"
-                        className="salon-luxe-select-item"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        All Locations
-                      </SelectItem>
-                      {isLoadingBranches ? (
-                        <div
-                          className="px-2 py-3 text-center text-sm"
-                          style={{ color: COLORS.bronze }}
-                        >
-                          Loading...
-                        </div>
-                      ) : availableBranches.length === 0 ? (
-                        <div
-                          className="px-2 py-3 text-center text-sm"
-                          style={{ color: COLORS.bronze }}
-                        >
-                          No branches
-                        </div>
-                      ) : (
-                        availableBranches.map(branch => (
-                          <SelectItem
-                            key={branch.id}
-                            value={branch.id}
-                            className="salon-luxe-select-item"
-                            style={{ color: COLORS.champagne }}
-                          >
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
-                              <div className="flex flex-col">
-                                <span className="font-medium">{branch.entity_name}</span>
-                                {branch.entity_code && (
-                                  <span className="text-xs opacity-60">{branch.entity_code}</span>
-                                )}
-                              </div>
-                            </div>
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-
-                  {/* Active Branch Badge */}
-                  {localBranchFilter && (
-                    <div
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity"
-                      style={{
-                        backgroundColor: COLORS.charcoalLight,
-                        borderColor: COLORS.gold + '40',
-                        color: COLORS.champagne
-                      }}
-                    >
-                      <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                      <span className="hidden sm:inline">{availableBranches.find(b => b.id === localBranchFilter)?.entity_name || 'Branch'}</span>
-                      <X
-                        className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
-                        onClick={() => setLocalBranchFilter(null)}
-                        style={{ color: COLORS.gold }}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Right: View Mode & Sort */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  {/* Sort Dropdown */}
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger
-                      className="w-full sm:w-44 border"
-                      style={{
-                        backgroundColor: COLORS.charcoal,
-                        borderColor: COLORS.bronze + '40',
-                        color: COLORS.champagne
-                      }}
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent
-                      className="salon-luxe-select"
-                      style={{
-                        backgroundColor: COLORS.charcoal,
-                        borderColor: COLORS.bronze + '40'
-                      }}
-                    >
-                      <SelectItem value="name_asc" className="salon-luxe-select-item">
-                        Name (A-Z)
-                      </SelectItem>
-                      <SelectItem value="name_desc" className="salon-luxe-select-item">
-                        Name (Z-A)
-                      </SelectItem>
-                      <SelectItem value="updated_desc" className="salon-luxe-select-item">
-                        Updated (Newest)
-                      </SelectItem>
-                      <SelectItem value="updated_asc" className="salon-luxe-select-item">
-                        Updated (Oldest)
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  {/* Include Archived Toggle & View Mode */}
-                  <div className="flex items-center gap-3">
-                    {/* Include Archived Toggle */}
-                    <button
-                      onClick={() => setIncludeArchived(!includeArchived)}
-                      className={`px-3 py-2 rounded-lg transition-all flex items-center gap-2 ${
-                        includeArchived
-                          ? 'bg-gold/20 border-gold/40'
-                          : 'hover:bg-white/10 border-bronze/30'
-                      } border`}
-                      style={{
-                        color: includeArchived ? COLORS.gold : COLORS.lightText,
-                        borderColor: includeArchived ? COLORS.gold + '40' : COLORS.bronze + '30'
-                      }}
-                      title={includeArchived ? 'Hide archived products' : 'Show archived products'}
-                    >
-                      <Archive className="w-4 h-4" />
-                      <span className="text-sm font-medium hidden sm:inline">
-                        {includeArchived ? 'Hide Archived' : 'Show Archived'}
-                      </span>
-                    </button>
-
-                    {/* Grid/List Toggle */}
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => setViewMode('grid')}
-                        className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
-                        style={{ color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText }}
-                        title="Grid view"
-                      >
-                        <Grid3X3 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setViewMode('list')}
-                        className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
-                        style={{ color: viewMode === 'list' ? COLORS.gold : COLORS.lightText }}
-                        title="List view"
-                      >
-                        <List className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* ✅ ENTERPRISE: Categories Section with Animations */}
           {productCategories.length > 0 && (
@@ -1397,10 +1254,220 @@ function SalonProductsPageContent() {
             />
           </div>
 
-          {/* Filters Bar */}
-          <div className="mx-6 mt-4 flex items-center gap-3">
-            {/* Archived Products Info Badge */}
-            {includeArchived && archivedCount > 0 && (
+          {/* Top Control Bar - Tabs, Branch Filter & View Controls */}
+          <div className="mx-6 mt-6">
+            <div
+              className="p-4 rounded-xl"
+              style={{
+                backgroundColor: COLORS.charcoalLight + 'ee',
+                border: `1px solid ${COLORS.bronze}30`,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+              }}
+            >
+              {/* ✅ MOBILE: Stack vertically on mobile, side-by-side on desktop */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                {/* Left: Status Tabs, Location Filter & Category Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                  {/* Status Tabs */}
+                  <Tabs
+                    value={includeArchived ? 'all' : 'active'}
+                    onValueChange={v => setIncludeArchived(v === 'all')}
+                  >
+                    <TabsList style={{ backgroundColor: COLORS.charcoalLight }}>
+                      <TabsTrigger value="active">Active</TabsTrigger>
+                      <TabsTrigger value="all">All Products</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+
+                  {/* Location Filter */}
+                  <Select
+                    value={localBranchFilter || '__ALL__'}
+                    onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
+                  >
+                    <SelectTrigger
+                      className="w-full sm:w-52 border"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <MapPin className="h-4 w-4 flex-shrink-0" style={{ color: COLORS.gold }} />
+                        <span className="truncate">
+                          <SelectValue placeholder="All Locations" />
+                        </span>
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent
+                      className="salon-luxe-select"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40'
+                      }}
+                    >
+                      <SelectItem
+                        value="__ALL__"
+                        className="salon-luxe-select-item"
+                        style={{ color: COLORS.champagne }}
+                      >
+                        All Locations
+                      </SelectItem>
+                      {isLoadingBranches ? (
+                        <div
+                          className="px-2 py-3 text-center text-sm"
+                          style={{ color: COLORS.bronze }}
+                        >
+                          Loading...
+                        </div>
+                      ) : availableBranches.length === 0 ? (
+                        <div
+                          className="px-2 py-3 text-center text-sm"
+                          style={{ color: COLORS.bronze }}
+                        >
+                          No branches
+                        </div>
+                      ) : (
+                        availableBranches.map(branch => (
+                          <SelectItem
+                            key={branch.id}
+                            value={branch.id}
+                            className="salon-luxe-select-item"
+                            style={{ color: COLORS.champagne }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-3 w-3" style={{ color: COLORS.gold }} />
+                              <div className="flex flex-col">
+                                <span className="font-medium">{branch.entity_name}</span>
+                                {branch.entity_code && (
+                                  <span className="text-xs opacity-60">{branch.entity_code}</span>
+                                )}
+                              </div>
+                            </div>
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+
+                  {/* Category Filter */}
+                  <Select
+                    value={categoryFilter || '__ALL__'}
+                    onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
+                  >
+                    <SelectTrigger
+                      className="w-full sm:w-48 border"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <Tag className="h-4 w-4 flex-shrink-0" style={{ color: COLORS.gold }} />
+                        <span className="truncate">
+                          <SelectValue placeholder="All Categories" />
+                        </span>
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent
+                      className="salon-luxe-select"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40'
+                      }}
+                    >
+                      <SelectItem
+                        value="__ALL__"
+                        className="salon-luxe-select-item"
+                        style={{ color: COLORS.champagne }}
+                      >
+                        All Categories
+                      </SelectItem>
+                      {categories.map(cat => (
+                        <SelectItem
+                          key={cat}
+                          value={cat}
+                          className="salon-luxe-select-item"
+                          style={{ color: COLORS.champagne }}
+                        >
+                          {cat}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Right: Sort & View Mode */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  {/* Sort Dropdown */}
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger
+                      className="w-full sm:w-44 border"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40',
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent
+                      className="salon-luxe-select"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        borderColor: COLORS.bronze + '40'
+                      }}
+                    >
+                      <SelectItem value="name_asc" className="salon-luxe-select-item">
+                        Name (A-Z)
+                      </SelectItem>
+                      <SelectItem value="name_desc" className="salon-luxe-select-item">
+                        Name (Z-A)
+                      </SelectItem>
+                      <SelectItem value="price_low" className="salon-luxe-select-item">
+                        Price (Low to High)
+                      </SelectItem>
+                      <SelectItem value="price_high" className="salon-luxe-select-item">
+                        Price (High to Low)
+                      </SelectItem>
+                      <SelectItem value="updated_desc" className="salon-luxe-select-item">
+                        Updated (Newest)
+                      </SelectItem>
+                      <SelectItem value="updated_asc" className="salon-luxe-select-item">
+                        Updated (Oldest)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Grid/List Toggle */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
+                      style={{ color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText }}
+                      title="Grid view"
+                    >
+                      <Grid3X3 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-gold/20' : 'hover:bg-white/10'}`}
+                      style={{ color: viewMode === 'list' ? COLORS.gold : COLORS.lightText }}
+                      title="List view"
+                    >
+                      <List className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Filters Info Bar */}
+          {(includeArchived && archivedCount > 0) && (
+            <div className="mx-6 mt-4 flex items-center gap-3">
+              {/* Archived Products Info Badge */}
               <div
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm font-medium"
                 style={{
@@ -1413,100 +1480,6 @@ function SalonProductsPageContent() {
                 <span>
                   Showing {archivedCount} archived product{archivedCount !== 1 ? 's' : ''}
                 </span>
-              </div>
-            )}
-
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="px-3 py-1.5 rounded-lg border text-sm font-medium transition-all hover:opacity-80"
-              style={{
-                backgroundColor: showFilters ? COLORS.gold + '20' : COLORS.charcoalLight,
-                borderColor: showFilters ? COLORS.gold + '60' : COLORS.bronze + '40',
-                color: showFilters ? COLORS.gold : COLORS.champagne
-              }}
-            >
-              <div className="flex items-center gap-1.5">
-                <Filter className="h-4 w-4" />
-                <span>Filters</span>
-              </div>
-            </button>
-
-            {categoryFilter && (
-              <div
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity"
-                style={{
-                  backgroundColor: COLORS.gold + '20',
-                  borderColor: COLORS.gold + '60',
-                  color: COLORS.gold
-                }}
-              >
-                <Tag className="h-3 w-3" style={{ color: COLORS.gold }} />
-                <span>{categoryFilter}</span>
-                <X
-                  className="h-3 w-3 cursor-pointer hover:opacity-70 transition-opacity"
-                  onClick={() => setCategoryFilter('')}
-                  style={{ color: COLORS.gold }}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Expandable Filters */}
-          {showFilters && (
-            <div
-              className="mx-6 mt-4 pt-4 border-t flex items-center gap-4"
-              style={{
-                borderColor: COLORS.bronze + '20'
-              }}
-            >
-              {/* Category Filter */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <Tag className="h-4 w-4" style={{ color: COLORS.gold }} />
-                  <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
-                    Category:
-                  </span>
-                </div>
-                <Select
-                  value={categoryFilter || '__ALL__'}
-                  onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
-                >
-                  <SelectTrigger
-                    className="w-48 border"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      borderColor: COLORS.bronze + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <SelectValue placeholder="All categories" />
-                  </SelectTrigger>
-                  <SelectContent
-                    className="salon-luxe-select"
-                    style={{
-                      backgroundColor: COLORS.charcoal,
-                      borderColor: COLORS.bronze + '40'
-                    }}
-                  >
-                    <SelectItem
-                      value="__ALL__"
-                      className="salon-luxe-select-item"
-                      style={{ color: COLORS.champagne }}
-                    >
-                      All categories
-                    </SelectItem>
-                    {categories.map(cat => (
-                      <SelectItem
-                        key={cat}
-                        value={cat}
-                        className="salon-luxe-select-item"
-                        style={{ color: COLORS.champagne }}
-                      >
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
             </div>
           )}

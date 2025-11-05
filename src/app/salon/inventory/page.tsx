@@ -58,8 +58,14 @@ import {
   Download,
   Edit,
   ExternalLink,
-  ArrowLeft
+  ArrowLeft,
+  Package
 } from 'lucide-react'
+import {
+  SalonIconButton,
+  SalonIconButtonGroup,
+  SalonIconButtonDivider
+} from '@/components/salon/shared/SalonIconButton'
 import { cn } from '@/lib/utils'
 
 const COLORS = {
@@ -704,26 +710,38 @@ function SalonInventoryContent() {
                 />
               </div>
 
-              {/* Actions */}
-              <Button
-                variant="outline"
-                className="gap-2"
-                style={{ borderColor: COLORS.gold + '40', color: COLORS.gold }}
-              >
-                <Upload className="w-4 h-4" />
-                Stock Movement
-              </Button>
+              {/* Icon Button Actions */}
+              <SalonIconButtonGroup spacing="md">
+                {/* Navigation to Products */}
+                <Link href="/salon/products">
+                  <SalonIconButton
+                    icon={Package}
+                    label="View Products"
+                    onClick={() => {}}
+                    color="#3B82F6"
+                    textColor={COLORS.champagne}
+                  />
+                </Link>
 
-              <Button
-                className="gap-2"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.charcoalDark
-                }}
-              >
-                <Plus className="w-4 h-4" />
-                New Item
-              </Button>
+                <SalonIconButtonDivider />
+
+                {/* Actions */}
+                <SalonIconButton
+                  icon={Upload}
+                  label="Stock Movement"
+                  onClick={() => {}}
+                  color="#B794F4"
+                  textColor={COLORS.champagne}
+                />
+
+                <SalonIconButton
+                  icon={Plus}
+                  label="New Item"
+                  onClick={() => {}}
+                  color="#D4AF37"
+                  textColor={COLORS.charcoalDark}
+                />
+              </SalonIconButtonGroup>
             </div>
           </div>
         </div>
