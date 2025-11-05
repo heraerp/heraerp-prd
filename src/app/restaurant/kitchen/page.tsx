@@ -3,7 +3,8 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 import { KitchenDisplay } from '@/components/restaurant/KitchenDisplay'
 
 // Restaurant organization configuration
@@ -31,6 +32,39 @@ const RESTAURANT_CONFIG = {
 }
 
 export default function KitchenPage() {
+  const { updateProgress, finishLoading } = useLoadingStore()
+
+  // ⚡ ENTERPRISE: Complete loading animation on mount (if coming from login)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+
+    if (isInitializing) {
+      console.log('🍽️ Restaurant Kitchen: Completing loading animation from 70% → 100%')
+
+      // Animate from 70% to 100% smoothly
+      let progress = 70
+      const progressInterval = setInterval(() => {
+        progress += 5
+        if (progress <= 100) {
+          updateProgress(progress, undefined, progress === 100 ? 'Ready!' : 'Loading your workspace...')
+        }
+        if (progress >= 100) {
+          clearInterval(progressInterval)
+          // Complete and hide overlay after brief delay
+          setTimeout(() => {
+            finishLoading()
+            // Clean up URL parameter
+            window.history.replaceState({}, '', window.location.pathname)
+            console.log('✅ Restaurant Kitchen: Loading complete!')
+          }, 500)
+        }
+      }, 50)
+
+      return () => clearInterval(progressInterval)
+    }
+  }, [updateProgress, finishLoading])
+
   return (
     <div className="container mx-auto p-4 max-w-7xl">
       <KitchenDisplay
