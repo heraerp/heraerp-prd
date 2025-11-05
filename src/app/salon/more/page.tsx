@@ -126,27 +126,49 @@ export default function MorePage() {
 
       <div className="p-5">
         {/* Premium List - Clean iOS Style */}
-        <PremiumCard elevation="flat" padding="none" className="overflow-hidden">
-          {filteredItems.map((item, index) => {
-            const Icon = item.icon
-            return (
-              <React.Fragment key={item.href}>
-                <PremiumListItem
-                  title={item.title}
-                  subtitle={item.description}
-                  icon={<Icon className="w-5 h-5" style={{ color: item.color }} />}
-                  onClick={() => handleNavigation(item.href)}
-                />
-                {index < filteredItems.length - 1 && (
-                  <div
-                    className="mx-4 h-[0.5px]"
-                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}
+        {filteredItems.length > 0 ? (
+          <PremiumCard elevation="flat" padding="none" className="overflow-hidden">
+            {filteredItems.map((item, index) => {
+              const Icon = item.icon
+              return (
+                <React.Fragment key={item.href}>
+                  <PremiumListItem
+                    title={item.title}
+                    subtitle={item.description}
+                    icon={<Icon className="w-5 h-5" style={{ color: item.color }} />}
+                    onClick={() => handleNavigation(item.href)}
                   />
-                )}
-              </React.Fragment>
-            )
-          })}
-        </PremiumCard>
+                  {index < filteredItems.length - 1 && (
+                    <div
+                      className="mx-4 h-[0.5px]"
+                      style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}
+                    />
+                  )}
+                </React.Fragment>
+              )
+            })}
+          </PremiumCard>
+        ) : (
+          <PremiumCard elevation="medium" padding="lg">
+            <div className="text-center py-8">
+              <div
+                className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
+                style={{
+                  background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base}20 0%, ${SALON_LUXE_COLORS.gold.dark}10 100%)`,
+                  border: `1px solid ${SALON_LUXE_COLORS.gold.base}30`
+                }}
+              >
+                <Settings className="w-8 h-8" style={{ color: SALON_LUXE_COLORS.gold.base }} />
+              </div>
+              <h3 className="text-lg font-bold mb-2" style={{ color: SALON_LUXE_COLORS.champagne.base }}>
+                No Additional Features
+              </h3>
+              <p className="text-sm leading-relaxed" style={{ color: SALON_LUXE_COLORS.bronze }}>
+                Your role currently doesn't have access to additional features. Contact your administrator for more information.
+              </p>
+            </div>
+          </PremiumCard>
+        )}
 
         {/* Bottom spacing for mobile nav */}
         <div className="h-24" />
