@@ -1,10 +1,10 @@
+'use client'
+
 // ================================================================================
 // HERA APPOINTMENT DETAIL PAGE
 // Smart Code: HERA.PAGES.APPOINTMENTS.DETAIL.V1
 // Appointment detail view with actions and metadata
 // ================================================================================
-
-
 
 import React from 'react'
 import { useRouter, useParams } from 'next/navigation'

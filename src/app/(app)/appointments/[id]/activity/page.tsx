@@ -1,10 +1,10 @@
+'use client'
+
 // ================================================================================
 // HERA APPOINTMENT ACTIVITY PAGE
 // Smart Code: HERA.PAGES.APPOINTMENTS.ACTIVITY.V1
 // Activity timeline for appointment history
 // ================================================================================
-
-
 
 import React from 'react'
 import { useRouter, useParams } from 'next/navigation'

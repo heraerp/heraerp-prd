@@ -1,5 +1,3 @@
-'use client'
-
 /**
  * Jewelry Industry Layout
  * Smart Code: HERA.JEWELRY.LAYOUT.v1

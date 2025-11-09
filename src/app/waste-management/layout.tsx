@@ -1,5 +1,3 @@
-'use client'
-
 /**
  * Waste Management Industry Layout
  * Smart Code: HERA.WASTE_MGMT.LAYOUT.v1
