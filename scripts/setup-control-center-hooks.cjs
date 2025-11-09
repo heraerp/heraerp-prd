@@ -70,6 +70,11 @@ echo "✅ Post-merge tasks completed!"
 
 async function setupHooks() {
     try {
+        // Skip in CI/production environments
+        if (process.env.CI === 'true' || process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production') {
+            console.log('🚀 Skipping control center hook setup in CI/production environment');
+            return;
+        }
         // Ensure hooks directory exists
         await fs.mkdir(HOOKS_DIR, { recursive: true });
         
@@ -100,7 +105,7 @@ async function setupHooks() {
         packageJson.scripts['cc:health'] = 'node mcp-server/hera-control-center.js health';
         packageJson.scripts['cc:check'] = 'node mcp-server/hera-control-center.js control';
         packageJson.scripts['cc:deploy'] = 'node mcp-server/hera-control-center.js deploy-check';
-        packageJson.scripts['postinstall'] = 'node scripts/setup-control-center-hooks.js';
+        packageJson.scripts['postinstall'] = 'node scripts/setup-control-center-hooks.cjs || echo "Skipping control center hook setup"';
         
         await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
         console.log('✅ Package.json scripts updated');
