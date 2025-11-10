@@ -1,7 +1,6 @@
 {
   "name": "hera-salon-scripts",
   "version": "1.0.0",
-  "type": "module",
   "description": "HERA Salon bootstrap and validation scripts",
   "scripts": {
     "salon:bootstrap": "npm run salon:create-orgs && npm run salon:seed-ho",
