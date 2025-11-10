@@ -33,7 +33,7 @@ export type AppRole = 'owner' | 'manager' | 'receptionist' | 'accountant' | 'sty
 /**
  * Supported HERA application codes
  */
-export type AppCode = 'salon' | 'cashew' | 'isp' | 'furniture' | 'restaurant' | 'retail'
+export type AppCode = 'salon' | 'cashew' | 'isp' | 'furniture' | 'restaurant' | 'retail' | 'wms'
 
 /**
  * HERA RBAC role type (database format)
@@ -197,6 +197,15 @@ export function getRoleDisplayName(role: AppRole, app?: AppCode): string {
       stylist: 'Sales Associate',
       staff: 'Store Staff',
       user: 'Customer'
+    },
+    wms: {
+      owner: 'Warehouse Owner',
+      manager: 'Operations Manager',
+      receptionist: 'Receiving Clerk',
+      accountant: 'Inventory Accountant',
+      stylist: 'Order Picker',
+      staff: 'Warehouse Staff',
+      user: 'Vendor'
     }
   }
 
@@ -319,6 +328,19 @@ const APP_ROUTING_RULES: Record<AppCode, Record<AppRole, string>> = {
     stylist: '/retail/sales',            // Sales associate
     staff: '/retail/operations',         // Store operations
     user: '/retail/home'                 // Customer portal
+  },
+
+  // ========================
+  // WMS APP (Warehouse Management)
+  // ========================
+  wms: {
+    owner: '/wms/dashboard',             // Warehouse analytics & management
+    manager: '/wms/operations',          // Operations management
+    receptionist: '/wms/receiving',      // Receiving desk
+    accountant: '/wms/inventory-value',  // Financial inventory tracking
+    stylist: '/wms/picker',              // Order picker view
+    staff: '/wms/operations',            // General warehouse staff
+    user: '/wms'                         // External portal
   }
 }
 
@@ -361,6 +383,7 @@ export function getRoleRedirectPath(role: AppRole, app?: AppCode): string {
     else if (pathname.startsWith('/furniture')) appCode = 'furniture'
     else if (pathname.startsWith('/restaurant')) appCode = 'restaurant'
     else if (pathname.startsWith('/retail')) appCode = 'retail'
+    else if (pathname.startsWith('/wms')) appCode = 'wms'
   }
 
   // Get routing rules for the app
@@ -415,7 +438,7 @@ export function getAppCodeFromOrganization(organizationId: string): AppCode {
  * @returns true if app is a valid AppCode
  */
 export function isValidAppCode(app: string): app is AppCode {
-  const validApps: AppCode[] = ['salon', 'cashew', 'isp', 'furniture', 'restaurant', 'retail']
+  const validApps: AppCode[] = ['salon', 'cashew', 'isp', 'furniture', 'restaurant', 'retail', 'wms']
   return validApps.includes(app as AppCode)
 }
 

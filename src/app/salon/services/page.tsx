@@ -13,6 +13,11 @@ import { ServiceCategory, ServiceCategoryFormValues } from '@/types/salon-servic
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import {
+  SalonIconButton,
+  SalonIconButtonGroup,
+  SalonIconButtonDivider
+} from '@/components/salon/shared/SalonIconButton'
 // ✅ SSR FIX: Dynamically import xlsx only when needed (browser-only library)
 // import * as XLSX from 'xlsx' // REMOVED - causes SSR crash
 
@@ -1106,79 +1111,51 @@ function SalonServicesPageContent() {
       title="Services"
       description="Manage your service catalog and pricing"
       actions={
-        <>
-          {/* New Category - Emerald */}
-          <button
-            onClick={() => {
-              setEditingCategory(null)
-              setCategoryModalOpen(true)
-            }}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.emerald,
-              color: COLORS.champagne,
-              border: `1px solid ${COLORS.emerald}`
-            }}
-          >
-            <FolderPlus className="w-4 h-4" />
-            New Category
-          </button>
-          {/* New Service - Gold */}
-          <button
-            onClick={() => {
-              setEditingService(null)
-              setModalOpen(true)
-            }}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.gold,
-              color: COLORS.black,
-              border: `1px solid ${COLORS.gold}`
-            }}
-          >
-            <Plus className="w-4 h-4" />
-            New Service
-          </button>
-          {/* Import - Bronze */}
-          <button
-            onClick={() => setImportModalOpen(true)}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.bronze,
-              color: COLORS.champagne,
-              border: `1px solid ${COLORS.bronze}`
-            }}
-          >
-            <Upload className="w-4 h-4" />
-            Import
-          </button>
-          {/* Export - Plum */}
-          <button
-            onClick={handleExport}
-            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.plum,
-              color: COLORS.champagne,
-              border: `1px solid ${COLORS.plum}`
-            }}
-          >
-            <Download className="w-4 h-4" />
-            Export
-          </button>
-          {/* Refresh Data - Bronze (icon only, at the end) */}
-          <button
-            onClick={() => window.location.reload()}
-            className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: COLORS.charcoal,
-              border: `1px solid ${COLORS.bronze}40`,
-              color: COLORS.bronze
-            }}
-            title="Refresh data"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
-        </>
+        <div className="hidden md:block">
+          <SalonIconButtonGroup spacing="md">
+            {/* Primary Actions */}
+            <SalonIconButton
+              icon={Plus}
+              label="New Service"
+              onClick={() => {
+                setEditingService(null)
+                setModalOpen(true)
+              }}
+              color="#D4AF37"
+              textColor={COLORS.black}
+            />
+
+            <SalonIconButton
+              icon={FolderPlus}
+              label="New Category"
+              onClick={() => {
+                setEditingCategory(null)
+                setCategoryModalOpen(true)
+              }}
+              color="#0F6F5C"
+              textColor={COLORS.champagne}
+            />
+
+            <SalonIconButtonDivider />
+
+            {/* Import/Export */}
+            <SalonIconButton
+              icon={Upload}
+              label="Import Services"
+              onClick={() => setImportModalOpen(true)}
+              color="#E8B4B8"
+              textColor={COLORS.charcoal}
+            />
+
+            <SalonIconButton
+              icon={Download}
+              label="Export Services"
+              onClick={handleExport}
+              color="#10B981"
+              textColor={COLORS.champagne}
+            />
+          </SalonIconButtonGroup>
+        </div>
       }
     >
       {/* 📱 PREMIUM MOBILE HEADER */}
@@ -1356,57 +1333,43 @@ function SalonServicesPageContent() {
         </div>
 
         {/* 📱 MOBILE QUICK ACTIONS */}
-        <div className="md:hidden mb-6 space-y-2">
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setEditingCategory(null)
-                setCategoryModalOpen(true)
-              }}
-              className="flex-1 min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
-              style={{
-                backgroundColor: COLORS.emerald,
-                color: COLORS.champagne
-              }}
-            >
-              <FolderPlus className="w-4 h-4" />
-              New Category
-            </button>
-            <button
-              onClick={() => window.location.reload()}
-              className="min-w-[48px] min-h-[48px] rounded-xl transition-all duration-200 active:scale-95 flex items-center justify-center"
-              style={{
-                backgroundColor: COLORS.charcoal,
-                border: `1px solid ${COLORS.bronze}40`,
-                color: COLORS.bronze
-              }}
-            >
-              <RefreshCw className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setImportModalOpen(true)}
-              className="flex-1 min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
-              style={{
-                backgroundColor: COLORS.bronze,
-                color: COLORS.champagne
-              }}
-            >
-              <Upload className="w-4 h-4" />
-              Import Excel
-            </button>
-            <button
-              onClick={handleExport}
-              className="flex-1 min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
-              style={{
-                backgroundColor: COLORS.plum,
-                color: COLORS.champagne
-              }}
-            >
-              <Download className="w-4 h-4" />
-              Export Excel
-            </button>
+        <div className="md:hidden px-4 pb-4 overflow-hidden">
+          <div className="flex gap-2 overflow-x-auto pb-16 -mb-14 scrollbar-hide">
+            <SalonIconButtonGroup spacing="md">
+              {/* Primary Actions */}
+              <SalonIconButton
+                icon={FolderPlus}
+                label="New Category"
+                onClick={() => {
+                  setEditingCategory(null)
+                  setCategoryModalOpen(true)
+                }}
+                color="#0F6F5C"
+                textColor={COLORS.champagne}
+                size="md"
+              />
+
+              <SalonIconButtonDivider />
+
+              {/* Import/Export */}
+              <SalonIconButton
+                icon={Upload}
+                label="Import Services"
+                onClick={() => setImportModalOpen(true)}
+                color="#E8B4B8"
+                textColor={COLORS.charcoal}
+                size="md"
+              />
+
+              <SalonIconButton
+                icon={Download}
+                label="Export Services"
+                onClick={handleExport}
+                color="#10B981"
+                textColor={COLORS.champagne}
+                size="md"
+              />
+            </SalonIconButtonGroup>
           </div>
         </div>
 

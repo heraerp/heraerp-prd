@@ -94,14 +94,28 @@ export async function GET(request: NextRequest) {
 
 **File:** `/src/lib/auth/role-normalizer.ts`
 
-**Add your app routing rules:**
+**Complete Checklist (4 required changes):**
+
+#### 1️⃣ Add to `AppCode` Type (Line ~36)
 
 ```typescript
-// Around line 300+ in APP_ROUTING_RULES
-export const APP_ROUTING_RULES: Record<AppName, Record<string, string>> = {
+export type AppCode =
+  | 'salon'
+  | 'cashew'
+  | 'isp'
+  | 'furniture'
+  | 'restaurant'
+  | 'retail'
+  | 'newapp'  // ✅ ADD YOUR APP CODE HERE (lowercase)
+```
+
+#### 2️⃣ Add Routing Rules (Line ~245-336)
+
+```typescript
+const APP_ROUTING_RULES: Record<AppCode, Record<AppRole, string>> = {
   // ... existing apps ...
 
-  // ✅ ADD YOUR NEW APP HERE
+  // ✅ ADD YOUR APP ROUTING RULES HERE
   newapp: {
     owner: '/newapp/dashboard',           // Business owner/admin
     manager: '/newapp/manager',           // Operations manager
@@ -114,19 +128,63 @@ export const APP_ROUTING_RULES: Record<AppName, Record<string, string>> = {
 }
 ```
 
-**Update TypeScript types:**
+#### 3️⃣ Add URL Detection (Line ~367-378)
 
 ```typescript
-// Around line 10-20, add to AppName union
-export type AppName =
-  | 'salon'
-  | 'retail'
-  | 'cashew'
-  | 'furniture'
-  | 'isp'
-  | 'restaurant'
-  | 'newapp'  // ✅ ADD YOUR APP HERE
+if (!app && typeof window !== 'undefined') {
+  const pathname = window.location.pathname
+
+  // Extract app code from URL path
+  if (pathname.startsWith('/salon')) appCode = 'salon'
+  else if (pathname.startsWith('/cashew')) appCode = 'cashew'
+  else if (pathname.startsWith('/isp')) appCode = 'isp'
+  else if (pathname.startsWith('/furniture')) appCode = 'furniture'
+  else if (pathname.startsWith('/restaurant')) appCode = 'restaurant'
+  else if (pathname.startsWith('/retail')) appCode = 'retail'
+  else if (pathname.startsWith('/newapp')) appCode = 'newapp'  // ✅ ADD HERE
+}
 ```
+
+#### 4️⃣ Add to Validation Function (Line ~432)
+
+```typescript
+export function isValidAppCode(app: string): app is AppCode {
+  const validApps: AppCode[] = [
+    'salon', 'cashew', 'isp', 'furniture', 'restaurant', 'retail',
+    'newapp'  // ✅ ADD YOUR APP CODE HERE
+  ]
+  return validApps.includes(app as AppCode)
+}
+```
+
+#### 5️⃣ (Optional) Add Display Names (Line ~146-210)
+
+```typescript
+const appSpecificNames: Record<AppCode, Record<AppRole, string>> = {
+  // ... existing apps ...
+
+  // ✅ OPTIONAL: Add app-specific role display names
+  newapp: {
+    owner: 'Business Owner',
+    manager: 'Operations Manager',
+    receptionist: 'Front Desk',
+    accountant: 'Accountant',
+    stylist: 'Specialist',
+    staff: 'Staff Member',
+    user: 'Customer'
+  }
+}
+```
+
+**Verification Checklist:**
+
+- [ ] App code added to `AppCode` type
+- [ ] Routing rules added to `APP_ROUTING_RULES`
+- [ ] URL detection added to `getRoleRedirectPath()`
+- [ ] App code added to `isValidAppCode()` validation
+- [ ] (Optional) Display names added to `getRoleDisplayName()`
+- [ ] Run `npm run typecheck` - no errors
+- [ ] Test login with new app code
 
 ### ✅ STEP 2: Update HERAAuthProvider (if needed)
 

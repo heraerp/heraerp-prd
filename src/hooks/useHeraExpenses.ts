@@ -1,25 +1,36 @@
 /**
- * HERA Expenses Hook V2
+ * HERA Expenses Hook V3 - Finance DNA v2 Integration
  *
  * ✅ Enterprise-grade expense management using universal_transactions
  * ✅ Proper double-entry GL accounting with DR/CR
  * ✅ Integrates with Chart of Accounts
  * ✅ Automatic P&L and Cash Flow integration
+ * ✅ Finance DNA v2 integration with payment status workflow
+ * ✅ Accounts Payable tracking for pending expenses
  *
- * BREAKING CHANGE from V1:
- * - Expenses now stored as transactions (not entities)
- * - Automatic GL entries for every expense
- * - Payment method affects GL accounts
+ * Payment Status Workflow:
+ * 1. CREATE EXPENSE (pending): DR Expense (6xxx), CR Accounts Payable (2100)
+ * 2. MARK AS PAID: DR Accounts Payable (2100), CR Cash/Bank (1xxx)
+ *
+ * BREAKING CHANGE from V2:
+ * - Expenses now automatically post to Finance DNA v2 GL
+ * - Payment status workflow: pending → paid
+ * - Accounts Payable tracking for unpaid expenses
  */
 
 import { useMemo } from 'react'
 import { useUniversalTransactionV1 } from './useUniversalTransactionV1'
 import {
-  generateExpenseGLLines,
+  generatePendingExpenseGLLines,
+  generateExpensePaymentGLLines,
   getExpenseGLAccount,
   getPaymentGLAccount,
   EXPENSE_CATEGORY_TO_GL
 } from '@/lib/finance/gl-account-mapping'
+import {
+  postExpenseToFinance,
+  markExpenseAsPaid as markExpenseAsPaidService
+} from '@/services/expense-finance-integration'
 
 export interface ExpenseTransaction {
   id: string
@@ -177,7 +188,7 @@ export function useHeraExpenses(options?: UseHeraExpensesOptions) {
     return filtered
   }, [expenses, options?.filters?.category, options?.filters?.status, options?.filters?.search])
 
-  // Helper to create expense with GL accounting
+  // Helper to create expense with Finance DNA v2 integration
   const createExpense = async (data: {
     name: string
     vendor: string
@@ -190,59 +201,134 @@ export function useHeraExpenses(options?: UseHeraExpensesOptions) {
     receipt_url?: string
     reference_number?: string
     branch_id?: string
+    actor_user_id?: string // Required for Finance DNA v2
   }) => {
     const category = data.category
     const paymentMethod = data.payment_method || 'Cash'
     const amount = data.amount
+    const paymentStatus = data.status || 'pending'
 
-    // Validate category and payment method
+    // Validate category
     const expenseAccount = getExpenseGLAccount(category)
-    const paymentAccount = getPaymentGLAccount(paymentMethod)
-
     if (!expenseAccount) {
       throw new Error(`Invalid expense category: ${category}`)
     }
-    if (!paymentAccount) {
-      throw new Error(`Invalid payment method: ${paymentMethod}`)
-    }
 
-    // Generate GL lines (DR Expense, CR Payment Account)
-    const glLines = generateExpenseGLLines(
-      category,
-      paymentMethod,
-      amount,
-      data.branch_id
-    )
+    // Generate GL lines based on payment status
+    // PENDING: DR Expense, CR Accounts Payable
+    // PAID: DR Expense, CR Cash/Bank (legacy, not recommended - use pending → paid workflow instead)
+    const glLines = paymentStatus === 'pending'
+      ? generatePendingExpenseGLLines(category, amount, data.branch_id)
+      : generatePendingExpenseGLLines(category, amount, data.branch_id) // Always use pending workflow
 
     // Build transaction payload
     const transactionPayload = {
       transaction_type: 'EXPENSE',
       transaction_date: data.expense_date,
       total_amount: amount,
+      transaction_status: paymentStatus === 'paid' ? 'paid' : 'pending',
       smart_code: `HERA.SALON.TXN.EXPENSE.${category.toUpperCase()}.v1`,
 
-      // Store expense details in metadata
+      // Store expense details in metadata (Finance DNA v2 compliant)
       metadata: {
-        expense_category: category,
+        category: category, // Standardized field name
+        expense_category: category, // Backward compatibility
         vendor_name: data.vendor,
         payment_method: paymentMethod,
-        payment_status: data.status || 'pending',
-        payment_date: data.status === 'paid' ? data.expense_date : undefined,
+        payment_status: paymentStatus, // pending | paid
+        payment_date: paymentStatus === 'paid' ? data.expense_date : undefined,
         description: data.description,
         invoice_number: data.reference_number,
         receipt_url: data.receipt_url,
-        notes: data.name
+        notes: data.name,
+        branch_id: data.branch_id,
+        // Finance DNA v2 metadata
+        finance_dna_version: 'v2.0',
+        awaiting_finance_posting: true
       },
 
       // Relationships (if vendor/branch entities exist)
       source_entity_id: undefined, // TODO: Link to vendor entity if exists
       target_entity_id: data.branch_id,
 
-      // GL Lines
+      // GL Lines (will be posted to Finance DNA v2 separately)
       lines: glLines
     }
 
-    return baseCreate(transactionPayload as any)
+    console.log('💰 [useHeraExpenses] Creating expense transaction:', {
+      amount,
+      category,
+      paymentStatus,
+      paymentMethod
+    })
+
+    // Step 1: Create expense transaction
+    const createResult = await baseCreate(transactionPayload as any)
+
+    if (!createResult?.id) {
+      throw new Error('Failed to create expense transaction')
+    }
+
+    console.log('✅ [useHeraExpenses] Expense transaction created:', createResult.id)
+
+    // Step 2: Post to Finance DNA v2 (if pending)
+    if (paymentStatus === 'pending' && data.actor_user_id && options?.organizationId) {
+      try {
+        console.log('📊 [useHeraExpenses] Posting expense to Finance DNA v2...')
+
+        const financeResult = await postExpenseToFinance({
+          expenseTransaction: {
+            id: createResult.id,
+            organization_id: options.organizationId,
+            transaction_type: 'EXPENSE',
+            transaction_date: data.expense_date,
+            total_amount: amount,
+            transaction_status: 'pending',
+            metadata: transactionPayload.metadata
+          },
+          organizationId: options.organizationId,
+          actorUserId: data.actor_user_id
+        })
+
+        if (financeResult.success) {
+          console.log('✅ [useHeraExpenses] Successfully posted to Finance DNA v2:', {
+            financeTransactionId: financeResult.financeTransactionId,
+            relationshipId: financeResult.relationshipId
+          })
+        } else {
+          console.error('⚠️ [useHeraExpenses] Finance posting failed (non-critical):', financeResult.error)
+        }
+      } catch (error) {
+        console.error('⚠️ [useHeraExpenses] Finance posting error (non-critical):', error)
+        // Non-blocking - expense still created successfully
+      }
+    }
+
+    // Step 3: If paid immediately, mark as paid (creates payment GL journal)
+    if (paymentStatus === 'paid' && data.actor_user_id && options?.organizationId) {
+      try {
+        console.log('💳 [useHeraExpenses] Marking expense as paid...')
+
+        const paymentResult = await markExpenseAsPaidService({
+          expenseTransactionId: createResult.id,
+          paymentMethod,
+          paymentDate: data.expense_date,
+          organizationId: options.organizationId,
+          actorUserId: data.actor_user_id
+        })
+
+        if (paymentResult.success) {
+          console.log('✅ [useHeraExpenses] Successfully marked as paid in Finance DNA v2')
+        } else {
+          console.error('⚠️ [useHeraExpenses] Payment posting failed (non-critical):', paymentResult.error)
+        }
+      } catch (error) {
+        console.error('⚠️ [useHeraExpenses] Payment posting error (non-critical):', error)
+        // Non-blocking - expense still created successfully
+      }
+    }
+
+    return createResult
   }
 
   // Helper to update expense
@@ -336,6 +422,85 @@ export function useHeraExpenses(options?: UseHeraExpensesOptions) {
     }
   }
 
+  // Helper to mark expense as paid (Finance DNA v2 workflow)
+  const markAsPaid = async (params: {
+    expense_id: string
+    payment_method: string
+    payment_date: string
+    actor_user_id: string
+  }): Promise<{
+    success: boolean
+    financeTransactionId?: string
+    error?: string
+  }> => {
+    const { expense_id, payment_method, payment_date, actor_user_id } = params
+
+    if (!options?.organizationId) {
+      return {
+        success: false,
+        error: 'Organization ID is required'
+      }
+    }
+
+    const expense = expenses?.find(e => e.id === expense_id)
+    if (!expense) {
+      return {
+        success: false,
+        error: 'Expense not found'
+      }
+    }
+
+    // Validate payment method
+    const paymentAccount = getPaymentGLAccount(payment_method)
+    if (!paymentAccount) {
+      return {
+        success: false,
+        error: `Invalid payment method: ${payment_method}`
+      }
+    }
+
+    try {
+      console.log('💳 [useHeraExpenses] Marking expense as paid:', {
+        expense_id,
+        payment_method,
+        payment_date
+      })
+
+      // Call Finance DNA v2 service
+      const result = await markExpenseAsPaidService({
+        expenseTransactionId: expense_id,
+        paymentMethod: payment_method,
+        paymentDate: payment_date,
+        organizationId: options.organizationId,
+        actorUserId: actor_user_id
+      })
+
+      if (result.success) {
+        console.log('✅ [useHeraExpenses] Successfully marked as paid in Finance DNA v2')
+
+        // Refresh expenses to show updated status
+        await refetch()
+
+        return {
+          success: true,
+          financeTransactionId: result.financeTransactionId
+        }
+      } else {
+        console.error('❌ [useHeraExpenses] Failed to mark as paid:', result.error)
+        return {
+          success: false,
+          error: result.error
+        }
+      }
+    } catch (error) {
+      console.error('❌ [useHeraExpenses] Mark as paid error:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      }
+    }
+  }
+
   // Helper to calculate expense totals by category
   const calculateExpenseTotals = () => {
     if (!filteredExpenses) return { total: 0, byCategory: {} }
@@ -351,6 +516,21 @@ export function useHeraExpenses(options?: UseHeraExpensesOptions) {
     return { total, byCategory }
   }
 
+  // Helper to get pending expenses (unpaid, awaiting payment)
+  const getPendingExpenses = () => {
+    return filteredExpenses?.filter(e => e.status === 'pending') || []
+  }
+
+  // Helper to get paid expenses
+  const getPaidExpenses = () => {
+    return filteredExpenses?.filter(e => e.status === 'paid') || []
+  }
+
+  // Helper to get total accounts payable (pending expenses)
+  const getTotalAccountsPayable = () => {
+    return getPendingExpenses().reduce((sum, e) => sum + (e.total_amount || 0), 0)
+  }
+
   return {
     expenses: filteredExpenses,
     isLoading,
@@ -359,7 +539,11 @@ export function useHeraExpenses(options?: UseHeraExpensesOptions) {
     createExpense,
     updateExpense,
     deleteExpense,
+    markAsPaid, // NEW: Mark expense as paid (Finance DNA v2)
     calculateExpenseTotals,
+    getPendingExpenses, // NEW: Get unpaid expenses
+    getPaidExpenses, // NEW: Get paid expenses
+    getTotalAccountsPayable, // NEW: Get total AP balance
     isCreating,
     isUpdating,
     isDeleting
