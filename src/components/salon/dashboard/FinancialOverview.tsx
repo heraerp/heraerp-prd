@@ -115,7 +115,7 @@ export function FinancialOverview({ kpis, formatCurrency, selectedPeriod }: Fina
 
           {/* Gross Profit */}
           <div
-            className="group p-5 rounded-xl mb-4 transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+            className="group p-5 rounded-xl mb-4 transition-all duration-300 hover:scale-[1.008]"
             style={{
               backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.emerald}15 0%, ${LUXE_COLORS.emerald}05 100%)`,
               border: `1px solid ${LUXE_COLORS.emerald}40`,
@@ -156,7 +156,7 @@ export function FinancialOverview({ kpis, formatCurrency, selectedPeriod }: Fina
 
           {/* Profit Margin */}
           <div
-            className="group p-5 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+            className="group p-5 rounded-xl transition-all duration-300 hover:scale-[1.008]"
             style={{
               backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.gold}15 0%, ${LUXE_COLORS.gold}05 100%)`,
               border: `1px solid ${LUXE_COLORS.gold}40`,
@@ -262,7 +262,7 @@ export function FinancialOverview({ kpis, formatCurrency, selectedPeriod }: Fina
                   return (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+                      className="flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:scale-[1.008]"
                       style={{
                         backgroundImage: `linear-gradient(135deg, ${method.color}15 0%, ${method.color}05 100%)`,
                         border: `1px solid ${method.color}30`

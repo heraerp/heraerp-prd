@@ -245,7 +245,7 @@ export async function signupWithOrganizationServer(
       .insert({
         id: orgId,
         organization_id: orgId,
-        entity_type: 'ORG',
+        entity_type: 'ORGANIZATION',
         entity_name: params.businessName,
         entity_code: orgCode,
         smart_code: `HERA.SALON.ENTITY.ORG.${normalizedOrgName}.v1`,

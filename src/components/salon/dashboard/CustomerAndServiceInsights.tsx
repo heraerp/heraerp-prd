@@ -64,7 +64,7 @@ export function CustomerAndServiceInsights({ kpis, formatCurrency, selectedPerio
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div
-            className="p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+            className="p-4 rounded-xl transition-all duration-300 hover:scale-[1.008]"
             style={{
               backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
               border: `1px solid ${LUXE_COLORS.emerald}30`
@@ -80,7 +80,7 @@ export function CustomerAndServiceInsights({ kpis, formatCurrency, selectedPerio
           </div>
 
           <div
-            className="p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+            className="p-4 rounded-xl transition-all duration-300 hover:scale-[1.008]"
             style={{
               backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
               border: `1px solid ${LUXE_COLORS.sapphire}30`
@@ -96,7 +96,7 @@ export function CustomerAndServiceInsights({ kpis, formatCurrency, selectedPerio
           </div>
 
           <div
-            className="p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+            className="p-4 rounded-xl transition-all duration-300 hover:scale-[1.008]"
             style={{
               backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
               border: `1px solid ${LUXE_COLORS.gold}30`
@@ -112,7 +112,7 @@ export function CustomerAndServiceInsights({ kpis, formatCurrency, selectedPerio
           </div>
 
           <div
-            className="p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+            className="p-4 rounded-xl transition-all duration-300 hover:scale-[1.008]"
             style={{
               backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
               border: `1px solid ${LUXE_COLORS.plum}30`
@@ -222,7 +222,7 @@ export function CustomerAndServiceInsights({ kpis, formatCurrency, selectedPerio
               kpis.topServices.slice(0, 5).map((service, index) => (
                 <div
                   key={service.serviceId}
-                  className="group flex items-center justify-between p-3 rounded-lg transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+                  className="group flex items-center justify-between p-3 rounded-lg transition-all duration-300 hover:scale-[1.008]"
                   style={{
                     backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
                     border: `1px solid ${index === 0 ? LUXE_COLORS.gold : LUXE_COLORS.emerald}30`
@@ -272,7 +272,7 @@ export function CustomerAndServiceInsights({ kpis, formatCurrency, selectedPerio
               {kpis.leastPopularServices.slice(0, 3).map(service => (
                 <div
                   key={service.serviceId}
-                  className="flex items-center justify-between p-3 rounded-lg transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+                  className="flex items-center justify-between p-3 rounded-lg transition-all duration-300 hover:scale-[1.008]"
                   style={{
                     backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.warning}10 0%, ${LUXE_COLORS.warning}05 100%)`,
                     border: `1px solid ${LUXE_COLORS.warning}30`

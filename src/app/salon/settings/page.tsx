@@ -33,6 +33,7 @@ import { Switch } from '@/components/ui/switch'
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
+import { BusinessHoursSection } from '@/components/salon/settings/BusinessHoursSection'
 import {
   Settings,
   Users,
@@ -45,8 +46,6 @@ import {
   Loader2,
   Save,
   RefreshCw,
-  Package,
-  ArrowRight,
   Sparkles
 } from 'lucide-react'
 import { SALON_LUXE_COLORS as LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
@@ -196,7 +195,7 @@ function SettingsPageContent() {
         p_organization_id: organizationId,
         p_entity: {
           entity_id: organizationId,
-          entity_type: 'ORG' // ✅ CRITICAL: Organizations use 'ORG' not 'ORGANIZATION'
+          entity_type: 'ORGANIZATION' // ✅ FIXED: Use correct entity type 'ORGANIZATION'
         },
         p_dynamic: dynamicFields,
         p_relationships: [],
@@ -521,85 +520,11 @@ function SettingsPageContent() {
                   </CardContent>
                 </Card>
 
-                {/* Business Hours */}
-                <Card
-                  className="border-0 shadow-lg"
-                  style={{
-                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-                    border: `1px solid ${LUXE_COLORS.border.light}`
-                  }}
-                >
-                  <CardHeader>
-                    <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>Business Hours</CardTitle>
-                    <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                      Set your salon's operating hours
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {[
-                        'Monday',
-                        'Tuesday',
-                        'Wednesday',
-                        'Thursday',
-                        'Friday',
-                        'Saturday',
-                        'Sunday'
-                      ].map(day => (
-                        <div key={day} className="flex items-center justify-between py-2">
-                          <span style={{ color: LUXE_COLORS.champagne.base }}>{day}</span>
-                          <div className="flex items-center gap-4">
-                            <span style={{ color: LUXE_COLORS.text.secondary }}>9:00 AM - 8:00 PM</span>
-                            <Switch />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Inventory Settings */}
-                <Card
-                  className="border-0 shadow-lg"
-                  style={{
-                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-                    border: `1px solid ${LUXE_COLORS.border.light}`
-                  }}
-                >
-                  <CardHeader>
-                    <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>
-                      <div className="flex items-center gap-2">
-                        <Package className="w-5 h-5" style={{ color: LUXE_COLORS.gold.base }} />
-                        Inventory Management
-                      </div>
-                    </CardTitle>
-                    <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                      Configure inventory tracking and stock management settings
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <p style={{ color: LUXE_COLORS.champagne.base }}>
-                          Enable inventory tracking, manage stock levels, and configure
-                          branch-specific inventory settings.
-                        </p>
-                        <p className="text-sm mt-2" style={{ color: LUXE_COLORS.text.secondary }}>
-                          Control which products require inventory tracking and set organization-wide
-                          defaults.
-                        </p>
-                      </div>
-                      <Button
-                        onClick={() => router.push('/salon/settings/inventory')}
-                        className="min-h-[48px] font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-                        style={{ backgroundColor: LUXE_COLORS.gold.base, color: LUXE_COLORS.charcoal.dark }}
-                      >
-                        Configure
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Business Hours - Branch-Aware */}
+                <BusinessHoursSection
+                  onSuccess={(message) => showSuccess(message)}
+                  onError={(message) => showError(message)}
+                />
               </div>
             </TabsContent>
 

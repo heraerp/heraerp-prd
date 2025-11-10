@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
       .insert({
         id: orgId,
         organization_id: orgId,
-        entity_type: 'ORG',
+        entity_type: 'ORGANIZATION',
         entity_name: data.organization_name,
         entity_code: orgCode,
         smart_code: `HERA.SALON.ENTITY.ORG.${normalizedOrgName}.v1`,

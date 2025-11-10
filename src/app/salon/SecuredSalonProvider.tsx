@@ -995,13 +995,13 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       })
 
       // ✅ READ organization entity with ALL dynamic fields
-      // Organizations are stored as entities with entity_type = 'ORG'
+      // Organizations are stored as entities with entity_type = 'ORGANIZATION'
       const { data, error } = await entityCRUD({
         p_action: 'READ',
         p_actor_user_id: actorUserId,
         p_organization_id: orgId,
         p_entity: {
-          entity_type: 'ORG', // ✅ CORRECTED: Organizations use 'ORG' not 'ORGANIZATION'
+          entity_type: 'ORGANIZATION', // ✅ FIXED: Use correct entity type 'ORGANIZATION'
           entity_id: orgId // Specific organization ID to read
         },
         p_dynamic: {}, // Empty = fetch all dynamic fields
