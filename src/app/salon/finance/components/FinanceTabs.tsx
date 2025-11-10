@@ -24,7 +24,9 @@ import {
   Edit2,
   Trash2,
   Plus,
-  DollarSign
+  DollarSign,
+  XCircle,
+  Banknote
 } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import {
@@ -1899,7 +1901,7 @@ function ExpenseRow({ expense, onEdit, onDelete, onMarkAsPaid, isPaymentProcessi
               {isPaymentProcessing ? (
                 <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
               ) : (
-                <DollarSign className="w-5 h-5" />
+                <Banknote className="w-5 h-5" />
               )}
             </button>
           )}
@@ -1923,9 +1925,9 @@ function ExpenseRow({ expense, onEdit, onDelete, onMarkAsPaid, isPaymentProcessi
               color: SALON_LUXE_COLORS.ruby.base,
               border: `1px solid ${SALON_LUXE_COLORS.ruby.base}40`
             }}
-            title="Delete expense"
+            title="Cancel/Reverse expense"
           >
-            <Trash2 className="w-5 h-5" />
+            <XCircle className="w-5 h-5" />
           </button>
         </div>
       </div>
