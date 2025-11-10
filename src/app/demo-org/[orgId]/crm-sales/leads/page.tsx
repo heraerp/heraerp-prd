@@ -7,6 +7,8 @@
  * Demo leads page for CRM Sales/Lead Management module
  */
 
+"use client";
+
 import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
 import { 
