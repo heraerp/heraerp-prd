@@ -142,14 +142,14 @@ async function testCatalogFilterByCategory() {
 }
 
 async function testCatalogGet() {
-  console.log('\n📋 Test 1.3: GET - Get Specific App Details')
+  console.log('\n📋 Test 1.3: READ - Get Specific App Details')
   console.log('-'.repeat(80))
 
   try {
     const { data, error } = await supabase.rpc('hera_microapp_catalog_v2', {
       p_actor_user_id: TEST_CONFIG.actor_user_id,
       p_organization_id: TEST_CONFIG.organization_id,
-      p_operation: 'GET',
+      p_operation: 'READ',
       p_filters: {
         app_code: TEST_CONFIG.test_app_code
       },

@@ -23,10 +23,7 @@ import {
   Clock,
   UserPlus,
   Sparkles,
-  RefreshCw,
-  Settings,
   Loader2,
-  LogOut,
   Bell
 } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
@@ -282,7 +279,6 @@ export default function ReceptionistDashboard() {
   const { organization, organizationId, availableBranches } = useSecuredSalonContext()
   const { user, role } = useSalonSecurity()
   const { reset: resetLoading, updateProgress, finishLoading } = useLoadingStore()
-  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // ✨ MODAL STATE: For AppointmentModal
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null)
@@ -340,14 +336,6 @@ export default function ReceptionistDashboard() {
     currency: 'AED'
   })
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true)
-    try {
-      await refreshAll()
-    } finally {
-      setTimeout(() => setIsRefreshing(false), 800)
-    }
-  }
 
   // Appointment click handler - Opens modal instead of navigating
   const handleAppointmentClick = (appointment: any) => {
@@ -373,24 +361,6 @@ export default function ReceptionistDashboard() {
     }
   }
 
-  // Logout handler
-  const handleLogout = async () => {
-    try {
-      // ✅ CRITICAL: Reset global loading state before logout
-      resetLoading()
-
-      const { supabase } = await import('@/lib/supabase/client')
-      await supabase.auth.signOut()
-      localStorage.removeItem('salonUserName')
-      localStorage.removeItem('salonUserEmail')
-      localStorage.removeItem('salonRole')
-      router.push('/salon/auth')
-    } catch (error) {
-      console.error('Logout error:', error)
-      resetLoading() // Reset even on error
-      router.push('/salon/auth')
-    }
-  }
 
   // ⚡ PERFORMANCE: Show loading if redirecting owner (only blocking case)
   if (role && role.toLowerCase() === 'owner') {
@@ -417,39 +387,6 @@ export default function ReceptionistDashboard() {
       maxWidth="full"
       padding="lg"
       showAnimatedBackground={true}
-      actions={
-        <div className="flex items-center gap-3">
-          {/* Refresh Button - Desktop */}
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}20 0%, ${LUXE_COLORS.emerald}10 100%)`,
-              border: `1px solid ${LUXE_COLORS.emerald}30`,
-              color: LUXE_COLORS.champagne,
-              boxShadow: isRefreshing ? `0 0 20px ${LUXE_COLORS.emerald}40` : undefined
-            }}
-          >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            <span>Refresh</span>
-          </button>
-
-          {/* Logout Button - Desktop */}
-          <button
-            onClick={handleLogout}
-            className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl"
-            style={{
-              background: `linear-gradient(135deg, ${LUXE_COLORS.ruby}20 0%, ${LUXE_COLORS.ruby}10 100%)`,
-              border: `1px solid ${LUXE_COLORS.ruby}40`,
-              color: LUXE_COLORS.ruby
-            }}
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
-        </div>
-      }
     >
       {/* ⚡ STAGE 1: PREMIUM MOBILE HEADER - Instant load (no blocking) */}
       <PremiumMobileHeader
@@ -458,36 +395,6 @@ export default function ReceptionistDashboard() {
         showNotifications={true}
         notificationCount={dashboardLoading ? 0 : (kpis.appointmentsByStatus?.pending || 0)}
         shrinkOnScroll={true}
-        rightAction={
-          <div className="flex items-center gap-2">
-            {/* Refresh Icon */}
-            <button
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90 transition-transform duration-200"
-              style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}30 0%, ${LUXE_COLORS.emerald}20 100%)`,
-                border: `1px solid ${LUXE_COLORS.emerald}40`
-              }}
-              aria-label="Refresh"
-            >
-              <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} style={{ color: LUXE_COLORS.emerald }} />
-            </button>
-
-            {/* Logout Icon */}
-            <button
-              onClick={handleLogout}
-              className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90 transition-transform duration-200"
-              style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.ruby}30 0%, ${LUXE_COLORS.ruby}20 100%)`,
-                border: `1px solid ${LUXE_COLORS.ruby}40`
-              }}
-              aria-label="Logout"
-            >
-              <LogOut className="w-5 h-5" style={{ color: LUXE_COLORS.ruby }} />
-            </button>
-          </div>
-        }
       />
 
       {/* Main Content Container */}
