@@ -57,6 +57,17 @@ export const GL_ACCOUNTS: Record<string, GLAccount> = {
   },
 
   // ============================================================================
+  // LIABILITY ACCOUNTS (2000-2999)
+  // ============================================================================
+  '2100': {
+    code: '2100',
+    name: 'Accounts Payable',
+    type: 'liability',
+    category: 'Current Liabilities',
+    smart_code: 'HERA.FINANCE.GL.ACCOUNT.LIABILITY.AP.v1'
+  },
+
+  // ============================================================================
   // EXPENSE ACCOUNTS (6000-6999)
   // ============================================================================
   '6100': {
@@ -164,7 +175,132 @@ export function getAssetGLAccounts(): GLAccount[] {
 }
 
 /**
- * Generate GL transaction lines for an expense
+ * Get Accounts Payable GL account
+ */
+export function getAccountsPayableGLAccount(): GLAccount {
+  return GL_ACCOUNTS['2100']
+}
+
+/**
+ * Get all liability GL accounts
+ */
+export function getLiabilityGLAccounts(): GLAccount[] {
+  return Object.values(GL_ACCOUNTS).filter(acc => acc.type === 'liability')
+}
+
+/**
+ * Generate GL transaction lines for a PENDING expense (DR Expense, CR Accounts Payable)
+ * Used when expense is created but payment has not been made yet
+ */
+export function generatePendingExpenseGLLines(
+  category: string,
+  amount: number,
+  costCenter?: string
+): Array<{
+  line_number: number
+  line_type: 'GL'
+  line_amount: number
+  line_data: {
+    account_code: string
+    account_name: string
+    side: 'DR' | 'CR'
+    amount: number
+    cost_center?: string
+  }
+}> {
+  const expenseAccount = getExpenseGLAccount(category)
+  const apAccount = getAccountsPayableGLAccount()
+
+  if (!expenseAccount) {
+    throw new Error(`Invalid expense category "${category}"`)
+  }
+
+  return [
+    // DR: Expense Account (increases expense)
+    {
+      line_number: 1,
+      line_type: 'GL' as const,
+      line_amount: amount,
+      line_data: {
+        account_code: expenseAccount.code,
+        account_name: expenseAccount.name,
+        side: 'DR' as const,
+        amount: amount,
+        ...(costCenter ? { cost_center: costCenter } : {})
+      }
+    },
+    // CR: Accounts Payable (increases liability - unpaid expense)
+    {
+      line_number: 2,
+      line_type: 'GL' as const,
+      line_amount: amount,
+      line_data: {
+        account_code: apAccount.code,
+        account_name: apAccount.name,
+        side: 'CR' as const,
+        amount: amount
+      }
+    }
+  ]
+}
+
+/**
+ * Generate GL transaction lines for PAYMENT of an expense (DR AP, CR Cash/Bank)
+ * Used when paying a previously pending expense
+ */
+export function generateExpensePaymentGLLines(
+  paymentMethod: string,
+  amount: number
+): Array<{
+  line_number: number
+  line_type: 'GL'
+  line_amount: number
+  line_data: {
+    account_code: string
+    account_name: string
+    side: 'DR' | 'CR'
+    amount: number
+  }
+}> {
+  const paymentAccount = getPaymentGLAccount(paymentMethod)
+  const apAccount = getAccountsPayableGLAccount()
+
+  if (!paymentAccount) {
+    throw new Error(`Invalid payment method "${paymentMethod}"`)
+  }
+
+  return [
+    // DR: Accounts Payable (decreases liability - clearing the debt)
+    {
+      line_number: 1,
+      line_type: 'GL' as const,
+      line_amount: amount,
+      line_data: {
+        account_code: apAccount.code,
+        account_name: apAccount.name,
+        side: 'DR' as const,
+        amount: amount
+      }
+    },
+    // CR: Payment Account (decreases asset - cash/bank going out)
+    {
+      line_number: 2,
+      line_type: 'GL' as const,
+      line_amount: amount,
+      line_data: {
+        account_code: paymentAccount.code,
+        account_name: paymentAccount.name,
+        side: 'CR' as const,
+        amount: amount
+      }
+    }
+  ]
+}
+
+/**
+ * Generate GL transaction lines for an expense (LEGACY - direct payment)
+ * Used when expense is created AND paid immediately (DR Expense, CR Cash/Bank)
+ * @deprecated Use generatePendingExpenseGLLines + generateExpensePaymentGLLines for proper accrual accounting
  */
 export function generateExpenseGLLines(
   category: string,

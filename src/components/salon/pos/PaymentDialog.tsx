@@ -23,6 +23,7 @@ import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { SalonLuxeInput } from '@/components/salon/shared/SalonLuxeInput'
 import { ValidationWarningModal } from './ValidationWarningModal'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 
 // Salon Luxe Color Palette
 const COLORS = {
@@ -71,14 +72,17 @@ export function PaymentDialog({
   branchName,
   onComplete
 }: PaymentDialogProps) {
+  // ✅ PERFORMANCE FIX: Use context data instead of redundant fetching
+  const { organization, selectedBranch } = useSecuredSalonContext()
+
+  // ✅ Use dynamic currency from context (no DB fetch needed)
+  const currency = organization?.currency || 'AED'
+
   const [payments, setPayments] = useState<PaymentMethod[]>([])
   const [activeTab, setActiveTab] = useState<'cash' | 'card' | 'voucher'>('card')
   const [validationWarnings, setValidationWarnings] = useState<string[]>([])
   const [showValidationModal, setShowValidationModal] = useState(false)
   const [validationIssues, setValidationIssues] = useState<Array<{ type: string; message: string; action?: string }>>([])
-  const [branchDetails, setBranchDetails] = useState<{ address?: string; phone?: string }>({})
-  const [actualOrgName, setActualOrgName] = useState<string | null>(null)
-  const [currency, setCurrency] = useState<string>('AED') // Default to AED
 
   // ✅ REMOVED: Old bill / backdate functionality moved to cart date picker
   // Transaction date is now set in the cart, not in payment dialog
@@ -131,96 +135,7 @@ export function PaymentDialog({
   }, [cashAmount, payments, totals?.total])
 
   // ✅ REMOVED: Date validation moved to cart date picker
-
-  // ✅ ENTERPRISE: Fetch actual organization name and currency from database
-  useEffect(() => {
-    const fetchOrganizationDetails = async () => {
-      if (!organizationId) return
-
-      try {
-        const { universalApi } = await import('@/lib/universal-api-v2')
-
-        // ✅ ALWAYS fetch from database for most current organization name
-        const result = await universalApi.getOrganization(organizationId)
-        if (result.success && result.data) {
-          setActualOrgName(result.data.organization_name)
-        } else {
-          // Use provided name as fallback
-          setActualOrgName(organizationName || 'Salon')
-        }
-
-        // Fetch currency from organization dynamic data
-        const currencyResult = await universalApi.getDynamicData(organizationId, 'currency')
-
-        if (currencyResult.success && currencyResult.data?.field_value_text) {
-          setCurrency(currencyResult.data.field_value_text)
-        }
-      } catch (err) {
-        console.error('[PaymentDialog] Error fetching organization details:', err)
-        setActualOrgName(organizationName || 'Salon')  // Fallback to provided name or 'Salon'
-        // Currency stays as default 'AED'
-      }
-    }
-
-    fetchOrganizationDetails()
-  }, [organizationId, organizationName])
-
-  // Fetch branch address and phone from core_dynamic_data
-  useEffect(() => {
-    const fetchBranchDetails = async () => {
-      // ✅ FIX: Ensure branchId is a valid UUID string, not null/undefined
-      if (!branchId || branchId === 'null' || branchId === 'undefined' || !organizationId) {
-        return
-      }
-
-      try {
-        const { getEntities } = await import('@/lib/universal-api-v2-client')
-
-        // ✅ FIX: Fetch complete branch entity with dynamic fields included
-        const branches = await getEntities('', {
-          p_organization_id: organizationId,
-          p_entity_type: 'BRANCH',
-          p_include_dynamic: true,
-          p_status: null // Include all statuses to ensure we get the branch
-        })
-
-        // Find the specific branch
-        const branch = branches.find((b: any) => b.id === branchId)
-
-        if (branch) {
-          let address = undefined
-          let phone = undefined
-
-          // Extract address and phone from dynamic_fields array
-          if (Array.isArray(branch.dynamic_fields)) {
-            const addressField = branch.dynamic_fields.find((f: any) => f.field_name === 'address')
-            const phoneField = branch.dynamic_fields.find((f: any) => f.field_name === 'phone')
-
-            address = addressField?.field_value_text || undefined
-            phone = phoneField?.field_value_text || undefined
-          }
-
-          // ✅ FALLBACK: Check metadata for address/phone (legacy support)
-          if (!address && branch.metadata?.address) {
-            address = branch.metadata.address
-          }
-          if (!phone && branch.metadata?.phone) {
-            phone = branch.metadata.phone
-          }
-
-          setBranchDetails({
-            address,
-            phone
-          })
-        }
-      } catch (err) {
-        console.error('[PaymentDialog] Error fetching branch details:', err)
-        // Don't block payment if branch details fail to load
-      }
-    }
-
-    fetchBranchDetails()
-  }, [branchId, organizationId])
+  // ✅ REMOVED: Redundant organization and branch fetching - now using context data
 
   const addPayment = (type: 'cash' | 'card' | 'voucher') => {
     let amount = 0
@@ -376,12 +291,12 @@ export function PaymentDialog({
         timestamp: ticket.transaction_date || result.transaction_date || new Date().toISOString(),
         customer_name: ticket.customer_name,
         appointment_id: ticket.appointment_id,
-        organization_name: actualOrgName || 'Salon', // ✅ ENTERPRISE: Actual organization name from database
-        currency, // ✅ ENTERPRISE: Dynamic currency from organization
+        organization_name: organization.name || 'Salon', // ✅ From context (no DB fetch needed)
+        currency: organization.currency || 'AED', // ✅ From context (no DB fetch needed)
         branch_id: branchId, // ✅ Store branch ID
         branch_name: branchName || 'Main Branch', // ✅ Store branch name
-        ...(branchDetails.address && { branch_address: branchDetails.address }), // ✅ Only include if available
-        ...(branchDetails.phone && { branch_phone: branchDetails.phone }), // ✅ Only include if available
+        ...(selectedBranch?.address && { branch_address: selectedBranch.address }), // ✅ From context (no DB fetch needed)
+        ...(selectedBranch?.phone && { branch_phone: selectedBranch.phone }), // ✅ From context (no DB fetch needed)
         lineItems: ticket.lineItems,
         discounts: ticket.discounts,
         tips: ticket.tips,
@@ -468,7 +383,7 @@ export function PaymentDialog({
       open={open}
       onClose={handleClose}
       title="Process Payment"
-      description={`Total amount: AED ${(totals?.total || 0).toFixed(2)}`}
+      description={`Total amount: ${currency} ${(totals?.total || 0).toFixed(2)}`}
       icon={<Receipt className="w-6 h-6" />}
       size="md"
       className="max-w-xl max-h-[95vh]"
@@ -534,28 +449,28 @@ export function PaymentDialog({
                 <div className="flex justify-between text-sm" style={{ color: COLORS.lightText }}>
                   <span>Items ({ticket?.lineItems?.length || 0}):</span>
                   <span className="font-medium" style={{ color: COLORS.champagne }}>
-                    AED {(totals?.subtotal || 0).toFixed(2)}
+                    {currency} {(totals?.subtotal || 0).toFixed(2)}
                   </span>
                 </div>
                 {(totals?.discountAmount || 0) > 0 && (
                   <div className="flex justify-between text-sm" style={{ color: COLORS.emerald }}>
                     <span>Discounts:</span>
                     <span className="font-medium">
-                      -AED {(totals?.discountAmount || 0).toFixed(2)}
+                      -{currency} {(totals?.discountAmount || 0).toFixed(2)}
                     </span>
                   </div>
                 )}
                 {(totals?.tipAmount || 0) > 0 && (
                   <div className="flex justify-between text-sm" style={{ color: COLORS.gold }}>
                     <span>Gratuity:</span>
-                    <span className="font-medium">+AED {(totals?.tipAmount || 0).toFixed(2)}</span>
+                    <span className="font-medium">+{currency} {(totals?.tipAmount || 0).toFixed(2)}</span>
                   </div>
                 )}
                 {(totals?.taxAmount || 0) > 0 && (
                   <div className="flex justify-between text-sm" style={{ color: COLORS.lightText }}>
                     <span>Tax (5%):</span>
                     <span className="font-medium" style={{ color: COLORS.champagne }}>
-                      AED {(totals?.taxAmount || 0).toFixed(2)}
+                      {currency} {(totals?.taxAmount || 0).toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -570,7 +485,7 @@ export function PaymentDialog({
                   }}
                 >
                   <span style={{ color: COLORS.champagne }}>Total Due:</span>
-                  <span style={{ color: COLORS.gold }}>AED {(totals?.total || 0).toFixed(2)}</span>
+                  <span style={{ color: COLORS.gold }}>{currency} {(totals?.total || 0).toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>
@@ -661,7 +576,7 @@ export function PaymentDialog({
                       borderColor: `${COLORS.gold}40`
                     }}
                   >
-                    Remaining: AED {remainingAmount.toFixed(2)}
+                    Remaining: {currency} {remainingAmount.toFixed(2)}
                   </Button>
                   <Button
                     variant="outline"
@@ -724,7 +639,7 @@ export function PaymentDialog({
                         borderColor: `${COLORS.emerald}40`
                       }}
                     >
-                      Remaining: AED {remainingAmount.toFixed(2)}
+                      Remaining: {currency} {remainingAmount.toFixed(2)}
                     </Button>
                     <Button
                       variant="outline"
@@ -767,7 +682,7 @@ export function PaymentDialog({
                               }
                         }
                       >
-                        {index === 0 ? 'Exact' : ''} AED{' '}
+                        {index === 0 ? 'Exact' : ''} {currency}{' '}
                         {amount.toFixed(amount % 1 === 0 ? 0 : 2)}
                       </Button>
                     ))}
@@ -778,7 +693,7 @@ export function PaymentDialog({
                   <Alert>
                     <Calculator className="w-4 h-4" />
                     <AlertDescription>
-                      Change due: <strong>AED {changeAmount.toFixed(2)}</strong>
+                      Change due: <strong>{currency} {changeAmount.toFixed(2)}</strong>
                     </AlertDescription>
                   </Alert>
                 )}
@@ -827,7 +742,7 @@ export function PaymentDialog({
                       borderColor: `${COLORS.bronze}40`
                     }}
                   >
-                    Remaining: AED {remainingAmount.toFixed(2)}
+                    Remaining: {currency} {remainingAmount.toFixed(2)}
                   </Button>
                   <Button
                     variant="outline"
@@ -921,7 +836,7 @@ export function PaymentDialog({
                       {getPaymentIcon(payment.type)}
                       <div>
                         <div className="font-semibold text-sm" style={{ color: COLORS.champagne }}>
-                          AED {payment.amount.toFixed(2)}
+                          {currency} {payment.amount.toFixed(2)}
                         </div>
                         <div className="text-xs" style={{ color: COLORS.bronze }}>
                           {payment.type.charAt(0).toUpperCase() + payment.type.slice(1)}
@@ -985,7 +900,7 @@ export function PaymentDialog({
                   Total Due:
                 </span>
                 <span className="font-bold" style={{ color: COLORS.gold }}>
-                  AED {(totals?.total || 0).toFixed(2)}
+                  {currency} {(totals?.total || 0).toFixed(2)}
                 </span>
               </div>
               {payments.length > 0 && (
@@ -994,7 +909,7 @@ export function PaymentDialog({
                   <div className="flex justify-between text-sm" style={{ color: COLORS.lightText }}>
                     <span>Amount Tendered:</span>
                     <span className="font-semibold" style={{ color: COLORS.champagne }}>
-                      AED {paidAmount.toFixed(2)}
+                      {currency} {paidAmount.toFixed(2)}
                     </span>
                   </div>
                 </>
@@ -1011,7 +926,7 @@ export function PaymentDialog({
                     Balance to Pay:
                   </span>
                   <span className="font-bold" style={{ color: COLORS.red }}>
-                    AED {remainingAmount.toFixed(2)}
+                    {currency} {remainingAmount.toFixed(2)}
                   </span>
                 </div>
               ) : changeAmount > 0 ? (
@@ -1026,7 +941,7 @@ export function PaymentDialog({
                     Change Due:
                   </span>
                   <span className="font-bold" style={{ color: COLORS.emerald }}>
-                    AED {changeAmount.toFixed(2)}
+                    {currency} {changeAmount.toFixed(2)}
                   </span>
                 </div>
               ) : null}
