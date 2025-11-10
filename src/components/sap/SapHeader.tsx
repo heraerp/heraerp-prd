@@ -30,7 +30,7 @@ export function SapHeader({
       <div className="sap-header-content">
         {/* Left side - Logo and Breadcrumb */}
         <div className="flex items-center">
-          <Link href="/retail/home" className="sap-logo">
+          <Link href="/" className="sap-logo">
             <div className="sap-logo-icon">
               HERA
             </div>

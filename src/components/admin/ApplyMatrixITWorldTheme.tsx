@@ -317,17 +317,17 @@ export default function ApplyMatrixITWorldTheme() {
               </p>
               <div className="mt-3 space-y-2">
                 <a 
-                  href="/retail1/matrixitworld" 
+                  href="/apps" 
                   className="inline-flex items-center text-sm text-blue-700 hover:text-blue-900 underline"
                 >
-                  → MatrixIT World Overview
+                  → Explore Apps
                 </a>
                 <br />
                 <a 
-                  href="/retail1/matrixitworld/dashboard" 
+                  href="/admin" 
                   className="inline-flex items-center text-sm text-blue-700 hover:text-blue-900 underline"
                 >
-                  → MatrixIT World Dashboard
+                  → Admin Dashboard
                 </a>
               </div>
             </div>

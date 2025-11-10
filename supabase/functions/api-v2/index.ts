@@ -188,6 +188,90 @@ async function callTransactionsPost(
   });
 }
 
+// ---------- Micro-Apps RPC dispatch ----------
+async function callMicroAppCatalog(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  ctx: GuardrailCtx,
+  body: any,
+) {
+  // hera_microapp_catalog_v2: catalog management (platform org only)
+  return await supabaseAdmin.rpc("hera_microapp_catalog_v2", {
+    p_actor_user_id: ctx.actorUserEntityId,
+    p_organization_id: ctx.orgId,
+    p_operation: body.operation || 'LIST',
+    p_app_definition: body.app_definition || null,
+    p_filters: body.filters || null,
+    p_options: body.options || {}
+  });
+}
+
+async function callMicroAppInstall(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  ctx: GuardrailCtx,
+  body: any,
+) {
+  // hera_microapp_install_v2: installation management
+  return await supabaseAdmin.rpc("hera_microapp_install_v2", {
+    p_actor_user_id: ctx.actorUserEntityId,
+    p_organization_id: ctx.orgId,
+    p_operation: body.operation || 'LIST',
+    p_app_code: body.app_code || null,
+    p_app_version: body.app_version || null,
+    p_installation_config: body.installation_config || {},
+    p_filters: body.filters || null,
+    p_options: body.options || {}
+  });
+}
+
+async function callMicroAppDependencies(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  ctx: GuardrailCtx,
+  body: any,
+) {
+  // hera_microapp_dependencies_v2: dependency resolution and validation
+  return await supabaseAdmin.rpc("hera_microapp_dependencies_v2", {
+    p_actor_user_id: ctx.actorUserEntityId,
+    p_organization_id: ctx.orgId,
+    p_app_code: body.app_code,
+    p_version: body.app_version,
+    p_operation: body.operation || 'VALIDATE'
+  });
+}
+
+async function callMicroAppRuntime(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  ctx: GuardrailCtx,
+  body: any,
+) {
+  // hera_microapp_runtime_v2: runtime execution engine
+  return await supabaseAdmin.rpc("hera_microapp_runtime_v2", {
+    p_actor_user_id: ctx.actorUserEntityId,
+    p_organization_id: ctx.orgId,
+    p_operation: body.operation || 'EXECUTE',
+    p_app_code: body.app_code || null,
+    p_runtime_context: body.runtime_context || {},
+    p_execution_payload: body.execution_payload || {},
+    p_options: body.options || {}
+  });
+}
+
+async function callMicroAppWorkflow(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  ctx: GuardrailCtx,
+  body: any,
+) {
+  // hera_microapp_workflow_v2: workflow execution engine
+  return await supabaseAdmin.rpc("hera_microapp_workflow_v2", {
+    p_actor_user_id: ctx.actorUserEntityId,
+    p_organization_id: ctx.orgId,
+    p_operation: body.operation || 'EXECUTE',
+    p_app_code: body.app_code || null,
+    p_workflow_id: body.workflow_id || null,
+    p_workflow_payload: body.workflow_payload || {},
+    p_options: body.options || {}
+  });
+}
+
 // ---------- Router ----------
 async function handle(req: Request) {
   const url = new URL(req.url);
@@ -238,9 +322,44 @@ async function handle(req: Request) {
       return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
     }
 
+    // Micro-Apps Catalog endpoint (platform org only)
+    if (url.pathname.endsWith("/api/v2/micro-apps/catalog")) {
+      const { data, error } = await callMicroAppCatalog(supabaseAdmin, baseCtx, body);
+      if (error) return json(400, { error: error.message, rid });
+      return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+    }
+
+    // Micro-Apps Installation endpoint
+    if (url.pathname.endsWith("/api/v2/micro-apps/install")) {
+      const { data, error } = await callMicroAppInstall(supabaseAdmin, baseCtx, body);
+      if (error) return json(400, { error: error.message, rid });
+      return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+    }
+
+    // Micro-Apps Dependencies endpoint
+    if (url.pathname.endsWith("/api/v2/micro-apps/dependencies")) {
+      const { data, error } = await callMicroAppDependencies(supabaseAdmin, baseCtx, body);
+      if (error) return json(400, { error: error.message, rid });
+      return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+    }
+
+    // Micro-Apps Runtime endpoint
+    if (url.pathname.endsWith("/api/v2/micro-apps/runtime")) {
+      const { data, error } = await callMicroAppRuntime(supabaseAdmin, baseCtx, body);
+      if (error) return json(400, { error: error.message, rid });
+      return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+    }
+
+    // Micro-Apps Workflow endpoint
+    if (url.pathname.endsWith("/api/v2/micro-apps/workflow")) {
+      const { data, error } = await callMicroAppWorkflow(supabaseAdmin, baseCtx, body);
+      if (error) return json(400, { error: error.message, rid });
+      return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+    }
+
     // Optional generic route if you want a single command endpoint
     if (url.pathname.endsWith("/api/v2/command")) {
-      const op = body?.op as "entities" | "transactions";
+      const op = body?.op as "entities" | "transactions" | "micro-apps";
       if (op === "entities") {
         const { data, error } = await callEntitiesCRUD(supabaseAdmin, baseCtx, body);
         if (error) return json(400, { error: error.message, rid });
@@ -250,6 +369,35 @@ async function handle(req: Request) {
         const { data, error } = await callTransactionsPost(supabaseAdmin, baseCtx, body);
         if (error) return json(400, { error: error.message, rid });
         return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+      }
+      if (op === "micro-apps") {
+        const subOp = body?.sub_op as "catalog" | "install" | "dependencies" | "runtime" | "workflow";
+        if (subOp === "catalog") {
+          const { data, error } = await callMicroAppCatalog(supabaseAdmin, baseCtx, body);
+          if (error) return json(400, { error: error.message, rid });
+          return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+        }
+        if (subOp === "install") {
+          const { data, error } = await callMicroAppInstall(supabaseAdmin, baseCtx, body);
+          if (error) return json(400, { error: error.message, rid });
+          return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+        }
+        if (subOp === "dependencies") {
+          const { data, error } = await callMicroAppDependencies(supabaseAdmin, baseCtx, body);
+          if (error) return json(400, { error: error.message, rid });
+          return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+        }
+        if (subOp === "runtime") {
+          const { data, error } = await callMicroAppRuntime(supabaseAdmin, baseCtx, body);
+          if (error) return json(400, { error: error.message, rid });
+          return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+        }
+        if (subOp === "workflow") {
+          const { data, error } = await callMicroAppWorkflow(supabaseAdmin, baseCtx, body);
+          if (error) return json(400, { error: error.message, rid });
+          return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+        }
+        return json(400, { error: "unknown_micro_app_command", rid });
       }
       return json(400, { error: "unknown_command", rid });
     }

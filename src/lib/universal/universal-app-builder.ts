@@ -22,6 +22,9 @@ import {
   loadRetailApp
 } from './supabase-app-builder'
 
+// Import micro-apps integration
+import { microAppClient, type MicroAppDefinition } from '../micro-apps/micro-app-client'
+
 import { dynamicComponentFactory, DynamicComponentFactory } from './dynamic-component-factory'
 
 // Legacy import for backward compatibility
@@ -630,6 +633,269 @@ export class UniversalAppBuilder {
     
     // Then load it back as a GeneratedApp
     return this.buildApplication(config)
+  }
+
+  // ==================== MICRO-APPS INTEGRATION ====================
+
+  /**
+   * Create micro-app definition from AppBuilderConfig
+   */
+  public convertToMicroAppDefinition(config: AppBuilderConfig): MicroAppDefinition {
+    return {
+      code: config.app_id,
+      display_name: config.name,
+      version: config.version,
+      category: config.industry || 'general',
+      description: config.description,
+      depends_on: [], // TODO: Extract from config if supported
+      entities: config.entities?.map(entity => ({
+        entity_type: entity.entity_type,
+        display_name: entity.display_name,
+        display_name_plural: entity.display_name_plural,
+        fields: entity.fields || [],
+        relationships: entity.relationships || []
+      })),
+      transactions: config.transactions?.map(txn => ({
+        transaction_type: txn.transaction_type,
+        display_name: txn.display_name,
+        display_name_plural: txn.display_name_plural,
+        header_fields: txn.header_fields || [],
+        line_fields: txn.line_fields || []
+      })),
+      navigation: config.navigation?.main_menu?.map(item => ({
+        id: item.id,
+        label: item.label,
+        path: item.path,
+        icon: item.icon,
+        order: 0, // TODO: Add order to config
+        parent_id: undefined, // TODO: Add parent support
+        permissions: item.permissions
+      })),
+      workflows: config.workflows?.map(wf => ({
+        workflow_id: wf.workflow_id,
+        name: wf.name,
+        trigger: wf.trigger,
+        entity_type: wf.entity_type,
+        transaction_type: wf.transaction_type,
+        steps: wf.steps || []
+      })),
+      settings: {
+        ui_theme: config.ui_theme,
+        integrations: config.integrations,
+        business_rules: config.business_rules
+      }
+    }
+  }
+
+  /**
+   * Publish application to micro-apps catalog
+   */
+  public async publishToMicroAppsCatalog(
+    config: AppBuilderConfig,
+    actorId: string = 'system'
+  ): Promise<{ success: boolean; app_entity_id?: string; error?: string }> {
+    try {
+      // Convert to micro-app definition
+      const microAppDef = this.convertToMicroAppDefinition(config)
+      
+      // Publish to catalog
+      const result = await microAppClient.createCatalogApp(microAppDef)
+      
+      if (result.success) {
+        return {
+          success: true,
+          app_entity_id: result.app_entity_id
+        }
+      } else {
+        return {
+          success: false,
+          error: result.error || 'Failed to publish to catalog'
+        }
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * Install micro-app from catalog
+   */
+  public async installMicroApp(
+    appCode: string,
+    appVersion: string,
+    organizationId: string,
+    installationConfig: Record<string, any> = {}
+  ): Promise<{ success: boolean; installation_id?: string; error?: string }> {
+    try {
+      // Install with validation
+      const result = await microAppClient.installAppWithValidation(
+        appCode,
+        appVersion,
+        organizationId,
+        installationConfig
+      )
+      
+      // Check validation first
+      if (!result.validation.success || 
+          (result.validation.validation_errors && result.validation.validation_errors.length > 0)) {
+        return {
+          success: false,
+          error: `Dependency validation failed: ${JSON.stringify(result.validation.validation_errors)}`
+        }
+      }
+      
+      // Check installation
+      if (result.installation && result.installation.success) {
+        return {
+          success: true,
+          installation_id: result.installation.installation_entity_id
+        }
+      } else {
+        return {
+          success: false,
+          error: result.installation?.error || 'Installation failed'
+        }
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * List available micro-apps from catalog
+   */
+  public async listAvailableMicroApps(
+    category?: string,
+    search?: string
+  ): Promise<Array<{
+    code: string;
+    display_name: string;
+    version: string;
+    category: string;
+    description?: string;
+  }>> {
+    try {
+      const result = await microAppClient.listCatalogApps(
+        { category, search },
+        { limit: 50 }
+      )
+      
+      if (result.success && result.apps) {
+        return result.apps.map(app => ({
+          code: app.code,
+          display_name: app.display_name,
+          version: app.definition.version,
+          category: app.definition.category,
+          description: app.definition.description
+        }))
+      }
+      
+      return []
+    } catch (error) {
+      console.error('Error listing micro-apps:', error)
+      return []
+    }
+  }
+
+  /**
+   * Get micro-app installation status
+   */
+  public async getMicroAppStatus(
+    appCode: string,
+    organizationId: string
+  ): Promise<{
+    installed: boolean;
+    status?: string;
+    version?: string;
+    installation_id?: string;
+  }> {
+    try {
+      const result = await microAppClient.getInstallationStatus(appCode, organizationId)
+      
+      if (result.success && result.installation) {
+        return {
+          installed: true,
+          status: result.installation.status,
+          version: result.installation.app_version,
+          installation_id: result.installation.installation_id
+        }
+      } else {
+        return { installed: false }
+      }
+    } catch (error) {
+      console.error('Error getting micro-app status:', error)
+      return { installed: false }
+    }
+  }
+
+  /**
+   * Load micro-app definition and convert to GeneratedApp
+   */
+  public async loadMicroAppAsGeneratedApp(
+    appCode: string,
+    organizationId: string,
+    version?: string
+  ): Promise<GeneratedApp | null> {
+    try {
+      // Get app definition from catalog
+      const appDef = await microAppClient.getAppDefinition(appCode, version)
+      
+      if (!appDef) {
+        throw new Error(`Micro-app ${appCode} not found in catalog`)
+      }
+      
+      // Convert micro-app definition back to AppBuilderConfig
+      const config: AppBuilderConfig = {
+        app_id: appDef.code,
+        name: appDef.display_name,
+        description: appDef.description || '',
+        industry: appDef.category,
+        version: appDef.version,
+        entities: appDef.entities?.map(entity => ({
+          entity_type: entity.entity_type,
+          display_name: entity.display_name,
+          display_name_plural: entity.display_name_plural,
+          fields: entity.fields,
+          relationships: entity.relationships
+        })) || [],
+        transactions: appDef.transactions?.map(txn => ({
+          transaction_type: txn.transaction_type,
+          display_name: txn.display_name,
+          display_name_plural: txn.display_name_plural,
+          header_fields: txn.header_fields,
+          line_fields: txn.line_fields
+        })) || [],
+        screens: [], // TODO: Add screen support to micro-apps
+        workflows: appDef.workflows,
+        integrations: appDef.settings?.integrations,
+        business_rules: appDef.settings?.business_rules,
+        navigation: {
+          main_menu: appDef.navigation?.map(nav => ({
+            id: nav.id,
+            label: nav.label,
+            icon: nav.icon,
+            path: nav.path,
+            permissions: nav.permissions
+          })) || [],
+          quick_actions: [],
+          dashboards: []
+        },
+        ui_theme: appDef.settings?.ui_theme
+      }
+      
+      // Build as GeneratedApp
+      return this.buildApplication(config)
+      
+    } catch (error) {
+      console.error(`Error loading micro-app ${appCode}:`, error)
+      return null
+    }
   }
 }
 
