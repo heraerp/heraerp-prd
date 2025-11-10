@@ -8,20 +8,20 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Truck, 
-  MapPin, 
-  Recycle, 
-  BarChart3, 
-  Users, 
-  Calendar, 
-  Shield, 
+import {
+  Truck,
+  MapPin,
+  Recycle,
+  BarChart3,
+  Users,
+  Calendar,
+  Shield,
   Building,
   LogOut,
   Loader2,
@@ -29,17 +29,56 @@ import {
   AlertTriangle,
   Clock
 } from 'lucide-react'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 
 export default function WMSDashboard() {
   const router = useRouter()
-  const { 
-    user, 
-    organization, 
-    isAuthenticated, 
-    isLoading, 
+  const {
+    user,
+    organization,
+    isAuthenticated,
+    isLoading,
     logout,
-    contextLoading 
+    contextLoading
   } = useHERAAuth()
+  const { updateProgress, finishLoading, reset } = useLoadingStore()
+
+  // ✅ GLOBAL LOADING: Continue progress from login (70-100%)
+  useEffect(() => {
+    // Check for initializing flag from login redirect
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+
+    if (isInitializing && isAuthenticated) {
+      // Continue progress from 70% to 100%
+      let currentProgress = 70
+      const progressInterval = setInterval(() => {
+        currentProgress += 5
+        if (currentProgress <= 95) {
+          updateProgress(currentProgress, 'Loading dashboard components...', 'Almost ready...')
+        } else {
+          clearInterval(progressInterval)
+          // Finish loading when dashboard is ready
+          setTimeout(() => {
+            finishLoading()
+            // Remove query parameter for clean URL
+            router.replace('/wms/dashboard', { scroll: false })
+          }, 200)
+        }
+      }, 100)
+
+      return () => clearInterval(progressInterval)
+    }
+  }, [isAuthenticated, updateProgress, finishLoading, router])
+
+  // ✅ Reset global loading on mount (in case of back navigation)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+    if (!isInitializing) {
+      reset()
+    }
+  }, [reset])
 
   // Show loading state
   if (isLoading || contextLoading) {
