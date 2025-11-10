@@ -42,12 +42,27 @@ export function DeleteExpenseDialog({
 }: DeleteExpenseDialogProps) {
   if (!expense) return null
 
-  const isPosted = expense.transaction_status === 'posted'
+  // Check if expense is posted to Finance DNA v2 GL
+  const isPostedToFinance = expense.metadata?.awaiting_finance_posting === false ||
+    expense.metadata?.finance_dna_version === 'v2.0' ||
+    expense.transaction_status === 'posted'
+
+  // Check payment status
+  const isPaid = expense.status === 'paid' || expense.metadata?.payment_status === 'paid'
+
+  const isPosted = isPostedToFinance || isPaid
   const amount = expense.total_amount || 0
   const vendor = expense.vendor_name || expense.entity_name || 'Unknown'
   const date = expense.transaction_date
     ? new Date(expense.transaction_date).toLocaleDateString('en-GB')
     : ''
+
+  // Determine deletion reason
+  const deletionReason = isPaid
+    ? 'Payment already processed in GL'
+    : isPostedToFinance
+    ? 'Posted to Finance DNA v2 GL'
+    : null
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
@@ -152,14 +167,23 @@ export function DeleteExpenseDialog({
                   <Archive className="w-5 h-5 mt-0.5" style={{ color: COLORS.gold }} />
                   <div>
                     <p className="font-medium mb-2" style={{ color: COLORS.gold }}>
-                      🏆 Financial Integrity Protected
+                      🏆 Finance DNA v2 Integrity Protected
+                    </p>
+                    <p className="text-sm mb-3" style={{ color: COLORS.lightText }}>
+                      {deletionReason}. This expense has been posted to your general ledger
+                      and preserved for audit excellence.
                     </p>
                     <p className="text-sm" style={{ color: COLORS.lightText }}>
-                      This expense has been posted to your general ledger and preserved for
-                      audit excellence. We'll gracefully{' '}
-                      <strong>cancel it</strong> instead of deletion to maintain your
-                      financial records' integrity.
+                      We'll gracefully <strong>cancel it</strong> instead of deletion to
+                      maintain your financial records' integrity and audit trail.
                     </p>
+                    {isPaid && (
+                      <div className="mt-3 pt-3 border-t" style={{ borderColor: COLORS.gold + '20' }}>
+                        <p className="text-xs" style={{ color: COLORS.bronze }}>
+                          ✅ Payment transaction already recorded in GL
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
