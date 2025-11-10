@@ -8,6 +8,7 @@
 
 import { ReactNode } from 'react'
 import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
+import { CashewAuthProvider } from '@/components/auth/CashewAuthProvider'
 
 interface CashewLayoutProps {
   children: ReactNode
@@ -16,7 +17,9 @@ interface CashewLayoutProps {
 export default function CashewLayout({ children }: CashewLayoutProps) {
   return (
     <HERAAuthProvider>
-      {children}
+      <CashewAuthProvider>
+        {children}
+      </CashewAuthProvider>
     </HERAAuthProvider>
   )
 }

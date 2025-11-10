@@ -37,7 +37,7 @@ import {
   Zap,
   FileText,
   Calculator,
-  Balance
+  Scale
 } from 'lucide-react'
 
 /**
@@ -126,7 +126,7 @@ export default function GreenwormGLHealthPage() {
       status: 'healthy',
       change: '+0.2%',
       trend: 'up',
-      icon: Balance,
+      icon: Scale,
       color: '#10b981',
       description: 'All currencies balanced per HERA guardrails',
       category: 'balance'
