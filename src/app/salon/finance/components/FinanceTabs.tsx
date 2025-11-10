@@ -42,6 +42,7 @@ import { useHeraExpenses } from '@/hooks/useHeraExpenses'
 import { useCashFlow, useOpeningBalance } from '@/hooks/useCashFlow'
 import { useHeraPayroll } from '@/hooks/useHeraPayroll'
 import { useHeraInvoice } from '@/hooks/useHeraInvoice'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { ExpenseModal } from '@/components/salon/finance/ExpenseModal'
 import { PayrollModal } from '@/components/salon/finance/PayrollModal'
 import { InvoiceModal } from '@/components/salon/finance/InvoiceModal'
@@ -1518,6 +1519,8 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
   const [selectedExpense, setSelectedExpense] = useState<any>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('')
+  const [statusFilter, setStatusFilter] = useState<string>('all') // NEW: Payment status filter
+  const [payingExpenseId, setPayingExpenseId] = useState<string | null>(null) // NEW: Track payment in progress
 
   const {
     expenses,
@@ -1525,6 +1528,10 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
     createExpense,
     updateExpense,
     deleteExpense,
+    markAsPaid, // NEW: Mark expense as paid function
+    getPendingExpenses, // NEW: Get unpaid expenses
+    getPaidExpenses, // NEW: Get paid expenses
+    getTotalAccountsPayable, // NEW: Get total AP balance
     refetch,
     isCreating,
     isUpdating
@@ -1536,11 +1543,22 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
     }
   })
 
-  // Filter expenses by category and search
+  // Get user context for actor_user_id (required for Finance DNA v2)
+  const { user } = useHERAAuth()
+
+  // Filter expenses by category, status, and search
   const filteredExpenses = useMemo(() => {
     if (!expenses) return []
 
     let filtered = expenses
+
+    // Filter by payment status (NEW: Finance DNA v2)
+    if (statusFilter === 'pending') {
+      filtered = filtered.filter(e => e.status === 'pending')
+    } else if (statusFilter === 'paid') {
+      filtered = filtered.filter(e => e.status === 'paid')
+    }
+    // 'all' shows everything
 
     if (categoryFilter) {
       filtered = filtered.filter(e => e.category === categoryFilter)
@@ -1555,20 +1573,75 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
     }
 
     return filtered
-  }, [expenses, categoryFilter, searchTerm])
+  }, [expenses, categoryFilter, statusFilter, searchTerm])
+
+  // Calculate totals for display (NEW: Finance DNA v2)
+  const pendingTotal = useMemo(() => {
+    return getPendingExpenses?.().reduce((sum, e) => sum + (e.total_amount || 0), 0) || 0
+  }, [getPendingExpenses])
+
+  const paidTotal = useMemo(() => {
+    return getPaidExpenses?.().reduce((sum, e) => sum + (e.total_amount || 0), 0) || 0
+  }, [getPaidExpenses])
 
   const handleSave = async (data: any) => {
     try {
       if (selectedExpense) {
         await updateExpense(selectedExpense.id, data)
       } else {
-        await createExpense(data)
+        // Pass actor_user_id for Finance DNA v2 integration
+        await createExpense({
+          ...data,
+          actor_user_id: user?.id
+        })
       }
       setIsModalOpen(false)
       setSelectedExpense(null)
       await refetch()
     } catch (error) {
       console.error('Failed to save expense:', error)
+    }
+  }
+
+  // NEW: Handle marking expense as paid (Finance DNA v2 workflow)
+  const handleMarkAsPaid = async (expense: any) => {
+    if (!user?.id) {
+      alert('Authentication error: User context not available')
+      return
+    }
+
+    if (!expense.payment_method) {
+      alert('Payment method is required to mark expense as paid')
+      return
+    }
+
+    const confirmed = confirm(
+      `Mark this expense as paid?\n\nVendor: ${expense.vendor}\nAmount: AED ${expense.total_amount || 0}\nPayment Method: ${expense.payment_method}\n\nThis will post a payment transaction to the General Ledger.`
+    )
+
+    if (!confirmed) return
+
+    try {
+      setPayingExpenseId(expense.id)
+
+      const result = await markAsPaid({
+        expense_id: expense.id,
+        payment_method: expense.payment_method,
+        payment_date: new Date().toISOString().split('T')[0],
+        actor_user_id: user.id
+      })
+
+      if (result.success) {
+        alert('✅ Expense marked as paid successfully!\n\nPayment has been posted to the General Ledger.')
+        await refetch()
+      } else {
+        alert(`Failed to mark expense as paid:\n\n${result.error}`)
+      }
+    } catch (error) {
+      console.error('Failed to mark expense as paid:', error)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`)
+    } finally {
+      setPayingExpenseId(null)
     }
   }
 
@@ -1637,6 +1710,89 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
           </div>
         </div>
 
+        {/* NEW: Finance DNA v2 Status Filters & Accounts Payable Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Status Filter Buttons */}
+          <div className="col-span-1 md:col-span-2 flex flex-wrap gap-2">
+            <button
+              onClick={() => setStatusFilter('all')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                statusFilter === 'all' ? 'ring-2' : ''
+              }`}
+              style={{
+                backgroundColor: statusFilter === 'all' ? `${SALON_LUXE_COLORS.gold.base}20` : `${SALON_LUXE_COLORS.bronze.base}10`,
+                color: statusFilter === 'all' ? SALON_LUXE_COLORS.gold.base : SALON_LUXE_COLORS.bronze.base,
+                borderColor: statusFilter === 'all' ? SALON_LUXE_COLORS.gold.base : 'transparent',
+                ...(statusFilter === 'all' ? { ringColor: SALON_LUXE_COLORS.gold.base } : {})
+              }}
+            >
+              All Expenses ({expenses?.length || 0})
+            </button>
+            <button
+              onClick={() => setStatusFilter('pending')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                statusFilter === 'pending' ? 'ring-2' : ''
+              }`}
+              style={{
+                backgroundColor: statusFilter === 'pending' ? `${SALON_LUXE_COLORS.orange.base}20` : `${SALON_LUXE_COLORS.bronze.base}10`,
+                color: statusFilter === 'pending' ? SALON_LUXE_COLORS.orange.base : SALON_LUXE_COLORS.bronze.base,
+                borderColor: statusFilter === 'pending' ? SALON_LUXE_COLORS.orange.base : 'transparent',
+                ...(statusFilter === 'pending' ? { ringColor: SALON_LUXE_COLORS.orange.base } : {})
+              }}
+            >
+              <Clock className="w-3 h-3 inline mr-1" />
+              Pending ({getPendingExpenses?.().length || 0})
+            </button>
+            <button
+              onClick={() => setStatusFilter('paid')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                statusFilter === 'paid' ? 'ring-2' : ''
+              }`}
+              style={{
+                backgroundColor: statusFilter === 'paid' ? `${SALON_LUXE_COLORS.emerald.base}20` : `${SALON_LUXE_COLORS.bronze.base}10`,
+                color: statusFilter === 'paid' ? SALON_LUXE_COLORS.emerald.base : SALON_LUXE_COLORS.bronze.base,
+                borderColor: statusFilter === 'paid' ? SALON_LUXE_COLORS.emerald.base : 'transparent',
+                ...(statusFilter === 'paid' ? { ringColor: SALON_LUXE_COLORS.emerald.base } : {})
+              }}
+            >
+              <CheckCircle className="w-3 h-3 inline mr-1" />
+              Paid ({getPaidExpenses?.().length || 0})
+            </button>
+          </div>
+
+          {/* Accounts Payable Summary Card */}
+          <div
+            className="p-4 rounded-lg border"
+            style={{
+              backgroundColor: `${SALON_LUXE_COLORS.orange.base}10`,
+              borderColor: `${SALON_LUXE_COLORS.orange.base}40`
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide mb-1" style={{ color: SALON_LUXE_COLORS.orange.base }}>
+                  Accounts Payable
+                </p>
+                <p className="text-2xl font-bold" style={{ color: SALON_LUXE_COLORS.orange.base }}>
+                  AED {pendingTotal.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                </p>
+              </div>
+              <div
+                className="w-12 h-12 rounded-lg flex items-center justify-center"
+                style={{
+                  backgroundColor: `${SALON_LUXE_COLORS.orange.base}20`,
+                  border: `1px solid ${SALON_LUXE_COLORS.orange.base}40`
+                }}
+              >
+                <Clock className="w-6 h-6" style={{ color: SALON_LUXE_COLORS.orange.base }} />
+              </div>
+            </div>
+            <p className="text-xs mt-2" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+              Unpaid expenses awaiting payment
+            </p>
+          </div>
+        </div>
+
         <div className="space-y-2">
           {filteredExpenses.length > 0 ? (
             filteredExpenses.map(expense => (
@@ -1645,6 +1801,8 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
                 expense={expense}
                 onEdit={() => handleEdit(expense)}
                 onDelete={() => handleDelete(expense.id)}
+                onMarkAsPaid={() => handleMarkAsPaid(expense)}
+                isPaymentProcessing={payingExpenseId === expense.id}
               />
             ))
           ) : (
@@ -1674,11 +1832,13 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
   )
 }
 
-function ExpenseRow({ expense, onEdit, onDelete }: any) {
+function ExpenseRow({ expense, onEdit, onDelete, onMarkAsPaid, isPaymentProcessing }: any) {
   // ✅ Support both entity-based and transaction-based expenses
   const amount = expense.total_amount || expense.amount || 0
   const expenseDate = expense.transaction_date || expense.expense_date
   const category = expense.expense_category || expense.category || 'Uncategorized'
+  const isPending = expense.status === 'pending'
+  const isPaid = expense.status === 'paid'
 
   return (
     <div
@@ -1703,17 +1863,15 @@ function ExpenseRow({ expense, onEdit, onDelete }: any) {
         <span
           className="text-xs px-2 py-1 rounded flex items-center gap-1"
           style={{
-            backgroundColor:
-              expense.status === 'paid'
-                ? `${SALON_LUXE_COLORS.emerald.base}20`
-                : `${SALON_LUXE_COLORS.orange.base}20`,
-            color:
-              expense.status === 'paid'
-                ? SALON_LUXE_COLORS.emerald.base
-                : SALON_LUXE_COLORS.orange.base
+            backgroundColor: isPaid
+              ? `${SALON_LUXE_COLORS.emerald.base}20`
+              : `${SALON_LUXE_COLORS.orange.base}20`,
+            color: isPaid
+              ? SALON_LUXE_COLORS.emerald.base
+              : SALON_LUXE_COLORS.orange.base
           }}
         >
-          {expense.status === 'paid' ? (
+          {isPaid ? (
             <CheckCircle className="w-3 h-3" />
           ) : (
             <Clock className="w-3 h-3" />
@@ -1725,6 +1883,26 @@ function ExpenseRow({ expense, onEdit, onDelete }: any) {
         </span>
         {/* ✅ ENTERPRISE-GRADE ACTION BUTTONS: Always visible, clear icons, mobile-friendly */}
         <div className="flex gap-2">
+          {/* NEW: Mark as Paid button (only for pending expenses) */}
+          {isPending && onMarkAsPaid && (
+            <button
+              onClick={onMarkAsPaid}
+              disabled={isPaymentProcessing}
+              className="min-w-[44px] min-h-[44px] p-2.5 rounded-lg transition-all active:scale-95 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: `${SALON_LUXE_COLORS.emerald.base}20`,
+                color: SALON_LUXE_COLORS.emerald.base,
+                border: `1px solid ${SALON_LUXE_COLORS.emerald.base}40`
+              }}
+              title="Mark as paid (posts payment to GL)"
+            >
+              {isPaymentProcessing ? (
+                <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <DollarSign className="w-5 h-5" />
+              )}
+            </button>
+          )}
           <button
             onClick={onEdit}
             className="min-w-[44px] min-h-[44px] p-2.5 rounded-lg transition-all active:scale-95 hover:scale-105"
