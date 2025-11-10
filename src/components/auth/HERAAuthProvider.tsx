@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { createSecurityContextFromAuth } from '@/lib/security/user-entity-resolver'
 import type { SecurityContext } from '@/lib/security/database-context'
 import { normalizeRole, type AppRole } from '@/lib/auth/role-normalizer'
+import { membershipCache } from '@/lib/auth/membership-cache'
 
 type HeraStatus = 'idle' | 'resolving' | 'authenticated' | 'error'
 
@@ -233,32 +234,17 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             try {
               const { user } = session
 
-              // Fetch membership data from API v2
+              // Fetch membership data from API v2 with caching
               let res = {}
               try {
-                const response = await fetch('/api/v2/auth/resolve-membership', {
-                  headers: { Authorization: `Bearer ${session.access_token}` },
-                  cache: 'no-store',
-                })
-                if (response.ok) {
-                  const apiResponse = await response.json()
-                  // Handle HERA standard response format
-                  res = apiResponse.success ? apiResponse : apiResponse
-                  console.log('✅ Membership resolved from v2 API:', res)
-                } else {
-                  // ✅ ENTERPRISE: Check for specific error codes
-                  const errorData = await response.json().catch(() => ({}))
-                  const errorCode = errorData.error || 'unknown'
-
-                  if (errorCode === 'no_membership') {
-                    console.error('❌ No organization membership found for user')
-                    // Don't use fallback for no_membership - user genuinely has no access
-                    throw new Error('NO_ORGANIZATION_MEMBERSHIP')
-                  } else {
-                    console.warn('🚨 Membership API v2 failed:', errorCode)
-                    throw new Error(`MEMBERSHIP_API_ERROR: ${errorCode}`)
-                  }
-                }
+                // Use cached membership with stale-while-revalidate
+                const apiResponse = await membershipCache.getMembership(
+                  session.access_token, 
+                  user.id
+                )
+                // Handle HERA standard response format
+                res = apiResponse.success ? apiResponse : apiResponse
+                console.log('✅ Membership resolved from cached API:', res)
               } catch (error) {
                 // If NO_ORGANIZATION_MEMBERSHIP error, re-throw (don't use fallback)
                 if (error.message === 'NO_ORGANIZATION_MEMBERSHIP' || error.message?.startsWith('MEMBERSHIP_API_ERROR')) {
@@ -527,37 +513,35 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
       console.log('✅ Login successful, resolving membership...')
 
-      // 2. Resolve membership immediately (synchronous pattern)
-      const response = await fetch('/api/v2/auth/resolve-membership', {
-        headers: { Authorization: `Bearer ${data.session.access_token}` },
-        cache: 'no-store'
-      })
-
-      if (!response.ok) {
+      // 2. Resolve membership immediately with caching (synchronous pattern)
+      let membershipData
+      try {
+        membershipData = await membershipCache.getMembership(
+          data.session.access_token,
+          data.user.id
+        )
+        console.log('✅ Login membership resolved from cache')
+      } catch (error) {
         // ✅ ENTERPRISE: Parse error response for better error messages
-        const errorData = await response.json().catch(() => ({}))
-        const errorCode = errorData.error || 'unknown'
-        const errorMessage = errorData.message || 'Failed to resolve membership'
+        const errorMessage = error.message || 'Failed to resolve membership'
 
         console.error('❌ Membership resolution failed:', {
-          status: response.status,
-          errorCode,
+          error: error.message,
           errorMessage
         })
 
         // ✅ ENTERPRISE: Throw specific error codes for better handling
-        if (errorCode === 'no_membership') {
+        if (error.message?.includes('NO_ORGANIZATION_MEMBERSHIP')) {
           throw new Error('NO_ORGANIZATION_MEMBERSHIP: User has no organization access. Please contact support.')
-        } else if (errorCode === 'unauthorized') {
+        } else if (error.message?.includes('unauthorized')) {
           throw new Error('INVALID_AUTH: Authentication failed. Please login again.')
-        } else if (errorCode === 'database_error') {
+        } else if (error.message?.includes('database_error')) {
           throw new Error('DATABASE_ERROR: Failed to resolve authentication context. Please try again.')
         } else {
           throw new Error(`AUTH_ERROR: ${errorMessage}`)
         }
       }
 
-      const membershipData = await response.json()
       console.log('✅ Membership resolved:', membershipData)
 
       // 3. Extract data from API response
@@ -642,6 +626,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const logout = async () => {
     try {
       console.log('🔓 Logging out...')
+
+      // 0. Clear membership cache
+      membershipCache.clearAll()
+      console.log('🗑️ Membership cache cleared on logout')
 
       // 1. Reset context immediately (don't wait for auth state change)
       didResolveRef.current = false
