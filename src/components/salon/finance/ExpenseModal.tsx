@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { SalonLuxeModal, ValidationError } from '@/components/salon/shared/SalonLuxeModal'
+import { useSecuredSalon } from '@/app/salon/SecuredSalonProvider'
 import {
   Form,
   FormControl,
@@ -72,11 +73,10 @@ const PAYMENT_METHODS = [
   { value: 'Other', label: 'Other' }
 ]
 
-// Payment statuses
+// Payment statuses (removed 'cancelled' - use Cancel button instead)
 const PAYMENT_STATUSES = [
   { value: 'pending', label: 'Pending' },
-  { value: 'paid', label: 'Paid' },
-  { value: 'cancelled', label: 'Cancelled' }
+  { value: 'paid', label: 'Paid' }
 ]
 
 // ✅ Updated to match transaction-based expense format
@@ -108,6 +108,8 @@ interface ExpenseModalProps {
 export function ExpenseModal({ open, onClose, expense, onSave }: ExpenseModalProps) {
   const [showValidationSummary, setShowValidationSummary] = useState(false)
   const [shakeButton, setShakeButton] = useState(false)
+  const { organization } = useSecuredSalon()
+  const currency = organization?.currency || 'AED'
 
   const form = useForm<ExpenseForm>({
     resolver: zodResolver(ExpenseFormSchema),
@@ -333,12 +335,8 @@ export function ExpenseModal({ open, onClose, expense, onSave }: ExpenseModalPro
                   name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium tracking-wide flex items-center gap-2">
-                        <DollarSign
-                          className="w-4 h-4"
-                          style={{ color: SALON_LUXE_COLORS.ruby.base }}
-                        />
-                        Amount (AED) <span style={{ color: SALON_LUXE_COLORS.gold.base }}>*</span>
+                      <FormLabel className="text-sm font-medium tracking-wide">
+                        Amount ({currency}) <span style={{ color: SALON_LUXE_COLORS.gold.base }}>*</span>
                       </FormLabel>
                       <FormControl>
                         <div className="relative">
@@ -346,7 +344,7 @@ export function ExpenseModal({ open, onClose, expense, onSave }: ExpenseModalPro
                             className="absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold"
                             style={{ color: SALON_LUXE_COLORS.ruby.base }}
                           >
-                            AED
+                            {currency}
                           </span>
                           <Input
                             {...field}
