@@ -200,6 +200,7 @@ export function generatePendingExpenseGLLines(
   line_number: number
   line_type: 'GL'
   line_amount: number
+  smart_code: string
   line_data: {
     account_code: string
     account_name: string
@@ -215,12 +216,18 @@ export function generatePendingExpenseGLLines(
     throw new Error(`Invalid expense category "${category}"`)
   }
 
+  // Smart codes for GL lines
+  const categoryUpper = category.toUpperCase().replace(/\s+/g, '_')
+  const expenseSmartCode = `HERA.SALON.FINANCE.GL.LINE.EXPENSE.${categoryUpper}.DR.v1`
+  const apSmartCode = `HERA.SALON.FINANCE.GL.LINE.AP.CR.v1`
+
   return [
     // DR: Expense Account (increases expense)
     {
       line_number: 1,
       line_type: 'GL' as const,
       line_amount: amount,
+      smart_code: expenseSmartCode,
       line_data: {
         account_code: expenseAccount.code,
         account_name: expenseAccount.name,
@@ -234,6 +241,7 @@ export function generatePendingExpenseGLLines(
       line_number: 2,
       line_type: 'GL' as const,
       line_amount: amount,
+      smart_code: apSmartCode,
       line_data: {
         account_code: apAccount.code,
         account_name: apAccount.name,
@@ -255,6 +263,7 @@ export function generateExpensePaymentGLLines(
   line_number: number
   line_type: 'GL'
   line_amount: number
+  smart_code: string
   line_data: {
     account_code: string
     account_name: string
@@ -269,12 +278,18 @@ export function generateExpensePaymentGLLines(
     throw new Error(`Invalid payment method "${paymentMethod}"`)
   }
 
+  // Smart codes for payment GL lines
+  const paymentMethodUpper = paymentMethod.toUpperCase().replace(/\s+/g, '_')
+  const apDrSmartCode = `HERA.SALON.FINANCE.GL.LINE.AP.DR.v1`
+  const paymentCrSmartCode = `HERA.SALON.FINANCE.GL.LINE.${paymentMethodUpper}.CR.v1`
+
   return [
     // DR: Accounts Payable (decreases liability - clearing the debt)
     {
       line_number: 1,
       line_type: 'GL' as const,
       line_amount: amount,
+      smart_code: apDrSmartCode,
       line_data: {
         account_code: apAccount.code,
         account_name: apAccount.name,
@@ -287,6 +302,7 @@ export function generateExpensePaymentGLLines(
       line_number: 2,
       line_type: 'GL' as const,
       line_amount: amount,
+      smart_code: paymentCrSmartCode,
       line_data: {
         account_code: paymentAccount.code,
         account_name: paymentAccount.name,
