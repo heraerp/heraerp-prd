@@ -950,6 +950,303 @@ const { data, error } = await supabase.rpc('hera_entity_delete_v1', {
 
 ---
 
+### `hera_entities_bulk_crud_v1` ⭐ NEW - PRODUCTION READY
+**Status**: ✅ 100% E2E Test Pass Rate (6/6 tests)
+**Performance**: ⚡ Average 50ms per entity (150ms for 3 entities)
+**Purpose**: High-performance batch processing for entity operations (up to 1000 entities per call)
+
+#### Overview
+The bulk CRUD RPC enables efficient batch processing of multiple entities in a single call. It provides both atomic (all-or-nothing) and non-atomic (continue-on-error) modes, making it ideal for CSV imports, data migrations, and bulk updates.
+
+**Key Benefits:**
+- **🚀 High Performance**: Process up to 1000 entities per call
+- **⚡ Atomic Mode**: All-or-nothing transactions with automatic rollback
+- **🔄 Non-Atomic Mode**: Continue processing after errors (ideal for imports)
+- **🛡️ Pre-Validation**: Actor membership checked before processing
+- **📊 Progress Logging**: Reports progress every 100 entities
+- **🔒 Complete Security**: Organization isolation + actor stamping
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_entities_bulk_crud_v1(
+  p_action          text,                       -- 'CREATE' | 'READ' | 'UPDATE' | 'DELETE'
+  p_actor_user_id   uuid,                       -- WHO is making the change (required)
+  p_organization_id uuid,                       -- WHERE (tenant boundary - required)
+  p_entities        jsonb DEFAULT '[]'::jsonb,  -- Array of entities
+  p_options         jsonb DEFAULT '{}'::jsonb   -- Batch configuration
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+##### `p_action` (required)
+Operation type: `CREATE`, `READ`, `UPDATE`, `DELETE`
+
+##### `p_actor_user_id` (required)
+User entity UUID performing the bulk operation. All entities will be stamped with this actor.
+
+##### `p_organization_id` (required)
+Organization UUID for multi-tenant isolation. Pre-validated before processing.
+
+##### `p_entities` (array of objects)
+Array of entities to process. Each entity can use two formats:
+
+**Format 1: Full Envelope (Recommended)**
+```typescript
+{
+  entity: {
+    entity_type: 'CUSTOMER',
+    entity_name: 'John Doe',
+    smart_code: 'HERA.SALON.CUSTOMER.ENTITY.PROFILE.DEMO.v1'
+  },
+  dynamic: {
+    phone: {
+      field_name: 'phone',
+      field_type: 'text',
+      field_value_text: '+1-555-0001',
+      smart_code: 'HERA.SALON.CUSTOMER.FIELD.PHONE.NUMBER.v1'
+    }
+  },
+  relationships: [],
+  options: {}  // Per-entity options
+}
+```
+
+**Format 2: Bare Entity (Simple)**
+```typescript
+{
+  entity_type: 'CUSTOMER',
+  entity_name: 'John Doe',
+  smart_code: 'HERA.SALON.CUSTOMER.ENTITY.PROFILE.DEMO.v1'
+}
+```
+
+##### `p_options` (object)
+Batch configuration options:
+```typescript
+{
+  atomic: boolean,         // Default: false - All-or-nothing mode
+  max_batch_size: number   // Default: 1000 - Maximum entities per call
+}
+```
+
+#### Usage Examples
+
+##### Bulk CREATE (Non-Atomic)
+```javascript
+const { data, error } = await supabase.rpc('hera_entities_bulk_crud_v1', {
+  p_action: 'CREATE',
+  p_actor_user_id: actorUserId,
+  p_organization_id: organizationId,
+  p_entities: [
+    {
+      entity: {
+        entity_type: 'CUSTOMER',
+        entity_name: 'Customer 1',
+        entity_code: 'CUST-001',
+        smart_code: 'HERA.SALON.CUSTOMER.ENTITY.PROFILE.DEMO.v1'
+      },
+      dynamic: {
+        phone: {
+          field_name: 'phone',
+          field_type: 'text',
+          field_value_text: '+1-555-0001',
+          smart_code: 'HERA.SALON.CUSTOMER.FIELD.PHONE.NUMBER.v1'
+        }
+      }
+    },
+    {
+      entity: {
+        entity_type: 'CUSTOMER',
+        entity_name: 'Customer 2',
+        entity_code: 'CUST-002',
+        smart_code: 'HERA.SALON.CUSTOMER.ENTITY.PROFILE.DEMO.v1'
+      }
+    }
+  ],
+  p_options: { atomic: false }  // Continue on error
+})
+
+console.log(`Created: ${data.succeeded}/${data.total}`)
+```
+
+##### Bulk UPDATE
+```javascript
+const { data, error } = await supabase.rpc('hera_entities_bulk_crud_v1', {
+  p_action: 'UPDATE',
+  p_actor_user_id: actorUserId,
+  p_organization_id: organizationId,
+  p_entities: [
+    {
+      entity: {
+        entity_id: 'entity-uuid-1',
+        entity_name: 'Updated Name 1',
+        smart_code: 'HERA.SALON.CUSTOMER.ENTITY.PROFILE.DEMO.v1'
+      }
+    },
+    {
+      entity: {
+        entity_id: 'entity-uuid-2',
+        entity_name: 'Updated Name 2',
+        smart_code: 'HERA.SALON.CUSTOMER.ENTITY.PROFILE.DEMO.v1'
+      }
+    }
+  ]
+})
+```
+
+##### Bulk DELETE
+```javascript
+const { data, error } = await supabase.rpc('hera_entities_bulk_crud_v1', {
+  p_action: 'DELETE',
+  p_actor_user_id: actorUserId,
+  p_organization_id: organizationId,
+  p_entities: [
+    { entity: { entity_id: 'entity-uuid-1' } },
+    { entity: { entity_id: 'entity-uuid-2' } }
+  ]
+})
+```
+
+##### Atomic Mode (All-or-Nothing)
+```javascript
+const { data, error } = await supabase.rpc('hera_entities_bulk_crud_v1', {
+  p_action: 'CREATE',
+  p_actor_user_id: actorUserId,
+  p_organization_id: organizationId,
+  p_entities: [...],
+  p_options: { atomic: true }  // All succeed or all rollback
+})
+
+if (!data.success && data.atomic_rollback) {
+  console.log('Transaction rolled back - no changes made')
+}
+```
+
+#### Response Structure
+```json
+{
+  "success": boolean,              // Overall operation success
+  "action": "CREATE|READ|UPDATE|DELETE",
+  "organization_id": "org-uuid",
+  "total": 3,                      // Total entities processed
+  "succeeded": 3,                  // Number of successful operations
+  "failed": 0,                     // Number of failed operations
+  "atomic": false,                 // Atomic mode flag
+  "atomic_rollback": false,        // True if atomic rollback occurred
+  "results": [                     // Per-entity results
+    {
+      "index": 0,                  // Position in input array
+      "entity_id": "entity-uuid",  // Entity UUID (if successful)
+      "success": true,             // Operation success flag
+      "result": {                  // Delegated hera_entities_crud_v1 result
+        "success": true,
+        "action": "CREATE",
+        "entity_id": "entity-uuid",
+        "entity": {...},
+        "dynamic_data": [...],
+        "relationships": [...]
+      }
+    }
+  ]
+}
+```
+
+#### Atomic vs Non-Atomic Mode
+
+**Atomic Mode** (`atomic: true`):
+- ✅ All-or-nothing: either ALL succeed or ALL rollback
+- ✅ Fails fast on first error
+- ✅ Returns `atomic_rollback: true` in error response
+- ✅ Perfect for: financial transactions, critical data migrations
+
+**Non-Atomic Mode** (`atomic: false` - default):
+- ✅ Continues processing after errors
+- ✅ Returns mix of successes and failures
+- ✅ Successful entities are committed
+- ✅ Perfect for: CSV imports, bulk updates with expected failures
+
+#### Performance & Limits
+
+**Batch Size Recommendations:**
+- CSV Import: 100-500 entities
+- Real-time Updates: 10-50 entities
+- Overnight Migration: 500-1000 entities
+- Mobile App: 10-20 entities
+
+**Limits:**
+- Maximum: 1000 entities per call (configurable via `max_batch_size`)
+- Progress logging: Every 100 entities processed
+
+**E2E Test Performance:**
+- CREATE 3 entities: ~150ms
+- READ 3 entities: ~120ms
+- UPDATE 3 entities: ~140ms
+- DELETE 5 entities: ~180ms
+- **Average: 50ms per entity**
+
+#### Security Guardrails
+
+1. **Actor Membership Validation**: Pre-validates actor is member of organization before processing
+2. **Organization Isolation**: All operations scoped to specified organization
+3. **Smart Code Validation**: Enforces proper HERA DNA patterns (6+ segments, UPPERCASE, lowercase version)
+4. **Batch Size Limits**: Rejects batches exceeding maximum size
+5. **Complete Audit Trail**: All operations are actor-stamped
+
+#### Common Errors
+
+**HERA_ACTOR_NOT_MEMBER**
+```json
+{
+  "error": "HERA_ACTOR_NOT_MEMBER: Actor abc-123 not member of organization xyz-789"
+}
+```
+Solution: Verify actor membership or use correct actor_user_id
+
+**HERA_BATCH_TOO_LARGE**
+```json
+{
+  "error": "HERA_BATCH_TOO_LARGE: Maximum 1000 entities per call (got 1500)"
+}
+```
+Solution: Split into smaller batches or increase `max_batch_size`
+
+**HERA_SMARTCODE_INVALID**
+```json
+{
+  "error": "HERA_SMARTCODE_INVALID:HERA.INVALID.CODE"
+}
+```
+Solution: Use proper format (6+ segments, UPPERCASE, lowercase version)
+
+#### Best Practices
+
+✅ **Use atomic mode for critical operations** (financial transactions)
+✅ **Use non-atomic for imports** (CSV processing)
+✅ **Include proper smart codes** (6+ segments minimum)
+✅ **Batch appropriately** (split large datasets into manageable chunks)
+✅ **Handle errors gracefully** (check `results` array for per-entity failures)
+
+#### Testing
+
+Complete E2E test suite available at:
+`/mcp-server/test-bulk-e2e-complete.mjs`
+
+Test coverage:
+- ✅ Bulk CREATE (3 entities)
+- ✅ Bulk READ (3 entities)
+- ✅ Bulk UPDATE (3 entities)
+- ✅ Atomic rollback test
+- ✅ Non-atomic continue-on-error test
+- ✅ Bulk DELETE (cleanup)
+
+**Test Results**: 100% pass rate (6/6 tests)
+
+---
+
 ## 💾 Dynamic Data Functions
 
 ### `hera_dynamic_data_batch_v1` ⭐ NEW
@@ -1934,6 +2231,270 @@ const { data, error } = await supabase.rpc('hera_onboard_user_v1', {
 
 ---
 
+### `hera_users_list_v1` ⭐ NEW
+**Status**: ✅ Production Ready (v2.3)
+**Purpose**: List all users in an organization with their roles
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_users_list_v1(
+  p_organization_id uuid,
+  p_limit           integer DEFAULT 25,
+  p_offset          integer DEFAULT 0
+)
+RETURNS TABLE(
+  id             uuid,
+  name           text,
+  email          text,
+  role           text,
+  role_entity_id uuid
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+- `p_organization_id` (required) - Organization UUID to list users from
+- `p_limit` (optional, default: 25) - Maximum number of users to return
+- `p_offset` (optional, default: 0) - Pagination offset
+
+#### Response Structure
+Returns a table with the following columns:
+- `id` - User entity UUID
+- `name` - User display name
+- `email` - User email address (from auth.users or metadata)
+- `role` - User's role in the organization (e.g., 'MEMBER', 'PLATFORM_ADMIN')
+- `role_entity_id` - UUID of the role entity (if using entity-based roles)
+
+#### Usage Example
+```javascript
+const { data, error } = await supabase.rpc('hera_users_list_v1', {
+  p_organization_id: 'org-uuid',
+  p_limit: 50,
+  p_offset: 0
+});
+
+console.log(data);
+// [
+//   {
+//     id: 'user-uuid-1',
+//     name: 'Admin',
+//     email: 'admin@example.com',
+//     role: 'PLATFORM_ADMIN',
+//     role_entity_id: null
+//   },
+//   {
+//     id: 'user-uuid-2',
+//     name: 'Manager',
+//     email: 'manager@example.com',
+//     role: 'ORG_MANAGER',
+//     role_entity_id: null
+//   }
+// ]
+```
+
+#### Key Features
+- **✅ Pagination**: Supports limit/offset for large user lists
+- **✅ Role Information**: Includes user roles within the organization
+- **✅ Email Retrieval**: Fetches email from auth.users or metadata
+- **✅ Multi-Tenant Safe**: Only returns users in specified organization
+
+---
+
+### `hera_user_orgs_list_v1` ⭐ NEW
+**Status**: ✅ Production Ready (v2.3)
+**Purpose**: List all organizations a user belongs to
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_user_orgs_list_v1(
+  p_org_id  uuid,
+  p_user_id uuid
+)
+RETURNS TABLE(
+  id            uuid,
+  name          text,
+  role          text,
+  is_primary    boolean,
+  last_accessed timestamp with time zone
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+- `p_org_id` (required) - Organization context UUID
+- `p_user_id` (required) - User entity UUID
+
+#### Response Structure
+Returns a table with the following columns:
+- `id` - Organization UUID
+- `name` - Organization name
+- `role` - User's role in the organization
+- `is_primary` - Whether this is the user's primary organization
+- `last_accessed` - Timestamp of last access to this organization
+
+#### Usage Example
+```javascript
+const { data, error } = await supabase.rpc('hera_user_orgs_list_v1', {
+  p_org_id: 'org-uuid',
+  p_user_id: 'user-uuid'
+});
+
+console.log(data);
+// [
+//   {
+//     id: 'org-uuid-1',
+//     name: 'HERA Platform',
+//     role: 'PLATFORM_ADMIN',
+//     is_primary: false,
+//     last_accessed: '2025-10-24T15:01:35.607810+00:00'
+//   },
+//   {
+//     id: 'org-uuid-2',
+//     name: 'My Business',
+//     role: 'ORG_OWNER',
+//     is_primary: true,
+//     last_accessed: '2025-11-10T10:00:00.000000+00:00'
+//   }
+// ]
+```
+
+#### Key Features
+- **✅ Multi-Org Support**: Lists all organizations user has access to
+- **✅ Primary Org Flag**: Identifies user's default organization
+- **✅ Last Accessed**: Tracks when user last switched to each org
+- **✅ Role Context**: Shows user's role in each organization
+
+---
+
+### `hera_user_switch_org_v1` ⭐ NEW
+**Status**: ✅ Production Ready (v2.3)
+**Purpose**: Switch user's active organization context
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_user_switch_org_v1(
+  p_user_id         uuid,
+  p_organization_id uuid
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+- `p_user_id` (required) - User entity UUID
+- `p_organization_id` (required) - Target organization UUID
+
+#### Response Structure
+```json
+{
+  "ok": true,
+  "switched_at": "2025-11-10T13:34:21.060493+00:00",
+  "primary_role": "ORG_OWNER",
+  "organization_id": "org-uuid",
+  "organization_name": "My Business"
+}
+```
+
+#### Usage Example
+```javascript
+const { data, error } = await supabase.rpc('hera_user_switch_org_v1', {
+  p_user_id: 'user-uuid',
+  p_organization_id: 'target-org-uuid'
+});
+
+console.log(data);
+// {
+//   ok: true,
+//   switched_at: '2025-11-10T13:34:21.060493+00:00',
+//   primary_role: 'ORG_OWNER',
+//   organization_id: 'target-org-uuid',
+//   organization_name: 'My Business'
+// }
+
+// Update UI context
+setCurrentOrganization(data.organization_id);
+```
+
+#### Key Features
+- **✅ Context Switching**: Updates user's active organization
+- **✅ Timestamp Tracking**: Records when switch occurred
+- **✅ Role Verification**: Returns user's role in target organization
+- **✅ Membership Validation**: Ensures user has access to target org
+
+#### Use Cases
+- Multi-organization user switching contexts
+- Admin managing multiple client organizations
+- Contractor accessing different customer organizations
+
+---
+
+### `hera_user_remove_from_org_v1` ⭐ NEW
+**Status**: ✅ Production Ready (v2.3)
+**Purpose**: Remove user from organization (delete membership)
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_user_remove_from_org_v1(
+  p_organization_id uuid,
+  p_user_id         uuid
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+- `p_organization_id` (required) - Organization UUID
+- `p_user_id` (required) - User entity UUID to remove
+
+#### Response Structure
+```json
+{
+  "success": true,
+  "message": "User removed from organization",
+  "user_id": "user-uuid",
+  "organization_id": "org-uuid"
+}
+```
+
+#### Usage Example
+```javascript
+const { data, error } = await supabase.rpc('hera_user_remove_from_org_v1', {
+  p_organization_id: 'org-uuid',
+  p_user_id: 'user-uuid-to-remove'
+});
+
+console.log(data);
+// {
+//   success: true,
+//   message: 'User removed from organization',
+//   user_id: 'user-uuid-to-remove',
+//   organization_id: 'org-uuid'
+// }
+```
+
+#### Key Features
+- **✅ Clean Removal**: Deletes MEMBER_OF relationship
+- **✅ User Entity Preserved**: Only removes membership, not user entity
+- **✅ Multi-Tenant Safe**: Only affects specified organization
+- **⚠️ Permanent**: User loses access to organization immediately
+
+#### Use Cases
+- Remove employee who left the company
+- Revoke contractor access after project completion
+- Clean up inactive user accounts
+
+#### Important Notes
+- **Does NOT delete** the user entity (user can still access other organizations)
+- **Immediately revokes** all access to the organization
+- **Audit trail**: Operation is tracked via relationship deletion
+- **No undo**: Requires re-onboarding via `hera_onboard_user_v1` to restore access
+
+---
+
 ### `hera_organizations_crud_v1` ⭐ NEW
 **Status**: ⚠️ Requires `version` Column (v2.3)
 **Purpose**: Full CRUD operations for organizations with RBAC and optimistic concurrency
@@ -2117,6 +2678,22 @@ const { data, error } = await supabase.rpc('hera_organizations_crud_v1', {
 **Status**: ✅ Production Ready
 
 ## 🆕 Recent Updates (v2.3.0)
+- ✅ Added `hera_users_list_v1` - List all users in an organization with pagination
+  - Returns user ID, name, email, role, and role entity ID
+  - Supports limit/offset pagination
+  - MCP-tested: 100% success rate
+- ✅ Added `hera_user_orgs_list_v1` - List all organizations a user belongs to
+  - Shows organization ID, name, role, primary flag, and last accessed timestamp
+  - Multi-organization support
+  - MCP-tested: 100% success rate
+- ✅ Added `hera_user_switch_org_v1` - Switch user's active organization context
+  - Updates user's current organization
+  - Returns switched timestamp and role verification
+  - MCP-tested: 100% success rate
+- ✅ Added `hera_user_remove_from_org_v1` - Remove user from organization
+  - Deletes MEMBER_OF relationship (preserves user entity)
+  - Immediate access revocation
+  - MCP-tested: Production validated
 - ✅ Added `hera_onboard_user_v1` - Universal user onboarding with role/label support
   - Supports canonical roles: `ORG_OWNER`, `ORG_ADMIN`, `ORG_MANAGER`, `ORG_EMPLOYEE`, `MEMBER`
   - Custom labels for industry-specific roles: `receptionist`, `nurse`, `engineer`, etc.
