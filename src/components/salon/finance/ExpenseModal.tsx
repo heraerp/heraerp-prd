@@ -31,7 +31,9 @@ import {
   Calendar,
   Tag,
   CreditCard,
-  FileText
+  FileText,
+  Info,
+  CheckCircle2
 } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
@@ -481,7 +483,7 @@ export function ExpenseModal({ open, onClose, expense, onSave }: ExpenseModalPro
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium tracking-wide">Status</FormLabel>
+                      <FormLabel className="text-sm font-medium tracking-wide">Payment Status</FormLabel>
                       <Select value={field.value || 'pending'} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger
@@ -500,9 +502,77 @@ export function ExpenseModal({ open, onClose, expense, onSave }: ExpenseModalPro
                         </SelectContent>
                       </Select>
                       <FormMessage />
+                      <FormDescription
+                        className="text-xs mt-1"
+                        style={{ color: SALON_LUXE_COLORS.bronze.base, opacity: 0.8 }}
+                      >
+                        {field.value === 'pending' ? (
+                          <span>📊 Posts to Accounts Payable</span>
+                        ) : field.value === 'paid' ? (
+                          <span>✅ Posts payment to GL immediately</span>
+                        ) : (
+                          <span>Cancelled expenses are not posted</span>
+                        )}
+                      </FormDescription>
                     </FormItem>
                   )}
                 />
+              </div>
+
+              {/* Finance DNA v2 Workflow Info */}
+              <div
+                className="mt-5 p-4 rounded-lg border"
+                style={{
+                  backgroundColor: SALON_LUXE_COLORS.gold.base + '10',
+                  borderColor: SALON_LUXE_COLORS.gold.base + '40'
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <Info
+                    className="w-5 h-5 flex-shrink-0 mt-0.5"
+                    style={{ color: SALON_LUXE_COLORS.gold.base }}
+                  />
+                  <div className="flex-1 space-y-2">
+                    <h4
+                      className="text-sm font-semibold tracking-wide"
+                      style={{ color: SALON_LUXE_COLORS.gold.base }}
+                    >
+                      Finance DNA v2 Payment Workflow
+                    </h4>
+                    <div className="text-xs space-y-1.5" style={{ color: SALON_LUXE_COLORS.text.secondary }}>
+                      <div className="flex items-start gap-2">
+                        <span
+                          className="font-semibold mt-0.5"
+                          style={{ color: SALON_LUXE_COLORS.gold.base }}
+                        >
+                          1.
+                        </span>
+                        <span>
+                          <strong>Pending:</strong> Expense recorded, payment not made yet → Posts to{' '}
+                          <span style={{ color: SALON_LUXE_COLORS.emerald.base }}>Accounts Payable (2100)</span>
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span
+                          className="font-semibold mt-0.5"
+                          style={{ color: SALON_LUXE_COLORS.gold.base }}
+                        >
+                          2.
+                        </span>
+                        <span>
+                          <strong>Paid:</strong> Payment made immediately → Posts to{' '}
+                          <span style={{ color: SALON_LUXE_COLORS.emerald.base }}>
+                            {form.watch('payment_method') || 'Cash/Bank'}
+                          </span>
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2 pt-2 border-t" style={{ borderColor: SALON_LUXE_COLORS.gold.base + '20' }}>
+                        <CheckCircle2 className="w-3.5 h-3.5" style={{ color: SALON_LUXE_COLORS.emerald.base }} />
+                        <span className="text-xs">Automatic GL posting with complete audit trail</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
