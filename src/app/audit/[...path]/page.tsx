@@ -1,7 +1,9 @@
-
+"use client";
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic'
+// NOTE: `dynamic` config is server-only and not allowed in a client component.
+// If you really need it later, we can move it into a tiny server wrapper.
+// export const dynamic = 'force-dynamic';
 
 import { useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
