@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 import {
   TrendingUp,
   Users,
@@ -84,6 +85,7 @@ function MetricCard({ title, value, change, icon: Icon, gradient, subValue }: Me
 }
 
 export default function ISPDashboard() {
+  const { updateProgress, finishLoading } = useLoadingStore()
   const [selectedPeriod, setSelectedPeriod] = useState('month')
   const [isLoading, setIsLoading] = useState(false)
   const [dashboardData, setDashboardData] = useState<any>({
@@ -94,6 +96,37 @@ export default function ISPDashboard() {
     new_this_month: 1245,
     churn_rate: 2.3
   })
+
+  // ⚡ ENTERPRISE: Complete loading animation on mount (if coming from login)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+
+    if (isInitializing) {
+      console.log('🌐 ISP Dashboard: Completing loading animation from 70% → 100%')
+
+      // Animate from 70% to 100% smoothly
+      let progress = 70
+      const progressInterval = setInterval(() => {
+        progress += 5
+        if (progress <= 100) {
+          updateProgress(progress, undefined, progress === 100 ? 'Ready!' : 'Loading your workspace...')
+        }
+        if (progress >= 100) {
+          clearInterval(progressInterval)
+          // Complete and hide overlay after brief delay
+          setTimeout(() => {
+            finishLoading()
+            // Clean up URL parameter
+            window.history.replaceState({}, '', window.location.pathname)
+            console.log('✅ ISP Dashboard: Loading complete!')
+          }, 500)
+        }
+      }, 50)
+
+      return () => clearInterval(progressInterval)
+    }
+  }, [updateProgress, finishLoading])
   const [revenueData, setRevenueData] = useState<any[]>([
     { month: 'Jan', revenue: 38000000, subscribers: 42000 },
     { month: 'Feb', revenue: 39500000, subscribers: 42800 },

@@ -364,10 +364,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     // Only initialize if not already cached or if we need to reinitialize
     if (!securityStore.isInitialized || securityStore.shouldReinitialize()) {
       console.log('🔄 Initializing security context...')
-      // ✅ ENTERPRISE: Use single-flight wrapper to prevent concurrent re-init stampede
-      // Use silent mode if store is initializing (prevents banner flash on page load)
-      const useSilentMode = !hasInitialized && securityStore.isInitialized
-      runReinitSingleFlight({ silent: useSilentMode }).then(() => {
+      // ✅ FIX: ALWAYS use silent mode during initialization
+      // User already sees "Loading your dashboard..." screen, no need for reconnecting banner
+      runReinitSingleFlight({ silent: true }).then(() => {
         authCheckDoneRef.current = true // ✅ Mark auth check as complete
         console.log('✅ Auth check complete and cached')
       })
@@ -482,21 +481,29 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       })
 
       if (event === 'SIGNED_IN' && session) {
-        // Only re-initialize if user or organization changed
-        const currentUserId = context.userId
+        // ✅ FIX: Use stored user ID (from securityStore) instead of context.userId
+        // context.userId can be empty during tab switches due to React re-renders
+        const currentUserId = securityStore.userId || initializedForUser.current
         const sessionUserId = session.user.id
+
+        console.log('🔐 SIGNED_IN event - checking user:', {
+          currentUserId,
+          sessionUserId,
+          isNewUser: !currentUserId || currentUserId !== sessionUserId
+        })
 
         if (!currentUserId || currentUserId !== sessionUserId) {
           // New user logged in - full re-initialization needed
-          console.log('🔐 SIGNED_IN event - new user, resetting auth check')
+          console.log('🔐 SIGNED_IN event - new user detected, full re-initialization')
           authCheckDoneRef.current = false
           securityStore.clearState()
-          // ✅ ENTERPRISE: Use single-flight wrapper
-          await runReinitSingleFlight()
+          // ✅ FIX: Use SILENT mode during login - user already sees loading screen
+          // This prevents "Reconnecting" banner from appearing during login flow
+          await runReinitSingleFlight({ silent: true })
           authCheckDoneRef.current = true
         } else {
           // Same user - just verify session is valid, don't clear data
-          console.log('🔐 SIGNED_IN event - same user, keeping existing state')
+          console.log('🔐 SIGNED_IN event - same user, no action needed')
         }
       } else if (event === 'SIGNED_OUT') {
         console.log('🔐 SIGNED_OUT event - clearing state')
@@ -512,8 +519,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         // Only reinit if cache has ACTUALLY expired (HARD_TTL exceeded)
         if (securityStore.shouldReinitialize()) {
           console.log('🔄 Cache hard expired (60+ min), reinitializing...')
-          // ✅ ENTERPRISE: Use single-flight wrapper
-          await runReinitSingleFlight()
+          // ✅ FIX: Use SILENT mode during token refresh - automatic background operation
+          // This prevents "Reconnecting" banner during routine token refresh
+          await runReinitSingleFlight({ silent: true })
           authCheckDoneRef.current = true
         } else {
           console.log('✅ Cache still valid, no reinit needed')
@@ -546,14 +554,22 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     const HEARTBEAT_INTERVAL = 4 * 60 * 1000 // 4 minutes
 
     heartbeatTimerRef.current = setInterval(() => {
+      // ✅ FIX: Skip heartbeat if page is hidden (tab/window switched)
+      // This prevents unnecessary reconnections when user switches tabs
+      if (typeof document !== 'undefined' && document.hidden) {
+        console.log('💓 Heartbeat: Skipping (page hidden)')
+        return
+      }
+
       const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
 
       // If approaching SOFT_TTL (10 min), do background refresh
       if (timeSinceInit > SOFT_TTL - 60000) {
         // Within 1 minute of SOFT_TTL
-        console.log('💓 Heartbeat: Proactive background refresh (approaching SOFT_TTL)')
+        console.log('💓 Heartbeat: Proactive background refresh (approaching SOFT_TTL) - SILENT MODE')
 
-        // Background refresh without showing banner (silent mode)
+        // ✅ FIX: ALWAYS use silent mode for heartbeat refresh (no banner shown)
+        // This prevents "Reconnecting" banner during routine 10-minute maintenance
         runReinitSingleFlight({ silent: true }).catch(error => {
           console.warn('💓 Heartbeat: Background refresh failed (non-critical):', error)
           // Don't show error to user - this is proactive maintenance
@@ -563,12 +579,34 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       }
     }, HEARTBEAT_INTERVAL)
 
+    // ✅ FIX: Listen for visibility changes to handle tab switching gracefully
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        console.log('👁️ Page hidden - pausing heartbeat checks')
+      } else {
+        console.log('👁️ Page visible - resuming normal operation')
+        // When page becomes visible again, check if session needs refresh
+        const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
+        if (timeSinceInit > HARD_TTL) {
+          console.log('👁️ Session expired during tab switch, refreshing...')
+          runReinitSingleFlight({ silent: true })
+        }
+      }
+    }
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', handleVisibilityChange)
+    }
+
     // Cleanup on unmount
     return () => {
       if (heartbeatTimerRef.current) {
         console.log('💓 Stopping heartbeat mechanism')
         clearInterval(heartbeatTimerRef.current)
         heartbeatTimerRef.current = null
+      }
+      if (typeof document !== 'undefined') {
+        document.removeEventListener('visibilitychange', handleVisibilityChange)
       }
     }
   }, [hasInitialized, context.isAuthenticated]) // Re-run when auth state changes
@@ -724,30 +762,15 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       console.log('✅ Using organization from user auth:', securityContext.orgId)
 
-      // 🔒 SECURITY: Clear all caches if org ID doesn't match JWT
-      const cachedOrgId = localStorage.getItem('organizationId')
-      const storeOrgId = securityStore.organizationId
-
-      if (
-        (cachedOrgId && cachedOrgId !== securityContext.orgId) ||
-        (storeOrgId && storeOrgId !== securityContext.orgId)
-      ) {
-        console.warn('🚨 Cached organization ID mismatch - clearing ALL stale caches')
-        console.warn(`   localStorage: ${cachedOrgId}`)
-        console.warn(`   Zustand store: ${storeOrgId}`)
-        console.warn(`   JWT (correct): ${securityContext.orgId}`)
-
-        // Clear localStorage
-        localStorage.removeItem('organizationId')
-        localStorage.removeItem('salonRole')
-        localStorage.removeItem('userPermissions')
-        localStorage.removeItem('selectedBranchId')
-
-        // Clear Zustand persisted store
-        securityStore.clearState()
-
-        console.log('✅ All caches cleared - using JWT organization ID')
-      }
+      // ✅ ENTERPRISE FIX: Remove org ID mismatch check during initialization
+      // Reason: Login page already clears localStorage BEFORE login
+      // This check was causing logout because SecuredSalonProvider runs
+      // DURING dashboard load, BEFORE HERAAuthProvider finishes storing new org ID
+      // Result: It saw "no match" → cleared everything → invalidated session → logout
+      //
+      // The org ID mismatch check is now ONLY in onAuthStateChange SIGNED_IN event
+      // where it checks if USER changed (not org), which is the correct validation
+      console.log('✅ Skipping org ID mismatch check during init (login page already cleared cache)')
 
       // Get salon-specific role and permissions
       const salonRole = await getSalonRole(securityContext)
@@ -1106,11 +1129,18 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         dataDataKeys: data?.data ? Object.keys(data.data) : []
       })
 
-      // ✅ CRITICAL FIX: entityCRUD returns { data: { entity, dynamic_data }, error }
-      // So we need to check data.entity (not data.data.entity)
-      if (data?.entity) {
-        // Direct format from entityCRUD RPC: { data: { entity: {...}, dynamic_data: [...] }, error }
-        console.log('[SecuredSalonProvider] 📦 Using RPC format (data.entity)')
+      // ✅ CRITICAL FIX: entityCRUD can return data in multiple formats
+      // Format 1: { data: { data: { entity, dynamic_data } } } (nested double data)
+      // Format 2: { data: { entity, dynamic_data } } (single data wrapper)
+      // Format 3: { entity, dynamic_data } (direct)
+      if (data?.data?.entity) {
+        // Nested format: { data: { data: { entity: {...}, dynamic_data: [...] } } }
+        console.log('[SecuredSalonProvider] 📦 Using nested RPC format (data.data.entity)')
+        orgEntity = data.data.entity
+        dynamicDataArray = data.data.dynamic_data || data.data.dynamic_fields || []
+      } else if (data?.entity) {
+        // Direct format: { data: { entity: {...}, dynamic_data: [...] }, error }
+        console.log('[SecuredSalonProvider] 📦 Using direct RPC format (data.entity)')
         orgEntity = data.entity
         dynamicDataArray = data.dynamic_data || data.dynamic_fields || []
       } else if (data?.items && Array.isArray(data.items) && data.items.length > 0) {
@@ -1490,21 +1520,18 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     [context, isLoadingBranches, hasPermission, hasAnyPermission]
   )
 
-  // ✅ ENTERPRISE: Enhanced loading state with better transition handling
-  // Show loading during:
-  // 1. Initial authentication (isLoading && !initialized)
-  // 2. Post-login initialization (isAuthenticated from HERAAuth but SecuredSalon not ready)
-  // 3. Role resolution (has auth but no role yet)
-  // 4. PATIENCE: During first 5 seconds after login, ALWAYS show loading (not error)
+  // ✅ ENTERPRISE UX: Optimized loading state - only show when cache is stale
+  // Show loading ONLY during:
+  // 1. Initial load when cache doesn't exist
+  // 2. Cache invalidation (HARD_TTL exceeded or manual reinit)
+  // 3. First 500ms after page load (grace period for smooth transition)
   const timeSincePageLoad = typeof window !== 'undefined' ? Date.now() - (window.performance?.timing?.navigationStart || 0) : Infinity
-  const isInGracePeriod = timeSincePageLoad < 5000 // First 5 seconds after page load
+  const isInGracePeriod = timeSincePageLoad < 500 // 500ms grace period for smooth transition
 
   const isInitializing =
-    (context.isLoading && (!securityStore.isInitialized || !hasInitialized)) ||
-    (auth.isAuthenticated && !context.isAuthenticated) || // ✅ REMOVED && !authError check
-    (auth.isAuthenticated && auth.isLoading) ||
-    (auth.isAuthenticated && !context.organization?.id) || // ✅ REMOVED && !authError check
-    (auth.isAuthenticated && !hasInitialized && isInGracePeriod) // ✅ NEW: Grace period after login
+    (!securityStore.isInitialized || securityStore.shouldReinitialize()) &&
+    (context.isLoading || !hasInitialized || isInGracePeriod) &&
+    auth.isAuthenticated
 
   if (isInitializing) {
     return (
@@ -1527,11 +1554,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             />
           </div>
           <h3 className="text-lg font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
-            {auth.isAuthenticated && !context.isAuthenticated
-              ? 'Setting up your workspace...'
-              : auth.isAuthenticated && !context.organization?.id
-              ? 'Loading organization details...'
-              : 'Verifying permissions...'}
+            Loading your dashboard...
           </h3>
           <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
             Please wait a moment
@@ -1644,8 +1667,12 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         isReconnecting={isReconnecting}
         message="Reconnecting to secure session..."
         onRetry={() => {
-          console.log('🔄 User requested manual retry')
-          runReinitSingleFlight()
+          console.log('🔄 User requested manual retry - forcing fresh initialization')
+          // Force a fresh re-initialization by clearing the in-progress flag
+          isReinitializingRef.current = false
+          reinitPromiseRef.current = null
+          // Then start a new non-silent reinit (shows progress to user)
+          runReinitSingleFlight({ silent: false })
         }}
       />
     </SecuredSalonContext.Provider>

@@ -336,19 +336,23 @@ button:not(.unstyled):hover {
   transform: scale(1.02) !important;
 }
 
-/* Primary gold buttons */
+/* Primary gold buttons - Enhanced for high visibility */
 .primary-button,
 button[type="submit"]:not([variant="outline"]) {
-  background: linear-gradient(90deg, #D4AF37 0%, #B8941F 100%) !important;
+  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%) !important;
   color: #0F0F0F !important;
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4) !important;
-  transition: all 0.3s ease !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
+  border: 2px solid rgba(212, 175, 55, 0.70) !important;
+  transition: all 0.2s ease !important;
 }
 
 .primary-button:hover,
 button[type="submit"]:not([variant="outline"]):hover {
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6) !important;
-  transform: scale(1.05) !important;
+  background: linear-gradient(135deg, #E3C75F 0%, #D4AF37 100%) !important;
+  border-color: #F0D584 !important;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-2px) scale(1.02) !important;
 }
 
 /* Outline buttons */

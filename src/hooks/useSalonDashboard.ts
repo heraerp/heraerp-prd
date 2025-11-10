@@ -649,10 +649,20 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       const status = apt.transaction_status?.toLowerCase() || apt.metadata?.status?.toLowerCase()
       return status === 'completed'
     })
-    // Note: Using tickets (GL_JOURNAL) revenue divided by completed appointments count
-    // This approximates average appointment value from financial records
+
+    // ✅ CRITICAL FIX: Use revenue from PERIOD-FILTERED tickets, not all-time revenue
+    // Calculate period tickets inline since periodCompletedTickets is defined later
+    const periodTickets = periodRange
+      ? completedTickets.filter(t => {
+          const txDate = parseISO(t.transaction_date || t.created_at)
+          return txDate >= periodRange.start && txDate <= periodRange.end
+        })
+      : completedTickets
+
+    const periodRevenue = extractGrossRevenue(periodTickets)
+
     const averageAppointmentValue =
-      completedAppointments.length > 0 ? totalRevenue / completedAppointments.length : 0
+      completedAppointments.length > 0 ? periodRevenue / completedAppointments.length : 0
 
     const noShowRate = totalAppointments > 0 ? (appointmentsByStatus.no_show / totalAppointments) * 100 : 0
     const cancellationRate =
@@ -716,9 +726,10 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     const revenueVsLastMonth = 0
 
     // ✅ ALIGNED WITH REPORTS: Average transaction value from GL_JOURNAL metadata
+    // ✅ CRITICAL FIX: Use period-filtered tickets for average transaction value
     const averageTransactionValue =
-      completedTickets.length > 0
-        ? extractGrossRevenue(completedTickets) / completedTickets.length
+      periodTickets.length > 0
+        ? extractGrossRevenue(periodTickets) / periodTickets.length
         : 0
 
     // ═══════════════════════════════════════════════════════════════
@@ -751,12 +762,11 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       // Get staff rating
       const averageRating = s.dynamic_fields?.rating?.value || s.metadata?.rating || 5.0
 
-      // Better utilization calculation: (services completed in period / expected services per day) * 100
+      // ✅ CRITICAL FIX: Better utilization calculation respecting selected period
+      // (services completed in period / expected services per period) * 100
       // Expected services per day: 8 (assuming 8 services per 8-hour day)
       // Use appointment transactions for accurate service count (with period filter)
-      const todayStaffAppointments = periodAppointments.filter(apt => {
-        const aptDate = parseISO(apt.transaction_date || apt.created_at)
-        const isToday = aptDate >= todayStart && aptDate <= todayEnd
+      const staffAppointmentsInPeriod = periodAppointments.filter(apt => {
         const status = apt.transaction_status?.toLowerCase() || apt.metadata?.status?.toLowerCase()
         const isCompletedOrInService = status === 'completed' || status === 'in_service' || status === 'in_progress'
 
@@ -767,11 +777,20 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
           apt.source_entity_id === s.id ||
           apt.target_entity_id === s.id
 
-        return isToday && isCompletedOrInService && isStaffMatch
+        return isCompletedOrInService && isStaffMatch
       })
 
-      const todayServices = todayStaffAppointments.length
-      const utilizationRate = Math.min(100, (todayServices / 8) * 100) // Cap at 100%
+      // ✅ Calculate expected capacity based on selected period
+      const getDaysInPeriod = () => {
+        if (!periodRange) return 365 // All time - assume full year
+        const diffMs = periodRange.end.getTime() - periodRange.start.getTime()
+        return Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)))
+      }
+
+      const daysInPeriod = getDaysInPeriod()
+      const expectedServicesInPeriod = daysInPeriod * 8 // 8 services per day
+      const servicesInPeriod = staffAppointmentsInPeriod.length
+      const utilizationRate = Math.min(100, (servicesInPeriod / expectedServicesInPeriod) * 100) // Cap at 100%
 
       return {
         staffId: s.id,
@@ -787,36 +806,49 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 5)
 
-    // Calculate team utilization based on period appointments/services
-    // Filter period appointments (completed or in-service)
-    const todayAppointmentTransactions = periodAppointments.filter(apt => {
-      const aptDate = parseISO(apt.transaction_date || apt.created_at)
+    // ✅ CRITICAL FIX: Calculate team utilization based on period appointments/services
+    // Filter period appointments (completed or in-service) - respects selected period
+    const periodAppointmentTransactions = periodAppointments.filter(apt => {
       const status = apt.transaction_status?.toLowerCase() || apt.metadata?.status?.toLowerCase()
       const isCompletedOrInService = status === 'completed' || status === 'in_service' || status === 'in_progress'
-      return aptDate >= todayStart && aptDate <= todayEnd && isCompletedOrInService
+      return isCompletedOrInService
     })
 
-    const totalTodayServices = todayAppointmentTransactions.length
-    const expectedDailyCapacity = activeStaff.length * 8 // 8 services per staff per day
-    const averageStaffUtilization = expectedDailyCapacity > 0
-      ? Math.min(100, (totalTodayServices / expectedDailyCapacity) * 100)
+    // ✅ Calculate expected capacity based on selected period
+    const getDaysInPeriod = () => {
+      if (!periodRange) return 365 // All time - assume full year
+      const diffMs = periodRange.end.getTime() - periodRange.start.getTime()
+      return Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)))
+    }
+
+    const daysInPeriod = getDaysInPeriod()
+    const totalPeriodServices = periodAppointmentTransactions.length
+    const expectedPeriodCapacity = activeStaff.length * 8 * daysInPeriod // 8 services per staff per day
+    const averageStaffUtilization = expectedPeriodCapacity > 0
+      ? Math.min(100, (totalPeriodServices / expectedPeriodCapacity) * 100)
       : 0
 
-    const totalStaffHoursToday = todayOnDutyStaff * 8
+    // ✅ CRITICAL FIX: Total staff hours should respect selected period
+    // For "today", show today's on-duty staff hours
+    // For other periods, show total available hours across the period
+    const totalStaffHoursToday = selectedPeriod === 'today'
+      ? todayOnDutyStaff * 8  // Today only: on-duty staff × 8 hours
+      : activeStaff.length * 8 * daysInPeriod  // Other periods: all active staff × 8 hours × days
 
     // ═══════════════════════════════════════════════════════════════
     // CUSTOMER INSIGHTS
     // ═══════════════════════════════════════════════════════════════
 
-    // ✅ ENTERPRISE: Filter customers by selected period
-    const periodCustomers = periodRange
+    // ✅ FIX: Calculate NEW customers created in the selected period
+    // NEW customers = customers whose created_at date is within the period
+    const newCustomersInPeriod = periodRange
       ? activeCustomers.filter(c => {
           const createdAt = parseISO(c.created_at)
           return createdAt >= periodRange.start && createdAt <= periodRange.end
         })
       : activeCustomers
 
-    const newCustomersToday = periodCustomers.length
+    const newCustomersToday = newCustomersInPeriod.length
 
     const periodCustomerIds = new Set(
       periodCompletedTickets
@@ -864,8 +896,16 @@ export function useSalonDashboard(config: UseSalonDashboardConfig) {
     // ✅ PROPER SOLUTION: Use SALE transactions to get service data
     // GL_JOURNAL lines have entity_id=null, but SALE transaction lines have the actual service IDs
     const serviceStats = activeServices.map(service => {
-      // Match SALE transactions that have this service in their lines
-      const serviceSales = (saleTransactions || []).filter(sale => {
+      // ✅ CRITICAL FIX: Filter SALE transactions by selected period FIRST
+      const periodSales = periodRange
+        ? (saleTransactions || []).filter(sale => {
+            const saleDate = parseISO(sale.transaction_date || sale.created_at)
+            return saleDate >= periodRange.start && saleDate <= periodRange.end
+          })
+        : (saleTransactions || [])
+
+      // Match period-filtered SALE transactions that have this service in their lines
+      const serviceSales = periodSales.filter(sale => {
         const lines = sale.lines || []
         return lines.some((line: any) =>
           line.entity_id === service.id &&

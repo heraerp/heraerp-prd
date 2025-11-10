@@ -39,7 +39,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
     {
       title: 'Appointments',
-      href: '/salon/appointments',
+      href: '/salon/appointments/calendar',
       icon: Calendar
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },
@@ -56,7 +56,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Dashboard', href: '/salon/receptionist', icon: Home },
     {
       title: 'Appointments',
-      href: '/salon/appointments',
+      href: '/salon/appointments/calendar',
       icon: Calendar
     },
     { title: 'POS', href: '/salon/pos', icon: CreditCard },

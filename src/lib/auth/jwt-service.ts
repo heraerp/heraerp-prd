@@ -9,6 +9,13 @@ export interface JWTPayload {
   organization_id?: string
   role?: string
   permissions?: string[]
+  user_metadata?: {
+    hera_user_entity_id?: string
+    organization_id?: string
+    role?: string
+    permissions?: string[]
+    [key: string]: any
+  }
   iat: number
   exp: number
   iss: string
@@ -144,6 +151,7 @@ export class HERAJWTService {
         organization_id: organizationId,
         role,
         permissions,
+        user_metadata: user.user_metadata, // ✅ ENTERPRISE FIX: Include user_metadata for verifyAuth
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + this.defaultExpiry,
         iss: this.issuer

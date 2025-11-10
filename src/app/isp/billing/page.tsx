@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 import {
   CreditCard,
   Download,
@@ -151,6 +152,7 @@ function BillingCard({ title, value, change, icon: Icon, gradient, subValue }: B
 }
 
 export default function BillingPage() {
+  const { updateProgress, finishLoading } = useLoadingStore()
   const [selectedPeriod, setSelectedPeriod] = useState('month')
   const [searchTerm, setSearchTerm] = useState('')
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices)
@@ -165,6 +167,37 @@ export default function BillingPage() {
     description: '',
     billingPeriod: 'June 2024'
   })
+
+  // ⚡ ENTERPRISE: Complete loading animation on mount (if coming from login)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+
+    if (isInitializing) {
+      console.log('💳 ISP Billing: Completing loading animation from 70% → 100%')
+
+      // Animate from 70% to 100% smoothly
+      let progress = 70
+      const progressInterval = setInterval(() => {
+        progress += 5
+        if (progress <= 100) {
+          updateProgress(progress, undefined, progress === 100 ? 'Ready!' : 'Loading your workspace...')
+        }
+        if (progress >= 100) {
+          clearInterval(progressInterval)
+          // Complete and hide overlay after brief delay
+          setTimeout(() => {
+            finishLoading()
+            // Clean up URL parameter
+            window.history.replaceState({}, '', window.location.pathname)
+            console.log('✅ ISP Billing: Loading complete!')
+          }, 500)
+        }
+      }, 50)
+
+      return () => clearInterval(progressInterval)
+    }
+  }, [updateProgress, finishLoading])
 
   const handleAdd = () => {
     const newInvoice: Invoice = {

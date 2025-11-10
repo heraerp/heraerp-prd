@@ -532,7 +532,7 @@ function ProductCard({
         }}
       />
       {/* Header: Icon, Name, Actions */}
-      <div className="flex items-start gap-3 mb-4 relative z-10">
+      <div className="flex items-start gap-4 mb-4 relative z-10">
         <div
           className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
           style={{
@@ -543,7 +543,7 @@ function ProductCard({
           <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 pr-2">
           {/* ✅ ENTERPRISE UX: Premium Salon Luxe tooltip for full product name */}
           <SalonLuxeTooltip
             content={product.entity_name}
@@ -574,7 +574,7 @@ function ProductCard({
               delay={500}
             >
               <code
-                className="text-[9px] font-mono px-1.5 py-0.5 rounded inline-block truncate max-w-full cursor-help"
+                className="text-[9px] font-mono px-1.5 py-0.5 rounded inline-block truncate max-w-[85%] cursor-help"
                 style={{
                   backgroundColor: COLORS.bronze + '15',
                   color: COLORS.bronze,
@@ -587,76 +587,80 @@ function ProductCard({
           )}
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"
-              style={{ color: COLORS.lightText }}
+        {/* Actions: Archived Badge + Dropdown Menu - Horizontally aligned */}
+        <div className="flex items-center gap-2 shrink-0 ml-2">
+          {isArchived && (
+            <Badge
+              variant="secondary"
+              className="text-[9px] font-bold tracking-tight px-1.5 py-0.5"
+              style={{
+                backgroundColor: COLORS.bronze + '25',
+                color: COLORS.champagne,
+                border: `1.5px solid ${COLORS.gold}`,
+                boxShadow: `0 0 6px ${COLORS.gold}30`
+              }}
             >
-              <MoreVertical className="h-4 w-4" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
-          >
-            <DropdownMenuItem
-              onClick={() => onEdit(product)}
-              style={{ color: COLORS.lightText }}
-              className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
-            >
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-            {isArchived ? (
-              <DropdownMenuItem
-                onClick={() => onRestore(product)}
+              ARC
+            </Badge>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="p-2 rounded-lg hover:bg-white/5 transition-colors"
                 style={{ color: COLORS.lightText }}
-                className="hover:!bg-green-900/20 hover:!text-green-300"
               >
-                <ArchiveRestore className="mr-2 h-4 w-4" />
-                Restore
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                onClick={() => onArchive(product)}
-                style={{ color: COLORS.lightText }}
-                className="hover:!bg-yellow-900/20 hover:!text-yellow-300"
-              >
-                <Archive className="mr-2 h-4 w-4" />
-                Archive
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-            <DropdownMenuItem
-              onClick={() => onDelete(product)}
-              className="hover:!bg-red-900/20 hover:!text-red-300"
-              style={{ color: '#FF6B6B' }}
+                <MoreVertical className="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
             >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuItem
+                onClick={() => onEdit(product)}
+                style={{ color: COLORS.lightText }}
+                className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
+              {isArchived ? (
+                <DropdownMenuItem
+                  onClick={() => onRestore(product)}
+                  style={{ color: COLORS.lightText }}
+                  className="hover:!bg-green-900/20 hover:!text-green-300"
+                >
+                  <ArchiveRestore className="mr-2 h-4 w-4" />
+                  Restore
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => onArchive(product)}
+                  style={{ color: COLORS.lightText }}
+                  className="hover:!bg-yellow-900/20 hover:!text-yellow-300"
+                >
+                  <Archive className="mr-2 h-4 w-4" />
+                  Archive
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
+              <DropdownMenuItem
+                onClick={() => onDelete(product)}
+                className="hover:!bg-red-900/20 hover:!text-red-300"
+                style={{ color: '#FF6B6B' }}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
-      {/* Status & Category Badges */}
-      <div className="flex gap-2 mb-3 relative z-10">
-        {isArchived && (
-          <Badge
-            variant="secondary"
-            className="text-[10px] font-medium"
-            style={{
-              backgroundColor: COLORS.bronze + '20',
-              color: COLORS.champagne,
-              border: `1px solid ${COLORS.bronze}40`
-            }}
-          >
-            Archived
-          </Badge>
-        )}
-        {product.category && (
+      {/* Category Badge - Only show if product has category */}
+      {product.category && (
+        <div className="flex gap-2 mb-3 relative z-10">
           <Badge
             variant="secondary"
             className="text-[10px] font-medium"
@@ -668,8 +672,8 @@ function ProductCard({
           >
             {product.category}
           </Badge>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Metrics Grid - Cleaner, lighter design */}
       <div className="grid grid-cols-3 gap-2.5 mb-3 relative z-10">

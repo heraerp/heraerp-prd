@@ -350,6 +350,67 @@ export function SalonResourceCalendar({
     }
   }, [refetchAppointments])
 
+  // 🚀 ENTERPRISE: Auto-refresh when returning from POS after payment completion
+  // This handles the case where user navigates back from POS after completing payment
+  useEffect(() => {
+    // Check if we're returning from POS with a completed payment
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'appointment_status_updated' && e.newValue) {
+        console.log('✅ [Calendar] Detected appointment status update from POS - refreshing...')
+
+        // Parse the update data
+        try {
+          const updateData = JSON.parse(e.newValue)
+          console.log('📋 Update data:', updateData)
+
+          // Refetch appointments to get latest status
+          if (refetchAppointments) {
+            refetchAppointments()
+          }
+
+          // Clear the flag after processing
+          localStorage.removeItem('appointment_status_updated')
+        } catch (err) {
+          console.error('Failed to parse appointment update data:', err)
+        }
+      }
+    }
+
+    // Listen for storage events (cross-tab communication)
+    window.addEventListener('storage', handleStorageChange)
+
+    // Also check on component mount (in case we're returning via browser back button)
+    const checkForUpdates = () => {
+      const updateFlag = localStorage.getItem('appointment_status_updated')
+      if (updateFlag) {
+        console.log('✅ [Calendar] Found pending appointment update on mount - refreshing...')
+
+        if (refetchAppointments) {
+          refetchAppointments()
+        }
+
+        // Clear the flag
+        localStorage.removeItem('appointment_status_updated')
+      }
+    }
+
+    // Check immediately on mount
+    checkForUpdates()
+
+    // Also check when route changes (using Next.js router events)
+    const handleRouteChange = () => {
+      checkForUpdates()
+    }
+
+    // Listen for popstate (browser back/forward buttons)
+    window.addEventListener('popstate', handleRouteChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('popstate', handleRouteChange)
+    }
+  }, [refetchAppointments])
+
   // 🐛 DEBUG: Comprehensive logging for appointment loading
   useEffect(() => {
     if (DEBUG_MODE) {
@@ -1610,34 +1671,34 @@ export function SalonResourceCalendar({
   const APPOINTMENT_STATUSES = {
     booked: {
       label: 'Booked',
-      color: '#FBBF24', // Bright Amber (distinct from staff colors)
-      bg: 'rgba(251, 191, 36, 0.25)', // Brighter background
-      border: 'rgba(251, 191, 36, 0.7)', // Brighter border
+      color: '#FCD34D', // Enhanced Gold - matches badge color
+      bg: 'rgba(252, 211, 77, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#FCD34D', // ✨ ENHANCED: Solid border for crisp edges
       icon: '📅',
       description: 'Appointment confirmed, awaiting check-in'
     },
     checked_in: {
       label: 'Checked In',
-      color: '#60A5FA', // Bright Blue (distinct from staff colors)
-      bg: 'rgba(96, 165, 250, 0.25)', // Brighter background
-      border: 'rgba(96, 165, 250, 0.7)', // Brighter border
+      color: '#60A5FA', // Bright Blue - matches badge color
+      bg: 'rgba(96, 165, 250, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#60A5FA', // ✨ ENHANCED: Solid border for crisp edges
       icon: '✓',
       description: 'Customer has arrived and checked in',
       action: 'process_payment' // ✅ Next action: Process Payment at POS → Auto-complete
     },
     completed: {
       label: 'Completed',
-      color: '#9CA3AF', // Light Gray (distinct from staff colors)
-      bg: 'rgba(156, 163, 175, 0.25)', // Brighter background
-      border: 'rgba(156, 163, 175, 0.7)', // Brighter border
+      color: '#34D399', // Enhanced Emerald Green - matches badge color
+      bg: 'rgba(52, 211, 153, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#34D399', // ✨ ENHANCED: Solid border for crisp edges
       icon: '✅',
       description: 'Appointment finished and closed'
     },
     cancelled: {
       label: 'Cancelled',
-      color: '#F87171', // Bright Red (distinct from staff colors)
-      bg: 'rgba(248, 113, 113, 0.25)', // Brighter background
-      border: 'rgba(248, 113, 113, 0.7)', // Brighter border
+      color: '#F87171', // Enhanced Red - matches badge color
+      bg: 'rgba(248, 113, 113, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#F87171', // ✨ ENHANCED: Solid border for crisp edges
       icon: '✕',
       description: 'Appointment cancelled'
     }
@@ -3899,23 +3960,50 @@ export function SalonResourceCalendar({
           size="sm"
           footer={
             <div className="flex items-center gap-3 w-full justify-end">
-              <Button
-                variant="outline"
+              <button
                 onClick={() => {
                   setConfirmationDialog(null)
                   setConfirmationReason('')
                 }}
-                className="min-w-[120px]"
+                className="min-w-[120px] px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200"
+                style={{
+                  backgroundColor: 'transparent',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  color: '#F5E6C8'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)'
+                  e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)'
+                }}
               >
                 {confirmationDialog.cancelText}
-              </Button>
-              <Button
-                type="submit"
+              </button>
+              <button
                 onClick={() => confirmationDialog.onConfirm(confirmationReason || undefined)}
-                className="min-w-[120px] primary-button"
+                className="min-w-[120px] px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #B8960C 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.5)',
+                  color: '#0B0B0B',
+                  boxShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #E3C75F 0%, #C9A520 100%)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.4)'
+                  e.currentTarget.style.transform = 'scale(1.02)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #D4AF37 0%, #B8960C 100%)'
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(212, 175, 55, 0.3)'
+                  e.currentTarget.style.transform = 'scale(1)'
+                }}
               >
                 {confirmationDialog.confirmText}
-              </Button>
+              </button>
             </div>
           }
         >
@@ -3991,63 +4079,99 @@ function AppointmentStatusBadge({
   const [badgePosition, setBadgePosition] = useState<{ top: number; left: number; maxHeight: number } | null>(null)
   const badgeRef = useRef<HTMLButtonElement>(null)
 
-  // ✨ ENTERPRISE: Smart positioning - detects available space and adjusts
+  // ✨ ENTERPRISE: Smart positioning - anchored to badge with visual connection
   useEffect(() => {
     if (showStatusMenu && badgeRef.current) {
       const rect = badgeRef.current.getBoundingClientRect()
-      const dropdownHeight = 450 // Max height of dropdown
+      const dropdownWidth = 200
       const viewportHeight = window.innerHeight
+      const viewportWidth = window.innerWidth
       const spaceBelow = viewportHeight - rect.bottom
       const spaceAbove = rect.top
 
-      // Determine if dropdown should appear above or below badge
-      const shouldPositionAbove = spaceBelow < dropdownHeight && spaceAbove > spaceBelow
+      // Calculate actual content height (no scroll needed for 4-5 options)
+      // Each option: ~44px, Process Payment: ~52px, padding: 8px top/bottom
+      const contentHeight = status === 'checked_in' ? 260 : 210
+
+      // Determine vertical positioning (prefer below)
+      const shouldPositionAbove = spaceBelow < contentHeight + 20 && spaceAbove > spaceBelow
+
+      // Determine horizontal positioning (prefer aligned to right edge of badge)
+      let leftPosition = rect.right - dropdownWidth
+
+      // If dropdown would overflow left, align to left edge of badge instead
+      if (leftPosition < 10) {
+        leftPosition = rect.left
+      }
+
+      // If still overflowing, center on badge
+      if (leftPosition + dropdownWidth > viewportWidth - 10) {
+        leftPosition = rect.left + (rect.width / 2) - (dropdownWidth / 2)
+      }
 
       setBadgePosition({
         top: shouldPositionAbove
-          ? rect.top - Math.min(dropdownHeight, spaceAbove - 20) // Position above with padding
-          : rect.bottom + 8, // Position below with gap
-        left: rect.right - 220, // Align dropdown right edge with badge
-        maxHeight: shouldPositionAbove
-          ? Math.min(dropdownHeight, spaceAbove - 20)
-          : Math.min(dropdownHeight, spaceBelow - 20)
+          ? rect.top - contentHeight - 4 // 4px gap above
+          : rect.bottom + 4, // 4px gap below - visually connected
+        left: Math.max(10, Math.min(leftPosition, viewportWidth - dropdownWidth - 10)),
+        maxHeight: contentHeight // Exact height, no scrollbar needed
       })
     }
-  }, [showStatusMenu])
+  }, [showStatusMenu, status])
 
-  // Status configuration - VERY BRIGHT colors to stand out from stylist background
+  // Status configuration - Salon Luxe aesthetic with proper icons
   // Workflow: Booked → Checked In → Process Payment (POS) → Completed (automatic)
   const STATUSES = {
     booked: {
       label: 'Booked',
-      color: '#FCD34D', // Very Bright Gold/Yellow - highly visible
-      bg: 'rgba(252, 211, 77, 0.45)', // Increased opacity for more prominence
-      border: 'rgba(252, 211, 77, 0.9)', // Much stronger border
-      icon: '📅',
+      color: '#FCD34D', // Brighter Gold - stronger contrast
+      textColor: '#1A1A1A', // Dark text for better readability
+      bg: 'rgba(252, 211, 77, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#FCD34D', // ✨ ENHANCED: Solid border for crisp edges
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+          <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/>
+        </svg>
+      ),
       action: null
     },
     checked_in: {
       label: 'Checked In',
-      color: '#38BDF8', // Electric Cyan/Sky Blue - very bright
-      bg: 'rgba(56, 189, 248, 0.4)', // Increased opacity
-      border: 'rgba(56, 189, 248, 0.9)', // Much stronger border
-      icon: '✓',
-      action: 'process_payment' // ✅ Show "Process Payment" button → Auto-complete after payment
+      color: '#60A5FA', // Bright Blue - professional
+      textColor: '#FFFFFF', // White text for contrast
+      bg: 'rgba(96, 165, 250, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#60A5FA', // ✨ ENHANCED: Solid border for crisp edges
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      ),
+      action: 'process_payment'
     },
     completed: {
       label: 'Completed',
-      color: '#86EFAC', // Bright Mint Green - much brighter than gray
-      bg: 'rgba(134, 239, 172, 0.35)', // Increased opacity
-      border: 'rgba(134, 239, 172, 0.85)', // Much stronger border
-      icon: '✅',
+      color: '#34D399', // Brighter Emerald Green - success
+      textColor: '#1A1A1A', // Dark text for better readability
+      bg: 'rgba(52, 211, 153, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#34D399', // ✨ ENHANCED: Solid border for crisp edges
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+          <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+        </svg>
+      ),
       action: null
     },
     cancelled: {
       label: 'Cancelled',
-      color: '#FCA5A5', // Bright Coral/Salmon - softer but still visible
-      bg: 'rgba(252, 165, 165, 0.35)', // Increased opacity
-      border: 'rgba(252, 165, 165, 0.85)', // Much stronger border
-      icon: '✕',
+      color: '#F87171', // Brighter Red - cancelled
+      textColor: '#FFFFFF', // White text for contrast
+      bg: 'rgba(248, 113, 113, 0.50)', // ✨ ENHANCED: More vibrant background (35% → 50%)
+      border: '#F87171', // ✨ ENHANCED: Solid border for crisp edges
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      ),
       action: null
     }
   }
@@ -4082,38 +4206,44 @@ function AppointmentStatusBadge({
 
   return (
     <>
-      {/* ✨ ENTERPRISE GRADE: Aesthetic Status Badge */}
+      {/* ✨ ENTERPRISE GRADE: Salon Luxe Status Badge - Enhanced Contrast */}
       <button
         ref={badgeRef}
         onClick={e => {
           e.stopPropagation()
           setShowStatusMenu(!showStatusMenu)
         }}
-        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all duration-200"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200"
         style={{
-          backgroundColor: currentStatus.color,
-          border: `1.5px solid #D4AF37`, // Gold border - salon luxe theme
-          color: '#000000',
-          fontWeight: '600',
+          backgroundColor: currentStatus.bg,
+          border: `2px solid ${currentStatus.border}`,
+          color: currentStatus.textColor,
+          fontWeight: '700',
           fontSize: '11px',
-          boxShadow: `0 2px 6px ${currentStatus.color}60, 0 0 0 2px rgba(212, 175, 55, 0.2)`, // Gold glow
+          letterSpacing: '0.02em',
+          boxShadow: `0 3px 16px ${currentStatus.color}60, inset 0 1px 0 rgba(255,255,255,0.20)`, // ✨ ENHANCED: Stronger glow (40% → 60%)
           cursor: 'pointer',
           position: 'relative',
-          zIndex: showStatusMenu ? 9999 : 'auto'
+          zIndex: showStatusMenu ? 9999 : 'auto',
+          backdropFilter: 'blur(12px)'
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.boxShadow = `0 3px 10px ${currentStatus.color}80, 0 0 0 3px rgba(212, 175, 55, 0.4)` // Brighter gold glow on hover
-          e.currentTarget.style.transform = 'scale(1.05)'
-          e.currentTarget.style.borderColor = '#E3C75F' // Lighter gold on hover
+          e.currentTarget.style.backgroundColor = currentStatus.color + '60' // ✨ ENHANCED: Brighter hover (45% → 60%)
+          e.currentTarget.style.boxShadow = `0 6px 24px ${currentStatus.color}80, inset 0 1px 0 rgba(255,255,255,0.30)` // ✨ ENHANCED: Stronger glow (60% → 80%)
+          e.currentTarget.style.transform = 'scale(1.08) translateY(-2px)' // ✨ ENHANCED: More pronounced lift
+          e.currentTarget.style.borderColor = currentStatus.color
+          e.currentTarget.style.borderWidth = '2.5px' // ✨ ENHANCED: Thicker border on hover
         }}
         onMouseLeave={e => {
-          e.currentTarget.style.boxShadow = `0 2px 6px ${currentStatus.color}60, 0 0 0 2px rgba(212, 175, 55, 0.2)`
-          e.currentTarget.style.transform = 'scale(1)'
-          e.currentTarget.style.borderColor = '#D4AF37' // Reset to base gold
+          e.currentTarget.style.backgroundColor = currentStatus.bg
+          e.currentTarget.style.boxShadow = `0 3px 16px ${currentStatus.color}60, inset 0 1px 0 rgba(255,255,255,0.20)`
+          e.currentTarget.style.transform = 'scale(1) translateY(0)'
+          e.currentTarget.style.borderColor = currentStatus.border
+          e.currentTarget.style.borderWidth = '2px'
         }}
       >
-        <span style={{ fontSize: '13px' }}>{currentStatus.icon}</span>
-        {!compact && <span className="font-semibold">{currentStatus.label}</span>}
+        {currentStatus.icon}
+        {!compact && <span className="font-bold tracking-wide">{currentStatus.label}</span>}
       </button>
 
       {/* ✨ ENTERPRISE GRADE: Portal-Based Dropdown - BREAKS OUT OF PARENT BOUNDARIES */}
@@ -4134,7 +4264,7 @@ function AppointmentStatusBadge({
             }}
           />
 
-          {/* Dropdown menu */}
+          {/* Dropdown menu - enterprise-grade, no scrollbar */}
           <div
             style={{
               position: 'fixed',
@@ -4142,17 +4272,16 @@ function AppointmentStatusBadge({
               left: badgePosition.left,
               zIndex: 9999,
               backgroundColor: '#1A1A1A',
-              border: `2px solid #D4AF37`, // Gold border - salon luxe theme
-              borderRadius: '12px',
-              minWidth: '220px',
-              maxHeight: `${badgePosition.maxHeight}px`, // Smart dynamic height
-              overflow: 'auto',
+              border: `1px solid rgba(212, 175, 55, 0.3)`,
+              borderRadius: '10px',
+              width: '200px',
               boxShadow: `
-                0 20px 40px rgba(0, 0, 0, 0.9),
-                0 0 0 1px #D4AF37,
-                0 0 30px rgba(212, 175, 55, 0.5)
+                0 8px 32px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(212, 175, 55, 0.2),
+                inset 0 1px 0 rgba(212, 175, 55, 0.1)
               `,
-              animation: 'fadeIn 0.2s ease-out'
+              backdropFilter: 'blur(12px)',
+              overflow: 'visible'
             }}
             onClick={e => e.stopPropagation()}
           >
@@ -4165,34 +4294,39 @@ function AppointmentStatusBadge({
                   onProcessPayment(appointment)
                   setShowStatusMenu(false)
                 }}
-                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg transition-all duration-150 hover:scale-[1.02]"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 hover:scale-[1.02]"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(147,51,234,0.3) 0%, rgba(192,132,252,0.2) 100%)',
-                  border: '1px solid rgba(147,51,234,0.5)',
-                  color: '#C084FC'
+                  background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%)',
+                  border: '1px solid rgba(139, 92, 246, 0.4)',
+                  color: '#A78BFA'
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.background =
-                    'linear-gradient(135deg, rgba(147,51,234,0.4) 0%, rgba(192,132,252,0.3) 100%)'
-                  e.currentTarget.style.borderColor = 'rgba(147,51,234,0.7)'
+                    'linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(168, 85, 247, 0.2) 100%)'
+                  e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.6)'
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.background =
-                    'linear-gradient(135deg, rgba(147,51,234,0.3) 0%, rgba(192,132,252,0.2) 100%)'
-                  e.currentTarget.style.borderColor = 'rgba(147,51,234,0.5)'
+                    'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%)'
+                  e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.4)'
                 }}
               >
-                <span className="text-base">💳</span>
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                </svg>
                 <div className="flex-1 text-left">
                   <p className="text-xs font-semibold">Process Payment</p>
-                  <p className="text-[10px] opacity-80">Go to POS</p>
+                  <p className="text-[10px] opacity-70">Go to POS</p>
                 </div>
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 opacity-60">
+                  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
               </button>
             </div>
           )}
 
-          {/* ✨ ENTERPRISE GRADE: Beautiful Status Options - ALL VISIBLE */}
-          <div className="p-2" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {/* ✨ ENTERPRISE GRADE: Clean Status Options - No Scrollbar */}
+          <div className="p-2" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {Object.entries(STATUSES).map(([key, statusConfig]) => {
               // Check if this transition is allowed
               const isAllowed = allowedStatuses.includes(key as any) || status === key
@@ -4213,72 +4347,50 @@ function AppointmentStatusBadge({
                     setShowStatusMenu(false)
                   }}
                   disabled={isCurrent}
-                  className="w-full transition-all duration-150"
+                  className="w-full transition-all duration-200"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    padding: '10px 14px',
-                    borderRadius: '8px',
-                    backgroundColor: isCurrent ? statusConfig.color : `${statusConfig.color}25`,
-                    border: `1.5px solid ${isCurrent ? statusConfig.color : `${statusConfig.color}60`}`,
-                    color: isCurrent ? '#000000' : statusConfig.color,
-                    fontWeight: isCurrent ? '700' : '600',
-                    fontSize: '13px',
+                    gap: '8px',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    backgroundColor: isCurrent ? statusConfig.bg : 'transparent',
+                    border: `1px solid ${isCurrent ? statusConfig.border : 'transparent'}`,
+                    color: statusConfig.color,
+                    fontWeight: isCurrent ? '600' : '500',
+                    fontSize: '12px',
                     cursor: isCurrent ? 'default' : 'pointer',
-                    opacity: 1,
-                    boxShadow: isCurrent ? `0 2px 8px ${statusConfig.color}40` : 'none'
+                    opacity: isCurrent ? 1 : 0.9
                   }}
                   onMouseEnter={e => {
                     if (!isCurrent) {
-                      e.currentTarget.style.backgroundColor = `${statusConfig.color}40`
-                      e.currentTarget.style.borderColor = `${statusConfig.color}90`
-                      e.currentTarget.style.transform = 'translateX(3px)'
-                      e.currentTarget.style.boxShadow = `0 3px 10px ${statusConfig.color}50`
+                      e.currentTarget.style.backgroundColor = statusConfig.bg
+                      e.currentTarget.style.borderColor = statusConfig.border
+                      e.currentTarget.style.opacity = '1'
                     }
                   }}
                   onMouseLeave={e => {
                     if (!isCurrent) {
-                      e.currentTarget.style.backgroundColor = `${statusConfig.color}25`
-                      e.currentTarget.style.borderColor = `${statusConfig.color}60`
-                      e.currentTarget.style.transform = 'translateX(0)'
-                      e.currentTarget.style.boxShadow = 'none'
+                      e.currentTarget.style.backgroundColor = 'transparent'
+                      e.currentTarget.style.borderColor = 'transparent'
+                      e.currentTarget.style.opacity = '0.9'
                     }
                   }}
                 >
-                  <span style={{ fontSize: '16px', lineHeight: 1 }}>{statusConfig.icon}</span>
-                  <span style={{ flex: 1, textAlign: 'left', fontWeight: isCurrent ? '700' : '600' }}>
+                  {statusConfig.icon}
+                  <span style={{ flex: 1, textAlign: 'left' }}>
                     {statusConfig.label}
-                    {needsConfirm && !isCurrent && (
-                      <span style={{ marginLeft: '6px', fontSize: '11px', opacity: 0.8 }}>⚠️</span>
-                    )}
                   </span>
                   {isCurrent && (
-                    <span style={{ fontSize: '18px', opacity: 0.6, fontWeight: '700' }}>•</span>
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 opacity-60">
+                      <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+                    </svg>
                   )}
                 </button>
               )
             })}
           </div>
 
-          {/* ✨ ENTERPRISE: Help text for confirmation indicators */}
-          {allowedStatuses.some((s: string) => requiresConfirmation(status, s)) && (
-            <div
-              style={{
-                padding: '10px 14px',
-                fontSize: '11px',
-                color: '#D4AF37',
-                borderTop: `1px solid ${currentStatus.color}40`,
-                backgroundColor: `${currentStatus.color}10`,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <span style={{ fontSize: '13px' }}>⚠️</span>
-              <span>Requires confirmation</span>
-            </div>
-          )}
         </div>
       </>,
       document.body
@@ -4330,9 +4442,15 @@ function AppointmentCard({
         />
       </div>
 
+      {/* ✨ ENHANCED: Status-colored icon circle with improved depth */}
       <div
-        className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-xs font-bold flex-shrink-0"
-        style={{ backgroundColor: appointment.color }}
+        className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 transition-transform duration-200"
+        style={{
+          backgroundColor: appointment.color,
+          boxShadow: `0 2px 8px ${appointment.color}60, inset 0 1px 0 rgba(255,255,255,0.25)`,
+          border: `1.5px solid ${appointment.color}`,
+          color: '#1A1A1A' // Dark text for better contrast
+        }}
       >
         {appointment.icon}
       </div>
@@ -4356,13 +4474,16 @@ function AppointmentCard({
         )}
         {!compact && (
           <div className="flex items-center gap-2 mt-1">
+            {/* ✨ ENHANCED: Price badge with stronger contrast and depth */}
             <Badge
               variant="secondary"
-              className="text-xs px-1 py-0 calendar-appointment-badge"
+              className="text-xs px-2 py-0.5 calendar-appointment-badge font-bold"
               style={{
-                backgroundColor: `${appointment.color}20`,
+                backgroundColor: `${appointment.color}35`,
                 color: appointment.color,
-                borderColor: appointment.color
+                border: `1px solid ${appointment.color}`,
+                boxShadow: `0 1px 4px ${appointment.color}40`,
+                borderRadius: '6px'
               }}
             >
               {appointment.price}

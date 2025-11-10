@@ -6,10 +6,12 @@
 nixPkgs = ["nodejs_20", "openssl"]
 
 [phases.install]
-cmds = ["npm ci --omit=dev"]
+# Install with dev deps for build (TypeScript needs them)
+cmds = ["npm ci"]
 
 [phases.build]
-cmds = ["npm run build"]
+# Build with dev deps available
+cmds = ["npm run build", "npm prune --omit=dev"]
 
 [phases.start]
 cmd = "npm start"

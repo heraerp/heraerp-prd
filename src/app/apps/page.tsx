@@ -3,8 +3,8 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { Suspense, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -33,12 +33,16 @@ import {
   Snowflake,
   Loader2,
   Lock,
-  LogOut
+  LogOut,
+  Store,
+  Settings
 } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import Link from 'next/link'
 import Navbar from '@/app/components/Navbar'
 import Footer from '@/app/components/Footer'
+import { AppPurchaseModal } from '@/components/apps/AppPurchaseModal'
+import { AppManageModal } from '@/components/apps/AppManageModal'
 
 interface AppCard {
   id: string
@@ -106,7 +110,7 @@ const apps: AppCard[] = [
     title: 'Retail',
     description: 'Multi-channel retail management with inventory, POS, and customer loyalty',
     icon: ShoppingBag,
-    href: '/retail',
+    href: '/retail/home',
     category: 'industry',
     status: 'coming-soon',
     gradient: 'from-yellow-500 to-orange-600',
@@ -208,15 +212,29 @@ const apps: AppCard[] = [
   }
 ]
 
-export default function AppsPage() {
+// Separate component that uses useSearchParams
+function AppsPageContent() {
   const router = useRouter()
-  const { isAuthenticated, isLoading, currentOrganization, contextLoading, logout, user, availableApps } = useHERAAuth()
+  const searchParams = useSearchParams()
+  const { isAuthenticated, isLoading, currentOrganization, contextLoading, logout, user, availableApps, role, hasScope } = useHERAAuth()
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'industry' | 'universal' | 'ai'>(
     'all'
   )
   const [redirectTimer, setRedirectTimer] = useState<NodeJS.Timeout | null>(null)
   const [userApps, setUserApps] = useState<AppCard[]>([])
   const [loadingApps, setLoadingApps] = useState(true)
+
+  // App Store Mode
+  const isStoreMode = searchParams?.get('mode') === 'store'
+  const highlightAppCode = searchParams?.get('highlight')?.toUpperCase()
+
+  // Modal States
+  const [selectedAppForPurchase, setSelectedAppForPurchase] = useState<AppCard | null>(null)
+  const [selectedAppForManage, setSelectedAppForManage] = useState<AppCard | null>(null)
+
+  // 🛡️ ENTERPRISE: Role-based permission check
+  // Only ORG_OWNER and ADMIN can purchase/manage apps
+  const canManageApps = hasScope && (hasScope('OWNER') || hasScope('ADMIN') || role === 'owner' || role === 'manager')
 
   // Check authentication status
   useEffect(() => {
@@ -280,9 +298,17 @@ export default function AppsPage() {
 
             const appStyle = appIcons[appCode] || { icon: Briefcase, gradient: 'from-blue-500 to-indigo-600' }
 
-            // 🔧 CRITICAL: Use role-based routing for apps (especially salon)
-            // Instead of hardcoding /dashboard, route to /auth which handles role-based redirect
-            const appHref = `/${heraApp.code.toLowerCase()}/auth`
+            // 🔧 CRITICAL: Use correct landing page for each app
+            // - SALON: /auth (role-based routing)
+            // - RETAIL: /home (fixed landing page)
+            // - CASHEW: /dashboard (fixed landing page)
+            // - Others: /auth (default role-based routing)
+            let appHref = `/${heraApp.code.toLowerCase()}/auth`
+            if (appCode === 'RETAIL') {
+              appHref = '/retail/home'
+            } else if (appCode === 'CASHEW') {
+              appHref = '/cashew/dashboard'
+            }
 
             return {
               id: heraApp.code.toLowerCase(),
@@ -335,6 +361,11 @@ export default function AppsPage() {
       return
     }
 
+    // In store mode, don't navigate directly - use purchase/manage buttons instead
+    if (isStoreMode) {
+      return
+    }
+
     // If no organization, redirect to create one
     if (!currentOrganization) {
       localStorage.setItem('redirectAfterOrg', app.href)
@@ -344,8 +375,24 @@ export default function AppsPage() {
     }
   }
 
-  // ✅ ONLY show user's linked apps (no fallback to hardcoded apps)
-  const appsToDisplay = loadingApps ? [] : userApps
+  // Helper: Check if app is purchased by current organization
+  const isAppPurchased = (appId: string): boolean => {
+    if (!availableApps) return false
+    return availableApps.some(heraApp => heraApp.code.toLowerCase() === appId.toLowerCase())
+  }
+
+  // Helper: Get purchased apps for checking
+  const purchasedAppIds = new Set(
+    (availableApps || []).map(heraApp => heraApp.code.toLowerCase())
+  )
+
+  // ✅ App display logic based on mode
+  const appsToDisplay = isStoreMode
+    ? apps // Show ALL apps in store mode
+    : loadingApps
+    ? []
+    : userApps // Show only user's apps in normal mode
+
   const filteredApps =
     selectedCategory === 'all' ? appsToDisplay : appsToDisplay.filter(app => app.category === selectedCategory)
 
@@ -456,15 +503,27 @@ export default function AppsPage() {
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-white">Choose Your </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-              Application
-            </span>
+            {isStoreMode ? (
+              <>
+                <span className="text-white">App </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                  Store
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-white">Choose Your </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                  Application
+                </span>
+              </>
+            )}
           </h1>
 
           <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-            Select an industry-specific solution or universal business application. All apps include
-            sample data to help you get started immediately.
+            {isStoreMode
+              ? 'Browse and purchase enterprise applications for your organization. Instant activation with enterprise-grade security.'
+              : 'Select an industry-specific solution or universal business application. All apps include sample data to help you get started immediately.'}
           </p>
         </div>
 
@@ -550,15 +609,19 @@ export default function AppsPage() {
           {filteredApps.map(app => {
             const Icon = app.icon
             const isDisabled = app.status === 'coming-soon'
+            const isPurchased = isAppPurchased(app.id)
+            const isHighlighted = highlightAppCode === app.id.toUpperCase()
 
             return (
               <div
                 key={app.id}
-                className={`relative group ${!isDisabled && 'cursor-pointer'}`}
+                className={`relative group ${!isDisabled && !isStoreMode && 'cursor-pointer'} ${
+                  isHighlighted ? 'ring-4 ring-gold/50 rounded-2xl' : ''
+                }`}
                 onClick={() => !isDisabled && handleAppClick(app)}
               >
                 {/* Hover glow effect */}
-                {!isDisabled && (
+                {!isDisabled && !isStoreMode && (
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/10 group-hover:to-purple-500/10 rounded-2xl blur-xl transition-all" />
                 )}
 
@@ -566,11 +629,13 @@ export default function AppsPage() {
                   className={`relative overflow-hidden transition-all duration-300 card-glass backdrop-blur-xl border border-border ${
                     isDisabled
                       ? 'opacity-60 cursor-not-allowed'
+                      : isStoreMode
+                      ? 'hover:border-indigo-500/30 hover:shadow-2xl'
                       : 'hover:border-indigo-500/30 hover:shadow-2xl hover:-translate-y-1'
                   }`}
                 >
                   {/* Status Badge */}
-                  {app.status !== 'production' && (
+                  {app.status !== 'production' ? (
                     <div
                       className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full backdrop-blur-sm ${
                         app.status === 'beta'
@@ -580,6 +645,13 @@ export default function AppsPage() {
                     >
                       {app.status === 'beta' ? 'Beta' : 'Coming Soon'}
                     </div>
+                  ) : (
+                    isStoreMode &&
+                    isPurchased && (
+                      <div className="absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full backdrop-blur-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Purchased
+                      </div>
+                    )
                   )}
 
                   <CardHeader>
@@ -605,7 +677,60 @@ export default function AppsPage() {
                       ))}
                     </div>
 
-                    {!isDisabled && (
+                    {/* Store Mode: Purchase/Manage Buttons */}
+                    {isStoreMode && !isDisabled && (
+                      <div className="pt-2 space-y-2">
+                        {isPurchased ? (
+                          <>
+                            {canManageApps && (
+                              <Button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setSelectedAppForManage(app)
+                                }}
+                                className="w-full bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white"
+                              >
+                                <Settings className="w-4 h-4 mr-2" />
+                                Manage App
+                              </Button>
+                            )}
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                router.push(app.href)
+                              }}
+                              variant="outline"
+                              className="w-full card-glass border-border text-slate-300 hover:border-indigo-500/30 hover:text-white"
+                            >
+                              <ChevronRight className="w-4 h-4 mr-2" />
+                              Open App
+                            </Button>
+                          </>
+                        ) : (
+                          canManageApps ? (
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setSelectedAppForPurchase(app)
+                              }}
+                              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white"
+                            >
+                              <ShoppingBag className="w-4 h-4 mr-2" />
+                              Purchase App
+                            </Button>
+                          ) : (
+                            <div className="w-full p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-center">
+                              <p className="text-xs text-amber-300">
+                                Contact your organization owner to purchase this app
+                              </p>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
+
+                    {/* Normal Mode: Open App */}
+                    {!isStoreMode && !isDisabled && (
                       <div className="flex items-center justify-between pt-2">
                         <span className="text-sm font-medium text-indigo-400">Open App</span>
                         <ChevronRight className="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform" />
@@ -633,6 +758,76 @@ export default function AppsPage() {
       <div className="relative z-10">
         <Footer showGradient={false} />
       </div>
+
+      {/* Purchase Modal */}
+      {selectedAppForPurchase && (
+        <AppPurchaseModal
+          open={!!selectedAppForPurchase}
+          onClose={() => setSelectedAppForPurchase(null)}
+          app={selectedAppForPurchase ? {
+            code: selectedAppForPurchase.id.toUpperCase(),
+            name: selectedAppForPurchase.title,
+            description: selectedAppForPurchase.description,
+            icon: selectedAppForPurchase.icon,
+            gradient: selectedAppForPurchase.gradient,
+            features: selectedAppForPurchase.features,
+            pricing: {
+              plan: 'Enterprise License',
+              description: 'Full access to all features with enterprise-grade security and support'
+            }
+          } : null}
+          onPurchaseSuccess={() => {
+            // Refresh the page to show updated apps
+            router.refresh()
+          }}
+        />
+      )}
+
+      {/* Manage Modal */}
+      {selectedAppForManage && (
+        <AppManageModal
+          open={!!selectedAppForManage}
+          onClose={() => setSelectedAppForManage(null)}
+          app={selectedAppForManage ? {
+            code: selectedAppForManage.id.toUpperCase(),
+            name: selectedAppForManage.title,
+            description: selectedAppForManage.description,
+            icon: selectedAppForManage.icon,
+            gradient: selectedAppForManage.gradient,
+            features: selectedAppForManage.features,
+            installed_at: availableApps?.find(a => a.code.toLowerCase() === selectedAppForManage.id.toLowerCase())?.created_at,
+            subscription: {
+              plan: 'Enterprise License',
+              status: 'active'
+            }
+          } : null}
+          onUnlinkSuccess={() => {
+            // Refresh the page to show updated apps
+            router.refresh()
+          }}
+        />
+      )}
     </div>
+  )
+}
+
+// Main export wrapped in Suspense
+export default function AppsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 relative">
+        <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 -z-20" />
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 card-glass backdrop-blur-xl rounded-2xl mb-4 shadow-xl border border-border">
+              <Loader2 className="w-10 h-10 animate-spin text-indigo-400" />
+            </div>
+            <p className="text-slate-300">Loading apps...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <AppsPageContent />
+    </Suspense>
   )
 }

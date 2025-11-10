@@ -252,6 +252,13 @@ export const SALON_PAGE_ACCESS: PageAccessRule[] = [
     allowedRoles: ['owner', 'accountant'],
     description: 'Accountant Dashboard'
   },
+
+  // More page - All roles can access (shows role-filtered menu items)
+  {
+    path: '/salon/more',
+    allowedRoles: ['owner', 'manager', 'receptionist', 'accountant'],
+    description: 'More Features & Settings'
+  },
 ]
 
 /**

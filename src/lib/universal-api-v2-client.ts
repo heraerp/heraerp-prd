@@ -21,24 +21,68 @@ function getBaseUrl(): string {
 }
 
 /**
+ * ✅ ENTERPRISE: Wait for stable session with exponential backoff
+ * Handles race condition where getSession() returns null during token refresh or initialization
+ * Smart Code: HERA.API.CLIENT.STABLE_SESSION.v1
+ */
+async function waitForStableSession(maxAttempts = 3): Promise<any | null> {
+  if (typeof window === 'undefined') return null
+
+  const baseDelay = 100 // 100ms base delay
+  const { supabase } = await import('@/lib/supabase/client')
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const {
+      data: { session },
+      error
+    } = await supabase.auth.getSession()
+
+    if (error) {
+      console.warn(`[waitForStableSession] Session retrieval error (attempt ${attempt}/${maxAttempts}):`, error.message)
+    }
+
+    if (session?.access_token) {
+      if (attempt > 1) {
+        console.log(`[waitForStableSession] ✅ Stable session found (attempt ${attempt}/${maxAttempts})`)
+      }
+      return session
+    }
+
+    if (attempt === maxAttempts) {
+      console.warn('[waitForStableSession] ❌ Failed to get stable session after max attempts')
+      return null
+    }
+
+    // Exponential backoff: 100ms, 200ms, 400ms
+    const delay = baseDelay * Math.pow(2, attempt - 1)
+    console.log(`[waitForStableSession] ⏳ Session not ready, waiting ${delay}ms (attempt ${attempt}/${maxAttempts})...`)
+    await new Promise(resolve => setTimeout(resolve, delay))
+  }
+
+  return null
+}
+
+/**
  * Get auth headers with Supabase token
+ * ✅ ENTERPRISE: Uses waitForStableSession() to handle initialization race conditions
  */
 async function getAuthHeaders(): Promise<HeadersInit> {
   // Only in browser
   if (typeof window === 'undefined') return {}
 
   try {
-    // Dynamically import supabase to avoid SSR issues
-    const { supabase } = await import('@/lib/supabase/client')
-    const {
-      data: { session }
-    } = await supabase.auth.getSession()
+    // ✅ ENTERPRISE FIX: Use waitForStableSession() instead of direct getSession()
+    // This handles race conditions during login where session isn't ready yet
+    const session = await waitForStableSession(3) // Try 3 times with exponential backoff
 
     if (session?.access_token) {
       return {
         Authorization: `Bearer ${session.access_token}`
       }
     }
+
+    // If no session after retries, log and return empty (will trigger 401 which is correct)
+    console.warn('[getAuthHeaders] No session available after retries')
   } catch (error) {
     // Only log in development
     if (process.env.NODE_ENV === 'development') {

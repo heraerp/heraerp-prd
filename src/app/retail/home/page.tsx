@@ -1,16 +1,18 @@
 "use client"
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { useHera } from '@/lib/hooks/hera'
-import { 
-  TrendingUp, Package, Wrench, CreditCard, Users, BarChart3, 
+import { useLoadingStore } from '@/lib/stores/loading-store'
+import {
+  TrendingUp, Package, Wrench, CreditCard, Users, BarChart3,
   Settings, ShoppingCart, AlertTriangle, CheckCircle, Clock,
   ArrowUpRight, DollarSign, Star, Truck
 } from 'lucide-react'
 
 export default function RetailHomePage() {
   const { client, auth } = useHera()
+  const { updateProgress, finishLoading } = useLoadingStore()
   const now = useMemo(() => new Date(), [])
   const from = new Date(now)
   from.setHours(0, 0, 0, 0)
@@ -18,6 +20,38 @@ export default function RetailHomePage() {
   const [tiles, setTiles] = React.useState<any>(null)
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
+
+  // ⚡ ENTERPRISE: Complete loading animation on mount (if coming from login)
+  useEffect(() => {
+    // Check if we're coming from login (initializing=true parameter)
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+
+    if (isInitializing) {
+      console.log('🏠 Retail Home: Completing loading animation from 70% → 100%')
+
+      // Animate from 70% to 100% smoothly
+      let progress = 70
+      const progressInterval = setInterval(() => {
+        progress += 5
+        if (progress <= 100) {
+          updateProgress(progress, undefined, progress === 100 ? 'Ready!' : 'Loading your workspace...')
+        }
+        if (progress >= 100) {
+          clearInterval(progressInterval)
+          // Complete and hide overlay after brief delay
+          setTimeout(() => {
+            finishLoading()
+            // Clean up URL parameter
+            window.history.replaceState({}, '', window.location.pathname)
+            console.log('✅ Retail Home: Loading complete!')
+          }, 500)
+        }
+      }, 50)
+
+      return () => clearInterval(progressInterval)
+    }
+  }, [updateProgress, finishLoading])
 
   React.useEffect(() => {
     let mounted = true

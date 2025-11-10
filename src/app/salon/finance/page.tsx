@@ -6,9 +6,10 @@ import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonFinancialSecurity } from '@/hooks/useSalonSecurity'
 
 // Lazy load major sections for instant page load
-const FinanceHeader = lazy(() => import('./components/FinanceHeader'))
 const FinanceKPIs = lazy(() => import('./components/FinanceKPIs'))
 const FinanceTabs = lazy(() => import('./components/FinanceTabs'))
+import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import { TrendingUp, Bell } from 'lucide-react'
 
 /**
  * 🏦 HERA SALON FINANCE PAGE - ENTERPRISE GRADE
@@ -88,18 +89,14 @@ export default function SalonFinancePage() {
       maxWidth="full"
       padding="lg"
     >
-      {/* iOS-style status bar spacer - MOBILE ONLY */}
-      <div className="h-11 bg-gradient-to-b from-black/20 to-transparent md:hidden" />
-
       {/* Mobile App Header - ENTERPRISE PATTERN */}
-      <Suspense fallback={<div className="h-16 md:hidden" />}>
-        <FinanceHeader
-          user={user}
-          organizationId={organizationId}
-          canExportFinancial={canExportFinancial}
-          logFinancialAction={logFinancialAction}
-        />
-      </Suspense>
+      <PremiumMobileHeader
+        title="Financial Management"
+        subtitle="Real-time financial reports"
+        icon={TrendingUp}
+        showNotifications={false}
+        shrinkOnScroll={true}
+      />
 
       {/* KPI Cards Section - Lazy Loaded */}
       <Suspense fallback={<KPISkeleton />}>

@@ -5,6 +5,7 @@ import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useSalonDashboard } from '@/hooks/useSalonDashboard'
 import { useRouter } from 'next/navigation'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 import { Button } from '@/components/ui/button'
 import { ComplianceAlertBanner } from '@/components/salon/ComplianceAlertBanner'
 import {
@@ -66,16 +67,50 @@ function DashboardContent() {
     isAuthenticated
   } = useSalonSecurity()
   const router = useRouter()
+  const { updateProgress, finishLoading, reset: resetLoading } = useLoadingStore()
   const [lastRefresh, setLastRefresh] = useState(new Date())
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [loadStage, setLoadStage] = useState(1) // Progressive loading stages
 
-  // ✅ ROLE-BASED REDIRECT: Redirect receptionist to their dashboard
+  // ✅ REMOVED DUPLICATE: Receptionist redirect now handled in conditional render below (line ~235)
+  // This prevents race condition between two redirect mechanisms
+
+  // ✅ GLOBAL LOADING: Continue progress from login (70-100%)
   useEffect(() => {
-    if (role && role.toLowerCase() === 'receptionist') {
-      router.push('/salon/receptionist')
+    // ✅ FIXED: Use window.location.search for reliability (not useSearchParams hook)
+    const urlParams = new URLSearchParams(window.location.search)
+    const isInitializing = urlParams.get('initializing') === 'true'
+    const isReceptionist = role && role.toLowerCase() === 'receptionist'
+
+    // ✅ FIXED: Don't wait for orgLoading/securityLoading - those are for DATA, not the loading animation!
+    // Start the 70-100% progression as soon as we're authenticated and initializing
+    if (isInitializing && isAuthenticated) {
+      // Continue progress from 70% to 100%
+      let currentProgress = 70
+      const progressInterval = setInterval(() => {
+        currentProgress += 5
+        if (currentProgress <= 95) {
+          updateProgress(currentProgress, 'Loading dashboard components...', 'Almost ready...')
+        } else {
+          clearInterval(progressInterval)
+          // Finish loading when dashboard is ready
+          setTimeout(() => {
+            finishLoading()
+
+            // ✅ ENTERPRISE: Redirect receptionist AFTER loading completes
+            if (isReceptionist) {
+              router.push('/salon/receptionist')
+            } else {
+              // Remove query parameter for clean URL (non-receptionist roles)
+              router.replace('/salon/dashboard', { scroll: false })
+            }
+          }, 200)
+        }
+      }, 100)
+
+      return () => clearInterval(progressInterval)
     }
-  }, [role, router])
+  }, [isAuthenticated, role, updateProgress, finishLoading, router])
 
   // ✅ PERFORMANCE: Progressive component loading
   useEffect(() => {
@@ -128,6 +163,9 @@ function DashboardContent() {
   // Logout handler
   const handleLogout = async () => {
     try {
+      // ✅ CRITICAL: Reset global loading state before logout
+      resetLoading()
+
       const { supabase } = await import('@/lib/supabase/client')
       await supabase.auth.signOut()
       localStorage.removeItem('salonUserName')
@@ -136,6 +174,7 @@ function DashboardContent() {
       router.push('/salon/auth')
     } catch (error) {
       console.error('Logout error:', error)
+      resetLoading() // Reset even on error
       router.push('/salon/auth')
     }
   }
@@ -143,45 +182,29 @@ function DashboardContent() {
   // ⚡ REMOVED BLOCKING LOADER: Page now loads instantly with progressive sections
   // The 5-stage progressive loading system (Lines 81-91, 557-603) now visible immediately!
 
-  // ✅ ENTERPRISE: Show loading while role is being resolved (not error)
-  // This prevents "Authentication Required" flash during role resolution after login
+  // ✅ ENTERPRISE STATE 1: Not authenticated at all
   if (!isAuthenticated) {
-    // Not authenticated at all - redirect to login
     return (
       <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.charcoal }}
       >
-        <Card
-          className="max-w-md w-full border-0"
-          style={{ backgroundColor: LUXE_COLORS.charcoalLight }}
-        >
-          <CardContent className="p-8 text-center">
-            <AlertCircle className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
-            <h3 className="text-xl mb-2" style={{ color: LUXE_COLORS.gold }}>
-              Authentication Required
-            </h3>
-            <p className="mb-6" style={{ color: LUXE_COLORS.bronze }}>
-              Please log in to access the dashboard.
-            </p>
-            <Button
-              onClick={() => router.push('/salon/auth')}
-              className="w-full"
-              style={{
-                backgroundColor: LUXE_COLORS.gold,
-                color: LUXE_COLORS.charcoal
-              }}
-            >
-              Go to Login
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 mx-auto mb-4 animate-spin" style={{ color: LUXE_COLORS.gold }} />
+          <h3 className="text-lg font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
+            Authenticating...
+          </h3>
+          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+            Verifying your session
+          </p>
+        </div>
       </div>
     )
   }
 
-  // ✅ PATIENCE: Show loading (not error) while role is being resolved after login
-  if (!role) {
+  // ✅ ENTERPRISE STATE 2: Authenticated but role is being resolved
+  // CRITICAL FIX: Check ALL loading flags to prevent "Access Restricted" flash
+  if (isAuthenticated && (securityLoading || orgLoading || !role)) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
@@ -202,18 +225,31 @@ function DashboardContent() {
             />
           </div>
           <h3 className="text-lg font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
-            Loading your dashboard...
+            Setting up your workspace...
           </h3>
           <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-            Setting up your workspace
+            Loading your permissions and preferences
           </p>
         </div>
       </div>
     )
   }
 
-  // Show loading while redirecting receptionist
-  if (role && role.toLowerCase() === 'receptionist') {
+  // ✅ ENTERPRISE STATE 3: Redirect receptionist with smooth transition
+  // BUT: Let global loading complete first if initializing=true
+  const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
+  const isInitializing = urlParams?.get('initializing') === 'true'
+  const isReceptionist = role && role.toLowerCase() === 'receptionist'
+
+  if (isReceptionist && !isInitializing) {
+    // Only redirect if NOT in initializing mode (loading already completed)
+    React.useEffect(() => {
+      const timer = setTimeout(() => {
+        router.push('/salon/receptionist')
+      }, 100) // Small delay prevents race conditions
+      return () => clearTimeout(timer)
+    }, [router])
+
     return (
       <div
         className="min-h-screen flex items-center justify-center"
@@ -222,7 +258,7 @@ function DashboardContent() {
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
           <div className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
-            Redirecting to Receptionist Dashboard...
+            Redirecting to your dashboard...
           </div>
         </div>
       </div>
@@ -395,6 +431,9 @@ function DashboardContent() {
               <Button
                 onClick={async () => {
                   try {
+                    // ✅ CRITICAL: Reset global loading state before logout
+                    resetLoading()
+
                     const { supabase } = await import('@/lib/supabase/client')
                     await supabase.auth.signOut()
                     localStorage.removeItem('salonUserName')
@@ -403,6 +442,7 @@ function DashboardContent() {
                     router.push('/salon/auth')
                   } catch (error) {
                     console.error('Logout error:', error)
+                    resetLoading() // Reset even on error
                     router.push('/salon/auth')
                   }
                 }}

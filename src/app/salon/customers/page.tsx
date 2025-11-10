@@ -208,8 +208,17 @@ function SalonCustomersPageContent() {
 
   // Filter and sort customers - memoized for performance
   const filteredAndSortedCustomers = useMemo(() => {
-    // Apply sorting
+    // Step 1: Sort customers - Active customers first, then archived
     const sorted = [...customers].sort((a, b) => {
+      // Primary sort: Active customers before archived customers
+      const aIsArchived = a.status === 'archived'
+      const bIsArchived = b.status === 'archived'
+
+      if (aIsArchived !== bIsArchived) {
+        return aIsArchived ? 1 : -1 // Active customers (false) come first
+      }
+
+      // Secondary sort: Apply user-selected sorting within each group
       switch (sortBy) {
         case 'name_asc':
           return (a.entity_name || '').localeCompare(b.entity_name || '')
@@ -592,10 +601,10 @@ function SalonCustomersPageContent() {
           />
           <SalonLuxeKPICard
             title="Avg Lifetime Value"
-            value={`AED ${Math.round(stats.averageLifetimeValue).toLocaleString()}`}
-            icon={DollarSign}
+            value={Math.round(stats.averageLifetimeValue).toLocaleString()}
+            icon={TrendingUp}
             color={COLORS.gold}
-            description="Per customer"
+            description="Per customer (currency)"
             animationDelay={300}
           />
         </div>
@@ -659,65 +668,44 @@ function SalonCustomersPageContent() {
             )}
           </div>
 
-          {/* Filters Row */}
+          {/* Filters Row - EXACT Pattern as Products Page */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex items-center gap-3">{/* ✅ REMOVED overflow-x-auto to fix horizontal scrollbar */}
-              {/* View Mode Toggle */}
+            {/* Left Side: Active/All Toggle Only */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              {/* Active / All Customers Toggle */}
               <div
-                className="flex items-center gap-1 p-1 rounded-lg flex-shrink-0"
+                className="flex items-center gap-1 p-1 rounded-lg"
                 style={{ backgroundColor: COLORS.charcoalLight }}
               >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setViewMode('grid')}
+                <button
+                  onClick={() => setIncludeArchived(false)}
+                  className="px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200"
                   style={{
-                    backgroundColor: viewMode === 'grid' ? COLORS.gold + '20' : 'transparent',
-                    color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText
+                    backgroundColor: !includeArchived ? COLORS.gold + '20' : 'transparent',
+                    color: !includeArchived ? COLORS.gold : COLORS.lightText
                   }}
                 >
-                  <Grid3X3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setViewMode('list')}
+                  Active
+                </button>
+                <button
+                  onClick={() => setIncludeArchived(true)}
+                  className="px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200"
                   style={{
-                    backgroundColor: viewMode === 'list' ? COLORS.gold + '20' : 'transparent',
-                    color: viewMode === 'list' ? COLORS.gold : COLORS.lightText
+                    backgroundColor: includeArchived ? COLORS.gold + '20' : 'transparent',
+                    color: includeArchived ? COLORS.gold : COLORS.lightText
                   }}
                 >
-                  <List className="h-4 w-4" />
-                </Button>
+                  All
+                </button>
               </div>
-
-              {/* Include Archived Toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  console.log('[CustomersPage] 🔄 Toggling includeArchived:', !includeArchived)
-                  setIncludeArchived(!includeArchived)
-                }}
-                className="flex-shrink-0"
-                style={{
-                  backgroundColor: includeArchived ? COLORS.bronze + '20' : 'transparent',
-                  color: includeArchived ? COLORS.bronze : COLORS.lightText,
-                  border: `1px solid ${COLORS.bronze}30`
-                }}
-              >
-                <Archive className="h-4 w-4 mr-2" />
-                <span className="hidden md:inline">{includeArchived ? 'Hide Archived' : 'Show Archived'}</span>
-                <span className="md:hidden">Archived</span>
-              </Button>
             </div>
 
-            {/* Right Side: Sort and Badges */}
-            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full md:w-auto">
+            {/* Right Side: Sort Dropdown + View Mode Toggle */}
+            <div className="flex items-center gap-3">
               {/* Sort Dropdown */}
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger
-                  className="flex-1 md:w-48 transition-all duration-200 hover:scale-105 hover:border-gold/50"
+                  className="w-full md:w-56 transition-all duration-200 hover:scale-105"
                   style={{
                     backgroundColor: COLORS.charcoalLight + '80',
                     borderColor: COLORS.bronze + '40',
@@ -748,30 +736,35 @@ function SalonCustomersPageContent() {
                 </SelectContent>
               </Select>
 
-              {/* Badges */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge
-                  variant="secondary"
-                  style={{ backgroundColor: COLORS.charcoalLight, color: COLORS.lightText }}
+              {/* Grid / List View Toggle */}
+              <div
+                className="flex items-center gap-1 p-1 rounded-lg"
+                style={{ backgroundColor: COLORS.charcoalLight }}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  style={{
+                    backgroundColor: viewMode === 'grid' ? COLORS.gold + '20' : 'transparent',
+                    color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText
+                  }}
+                  title="Grid View"
                 >
-                  Showing {customers.length} {includeArchived ? 'total' : 'active'}
-                </Badge>
-                {includeArchived && activeCount > 0 && (
-                  <Badge
-                    variant="secondary"
-                    style={{ backgroundColor: COLORS.emerald + '20', color: COLORS.emerald }}
-                  >
-                    {activeCount} active
-                  </Badge>
-                )}
-                {includeArchived && archivedCount > 0 && (
-                  <Badge
-                    variant="secondary"
-                    style={{ backgroundColor: COLORS.plum + '20', color: COLORS.plum }}
-                  >
-                    {archivedCount} archived
-                  </Badge>
-                )}
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  style={{
+                    backgroundColor: viewMode === 'list' ? COLORS.gold + '20' : 'transparent',
+                    color: viewMode === 'list' ? COLORS.gold : COLORS.lightText
+                  }}
+                  title="List View"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>

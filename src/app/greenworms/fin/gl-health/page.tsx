@@ -16,7 +16,7 @@ import { MobileCard } from '@/components/mobile/MobileCard'
 import { MobileChart } from '@/components/mobile/MobileCharts'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'
-import { 
+import {
   AlertCircle,
   CheckCircle,
   Clock,

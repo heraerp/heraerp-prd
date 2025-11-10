@@ -109,11 +109,21 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
     // are stored in tenant orgs, not platform org where USER entities live
     const sb = supabaseForToken(token)
 
+    // ✅ ENTERPRISE FIX: Check JWT metadata for hera_user_entity_id first
+    // For users created via hera_onboard_user_v1, auth UID ≠ user entity ID
+    let userEntityId = (payload as any).user_metadata?.hera_user_entity_id || payload.sub
+
+    console.log('[verifyAuth] User entity resolution:', {
+      authUid: payload.sub,
+      metadataEntityId: (payload as any).user_metadata?.hera_user_entity_id,
+      finalUserEntityId: userEntityId
+    })
+
     // Query user's memberships directly from core_relationships
     const { data: memberships } = await withTimeout(
       sb.from('core_relationships')
         .select('to_entity_id, organization_id, relationship_data')
-        .eq('from_entity_id', payload.sub)
+        .eq('from_entity_id', userEntityId)  // ✅ Use resolved user entity ID
         .eq('relationship_type', 'MEMBER_OF')
         .eq('is_active', true)
     )

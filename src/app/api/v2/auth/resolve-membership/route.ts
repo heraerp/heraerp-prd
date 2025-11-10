@@ -40,26 +40,33 @@ export async function GET(request: NextRequest) {
 
     const supabaseService = getSupabaseService()
 
-    // ✅ FIX: Map auth UID to user entity ID by looking up metadata->supabase_user_id
-    console.log(`[resolve-membership] Looking up USER entity by supabase_user_id...`)
-    const { data: userEntities, error: lookupError } = await supabaseService
-      .from('core_entities')
-      .select('id, entity_name')
-      .eq('entity_type', 'USER')
-      .contains('metadata', { supabase_user_id: authUserId })
-      .limit(1)
+    // ✅ ENTERPRISE FIX: Check auth metadata FIRST (faster + handles hera_onboard_user_v1 users)
+    let userEntityId = user.user_metadata?.hera_user_entity_id
 
-    if (lookupError) {
-      console.error('[resolve-membership] User entity lookup error:', lookupError)
-    }
-
-    // Use user entity ID if found, otherwise fall back to auth UID
-    const userEntityId = userEntities?.[0]?.id || authUserId
-
-    if (userEntities?.[0]) {
-      console.log(`[resolve-membership] ✅ Mapped auth UID to user entity: ${userEntityId} (${userEntities[0].entity_name})`)
+    if (userEntityId) {
+      console.log(`[resolve-membership] ✅ Found hera_user_entity_id in auth metadata: ${userEntityId}`)
     } else {
-      console.log(`[resolve-membership] ⚠️ No USER entity found with supabase_user_id, using auth UID: ${authUserId}`)
+      // ✅ FALLBACK: Map auth UID to user entity ID by looking up metadata->supabase_user_id
+      console.log(`[resolve-membership] No hera_user_entity_id in auth metadata, looking up USER entity by supabase_user_id...`)
+      const { data: userEntities, error: lookupError } = await supabaseService
+        .from('core_entities')
+        .select('id, entity_name')
+        .eq('entity_type', 'USER')
+        .contains('metadata', { supabase_user_id: authUserId })
+        .limit(1)
+
+      if (lookupError) {
+        console.error('[resolve-membership] User entity lookup error:', lookupError)
+      }
+
+      // Use user entity ID if found, otherwise fall back to auth UID (direct match case)
+      userEntityId = userEntities?.[0]?.id || authUserId
+
+      if (userEntities?.[0]) {
+        console.log(`[resolve-membership] ✅ Mapped auth UID to user entity via metadata lookup: ${userEntityId} (${userEntities[0].entity_name})`)
+      } else {
+        console.log(`[resolve-membership] ⚠️ No USER entity found with supabase_user_id, using auth UID as fallback: ${authUserId}`)
+      }
     }
 
     // ✅ OPTIMIZED: Single RPC call gets ALL organizations with roles and metadata
@@ -77,11 +84,21 @@ export async function GET(request: NextRequest) {
 
     if (!authContext || !authContext.organizations || authContext.organizations.length === 0) {
       console.log('[resolve-membership] No active memberships found')
+      console.log('[resolve-membership] Auth context:', JSON.stringify(authContext, null, 2))
       return NextResponse.json({
         error: 'no_membership',
         message: 'User has no organization memberships'
       }, { status: 404 })
     }
+
+    // ✅ DIAGNOSTIC: Log RAW organizations data from RPC
+    console.log('[resolve-membership] 📊 RAW RPC RESPONSE - Organizations:')
+    authContext.organizations.forEach((org: any, idx: number) => {
+      console.log(`  [${idx + 1}] ${org.name} (${org.code})`)
+      console.log(`      Org ID: ${org.id}`)
+      console.log(`      Role: ${org.primary_role}`)
+      console.log(`      Apps: ${JSON.stringify(org.apps || [])}`)
+    })
 
     // Transform introspect response to match existing API format
     const validOrgs = authContext.organizations.map((org: any) => ({
@@ -103,6 +120,15 @@ export async function GET(request: NextRequest) {
 
     console.log(`[resolve-membership] ⚡ OPTIMIZED: Single RPC resolved ${validOrgs.length} organization(s) for user ${userEntityId}`)
     console.log(`[resolve-membership] Default org: ${defaultOrg.id} (${defaultOrg.name}) - Role: ${defaultOrg.primary_role}`)
+
+    // ✅ DIAGNOSTIC: Log TRANSFORMED organizations data
+    console.log('[resolve-membership] 📊 TRANSFORMED API RESPONSE - Organizations:')
+    validOrgs.forEach((org: any, idx: number) => {
+      console.log(`  [${idx + 1}] ${org.name} (${org.code})`)
+      console.log(`      Org ID: ${org.id}`)
+      console.log(`      Role: ${org.primary_role}`)
+      console.log(`      Apps: ${JSON.stringify(org.apps || [])}`)
+    })
 
     return NextResponse.json({
       success: true,

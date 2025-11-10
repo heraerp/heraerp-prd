@@ -22,7 +22,9 @@ export function SalonRouteGuard({ children, fallback }: SalonRouteGuardProps) {
   const router = useRouter()
   const { user, organization, isAuthenticated, contextLoading } = useHERAAuth()
 
-  const [isChecking, setIsChecking] = useState(true)
+  // ✅ ENTERPRISE UX: Start with smart initial state - skip loading if auth context ready
+  // Security: All hasPageAccess() checks still run, just skip loading screen when data available
+  const [isChecking, setIsChecking] = useState(!user || !organization?.id)
   const [hasAccess, setHasAccess] = useState(false)
   const [userRole, setUserRole] = useState<SalonRole | null>(null)
 
@@ -94,7 +96,7 @@ export function SalonRouteGuard({ children, fallback }: SalonRouteGuardProps) {
         <div className="min-h-screen bg-charcoal flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-gold/20 border-t-gold rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-champagne text-lg font-medium">Checking permissions...</p>
+            <p className="text-champagne text-lg font-medium">Loading your dashboard...</p>
             <p className="text-bronze text-sm mt-2">Please wait</p>
           </div>
         </div>

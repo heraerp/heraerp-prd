@@ -12,6 +12,7 @@ import { NavigationProvider } from './navigation-provider'
 import { PrefetchLinks } from './prefetch-links'
 import { useSecuredSalonContext } from './SecuredSalonProvider'
 import { SalonRouteGuard } from '@/components/auth/SalonRouteGuard'
+import { SalonLuxeLoadingOverlay } from '@/components/salon/shared/SalonLuxeLoadingOverlay'
 
 // Import global salon luxe theme
 import '@/styles/salon-luxe.css'
@@ -73,11 +74,18 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
                        pathname === '/salon/reset-password'
 
   if (isPublicPage) {
-    return <>{children}</>
+    return (
+      <>
+        <SalonLuxeLoadingOverlay />
+        {children}
+      </>
+    )
   }
 
   return (
-    <NavigationProvider>
+    <>
+      <SalonLuxeLoadingOverlay />
+      <NavigationProvider>
       <SalonQueryWrapper>
         <SecuredSalonProvider>
           {/* 🛡️ RBAC: Route guard protects all salon pages */}
@@ -92,5 +100,6 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
         </SecuredSalonProvider>
       </SalonQueryWrapper>
     </NavigationProvider>
+    </>
   )
 }

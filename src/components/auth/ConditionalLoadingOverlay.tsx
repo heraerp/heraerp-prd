@@ -8,6 +8,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import { GlobalLoadingOverlay } from './GlobalLoadingOverlay'
 
 export function ConditionalLoadingOverlay() {
   const pathname = usePathname()
@@ -21,7 +22,6 @@ export function ConditionalLoadingOverlay() {
     return null
   }
 
-  // For all other routes, return null for now
-  // TODO: Add GlobalLoadingOverlay when needed
-  return null
+  // For all other routes, use HERA theme
+  return <GlobalLoadingOverlay />
 }

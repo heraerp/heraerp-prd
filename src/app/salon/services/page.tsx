@@ -45,7 +45,8 @@ import {
   Building2,
   MapPin,
   RefreshCw,
-  DollarSign
+  DollarSign,
+  Archive
 } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
@@ -169,7 +170,6 @@ function SalonServicesPageContent() {
   const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const [categoryFilter, setCategoryFilter] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState('name_asc')
   // Local branch filter state (separate from global context)
   const [localBranchFilter, setLocalBranchFilter] = useState<string | null>(null)
@@ -1088,6 +1088,11 @@ function SalonServicesPageContent() {
       : 0
   }, [allServicesForKPIs])
 
+  const archivedCount = useMemo(
+    () => allServicesForKPIs?.filter(s => s && s.status === 'archived').length || 0,
+    [allServicesForKPIs]
+  )
+
   const formatDuration = useCallback((minutes: number) => {
     const hours = Math.floor(minutes / 60)
     const mins = Math.round(minutes % 60)
@@ -1405,11 +1410,52 @@ function SalonServicesPageContent() {
           </div>
         </div>
 
-        {/* Filters and View Options - MOBILE RESPONSIVE */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-          {/* Left Side: Tabs, Filters, Badges */}
-          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
-            <div className="flex items-center gap-3">
+        {/* 🔍 UNIFIED FILTER BANNER - Matching Products Page Pattern */}
+        <div
+          className="p-4 rounded-xl mb-6"
+          style={{
+            backgroundColor: COLORS.charcoalLight + 'ee',
+            border: `1px solid ${COLORS.bronze}30`,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+          }}
+        >
+          {/* Row 1: Search Bar (Full Width) */}
+          <div className="mb-4">
+            <div className="relative">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+                style={{ color: COLORS.gold }}
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search services by name or code..."
+                className="w-full pl-10 pr-10 py-2.5 rounded-lg border focus:outline-none focus:ring-2 transition-all"
+                style={{
+                  backgroundColor: COLORS.charcoal,
+                  borderColor: COLORS.bronze + '40',
+                  color: COLORS.champagne,
+                  focusRingColor: COLORS.gold + '50'
+                }}
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-white/10 transition-colors"
+                  title="Clear search"
+                >
+                  <X className="w-4 h-4" style={{ color: COLORS.bronze }} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Row 2: Filters and View Controls */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Left: Status Tabs, Location Filter & Category Filter */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 flex-wrap">
+              {/* Status Tabs */}
               <Tabs
                 value={includeArchived ? 'all' : 'active'}
                 onValueChange={v => setIncludeArchived(v === 'all')}
@@ -1420,207 +1466,154 @@ function SalonServicesPageContent() {
                 </TabsList>
               </Tabs>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="transition-all duration-200 hover:scale-105"
-                style={{
-                  color: showFilters ? COLORS.gold : COLORS.lightText,
-                  backgroundColor: showFilters ? `${COLORS.gold}20` : 'transparent'
-                }}
+              {/* Location Filter - Now always visible in Row 2 */}
+              <Select
+                value={localBranchFilter || '__ALL__'}
+                onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
               >
-                <Filter className="h-4 w-4 mr-1" />
-                <span className="font-medium hidden md:inline">Filters</span>
-              </Button>
-            </div>
-
-            {/* Filter Badges - Wrap on mobile */}
-            <div className="flex flex-wrap items-center gap-2">
-              {localBranchFilter && (
-                <div
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-left-2"
+                <SelectTrigger
+                  className="w-full sm:w-52 border"
                   style={{
-                    backgroundColor: COLORS.gold + '20',
-                    borderColor: COLORS.gold + '40',
+                    backgroundColor: COLORS.charcoal,
+                    borderColor: COLORS.bronze + '40',
                     color: COLORS.champagne
                   }}
                 >
-                  <Building2 className="h-3 w-3" style={{ color: COLORS.gold }} />
-                  <span className="text-xs md:text-sm">
-                    {availableBranches.find(b => b.id === localBranchFilter)?.entity_name ||
-                      'Branch'}
-                  </span>
-                  <button
-                    onClick={() => setLocalBranchFilter(null)}
-                    className="ml-1 hover:scale-110 active:scale-95 transition-all duration-200 rounded-full p-0.5 hover:bg-gold/20"
-                    aria-label="Clear branch filter"
-                  >
-                    <X className="h-3 w-3" style={{ color: COLORS.gold }} />
-                  </button>
-                </div>
-              )}
-              {categoryFilter && (
-                <div
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-left-2"
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    <MapPin className="h-4 w-4 flex-shrink-0" style={{ color: COLORS.gold }} />
+                    <span className="truncate">
+                      <SelectValue placeholder="All Locations" />
+                    </span>
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="__ALL__" className="hera-select-item">
+                    All Locations
+                  </SelectItem>
+                  {availableBranches.map(branch => (
+                    <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
+                      {branch.entity_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Category Filter - Now always visible in Row 2 */}
+              <Select
+                value={categoryFilter || '__ALL__'}
+                onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
+              >
+                <SelectTrigger
+                  className="w-full sm:w-52 border"
                   style={{
-                    backgroundColor: COLORS.gold + '20',
-                    borderColor: COLORS.gold + '40',
+                    backgroundColor: COLORS.charcoal,
+                    borderColor: COLORS.bronze + '40',
                     color: COLORS.champagne
                   }}
                 >
-                  <Tag className="h-3 w-3" style={{ color: COLORS.gold }} />
-                  <span className="text-xs md:text-sm">{categoryFilter}</span>
-                  <button
-                    onClick={() => setCategoryFilter('')}
-                    className="ml-1 hover:scale-110 active:scale-95 transition-all duration-200 rounded-full p-0.5 hover:bg-gold/20"
-                    aria-label="Clear category filter"
-                  >
-                    <X className="h-3 w-3" style={{ color: COLORS.gold }} />
-                  </button>
-                </div>
-              )}
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    <Tag className="h-4 w-4 flex-shrink-0" style={{ color: COLORS.gold }} />
+                    <span className="truncate">
+                      <SelectValue placeholder="All Categories" />
+                    </span>
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="__ALL__" className="hera-select-item">
+                    All Categories
+                  </SelectItem>
+                  {categories.map(cat => (
+                    <SelectItem key={cat} value={cat} className="hera-select-item">
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
 
-          {/* Right Side: Sort and View Toggle - Full width on mobile */}
-          <div className="flex items-center gap-2 w-full md:w-auto">
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger
-                className="flex-1 md:w-48 transition-all duration-200 hover:scale-105 hover:border-gold/50"
-                style={{
-                  backgroundColor: COLORS.charcoalLight + '80',
-                  borderColor: COLORS.bronze + '40',
-                  color: COLORS.champagne
-                }}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="hera-select-content">
-                <SelectItem value="name_asc" className="hera-select-item">
-                  Name (A-Z)
-                </SelectItem>
-                <SelectItem value="name_desc" className="hera-select-item">
-                  Name (Z-A)
-                </SelectItem>
-                <SelectItem value="duration_asc" className="hera-select-item">
-                  Duration (Shortest)
-                </SelectItem>
-                <SelectItem value="duration_desc" className="hera-select-item">
-                  Duration (Longest)
-                </SelectItem>
-                <SelectItem value="price_asc" className="hera-select-item">
-                  Price (Low to High)
-                </SelectItem>
-                <SelectItem value="price_desc" className="hera-select-item">
-                  Price (High to Low)
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Right: Sort & View Mode */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              {/* Sort Dropdown */}
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger
+                  className="w-full sm:w-48 border"
+                  style={{
+                    backgroundColor: COLORS.charcoal,
+                    borderColor: COLORS.bronze + '40',
+                    color: COLORS.champagne
+                  }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="hera-select-content">
+                  <SelectItem value="name_asc" className="hera-select-item">
+                    Name (A-Z)
+                  </SelectItem>
+                  <SelectItem value="name_desc" className="hera-select-item">
+                    Name (Z-A)
+                  </SelectItem>
+                  <SelectItem value="duration_asc" className="hera-select-item">
+                    Duration (Shortest)
+                  </SelectItem>
+                  <SelectItem value="duration_desc" className="hera-select-item">
+                    Duration (Longest)
+                  </SelectItem>
+                  <SelectItem value="price_asc" className="hera-select-item">
+                    Price (Low to High)
+                  </SelectItem>
+                  <SelectItem value="price_desc" className="hera-select-item">
+                    Price (High to Low)
+                  </SelectItem>
+                </SelectContent>
+              </Select>
 
-            <button
-              onClick={() => setViewMode('grid')}
-              className="p-2 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 shrink-0"
-              style={{
-                backgroundColor: viewMode === 'grid' ? `${COLORS.gold}20` : 'transparent',
-                border: `1px solid ${viewMode === 'grid' ? COLORS.gold + '50' : COLORS.bronze + '30'}`,
-                color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText
-              }}
-              aria-label="Grid view"
-            >
-              <Grid3X3 className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className="p-2 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 shrink-0"
-              style={{
-                backgroundColor: viewMode === 'list' ? `${COLORS.gold}20` : 'transparent',
-                border: `1px solid ${viewMode === 'list' ? COLORS.gold + '50' : COLORS.bronze + '30'}`,
-                color: viewMode === 'list' ? COLORS.gold : COLORS.lightText
-              }}
-              aria-label="List view"
-            >
-              <List className="w-5 h-5" />
-            </button>
+              {/* Grid/List Toggle */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className="p-2 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 shrink-0"
+                  style={{
+                    backgroundColor: viewMode === 'grid' ? `${COLORS.gold}20` : 'transparent',
+                    border: `1px solid ${viewMode === 'grid' ? COLORS.gold + '50' : COLORS.bronze + '30'}`,
+                    color: viewMode === 'grid' ? COLORS.gold : COLORS.lightText
+                  }}
+                  aria-label="Grid view"
+                >
+                  <Grid3X3 className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className="p-2 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 shrink-0"
+                  style={{
+                    backgroundColor: viewMode === 'list' ? `${COLORS.gold}20` : 'transparent',
+                    border: `1px solid ${viewMode === 'list' ? COLORS.gold + '50' : COLORS.bronze + '30'}`,
+                    color: viewMode === 'list' ? COLORS.gold : COLORS.lightText
+                  }}
+                  aria-label="List view"
+                >
+                  <List className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Expandable Filters with Soft Animation */}
-        {showFilters && (
-          <div
-            className="mb-6 pt-4 border-t animate-in fade-in slide-in-from-top-2 duration-300"
-            style={{ borderColor: COLORS.bronze + '30' }}
-          >
-            <div className="flex items-center gap-4">
-              {/* Branch Filter - Compact & Enterprise-Grade */}
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-xs font-medium uppercase tracking-wider opacity-70 shrink-0"
-                  style={{ color: COLORS.bronze }}
-                >
-                  Location
-                </span>
-                <Select
-                  value={localBranchFilter || '__ALL__'}
-                  onValueChange={value => setLocalBranchFilter(value === '__ALL__' ? null : value)}
-                >
-                  <SelectTrigger
-                    className="w-[180px] h-9 text-sm transition-all duration-200 hover:border-gold/50"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight + '80',
-                      borderColor: COLORS.bronze + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <SelectValue placeholder="All branches" />
-                  </SelectTrigger>
-                  <SelectContent className="hera-select-content">
-                    <SelectItem value="__ALL__" className="hera-select-item">
-                      All branches
-                    </SelectItem>
-                    {availableBranches.map(branch => (
-                      <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
-                        {branch.entity_name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Category Filter - Compact & Enterprise-Grade */}
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-xs font-medium uppercase tracking-wider opacity-70 shrink-0"
-                  style={{ color: COLORS.bronze }}
-                >
-                  Category
-                </span>
-                <Select
-                  value={categoryFilter || '__ALL__'}
-                  onValueChange={value => setCategoryFilter(value === '__ALL__' ? '' : value)}
-                >
-                  <SelectTrigger
-                    className="w-[180px] h-9 text-sm transition-all duration-200 hover:border-gold/50"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight + '80',
-                      borderColor: COLORS.bronze + '40',
-                      color: COLORS.champagne
-                    }}
-                  >
-                    <SelectValue placeholder="All categories" />
-                  </SelectTrigger>
-                  <SelectContent className="hera-select-content">
-                    <SelectItem value="__ALL__" className="hera-select-item">
-                      All categories
-                    </SelectItem>
-                    {categories.map(cat => (
-                      <SelectItem key={cat} value={cat} className="hera-select-item">
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+        {/* Active Filters Info Bar */}
+        {includeArchived && archivedCount > 0 && (
+          <div className="mb-6 flex items-center gap-3">
+            {/* Archived Services Info Badge */}
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm font-medium"
+              style={{
+                backgroundColor: COLORS.bronze + '15',
+                borderColor: COLORS.bronze + '40',
+                color: COLORS.champagne
+              }}
+            >
+              <Archive className="h-4 w-4" style={{ color: COLORS.bronze }} />
+              <span>
+                Showing {archivedCount} archived service{archivedCount !== 1 ? 's' : ''}
+              </span>
             </div>
           </div>
         )}

@@ -6,6 +6,7 @@ import { useSalonSecurity } from '@/hooks/useSalonSecurity'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { useLoadingStore } from '@/lib/stores/loading-store'
 import {
   Calendar,
   DollarSign,
@@ -161,6 +162,7 @@ export function UnifiedDashboard() {
     canViewFinancials
   } = useSalonSecurity()
   const router = useRouter()
+  const { reset: resetLoading } = useLoadingStore()
 
   // Redirect to role-specific dashboards
   useEffect(() => {
@@ -338,6 +340,9 @@ export function UnifiedDashboard() {
               <Button
                 onClick={async () => {
                   try {
+                    // ✅ CRITICAL: Reset global loading state before logout
+                    resetLoading()
+
                     const { supabase } = await import('@/lib/supabase/client')
                     await supabase.auth.signOut()
                     localStorage.removeItem('salonUserName')
@@ -346,6 +351,7 @@ export function UnifiedDashboard() {
                     router.push('/salon/auth')
                   } catch (error) {
                     console.error('Logout error:', error)
+                    resetLoading() // Reset even on error
                     router.push('/salon/auth')
                   }
                 }}
