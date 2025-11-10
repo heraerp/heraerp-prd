@@ -16,10 +16,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ArrowLeft, Save, Loader2 } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Sparkles, FileText, HelpCircle } from 'lucide-react'
 import type { DynamicComponentProps } from '@/lib/hera/component-loader'
 import { CashewEntitiesAPI, CashewEntityTypes, CashewSmartCodes } from '@/lib/cashew/api-client'
 import { useSafeHERAAuth } from '@/components/auth/SafeHERAAuth'
+import { UniversalEntityShell, useEntityShell } from './UniversalEntityShell'
 
 interface EntityWizardProps extends DynamicComponentProps {
   entityType: string
@@ -36,6 +37,15 @@ export function EntityWizard({
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState(1)
   const { organization } = useSafeHERAAuth()
+  
+  // Use the UniversalEntityShell state management
+  const { 
+    showAIPanel, 
+    setShowAIPanel, 
+    lastSaved, 
+    updateLastSaved, 
+    showToast 
+  } = useEntityShell()
 
   const getEntityConfig = (type: string) => {
     const configs: Record<string, any> = {
@@ -122,6 +132,148 @@ export function EntityWizard({
           }
         ]
       },
+      
+      // WMS Entity Configurations
+      WMS_VEHICLE: {
+        title: 'Create Vehicle',
+        description: 'Add a new waste collection vehicle to the fleet',
+        icon: '🚛',
+        listPath: resolvedOperation.canonical_path.replace('/new', '/list'),
+        steps: [
+          {
+            title: 'Vehicle Information',
+            fields: [
+              { name: 'vehicle_name', label: 'Vehicle Name', type: 'text', required: true, placeholder: 'WM-001 Collection Truck' },
+              { name: 'license_plate', label: 'License Plate', type: 'text', required: true, placeholder: 'ABC-1234' },
+              { name: 'vehicle_type', label: 'Vehicle Type', type: 'select', 
+                options: ['COMPACTOR_TRUCK', 'REAR_LOADER', 'SIDE_LOADER', 'FRONT_LOADER', 'ROLL_OFF', 'RECYCLING_TRUCK'], 
+                required: true }
+            ]
+          },
+          {
+            title: 'Specifications',
+            fields: [
+              { name: 'capacity_tons', label: 'Capacity (Tons)', type: 'number', required: true, min: 1, max: 50, placeholder: '25' },
+              { name: 'year', label: 'Year', type: 'number', required: true, min: 2000, max: 2030, placeholder: '2023' },
+              { name: 'fuel_efficiency', label: 'Fuel Efficiency (mpg)', type: 'number', required: false, min: 1, max: 25, placeholder: '8.2' }
+            ]
+          }
+        ]
+      },
+      
+      WMS_CUSTOMER: {
+        title: 'Create Customer',
+        description: 'Add a new waste management service customer',
+        icon: '🏢',
+        listPath: resolvedOperation.canonical_path.replace('/new', '/list'),
+        steps: [
+          {
+            title: 'Basic Information',
+            fields: [
+              { name: 'customer_name', label: 'Customer Name', type: 'text', required: true, placeholder: 'ACME Corporation' },
+              { name: 'customer_type', label: 'Customer Type', type: 'select', 
+                options: ['RESIDENTIAL', 'COMMERCIAL', 'INDUSTRIAL', 'MUNICIPAL', 'CONSTRUCTION'], 
+                required: true },
+              { name: 'contact_person', label: 'Contact Person', type: 'text', required: true },
+              { name: 'email', label: 'Email Address', type: 'email', required: true }
+            ]
+          },
+          {
+            title: 'Service Details',
+            fields: [
+              { name: 'service_frequency', label: 'Service Frequency', type: 'select', 
+                options: ['DAILY', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'ON_DEMAND'], 
+                required: true },
+              { name: 'monthly_revenue', label: 'Monthly Revenue', type: 'number', required: false, min: 0, placeholder: '2500' },
+              { name: 'special_requirements', label: 'Special Requirements', type: 'textarea', required: false }
+            ]
+          }
+        ]
+      },
+      
+      WMS_ROUTE: {
+        title: 'Create Route',
+        description: 'Plan a new waste collection route',
+        icon: '🗺️',
+        listPath: resolvedOperation.canonical_path.replace('/new', '/list'),
+        steps: [
+          {
+            title: 'Route Information',
+            fields: [
+              { name: 'route_name', label: 'Route Name', type: 'text', required: true, placeholder: 'Downtown Commercial Route' },
+              { name: 'route_code', label: 'Route Code', type: 'text', required: true, placeholder: 'RT-001' },
+              { name: 'route_type', label: 'Route Type', type: 'select', 
+                options: ['RESIDENTIAL', 'COMMERCIAL', 'INDUSTRIAL', 'MIXED', 'RECYCLING', 'HAZARDOUS'], 
+                required: true }
+            ]
+          },
+          {
+            title: 'Planning Details',
+            fields: [
+              { name: 'total_stops', label: 'Total Stops', type: 'number', required: false, min: 1, placeholder: '25' },
+              { name: 'estimated_duration', label: 'Estimated Duration (hours)', type: 'number', required: false, min: 0.5, placeholder: '6' },
+              { name: 'optimization_notes', label: 'Optimization Notes', type: 'textarea', required: false }
+            ]
+          }
+        ]
+      },
+      
+      WMS_FACILITY: {
+        title: 'Create Facility',
+        description: 'Add a new waste processing facility',
+        icon: '🏭',
+        listPath: resolvedOperation.canonical_path.replace('/new', '/list'),
+        steps: [
+          {
+            title: 'Facility Information',
+            fields: [
+              { name: 'facility_name', label: 'Facility Name', type: 'text', required: true, placeholder: 'Central Transfer Station' },
+              { name: 'facility_code', label: 'Facility Code', type: 'text', required: true, placeholder: 'FAC-001' },
+              { name: 'facility_type', label: 'Facility Type', type: 'select', 
+                options: ['TRANSFER_STATION', 'PROCESSING_PLANT', 'RECYCLING_CENTER', 'LANDFILL', 'COMPOSTING_FACILITY', 'HAZMAT_FACILITY'], 
+                required: true },
+              { name: 'address', label: 'Address', type: 'textarea', required: false }
+            ]
+          },
+          {
+            title: 'Operations',
+            fields: [
+              { name: 'total_capacity', label: 'Total Capacity (tons/day)', type: 'number', required: false, min: 1, placeholder: '500' },
+              { name: 'current_utilization', label: 'Current Utilization (%)', type: 'number', required: false, min: 0, max: 100, placeholder: '75' },
+              { name: 'compliance_score', label: 'Compliance Score (%)', type: 'number', required: false, min: 0, max: 100, placeholder: '95' }
+            ]
+          }
+        ]
+      },
+      
+      WMS_CONTRACTOR: {
+        title: 'Create Contractor',
+        description: 'Add a new third-party service contractor',
+        icon: '🤝',
+        listPath: resolvedOperation.canonical_path.replace('/new', '/list'),
+        steps: [
+          {
+            title: 'Contractor Information',
+            fields: [
+              { name: 'contractor_name', label: 'Contractor Name', type: 'text', required: true, placeholder: 'GreenWaste Services Inc.' },
+              { name: 'contractor_code', label: 'Contractor Code', type: 'text', required: true, placeholder: 'CONT-001' },
+              { name: 'contact_person', label: 'Contact Person', type: 'text', required: true },
+              { name: 'email', label: 'Email Address', type: 'email', required: true }
+            ]
+          },
+          {
+            title: 'Contract Details',
+            fields: [
+              { name: 'service_type', label: 'Service Type', type: 'select', 
+                options: ['COLLECTION', 'TRANSPORT', 'PROCESSING', 'MAINTENANCE', 'DISPOSAL', 'CONSULTING'], 
+                required: true },
+              { name: 'contract_value', label: 'Contract Value', type: 'number', required: false, min: 0, placeholder: '250000' },
+              { name: 'performance_rating', label: 'Performance Rating', type: 'number', required: false, min: 1, max: 5, step: 0.1, placeholder: '4.5' }
+            ]
+          }
+        ]
+      },
+      
       WM_ROUTE: {
         title: 'Create Waste Route',
         description: 'Plan a new waste collection route',
@@ -637,103 +789,124 @@ export function EntityWizard({
     }
   }
 
-  return (
-    <div className="container mx-auto p-6 max-w-2xl">
-      {/* Page Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <Button variant="ghost" size="sm" asChild>
-            <a href={config.listPath}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to List
-            </a>
-          </Button>
-        </div>
-        
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <span className="text-2xl">{config.icon}</span>
-          {config.title}
-        </h1>
-        <p className="text-muted-foreground mt-1">{config.description}</p>
-        
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-          <span>HERA</span>
-          <span>→</span>
-          <span>{resolvedOperation.params?.module || 'Module'}</span>
-          <span>→</span>
-          <span>{resolvedOperation.params?.area || 'Area'}</span>
-          <span>→</span>
-          <Badge variant="outline">{resolvedOperation.scenario}</Badge>
+  // Define the three panels for UniversalEntityShell
+  const leftPanelContent = (
+    <div className="space-y-6">
+      {/* Entity Info */}
+      <div>
+        <h3 className="font-semibold text-gray-900 flex items-center gap-2 mb-3">
+          <span className="text-xl">{config.icon}</span>
+          Entity Details
+        </h3>
+        <div className="space-y-2 text-sm">
+          <div>
+            <span className="font-medium text-gray-600">Type:</span>
+            <br />
+            <span className="text-gray-900">{entityType.replace('_', ' ')}</span>
+          </div>
+          <div>
+            <span className="font-medium text-gray-600">Smart Code:</span>
+            <br />
+            <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-800">
+              {resolvedOperation.smart_code}
+            </code>
+          </div>
+          <div>
+            <span className="font-medium text-gray-600">Component:</span>
+            <br />
+            <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-800">
+              {resolvedOperation.component_id}
+            </code>
+          </div>
         </div>
       </div>
-
-      {/* Debug Info */}
-      <Card className="mb-6 bg-muted/50">
-        <CardHeader>
-          <CardTitle className="text-sm">Dynamic Resolution Info</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <strong>Component:</strong><br />
-              <code className="text-xs">{resolvedOperation.component_id}</code>
-            </div>
-            <div>
-              <strong>Entity Type:</strong><br />
-              <code className="text-xs">{entityType}</code>
-            </div>
-            <div>
-              <strong>Smart Code:</strong><br />
-              <code className="text-xs">{resolvedOperation.smart_code}</code>
-            </div>
-            <div>
-              <strong>Alias Hit:</strong><br />
-              <Badge variant={resolvedOperation.aliasHit ? "default" : "secondary"}>
-                {resolvedOperation.aliasHit ? 'Yes' : 'No'}
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Step Progress */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium">Step {step} of {config.steps.length}</span>
-          <span className="text-sm text-muted-foreground">{Math.round((step / config.steps.length) * 100)}% Complete</span>
-        </div>
-        <div className="w-full bg-muted rounded-full h-2">
-          <div 
-            className="bg-primary h-2 rounded-full transition-all duration-300" 
-            style={{ width: `${(step / config.steps.length) * 100}%` }}
-          />
+      <div>
+        <h3 className="font-semibold text-gray-900 mb-3">Progress</h3>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium">Step {step} of {config.steps.length}</span>
+            <span className="text-gray-600">{Math.round((step / config.steps.length) * 100)}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+              style={{ width: `${(step / config.steps.length) * 100}%` }}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Form Step */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{currentStep.title}</CardTitle>
-          <CardDescription>
+      {/* Current Step Info */}
+      <div>
+        <h3 className="font-semibold text-gray-900 mb-3">Current Step</h3>
+        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="font-medium text-blue-900">{currentStep.title}</p>
+          <p className="text-sm text-blue-700 mt-1">
             Complete the required fields to continue
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {currentStep.fields.map((field: any) => (
-            <div key={field.name} className="space-y-2">
-              <Label htmlFor={field.name}>
-                {field.label}
-                {field.required && <span className="text-red-500 ml-1">*</span>}
-              </Label>
-              {renderField(field)}
+          </p>
+        </div>
+      </div>
+
+      {/* Steps Overview */}
+      <div>
+        <h3 className="font-semibold text-gray-900 mb-3">Steps</h3>
+        <div className="space-y-2">
+          {config.steps.map((stepItem: any, index: number) => (
+            <div 
+              key={index}
+              className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${
+                index + 1 === step 
+                  ? 'bg-blue-100 border border-blue-200' 
+                  : index + 1 < step 
+                    ? 'bg-green-50 border border-green-200' 
+                    : 'bg-gray-50 border border-gray-200'
+              }`}
+            >
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                index + 1 === step 
+                  ? 'bg-blue-600 text-white' 
+                  : index + 1 < step 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-gray-400 text-white'
+              }`}>
+                {index + 1}
+              </div>
+              <span className={`text-sm ${
+                index + 1 === step ? 'font-medium text-blue-900' : 'text-gray-700'
+              }`}>
+                {stepItem.title}
+              </span>
             </div>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+    </div>
+  )
+
+  const centerPanelContent = (
+    <div className="p-6">
+      {/* Form Step */}
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-2">{currentStep.title}</h2>
+        <p className="text-gray-600">Complete the required fields to continue</p>
+      </div>
+
+      <div className="space-y-4 mb-8">
+        {currentStep.fields.map((field: any) => (
+          <div key={field.name} className="space-y-2">
+            <Label htmlFor={field.name}>
+              {field.label}
+              {field.required && <span className="text-red-500 ml-1">*</span>}
+            </Label>
+            {renderField(field)}
+          </div>
+        ))}
+      </div>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between mt-6">
+      <div className="flex justify-between pt-6 border-t border-gray-200">
         <Button 
           variant="outline" 
           onClick={handlePrevious}
@@ -765,5 +938,94 @@ export function EntityWizard({
         </div>
       </div>
     </div>
+  )
+
+  const rightPanelContent = (
+    <div className="space-y-6">
+      {/* AI Assistant */}
+      <div>
+        <h4 className="font-medium text-gray-900 mb-3">Smart Suggestions</h4>
+        <div className="space-y-3">
+          <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+            <p className="text-sm text-purple-800 font-medium mb-1">💡 Tip</p>
+            <p className="text-sm text-purple-700">
+              Use descriptive names that clearly identify this {entityType.replace('_', ' ').toLowerCase()}.
+            </p>
+          </div>
+          <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+            <p className="text-sm text-amber-800 font-medium mb-1">⚡ Best Practice</p>
+            <p className="text-sm text-amber-700">
+              Fill in all required fields marked with * to ensure complete data.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Field Help */}
+      <div>
+        <h4 className="font-medium text-gray-900 mb-3">Field Guide</h4>
+        <div className="space-y-2">
+          {currentStep.fields.slice(0, 3).map((field: any, index: number) => (
+            <div key={index} className="p-3 bg-gray-50 rounded-lg">
+              <p className="font-medium text-gray-900 text-sm">{field.label}</p>
+              <p className="text-xs text-gray-600 mt-1">
+                {field.placeholder || `Enter the ${field.label.toLowerCase()} for this entity`}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Progress Stats */}
+      <div>
+        <h4 className="font-medium text-gray-900 mb-3">Statistics</h4>
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Fields Completed:</span>
+            <span className="font-medium">
+              {Object.keys(formData).length}/{currentStep.fields.length}
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Required Fields:</span>
+            <span className="font-medium">
+              {currentStep.fields.filter((f: any) => f.required).length}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  const breadcrumbs = [
+    { label: 'HERA' },
+    { label: resolvedOperation.params?.module || 'Module' },
+    { label: resolvedOperation.params?.area || 'Area' },
+    { label: config.title }
+  ]
+
+  const handleSave = async () => {
+    await handleSubmit()
+    updateLastSaved()
+  }
+
+  return (
+    <UniversalEntityShell
+      title={config.title}
+      subtitle={config.description}
+      breadcrumbs={breadcrumbs}
+      leftPanelContent={leftPanelContent}
+      centerPanelContent={centerPanelContent}
+      rightPanelContent={rightPanelContent}
+      showAIPanel={showAIPanel}
+      onToggleAIPanel={() => setShowAIPanel(!showAIPanel)}
+      onSave={handleSave}
+      onCancel={() => window.location.href = config.listPath}
+      saveButtonText={isLastStep ? `Create ${entityType.replace('_', ' ')}` : 'Continue'}
+      isLoading={loading}
+      lastSaved={lastSaved}
+      allowFullscreen={true}
+      showAutoSave={false}
+    />
   )
 }
