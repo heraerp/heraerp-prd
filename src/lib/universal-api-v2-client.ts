@@ -1206,3 +1206,224 @@ export async function onboardUser(
     p_role: role
   }, organizationId)
 }
+
+// ============================================================================
+// ORGANIZATION MANAGEMENT RPCs (v2.3)
+// ============================================================================
+
+/**
+ * List organizations with pagination
+ * @param actorUserId - Actor user entity UUID
+ * @param options - Pagination options
+ * @returns List of organizations
+ */
+export async function listOrganizations(
+  actorUserId: string,
+  options: { limit?: number; offset?: number } = {}
+): Promise<{
+  data: {
+    items: Array<{
+      id: string
+      organization_name: string
+      organization_code: string
+      organization_type: string
+      industry_classification: string | null
+      parent_organization_id: string | null
+      status: string
+      settings: any
+      created_at: string
+      updated_at: string
+      created_by: string
+      updated_by: string
+    }>
+    action: string
+    limit: number
+    offset: number
+  } | null
+  error: any
+}> {
+  return callRPC('hera_organizations_crud_v1', {
+    p_action: 'LIST',
+    p_actor_user_id: actorUserId,
+    p_payload: {},
+    p_limit: options.limit || 50,
+    p_offset: options.offset || 0
+  })
+}
+
+/**
+ * Get organization details by ID
+ * @param actorUserId - Actor user entity UUID
+ * @param organizationId - Organization UUID
+ * @returns Organization details
+ */
+export async function getOrganization(
+  actorUserId: string,
+  organizationId: string
+): Promise<{
+  data: {
+    action: string
+    organization: {
+      id: string
+      organization_name: string
+      organization_code: string
+      organization_type: string
+      industry_classification: string | null
+      parent_organization_id: string | null
+      status: string
+      settings: any
+      created_at: string
+      updated_at: string
+      created_by: string
+      updated_by: string
+    }
+  } | null
+  error: any
+}> {
+  return callRPC('hera_organizations_crud_v1', {
+    p_action: 'GET',
+    p_actor_user_id: actorUserId,
+    p_payload: { id: organizationId },
+    p_limit: 1,
+    p_offset: 0
+  }, organizationId)
+}
+
+/**
+ * Create new organization with optional bootstrap and members
+ * @param actorUserId - Actor user entity UUID
+ * @param payload - Organization creation payload
+ * @returns Created organization
+ */
+export async function createOrganization(
+  actorUserId: string,
+  payload: {
+    organization_name: string
+    organization_code: string
+    organization_type: string
+    industry_classification?: string
+    parent_organization_id?: string
+    settings?: any
+    status?: string
+    bootstrap?: boolean
+    owner_user_id?: string
+    members?: Array<{
+      user_id: string
+      role: string
+    }>
+  }
+): Promise<{
+  data: {
+    action: string
+    organization: {
+      id: string
+      organization_name: string
+      organization_code: string
+      organization_type: string
+      industry_classification: string | null
+      parent_organization_id: string | null
+      status: string
+      settings: any
+      created_at: string
+      updated_at: string
+      created_by: string
+      updated_by: string
+    }
+  } | null
+  error: any
+}> {
+  return callRPC('hera_organizations_crud_v1', {
+    p_action: 'CREATE',
+    p_actor_user_id: actorUserId,
+    p_payload: payload,
+    p_limit: 1,
+    p_offset: 0
+  })
+}
+
+/**
+ * Update organization with optimistic concurrency control
+ * @param actorUserId - Actor user entity UUID
+ * @param organizationId - Organization UUID
+ * @param updates - Fields to update
+ * @param ifMatchVersion - Version for optimistic locking (optional)
+ * @returns Updated organization
+ */
+export async function updateOrganization(
+  actorUserId: string,
+  organizationId: string,
+  updates: {
+    organization_name?: string
+    organization_code?: string
+    organization_type?: string
+    industry_classification?: string
+    parent_organization_id?: string
+    settings?: any
+    status?: string
+  },
+  ifMatchVersion?: number
+): Promise<{
+  data: {
+    action: string
+    organization: {
+      id: string
+      organization_name: string
+      organization_code: string
+      organization_type: string
+      industry_classification: string | null
+      parent_organization_id: string | null
+      status: string
+      settings: any
+      created_at: string
+      updated_at: string
+      created_by: string
+      updated_by: string
+    }
+  } | null
+  error: any
+}> {
+  const payload: any = {
+    id: organizationId,
+    ...updates
+  }
+
+  if (ifMatchVersion !== undefined) {
+    payload.if_match_version = ifMatchVersion
+  }
+
+  return callRPC('hera_organizations_crud_v1', {
+    p_action: 'UPDATE',
+    p_actor_user_id: actorUserId,
+    p_payload: payload,
+    p_limit: 1,
+    p_offset: 0
+  }, organizationId)
+}
+
+/**
+ * Archive organization (soft delete)
+ * @param actorUserId - Actor user entity UUID
+ * @param organizationId - Organization UUID
+ * @returns Archive confirmation
+ */
+export async function archiveOrganization(
+  actorUserId: string,
+  organizationId: string
+): Promise<{
+  data: {
+    action: string
+    organization: {
+      id: string
+      status: string
+    }
+  } | null
+  error: any
+}> {
+  return callRPC('hera_organizations_crud_v1', {
+    p_action: 'ARCHIVE',
+    p_actor_user_id: actorUserId,
+    p_payload: { id: organizationId },
+    p_limit: 1,
+    p_offset: 0
+  }, organizationId)
+}
