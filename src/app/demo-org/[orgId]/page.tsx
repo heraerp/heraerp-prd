@@ -1,5 +1,7 @@
 
 
+'use client';
+
 /**
  * Demo Organization Home
  * Smart Code: HERA.DEMO.ORG.HOME.v1

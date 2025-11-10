@@ -1,10 +1,10 @@
+'use client';
+
 // ================================================================================
 // SALON APPOINTMENT EDIT PAGE
 // Smart Code: HERA.PAGES.SALON.APPOINTMENTS.EDIT.V1
 // Edit existing appointment details
 // ================================================================================
-
-
 
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'

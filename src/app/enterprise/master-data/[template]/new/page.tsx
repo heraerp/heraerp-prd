@@ -1,5 +1,7 @@
 
 
+'use client';
+
 /**
  * New Master Data Entity Page
  * Smart Code: HERA.ENTERPRISE.MASTER_DATA.NEW_ENTITY.v1

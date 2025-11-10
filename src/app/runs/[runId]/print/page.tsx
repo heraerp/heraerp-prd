@@ -1,5 +1,7 @@
 
 
+'use client';
+
 import { api } from '@/lib/api-client'
 import { formatDateTime } from '@/lib/format'
 import { RunStatusBadge } from '@/components/RunStatusBadge'
