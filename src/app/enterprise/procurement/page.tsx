@@ -1,19 +1,22 @@
-'use client'
-
 /**
- * Enterprise Procurement Overview Page
- * Smart Code: HERA.ENTERPRISE.PROCUREMENT.OVERVIEW.v1
+ * Enterprise Procurement Overview Page - Dynamic Tiles
+ * Smart Code: HERA.ENTERPRISE.PROCUREMENT.DYNAMIC_TILES.v1
  * 
- * HERA Enterprise procurement management dashboard
+ * HERA Enterprise procurement management dashboard with dynamic tile system
+ * Maintains three-column layout: News | Dynamic Tiles | HERA Assistant
  */
 
-import React, { useState } from 'react'
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { ProtectedPage } from '@/components/rbac/ProtectedPage'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { 
   Search,
   Bell,
@@ -66,12 +69,175 @@ import {
   Timer,
   Database,
   UserCheck,
-  LineChart
+  LineChart,
+  Loader2
 } from 'lucide-react'
 
+// Icon mapping for dynamic tiles
+const iconMap = {
+  'zap': Zap,
+  'shopping-cart': ShoppingCart,
+  'target': Target,
+  'users': Users,
+  'file-text': FileText,
+  'bar-chart-3': BarChart3,
+  'calculator': Calculator,
+  'shield': Shield,
+  'building-2': Building2,
+  'credit-card': CreditCard,
+  'settings': Settings
+}
+
+interface ProcurementTile {
+  id: string
+  entity_name: string
+  entity_code: string
+  slug: string
+  subtitle: string
+  icon: string
+  color: string
+  persona_label: string
+  visible_roles: string[]
+  route: string
+  order: number
+}
+
 export default function EnterpriseProcurementOverviewPage() {
+  const router = useRouter()
+  const { user, organization, isAuthenticated, isLoading, contextLoading } = useHERAAuth()
   const [activeTab, setActiveTab] = useState('favorites')
   const [searchQuery, setSearchQuery] = useState('')
+  
+  // Dynamic tiles state
+  const [dynamicTiles, setDynamicTiles] = useState<ProcurementTile[]>([])
+  const [tilesLoading, setTilesLoading] = useState(true)
+  const [tilesError, setTilesError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (isAuthenticated && organization?.id) {
+      loadDynamicTiles()
+    }
+  }, [isAuthenticated, organization?.id])
+
+  const loadDynamicTiles = async () => {
+    try {
+      setTilesLoading(true)
+      setTilesError(null)
+      
+      console.log('🔍 Loading dynamic procurement tiles')
+
+      // Dynamic tiles configuration - these will come from API/database later
+      const procurementTiles: ProcurementTile[] = [
+        {
+          id: 'modern-procurement',
+          entity_name: 'Modern Procurement',
+          entity_code: 'MODERN_PROC',
+          slug: 'modern',
+          subtitle: 'AI-Driven Process Automation',
+          icon: 'zap',
+          color: 'bg-blue-600',
+          persona_label: 'Digital Transformation',
+          visible_roles: ['procurement_manager', 'admin'],
+          route: '/enterprise/procurement/modern',
+          order: 1
+        },
+        {
+          id: 'operational-procurement',
+          entity_name: 'Operational Procurement',
+          entity_code: 'OPS_PROC',
+          slug: 'operational',
+          subtitle: 'Day-to-Day Purchasing Tasks',
+          icon: 'shopping-cart',
+          color: 'bg-green-600',
+          persona_label: 'Operations',
+          visible_roles: ['buyer', 'procurement_manager'],
+          route: '/enterprise/procurement/operational',
+          order: 2
+        },
+        {
+          id: 'sourcing',
+          entity_name: 'Sourcing',
+          entity_code: 'SOURCING',
+          slug: 'sourcing',
+          subtitle: 'Cognitive Sourcing & Contracts',
+          icon: 'target',
+          color: 'bg-orange-600',
+          persona_label: 'Strategic Sourcing',
+          visible_roles: ['sourcing_manager', 'procurement_manager'],
+          route: '/enterprise/procurement/sourcing',
+          order: 3
+        },
+        {
+          id: 'supplier-management',
+          entity_name: 'Supplier Management',
+          entity_code: 'SUPPLIERS',
+          slug: 'suppliers',
+          subtitle: 'Real-Time Supplier Evaluation',
+          icon: 'users',
+          color: 'bg-purple-600',
+          persona_label: 'Supplier Relations',
+          visible_roles: ['supplier_manager', 'procurement_manager'],
+          route: '/enterprise/procurement/suppliers',
+          order: 4
+        },
+        {
+          id: 'invoice-management',
+          entity_name: 'Invoice Management',
+          entity_code: 'INVOICES',
+          slug: 'invoices',
+          subtitle: 'Automated Invoice Processing',
+          icon: 'file-text',
+          color: 'bg-teal-600',
+          persona_label: 'Accounts Payable',
+          visible_roles: ['ap_clerk', 'finance_manager'],
+          route: '/enterprise/procurement/invoices',
+          order: 5
+        },
+        {
+          id: 'analytics-insights',
+          entity_name: 'Procurement Analytics',
+          entity_code: 'ANALYTICS',
+          slug: 'analytics',
+          subtitle: 'Spend Analysis & Insights',
+          icon: 'bar-chart-3',
+          color: 'bg-red-600',
+          persona_label: 'Business Intelligence',
+          visible_roles: ['analyst', 'procurement_manager'],
+          route: '/enterprise/procurement/analytics',
+          order: 6
+        },
+        {
+          id: 'purchasing-rebates',
+          entity_name: 'Purchasing Rebates',
+          entity_code: 'REBATES',
+          slug: 'purchasing-rebates',
+          subtitle: 'End-to-end Supplier Rebate Management',
+          icon: 'calculator',
+          color: 'bg-indigo-600',
+          persona_label: 'Financial Optimization',
+          visible_roles: ['finance_manager', 'procurement_manager'],
+          route: '/enterprise/procurement/purchasing-rebates',
+          order: 7
+        }
+      ]
+
+      setDynamicTiles(procurementTiles.sort((a, b) => a.order - b.order))
+
+    } catch (err) {
+      console.error('Error loading dynamic tiles:', err)
+      setTilesError(err instanceof Error ? err.message : 'Failed to load tiles')
+    } finally {
+      setTilesLoading(false)
+    }
+  }
+
+  const handleTileClick = (tile: ProcurementTile) => {
+    if (tile.route) {
+      router.push(tile.route)
+    } else {
+      alert(`${tile.entity_name} coming soon!\\nRoute: ${tile.route}\\nRoles: ${tile.visible_roles.join(', ')}`)
+    }
+  }
 
   // News/Updates data
   const newsItems = [
@@ -96,67 +262,7 @@ export default function EnterpriseProcurementOverviewPage() {
     }
   ]
 
-  // Main module tiles based on YAML
-  const modulePages = [
-    {
-      id: 'modern-procurement',
-      title: 'Modern Procurement',
-      subtitle: 'AI-Driven Process Automation',
-      icon: Zap,
-      color: 'bg-blue-600',
-      href: '/enterprise/procurement/modern'
-    },
-    {
-      id: 'operational-procurement',
-      title: 'Operational Procurement',
-      subtitle: 'Day-to-Day Purchasing Tasks',
-      icon: ShoppingCart,
-      color: 'bg-green-600',
-      href: '/enterprise/procurement/operational'
-    },
-    {
-      id: 'sourcing',
-      title: 'Sourcing',
-      subtitle: 'Cognitive Sourcing & Contracts',
-      icon: Target,
-      color: 'bg-orange-600',
-      href: '/enterprise/procurement/sourcing'
-    },
-    {
-      id: 'supplier-management',
-      title: 'Supplier Management',
-      subtitle: 'Real-Time Supplier Evaluation',
-      icon: Users,
-      color: 'bg-purple-600',
-      href: '/enterprise/procurement/suppliers'
-    },
-    {
-      id: 'invoice-management',
-      title: 'Invoice Management',
-      subtitle: 'Automated Invoice Processing',
-      icon: FileText,
-      color: 'bg-teal-600',
-      href: '/enterprise/procurement/invoices'
-    },
-    {
-      id: 'analytics-insights',
-      title: 'Procurement Analytics',
-      subtitle: 'Spend Analysis & Insights',
-      icon: BarChart3,
-      color: 'bg-red-600',
-      href: '/enterprise/procurement/analytics'
-    },
-    {
-      id: 'purchasing-rebates',
-      title: 'Purchasing Rebates',
-      subtitle: 'End-to-end Supplier Rebate Management',
-      icon: Calculator,
-      color: 'bg-indigo-600',
-      href: '/enterprise/procurement/purchasing-rebates'
-    }
-  ]
-
-  // Apps data
+  // Apps data for tabs (will remain static for now)
   const appsData = {
     favorites: [
       { icon: ShoppingCart, title: 'Purchase Orders', subtitle: 'Create & manage orders', href: '/enterprise/procurement/orders' },
@@ -248,6 +354,7 @@ export default function EnterpriseProcurementOverviewPage() {
         {/* Main Content */}
         <div className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
             {/* Left Column - News */}
             <div className="lg:col-span-1 space-y-4">
               <div className="flex items-center space-x-2">
@@ -275,36 +382,54 @@ export default function EnterpriseProcurementOverviewPage() {
               </div>
             </div>
 
-            {/* Center Column - Pages and Apps */}
+            {/* Center Column - Dynamic Tiles and Apps */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Pages Section */}
+              
+              {/* Dynamic Tiles Section */}
               <div>
                 <div className="flex items-center space-x-2 mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">Pages</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">Procurement Modules ({dynamicTiles.length})</h2>
                   <ChevronDown className="w-4 h-4 text-gray-500" />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  {modulePages.map((page) => {
-                    const Icon = page.icon
-                    return (
-                      <Card 
-                        key={page.id} 
-                        className={`${page.color} text-white border-0 hover:shadow-lg transition-shadow cursor-pointer`}
-                        onClick={() => window.location.href = page.href}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <Icon className="w-6 h-6" />
-                            <Eye className="w-4 h-4 opacity-75" />
-                          </div>
-                          <h3 className="font-semibold text-lg mb-1">{page.title}</h3>
-                          <p className="text-sm opacity-90">{page.subtitle}</p>
-                        </CardContent>
-                      </Card>
-                    )
-                  })}
-                </div>
+                {tilesLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-purple-600 mr-2" />
+                    <span className="text-gray-600">Loading modules...</span>
+                  </div>
+                ) : tilesError ? (
+                  <div className="text-center py-12">
+                    <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-2" />
+                    <p className="text-red-600">{tilesError}</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    {dynamicTiles.map((tile) => {
+                      const Icon = iconMap[tile.icon] || Settings
+                      return (
+                        <Card 
+                          key={tile.id} 
+                          className={`${tile.color} text-white border-0 hover:shadow-lg transition-all duration-200 hover:scale-105 cursor-pointer`}
+                          onClick={() => handleTileClick(tile)}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <Icon className="w-6 h-6" />
+                              <Eye className="w-4 h-4 opacity-75" />
+                            </div>
+                            <h3 className="font-semibold text-lg mb-1">{tile.entity_name}</h3>
+                            <p className="text-sm opacity-90 mb-2">{tile.subtitle}</p>
+                            {tile.persona_label && (
+                              <Badge variant="secondary" className="text-xs bg-white/20">
+                                {tile.persona_label}
+                              </Badge>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Apps Section */}
@@ -331,7 +456,7 @@ export default function EnterpriseProcurementOverviewPage() {
                             <Card 
                               key={index} 
                               className="border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
-                              onClick={() => window.location.href = app.href}
+                              onClick={() => router.push(app.href)}
                             >
                               <CardContent className="p-4">
                                 <div className="flex items-center space-x-3">

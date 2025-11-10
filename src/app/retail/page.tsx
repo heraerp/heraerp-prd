@@ -1,9 +1,8 @@
 /**
- * HERA Apps Index Page
- * Smart Code: HERA.PLATFORM.APPS.INDEX.v1
+ * HERA Retail Root Page
+ * Smart Code: HERA.RETAIL.ROOT.v1
  * 
- * Landing page for HERA application modules
- * Redirects to appropriate destination based on user context
+ * Root page for retail system - redirects to appropriate destination
  */
 
 'use client'
@@ -11,20 +10,17 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { Loader2, Grid3X3 } from 'lucide-react'
+import { Loader2, ShoppingBag } from 'lucide-react'
 
-export default function AppsIndexPage() {
+export default function RetailRootPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading, user } = useHERAAuth()
+  const { isAuthenticated, isLoading } = useHERAAuth()
 
   useEffect(() => {
     if (!isLoading) {
       if (isAuthenticated) {
-        // Redirect authenticated users to the retail dashboard for now
-        // In the future, this could be role-based or preference-based
         router.replace('/retail/dashboard')
       } else {
-        // Redirect unauthenticated users to login
         router.replace('/retail/login')
       }
     }
@@ -37,18 +33,18 @@ export default function AppsIndexPage() {
           <div className="relative">
             <div className="absolute -inset-4 bg-gradient-to-r from-indigo-400 to-blue-500 rounded-full blur-lg opacity-30" />
             <div className="relative bg-indigo-800 p-4 rounded-2xl border border-indigo-700">
-              <Grid3X3 className="h-8 w-8 text-indigo-400 animate-pulse" />
+              <ShoppingBag className="h-8 w-8 text-indigo-400 animate-pulse" />
             </div>
           </div>
         </div>
         
         <h1 className="text-2xl font-bold text-white mb-4">
-          HERA Application Modules
+          HERA Retail & Distribution
         </h1>
         
         <div className="flex items-center gap-2 text-indigo-300">
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span>Loading your workspace...</span>
+          <span>Initializing Retail Management System...</span>
         </div>
       </div>
     </div>

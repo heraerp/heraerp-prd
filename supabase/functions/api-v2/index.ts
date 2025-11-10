@@ -5,6 +5,9 @@
 
 import { serve } from "https://deno.land/std@0.202.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getRedisClient } from './redis-client.ts';
+import { getRateLimiter } from './rate-limiter.ts';
+import { getIdempotencyHandler } from './idempotency.ts';
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -36,12 +39,13 @@ function requestId() {
   return crypto.randomUUID();
 }
 
-// ---------- Org & Actor resolution ----------
+// ---------- Org & Actor resolution with Redis caching ----------
 async function resolveActorAndOrg(
   supabaseAdmin: ReturnType<typeof createClient>,
   req: Request,
 ) {
   const rid = requestId();
+  const redis = getRedisClient();
 
   // 1) JWT validation (Supabase)
   const token = getBearer(req);
@@ -51,13 +55,41 @@ async function resolveActorAndOrg(
   const { data: user, error: authErr } = await supabaseAdmin.auth.getUser(token);
   if (authErr || !user?.user) return { error: json(401, { error: "invalid_token", rid }) };
 
-  // 2) Resolve identity → USER entity id via server-side function
-  //    (server function maps auth UID → USER entity, memberships, etc.)
-  //    Contract documented in Authorization flow.
-  const { data: identity, error: idErr } = await supabaseAdmin
-    .rpc("resolve_user_identity_v1", { p_auth_uid: user.user.id });
-  if (idErr || !identity?.user_entity_id) {
-    return { error: json(401, { error: "identity_not_resolved", rid }) };
+  // 2) Resolve identity with Redis caching
+  let identity: any = null;
+  
+  // Try Redis cache first
+  if (redis) {
+    try {
+      identity = await redis.getActorIdentity(user.user.id);
+      if (identity) {
+        console.log(`⚡ Actor identity cache hit for ${user.user.id.slice(0, 8)}`);
+      }
+    } catch (error) {
+      console.warn('⚠️ Redis cache lookup failed:', error.message);
+    }
+  }
+
+  // Cache miss - resolve from database
+  if (!identity) {
+    console.log(`🔍 Resolving actor identity from database for ${user.user.id.slice(0, 8)}`);
+    const { data: dbIdentity, error: idErr } = await supabaseAdmin
+      .rpc("resolve_user_identity_v1", { p_auth_uid: user.user.id });
+    
+    if (idErr || !dbIdentity?.user_entity_id) {
+      return { error: json(401, { error: "identity_not_resolved", rid }) };
+    }
+    
+    identity = dbIdentity;
+    
+    // Cache the result for future requests
+    if (redis) {
+      try {
+        await redis.cacheActorIdentity(user.user.id, identity, { ttl: 300, prefix: 'actor_identity' });
+      } catch (error) {
+        console.warn('⚠️ Failed to cache actor identity:', error.message);
+      }
+    }
   }
 
   // 3) Resolve org context (Header > JWT custom claim > default membership)
@@ -279,8 +311,55 @@ async function handle(req: Request) {
     global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
   });
 
+  // Health check endpoint (no auth required)
+  if (url.pathname.endsWith("/api/v2/health")) {
+    const rid = requestId();
+    
+    // Check all performance infrastructure components
+    const redis = getRedisClient();
+    const rateLimiter = getRateLimiter();
+    const idempotencyHandler = getIdempotencyHandler();
+    
+    const [redisHealth, rateLimitHealth, idempotencyHealth] = await Promise.all([
+      redis ? redis.healthCheck() : Promise.resolve({ status: 'unhealthy', error: 'Redis not configured' }),
+      rateLimiter.healthCheck(),
+      idempotencyHandler.healthCheck()
+    ]);
+
+    const overallStatus = 
+      redisHealth.status === 'healthy' && 
+      rateLimitHealth.status === 'healthy' && 
+      idempotencyHealth.status === 'healthy' ? 'healthy' : 
+      redisHealth.status === 'unhealthy' || 
+      rateLimitHealth.status === 'unhealthy' || 
+      idempotencyHealth.status === 'unhealthy' ? 'degraded' : 'unhealthy';
+
+    return json(200, {
+      status: overallStatus,
+      timestamp: new Date().toISOString(),
+      version: "2.3.0", // Week 2 version
+      components: {
+        api_gateway: "healthy",
+        redis: redisHealth.status,
+        rate_limiter: rateLimitHealth.status,
+        idempotency: idempotencyHealth.status,
+        guardrails: "healthy"
+      },
+      performance: {
+        redis_latency_ms: redisHealth.latency,
+        caching_enabled: redis !== null,
+        rate_limiting_enabled: true,
+        idempotency_enabled: true
+      },
+      redis_details: redisHealth,
+      rate_limit_details: rateLimitHealth,
+      idempotency_details: idempotencyHealth,
+      rid
+    });
+  }
+
   const method = req.method.toUpperCase();
-  if (!["POST"].includes(method)) {
+  if (!["POST", "GET"].includes(method)) {
     return json(405, { error: "method_not_allowed" });
   }
 
@@ -307,19 +386,71 @@ async function handle(req: Request) {
   const gr = validatePayloadAgainstGuardrails(baseCtx, body);
   if (!gr.ok) return json(400, { error: `guardrail_violation:${gr.reason}`, rid });
 
-  // Idempotency / Rate limiting hooks will be added in Phase 2
+  // Rate Limiting (Week 2)
+  const rateLimiter = getRateLimiter();
+  const endpoint = url.pathname.split('/').pop() || 'unknown';
+  const rateLimitCheck = await rateLimiter.createMiddleware()(
+    req,
+    ok.actorUserEntityId,
+    ok.orgId,
+    undefined, // userRole - could extract from identity
+    endpoint
+  );
+
+  if (!rateLimitCheck.allowed) {
+    console.log(`🚫 Rate limit exceeded for actor ${ok.actorUserEntityId.slice(0, 8)} on ${endpoint}`);
+    return rateLimitCheck.response!;
+  }
+
+  // Idempotency Check (Week 2)
+  const idempotencyHandler = getIdempotencyHandler();
+  const idempotencyCheck = await idempotencyHandler.createMiddleware()(
+    req,
+    ok.actorUserEntityId,
+    ok.orgId,
+    body
+  );
+
+  if (idempotencyCheck.isDuplicate) {
+    console.log(`🔄 Returning cached response for duplicate request`);
+    return idempotencyCheck.response!;
+  }
+
+  // Helper function to add headers and store idempotency response
+  const addHeadersAndStore = (response: Response, responseBody: any) => {
+    // Add rate limit headers
+    Object.entries(rateLimitCheck.headers).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+
+    // Store for idempotency if successful
+    if (response.status >= 200 && response.status < 300 && idempotencyCheck.storeResponse) {
+      idempotencyCheck.storeResponse({
+        status: response.status,
+        body: responseBody,
+        headers: Object.fromEntries(response.headers.entries())
+      }).catch(error => {
+        console.warn('⚠️ Failed to store idempotency response:', error);
+      });
+    }
+
+    return response;
+  };
+
   // Route
   try {
     if (url.pathname.endsWith("/api/v2/entities")) {
       const { data, error } = await callEntitiesCRUD(supabaseAdmin, baseCtx, body);
       if (error) return json(400, { error: error.message, rid });
-      return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+      const responseBody = { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId };
+      return addHeadersAndStore(json(200, responseBody), responseBody);
     }
 
     if (url.pathname.endsWith("/api/v2/transactions")) {
       const { data, error } = await callTransactionsPost(supabaseAdmin, baseCtx, body);
       if (error) return json(400, { error: error.message, rid });
-      return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+      const responseBody = { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId };
+      return addHeadersAndStore(json(200, responseBody), responseBody);
     }
 
     // Micro-Apps Catalog endpoint (platform org only)
