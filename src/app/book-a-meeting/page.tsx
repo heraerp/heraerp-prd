@@ -136,18 +136,16 @@ export default function BookMeetingPage() {
                   </div>
                 </div>
 
-                {/* CTA Button - Enterprise Style */}
+                {/* CTA Button - HERA Style with Golden Outline */}
                 <a
                   href="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative flex items-center justify-between w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/20 active:scale-[0.98]"
+                  className="group inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-amber-500/50 hover:border-amber-400 hover:bg-amber-500/10 text-amber-400 hover:text-amber-300 font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/20 active:scale-[0.98]"
                 >
-                  <span className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5" />
-                    Book Your Demo
-                  </span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                  <Calendar className="w-4 h-4" />
+                  Book Your Demo
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                 </a>
 
                 {/* Trust Indicators */}
