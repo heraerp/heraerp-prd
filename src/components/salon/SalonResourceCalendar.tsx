@@ -31,11 +31,17 @@ import {
   AlertTriangle,
   Info,
   Building2,
-  Clock
+  Clock,
+  Calendar,
+  UserCheck,
+  DollarSign,
+  CheckCircle,
+  XCircle,
+  FileEdit
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { useHeraAppointments } from '@/hooks/useHeraAppointments'
+import { useHeraAppointments, STATUS_CONFIG } from '@/hooks/useHeraAppointments'
 import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { useHeraCustomers } from '@/hooks/useHeraCustomers'
 import { useHeraServices } from '@/hooks/useHeraServices'
@@ -144,6 +150,24 @@ function useIsMounted() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   return mounted
+}
+
+// Helper to get status icon based on STATUS_CONFIG
+function getStatusIcon(status: string) {
+  const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+    'FileEdit': FileEdit,
+    'Calendar': Calendar,
+    'UserCheck': UserCheck,
+    'Clock': Clock,
+    'DollarSign': DollarSign,
+    'CheckCircle': CheckCircle,
+    'XCircle': XCircle,
+    'AlertCircle': AlertCircle
+  }
+
+  const iconName = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.icon || 'Calendar'
+  const IconComponent = iconMap[iconName] || Scissors
+  return <IconComponent className="w-3 h-3" />
 }
 
 export function SalonResourceCalendar({
@@ -668,7 +692,7 @@ export function SalonResourceCalendar({
         color: staffColor.bg, // ✨ Use staff color instead of service color
         colorLight: staffColor.light,
         colorBorder: staffColor.border,
-        icon: <Scissors className="w-3 h-3" />,
+        icon: getStatusIcon(apt.status || 'booked'), // ✅ Dynamic status-based icon
         station: `station-1`,
         branchId: appointmentBranchId
       }
