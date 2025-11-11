@@ -11,6 +11,7 @@ import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'
 import { ConditionalLoadingOverlay } from '@/components/auth/ConditionalLoadingOverlay'
 import { HMRRecoveryHelper } from '@/components/dev/HMRRecoveryHelper'
+import { InstantRouterProvider, NavigationProgress, PerformanceMetrics } from '@/components/performance/InstantRouter'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
 import '@/styles/radix-overrides.css' // Radix UI global overrides for HERA modals
@@ -159,20 +160,24 @@ export default function RootLayout({
         {/* Smart HMR Recovery Helper (development only) */}
         {process.env.NODE_ENV === 'development' && <HMRRecoveryHelper />}
 
-        <ThemeProvider>
-          <PublicPageWrapper>
-            <QueryProvider>
-              <HERAAuthProvider>
-                <ToastProvider>
-                  {children}
-                  <Toaster />
-                  <CookieBanner />
-                  <ConditionalLoadingOverlay />
-                </ToastProvider>
-              </HERAAuthProvider>
-            </QueryProvider>
-          </PublicPageWrapper>
-        </ThemeProvider>
+        <InstantRouterProvider>
+          <NavigationProgress />
+          <ThemeProvider>
+            <PublicPageWrapper>
+              <QueryProvider>
+                <HERAAuthProvider>
+                  <ToastProvider>
+                    {children}
+                    <Toaster />
+                    <CookieBanner />
+                    <ConditionalLoadingOverlay />
+                  </ToastProvider>
+                </HERAAuthProvider>
+              </QueryProvider>
+            </PublicPageWrapper>
+          </ThemeProvider>
+          <PerformanceMetrics />
+        </InstantRouterProvider>
       </body>
     </html>
   )

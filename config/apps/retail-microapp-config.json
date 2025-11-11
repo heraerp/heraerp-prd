@@ -1,0 +1,457 @@
+{
+  "app_id": "retail_distribution",
+  "version": "v1.0.0",
+  "display_name": "HERA Retail & Distribution",
+  "description": "Comprehensive retail and distribution management with POS, inventory, and analytics",
+  "organization_id": "ff837c4c-95f2-43ac-a498-39597018b10c",
+  "login_credentials": {
+    "email": "retail@heraerp.com",
+    "password": "demo2025!"
+  },
+  "entities": [
+    {
+      "entity_type": "RETAIL_PRODUCT",
+      "smart_code_prefix": "HERA.RETAIL.PRODUCT",
+      "display_name": "Product",
+      "fields": [
+        {
+          "field_name": "product_name",
+          "display_label": "Product Name",
+          "field_type": "text",
+          "is_required": true,
+          "validation": {
+            "min_length": 2,
+            "max_length": 100
+          }
+        },
+        {
+          "field_name": "sku",
+          "display_label": "SKU",
+          "field_type": "text",
+          "is_required": true,
+          "validation": {
+            "pattern": "^[A-Z0-9-]{3,20}$"
+          }
+        },
+        {
+          "field_name": "barcode",
+          "display_label": "Barcode",
+          "field_type": "text",
+          "is_required": false
+        },
+        {
+          "field_name": "price",
+          "display_label": "Unit Price",
+          "field_type": "number",
+          "is_required": true,
+          "validation": {
+            "min": 0,
+            "currency": "AED"
+          }
+        },
+        {
+          "field_name": "cost",
+          "display_label": "Cost Price",
+          "field_type": "number",
+          "is_required": false,
+          "validation": {
+            "min": 0,
+            "currency": "AED"
+          }
+        },
+        {
+          "field_name": "category_id",
+          "display_label": "Category",
+          "field_type": "entity_ref",
+          "is_required": true,
+          "ref": {
+            "entity_type": "RETAIL_CATEGORY"
+          }
+        },
+        {
+          "field_name": "stock_quantity",
+          "display_label": "Stock Quantity",
+          "field_type": "number",
+          "is_required": false,
+          "validation": {
+            "min": 0
+          }
+        }
+      ]
+    },
+    {
+      "entity_type": "RETAIL_CATEGORY",
+      "smart_code_prefix": "HERA.RETAIL.CATEGORY",
+      "display_name": "Category",
+      "fields": [
+        {
+          "field_name": "category_name",
+          "display_label": "Category Name",
+          "field_type": "text",
+          "is_required": true
+        },
+        {
+          "field_name": "description",
+          "display_label": "Description",
+          "field_type": "text",
+          "is_required": false
+        }
+      ]
+    },
+    {
+      "entity_type": "RETAIL_CUSTOMER",
+      "smart_code_prefix": "HERA.RETAIL.CUSTOMER",
+      "display_name": "Customer",
+      "fields": [
+        {
+          "field_name": "customer_name",
+          "display_label": "Customer Name",
+          "field_type": "text",
+          "is_required": true
+        },
+        {
+          "field_name": "email",
+          "display_label": "Email",
+          "field_type": "email",
+          "is_required": false
+        },
+        {
+          "field_name": "phone",
+          "display_label": "Phone Number",
+          "field_type": "text",
+          "is_required": false
+        },
+        {
+          "field_name": "loyalty_points",
+          "display_label": "Loyalty Points",
+          "field_type": "number",
+          "is_required": false,
+          "validation": {
+            "min": 0
+          }
+        }
+      ]
+    },
+    {
+      "entity_type": "RETAIL_STORE",
+      "smart_code_prefix": "HERA.RETAIL.STORE",
+      "display_name": "Store Location",
+      "fields": [
+        {
+          "field_name": "store_name",
+          "display_label": "Store Name",
+          "field_type": "text",
+          "is_required": true
+        },
+        {
+          "field_name": "store_code",
+          "display_label": "Store Code",
+          "field_type": "text",
+          "is_required": true,
+          "validation": {
+            "pattern": "^[A-Z0-9]{3,10}$"
+          }
+        },
+        {
+          "field_name": "address",
+          "display_label": "Address",
+          "field_type": "text",
+          "is_required": false
+        }
+      ]
+    },
+    {
+      "entity_type": "RETAIL_SUPPLIER",
+      "smart_code_prefix": "HERA.RETAIL.SUPPLIER",
+      "display_name": "Supplier",
+      "fields": [
+        {
+          "field_name": "supplier_name",
+          "display_label": "Supplier Name",
+          "field_type": "text",
+          "is_required": true
+        },
+        {
+          "field_name": "contact_email",
+          "display_label": "Contact Email",
+          "field_type": "email",
+          "is_required": false
+        },
+        {
+          "field_name": "payment_terms",
+          "display_label": "Payment Terms",
+          "field_type": "text",
+          "is_required": false
+        }
+      ]
+    }
+  ],
+  "transactions": [
+    {
+      "transaction_type": "POS_SALE",
+      "smart_code_prefix": "HERA.RETAIL.POS.SALE",
+      "display_name": "POS Sale",
+      "workflow": {
+        "states": ["draft", "processing", "completed", "refunded"],
+        "initial_state": "draft",
+        "transitions": [
+          {
+            "from": "draft",
+            "to": "processing",
+            "action": "process_payment",
+            "required_fields": ["total_amount", "payment_method"]
+          },
+          {
+            "from": "processing",
+            "to": "completed",
+            "action": "complete_sale",
+            "auto_transition": true
+          },
+          {
+            "from": "completed",
+            "to": "refunded",
+            "action": "process_refund",
+            "required_role": "manager"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "field_name": "customer_id",
+          "display_label": "Customer",
+          "field_type": "entity_ref",
+          "is_required": false,
+          "ref": {
+            "entity_type": "RETAIL_CUSTOMER"
+          }
+        },
+        {
+          "field_name": "store_id",
+          "display_label": "Store",
+          "field_type": "entity_ref",
+          "is_required": true,
+          "ref": {
+            "entity_type": "RETAIL_STORE"
+          }
+        },
+        {
+          "field_name": "payment_method",
+          "display_label": "Payment Method",
+          "field_type": "select",
+          "is_required": true,
+          "options": ["cash", "card", "digital_wallet", "store_credit"]
+        },
+        {
+          "field_name": "subtotal",
+          "display_label": "Subtotal",
+          "field_type": "number",
+          "is_required": true
+        },
+        {
+          "field_name": "tax_amount",
+          "display_label": "Tax Amount",
+          "field_type": "number",
+          "is_required": false
+        },
+        {
+          "field_name": "discount_amount",
+          "display_label": "Discount",
+          "field_type": "number",
+          "is_required": false
+        }
+      ],
+      "line_types": [
+        {
+          "line_type": "PRODUCT_LINE",
+          "display_name": "Product Line",
+          "fields": [
+            {
+              "field_name": "product_id",
+              "display_label": "Product",
+              "field_type": "entity_ref",
+              "is_required": true,
+              "ref": {
+                "entity_type": "RETAIL_PRODUCT"
+              }
+            },
+            {
+              "field_name": "quantity",
+              "display_label": "Quantity",
+              "field_type": "number",
+              "is_required": true,
+              "validation": {
+                "min": 1
+              }
+            },
+            {
+              "field_name": "unit_price",
+              "display_label": "Unit Price",
+              "field_type": "number",
+              "is_required": true
+            },
+            {
+              "field_name": "line_discount",
+              "display_label": "Line Discount",
+              "field_type": "number",
+              "is_required": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "domain_id": "retail_operations",
+      "display_name": "Retail Operations",
+      "description": "POS, Sales, Customer Service",
+      "icon": "shopping_bag",
+      "color": "indigo",
+      "route": "/retail/operations",
+      "roles": ["store_manager", "cashier", "sales_associate"]
+    },
+    {
+      "domain_id": "wholesale_distribution",
+      "display_name": "Wholesale Distribution",
+      "description": "B2B Sales, Distribution Management",
+      "icon": "truck",
+      "color": "blue-gray",
+      "route": "/retail/wholesale",
+      "roles": ["distributor_manager", "sales_manager"]
+    },
+    {
+      "domain_id": "merchandising_pricing",
+      "display_name": "Merchandise & Pricing",
+      "description": "Product Management, Pricing Strategy",
+      "icon": "tag",
+      "color": "amber",
+      "route": "/retail/merchandising",
+      "roles": ["merchandiser", "pricing_analyst"]
+    },
+    {
+      "domain_id": "inventory_warehouse",
+      "display_name": "Inventory & Warehouse",
+      "description": "Stock Management, Warehouse Operations",
+      "icon": "warehouse",
+      "color": "teal",
+      "route": "/retail/inventory",
+      "roles": ["store_manager", "warehouse_lead", "inventory_manager"]
+    },
+    {
+      "domain_id": "planning_replenishment",
+      "display_name": "Planning & Replenishment",
+      "description": "Demand Planning, Auto-Replenishment",
+      "icon": "trending_up",
+      "color": "cyan",
+      "route": "/retail/planning",
+      "roles": ["planner", "buyer"]
+    },
+    {
+      "domain_id": "finance_controlling",
+      "display_name": "Finance & Controlling",
+      "description": "P&L, Cost Management, Financial Reporting",
+      "icon": "calculator",
+      "color": "red-brown",
+      "route": "/retail/finance",
+      "roles": ["accountant", "cfo", "finance_manager"]
+    },
+    {
+      "domain_id": "customer_loyalty",
+      "display_name": "Customer & Loyalty",
+      "description": "CRM, Loyalty Programs, Customer Analytics",
+      "icon": "heart",
+      "color": "pink",
+      "route": "/retail/crm",
+      "roles": ["crm_lead", "marketing_manager"]
+    },
+    {
+      "domain_id": "analytics_dashboards",
+      "display_name": "Analytics & Dashboards",
+      "description": "Business Intelligence, KPIs, Reports",
+      "icon": "bar_chart",
+      "color": "purple",
+      "route": "/retail/analytics",
+      "roles": ["executive", "analyst", "store_manager"]
+    },
+    {
+      "domain_id": "platform_admin",
+      "display_name": "Platform & Administration",
+      "description": "System Settings, User Management",
+      "icon": "settings",
+      "color": "gray",
+      "route": "/retail/admin",
+      "roles": ["system_admin", "it_manager"]
+    }
+  ],
+  "kpi_tiles": [
+    {
+      "tile_id": "sales_volume_today",
+      "display_name": "Sales Volume Today",
+      "icon": "monetization_on",
+      "smart_code": "HERA.RETAIL.POS.SALES.v1",
+      "data_source": "universal_transactions",
+      "calculation": "sum",
+      "field": "total_amount",
+      "filter": {
+        "transaction_type": "POS_SALE",
+        "date": "today"
+      }
+    },
+    {
+      "tile_id": "stock_value_by_type",
+      "display_name": "Stock Value by Type",
+      "icon": "inventory",
+      "smart_code": "HERA.INVENTORY.STOCK.VALUE.v1",
+      "data_source": "core_dynamic_data",
+      "calculation": "sum",
+      "field": "stock_value",
+      "group_by": "category"
+    },
+    {
+      "tile_id": "profit_margin_month",
+      "display_name": "Profit Margin by Month",
+      "icon": "trending_down",
+      "smart_code": "HERA.FINANCE.PNL.MARGIN.v1",
+      "calculation": "percentage",
+      "formula": "(revenue - cogs) / revenue * 100"
+    }
+  ],
+  "business_rules": [
+    {
+      "rule_id": "auto_loyalty_points",
+      "description": "Automatically award loyalty points based on purchase amount",
+      "trigger": "transaction_complete",
+      "condition": "transaction_type == 'POS_SALE' && customer_id != null",
+      "action": "award_points",
+      "parameters": {
+        "points_per_aed": 1,
+        "bonus_threshold": 100
+      }
+    },
+    {
+      "rule_id": "low_stock_alert",
+      "description": "Alert when product stock falls below threshold",
+      "trigger": "stock_change",
+      "condition": "stock_quantity < min_stock_level",
+      "action": "send_notification",
+      "parameters": {
+        "notification_type": "low_stock",
+        "recipients": ["inventory_manager"]
+      }
+    }
+  ],
+  "permissions": {
+    "cashier": {
+      "domains": ["retail_operations"],
+      "actions": ["create_pos_sale", "view_products", "view_customers"]
+    },
+    "store_manager": {
+      "domains": ["retail_operations", "inventory_warehouse", "analytics_dashboards"],
+      "actions": ["*"]
+    },
+    "system_admin": {
+      "domains": ["*"],
+      "actions": ["*"]
+    }
+  }
+}

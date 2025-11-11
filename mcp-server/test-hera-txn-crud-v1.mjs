@@ -28,10 +28,11 @@
 import { createClient } from '@supabase/supabase-js';
 import 'dotenv/config';
 
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Initialize Supabase client
+const SUPABASE_URL = 'https://ralywraqvuqgdezttfde.supabase.co';
+const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhbHl3cmFxdnVxZ2RlenR0ZmRlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTM2MzQ3NiwiZXhwIjoyMDc2OTM5NDc2fQ.yG7IzdXluaPiT6mHf3Yu4LV_pyY_S6iHHi7JrR-iA-w';
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
 // Test data - Using Hairtalkz organization with valid member
 const TEST_ORG_ID = '378f24fb-d496-4ff7-8afa-ea34895a0eb8'; // Hairtalkz
