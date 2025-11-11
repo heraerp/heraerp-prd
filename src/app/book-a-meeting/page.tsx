@@ -99,25 +99,16 @@ export default function BookMeetingPage() {
           <div className="card-glass rounded-2xl p-8">
             <h2 className="mb-4 text-xl font-semibold ink">Choose a Time That Works for You</h2>
 
-            {/* Placeholder for calendar embed */}
-            <div className="rounded-lg border-2 border-dashed border-blue-800/30 bg-slate-900/30 p-8 text-center">
-              <div className="mx-auto mb-4 h-12 w-12 flex items-center justify-center">
-                <Calendar className="h-12 w-12 ink-muted" />
-              </div>
-              <p className="mb-4 ink-muted">Calendar widget will appear here</p>
-              <p className="text-sm ink-muted">
-                Replace this with your Calendly, Cal.com, or custom booking widget
-              </p>
-
-              {/* Temporary booking links */}
-              <div className="mt-6 space-y-3">
-                <a href="#" className="btn-gradient block py-3">
-                  <span className="relative z-10">Schedule for This Week</span>
-                </a>
-                <a href="#" className="btn-quiet block py-3">
-                  <span className="relative z-10">Schedule for Next Week</span>
-                </a>
-              </div>
+            {/* Microsoft Bookings Embed */}
+            <div className="rounded-lg overflow-hidden bg-white" style={{ minHeight: '600px' }}>
+              <iframe
+                src="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
+                width="100%"
+                height="600"
+                style={{ border: 0 }}
+                allowFullScreen
+                title="Book a meeting with HERA ERP"
+              />
             </div>
 
             <div className="mt-6 text-center">
