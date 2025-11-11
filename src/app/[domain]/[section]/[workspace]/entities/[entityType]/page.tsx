@@ -176,7 +176,7 @@ export default function UniversalEntityListPage({ params }: PageProps) {
     
     const initialFormData: Record<string, any> = { status: 'active' }
     
-    entityConfig.fields.forEach(field => {
+    finalEntityConfig.fields.forEach(field => {
       if (field.type === 'boolean') {
         initialFormData[field.name] = false
       } else if (field.type === 'number') {
@@ -194,7 +194,7 @@ export default function UniversalEntityListPage({ params }: PageProps) {
     
     const initialFormData: Record<string, any> = { status: 'active' }
     
-    entityConfig.fields.forEach(field => {
+    finalEntityConfig.fields.forEach(field => {
       if (field.type === 'boolean') {
         initialFormData[field.name] = false
       } else if (field.type === 'number') {
@@ -276,11 +276,30 @@ export default function UniversalEntityListPage({ params }: PageProps) {
     )
   }
 
-  if (!entityConfig) {
+  // Use dynamic entity config if not found in universal config (fully dynamic system)
+  const dynamicEntityConfig = !entityConfig ? {
+    id: entityType.toLowerCase(),
+    name: entityType.charAt(0).toUpperCase() + entityType.slice(1).toLowerCase() + 's',
+    description: `Dynamic ${entityType} entities for ${workspace} workspace`,
+    icon: { name: 'Package' },
+    color: 'blue',
+    fields: [
+      { id: 'name', name: 'name', label: 'Name', type: 'text', required: true },
+      { id: 'description', name: 'description', label: 'Description', type: 'text', required: false },
+      { id: 'category', name: 'category', label: 'Category', type: 'text', required: false },
+      { id: 'value', name: 'value', label: 'Value', type: 'number', required: false }
+    ],
+    actions: ['create', 'edit', 'view', 'delete'],
+    workspaces: [workspace]
+  } : null
+
+  const finalEntityConfig = entityConfig || dynamicEntityConfig
+
+  if (!finalEntityConfig) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-lg text-slate-600">Entity type &quot;{entityType}&quot; not found in workspace &quot;{workspace}&quot;.</p>
+          <p className="text-lg text-slate-600">Unable to load entity configuration for &quot;{entityType}&quot;.</p>
           <Button onClick={() => router.back()} className="mt-4">
             Go Back
           </Button>
@@ -304,8 +323,8 @@ export default function UniversalEntityListPage({ params }: PageProps) {
               <EntityIcon className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-800">{entityConfig.name}</h1>
-              <p className="text-xs text-slate-600">{entityConfig.description}</p>
+              <h1 className="text-lg font-bold text-slate-800">{finalEntityConfig.name}</h1>
+              <p className="text-xs text-slate-600">{finalEntityConfig.description}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -326,8 +345,8 @@ export default function UniversalEntityListPage({ params }: PageProps) {
           <div className="hidden md:block mb-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-slate-800 mb-2">{entityConfig.name} Management</h1>
-                <p className="text-slate-600">{entityConfig.description}</p>
+                <h1 className="text-3xl font-bold text-slate-800 mb-2">{finalEntityConfig.name} Management</h1>
+                <p className="text-slate-600">{finalEntityConfig.description}</p>
               </div>
               <div className="flex items-center gap-4">
                 <Button 
@@ -335,7 +354,7 @@ export default function UniversalEntityListPage({ params }: PageProps) {
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6"
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  New {entityConfig.name.slice(0, -1)}
+                  New {finalEntityConfig.name.slice(0, -1)}
                 </Button>
                 <Button 
                   onClick={() => setIsCreateDialogOpen(true)}
@@ -356,7 +375,7 @@ export default function UniversalEntityListPage({ params }: PageProps) {
               className="w-full min-h-[56px] bg-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform"
             >
               <Plus className="w-5 h-5" />
-              New {entityConfig.name.slice(0, -1)}
+              New {finalEntityConfig.name.slice(0, -1)}
             </button>
             <button 
               onClick={() => setIsCreateDialogOpen(true)}
@@ -373,7 +392,7 @@ export default function UniversalEntityListPage({ params }: PageProps) {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
-                  placeholder={`Search ${entityConfig.name.toLowerCase()}...`}
+                  placeholder={`Search ${finalEntityConfig.name.toLowerCase()}...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 bg-white/70 border-slate-200/50 focus:bg-white focus:border-blue-500"
@@ -534,16 +553,16 @@ export default function UniversalEntityListPage({ params }: PageProps) {
             {filteredEntities.length === 0 && (
               <div className="text-center py-12">
                 <EntityIcon className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-slate-900 mb-2">No {entityConfig.name.toLowerCase()} found</h3>
+                <h3 className="text-lg font-medium text-slate-900 mb-2">No {finalEntityConfig.name.toLowerCase()} found</h3>
                 <p className="text-slate-500 mb-4">
                   {searchTerm || statusFilter !== 'all' 
                     ? 'Try adjusting your search or filter criteria.'
-                    : `Get started by adding your first ${entityConfig.name.toLowerCase().slice(0, -1)}.`
+                    : `Get started by adding your first ${finalEntityConfig.name.toLowerCase().slice(0, -1)}.`
                   }
                 </p>
                 <Button onClick={() => navigate(`/${domain}/${section}/${workspace}/entities/${entityType}/new`)}>
                   <Plus className="w-4 h-4 mr-2" />
-                  New {entityConfig.name.slice(0, -1)}
+                  New {finalEntityConfig.name.slice(0, -1)}
                 </Button>
               </div>
             )}
@@ -566,12 +585,12 @@ export default function UniversalEntityListPage({ params }: PageProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <EntityIcon className="w-5 h-5 text-blue-600" />
-              {selectedEntity ? `Edit ${entityConfig.name.slice(0, -1)}` : `Add New ${entityConfig.name.slice(0, -1)}`}
+              {selectedEntity ? `Edit ${finalEntityConfig.name.slice(0, -1)}` : `Add New ${finalEntityConfig.name.slice(0, -1)}`}
             </DialogTitle>
           </DialogHeader>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            {entityConfig.fields.map((field) => (
+            {finalEntityConfig.fields.map((field) => (
               <div key={field.id}>
                 <Label htmlFor={field.name} className="text-sm font-medium">
                   {field.label} {field.required && '*'}
@@ -637,7 +656,7 @@ export default function UniversalEntityListPage({ params }: PageProps) {
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <Save className="w-4 h-4 mr-2" />
-                {selectedEntity ? 'Update' : 'Create'} {entityConfig.name.slice(0, -1)}
+                {selectedEntity ? 'Update' : 'Create'} {finalEntityConfig.name.slice(0, -1)}
               </Button>
             </div>
           </form>
