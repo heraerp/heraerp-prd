@@ -1,4 +1,6 @@
-'use client'
+
+
+'use client';
 
 /**
  * New Master Data Entity Page

@@ -1,4 +1,6 @@
-'use client'
+
+
+'use client';
 
 import { api } from '@/lib/api-client'
 import { formatDateTime } from '@/lib/format'

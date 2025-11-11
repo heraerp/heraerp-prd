@@ -1,0 +1,196 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e9]: HERA
+        - img [ref=e10]
+        - generic [ref=e12]: All products
+        - generic [ref=e13]: /
+        - generic [ref=e14]: HERA Cloud ERP
+      - generic [ref=e15]:
+        - generic [ref=e17]:
+          - combobox [ref=e18]:
+            - option "Apps" [selected]
+            - option "Data"
+            - option "Help"
+          - generic [ref=e19]:
+            - img [ref=e20]
+            - textbox "Search in Apps" [ref=e23]
+          - button [ref=e24] [cursor=pointer]:
+            - img [ref=e25]
+        - generic [ref=e28]:
+          - button "3" [ref=e29] [cursor=pointer]:
+            - img [ref=e30]
+            - generic [ref=e33]: "3"
+          - button [ref=e34] [cursor=pointer]:
+            - img [ref=e35]
+          - button [ref=e38] [cursor=pointer]:
+            - img [ref=e39]
+          - generic [ref=e42]:
+            - generic [ref=e44]: JD
+            - generic [ref=e45]: John Doe
+            - img [ref=e46]
+    - generic [ref=e50]:
+      - navigation [ref=e51]:
+        - link "My Home" [ref=e52] [cursor=pointer]:
+          - /url: /enterprise/home
+          - generic [ref=e53]:
+            - img [ref=e54]
+            - generic [ref=e57]: My Home
+        - link "Finance" [ref=e58] [cursor=pointer]:
+          - /url: /enterprise/finance
+          - generic [ref=e59]:
+            - img [ref=e60]
+            - generic [ref=e62]: Finance
+        - link "Procurement" [ref=e63] [cursor=pointer]:
+          - /url: /enterprise/procurement
+          - generic [ref=e64]:
+            - img [ref=e65]
+            - generic [ref=e69]: Procurement
+        - link "Supply chain" [ref=e70] [cursor=pointer]:
+          - /url: /enterprise/scm
+          - generic [ref=e71]:
+            - img [ref=e72]
+            - generic [ref=e77]: Supply chain
+        - link "Manufacturing" [ref=e78] [cursor=pointer]:
+          - /url: /enterprise/manufacturing
+          - generic [ref=e79]:
+            - img [ref=e80]
+            - generic [ref=e84]: Manufacturing
+        - link "Sales" [ref=e85] [cursor=pointer]:
+          - /url: /enterprise/sales
+          - generic [ref=e86]:
+            - img [ref=e87]
+            - generic [ref=e90]: Sales
+        - link "Services" [ref=e91] [cursor=pointer]:
+          - /url: /enterprise/services
+          - generic [ref=e92]:
+            - img [ref=e93]
+            - generic [ref=e96]: Services
+        - link "Asset management" [ref=e97] [cursor=pointer]:
+          - /url: /enterprise/assets
+          - generic [ref=e98]:
+            - img [ref=e99]
+            - generic [ref=e103]: Asset management
+      - button [ref=e105] [cursor=pointer]:
+        - img [ref=e106]
+  - main [ref=e108]:
+    - generic [ref=e110]:
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - button "Back" [ref=e114] [cursor=pointer]:
+            - img [ref=e115]
+          - link "HERA" [ref=e117] [cursor=pointer]:
+            - /url: /enterprise/home
+            - generic [ref=e118]: HERA
+          - generic [ref=e120]: Enterprise > Procurement > Rebate Agreements > Create
+        - button "Modules" [ref=e123] [cursor=pointer]:
+          - img [ref=e124]
+          - generic [ref=e127]: Modules
+          - img [ref=e128]
+        - generic [ref=e130]:
+          - generic [ref=e131]:
+            - textbox "Search CRM..." [ref=e132]
+            - img [ref=e133]
+          - button "Search" [ref=e136] [cursor=pointer]:
+            - img [ref=e137]
+          - button "Help" [ref=e140] [cursor=pointer]:
+            - img [ref=e141]
+          - button "Notifications" [ref=e144] [cursor=pointer]:
+            - img [ref=e145]
+          - button "Settings" [ref=e148] [cursor=pointer]:
+            - img [ref=e149]
+          - generic [ref=e153] [cursor=pointer]: EG
+      - generic [ref=e154]:
+        - generic [ref=e156]:
+          - generic [ref=e157]:
+            - generic [ref=e159]:
+              - generic [ref=e160]: Progress
+              - generic [ref=e161]: 33%
+            - generic [ref=e164]:
+              - generic [ref=e165]: 1 of 3 completed
+              - generic [ref=e166]:
+                - img [ref=e167]
+                - text: 5-10 minutes
+          - navigation [ref=e171]:
+            - button "Basic Information *" [ref=e172] [cursor=pointer]:
+              - img [ref=e174]
+              - generic [ref=e178]:
+                - generic [ref=e179]: Basic Information
+                - generic [ref=e180]: "*"
+              - img [ref=e182]
+            - button "Rebate Agreement Details *" [ref=e184] [cursor=pointer]:
+              - img [ref=e186]
+              - generic [ref=e190]:
+                - generic [ref=e191]: Rebate Agreement Details
+                - generic [ref=e192]: "*"
+              - img [ref=e194]
+            - button "Relationships & Workflows" [ref=e196] [cursor=pointer]:
+              - img [ref=e198]
+              - generic [ref=e203]: Relationships & Workflows
+              - img [ref=e205]
+        - generic [ref=e208]:
+          - generic [ref=e210]:
+            - generic [ref=e211]:
+              - heading "Create New Rebate Agreement" [level=1] [ref=e212]
+              - paragraph [ref=e213]: Set up a new rebate agreement record with all required information and HERA integration
+            - generic [ref=e214]:
+              - button "Cancel" [ref=e215] [cursor=pointer]:
+                - img [ref=e216]
+                - text: Cancel
+              - button "Save & Continue" [ref=e219] [cursor=pointer]:
+                - img [ref=e220]
+                - text: Save & Continue
+              - button "Create Rebate Agreement" [ref=e224] [cursor=pointer]:
+                - img [ref=e225]
+                - text: Create Rebate Agreement
+          - generic [ref=e230]:
+            - img [ref=e231]
+            - generic [ref=e233]: Loading HERA Platform...
+        - generic [ref=e235]:
+          - generic [ref=e236]:
+            - generic [ref=e237]:
+              - img [ref=e239]
+              - generic [ref=e242]:
+                - heading "AI Assistant" [level=3] [ref=e243]
+                - paragraph [ref=e244]: Smart suggestions and insights
+            - generic [ref=e245]:
+              - button "Insights 2" [ref=e246] [cursor=pointer]:
+                - text: Insights
+                - generic [ref=e247]: "2"
+              - button "Tips 4" [ref=e248] [cursor=pointer]:
+                - text: Tips
+                - generic [ref=e249]: "4"
+          - generic [ref=e250]:
+            - generic [ref=e253]:
+              - img [ref=e255]
+              - generic [ref=e257]:
+                - heading "Naming Convention" [level=4] [ref=e258]
+                - paragraph [ref=e259]: Consider using a descriptive name that follows your organization's naming conventions.
+                - button "Apply Standard" [ref=e260] [cursor=pointer]
+            - generic [ref=e263]:
+              - img [ref=e265]
+              - generic [ref=e267]:
+                - heading "Auto-validation" [level=4] [ref=e268]
+                - paragraph [ref=e269]: HERA will automatically validate required fields and smart code patterns.
+  - contentinfo [ref=e270]:
+    - generic [ref=e272]:
+      - generic [ref=e273]:
+        - generic [ref=e274]: © 2024 HERA Enterprise
+        - generic [ref=e275]: •
+        - link "Privacy" [ref=e276] [cursor=pointer]:
+          - /url: /privacy
+        - generic [ref=e277]: •
+        - link "Terms" [ref=e278] [cursor=pointer]:
+          - /url: /terms
+        - generic [ref=e279]: •
+        - link "Support" [ref=e280] [cursor=pointer]:
+          - /url: /support
+      - generic [ref=e281]:
+        - generic [ref=e282]: Version 1.2.2
+        - generic [ref=e283]: •
+        - generic [ref=e284]: System Healthy
+```

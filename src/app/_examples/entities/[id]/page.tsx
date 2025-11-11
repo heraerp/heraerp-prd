@@ -1,5 +1,5 @@
 // app/examples/entities/[id]/page.tsx - Entity detail with dynamic data
-'use client'
+
 import React from 'react'
 import { ObjectHeader, DataTable, useEntity, useDynamicData } from '@/ui'
 import { useRouter } from 'next/navigation'

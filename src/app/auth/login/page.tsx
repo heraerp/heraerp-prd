@@ -76,6 +76,17 @@ function LoginForm() {
         return
       }
 
+      // ✅ CRITICAL: Check for multiple organizations - let user choose
+      if (userOrganizations.length > 1) {
+        console.log('📋 Multiple organizations detected for demo user, redirecting to selector', {
+          organizationCount: userOrganizations.length,
+          organizations: userOrganizations.map(org => ({ id: org.id, name: org.name }))
+        })
+        setIsLoading(false)
+        router.push('/auth/organizations')
+        return
+      }
+
       // ✅ ENTERPRISE: Get apps from first organization
       const firstOrg = userOrganizations[0]
       const userApps = firstOrg?.apps || []
@@ -163,6 +174,17 @@ function LoginForm() {
         return
       }
 
+      // ✅ CRITICAL: Check for multiple organizations - let user choose
+      if (userOrganizations.length > 1) {
+        console.log('📋 Multiple organizations detected, redirecting to selector', {
+          organizationCount: userOrganizations.length,
+          organizations: userOrganizations.map(org => ({ id: org.id, name: org.name }))
+        })
+        setIsLoading(false)
+        router.push('/auth/organizations')
+        return
+      }
+
       // ✅ ENTERPRISE: Get apps from first organization
       const firstOrg = userOrganizations[0]
       const userApps = firstOrg?.apps || []
@@ -221,7 +243,6 @@ function LoginForm() {
         // Dashboard will continue progress to 100% then hide overlay
         await router.push(redirectPath + '?initializing=true')
       }, 300)
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login')
       setIsLoading(false)

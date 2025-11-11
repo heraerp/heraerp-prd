@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-10-29T15:36:09.498Z",
+  "target_directory": "app/retail1",
+  "overall_status": "FAILED",
+  "total_duration": 14035,
+  "results": [
+    {
+      "step": "TypeScript Compilation Check",
+      "success": false,
+      "message": "TypeScript compilation failed in generated code",
+      "duration": 3038,
+      "error": "npm warn config cache-max This option has been deprecated in favor of `--prefer-online`\napp/retail1/matrixitworld/customers/page.tsx(269,9): error TS2322: Type '{ entity_type: string; entity_name: string; entity_code: string; smart_code: string; organization_id: string; status: string; dynamic_fields: ({ field_name: string; field_type: string; field_value_text: string; smart_code: string; field_value_number?: undefined; } | { ...; })[]; }' is not assignable to type 'EntityCreateRequest'.\n  Types"
+    },
+    {
+      "step": "Import Resolution Check",
+      "success": true,
+      "message": "All imports resolved for 4 files",
+      "duration": 1
+    },
+    {
+      "step": "Syntax Validation",
+      "success": true,
+      "message": "Next.js build successful",
+      "duration": 10996
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "passed": 2,
+    "failed": 1
+  }
+}

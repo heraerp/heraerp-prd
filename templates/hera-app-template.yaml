@@ -1,0 +1,804 @@
+# HERA UNIFIED APP SPECIFICATION TEMPLATE
+# This YAML defines a complete enterprise module with frontend + backend integration
+# Claude uses this as the brain center blueprint for intelligent app building
+
+app:
+  # Basic app metadata
+  id: "inventory_management"
+  name: "Smart Inventory Management"
+  version: "1.0.0"
+  description: "Complete inventory management with stock tracking and analytics"
+  module: "INVENTORY"
+  industry: "general"
+  
+  # Technical requirements
+  organization_required: true
+  authentication_required: true
+  mobile_optimized: true
+  
+  # Navigation and routing
+  base_url: "/inventory"
+  icon: "Package"
+  menu_order: 3
+  
+  # Theme and branding
+  primary_color: "#3B82F6"
+  secondary_color: "#10B981"
+  theme: "professional"
+
+# Master Data Entities - Claude builds creation, list, edit pages with real HERA integration
+master_data:
+  - entity_type: "PRODUCT"
+    label: "Product"
+    icon: "Package"
+    smart_code_prefix: "HERA.INVENTORY.PRODUCT"
+    
+    # Page configuration
+    pages:
+      create:
+        url: "/inventory/products/new"
+        template: "HERAMasterDataTemplate"
+        title: "Add New Product"
+      list:
+        url: "/inventory/products"
+        template: "EnterpriseListPage"
+        title: "Product Catalog"
+        features: ["search", "filter", "export", "bulk_actions"]
+      edit:
+        url: "/inventory/products/[id]/edit"
+        template: "HERAMasterDataTemplate"
+        title: "Edit Product"
+      view:
+        url: "/inventory/products/[id]"
+        template: "EnterpriseDetailPage"
+        title: "Product Details"
+    
+    # Form sections for creation/editing
+    sections:
+      - id: "basic"
+        label: "Basic Information"
+        icon: "Info"
+        required: true
+        description: "Essential product details and classification"
+      
+      - id: "specifications"
+        label: "Specifications"
+        icon: "Settings"
+        required: false
+        description: "Technical specifications and attributes"
+      
+      - id: "inventory"
+        label: "Inventory Settings"
+        icon: "Warehouse"
+        required: true
+        description: "Stock management and control settings"
+      
+      - id: "pricing"
+        label: "Pricing & Costing"
+        icon: "DollarSign"
+        required: false
+        description: "Product pricing and cost information"
+    
+    # Form fields with HERA integration
+    fields:
+      # Basic Information
+      - name: "product_name"
+        label: "Product Name"
+        type: "text"
+        required: true
+        section: "basic"
+        placeholder: "Enter product name"
+        hera_mapping:
+          table: "core_entities"
+          field: "entity_name"
+        validation:
+          min_length: 3
+          max_length: 100
+      
+      - name: "product_code" 
+        label: "Product Code"
+        type: "text"
+        required: true
+        section: "basic"
+        placeholder: "Auto-generated from name"
+        hera_mapping:
+          table: "core_entities"
+          field: "entity_code"
+        auto_generate: true
+        validation:
+          pattern: "^[A-Z0-9-]+$"
+      
+      - name: "category"
+        label: "Category"
+        type: "select"
+        required: true
+        section: "basic"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "text"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.CATEGORY.v1"
+        options:
+          - value: "raw_materials"
+            label: "Raw Materials"
+            description: "Materials used in production"
+          - value: "finished_goods"
+            label: "Finished Goods" 
+            description: "Ready-to-sell products"
+          - value: "components"
+            label: "Components"
+            description: "Product components and parts"
+      
+      - name: "description"
+        label: "Description"
+        type: "textarea"
+        section: "basic"
+        placeholder: "Detailed product description"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "text"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.DESCRIPTION.v1"
+      
+      # Specifications
+      - name: "unit_of_measure"
+        label: "Unit of Measure"
+        type: "select"
+        required: true
+        section: "specifications"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "text"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.UOM.v1"
+        options:
+          - value: "each"
+            label: "Each (EA)"
+          - value: "kg"
+            label: "Kilogram (KG)"
+          - value: "liter"
+            label: "Liter (L)"
+          - value: "meter"
+            label: "Meter (M)"
+      
+      - name: "weight"
+        label: "Weight (KG)"
+        type: "number"
+        section: "specifications"
+        placeholder: "Product weight"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "number"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.WEIGHT.v1"
+        validation:
+          min: 0
+      
+      # Inventory Settings
+      - name: "track_inventory"
+        label: "Track Inventory"
+        type: "select"
+        required: true
+        section: "inventory"
+        default: "yes"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "text"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.TRACK_INVENTORY.v1"
+        options:
+          - value: "yes"
+            label: "Yes - Track Stock Levels"
+          - value: "no"
+            label: "No - Non-Inventory Item"
+      
+      - name: "reorder_level"
+        label: "Reorder Level"
+        type: "number"
+        section: "inventory"
+        placeholder: "Minimum stock level"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "number"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.REORDER_LEVEL.v1"
+        validation:
+          min: 0
+        conditional:
+          field: "track_inventory"
+          value: "yes"
+      
+      - name: "max_stock"
+        label: "Maximum Stock Level"
+        type: "number"
+        section: "inventory"
+        placeholder: "Maximum stock level"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "number"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.MAX_STOCK.v1"
+        validation:
+          min: 0
+        conditional:
+          field: "track_inventory"
+          value: "yes"
+      
+      # Pricing
+      - name: "standard_cost"
+        label: "Standard Cost"
+        type: "number"
+        section: "pricing"
+        placeholder: "Standard cost per unit"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "number"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.STANDARD_COST.v1"
+        validation:
+          min: 0
+      
+      - name: "selling_price"
+        label: "Selling Price"
+        type: "number"
+        section: "pricing"
+        placeholder: "Default selling price"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "number"
+          smart_code: "HERA.INVENTORY.PRODUCT.FIELD.SELLING_PRICE.v1"
+        validation:
+          min: 0
+
+  # Additional master data entities
+  - entity_type: "LOCATION"
+    label: "Storage Location"
+    icon: "MapPin"
+    smart_code_prefix: "HERA.INVENTORY.LOCATION"
+    
+    pages:
+      create:
+        url: "/inventory/locations/new"
+        title: "Add Storage Location"
+      list:
+        url: "/inventory/locations"
+        title: "Storage Locations"
+    
+    sections:
+      - id: "basic"
+        label: "Basic Information"
+        icon: "Info"
+        required: true
+    
+    fields:
+      - name: "location_name"
+        label: "Location Name"
+        type: "text"
+        required: true
+        section: "basic"
+        hera_mapping:
+          table: "core_entities"
+          field: "entity_name"
+      
+      - name: "location_type"
+        label: "Location Type"
+        type: "select"
+        required: true
+        section: "basic"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "text"
+          smart_code: "HERA.INVENTORY.LOCATION.FIELD.TYPE.v1"
+        options:
+          - value: "warehouse"
+            label: "Warehouse"
+          - value: "store"
+            label: "Retail Store"
+          - value: "factory"
+            label: "Manufacturing Facility"
+
+# Transaction Types - Claude builds transaction wizards with real HERA integration
+transactions:
+  - transaction_type: "STOCK_ADJUSTMENT"
+    label: "Stock Adjustment"
+    icon: "TrendingUp"
+    smart_code: "HERA.INVENTORY.TXN.STOCK_ADJUSTMENT"
+    
+    # Page configuration
+    pages:
+      create:
+        url: "/inventory/adjustments/new"
+        template: "HERATransactionWizard"
+        title: "New Stock Adjustment"
+      list:
+        url: "/inventory/adjustments"
+        template: "EnterpriseListPage"
+        title: "Stock Adjustments"
+        features: ["search", "filter", "export"]
+    
+    # Transaction header fields
+    header_fields:
+      - name: "adjustment_number"
+        label: "Adjustment Number"
+        type: "text"
+        required: true
+        readonly: true
+        auto_generate: true
+        hera_mapping:
+          table: "universal_transactions"
+          field: "transaction_number"
+      
+      - name: "adjustment_date"
+        label: "Adjustment Date"
+        type: "date"
+        required: true
+        default: "today"
+        hera_mapping:
+          table: "universal_transactions"
+          field: "transaction_date"
+      
+      - name: "location_id"
+        label: "Location"
+        type: "entity_select"
+        required: true
+        entity_type: "LOCATION"
+        hera_mapping:
+          table: "universal_transactions"
+          field: "target_entity_id"
+      
+      - name: "reason"
+        label: "Adjustment Reason"
+        type: "select"
+        required: true
+        hera_mapping:
+          table: "universal_transactions"
+          field: "transaction_status"
+        options:
+          - value: "cycle_count"
+            label: "Cycle Count Adjustment"
+          - value: "damaged"
+            label: "Damaged Goods"
+          - value: "expired"
+            label: "Expired Items"
+          - value: "theft"
+            label: "Theft/Loss"
+          - value: "other"
+            label: "Other"
+      
+      - name: "notes"
+        label: "Notes"
+        type: "textarea"
+        placeholder: "Additional notes about this adjustment"
+        hera_mapping:
+          table: "core_dynamic_data"
+          field_type: "text"
+          smart_code: "HERA.INVENTORY.TXN.STOCK_ADJUSTMENT.FIELD.NOTES.v1"
+    
+    # Transaction line fields
+    line_fields:
+      - name: "product_id"
+        label: "Product"
+        type: "entity_select"
+        required: true
+        entity_type: "PRODUCT"
+        hera_mapping:
+          table: "universal_transaction_lines"
+          field: "entity_id"
+      
+      - name: "current_quantity"
+        label: "Current Quantity"
+        type: "number"
+        readonly: true
+        auto_populate: true
+        hera_mapping:
+          source: "current_stock_query"
+      
+      - name: "adjusted_quantity"
+        label: "Adjusted Quantity"
+        type: "number"
+        required: true
+        hera_mapping:
+          table: "universal_transaction_lines"
+          field: "quantity"
+      
+      - name: "variance"
+        label: "Variance"
+        type: "number"
+        readonly: true
+        calculated: true
+        formula: "adjusted_quantity - current_quantity"
+      
+      - name: "unit_cost"
+        label: "Unit Cost"
+        type: "number"
+        auto_populate: true
+        hera_mapping:
+          table: "universal_transaction_lines"
+          field: "unit_amount"
+      
+      - name: "total_value"
+        label: "Total Value"
+        type: "number"
+        readonly: true
+        calculated: true
+        formula: "variance * unit_cost"
+        hera_mapping:
+          table: "universal_transaction_lines"
+          field: "line_amount"
+    
+    # Business logic and automation
+    automation:
+      on_save:
+        - update_stock_levels
+        - create_gl_entries
+        - send_notifications
+      
+      validations:
+        - ensure_positive_adjusted_quantity
+        - verify_location_access
+        - check_product_trackability
+
+  # Additional transaction type
+  - transaction_type: "STOCK_TRANSFER"
+    label: "Stock Transfer"
+    icon: "ArrowRightLeft"
+    smart_code: "HERA.INVENTORY.TXN.STOCK_TRANSFER"
+    
+    pages:
+      create:
+        url: "/inventory/transfers/new"
+        title: "New Stock Transfer"
+      list:
+        url: "/inventory/transfers"
+        title: "Stock Transfers"
+    
+    header_fields:
+      - name: "transfer_number"
+        label: "Transfer Number"
+        type: "text"
+        required: true
+        readonly: true
+        auto_generate: true
+      
+      - name: "from_location"
+        label: "From Location"
+        type: "entity_select"
+        required: true
+        entity_type: "LOCATION"
+        hera_mapping:
+          table: "universal_transactions"
+          field: "source_entity_id"
+      
+      - name: "to_location"
+        label: "To Location"
+        type: "entity_select"
+        required: true
+        entity_type: "LOCATION"
+        hera_mapping:
+          table: "universal_transactions"
+          field: "target_entity_id"
+      
+      - name: "transfer_date"
+        label: "Transfer Date"
+        type: "date"
+        required: true
+        default: "today"
+
+# Display/List Pages - Claude builds data display pages with real HERA queries
+display_pages:
+  - page_type: "list"
+    entity_type: "PRODUCT"
+    url: "/inventory/products"
+    title: "Product Catalog"
+    template: "EnterpriseListPage"
+    
+    # Data source configuration
+    data_source:
+      hera_rpc: "hera_entities_crud_v1"
+      parameters:
+        p_action: "READ"
+        p_entity:
+          entity_type: "PRODUCT"
+      organization_filtered: true
+    
+    # Display columns
+    columns:
+      - field: "entity_name"
+        label: "Product Name"
+        sortable: true
+        searchable: true
+        primary: true
+      
+      - field: "entity_code"
+        label: "Product Code"
+        sortable: true
+        searchable: true
+      
+      - field: "category"
+        label: "Category"
+        sortable: true
+        filterable: true
+        source: "dynamic_data"
+      
+      - field: "current_stock"
+        label: "Current Stock"
+        sortable: true
+        type: "number"
+        source: "calculated"
+        query: "get_current_stock"
+      
+      - field: "reorder_level"
+        label: "Reorder Level"
+        type: "number"
+        source: "dynamic_data"
+      
+      - field: "status"
+        label: "Status"
+        type: "badge"
+        calculated: true
+        formula: "current_stock > reorder_level ? 'In Stock' : 'Low Stock'"
+    
+    # Features and actions
+    features:
+      search: true
+      filter: true
+      export: true
+      bulk_actions: true
+      pagination: true
+    
+    filters:
+      - field: "category"
+        type: "select"
+        source: "dynamic_data_values"
+      
+      - field: "stock_status"
+        type: "select"
+        options:
+          - value: "in_stock"
+            label: "In Stock"
+          - value: "low_stock"
+            label: "Low Stock"
+          - value: "out_of_stock"
+            label: "Out of Stock"
+    
+    actions:
+      row_actions:
+        - action: "edit"
+          label: "Edit"
+          url: "/inventory/products/[id]/edit"
+          icon: "Edit"
+        
+        - action: "view"
+          label: "View Details"
+          url: "/inventory/products/[id]"
+          icon: "Eye"
+        
+        - action: "adjust_stock"
+          label: "Adjust Stock"
+          url: "/inventory/adjustments/new?product=[id]"
+          icon: "TrendingUp"
+      
+      bulk_actions:
+        - action: "export_selected"
+          label: "Export Selected"
+          icon: "Download"
+        
+        - action: "bulk_price_update"
+          label: "Update Prices"
+          icon: "DollarSign"
+
+# Dashboard/Analytics - Claude builds live dashboards with real data
+dashboard:
+  url: "/inventory"
+  title: "Inventory Dashboard"
+  template: "EnterpriseDashboard"
+  
+  # Key Performance Indicators
+  kpis:
+    - id: "total_products"
+      label: "Total Products"
+      icon: "Package"
+      type: "count"
+      color: "blue"
+      data_source:
+        hera_rpc: "hera_entities_crud_v1"
+        query: "count_entities"
+        parameters:
+          entity_type: "PRODUCT"
+    
+    - id: "low_stock_items"
+      label: "Low Stock Items"
+      icon: "AlertTriangle"
+      type: "count"
+      color: "amber"
+      alert_threshold: 0
+      data_source:
+        custom_query: "get_low_stock_count"
+    
+    - id: "total_inventory_value"
+      label: "Total Inventory Value"
+      icon: "DollarSign"
+      type: "currency"
+      color: "green"
+      data_source:
+        custom_query: "calculate_inventory_value"
+    
+    - id: "pending_adjustments"
+      label: "Pending Adjustments"
+      icon: "Clock"
+      type: "count"
+      color: "purple"
+      data_source:
+        hera_rpc: "hera_txn_crud_v1"
+        query: "count_transactions"
+        parameters:
+          transaction_type: "STOCK_ADJUSTMENT"
+          status: "PENDING"
+  
+  # Charts and visualizations
+  widgets:
+    - id: "stock_by_category"
+      title: "Stock by Category"
+      type: "pie_chart"
+      size: "half"
+      data_source:
+        custom_query: "get_stock_by_category"
+    
+    - id: "recent_adjustments"
+      title: "Recent Stock Adjustments"
+      type: "list"
+      size: "half"
+      limit: 10
+      data_source:
+        hera_rpc: "hera_txn_crud_v1"
+        parameters:
+          transaction_type: "STOCK_ADJUSTMENT"
+          limit: 10
+          order_by: "created_at DESC"
+    
+    - id: "inventory_trends"
+      title: "Inventory Value Trends"
+      type: "line_chart"
+      size: "full"
+      time_period: "30_days"
+      data_source:
+        custom_query: "get_inventory_trends"
+
+# Navigation Structure
+navigation:
+  dashboard:
+    url: "/inventory"
+    label: "Dashboard"
+    icon: "BarChart3"
+    order: 1
+  
+  sections:
+    - name: "Master Data"
+      order: 2
+      items:
+        - label: "Products"
+          url: "/inventory/products"
+          icon: "Package"
+          order: 1
+        
+        - label: "Categories"
+          url: "/inventory/categories"
+          icon: "Grid"
+          order: 2
+        
+        - label: "Locations"
+          url: "/inventory/locations"
+          icon: "MapPin"
+          order: 3
+    
+    - name: "Transactions"
+      order: 3
+      items:
+        - label: "Stock Adjustments"
+          url: "/inventory/adjustments"
+          icon: "TrendingUp"
+          order: 1
+        
+        - label: "Stock Transfers"
+          url: "/inventory/transfers"
+          icon: "ArrowRightLeft"
+          order: 2
+        
+        - label: "Cycle Counts"
+          url: "/inventory/cycle-counts"
+          icon: "RotateCcw"
+          order: 3
+    
+    - name: "Reports"
+      order: 4
+      items:
+        - label: "Stock Reports"
+          url: "/inventory/reports/stock"
+          icon: "FileText"
+          order: 1
+        
+        - label: "Movement Reports"
+          url: "/inventory/reports/movements"
+          icon: "Activity"
+          order: 2
+
+# Database Integration Configuration
+database:
+  # HERA Sacred Six integration
+  sacred_six:
+    core_entities: true
+    core_dynamic_data: true
+    core_relationships: true
+    core_organizations: true
+    universal_transactions: true
+    universal_transaction_lines: true
+  
+  # RPC Functions used
+  rpc_functions:
+    - name: "hera_entities_crud_v1"
+      used_for: ["master_data_crud", "entity_queries"]
+    
+    - name: "hera_txn_crud_v1"
+      used_for: ["transaction_processing", "transaction_queries"]
+  
+  # Custom queries for complex business logic
+  custom_queries:
+    - name: "get_current_stock"
+      description: "Calculate current stock for a product"
+      sql: |
+        SELECT SUM(quantity) as current_stock
+        FROM universal_transaction_lines utl
+        JOIN universal_transactions ut ON ut.id = utl.transaction_id
+        WHERE utl.entity_id = $1 
+        AND ut.organization_id = $2
+        AND ut.transaction_status = 'COMPLETED'
+    
+    - name: "get_low_stock_count"
+      description: "Count products below reorder level"
+      sql: |
+        WITH current_stocks AS (
+          SELECT entity_id, SUM(quantity) as current_qty
+          FROM universal_transaction_lines utl
+          JOIN universal_transactions ut ON ut.id = utl.transaction_id
+          WHERE ut.organization_id = $1
+          GROUP BY entity_id
+        ),
+        reorder_levels AS (
+          SELECT entity_id, field_value_number as reorder_level
+          FROM core_dynamic_data
+          WHERE field_name = 'reorder_level'
+          AND organization_id = $1
+        )
+        SELECT COUNT(*) as low_stock_count
+        FROM current_stocks cs
+        JOIN reorder_levels rl ON rl.entity_id = cs.entity_id
+        WHERE cs.current_qty <= rl.reorder_level
+
+# Security and Access Control
+security:
+  authentication_required: true
+  organization_isolation: true
+  role_based_access: true
+  
+  permissions:
+    - role: "inventory_manager"
+      permissions: ["read", "write", "delete", "approve"]
+    
+    - role: "inventory_clerk"
+      permissions: ["read", "write"]
+    
+    - role: "viewer"
+      permissions: ["read"]
+
+# Performance and Optimization
+performance:
+  lazy_loading: true
+  pagination_default: 50
+  cache_queries: true
+  optimize_images: true
+  bundle_splitting: true
+
+# Testing and Quality Assurance
+testing:
+  unit_tests: true
+  integration_tests: true
+  e2e_tests: true
+  performance_tests: true
+  accessibility_tests: true
+  
+  test_data:
+    generate_sample_data: true
+    sample_products: 100
+    sample_transactions: 500

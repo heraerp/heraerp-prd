@@ -54,7 +54,7 @@ export function HeraNavbar({
           {/* Left Section - Logo, Back Button, Title, Breadcrumbs */}
           <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* HERA Logo */}
-            <Link href="/retail/home" className="flex items-center gap-2 shrink-0">
+            <Link href="/" className="flex items-center gap-2 shrink-0">
               <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
                 <span className="text-white font-bold text-sm">H</span>
               </div>
@@ -210,7 +210,7 @@ export function HeraNavbar({
                     </div>
                     <div className="p-1">
                       <Link
-                        href="/retail/admin"
+                        href="/admin"
                         className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg hera-font-primary"
                         onClick={() => setShowUserMenu(false)}
                       >

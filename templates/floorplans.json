@@ -1,0 +1,153 @@
+{
+  "listReport": {
+    "name": "List Report",
+    "description": "Master data browsing with search, filters, and CRUD operations",
+    "page": "ListReportPage.tsx",
+    "uses": [
+      "ListReport",
+      "DynamicPage", 
+      "PageToolbar",
+      "FilterBar",
+      "DataGrid",
+      "hooks:list",
+      "hooks:mutations"
+    ],
+    "route": "/:module/:entity",
+    "bestFor": ["customers", "products", "accounts", "contacts", "leads", "vendors", "employees"],
+    "features": [
+      "Enterprise data grid with sorting/filtering",
+      "Responsive glassmorphic design",
+      "Search and quick filters",
+      "Bulk operations and export",
+      "Mobile-optimized cards view"
+    ]
+  },
+  
+  "objectPage": {
+    "name": "Object Page", 
+    "description": "Detailed entity view with sections and related data",
+    "page": "ObjectPage.tsx",
+    "uses": [
+      "ObjectPage",
+      "DynamicPage",
+      "Section", 
+      "FormSection",
+      "RelatedDataSection",
+      "hooks:read",
+      "hooks:mutations"
+    ],
+    "route": "/:module/:entity/:id",
+    "bestFor": ["customer-details", "product-details", "account-management", "project-overview"],
+    "features": [
+      "Tabbed or accordion sections",
+      "In-place editing capabilities", 
+      "Related data management",
+      "Action toolbar with save/delete",
+      "Responsive section layout"
+    ]
+  },
+
+  "flexColumns": {
+    "name": "Flexible Column Layout",
+    "description": "Three-pane master-detail-subdetail interface",
+    "page": "FlexColumnsPage.tsx", 
+    "uses": [
+      "FlexibleColumns",
+      "ListReport",
+      "ObjectPage",
+      "hooks:list",
+      "hooks:read"
+    ],
+    "route": "/:module/:entity/workspace",
+    "bestFor": ["customer-orders", "project-tasks", "invoice-lines", "complex-workflows"],
+    "features": [
+      "Context-preserving navigation",
+      "Master-detail relationships",
+      "Responsive column layout",
+      "Deep-linking support",
+      "Efficient data loading"
+    ]
+  },
+
+  "worklist": {
+    "name": "Worklist",
+    "description": "Task-oriented workflow interface with cards",
+    "page": "WorklistPage.tsx",
+    "uses": [
+      "Worklist",
+      "DynamicPage",
+      "KPI",
+      "hooks:tasks"
+    ],
+    "route": "/:module/worklist",
+    "bestFor": ["approvals", "tasks", "notifications", "workflow-items", "exceptions"],
+    "features": [
+      "Card-based task display",
+      "Priority and status indicators",
+      "Quick action buttons",
+      "Filtering and grouping",
+      "Real-time updates"
+    ]
+  },
+
+  "wizard": {
+    "name": "Wizard Flow",
+    "description": "Multi-step guided process for complex operations",
+    "page": "WizardPage.tsx",
+    "uses": [
+      "Wizard",
+      "DynamicPage",
+      "Section",
+      "hooks:mutations"
+    ],
+    "route": "/:module/:entity/create",
+    "bestFor": ["transaction-posting", "setup-wizards", "guided-imports", "complex-forms"],
+    "features": [
+      "Step-by-step progression",
+      "Validation at each step",
+      "Progress indicator",
+      "Back/forward navigation",
+      "Summary and confirmation"
+    ]
+  },
+
+  "dashboard": {
+    "name": "Dashboard",
+    "description": "KPI overview with charts and metrics",
+    "page": "DashboardPage.tsx",
+    "uses": [
+      "KPI",
+      "DynamicPage",
+      "Recharts",
+      "hooks:analytics"
+    ],
+    "route": "/:module/dashboard",
+    "bestFor": ["executive-overview", "module-analytics", "performance-metrics", "real-time-monitoring"],
+    "features": [
+      "Responsive KPI grid",
+      "Interactive charts",
+      "Real-time data updates",
+      "Drill-down capabilities",
+      "Export and sharing"
+    ]
+  },
+
+  "fullscreen": {
+    "name": "Full Screen",
+    "description": "Immersive single-focus interface",
+    "page": "FullscreenPage.tsx",
+    "uses": [
+      "Fullscreen",
+      "DynamicPage"
+    ],
+    "route": "/:module/:feature/fullscreen",
+    "bestFor": ["data-imports", "simulators", "focused-workflows", "presentations"],
+    "features": [
+      "Distraction-free interface",
+      "Full viewport utilization",
+      "Contextual toolbars",
+      "Keyboard navigation",
+      "Immersive experience"
+    ]
+  }
+}

@@ -48,7 +48,7 @@ export function SapNavbar({
             </button>
           )}
           
-          <Link href="/retail/home" className="flex items-center text-white no-underline">
+          <Link href="/" className="flex items-center text-white no-underline">
             <div className="h-7 bg-white rounded px-2 flex items-center justify-center font-bold text-xs text-[#4A90E2] min-w-[40px]">
               {title}
             </div>

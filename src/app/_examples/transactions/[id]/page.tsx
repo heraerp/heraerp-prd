@@ -1,5 +1,5 @@
 // app/examples/transactions/[id]/page.tsx - Transaction detail page
-'use client'
+
 import React from 'react'
 import { ObjectHeader, LinesTable, RelatedPanel, useTransaction } from '@/ui'
 import { useRouter } from 'next/navigation'

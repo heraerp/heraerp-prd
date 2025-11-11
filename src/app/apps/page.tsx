@@ -106,22 +106,6 @@ const apps: AppCard[] = [
     features: ['Patient Records', 'Appointment Scheduling', 'Prescription Management', 'Billing']
   },
   {
-    id: 'retail',
-    title: 'Retail',
-    description: 'Multi-channel retail management with inventory, POS, and customer loyalty',
-    icon: ShoppingBag,
-    href: '/retail/home',
-    category: 'industry',
-    status: 'coming-soon',
-    gradient: 'from-yellow-500 to-orange-600',
-    features: [
-      'Multi-Store POS',
-      'Inventory Management',
-      'Customer Loyalty',
-      'E-commerce Integration'
-    ]
-  },
-  {
     id: 'jewelry',
     title: 'Jewelry',
     description:
@@ -300,13 +284,10 @@ function AppsPageContent() {
 
             // 🔧 CRITICAL: Use correct landing page for each app
             // - SALON: /auth (role-based routing)
-            // - RETAIL: /home (fixed landing page)
             // - CASHEW: /dashboard (fixed landing page)
             // - Others: /auth (default role-based routing)
             let appHref = `/${heraApp.code.toLowerCase()}/auth`
-            if (appCode === 'RETAIL') {
-              appHref = '/retail/home'
-            } else if (appCode === 'CASHEW') {
+            if (appCode === 'CASHEW') {
               appHref = '/cashew/dashboard'
             }
 

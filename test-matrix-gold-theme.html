@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Gold Theme Test</title>
+    <style>
+        /* Matrix Gold CSS Variables */
+        :root {
+            --brand-primary-color: #F5C400;
+            --brand-secondary-color: #4A4A4A;
+            --brand-accent-color: #F5C400;
+            --brand-success-color: #10B981;
+            --brand-warning-color: #F5C400;
+            --brand-error-color: #EF4444;
+            --brand-background-color: #FFFFFF;
+            --brand-surface-color: #FFF8E1;
+            --brand-text-primary: #2C2C2C;
+            --brand-text-secondary: #757575;
+            --brand-border-color: #E0E0E0;
+            --brand-font-heading: Inter;
+            --brand-font-body: Inter;
+            
+            /* Color variations */
+            --brand-primary-50: rgb(253, 251, 235);
+            --brand-primary-100: rgb(251, 245, 191);
+            --brand-primary-200: rgb(247, 235, 120);
+            --brand-primary-300: rgb(243, 224, 48);
+            --brand-primary-400: rgb(249, 209, 26);
+            --brand-primary-500: rgb(245, 196, 0);
+            --brand-primary-600: rgb(196, 157, 0);
+            --brand-primary-700: rgb(147, 118, 0);
+            --brand-primary-800: rgb(98, 78, 0);
+            --brand-primary-900: rgb(49, 39, 0);
+        }
+        
+        body {
+            font-family: var(--brand-font-body);
+            background-color: var(--brand-background-color);
+            color: var(--brand-text-primary);
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--brand-border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .brand-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .color-card {
+            background: white;
+            border: 1px solid var(--brand-border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .color-sample {
+            width: 100%;
+            height: 60px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .primary { background-color: var(--brand-primary-color); }
+        .secondary { background-color: var(--brand-secondary-color); }
+        .surface { background-color: var(--brand-surface-color); }
+        .text-primary { color: var(--brand-text-primary); }
+        .text-secondary { color: var(--brand-text-secondary); }
+        
+        .sample-content {
+            background: var(--brand-surface-color);
+            border: 1px solid var(--brand-border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .button {
+            background-color: var(--brand-primary-color);
+            color: var(--brand-text-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .button:hover {
+            background-color: var(--brand-primary-600);
+        }
+        
+        .button-secondary {
+            background-color: var(--brand-secondary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 style="color: var(--brand-primary-color); margin: 0;">MatrixIT World - Matrix Gold Theme Test</h1>
+        <p style="color: var(--brand-text-secondary); margin: 5px 0 0 0;">Verifying Matrix Gold branding implementation</p>
+    </div>
+    
+    <div class="brand-showcase">
+        <div class="color-card">
+            <div class="color-sample primary"></div>
+            <h3>Primary (Matrix Gold)</h3>
+            <code>#F5C400</code>
+        </div>
+        
+        <div class="color-card">
+            <div class="color-sample secondary"></div>
+            <h3>Secondary (Charcoal)</h3>
+            <code>#4A4A4A</code>
+        </div>
+        
+        <div class="color-card">
+            <div class="color-sample surface"></div>
+            <h3>Surface (Cream Yellow)</h3>
+            <code>#FFF8E1</code>
+        </div>
+    </div>
+    
+    <div class="sample-content">
+        <h2 class="text-primary">Sample Content with Matrix Gold Theme</h2>
+        <p class="text-secondary">This demonstrates how text should appear with the Matrix Gold color palette.</p>
+        
+        <button class="button">Matrix Gold Button</button>
+        <button class="button-secondary">Charcoal Button</button>
+        
+        <div style="margin-top: 20px;">
+            <h3>Expected MatrixIT World Appearance:</h3>
+            <ul>
+                <li>White background (#FFFFFF)</li>
+                <li>Matrix Gold accents (#F5C400)</li>
+                <li>Charcoal gray secondary elements (#4A4A4A)</li>
+                <li>Dark text for readability (#2C2C2C)</li>
+                <li>Light cream surfaces (#FFF8E1)</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div style="background: var(--brand-primary-color); color: var(--brand-text-primary); padding: 20px; border-radius: 8px; text-align: center; font-weight: bold;">
+        🎯 This is how MatrixIT World should look with Matrix Gold branding!
+    </div>
+</body>
+</html>

@@ -1,0 +1,1 @@
+approval_request_id,entity_id,organization_id,from_state,to_state,requested_by,approval_rules,notes,approval_data,status,priority,due_date,created_at,resolved_at,resolved_by,resolution_notes

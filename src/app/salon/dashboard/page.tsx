@@ -11,15 +11,12 @@ import { ComplianceAlertBanner } from '@/components/salon/ComplianceAlertBanner'
 import {
   Users,
   Scissors,
-  RefreshCw,
-  Settings,
   Loader2,
   AlertCircle,
   Sparkles,
   Calendar,
   TrendingUp,
-  Filter,
-  LogOut
+  Filter
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { LUXE_COLORS } from '@/lib/constants/salon'
@@ -68,8 +65,6 @@ function DashboardContent() {
   } = useSalonSecurity()
   const router = useRouter()
   const { updateProgress, finishLoading, reset: resetLoading } = useLoadingStore()
-  const [lastRefresh, setLastRefresh] = useState(new Date())
-  const [isRefreshing, setIsRefreshing] = useState(false)
   const [loadStage, setLoadStage] = useState(1) // Progressive loading stages
 
   // ✅ REMOVED DUPLICATE: Receptionist redirect now handled in conditional render below (line ~235)
@@ -148,36 +143,7 @@ function DashboardContent() {
   // ⚡ PERFORMANCE: No blocking - let progressive loading work
   const isLoading = orgLoading || securityLoading || dashboardLoading
 
-  // Refresh all data with animation
-  const handleRefresh = async () => {
-    setIsRefreshing(true)
-    try {
-      await refreshAll()
-      setLastRefresh(new Date())
-    } finally {
-      // Keep spinning for smooth UX
-      setTimeout(() => setIsRefreshing(false), 800)
-    }
-  }
 
-  // Logout handler
-  const handleLogout = async () => {
-    try {
-      // ✅ CRITICAL: Reset global loading state before logout
-      resetLoading()
-
-      const { supabase } = await import('@/lib/supabase/client')
-      await supabase.auth.signOut()
-      localStorage.removeItem('salonUserName')
-      localStorage.removeItem('salonUserEmail')
-      localStorage.removeItem('salonRole')
-      router.push('/salon/auth')
-    } catch (error) {
-      console.error('Logout error:', error)
-      resetLoading() // Reset even on error
-      router.push('/salon/auth')
-    }
-  }
 
   // ⚡ REMOVED BLOCKING LOADER: Page now loads instantly with progressive sections
   // The 5-stage progressive loading system (Lines 81-91, 557-603) now visible immediately!
@@ -274,36 +240,6 @@ function DashboardContent() {
         showNotifications={true}
         notificationCount={isLoading ? 0 : (kpis.appointmentsByStatus?.pending || 0)}
         shrinkOnScroll={true}
-        rightAction={
-          <div className="flex items-center gap-2">
-            {/* Refresh Icon */}
-            <button
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90 transition-transform duration-200"
-              style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}30 0%, ${LUXE_COLORS.emerald}20 100%)`,
-                border: `1px solid ${LUXE_COLORS.emerald}40`
-              }}
-              aria-label="Refresh"
-            >
-              <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} style={{ color: LUXE_COLORS.emerald }} />
-            </button>
-
-            {/* Logout Icon */}
-            <button
-              onClick={handleLogout}
-              className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90 transition-transform duration-200"
-              style={{
-                background: `linear-gradient(135deg, ${LUXE_COLORS.ruby}30 0%, ${LUXE_COLORS.ruby}20 100%)`,
-                border: `1px solid ${LUXE_COLORS.ruby}40`
-              }}
-              aria-label="Logout"
-            >
-              <LogOut className="w-5 h-5" style={{ color: LUXE_COLORS.ruby }} />
-            </button>
-          </div>
-        }
       />
 
       {/* Elegant gradient background overlay */}
@@ -411,53 +347,6 @@ function DashboardContent() {
                 </div>
               </div>
 
-              {/* Refresh Button */}
-              <button
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.emerald}20 0%, ${LUXE_COLORS.emerald}10 100%)`,
-                  border: `1px solid ${LUXE_COLORS.emerald}30`,
-                  color: LUXE_COLORS.champagne,
-                  boxShadow: isRefreshing ? `0 0 20px ${LUXE_COLORS.emerald}40` : undefined
-                }}
-              >
-                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                <span className="hidden sm:inline">Refresh</span>
-              </button>
-
-              {/* Logout Button */}
-              <Button
-                onClick={async () => {
-                  try {
-                    // ✅ CRITICAL: Reset global loading state before logout
-                    resetLoading()
-
-                    const { supabase } = await import('@/lib/supabase/client')
-                    await supabase.auth.signOut()
-                    localStorage.removeItem('salonUserName')
-                    localStorage.removeItem('salonUserEmail')
-                    localStorage.removeItem('salonRole')
-                    router.push('/salon/auth')
-                  } catch (error) {
-                    console.error('Logout error:', error)
-                    resetLoading() // Reset even on error
-                    router.push('/salon/auth')
-                  }
-                }}
-                variant="outline"
-                className="px-4 py-2.5 font-medium transition-all hover:scale-105"
-                style={{
-                  background: `linear-gradient(135deg, ${LUXE_COLORS.ruby}20 0%, ${LUXE_COLORS.ruby}10 100%)`,
-                  border: `1px solid ${LUXE_COLORS.ruby}40`,
-                  color: LUXE_COLORS.ruby,
-                  boxShadow: `0 0 0 1px ${LUXE_COLORS.ruby}20`
-                }}
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
             </div>
           </div>
         </div>

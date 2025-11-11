@@ -1,10 +1,10 @@
+'use client';
+
 // ================================================================================
 // HERA SALON - CUSTOMER DETAIL PAGE
 // Smart Code: HERA.PAGES.SALON.CUSTOMERS.DETAIL.V1
 // View customer details with HERA DNA UI
 // ================================================================================
-
-'use client'
 
 import React, { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'

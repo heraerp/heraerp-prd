@@ -1,0 +1,14 @@
+public	core_dynamic_data	organization_id
+public	core_entities	organization_id
+public	core_organizations	organization_code
+public	core_organizations	organization_name
+public	core_organizations	organization_type
+public	core_organizations	parent_organization_id
+public	core_relationships	organization_id
+public	universal_transaction_lines	organization_id
+public	universal_transactions	organization_id
+public	v_current_dynamic_data	organization_id
+public	v_hera_accounts	organization_id
+public	v_period_close_dashboard	organization_id
+public	v_universal_gl_lines	organization_id
+public	v_universal_transaction_lines_with_base	organization_id

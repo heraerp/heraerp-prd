@@ -1,0 +1,301 @@
+{
+  "template_id": "customer_commercial_v1",
+  "template_name": "Commercial Customer",
+  "template_version": "1.0.0",
+  "entity_type": "CUSTOMER_COMMERCIAL",
+  "smart_code_prefix": "HERA.WASTE.CUSTOMER.COMMERCIAL",
+  "description": "Commercial waste management customers - businesses, institutions, and industrial clients",
+  
+  "standard_fields": {
+    "entity_name": {
+      "label": "Business Name",
+      "required": true,
+      "placeholder": "e.g., ACME Manufacturing Corp",
+      "validation": {
+        "min_length": 2,
+        "max_length": 100
+      }
+    },
+    "entity_code": {
+      "label": "Customer ID",
+      "required": true,
+      "auto_generate": {
+        "pattern": "COMM-{{year}}-{{sequence:4}}"
+      }
+    }
+  },
+  
+  "dynamic_fields": [
+    {
+      "field_name": "business_type",
+      "field_type": "text",
+      "label": "Business Type",
+      "required": true,
+      "validation_rules": {
+        "enum": [
+          "Restaurant",
+          "Retail Store", 
+          "Manufacturing",
+          "Office Building",
+          "Healthcare Facility",
+          "Educational Institution",
+          "Hotel/Hospitality",
+          "Construction Site",
+          "Warehouse/Distribution",
+          "Government/Municipal",
+          "Other"
+        ]
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.BUSINESS_TYPE.v1"
+    },
+    {
+      "field_name": "contact_person",
+      "field_type": "text",
+      "label": "Primary Contact",
+      "required": true,
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.CONTACT.v1"
+    },
+    {
+      "field_name": "contact_email",
+      "field_type": "email",
+      "label": "Contact Email",
+      "required": true,
+      "validation_rules": {
+        "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.EMAIL.v1"
+    },
+    {
+      "field_name": "contact_phone",
+      "field_type": "phone",
+      "label": "Contact Phone",
+      "required": true,
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.PHONE.v1"
+    },
+    {
+      "field_name": "billing_address",
+      "field_type": "text",
+      "label": "Billing Address",
+      "required": true,
+      "ui_hints": {
+        "input_type": "textarea",
+        "rows": 3
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.BILLING_ADDRESS.v1"
+    },
+    {
+      "field_name": "service_frequency",
+      "field_type": "text",
+      "label": "Service Frequency",
+      "required": true,
+      "validation_rules": {
+        "enum": ["Daily", "Weekly", "Bi-Weekly", "Monthly", "On-Call"]
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.SERVICE_FREQUENCY.v1"
+    },
+    {
+      "field_name": "container_count",
+      "field_type": "number",
+      "label": "Number of Containers",
+      "default": 1,
+      "validation_rules": {
+        "min": 1,
+        "max": 100
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.CONTAINER_COUNT.v1"
+    },
+    {
+      "field_name": "monthly_tonnage_estimate",
+      "field_type": "number",
+      "label": "Estimated Monthly Tonnage",
+      "ui_hints": {
+        "suffix": "tons",
+        "decimal_places": 2
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.TONNAGE.v1"
+    },
+    {
+      "field_name": "waste_types",
+      "field_type": "text",
+      "label": "Waste Types",
+      "validation_rules": {
+        "enum": ["General", "Recycling", "Hazardous", "Medical", "Construction", "Organic"]
+      },
+      "ui_hints": {
+        "input_type": "multi-select"
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.WASTE_TYPES.v1"
+    },
+    {
+      "field_name": "credit_limit",
+      "field_type": "number",
+      "label": "Credit Limit",
+      "ui_hints": {
+        "prefix": "$",
+        "decimal_places": 2
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.CREDIT_LIMIT.v1"
+    },
+    {
+      "field_name": "payment_terms",
+      "field_type": "text",
+      "label": "Payment Terms",
+      "validation_rules": {
+        "enum": ["Net 15", "Net 30", "Net 45", "Net 60", "COD", "Prepaid"]
+      },
+      "default": "Net 30",
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.PAYMENT_TERMS.v1"
+    },
+    {
+      "field_name": "tax_id",
+      "field_type": "text",
+      "label": "Tax ID / EIN",
+      "validation_rules": {
+        "pattern": "^[0-9]{2}-[0-9]{7}$"
+      },
+      "placeholder": "e.g., 12-3456789",
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.TAX_ID.v1"
+    },
+    {
+      "field_name": "special_instructions",
+      "field_type": "text",
+      "label": "Special Instructions",
+      "ui_hints": {
+        "input_type": "textarea",
+        "rows": 3
+      },
+      "smart_code": "HERA.WASTE.CUSTOMER.COMMERCIAL.FIELD.INSTRUCTIONS.v1"
+    }
+  ],
+  
+  "ui_config": {
+    "form_view": {
+      "tabs": [
+        {
+          "id": "overview",
+          "label": "Overview",
+          "icon": "building",
+          "fields": ["entity_name", "entity_code", "business_type", "contact_person", "status"]
+        },
+        {
+          "id": "contact",
+          "label": "Contact Info",
+          "icon": "phone",
+          "fields": ["contact_email", "contact_phone", "billing_address"]
+        },
+        {
+          "id": "service",
+          "label": "Service Details",
+          "icon": "truck",
+          "fields": ["service_frequency", "container_count", "monthly_tonnage_estimate", "waste_types", "special_instructions"]
+        },
+        {
+          "id": "billing",
+          "label": "Billing",
+          "icon": "credit-card",
+          "fields": ["credit_limit", "payment_terms", "tax_id"]
+        },
+        {
+          "id": "locations",
+          "label": "Service Locations",
+          "icon": "map-pin",
+          "component": "related-entities",
+          "relationship_type": "CUSTOMER_HAS_SERVICE_LOCATION"
+        }
+      ]
+    },
+    "list_view": {
+      "columns": [
+        {"field": "entity_name", "label": "Business Name", "sortable": true, "searchable": true},
+        {"field": "business_type", "label": "Type", "sortable": true, "filterable": true},
+        {"field": "contact_person", "label": "Contact", "sortable": true},
+        {"field": "service_frequency", "label": "Frequency", "sortable": true, "filterable": true},
+        {"field": "monthly_tonnage_estimate", "label": "Monthly Tonnage", "sortable": true, "format": "number"},
+        {"field": "status", "label": "Status", "sortable": true, "filterable": true},
+        {"field": "created_at", "label": "Created", "sortable": true, "format": "date"}
+      ],
+      "default_sort": {"field": "entity_name", "direction": "asc"},
+      "page_size": 25
+    },
+    "card_view": {
+      "mobile_fields": ["entity_name", "business_type", "contact_person", "service_frequency"],
+      "card_template": "commercial_customer_card"
+    }
+  },
+  
+  "business_rules": {
+    "duplicate_detection": {
+      "enabled": true,
+      "fields": ["entity_name", "contact_email", "tax_id"],
+      "fuzzy_matching": true
+    },
+    "audit_trail": {
+      "enabled": true,
+      "track_changes": true,
+      "retention_days": 2555  // 7 years for tax compliance
+    },
+    "validation": {
+      "required_fields": ["entity_name", "business_type", "contact_person", "contact_email", "contact_phone"],
+      "custom_validation": "commercial_customer_validation"
+    },
+    "workflows": {
+      "onboarding": "commercial_customer_onboarding_v1",
+      "credit_check": "credit_verification_v1",
+      "contract_generation": "service_contract_generation_v1"
+    }
+  },
+  
+  "relationships": {
+    "allowed_types": [
+      "CUSTOMER_HAS_SERVICE_LOCATION",
+      "CUSTOMER_HAS_CONTRACT", 
+      "CUSTOMER_HAS_BILLING_CONTACT",
+      "CUSTOMER_ASSIGNED_TO_ROUTE"
+    ],
+    "required_relationships": [
+      {"type": "CUSTOMER_HAS_SERVICE_LOCATION", "min": 1}
+    ]
+  },
+  
+  "reporting": {
+    "kpi_metrics": [
+      {"metric": "total_customers", "label": "Total Commercial Customers"},
+      {"metric": "active_customers", "label": "Active Customers"},
+      {"metric": "monthly_new", "label": "New This Month"},
+      {"metric": "avg_tonnage", "label": "Average Monthly Tonnage"},
+      {"metric": "credit_utilization", "label": "Credit Utilization %"}
+    ],
+    "standard_reports": [
+      "customer_list",
+      "customer_profitability",
+      "service_frequency_analysis",
+      "tonnage_trends"
+    ]
+  },
+  
+  "integration": {
+    "external_systems": {
+      "accounting": {
+        "field_mapping": {
+          "customer_name": "entity_name",
+          "customer_id": "entity_code",
+          "billing_address": "billing_address",
+          "payment_terms": "payment_terms",
+          "tax_id": "tax_id"
+        }
+      },
+      "route_optimization": {
+        "field_mapping": {
+          "customer_id": "entity_code",
+          "service_frequency": "service_frequency",
+          "container_count": "container_count"
+        }
+      }
+    },
+    "webhooks": {
+      "customer_created": "commercial_customer_webhook_v1",
+      "customer_updated": "commercial_customer_webhook_v1",
+      "customer_deactivated": "commercial_customer_webhook_v1"
+    }
+  }
+}

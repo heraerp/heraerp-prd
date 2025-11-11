@@ -5,7 +5,7 @@ echo "🛡️ Running HERA Standardization Checks..."
 
 # 1. Run HERA Standardization Checker
 echo "📋 Running standardization validation..."
-node scripts/hera-standardization-checker.js
+node scripts/hera-standardization-checker.cjs
 
 # 2. Run ESLint with HERA rules
 echo "📝 Running ESLint with HERA patterns..."

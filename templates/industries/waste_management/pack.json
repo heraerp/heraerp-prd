@@ -1,0 +1,190 @@
+{
+  "pack_id": "waste_management_v1",
+  "pack_version": "1.0.0",
+  "pack_name": "Waste Management Solution",
+  "description": "Complete ERP for waste collection, disposal, and compliance",
+  "industry": "waste_management",
+  "author": "HERA Core Team",
+  "license": "MIT",
+  "created_at": "2025-01-01T00:00:00Z",
+  "updated_at": "2025-01-01T00:00:00Z",
+  
+  "entities": [
+    "customer_commercial_v1",
+    "customer_residential_v1", 
+    "service_location_v1",
+    "vehicle_v1",
+    "driver_v1",
+    "route_v1",
+    "container_v1",
+    "landfill_v1",
+    "waste_item_v1",
+    "rdf_bale_v1",
+    "facility_v1",
+    "inspection_checklist_v1",
+    "vendor_v1",
+    "account_v1"
+  ],
+  
+  "transactions": [
+    "pickup_event_v1",
+    "scale_transaction_v1",
+    "invoice_waste_mgmt_v1",
+    "fuel_expense_v1",
+    "disposal_fee_v1",
+    "maintenance_expense_v1",
+    "compliance_report_v1"
+  ],
+  
+  "relationships": [
+    "customer_has_service_location",
+    "service_location_has_container",
+    "route_assigned_to_driver",
+    "route_includes_location",
+    "vehicle_assigned_to_route",
+    "driver_operates_vehicle",
+    "waste_item_disposed_at_facility"
+  ],
+  
+  "dashboards": [
+    "operations_dashboard_v1",
+    "fleet_dashboard_v1", 
+    "revenue_dashboard_v1",
+    "compliance_dashboard_v1"
+  ],
+  
+  "workflows": [
+    "daily_route_optimization_v1",
+    "invoice_generation_monthly_v1",
+    "compliance_reporting_quarterly_v1",
+    "vehicle_maintenance_schedule_v1"
+  ],
+  
+  "posting_bundle": "waste_management_finance_v1",
+  
+  "chart_of_accounts": "waste_management_coa_v1",
+  
+  "navigation": {
+    "sections": [
+      {
+        "id": "dashboard",
+        "label": "Dashboard", 
+        "icon": "LayoutDashboard",
+        "order": 1,
+        "items": [
+          {"label": "Operations", "route": "/dashboard/operations", "icon": "Truck"},
+          {"label": "Fleet", "route": "/dashboard/fleet", "icon": "Car"},
+          {"label": "Revenue", "route": "/dashboard/revenue", "icon": "DollarSign"},
+          {"label": "Compliance", "route": "/dashboard/compliance", "icon": "Shield"}
+        ]
+      },
+      {
+        "id": "operations",
+        "label": "Operations",
+        "icon": "Truck", 
+        "order": 2,
+        "items": [
+          {"label": "Routes", "route": "/routes", "icon": "Route"},
+          {"label": "Pickups", "route": "/transactions/pickups", "icon": "ClipboardCheck"},
+          {"label": "Service Locations", "route": "/entities/service_location", "icon": "MapPin"},
+          {"label": "Containers", "route": "/entities/container", "icon": "Box"}
+        ]
+      },
+      {
+        "id": "fleet",
+        "label": "Fleet Management",
+        "icon": "Car",
+        "order": 3,
+        "items": [
+          {"label": "Vehicles", "route": "/entities/vehicle", "icon": "Truck"},
+          {"label": "Drivers", "route": "/entities/driver", "icon": "User"},
+          {"label": "Maintenance", "route": "/maintenance", "icon": "Wrench"},
+          {"label": "Fuel Tracking", "route": "/transactions/fuel_expense", "icon": "Fuel"}
+        ]
+      },
+      {
+        "id": "customers",
+        "label": "Customers",
+        "icon": "Users",
+        "order": 4,
+        "items": [
+          {"label": "Commercial", "route": "/entities/customer_commercial", "icon": "Building"},
+          {"label": "Residential", "route": "/entities/customer_residential", "icon": "Home"},
+          {"label": "Contracts", "route": "/entities/service_contract", "icon": "FileContract"}
+        ]
+      },
+      {
+        "id": "processing",
+        "label": "Processing",
+        "icon": "Factory",
+        "order": 5,
+        "items": [
+          {"label": "Facilities", "route": "/entities/facility", "icon": "Building"},
+          {"label": "Waste Items", "route": "/entities/waste_item", "icon": "Trash2"},
+          {"label": "RDF Bales", "route": "/entities/rdf_bale", "icon": "Package"},
+          {"label": "Scale Tickets", "route": "/transactions/scale_transaction", "icon": "Scale"}
+        ]
+      },
+      {
+        "id": "finance",
+        "label": "Finance", 
+        "icon": "DollarSign",
+        "order": 6,
+        "items": [
+          {"label": "Invoices", "route": "/transactions/invoices", "icon": "FileText"},
+          {"label": "Receivables", "route": "/finance/ar", "icon": "CreditCard"},
+          {"label": "Expenses", "route": "/finance/expenses", "icon": "Receipt"},
+          {"label": "P&L", "route": "/finance/pl", "icon": "BarChart"}
+        ]
+      },
+      {
+        "id": "compliance",
+        "label": "Compliance",
+        "icon": "Shield",
+        "order": 7,
+        "items": [
+          {"label": "Reports", "route": "/compliance/reports", "icon": "FileText"},
+          {"label": "Inspections", "route": "/entities/inspection_checklist", "icon": "ClipboardCheck"},
+          {"label": "Violations", "route": "/compliance/violations", "icon": "AlertTriangle"},
+          {"label": "Permits", "route": "/compliance/permits", "icon": "Award"}
+        ]
+      }
+    ]
+  },
+  
+  "branding": {
+    "primary_color": "#10b981",
+    "secondary_color": "#059669",
+    "accent_color": "#f59e0b",
+    "font_family": "Inter",
+    "theme": "light"
+  },
+  
+  "features": {
+    "route_optimization": true,
+    "fleet_tracking": true,
+    "scale_integration": true,
+    "environmental_compliance": true,
+    "customer_portal": true,
+    "mobile_driver_app": true,
+    "gps_tracking": true,
+    "weight_based_billing": true
+  },
+  
+  "configuration": {
+    "currencies": ["USD", "EUR", "GBP", "INR", "AED"],
+    "weight_units": ["kg", "lbs", "tons"],
+    "distance_units": ["km", "miles"],
+    "languages": ["en", "es", "fr", "de"],
+    "timezone_default": "UTC",
+    "fiscal_year": "calendar"
+  },
+  
+  "dependencies": [],
+  
+  "compatibility": {
+    "hera_version": ">=3.0.0",
+    "required_modules": ["finance", "inventory", "crm"],
+    "optional_modules": ["iot", "gis", "reporting"]
+  }
+}

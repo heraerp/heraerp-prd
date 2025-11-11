@@ -1,0 +1,2636 @@
+{
+  "schema_version": "1.0",
+  "title": "\ud83c\udfd7\ufe0f HERA \u2014 S/4HANA-Competitive Navigation",
+  "defaults": {
+    "standard_ops": [
+      "CREATE",
+      "LIST",
+      "APPROVE",
+      "ANALYTICS",
+      "SETTINGS"
+    ]
+  },
+  "level_1": {
+    "apps": [
+      {
+        "name": "HERA",
+        "code": "HERA_HOME",
+        "route": "/apps",
+        "icon": "building",
+        "smart_code_prefix": "HERA.APP.HOME"
+      },
+      {
+        "name": "Finance",
+        "code": "FIN",
+        "route": "/enterprise/finance",
+        "icon": "banknote",
+        "smart_code_prefix": "HERA.FIN"
+      },
+      {
+        "name": "Procurement",
+        "code": "PROC",
+        "route": "/enterprise/procurement",
+        "icon": "shopping-cart",
+        "smart_code_prefix": "HERA.PROC"
+      },
+      {
+        "name": "Inventory & Warehouse",
+        "code": "INV",
+        "route": "/enterprise/inventory",
+        "icon": "boxes",
+        "smart_code_prefix": "HERA.INV"
+      },
+      {
+        "name": "Sales",
+        "code": "SALES",
+        "route": "/enterprise/sales",
+        "icon": "badge-dollar",
+        "smart_code_prefix": "HERA.SALES"
+      },
+      {
+        "name": "Manufacturing",
+        "code": "MFG",
+        "route": "/enterprise/manufacturing",
+        "icon": "factory",
+        "smart_code_prefix": "HERA.MFG"
+      },
+      {
+        "name": "Quality Management",
+        "code": "QM",
+        "route": "/enterprise/qm",
+        "icon": "check-circle",
+        "smart_code_prefix": "HERA.QM"
+      },
+      {
+        "name": "Asset Management",
+        "code": "EAM",
+        "route": "/enterprise/assets",
+        "icon": "wrench",
+        "smart_code_prefix": "HERA.EAM"
+      },
+      {
+        "name": "Projects",
+        "code": "PRJ",
+        "route": "/enterprise/projects",
+        "icon": "kanban",
+        "smart_code_prefix": "HERA.PRJ"
+      },
+      {
+        "name": "Customer Service (CRM)",
+        "code": "CRM",
+        "route": "/enterprise/crm",
+        "icon": "headset",
+        "smart_code_prefix": "HERA.CRM"
+      },
+      {
+        "name": "HR",
+        "code": "HR",
+        "route": "/enterprise/hr",
+        "icon": "users",
+        "smart_code_prefix": "HERA.HR"
+      },
+      {
+        "name": "PLM",
+        "code": "PLM",
+        "route": "/enterprise/plm",
+        "icon": "package-open",
+        "smart_code_prefix": "HERA.PLM"
+      },
+      {
+        "name": "EHS",
+        "code": "EHS",
+        "route": "/enterprise/ehs",
+        "icon": "shield-alert",
+        "smart_code_prefix": "HERA.EHS"
+      },
+      {
+        "name": "Analytics",
+        "code": "ANALYTICS",
+        "route": "/enterprise/analytics",
+        "icon": "chart-line",
+        "smart_code_prefix": "HERA.ANALYTICS"
+      },
+      {
+        "name": "Admin / GRC",
+        "code": "ADMIN",
+        "route": "/enterprise/admin",
+        "icon": "settings",
+        "smart_code_prefix": "HERA.ADMIN"
+      }
+    ]
+  },
+  "level_2": {
+    "modules": [
+      {
+        "name": "Finance",
+        "code": "FIN",
+        "route": "/enterprise/finance",
+        "areas": [
+          {
+            "name": "General Ledger",
+            "code": "GL",
+            "route": "/enterprise/finance/gl"
+          },
+          {
+            "name": "Accounts Payable",
+            "code": "AP",
+            "route": "/enterprise/finance/ap"
+          },
+          {
+            "name": "Accounts Receivable",
+            "code": "AR",
+            "route": "/enterprise/finance/ar"
+          },
+          {
+            "name": "Asset Accounting",
+            "code": "FA",
+            "route": "/enterprise/finance/fa"
+          },
+          {
+            "name": "Cash & Bank",
+            "code": "CASH",
+            "route": "/enterprise/finance/cash"
+          },
+          {
+            "name": "Treasury & Risk",
+            "code": "TRM",
+            "route": "/enterprise/finance/treasury"
+          },
+          {
+            "name": "Credit Management",
+            "code": "CREDIT",
+            "route": "/enterprise/finance/credit"
+          },
+          {
+            "name": "Controlling",
+            "code": "CO",
+            "route": "/enterprise/finance/co"
+          },
+          {
+            "name": "Profitability (COPA)",
+            "code": "COPA",
+            "route": "/enterprise/finance/copa"
+          },
+          {
+            "name": "Product Costing",
+            "code": "COST",
+            "route": "/enterprise/finance/product-costing"
+          },
+          {
+            "name": "Tax & Compliance",
+            "code": "TAX",
+            "route": "/enterprise/finance/tax"
+          },
+          {
+            "name": "Revenue Recognition",
+            "code": "REVREC",
+            "route": "/enterprise/finance/revenue-recognition"
+          },
+          {
+            "name": "Consolidation & Group Reporting",
+            "code": "CONS",
+            "route": "/enterprise/finance/consolidation"
+          },
+          {
+            "name": "Financial Close",
+            "code": "CLOSE",
+            "route": "/enterprise/finance/close"
+          },
+          {
+            "name": "Reports",
+            "code": "FINREP",
+            "route": "/enterprise/finance/reports"
+          }
+        ]
+      },
+      {
+        "name": "Procurement",
+        "code": "PROC",
+        "route": "/enterprise/procurement",
+        "areas": [
+          {
+            "name": "Requisitions",
+            "code": "REQ",
+            "route": "/enterprise/procurement/requisitions"
+          },
+          {
+            "name": "Sourcing & RFQ",
+            "code": "SRC",
+            "route": "/enterprise/procurement/sourcing"
+          },
+          {
+            "name": "Purchase Orders",
+            "code": "PO",
+            "route": "/enterprise/procurement/po"
+          },
+          {
+            "name": "Goods Receipt",
+            "code": "GR",
+            "route": "/enterprise/procurement/gr"
+          },
+          {
+            "name": "Vendor Management",
+            "code": "VEND",
+            "route": "/enterprise/procurement/vendors"
+          },
+          {
+            "name": "Contracts",
+            "code": "CTR",
+            "route": "/enterprise/procurement/contracts"
+          },
+          {
+            "name": "Spend Analytics",
+            "code": "SPEND",
+            "route": "/enterprise/procurement/analytics"
+          }
+        ]
+      },
+      {
+        "name": "Inventory & Warehouse",
+        "code": "INV",
+        "route": "/enterprise/inventory",
+        "areas": [
+          {
+            "name": "Items & Bins",
+            "code": "ITEMS",
+            "route": "/enterprise/inventory/items"
+          },
+          {
+            "name": "Receipts & Issues",
+            "code": "MOVES",
+            "route": "/enterprise/inventory/moves"
+          },
+          {
+            "name": "Transfers",
+            "code": "XFER",
+            "route": "/enterprise/inventory/transfers"
+          },
+          {
+            "name": "Counting",
+            "code": "COUNT",
+            "route": "/enterprise/inventory/counting"
+          },
+          {
+            "name": "Warehouse Tasks (EWM)",
+            "code": "EWM",
+            "route": "/enterprise/inventory/ewm"
+          },
+          {
+            "name": "Batches & Serials",
+            "code": "TRACE",
+            "route": "/enterprise/inventory/trace"
+          },
+          {
+            "name": "Reports",
+            "code": "INVREP",
+            "route": "/enterprise/inventory/reports"
+          }
+        ]
+      },
+      {
+        "name": "Sales",
+        "code": "SALES",
+        "route": "/enterprise/sales",
+        "areas": [
+          {
+            "name": "Leads & Quotes",
+            "code": "LQ",
+            "route": "/enterprise/sales/quotes"
+          },
+          {
+            "name": "Sales Orders",
+            "code": "SO",
+            "route": "/enterprise/sales/orders"
+          },
+          {
+            "name": "Deliveries & Returns",
+            "code": "DLV",
+            "route": "/enterprise/sales/delivery"
+          },
+          {
+            "name": "Billing & AR",
+            "code": "BILL",
+            "route": "/enterprise/sales/billing"
+          },
+          {
+            "name": "Pricing & Conditions",
+            "code": "PRICE",
+            "route": "/enterprise/sales/pricing"
+          },
+          {
+            "name": "Credit Check",
+            "code": "CRCHK",
+            "route": "/enterprise/sales/credit-check"
+          },
+          {
+            "name": "Reports",
+            "code": "SALREP",
+            "route": "/enterprise/sales/reports"
+          }
+        ]
+      },
+      {
+        "name": "Manufacturing",
+        "code": "MFG",
+        "route": "/enterprise/manufacturing",
+        "areas": [
+          {
+            "name": "BOM & Routing",
+            "code": "ENG",
+            "route": "/enterprise/manufacturing/engineering"
+          },
+          {
+            "name": "MRP & Planning",
+            "code": "MRP",
+            "route": "/enterprise/manufacturing/mrp"
+          },
+          {
+            "name": "Work Orders",
+            "code": "WO",
+            "route": "/enterprise/manufacturing/work-orders"
+          },
+          {
+            "name": "Shop Floor Execution",
+            "code": "SFE",
+            "route": "/enterprise/manufacturing/shop-floor"
+          },
+          {
+            "name": "Costing",
+            "code": "MFGCOST",
+            "route": "/enterprise/manufacturing/costing"
+          },
+          {
+            "name": "Reports",
+            "code": "MFGREP",
+            "route": "/enterprise/manufacturing/reports"
+          }
+        ]
+      },
+      {
+        "name": "Quality Management",
+        "code": "QM",
+        "route": "/enterprise/qm",
+        "areas": [
+          {
+            "name": "Inspection Plans",
+            "code": "QPLAN",
+            "route": "/enterprise/qm/plans"
+          },
+          {
+            "name": "Inspections & Results",
+            "code": "QRES",
+            "route": "/enterprise/qm/inspections"
+          },
+          {
+            "name": "Nonconformance & CAPA",
+            "code": "QNC",
+            "route": "/enterprise/qm/nc"
+          },
+          {
+            "name": "Certificates",
+            "code": "QCERT",
+            "route": "/enterprise/qm/certificates"
+          },
+          {
+            "name": "Reports",
+            "code": "QMREP",
+            "route": "/enterprise/qm/reports"
+          }
+        ]
+      },
+      {
+        "name": "Asset Management",
+        "code": "EAM",
+        "route": "/enterprise/assets",
+        "areas": [
+          {
+            "name": "Asset Register",
+            "code": "REG",
+            "route": "/enterprise/assets/register"
+          },
+          {
+            "name": "Maintenance Plans",
+            "code": "PM",
+            "route": "/enterprise/assets/maintenance-plans"
+          },
+          {
+            "name": "Work Orders",
+            "code": "WO",
+            "route": "/enterprise/assets/work-orders"
+          },
+          {
+            "name": "Spare Parts",
+            "code": "SPARE",
+            "route": "/enterprise/assets/spares"
+          },
+          {
+            "name": "Depreciation",
+            "code": "DEP",
+            "route": "/enterprise/assets/depreciation"
+          },
+          {
+            "name": "Reports",
+            "code": "EAMREP",
+            "route": "/enterprise/assets/reports"
+          }
+        ]
+      },
+      {
+        "name": "Projects",
+        "code": "PRJ",
+        "route": "/enterprise/projects",
+        "areas": [
+          {
+            "name": "Portfolio & WBS",
+            "code": "WBS",
+            "route": "/enterprise/projects/wbs"
+          },
+          {
+            "name": "Budget & Costs",
+            "code": "COST",
+            "route": "/enterprise/projects/costs"
+          },
+          {
+            "name": "Time & Expenses",
+            "code": "TIME",
+            "route": "/enterprise/projects/time"
+          },
+          {
+            "name": "Billing & Revenue",
+            "code": "BILL",
+            "route": "/enterprise/projects/billing"
+          },
+          {
+            "name": "Reports",
+            "code": "PRJREP",
+            "route": "/enterprise/projects/reports"
+          }
+        ]
+      },
+      {
+        "name": "Customer Service (CRM)",
+        "code": "CRM",
+        "route": "/enterprise/crm",
+        "areas": [
+          {
+            "name": "Accounts & Contacts",
+            "code": "ACCT",
+            "route": "/enterprise/crm/accounts"
+          },
+          {
+            "name": "Cases & Tickets",
+            "code": "CASE",
+            "route": "/enterprise/crm/cases"
+          },
+          {
+            "name": "Service Orders",
+            "code": "SVCO",
+            "route": "/enterprise/crm/service-orders"
+          },
+          {
+            "name": "Contracts & SLAs",
+            "code": "SLA",
+            "route": "/enterprise/crm/slas"
+          },
+          {
+            "name": "Knowledge Base",
+            "code": "KB",
+            "route": "/enterprise/crm/kb"
+          },
+          {
+            "name": "Reports",
+            "code": "CRMREP",
+            "route": "/enterprise/crm/reports"
+          }
+        ]
+      },
+      {
+        "name": "HR",
+        "code": "HR",
+        "route": "/enterprise/hr",
+        "areas": [
+          {
+            "name": "People & Org",
+            "code": "PEO",
+            "route": "/enterprise/hr/org"
+          },
+          {
+            "name": "Time & Attendance",
+            "code": "TIME",
+            "route": "/enterprise/hr/time"
+          },
+          {
+            "name": "Performance",
+            "code": "PERF",
+            "route": "/enterprise/hr/performance"
+          },
+          {
+            "name": "Recruiting",
+            "code": "REC",
+            "route": "/enterprise/hr/recruiting"
+          },
+          {
+            "name": "Learning",
+            "code": "LRN",
+            "route": "/enterprise/hr/learning"
+          },
+          {
+            "name": "Payroll (Integration)",
+            "code": "PAY",
+            "route": "/enterprise/hr/payroll"
+          },
+          {
+            "name": "Reports",
+            "code": "HRREP",
+            "route": "/enterprise/hr/reports"
+          }
+        ]
+      },
+      {
+        "name": "PLM",
+        "code": "PLM",
+        "route": "/enterprise/plm",
+        "areas": [
+          {
+            "name": "Documents & CAD",
+            "code": "DOC",
+            "route": "/enterprise/plm/docs"
+          },
+          {
+            "name": "BOM Versions",
+            "code": "BOMV",
+            "route": "/enterprise/plm/boms"
+          },
+          {
+            "name": "Change Management (ECN)",
+            "code": "ECN",
+            "route": "/enterprise/plm/ecn"
+          },
+          {
+            "name": "Compliance",
+            "code": "COMPL",
+            "route": "/enterprise/plm/compliance"
+          },
+          {
+            "name": "Reports",
+            "code": "PLMREP",
+            "route": "/enterprise/plm/reports"
+          }
+        ]
+      },
+      {
+        "name": "EHS",
+        "code": "EHS",
+        "route": "/enterprise/ehs",
+        "areas": [
+          {
+            "name": "Incidents",
+            "code": "INC",
+            "route": "/enterprise/ehs/incidents"
+          },
+          {
+            "name": "Risk Assessments",
+            "code": "RISK",
+            "route": "/enterprise/ehs/risks"
+          },
+          {
+            "name": "Permits & Compliance",
+            "code": "PERMIT",
+            "route": "/enterprise/ehs/permits"
+          },
+          {
+            "name": "Training",
+            "code": "TRAIN",
+            "route": "/enterprise/ehs/training"
+          },
+          {
+            "name": "Reports",
+            "code": "EHSREP",
+            "route": "/enterprise/ehs/reports"
+          }
+        ]
+      },
+      {
+        "name": "Analytics",
+        "code": "ANALYTICS",
+        "route": "/enterprise/analytics",
+        "areas": [
+          {
+            "name": "Dashboards",
+            "code": "DASH",
+            "route": "/enterprise/analytics/dashboards"
+          },
+          {
+            "name": "Reports",
+            "code": "RPT",
+            "route": "/enterprise/analytics/reports"
+          },
+          {
+            "name": "Planning & Forecast",
+            "code": "PLAN",
+            "route": "/enterprise/analytics/planning"
+          },
+          {
+            "name": "Data Models",
+            "code": "MODEL",
+            "route": "/enterprise/analytics/models"
+          }
+        ]
+      },
+      {
+        "name": "Admin / GRC",
+        "code": "ADMIN",
+        "route": "/enterprise/admin",
+        "areas": [
+          {
+            "name": "Org & Tenants",
+            "code": "ORG",
+            "route": "/enterprise/admin/org"
+          },
+          {
+            "name": "Users & Roles",
+            "code": "IAM",
+            "route": "/enterprise/admin/iam"
+          },
+          {
+            "name": "Guardrails & Policies",
+            "code": "GRC",
+            "route": "/enterprise/admin/grc"
+          },
+          {
+            "name": "Bundles & Generator",
+            "code": "BUNDLES",
+            "route": "/enterprise/admin/bundles"
+          },
+          {
+            "name": "System & Integrations",
+            "code": "SYS",
+            "route": "/enterprise/admin/system"
+          }
+        ]
+      }
+    ]
+  },
+  "level_3": {
+    "areas": [
+      {
+        "module_code": "FIN",
+        "area_code": "GL",
+        "route": "/enterprise/finance/gl",
+        "operations": [
+          {
+            "name": "Create Journal",
+            "code": "CREATE",
+            "route": "/enterprise/finance/gl/create",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "List Journals",
+            "code": "LIST",
+            "route": "/enterprise/finance/gl/list",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals",
+            "code": "APPROVE",
+            "route": "/enterprise/finance/gl/approvals",
+            "required_permissions": [
+              "FIN.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Period Close",
+            "code": "CLOSE",
+            "route": "/enterprise/finance/gl/close",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/finance/gl/analytics",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/gl/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "FIN",
+        "area_code": "AP",
+        "route": "/enterprise/finance/ap",
+        "operations": [
+          {
+            "name": "Create Supplier Invoice",
+            "code": "CREATE",
+            "route": "/enterprise/finance/ap/create",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Open Items",
+            "code": "LIST",
+            "route": "/enterprise/finance/ap/list",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Payments Run",
+            "code": "POST",
+            "route": "/enterprise/finance/ap/payments",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals",
+            "code": "APPROVE",
+            "route": "/enterprise/finance/ap/approvals",
+            "required_permissions": [
+              "FIN.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/finance/ap/analytics",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/ap/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "FIN",
+        "area_code": "AR",
+        "route": "/enterprise/finance/ar",
+        "operations": [
+          {
+            "name": "Create Customer Invoice",
+            "code": "CREATE",
+            "route": "/enterprise/finance/ar/create",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Open Items",
+            "code": "LIST",
+            "route": "/enterprise/finance/ar/list",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Cash Application",
+            "code": "POST",
+            "route": "/enterprise/finance/ar/cash-application",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals",
+            "code": "APPROVE",
+            "route": "/enterprise/finance/ar/approvals",
+            "required_permissions": [
+              "FIN.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/finance/ar/analytics",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/ar/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "FIN",
+        "area_code": "CO",
+        "route": "/enterprise/finance/co",
+        "operations": [
+          {
+            "name": "Cost Centers",
+            "code": "CCTR",
+            "route": "/enterprise/finance/co/cost-centers",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Internal Orders",
+            "code": "IO",
+            "route": "/enterprise/finance/co/internal-orders",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Activity Types",
+            "code": "ACT",
+            "route": "/enterprise/finance/co/activity-types",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Allocations (Asmt/Dist)",
+            "code": "ALLOC",
+            "route": "/enterprise/finance/co/allocations",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/finance/co/analytics",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/co/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "FIN",
+        "area_code": "COPA",
+        "route": "/enterprise/finance/copa",
+        "operations": [
+          {
+            "name": "Define Characteristics",
+            "code": "DEFINE",
+            "route": "/enterprise/finance/copa/characteristics",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Profitability Reports",
+            "code": "LIST",
+            "route": "/enterprise/finance/copa/reports",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Allocations",
+            "code": "ALLOC",
+            "route": "/enterprise/finance/copa/allocations",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Planning",
+            "code": "PLAN",
+            "route": "/enterprise/finance/copa/planning",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/copa/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "FIN",
+        "area_code": "COST",
+        "route": "/enterprise/finance/product-costing",
+        "operations": [
+          {
+            "name": "Costing Variants",
+            "code": "VAR",
+            "route": "/enterprise/finance/product-costing/variants",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Standard Cost Runs",
+            "code": "RUN",
+            "route": "/enterprise/finance/product-costing/standard-cost",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "WIP & Variance",
+            "code": "WIP",
+            "route": "/enterprise/finance/product-costing/wip-variance",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/finance/product-costing/analytics",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/product-costing/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "FIN",
+        "area_code": "TRM",
+        "route": "/enterprise/finance/treasury",
+        "operations": [
+          {
+            "name": "Cash Position",
+            "code": "CASH_POS",
+            "route": "/enterprise/finance/treasury/cash-position",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "FX & Hedging",
+            "code": "FX",
+            "route": "/enterprise/finance/treasury/fx-hedge",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "In-House Bank",
+            "code": "IHB",
+            "route": "/enterprise/finance/treasury/in-house-bank",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Risk Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/finance/treasury/analytics",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/treasury/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "FIN",
+        "area_code": "REVREC",
+        "route": "/enterprise/finance/revenue-recognition",
+        "operations": [
+          {
+            "name": "Rules (IFRS 15/ASC 606)",
+            "code": "RULES",
+            "route": "/enterprise/finance/revenue-recognition/rules",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Schedules",
+            "code": "SCHED",
+            "route": "/enterprise/finance/revenue-recognition/schedules",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Post Revenue",
+            "code": "POST",
+            "route": "/enterprise/finance/revenue-recognition/post",
+            "required_permissions": [
+              "FIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/revenue-recognition/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "FIN",
+        "area_code": "CONS",
+        "route": "/enterprise/finance/consolidation",
+        "operations": [
+          {
+            "name": "Group Structure",
+            "code": "GROUP",
+            "route": "/enterprise/finance/consolidation/group",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Eliminations",
+            "code": "ELIM",
+            "route": "/enterprise/finance/consolidation/eliminations",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Group Reports",
+            "code": "REPORTS",
+            "route": "/enterprise/finance/consolidation/reports",
+            "required_permissions": [
+              "FIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/finance/consolidation/settings",
+            "required_permissions": [
+              "FIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "PROC",
+        "area_code": "PO",
+        "route": "/enterprise/procurement/po",
+        "operations": [
+          {
+            "name": "Create PO",
+            "code": "CREATE",
+            "route": "/enterprise/procurement/po/create",
+            "required_permissions": [
+              "PROC.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "PO List",
+            "code": "LIST",
+            "route": "/enterprise/procurement/po/list",
+            "required_permissions": [
+              "PROC.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals",
+            "code": "APPROVE",
+            "route": "/enterprise/procurement/po/approvals",
+            "required_permissions": [
+              "PROC.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/procurement/po/analytics",
+            "required_permissions": [
+              "PROC.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/procurement/po/settings",
+            "required_permissions": [
+              "PROC.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "PROC",
+        "area_code": "REQ",
+        "route": "/enterprise/procurement/requisitions",
+        "operations": [
+          {
+            "name": "Create Requisition",
+            "code": "CREATE",
+            "route": "/enterprise/procurement/requisitions/create",
+            "required_permissions": [
+              "PROC.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Requisition List",
+            "code": "LIST",
+            "route": "/enterprise/procurement/requisitions/list",
+            "required_permissions": [
+              "PROC.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals",
+            "code": "APPROVE",
+            "route": "/enterprise/procurement/requisitions/approvals",
+            "required_permissions": [
+              "PROC.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Sourcing (RFQ)",
+            "code": "SRC",
+            "route": "/enterprise/procurement/sourcing",
+            "required_permissions": [
+              "PROC.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/procurement/requisitions/settings",
+            "required_permissions": [
+              "PROC.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "INV",
+        "area_code": "MOVES",
+        "route": "/enterprise/inventory/moves",
+        "operations": [
+          {
+            "name": "Goods Receipt",
+            "code": "GR",
+            "route": "/enterprise/inventory/moves/gr",
+            "required_permissions": [
+              "INV.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Goods Issue",
+            "code": "GI",
+            "route": "/enterprise/inventory/moves/gi",
+            "required_permissions": [
+              "INV.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Movements List",
+            "code": "LIST",
+            "route": "/enterprise/inventory/moves/list",
+            "required_permissions": [
+              "INV.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals",
+            "code": "APPROVE",
+            "route": "/enterprise/inventory/moves/approvals",
+            "required_permissions": [
+              "INV.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/inventory/moves/analytics",
+            "required_permissions": [
+              "INV.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/inventory/moves/settings",
+            "required_permissions": [
+              "INV.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "INV",
+        "area_code": "TRACE",
+        "route": "/enterprise/inventory/trace",
+        "operations": [
+          {
+            "name": "Batch/Serial Lookup",
+            "code": "LIST",
+            "route": "/enterprise/inventory/trace/list",
+            "required_permissions": [
+              "INV.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Trace Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/inventory/trace/analytics",
+            "required_permissions": [
+              "INV.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/inventory/trace/settings",
+            "required_permissions": [
+              "INV.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "SALES",
+        "area_code": "SO",
+        "route": "/enterprise/sales/orders",
+        "operations": [
+          {
+            "name": "Create Sales Order",
+            "code": "CREATE",
+            "route": "/enterprise/sales/orders/create",
+            "required_permissions": [
+              "SALES.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Order List",
+            "code": "LIST",
+            "route": "/enterprise/sales/orders/list",
+            "required_permissions": [
+              "SALES.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Delivery",
+            "code": "DELIVERY",
+            "route": "/enterprise/sales/delivery",
+            "required_permissions": [
+              "SALES.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Credit Check",
+            "code": "CRCHK",
+            "route": "/enterprise/sales/credit-check",
+            "required_permissions": [
+              "SALES.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/sales/orders/analytics",
+            "required_permissions": [
+              "SALES.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/sales/orders/settings",
+            "required_permissions": [
+              "SALES.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "MFG",
+        "area_code": "WO",
+        "route": "/enterprise/manufacturing/work-orders",
+        "operations": [
+          {
+            "name": "Create WO",
+            "code": "CREATE",
+            "route": "/enterprise/manufacturing/work-orders/create",
+            "required_permissions": [
+              "MFG.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "WO List",
+            "code": "LIST",
+            "route": "/enterprise/manufacturing/work-orders/list",
+            "required_permissions": [
+              "MFG.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Issue to WO",
+            "code": "ISSUE",
+            "route": "/enterprise/manufacturing/work-orders/issue",
+            "required_permissions": [
+              "MFG.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Receipt from WO",
+            "code": "RECEIPT",
+            "route": "/enterprise/manufacturing/work-orders/receipt",
+            "required_permissions": [
+              "MFG.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/manufacturing/work-orders/analytics",
+            "required_permissions": [
+              "MFG.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/manufacturing/work-orders/settings",
+            "required_permissions": [
+              "MFG.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "QM",
+        "area_code": "QRES",
+        "route": "/enterprise/qm/inspections",
+        "operations": [
+          {
+            "name": "Create Inspection",
+            "code": "CREATE",
+            "route": "/enterprise/qm/inspections/create",
+            "required_permissions": [
+              "QM.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Record Results",
+            "code": "RESULTS",
+            "route": "/enterprise/qm/inspections/results",
+            "required_permissions": [
+              "QM.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "NC & CAPA",
+            "code": "ACTIONS",
+            "route": "/enterprise/qm/nc",
+            "required_permissions": [
+              "QM.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/qm/inspections/analytics",
+            "required_permissions": [
+              "QM.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/qm/inspections/settings",
+            "required_permissions": [
+              "QM.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "EAM",
+        "area_code": "PM",
+        "route": "/enterprise/assets/maintenance-plans",
+        "operations": [
+          {
+            "name": "Create Plan",
+            "code": "CREATE",
+            "route": "/enterprise/assets/maintenance-plans/create",
+            "required_permissions": [
+              "EAM.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Plans List",
+            "code": "LIST",
+            "route": "/enterprise/assets/maintenance-plans/list",
+            "required_permissions": [
+              "EAM.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Generate WO",
+            "code": "GEN_WO",
+            "route": "/enterprise/assets/maintenance-plans/generate",
+            "required_permissions": [
+              "EAM.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/assets/maintenance-plans/analytics",
+            "required_permissions": [
+              "EAM.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/assets/maintenance-plans/settings",
+            "required_permissions": [
+              "EAM.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "PRJ",
+        "area_code": "WBS",
+        "route": "/enterprise/projects/wbs",
+        "operations": [
+          {
+            "name": "Create Project/WBS",
+            "code": "CREATE",
+            "route": "/enterprise/projects/wbs/create",
+            "required_permissions": [
+              "PRJ.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "WBS List",
+            "code": "LIST",
+            "route": "/enterprise/projects/wbs/list",
+            "required_permissions": [
+              "PRJ.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Milestones",
+            "code": "MILE",
+            "route": "/enterprise/projects/wbs/milestones",
+            "required_permissions": [
+              "PRJ.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/projects/wbs/analytics",
+            "required_permissions": [
+              "PRJ.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/projects/wbs/settings",
+            "required_permissions": [
+              "PRJ.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "CRM",
+        "area_code": "CASE",
+        "route": "/enterprise/crm/cases",
+        "operations": [
+          {
+            "name": "New Case",
+            "code": "CREATE",
+            "route": "/enterprise/crm/cases/create",
+            "required_permissions": [
+              "CRM.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Case List",
+            "code": "LIST",
+            "route": "/enterprise/crm/cases/list",
+            "required_permissions": [
+              "CRM.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals/SLAs",
+            "code": "APPROVE",
+            "route": "/enterprise/crm/cases/approvals",
+            "required_permissions": [
+              "CRM.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Knowledge Search",
+            "code": "KB",
+            "route": "/enterprise/crm/kb",
+            "required_permissions": [
+              "CRM.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/crm/cases/analytics",
+            "required_permissions": [
+              "CRM.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/crm/cases/settings",
+            "required_permissions": [
+              "CRM.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "HR",
+        "area_code": "TIME",
+        "route": "/enterprise/hr/time",
+        "operations": [
+          {
+            "name": "Record Time",
+            "code": "CREATE",
+            "route": "/enterprise/hr/time/create",
+            "required_permissions": [
+              "HR.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Timesheets",
+            "code": "LIST",
+            "route": "/enterprise/hr/time/list",
+            "required_permissions": [
+              "HR.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals",
+            "code": "APPROVE",
+            "route": "/enterprise/hr/time/approvals",
+            "required_permissions": [
+              "HR.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/hr/time/analytics",
+            "required_permissions": [
+              "HR.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/hr/time/settings",
+            "required_permissions": [
+              "HR.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "PLM",
+        "area_code": "ECN",
+        "route": "/enterprise/plm/ecn",
+        "operations": [
+          {
+            "name": "Create ECN",
+            "code": "CREATE",
+            "route": "/enterprise/plm/ecn/create",
+            "required_permissions": [
+              "PLM.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "ECN List",
+            "code": "LIST",
+            "route": "/enterprise/plm/ecn/list",
+            "required_permissions": [
+              "PLM.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Approvals",
+            "code": "APPROVE",
+            "route": "/enterprise/plm/ecn/approvals",
+            "required_permissions": [
+              "PLM.APPROVE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/plm/ecn/analytics",
+            "required_permissions": [
+              "PLM.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/plm/ecn/settings",
+            "required_permissions": [
+              "PLM.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "EHS",
+        "area_code": "INC",
+        "route": "/enterprise/ehs/incidents",
+        "operations": [
+          {
+            "name": "Report Incident",
+            "code": "CREATE",
+            "route": "/enterprise/ehs/incidents/create",
+            "required_permissions": [
+              "EHS.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Incident List",
+            "code": "LIST",
+            "route": "/enterprise/ehs/incidents/list",
+            "required_permissions": [
+              "EHS.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Corrective Actions",
+            "code": "ACTIONS",
+            "route": "/enterprise/ehs/incidents/actions",
+            "required_permissions": [
+              "EHS.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Analytics",
+            "code": "ANALYTICS",
+            "route": "/enterprise/ehs/incidents/analytics",
+            "required_permissions": [
+              "EHS.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/ehs/incidents/settings",
+            "required_permissions": [
+              "EHS.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "ANALYTICS",
+        "area_code": "DASH",
+        "route": "/enterprise/analytics/dashboards",
+        "operations": [
+          {
+            "name": "Create Dashboard",
+            "code": "CREATE",
+            "route": "/enterprise/analytics/dashboards/create",
+            "required_permissions": [
+              "ANALYTICS.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Dashboard Gallery",
+            "code": "LIST",
+            "route": "/enterprise/analytics/dashboards/list",
+            "required_permissions": [
+              "ANALYTICS.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Data Sources",
+            "code": "SOURCES",
+            "route": "/enterprise/analytics/models",
+            "required_permissions": [
+              "ANALYTICS.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Permissions",
+            "code": "PERMS",
+            "route": "/enterprise/analytics/dashboards/permissions",
+            "required_permissions": [
+              "ANALYTICS.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/analytics/dashboards/settings",
+            "required_permissions": [
+              "ANALYTICS.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      },
+      {
+        "module_code": "ADMIN",
+        "area_code": "IAM",
+        "route": "/enterprise/admin/iam",
+        "operations": [
+          {
+            "name": "Invite User",
+            "code": "CREATE",
+            "route": "/enterprise/admin/iam/invite",
+            "required_permissions": [
+              "ADMIN.WRITE"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Users & Roles",
+            "code": "LIST",
+            "route": "/enterprise/admin/iam/list",
+            "required_permissions": [
+              "ADMIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Policies & Guardrails",
+            "code": "POLICY",
+            "route": "/enterprise/admin/grc",
+            "required_permissions": [
+              "ADMIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Audit Logs",
+            "code": "AUDIT",
+            "route": "/enterprise/admin/iam/audit",
+            "required_permissions": [
+              "ADMIN.READ"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          },
+          {
+            "name": "Settings",
+            "code": "SETTINGS",
+            "route": "/enterprise/admin/iam/settings",
+            "required_permissions": [
+              "ADMIN.ADMIN"
+            ],
+            "feature_flags": {
+              "analytics_enabled": true,
+              "approvals_enabled": true,
+              "ai_assist_enabled": true,
+              "export_enabled": true
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "security": {
+    "permissions_sets": [
+      {
+        "code": "READ",
+        "description": "Read-only access"
+      },
+      {
+        "code": "WRITE",
+        "description": "Create/modify objects"
+      },
+      {
+        "code": "APPROVE",
+        "description": "Approve workflow items"
+      },
+      {
+        "code": "ADMIN",
+        "description": "Configure module settings"
+      }
+    ],
+    "rbac_examples": [
+      {
+        "role": "FINANCE_ACCOUNTANT",
+        "grants": [
+          "FIN.READ",
+          "FIN.WRITE",
+          "FIN.APPROVE"
+        ]
+      },
+      {
+        "role": "FINANCE_CONTROLLER",
+        "grants": [
+          "FIN.READ",
+          "FIN.WRITE",
+          "FIN.APPROVE",
+          "FIN.ADMIN"
+        ]
+      },
+      {
+        "role": "SALES_REP",
+        "grants": [
+          "SALES.READ",
+          "SALES.WRITE"
+        ]
+      },
+      {
+        "role": "WAREHOUSE_MANAGER",
+        "grants": [
+          "INV.READ",
+          "INV.WRITE",
+          "INV.APPROVE"
+        ]
+      }
+    ]
+  }
+}

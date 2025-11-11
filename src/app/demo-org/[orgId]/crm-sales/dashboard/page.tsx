@@ -1,4 +1,4 @@
-'use client'
+
 
 /**
  * CRM Sales Dashboard
@@ -6,6 +6,8 @@
  * 
  * Demo dashboard for CRM Sales/Lead Management module
  */
+
+"use client";
 
 import React from 'react'
 import { useParams } from 'next/navigation'

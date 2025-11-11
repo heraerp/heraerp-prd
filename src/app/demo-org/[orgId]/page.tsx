@@ -1,4 +1,6 @@
-'use client'
+
+
+'use client';
 
 /**
  * Demo Organization Home

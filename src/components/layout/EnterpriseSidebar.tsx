@@ -72,7 +72,6 @@ const allApps: SidebarItem[] = [
   // Business Apps
   { title: 'Salon Manager', href: '/salon', icon: Scissors, requiresApp: 'salon' },
   { title: 'Restaurant POS', href: '/restaurant', icon: Store, requiresApp: 'restaurant' },
-  { title: 'Retail Suite', href: '/retail', icon: ShoppingBag, requiresApp: 'retail' },
   { title: 'Manufacturing', href: '/furniture', icon: Factory, requiresApp: 'manufacturing' },
   {
     title: 'Healthcare',

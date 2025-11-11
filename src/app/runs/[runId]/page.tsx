@@ -1,4 +1,4 @@
-'use client'
+
 
 import { useRun, useRunTimeline } from '@/hooks/use-runs'
 import { useOrgStore } from '@/state/org'

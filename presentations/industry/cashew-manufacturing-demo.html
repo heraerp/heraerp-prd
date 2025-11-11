@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cashew Manufacturing ERP - Complete Industry Solution</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    /* Base presentation styles - inline version */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --hera-primary: #667eea;
+      --hera-secondary: #764ba2;
+      --hera-accent: #f093fb;
+      --hera-success: #18a058;
+      --hera-warning: #f0a020;
+      --hera-danger: #d03050;
+      --hera-info: #3b82f6;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    body {
+      font-family: var(--font-family);
+      background: linear-gradient(135deg, #8B4513 0%, #DEB887 50%, #F4A460 100%);
+      min-height: 100vh;
+      padding: 1.25rem;
+      line-height: 1.6;
+    }
+    
+    .presentation-container {
+      max-width: 1800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--glass-shadow);
+      overflow: hidden;
+      animation: slideInUp 0.8s ease-out;
+    }
+    
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .presentation-header {
+      background: linear-gradient(135deg, #8B4513 0%, #DEB887 100%);
+      color: white;
+      padding: 3rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .presentation-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+      animation: headerGlow 4s ease-in-out infinite;
+    }
+    
+    @keyframes headerGlow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
+    }
+    
+    .presentation-header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .presentation-header .subtitle {
+      font-size: 1.125rem;
+      opacity: 0.95;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .presentation-header .metadata {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      margin-top: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .presentation-content {
+      padding: 2.5rem;
+    }
+    
+    .info-banner {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.25rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      text-align: center;
+      animation: bannerPulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes bannerPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(240, 147, 251, 0.3); }
+      50% { box-shadow: 0 0 30px rgba(240, 147, 251, 0.6); }
+    }
+    
+    .info-banner h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: var(--hera-primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-success {
+      background: var(--hera-success);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #148f4f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(24, 160, 88, 0.4);
+    }
+    
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+    
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      border-left: 4px solid;
+      transition: all 0.3s ease;
+    }
+    
+    .legend-item:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .legend-item.process { border-color: var(--hera-success); }
+    .legend-item.quality { border-color: var(--hera-info); }
+    .legend-item.risk { border-color: var(--hera-danger); }
+    .legend-item.role { border-color: var(--hera-warning); }
+    
+    .legend-box {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 2px solid;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+    }
+    
+    .legend-box.process { 
+      background: var(--hera-success);
+      border-color: var(--hera-success);
+    }
+    .legend-box.quality { 
+      background: var(--hera-info);
+      border-color: var(--hera-info);
+    }
+    .legend-box.risk { 
+      background: var(--hera-danger);
+      border-color: var(--hera-danger);
+    }
+    .legend-box.role { 
+      background: var(--hera-warning);
+      border-color: var(--hera-warning);
+    }
+    
+    .diagram-container {
+      background: white;
+      border-radius: 12px;
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin-bottom: 2rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .mermaid {
+      display: flex;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+    
+    .info-panel {
+      background: #f8f9fa;
+      border-left: 4px solid var(--hera-primary);
+      padding: 1.25rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .info-panel:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .info-panel h3 {
+      color: var(--hera-primary);
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .info-panel ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .info-panel li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .info-panel li:last-child {
+      border-bottom: none;
+    }
+    
+    .info-panel li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--hera-success);
+      font-weight: bold;
+      font-size: 1.125rem;
+    }
+    
+    .info-panel.risk {
+      border-left-color: var(--hera-danger);
+    }
+    
+    .info-panel.risk h3 {
+      color: var(--hera-danger);
+    }
+    
+    .info-panel.risk li:before {
+      content: "⚠";
+      color: var(--hera-danger);
+    }
+    
+    .demo-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .demo-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .demo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    
+    .demo-card h4 {
+      font-size: 1.125rem;
+      margin-bottom: 0.75rem;
+      color: #fbbf24;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .feature-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border-left: 4px solid var(--hera-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    
+    .feature-card .icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .feature-card h4 {
+      color: var(--hera-primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.125rem;
+    }
+    
+    @media (max-width: 768px) {
+      body { padding: 0.75rem; }
+      .presentation-header { padding: 1.5rem; }
+      .presentation-header h1 { font-size: 1.5rem; }
+      .presentation-content { padding: 1.25rem; }
+      .legend { grid-template-columns: 1fr; }
+      .controls { flex-direction: column; align-items: center; }
+      .btn { width: 100%; justify-content: center; max-width: 300px; }
+    }
+    
+    @media print {
+      body { background: white; padding: 0; }
+      .presentation-container { box-shadow: none; border-radius: 0; }
+      .controls { display: none; }
+      .info-banner { animation: none; box-shadow: none; }
+      .presentation-header::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation-container">
+    <div class="presentation-header">
+      <h1>🥜 Cashew Manufacturing ERP Demo</h1>
+      <p class="subtitle">End-to-End Cashew Processing Operations in HERA</p>
+      <p class="metadata">From Raw Nuts to Export-Ready Kernels • Complete Industry Solution • Zero Customization Required</p>
+    </div>
+    
+    <div class="presentation-content">
+      <!-- Executive Summary Banner -->
+      <div class="info-banner">
+        <h2>🎯 Complete Cashew Manufacturing Solution</h2>
+        <p><strong>26 Business Functions</strong> • <strong>4 Universal Components</strong> • <strong>35-Minute Implementation</strong></p>
+        <p style="font-size: 1.1rem; margin-top: 15px; font-weight: 600;">Raw Nut Procurement → Quality Control → Processing → Grading → Export</p>
+      </div>
+
+      <!-- Navigation Controls -->
+      <div class="controls">
+        <button class="btn btn-success" onclick="showLiveDemo()">
+          <i data-lucide="play-circle"></i>
+          Launch Live Demo
+        </button>
+        <button class="btn btn-primary" onclick="zoomIn()">
+          <i data-lucide="zoom-in"></i>
+          Zoom In
+        </button>
+        <button class="btn btn-primary" onclick="zoomOut()">
+          <i data-lucide="zoom-out"></i>
+          Zoom Out
+        </button>
+        <button class="btn btn-secondary" onclick="resetZoom()">
+          <i data-lucide="refresh-cw"></i>
+          Reset
+        </button>
+        <button class="btn btn-secondary" onclick="toggleFullscreen()">
+          <i data-lucide="maximize"></i>
+          Fullscreen
+        </button>
+      </div>
+
+      <!-- Process Legend -->
+      <div class="legend">
+        <div class="legend-item process">
+          <div class="legend-box process">🏭</div>
+          <div>
+            <strong>Manufacturing Stages</strong>
+            <div style="font-size: 0.8rem; opacity: 0.8;">11 critical processing steps</div>
+          </div>
+        </div>
+        <div class="legend-item quality">
+          <div class="legend-box quality">🔍</div>
+          <div>
+            <strong>Quality Controls</strong>
+            <div style="font-size: 0.8rem; opacity: 0.8;">AQL testing and validation</div>
+          </div>
+        </div>
+        <div class="legend-item risk">
+          <div class="legend-box risk">⚠</div>
+          <div>
+            <strong>Risk Management</strong>
+            <div style="font-size: 0.8rem; opacity: 0.8;">Shrinkage, quality, compliance</div>
+          </div>
+        </div>
+        <div class="legend-item role">
+          <div class="legend-box role">👥</div>
+          <div>
+            <strong>Role Management</strong>
+            <div style="font-size: 0.8rem; opacity: 0.8;">6 specialized role types</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Complete Process Flow Diagram -->
+      <div class="diagram-container" id="diagram-container">
+        <h3 style="text-align: center; margin-bottom: 1rem;">🥜 Complete Cashew Processing Workflow</h3>
+        <div class="mermaid">
+flowchart TD
+    Start([🚚 Receive Raw Cashew Nuts<br/>RCN Procurement]) --> QC1[📋 Moisture & Quality Tests<br/>Target: <10% moisture]
+    QC1 --> Store1[🏭 Store RCN in Ventilated Warehouse<br/>Humidity & Mold Control]
+    Store1 --> Clean[🧹 Cleaning & Roasting<br/>Remove impurities, heat treatment]
+    Clean --> Cool[❄️ Cooling & Storage<br/>Safe handling temperature]
+    Cool --> Shell[🔨 Shelling & Cutting<br/>Manual/Semi-auto kernel extraction]
+    Shell --> Dry[🔥 Kernel Drying<br/>80°C, 3 hours, moisture to 3%]
+    Dry --> Peel[👐 Manual Peeling<br/>Testa removal & pre-grading]
+    Peel --> Grade[📊 Grading & Sorting<br/>W180, W210, W240, W320, etc.]
+    Grade --> Pack[📦 Vacuum Packing & Labeling<br/>Export preparation]
+    Pack --> Export[✈️ Finished Goods Storage/Export<br/>Ready for international markets]
+    
+    %% Quality Control Points
+    QC1 --> QC2[🔬 Laboratory Analysis<br/>Nut count, foreign matter]
+    Shell --> QC3[⚖️ Yield Calculation<br/>Input vs output tracking]
+    Grade --> QC4[📊 Grade Distribution<br/>Quality certification]
+    Pack --> QC5[📋 Final Inspection<br/>Export compliance check]
+    
+    %% Cost Centers & Tracking
+    Start --> CC1[💰 Raw Material Cost Center<br/>Procurement tracking]
+    Shell --> CC2[💰 Processing Cost Center<br/>Labor & overhead allocation]
+    Pack --> CC3[💰 Finished Goods Cost Center<br/>Final cost calculation]
+    
+    %% Risk Management Points
+    QC1 -.->|🚨 HIGH RISK| Risk1["⚠️ Moisture Manipulation<br/>Supplier may inflate moisture<br/>for higher payment"]
+    Shell -.->|🚨 CRITICAL| Risk2["⚠️ Shrinkage & Pilferage<br/>Workers may consume kernels<br/>Strict supervision required"]
+    Shell -.->|🚨 UNION ISSUE| Risk3["⚠️ Automation Resistance<br/>Labor unions oppose mechanization<br/>Gradual implementation needed"]
+    Dry -.->|🚨 CONTROL| Risk4["⚠️ Drying Parameters<br/>Temperature & time critical<br/>Quality impact high"]
+    Grade -.->|🚨 VALUE IMPACT| Risk5["⚠️ Grading Accuracy<br/>Direct impact on pricing<br/>Export compliance required"]
+    
+    %% HERA System Integration Points
+    QC1 --> HERA1[📊 HERA Quality Module<br/>Test results, compliance tracking]
+    Shell --> HERA2[📊 HERA Manufacturing<br/>Material issues, labor booking]
+    Grade --> HERA3[📊 HERA Inventory<br/>Finished goods receipt]
+    Export --> HERA4[📊 HERA Finance<br/>Cost roll-up, profitability]
+    
+    %% Styling
+    style Start fill:#e8fff1,stroke:#18a058,stroke-width:3px
+    style Export fill:#e8fff1,stroke:#18a058,stroke-width:3px
+    
+    style QC1 fill:#eef4ff,stroke:#3b82f6,stroke-width:2px
+    style QC2 fill:#eef4ff,stroke:#3b82f6,stroke-width:2px
+    style QC3 fill:#eef4ff,stroke:#3b82f6,stroke-width:2px
+    style QC4 fill:#eef4ff,stroke:#3b82f6,stroke-width:2px
+    style QC5 fill:#eef4ff,stroke:#3b82f6,stroke-width:2px
+    
+    style Store1 fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
+    style Clean fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
+    style Cool fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
+    style Shell fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
+    style Dry fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
+    style Peel fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
+    style Grade fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
+    style Pack fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
+    
+    style CC1 fill:#fff8e6,stroke:#f0a020,stroke-width:2px
+    style CC2 fill:#fff8e6,stroke:#f0a020,stroke-width:2px
+    style CC3 fill:#fff8e6,stroke:#f0a020,stroke-width:2px
+    
+    style Risk1 fill:#ffecec,stroke:#d03050,stroke-width:2px,stroke-dasharray: 5 5
+    style Risk2 fill:#ffecec,stroke:#d03050,stroke-width:2px,stroke-dasharray: 5 5
+    style Risk3 fill:#ffecec,stroke:#d03050,stroke-width:2px,stroke-dasharray: 5 5
+    style Risk4 fill:#ffecec,stroke:#d03050,stroke-width:2px,stroke-dasharray: 5 5
+    style Risk5 fill:#ffecec,stroke:#d03050,stroke-width:2px,stroke-dasharray: 5 5
+    
+    style HERA1 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style HERA2 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style HERA3 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style HERA4 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+        </div>
+      </div>
+
+      <!-- Live Demo Section -->
+      <div class="demo-section">
+        <h2>🚀 Live Demo Access</h2>
+        <p>Experience the complete cashew manufacturing system in action</p>
+        
+        <div class="demo-grid">
+          <div class="demo-card">
+            <h4>🏭 Master Data Management</h4>
+            <p>Materials, Products, Locations, Work Centers, BOMs, Cost Centers</p>
+            <button class="btn btn-primary" onclick="openDemo('/cashew/materials/list')" style="margin-top: 1rem; background: rgba(255,255,255,0.2);">
+              Access Materials →
+            </button>
+          </div>
+          
+          <div class="demo-card">
+            <h4>⚙️ Manufacturing Operations</h4>
+            <p>Material Issues, Labor Booking, Overhead, Quality Control</p>
+            <button class="btn btn-primary" onclick="openDemo('/cashew/manufacturing/issue/list')" style="margin-top: 1rem; background: rgba(255,255,255,0.2);">
+              Access Manufacturing →
+            </button>
+          </div>
+          
+          <div class="demo-card">
+            <h4>📊 Production Batches</h4>
+            <p>Track cashew processing batches from start to finish</p>
+            <button class="btn btn-primary" onclick="openDemo('/cashew/batches/list')" style="margin-top: 1rem; background: rgba(255,255,255,0.2);">
+              Access Batches →
+            </button>
+          </div>
+          
+          <div class="demo-card">
+            <h4>🔍 Quality Control</h4>
+            <p>AQL-based quality inspections and compliance tracking</p>
+            <button class="btn btn-primary" onclick="openDemo('/cashew/manufacturing/qc/list')" style="margin-top: 1rem; background: rgba(255,255,255,0.2);">
+              Access Quality →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERA System Features -->
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="icon">🎯</div>
+          <h4>26 Business Functions</h4>
+          <p>Complete cashew manufacturing operations covered with comprehensive workflows</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="icon">🔧</div>
+          <h4>4 Universal Components</h4>
+          <p>EntityList, EntityWizard, TransactionWizard, TransactionListPage handle everything</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="icon">⚡</div>
+          <h4>35-Minute Implementation</h4>
+          <p>From selection to production-ready system in under an hour</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="icon">📱</div>
+          <h4>Mobile-First Design</h4>
+          <p>Perfect experience on phones, tablets, and desktops with 44px touch targets</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="icon">🔒</div>
+          <h4>Enterprise Security</h4>
+          <p>Multi-tenant isolation, actor stamping, complete audit trail</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="icon">📈</div>
+          <h4>Real-time Analytics</h4>
+          <p>Live dashboards, yield tracking, cost analysis, quality metrics</p>
+        </div>
+      </div>
+
+      <!-- Process Breakdown -->
+      <div class="info-panel">
+        <h3>🥜 Cashew Processing Stages</h3>
+        <ul>
+          <li><strong>RCN Procurement:</strong> Raw Cashew Nut purchasing with moisture testing and quality verification</li>
+          <li><strong>Storage & Preparation:</strong> Ventilated warehouse storage with humidity control to prevent mold</li>
+          <li><strong>Cleaning & Roasting:</strong> Remove foreign matter, roast to facilitate shell removal</li>
+          <li><strong>Shelling & Cutting:</strong> Extract kernels (highest shrinkage risk, labor-intensive)</li>
+          <li><strong>Drying:</strong> Reduce moisture to ~3% at 80°C for preservation and quality</li>
+          <li><strong>Peeling:</strong> Remove testa (seed coat) with initial quality sorting</li>
+          <li><strong>Grading & Sorting:</strong> Final classification by size and quality (W180, W210, W240, W320)</li>
+          <li><strong>Packing & Export:</strong> Vacuum packaging, labeling, export documentation</li>
+        </ul>
+      </div>
+
+      <!-- Risk Management -->
+      <div class="info-panel risk">
+        <h3>⚠️ Critical Risk Points & HERA Controls</h3>
+        <ul>
+          <li><strong>Moisture Manipulation:</strong> HERA tracks moisture tests with actor stamping and audit trails</li>
+          <li><strong>Shrinkage & Pilferage:</strong> Real-time yield tracking with input/output reconciliation</li>
+          <li><strong>Union Resistance:</strong> Gradual automation tracking with productivity metrics</li>
+          <li><strong>Quality Control:</strong> AQL-based inspection workflows with compliance documentation</li>
+          <li><strong>Cost Management:</strong> Real-time cost center tracking with profitability analysis</li>
+        </ul>
+      </div>
+
+      <!-- Business Intelligence -->
+      <div class="info-panel">
+        <h3>📊 Key Performance Indicators</h3>
+        <ul>
+          <li><strong>Yield Rate:</strong> Kernel output as percentage of RCN input (industry benchmarks by grade)</li>
+          <li><strong>Shrinkage Tracking:</strong> Real-time monitoring of material losses during processing</li>
+          <li><strong>Grade Distribution:</strong> Percentage breakdown by export grades (impacts revenue directly)</li>
+          <li><strong>Quality Metrics:</strong> Rejection rates, moisture content, foreign matter levels</li>
+          <li><strong>Cost Analysis:</strong> Cost per kg by grade, labor productivity, overhead allocation</li>
+          <li><strong>Compliance Status:</strong> Export certifications, quality standards, audit readiness</li>
+        </ul>
+      </div>
+
+      <!-- HERA Integration -->
+      <div class="info-panel">
+        <h3>🔗 HERA System Integration Points</h3>
+        <ul>
+          <li><strong>Sacred Six Schema:</strong> All data stored in 6 universal tables, zero custom tables needed</li>
+          <li><strong>Dynamic Data Fields:</strong> Lot-specific information (moisture %, grade mix) in core_dynamic_data</li>
+          <li><strong>Universal Transactions:</strong> Material movements, labor hours, overhead allocations tracked</li>
+          <li><strong>Actor Stamping:</strong> Complete audit trail - who did what, when, and why</li>
+          <li><strong>Organization Isolation:</strong> Multi-tenant security with perfect data separation</li>
+          <li><strong>Real-time API:</strong> Live integration with scales, moisture meters, quality instruments</li>
+        </ul>
+      </div>
+
+      <!-- Call to Action -->
+      <div class="controls">
+        <button class="btn btn-success" onclick="showLiveDemo()">
+          <i data-lucide="play-circle"></i>
+          Launch Full Demo
+        </button>
+        <button class="btn btn-primary" onclick="scheduleImplementation()">
+          <i data-lucide="calendar"></i>
+          Schedule Implementation
+        </button>
+        <button class="btn btn-primary" onclick="downloadCashewGuide()">
+          <i data-lucide="download"></i>
+          Download Guide
+        </button>
+        <button class="btn btn-secondary" onclick="window.print()">
+          <i data-lucide="printer"></i>
+          Print
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Initialize Mermaid
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#e8fff1',
+        primaryTextColor: '#0a3',
+        primaryBorderColor: '#18a058',
+        lineColor: '#667eea',
+        secondaryColor: '#f0f4ff',
+        tertiaryColor: '#fff8e6',
+        errorBkgColor: '#ffecec',
+        errorTextColor: '#a00'
+      },
+      flowchart: {
+        curve: 'basis',
+        padding: 20,
+        nodeSpacing: 50,
+        rankSpacing: 80,
+        useMaxWidth: true
+      }
+    });
+    
+    // Initialize Lucide Icons
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+    
+    // Zoom controls
+    let zoomLevel = 1;
+    const container = document.getElementById('diagram-container');
+    
+    function zoomIn() {
+      zoomLevel = Math.min(zoomLevel + 0.1, 2.5);
+      applyZoom();
+    }
+    
+    function zoomOut() {
+      zoomLevel = Math.max(zoomLevel - 0.1, 0.3);
+      applyZoom();
+    }
+    
+    function resetZoom() {
+      zoomLevel = 1;
+      applyZoom();
+    }
+    
+    function applyZoom() {
+      const diagram = container.querySelector('.mermaid');
+      if (diagram) {
+        diagram.style.transform = `scale(${zoomLevel})`;
+        diagram.style.transformOrigin = 'top center';
+        diagram.style.transition = 'transform 0.3s ease';
+      }
+    }
+    
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+    
+    // Demo functions
+    function showLiveDemo() {
+      const demoUrl = 'http://localhost:3005/cashew';
+      window.open(demoUrl, '_blank');
+      alert('🚀 Live Demo Opened!\n\nThe cashew manufacturing system is now opening in a new tab.\n\nLogin with:\n📧 admin@keralacashew.com\n🔑 CashewAdmin2024!\n\nExplore all 26 business functions!');
+    }
+    
+    function openDemo(path) {
+      const demoUrl = `http://localhost:3005${path}`;
+      window.open(demoUrl, '_blank');
+    }
+    
+    function scheduleImplementation() {
+      alert('📅 Implementation Scheduled!\n\nOur team will contact you within 1 hour to:\n\n✅ Analyze your current cashew operations\n✅ Configure HERA for your specific needs\n✅ Complete implementation in 35 minutes\n✅ Train your team on the system\n\nYou\'ll be operational the same day!');
+    }
+    
+    function downloadCashewGuide() {
+      alert('📚 Cashew Manufacturing Guide!\n\nYour comprehensive guide includes:\n\n📖 Complete workflow documentation\n📊 Quality control procedures\n⚠️ Risk management protocols\n📈 KPI tracking methods\n🔧 HERA system features\n\nDownloading now...');
+    }
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '+' || e.key === '=') {
+          e.preventDefault();
+          zoomIn();
+        } else if (e.key === '-') {
+          e.preventDefault();
+          zoomOut();
+        } else if (e.key === '0') {
+          e.preventDefault();
+          resetZoom();
+        }
+      }
+      if (e.key === 'F11') {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+      if (e.key === 'F5') {
+        e.preventDefault();
+        showLiveDemo();
+      }
+    });
+    
+    // Add entrance animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    });
+    
+    document.querySelectorAll('.info-panel, .feature-card, .demo-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

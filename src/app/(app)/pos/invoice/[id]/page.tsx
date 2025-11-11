@@ -4,7 +4,7 @@
 // Invoice display page with print support
 // ================================================================================
 
-'use client'
+"use client";
 
 import { useParams } from 'next/navigation'
 import { Code } from 'lucide-react'

@@ -115,6 +115,28 @@ export class AccessControlService {
         pages: [],
         requiredRoles: ['procurement_specialist', 'procurement_manager', 'sourcing_specialist', 'supplier_manager', 'buyer', 'contract_manager'],
         isActive: true
+      },
+      {
+        id: 'services',
+        name: 'Services',
+        description: 'Service Management & Project Delivery',
+        module: 'services',
+        icon: 'Briefcase',
+        color: 'bg-teal-600',
+        pages: [],
+        requiredRoles: ['service_manager', 'project_manager', 'service_technician'],
+        isActive: true
+      },
+      {
+        id: 'assets',
+        name: 'Asset Management',
+        description: 'Asset Lifecycle & Maintenance Management',
+        module: 'assets',
+        icon: 'UserCheck',
+        color: 'bg-gray-600',
+        pages: [],
+        requiredRoles: ['asset_manager', 'maintenance_technician', 'facility_manager'],
+        isActive: true
       }
     ]
 
@@ -568,7 +590,7 @@ export class AccessControlService {
           { id: 'exec_all', resource: '*', action: 'read' },
           { id: 'exec_reports', resource: '*.reports', action: 'read' }
         ],
-        spaces: ['finance', 'sales', 'hr', 'materials', 'salon'],
+        spaces: ['finance', 'sales', 'hr', 'materials', 'salon', 'manufacturing', 'procurement', 'services', 'assets'],
         isActive: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()

@@ -1,0 +1,1 @@
+id,organization_id,transaction_id,line_number,entity_id,line_type,description,quantity,unit_amount,line_amount,discount_amount,tax_amount,smart_code,smart_code_status,ai_confidence,ai_classification,ai_insights,line_data,created_at,updated_at,created_by,updated_by,version,debit_amount,credit_amount

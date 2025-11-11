@@ -10,7 +10,6 @@ import React, { createContext, useContext, useEffect, useRef, useState, useMemo,
 import { useRouter } from 'next/navigation'
 import { createSecurityContextFromAuth } from '@/lib/security/user-entity-resolver'
 import type { SecurityContext } from '@/lib/security/database-context'
-import { getSafeOrgConfig, setSafeOrgContext } from '@/lib/salon/safe-org-loader'
 import { normalizeRole, type AppRole } from '@/lib/auth/role-normalizer'
 
 type HeraStatus = 'idle' | 'resolving' | 'authenticated' | 'error'
@@ -233,10 +232,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             
             try {
               const { user } = session
-              
-              // Get safe config first
-              const safeConfig = getSafeOrgConfig()
-              
+
               // Fetch membership data from API v2
               let res = {}
               try {
@@ -259,27 +255,27 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                     // Don't use fallback for no_membership - user genuinely has no access
                     throw new Error('NO_ORGANIZATION_MEMBERSHIP')
                   } else {
-                    console.warn('🚨 Membership API v2 failed, using fallback:', errorCode)
-                    res = { organization_id: safeConfig.organizationId }
+                    console.warn('🚨 Membership API v2 failed:', errorCode)
+                    throw new Error(`MEMBERSHIP_API_ERROR: ${errorCode}`)
                   }
                 }
               } catch (error) {
                 // If NO_ORGANIZATION_MEMBERSHIP error, re-throw (don't use fallback)
-                if (error.message === 'NO_ORGANIZATION_MEMBERSHIP') {
+                if (error.message === 'NO_ORGANIZATION_MEMBERSHIP' || error.message?.startsWith('MEMBERSHIP_API_ERROR')) {
                   throw error
                 }
-                console.warn('🚨 Membership API v2 error, using fallback:', error)
-                res = { organization_id: safeConfig.organizationId }
+                console.error('🚨 Membership API v2 error:', error)
+                throw error
               }
               // Parse v2 API response structure
               const normalizedOrgId =
                 res.membership?.organization_id ??
                 res.organization_id ??
-                res.org_entity_id ??
-                safeConfig.organizationId
+                res.org_entity_id
 
-              // Set safe context as backup
-              setSafeOrgContext()
+              if (!normalizedOrgId) {
+                throw new Error('NO_ORGANIZATION_ID_IN_RESPONSE')
+              }
 
               // Extract role from v2 response and normalize
               const rawRole = res.membership?.roles?.[0] ??
@@ -361,12 +357,24 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                 role: res.membership?.roles?.[0] || 'USER'
               }
 
+              // ✅ ENTERPRISE: Get organization details from current org in allOrganizations
+              const currentOrgData = allOrganizations.find(o => o.id === normalizedOrgId)
+
               const heraOrg: HERAOrganization = {
                 id: normalizedOrgId,
                 entity_id: res.membership?.org_entity_id || normalizedOrgId,
-                name: res.membership?.organization_name || safeConfig.fallbackName,
-                type: 'salon',
-                industry: 'beauty'
+                name: currentOrgData?.name || res.membership?.organization_name || 'Organization',
+                code: currentOrgData?.code || res.membership?.organization_code,
+                type: currentOrgData?.type || res.membership?.organization_type || 'general',
+                industry: currentOrgData?.industry || 'general',
+                primary_role: currentOrgData?.primary_role,
+                roles: currentOrgData?.roles || [],
+                user_role: currentOrgData?.user_role,
+                apps: currentOrgData?.apps || [],
+                settings: currentOrgData?.settings || {},
+                joined_at: currentOrgData?.joined_at,
+                is_owner: currentOrgData?.is_owner,
+                is_admin: currentOrgData?.is_admin
               }
 
               setCtx({
@@ -385,27 +393,39 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
                 organizations: allOrganizations  // NEW: Store all organizations
               })
 
-              // ✅ CRITICAL FIX: Store COMPLETE auth context in localStorage (9 keys)
+              // ✅ ENTERPRISE: Store app-agnostic auth context in localStorage
               // This handles users created via hera_onboard_user_v1 where auth UID ≠ user entity ID
-              // Also ensures full backwards compatibility with SecuredSalonProvider
               if (typeof window !== 'undefined') {
+                // Core auth context (app-agnostic)
+                localStorage.setItem('hera_user_entity_id', userEntityId)
+                localStorage.setItem('hera_organization_id', normalizedOrgId)
+                localStorage.setItem('hera_user_id', user.id)
+                localStorage.setItem('hera_user_email', user.email || '')
+                localStorage.setItem('hera_user_name', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
+                localStorage.setItem('hera_user_role', role)
+                localStorage.setItem('hera_default_app', defaultApp || '')
+                localStorage.setItem('hera_current_app', currentApp || '')
+
+                // Legacy compatibility keys (for backward compatibility with salon-specific code)
                 localStorage.setItem('user_entity_id', userEntityId)
                 localStorage.setItem('organizationId', normalizedOrgId)
-                localStorage.setItem('safeOrganizationId', normalizedOrgId)
-                localStorage.setItem('salonOrgId', normalizedOrgId)
-                localStorage.setItem('salonRole', role)
                 localStorage.setItem('userId', user.id)
                 localStorage.setItem('userEmail', user.email || '')
+
+                // ⚠️ DEPRECATED: salon-specific keys (kept for backward compatibility, will be removed in future)
+                localStorage.setItem('salonOrgId', normalizedOrgId)
+                localStorage.setItem('salonRole', role)
                 localStorage.setItem('salonUserEmail', user.email || '')
                 localStorage.setItem('salonUserName', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
 
-                console.log('✅ Stored complete auth context in localStorage (9 keys):', {
+                console.log('✅ Stored HERA auth context in localStorage:', {
                   user_entity_id: userEntityId,
-                  organizationId: normalizedOrgId,
-                  safeOrganizationId: normalizedOrgId,
-                  userId: user.id,
-                  userEmail: user.email,
-                  salonRole: role
+                  organization_id: normalizedOrgId,
+                  user_id: user.id,
+                  role,
+                  default_app: defaultApp,
+                  current_app: currentApp,
+                  available_apps: availableApps.length
                 })
               }
 
