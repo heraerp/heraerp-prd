@@ -319,42 +319,29 @@ export default function RetailDashboard() {
   }
 
   // Fetch dynamic modules from APP_DOMAIN entities (Level 1)
+  // APP_DOMAIN entities are global platform configuration
   const fetchDynamicModules = async () => {
-    if (!organization?.id) return
-
     try {
       setModulesLoading(true)
       setModulesError(null)
 
-      console.log('🔍 Fetching APP_DOMAIN entities for org:', organization.id)
+      console.log('🔍 Fetching APP_DOMAIN entities from platform org')
 
-      // Try user organization first
-      let response = await apiV2.get('entities', {
+      // APP_DOMAIN entities are always in platform organization
+      const response = await apiV2.get('entities', {
         entity_type: 'APP_DOMAIN',
-        organization_id: organization.id,
+        organization_id: '00000000-0000-0000-0000-000000000000',
         limit: 50
       })
 
-      console.log('📊 User org response:', {
+      console.log('📊 Platform org response:', {
         count: response.data?.items?.length || 0,
-        items: response.data?.items?.map((i: any) => ({ name: i.entity_name, code: i.entity_code })) || []
+        items: response.data?.items?.map((i: any) => ({ 
+          name: i.entity_name, 
+          code: i.entity_code, 
+          smartCode: i.smart_code 
+        })) || []
       })
-
-      // If no results in user org, try platform org as fallback
-      if (!response.data?.items || response.data.items.length === 0) {
-        console.log('🔄 No domains in user org, trying platform org...')
-        
-        response = await apiV2.get('entities', {
-          entity_type: 'APP_DOMAIN', 
-          organization_id: '00000000-0000-0000-0000-000000000000',
-          limit: 50
-        })
-
-        console.log('📊 Platform org response:', {
-          count: response.data?.items?.length || 0,
-          items: response.data?.items?.map((i: any) => ({ name: i.entity_name, code: i.entity_code })) || []
-        })
-      }
 
       if (response.data?.items) {
         const modules = response.data.items
@@ -365,7 +352,7 @@ export default function RetailDashboard() {
         setDynamicModules(modules)
         console.log('✅ Loaded dynamic domains:', modules.length, 'domains:', modules.map(m => m.title))
       } else {
-        console.warn('❌ No APP_DOMAIN entities found in any organization')
+        console.warn('❌ No APP_DOMAIN entities found in platform organization')
         setDynamicModules([])
       }
     } catch (error) {
@@ -377,12 +364,12 @@ export default function RetailDashboard() {
     }
   }
 
-  // Load dynamic modules when organization is available
+  // Load dynamic modules when authenticated
   useEffect(() => {
-    if (organization?.id && isAuthenticated) {
+    if (isAuthenticated) {
       fetchDynamicModules()
     }
-  }, [organization?.id, isAuthenticated])
+  }, [isAuthenticated])
 
   // Update time every minute
   useEffect(() => {
