@@ -77,22 +77,32 @@ export function BusinessHoursSection({ onSuccess, onError }: {
 
   // Load business hours from branch dynamic fields
   useEffect(() => {
+    console.log('[BusinessHours] Loading hours for branch:', {
+      branchId: selectedBranchId,
+      branchName: selectedBranch?.entity_name,
+      hasBusinessHours: !!selectedBranch?.business_hours,
+      businessHours: selectedBranch?.business_hours,
+      fullBranch: selectedBranch
+    })
+
     if (selectedBranch?.business_hours) {
       try {
         const loadedHours = typeof selectedBranch.business_hours === 'string'
           ? JSON.parse(selectedBranch.business_hours)
           : selectedBranch.business_hours
+        console.log('[BusinessHours] Loaded hours:', loadedHours)
         setHours({ ...DEFAULT_HOURS, ...loadedHours })
         setHasChanges(false)
       } catch (error) {
-        console.error('Failed to parse business hours:', error)
+        console.error('[BusinessHours] Failed to parse business hours:', error)
         setHours(DEFAULT_HOURS)
       }
     } else {
+      console.log('[BusinessHours] No business hours found, using defaults')
       setHours(DEFAULT_HOURS)
       setHasChanges(false)
     }
-  }, [selectedBranch])
+  }, [selectedBranch, selectedBranchId])
 
   const handleDayToggle = (day: keyof BusinessHoursData, enabled: boolean) => {
     setHours(prev => ({
@@ -112,6 +122,7 @@ export function BusinessHoursSection({ onSuccess, onError }: {
 
   const handleSave = async () => {
     if (!selectedBranchId || !organizationId || !user?.id) {
+      console.error('[BusinessHours] Missing required info:', { selectedBranchId, organizationId, userId: user?.id })
       onError?.('Missing required information')
       return
     }
@@ -124,8 +135,15 @@ export function BusinessHoursSection({ onSuccess, onError }: {
     setIsSaving(true)
 
     try {
+      console.log('[BusinessHours] Saving hours:', {
+        branchId: selectedBranchId,
+        organizationId,
+        actorUserId: user.id,
+        hours
+      })
+
       // Save business hours to branch entity via entityCRUD
-      await entityCRUD({
+      const payload = {
         action: 'UPDATE',
         actor_user_id: user.id,
         organization_id: organizationId,
@@ -140,12 +158,23 @@ export function BusinessHoursSection({ onSuccess, onError }: {
             smart_code: 'HERA.SALON.BRANCH.FIELD.BUSINESS_HOURS.v1'
           }
         }
-      })
+      }
+
+      console.log('[BusinessHours] EntityCRUD payload:', payload)
+
+      const result = await entityCRUD(payload)
+
+      console.log('[BusinessHours] Save result:', result)
 
       setHasChanges(false)
       onSuccess?.('Business hours updated successfully')
+
+      // Reload branches to get updated data
+      if (context?.loadBranches) {
+        await context.loadBranches(organizationId)
+      }
     } catch (error) {
-      console.error('Failed to save business hours:', error)
+      console.error('[BusinessHours] Failed to save business hours:', error)
       onError?.('Failed to save business hours')
     } finally {
       setIsSaving(false)

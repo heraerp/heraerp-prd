@@ -1069,7 +1069,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         // Extract settings with detailed logging
         const currency = settingsFromDynamic.currency || orgFromTable.metadata?.currency || 'AED'
         const organization_name =
-          settingsFromDynamic.organization_name || orgFromTable.organization_name || 'HairTalkz'
+          settingsFromDynamic.organization_name || orgFromTable.organization_name || 'Organization'
 
         console.log('[SecuredSalonProvider] 📋 Extracted organization data:', {
           organization_name,
@@ -1189,7 +1189,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
         const currency = settingsFromDynamic.currency || orgFromTable.metadata?.currency || 'AED'
         const organization_name =
-          settingsFromDynamic.organization_name || orgFromTable.organization_name || 'HairTalkz'
+          settingsFromDynamic.organization_name || orgFromTable.organization_name || 'Organization'
 
         const currencySymbolMap: Record<string, string> = {
           AED: 'د.إ',
@@ -1238,10 +1238,23 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         })
       }
 
+      // ✅ CRITICAL FIX: Also check if orgEntity has dynamic_fields in object format (nested with .value)
+      // Pattern from useHeraServices: dynamic_fields.organization_name.value
+      if (orgEntity && orgEntity.dynamic_fields && typeof orgEntity.dynamic_fields === 'object' && !Array.isArray(orgEntity.dynamic_fields)) {
+        console.log('[SecuredSalonProvider] 🔍 Found nested dynamic_fields object format:', Object.keys(orgEntity.dynamic_fields))
+        Object.entries(orgEntity.dynamic_fields).forEach(([key, field]: [string, any]) => {
+          if (field && typeof field === 'object' && 'value' in field) {
+            // Prioritize nested dynamic_fields over array format
+            settingsFromDynamic[key] = field.value
+            console.log(`[SecuredSalonProvider] ✅ Extracted ${key} = ${field.value} from nested format`)
+          }
+        })
+      }
+
       // Extract settings with fallbacks
       const currency = settingsFromDynamic.currency || orgEntity.metadata?.currency || 'AED'
       const organization_name =
-        settingsFromDynamic.organization_name || orgEntity.entity_name || orgEntity.organization_name || 'HairTalkz'
+        settingsFromDynamic.organization_name || orgEntity.entity_name || orgEntity.organization_name || 'Organization'
       const legal_name = settingsFromDynamic.legal_name
       const address = settingsFromDynamic.address
       const phone = settingsFromDynamic.phone
