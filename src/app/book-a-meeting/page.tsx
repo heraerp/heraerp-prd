@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Calendar, Check, Phone, Clock, Star, Zap, ChevronRight, Shield, Sparkles } from 'lucide-react'
+import { Calendar, Check, Phone, Clock, Star, Zap, ChevronRight, Shield, Sparkles, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Book a Demo | HERA ERP',
