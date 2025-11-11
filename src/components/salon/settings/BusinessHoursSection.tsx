@@ -1,24 +1,27 @@
 'use client'
 
 /**
- * ✨ BUSINESS HOURS SECTION - Branch-Aware
+ * ✨ BUSINESS HOURS SECTION v2.0 - Enterprise Grade
  *
- * FEATURES:
- * - Branch-specific business hours configuration
- * - 7-day weekly schedule with time pickers
- * - Toggle switches for closed days
- * - HERA DNA compliant (smart codes + dynamic data)
- * - Mobile-first responsive design
- * - Actor-stamped mutations via entityCRUD
+ * UPGRADED FEATURES:
+ * - ✅ View/Edit mode toggle (matches Organization Settings UX)
+ * - ✅ Edit button with Cancel/Save workflow
+ * - ✅ Clean read-only display by default
+ * - ✅ Enterprise-grade layout and spacing
+ * - ✅ SalonLuxeButton components
+ * - ✅ Improved visual hierarchy and alignment
+ * - ✅ Branch-specific business hours configuration
+ * - ✅ 7-day weekly schedule with time pickers
+ * - ✅ HERA DNA compliant (smart codes + dynamic data)
+ * - ✅ Actor-stamped mutations via entityCRUD
  */
 
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { Clock, Save, Loader2, Building2 } from 'lucide-react'
+import { Clock, Save, Building2, Edit, X, Sparkles } from 'lucide-react'
 import { SALON_LUXE_COLORS as LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { BranchSelector } from '@/components/salon/BranchSelector'
 import { entityCRUD } from '@/lib/universal-api-v2-client'
@@ -58,7 +61,7 @@ const DEFAULT_HOURS: BusinessHoursData = {
   thursday: { open: '09:00', close: '20:00', is_open: true },
   friday: { open: '09:00', close: '20:00', is_open: true },
   saturday: { open: '09:00', close: '20:00', is_open: true },
-  sunday: { open: '10:00', close: '18:00', is_open: false }
+  sunday: { open: '09:00', close: '20:00', is_open: true } // ✅ All days open by default - salons can customize
 }
 
 export function BusinessHoursSection({ onSuccess, onError }: {
@@ -68,8 +71,9 @@ export function BusinessHoursSection({ onSuccess, onError }: {
   const context = useSecuredSalonContext()
   const { user } = useHERAAuth()
   const [hours, setHours] = useState<BusinessHoursData>(DEFAULT_HOURS)
+  const [originalHours, setOriginalHours] = useState<BusinessHoursData>(DEFAULT_HOURS)
   const [isSaving, setIsSaving] = useState(false)
-  const [hasChanges, setHasChanges] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
 
   const selectedBranch = context?.selectedBranch
   const selectedBranchId = context?.selectedBranchId
@@ -85,11 +89,7 @@ export function BusinessHoursSection({ onSuccess, onError }: {
       hasOpeningTime: !!selectedBranch?.opening_time,
       hasClosingTime: !!selectedBranch?.closing_time,
       opening_time: selectedBranch?.opening_time,
-      closing_time: selectedBranch?.closing_time,
-      branchKeys: selectedBranch ? Object.keys(selectedBranch) : [],
-      hasDynamicFields: !!selectedBranch?.dynamic_fields,
-      dynamicFieldsType: selectedBranch?.dynamic_fields ? typeof selectedBranch.dynamic_fields : 'undefined',
-      fullBranch: selectedBranch
+      closing_time: selectedBranch?.closing_time
     })
 
     if (selectedBranch?.business_hours) {
@@ -99,11 +99,13 @@ export function BusinessHoursSection({ onSuccess, onError }: {
           ? JSON.parse(selectedBranch.business_hours)
           : selectedBranch.business_hours
         console.log('[BusinessHours] Loaded hours from business_hours field:', loadedHours)
-        setHours({ ...DEFAULT_HOURS, ...loadedHours })
-        setHasChanges(false)
+        const mergedHours = { ...DEFAULT_HOURS, ...loadedHours }
+        setHours(mergedHours)
+        setOriginalHours(mergedHours)
       } catch (error) {
         console.error('[BusinessHours] Failed to parse business hours:', error)
         setHours(DEFAULT_HOURS)
+        setOriginalHours(DEFAULT_HOURS)
       }
     } else if (selectedBranch?.opening_time && selectedBranch?.closing_time) {
       // ✅ LEGACY FORMAT: Convert old opening_time/closing_time to new format
@@ -115,15 +117,18 @@ export function BusinessHoursSection({ onSuccess, onError }: {
         thursday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
         friday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
         saturday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
-        sunday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: false }
+        sunday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true } // ✅ All days open for legacy
       }
       setHours(legacyHours)
-      setHasChanges(false) // Don't mark as changed, this is just loading
+      setOriginalHours(legacyHours)
     } else {
       console.log('[BusinessHours] No business hours found, using defaults')
       setHours(DEFAULT_HOURS)
-      setHasChanges(false)
+      setOriginalHours(DEFAULT_HOURS)
     }
+
+    // Reset edit mode when branch changes
+    setIsEditing(false)
   }, [selectedBranch, selectedBranchId])
 
   const handleDayToggle = (day: keyof BusinessHoursData, enabled: boolean) => {
@@ -131,7 +136,6 @@ export function BusinessHoursSection({ onSuccess, onError }: {
       ...prev,
       [day]: { ...prev[day], is_open: enabled }
     }))
-    setHasChanges(true)
   }
 
   const handleTimeChange = (day: keyof BusinessHoursData, field: 'open' | 'close', value: string) => {
@@ -139,7 +143,11 @@ export function BusinessHoursSection({ onSuccess, onError }: {
       ...prev,
       [day]: { ...prev[day], [field]: value }
     }))
-    setHasChanges(true)
+  }
+
+  const handleCancelEdit = () => {
+    setHours(originalHours)
+    setIsEditing(false)
   }
 
   const handleSave = async () => {
@@ -188,7 +196,8 @@ export function BusinessHoursSection({ onSuccess, onError }: {
 
       console.log('[BusinessHours] Save result:', result)
 
-      setHasChanges(false)
+      setOriginalHours(hours)
+      setIsEditing(false)
       onSuccess?.('Business hours updated successfully')
 
       // Reload branches to get updated data
@@ -207,32 +216,43 @@ export function BusinessHoursSection({ onSuccess, onError }: {
   if (!selectedBranchId || selectedBranchId === 'all') {
     return (
       <Card
-        className="border-0 shadow-lg"
+        className="border-0 shadow-2xl overflow-hidden"
         style={{
           background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-          border: `1px solid ${LUXE_COLORS.border.light}`
+          border: `1px solid ${LUXE_COLORS.border.light}`,
+          borderRadius: '16px'
         }}
       >
         <CardHeader>
-          <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5" style={{ color: LUXE_COLORS.gold.base }} />
-              Business Hours
+          <div className="flex items-center gap-3">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center"
+              style={{
+                background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
+                border: `1px solid ${LUXE_COLORS.gold.base}40`
+              }}
+            >
+              <Clock className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
             </div>
-          </CardTitle>
-          <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-            Set operating hours for each branch
-          </CardDescription>
+            <div>
+              <CardTitle className="text-xl" style={{ color: LUXE_COLORS.champagne.base }}>
+                Business Hours
+              </CardTitle>
+              <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
+                Set operating hours for each branch
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="mb-4">
-            <Label style={{ color: LUXE_COLORS.champagne.base }} className="mb-2 block">
+            <Label style={{ color: LUXE_COLORS.champagne.base }} className="mb-2 block text-sm font-medium">
               Select Branch
             </Label>
             <BranchSelector variant="default" />
           </div>
           <div
-            className="p-6 rounded-xl text-center"
+            className="p-8 rounded-xl text-center"
             style={{
               background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}15 0%, ${LUXE_COLORS.gold.base}05 100%)`,
               border: `1px solid ${LUXE_COLORS.gold.base}30`
@@ -253,38 +273,62 @@ export function BusinessHoursSection({ onSuccess, onError }: {
 
   return (
     <Card
-      className="border-0 shadow-lg"
+      className="border-0 shadow-2xl overflow-hidden"
       style={{
         background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-        border: `1px solid ${LUXE_COLORS.border.light}`
+        border: `1px solid ${LUXE_COLORS.border.light}`,
+        borderRadius: '16px'
       }}
     >
-      <CardHeader>
-        <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>
-          <div className="flex items-center gap-2">
-            <Clock className="w-5 h-5" style={{ color: LUXE_COLORS.gold.base }} />
-            Business Hours
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center"
+              style={{
+                background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
+                border: `1px solid ${LUXE_COLORS.gold.base}40`
+              }}
+            >
+              <Clock className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
+            </div>
+            <div>
+              <CardTitle className="text-xl" style={{ color: LUXE_COLORS.champagne.base }}>
+                Business Hours
+              </CardTitle>
+              <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
+                Operating hours for {selectedBranch?.entity_name || 'this branch'}
+              </CardDescription>
+            </div>
           </div>
-        </CardTitle>
-        <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-          Set operating hours for {selectedBranch?.entity_name || 'this branch'}
-        </CardDescription>
+          {/* Edit Button */}
+          {!isEditing && (
+            <SalonLuxeButton
+              onClick={() => setIsEditing(true)}
+              variant="outline"
+              size="md"
+              icon={<Edit className="h-5 w-5" />}
+            >
+              Edit
+            </SalonLuxeButton>
+          )}
+        </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-6">
         {/* Branch Selector */}
-        <div className="mb-6">
-          <Label style={{ color: LUXE_COLORS.champagne.base }} className="mb-2 block">
+        <div>
+          <Label style={{ color: LUXE_COLORS.text.secondary }} className="mb-2 block text-sm font-medium">
             Branch
           </Label>
           <BranchSelector variant="default" />
         </div>
 
         {/* Days of Week */}
-        <div className="space-y-3 mb-6">
+        <div className="space-y-3">
           {DAYS.map(day => (
             <div
               key={day}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl transition-all duration-200"
+              className="rounded-xl p-4 transition-all duration-200"
               style={{
                 background: hours[day].is_open
                   ? `linear-gradient(135deg, ${LUXE_COLORS.emerald.base}10 0%, ${LUXE_COLORS.emerald.base}05 100%)`
@@ -292,14 +336,43 @@ export function BusinessHoursSection({ onSuccess, onError }: {
                 border: `1px solid ${hours[day].is_open ? LUXE_COLORS.emerald.base + '30' : LUXE_COLORS.border.light}`
               }}
             >
-              <div className="flex items-center gap-3 flex-1">
-                <div className="flex items-center gap-3 min-w-[120px]">
-                  <Switch
-                    checked={hours[day].is_open}
-                    onCheckedChange={(checked) => handleDayToggle(day, checked)}
-                  />
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Day Label and Toggle */}
+                <div className="flex items-center gap-4 min-w-[160px]">
+                  {isEditing ? (
+                    <button
+                      onClick={() => handleDayToggle(day, !hours[day].is_open)}
+                      className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      style={{
+                        backgroundColor: hours[day].is_open ? LUXE_COLORS.emerald.base : LUXE_COLORS.border.light,
+                        borderColor: hours[day].is_open ? LUXE_COLORS.emerald.base : LUXE_COLORS.border.light
+                      }}
+                      role="switch"
+                      aria-checked={hours[day].is_open}
+                    >
+                      <span
+                        className="inline-block h-5 w-5 transform rounded-full shadow-lg transition duration-200 ease-in-out"
+                        style={{
+                          backgroundColor: LUXE_COLORS.champagne.base,
+                          transform: hours[day].is_open ? 'translateX(20px)' : 'translateX(0)'
+                        }}
+                      />
+                    </button>
+                  ) : (
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{
+                        backgroundColor: hours[day].is_open ? LUXE_COLORS.emerald.base : LUXE_COLORS.charcoal.dark,
+                        border: `2px solid ${hours[day].is_open ? LUXE_COLORS.emerald.base : LUXE_COLORS.border.light}`
+                      }}
+                    >
+                      {hours[day].is_open && (
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: LUXE_COLORS.charcoal.dark }} />
+                      )}
+                    </div>
+                  )}
                   <span
-                    className="font-medium"
+                    className="font-medium text-base"
                     style={{
                       color: hours[day].is_open ? LUXE_COLORS.champagne.base : LUXE_COLORS.text.secondary
                     }}
@@ -308,31 +381,40 @@ export function BusinessHoursSection({ onSuccess, onError }: {
                   </span>
                 </div>
 
+                {/* Time Display/Input */}
                 {hours[day].is_open ? (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <input
-                      type="time"
-                      value={hours[day].open}
-                      onChange={(e) => handleTimeChange(day, 'open', e.target.value)}
-                      className="px-3 py-2 rounded-lg min-h-[44px] text-sm"
-                      style={{
-                        background: LUXE_COLORS.charcoal.dark,
-                        color: LUXE_COLORS.champagne.base,
-                        border: `1px solid ${LUXE_COLORS.border.light}`
-                      }}
-                    />
-                    <span style={{ color: LUXE_COLORS.text.secondary }}>to</span>
-                    <input
-                      type="time"
-                      value={hours[day].close}
-                      onChange={(e) => handleTimeChange(day, 'close', e.target.value)}
-                      className="px-3 py-2 rounded-lg min-h-[44px] text-sm"
-                      style={{
-                        background: LUXE_COLORS.charcoal.dark,
-                        color: LUXE_COLORS.champagne.base,
-                        border: `1px solid ${LUXE_COLORS.border.light}`
-                      }}
-                    />
+                  <div className="flex items-center gap-3">
+                    {isEditing ? (
+                      <>
+                        <input
+                          type="time"
+                          value={hours[day].open}
+                          onChange={(e) => handleTimeChange(day, 'open', e.target.value)}
+                          className="px-4 py-2 rounded-lg min-h-[44px] text-sm font-medium"
+                          style={{
+                            background: LUXE_COLORS.charcoal.dark,
+                            color: LUXE_COLORS.champagne.base,
+                            border: `1px solid ${LUXE_COLORS.border.base}`
+                          }}
+                        />
+                        <span className="text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>to</span>
+                        <input
+                          type="time"
+                          value={hours[day].close}
+                          onChange={(e) => handleTimeChange(day, 'close', e.target.value)}
+                          className="px-4 py-2 rounded-lg min-h-[44px] text-sm font-medium"
+                          style={{
+                            background: LUXE_COLORS.charcoal.dark,
+                            color: LUXE_COLORS.champagne.base,
+                            border: `1px solid ${LUXE_COLORS.border.base}`
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <span className="text-base font-medium" style={{ color: LUXE_COLORS.champagne.base }}>
+                        {hours[day].open} - {hours[day].close}
+                      </span>
+                    )}
                   </div>
                 ) : (
                   <span
@@ -347,28 +429,28 @@ export function BusinessHoursSection({ onSuccess, onError }: {
           ))}
         </div>
 
-        {/* Save Button */}
-        <Button
-          onClick={handleSave}
-          disabled={!hasChanges || isSaving}
-          className="w-full min-h-[48px] font-semibold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{
-            backgroundColor: hasChanges ? LUXE_COLORS.gold.base : LUXE_COLORS.charcoal.dark,
-            color: hasChanges ? LUXE_COLORS.charcoal.dark : LUXE_COLORS.text.secondary
-          }}
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4 mr-2" />
-              {hasChanges ? 'Save Business Hours' : 'No Changes'}
-            </>
-          )}
-        </Button>
+        {/* ✅ Conditional footer: Show Save/Cancel only when editing */}
+        {isEditing && (
+          <div className="flex justify-end gap-3 pt-6 border-t" style={{ borderColor: LUXE_COLORS.border.light }}>
+            <SalonLuxeButton
+              onClick={handleCancelEdit}
+              variant="outline"
+              size="md"
+              icon={<X className="h-4 w-4" />}
+            >
+              Cancel
+            </SalonLuxeButton>
+            <SalonLuxeButton
+              onClick={handleSave}
+              loading={isSaving}
+              variant="primary"
+              size="md"
+              icon={<Save className="h-4 w-4" />}
+            >
+              Save Changes
+            </SalonLuxeButton>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

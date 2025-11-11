@@ -45,24 +45,19 @@ import {
   Loader2,
   Save,
   RefreshCw,
-  Package,
-  ArrowRight,
   Sparkles,
   Building2,
   Clock,
   Mail,
   Phone,
   MapPin,
-  CreditCard
+  CreditCard,
+  Edit,
+  X
 } from 'lucide-react'
 import { SALON_LUXE_COLORS as LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { entityCRUD } from '@/lib/universal-api-v2-client'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-
-// 🚀 LAZY LOADING: Split heavy components for faster initial load
-const InventorySettingsCard = lazy(() =>
-  import('@/components/salon/settings/InventorySettingsCard').then(m => ({ default: m.InventorySettingsCard }))
-)
 
 // 🚀 PERFORMANCE: Skeleton loader for tabs
 function TabLoader() {
@@ -94,6 +89,15 @@ function CardSkeleton() {
   )
 }
 
+interface OrgMember {
+  user_id: string
+  user_name: string
+  user_email: string
+  role: string
+  status: string
+  joined_at: string
+}
+
 function SettingsPageContent() {
   const router = useRouter()
   const context = useSecuredSalonContext()
@@ -102,6 +106,7 @@ function SettingsPageContent() {
 
   // Form state for organization settings - MUST be before conditional returns
   const [activeTab, setActiveTab] = useState('general')
+  const [isEditing, setIsEditing] = useState(false) // ✅ Edit mode toggle
   const [organizationName, setOrganizationName] = useState('')
   const [legalName, setLegalName] = useState('')
   const [phone, setPhone] = useState('')
@@ -110,6 +115,10 @@ function SettingsPageContent() {
   const [trn, setTrn] = useState('')
   const [currency, setCurrency] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+
+  // ✅ Users tab state
+  const [orgMembers, setOrgMembers] = useState<OrgMember[]>([])
+  const [isLoadingMembers, setIsLoadingMembers] = useState(false)
 
   // ✅ SAFETY: Safely destructure with fallbacks (even during loading)
   const organizationId = context?.organizationId || context?.orgId || ''
@@ -132,6 +141,81 @@ function SettingsPageContent() {
     }
   }, [organization])
 
+  // ✅ Load organization members when Users tab is active
+  useEffect(() => {
+    if (activeTab === 'users' && organizationId && !isLoadingMembers && orgMembers.length === 0) {
+      loadOrganizationMembers()
+    }
+  }, [activeTab, organizationId])
+
+  const loadOrganizationMembers = async () => {
+    if (!organizationId || !user?.id) {
+      console.log('[Settings] Missing organizationId or user.id for loading members')
+      return
+    }
+
+    setIsLoadingMembers(true)
+    try {
+      console.log('[Settings] Loading organization members for:', organizationId)
+
+      // ✅ Query MEMBER_OF relationships to get organization members
+      const { data: relationships, error } = await import('@/lib/supabase/client').then(m => m.supabase)
+        .from('core_relationships')
+        .select(`
+          from_entity_id,
+          relationship_data,
+          created_at,
+          core_entities!core_relationships_from_entity_id_fkey (
+            id,
+            entity_name,
+            entity_code,
+            core_dynamic_data (
+              field_name,
+              field_value_text
+            )
+          )
+        `)
+        .eq('organization_id', organizationId)
+        .eq('relationship_type', 'MEMBER_OF')
+        .eq('to_entity_id', organizationId)
+
+      if (error) {
+        console.error('[Settings] Error loading members:', error)
+        showError('Error', 'Failed to load organization members')
+        return
+      }
+
+      console.log('[Settings] Loaded relationships:', relationships)
+
+      // ✅ Transform relationships to member list
+      const members: OrgMember[] = (relationships || []).map((rel: any) => {
+        const userEntity = rel.core_entities
+        const role = rel.relationship_data?.role || 'member'
+
+        // Extract email from dynamic data
+        const emailField = userEntity?.core_dynamic_data?.find((d: any) => d.field_name === 'email')
+        const email = emailField?.field_value_text || userEntity?.entity_code || 'unknown@salon.com'
+
+        return {
+          user_id: rel.from_entity_id,
+          user_name: userEntity?.entity_name || 'Unknown User',
+          user_email: email,
+          role: role.charAt(0).toUpperCase() + role.slice(1), // Capitalize
+          status: 'Active',
+          joined_at: rel.created_at
+        }
+      })
+
+      console.log('[Settings] Transformed members:', members)
+      setOrgMembers(members)
+    } catch (error: any) {
+      console.error('[Settings] Exception loading members:', error)
+      showError('Error', error.message || 'Failed to load members')
+    } finally {
+      setIsLoadingMembers(false)
+    }
+  }
+
   // ✅ LOADING STATE: Show loader if context is still loading or undefined
   if (!context || context.isLoading) {
     return (
@@ -145,6 +229,18 @@ function SettingsPageContent() {
         </div>
       </div>
     )
+  }
+
+  // ✅ Cancel edit mode - restore original values
+  const handleCancelEdit = () => {
+    setOrganizationName(organization.name || '')
+    setLegalName(organization.legal_name || '')
+    setPhone(organization.phone || '')
+    setEmail(organization.email || '')
+    setAddress(organization.address || '')
+    setTrn(organization.trn || '')
+    setCurrency(organization.currency || 'AED')
+    setIsEditing(false)
   }
 
   // Save organization settings using HERA hook
@@ -226,6 +322,7 @@ function SettingsPageContent() {
 
       removeToast(loadingId)
       showSuccess('Settings saved successfully', 'Organization settings have been updated')
+      setIsEditing(false) // ✅ Exit edit mode after successful save
     } catch (error: any) {
       console.error('[Settings] Error saving organization settings:', error)
       removeToast(loadingId)
@@ -338,24 +435,37 @@ function SettingsPageContent() {
                 }}
               >
                 <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center"
-                      style={{
-                        background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
-                        border: `1px solid ${LUXE_COLORS.gold.base}40`
-                      }}
-                    >
-                      <Sparkles className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center"
+                        style={{
+                          background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
+                          border: `1px solid ${LUXE_COLORS.gold.base}40`
+                        }}
+                      >
+                        <Sparkles className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl" style={{ color: LUXE_COLORS.champagne.base }}>
+                          Organization Information
+                        </CardTitle>
+                        <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
+                          Basic information about your salon
+                        </CardDescription>
+                      </div>
                     </div>
-                    <div>
-                      <CardTitle className="text-xl" style={{ color: LUXE_COLORS.champagne.base }}>
-                        Organization Information
-                      </CardTitle>
-                      <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                        Basic information about your salon
-                      </CardDescription>
-                    </div>
+                    {/* Edit Button */}
+                    {!isEditing && (
+                      <SalonLuxeButton
+                        onClick={() => setIsEditing(true)}
+                        variant="outline"
+                        size="md"
+                        icon={<Edit className="h-5 w-5" />}
+                      >
+                        Edit
+                      </SalonLuxeButton>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -365,34 +475,46 @@ function SettingsPageContent() {
                         <Building2 className="w-4 h-4" />
                         Organization Name
                       </Label>
-                      <Input
-                        value={organizationName}
-                        onChange={(e) => setOrganizationName(e.target.value)}
-                        placeholder="Enter organization name"
-                        className="min-h-[48px] rounded-lg text-base"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.base}`,
-                          color: LUXE_COLORS.champagne.base
-                        }}
-                      />
+                      {isEditing ? (
+                        <Input
+                          value={organizationName}
+                          onChange={(e) => setOrganizationName(e.target.value)}
+                          placeholder="Enter organization name"
+                          className="min-h-[48px] rounded-lg text-base"
+                          style={{
+                            backgroundColor: LUXE_COLORS.charcoal.dark,
+                            border: `1px solid ${LUXE_COLORS.border.base}`,
+                            color: LUXE_COLORS.champagne.base
+                          }}
+                        />
+                      ) : (
+                        <p className="min-h-[48px] flex items-center px-4 rounded-lg text-base" style={{ color: LUXE_COLORS.champagne.base }}>
+                          {organizationName || '-'}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
                         <CreditCard className="w-4 h-4" />
                         Legal Name
                       </Label>
-                      <Input
-                        value={legalName}
-                        onChange={(e) => setLegalName(e.target.value)}
-                        placeholder="Enter legal name (optional)"
-                        className="min-h-[48px] rounded-lg text-base"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.base}`,
-                          color: LUXE_COLORS.champagne.base
-                        }}
-                      />
+                      {isEditing ? (
+                        <Input
+                          value={legalName}
+                          onChange={(e) => setLegalName(e.target.value)}
+                          placeholder="Enter legal name (optional)"
+                          className="min-h-[48px] rounded-lg text-base"
+                          style={{
+                            backgroundColor: LUXE_COLORS.charcoal.dark,
+                            border: `1px solid ${LUXE_COLORS.border.base}`,
+                            color: LUXE_COLORS.champagne.base
+                          }}
+                        />
+                      ) : (
+                        <p className="min-h-[48px] flex items-center px-4 rounded-lg text-base" style={{ color: LUXE_COLORS.champagne.base }}>
+                          {legalName || '-'}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -402,35 +524,47 @@ function SettingsPageContent() {
                         <Phone className="w-4 h-4" />
                         Phone Number
                       </Label>
-                      <Input
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+971 4 123 4567"
-                        className="min-h-[48px] rounded-lg text-base"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.base}`,
-                          color: LUXE_COLORS.champagne.base
-                        }}
-                      />
+                      {isEditing ? (
+                        <Input
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="+971 4 123 4567"
+                          className="min-h-[48px] rounded-lg text-base"
+                          style={{
+                            backgroundColor: LUXE_COLORS.charcoal.dark,
+                            border: `1px solid ${LUXE_COLORS.border.base}`,
+                            color: LUXE_COLORS.champagne.base
+                          }}
+                        />
+                      ) : (
+                        <p className="min-h-[48px] flex items-center px-4 rounded-lg text-base" style={{ color: LUXE_COLORS.champagne.base }}>
+                          {phone || '-'}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
                         <Mail className="w-4 h-4" />
                         Email Address
                       </Label>
-                      <Input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="info@example.com"
-                        type="email"
-                        className="min-h-[48px] rounded-lg text-base"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.base}`,
-                          color: LUXE_COLORS.champagne.base
-                        }}
-                      />
+                      {isEditing ? (
+                        <Input
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="info@example.com"
+                          type="email"
+                          className="min-h-[48px] rounded-lg text-base"
+                          style={{
+                            backgroundColor: LUXE_COLORS.charcoal.dark,
+                            border: `1px solid ${LUXE_COLORS.border.base}`,
+                            color: LUXE_COLORS.champagne.base
+                          }}
+                        />
+                      ) : (
+                        <p className="min-h-[48px] flex items-center px-4 rounded-lg text-base" style={{ color: LUXE_COLORS.champagne.base }}>
+                          {email || '-'}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -439,17 +573,23 @@ function SettingsPageContent() {
                       <MapPin className="w-4 h-4" />
                       Address
                     </Label>
-                    <Input
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Enter complete address"
-                      className="min-h-[48px] rounded-lg text-base"
-                      style={{
-                        backgroundColor: LUXE_COLORS.charcoal.dark,
-                        border: `1px solid ${LUXE_COLORS.border.base}`,
-                        color: LUXE_COLORS.champagne.base
-                      }}
-                    />
+                    {isEditing ? (
+                      <Input
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="Enter complete address"
+                        className="min-h-[48px] rounded-lg text-base"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal.dark,
+                          border: `1px solid ${LUXE_COLORS.border.base}`,
+                          color: LUXE_COLORS.champagne.base
+                        }}
+                      />
+                    ) : (
+                      <p className="min-h-[48px] flex items-center px-4 rounded-lg text-base" style={{ color: LUXE_COLORS.champagne.base }}>
+                        {address || '-'}
+                      </p>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -458,51 +598,76 @@ function SettingsPageContent() {
                         <CreditCard className="w-4 h-4" />
                         Tax Registration Number (TRN)
                       </Label>
-                      <Input
-                        value={trn}
-                        onChange={(e) => setTrn(e.target.value)}
-                        placeholder="Enter TRN"
-                        className="min-h-[48px] rounded-lg text-base"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.base}`,
-                          color: LUXE_COLORS.champagne.base
-                        }}
-                      />
+                      {isEditing ? (
+                        <Input
+                          value={trn}
+                          onChange={(e) => setTrn(e.target.value)}
+                          placeholder="Enter TRN"
+                          className="min-h-[48px] rounded-lg text-base"
+                          style={{
+                            backgroundColor: LUXE_COLORS.charcoal.dark,
+                            border: `1px solid ${LUXE_COLORS.border.base}`,
+                            color: LUXE_COLORS.champagne.base
+                          }}
+                        />
+                      ) : (
+                        <p className="min-h-[48px] flex items-center px-4 rounded-lg text-base" style={{ color: LUXE_COLORS.champagne.base }}>
+                          {trn || '-'}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
                         <Globe className="w-4 h-4" />
                         Currency
                       </Label>
-                      <Input
-                        value={currency}
-                        onChange={(e) => setCurrency(e.target.value)}
-                        placeholder="AED"
-                        className="min-h-[48px] rounded-lg text-base"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.base}`,
-                          color: LUXE_COLORS.champagne.base
-                        }}
-                      />
-                      <p className="text-xs mt-1" style={{ color: LUXE_COLORS.text.tertiary }}>
-                        Current symbol: {organization?.currencySymbol || 'AED'}
-                      </p>
+                      {isEditing ? (
+                        <>
+                          <Input
+                            value={currency}
+                            onChange={(e) => setCurrency(e.target.value)}
+                            placeholder="AED"
+                            className="min-h-[48px] rounded-lg text-base"
+                            style={{
+                              backgroundColor: LUXE_COLORS.charcoal.dark,
+                              border: `1px solid ${LUXE_COLORS.border.base}`,
+                              color: LUXE_COLORS.champagne.base
+                            }}
+                          />
+                          <p className="text-xs mt-1" style={{ color: LUXE_COLORS.text.tertiary }}>
+                            Current symbol: {organization?.currencySymbol || 'AED'}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="min-h-[48px] flex items-center px-4 rounded-lg text-base" style={{ color: LUXE_COLORS.champagne.base }}>
+                          {currency || 'AED'}
+                        </p>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex justify-end pt-6 border-t" style={{ borderColor: LUXE_COLORS.border.light }}>
-                    <SalonLuxeButton
-                      onClick={handleSaveOrganizationSettings}
-                      loading={isSaving}
-                      variant="primary"
-                      size="lg"
-                      icon={<Save className="h-5 w-5" />}
-                    >
-                      Save Changes
-                    </SalonLuxeButton>
-                  </div>
+                  {/* ✅ Conditional footer: Show Save/Cancel only when editing */}
+                  {isEditing && (
+                    <div className="flex justify-end gap-3 pt-6 border-t" style={{ borderColor: LUXE_COLORS.border.light }}>
+                      <SalonLuxeButton
+                        onClick={handleCancelEdit}
+                        variant="outline"
+                        size="md"
+                        icon={<X className="h-4 w-4" />}
+                      >
+                        Cancel
+                      </SalonLuxeButton>
+                      <SalonLuxeButton
+                        onClick={handleSaveOrganizationSettings}
+                        loading={isSaving}
+                        variant="primary"
+                        size="md"
+                        icon={<Save className="h-4 w-4" />}
+                      >
+                        Save Changes
+                      </SalonLuxeButton>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -511,63 +676,12 @@ function SettingsPageContent() {
                 onSuccess={(message) => showSuccess('Success', message)}
                 onError={(message) => showError('Error', message)}
               />
-
-              {/* Inventory Settings */}
-              <Suspense fallback={<CardSkeleton />}>
-                <Card
-                  className="border-0 shadow-2xl overflow-hidden"
-                  style={{
-                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-                    border: `1px solid ${LUXE_COLORS.border.light}`,
-                    borderRadius: '16px'
-                  }}
-                >
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center"
-                        style={{
-                          background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
-                          border: `1px solid ${LUXE_COLORS.gold.base}40`
-                        }}
-                      >
-                        <Package className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
-                      </div>
-                      <div>
-                        <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>
-                          Inventory Management
-                        </CardTitle>
-                        <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                          Configure inventory tracking and stock management
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <p style={{ color: LUXE_COLORS.champagne.base }}>
-                          Enable inventory tracking, manage stock levels, and configure
-                          branch-specific inventory settings.
-                        </p>
-                      </div>
-                      <SalonLuxeButton
-                        onClick={() => router.push('/salon/settings/inventory')}
-                        variant="primary"
-                        icon={<ArrowRight className="h-5 w-5" />}
-                      >
-                        Configure
-                      </SalonLuxeButton>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Suspense>
             </TabsContent>
 
             {/* USERS TAB */}
             <TabsContent value="users" className="animate-in fade-in duration-300">
               <Card
-                className="border-0 shadow-2xl"
+                className="border-0 shadow-2xl overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
                   border: `1px solid ${LUXE_COLORS.border.light}`,
@@ -586,50 +700,77 @@ function SettingsPageContent() {
                       <Users className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
                     </div>
                     <div>
-                      <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>User Management</CardTitle>
+                      <CardTitle className="text-xl" style={{ color: LUXE_COLORS.champagne.base }}>User Management</CardTitle>
                       <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                        Manage staff accounts and permissions
+                        Manage staff accounts and permissions for {organizationName}
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {[
-                      { name: 'Michele Rodriguez', email: 'owner@hairtalkz.ae', role: 'Owner', status: 'Active' },
-                      { name: 'Sarah Johnson', email: 'receptionist@hairtalkz.ae', role: 'Receptionist', status: 'Active' },
-                      { name: 'Michael Chen', email: 'accountant@hairtalkz.ae', role: 'Accountant', status: 'Active' },
-                      { name: 'David Thompson', email: 'admin@hairtalkz.ae', role: 'Admin', status: 'Active' }
-                    ].map(user => (
-                      <div
-                        key={user.email}
-                        className="flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:scale-[1.01]"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.base}`
-                        }}
-                      >
-                        <div>
-                          <div className="font-medium" style={{ color: LUXE_COLORS.champagne.base }}>{user.name}</div>
-                          <div className="text-sm" style={{ color: LUXE_COLORS.text.secondary }}>{user.email}</div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span
-                            className="text-xs px-3 py-1.5 rounded-full font-medium"
-                            style={{
-                              backgroundColor: `${LUXE_COLORS.emerald.base}20`,
-                              color: LUXE_COLORS.emerald.base
-                            }}
-                          >
-                            {user.status}
-                          </span>
-                          <span className="text-sm font-medium" style={{ color: LUXE_COLORS.gold.base }}>
-                            {user.role}
-                          </span>
-                        </div>
+                  {isLoadingMembers ? (
+                    <div className="flex items-center justify-center py-12">
+                      <div className="text-center">
+                        <Loader2
+                          className="h-8 w-8 animate-spin mx-auto mb-4"
+                          style={{ color: LUXE_COLORS.gold.base }}
+                        />
+                        <p style={{ color: LUXE_COLORS.text.secondary }}>Loading members...</p>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ) : orgMembers.length === 0 ? (
+                    <div
+                      className="p-8 rounded-xl text-center"
+                      style={{
+                        background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}15 0%, ${LUXE_COLORS.gold.base}05 100%)`,
+                        border: `1px solid ${LUXE_COLORS.gold.base}30`
+                      }}
+                    >
+                      <Users className="w-12 h-12 mx-auto mb-3" style={{ color: LUXE_COLORS.gold.base }} />
+                      <p style={{ color: LUXE_COLORS.champagne.base }} className="font-medium mb-1">
+                        No Members Found
+                      </p>
+                      <p style={{ color: LUXE_COLORS.text.secondary }} className="text-sm">
+                        Invite team members to get started
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {orgMembers.map(member => (
+                        <div
+                          key={member.user_id}
+                          className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.01]"
+                          style={{
+                            backgroundColor: LUXE_COLORS.charcoal.dark,
+                            border: `1px solid ${LUXE_COLORS.border.base}`
+                          }}
+                        >
+                          <div className="flex-1">
+                            <div className="font-medium text-base" style={{ color: LUXE_COLORS.champagne.base }}>
+                              {member.user_name}
+                            </div>
+                            <div className="text-sm mt-1" style={{ color: LUXE_COLORS.text.secondary }}>
+                              {member.user_email}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span
+                              className="text-xs px-3 py-1.5 rounded-full font-medium"
+                              style={{
+                                backgroundColor: `${LUXE_COLORS.emerald.base}20`,
+                                color: LUXE_COLORS.emerald.base
+                              }}
+                            >
+                              {member.status}
+                            </span>
+                            <span className="text-sm font-medium px-3 py-1.5" style={{ color: LUXE_COLORS.gold.base }}>
+                              {member.role}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <div className="flex justify-end pt-6 border-t mt-6" style={{ borderColor: LUXE_COLORS.border.light }}>
                     <SalonLuxeButton variant="primary" icon={<Users className="h-5 w-5" />}>
                       Add User
