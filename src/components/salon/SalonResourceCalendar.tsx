@@ -701,7 +701,7 @@ export function SalonResourceCalendar({
     // 🔍 Apply filters (status, service, date range) if any are active
     // For now, just return all appointments - filters can be added in future
 
-    // 🐛 DEBUG: Log appointments to check date parsing
+    // 🐛 DEBUG: Log appointments to check date parsing and status icons
     if (DEBUG_MODE && appointments.length > 0) {
       console.log('📅 [Calendar] Transformed appointments:', {
         total: appointments.length,
@@ -710,7 +710,12 @@ export function SalonResourceCalendar({
           client: apt.client,
           date: apt.date.toDateString(),
           time: apt.time,
-          originalStartTime: rawAppointments.find(r => r.id === apt.id)?.start_time
+          status: apt.status,
+          rawStatus: apt.rawStatus,
+          icon: apt.icon?.type?.name || 'unknown',
+          originalStartTime: rawAppointments.find(r => r.id === apt.id)?.start_time,
+          originalStatus: rawAppointments.find(r => r.id === apt.id)?.status,
+          originalTransactionStatus: rawAppointments.find(r => r.id === apt.id)?.transaction_status
         }))
       })
     }
