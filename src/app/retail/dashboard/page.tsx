@@ -548,16 +548,42 @@ export default function RetailDashboard() {
                 </div>
               )}
 
-              {/* Empty State */}
+              {/* Empty State with Sample Creation */}
               {!modulesLoading && dynamicModules.length === 0 && !modulesError && (
-                <div className="text-center py-8">
-                  <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Workspaces Found</h3>
-                  <p className="text-gray-500 mb-4">No APP_WORKSPACE entities found in this organization.</p>
-                  <Button onClick={fetchDynamicModules} variant="outline">
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Reload Workspaces
-                  </Button>
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-8 text-center">
+                  <div className="max-w-md mx-auto">
+                    <Package className="h-16 w-16 text-blue-500 mx-auto mb-4" />
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">No Workspaces Found</h3>
+                    <p className="text-gray-600 mb-6">
+                      No APP_WORKSPACE entities found. This dashboard reads workspace configuration from APP_WORKSPACE entities in the database.
+                    </p>
+                    
+                    {/* Sample Entity Creation */}
+                    <div className="bg-white rounded-lg p-4 mb-4 text-left">
+                      <h4 className="font-semibold text-gray-800 mb-2">🎯 Expected Entity Format:</h4>
+                      <div className="text-sm text-gray-600 space-y-1">
+                        <div><strong>Entity Type:</strong> APP_WORKSPACE</div>
+                        <div><strong>Entity Name:</strong> "Inventory Management Workspace"</div>
+                        <div><strong>Entity Code:</strong> "NAV-WORK-INVENTORY-MAIN"</div>
+                        <div><strong>Smart Code:</strong> "HERA.PLATFORM.NAV.APPWORKSPACE.INVENTORY.MAIN.v1"</div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <Button 
+                        onClick={fetchDynamicModules} 
+                        variant="outline"
+                        className="w-full"
+                      >
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Check for New Workspaces
+                      </Button>
+                      
+                      <div className="text-sm text-gray-500">
+                        <strong>Next:</strong> Create APP_WORKSPACE entities in your database to see dynamic workspaces here.
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
