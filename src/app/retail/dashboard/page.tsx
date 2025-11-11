@@ -11,7 +11,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { apiV2 } from '@/lib/client/fetchV2'
+import { useUniversalEntityV1 } from '@/hooks/useUniversalEntityV1'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -191,10 +191,37 @@ export default function RetailDashboard() {
     contextLoading 
   } = useHERAAuth()
 
+  // Use hooks to fetch APP and APP_DOMAIN entities from platform org
+  const { entities: appEntities, isLoading: appLoading, error: appError, refetch: refetchApps } = useUniversalEntityV1({
+    entity_type: 'APP',
+    organizationId: '00000000-0000-0000-0000-000000000000', // Platform org
+    filters: {
+      limit: 10,
+      include_dynamic: false,
+      include_relationships: false
+    }
+  })
+
+  const { entities: domainEntities, isLoading: domainsLoading, error: domainsError, refetch: refetchDomains } = useUniversalEntityV1({
+    entity_type: 'APP_DOMAIN', 
+    organizationId: '00000000-0000-0000-0000-000000000000', // Platform org
+    filters: {
+      limit: 50,
+      include_dynamic: false,
+      include_relationships: false
+    }
+  })
+
+  // Reload function for the manual refresh button
+  const fetchDynamicModules = async () => {
+    console.log('🔄 Manual refresh triggered')
+    await Promise.all([refetchApps(), refetchDomains()])
+  }
+
   // Dynamic modules state
   const [dynamicModules, setDynamicModules] = useState<DynamicRetailModule[]>([])
-  const [modulesLoading, setModulesLoading] = useState(true)
-  const [modulesError, setModulesError] = useState<string | null>(null)
+  const modulesLoading = appLoading || domainsLoading
+  const modulesError = appError || domainsError
 
   const [currentTime, setCurrentTime] = useState(new Date())
   const [aiMessage, setAiMessage] = useState('')
@@ -274,9 +301,43 @@ export default function RetailDashboard() {
           'users': Users,
           'package': Package
         }
+
+        // Convert hex colors to Tailwind CSS classes
+        let bgColor = metadata.color
+        if (typeof metadata.color === 'string') {
+          // If it's a hex color, convert to appropriate Tailwind class
+          if (metadata.color.startsWith('#')) {
+            const colorMap: Record<string, string> = {
+              '#F59E0B': 'bg-amber-600',
+              '#f59e0b': 'bg-amber-600',
+              '#EF4444': 'bg-red-600',
+              '#ef4444': 'bg-red-600',
+              '#10B981': 'bg-green-600',
+              '#10b981': 'bg-green-600',
+              '#3B82F6': 'bg-blue-600',
+              '#3b82f6': 'bg-blue-600',
+              '#8B5CF6': 'bg-purple-600',
+              '#8b5cf6': 'bg-purple-600',
+              '#EC4899': 'bg-pink-600',
+              '#ec4899': 'bg-pink-600',
+              '#6366F1': 'bg-indigo-600',
+              '#6366f1': 'bg-indigo-600',
+              '#14B8A6': 'bg-teal-600',
+              '#14b8a6': 'bg-teal-600',
+              '#F97316': 'bg-orange-600',
+              '#f97316': 'bg-orange-600'
+            }
+            bgColor = colorMap[metadata.color] || 'bg-blue-600'
+          }
+          // If it doesn't start with 'bg-', add the prefix
+          else if (!metadata.color.startsWith('bg-')) {
+            bgColor = `bg-${metadata.color}`
+          }
+        }
+
         return { 
           icon: iconMap[metadata.icon] || Package, 
-          bgColor: metadata.color || 'bg-blue-600' 
+          bgColor: bgColor || 'bg-blue-600' 
         }
       }
       
@@ -331,81 +392,46 @@ export default function RetailDashboard() {
     }
   }
 
-  // Fetch APP and its linked domains via APP_HAS_DOMAIN relationships (Level 1)
-  const fetchDynamicModules = async () => {
-    try {
-      setModulesLoading(true)
-      setModulesError(null)
-
-      console.log('🔍 Fetching RETAIL APP and its linked domains via relationships')
-
-      // Step 1: Get RETAIL APP entity
-      const appResponse = await apiV2.get('entities', {
-        entity_type: 'APP',
-        entity_code: 'RETAIL',
-        organization_id: '00000000-0000-0000-0000-000000000000',
-        limit: 1
+  // Process hook data when available
+  useEffect(() => {
+    if (!appLoading && !domainsLoading && isAuthenticated) {
+      console.log('🔍 Processing APP and APP_DOMAIN entities from hooks')
+      
+      console.log('📊 Hook results:', {
+        apps: appEntities?.length || 0,
+        domains: domainEntities?.length || 0,
+        appNames: appEntities?.map(app => `${app.entity_name} (${app.entity_code})`) || [],
+        domainNames: domainEntities?.map(domain => `${domain.entity_name} (${domain.entity_code})`) || []
       })
 
-      console.log('📊 RETAIL APP response:', {
-        count: appResponse.data?.items?.length || 0,
-        app: appResponse.data?.items?.[0]?.entity_name
-      })
-
-      if (!appResponse.data?.items?.[0]) {
-        throw new Error('RETAIL APP not found')
+      // Check if RETAIL APP exists
+      const retailApp = appEntities?.find(app => app.entity_code === 'RETAIL')
+      
+      if (retailApp) {
+        console.log('✅ Found RETAIL APP:', {
+          id: retailApp.id,
+          name: retailApp.entity_name,
+          code: retailApp.entity_code
+        })
+        // TODO: Later we can fetch relationships to filter domains for this specific APP
+        // For now, load all available APP_DOMAIN entities as fallback
+      } else {
+        console.log('⚠️ RETAIL APP not found, using all available domains')
       }
 
-      const retailApp = appResponse.data.items[0]
-
-      // Step 2: Get linked domains via relationships
-      const relationshipsResponse = await apiV2.get('relationships', {
-        from_entity_id: retailApp.id,
-        relationship_type: 'APP_HAS_DOMAIN',
-        organization_id: '00000000-0000-0000-0000-000000000000',
-        include_target_entities: true,
-        limit: 50
-      })
-
-      console.log('📊 Relationships response:', {
-        count: relationshipsResponse.data?.items?.length || 0,
-        relationships: relationshipsResponse.data?.items?.map((r: any) => ({
-          type: r.relationship_type,
-          target: r.target_entity?.entity_name
-        })) || []
-      })
-
-      if (relationshipsResponse.data?.items) {
-        // Extract APP_DOMAIN entities from relationships
-        const domainEntities = relationshipsResponse.data.items
-          .filter((rel: any) => rel.target_entity && rel.target_entity.entity_type === 'APP_DOMAIN')
-          .map((rel: any) => rel.target_entity)
-
+      if (domainEntities && domainEntities.length > 0) {
         const modules = domainEntities
           .map(parseDomainEntity)
           .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
 
         setDynamicModules(modules)
-        console.log('✅ Loaded RETAIL domains via relationships:', modules.length, 'domains:', modules.map(m => m.title))
+        console.log('✅ Loaded APP_DOMAIN entities via hooks:', modules.length, 'domains:', modules.map(m => m.title))
       } else {
-        console.warn('❌ No APP_HAS_DOMAIN relationships found for RETAIL')
+        console.warn('❌ No APP_DOMAIN entities found')
         setDynamicModules([])
       }
-    } catch (error) {
-      console.error('❌ Error fetching dynamic modules:', error)
-      setModulesError(`Failed to load RETAIL domains: ${error.message}`)
-      setDynamicModules([])
-    } finally {
-      setModulesLoading(false)
     }
-  }
-
-  // Load dynamic modules when authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchDynamicModules()
-    }
-  }, [isAuthenticated])
+  }, [appLoading, domainsLoading, isAuthenticated, appEntities, domainEntities])
 
   // Update time every minute
   useEffect(() => {
@@ -571,14 +597,6 @@ export default function RetailDashboard() {
               </div>
 
               {/* Debug Info */}
-              {process.env.NODE_ENV === 'development' && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-xs">
-                  <strong>🔍 Debug:</strong> Org: <code>{organization?.id}</code>, 
-                  Loading: <code>{modulesLoading.toString()}</code>, 
-                  Domains: <code>{dynamicModules.length}</code>
-                  {modulesError && <span className="text-red-600">, Error: {modulesError}</span>}
-                </div>
-              )}
 
               {/* Loading State */}
               {modulesLoading && (
@@ -611,12 +629,12 @@ export default function RetailDashboard() {
                         onClick={() => {
                           // Level 1→2 routing: App Dashboard → Domain Page
                           if (module.domain && module.section) {
-                            const route = `/${module.domain}/${module.section}`
+                            const route = `/retail/domains/${module.section}`
                             console.log(`🎯 Navigating from App dashboard to Domain page: ${route}`)
                             console.log(`📋 Domain: ${module.title} (${module.entity_code})`)
                             router.push(route)
                           } else {
-                            alert(`${module.title} domain navigation:\n\nRoute: /${module.domain}/${module.section}\nEntity: ${module.entity_code}\nSmart Code: ${module.smart_code}`)
+                            alert(`${module.title} domain navigation:\n\nRoute: /retail/domains/${module.section}\nEntity: ${module.entity_code}\nSmart Code: ${module.smart_code}`)
                           }
                         }}
                       >
@@ -662,7 +680,7 @@ export default function RetailDashboard() {
                         <div><strong>APP Entity:</strong> HERA Retail (entity_code: RETAIL)</div>
                         <div><strong>Relationship:</strong> APP_HAS_DOMAIN</div>
                         <div><strong>APP_DOMAIN:</strong> Various domains (NAV-DOM-*)</div>
-                        <div><strong>Routing:</strong> /retail/{domain_slug}</div>
+                        <div><strong>Routing:</strong> /retail/[domain]</div>
                         <div><strong>Example:</strong> /retail/merchandising, /retail/inventory</div>
                       </div>
                     </div>

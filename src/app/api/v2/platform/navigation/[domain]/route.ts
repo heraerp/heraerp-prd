@@ -2,11 +2,17 @@
  * Platform Navigation API
  * Smart Code: HERA.PLATFORM.API.NAVIGATION.v1
  * 
- * Fetches navigation structure from platform organization
- * Accessible to any authenticated user regardless of organization
+ * Fetches navigation structure from platform organization (00000000-0000-0000-0000-000000000000)
+ * Accessible to any user regardless of their tenant organization
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function GET(
   request: NextRequest,
@@ -15,10 +21,81 @@ export async function GET(
   try {
     const { domain: domainSlug } = await params
 
-    console.log('🔍 API: Loading domain and sections for:', domainSlug)
+    console.log('🔍 API: Loading domain and sections from platform organization for:', domainSlug)
 
-    // Mock data for testing - supports all retail domains
-    const domainConfigs = {
+    // First, get the domain entity from platform organization (00000000-0000-0000-0000-000000000000)
+    // Platform navigation is accessible to all tenant organizations
+    const { data: domainData, error: domainError } = await supabase
+      .from('core_entities')
+      .select('*')
+      .eq('entity_type', 'APP_DOMAIN')
+      .contains('metadata', { slug: domainSlug })
+      .single()
+
+    if (domainError || !domainData) {
+      console.log('⚠️ Domain not found in database, falling back to mock data. Error:', domainError)
+      return getMockData(domainSlug)
+    }
+
+    // Then get the sections for this domain from platform organization
+    const { data: sectionsData, error: sectionsError } = await supabase
+      .from('core_entities')
+      .select(`
+        id,
+        entity_name,
+        entity_code,
+        entity_type,
+        smart_code,
+        metadata
+      `)
+      .eq('entity_type', 'APP_SECTION')
+      .contains('metadata', { domain: domainSlug })
+
+    if (sectionsError) {
+      console.error('❌ Error fetching sections:', sectionsError)
+      return getMockData(domainSlug)
+    }
+
+    // Transform the data to match the expected format
+    const domain = {
+      id: domainData.id,
+      entity_name: domainData.entity_name,
+      entity_code: domainData.entity_code,
+      slug: domainSlug,
+      subtitle: domainData.metadata?.subtitle || '',
+      color: domainData.metadata?.color || '#6366F1'
+    }
+
+    const sections = (sectionsData || []).map((section, index) => ({
+      id: section.id,
+      entity_name: section.entity_name,
+      entity_code: section.entity_code,
+      slug: section.metadata?.slug || section.entity_code.toLowerCase(),
+      subtitle: section.metadata?.subtitle || '',
+      icon: section.metadata?.icon || 'box',
+      color: section.metadata?.color || '#6366F1',
+      persona_label: section.metadata?.persona_label || '',
+      visible_roles: section.metadata?.visible_roles || [],
+      route: section.metadata?.route || `/${domainSlug}/${section.metadata?.slug || section.entity_code.toLowerCase()}`,
+      order: section.metadata?.order || index + 1
+    }))
+
+    console.log('✅ API: Successfully loaded from Supabase:', { domain: domain.entity_name, sections: sections.length })
+
+    return NextResponse.json({ domain, sections })
+
+  } catch (error) {
+    console.error('❌ API Error:', error)
+    return getMockData(domainSlug)
+  }
+}
+
+// Fallback mock data function
+function getMockData(domainSlug: string) {
+  console.log('📦 Using mock data for:', domainSlug)
+  
+  // Mock data for testing - supports all retail domains
+  const domainConfigs = {
       retail: {
         domain: {
           id: 'retail-ops',
@@ -545,24 +622,15 @@ export async function GET(
       }
     }
 
-    const mockData = domainConfigs[domainSlug as keyof typeof domainConfigs]
+  const mockData = domainConfigs[domainSlug as keyof typeof domainConfigs]
 
-    if (!mockData) {
-      return NextResponse.json(
-        { error: `Domain "${domainSlug}" not found` },
-        { status: 404 }
-      )
-    }
-
-    console.log('✅ API: Successfully loaded domain and sections')
-
-    return NextResponse.json(mockData)
-
-  } catch (error) {
-    console.error('❌ API Error:', error)
+  if (!mockData) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
-      { status: 500 }
+      { error: `Domain "${domainSlug}" not found` },
+      { status: 404 }
     )
   }
+
+  console.log('✅ API: Successfully loaded mock data for:', domainSlug)
+  return NextResponse.json(mockData)
 }

@@ -277,6 +277,7 @@ function transformRPCResponseToEntity(rpcEntity: any): any {
     smart_code: entity.smart_code,
     status: entityLevelStatus,  // Entity-level status (active/archived for soft delete)
     metadata: entity.metadata,
+    parent_entity_id: entity.parent_entity_id,  // ✅ FIX: Include parent_entity_id field
     created_at: entity.created_at,
     updated_at: entity.updated_at,
     created_by: entity.created_by,
