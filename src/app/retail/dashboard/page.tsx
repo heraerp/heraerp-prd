@@ -229,11 +229,17 @@ export default function RetailDashboard() {
     const workspace = ''
 
     // Extract metadata for advanced configuration
-    let metadata = {}
+    let metadata: any = {}
     try {
-      metadata = entity.metadata ? JSON.parse(entity.metadata) : {}
+      if (entity.metadata) {
+        if (typeof entity.metadata === 'string') {
+          metadata = JSON.parse(entity.metadata)
+        } else {
+          metadata = entity.metadata
+        }
+      }
     } catch (e) {
-      console.warn('Failed to parse metadata:', entity.metadata)
+      console.warn('Failed to parse metadata for', entity.entity_name, ':', entity.metadata, e)
     }
 
     // Icon mapping based on entity_code patterns and metadata
@@ -320,11 +326,35 @@ export default function RetailDashboard() {
       setModulesLoading(true)
       setModulesError(null)
 
-      const response = await apiV2.get('entities', {
+      console.log('🔍 Fetching APP_DOMAIN entities for org:', organization.id)
+
+      // Try user organization first
+      let response = await apiV2.get('entities', {
         entity_type: 'APP_DOMAIN',
         organization_id: organization.id,
         limit: 50
       })
+
+      console.log('📊 User org response:', {
+        count: response.data?.items?.length || 0,
+        items: response.data?.items?.map((i: any) => ({ name: i.entity_name, code: i.entity_code })) || []
+      })
+
+      // If no results in user org, try platform org as fallback
+      if (!response.data?.items || response.data.items.length === 0) {
+        console.log('🔄 No domains in user org, trying platform org...')
+        
+        response = await apiV2.get('entities', {
+          entity_type: 'APP_DOMAIN', 
+          organization_id: '00000000-0000-0000-0000-000000000000',
+          limit: 50
+        })
+
+        console.log('📊 Platform org response:', {
+          count: response.data?.items?.length || 0,
+          items: response.data?.items?.map((i: any) => ({ name: i.entity_name, code: i.entity_code })) || []
+        })
+      }
 
       if (response.data?.items) {
         const modules = response.data.items
@@ -333,14 +363,14 @@ export default function RetailDashboard() {
           .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
 
         setDynamicModules(modules)
-        console.log('✅ Loaded dynamic domains:', modules.length, 'domains')
+        console.log('✅ Loaded dynamic domains:', modules.length, 'domains:', modules.map(m => m.title))
       } else {
-        console.warn('No APP_DOMAIN entities found')
+        console.warn('❌ No APP_DOMAIN entities found in any organization')
         setDynamicModules([])
       }
     } catch (error) {
       console.error('❌ Error fetching dynamic modules:', error)
-      setModulesError('Failed to load domain modules')
+      setModulesError(`Failed to load domain modules: ${error.message}`)
       setDynamicModules([])
     } finally {
       setModulesLoading(false)
@@ -516,6 +546,16 @@ export default function RetailDashboard() {
                   </Button>
                 )}
               </div>
+
+              {/* Debug Info */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-xs">
+                  <strong>🔍 Debug:</strong> Org: <code>{organization?.id}</code>, 
+                  Loading: <code>{modulesLoading.toString()}</code>, 
+                  Domains: <code>{dynamicModules.length}</code>
+                  {modulesError && <span className="text-red-600">, Error: {modulesError}</span>}
+                </div>
+              )}
 
               {/* Loading State */}
               {modulesLoading && (
