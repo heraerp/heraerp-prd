@@ -1427,3 +1427,192 @@ export async function archiveOrganization(
     p_offset: 0
   }, organizationId)
 }
+
+// ============================================================================
+// 📱 APP MANAGEMENT FUNCTIONS (v2.4.0)
+// ============================================================================
+
+/**
+ * Register/create new app in platform catalog
+ * @param actorUserId - Platform admin user entity UUID
+ * @param payload - App registration data
+ * @returns Created app
+ * @example
+ * const result = await registerApp(adminId, {
+ *   code: 'CRM',
+ *   name: 'HERA CRM',
+ *   smart_code: 'HERA.PLATFORM.APP.ENTITY.CRM.v1',
+ *   status: 'active',
+ *   metadata: { category: 'business', version: '1.0.0' }
+ * })
+ */
+export async function registerApp(
+  actorUserId: string,
+  payload: {
+    code: string              // UPPERCASE alphanumeric only (e.g., "SALON", "CRM")
+    name: string              // Display name
+    smart_code: string        // HERA DNA pattern
+    status?: string           // 'active' | 'inactive'
+    metadata?: {
+      category?: string
+      version?: string
+      description?: string
+      icon?: string
+      features?: string[]
+      [key: string]: any
+    }
+  }
+): Promise<{
+  data: {
+    app: {
+      id: string
+      code: string
+      name: string
+      status: string
+      smart_code: string
+      metadata: any
+      created_at: string
+      updated_at: string
+      business_rules?: any
+    }
+  } | null
+  error: any
+}> {
+  return callRPC('hera_apps_register_v1', {
+    p_actor_user_id: actorUserId,
+    p_payload: payload
+  })
+}
+
+/**
+ * Get single app by ID or code
+ * @param actorUserId - Actor user entity UUID
+ * @param selector - App selector (id or code)
+ * @returns App details
+ * @example
+ * // Get by code
+ * const result = await getApp(userId, { code: 'SALON' })
+ *
+ * // Get by ID
+ * const result = await getApp(userId, { id: 'app-uuid' })
+ */
+export async function getApp(
+  actorUserId: string,
+  selector: {
+    id?: string     // App UUID
+    code?: string   // App code (e.g., "SALON")
+  }
+): Promise<{
+  data: {
+    app: {
+      id: string
+      code: string
+      name: string
+      status: string
+      smart_code: string
+      metadata: any
+      created_at: string
+      updated_at: string
+      business_rules?: any
+    }
+  } | null
+  error: any
+}> {
+  return callRPC('hera_apps_get_v1', {
+    p_actor_user_id: actorUserId,
+    p_selector: selector
+  })
+}
+
+/**
+ * List apps with optional filters
+ * @param actorUserId - Actor user entity UUID
+ * @param filters - Optional filters and pagination
+ * @returns List of apps
+ * @example
+ * // List active apps
+ * const result = await listApps(userId, { status: 'active', limit: 10 })
+ *
+ * // List all apps
+ * const result = await listApps(userId, {})
+ */
+export async function listApps(
+  actorUserId: string,
+  filters?: {
+    status?: string       // Filter by status
+    category?: string     // Filter by metadata.category
+    limit?: number        // Max results (default: 50)
+    offset?: number       // Pagination offset (default: 0)
+  }
+): Promise<{
+  data: {
+    items: Array<{
+      id: string
+      code: string
+      name: string
+      status: string
+      smart_code: string
+      metadata: any
+      created_at: string
+      updated_at: string
+      business_rules?: any
+    }>
+    total: number
+    limit: number
+    offset: number
+    action: string
+  } | null
+  error: any
+}> {
+  return callRPC('hera_apps_list_v1', {
+    p_actor_user_id: actorUserId,
+    p_filters: filters || {}
+  })
+}
+
+/**
+ * Update app details
+ * @param actorUserId - Platform admin user entity UUID
+ * @param appId - App UUID
+ * @param updates - Fields to update
+ * @returns Updated app
+ * @example
+ * const result = await updateApp(adminId, 'app-uuid', {
+ *   name: 'HERA CRM Enterprise',
+ *   status: 'active',
+ *   metadata: { version: '2.0.0', features: [...] }
+ * })
+ */
+export async function updateApp(
+  actorUserId: string,
+  appId: string,
+  updates: {
+    name?: string           // Updated display name
+    status?: string         // 'active' | 'inactive'
+    metadata?: any          // Full metadata replacement
+    business_rules?: any    // Updated business rules
+  }
+): Promise<{
+  data: {
+    app: {
+      id: string
+      code: string
+      name: string
+      status: string
+      smart_code: string
+      metadata: any
+      created_at: string
+      updated_at: string
+      business_rules?: any
+    }
+  } | null
+  error: any
+}> {
+  return callRPC('hera_apps_update_v1', {
+    p_actor_user_id: actorUserId,
+    p_payload: {
+      id: appId,
+      ...updates
+    }
+  })
+}
