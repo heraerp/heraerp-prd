@@ -1,18 +1,18 @@
 'use client'
 
 /**
- * ✨ SALON LUXE ENTERPRISE SETTINGS PAGE
+ * ✨ SALON LUXE ENTERPRISE SETTINGS PAGE v3.0
  *
- * UPGRADED FEATURES (v2.3):
- * - ✅ SalonLuxePage wrapper for consistent layout
+ * UPGRADED FEATURES:
+ * - ✅ SalonLuxeButton, SalonLuxePage, SalonLuxeCard components
  * - ✅ PremiumMobileHeader for iOS-style mobile experience
  * - ✅ Lazy loading with Suspense boundaries for performance
  * - ✅ Mobile-first responsive design (44px touch targets)
  * - ✅ StatusToastProvider for enterprise notifications
  * - ✅ SALON_LUXE_COLORS theme consistency
- * - ✅ useUniversalEntityV1 hook (NO direct RPC calls)
- * - ✅ Bottom spacing for mobile scroll comfort
- * - ✅ Progressive enhancement with graceful degradation
+ * - ✅ Glassmorphism design with backdrop blur
+ * - ✅ Progressive disclosure and organized sections
+ * - ✅ Enterprise-grade accessibility (ARIA labels, keyboard nav)
  *
  * HERA DNA COMPLIANCE:
  * - Organization settings stored in core_dynamic_data
@@ -26,11 +26,11 @@ import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
+import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { BusinessHoursSection } from '@/components/salon/settings/BusinessHoursSection'
@@ -38,7 +38,6 @@ import {
   Settings,
   Users,
   Shield,
-  Database,
   Bell,
   Palette,
   Globe,
@@ -46,11 +45,24 @@ import {
   Loader2,
   Save,
   RefreshCw,
-  Sparkles
+  Package,
+  ArrowRight,
+  Sparkles,
+  Building2,
+  Clock,
+  Mail,
+  Phone,
+  MapPin,
+  CreditCard
 } from 'lucide-react'
 import { SALON_LUXE_COLORS as LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { entityCRUD } from '@/lib/universal-api-v2-client'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+
+// 🚀 LAZY LOADING: Split heavy components for faster initial load
+const InventorySettingsCard = lazy(() =>
+  import('@/components/salon/settings/InventorySettingsCard').then(m => ({ default: m.InventorySettingsCard }))
+)
 
 // 🚀 PERFORMANCE: Skeleton loader for tabs
 function TabLoader() {
@@ -63,6 +75,21 @@ function TabLoader() {
       <span className="ml-3" style={{ color: LUXE_COLORS.text.secondary }}>
         Loading...
       </span>
+    </div>
+  )
+}
+
+// 🚀 PERFORMANCE: Card skeleton
+function CardSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      <div
+        className="h-48 rounded-xl"
+        style={{
+          background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
+          border: `1px solid ${LUXE_COLORS.border.light}`
+        }}
+      />
     </div>
   )
 }
@@ -136,7 +163,6 @@ function SettingsPageContent() {
     setIsSaving(true)
 
     // ✅ Build dynamic fields in RPC format
-    // Format for entityCRUD: { field_name: { field_value_text: 'value', smart_code: '...' } }
     const dynamicFields: Record<string, any> = {}
 
     if (organizationName) {
@@ -183,20 +209,13 @@ function SettingsPageContent() {
     }
 
     try {
-      console.log('[Settings] 🔍 Calling entityCRUD with:', {
-        entity_id: organizationId,
-        organization_id: organizationId,
-        dynamic_fields_count: Object.keys(dynamicFields).length
-      })
-
-      // ✅ Use entityCRUD RPC function directly
       const result = await entityCRUD({
         p_action: 'UPDATE',
         p_actor_user_id: user?.id || '',
         p_organization_id: organizationId,
         p_entity: {
           entity_id: organizationId,
-          entity_type: 'ORGANIZATION' // ✅ FIXED: Use correct entity type 'ORGANIZATION'
+          entity_type: 'ORGANIZATION'
         },
         p_dynamic: dynamicFields,
         p_relationships: [],
@@ -205,58 +224,10 @@ function SettingsPageContent() {
         }
       })
 
-      console.log('[Settings] Save successful - Full response:', JSON.stringify(result, null, 2))
-
       removeToast(loadingId)
       showSuccess('Settings saved successfully', 'Organization settings have been updated')
-
-      console.log('[Settings] ✅ Settings saved successfully')
-
-      // ✅ TRANSFORM RPC RESPONSE: Extract updated values from RPC response to confirm save
-      // RPC returns: { data: { entity: {...}, dynamic_data: [...] } }
-      if (result?.data?.data?.dynamic_data || result?.data?.dynamic_fields) {
-        const dynamicDataArray = result.data.data?.dynamic_data || result.data?.dynamic_fields || []
-
-        console.log('[Settings] 📦 Transforming updated dynamic fields:', {
-          count: dynamicDataArray.length,
-          fields: dynamicDataArray.map((f: any) => f.field_name)
-        })
-
-        // Transform array to object (same logic as SecuredSalonProvider)
-        const updatedFields: Record<string, any> = {}
-        dynamicDataArray.forEach((field: any) => {
-          const value =
-            field.field_value_text ||
-            field.field_value_number ||
-            field.field_value_boolean ||
-            field.field_value_date ||
-            field.field_value_json
-          updatedFields[field.field_name] = value
-        })
-
-        console.log('[Settings] ✅ Transformed fields:', updatedFields)
-
-        // Update form state with confirmed saved values
-        if (updatedFields.organization_name) setOrganizationName(updatedFields.organization_name)
-        if (updatedFields.legal_name) setLegalName(updatedFields.legal_name)
-        if (updatedFields.phone) setPhone(updatedFields.phone)
-        if (updatedFields.email) setEmail(updatedFields.email)
-        if (updatedFields.address) setAddress(updatedFields.address)
-        if (updatedFields.trn) setTrn(updatedFields.trn)
-        if (updatedFields.currency) setCurrency(updatedFields.currency)
-      } else {
-        console.log('[Settings] ℹ️ No dynamic_data in response, keeping form state as-is')
-      }
     } catch (error: any) {
-      console.error('[Settings] Error saving organization settings:', {
-        error,
-        errorMessage: error.message,
-        errorString: String(error),
-        organizationId,
-        userId: user?.id,
-        dynamicFields: Object.keys(dynamicFields || {})
-      })
-
+      console.error('[Settings] Error saving organization settings:', error)
       removeToast(loadingId)
       showError(
         'Failed to save settings',
@@ -270,494 +241,545 @@ function SettingsPageContent() {
   return (
     <SalonLuxePage
       title="Settings"
-      description="Configure system settings and manage your organization"
+      description="Configure your salon and manage organization settings"
       maxWidth="full"
-      padding="lg"
-      actions={
-        <button
-          onClick={() => window.location.reload()}
-          className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
-          style={{
-            backgroundColor: LUXE_COLORS.charcoal.base,
-            border: `1px solid ${LUXE_COLORS.text.secondary}40`,
-            color: LUXE_COLORS.text.secondary
-          }}
-          title="Refresh data"
-        >
-          <RefreshCw className="w-4 h-4" />
-        </button>
-      }
+      padding="none"
     >
       {/* 📱 PREMIUM MOBILE HEADER */}
       <PremiumMobileHeader
         title="Settings"
         subtitle={organizationName || 'System Configuration'}
+        icon={<Settings className="w-6 h-6" />}
         showNotifications={false}
         shrinkOnScroll
-        rightAction={
-          <button
-            onClick={() => window.location.reload()}
-            className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90 transition-transform duration-200"
-            style={{
-              background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}30 0%, ${LUXE_COLORS.gold.base}20 100%)`,
-              border: `1px solid ${LUXE_COLORS.gold.base}40`
-            }}
-            aria-label="Refresh"
-          >
-            <RefreshCw className="w-5 h-5" style={{ color: LUXE_COLORS.gold.base }} />
-          </button>
-        }
       />
 
       <div className="p-4 md:p-6 lg:p-8">
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList
-            className="w-full md:w-auto grid grid-cols-2 md:flex md:inline-flex gap-2 p-1"
+        {/* Enterprise Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          {/* Mobile-First Tab List */}
+          <div className="sticky top-0 z-40 -mx-4 md:mx-0 px-4 md:px-0 py-3 md:py-0"
             style={{
-              backgroundColor: LUXE_COLORS.charcoal.light,
-              border: `1px solid ${LUXE_COLORS.border.light}`
+              backgroundColor: LUXE_COLORS.black,
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)'
             }}
           >
-            <TabsTrigger
-              value="general"
-              className="min-h-[44px] data-[state=active]:bg-gold/20 data-[state=active]:text-gold transition-all"
+            <TabsList
+              className="w-full md:w-auto grid grid-cols-2 md:flex md:inline-flex gap-2 p-1.5 rounded-xl"
               style={{
-                color: activeTab === 'general' ? LUXE_COLORS.gold.base : LUXE_COLORS.text.secondary
+                background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
+                border: `1px solid ${LUXE_COLORS.border.light}`,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
               }}
             >
-              <Settings className="w-4 h-4 mr-2" />
-              <span className="hidden md:inline">General</span>
-              <span className="md:hidden">General</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="users"
-              className="min-h-[44px] data-[state=active]:bg-gold/20 data-[state=active]:text-gold transition-all"
-              style={{
-                color: activeTab === 'users' ? LUXE_COLORS.gold.base : LUXE_COLORS.text.secondary
-              }}
-            >
-              <Users className="w-4 h-4 mr-2" />
-              <span className="hidden md:inline">Users</span>
-              <span className="md:hidden">Users</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="security"
-              className="min-h-[44px] data-[state=active]:bg-gold/20 data-[state=active]:text-gold transition-all"
-              style={{
-                color: activeTab === 'security' ? LUXE_COLORS.gold.base : LUXE_COLORS.text.secondary
-              }}
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              <span className="hidden md:inline">Security</span>
-              <span className="md:hidden">Security</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="integrations"
-              className="min-h-[44px] data-[state=active]:bg-gold/20 data-[state=active]:text-gold transition-all"
-              style={{
-                color: activeTab === 'integrations' ? LUXE_COLORS.gold.base : LUXE_COLORS.text.secondary
-              }}
-            >
-              <Key className="w-4 h-4 mr-2" />
-              <span className="hidden md:inline">Integrations</span>
-              <span className="md:hidden">API</span>
-            </TabsTrigger>
-          </TabsList>
+              <TabsTrigger
+                value="general"
+                className="min-h-[44px] rounded-lg data-[state=active]:shadow-md transition-all duration-200"
+                style={{
+                  color: activeTab === 'general' ? LUXE_COLORS.charcoal.dark : LUXE_COLORS.text.secondary,
+                  backgroundColor: activeTab === 'general' ? LUXE_COLORS.gold.base : 'transparent',
+                  fontWeight: activeTab === 'general' ? 700 : 500
+                }}
+              >
+                <Building2 className="w-4 h-4 mr-2" />
+                <span>General</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="users"
+                className="min-h-[44px] rounded-lg data-[state=active]:shadow-md transition-all duration-200"
+                style={{
+                  color: activeTab === 'users' ? LUXE_COLORS.charcoal.dark : LUXE_COLORS.text.secondary,
+                  backgroundColor: activeTab === 'users' ? LUXE_COLORS.gold.base : 'transparent',
+                  fontWeight: activeTab === 'users' ? 700 : 500
+                }}
+              >
+                <Users className="w-4 h-4 mr-2" />
+                <span>Users</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="security"
+                className="min-h-[44px] rounded-lg data-[state=active]:shadow-md transition-all duration-200"
+                style={{
+                  color: activeTab === 'security' ? LUXE_COLORS.charcoal.dark : LUXE_COLORS.text.secondary,
+                  backgroundColor: activeTab === 'security' ? LUXE_COLORS.gold.base : 'transparent',
+                  fontWeight: activeTab === 'security' ? 700 : 500
+                }}
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                <span>Security</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="integrations"
+                className="min-h-[44px] rounded-lg data-[state=active]:shadow-md transition-all duration-200"
+                style={{
+                  color: activeTab === 'integrations' ? LUXE_COLORS.charcoal.dark : LUXE_COLORS.text.secondary,
+                  backgroundColor: activeTab === 'integrations' ? LUXE_COLORS.gold.base : 'transparent',
+                  fontWeight: activeTab === 'integrations' ? 700 : 500
+                }}
+              >
+                <Key className="w-4 h-4 mr-2" />
+                <span className="hidden md:inline">Integrations</span>
+                <span className="md:hidden">API</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <Suspense fallback={<TabLoader />}>
-            <TabsContent value="general">
-              <div className="grid gap-6 animate-in fade-in duration-300">
-                {/* Salon Information */}
-                <Card
-                  className="border-0 shadow-lg"
-                  style={{
-                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-                    border: `1px solid ${LUXE_COLORS.border.light}`
-                  }}
-                >
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2" style={{ color: LUXE_COLORS.champagne.base }}>
-                      <Sparkles className="w-5 h-5" style={{ color: LUXE_COLORS.gold.base }} />
-                      Organization Information
-                    </CardTitle>
-                    <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                      Basic information about your organization
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label style={{ color: LUXE_COLORS.text.secondary }}>Organization Name</Label>
-                        <Input
-                          value={organizationName}
-                          onChange={(e) => setOrganizationName(e.target.value)}
-                          placeholder="Enter organization name"
-                          className="min-h-[44px]"
-                          style={{
-                            backgroundColor: LUXE_COLORS.charcoal.dark,
-                            border: `1px solid ${LUXE_COLORS.border.light}`,
-                            color: LUXE_COLORS.champagne.base
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <Label style={{ color: LUXE_COLORS.text.secondary }}>Legal Name</Label>
-                        <Input
-                          value={legalName}
-                          onChange={(e) => setLegalName(e.target.value)}
-                          placeholder="Enter legal name (optional)"
-                          className="min-h-[44px]"
-                          style={{
-                            backgroundColor: LUXE_COLORS.charcoal.dark,
-                            border: `1px solid ${LUXE_COLORS.border.light}`,
-                            color: LUXE_COLORS.champagne.base
-                          }}
-                        />
-                      </div>
+            {/* GENERAL TAB */}
+            <TabsContent value="general" className="space-y-6 animate-in fade-in duration-300">
+              {/* Organization Information Card */}
+              <Card
+                className="border-0 shadow-2xl overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
+                  border: `1px solid ${LUXE_COLORS.border.light}`,
+                  borderRadius: '16px'
+                }}
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center"
+                      style={{
+                        background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
+                        border: `1px solid ${LUXE_COLORS.gold.base}40`
+                      }}
+                    >
+                      <Sparkles className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label style={{ color: LUXE_COLORS.text.secondary }}>Phone Number</Label>
-                        <Input
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="+971 4 123 4567"
-                          className="min-h-[44px]"
-                          style={{
-                            backgroundColor: LUXE_COLORS.charcoal.dark,
-                            border: `1px solid ${LUXE_COLORS.border.light}`,
-                            color: LUXE_COLORS.champagne.base
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <Label style={{ color: LUXE_COLORS.text.secondary }}>Email Address</Label>
-                        <Input
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="info@example.com"
-                          type="email"
-                          className="min-h-[44px]"
-                          style={{
-                            backgroundColor: LUXE_COLORS.charcoal.dark,
-                            border: `1px solid ${LUXE_COLORS.border.light}`,
-                            color: LUXE_COLORS.champagne.base
-                          }}
-                        />
-                      </div>
-                    </div>
-
                     <div>
-                      <Label style={{ color: LUXE_COLORS.text.secondary }}>Address</Label>
+                      <CardTitle className="text-xl" style={{ color: LUXE_COLORS.champagne.base }}>
+                        Organization Information
+                      </CardTitle>
+                      <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
+                        Basic information about your salon
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
+                        <Building2 className="w-4 h-4" />
+                        Organization Name
+                      </Label>
                       <Input
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        placeholder="Enter complete address"
-                        className="min-h-[44px]"
+                        value={organizationName}
+                        onChange={(e) => setOrganizationName(e.target.value)}
+                        placeholder="Enter organization name"
+                        className="min-h-[48px] rounded-lg text-base"
                         style={{
                           backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.light}`,
+                          border: `1px solid ${LUXE_COLORS.border.base}`,
                           color: LUXE_COLORS.champagne.base
                         }}
                       />
                     </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
+                        <CreditCard className="w-4 h-4" />
+                        Legal Name
+                      </Label>
+                      <Input
+                        value={legalName}
+                        onChange={(e) => setLegalName(e.target.value)}
+                        placeholder="Enter legal name (optional)"
+                        className="min-h-[48px] rounded-lg text-base"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal.dark,
+                          border: `1px solid ${LUXE_COLORS.border.base}`,
+                          color: LUXE_COLORS.champagne.base
+                        }}
+                      />
+                    </div>
+                  </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label style={{ color: LUXE_COLORS.text.secondary }}>Tax Registration Number (TRN)</Label>
-                        <Input
-                          value={trn}
-                          onChange={(e) => setTrn(e.target.value)}
-                          placeholder="Enter TRN"
-                          className="min-h-[44px]"
-                          style={{
-                            backgroundColor: LUXE_COLORS.charcoal.dark,
-                            border: `1px solid ${LUXE_COLORS.border.light}`,
-                            color: LUXE_COLORS.champagne.base
-                          }}
-                        />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
+                        <Phone className="w-4 h-4" />
+                        Phone Number
+                      </Label>
+                      <Input
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+971 4 123 4567"
+                        className="min-h-[48px] rounded-lg text-base"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal.dark,
+                          border: `1px solid ${LUXE_COLORS.border.base}`,
+                          color: LUXE_COLORS.champagne.base
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
+                        <Mail className="w-4 h-4" />
+                        Email Address
+                      </Label>
+                      <Input
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="info@example.com"
+                        type="email"
+                        className="min-h-[48px] rounded-lg text-base"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal.dark,
+                          border: `1px solid ${LUXE_COLORS.border.base}`,
+                          color: LUXE_COLORS.champagne.base
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
+                      <MapPin className="w-4 h-4" />
+                      Address
+                    </Label>
+                    <Input
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="Enter complete address"
+                      className="min-h-[48px] rounded-lg text-base"
+                      style={{
+                        backgroundColor: LUXE_COLORS.charcoal.dark,
+                        border: `1px solid ${LUXE_COLORS.border.base}`,
+                        color: LUXE_COLORS.champagne.base
+                      }}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
+                        <CreditCard className="w-4 h-4" />
+                        Tax Registration Number (TRN)
+                      </Label>
+                      <Input
+                        value={trn}
+                        onChange={(e) => setTrn(e.target.value)}
+                        placeholder="Enter TRN"
+                        className="min-h-[48px] rounded-lg text-base"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal.dark,
+                          border: `1px solid ${LUXE_COLORS.border.base}`,
+                          color: LUXE_COLORS.champagne.base
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>
+                        <Globe className="w-4 h-4" />
+                        Currency
+                      </Label>
+                      <Input
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        placeholder="AED"
+                        className="min-h-[48px] rounded-lg text-base"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal.dark,
+                          border: `1px solid ${LUXE_COLORS.border.base}`,
+                          color: LUXE_COLORS.champagne.base
+                        }}
+                      />
+                      <p className="text-xs mt-1" style={{ color: LUXE_COLORS.text.tertiary }}>
+                        Current symbol: {organization?.currencySymbol || 'AED'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-6 border-t" style={{ borderColor: LUXE_COLORS.border.light }}>
+                    <SalonLuxeButton
+                      onClick={handleSaveOrganizationSettings}
+                      loading={isSaving}
+                      variant="primary"
+                      size="lg"
+                      icon={<Save className="h-5 w-5" />}
+                    >
+                      Save Changes
+                    </SalonLuxeButton>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Business Hours - Branch-Aware */}
+              <BusinessHoursSection
+                onSuccess={(message) => showSuccess('Success', message)}
+                onError={(message) => showError('Error', message)}
+              />
+
+              {/* Inventory Settings */}
+              <Suspense fallback={<CardSkeleton />}>
+                <Card
+                  className="border-0 shadow-2xl overflow-hidden"
+                  style={{
+                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
+                    border: `1px solid ${LUXE_COLORS.border.light}`,
+                    borderRadius: '16px'
+                  }}
+                >
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center"
+                        style={{
+                          background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
+                          border: `1px solid ${LUXE_COLORS.gold.base}40`
+                        }}
+                      >
+                        <Package className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
                       </div>
                       <div>
-                        <Label style={{ color: LUXE_COLORS.text.secondary }}>Currency</Label>
-                        <Input
-                          value={currency}
-                          onChange={(e) => setCurrency(e.target.value)}
-                          placeholder="AED"
-                          className="min-h-[44px]"
-                          style={{
-                            backgroundColor: LUXE_COLORS.charcoal.dark,
-                            border: `1px solid ${LUXE_COLORS.border.light}`,
-                            color: LUXE_COLORS.champagne.base
-                          }}
-                        />
-                        <p className="text-xs mt-1" style={{ color: LUXE_COLORS.text.tertiary }}>
-                          Current symbol: {organization?.currencySymbol || 'AED'}
-                        </p>
+                        <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>
+                          Inventory Management
+                        </CardTitle>
+                        <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
+                          Configure inventory tracking and stock management
+                        </CardDescription>
                       </div>
                     </div>
-
-                    <div className="flex justify-end pt-4">
-                      <Button
-                        onClick={handleSaveOrganizationSettings}
-                        disabled={isSaving}
-                        className="min-h-[48px] px-6 font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-                        style={{ backgroundColor: LUXE_COLORS.gold.base, color: LUXE_COLORS.charcoal.dark }}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div className="flex-1">
+                        <p style={{ color: LUXE_COLORS.champagne.base }}>
+                          Enable inventory tracking, manage stock levels, and configure
+                          branch-specific inventory settings.
+                        </p>
+                      </div>
+                      <SalonLuxeButton
+                        onClick={() => router.push('/salon/settings/inventory')}
+                        variant="primary"
+                        icon={<ArrowRight className="h-5 w-5" />}
                       >
-                        {isSaving ? (
-                          <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Saving...
-                          </>
-                        ) : (
-                          <>
-                            <Save className="h-4 w-4 mr-2" />
-                            Save Changes
-                          </>
-                        )}
-                      </Button>
+                        Configure
+                      </SalonLuxeButton>
                     </div>
                   </CardContent>
                 </Card>
-
-                {/* Business Hours - Branch-Aware */}
-                <BusinessHoursSection
-                  onSuccess={(message) => showSuccess(message)}
-                  onError={(message) => showError(message)}
-                />
-              </div>
+              </Suspense>
             </TabsContent>
 
-            <TabsContent value="users">
+            {/* USERS TAB */}
+            <TabsContent value="users" className="animate-in fade-in duration-300">
               <Card
-                className="border-0 shadow-lg animate-in fade-in duration-300"
+                className="border-0 shadow-2xl"
                 style={{
                   background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-                  border: `1px solid ${LUXE_COLORS.border.light}`
+                  border: `1px solid ${LUXE_COLORS.border.light}`,
+                  borderRadius: '16px'
                 }}
               >
                 <CardHeader>
-                  <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>User Management</CardTitle>
-                  <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                    Manage staff accounts and permissions
-                  </CardDescription>
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center"
+                      style={{
+                        background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
+                        border: `1px solid ${LUXE_COLORS.gold.base}40`
+                      }}
+                    >
+                      <Users className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
+                    </div>
+                    <div>
+                      <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>User Management</CardTitle>
+                      <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
+                        Manage staff accounts and permissions
+                      </CardDescription>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {/* User List */}
-                    <div className="space-y-2">
-                      {[
-                        {
-                          name: 'Michele Rodriguez',
-                          email: 'owner@hairtalkz.ae',
-                          role: 'Owner',
-                          status: 'Active'
-                        },
-                        {
-                          name: 'Sarah Johnson',
-                          email: 'receptionist@hairtalkz.ae',
-                          role: 'Receptionist',
-                          status: 'Active'
-                        },
-                        {
-                          name: 'Michael Chen',
-                          email: 'accountant@hairtalkz.ae',
-                          role: 'Accountant',
-                          status: 'Active'
-                        },
-                        {
-                          name: 'David Thompson',
-                          email: 'admin@hairtalkz.ae',
-                          role: 'Admin',
-                          status: 'Active'
-                        }
-                      ].map(user => (
-                        <div
-                          key={user.email}
-                          className="flex items-center justify-between p-4 rounded-lg transition-all duration-200 hover:scale-102"
-                          style={{ backgroundColor: LUXE_COLORS.charcoal.dark }}
-                        >
-                          <div>
-                            <div style={{ color: LUXE_COLORS.champagne.base }}>{user.name}</div>
-                            <div className="text-sm" style={{ color: LUXE_COLORS.text.secondary }}>
-                              {user.email}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <span
-                              className="text-sm px-2 py-1 rounded"
-                              style={{
-                                backgroundColor: LUXE_COLORS.emerald.base + '20',
-                                color: LUXE_COLORS.emerald.base
-                              }}
-                            >
-                              {user.status}
-                            </span>
-                            <span className="text-sm" style={{ color: LUXE_COLORS.gold.base }}>
-                              {user.role}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex justify-end pt-4">
-                      <Button
-                        className="min-h-[48px] font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-                        style={{ backgroundColor: LUXE_COLORS.gold.base, color: LUXE_COLORS.charcoal.dark }}
+                  <div className="space-y-3">
+                    {[
+                      { name: 'Michele Rodriguez', email: 'owner@hairtalkz.ae', role: 'Owner', status: 'Active' },
+                      { name: 'Sarah Johnson', email: 'receptionist@hairtalkz.ae', role: 'Receptionist', status: 'Active' },
+                      { name: 'Michael Chen', email: 'accountant@hairtalkz.ae', role: 'Accountant', status: 'Active' },
+                      { name: 'David Thompson', email: 'admin@hairtalkz.ae', role: 'Admin', status: 'Active' }
+                    ].map(user => (
+                      <div
+                        key={user.email}
+                        className="flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:scale-[1.01]"
+                        style={{
+                          backgroundColor: LUXE_COLORS.charcoal.dark,
+                          border: `1px solid ${LUXE_COLORS.border.base}`
+                        }}
                       >
-                        <Users className="h-4 w-4 mr-2" />
-                        Add User
-                      </Button>
-                    </div>
+                        <div>
+                          <div className="font-medium" style={{ color: LUXE_COLORS.champagne.base }}>{user.name}</div>
+                          <div className="text-sm" style={{ color: LUXE_COLORS.text.secondary }}>{user.email}</div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span
+                            className="text-xs px-3 py-1.5 rounded-full font-medium"
+                            style={{
+                              backgroundColor: `${LUXE_COLORS.emerald.base}20`,
+                              color: LUXE_COLORS.emerald.base
+                            }}
+                          >
+                            {user.status}
+                          </span>
+                          <span className="text-sm font-medium" style={{ color: LUXE_COLORS.gold.base }}>
+                            {user.role}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-end pt-6 border-t mt-6" style={{ borderColor: LUXE_COLORS.border.light }}>
+                    <SalonLuxeButton variant="primary" icon={<Users className="h-5 w-5" />}>
+                      Add User
+                    </SalonLuxeButton>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="security">
-              <div className="grid gap-6 animate-in fade-in duration-300">
-                {/* Password Policy */}
-                <Card
-                  className="border-0 shadow-lg"
-                  style={{
-                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-                    border: `1px solid ${LUXE_COLORS.border.light}`
-                  }}
-                >
-                  <CardHeader>
-                    <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>Password Policy</CardTitle>
-                    <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                      Configure password requirements
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between py-2">
-                      <Label style={{ color: LUXE_COLORS.champagne.base }}>Minimum password length</Label>
-                      <Input
-                        type="number"
-                        defaultValue="8"
-                        className="w-20 min-h-[44px]"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.light}`,
-                          color: LUXE_COLORS.champagne.base
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between py-2">
-                      <Label style={{ color: LUXE_COLORS.champagne.base }}>
-                        Require uppercase letters
-                      </Label>
-                      <Switch defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between py-2">
-                      <Label style={{ color: LUXE_COLORS.champagne.base }}>
-                        Require special characters
-                      </Label>
-                      <Switch defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between py-2">
-                      <Label style={{ color: LUXE_COLORS.champagne.base }}>Require numbers</Label>
-                      <Switch defaultChecked />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Session Management */}
-                <Card
-                  className="border-0 shadow-lg"
-                  style={{
-                    background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-                    border: `1px solid ${LUXE_COLORS.border.light}`
-                  }}
-                >
-                  <CardHeader>
-                    <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>Session Management</CardTitle>
-                    <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                      Configure session timeout and security settings
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between py-2">
-                      <Label style={{ color: LUXE_COLORS.champagne.base }}>
-                        Session timeout (minutes)
-                      </Label>
-                      <Input
-                        type="number"
-                        defaultValue="30"
-                        className="w-20 min-h-[44px]"
-                        style={{
-                          backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.light}`,
-                          color: LUXE_COLORS.champagne.base
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between py-2">
-                      <Label style={{ color: LUXE_COLORS.champagne.base }}>
-                        Enable two-factor authentication
-                      </Label>
-                      <Switch />
-                    </div>
-                    <div className="flex justify-end pt-4">
-                      <Button
-                        className="min-h-[48px] font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-                        style={{ backgroundColor: LUXE_COLORS.gold.base, color: LUXE_COLORS.charcoal.dark }}
-                      >
-                        <Save className="h-4 w-4 mr-2" />
-                        Save Security Settings
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="integrations">
+            {/* SECURITY TAB */}
+            <TabsContent value="security" className="space-y-6 animate-in fade-in duration-300">
+              {/* Password Policy */}
               <Card
-                className="border-0 shadow-lg animate-in fade-in duration-300"
+                className="border-0 shadow-2xl"
                 style={{
                   background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
-                  border: `1px solid ${LUXE_COLORS.border.light}`
+                  border: `1px solid ${LUXE_COLORS.border.light}`,
+                  borderRadius: '16px'
                 }}
               >
                 <CardHeader>
-                  <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>API & Integrations</CardTitle>
+                  <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>Password Policy</CardTitle>
                   <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
-                    Manage third-party integrations and API keys
+                    Configure password requirements
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {[
+                    { label: 'Minimum password length', type: 'number', value: '8' },
+                    { label: 'Require uppercase letters', type: 'switch', value: true },
+                    { label: 'Require special characters', type: 'switch', value: true },
+                    { label: 'Require numbers', type: 'switch', value: true }
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-center justify-between py-3">
+                      <Label style={{ color: LUXE_COLORS.champagne.base }}>{item.label}</Label>
+                      {item.type === 'number' ? (
+                        <Input
+                          type="number"
+                          defaultValue={item.value as string}
+                          className="w-24 min-h-[44px]"
+                          style={{
+                            backgroundColor: LUXE_COLORS.charcoal.dark,
+                            border: `1px solid ${LUXE_COLORS.border.base}`,
+                            color: LUXE_COLORS.champagne.base
+                          }}
+                        />
+                      ) : (
+                        <Switch defaultChecked={item.value as boolean} />
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* Session Management */}
+              <Card
+                className="border-0 shadow-2xl"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
+                  border: `1px solid ${LUXE_COLORS.border.light}`,
+                  borderRadius: '16px'
+                }}
+              >
+                <CardHeader>
+                  <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>Session Management</CardTitle>
+                  <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
+                    Configure session timeout and security settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between py-3">
+                    <Label style={{ color: LUXE_COLORS.champagne.base }}>Session timeout (minutes)</Label>
+                    <Input
+                      type="number"
+                      defaultValue="30"
+                      className="w-24 min-h-[44px]"
+                      style={{
+                        backgroundColor: LUXE_COLORS.charcoal.dark,
+                        border: `1px solid ${LUXE_COLORS.border.base}`,
+                        color: LUXE_COLORS.champagne.base
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between py-3">
+                    <Label style={{ color: LUXE_COLORS.champagne.base }}>Enable two-factor authentication</Label>
+                    <Switch />
+                  </div>
+                  <div className="flex justify-end pt-6 border-t" style={{ borderColor: LUXE_COLORS.border.light }}>
+                    <SalonLuxeButton variant="primary" icon={<Save className="h-5 w-5" />}>
+                      Save Security Settings
+                    </SalonLuxeButton>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* INTEGRATIONS TAB */}
+            <TabsContent value="integrations" className="animate-in fade-in duration-300">
+              <Card
+                className="border-0 shadow-2xl"
+                style={{
+                  background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.light} 0%, ${LUXE_COLORS.charcoal.dark} 100%)`,
+                  border: `1px solid ${LUXE_COLORS.border.light}`,
+                  borderRadius: '16px'
+                }}
+              >
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center"
+                      style={{
+                        background: `linear-gradient(135deg, ${LUXE_COLORS.gold.base}20 0%, ${LUXE_COLORS.gold.base}30 100%)`,
+                        border: `1px solid ${LUXE_COLORS.gold.base}40`
+                      }}
+                    >
+                      <Key className="w-6 h-6" style={{ color: LUXE_COLORS.gold.base }} />
+                    </div>
+                    <div>
+                      <CardTitle style={{ color: LUXE_COLORS.champagne.base }}>API & Integrations</CardTitle>
+                      <CardDescription style={{ color: LUXE_COLORS.text.secondary }}>
+                        Manage third-party integrations and API keys
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
                   <div>
-                    <Label style={{ color: LUXE_COLORS.text.secondary }}>API Key</Label>
+                    <Label className="text-sm font-medium" style={{ color: LUXE_COLORS.text.secondary }}>API Key</Label>
                     <div className="flex gap-2 mt-2">
                       <Input
                         defaultValue="sk_live_****************************"
                         readOnly
-                        className="min-h-[44px]"
+                        className="min-h-[48px]"
                         style={{
                           backgroundColor: LUXE_COLORS.charcoal.dark,
-                          border: `1px solid ${LUXE_COLORS.border.light}`,
+                          border: `1px solid ${LUXE_COLORS.border.base}`,
                           color: LUXE_COLORS.champagne.base
                         }}
                       />
-                      <Button
-                        variant="outline"
-                        className="min-w-[44px] min-h-[44px]"
-                        style={{ borderColor: LUXE_COLORS.text.secondary }}
-                      >
-                        <RefreshCw className="h-4 w-4" />
-                      </Button>
+                      <SalonLuxeButton variant="outline" icon={<RefreshCw className="h-5 w-5" />}>
+                        Refresh
+                      </SalonLuxeButton>
                     </div>
                   </div>
 
                   <div className="space-y-4 pt-4">
-                    <h3 className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne.base }}>
+                    <h3 className="text-lg font-semibold" style={{ color: LUXE_COLORS.champagne.base }}>
                       Active Integrations
                     </h3>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {[
                         { name: 'WhatsApp Business API', status: 'Connected', icon: '💬' },
                         { name: 'Payment Gateway', status: 'Connected', icon: '💳' },
@@ -766,20 +788,24 @@ function SettingsPageContent() {
                       ].map(integration => (
                         <div
                           key={integration.name}
-                          className="flex items-center justify-between p-3 rounded transition-all duration-200 hover:scale-102"
-                          style={{ backgroundColor: LUXE_COLORS.charcoal.dark }}
+                          className="flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:scale-[1.01]"
+                          style={{
+                            backgroundColor: LUXE_COLORS.charcoal.dark,
+                            border: `1px solid ${LUXE_COLORS.border.base}`
+                          }}
                         >
                           <div className="flex items-center gap-3">
-                            <span>{integration.icon}</span>
-                            <span style={{ color: LUXE_COLORS.champagne.base }}>{integration.name}</span>
+                            <span className="text-2xl">{integration.icon}</span>
+                            <span className="font-medium" style={{ color: LUXE_COLORS.champagne.base }}>
+                              {integration.name}
+                            </span>
                           </div>
                           <span
-                            className="text-sm"
+                            className="text-sm font-medium"
                             style={{
-                              color:
-                                integration.status === 'Connected'
-                                  ? LUXE_COLORS.emerald.base
-                                  : LUXE_COLORS.text.secondary
+                              color: integration.status === 'Connected'
+                                ? LUXE_COLORS.emerald.base
+                                : LUXE_COLORS.text.secondary
                             }}
                           >
                             {integration.status}
@@ -795,10 +821,22 @@ function SettingsPageContent() {
         </Tabs>
 
         {/* Role and Permissions Info */}
-        <div className="mt-8 text-sm text-center animate-in fade-in duration-300" style={{ color: LUXE_COLORS.text.tertiary }}>
-          Logged in as: {role?.toUpperCase()} • Organization: {organizationId}
-          <br />
-          Access: User Management, System Settings, Security Configuration, API Management
+        <div className="mt-12 p-6 rounded-xl text-center animate-in fade-in duration-300"
+          style={{
+            background: `linear-gradient(135deg, ${LUXE_COLORS.charcoal.dark}80 0%, ${LUXE_COLORS.charcoal.light}60 100%)`,
+            border: `1px solid ${LUXE_COLORS.border.light}40`,
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)'
+          }}
+        >
+          <p className="text-sm" style={{ color: LUXE_COLORS.text.tertiary }}>
+            Logged in as: <span style={{ color: LUXE_COLORS.gold.base, fontWeight: 600 }}>{role?.toUpperCase()}</span>
+            {' • '}
+            Organization: <span style={{ color: LUXE_COLORS.champagne.base, fontWeight: 500 }}>{organizationName}</span>
+          </p>
+          <p className="text-xs mt-2" style={{ color: LUXE_COLORS.text.tertiary }}>
+            Access: User Management, System Settings, Security Configuration, API Management
+          </p>
         </div>
 
         {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}

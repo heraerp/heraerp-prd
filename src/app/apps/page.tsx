@@ -40,7 +40,6 @@ import {
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import Link from 'next/link'
 import Navbar from '@/app/components/Navbar'
-import Footer from '@/app/components/Footer'
 import { AppPurchaseModal } from '@/components/apps/AppPurchaseModal'
 import { AppManageModal } from '@/components/apps/AppManageModal'
 
@@ -400,9 +399,6 @@ function AppsPageContent() {
             <p className="text-slate-300">Loading your apps...</p>
           </div>
         </div>
-        <div className="relative z-10">
-          <Footer showGradient={false} />
-        </div>
       </div>
     )
   }
@@ -431,9 +427,6 @@ function AppsPageContent() {
             </div>
           </CardContent>
         </Card>
-        <div className="relative z-10">
-          <Footer showGradient={false} />
-        </div>
       </div>
     )
   }
@@ -734,11 +727,6 @@ function AppsPageContent() {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <div className="relative z-10">
-        <Footer showGradient={false} />
-      </div>
 
       {/* Purchase Modal */}
       {selectedAppForPurchase && (
