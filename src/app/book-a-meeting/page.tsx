@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Calendar, Check, Phone, Clock, Star, Zap, ArrowRight, Sparkles, Shield } from 'lucide-react'
+import { Calendar, Check, Phone, Clock, Star, Zap, ChevronRight, Shield } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Book a Demo | HERA ERP',
@@ -136,17 +136,19 @@ export default function BookMeetingPage() {
                   </div>
                 </div>
 
-                {/* CTA Button - HERA Style with Golden Outline */}
-                <a
-                  href="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-6 py-3 bg-transparent border-2 border-amber-500/50 hover:border-amber-400 hover:bg-amber-500/10 text-amber-400 hover:text-amber-300 font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/20 active:scale-[0.98]"
-                >
-                  <Calendar className="w-4 h-4" />
-                  Book Your Demo
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-                </a>
+                {/* CTA Button - HERA Theme */}
+                <div className="flex justify-center">
+                  <a
+                    href="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-base rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-purple-500/20 border border-indigo-500/20 active:scale-[0.98]"
+                  >
+                    <Calendar className="w-5 h-5" />
+                    Book Your Demo
+                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                  </a>
+                </div>
 
                 {/* Trust Indicators */}
                 <div className="mt-6 pt-6 border-t border-slate-700">
