@@ -620,7 +620,7 @@ export const UNIVERSAL_CONFIG = {
         { id: 'date', name: 'transaction_date', label: 'Date', type: 'date', required: true }
       ],
       statuses: ['draft', 'processing', 'completed', 'cancelled'],
-      workspaces: ['main', 'mobile']
+      workspaces: ['main', 'mobile', 'pos']
     },
     {
       id: 'purchases',

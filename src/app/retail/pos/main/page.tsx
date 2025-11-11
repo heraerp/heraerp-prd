@@ -284,10 +284,83 @@ export default function SAWorkspacePage() {
     // Add enterprise notification
     addNotification(`Opening ${card.label}`, 'info')
     
-    // For now, show details about the card - in production would route to dynamic views
-    setTimeout(() => {
-      alert(`${card.label}\\n\\nTarget: ${card.target_type}\\nTemplate: ${card.template_code}\\nView Slug: ${card.view_slug}\\nMetrics: ${card.metrics?.label || 'None'}\\n\\nStatus: ${card.status || 'Unknown'}\\nPriority: ${card.priority || 'Normal'}\\nLast Updated: ${card.lastUpdated || 'Unknown'}`)
-    }, 500)
+    // Route to appropriate dynamic page based on target_type
+    let targetRoute = ''
+    
+    switch (card.target_type) {
+      case 'entity':
+      case 'entities':
+        // Route to dynamic entity list page
+        // Extract entity type from view_slug or entity_type field
+        const entityType = card.entity_type || card.view_slug
+        targetRoute = `/${domain}/${section}/${workspace}/entities/${entityType}`
+        break
+        
+      case 'transaction':
+      case 'transactions':
+      case 'create':
+        // Route to dynamic transaction page
+        // Extract transaction type from view_slug - handle "/retail/pos/main/transactions/sales/create" format
+        let transactionType = 'sales'
+        if (card.view_slug.includes('/transactions/')) {
+          const parts = card.view_slug.split('/transactions/')[1]?.split('/')
+          transactionType = parts?.[0] || 'sales'
+        } else if (card.view_slug.includes('transaction')) {
+          transactionType = card.view_slug.replace('-transaction', '')
+        } else {
+          transactionType = card.view_slug.split('/').pop()?.replace('/create', '') || 'sales'
+        }
+        targetRoute = `/${domain}/${section}/${workspace}/transactions/${transactionType}`
+        break
+        
+      case 'workflow':
+      case 'workflows':
+        // Route to dynamic workflow page (future implementation)
+        targetRoute = `/${domain}/${section}/${workspace}/workflows/${card.view_slug}`
+        break
+        
+      case 'relationship':
+      case 'relationships':
+        // Route to dynamic relationship page (future implementation)
+        targetRoute = `/${domain}/${section}/${workspace}/relationships/${card.view_slug}`
+        break
+        
+      case 'analytics':
+        // Route to dynamic analytics page (future implementation)
+        targetRoute = `/${domain}/${section}/${workspace}/analytics/${card.view_slug}`
+        break
+        
+      case 'report':
+      case 'reports':
+        // Route to dynamic report page
+        targetRoute = `/${domain}/${section}/${workspace}/reports/${card.view_slug}`
+        break
+        
+      default:
+        // Legacy routing for custom views or fallback to view_slug
+        if (card.view_slug.includes('entities') || card.view_slug.includes('entity')) {
+          const entityType = card.view_slug.replace(/entities?[-_]?/, '') || 'items'
+          targetRoute = `/${domain}/${section}/${workspace}/entities/${entityType}`
+        } else if (card.view_slug.includes('transaction') || card.view_slug.includes('txn') || card.view_slug.includes('sales') || card.view_slug.includes('create')) {
+          let transactionType = 'sales'
+          if (card.view_slug.includes('/transactions/')) {
+            const parts = card.view_slug.split('/transactions/')[1]?.split('/')
+            transactionType = parts?.[0] || 'sales'
+          } else {
+            transactionType = card.view_slug.replace(/transactions?[-_]?/, '').split('/').filter(p => p && p !== 'create')[0] || 'sales'
+          }
+          targetRoute = `/${domain}/${section}/${workspace}/transactions/${transactionType}`
+        } else {
+          // For now, show details about the card for unimplemented types
+          alert(`${card.label}\\n\\nTarget: ${card.target_type}\\nTemplate: ${card.template_code}\\nView Slug: ${card.view_slug}\\nMetrics: ${card.metrics?.label || 'None'}\\n\\nStatus: ${card.status || 'Unknown'}\\nPriority: ${card.priority || 'Normal'}\\nLast Updated: ${card.lastUpdated || 'Unknown'}\\n\\nNote: This card type will be routed to dynamic pages when implemented.`)
+          return
+        }
+    }
+    
+    if (targetRoute) {
+      console.log(`🎯 Routing to dynamic page: ${targetRoute}`)
+      navigate(targetRoute)
+    }
   }
 
   const toggleFavorite = (cardSlug: string, e: React.MouseEvent) => {
@@ -869,9 +942,49 @@ export default function SAWorkspacePage() {
                       onContextMenu={(e) => handleContextMenu(e, card.view_slug)}
                       onMouseEnter={() => {
                         setHoveredCard(card.view_slug)
-                        // Prefetch card route for instant navigation
-                        const cardRoute = `/apps/${domain}/${section}/${workspace}/${card.view_slug}`
-                        prefetchOnHover(cardRoute)
+                        // Prefetch dynamic route for instant navigation
+                        let prefetchRoute = ''
+                        
+                        switch (card.target_type) {
+                          case 'entity':
+                          case 'entities':
+                            const entityType = card.entity_type || card.view_slug
+                            prefetchRoute = `/${domain}/${section}/${workspace}/entities/${entityType}`
+                            break
+                          case 'transaction':
+                          case 'transactions':
+                          case 'create':
+                            let transactionType = 'sales'
+                            if (card.view_slug.includes('/transactions/')) {
+                              const parts = card.view_slug.split('/transactions/')[1]?.split('/')
+                              transactionType = parts?.[0] || 'sales'
+                            } else if (card.view_slug.includes('transaction')) {
+                              transactionType = card.view_slug.replace('-transaction', '')
+                            } else {
+                              transactionType = card.view_slug.split('/').pop()?.replace('/create', '') || 'sales'
+                            }
+                            prefetchRoute = `/${domain}/${section}/${workspace}/transactions/${transactionType}`
+                            break
+                          default:
+                            // Legacy fallback
+                            if (card.view_slug.includes('entities') || card.view_slug.includes('entity')) {
+                              const entityType = card.view_slug.replace(/entities?[-_]?/, '') || 'items'
+                              prefetchRoute = `/${domain}/${section}/${workspace}/entities/${entityType}`
+                            } else if (card.view_slug.includes('transaction') || card.view_slug.includes('txn') || card.view_slug.includes('sales') || card.view_slug.includes('create')) {
+                              let transactionType = 'sales'
+                              if (card.view_slug.includes('/transactions/')) {
+                                const parts = card.view_slug.split('/transactions/')[1]?.split('/')
+                                transactionType = parts?.[0] || 'sales'
+                              } else {
+                                transactionType = card.view_slug.replace(/transactions?[-_]?/, '').split('/').filter(p => p && p !== 'create')[0] || 'sales'
+                              }
+                              prefetchRoute = `/${domain}/${section}/${workspace}/transactions/${transactionType}`
+                            }
+                        }
+                        
+                        if (prefetchRoute) {
+                          prefetchOnHover(prefetchRoute)
+                        }
                       }}
                       onMouseLeave={() => setHoveredCard(null)}
                     >
