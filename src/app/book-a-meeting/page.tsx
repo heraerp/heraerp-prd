@@ -99,16 +99,32 @@ export default function BookMeetingPage() {
           <div className="card-glass rounded-2xl p-8">
             <h2 className="mb-4 text-xl font-semibold ink">Choose a Time That Works for You</h2>
 
-            {/* Microsoft Bookings Embed */}
-            <div className="rounded-lg overflow-hidden bg-white" style={{ minHeight: '600px' }}>
-              <iframe
-                src="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
-                width="100%"
-                height="600"
-                style={{ border: 0 }}
-                allowFullScreen
-                title="Book a meeting with HERA ERP"
-              />
+            {/* Microsoft Bookings Link */}
+            <div className="rounded-lg bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-blue-800/30 p-8 text-center">
+              <div className="mx-auto mb-6 h-16 w-16 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl">
+                <Calendar className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold ink mb-3">Schedule Your Demo</h3>
+              <p className="text-sm ink-muted mb-6 max-w-md mx-auto">
+                Click below to view available time slots and book a meeting that works for you. You'll be redirected to our Microsoft Bookings page.
+              </p>
+
+              {/* Primary Booking Button */}
+              <a
+                href="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              >
+                <Calendar className="w-5 h-5" />
+                View Available Times & Book Now
+                <ArrowRight className="w-5 h-5" />
+              </a>
+
+              <p className="text-xs ink-muted mt-4">
+                <Clock className="w-3 h-3 inline mr-1" />
+                Most appointments within 24-48 hours
+              </p>
             </div>
 
             <div className="mt-6 text-center">
