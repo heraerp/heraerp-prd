@@ -83,7 +83,7 @@ interface AIMessage {
   features?: string[]
 }
 
-// HERA Retail Modules - 9 tiles in 3x3 grid layout
+// HERA Retail Modules - Dynamic universal routing (NO hardcoding)
 const retailModules = [
   {
     id: 'retail_operations',
@@ -92,7 +92,8 @@ const retailModules = [
     icon: Store,
     bgColor: 'bg-indigo-600',
     textColor: 'text-white',
-    route: '/apps/retail',
+    domain: 'retail',
+    section: 'pos',
     roles: ['Store Mgr', 'Cashier']
   },
   {
@@ -102,7 +103,8 @@ const retailModules = [
     icon: Truck,
     bgColor: 'bg-slate-600',
     textColor: 'text-white',
-    route: '/apps/wholesale',
+    domain: 'wholesale',
+    section: 'ordering',
     roles: ['Distributor Mgr']
   },
   {
@@ -112,7 +114,8 @@ const retailModules = [
     icon: Tag,
     bgColor: 'bg-amber-600',
     textColor: 'text-white',
-    route: '/apps/merchandising',
+    domain: 'retail',
+    section: 'merchandising',
     roles: ['Merchandiser']
   },
   {
@@ -122,7 +125,8 @@ const retailModules = [
     icon: Warehouse,
     bgColor: 'bg-teal-600',
     textColor: 'text-white',
-    route: '/apps/inventory',
+    domain: 'retail',
+    section: 'inventory',
     roles: ['Store Mgr', 'Warehouse Lead']
   },
   {
@@ -132,7 +136,8 @@ const retailModules = [
     icon: Calendar,
     bgColor: 'bg-cyan-600',
     textColor: 'text-white',
-    route: '/apps/planning',
+    domain: 'retail',
+    section: 'planning',
     roles: ['Planner']
   },
   {
@@ -142,7 +147,8 @@ const retailModules = [
     icon: Calculator,
     bgColor: 'bg-red-800',
     textColor: 'text-white',
-    route: '/apps/finance',
+    domain: 'finance',
+    section: 'accounting',
     roles: ['Accountant', 'CFO']
   },
   {
@@ -152,7 +158,8 @@ const retailModules = [
     icon: Users,
     bgColor: 'bg-pink-600',
     textColor: 'text-white',
-    route: '/apps/crm',
+    domain: 'crm',
+    section: 'contacts',
     roles: ['CRM Lead']
   },
   {
@@ -162,7 +169,8 @@ const retailModules = [
     icon: BarChart3,
     bgColor: 'bg-purple-600',
     textColor: 'text-white',
-    route: '/apps/analytics',
+    domain: 'retail',
+    section: 'analytics',
     roles: ['Executives']
   },
   {
@@ -172,7 +180,8 @@ const retailModules = [
     icon: Settings,
     bgColor: 'bg-gray-600',
     textColor: 'text-white',
-    route: '/apps/admin',
+    domain: 'retail',
+    section: 'admin',
     roles: ['System Admin']
   }
 ]
@@ -366,11 +375,6 @@ export default function RetailDashboard() {
     }
   }
 
-  const handleDomainClick = (domain: typeof domains[0]) => {
-    // For now, show coming soon alert
-    alert(`${domain.title} module coming soon!`)
-    // router.push(domain.route)
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -451,12 +455,13 @@ export default function RetailDashboard() {
                       key={module.id}
                       className={`${module.bgColor} ${module.textColor} rounded-lg cursor-pointer hover:opacity-90 transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md`}
                       onClick={() => {
-                        // Extract domain slug from route
-                        const domainSlug = module.route.split('/').pop()
-                        if (domainSlug) {
-                          router.push(`/apps/${domainSlug}`)
+                        // Dynamic universal routing - NO hardcoding, NO /apps prefix
+                        if (module.domain && module.section) {
+                          // Generate dynamic route: /{domain}/{section}
+                          const route = `/${module.domain}/${module.section}`
+                          router.push(route)
                         } else {
-                          alert(`${module.title} module coming soon!\nRoute: ${module.route}\nRoles: ${module.roles.join(', ')}`)
+                          alert(`${module.title} module configuration needed!\nDomain: ${module.domain}\nSection: ${module.section}\nRoles: ${module.roles.join(', ')}`)
                         }
                       }}
                     >

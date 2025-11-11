@@ -62,19 +62,19 @@ const ProductFilterPanel = ({ onFilterChange }: { onFilterChange: (filters: any)
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-bold text-champagne mb-4 flex items-center gap-2">
-          <Filter className="w-5 h-5 text-gold" />
+        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <Filter className="w-5 h-5 text-blue-600" />
           Filters
         </h3>
       </div>
 
       {/* Category Filter */}
       <div>
-        <label className="block text-sm font-medium text-champagne mb-2">Category</label>
+        <label className="block text-sm font-medium text-slate-900 mb-2">Category</label>
         <select
           value={filters.category}
           onChange={(e) => handleFilterChange('category', e.target.value)}
-          className="w-full min-h-[44px] bg-charcoal/50 border border-gold/20 rounded-xl px-3 text-champagne focus:border-gold/50 focus:outline-none"
+          className="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
         >
           {categories.map((category) => (
             <option key={category} value={category === 'All Categories' ? '' : category.toLowerCase()}>
@@ -86,11 +86,11 @@ const ProductFilterPanel = ({ onFilterChange }: { onFilterChange: (filters: any)
 
       {/* Price Range Filter */}
       <div>
-        <label className="block text-sm font-medium text-champagne mb-2">Price Range</label>
+        <label className="block text-sm font-medium text-slate-900 mb-2">Price Range</label>
         <select
           value={filters.priceRange}
           onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-          className="w-full min-h-[44px] bg-charcoal/50 border border-gold/20 rounded-xl px-3 text-champagne focus:border-gold/50 focus:outline-none"
+          className="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
         >
           {priceRanges.map((range) => (
             <option key={range} value={range === 'All Prices' ? '' : range}>
@@ -107,19 +107,19 @@ const ProductFilterPanel = ({ onFilterChange }: { onFilterChange: (filters: any)
             type="checkbox"
             checked={filters.inStock}
             onChange={(e) => handleFilterChange('inStock', e.target.checked)}
-            className="w-4 h-4 bg-charcoal border border-gold/20 rounded text-gold focus:ring-gold/20"
+            className="w-4 h-4 bg-white border border-slate-300 rounded text-blue-600 focus:ring-blue-200"
           />
-          <span className="text-champagne">In Stock Only</span>
+          <span className="text-slate-900">In Stock Only</span>
         </label>
       </div>
 
       {/* Status Filter */}
       <div>
-        <label className="block text-sm font-medium text-champagne mb-2">Status</label>
+        <label className="block text-sm font-medium text-slate-900 mb-2">Status</label>
         <select
           value={filters.status}
           onChange={(e) => handleFilterChange('status', e.target.value)}
-          className="w-full min-h-[44px] bg-charcoal/50 border border-gold/20 rounded-xl px-3 text-champagne focus:border-gold/50 focus:outline-none"
+          className="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
         >
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
@@ -129,14 +129,14 @@ const ProductFilterPanel = ({ onFilterChange }: { onFilterChange: (filters: any)
       </div>
 
       {/* Quick Actions */}
-      <div className="pt-4 border-t border-gold/20">
-        <h4 className="text-sm font-medium text-champagne mb-3">Quick Actions</h4>
+      <div className="pt-4 border-t border-slate-200">
+        <h4 className="text-sm font-medium text-slate-900 mb-3">Quick Actions</h4>
         <div className="space-y-2">
-          <button className="w-full min-h-[44px] bg-blue-500/20 border border-blue-500/30 rounded-xl flex items-center gap-2 px-3 text-blue-300 hover:bg-blue-500/30 active:scale-95 transition-all">
+          <button className="w-full min-h-[44px] bg-blue-50 border border-blue-200 rounded-xl flex items-center gap-2 px-3 text-blue-700 hover:bg-blue-100 active:scale-95 transition-all">
             <Upload className="w-4 h-4" />
             Import Products
           </button>
-          <button className="w-full min-h-[44px] bg-green-500/20 border border-green-500/30 rounded-xl flex items-center gap-2 px-3 text-green-300 hover:bg-green-500/30 active:scale-95 transition-all">
+          <button className="w-full min-h-[44px] bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 px-3 text-green-700 hover:bg-green-100 active:scale-95 transition-all">
             <Download className="w-4 h-4" />
             Export Products
           </button>
@@ -222,25 +222,25 @@ const ProductListContent = ({ view, searchTerm, filters }: { view: string, searc
     return (
       <div className="space-y-3">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="bg-gradient-to-r from-charcoal/90 to-black/95 backdrop-blur-lg border border-gold/20 rounded-xl p-4 hover:border-gold/40 transition-all">
+          <div key={product.id} className="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-lg transition-all">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4 flex-1">
                 {/* Product Image/Icon */}
-                <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Package className="w-6 h-6 text-gold" />
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Package className="w-6 h-6 text-blue-600" />
                 </div>
 
                 {/* Product Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-champagne truncate">{product.name}</h3>
-                  <div className="flex items-center gap-4 text-sm text-bronze">
+                  <h3 className="font-medium text-slate-900 truncate">{product.name}</h3>
+                  <div className="flex items-center gap-4 text-sm text-slate-600">
                     <span>SKU: {product.sku}</span>
                     <span className="flex items-center gap-1">
                       <DollarSign className="w-3 h-3" />
                       {product.price}
                     </span>
                     <span className={`px-2 py-1 rounded-lg text-xs ${
-                      product.stock > 0 ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
+                      product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                     }`}>
                       {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
                     </span>
@@ -252,19 +252,19 @@ const ProductListContent = ({ view, searchTerm, filters }: { view: string, searc
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button 
                   onClick={() => handleProductAction('view', product.id)}
-                  className="w-10 h-10 bg-blue-500/20 border border-blue-500/30 rounded-lg flex items-center justify-center text-blue-300 hover:bg-blue-500/30 active:scale-95 transition-all"
+                  className="w-10 h-10 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-100 active:scale-95 transition-all"
                 >
                   <Eye className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={() => handleProductAction('edit', product.id)}
-                  className="w-10 h-10 bg-gold/20 border border-gold/30 rounded-lg flex items-center justify-center text-gold hover:bg-gold/30 active:scale-95 transition-all"
+                  className="w-10 h-10 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-center text-amber-600 hover:bg-amber-100 active:scale-95 transition-all"
                 >
                   <Edit className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={() => handleProductAction('delete', product.id)}
-                  className="w-10 h-10 bg-red-500/20 border border-red-500/30 rounded-lg flex items-center justify-center text-red-300 hover:bg-red-500/30 active:scale-95 transition-all"
+                  className="w-10 h-10 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center text-red-600 hover:bg-red-100 active:scale-95 transition-all"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -280,32 +280,32 @@ const ProductListContent = ({ view, searchTerm, filters }: { view: string, searc
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {filteredProducts.map((product) => (
-        <div key={product.id} className="bg-gradient-to-br from-charcoal/90 to-black/95 backdrop-blur-lg border border-gold/20 rounded-xl p-4 hover:border-gold/40 transition-all group">
+        <div key={product.id} className="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-lg transition-all group">
           {/* Product Image */}
-          <div className="aspect-square bg-gold/10 rounded-lg mb-4 flex items-center justify-center">
-            <Package className="w-12 h-12 text-gold" />
+          <div className="aspect-square bg-blue-50 rounded-lg mb-4 flex items-center justify-center">
+            <Package className="w-12 h-12 text-blue-600" />
           </div>
 
           {/* Product Info */}
           <div className="space-y-2">
-            <h3 className="font-medium text-champagne line-clamp-2 group-hover:text-gold transition-colors">
+            <h3 className="font-medium text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
               {product.name}
             </h3>
             
-            <div className="flex items-center gap-2 text-sm text-bronze">
+            <div className="flex items-center gap-2 text-sm text-slate-600">
               <Tag className="w-3 h-3" />
               <span>{product.sku}</span>
             </div>
 
-            <div className="flex items-center gap-2 text-sm text-bronze">
+            <div className="flex items-center gap-2 text-sm text-slate-600">
               <Barcode className="w-3 h-3" />
               <span className="font-mono">{product.barcode}</span>
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-lg font-bold text-gold">${product.price}</span>
+              <span className="text-lg font-bold text-blue-600">${product.price}</span>
               <span className={`px-2 py-1 rounded-lg text-xs ${
-                product.stock > 0 ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
+                product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
               }`}>
                 {product.stock > 0 ? `${product.stock}` : 'Out'}
               </span>
@@ -316,13 +316,13 @@ const ProductListContent = ({ view, searchTerm, filters }: { view: string, searc
           <div className="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
             <button 
               onClick={() => handleProductAction('view', product.id)}
-              className="flex-1 min-h-[36px] bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300 hover:bg-blue-500/30 active:scale-95 transition-all flex items-center justify-center"
+              className="flex-1 min-h-[36px] bg-blue-50 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-100 active:scale-95 transition-all flex items-center justify-center"
             >
               <Eye className="w-4 h-4" />
             </button>
             <button 
               onClick={() => handleProductAction('edit', product.id)}
-              className="flex-1 min-h-[36px] bg-gold/20 border border-gold/30 rounded-lg text-gold hover:bg-gold/30 active:scale-95 transition-all flex items-center justify-center"
+              className="flex-1 min-h-[36px] bg-amber-50 border border-amber-200 rounded-lg text-amber-600 hover:bg-amber-100 active:scale-95 transition-all flex items-center justify-center"
             >
               <Edit className="w-4 h-4" />
             </button>
@@ -344,10 +344,10 @@ export default function POSProductsPage() {
   // Authentication guards
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-champagne mb-2">Authentication Required</h1>
-          <p className="text-bronze">Please log in to access product management</p>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Authentication Required</h1>
+          <p className="text-slate-600">Please log in to access product management</p>
         </div>
       </div>
     )
@@ -355,10 +355,10 @@ export default function POSProductsPage() {
 
   if (!organization) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-champagne mb-2">Organization Required</h1>
-          <p className="text-bronze">Please select an organization to continue</p>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Organization Required</h1>
+          <p className="text-slate-600">Please select an organization to continue</p>
         </div>
       </div>
     )

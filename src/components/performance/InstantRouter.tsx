@@ -44,14 +44,14 @@ export function InstantRouterProvider({ children }: InstantRouterProviderProps) 
 
   // Routes that support instant navigation
   const instantRoutes = new Set([
-    '/apps/retail/pos',
-    '/apps/retail/inventory',
-    '/apps/retail/customers',
-    '/apps/retail/reports',
-    '/apps/wholesale',
-    '/apps/finance',
-    '/apps/crm',
-    '/apps/analytics'
+    '/retail/pos',
+    '/retail/inventory',
+    '/retail/customers',
+    '/retail/reports',
+    '/wholesale',
+    '/finance',
+    '/crm',
+    '/analytics'
   ])
 
   /**

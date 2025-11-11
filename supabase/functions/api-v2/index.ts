@@ -8,6 +8,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getRedisClient } from './redis-client.ts';
 import { getRateLimiter } from './rate-limiter.ts';
 import { getIdempotencyHandler } from './idempotency.ts';
+import { HERAEnhancedLogger, createHERALogger, withHERALogging } from './enhanced-logger.ts';
+import { heraMetrics, apiMetrics, getMetricsHealthCheck } from './otel-metrics.ts';
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -43,17 +45,27 @@ function requestId() {
 async function resolveActorAndOrg(
   supabaseAdmin: ReturnType<typeof createClient>,
   req: Request,
+  logger: HERAEnhancedLogger,
 ) {
   const rid = requestId();
   const redis = getRedisClient();
+  
+  logger.actorTrace('actor_resolution_started');
+  const resolutionStartTime = Date.now();
 
   // 1) JWT validation (Supabase)
   const token = getBearer(req);
-  if (!token) return { error: json(401, { error: "invalid_token", rid }) };
+  if (!token) {
+    heraMetrics.recordAuthFailure('missing_token');
+    return { error: json(401, { error: "invalid_token", rid }) };
+  }
 
   // Use supabase-js with service role to verify + access
   const { data: user, error: authErr } = await supabaseAdmin.auth.getUser(token);
-  if (authErr || !user?.user) return { error: json(401, { error: "invalid_token", rid }) };
+  if (authErr || !user?.user) {
+    heraMetrics.recordAuthFailure('invalid_jwt');
+    return { error: json(401, { error: "invalid_token", rid }) };
+  }
 
   // 2) Resolve identity with Redis caching
   let identity: any = null;
@@ -63,31 +75,54 @@ async function resolveActorAndOrg(
     try {
       identity = await redis.getActorIdentity(user.user.id);
       if (identity) {
-        console.log(`⚡ Actor identity cache hit for ${user.user.id.slice(0, 8)}`);
+        logger.cacheEvent('hit', `actor_identity:${user.user.id.slice(0, 8)}`);
+        logger.actorTrace('identity_cache_hit', identity.user_entity_id);
+        heraMetrics.recordCacheEvent('hit', `actor_identity:${user.user.id.slice(0, 8)}`);
       }
     } catch (error) {
-      console.warn('⚠️ Redis cache lookup failed:', error.message);
+      logger.cacheEvent('miss', `actor_identity:${user.user.id.slice(0, 8)}`);
+      logger.warn('Redis cache lookup failed', { error: error.message });
+      heraMetrics.recordCacheEvent('miss', `actor_identity:${user.user.id.slice(0, 8)}`);
     }
   }
 
   // Cache miss - resolve from database
   if (!identity) {
-    console.log(`🔍 Resolving actor identity from database for ${user.user.id.slice(0, 8)}`);
+    logger.actorTrace('identity_database_lookup', undefined, { authUid: user.user.id.slice(0, 8) });
+    const startTime = Date.now();
+    
     const { data: dbIdentity, error: idErr } = await supabaseAdmin
       .rpc("resolve_user_identity_v1", { p_auth_uid: user.user.id });
     
+    const duration = Date.now() - startTime;
+    logger.performance({
+      operation: 'resolve_user_identity_v1',
+      duration,
+      requestId: rid,
+      status: idErr ? 'error' : 'success'
+    });
+    
+    heraMetrics.recordDbQuery('resolve_user_identity_v1', duration, !idErr);
+    
     if (idErr || !dbIdentity?.user_entity_id) {
+      logger.error('Actor identity resolution failed', idErr as Error, { 
+        authUid: user.user.id.slice(0, 8) 
+      });
+      heraMetrics.recordAuthFailure('identity_not_resolved');
       return { error: json(401, { error: "identity_not_resolved", rid }) };
     }
     
     identity = dbIdentity;
+    logger.actorTrace('identity_resolved', identity.user_entity_id);
     
     // Cache the result for future requests
     if (redis) {
       try {
         await redis.cacheActorIdentity(user.user.id, identity, { ttl: 300, prefix: 'actor_identity' });
+        logger.cacheEvent('set', `actor_identity:${user.user.id.slice(0, 8)}`, 300);
+        heraMetrics.recordCacheEvent('set', `actor_identity:${user.user.id.slice(0, 8)}`);
       } catch (error) {
-        console.warn('⚠️ Failed to cache actor identity:', error.message);
+        logger.warn('Failed to cache actor identity', { error: error.message });
       }
     }
   }
@@ -104,8 +139,33 @@ async function resolveActorAndOrg(
   const isMember = identity.memberships?.some((m: any) =>
     m.organization_id === orgId && (m.is_active ?? true)
   );
-  if (!isMember) return { error: json(403, { error: "actor_not_member", rid }) };
+  
+  logger.actorTrace('membership_validation', identity.user_entity_id, {
+    orgId,
+    isMember,
+    memberships: identity.memberships?.length || 0
+  });
+  
+  if (!isMember) {
+    logger.audit({
+      eventType: 'security_violation',
+      actorId: identity.user_entity_id,
+      organizationId: orgId,
+      metadata: {
+        violationType: 'membership_denied',
+        availableMemberships: identity.memberships?.map((m: any) => m.organization_id) || []
+      },
+      severity: 'warn'
+    });
+    heraMetrics.recordSecurityViolation('membership_denied', 'warn', identity.user_entity_id);
+    return { error: json(403, { error: "actor_not_member", rid }) };
+  }
 
+  const resolutionDuration = Date.now() - resolutionStartTime;
+  heraMetrics.recordActorResolution(resolutionDuration, !!identity.cache_hit, identity.user_entity_id);
+  
+  logger.actorTrace('actor_resolution_complete', identity.user_entity_id, { orgId });
+  
   return {
     ok: {
       rid,
@@ -117,7 +177,21 @@ async function resolveActorAndOrg(
 }
 
 // ---------- Guardrails (v2.0 minimal runtime for Phase 1) ----------
-function validateSmartCodePresenceAndPattern(smartCode?: string) {
+function validateSmartCodePresenceAndPattern(smartCode?: string, logger?: HERAEnhancedLogger) {
+  const isValid = !!(smartCode && SMARTCODE_REGEX.test(smartCode));
+  
+  if (logger) {
+    logger.smartCodeValidation(
+      smartCode || 'undefined', 
+      isValid, 
+      SMARTCODE_REGEX.toString()
+    );
+  }
+  
+  if (smartCode) {
+    heraMetrics.recordSmartCodeValidation(smartCode, isValid);
+  }
+  
   if (!smartCode) return { ok: false, reason: "SMARTCODE_MISSING" };
   if (!SMARTCODE_REGEX.test(smartCode)) {
     return { ok: false, reason: "SMARTCODE_REGEX_FAIL" };
@@ -136,17 +210,22 @@ function isGLSmartCode(code: string) {
   return code.includes(".GL.");
 }
 
-function validateGLBalance(lines: Array<any>) {
+function validateGLBalance(lines: Array<any>, logger?: HERAEnhancedLogger, transactionId?: string) {
   // Per-currency balance rule is enforced at DB, but we preflight here too.
   const totals = new Map<string, { dr: number; cr: number }>();
+  const glEntries: any[] = [];
+  
   for (const line of lines ?? []) {
     const sc = line.smart_code as string;
     if (!sc || !isGLSmartCode(sc)) continue;
+    
     const side = line?.line_data?.side;
     const amt = Number(line?.line_amount ?? 0);
     const currency = (line?.transaction_currency_code ||
       line?.currency ||
       "DOC") as string;
+
+    glEntries.push({ smartCode: sc, side, amount: amt, currency });
 
     if (!["DR", "CR"].includes(side)) {
       return { ok: false, reason: "GL_SIDE_REQUIRED" };
@@ -158,31 +237,87 @@ function validateGLBalance(lines: Array<any>) {
     else t.cr += amt;
     totals.set(currency, t);
   }
-  for (const [, t] of totals) {
+  
+  // Check balance per currency
+  let isBalanced = true;
+  for (const [currency, t] of totals) {
     const diff = Math.abs((t.dr ?? 0) - (t.cr ?? 0));
-    if (diff > 0.01) return { ok: false, reason: "GL_NOT_BALANCED" };
+    if (diff > 0.01) {
+      isBalanced = false;
+      
+      // Log GL audit trail for unbalanced entries
+      if (logger && transactionId) {
+        logger.glAudit(transactionId, {
+          currency,
+          debitTotal: t.dr,
+          creditTotal: t.cr,
+          isBalanced: false,
+          entries: glEntries.filter(e => e.currency === currency)
+        });
+      }
+      
+      heraMetrics.recordGLValidation(currency, false, glEntries.filter(e => e.currency === currency).length);
+      return { ok: false, reason: "GL_NOT_BALANCED" };
+    }
   }
+  
+  // Log successful GL validation
+  if (logger && transactionId && isBalanced && glEntries.length > 0) {
+    for (const [currency, t] of totals) {
+      logger.glAudit(transactionId, {
+        currency,
+        debitTotal: t.dr,
+        creditTotal: t.cr,
+        isBalanced: true,
+        entries: glEntries.filter(e => e.currency === currency)
+      });
+      
+      heraMetrics.recordGLValidation(currency, true, glEntries.filter(e => e.currency === currency).length);
+    }
+  }
+  
   return { ok: true };
 }
 
 function validatePayloadAgainstGuardrails(
   ctx: GuardrailCtx,
   body: any,
+  logger?: HERAEnhancedLogger,
+  transactionId?: string,
 ) {
   // Header-style payloads (universal_transactions) or entity payloads
   // Smart Code rule applies broadly across entities/UT/UTL.
   if (body?.smart_code) {
-    const sc = validateSmartCodePresenceAndPattern(body.smart_code);
+    const sc = validateSmartCodePresenceAndPattern(body.smart_code, logger);
     if (!sc.ok) return sc;
   }
+  
   // Org filter
   const org = ensureOrgInPayload(body, ctx.orgId);
-  if (!org.ok) return org;
+  if (!org.ok) {
+    if (logger) {
+      logger.audit({
+        eventType: 'security_violation',
+        actorId: ctx.actorUserEntityId,
+        organizationId: ctx.orgId,
+        metadata: {
+          violationType: 'organization_filter_violation',
+          expectedOrg: ctx.orgId,
+          providedOrg: body?.organization_id,
+          reason: org.reason
+        },
+        severity: 'critical'
+      });
+    }
+    return org;
+  }
+  
   // GL balance (if UT lines present)
   if (Array.isArray(body?.lines)) {
-    const gl = validateGLBalance(body.lines);
+    const gl = validateGLBalance(body.lines, logger, transactionId);
     if (!gl.ok) return gl;
   }
+  
   return { ok: true };
 }
 
@@ -306,10 +441,17 @@ async function callMicroAppWorkflow(
 
 // ---------- Router ----------
 async function handle(req: Request) {
-  const url = new URL(req.url);
-  const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-    global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
-  });
+  return withHERALogging(async (logger: HERAEnhancedLogger) => {
+    const url = new URL(req.url);
+    const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
+    });
+
+    logger.info('API v2 request started', {
+      method: req.method,
+      pathname: url.pathname,
+      userAgent: req.headers.get('user-agent')
+    });
 
   // Health check endpoint (no auth required)
   if (url.pathname.endsWith("/api/v2/health")) {
@@ -358,13 +500,25 @@ async function handle(req: Request) {
     });
   }
 
+  // Metrics endpoint (no auth required for monitoring)
+  if (url.pathname.endsWith("/api/v2/metrics")) {
+    const rid = requestId();
+    const metricsHealth = getMetricsHealthCheck();
+    
+    return json(200, {
+      ...metricsHealth,
+      rid,
+      timestamp: new Date().toISOString()
+    });
+  }
+
   const method = req.method.toUpperCase();
   if (!["POST", "GET"].includes(method)) {
     return json(405, { error: "method_not_allowed" });
   }
 
   // Auth / Identity / Org
-  const res = await resolveActorAndOrg(supabaseAdmin, req);
+  const res = await resolveActorAndOrg(supabaseAdmin, req, logger);
   if ("error" in res) return res.error;
   const { ok } = res;
   const rid = ok.rid;
@@ -535,8 +689,13 @@ async function handle(req: Request) {
 
     return json(404, { error: "not_found", rid });
   } catch (e) {
+    logger.error('API v2 request failed', e as Error, { 
+      url: req.url, 
+      method: req.method 
+    });
     return json(500, { error: "internal_error", rid, detail: String(e) });
   }
+  })(req);
 }
 
 serve(handle);

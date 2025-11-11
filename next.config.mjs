@@ -83,12 +83,61 @@ const nextConfig = {
     return { beforeFiles: [], afterFiles: [], fallback: [] }
   },
 
-  // Redirect old enterprise/salon routes to standalone salon
+  // Redirect old routes to new universal structure
   async redirects() {
     return [
+      // Redirect old enterprise/salon routes to standalone salon
       {
         source: '/enterprise/salon/:path*',
         destination: '/salon/:path*',
+        permanent: true
+      },
+      // Redirect old /apps prefix routes to new universal structure
+      {
+        source: '/apps/:domain/:section/:workspace',
+        destination: '/:domain/:section/:workspace',
+        permanent: true
+      },
+      {
+        source: '/apps/:domain/:section/:workspace/:path*',
+        destination: '/:domain/:section/:workspace/:path*',
+        permanent: true
+      },
+      // Specific retail redirects for existing pages
+      {
+        source: '/apps/retail/pos/main',
+        destination: '/retail/pos/main',
+        permanent: true
+      },
+      {
+        source: '/apps/retail/pos/customers',
+        destination: '/retail/pos/main/entities/customers',
+        permanent: true
+      },
+      {
+        source: '/apps/retail/pos/products',
+        destination: '/retail/pos/main/entities/products',
+        permanent: true
+      },
+      {
+        source: '/apps/retail/pos/suppliers',
+        destination: '/retail/pos/main/entities/suppliers',
+        permanent: true
+      },
+      {
+        source: '/apps/retail/inventory/main',
+        destination: '/retail/inventory/main',
+        permanent: true
+      },
+      // Wholesale redirects
+      {
+        source: '/apps/wholesale',
+        destination: '/wholesale',
+        permanent: true
+      },
+      {
+        source: '/apps/wholesale/:path*',
+        destination: '/wholesale/:path*',
         permanent: true
       }
     ]

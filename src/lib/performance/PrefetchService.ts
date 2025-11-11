@@ -25,22 +25,22 @@ class PrefetchService {
   private isProcessing = false
   private prefetchedRoutes = new Set<string>()
 
-  // Critical navigation paths - prefetch immediately
+  // Critical navigation paths - prefetch immediately (universal routing - NO /apps)
   private criticalRoutes = [
     '/api/v2/platform/navigation/retail',
     '/api/v2/platform/workspace/retail/pos/main',
-    '/apps/retail/pos',
-    '/apps/retail/inventory', 
-    '/apps/retail/customers',
-    '/apps/retail/reports'
+    '/retail/pos',
+    '/retail/inventory', 
+    '/retail/customers',
+    '/retail/reports'
   ]
 
-  // Secondary routes - prefetch on hover or interaction
+  // Secondary routes - prefetch on hover or interaction (universal routing - NO /apps)
   private secondaryRoutes = [
-    '/apps/wholesale',
-    '/apps/finance',
-    '/apps/crm',
-    '/apps/analytics'
+    '/wholesale',
+    '/finance',
+    '/crm',
+    '/retail/analytics'
   ]
 
   constructor() {
@@ -51,6 +51,11 @@ class PrefetchService {
    * Initialize aggressive prefetching for enterprise performance
    */
   private async initializePrefetching() {
+    // Skip prefetch initialization during SSR
+    if (typeof window === 'undefined') {
+      return
+    }
+    
     // Prefetch critical routes immediately
     await this.prefetchCriticalRoutes()
     
@@ -85,6 +90,9 @@ class PrefetchService {
    * Setup hover-based prefetching for secondary routes
    */
   private setupHoverPrefetching() {
+    // Check if we're in the browser environment
+    if (typeof document === 'undefined') return
+    
     document.addEventListener('mouseover', (event) => {
       const target = event.target as HTMLElement
       const link = target.closest('a') || target.closest('[data-prefetch]')
@@ -107,6 +115,9 @@ class PrefetchService {
    * Setup idle time prefetching for non-critical routes
    */
   private setupIdlePrefetching() {
+    // Check if we're in the browser environment
+    if (typeof document === 'undefined') return
+    
     let idleTimer: NodeJS.Timeout
 
     const resetIdleTimer = () => {
@@ -204,6 +215,11 @@ class PrefetchService {
    * Fetch route with appropriate strategy
    */
   private async fetchRoute(url: string, config: PrefetchConfig): Promise<any> {
+    // Skip prefetch during SSR
+    if (typeof window === 'undefined') {
+      return null
+    }
+    
     const controller = new AbortController()
     
     // Timeout for low priority requests

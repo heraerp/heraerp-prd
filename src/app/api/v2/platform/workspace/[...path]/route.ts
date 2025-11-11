@@ -13,7 +13,8 @@ export async function GET(
   { params }: { params: { path: string[] } }
 ) {
   try {
-    const [domain, section, workspace] = params.path
+    const resolvedParams = await params
+    const [domain, section, workspace] = resolvedParams.path
 
     console.log('🔍 API: Loading workspace for path:', { domain, section, workspace })
 

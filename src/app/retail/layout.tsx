@@ -1,9 +1,9 @@
 /**
- * HERA Retail & Distribution Layout
+ * HERA Retail Domain Layout
  * Smart Code: HERA.RETAIL.LAYOUT.v1
  * 
- * Root layout for retail and distribution management system
- * Provides retail-specific theming and authentication context
+ * Domain-specific layout for retail applications
+ * Provides authentication context and retail-specific styling
  */
 
 import React from 'react'
@@ -16,20 +16,20 @@ interface RetailLayoutProps {
 export default function RetailLayout({ children }: RetailLayoutProps) {
   return (
     <HERAAuthProvider>
-      <div className="retail-app">
+      <div className="hera-retail">
         {children}
       </div>
     </HERAAuthProvider>
   )
 }
 
-// Retail module metadata
+// Retail domain metadata
 export const metadata = {
-  title: 'HERA Retail & Distribution - Enterprise Retail Management',
-  description: 'Comprehensive retail and distribution management with POS, inventory, analytics, and customer loyalty',
+  title: 'HERA Retail - Point of Sale & Inventory Management',
+  description: 'Comprehensive retail management with POS, inventory tracking, customer management, and supplier integration',
   openGraph: {
-    title: 'HERA Retail & Distribution',
-    description: 'Enterprise-grade retail management solution with multi-channel capabilities',
+    title: 'HERA Retail',
+    description: 'Enterprise-grade retail management system with real-time inventory tracking',
     type: 'website'
   }
 }

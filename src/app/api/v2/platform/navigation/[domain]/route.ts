@@ -13,7 +13,7 @@ export async function GET(
   { params }: { params: { domain: string } }
 ) {
   try {
-    const { domain: domainSlug } = params
+    const { domain: domainSlug } = await params
 
     console.log('🔍 API: Loading domain and sections for:', domainSlug)
 
