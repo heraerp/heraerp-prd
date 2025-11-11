@@ -100,31 +100,54 @@ export default function BookMeetingPage() {
             <h2 className="mb-4 text-xl font-semibold ink">Choose a Time That Works for You</h2>
 
             {/* Microsoft Bookings Link */}
-            <div className="rounded-lg bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-blue-800/30 p-8 text-center">
-              <div className="mx-auto mb-6 h-16 w-16 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl">
-                <Calendar className="h-8 w-8 text-white" />
+            <div className="rounded-2xl bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-blue-800/30 p-10 text-center relative overflow-hidden">
+              {/* Animated background glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 animate-pulse" />
+
+              <div className="relative z-10">
+                <div className="mx-auto mb-6 h-20 w-20 flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 rounded-2xl shadow-2xl transform hover:rotate-6 transition-transform duration-300">
+                  <Calendar className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold ink mb-3 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Schedule Your Demo
+                </h3>
+                <p className="text-base ink-muted mb-8 max-w-md mx-auto leading-relaxed">
+                  Choose from our available time slots and book a personalized demo. We'll reach out to you within 24-48 hours.
+                </p>
+
+                {/* Primary Booking Button with enhanced design */}
+                <div className="relative inline-block group">
+                  {/* Glowing background effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-300 animate-pulse" />
+
+                  <a
+                    href="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white text-lg font-bold rounded-2xl transition-all duration-300 hover:scale-110 active:scale-95 shadow-2xl"
+                  >
+                    <Calendar className="w-6 h-6 animate-bounce" />
+                    View Available Times & Book Now
+                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+                  </a>
+                </div>
+
+                {/* Features badges */}
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <span className="text-xs font-medium text-green-400">Free Consultation</span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full">
+                    <Clock className="w-4 h-4 text-blue-400" />
+                    <span className="text-xs font-medium text-blue-400">30 Minutes</span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/30 rounded-full">
+                    <Sparkles className="w-4 h-4 text-purple-400" />
+                    <span className="text-xs font-medium text-purple-400">No Obligation</span>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold ink mb-3">Schedule Your Demo</h3>
-              <p className="text-sm ink-muted mb-6 max-w-md mx-auto">
-                Click below to view available time slots and book a meeting that works for you. You'll be redirected to our Microsoft Bookings page.
-              </p>
-
-              {/* Primary Booking Button */}
-              <a
-                href="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-              >
-                <Calendar className="w-5 h-5" />
-                View Available Times & Book Now
-                <ArrowRight className="w-5 h-5" />
-              </a>
-
-              <p className="text-xs ink-muted mt-4">
-                <Clock className="w-3 h-3 inline mr-1" />
-                Most appointments within 24-48 hours
-              </p>
             </div>
 
             <div className="mt-6 text-center">
