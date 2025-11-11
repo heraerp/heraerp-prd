@@ -1616,3 +1616,232 @@ export async function updateApp(
     }
   })
 }
+
+// ============================================================================
+// ORGANIZATION-APP LINKING FUNCTIONS (v2.5.0) - Added 2025-11-11
+// ============================================================================
+
+/**
+ * Link/install app to organization with subscription and configuration
+ * @param actorUserId - Actor user entity UUID
+ * @param organizationId - Target organization UUID
+ * @param payload - App linking configuration
+ * @returns Linked app details with relationship ID
+ * @example
+ * const result = await linkAppToOrg(userId, orgId, {
+ *   app_code: 'SALON',
+ *   subscription: { plan: 'enterprise', status: 'active', seats: 10 },
+ *   config: { features_enabled: ['appointments', 'pos'] },
+ *   is_active: true
+ * })
+ */
+export async function linkAppToOrg(
+  actorUserId: string,
+  organizationId: string,
+  payload: {
+    app_code: string          // App code (e.g., "SALON", "CRM")
+    subscription: {
+      plan: string            // Subscription plan ('basic' | 'professional' | 'enterprise')
+      status: string          // Subscription status ('trial' | 'active' | 'expired' | 'cancelled')
+      seats?: number          // Number of user seats
+      billing_cycle?: string  // Billing frequency ('monthly' | 'annual' | 'lifetime')
+      [key: string]: any
+    }
+    config: {
+      features_enabled?: string[]      // Enabled feature flags
+      custom_branding?: boolean        // Custom branding enabled
+      notifications_enabled?: boolean  // Notifications enabled
+      custom_domain?: string           // Custom domain for app
+      [key: string]: any
+    }
+    is_active: boolean        // Active status
+    installed_at?: string     // Installation timestamp (ISO 8601)
+  }
+): Promise<{
+  data: {
+    ts: string
+    app: {
+      id: string
+      code: string
+      name: string
+      smart_code: string
+    }
+    action: string
+    config: any
+    is_active: boolean
+    installed_at: string
+    subscription: any
+    organization_id: string
+    relationship_id: string
+  } | null
+  error: any
+}> {
+  return callRPC('hera_org_link_app_v1', {
+    p_actor_user_id: actorUserId,
+    p_organization_id: organizationId,
+    p_app_code: payload.app_code,
+    p_installed_at: payload.installed_at || new Date().toISOString(),
+    p_subscription: payload.subscription,
+    p_config: payload.config,
+    p_is_active: payload.is_active
+  })
+}
+
+/**
+ * List apps linked to organization with advanced filtering
+ * @param actorUserId - Actor user entity UUID
+ * @param organizationId - Target organization UUID
+ * @param filters - Optional filters and pagination
+ * @returns List of linked apps
+ * @example
+ * // List active apps
+ * const result = await listOrgApps(userId, orgId, { status: 'active', limit: 10 })
+ *
+ * // List all linked apps
+ * const result = await listOrgApps(userId, orgId, {})
+ */
+export async function listOrgApps(
+  actorUserId: string,
+  organizationId: string,
+  filters?: {
+    status?: string       // Filter by app status ('active' | 'inactive')
+    limit?: number        // Max results (default: 50)
+    offset?: number       // Pagination offset (default: 0)
+  }
+): Promise<{
+  data: {
+    items: Array<{
+      code: string
+      name: string
+      config: any
+      is_active: boolean
+      smart_code: string
+      installed_at: string
+      subscription: any
+      app_entity_id: string
+      relationship_id: string
+    }>
+    total: number
+    limit: number
+    offset: number
+    action: string
+  } | null
+  error: any
+}> {
+  return callRPC('hera_org_list_apps_v1', {
+    p_actor_user_id: actorUserId,
+    p_organization_id: organizationId,
+    p_filters: filters || {}
+  })
+}
+
+/**
+ * Simple list of apps linked to organization (no actor validation required)
+ * Faster than listOrgApps but no filtering options
+ * @param organizationId - Target organization UUID
+ * @returns List of linked apps
+ * @example
+ * // System-level app listing (no actor required)
+ * const result = await listOrgAppsSimple(orgId)
+ */
+export async function listOrgAppsSimple(
+  organizationId: string
+): Promise<{
+  data: {
+    data: {
+      items: Array<{
+        app: {
+          id: string
+          code: string
+          name: string
+          smart_code: string
+        }
+        config: any
+        is_active: boolean
+        linked_at: string
+        subscription: any
+        relationship_id: string
+      }>
+      total: number
+    }
+    action: string
+    success: boolean
+  } | null
+  error: any
+}> {
+  return callRPC('hera_org_apps_list_v1', {
+    p_organization_id: organizationId
+  })
+}
+
+/**
+ * Set default app for organization (landing page after login)
+ * ⚠️ Requires actor to have MEMBER_OF relationship with organization
+ * @param actorUserId - Actor user entity UUID (requires membership)
+ * @param organizationId - Target organization UUID
+ * @param appCode - Default app code (e.g., "SALON", "CRM")
+ * @returns Updated organization settings
+ * @example
+ * const result = await setOrgDefaultApp(userId, orgId, 'SALON')
+ */
+export async function setOrgDefaultApp(
+  actorUserId: string,
+  organizationId: string,
+  appCode: string
+): Promise<{
+  data: {
+    app_code: string
+    organization_id: string
+    updated_at: string
+    action: string
+  } | null
+  error: any
+}> {
+  return callRPC('hera_org_set_default_app_v1', {
+    p_actor_user_id: actorUserId,
+    p_organization_id: organizationId,
+    p_app_code: appCode
+  })
+}
+
+/**
+ * Unlink/uninstall app from organization
+ * ⚠️ Requires actor to have MEMBER_OF relationship with organization
+ * @param actorUserId - Actor user entity UUID (requires membership)
+ * @param organizationId - Target organization UUID
+ * @param appCode - App code to unlink
+ * @param options - Unlink options
+ * @returns Unlink confirmation
+ * @example
+ * // Soft delete (recommended - preserves audit trail)
+ * const result = await unlinkAppFromOrg(userId, orgId, 'SALON', { hard_delete: false })
+ *
+ * // Hard delete (permanent removal)
+ * const result = await unlinkAppFromOrg(userId, orgId, 'SALON', { hard_delete: true })
+ */
+export async function unlinkAppFromOrg(
+  actorUserId: string,
+  organizationId: string,
+  appCode: string,
+  options?: {
+    hard_delete?: boolean      // Hard delete vs soft delete (default: false)
+    uninstalled_at?: string    // Uninstallation timestamp (ISO 8601)
+  }
+): Promise<{
+  data: {
+    app_code: string
+    organization_id: string
+    uninstalled_at: string
+    action: string
+    delete_type: string
+  } | null
+  error: any
+}> {
+  return callRPC('hera_org_unlink_app_v1', {
+    p_actor_user_id: actorUserId,
+    p_organization_id: organizationId,
+    p_app_code: appCode,
+    p_uninstalled_at: options?.uninstalled_at || new Date().toISOString(),
+    p_hard_delete: options?.hard_delete || false
+  })
+}
