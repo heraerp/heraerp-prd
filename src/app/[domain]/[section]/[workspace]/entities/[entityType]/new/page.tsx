@@ -188,7 +188,7 @@ export default function UniversalEntityCreatePage({ params }: PageProps) {
   const { user, organization, isAuthenticated, contextLoading } = useHERAAuth()
   
   // Universal Entity Hook for CRUD operations
-  const { createEntity, isLoading } = useUniversalEntityV1({
+  const { create, isLoading } = useUniversalEntityV1({
     entity_type: entityType.toUpperCase(),
     organizationId: organization?.id
   })
@@ -300,13 +300,13 @@ export default function UniversalEntityCreatePage({ params }: PageProps) {
 
     console.log('🚀 Creating dynamic entity:', entityData)
     
-    const result = await createEntity(entityData)
-    
-    if (result.success) {
-      console.log('✅ Entity created successfully:', result.data)
-    } else {
-      console.error('❌ Failed to create entity:', result.error)
-      throw new Error(result.error || 'Failed to create entity')
+    try {
+      const result = await create(entityData)
+      console.log('✅ Entity created successfully:', result)
+      return result
+    } catch (error) {
+      console.error('❌ Failed to create entity:', error)
+      throw error
     }
   }
 
