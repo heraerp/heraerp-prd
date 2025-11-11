@@ -84,6 +84,27 @@ function SettingsPageContent() {
   const [currency, setCurrency] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
+  // ✅ SAFETY: Safely destructure with fallbacks (even during loading)
+  const organizationId = context?.organizationId || context?.orgId || ''
+  const role = context?.salonRole || context?.role || 'stylist'
+  const organization = context?.organization || { id: '', name: '', currency: 'AED', currencySymbol: 'AED' }
+  const contextUser = context?.user
+
+  // ✅ CRITICAL FIX: Initialize form state from context when data loads
+  // MUST be before conditional return to maintain consistent hook order
+  useEffect(() => {
+    console.log('[Settings] Loading organization data:', organization)
+    if (organization) {
+      setOrganizationName(organization.name || '')
+      setLegalName(organization.legal_name || '')
+      setPhone(organization.phone || '')
+      setEmail(organization.email || '')
+      setAddress(organization.address || '')
+      setTrn(organization.trn || '')
+      setCurrency(organization.currency || 'AED')
+    }
+  }, [organization])
+
   // ✅ LOADING STATE: Show loader if context is still loading or undefined
   if (!context || context.isLoading) {
     return (
@@ -98,26 +119,6 @@ function SettingsPageContent() {
       </div>
     )
   }
-
-  // ✅ SAFETY: Safely destructure with fallbacks (after loading check)
-  const organizationId = context?.organizationId || context?.orgId || ''
-  const role = context.salonRole || context.role || 'stylist'
-  const organization = context.organization || { id: '', name: '', currency: 'AED', currencySymbol: 'AED' }
-  const contextUser = context.user
-
-  // Initialize form state from context when data loads
-  useEffect(() => {
-    console.log('[Settings] Loading organization data:', organization)
-    if (organization) {
-      setOrganizationName(organization.name || '')
-      setLegalName(organization.legal_name || '')
-      setPhone(organization.phone || '')
-      setEmail(organization.email || '')
-      setAddress(organization.address || '')
-      setTrn(organization.trn || '')
-      setCurrency(organization.currency || 'AED')
-    }
-  }, [organization])
 
   // Save organization settings using HERA hook
   const handleSaveOrganizationSettings = async () => {

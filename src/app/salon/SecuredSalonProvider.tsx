@@ -1368,6 +1368,18 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             }
           })
         }
+        // ✅ CRITICAL FIX: Also handle dynamic_fields in OBJECT format (nested with .value)
+        // Pattern from useHeraServices: dynamic_fields.business_hours.value
+        else if (branch.dynamic_fields && typeof branch.dynamic_fields === 'object') {
+          console.log('[loadBranches] 🔍 Found nested dynamic_fields object format:', Object.keys(branch.dynamic_fields))
+          Object.entries(branch.dynamic_fields).forEach(([key, field]: [string, any]) => {
+            if (field && typeof field === 'object' && 'value' in field) {
+              // Flatten nested format to top-level property
+              transformed[key] = field.value
+              console.log(`[loadBranches] ✅ Extracted ${key} = ${JSON.stringify(field.value)} from nested format`)
+            }
+          })
+        }
         // ✅ FALLBACK: If no dynamic_fields, check metadata for opening/closing times
         else if (branch.metadata && typeof branch.metadata === 'object') {
           // Extract opening_time and closing_time from metadata if they exist
