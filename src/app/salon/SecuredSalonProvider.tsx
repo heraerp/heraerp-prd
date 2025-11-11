@@ -1342,6 +1342,16 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       // ✅ Transform branches to flatten dynamic fields to top-level properties
       const transformedBranches = (branches || []).map((branch: any) => {
+        console.log('[loadBranches] 🔍 Raw branch data:', {
+          id: branch.id,
+          entity_name: branch.entity_name,
+          hasDynamicFields: !!branch.dynamic_fields,
+          dynamicFieldsType: branch.dynamic_fields ? (Array.isArray(branch.dynamic_fields) ? 'array' : typeof branch.dynamic_fields) : 'none',
+          dynamicFieldsKeys: branch.dynamic_fields && typeof branch.dynamic_fields === 'object' && !Array.isArray(branch.dynamic_fields) ? Object.keys(branch.dynamic_fields) : null,
+          dynamicFieldsCount: Array.isArray(branch.dynamic_fields) ? branch.dynamic_fields.length : 0,
+          rawBranch: branch
+        })
+
         // Start with the base branch entity
         const transformed: any = {
           id: branch.id,
@@ -1390,6 +1400,18 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
             transformed.closing_time = branch.metadata.closing_time
           }
         }
+
+        console.log('[loadBranches] ✅ Transformed branch:', {
+          id: transformed.id,
+          entity_name: transformed.entity_name,
+          hasBusinessHours: !!transformed.business_hours,
+          hasOpeningTime: !!transformed.opening_time,
+          hasClosingTime: !!transformed.closing_time,
+          business_hours: transformed.business_hours,
+          opening_time: transformed.opening_time,
+          closing_time: transformed.closing_time,
+          allKeys: Object.keys(transformed).filter(k => !['metadata', 'dynamic_fields', 'relationships'].includes(k))
+        })
 
         return transformed
       })

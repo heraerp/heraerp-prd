@@ -82,21 +82,43 @@ export function BusinessHoursSection({ onSuccess, onError }: {
       branchName: selectedBranch?.entity_name,
       hasBusinessHours: !!selectedBranch?.business_hours,
       businessHours: selectedBranch?.business_hours,
+      hasOpeningTime: !!selectedBranch?.opening_time,
+      hasClosingTime: !!selectedBranch?.closing_time,
+      opening_time: selectedBranch?.opening_time,
+      closing_time: selectedBranch?.closing_time,
+      branchKeys: selectedBranch ? Object.keys(selectedBranch) : [],
+      hasDynamicFields: !!selectedBranch?.dynamic_fields,
+      dynamicFieldsType: selectedBranch?.dynamic_fields ? typeof selectedBranch.dynamic_fields : 'undefined',
       fullBranch: selectedBranch
     })
 
     if (selectedBranch?.business_hours) {
+      // ✅ NEW FORMAT: Use business_hours JSON object (7-day schedule)
       try {
         const loadedHours = typeof selectedBranch.business_hours === 'string'
           ? JSON.parse(selectedBranch.business_hours)
           : selectedBranch.business_hours
-        console.log('[BusinessHours] Loaded hours:', loadedHours)
+        console.log('[BusinessHours] Loaded hours from business_hours field:', loadedHours)
         setHours({ ...DEFAULT_HOURS, ...loadedHours })
         setHasChanges(false)
       } catch (error) {
         console.error('[BusinessHours] Failed to parse business hours:', error)
         setHours(DEFAULT_HOURS)
       }
+    } else if (selectedBranch?.opening_time && selectedBranch?.closing_time) {
+      // ✅ LEGACY FORMAT: Convert old opening_time/closing_time to new format
+      console.log('[BusinessHours] Converting legacy opening/closing times to business_hours format')
+      const legacyHours: BusinessHoursData = {
+        monday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
+        tuesday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
+        wednesday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
+        thursday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
+        friday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
+        saturday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: true },
+        sunday: { open: selectedBranch.opening_time, close: selectedBranch.closing_time, is_open: false }
+      }
+      setHours(legacyHours)
+      setHasChanges(false) // Don't mark as changed, this is just loading
     } else {
       console.log('[BusinessHours] No business hours found, using defaults')
       setHours(DEFAULT_HOURS)

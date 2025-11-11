@@ -1,18 +1,12 @@
 /**
  * HERA Navigation Resolution Service
  * Smart Code: HERA.PLATFORM.NAV.RESOLVER.v1
- * 
+ *
  * Resolves URL paths to canonical operations and components
  * Supports alias mapping and dynamic route resolution
  */
 
-import { createClient } from '@supabase/supabase-js'
-
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import { supabase } from '@/lib/supabase/client'
 
 const PLATFORM_ORGANIZATION_ID = '00000000-0000-0000-0000-000000000000'
 
