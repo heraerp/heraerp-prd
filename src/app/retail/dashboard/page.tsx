@@ -217,24 +217,55 @@ export default function RetailDashboard() {
     }
   ])
 
-  // Parse APP_WORKSPACE entities into retail modules
-  const parseWorkspaceEntity = (entity: any): DynamicRetailModule => {
-    // Extract domain, section, workspace from smart_code
-    // Example: "HERA.PLATFORM.NAV.APPWORKSPACE.INVENTORY.STOCKMAIN.V1"
+  // Parse APP_DOMAIN entities into retail modules
+  const parseDomainEntity = (entity: any): DynamicRetailModule => {
+    // Extract domain from smart_code
+    // Example: "HERA.PLATFORM.NAV.APPDOMAIN.RETAIL.V1"
     const smartCodeParts = entity.smart_code?.split('.') || []
     const domain = smartCodeParts[4]?.toLowerCase() || 'retail'
-    const section = smartCodeParts[5]?.toLowerCase().replace('stockmain', 'main') || 'inventory'  
-    const workspace = 'main'
+    
+    // Level 1 domains route to their dashboard pages
+    const section = 'dashboard'
+    const workspace = ''
 
-    // Icon mapping based on entity_code patterns
-    const getIconAndColor = (entityCode: string, entityName: string) => {
+    // Extract metadata for advanced configuration
+    let metadata = {}
+    try {
+      metadata = entity.metadata ? JSON.parse(entity.metadata) : {}
+    } catch (e) {
+      console.warn('Failed to parse metadata:', entity.metadata)
+    }
+
+    // Icon mapping based on entity_code patterns and metadata
+    const getIconAndColor = (entityCode: string, entityName: string, metadata: any) => {
       const code = entityCode.toLowerCase()
       const name = entityName.toLowerCase()
       
+      // Use metadata if available
+      if (metadata.icon && metadata.color) {
+        const iconMap: any = {
+          'warehouse': Warehouse,
+          'store': Store, 
+          'truck': Truck,
+          'calculator': Calculator,
+          'tag': Tag,
+          'box': Package,
+          'bar-chart-3': BarChart3,
+          'settings': Settings,
+          'users': Users,
+          'package': Package
+        }
+        return { 
+          icon: iconMap[metadata.icon] || Package, 
+          bgColor: metadata.color || 'bg-blue-600' 
+        }
+      }
+      
+      // Fallback to pattern matching
       if (code.includes('inventory') || name.includes('inventory')) {
         return { icon: Warehouse, bgColor: 'bg-teal-600' }
       }
-      if (code.includes('pos') || name.includes('pos')) {
+      if (code.includes('retail') || name.includes('retail')) {
         return { icon: Store, bgColor: 'bg-indigo-600' }
       }
       if (code.includes('wholesale') || name.includes('wholesale')) {
@@ -243,7 +274,7 @@ export default function RetailDashboard() {
       if (code.includes('finance') || name.includes('finance')) {
         return { icon: Calculator, bgColor: 'bg-red-800' }
       }
-      if (code.includes('merchandise') || name.includes('catalog')) {
+      if (code.includes('merchandise') || code.includes('merchandising')) {
         return { icon: Tag, bgColor: 'bg-amber-600' }
       }
       if (code.includes('analytics') || name.includes('analytics')) {
@@ -255,30 +286,33 @@ export default function RetailDashboard() {
       if (code.includes('crm') || name.includes('customer')) {
         return { icon: Users, bgColor: 'bg-pink-600' }
       }
+      if (code.includes('planning') || name.includes('planning')) {
+        return { icon: Calendar, bgColor: 'bg-cyan-600' }
+      }
       // Default
       return { icon: Package, bgColor: 'bg-blue-600' }
     }
 
-    const { icon, bgColor } = getIconAndColor(entity.entity_code, entity.entity_name)
+    const { icon, bgColor } = getIconAndColor(entity.entity_code, entity.entity_name, metadata)
 
     return {
       id: entity.id,
       entity_id: entity.id,
-      title: entity.entity_name.replace(' Workspace', ''),
-      subtitle: entity.entity_description || `${section.charAt(0).toUpperCase() + section.slice(1)} Management`,
+      title: entity.entity_name,
+      subtitle: metadata.subtitle || entity.entity_description || `${domain.charAt(0).toUpperCase() + domain.slice(1)} Management`,
       icon,
       bgColor,
       textColor: 'text-white',
       domain,
       section,
       workspace,
-      roles: ['Manager', 'Operator'], // Default roles
+      roles: metadata.roles || ['Manager', 'Operator'],
       entity_code: entity.entity_code,
       smart_code: entity.smart_code
     }
   }
 
-  // Fetch dynamic modules from APP_WORKSPACE entities
+  // Fetch dynamic modules from APP_DOMAIN entities (Level 1)
   const fetchDynamicModules = async () => {
     if (!organization?.id) return
 
@@ -287,27 +321,26 @@ export default function RetailDashboard() {
       setModulesError(null)
 
       const response = await apiV2.get('entities', {
-        entity_type: 'APP_WORKSPACE',
+        entity_type: 'APP_DOMAIN',
         organization_id: organization.id,
         limit: 50
       })
 
       if (response.data?.items) {
         const modules = response.data.items
-          .filter((entity: any) => entity.entity_type === 'APP_WORKSPACE')
-          .map(parseWorkspaceEntity)
+          .filter((entity: any) => entity.entity_type === 'APP_DOMAIN')
+          .map(parseDomainEntity)
           .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
 
         setDynamicModules(modules)
-        console.log('✅ Loaded dynamic modules:', modules.length, 'workspaces')
+        console.log('✅ Loaded dynamic domains:', modules.length, 'domains')
       } else {
-        console.warn('No APP_WORKSPACE entities found, using fallback modules')
-        // Fallback to hardcoded modules if no APP_WORKSPACE entities exist
+        console.warn('No APP_DOMAIN entities found')
         setDynamicModules([])
       }
     } catch (error) {
       console.error('❌ Error fetching dynamic modules:', error)
-      setModulesError('Failed to load workspace modules')
+      setModulesError('Failed to load domain modules')
       setDynamicModules([])
     } finally {
       setModulesLoading(false)
@@ -469,7 +502,7 @@ export default function RetailDashboard() {
             <div>
               <div className="flex items-center gap-2 mb-4 lg:mb-6">
                 <h2 className="text-lg font-semibold text-gray-900">
-                  Retail Modules ({modulesLoading ? '...' : dynamicModules.length})
+                  Business Domains ({modulesLoading ? '...' : dynamicModules.length})
                 </h2>
                 <ArrowDown className="h-4 w-4 text-gray-500" />
                 {!modulesLoading && (
@@ -513,13 +546,13 @@ export default function RetailDashboard() {
                         key={module.entity_id}
                         className={`${module.bgColor} ${module.textColor} rounded-lg cursor-pointer hover:opacity-90 transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md relative group`}
                         onClick={() => {
-                          // Dynamic universal routing to workspace page
-                          if (module.domain && module.section && module.workspace) {
-                            const route = `/${module.domain}/${module.section}/${module.workspace}`
-                            console.log(`🎯 Navigating to workspace: ${route}`)
+                          // Level 1 routing: Domain → Dashboard  
+                          if (module.domain) {
+                            const route = `/${module.domain}/dashboard`
+                            console.log(`🎯 Navigating to domain dashboard: ${route}`)
                             router.push(route)
                           } else {
-                            alert(`${module.title} workspace navigation:\n\nRoute: /${module.domain}/${module.section}/${module.workspace}\nEntity: ${module.entity_code}\nSmart Code: ${module.smart_code}`)
+                            alert(`${module.title} domain navigation:\n\nRoute: /${module.domain}/dashboard\nEntity: ${module.entity_code}\nSmart Code: ${module.smart_code}`)
                           }
                         }}
                       >
@@ -553,19 +586,20 @@ export default function RetailDashboard() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-8 text-center">
                   <div className="max-w-md mx-auto">
                     <Package className="h-16 w-16 text-blue-500 mx-auto mb-4" />
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">No Workspaces Found</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">No Business Domains Found</h3>
                     <p className="text-gray-600 mb-6">
-                      No APP_WORKSPACE entities found. This dashboard reads workspace configuration from APP_WORKSPACE entities in the database.
+                      No APP_DOMAIN entities found. This dashboard reads domain configuration from APP_DOMAIN entities in the database.
                     </p>
                     
                     {/* Sample Entity Creation */}
                     <div className="bg-white rounded-lg p-4 mb-4 text-left">
                       <h4 className="font-semibold text-gray-800 mb-2">🎯 Expected Entity Format:</h4>
                       <div className="text-sm text-gray-600 space-y-1">
-                        <div><strong>Entity Type:</strong> APP_WORKSPACE</div>
-                        <div><strong>Entity Name:</strong> "Inventory Management Workspace"</div>
-                        <div><strong>Entity Code:</strong> "NAV-WORK-INVENTORY-MAIN"</div>
-                        <div><strong>Smart Code:</strong> "HERA.PLATFORM.NAV.APPWORKSPACE.INVENTORY.MAIN.v1"</div>
+                        <div><strong>Entity Type:</strong> APP_DOMAIN</div>
+                        <div><strong>Entity Name:</strong> "Retail Operations"</div>
+                        <div><strong>Entity Code:</strong> "NAV-DOM-RETAIL"</div>
+                        <div><strong>Smart Code:</strong> "HERA.PLATFORM.NAV.APPDOMAIN.RETAIL.V1"</div>
+                        <div><strong>Level:</strong> 1 (Domain → Dashboard)</div>
                       </div>
                     </div>
 
@@ -576,11 +610,11 @@ export default function RetailDashboard() {
                         className="w-full"
                       >
                         <RefreshCw className="h-4 w-4 mr-2" />
-                        Check for New Workspaces
+                        Check for New Domains
                       </Button>
                       
                       <div className="text-sm text-gray-500">
-                        <strong>Next:</strong> Create APP_WORKSPACE entities in your database to see dynamic workspaces here.
+                        <strong>Next:</strong> Create APP_DOMAIN entities in your database to see dynamic domains here.
                       </div>
                     </div>
                   </div>
