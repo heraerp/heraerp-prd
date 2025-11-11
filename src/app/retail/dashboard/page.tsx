@@ -11,6 +11,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { apiV2 } from '@/lib/client/fetchV2'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -83,108 +84,22 @@ interface AIMessage {
   features?: string[]
 }
 
-// HERA Retail Modules - Dynamic universal routing (NO hardcoding)
-const retailModules = [
-  {
-    id: 'retail_operations',
-    title: 'Retail Operations',
-    subtitle: 'Store Management & POS',
-    icon: Store,
-    bgColor: 'bg-indigo-600',
-    textColor: 'text-white',
-    domain: 'retail',
-    section: 'pos',
-    roles: ['Store Mgr', 'Cashier']
-  },
-  {
-    id: 'wholesale_distribution',
-    title: 'Wholesale Distribution',
-    subtitle: 'B2B Sales & Distribution',
-    icon: Truck,
-    bgColor: 'bg-slate-600',
-    textColor: 'text-white',
-    domain: 'wholesale',
-    section: 'ordering',
-    roles: ['Distributor Mgr']
-  },
-  {
-    id: 'merchandise_pricing',
-    title: 'Merchandise & Pricing',
-    subtitle: 'Product Catalog & Pricing',
-    icon: Tag,
-    bgColor: 'bg-amber-600',
-    textColor: 'text-white',
-    domain: 'retail',
-    section: 'merchandising',
-    roles: ['Merchandiser']
-  },
-  {
-    id: 'inventory_warehouse',
-    title: 'Inventory & Warehouse',
-    subtitle: 'Stock Management & WMS',
-    icon: Warehouse,
-    bgColor: 'bg-teal-600',
-    textColor: 'text-white',
-    domain: 'retail',
-    section: 'inventory',
-    roles: ['Store Mgr', 'Warehouse Lead']
-  },
-  {
-    id: 'planning_replenishment',
-    title: 'Planning & Replenishment',
-    subtitle: 'Demand Planning & Auto-Replenishment',
-    icon: Calendar,
-    bgColor: 'bg-cyan-600',
-    textColor: 'text-white',
-    domain: 'retail',
-    section: 'planning',
-    roles: ['Planner']
-  },
-  {
-    id: 'finance_controlling',
-    title: 'Finance & Controlling',
-    subtitle: 'Accounting & Financial Control',
-    icon: Calculator,
-    bgColor: 'bg-red-800',
-    textColor: 'text-white',
-    domain: 'finance',
-    section: 'accounting',
-    roles: ['Accountant', 'CFO']
-  },
-  {
-    id: 'customer_loyalty',
-    title: 'Customer & Loyalty',
-    subtitle: 'CRM & Loyalty Programs',
-    icon: Users,
-    bgColor: 'bg-pink-600',
-    textColor: 'text-white',
-    domain: 'crm',
-    section: 'contacts',
-    roles: ['CRM Lead']
-  },
-  {
-    id: 'analytics_dashboards',
-    title: 'Analytics & Dashboards',
-    subtitle: 'Business Intelligence & Reports',
-    icon: BarChart3,
-    bgColor: 'bg-purple-600',
-    textColor: 'text-white',
-    domain: 'retail',
-    section: 'analytics',
-    roles: ['Executives']
-  },
-  {
-    id: 'platform_administration',
-    title: 'Platform & Administration',
-    subtitle: 'System Config & User Management',
-    icon: Settings,
-    bgColor: 'bg-gray-600',
-    textColor: 'text-white',
-    domain: 'retail',
-    section: 'admin',
-    roles: ['System Admin']
-  }
-]
+// Dynamic interface for workspace modules
+interface DynamicRetailModule {
+  id: string
+  entity_id: string
+  title: string
+  subtitle: string
+  icon: any
+  bgColor: string
+  textColor: string
+  domain: string
+  section: string
+  workspace: string
+  roles: string[]
+  entity_code: string
+  smart_code: string
+}
 
 // SAP Fiori-style Insights Tiles matching the screenshot layout
 const insightsTiles = [
@@ -275,6 +190,11 @@ export default function RetailDashboard() {
     contextLoading 
   } = useHERAAuth()
 
+  // Dynamic modules state
+  const [dynamicModules, setDynamicModules] = useState<DynamicRetailModule[]>([])
+  const [modulesLoading, setModulesLoading] = useState(true)
+  const [modulesError, setModulesError] = useState<string | null>(null)
+
   const [currentTime, setCurrentTime] = useState(new Date())
   const [aiMessage, setAiMessage] = useState('')
   const [aiMessages, setAiMessages] = useState<AIMessage[]>([
@@ -295,6 +215,110 @@ export default function RetailDashboard() {
       timestamp: '2 min ago'
     }
   ])
+
+  // Parse APP_WORKSPACE entities into retail modules
+  const parseWorkspaceEntity = (entity: any): DynamicRetailModule => {
+    // Extract domain, section, workspace from smart_code
+    // Example: "HERA.PLATFORM.NAV.APPWORKSPACE.INVENTORY.STOCKMAIN.V1"
+    const smartCodeParts = entity.smart_code?.split('.') || []
+    const domain = smartCodeParts[4]?.toLowerCase() || 'retail'
+    const section = smartCodeParts[5]?.toLowerCase().replace('stockmain', 'main') || 'inventory'  
+    const workspace = 'main'
+
+    // Icon mapping based on entity_code patterns
+    const getIconAndColor = (entityCode: string, entityName: string) => {
+      const code = entityCode.toLowerCase()
+      const name = entityName.toLowerCase()
+      
+      if (code.includes('inventory') || name.includes('inventory')) {
+        return { icon: Warehouse, bgColor: 'bg-teal-600' }
+      }
+      if (code.includes('pos') || name.includes('pos')) {
+        return { icon: Store, bgColor: 'bg-indigo-600' }
+      }
+      if (code.includes('wholesale') || name.includes('wholesale')) {
+        return { icon: Truck, bgColor: 'bg-slate-600' }
+      }
+      if (code.includes('finance') || name.includes('finance')) {
+        return { icon: Calculator, bgColor: 'bg-red-800' }
+      }
+      if (code.includes('merchandise') || name.includes('catalog')) {
+        return { icon: Tag, bgColor: 'bg-amber-600' }
+      }
+      if (code.includes('analytics') || name.includes('analytics')) {
+        return { icon: BarChart3, bgColor: 'bg-purple-600' }
+      }
+      if (code.includes('admin') || name.includes('admin')) {
+        return { icon: Settings, bgColor: 'bg-gray-600' }
+      }
+      if (code.includes('crm') || name.includes('customer')) {
+        return { icon: Users, bgColor: 'bg-pink-600' }
+      }
+      // Default
+      return { icon: Package, bgColor: 'bg-blue-600' }
+    }
+
+    const { icon, bgColor } = getIconAndColor(entity.entity_code, entity.entity_name)
+
+    return {
+      id: entity.id,
+      entity_id: entity.id,
+      title: entity.entity_name.replace(' Workspace', ''),
+      subtitle: entity.entity_description || `${section.charAt(0).toUpperCase() + section.slice(1)} Management`,
+      icon,
+      bgColor,
+      textColor: 'text-white',
+      domain,
+      section,
+      workspace,
+      roles: ['Manager', 'Operator'], // Default roles
+      entity_code: entity.entity_code,
+      smart_code: entity.smart_code
+    }
+  }
+
+  // Fetch dynamic modules from APP_WORKSPACE entities
+  const fetchDynamicModules = async () => {
+    if (!organization?.id) return
+
+    try {
+      setModulesLoading(true)
+      setModulesError(null)
+
+      const response = await apiV2.get('entities', {
+        entity_type: 'APP_WORKSPACE',
+        organization_id: organization.id,
+        limit: 50
+      })
+
+      if (response.data?.items) {
+        const modules = response.data.items
+          .filter((entity: any) => entity.entity_type === 'APP_WORKSPACE')
+          .map(parseWorkspaceEntity)
+          .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
+
+        setDynamicModules(modules)
+        console.log('✅ Loaded dynamic modules:', modules.length, 'workspaces')
+      } else {
+        console.warn('No APP_WORKSPACE entities found, using fallback modules')
+        // Fallback to hardcoded modules if no APP_WORKSPACE entities exist
+        setDynamicModules([])
+      }
+    } catch (error) {
+      console.error('❌ Error fetching dynamic modules:', error)
+      setModulesError('Failed to load workspace modules')
+      setDynamicModules([])
+    } finally {
+      setModulesLoading(false)
+    }
+  }
+
+  // Load dynamic modules when organization is available
+  useEffect(() => {
+    if (organization?.id && isAuthenticated) {
+      fetchDynamicModules()
+    }
+  }, [organization?.id, isAuthenticated])
 
   // Update time every minute
   useEffect(() => {
@@ -440,49 +464,101 @@ export default function RetailDashboard() {
           {/* Left Column - Pages and Insights */}
           <div className="lg:col-span-3 space-y-6 lg:space-y-8">
             
-            {/* Retail Modules Section */}
+            {/* Dynamic Retail Modules Section */}
             <div>
               <div className="flex items-center gap-2 mb-4 lg:mb-6">
-                <h2 className="text-lg font-semibold text-gray-900">Retail Modules (9)</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Retail Modules ({modulesLoading ? '...' : dynamicModules.length})
+                </h2>
                 <ArrowDown className="h-4 w-4 text-gray-500" />
+                {!modulesLoading && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={fetchDynamicModules}
+                    className="ml-2"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 lg:gap-4">
-                {retailModules.map((module) => {
-                  const Icon = module.icon
-                  return (
-                    <div
-                      key={module.id}
-                      className={`${module.bgColor} ${module.textColor} rounded-lg cursor-pointer hover:opacity-90 transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md`}
-                      onClick={() => {
-                        // Dynamic universal routing - NO hardcoding, NO /apps prefix
-                        if (module.domain && module.section) {
-                          // Generate dynamic route: /{domain}/{section}
-                          const route = `/${module.domain}/${module.section}`
-                          router.push(route)
-                        } else {
-                          alert(`${module.title} module configuration needed!\nDomain: ${module.domain}\nSection: ${module.section}\nRoles: ${module.roles.join(', ')}`)
-                        }
-                      }}
-                    >
-                      <div className="p-4 lg:p-5 h-28 lg:h-36 flex flex-col justify-between">
-                        <div className="flex items-start justify-between">
-                          <Icon className="h-6 w-6 lg:h-7 lg:w-7" />
-                          <div className="text-xs opacity-75 hidden lg:block">
-                            {module.roles.join(' • ')}
+
+              {/* Loading State */}
+              {modulesLoading && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 lg:gap-4">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="bg-gray-200 animate-pulse rounded-lg h-28 lg:h-36"></div>
+                  ))}
+                </div>
+              )}
+
+              {/* Error State */}
+              {modulesError && !modulesLoading && (
+                <Alert className="border-red-200 bg-red-50 mb-4">
+                  <AlertTriangle className="h-4 w-4 text-red-600" />
+                  <AlertDescription className="text-red-800">
+                    {modulesError}. <Button variant="link" onClick={fetchDynamicModules} className="text-red-600 underline p-0 h-auto">Try again</Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {/* Dynamic Modules Grid */}
+              {!modulesLoading && dynamicModules.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 lg:gap-4">
+                  {dynamicModules.map((module) => {
+                    const Icon = module.icon
+                    return (
+                      <div
+                        key={module.entity_id}
+                        className={`${module.bgColor} ${module.textColor} rounded-lg cursor-pointer hover:opacity-90 transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md relative group`}
+                        onClick={() => {
+                          // Dynamic universal routing to workspace page
+                          if (module.domain && module.section && module.workspace) {
+                            const route = `/${module.domain}/${module.section}/${module.workspace}`
+                            console.log(`🎯 Navigating to workspace: ${route}`)
+                            router.push(route)
+                          } else {
+                            alert(`${module.title} workspace navigation:\n\nRoute: /${module.domain}/${module.section}/${module.workspace}\nEntity: ${module.entity_code}\nSmart Code: ${module.smart_code}`)
+                          }
+                        }}
+                      >
+                        <div className="p-4 lg:p-5 h-28 lg:h-36 flex flex-col justify-between">
+                          <div className="flex items-start justify-between">
+                            <Icon className="h-6 w-6 lg:h-7 lg:w-7" />
+                            <div className="text-xs opacity-75 hidden lg:block">
+                              {module.roles.join(' • ')}
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-sm lg:text-base mb-1 leading-tight">{module.title}</h3>
+                            <p className="text-xs lg:text-sm opacity-90 leading-tight">{module.subtitle}</p>
+                            
+                            {/* Entity code badge on hover */}
+                            <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Badge variant="outline" className="text-xs bg-black/20 text-white border-white/30">
+                                {module.entity_code.split('-').pop()}
+                              </Badge>
+                            </div>
                           </div>
                         </div>
-                        <div>
-                          <h3 className="font-semibold text-sm lg:text-base mb-1 leading-tight">{module.title}</h3>
-                          {module.subtitle && (
-                            <p className="text-xs lg:text-sm opacity-90 leading-tight">{module.subtitle}</p>
-                          )}
-                        </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Empty State */}
+              {!modulesLoading && dynamicModules.length === 0 && !modulesError && (
+                <div className="text-center py-8">
+                  <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Workspaces Found</h3>
+                  <p className="text-gray-500 mb-4">No APP_WORKSPACE entities found in this organization.</p>
+                  <Button onClick={fetchDynamicModules} variant="outline">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Reload Workspaces
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Insights Tiles */}
