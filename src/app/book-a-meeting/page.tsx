@@ -171,7 +171,12 @@ export default function BookMeetingPage() {
                 <Phone className="w-4 h-4 text-blue-400" />
                 <p className="text-sm ink-muted">Prefer to talk now?</p>
               </div>
-              <p className="font-semibold ink">Call us: 0800 HERA ERP</p>
+              <a
+                href="tel:+447440375190"
+                className="font-semibold ink hover:text-indigo-400 transition-colors"
+              >
+                Call us: +44 7440 375190
+              </a>
             </div>
           </div>
         </div>
