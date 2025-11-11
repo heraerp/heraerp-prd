@@ -219,13 +219,26 @@ export default function RetailDashboard() {
 
   // Parse APP_DOMAIN entities into retail modules
   const parseDomainEntity = (entity: any): DynamicRetailModule => {
-    // Extract domain from smart_code
-    // Example: "HERA.PLATFORM.NAV.APPDOMAIN.RETAIL.V1"
+    // Extract domain slug from smart_code or metadata
+    // Example: "HERA.PLATFORM.NAV.APPDOMAIN.MERCHANDISING.V1" → "merchandising"
     const smartCodeParts = entity.smart_code?.split('.') || []
-    const domain = smartCodeParts[4]?.toLowerCase() || 'retail'
+    let domainSlug = smartCodeParts[4]?.toLowerCase() || 'unknown'
     
-    // Level 1 domains route to their dashboard pages
-    const section = 'dashboard'
+    // Use metadata slug if available (more reliable)
+    if (entity.metadata?.slug) {
+      domainSlug = entity.metadata.slug
+    } else {
+      // Convert entity_code to slug: NAV-DOM-RETAIL → retail
+      if (entity.entity_code?.startsWith('NAV-DOM-')) {
+        domainSlug = entity.entity_code.replace('NAV-DOM-', '').toLowerCase()
+        // Handle special cases
+        if (domainSlug === 'inventorywh') domainSlug = 'inventory'
+        if (domainSlug === 'merchandising') domainSlug = 'merchandising'
+      }
+    }
+    
+    // Level 1: APP domains route to domain-specific pages
+    const section = domainSlug
     const workspace = ''
 
     // Extract metadata for advanced configuration
@@ -305,12 +318,12 @@ export default function RetailDashboard() {
       id: entity.id,
       entity_id: entity.id,
       title: entity.entity_name,
-      subtitle: metadata.subtitle || entity.entity_description || `${domain.charAt(0).toUpperCase() + domain.slice(1)} Management`,
+      subtitle: metadata.subtitle || entity.entity_description || `${domainSlug.charAt(0).toUpperCase() + domainSlug.slice(1)} Management`,
       icon,
       bgColor,
       textColor: 'text-white',
-      domain,
-      section,
+      domain: 'retail', // App slug
+      section: domainSlug, // Domain slug for Level 2 routing
       workspace,
       roles: metadata.roles || ['Manager', 'Operator'],
       entity_code: entity.entity_code,
@@ -318,46 +331,69 @@ export default function RetailDashboard() {
     }
   }
 
-  // Fetch dynamic modules from APP_DOMAIN entities (Level 1)
-  // APP_DOMAIN entities are global platform configuration
+  // Fetch APP and its linked domains via APP_HAS_DOMAIN relationships (Level 1)
   const fetchDynamicModules = async () => {
     try {
       setModulesLoading(true)
       setModulesError(null)
 
-      console.log('🔍 Fetching APP_DOMAIN entities from platform org')
+      console.log('🔍 Fetching RETAIL APP and its linked domains via relationships')
 
-      // APP_DOMAIN entities are always in platform organization
-      const response = await apiV2.get('entities', {
-        entity_type: 'APP_DOMAIN',
+      // Step 1: Get RETAIL APP entity
+      const appResponse = await apiV2.get('entities', {
+        entity_type: 'APP',
+        entity_code: 'RETAIL',
         organization_id: '00000000-0000-0000-0000-000000000000',
+        limit: 1
+      })
+
+      console.log('📊 RETAIL APP response:', {
+        count: appResponse.data?.items?.length || 0,
+        app: appResponse.data?.items?.[0]?.entity_name
+      })
+
+      if (!appResponse.data?.items?.[0]) {
+        throw new Error('RETAIL APP not found')
+      }
+
+      const retailApp = appResponse.data.items[0]
+
+      // Step 2: Get linked domains via relationships
+      const relationshipsResponse = await apiV2.get('relationships', {
+        from_entity_id: retailApp.id,
+        relationship_type: 'APP_HAS_DOMAIN',
+        organization_id: '00000000-0000-0000-0000-000000000000',
+        include_target_entities: true,
         limit: 50
       })
 
-      console.log('📊 Platform org response:', {
-        count: response.data?.items?.length || 0,
-        items: response.data?.items?.map((i: any) => ({ 
-          name: i.entity_name, 
-          code: i.entity_code, 
-          smartCode: i.smart_code 
+      console.log('📊 Relationships response:', {
+        count: relationshipsResponse.data?.items?.length || 0,
+        relationships: relationshipsResponse.data?.items?.map((r: any) => ({
+          type: r.relationship_type,
+          target: r.target_entity?.entity_name
         })) || []
       })
 
-      if (response.data?.items) {
-        const modules = response.data.items
-          .filter((entity: any) => entity.entity_type === 'APP_DOMAIN')
+      if (relationshipsResponse.data?.items) {
+        // Extract APP_DOMAIN entities from relationships
+        const domainEntities = relationshipsResponse.data.items
+          .filter((rel: any) => rel.target_entity && rel.target_entity.entity_type === 'APP_DOMAIN')
+          .map((rel: any) => rel.target_entity)
+
+        const modules = domainEntities
           .map(parseDomainEntity)
           .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
 
         setDynamicModules(modules)
-        console.log('✅ Loaded dynamic domains:', modules.length, 'domains:', modules.map(m => m.title))
+        console.log('✅ Loaded RETAIL domains via relationships:', modules.length, 'domains:', modules.map(m => m.title))
       } else {
-        console.warn('❌ No APP_DOMAIN entities found in platform organization')
+        console.warn('❌ No APP_HAS_DOMAIN relationships found for RETAIL')
         setDynamicModules([])
       }
     } catch (error) {
       console.error('❌ Error fetching dynamic modules:', error)
-      setModulesError(`Failed to load domain modules: ${error.message}`)
+      setModulesError(`Failed to load RETAIL domains: ${error.message}`)
       setDynamicModules([])
     } finally {
       setModulesLoading(false)
@@ -573,13 +609,14 @@ export default function RetailDashboard() {
                         key={module.entity_id}
                         className={`${module.bgColor} ${module.textColor} rounded-lg cursor-pointer hover:opacity-90 transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md relative group`}
                         onClick={() => {
-                          // Level 1 routing: Domain → Dashboard  
-                          if (module.domain) {
-                            const route = `/${module.domain}/dashboard`
-                            console.log(`🎯 Navigating to domain dashboard: ${route}`)
+                          // Level 1→2 routing: App Dashboard → Domain Page
+                          if (module.domain && module.section) {
+                            const route = `/${module.domain}/${module.section}`
+                            console.log(`🎯 Navigating from App dashboard to Domain page: ${route}`)
+                            console.log(`📋 Domain: ${module.title} (${module.entity_code})`)
                             router.push(route)
                           } else {
-                            alert(`${module.title} domain navigation:\n\nRoute: /${module.domain}/dashboard\nEntity: ${module.entity_code}\nSmart Code: ${module.smart_code}`)
+                            alert(`${module.title} domain navigation:\n\nRoute: /${module.domain}/${module.section}\nEntity: ${module.entity_code}\nSmart Code: ${module.smart_code}`)
                           }
                         }}
                       >
@@ -615,18 +652,18 @@ export default function RetailDashboard() {
                     <Package className="h-16 w-16 text-blue-500 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-gray-900 mb-3">No Business Domains Found</h3>
                     <p className="text-gray-600 mb-6">
-                      No APP_DOMAIN entities found. This dashboard reads domain configuration from APP_DOMAIN entities in the database.
+                      No APP_HAS_DOMAIN relationships found for HERA Retail APP. This dashboard reads domains linked to the RETAIL APP via relationships.
                     </p>
                     
-                    {/* Sample Entity Creation */}
+                    {/* Expected Relationship Structure */}
                     <div className="bg-white rounded-lg p-4 mb-4 text-left">
-                      <h4 className="font-semibold text-gray-800 mb-2">🎯 Expected Entity Format:</h4>
+                      <h4 className="font-semibold text-gray-800 mb-2">🔗 Expected Relationship Structure:</h4>
                       <div className="text-sm text-gray-600 space-y-1">
-                        <div><strong>Entity Type:</strong> APP_DOMAIN</div>
-                        <div><strong>Entity Name:</strong> "Retail Operations"</div>
-                        <div><strong>Entity Code:</strong> "NAV-DOM-RETAIL"</div>
-                        <div><strong>Smart Code:</strong> "HERA.PLATFORM.NAV.APPDOMAIN.RETAIL.V1"</div>
-                        <div><strong>Level:</strong> 1 (Domain → Dashboard)</div>
+                        <div><strong>APP Entity:</strong> HERA Retail (entity_code: RETAIL)</div>
+                        <div><strong>Relationship:</strong> APP_HAS_DOMAIN</div>
+                        <div><strong>APP_DOMAIN:</strong> Various domains (NAV-DOM-*)</div>
+                        <div><strong>Routing:</strong> /retail/{domain_slug}</div>
+                        <div><strong>Example:</strong> /retail/merchandising, /retail/inventory</div>
                       </div>
                     </div>
 
@@ -637,11 +674,11 @@ export default function RetailDashboard() {
                         className="w-full"
                       >
                         <RefreshCw className="h-4 w-4 mr-2" />
-                        Check for New Domains
+                        Reload RETAIL Domains
                       </Button>
                       
                       <div className="text-sm text-gray-500">
-                        <strong>Next:</strong> Create APP_DOMAIN entities in your database to see dynamic domains here.
+                        <strong>Expected:</strong> 8 domains linked to HERA Retail via APP_HAS_DOMAIN relationships.
                       </div>
                     </div>
                   </div>
