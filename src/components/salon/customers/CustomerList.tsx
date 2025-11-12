@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button'
 import {
   MoreVertical,
   Edit,
+  History,
   Trash2,
   Archive,
   ArchiveRestore,
@@ -58,6 +59,7 @@ interface CustomerListProps {
   customers: CustomerEntity[]
   viewMode?: 'list' | 'grid'
   onEdit: (customer: CustomerEntity) => void
+  onViewHistory: (customer: CustomerEntity) => void
   onDelete: (customer: CustomerEntity) => void
   onArchive: (customer: CustomerEntity) => void
   onRestore: (customer: CustomerEntity) => void
@@ -67,6 +69,7 @@ export function CustomerList({
   customers,
   viewMode = 'list',
   onEdit,
+  onViewHistory,
   onDelete,
   onArchive,
   onRestore
@@ -76,6 +79,7 @@ export function CustomerList({
       <CustomerGridView
         customers={customers}
         onEdit={onEdit}
+        onViewHistory={onViewHistory}
         onDelete={onDelete}
         onArchive={onArchive}
         onRestore={onRestore}
@@ -251,9 +255,13 @@ export function CustomerList({
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="transition-all hover:scale-110"
+                            style={{
+                              backgroundColor: COLORS.charcoalLight,
+                              border: `1px solid ${COLORS.gold}40`
+                            }}
                           >
-                            <MoreVertical className="h-4 w-4" style={{ color: COLORS.lightText }} />
+                            <MoreVertical className="h-4 w-4" style={{ color: COLORS.gold }} />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
@@ -279,9 +287,13 @@ export function CustomerList({
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="transition-all hover:scale-110"
+                            style={{
+                              backgroundColor: COLORS.charcoalLight,
+                              border: `1px solid ${COLORS.gold}40`
+                            }}
                           >
-                            <MoreVertical className="h-4 w-4" style={{ color: COLORS.lightText }} />
+                            <MoreVertical className="h-4 w-4" style={{ color: COLORS.gold }} />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
@@ -298,6 +310,14 @@ export function CustomerList({
                           >
                             <Edit className="mr-2 h-4 w-4" />
                             Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onViewHistory(customer)}
+                            style={{ color: COLORS.lightText }}
+                            className="hover:!bg-purple-900/20 hover:!text-purple-300"
+                          >
+                            <History className="mr-2 h-4 w-4" />
+                            View History
                           </DropdownMenuItem>
                           <DropdownMenuSeparator
                             style={{ backgroundColor: COLORS.bronze + '30' }}
@@ -347,6 +367,7 @@ export function CustomerList({
 function CustomerGridView({
   customers,
   onEdit,
+  onViewHistory,
   onDelete,
   onArchive,
   onRestore
@@ -376,7 +397,7 @@ function CustomerGridView({
                 boxShadow: `0 4px 16px rgba(0,0,0,0.3), 0 0 20px ${isVIP ? COLORS.gold : COLORS.bronze}10`
               }}
             >
-              {/* Top Right: Status Badges */}
+              {/* Top Right: 3-Dot Menu + Status Badges */}
               <div className="absolute top-2 right-2 flex items-center gap-2">
                 {/* VIP Badge */}
                 {isVIP && !isDeleted && !isArchived && (
@@ -416,6 +437,105 @@ function CustomerGridView({
                     ARC
                   </Badge>
                 ) : null}
+
+                {/* Actions Dropdown - 3 Dots */}
+                {isDeleted ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 transition-all hover:scale-110"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}40`
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreVertical className="h-4 w-4" style={{ color: COLORS.gold }} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        border: `1px solid ${COLORS.bronze}33`
+                      }}
+                    >
+                      <DropdownMenuItem
+                        onClick={() => onRestore(customer)}
+                        style={{ color: COLORS.lightText }}
+                        className="hover:!bg-green-900/20 hover:!text-green-300"
+                      >
+                        <ArchiveRestore className="mr-2 h-4 w-4" />
+                        Restore to Active
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 transition-all hover:scale-110"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}40`
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreVertical className="h-4 w-4" style={{ color: COLORS.gold }} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        border: `1px solid ${COLORS.bronze}33`
+                      }}
+                    >
+                      <DropdownMenuItem
+                        onClick={() => onEdit(customer)}
+                        style={{ color: COLORS.lightText }}
+                        className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
+                      >
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator
+                        style={{ backgroundColor: COLORS.bronze + '30' }}
+                      />
+                      {isArchived ? (
+                        <DropdownMenuItem
+                          onClick={() => onRestore(customer)}
+                          style={{ color: COLORS.lightText }}
+                          className="hover:!bg-green-900/20 hover:!text-green-300"
+                        >
+                          <ArchiveRestore className="mr-2 h-4 w-4" />
+                          Restore
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          onClick={() => onArchive(customer)}
+                          style={{ color: COLORS.lightText }}
+                          className="hover:!bg-muted hover:!text-foreground"
+                        >
+                          <Archive className="mr-2 h-4 w-4" />
+                          Archive
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem
+                        onClick={() => onDelete(customer)}
+                        className="hover:!bg-red-900/20 hover:!text-red-300"
+                        style={{ color: '#FF6B6B' }}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
 
               <CardContent className="p-4">
@@ -466,69 +586,26 @@ function CustomerGridView({
                   )}
                 </div>
 
-                {/* Actions */}
+                {/* Actions - View History Button Only (3-dot menu moved to top-right) */}
                 <div
-                  className="flex justify-end gap-2 pt-2 border-t"
+                  className="flex justify-center pt-3 border-t"
                   style={{ borderColor: COLORS.bronze + '20' }}
                 >
-                  {isDeleted ? (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onRestore(customer)}
-                      className="text-xs hover:bg-green-900/20 hover:text-green-300"
-                      style={{ color: COLORS.lightText }}
-                    >
-                      <ArchiveRestore className="h-3 w-3 mr-1" />
-                      Restore
-                    </Button>
-                  ) : (
-                    <>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEdit(customer)}
-                        className="text-xs hover:bg-cyan-900/20 hover:text-cyan-300"
-                        style={{ color: COLORS.lightText }}
-                      >
-                        <Edit className="h-3 w-3 mr-1" />
-                        Edit
-                      </Button>
-                      {isArchived ? (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onRestore(customer)}
-                          className="text-xs hover:bg-green-900/20 hover:text-green-300"
-                          style={{ color: COLORS.lightText }}
-                        >
-                          <ArchiveRestore className="h-3 w-3 mr-1" />
-                          Restore
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onArchive(customer)}
-                          className="text-xs hover:bg-muted hover:text-foreground"
-                          style={{ color: COLORS.lightText }}
-                        >
-                          <Archive className="h-3 w-3 mr-1" />
-                          Archive
-                        </Button>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(customer)}
-                        className="text-xs hover:bg-red-900/20 hover:text-red-300"
-                        style={{ color: '#FF6B6B' }}
-                      >
-                        <Trash2 className="h-3 w-3 mr-1" />
-                        Delete
-                      </Button>
-                    </>
-                  )}
+                  {/* View History Button - Centered */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onViewHistory(customer)}
+                    className="text-xs transition-all hover:scale-105 w-full"
+                    style={{
+                      backgroundColor: COLORS.charcoalLight,
+                      border: `1px solid ${COLORS.gold}40`,
+                      color: COLORS.gold
+                    }}
+                  >
+                    <History className="h-4 w-4 mr-1" />
+                    View History
+                  </Button>
                 </div>
               </CardContent>
             </Card>

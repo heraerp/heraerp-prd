@@ -279,6 +279,10 @@ function NewAppointmentContent() {
     email: ''
   })
   const [creatingCustomer, setCreatingCustomer] = useState(false)
+  const [validationErrors, setValidationErrors] = useState({
+    phone: '',
+    email: ''
+  })
 
   // ✅ OPTIMIZED: Granular loading states for progressive rendering
   // Critical data: branches must load before form is interactive
@@ -612,12 +616,74 @@ function NewAppointmentContent() {
     [cart]
   )
 
+  // Validation helper functions
+  // ✅ International phone validation (works for UAE, UK, India, US, etc.)
+  // Examples of valid formats:
+  // - UAE: +971 50 123 4567 (12 digits), 050 123 4567 (9 digits)
+  // - UK: +44 20 1234 5678 (11 digits), 020 1234 5678 (10 digits)
+  // - India: +91 98765 43210 (12 digits), 9876543210 (10 digits)
+  // - US: +1 (555) 123-4567 (11 digits), (555) 123-4567 (10 digits)
+  const validatePhone = (phone: string): string => {
+    if (!phone || !phone.trim()) return '' // Empty is valid (optional field)
+
+    // Remove common formatting characters to get just the digits
+    const phoneDigits = phone.replace(/[\s\-\(\)\+\.]/g, '')
+
+    // Basic validation: must contain only digits and be between 7-15 characters
+    // ITU-T E.164 standard: international phone numbers can be up to 15 digits
+    // Minimum 7 digits covers most local numbers worldwide
+    if (!/^\d+$/.test(phoneDigits)) {
+      return 'Phone number should contain only numbers and formatting characters (+, -, (), spaces)'
+    }
+
+    if (phoneDigits.length < 7) {
+      return 'Phone number is too short (minimum 7 digits)'
+    }
+
+    if (phoneDigits.length > 15) {
+      return 'Phone number is too long (maximum 15 digits)'
+    }
+
+    return ''
+  }
+
+  const validateEmail = (email: string): string => {
+    if (!email || !email.trim()) return '' // Empty is valid (optional field)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.trim())) {
+      return 'Please enter a valid email address'
+    }
+    return ''
+  }
+
   // Create new customer
   const handleCreateCustomer = async () => {
     if (!newCustomerData.name.trim()) {
       toast({
         title: 'Error',
         description: 'Customer name is required'
+      })
+      return
+    }
+
+    // ✅ Validate phone number format (if provided)
+    const phoneError = validatePhone(newCustomerData.phone)
+    if (phoneError) {
+      toast({
+        title: 'Invalid Phone Number',
+        description: phoneError,
+        variant: 'destructive'
+      })
+      return
+    }
+
+    // ✅ Validate email format (if provided)
+    const emailError = validateEmail(newCustomerData.email)
+    if (emailError) {
+      toast({
+        title: 'Invalid Email',
+        description: emailError,
+        variant: 'destructive'
       })
       return
     }
@@ -658,6 +724,7 @@ function NewAppointmentContent() {
 
         // Reset form and close modal
         setNewCustomerData({ name: '', phone: '', email: '' })
+        setValidationErrors({ phone: '', email: '' })
         setShowNewCustomerModal(false)
       }
     } catch (error) {
@@ -779,14 +846,17 @@ function NewAppointmentContent() {
 
       const appointmentId = result.id
 
-      // ✅ FIXED: Invalidate customers cache to ensure calendar shows correct customer names
-      // This is critical when a new customer is created inline before booking
+      // ✅ CRITICAL: Invalidate customers cache using CORRECT v1 query key
+      // This is essential when a new customer is created inline before booking
+      queryClient.invalidateQueries({ queryKey: ['entities-v1', 'CUSTOMER'], exact: false })
+
+      // Legacy key for backward compatibility
       queryClient.invalidateQueries({ queryKey: ['entities', 'CUSTOMER'], exact: false })
 
       // Also invalidate appointments to ensure calendar refetches with fresh data
       queryClient.invalidateQueries({ queryKey: ['transactions-v1'], exact: false })
 
-      console.log('✅ Invalidated customer and appointment caches for calendar refresh')
+      console.log('✅ Invalidated customer (v1 + legacy) and appointment caches for calendar refresh')
 
       // Show success dialog instead of immediate redirect
       setSavedStatus(status) // 🎯 CRITICAL: Track which status was saved
@@ -2148,23 +2218,40 @@ function NewAppointmentContent() {
               <Input
                 placeholder="Enter phone number..."
                 value={newCustomerData.phone}
-                onChange={e => setNewCustomerData({ ...newCustomerData, phone: e.target.value })}
+                onChange={e => {
+                  setNewCustomerData({ ...newCustomerData, phone: e.target.value })
+                  // Clear error on change
+                  if (validationErrors.phone) {
+                    setValidationErrors({ ...validationErrors, phone: '' })
+                  }
+                }}
                 className="transition-all duration-180"
                 style={{
                   background: 'rgba(0,0,0,0.4)',
-                  border: '1px solid rgba(245,230,200,0.15)',
+                  border: validationErrors.phone
+                    ? '1px solid rgba(239,68,68,0.5)'
+                    : '1px solid rgba(245,230,200,0.15)',
                   color: '#F5E6C8',
                   transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
                 }}
                 onFocus={e => {
-                  e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,175,55,0.1)'
+                  if (!validationErrors.phone) {
+                    e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,175,55,0.1)'
+                  }
                 }}
                 onBlur={e => {
-                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.15)'
-                  e.currentTarget.style.boxShadow = 'none'
+                  const error = validatePhone(e.target.value)
+                  setValidationErrors({ ...validationErrors, phone: error })
+                  if (!error) {
+                    e.currentTarget.style.borderColor = 'rgba(245,230,200,0.15)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }
                 }}
               />
+              {validationErrors.phone && (
+                <p className="text-xs text-red-400 mt-1">{validationErrors.phone}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -2173,23 +2260,40 @@ function NewAppointmentContent() {
                 type="email"
                 placeholder="Enter email address..."
                 value={newCustomerData.email}
-                onChange={e => setNewCustomerData({ ...newCustomerData, email: e.target.value })}
+                onChange={e => {
+                  setNewCustomerData({ ...newCustomerData, email: e.target.value })
+                  // Clear error on change
+                  if (validationErrors.email) {
+                    setValidationErrors({ ...validationErrors, email: '' })
+                  }
+                }}
                 className="transition-all duration-180"
                 style={{
                   background: 'rgba(0,0,0,0.4)',
-                  border: '1px solid rgba(245,230,200,0.15)',
+                  border: validationErrors.email
+                    ? '1px solid rgba(239,68,68,0.5)'
+                    : '1px solid rgba(245,230,200,0.15)',
                   color: '#F5E6C8',
                   transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
                 }}
                 onFocus={e => {
-                  e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,175,55,0.1)'
+                  if (!validationErrors.email) {
+                    e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,175,55,0.1)'
+                  }
                 }}
                 onBlur={e => {
-                  e.currentTarget.style.borderColor = 'rgba(245,230,200,0.15)'
-                  e.currentTarget.style.boxShadow = 'none'
+                  const error = validateEmail(e.target.value)
+                  setValidationErrors({ ...validationErrors, email: error })
+                  if (!error) {
+                    e.currentTarget.style.borderColor = 'rgba(245,230,200,0.15)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }
                 }}
               />
+              {validationErrors.email && (
+                <p className="text-xs text-red-400 mt-1">{validationErrors.email}</p>
+              )}
             </div>
 
             {/* Action buttons with enterprise hover effects */}
@@ -2198,6 +2302,7 @@ function NewAppointmentContent() {
                 onClick={() => {
                   setShowNewCustomerModal(false)
                   setNewCustomerData({ name: '', phone: '', email: '' })
+                  setValidationErrors({ phone: '', email: '' })
                 }}
                 disabled={creatingCustomer}
                 className="flex-1 transition-all duration-240"
@@ -2222,7 +2327,12 @@ function NewAppointmentContent() {
 
               <Button
                 onClick={handleCreateCustomer}
-                disabled={creatingCustomer || !newCustomerData.name}
+                disabled={
+                  creatingCustomer ||
+                  !newCustomerData.name ||
+                  !!validationErrors.phone ||
+                  !!validationErrors.email
+                }
                 className="flex-1 transition-all duration-240"
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',

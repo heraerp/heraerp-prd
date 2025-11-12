@@ -142,17 +142,6 @@ function transformRPCResponseToTransaction(rpcTransaction: any): any {
     lines: lines
   }
 
-  console.log('🔄 [transformRPCResponseToTransaction] Output:', {
-    id: transformedTransaction.id,
-    transaction_code: transformedTransaction.transaction_code,
-    source_entity_id: transformedTransaction.source_entity_id,
-    target_entity_id: transformedTransaction.target_entity_id,
-    metadata: transformedTransaction.metadata,
-    transaction_status: transformedTransaction.transaction_status,
-    deleted_at: transformedTransaction.deleted_at,
-    allKeys: Object.keys(transformedTransaction)
-  })
-
   return transformedTransaction
 }
 
@@ -507,8 +496,12 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
   const updateMutation = useMutation({
     mutationFn: async ({
       transaction_id,
+      lines, // ← NEW: Accept transaction lines for atomic updates
       ...updates
-    }: Partial<UniversalTransaction> & { transaction_id: string }) => {
+    }: Partial<UniversalTransaction> & {
+      transaction_id: string
+      lines?: Array<any> // ← NEW: Optional transaction lines
+    }) => {
       if (!organizationId || !actorUserId) {
         throw new Error('Organization ID and User ID required')
       }
@@ -517,6 +510,7 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       // - header: { smart_code (required), organization_id (required) }
       // - patch: { fields to update }
       // - transaction_id: at root level
+      // - lines: optional transaction lines array (NEW)
 
       const patch: any = {}
 
@@ -545,7 +539,7 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         patch.metadata = updates.metadata
       }
 
-      const updatePayload = {
+      const updatePayload: any = {
         transaction_id,
         header: {
           smart_code: updates.smart_code, // ✅ Required for guardrail
@@ -554,16 +548,24 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         patch
       }
 
+      // ✅ NEW: Include transaction lines if provided for atomic header + lines update
+      if (lines && lines.length > 0) {
+        updatePayload.lines = lines
+        // ✅ Use REPLACE mode to cleanly replace all lines (delete old, insert new)
+        patch.lines_mode = 'REPLACE'
+      }
+
       console.log('🚀 [useUniversalTransactionV1] UPDATE Payload:', {
         transaction_id,
         header: updatePayload.header,
         patch: updatePayload.patch,
+        lines_count: lines?.length || 0, // ← NEW: Log lines count
         header_smart_code: updatePayload.header.smart_code,
         updates_smart_code: updates.smart_code,
         full_payload: JSON.stringify(updatePayload, null, 2)
       })
 
-      // 🌟 TRANSACTION CRUD - UPDATE action
+      // 🌟 TRANSACTION CRUD - UPDATE action (now supports lines)
       const { data, error } = await transactionCRUD({
         p_action: 'UPDATE',
         p_actor_user_id: actorUserId,
@@ -601,26 +603,30 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       }
 
       // ✅ Extract updated transaction from NESTED response
-      // RPC UPDATE returns: { action: 'UPDATE', data: { action: 'READ', data: { header, lines } } }
+      // RPC UPDATE returns: { action: 'UPDATE', data: { success: true, action: 'UPDATE', data: { action: 'READ', data: { header, lines } } } }
       console.log('🔄 [useUniversalTransactionV1] UPDATE Response Structure:', {
         outerAction: data?.action,
+        innerSuccess: data?.data?.success,
         innerAction: data?.data?.action,
         hasData: !!data?.data?.data,
-        dataKeys: data?.data?.data ? Object.keys(data?.data?.data) : null,
-        fullData: data?.data?.data
+        dataAction: data?.data?.data?.action,
+        hasDataData: !!data?.data?.data?.data,
+        dataKeys: data?.data?.data?.data ? Object.keys(data?.data?.data?.data) : null,
+        fullData: data?.data?.data?.data
       })
 
-      // Use transformation function for consistency
+      // ✅ NEW: Extract from data.data.data.data (hera_txn_update_v1 returns { success, action, data: hera_txn_read_v1(...) })
       const updatedTransaction = {
-        header: data?.data?.data?.header || {},
-        lines: data?.data?.data?.lines || []
+        header: data?.data?.data?.data?.header || {},
+        lines: data?.data?.data?.data?.lines || []
       }
 
       console.log('🔄 [useUniversalTransactionV1] Extracted Updated Transaction:', {
         hasHeader: !!updatedTransaction.header,
         headerKeys: updatedTransaction.header ? Object.keys(updatedTransaction.header) : null,
         transaction_status: updatedTransaction.header?.transaction_status,
-        metadata: updatedTransaction.header?.metadata
+        metadata: updatedTransaction.header?.metadata,
+        lines_count: updatedTransaction.lines?.length || 0
       })
 
       return transformRPCResponseToTransaction(updatedTransaction)

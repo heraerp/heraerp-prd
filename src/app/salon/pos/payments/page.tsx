@@ -73,10 +73,12 @@ function PaymentsContent() {
   const [pageSize, setPageSize] = useState(25) // 25 payment transactions per page
 
   // Fetch sales data with branch filter
+  // ✅ FIX: No limit specified - fetch ALL transactions (RPC now supports unlimited fetch)
   const { sales, isLoading, refetch, SALE_STATUS_CONFIG, branches } = useHeraSales({
     organizationId: organizationId || '',
     filters: {
       branch_id: branchFilter !== 'all' ? branchFilter : undefined
+      // No limit = fetch all transactions
     }
   })
 

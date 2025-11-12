@@ -67,7 +67,7 @@ export function EntityMetadataProvider({ children }: { children: React.ReactNode
 
     const fullOptions: MetadataResolutionOptions = {
       organizationId: organization.id,
-      actorUserId: user.id,
+      actorUserId: user.entity_id || user.id,
       includePermissions: true,
       fallbackToPlatform: true,
       ...options

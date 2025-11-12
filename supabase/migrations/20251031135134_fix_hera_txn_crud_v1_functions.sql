@@ -372,7 +372,8 @@ DECLARE
     v_smart_code_like TEXT := NULLIF(p_filters->>'smart_code_like', '');
     v_date_from TIMESTAMPTZ := (p_filters->>'date_from')::TIMESTAMPTZ;
     v_date_to TIMESTAMPTZ := (p_filters->>'date_to')::TIMESTAMPTZ;
-    v_limit INTEGER := GREATEST(COALESCE((p_filters->>'limit')::INTEGER, 100), 1);
+    -- ✅ FIX: Remove hardcoded 100 limit - fetch ALL transactions when no limit specified
+    v_limit INTEGER := (p_filters->>'limit')::INTEGER;
     v_offset INTEGER := GREATEST(COALESCE((p_filters->>'offset')::INTEGER, 0), 0);
     v_results JSONB;
     v_total INTEGER;
@@ -392,7 +393,8 @@ BEGIN
     paginated AS (
         SELECT * FROM filtered_transactions
         ORDER BY transaction_date DESC, created_at DESC
-        LIMIT v_limit
+        -- ✅ FIX: LIMIT ALL when v_limit is NULL (fetch all transactions)
+        LIMIT COALESCE(v_limit, 2147483647)
         OFFSET v_offset
     )
     SELECT

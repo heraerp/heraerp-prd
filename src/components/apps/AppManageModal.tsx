@@ -79,12 +79,12 @@ export function AppManageModal({ open, onClose, app, onUnlinkSuccess }: AppManag
       console.log('🗑️ Unlinking app:', {
         app_code: app.code,
         organization_id: currentOrganization.id,
-        actor_user_id: user.id
+        actor_user_id: user.entity_id || user.id
       })
 
       // Call hera_org_unlink_app_v1 RPC (soft delete by default)
       const { data, error } = await supabase.rpc('hera_org_unlink_app_v1', {
-        p_actor_user_id: user.id,
+        p_actor_user_id: user.entity_id || user.id,
         p_organization_id: currentOrganization.id,
         p_app_code: app.code.toUpperCase(),
         p_uninstalled_at: new Date().toISOString(),

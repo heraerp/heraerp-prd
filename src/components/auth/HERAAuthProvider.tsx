@@ -381,28 +381,35 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
               // ✅ ENTERPRISE: Store app-agnostic auth context in localStorage
               // This handles users created via hera_onboard_user_v1 where auth UID ≠ user entity ID
+              // 🔴 CRITICAL FIX: Add try/catch to handle localStorage quota exceeded / Safari private mode
               if (typeof window !== 'undefined') {
-                // Core auth context (app-agnostic)
-                localStorage.setItem('hera_user_entity_id', userEntityId)
-                localStorage.setItem('hera_organization_id', normalizedOrgId)
-                localStorage.setItem('hera_user_id', user.id)
-                localStorage.setItem('hera_user_email', user.email || '')
-                localStorage.setItem('hera_user_name', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
-                localStorage.setItem('hera_user_role', role)
-                localStorage.setItem('hera_default_app', defaultApp || '')
-                localStorage.setItem('hera_current_app', currentApp || '')
+                try {
+                  // Core auth context (app-agnostic)
+                  localStorage.setItem('hera_user_entity_id', userEntityId)
+                  localStorage.setItem('hera_organization_id', normalizedOrgId)
+                  localStorage.setItem('hera_user_id', user.id)
+                  localStorage.setItem('hera_user_email', user.email || '')
+                  localStorage.setItem('hera_user_name', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
+                  localStorage.setItem('hera_user_role', role)
+                  localStorage.setItem('hera_default_app', defaultApp || '')
+                  localStorage.setItem('hera_current_app', currentApp || '')
 
-                // Legacy compatibility keys (for backward compatibility with salon-specific code)
-                localStorage.setItem('user_entity_id', userEntityId)
-                localStorage.setItem('organizationId', normalizedOrgId)
-                localStorage.setItem('userId', user.id)
-                localStorage.setItem('userEmail', user.email || '')
+                  // Legacy compatibility keys (for backward compatibility with salon-specific code)
+                  localStorage.setItem('user_entity_id', userEntityId)
+                  localStorage.setItem('organizationId', normalizedOrgId)
+                  localStorage.setItem('userId', user.id)
+                  localStorage.setItem('userEmail', user.email || '')
 
-                // ⚠️ DEPRECATED: salon-specific keys (kept for backward compatibility, will be removed in future)
-                localStorage.setItem('salonOrgId', normalizedOrgId)
-                localStorage.setItem('salonRole', role)
-                localStorage.setItem('salonUserEmail', user.email || '')
-                localStorage.setItem('salonUserName', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
+                  // ⚠️ DEPRECATED: salon-specific keys (kept for backward compatibility, will be removed in future)
+                  localStorage.setItem('salonOrgId', normalizedOrgId)
+                  localStorage.setItem('salonRole', role)
+                  localStorage.setItem('salonUserEmail', user.email || '')
+                  localStorage.setItem('salonUserName', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
+                } catch (storageError) {
+                  console.error('⚠️ Failed to write to localStorage (quota exceeded or private mode):', storageError)
+                  // Don't throw - allow user to continue with in-memory auth
+                  // Session will still work, just won't persist across page reloads
+                }
 
                 console.log('✅ Stored HERA auth context in localStorage:', {
                   user_entity_id: userEntityId,
@@ -566,16 +573,22 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       }
 
       // 4. Store COMPLETE auth context in localStorage (9 keys for full compatibility)
+      // 🔴 CRITICAL FIX: Add try/catch to handle localStorage quota exceeded / Safari private mode
       if (typeof window !== 'undefined') {
-        localStorage.setItem('organizationId', organizationId)
-        localStorage.setItem('safeOrganizationId', organizationId)
-        localStorage.setItem('salonOrgId', organizationId)
-        localStorage.setItem('salonRole', role)
-        localStorage.setItem('userId', data.user.id)
-        localStorage.setItem('userEmail', data.user.email || email)
-        localStorage.setItem('user_entity_id', userEntityId)
-        localStorage.setItem('salonUserEmail', data.user.email || email)
-        localStorage.setItem('salonUserName', data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User')
+        try {
+          localStorage.setItem('organizationId', organizationId)
+          localStorage.setItem('safeOrganizationId', organizationId)
+          localStorage.setItem('salonOrgId', organizationId)
+          localStorage.setItem('salonRole', role)
+          localStorage.setItem('userId', data.user.id)
+          localStorage.setItem('userEmail', data.user.email || email)
+          localStorage.setItem('user_entity_id', userEntityId)
+          localStorage.setItem('salonUserEmail', data.user.email || email)
+          localStorage.setItem('salonUserName', data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User')
+        } catch (storageError) {
+          console.error('⚠️ Failed to write to localStorage during login:', storageError)
+          // Don't throw - allow login to proceed with in-memory auth
+        }
 
         console.log('✅ Stored complete auth context in localStorage:', {
           organizationId,

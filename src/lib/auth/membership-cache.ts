@@ -105,27 +105,46 @@ class MembershipCache {
 
   /**
    * Actual fetch implementation
+   * 🔴 CRITICAL FIX: Add timeout to prevent indefinite hanging
    */
   private async doFetch(token: string, userId: string): Promise<any> {
     console.log(`🌐 Fetching fresh membership for user ${userId.slice(0, 8)}...`)
-    
-    const response = await fetch('/api/v2/auth/resolve-membership', {
-      headers: { 
-        Authorization: `Bearer ${token}`,
-        'Cache-Control': 'no-cache' // Ensure we get fresh data from server
-      },
-      // Remove 'no-store' to allow browser cache coordination
-    })
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      const errorCode = errorData.error || `HTTP ${response.status}`
-      throw new Error(`Membership resolution failed: ${errorCode}`)
+
+    // 🔴 FIX: Add 10-second timeout to prevent hanging
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
+    try {
+      const response = await fetch('/api/v2/auth/resolve-membership', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache' // Ensure we get fresh data from server
+        },
+        signal: controller.signal // Add abort signal for timeout
+        // Remove 'no-store' to allow browser cache coordination
+      })
+
+      clearTimeout(timeoutId) // Clear timeout on success
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        const errorCode = errorData.error || `HTTP ${response.status}`
+        throw new Error(`Membership resolution failed: ${errorCode}`)
+      }
+
+      const data = await response.json()
+      console.log(`✅ Fresh membership fetched for user ${userId.slice(0, 8)}`)
+      return data
+
+    } catch (error: any) {
+      clearTimeout(timeoutId) // Clear timeout on error
+
+      if (error.name === 'AbortError') {
+        console.error('⚠️ Membership API timeout after 10 seconds')
+        throw new Error('Membership resolution timeout - please try again')
+      }
+      throw error
     }
-    
-    const data = await response.json()
-    console.log(`✅ Fresh membership fetched for user ${userId.slice(0, 8)}`)
-    return data
   }
 
   /**
