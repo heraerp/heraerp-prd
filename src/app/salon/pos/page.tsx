@@ -779,7 +779,7 @@ function POSContent() {
           }
 
           // 🚀 ENTERPRISE: Set localStorage flag to trigger calendar refresh
-          localStorage.setItem('appointment_updated', JSON.stringify({
+          localStorage.setItem('appointment_status_updated', JSON.stringify({
             appointment_id: ticket.appointment_id,
             status: 'completed',
             servicesChanged,
