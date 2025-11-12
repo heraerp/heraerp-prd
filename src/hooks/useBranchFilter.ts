@@ -77,33 +77,69 @@ export function useBranchFilter(
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [didValidate, setDidValidate] = useState(false)
 
-  // Load branches on mount or organization change
+  // ✅ OPTIMIZED: Single useEffect for branch loading and validation
   useEffect(() => {
-    if (effectiveOrgId) {
-      loadBranches()
+    if (!effectiveOrgId) {
+      return
+    }
+
+    let isMounted = true
+
+    const loadAndValidateBranches = async () => {
+      setLoading(true)
+      setError(null)
+      console.log('useBranchFilter: Loading branches for org:', effectiveOrgId)
+
+      try {
+        const branchList = await getOrganizationBranches(effectiveOrgId)
+
+        if (!isMounted) return
+
+        console.log('useBranchFilter: Loaded branches:', branchList)
+        setBranches(branchList)
+
+        // Auto-select if only one branch and no current selection
+        if (branchList.length === 1 && !branchId) {
+          setBranchIdState(branchList[0].id)
+        }
+        // Validate persisted branch ID (only once after first load)
+        else if (
+          !didValidate &&
+          persistKey &&
+          typeof window !== 'undefined' &&
+          branchList.length > 0 &&
+          branchId &&
+          branchId !== 'all'
+        ) {
+          if (!branchList.some(b => b.id === branchId)) {
+            console.log('📍 Stored branch no longer exists, clearing filter:', branchId)
+            setBranchIdState(undefined)
+            localStorage.removeItem(`branch-filter-${persistKey}`)
+          }
+          setDidValidate(true)
+        }
+      } catch (err) {
+        if (!isMounted) return
+        console.error('Error loading branches:', err)
+        setError('Failed to load branches')
+        setBranches([])
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadAndValidateBranches()
+
+    return () => {
+      isMounted = false
     }
   }, [effectiveOrgId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Validate persisted branch ID when branches are loaded (only run once after branches load)
-  useEffect(() => {
-    if (
-      persistKey &&
-      typeof window !== 'undefined' &&
-      branches.length > 0 &&
-      branchId &&
-      branchId !== 'all'
-    ) {
-      // Check if the current branchId is still valid
-      if (!branches.some(b => b.id === branchId)) {
-        console.log('📍 Stored branch no longer exists, clearing filter:', branchId)
-        setBranchIdState(undefined) // Reset to undefined (show all)
-        localStorage.removeItem(`branch-filter-${persistKey}`) // Clear persistence
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [branches.length]) // Only re-run when branches count changes, not on every branchId change
-
+  // ✅ OPTIMIZED: Simplified manual refresh function
   const loadBranches = async () => {
     if (!effectiveOrgId) {
       console.log('useBranchFilter: No organization ID, skipping branch load')
@@ -112,19 +148,14 @@ export function useBranchFilter(
 
     setLoading(true)
     setError(null)
-    console.log('useBranchFilter: Loading branches for org:', effectiveOrgId)
+    console.log('useBranchFilter: Manually refreshing branches for org:', effectiveOrgId)
 
     try {
       const branchList = await getOrganizationBranches(effectiveOrgId)
-      console.log('useBranchFilter: Loaded branches:', branchList)
       setBranches(branchList)
-
-      // Auto-select if only one branch
-      if (branchList.length === 1 && !branchId) {
-        setBranchIdState(branchList[0].id)
-      }
+      console.log('useBranchFilter: Refreshed branches:', branchList)
     } catch (err) {
-      console.error('Error loading branches:', err)
+      console.error('Error refreshing branches:', err)
       setError('Failed to load branches')
       setBranches([])
     } finally {

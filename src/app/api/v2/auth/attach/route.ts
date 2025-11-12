@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
         {
           id: orgId,
           organization_id: orgId,
-          entity_type: 'ORG',
+          entity_type: 'ORGANIZATION',
           entity_name: orgRow?.organization_name || 'Organization',
           entity_code: orgRow?.organization_code || `ORG-${orgId.substring(0, 8)}`,
           smart_code: 'HERA.SYSTEM.ORG.ENTITY.ORGANIZATION.V1',

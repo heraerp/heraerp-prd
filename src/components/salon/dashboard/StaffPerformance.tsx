@@ -99,7 +99,7 @@ export function StaffPerformance({ kpis, formatCurrency, selectedPeriod }: Staff
             return (
               <div
                 key={staff.staffId}
-                className="group relative overflow-hidden rounded-xl p-5 transition-all duration-500 hover:scale-[1.008] cursor-pointer"
+                className="group relative overflow-hidden rounded-xl p-5 transition-all duration-500 hover:scale-[1.008]"
                 style={{
                   background: isTopThree
                     ? `linear-gradient(135deg, ${rankColor}15 0%, ${rankColor}05 100%)`
@@ -213,7 +213,7 @@ export function StaffPerformance({ kpis, formatCurrency, selectedPeriod }: Staff
       {/* Team Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div
-          className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+          className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-[1.02]"
           style={{
             backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
             border: `1px solid ${LUXE_COLORS.emerald}30`
@@ -229,7 +229,7 @@ export function StaffPerformance({ kpis, formatCurrency, selectedPeriod }: Staff
         </div>
 
         <div
-          className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+          className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-[1.02]"
           style={{
             backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
             border: `1px solid ${LUXE_COLORS.sapphire}30`
@@ -245,7 +245,7 @@ export function StaffPerformance({ kpis, formatCurrency, selectedPeriod }: Staff
         </div>
 
         <div
-          className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+          className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-[1.02]"
           style={{
             backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
             border: `1px solid ${LUXE_COLORS.gold}30`
@@ -261,7 +261,7 @@ export function StaffPerformance({ kpis, formatCurrency, selectedPeriod }: Staff
         </div>
 
         <div
-          className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+          className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-[1.02]"
           style={{
             backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
             border: `1px solid ${LUXE_COLORS.plum}30`

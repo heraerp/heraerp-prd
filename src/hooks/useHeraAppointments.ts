@@ -226,6 +226,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
   })
 
   // ✅ LAYER 1: Fetch customers using useUniversalEntityV1 (RPC API v2 Orchestrator)
+  // ✅ FIXED: Force refetch on mount to get newly created customers
   const {
     entities: customers,
     isLoading: customersLoading
@@ -236,6 +237,10 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       include_dynamic: false, // ✅ Performance: Don't need dynamic data for names
       include_relationships: false,
       list_mode: 'HEADERS' // ✅ V1: Fast mode (core fields only)
+    },
+    cacheConfig: {
+      refetchOnMount: true, // ✅ CRITICAL: Always refetch to get newly created customers
+      staleTime: 1 * 60 * 1000 // 1 minute (shorter than default 5 minutes)
     }
   })
 
@@ -324,6 +329,19 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       const stylistName = txn.target_entity_id
         ? staffMap.get(txn.target_entity_id) || 'Unassigned'
         : 'Unassigned'
+
+      // 🐛 DEBUG: Log every appointment to see which ones have Unknown Customer
+      if (customerName === 'Unknown Customer' && txn.source_entity_id) {
+        console.warn('[useHeraAppointments] 🚨 Unknown customer detected:', {
+          appointment_id: txn.id,
+          source_entity_id: txn.source_entity_id,
+          customerMapHasId: customerMap.has(txn.source_entity_id),
+          customerMapSize: customerMap.size,
+          customersLength: customers.length,
+          allCustomerIds: Array.from(customerMap.keys()),
+          transaction_date: txn.transaction_date
+        })
+      }
 
       if (index === 0) {
         console.log('[useHeraAppointments] First appointment enrichment:', {
@@ -518,7 +536,8 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       ...(data.duration_minutes && { duration_minutes: data.duration_minutes }),
       ...(data.notes !== undefined && { notes: data.notes }),
       ...(data.branch_id !== undefined && { branch_id: data.branch_id }),
-      ...(data.service_ids && { service_ids: data.service_ids }) // ✅ CRITICAL FIX: Include service_ids in metadata
+      ...(data.service_ids && { service_ids: data.service_ids }), // ✅ CRITICAL FIX: Include service_ids in metadata
+      ...(data.status !== undefined && { status: data.status }) // ✅ FIX: Update status in metadata
     }
 
     console.log('[useHeraAppointments] 🔍 Built updated metadata:', {
@@ -613,6 +632,79 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     return result
   }
 
+  // 🎯 ENTERPRISE: Replace Services - For POS sync (complete replacement of services)
+  const replaceServices = async ({
+    id,
+    serviceIds
+  }: {
+    id: string
+    serviceIds: string[]
+  }) => {
+    console.log('[useHeraAppointments] Replacing services:', { id, serviceIds })
+
+    if (!options?.organizationId) throw new Error('Organization ID required')
+
+    // Find the appointment
+    const appointment = enrichedAppointments.find(a => a.id === id)
+    if (!appointment) {
+      throw new Error('Appointment not found')
+    }
+
+    // Build service names and prices arrays
+    const serviceNames: string[] = []
+    const servicePrices: number[] = []
+
+    serviceIds.forEach(serviceId => {
+      const serviceData = serviceMap.get(serviceId)
+      if (serviceData) {
+        serviceNames.push(serviceData.name)
+        servicePrices.push(serviceData.price)
+      } else {
+        serviceNames.push('Service')
+        servicePrices.push(0)
+      }
+    })
+
+    // Calculate total amount
+    const totalAmount = servicePrices.reduce((sum, price) => sum + price, 0)
+
+    // Build transaction lines
+    const lines = serviceIds.map((serviceId, index) => {
+      const serviceData = serviceMap.get(serviceId)
+      return {
+        line_number: index + 1,
+        line_type: 'SERVICE',
+        entity_id: serviceId,
+        description: serviceData?.name || 'Service',
+        quantity: 1,
+        unit_amount: serviceData?.price || 0,
+        line_amount: serviceData?.price || 0,
+        smart_code: 'HERA.SALON.SERVICE.LINE.STANDARD.v1' // ✅ 6 segments, uppercase, lowercase version
+      }
+    })
+
+    // ✅ CRITICAL: Extract status from old metadata to avoid overwriting it
+    const { status: _oldStatus, ...metadataWithoutStatus } = appointment.metadata || {}
+
+    // Update appointment with new services and lines
+    const result = await updateTransaction({
+      transaction_id: id,
+      smart_code: appointment.smart_code || 'HERA.SALON.TRANSACTION.APPOINTMENT.STANDARD.v1', // ✅ CRITICAL: 6 segments, uppercase, lowercase version
+      total_amount: totalAmount,
+      metadata: {
+        ...metadataWithoutStatus, // ✅ FIX: Spread without status to avoid reverting status updates
+        service_ids: serviceIds,
+        service_names: serviceNames,
+        service_prices: servicePrices
+      },
+      lines
+    })
+
+    console.log('[useHeraAppointments] ✅ Services replaced:', result)
+
+    return result
+  }
+
   const isLoading =
     transactionsLoading || customersLoading || staffLoading || servicesLoading
 
@@ -629,6 +721,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     archiveAppointment,
     deleteAppointment: deleteAppointmentFunc,
     restoreAppointment,
+    replaceServices, // ✅ NEW: For POS service sync
 
     // Loading states - From useUniversalTransaction
     isCreating: isCreatingTransaction,

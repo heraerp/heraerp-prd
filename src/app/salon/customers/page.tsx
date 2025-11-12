@@ -2,7 +2,7 @@
 
 // Removed force-dynamic for better client-side navigation performance
 
-import React, { useState, useMemo, useCallback, Suspense, lazy } from 'react'
+import React, { useState, useMemo, useCallback, Suspense, lazy, useEffect } from 'react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraCustomers, type CustomerEntity } from '@/hooks/useHeraCustomers'
 import { CustomerList } from '@/components/salon/customers/CustomerList'
@@ -11,6 +11,7 @@ import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/Status
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import { SalonPagination } from '@/components/salon/ui/Pagination'
 
 // 🚀 LAZY LOADING: Split code for faster initial load
 const CustomerModal = lazy(() =>
@@ -107,11 +108,19 @@ function SalonCustomersPageContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [includeArchived, setIncludeArchived] = useState(false)
   const [sortBy, setSortBy] = useState('name_asc')
+  // 📄 PAGINATION STATE
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50) // 50 customers per page
   const [modalOpen, setModalOpen] = useState(false)
   const [editingCustomer, setEditingCustomer] = useState<CustomerEntity | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [customerToDelete, setCustomerToDelete] = useState<CustomerEntity | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+
+  // 🔄 RESET PAGE: Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, sortBy, includeArchived])
 
   // 🚨 ENTERPRISE ERROR LOGGING: Detailed console logs with timestamps
   const logError = useCallback(
@@ -239,6 +248,14 @@ function SalonCustomersPageContent() {
 
     return sorted
   }, [customers, sortBy])
+
+  // 📄 PAGINATION CALCULATIONS: Slice data for current page
+  const totalPages = Math.ceil(filteredAndSortedCustomers.length / pageSize)
+  const paginatedCustomers = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return filteredAndSortedCustomers.slice(startIndex, endIndex)
+  }, [filteredAndSortedCustomers, currentPage, pageSize])
 
   // CRUD Handlers - memoized for performance
   const handleSave = useCallback(
@@ -793,13 +810,32 @@ function SalonCustomersPageContent() {
           </div>
         ) : (
           <CustomerList
-            customers={filteredAndSortedCustomers}
+            customers={paginatedCustomers}
             viewMode={viewMode}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onArchive={handleArchive}
             onRestore={handleRestore}
           />
+        )}
+
+        {/* 📄 PAGINATION CONTROLS: Enterprise-grade pagination */}
+        {!isLoading && filteredAndSortedCustomers.length > 0 && (
+          <div className="mt-6">
+            <SalonPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredAndSortedCustomers.length}
+              pageSize={pageSize}
+              pageSizeOptions={[25, 50, 100]}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(newSize) => {
+                setPageSize(newSize)
+                setCurrentPage(1) // Reset to first page when changing page size
+              }}
+              itemsName="customers"
+            />
+          </div>
         )}
 
         {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}

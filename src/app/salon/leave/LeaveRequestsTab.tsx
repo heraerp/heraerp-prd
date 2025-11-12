@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { LeaveRequest } from '@/hooks/useHeraLeave'
 import { Calendar, Clock, CheckCircle, XCircle, Ban, User, FileText, ChevronDown, ChevronUp, Edit2, Trash2, MoreVertical } from 'lucide-react'
 import { format } from 'date-fns'
+import { SalonPagination } from '@/components/salon/ui/Pagination'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -604,6 +605,16 @@ export function LeaveRequestsTab({
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
+  // 📅 MONTH/YEAR FILTER: Default to current month
+  const currentDate = new Date()
+  const [selectedMonth, setSelectedMonth] = useState<number>(currentDate.getMonth()) // 0-11
+  const [selectedYear, setSelectedYear] = useState<number>(currentDate.getFullYear())
+  const [showAllTime, setShowAllTime] = useState<boolean>(false) // Toggle for "All Time" view
+
+  // 🚀 PAGINATION STATE: Enterprise-grade pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(25) // 25 leave requests per page
+
   // Filter requests
   const filteredRequests = useMemo(() => {
     let filtered = [...requests]
@@ -624,11 +635,35 @@ export function LeaveRequestsTab({
       )
     }
 
+    // 📅 MONTH/YEAR FILTER: Filter by start_date month/year
+    if (!showAllTime) {
+      filtered = filtered.filter(r => {
+        const startDate = new Date(r.start_date)
+        return (
+          startDate.getMonth() === selectedMonth &&
+          startDate.getFullYear() === selectedYear
+        )
+      })
+    }
+
     // Sort by date (most recent first)
     filtered.sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime())
 
     return filtered
-  }, [requests, statusFilter, searchQuery])
+  }, [requests, statusFilter, searchQuery, selectedMonth, selectedYear, showAllTime])
+
+  // 🔄 RESET PAGE: Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [statusFilter, searchQuery, selectedMonth, selectedYear, showAllTime])
+
+  // 📄 PAGINATION CALCULATIONS: Slice data for current page
+  const totalPages = Math.ceil(filteredRequests.length / pageSize)
+  const paginatedRequests = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return filteredRequests.slice(startIndex, endIndex)
+  }, [filteredRequests, currentPage, pageSize])
 
   if (isLoading) {
     return (
@@ -674,6 +709,59 @@ export function LeaveRequestsTab({
           <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
         </select>
+
+        {/* Month Filter */}
+        <select
+          value={showAllTime ? 'all' : selectedMonth.toString()}
+          onChange={e => {
+            if (e.target.value === 'all') {
+              setShowAllTime(true)
+            } else {
+              setShowAllTime(false)
+              setSelectedMonth(parseInt(e.target.value))
+            }
+          }}
+          className="w-full px-4 py-3 rounded-xl border text-sm transition-all duration-300"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            borderColor: `${COLORS.bronze}30`,
+            color: COLORS.champagne
+          }}
+        >
+          <option value="all">All Months</option>
+          <option value="0">January</option>
+          <option value="1">February</option>
+          <option value="2">March</option>
+          <option value="3">April</option>
+          <option value="4">May</option>
+          <option value="5">June</option>
+          <option value="6">July</option>
+          <option value="7">August</option>
+          <option value="8">September</option>
+          <option value="9">October</option>
+          <option value="10">November</option>
+          <option value="11">December</option>
+        </select>
+
+        {/* Year Filter */}
+        {!showAllTime && (
+          <select
+            value={selectedYear}
+            onChange={e => setSelectedYear(parseInt(e.target.value))}
+            className="w-full px-4 py-3 rounded-xl border text-sm transition-all duration-300"
+            style={{
+              backgroundColor: COLORS.charcoal,
+              borderColor: `${COLORS.bronze}30`,
+              color: COLORS.champagne
+            }}
+          >
+            {Array.from({ length: 5 }, (_, i) => currentDate.getFullYear() - 2 + i).map(year => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {/* Filters - Desktop */}
@@ -707,6 +795,59 @@ export function LeaveRequestsTab({
           <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
         </select>
+
+        {/* Month Filter */}
+        <select
+          value={showAllTime ? 'all' : selectedMonth.toString()}
+          onChange={e => {
+            if (e.target.value === 'all') {
+              setShowAllTime(true)
+            } else {
+              setShowAllTime(false)
+              setSelectedMonth(parseInt(e.target.value))
+            }
+          }}
+          className="px-4 py-2 rounded-lg border text-sm transition-all duration-300"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            borderColor: `${COLORS.bronze}30`,
+            color: COLORS.champagne
+          }}
+        >
+          <option value="all">All Months</option>
+          <option value="0">January</option>
+          <option value="1">February</option>
+          <option value="2">March</option>
+          <option value="3">April</option>
+          <option value="4">May</option>
+          <option value="5">June</option>
+          <option value="6">July</option>
+          <option value="7">August</option>
+          <option value="8">September</option>
+          <option value="9">October</option>
+          <option value="10">November</option>
+          <option value="11">December</option>
+        </select>
+
+        {/* Year Filter */}
+        {!showAllTime && (
+          <select
+            value={selectedYear}
+            onChange={e => setSelectedYear(parseInt(e.target.value))}
+            className="px-4 py-2 rounded-lg border text-sm transition-all duration-300"
+            style={{
+              backgroundColor: COLORS.charcoal,
+              borderColor: `${COLORS.bronze}30`,
+              color: COLORS.champagne
+            }}
+          >
+            {Array.from({ length: 5 }, (_, i) => currentDate.getFullYear() - 2 + i).map(year => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {/* Empty State */}
@@ -723,8 +864,8 @@ export function LeaveRequestsTab({
             No leave requests found
           </h3>
           <p className="text-sm" style={{ color: COLORS.bronze, opacity: 0.7 }}>
-            {searchQuery || statusFilter !== 'all'
-              ? 'Try adjusting your filters'
+            {searchQuery || statusFilter !== 'all' || !showAllTime
+              ? 'Try adjusting your filters or select "All Months" to view all requests'
               : 'Leave requests will appear here'}
           </p>
         </div>
@@ -732,7 +873,7 @@ export function LeaveRequestsTab({
 
       {/* Mobile Cards */}
       <div className="md:hidden">
-        {filteredRequests.map(request => (
+        {paginatedRequests.map(request => (
           <MobileCard
             key={request.id}
             request={request}
@@ -796,7 +937,7 @@ export function LeaveRequestsTab({
             </tr>
           </thead>
           <tbody>
-            {filteredRequests.map(request => (
+            {paginatedRequests.map(request => (
               <DesktopTableRow
                 key={request.id}
                 request={request}
@@ -811,6 +952,25 @@ export function LeaveRequestsTab({
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      {filteredRequests.length > 0 && (
+        <div className="mt-6">
+          <SalonPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredRequests.length}
+            pageSize={pageSize}
+            pageSizeOptions={[10, 25, 50, 100]}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(newSize) => {
+              setPageSize(newSize)
+              setCurrentPage(1)
+            }}
+            itemsName="leave requests"
+          />
+        </div>
+      )}
     </div>
   )
 }

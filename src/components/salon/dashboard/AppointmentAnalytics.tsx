@@ -142,7 +142,7 @@ export function AppointmentAnalytics({ kpis, selectedPeriod }: AppointmentAnalyt
               return (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+                  className="flex items-center justify-between p-3 rounded-xl transition-all duration-300 hover:scale-[1.008]"
                   style={{
                     backgroundImage: `linear-gradient(135deg, ${status.color}15 0%, ${status.color}05 100%)`,
                     border: `1px solid ${status.color}30`
@@ -189,7 +189,7 @@ export function AppointmentAnalytics({ kpis, selectedPeriod }: AppointmentAnalyt
               return (
                 <div
                   key={index}
-                  className="group p-5 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+                  className="group p-5 rounded-xl transition-all duration-300 hover:scale-[1.008]"
                   style={{
                     backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoalDark} 100%)`,
                     border: `1px solid ${metric.color}30`,
@@ -241,7 +241,7 @@ export function AppointmentAnalytics({ kpis, selectedPeriod }: AppointmentAnalyt
 
             {/* Average Appointment Value */}
             <div
-              className="group p-5 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+              className="group p-5 rounded-xl transition-all duration-300 hover:scale-[1.008]"
               style={{
                 backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.gold}15 0%, ${LUXE_COLORS.gold}05 100%)`,
                 border: `1px solid ${LUXE_COLORS.gold}40`,

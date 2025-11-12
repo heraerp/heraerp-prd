@@ -2,7 +2,7 @@
 
 // Removed force-dynamic for better client-side navigation performance
 
-import React, { useState, useMemo, useCallback, Suspense, lazy } from 'react'
+import React, { useState, useMemo, useCallback, Suspense, lazy, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraServices } from '@/hooks/useHeraServices'
@@ -13,6 +13,7 @@ import { ServiceCategory, ServiceCategoryFormValues } from '@/types/salon-servic
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import { SalonPagination } from '@/components/salon/ui/Pagination'
 import {
   SalonIconButton,
   SalonIconButtonGroup,
@@ -178,6 +179,10 @@ function SalonServicesPageContent() {
   const [sortBy, setSortBy] = useState('name_asc')
   // Local branch filter state (separate from global context)
   const [localBranchFilter, setLocalBranchFilter] = useState<string | null>(null)
+
+  // 🚀 PAGINATION STATE: Enterprise-grade pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50) // 50 services per page
 
   // Category modal state
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
@@ -359,6 +364,19 @@ function SalonServicesPageContent() {
 
     return sorted
   }, [services, searchQuery, categoryFilter, sortBy])
+
+  // 🔄 RESET PAGE: Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, categoryFilter, sortBy])
+
+  // 📄 PAGINATION CALCULATIONS: Slice data for current page
+  const totalPages = Math.ceil(filteredServices.length / pageSize)
+  const paginatedServices = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return filteredServices.slice(startIndex, endIndex)
+  }, [filteredServices, currentPage, pageSize])
 
   // CRUD handlers - memoized for performance
   const handleSave = useCallback(
@@ -1628,7 +1646,7 @@ function SalonServicesPageContent() {
               className="animate-in fade-in duration-300"
             >
               <ServiceList
-                services={filteredServices}
+                services={paginatedServices}
                 loading={isLoading}
                 viewMode={viewMode}
                 currency={currency}
@@ -1637,6 +1655,25 @@ function SalonServicesPageContent() {
                 onArchive={handleArchive}
                 onRestore={handleRestore}
               />
+
+              {/* 📄 PAGINATION CONTROLS: Enterprise-grade pagination */}
+              {filteredServices.length > 0 && (
+                <div className="mt-6">
+                  <SalonPagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={filteredServices.length}
+                    pageSize={pageSize}
+                    pageSizeOptions={[25, 50, 100]}
+                    onPageChange={setCurrentPage}
+                    onPageSizeChange={(newSize) => {
+                      setPageSize(newSize)
+                      setCurrentPage(1) // Reset to first page when changing page size
+                    }}
+                    itemsName="services"
+                  />
+                </div>
+              )}
             </div>
           </Suspense>
         )}

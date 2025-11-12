@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Calendar, Check, Phone, Clock, Star, Zap, ArrowRight, Sparkles } from 'lucide-react'
+import { Calendar, Check, Phone, Clock, Star, Zap, ChevronRight, Shield, Sparkles, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Book a Demo | HERA ERP',
@@ -99,24 +99,70 @@ export default function BookMeetingPage() {
           <div className="card-glass rounded-2xl p-8">
             <h2 className="mb-4 text-xl font-semibold ink">Choose a Time That Works for You</h2>
 
-            {/* Placeholder for calendar embed */}
-            <div className="rounded-lg border-2 border-dashed border-blue-800/30 bg-slate-900/30 p-8 text-center">
-              <div className="mx-auto mb-4 h-12 w-12 flex items-center justify-center">
-                <Calendar className="h-12 w-12 ink-muted" />
-              </div>
-              <p className="mb-4 ink-muted">Calendar widget will appear here</p>
-              <p className="text-sm ink-muted">
-                Replace this with your Calendly, Cal.com, or custom booking widget
-              </p>
+            {/* Microsoft Bookings Link */}
+            <div className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 p-8 relative overflow-hidden">
+              {/* Subtle animated background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-transparent opacity-50" />
 
-              {/* Temporary booking links */}
-              <div className="mt-6 space-y-3">
-                <a href="#" className="btn-gradient block py-3">
-                  <span className="relative z-10">Schedule for This Week</span>
-                </a>
-                <a href="#" className="btn-quiet block py-3">
-                  <span className="relative z-10">Schedule for Next Week</span>
-                </a>
+              <div className="relative z-10">
+                {/* Header Section */}
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex-shrink-0 w-14 h-14 flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl shadow-lg">
+                    <Calendar className="h-7 w-7 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-xl font-bold ink mb-1">
+                      View Available Time Slots
+                    </h3>
+                    <p className="text-sm ink-muted">
+                      Select a convenient time for your personalized demo
+                    </p>
+                  </div>
+                </div>
+
+                {/* Enterprise Features Grid */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="text-center p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                    <Clock className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                    <p className="text-xs font-medium ink-muted">30 Minutes</p>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                    <Zap className="w-5 h-5 text-purple-400 mx-auto mb-1" />
+                    <p className="text-xs font-medium ink-muted">No Obligation</p>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                    <Check className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
+                    <p className="text-xs font-medium ink-muted">Free Consultation</p>
+                  </div>
+                </div>
+
+                {/* CTA Button - HERA Theme */}
+                <div className="flex justify-center">
+                  <a
+                    href="https://outlook.office.com/bookwithme/user/368475775c5749b7af8023252bf81f62%40hanaset.com/meetingtype/DVZ72zcUlUGu53YRkUrU7g2?anonymous&ismsaljsauthenabled"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-base rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-purple-500/20 border border-indigo-500/20 active:scale-[0.98]"
+                  >
+                    <Calendar className="w-5 h-5" />
+                    Book Your Demo
+                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                  </a>
+                </div>
+
+                {/* Trust Indicators */}
+                <div className="mt-6 pt-6 border-t border-slate-700">
+                  <div className="flex items-center justify-center gap-6 text-xs text-slate-400">
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-emerald-400" />
+                      <span>Enterprise Security</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4 text-yellow-400" />
+                      <span>Rated 4.9/5</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -125,7 +171,12 @@ export default function BookMeetingPage() {
                 <Phone className="w-4 h-4 text-blue-400" />
                 <p className="text-sm ink-muted">Prefer to talk now?</p>
               </div>
-              <p className="font-semibold ink">Call us: 0800 HERA ERP</p>
+              <a
+                href="tel:+447440375190"
+                className="font-semibold ink hover:text-indigo-400 transition-colors"
+              >
+                Call us: +44 7440 375190
+              </a>
             </div>
           </div>
         </div>

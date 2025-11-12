@@ -75,7 +75,9 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     filters: {
       include_dynamic: true,
       include_relationships: true,
-      limit: options?.filters?.limit || 50, // ✅ FIXED: Reduced from 100, use passed limit
+      // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for service management
+      // Components can override with options?.filters?.limit if pagination needed
+      limit: options?.filters?.limit,
       ...options?.filters
     },
     dynamicFields: SERVICE_PRESET.dynamicFields as DynamicFieldDef[],
@@ -99,7 +101,8 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     filters: {
       include_dynamic: false,
       include_relationships: false,
-      limit: 100
+      // 🚀 ENTERPRISE: No hardcoded limit - load all categories
+      limit: undefined
     }
   })
 

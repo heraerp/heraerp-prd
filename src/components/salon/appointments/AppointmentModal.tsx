@@ -48,7 +48,8 @@ import {
   Edit2,
   Plus,
   Trash2,
-  Loader2
+  Loader2,
+  Phone
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Appointment } from '@/hooks/useHeraAppointments'
@@ -398,6 +399,10 @@ export function AppointmentModal({
   // ✅ CRITICAL FIX: Handle both entity_name and name fields for branches
   const customerName =
     customers.find(c => c.id === appointment.customer_id)?.entity_name || 'Unknown'
+  const customerPhone =
+    customers.find(c => c.id === appointment.customer_id)?.phone ||
+    customers.find(c => c.id === appointment.customer_id)?.dynamic_fields?.phone?.value ||
+    null
   const stylistName =
     stylists.find(s => s.id === appointment.stylist_id)?.entity_name || 'Unassigned'
   const branchName =
@@ -477,6 +482,34 @@ export function AppointmentModal({
                     </div>
                   )}
                 </div>
+
+                {/* Customer Phone Number */}
+                {customerPhone && (
+                  <div>
+                    <Label className="text-sm mb-2" style={{ color: LUXE_COLORS.champagne }}>
+                      Phone Number
+                    </Label>
+                    <div
+                      className="p-3 rounded-lg"
+                      style={{
+                        background: 'rgba(212,175,55,0.1)',
+                        border: `1px solid ${LUXE_COLORS.gold}20`,
+                        color: LUXE_COLORS.champagne
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
+                        <a
+                          href={`tel:${customerPhone}`}
+                          className="hover:text-gold transition-colors"
+                          style={{ color: LUXE_COLORS.champagne }}
+                        >
+                          {customerPhone}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Stylist Selection */}
                 <div>

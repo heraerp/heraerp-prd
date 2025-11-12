@@ -63,7 +63,7 @@ export function HeroMetrics({ kpis, formatCurrency, selectedPeriod }: HeroMetric
       {metrics.map((metric, index) => (
         <div
           key={index}
-          className="group relative overflow-hidden rounded-2xl p-6 backdrop-blur-xl transition-all duration-500 hover:scale-[1.008] hover:shadow-lg cursor-pointer"
+          className="group relative overflow-hidden rounded-2xl p-6 backdrop-blur-xl transition-all duration-500 hover:scale-[1.008] hover:shadow-lg"
           style={{
             backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.charcoalDark} 0%, ${LUXE_COLORS.charcoal} 100%)`,
             border: `1px solid ${metric.color}20`,

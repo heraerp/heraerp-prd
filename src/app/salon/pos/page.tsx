@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
 import { ShoppingCart, Monitor, Sparkles, Receipt as ReceiptIcon, AlertCircle, Building2, UserX, Users } from 'lucide-react'
 import Link from 'next/link'
+import { syncAppointmentServicesInBackground } from '@/lib/salon/appointment-service-sync'
 
 // ✅ ENTERPRISE PATTERN: Lazy load heavy components for better performance
 const CatalogPane = lazy(() => import('@/components/salon/pos/CatalogPane').then(m => ({ default: m.CatalogPane })))
@@ -135,8 +136,8 @@ function POSContent() {
 
   useCustomerLookup(effectiveOrgId || 'demo-org')
 
-  // Get appointment update function for status updates after payment
-  const { updateAppointmentStatus } = useHeraAppointments({ organizationId: effectiveOrgId || 'demo-org' })
+  // Get appointment update functions for status updates and service sync after payment
+  const { updateAppointmentStatus, replaceServices } = useHeraAppointments({ organizationId: effectiveOrgId || 'demo-org' })
 
   // 🎯 ENTERPRISE: Auto-load appointment from URL parameter
   useEffect(() => {
@@ -620,12 +621,50 @@ function POSContent() {
       setIsReceiptOpen(true)
 
       // Update appointment status to completed if payment was for an appointment
-      if (ticket.appointment_id) {
+      if (ticket.appointment_id && effectiveOrgId && user?.id) {
         try {
+          // 🎯 STEP 1: Update appointment status to completed FIRST
+          // This ensures status update is not overwritten by service sync
           await updateAppointmentStatus({
             id: ticket.appointment_id,
             status: 'completed'
           })
+
+          console.log('✅ [POS] Appointment status updated to completed')
+
+          // 🎯 STEP 2: Extract final service IDs from cart
+          const finalServiceIds = ticket.lineItems
+            .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
+            .map((item: any) => item.entity_id || item.id)
+            .filter(Boolean)
+
+          console.log('[POS] 🔄 Syncing services:', {
+            appointment_id: ticket.appointment_id,
+            finalServiceIds,
+            serviceCount: finalServiceIds.length
+          })
+
+          // 🎯 STEP 3: Sync services in background (non-blocking)
+          // Service sync now happens AFTER status update to avoid conflicts
+          if (finalServiceIds.length > 0) {
+            syncAppointmentServicesInBackground({
+              appointmentId: ticket.appointment_id,
+              finalServiceIds,
+              replaceServicesFunc: replaceServices,
+              onSuccess: () => {
+                console.log('✅ [POS] Services synced successfully')
+                // Invalidate appointment cache to refresh calendar
+                localStorage.setItem('appointment_services_updated', JSON.stringify({
+                  appointment_id: ticket.appointment_id,
+                  timestamp: new Date().toISOString(),
+                  source: 'pos_service_sync'
+                }))
+              },
+              onFailure: (error) => {
+                console.error('❌ [POS] Service sync failed:', error)
+              }
+            })
+          }
 
           // 🚀 ENTERPRISE: Set localStorage flag to trigger calendar refresh
           // This ensures the calendar updates when user navigates back
@@ -640,16 +679,16 @@ function POSContent() {
 
           toast({
             title: '✅ Appointment Completed',
-            description: 'Appointment status has been updated to completed.',
+            description: 'Services synced and appointment completed.',
             duration: 2000
           })
         } catch (error) {
-          console.error('[POSPage] ❌ Failed to update appointment status:', error)
+          console.error('[POSPage] ❌ Failed to update appointment:', error)
 
           // Don't block the payment flow, just show a warning
           toast({
-            title: '⚠️ Status Update Failed',
-            description: 'Payment was successful but appointment status could not be updated.',
+            title: '⚠️ Update Failed',
+            description: 'Payment was successful but appointment could not be updated.',
             variant: 'destructive',
             duration: 5000
           })
@@ -662,7 +701,7 @@ function POSContent() {
       setDefaultStylistName(undefined)
       setSelectedCustomer(null)
     },
-    [clearTicket, ticket.appointment_id, updateAppointmentStatus, toast]
+    [clearTicket, ticket.appointment_id, ticket.lineItems, effectiveOrgId, user, updateAppointmentStatus, replaceServices, toast]
   )
 
   // Get totals from the hook's memoized calculation

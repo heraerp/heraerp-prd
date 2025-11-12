@@ -87,7 +87,7 @@ if (!validation.isValid) {
 ### 🎯 GUARANTEED PREVENTION OF:
 1. ✅ **Schema Field Assumptions** - Uses actual database schema, prevents wrong field names
 2. ✅ **Wrong Field Placement** - Enforces business data in `core_dynamic_data` NOT metadata
-3. ✅ **Incorrect Relationships** - Enforces `source_entity_id`/`target_entity_id` patterns
+3. ✅ **Incorrect Relationships** - Enforces `from_entity_id`/`to_entity_id` patterns
 4. ✅ **Smart Code Format Errors** - Enforces UPPERCASE segments with lowercase `.v1` version automatically
 5. ✅ **Non-V2 API Usage** - Enforces `/api/v2/` endpoints with organization_id filtering
 6. ✅ **Duplicate Component Creation** - Checks existing components before creating new ones
@@ -98,7 +98,8 @@ if (!validation.isValid) {
 
 ⚠️ **CORRECTED FIELD NAMES** (From Actual Schema):
 - ✅ Use `transaction_number` (NOT `transaction_code`)
-- ✅ Use `source_entity_id`/`target_entity_id` (NOT `from_entity_id`/`to_entity_id`) 
+- ✅ Use `from_entity_id`/`to_entity_id` in `core_relationships` (NOT `source_entity_id`/`target_entity_id`)
+- ✅ Use `source_entity_id`/`target_entity_id` in `universal_transactions` (NOT `from_entity_id`/`to_entity_id`)
 - ✅ Use `entity_id` (NOT `line_entity_id`) in transaction lines
 - ✅ Use `line_order` (NOT `line_number`) in transaction lines
 - ✅ Use `relationship_data` (NOT `relationship_metadata`)
@@ -283,8 +284,8 @@ await apiV2.post('entities/dynamic-data', {
 
 // Relationships (for status workflows)
 await apiV2.post('relationships', {
-  source_entity_id: entityId,
-  target_entity_id: statusEntityId,
+  from_entity_id: entityId,
+  to_entity_id: statusEntityId,
   relationship_type: 'HAS_STATUS',
   organization_id: orgId
 })
@@ -829,9 +830,9 @@ const USER_PLATFORM_ORG = '00000000-0000-0000-0000-000000000000'
 
 // Membership relationships in tenant organizations
 await createRelationship({
-  source_entity_id: user.id,           // Actor entity
-  target_entity_id: organization.id,   // Tenant organization  
-  relationship_type: 'USER_MEMBER_OF_ORG',
+  from_entity_id: user.id,             // Actor entity
+  to_entity_id: organization.id,       // Tenant organization
+  relationship_type: 'MEMBER_OF',
   organization_id: organization.id     // Stored in tenant boundary
 })
 
@@ -880,8 +881,8 @@ const entity = { status: 'active' }
 
 // ✅ CORRECT - Use relationships
 await createRelationship({
-  source_entity_id: entity.id,
-  target_entity_id: activeStatusEntity.id,
+  from_entity_id: entity.id,
+  to_entity_id: activeStatusEntity.id,
   relationship_type: 'HAS_STATUS',
   organization_id: orgId
 })
@@ -1116,11 +1117,12 @@ const result = await apiV2.post('entities', {
 
 ### Common Issues:
 ```bash
-# Schema field errors (CORRECTED)
-✅ FIXED: transaction_code IS CORRECT (not transaction_number)
-✅ FIXED: from_entity_id/to_entity_id IS CORRECT in core_relationships 
-✅ FIXED: source_entity_id/target_entity_id IS CORRECT in universal_transactions
-✅ FIXED: entity_id/line_number IS CORRECT in universal_transaction_lines
+# Schema field errors (VERIFIED)
+✅ VERIFIED: transaction_number IS CORRECT in universal_transactions
+✅ VERIFIED: from_entity_id/to_entity_id IS CORRECT in core_relationships
+✅ VERIFIED: source_entity_id/target_entity_id IS CORRECT in universal_transactions
+✅ VERIFIED: entity_id IS CORRECT in universal_transaction_lines
+✅ VERIFIED: line_number IS CORRECT in universal_transaction_lines
 
 # Organization errors
 ERROR: DEFAULT_ORGANIZATION_ID not set

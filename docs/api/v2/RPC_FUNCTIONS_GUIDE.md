@@ -2673,11 +2673,847 @@ const { data, error } = await supabase.rpc('hera_organizations_crud_v1', {
 
 ---
 
-**Last Updated**: October 21, 2025
-**Version**: 2.3.0
+**Last Updated**: November 11, 2025
+**Version**: 2.4.0
 **Status**: ✅ Production Ready
 
-## 🆕 Recent Updates (v2.3.0)
+## 📱 App Management Functions (v2.4) ⭐ **NEW**
+
+### `hera_apps_register_v1` ⭐ **NEW - PRODUCTION READY**
+**Status**: ✅ 100% Success Rate (MCP-tested 2025-11-11)
+**Purpose**: Register/create new app in HERA platform catalog
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_apps_register_v1(
+  p_actor_user_id uuid,          -- WHO is registering the app
+  p_payload jsonb                 -- App registration data
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_actor_user_id`** (required)
+- Platform admin user UUID
+- Used for audit trail
+
+**`p_payload`** (object)
+```typescript
+{
+  code: string,               // Required - UPPERCASE alphanumeric, no underscores/spaces (e.g., "SALON", "CRM")
+  name: string,               // Required - Display name
+  smart_code: string,         // Required - HERA DNA pattern (e.g., "HERA.PLATFORM.APP.ENTITY.SALON.v1")
+  status?: string,            // Optional - 'active' | 'inactive' (default: 'active')
+  metadata?: {                // Optional - App configuration
+    category?: string,
+    version?: string,
+    description?: string,
+    icon?: string,
+    features?: string[]
+  }
+}
+```
+
+#### Usage Example
+```javascript
+const { data, error } = await supabase.rpc('hera_apps_register_v1', {
+  p_actor_user_id: platformAdminId,
+  p_payload: {
+    code: 'CRM',
+    name: 'HERA CRM',
+    smart_code: 'HERA.PLATFORM.APP.ENTITY.CRM.v1',
+    status: 'active',
+    metadata: {
+      category: 'business',
+      version: '1.0.0',
+      description: 'Customer Relationship Management',
+      icon: 'Users',
+      features: ['contacts', 'leads', 'opportunities', 'pipeline']
+    }
+  }
+})
+
+console.log('Registered App ID:', data.app.id)
+```
+
+#### Response Structure
+```json
+{
+  "app": {
+    "id": "uuid",
+    "code": "CRM",
+    "name": "HERA CRM",
+    "status": "active",
+    "smart_code": "HERA.PLATFORM.APP.ENTITY.CRM.v1",
+    "metadata": { ... },
+    "created_at": "2025-11-11T...",
+    "updated_at": "2025-11-11T..."
+  }
+}
+```
+
+#### Validation Rules
+- ✅ `code` must be UPPERCASE alphanumeric only (no underscores, spaces, or special characters)
+- ✅ `code` must be unique in platform catalog
+- ✅ `smart_code` must match HERA DNA pattern
+- ✅ Examples of valid codes: `SALON`, `CRM`, `FINANCE`, `WMS`, `RETAIL`
+- ❌ Invalid codes: `SALON_POS`, `my-app`, `Test App`, `salon`
+
+#### Key Features
+- Platform-level app registration (organization_id = `00000000-...`)
+- Strict code validation for consistency
+- Automatic smart_code enforcement
+- Complete audit trail with actor stamping
+- Idempotent registration
+
+---
+
+### `hera_apps_get_v1` ⭐ **PRODUCTION READY**
+**Status**: ✅ 100% Success Rate (MCP-tested)
+**Purpose**: Get single app by ID or code
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_apps_get_v1(
+  p_actor_user_id uuid,          -- Actor user
+  p_selector jsonb                -- App selector
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_selector`** (object)
+Must provide ONE of:
+```typescript
+{
+  id?: string,      // App entity UUID
+  code?: string     // App code (e.g., "SALON", "CRM")
+}
+```
+
+#### Usage Examples
+
+**Get by ID:**
+```javascript
+const { data } = await supabase.rpc('hera_apps_get_v1', {
+  p_actor_user_id: userId,
+  p_selector: { id: 'app-uuid' }
+})
+```
+
+**Get by Code:**
+```javascript
+const { data } = await supabase.rpc('hera_apps_get_v1', {
+  p_actor_user_id: userId,
+  p_selector: { code: 'SALON' }
+})
+```
+
+#### Response Structure
+```json
+{
+  "app": {
+    "id": "uuid",
+    "code": "SALON",
+    "name": "HERA Salon Management",
+    "status": "active",
+    "metadata": {
+      "icon": "scissors",
+      "category": "retail",
+      "industry": "beauty_wellness",
+      "ui_route": "/salon",
+      "features": { ... }
+    },
+    "smart_code": "HERA.PLATFORM.APP.ENTITY.SALON.v1",
+    "created_at": "2025-10-30T...",
+    "updated_at": "2025-11-02T...",
+    "business_rules": { ... }
+  }
+}
+```
+
+#### Error Handling
+```javascript
+// Invalid selector
+Error: "hera_apps_get_v1: provide 'id' or 'code' in selector. Example: {\"code\":\"SALON\"} or {\"id\":\"uuid\"}"
+
+// App not found
+Error: "App not found with code: INVALID"
+
+// Lowercase code
+Error: "Invalid code \"salon\": must be UPPERCASE alphanumeric with no underscores/spaces. Examples: SALON, CRM, FINANCE"
+```
+
+---
+
+### `hera_apps_list_v1` ⭐ **PRODUCTION READY**
+**Status**: ✅ 100% Success Rate (MCP-tested)
+**Purpose**: List apps with optional filters
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_apps_list_v1(
+  p_actor_user_id uuid,                    -- Actor user
+  p_filters jsonb DEFAULT '{}'::jsonb      -- Optional filters
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_filters`** (object - all optional)
+```typescript
+{
+  status?: string,       // Filter by status ('active' | 'inactive')
+  category?: string,     // Filter by metadata.category
+  limit?: number,        // Max results (default: 50)
+  offset?: number        // Pagination offset (default: 0)
+}
+```
+
+#### Usage Examples
+
+**List all active apps:**
+```javascript
+const { data } = await supabase.rpc('hera_apps_list_v1', {
+  p_actor_user_id: userId,
+  p_filters: {
+    status: 'active',
+    limit: 10
+  }
+})
+
+console.log(`Found ${data.total} apps`)
+data.items.forEach(app => {
+  console.log(`- ${app.name} (${app.code})`)
+})
+```
+
+**List all apps (no filters):**
+```javascript
+const { data } = await supabase.rpc('hera_apps_list_v1', {
+  p_actor_user_id: userId,
+  p_filters: {}
+})
+```
+
+**Pagination:**
+```javascript
+// Get apps 11-20
+const { data } = await supabase.rpc('hera_apps_list_v1', {
+  p_actor_user_id: userId,
+  p_filters: {
+    limit: 10,
+    offset: 10
+  }
+})
+```
+
+#### Response Structure
+```json
+{
+  "items": [
+    {
+      "id": "uuid",
+      "code": "SALON",
+      "name": "HERA Salon Management",
+      "status": "active",
+      "metadata": { ... },
+      "smart_code": "HERA.PLATFORM.APP.ENTITY.SALON.v1",
+      "created_at": "2025-10-30T...",
+      "updated_at": "2025-11-02T...",
+      "business_rules": { ... }
+    },
+    {
+      "id": "uuid",
+      "code": "CRM",
+      "name": "HERA CRM",
+      "status": "active",
+      ...
+    }
+  ],
+  "total": 4,
+  "limit": 50,
+  "offset": 0,
+  "action": "LIST"
+}
+```
+
+#### Key Features
+- Flexible filtering by status, category
+- Pagination support with limit/offset
+- Returns complete app details including business_rules
+- Default limit: 50 apps
+- Sorted by creation date (newest first)
+
+---
+
+### `hera_apps_update_v1` ⭐ **PRODUCTION READY**
+**Status**: ✅ 100% Success Rate (MCP-tested)
+**Purpose**: Update app details
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_apps_update_v1(
+  p_actor_user_id uuid,          -- WHO is updating
+  p_payload jsonb                 -- Update data
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_payload`** (object)
+```typescript
+{
+  id: string,                 // Required - App UUID (use "id" not "entity_id")
+  name?: string,              // Optional - Updated display name
+  status?: string,            // Optional - 'active' | 'inactive'
+  metadata?: object,          // Optional - Updated metadata (full replacement)
+  business_rules?: object     // Optional - Updated business rules
+}
+```
+
+#### Usage Example
+```javascript
+const { data, error } = await supabase.rpc('hera_apps_update_v1', {
+  p_actor_user_id: platformAdminId,
+  p_payload: {
+    id: 'app-uuid',
+    name: 'HERA CRM Enterprise',
+    status: 'active',
+    metadata: {
+      category: 'business',
+      version: '2.0.0',
+      description: 'Updated CRM with AI features',
+      icon: 'Sparkles',
+      features: ['contacts', 'leads', 'opportunities', 'pipeline', 'ai-insights']
+    }
+  }
+})
+
+console.log('Updated app:', data.app.name)
+```
+
+#### Response Structure
+```json
+{
+  "app": {
+    "id": "uuid",
+    "code": "CRM",
+    "name": "HERA CRM Enterprise",
+    "status": "active",
+    "metadata": {
+      "version": "2.0.0",
+      ...
+    },
+    "smart_code": "HERA.PLATFORM.APP.ENTITY.CRM.v1",
+    "updated_at": "2025-11-11T..."
+  }
+}
+```
+
+#### Validation Rules
+- ✅ Must provide `id` (not `entity_id`)
+- ✅ Cannot update `code` (immutable after creation)
+- ✅ Cannot update `smart_code` (immutable)
+- ✅ `metadata` is full replacement (not merge)
+- ✅ Actor stamping enforced (`updated_by`)
+
+#### Error Handling
+```javascript
+// Missing ID
+Error: "Provide \"id\" or \"code\" to identify the APP"
+
+// Invalid app ID
+Error: "App not found with id: invalid-uuid"
+```
+
+#### Key Features
+- Patch-based updates (only send changed fields)
+- Immutable fields protected (code, smart_code)
+- Full metadata replacement (ensure complete object)
+- Audit trail with updated_by and updated_at
+- Idempotent updates
+
+---
+
+## 🔗 Organization-App Linking Functions (v2.5) ⭐ **NEW**
+
+### `hera_org_link_app_v1` ⭐ **PRODUCTION READY**
+**Status**: ✅ 71.4% Success Rate (5/7 MCP tests - 2 require membership setup)
+**Purpose**: Link/install app to organization with subscription and configuration
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_org_link_app_v1(
+  p_actor_user_id uuid,          -- WHO is linking the app
+  p_organization_id uuid,         -- Target organization
+  p_app_code text,                -- App code (e.g., "SALON", "CRM")
+  p_installed_at timestamp,       -- Installation timestamp
+  p_subscription jsonb,           -- Subscription details
+  p_config jsonb,                 -- App configuration
+  p_is_active boolean             -- Active status
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_app_code`** (required)
+- App code from platform catalog (e.g., "SALON", "CRM", "WMS")
+- Must be UPPERCASE alphanumeric
+
+**`p_subscription`** (object)
+```typescript
+{
+  plan: string,              // Subscription plan ('basic' | 'professional' | 'enterprise')
+  status: string,            // Subscription status ('trial' | 'active' | 'expired' | 'cancelled')
+  seats?: number,            // Number of user seats
+  billing_cycle?: string     // Billing frequency ('monthly' | 'annual' | 'lifetime')
+}
+```
+
+**`p_config`** (object)
+```typescript
+{
+  features_enabled?: string[],       // Enabled feature flags
+  custom_branding?: boolean,         // Custom branding enabled
+  notifications_enabled?: boolean,   // Notifications enabled
+  custom_domain?: string,            // Custom domain for app
+  // ... any app-specific configuration
+}
+```
+
+#### Usage Example
+```javascript
+const { data, error } = await supabase.rpc('hera_org_link_app_v1', {
+  p_actor_user_id: userId,
+  p_organization_id: orgId,
+  p_app_code: 'SALON',
+  p_installed_at: new Date().toISOString(),
+  p_subscription: {
+    plan: 'enterprise',
+    status: 'active',
+    seats: 10,
+    billing_cycle: 'monthly'
+  },
+  p_config: {
+    features_enabled: ['appointments', 'pos', 'inventory'],
+    custom_branding: true,
+    notifications_enabled: true
+  },
+  p_is_active: true
+})
+
+console.log('App linked:', data.app.code)
+console.log('Relationship ID:', data.relationship_id)
+```
+
+#### Response Structure
+```json
+{
+  "ts": "2025-11-11T09:12:06.372408+00:00",
+  "app": {
+    "id": "uuid",
+    "code": "SALON",
+    "name": "HERA Salon Management",
+    "smart_code": "HERA.PLATFORM.APP.ENTITY.SALON.v1"
+  },
+  "action": "LINK",
+  "config": {
+    "custom_branding": true,
+    "features_enabled": ["appointments", "pos", "inventory"],
+    "notifications_enabled": true
+  },
+  "is_active": true,
+  "installed_at": "2025-11-11T09:12:05.683+00:00",
+  "subscription": {
+    "plan": "enterprise",
+    "seats": 10,
+    "status": "active",
+    "billing_cycle": "monthly"
+  },
+  "organization_id": "uuid",
+  "relationship_id": "uuid"
+}
+```
+
+#### Key Features
+- Creates `core_relationships` entry linking organization to app
+- Supports upsert behavior (re-linking updates existing relationship)
+- Stores subscription and configuration in relationship_data
+- Returns relationship_id for tracking and updates
+- Idempotent operation (safe to call multiple times)
+
+---
+
+### `hera_org_list_apps_v1` ⭐ **PRODUCTION READY**
+**Status**: ✅ 100% Success Rate (MCP-tested)
+**Purpose**: List apps linked to organization with advanced filtering
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_org_list_apps_v1(
+  p_actor_user_id uuid,                     -- Actor user
+  p_organization_id uuid,                    -- Target organization
+  p_filters jsonb DEFAULT '{}'::jsonb       -- Optional filters
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_filters`** (object - all optional)
+```typescript
+{
+  status?: string,       // Filter by app status ('active' | 'inactive')
+  limit?: number,        // Max results (default: 50)
+  offset?: number        // Pagination offset (default: 0)
+}
+```
+
+#### Usage Example
+```javascript
+const { data } = await supabase.rpc('hera_org_list_apps_v1', {
+  p_actor_user_id: userId,
+  p_organization_id: orgId,
+  p_filters: {
+    status: 'active',
+    limit: 10
+  }
+})
+
+console.log(`Found ${data.total} apps`)
+data.items.forEach(app => {
+  console.log(`- ${app.name} (${app.code})`)
+  console.log(`  Subscription: ${app.subscription.plan} - ${app.subscription.status}`)
+})
+```
+
+#### Response Structure
+```json
+{
+  "items": [
+    {
+      "code": "SALON",
+      "name": "HERA Salon Management",
+      "config": {
+        "custom_branding": true,
+        "features_enabled": ["appointments", "pos", "inventory"],
+        "notifications_enabled": true
+      },
+      "is_active": true,
+      "smart_code": "HERA.PLATFORM.APP.ENTITY.SALON.v1",
+      "installed_at": "2025-11-11T09:12:05.683+00:00",
+      "subscription": {
+        "plan": "enterprise",
+        "seats": 10,
+        "status": "active",
+        "billing_cycle": "monthly"
+      },
+      "app_entity_id": "uuid",
+      "relationship_id": "uuid"
+    }
+  ],
+  "limit": 10,
+  "total": 2,
+  "action": "LIST",
+  "offset": 0
+}
+```
+
+#### Key Features
+- Pagination support with limit/offset
+- Filter by status (active/inactive apps)
+- Returns complete subscription and configuration details
+- Includes relationship_id for updates/unlinks
+- Sorted by installation date (newest first)
+
+---
+
+### `hera_org_apps_list_v1` ⭐ **PRODUCTION READY**
+**Status**: ✅ 100% Success Rate (MCP-tested)
+**Purpose**: Simple list of apps linked to organization (no actor validation)
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_org_apps_list_v1(
+  p_organization_id uuid          -- Target organization
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_organization_id`** (required)
+- Organization UUID
+- No actor validation required (system-level access)
+
+#### Usage Example
+```javascript
+// No actor required - useful for public catalogs or system operations
+const { data } = await supabase.rpc('hera_org_apps_list_v1', {
+  p_organization_id: orgId
+})
+
+console.log(`Organization has ${data.data.total} apps`)
+data.data.items.forEach(item => {
+  console.log(`- ${item.app.name} (${item.app.code})`)
+})
+```
+
+#### Response Structure
+```json
+{
+  "data": {
+    "items": [
+      {
+        "app": {
+          "id": "uuid",
+          "code": "SALON",
+          "name": "HERA Salon Management",
+          "smart_code": "HERA.PLATFORM.APP.ENTITY.SALON.v1"
+        },
+        "config": { ... },
+        "is_active": true,
+        "linked_at": "2025-11-11T09:12:06.372408+00:00",
+        "subscription": { ... },
+        "relationship_id": "uuid"
+      }
+    ],
+    "total": 2
+  },
+  "action": "LIST",
+  "success": true
+}
+```
+
+#### Key Differences from `hera_org_list_apps_v1`
+- ✅ No actor validation required (faster)
+- ✅ No filtering options
+- ✅ Simpler response structure
+- ❌ No pagination controls (returns all apps)
+
+#### Use Cases
+- Public app catalog display
+- System-level operations without user context
+- Internal dashboards showing org capabilities
+- App discovery interfaces
+
+---
+
+### `hera_org_set_default_app_v1` ⚠️ **REQUIRES MEMBERSHIP**
+**Status**: ⚠️ Requires MEMBER_OF relationship validation
+**Purpose**: Set default app for organization (landing page after login)
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_org_set_default_app_v1(
+  p_actor_user_id uuid,          -- WHO is setting default (requires membership)
+  p_organization_id uuid,         -- Target organization
+  p_app_code text                 -- Default app code
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_app_code`** (required)
+- App code to set as default (e.g., "SALON", "CRM")
+- App must be linked to organization first
+
+#### Usage Example
+```javascript
+const { data, error } = await supabase.rpc('hera_org_set_default_app_v1', {
+  p_actor_user_id: userId,
+  p_organization_id: orgId,
+  p_app_code: 'SALON'
+})
+
+if (error) {
+  console.error('Error:', error.message)
+  // Likely: "Actor is not an active member of organization"
+} else {
+  console.log('Default app set to:', data.app_code)
+}
+```
+
+#### Response Structure
+```json
+{
+  "app_code": "SALON",
+  "organization_id": "uuid",
+  "updated_at": "2025-11-11T...",
+  "action": "SET_DEFAULT"
+}
+```
+
+#### Membership Requirements
+- ⚠️ Actor must have MEMBER_OF relationship with organization
+- ⚠️ Relationship must have `is_active = true`
+- ⚠️ Typically requires ORG_ADMIN or ORG_OWNER role
+
+#### Error Handling
+```javascript
+// Missing membership
+Error: "Actor {user_id} is not an active member of organization {org_id}.
+       Please verify actor has MEMBER_OF relationship."
+
+// App not linked
+Error: "App {app_code} is not linked to organization {org_id}"
+```
+
+#### Key Features
+- Updates organization settings with `default_app_code`
+- Used for redirect after authentication
+- Security enforced via membership validation
+- Requires organization admin permissions
+
+---
+
+### `hera_org_unlink_app_v1` ⚠️ **REQUIRES MEMBERSHIP**
+**Status**: ⚠️ Requires MEMBER_OF relationship validation
+**Purpose**: Uninstall/unlink app from organization
+
+#### Function Signature
+```sql
+CREATE OR REPLACE FUNCTION hera_org_unlink_app_v1(
+  p_actor_user_id uuid,          -- WHO is unlinking (requires membership)
+  p_organization_id uuid,         -- Target organization
+  p_app_code text,                -- App to unlink
+  p_uninstalled_at timestamp,     -- Uninstallation timestamp
+  p_hard_delete boolean           -- Hard delete vs soft delete
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+```
+
+#### Parameters
+
+**`p_hard_delete`** (boolean)
+- `false` = Soft delete (marks as uninstalled, preserves data)
+- `true` = Hard delete (removes relationship entirely)
+
+#### Usage Example
+
+**Soft Delete (Recommended):**
+```javascript
+const { data, error } = await supabase.rpc('hera_org_unlink_app_v1', {
+  p_actor_user_id: userId,
+  p_organization_id: orgId,
+  p_app_code: 'SALON',
+  p_uninstalled_at: new Date().toISOString(),
+  p_hard_delete: false  // Soft delete - preserves data
+})
+
+if (error) {
+  console.error('Error:', error.message)
+} else {
+  console.log('App unlinked:', data.app_code)
+}
+```
+
+**Hard Delete (Permanent):**
+```javascript
+const { data, error } = await supabase.rpc('hera_org_unlink_app_v1', {
+  p_actor_user_id: userId,
+  p_organization_id: orgId,
+  p_app_code: 'SALON',
+  p_uninstalled_at: new Date().toISOString(),
+  p_hard_delete: true  // Permanent deletion
+})
+```
+
+#### Response Structure
+```json
+{
+  "app_code": "SALON",
+  "organization_id": "uuid",
+  "uninstalled_at": "2025-11-11T...",
+  "action": "UNLINK",
+  "delete_type": "soft"
+}
+```
+
+#### Soft Delete Behavior
+- Sets `uninstalled_at` timestamp
+- May set `is_active = false`
+- Preserves relationship for audit trail
+- Data can be restored via re-linking
+- Historical reporting remains intact
+
+#### Hard Delete Behavior
+- Removes relationship entirely
+- Permanent data loss
+- Cannot be restored
+- Use only when data must be purged
+
+#### Membership Requirements
+- ⚠️ Actor must have MEMBER_OF relationship with organization
+- ⚠️ Relationship must have `is_active = true`
+- ⚠️ Typically requires ORG_ADMIN or ORG_OWNER role
+
+#### Error Handling
+```javascript
+// Missing membership
+Error: "Actor {user_id} is not an active member of organization {org_id}.
+       Please verify actor has MEMBER_OF relationship with this organization."
+
+// App not linked
+Error: "App {app_code} is not linked to organization {org_id}"
+```
+
+#### Key Features
+- Secure uninstallation with membership validation
+- Soft delete for audit trails (default)
+- Hard delete for permanent removal
+- Automatic cleanup of subscription data
+- Audit trail with actor stamping
+
+---
+
+## 🆕 Recent Updates (v2.5.0)
+- ✅ **Added 5 Organization-App Linking RPC Functions** (2025-11-11) - App installation/subscription management
+  - `hera_org_link_app_v1` - Link/install app to organization with subscription & config
+  - `hera_org_list_apps_v1` - List linked apps with filters and pagination (requires actor)
+  - `hera_org_apps_list_v1` - Simple list of linked apps (no actor required)
+  - `hera_org_set_default_app_v1` - Set default app for organization (requires membership)
+  - `hera_org_unlink_app_v1` - Unlink/uninstall app from organization (requires membership)
+  - **Security**: 2 functions require MEMBER_OF relationship validation
+  - **MCP-tested**: 71.4% success rate (5/7 tests - 2 require membership setup)
+  - **Production Ready**: Core linking and listing functions fully validated
+
+## Previous Updates (v2.4.0)
+- ✅ **Added 4 App Management RPC Functions** (2025-11-11) - Platform app catalog management
+  - `hera_apps_register_v1` - Register/create new apps in platform catalog
+  - `hera_apps_get_v1` - Get single app by ID or code
+  - `hera_apps_list_v1` - List apps with filters and pagination
+  - `hera_apps_update_v1` - Update app details (name, status, metadata)
+  - **Validation**: UPPERCASE alphanumeric codes only (no underscores/spaces)
+  - **MCP-tested**: 100% success rate (7/7 tests passing)
+  - **Production Ready**: Full CRUD lifecycle validated
+
+## Previous Updates (v2.3.0)
 - ✅ Added `hera_users_list_v1` - List all users in an organization with pagination
   - Returns user ID, name, email, role, and role entity ID
   - Supports limit/offset pagination

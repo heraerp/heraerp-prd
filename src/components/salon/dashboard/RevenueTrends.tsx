@@ -183,7 +183,7 @@ export function RevenueTrends({ kpis, formatCurrency, selectedPeriod }: RevenueT
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Month-to-Date Revenue */}
         <div
-          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008]"
           style={{
             backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.emerald}15 0%, ${LUXE_COLORS.emerald}05 100%)`,
             border: `1px solid ${LUXE_COLORS.emerald}30`,
@@ -211,7 +211,7 @@ export function RevenueTrends({ kpis, formatCurrency, selectedPeriod }: RevenueT
 
         {/* Average Transaction Value */}
         <div
-          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008]"
           style={{
             backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.sapphire}15 0%, ${LUXE_COLORS.sapphire}05 100%)`,
             border: `1px solid ${LUXE_COLORS.sapphire}30`,
@@ -239,7 +239,7 @@ export function RevenueTrends({ kpis, formatCurrency, selectedPeriod }: RevenueT
 
         {/* Total Revenue */}
         <div
-          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008] cursor-pointer"
+          className="group p-4 rounded-xl transition-all duration-300 hover:scale-[1.008]"
           style={{
             backgroundImage: `linear-gradient(135deg, ${LUXE_COLORS.gold}15 0%, ${LUXE_COLORS.gold}05 100%)`,
             border: `1px solid ${LUXE_COLORS.gold}40`,

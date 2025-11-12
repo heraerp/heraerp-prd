@@ -73,6 +73,10 @@ export interface UseUniversalEntityV1Config {
   }
   dynamicFields?: DynamicFieldDef[]
   relationships?: RelationshipDef[]
+  cacheConfig?: {
+    refetchOnMount?: boolean | 'always'
+    staleTime?: number
+  }
 }
 
 // ============================================================================
@@ -353,7 +357,9 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
       entity_type,
       organizationId,
       {
-        limit: filters.limit ?? 100,
+        // 🚀 ENTERPRISE: No default limit - allow unlimited fetch by default
+        // Components can set explicit limit in filters for pagination
+        limit: filters.limit ?? null,
         offset: filters.offset ?? 0,
         include_dynamic: filters.include_dynamic !== false,
         include_relationships: !!filters.include_relationships,
@@ -408,7 +414,9 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
         p_dynamic: {}, // ✅ Required by RPC even for READ - empty object means "no filter, fetch all"
         p_relationships: {}, // ✅ CRITICAL FIX: Use empty object (not { relationships: [] }) matching orchestrator test
         p_options: {
-          limit: filters.limit || 100,
+          // 🚀 ENTERPRISE: Only include limit if explicitly set, otherwise fetch all
+          // This allows database to return full result set without artificial constraints
+          ...(filters.limit !== undefined && filters.limit !== null ? { limit: filters.limit } : {}),
           include_dynamic: filters.include_dynamic !== false,
           include_relationships: !!filters.include_relationships,
           ...(filters.list_mode && { list_mode: filters.list_mode }) // ✅ NEW: Performance optimization for list reads
@@ -460,10 +468,10 @@ export function useUniversalEntityV1(config: UseUniversalEntityV1Config) {
       return transformedEntities
     },
     enabled: !!organizationId && !!actorUserId,
-    staleTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: config.cacheConfig?.staleTime ?? 30 * 60 * 1000, // 30 minutes by default, configurable
     gcTime: 60 * 60 * 1000, // 60 minutes
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: config.cacheConfig?.refetchOnMount ?? false, // ✅ CONFIGURABLE: Allow callers to force refetch
     refetchOnReconnect: false,
     retry: 1
   })

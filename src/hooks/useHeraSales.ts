@@ -157,7 +157,9 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
       date_from: options?.filters?.date_from,
       date_to: options?.filters?.date_to,
       include_lines: true, // ✅ FIX: Sales DO use universal_transaction_lines pattern
-      limit: options?.filters?.limit || 100,
+      // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for payment history
+      // Components can override with options?.filters?.limit if pagination needed
+      limit: options?.filters?.limit,
       offset: options?.filters?.offset || 0
     }
   })
