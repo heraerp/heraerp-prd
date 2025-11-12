@@ -27,9 +27,10 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 import { Loader2, Shield, AlertTriangle, Clock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
-import { useSalonSecurityStore, SOFT_TTL, HARD_TTL } from '@/lib/salon/security-store'
+import { useSalonSecurityStore, SOFT_TTL, HARD_TTL, GRACE_PERIOD, POS_TRANSACTION_PROTECTION_TTL } from '@/lib/salon/security-store'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { ReconnectingBanner } from '@/components/salon/auth/ReconnectingBanner'
+import { useEnterpriseActivityTracking } from '@/hooks/useEnterpriseActivityTracking'
 
 interface Branch {
   id: string
@@ -60,6 +61,11 @@ interface SalonSecurityContext extends SecurityContext {
   availableBranches: Branch[]
   isLoadingBranches: boolean // ✅ Track branch loading state
   setSelectedBranchId: (branchId: string) => void
+  
+  // 🎯 POS Transaction Protection
+  posTransactionActive: boolean
+  setPosTransactionActive: (active: boolean) => void
+  updatePosActivity: () => void
 }
 
 interface SalonAuthError {
@@ -126,6 +132,13 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const router = useRouter()
   const securityStore = useSalonSecurityStore()
   const auth = useHERAAuth()
+
+  // ✅ ENTERPRISE: Enable automatic activity-based session extension
+  const activityTracking = useEnterpriseActivityTracking({
+    enabled: true,
+    throttleMs: 5 * 60 * 1000, // 5 minutes between extensions
+    debugMode: process.env.NODE_ENV === 'development'
+  })
 
   // Branch state
   const [selectedBranchId, setSelectedBranchIdState] = useState<string | null>(() => {
@@ -350,6 +363,21 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       return
     }
 
+    // 🛡️ CRITICAL PRODUCTION FIX: NEVER trigger re-auth during navigation 
+    // when user is already authenticated with valid session
+    // This prevents the customer search logout issue
+    if (auth.isAuthenticated && securityStore.isInitialized && hasInitialized) {
+      // Even if shouldReinitialize() returns true, don't interrupt navigation
+      // for authenticated users with initialized context
+      const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
+      const hoursOld = Math.round(timeSinceInit / 1000 / 60 / 60)
+      
+      if (hoursOld < 23) { // Session is less than 23 hours old
+        console.log(`✅ Navigation protection: Keeping user logged in (session ${hoursOld}h old)`)
+        return
+      }
+    }
+
     // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (ONLY after loading completes)
     // ✅ PATIENCE FIX: Don't show error immediately - wait for context to be ready
     if (!auth.isAuthenticated) {
@@ -513,18 +541,17 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         clearContext()
         redirectToAuth()
       } else if (event === 'TOKEN_REFRESHED') {
-        console.log('🔐 TOKEN_REFRESHED event - token auto-refreshed')
-        // ✅ ENTERPRISE FIX: Do NOT force reinit on token refresh
-        // Token refresh is automatic and doesn't invalidate cache
-        // Only reinit if cache has ACTUALLY expired (HARD_TTL exceeded)
-        if (securityStore.shouldReinitialize()) {
-          console.log('🔄 Cache hard expired (60+ min), reinitializing...')
-          // ✅ FIX: Use SILENT mode during token refresh - automatic background operation
-          // This prevents "Reconnecting" banner during routine token refresh
-          await runReinitSingleFlight({ silent: true })
-          authCheckDoneRef.current = true
-        } else {
-          console.log('✅ Cache still valid, no reinit needed')
+        console.log('🔐 TOKEN_REFRESHED event - token auto-refreshed by Supabase')
+        // ✅ ENTERPRISE: Trust Supabase's automatic token refresh mechanism
+        // Token refresh is a normal background operation that should NOT trigger re-authentication
+        // This eliminates the most common cause of unnecessary authentication checks
+        console.log('✅ Enterprise mode: Token refresh handled automatically, no action needed')
+        
+        // ✅ ENTERPRISE: Only log if session is extremely old (diagnostic info)
+        const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
+        const hoursOld = Math.round(timeSinceInit / 1000 / 60 / 60)
+        if (hoursOld > 20) {
+          console.log(`ℹ️ Enterprise session info: ${hoursOld}h old, but still valid thanks to token refresh`)
         }
       }
     })
@@ -533,62 +560,57 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   }, []) // ✅ Empty deps - use refs to prevent re-initialization
 
   /**
-   * ✅ ENTERPRISE: Heartbeat mechanism for proactive session refresh
-   * Runs every 4 minutes to refresh context before SOFT_TTL (10 min) expires
-   * Smart Code: HERA.SECURITY.AUTH.HEARTBEAT.v1
+   * ✅ ENTERPRISE: Gentle session monitoring (30-minute intervals)
+   * Replaced aggressive 4-minute heartbeat with enterprise-grade monitoring
+   * Smart Code: HERA.SECURITY.AUTH.ENTERPRISE_MONITORING.v1
    */
   useEffect(() => {
-    // Only start heartbeat after successful initialization
+    // Only start monitoring after successful initialization
     if (!hasInitialized || !context.isAuthenticated) {
       return
     }
 
-    // Clear any existing heartbeat
+    // Clear any existing monitoring
     if (heartbeatTimerRef.current) {
       clearInterval(heartbeatTimerRef.current)
     }
 
-    console.log('💓 Starting heartbeat mechanism (4-minute interval)')
+    console.log('🏢 Starting enterprise session monitoring (30-minute intervals)')
 
-    // Start heartbeat: check and refresh every 4 minutes
-    const HEARTBEAT_INTERVAL = 4 * 60 * 1000 // 4 minutes
+    // ✅ ENTERPRISE: Much gentler monitoring - every 30 minutes instead of 4 minutes
+    const ENTERPRISE_MONITORING_INTERVAL = 30 * 60 * 1000 // 30 minutes
 
     heartbeatTimerRef.current = setInterval(() => {
-      // ✅ FIX: Skip heartbeat if page is hidden (tab/window switched)
-      // This prevents unnecessary reconnections when user switches tabs
+      // Skip monitoring if page is hidden (tab/window switched)
       if (typeof document !== 'undefined' && document.hidden) {
-        console.log('💓 Heartbeat: Skipping (page hidden)')
+        console.log('🏢 Enterprise monitoring: Skipping (page hidden)')
         return
       }
 
       const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
+      const hoursOld = Math.round(timeSinceInit / 1000 / 60 / 60)
 
-      // If approaching SOFT_TTL (10 min), do background refresh
-      if (timeSinceInit > SOFT_TTL - 60000) {
-        // Within 1 minute of SOFT_TTL
-        console.log('💓 Heartbeat: Proactive background refresh (approaching SOFT_TTL) - SILENT MODE')
-
-        // ✅ FIX: ALWAYS use silent mode for heartbeat refresh (no banner shown)
-        // This prevents "Reconnecting" banner during routine 10-minute maintenance
+      // ✅ ENTERPRISE: Only refresh if session is truly stale (approaching HARD_TTL)
+      // This prevents unnecessary authentication during normal work hours
+      if (timeSinceInit > HARD_TTL - (2 * 60 * 60 * 1000)) {
+        // Within 2 hours of HARD_TTL (22+ hours old)
+        console.log(`🏢 Enterprise monitoring: Session approaching expiry (${hoursOld}h old), silent refresh`)
+        
         runReinitSingleFlight({ silent: true }).catch(error => {
-          console.warn('💓 Heartbeat: Background refresh failed (non-critical):', error)
-          // Don't show error to user - this is proactive maintenance
+          console.warn('🏢 Enterprise monitoring: Background refresh failed (non-critical):', error)
         })
       } else {
-        console.log(`💓 Heartbeat: Session healthy (${Math.round(timeSinceInit / 60000)} min old)`)
+        console.log(`🏢 Enterprise monitoring: Session healthy (${hoursOld}h old, ${Math.round((HARD_TTL - timeSinceInit) / 1000 / 60 / 60)}h remaining)`)
       }
-    }, HEARTBEAT_INTERVAL)
+    }, ENTERPRISE_MONITORING_INTERVAL)
 
-    // ✅ FIX: Listen for visibility changes to handle tab switching gracefully
+    // ✅ ENTERPRISE: Gentle visibility change handling
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        console.log('👁️ Page hidden - pausing heartbeat checks')
-      } else {
-        console.log('👁️ Page visible - resuming normal operation')
-        // When page becomes visible again, check if session needs refresh
+      if (!document.hidden) {
+        // Only check when page becomes visible, and only if session is truly expired
         const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
         if (timeSinceInit > HARD_TTL) {
-          console.log('👁️ Session expired during tab switch, refreshing...')
+          console.log('🏢 Session expired during absence, refreshing silently...')
           runReinitSingleFlight({ silent: true })
         }
       }
@@ -601,7 +623,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     // Cleanup on unmount
     return () => {
       if (heartbeatTimerRef.current) {
-        console.log('💓 Stopping heartbeat mechanism')
+        console.log('🏢 Stopping enterprise session monitoring')
         clearInterval(heartbeatTimerRef.current)
         heartbeatTimerRef.current = null
       }
@@ -1515,9 +1537,13 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       executeSecurely,
       hasPermission,
       hasAnyPermission,
-      retry: initializeSecureContext
+      retry: initializeSecureContext,
+      // 🎯 POS Transaction Protection
+      posTransactionActive: securityStore.posTransactionActive || false,
+      setPosTransactionActive: securityStore.setPosTransactionActive,
+      updatePosActivity: securityStore.updatePosActivity
     }),
-    [context, isLoadingBranches, hasPermission, hasAnyPermission]
+    [context, isLoadingBranches, hasPermission, hasAnyPermission, securityStore.posTransactionActive, securityStore.setPosTransactionActive, securityStore.updatePosActivity]
   )
 
   // ✅ ENTERPRISE UX: Optimized loading state - only show when cache is stale
@@ -1528,10 +1554,15 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
   const timeSincePageLoad = typeof window !== 'undefined' ? Date.now() - (window.performance?.timing?.navigationStart || 0) : Infinity
   const isInGracePeriod = timeSincePageLoad < 500 // 500ms grace period for smooth transition
 
+  // 🚨 PRODUCTION FIX: Don't show loading during POS transactions
+  // This prevents interrupting customer transactions
+  const shouldReinitialize = securityStore.shouldReinitialize()
+  
   const isInitializing =
-    (!securityStore.isInitialized || securityStore.shouldReinitialize()) &&
+    (!securityStore.isInitialized || shouldReinitialize) &&
     (context.isLoading || !hasInitialized || isInGracePeriod) &&
-    auth.isAuthenticated
+    auth.isAuthenticated &&
+    !securityStore.posTransactionActive // 🛡️ CRITICAL: Never interrupt POS transactions
 
   if (isInitializing) {
     return (
