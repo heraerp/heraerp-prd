@@ -63,11 +63,11 @@ interface SalonSecurityState {
   shouldReinitialize: () => boolean
 }
 
-// ✅ ENTERPRISE: Extended TTL for salon business continuity
+// ✅ ENTERPRISE: Extended TTL for salon business continuity  
 // CRITICAL: Support full work shifts without authentication interruption
 // Smart Code: HERA.SECURITY.AUTH.ENTERPRISE_TTL.v1
 const SOFT_TTL = 12 * 60 * 60 * 1000 // 12 hours - full shift coverage
-const HARD_TTL = 24 * 60 * 60 * 1000 // 24 hours - multi-shift support
+const HARD_TTL = 24 * 60 * 60 * 1000 // 24 hours - multi-shift support (was 8 hours)
 const GRACE_PERIOD = 15 * 60 * 1000  // 15 minutes - extended grace for network issues
 const REINIT_INTERVAL = HARD_TTL // Backward compatibility
 

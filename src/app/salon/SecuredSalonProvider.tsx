@@ -363,21 +363,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       return
     }
 
-    // 🔒 RACE CONDITION FIX: Wait for COMPLETE auth resolution (session + organization)
-    // The membership API call takes 200-500ms after session loads
-    // If we check too early, we get false negative and redirect logged-in users
-    // This prevents occasional logout on fresh login (timing-dependent bug)
-    if (auth.isAuthenticated && !auth.organization?.id) {
-      console.log('⏸️ Session exists but organization context not resolved yet, waiting...', {
-        hasUser: !!auth.user,
-        isAuthenticated: auth.isAuthenticated,
-        hasOrganization: !!auth.organization?.id,
-        timestamp: new Date().toISOString()
-      })
-      return
-    }
-
-    // 🛡️ CRITICAL PRODUCTION FIX: NEVER trigger re-auth during navigation
+    // 🛡️ CRITICAL PRODUCTION FIX: NEVER trigger re-auth during navigation 
     // when user is already authenticated with valid session
     // This prevents the customer search logout issue
     if (auth.isAuthenticated && securityStore.isInitialized && hasInitialized) {
@@ -385,7 +371,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       // for authenticated users with initialized context
       const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
       const hoursOld = Math.round(timeSinceInit / 1000 / 60 / 60)
-
+      
       if (hoursOld < 23) { // Session is less than 23 hours old
         console.log(`✅ Navigation protection: Keeping user logged in (session ${hoursOld}h old)`)
         return
@@ -395,7 +381,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
     // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (ONLY after loading completes)
     // ✅ PATIENCE FIX: Don't show error immediately - wait for context to be ready
     if (!auth.isAuthenticated) {
-      console.log('🚪 Not authenticated (after complete resolution check), redirecting to auth...')
+      console.log('🚪 Not authenticated, redirecting to auth...')
       authCheckDoneRef.current = false // Reset for next login
       // DON'T update context here - prevents "Access Denied" flash
       // Just redirect silently
@@ -609,15 +595,9 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       if (timeSinceInit > HARD_TTL - (2 * 60 * 60 * 1000)) {
         // Within 2 hours of HARD_TTL (22+ hours old)
         console.log(`🏢 Enterprise monitoring: Session approaching expiry (${hoursOld}h old), silent refresh`)
-
-        // 🔴 CRITICAL FIX: Graceful degradation on heartbeat failure
-        // Don't invalidate context on failure - let user continue working
-        // Next heartbeat will retry
+        
         runReinitSingleFlight({ silent: true }).catch(error => {
           console.warn('🏢 Enterprise monitoring: Background refresh failed (non-critical):', error)
-          // DON'T clear context - this is critical!
-          // User continues working with current (slightly stale) context
-          // Next heartbeat will retry refresh
         })
       } else {
         console.log(`🏢 Enterprise monitoring: Session healthy (${hoursOld}h old, ${Math.round((HARD_TTL - timeSinceInit) / 1000 / 60 / 60)}h remaining)`)
@@ -631,12 +611,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
         if (timeSinceInit > HARD_TTL) {
           console.log('🏢 Session expired during absence, refreshing silently...')
-
-          // 🔴 CRITICAL FIX: Graceful degradation on visibility change refresh
-          runReinitSingleFlight({ silent: true }).catch(error => {
-            console.warn('⚠️ Tab refresh failed, keeping existing context:', error)
-            // Keep user working with cached context instead of logout
-          })
+          runReinitSingleFlight({ silent: true })
         }
       }
     }
@@ -753,23 +728,7 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       const uid = session?.user?.id
       if (!uid) {
-        // 🔴 CRITICAL FIX: Fallback to cached context instead of immediate logout
-        // If session check failed but we have valid cached context, keep user working
-        if (securityStore.isInitialized) {
-          const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
-
-          // If cache is reasonably fresh (< 2 hours), use it as fallback
-          if (timeSinceInit < 2 * 60 * 60 * 1000) {
-            console.log(`⚠️ Session check failed but cache is fresh (${Math.round(timeSinceInit / 60000)} min old), using cached context`)
-            // User continues working with cached context
-            // Next heartbeat will retry session refresh
-            return
-          } else {
-            console.log(`❌ Session check failed and cache is stale (${Math.round(timeSinceInit / 60000)} min old)`)
-          }
-        }
-
-        console.log('🚪 No stable session found and no valid cache, redirecting to auth')
+        console.log('🚪 No stable session found, redirecting to auth')
         return
       }
 
