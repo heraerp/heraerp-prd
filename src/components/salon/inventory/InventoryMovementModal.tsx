@@ -243,7 +243,7 @@ export function InventoryMovementModal({
       // Create inventory movement transaction
       const txnPayload = {
         p_action: 'CREATE',
-        p_actor_user_id: user.id,
+        p_actor_user_id: user.entity_id || user.id,
         p_organization_id: organization.id,
         p_transaction: {
           transaction_type: config.transactionType,
@@ -303,7 +303,7 @@ export function InventoryMovementModal({
         const processorResult = await processInventoryTransaction({
           transactionId,
           organizationId: organization.id,
-          actorUserId: user.id
+          actorUserId: user.entity_id || user.id
         })
 
         if (processorResult.success) {

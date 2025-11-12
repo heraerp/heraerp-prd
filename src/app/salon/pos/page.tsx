@@ -663,74 +663,113 @@ function POSContent() {
 
   const handlePaymentComplete = useCallback(
     async (saleData: any) => {
+      console.log('[POS] 💰 handlePaymentComplete called', {
+        saleData,
+        ticket_appointment_id: ticket.appointment_id,
+        effectiveOrgId,
+        user_id: user?.id,
+        has_all_required: !!(ticket.appointment_id && effectiveOrgId && user?.id)
+      })
+
       setCompletedSale(saleData)
       setIsPaymentOpen(false)
       setIsReceiptOpen(true)
 
       // Update appointment status to completed if payment was for an appointment
-      if (ticket.appointment_id && effectiveOrgId && user?.id) {
+      if (ticket.appointment_id && effectiveOrgId) {
+        console.log('[POS] 🎯 Starting appointment status update after payment', {
+          appointment_id: ticket.appointment_id,
+          organization_id: effectiveOrgId,
+          user_id: user?.id,
+          line_items_count: ticket.lineItems?.length
+        })
+
+        // 🔥 FIX: Move variable declarations outside try-catch so they're accessible in error logging
+        const finalServiceIds = ticket.lineItems
+          .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
+          .map((item: any) => item.entity_id || item.id)
+          .filter(Boolean)
+
+        const servicePriceMap = ticket.lineItems
+          .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
+          .reduce((acc: Record<string, number>, item: any) => ({
+            ...acc,
+            [item.entity_id || item.id]: item.unit_price || 0
+          }), {} as Record<string, number>)
+
+        // Detect changes (services OR prices)
+        const originalServiceIds = ticket.originalServiceIds || []
+        const originalServicePrices = ticket.originalServicePrices || {}
+        const servicesChanged = !arraysEqual(originalServiceIds, finalServiceIds)
+        const pricesChanged = detectPriceChanges(originalServiceIds, finalServiceIds, servicePriceMap, originalServicePrices)
+        const needsSync = servicesChanged || pricesChanged
+
         try {
           // 🎯 ENTERPRISE: Single Atomic Update - Status, Metadata, Services, AND Prices
-          // Extract final service IDs and prices from cart
-          const finalServiceIds = ticket.lineItems
-            .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
-            .map((item: any) => item.entity_id || item.id)
-            .filter(Boolean)
-
-          const servicePriceMap = ticket.lineItems
-            .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
-            .reduce((acc: Record<string, number>, item: any) => ({
-              ...acc,
-              [item.entity_id || item.id]: item.unit_price || 0
-            }), {} as Record<string, number>)
-
-          // Detect changes (services OR prices)
-          const originalServiceIds = ticket.originalServiceIds || []
-          const originalServicePrices = ticket.originalServicePrices || {}
-          const servicesChanged = !arraysEqual(originalServiceIds, finalServiceIds)
-          const pricesChanged = detectPriceChanges(originalServiceIds, finalServiceIds, servicePriceMap, originalServicePrices)
-          const needsSync = servicesChanged || pricesChanged
-
-          console.log('[POS] 🔍 Change detection:', {
+          // 🔍 CRITICAL DEBUG: Log status update decision factors
+          console.log('[POS] 🔍 Status update decision analysis:', {
             appointment_id: ticket.appointment_id,
+            needsSync,
             servicesChanged,
             pricesChanged,
-            needsSync,
-            originalServiceCount: originalServiceIds.length,
-            finalServiceCount: finalServiceIds.length,
-            priceChanges: Object.keys(servicePriceMap).filter(id => {
-              const original = originalServicePrices[id] ?? 0
-              const final = servicePriceMap[id] ?? 0
-              return Math.abs(original - final) > 0.01
-            }).length
+            finalServiceIds_count: finalServiceIds.length,
+            finalServiceIds,
+            originalServiceIds,
+            originalServicePrices,
+            servicePriceMap,
+            will_use_atomic_update: needsSync && finalServiceIds.length > 0,
+            will_use_simple_update: !(needsSync && finalServiceIds.length > 0)
           })
 
           if (needsSync && finalServiceIds.length > 0) {
-            console.log('[POS] 🔄 Updating appointment atomically (status + services + prices)...')
+            console.log('[POS] 🔄 Updating appointment atomically...')
+            console.log('[POS] 💰 Service prices being sent:', {
+              servicePriceMap,
+              servicePriceMap_keys: Object.keys(servicePriceMap),
+              finalServiceIds,
+              finalServiceIds_length: finalServiceIds.length,
+              prices_array: finalServiceIds.map(id => servicePriceMap[id] || 0),
+              // ✅ DEBUG: Show exact key-value pairs
+              price_map_entries: Object.entries(servicePriceMap).map(([key, value]) => ({
+                key,
+                key_length: key.length,
+                value,
+                first_char: key[0],
+                last_char: key[key.length - 1]
+              })),
+              service_id_details: finalServiceIds.map(id => ({
+                id,
+                id_length: id.length,
+                found_in_map: id in servicePriceMap,
+                price: servicePriceMap[id]
+              }))
+            })
 
             // ✅ SINGLE ATOMIC UPDATE - All changes in ONE RPC call
-            await updateAppointmentComplete({
+            const updateResult = await updateAppointmentComplete({
               id: ticket.appointment_id,
-              transaction_status: 'completed', // ← Update status
+              transaction_status: 'completed', // ← Update status (authoritative field)
               metadata: {
+                // ❌ REMOVED: status field - it belongs in transaction_status, not metadata
                 completed_at: new Date().toISOString(),
-                completed_by: user?.id || 'system',
-                pos_sale_id: paymentResult.transactionId, // ← Link to POS sale transaction
+                completed_by: user?.entity_id || user?.id || 'system',
+                pos_sale_id: saleData.transaction_id, // ← Link to POS sale transaction
                 payment_method: ticket.payment_method || 'cash'
               },
               serviceIds: finalServiceIds, // ← Update services
               servicePrices: servicePriceMap // ← Update prices
             })
 
-            console.log('✅ [POS] Appointment updated atomically:', {
-              status: 'completed',
+            console.log('✅ [POS] Appointment completed:', {
               services_count: finalServiceIds.length,
-              prices_updated: pricesChanged
+              prices_updated: pricesChanged,
+              result_total_amount: updateResult?.total_amount,
+              result_metadata_service_prices: updateResult?.metadata?.service_prices
             })
           } else {
-            console.log('[POS] ℹ️ No changes detected - only updating status...')
-
             // Just update status if no service/price changes
+            console.log('[POS] 📝 Updating appointment status only (no service/price changes)...')
+
             await updateAppointmentStatus({
               id: ticket.appointment_id,
               status: 'completed'
@@ -757,20 +796,38 @@ function POSContent() {
             duration: 2000
           })
         } catch (error: any) {
-          console.error('[POSPage] ❌ Failed to update appointment:', error)
-          console.error('[POSPage] 🔍 Error details:', {
-            message: error?.message,
+          // ✅ ENTERPRISE ERROR LOGGING: Comprehensive RPC failure analysis
+          const errorDetails = {
+            message: error?.message || 'Unknown error',
             stack: error?.stack,
-            response: error?.response,
-            data: error?.data
-          })
+            rpcResponse: error?.response?.data || error?.data,
+            appointmentId: ticket.appointment_id,
+            serviceIds: finalServiceIds,
+            servicesChanged,
+            pricesChanged,
+            needsSync,
+            context: 'appointment_status_update_after_payment',
+            organizationId: effectiveOrgId,
+            userId: user?.id,
+            timestamp: new Date().toISOString()
+          }
+
+          console.error('[POSPage] ❌ CRITICAL: Failed to update appointment after payment:', errorDetails)
+
+          // Log the full error object for debugging
+          console.error('[POSPage] 🔍 Full error object:', error)
+
+          // If RPC returned structured error, log it separately
+          if (error?.response?.data?.error || error?.data?.error) {
+            console.error('[POSPage] 🔍 RPC Error Response:', error?.response?.data || error?.data)
+          }
 
           // Don't block the payment flow, just show a warning
           toast({
             title: '⚠️ Update Failed',
-            description: `Payment was successful but appointment could not be updated: ${error?.message || 'Unknown error'}`,
+            description: `Payment was successful but appointment could not be updated: ${error?.message || 'Unknown error'}. Check console for details.`,
             variant: 'destructive',
-            duration: 5000
+            duration: 7000
           })
         }
       }
@@ -781,7 +838,7 @@ function POSContent() {
       setDefaultStylistName(undefined)
       setSelectedCustomer(null)
     },
-    [clearTicket, ticket.appointment_id, ticket.lineItems, effectiveOrgId, user, updateAppointmentStatus, replaceServices, toast]
+    [clearTicket, ticket.appointment_id, ticket.lineItems, effectiveOrgId, user, updateAppointmentStatus, updateAppointmentComplete, replaceServices, toast]
   )
 
   // Get totals from the hook's memoized calculation

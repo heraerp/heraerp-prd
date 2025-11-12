@@ -195,7 +195,7 @@ export function PayrollModal({ isOpen, onClose, onSuccess }: PayrollModalProps) 
 
     const input: CreatePayrollInput = {
       organizationId: organization.id,
-      actorUserId: user.id,
+      actorUserId: user.entity_id || user.id,
       payPeriodStart: new Date(payPeriodStart).toISOString(),
       payPeriodEnd: new Date(payPeriodEnd).toISOString(),
       paymentMethod,

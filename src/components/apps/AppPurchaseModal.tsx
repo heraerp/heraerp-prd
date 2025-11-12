@@ -67,12 +67,12 @@ export function AppPurchaseModal({ open, onClose, app, onPurchaseSuccess }: AppP
       console.log('🛒 Purchasing app:', {
         app_code: app.code,
         organization_id: currentOrganization.id,
-        actor_user_id: user.id
+        actor_user_id: user.entity_id || user.id
       })
 
       // Call hera_org_link_app_v1 RPC
       const { data, error } = await supabase.rpc('hera_org_link_app_v1', {
-        p_actor_user_id: user.id,
+        p_actor_user_id: user.entity_id || user.id,
         p_organization_id: currentOrganization.id,
         p_app_code: app.code.toUpperCase(),
         p_installed_at: new Date().toISOString(),

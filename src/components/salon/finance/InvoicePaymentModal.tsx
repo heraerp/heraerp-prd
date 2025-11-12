@@ -141,7 +141,7 @@ export function InvoicePaymentModal({
     try {
       const input: RecordInvoicePaymentInput = {
         organizationId: organization.id,
-        actorUserId: user.id,
+        actorUserId: user.entity_id || user.id,
         invoiceTransactionId: invoice.invoice_id,
         invoiceNumber: invoice.invoice_number,
         customerEntityId: invoice.customer_entity_id,

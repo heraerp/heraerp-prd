@@ -122,7 +122,7 @@ export function InvoiceModal({ isOpen, onClose, onSuccess }: InvoiceModalProps) 
     try {
       const input: CreateInvoiceInput = {
         organizationId: organization.id,
-        actorUserId: user.id,
+        actorUserId: user.entity_id || user.id,
         customerEntityId: customerEntityId || crypto.randomUUID(),  // Create customer entity if needed
         customerName,
         invoiceDate,

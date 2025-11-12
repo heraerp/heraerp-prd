@@ -219,7 +219,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'READ',
-        p_actor_user_id: user?.id || '',
+        p_actor_user_id: user?.entity_id || user?.id || '',
         p_organization_id: organizationId,
         p_entity: entityFilter,
         p_options: {
@@ -250,7 +250,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
     queryFn: async () => {
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'READ',
-        p_actor_user_id: user?.id || '',
+        p_actor_user_id: user?.entity_id || user?.id || '',
         p_organization_id: organizationId,
         p_entity: {
           entity_type: 'STAFF',
@@ -517,7 +517,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'CREATE',
-        p_actor_user_id: user.id,
+        p_actor_user_id: user.entity_id || user.id,
         p_organization_id: organizationId,
         p_entity: {
           entity_type: 'LEAVE_POLICY',  // ✅ CORRECT: Inside p_entity, not separate parameter
@@ -753,7 +753,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'UPDATE',
-        p_actor_user_id: user.id,
+        p_actor_user_id: user.entity_id || user.id,
         p_organization_id: organizationId,
         p_entity,
         p_dynamic,
@@ -784,7 +784,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'UPDATE',
-        p_actor_user_id: user.id,
+        p_actor_user_id: user.entity_id || user.id,
         p_organization_id: organizationId,
         p_entity: {
           entity_id: id,
@@ -818,7 +818,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
       // ✅ SIMPLE: Only update entity.status (like services page) - no dynamic fields needed
       const result = await callRPC('hera_entities_crud_v1', {
         p_action: 'UPDATE',
-        p_actor_user_id: user.id,
+        p_actor_user_id: user.entity_id || user.id,
         p_organization_id: organizationId,
         p_entity: {
           entity_id: id,
@@ -860,7 +860,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
         // Try hard delete
         const result = await callRPC('hera_entities_crud_v1', {
           p_action: 'DELETE',
-          p_actor_user_id: user.id,
+          p_actor_user_id: user.entity_id || user.id,
           p_organization_id: organizationId,
           p_entity: {
             entity_id: id
@@ -1068,7 +1068,7 @@ export function useHeraLeave(options: UseHeraLeaveOptions) {
 
       const result = await callRPC('hera_txn_crud_v1', {
         p_action: 'DELETE',
-        p_actor_user_id: user.id,
+        p_actor_user_id: user.entity_id || user.id,
         p_organization_id: organizationId,
         p_payload: {
           transaction_id: requestId

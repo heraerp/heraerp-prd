@@ -358,30 +358,76 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       const serviceIds = metadata.service_ids || []
       const serviceNames: string[] = []
       const servicePrices: number[] = []
+      const catalogPrices: number[] = [] // ✅ NEW: Catalog prices for comparison
+      const customPricesFromMetadata = metadata.service_prices || [] // ✅ Custom prices from POS
+
+      console.log('[useHeraAppointments] 🔍 Price enrichment START:', {
+        appointment_id: txn.id,
+        transaction_code: txn.transaction_code,
+        raw_total_amount: txn.total_amount,
+        metadata_service_prices: customPricesFromMetadata,
+        metadata_service_ids: serviceIds,
+        has_custom_prices: Array.isArray(customPricesFromMetadata) && customPricesFromMetadata.length > 0
+      })
 
       if (Array.isArray(serviceIds)) {
-        serviceIds.forEach((serviceId: string) => {
+        serviceIds.forEach((serviceId: string, index: number) => {
           const serviceData = serviceMap.get(serviceId)
+          const catalogPrice = serviceData?.price || 0
+
+          // ✅ CRITICAL FIX: Use custom price from metadata if available (including 0), otherwise use catalog price
+          const customPrice = customPricesFromMetadata[index]
+          const effectivePrice = (typeof customPrice === 'number' && customPrice !== null && customPrice !== undefined)
+            ? customPrice  // Use custom price even if it's 0 (free service)
+            : catalogPrice // Only fall back to catalog if custom price is truly missing
+
+          console.log(`[useHeraAppointments] 💰 Service ${index + 1}:`, {
+            service_id: serviceId,
+            service_name: serviceData?.name || 'Service',
+            catalog_price: catalogPrice,
+            custom_price: customPrice,
+            effective_price: effectivePrice,
+            used_custom: typeof customPrice === 'number',
+            custom_price_is_valid: customPrice !== null && customPrice !== undefined
+          })
+
           if (serviceData) {
             serviceNames.push(serviceData.name)
-            servicePrices.push(serviceData.price)
           } else {
             serviceNames.push('Service')
-            servicePrices.push(0)
           }
+
+          servicePrices.push(effectivePrice) // ✅ Effective price (custom or catalog)
+          catalogPrices.push(catalogPrice)   // ✅ Always store catalog price for comparison
         })
       }
 
-      // 🎯 ENTERPRISE: Calculate correct total from service prices (not from database)
+      // 🎯 ENTERPRISE: Calculate correct total from effective prices (custom if available, otherwise catalog)
       // This fixes incorrect totals from old RPC bug or incomplete data
       const calculatedTotal = servicePrices.reduce((sum, price) => sum + price, 0)
+      const catalogTotal = catalogPrices.reduce((sum, price) => sum + price, 0)
+      const hasPriceChanges = Math.abs(calculatedTotal - catalogTotal) > 0.01
+
+      console.log('[useHeraAppointments] 🎯 Price enrichment COMPLETE:', {
+        appointment_id: txn.id,
+        effective_prices: servicePrices,
+        catalog_prices: catalogPrices,
+        calculated_total: calculatedTotal,
+        catalog_total: catalogTotal,
+        has_price_changes: hasPriceChanges,
+        difference: calculatedTotal - catalogTotal
+      })
 
       // Build enriched metadata with service names and prices
       const enrichedMetadata = {
         ...metadata,
         service_ids: serviceIds,
         service_names: serviceNames,
-        service_prices: servicePrices
+        service_prices: servicePrices, // ✅ Effective prices (custom if available)
+        catalog_prices: catalogPrices, // ✅ NEW: Original catalog prices for comparison
+        has_price_changes: hasPriceChanges, // ✅ NEW: Flag to show price comparison UI
+        catalog_total: catalogTotal, // ✅ NEW: What the total would be at catalog prices
+        actual_total: calculatedTotal // ✅ NEW: What was actually charged
       }
 
       const appointment: Appointment = {
@@ -528,7 +574,7 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       }
     }
 
-    // Build updated metadata
+    // Build updated metadata (status goes to transaction_status, NOT metadata)
     const updatedMetadata = {
       ...appointment.metadata,
       ...(data.start_time && { start_time: data.start_time }),
@@ -536,15 +582,19 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       ...(data.duration_minutes && { duration_minutes: data.duration_minutes }),
       ...(data.notes !== undefined && { notes: data.notes }),
       ...(data.branch_id !== undefined && { branch_id: data.branch_id }),
-      ...(data.service_ids && { service_ids: data.service_ids }), // ✅ CRITICAL FIX: Include service_ids in metadata
-      ...(data.status !== undefined && { status: data.status }) // ✅ FIX: Update status in metadata
+      ...(data.service_ids && { service_ids: data.service_ids }) // ✅ CRITICAL FIX: Include service_ids in metadata
+      // ❌ REMOVED: status field - it belongs in transaction_status, not metadata
     }
+
+    // ✅ Remove legacy status field from metadata if present (cleanup)
+    const { status: _oldStatus, ...metadataWithoutStatus } = updatedMetadata
 
     console.log('[useHeraAppointments] 🔍 Built updated metadata:', {
       original: appointment.metadata,
       updates: data,
-      updated: updatedMetadata,
-      service_ids_changed: data.service_ids ? 'YES' : 'NO'
+      updated: metadataWithoutStatus,
+      service_ids_changed: data.service_ids ? 'YES' : 'NO',
+      status_removed: !!_oldStatus
     })
 
     // ✅ V1: Use updateTransaction from useUniversalTransactionV1
@@ -561,8 +611,8 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       ...(data.stylist_id !== undefined && { target_entity_id: data.stylist_id }),
       ...(data.price && { total_amount: data.price }),
       ...(data.start_time && { transaction_date: data.start_time }),
-      ...(data.status && { transaction_status: data.status }), // ✅ V1: status → transaction_status
-      metadata: updatedMetadata
+      ...(data.status && { transaction_status: data.status }), // ✅ V1: status → transaction_status (authoritative)
+      metadata: metadataWithoutStatus // ✅ Use cleaned metadata without legacy status field
     })
 
     console.log('[useHeraAppointments] ✅ Appointment updated:', result)
@@ -760,10 +810,44 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     const serviceNames: string[] = []
     const finalServicePrices: number[] = []
 
-    serviceIds.forEach(serviceId => {
+    console.log('[useHeraAppointments] 🔍 Building service prices array:', {
+      serviceIds,
+      servicePrices,
+      servicePrices_keys: servicePrices ? Object.keys(servicePrices) : null,
+      servicePrices_type: typeof servicePrices,
+      servicePrices_isObject: servicePrices && typeof servicePrices === 'object' && !Array.isArray(servicePrices)
+    })
+
+    // ✅ DEBUG: Compare service IDs with servicePrices keys
+    if (servicePrices && typeof servicePrices === 'object') {
+      const priceKeys = Object.keys(servicePrices)
+      console.log('[useHeraAppointments] 🔍 Detailed key comparison:', {
+        serviceIds_count: serviceIds.length,
+        priceKeys_count: priceKeys.length,
+        serviceIds_sample: serviceIds[0],
+        priceKeys_sample: priceKeys[0],
+        ids_match: serviceIds.length > 0 && priceKeys.length > 0 && serviceIds[0] === priceKeys[0],
+        all_service_ids: serviceIds,
+        all_price_keys: priceKeys
+      })
+    }
+
+    serviceIds.forEach((serviceId, index) => {
       const serviceData = serviceMap.get(serviceId)
       const originalPrice = serviceData?.price ?? 0
       const finalPrice = servicePrices?.[serviceId] ?? originalPrice
+
+      console.log(`[useHeraAppointments] 🔍 Service ${index + 1} price lookup:`, {
+        serviceId,
+        serviceName: serviceData?.name,
+        originalPrice,
+        servicePrices_has_key: servicePrices ? serviceId in servicePrices : false,
+        custom_price_from_map: servicePrices?.[serviceId],
+        finalPrice,
+        // ✅ DEBUG: Show exact key match check
+        exact_key_exists: servicePrices && Object.prototype.hasOwnProperty.call(servicePrices, serviceId),
+        available_keys: servicePrices ? Object.keys(servicePrices) : []
+      })
 
       serviceNames.push(serviceData?.name || 'Service')
       finalServicePrices.push(finalPrice)
@@ -831,8 +915,19 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       result_id: result?.id,
       result_status: result?.transaction_status,
       result_total: result?.total_amount,
-      result_lines_count: result?.lines?.length
+      result_lines_count: result?.lines?.length,
+      result_metadata_service_prices: result?.metadata?.service_prices,
+      calculated_total_sent: calculatedTotal
     })
+
+    // Verify the update was successful
+    if (result?.total_amount !== calculatedTotal) {
+      console.warn('[useHeraAppointments] ⚠️ WARNING: Returned total_amount does not match calculated total', {
+        calculated: calculatedTotal,
+        returned: result?.total_amount,
+        difference: (result?.total_amount || 0) - calculatedTotal
+      })
+    }
 
     return result
   }

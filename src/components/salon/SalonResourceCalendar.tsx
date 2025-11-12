@@ -683,7 +683,20 @@ export function SalonResourceCalendar({
         serviceNames, // ✨ Include service names for display
         status: calendarStatus, // ✅ Use actual database status
         rawStatus: apt.status, // Keep original for reference
-        price: `AED ${apt.total_amount || 0}`,
+        // ✅ CRITICAL FIX: Use enriched actual_total if available, otherwise fall back to total_amount
+        price: `AED ${apt.metadata?.actual_total || apt.total_amount || 0}`,
+        catalogPrice: apt.metadata?.catalog_total ? `AED ${apt.metadata.catalog_total}` : null, // ✅ NEW: Catalog price for comparison
+        hasPriceChanges: apt.metadata?.has_price_changes || false, // ✅ NEW: Flag to show price comparison
+        // 🔍 DEBUG: Log price data for completed appointments
+        ...(apt.status === 'completed' && console.log('[Calendar] 💰 Completed appointment price data:', {
+          appointment_id: apt.id,
+          raw_total_amount: apt.total_amount,
+          metadata_actual_total: apt.metadata?.actual_total,
+          metadata_catalog_total: apt.metadata?.catalog_total,
+          metadata_service_prices: apt.metadata?.service_prices,
+          metadata_has_price_changes: apt.metadata?.has_price_changes,
+          displayed_price: apt.metadata?.actual_total || apt.total_amount || 0
+        }) || {}),
         color: staffColor.bg, // ✨ Use staff color instead of service color
         colorLight: staffColor.light,
         colorBorder: staffColor.border,

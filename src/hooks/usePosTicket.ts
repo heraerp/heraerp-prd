@@ -309,6 +309,7 @@ export function usePosTicket(config: UsePosTicketConfig | string) {
       branch_name?: string
       notes?: string
       originalServiceIds?: string[] // ✅ NEW: Original service IDs from appointment
+      originalServicePrices?: Record<string, number> // ✅ NEW: Original service prices from appointment (for price change detection)
     }) => {
       setTicket(prev => ({
         ...prev,
@@ -531,6 +532,23 @@ export function usePosTicket(config: UsePosTicketConfig | string) {
 
       const totals = calculateTotals()
 
+      // 🔍 DEBUG: Log ticket line items before building transaction lines
+      console.log('🔍 [usePosTicket] Ticket lineItems:', {
+        count: ticket.lineItems.length,
+        items: ticket.lineItems.map((item, idx) => ({
+          index: idx,
+          entity_id: item.entity_id,
+          entity_type: item.entity_type,
+          entity_name: item.entity_name,
+          quantity: item.quantity,
+          unit_price: item.unit_price,
+          line_amount: item.line_amount,
+          stylist_id: item.stylist_id,
+          stylist_name: item.stylist_name,
+          FULL_ITEM: item
+        }))
+      })
+
       // Build transaction lines from ticket
       const lines = ticket.lineItems.map((item, index) => ({
         line_number: index + 1,
@@ -549,6 +567,19 @@ export function usePosTicket(config: UsePosTicketConfig | string) {
           appointment_id: item.appointment_id
         }
       }))
+
+      // 🔍 DEBUG: Log built transaction lines
+      console.log('🔍 [usePosTicket] Built transaction lines:', {
+        count: lines.length,
+        lines: lines.map(line => ({
+          line_number: line.line_number,
+          line_type: line.line_type,
+          entity_id: line.entity_id,
+          description: line.description,
+          line_amount: line.line_amount,
+          line_data: line.line_data
+        }))
+      })
 
       // Add discount lines
       ticket.discounts.forEach((discount) => {

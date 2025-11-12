@@ -125,6 +125,7 @@ export function AppointmentModal({
   const [notes, setNotes] = useState('')
   const [duration, setDuration] = useState(60)
   const [price, setPrice] = useState(0)
+  const [catalogTotal, setCatalogTotal] = useState(0) // Track original catalog price for comparison
 
   // Initialize form when appointment changes
   useEffect(() => {
@@ -322,14 +323,31 @@ export function AppointmentModal({
   // Calculate total price and duration from selected services
   useEffect(() => {
     if (selectedServices.length > 0) {
-      const total = selectedServices.reduce((sum, serviceId) => {
-        const service = services.find(s => s.id === serviceId)
-        if (!service) return sum
+      // 🔥 FIX: When viewing (not editing), use custom prices from appointment metadata
+      const customPrices = appointment?.metadata?.service_prices || []
+      const useCustomPrices = !isEditing && customPrices.length > 0
 
-        const servicePrice =
-          service.price_market || service.dynamic_fields?.price_market?.value || 0
-        return sum + servicePrice
-      }, 0)
+      let total = 0
+      let catalogTotalCalc = 0
+
+      selectedServices.forEach((serviceId, index) => {
+        const service = services.find(s => s.id === serviceId)
+        if (!service) return
+
+        const catalogPrice = service.price_market || service.dynamic_fields?.price_market?.value || 0
+        catalogTotalCalc += catalogPrice
+
+        let servicePrice
+        if (useCustomPrices && customPrices[index] !== undefined && customPrices[index] !== null) {
+          // Use custom price from appointment metadata
+          servicePrice = customPrices[index]
+        } else {
+          // Use catalog price
+          servicePrice = catalogPrice
+        }
+
+        total += servicePrice
+      })
 
       const totalDuration = selectedServices.reduce((sum, serviceId) => {
         const service = services.find(s => s.id === serviceId)
@@ -341,9 +359,10 @@ export function AppointmentModal({
       }, 0)
 
       setPrice(total)
+      setCatalogTotal(catalogTotalCalc)
       setDuration(totalDuration)
     }
-  }, [selectedServices, services])
+  }, [selectedServices, services, isEditing, appointment?.metadata?.service_prices])
 
   // ✅ FIX: Clear selected time ONLY when stylist or date ACTUALLY changes (not when entering edit mode)
   useEffect(() => {
@@ -859,13 +878,24 @@ export function AppointmentModal({
                             selectedId => String(selectedId) === String(service.id)
                           )
                         })
-                        .map(service => {
+                        .map((service, serviceIndex) => {
                           // Flexible selection check
                           const isSelected = selectedServices.some(
                             selectedId => String(selectedId) === String(service.id)
                           )
-                          const servicePrice =
-                            service.price_market || service.dynamic_fields?.price_market?.value || 0
+
+                          // 🔥 FIX: Use custom price from metadata if available, otherwise use catalog price
+                          const customPrices = appointment?.metadata?.service_prices || []
+                          const selectedServiceIndex = selectedServices.findIndex(
+                            selectedId => String(selectedId) === String(service.id)
+                          )
+                          const catalogPrice = service.price_market || service.dynamic_fields?.price_market?.value || 0
+
+                          // Use custom price from appointment metadata if it exists for this service
+                          const servicePrice = (selectedServiceIndex >= 0 && customPrices[selectedServiceIndex] !== undefined && customPrices[selectedServiceIndex] !== null)
+                            ? customPrices[selectedServiceIndex]
+                            : catalogPrice
+
                           const serviceDuration =
                             service.duration_min ||
                             service.dynamic_fields?.duration_min?.value ||
@@ -912,9 +942,23 @@ export function AppointmentModal({
                                       <Clock className="w-3 h-3" />
                                       {formatDuration(serviceDuration)}
                                     </span>
-                                    <span>
-                                      {currencySymbol} {servicePrice.toFixed(2)}
-                                    </span>
+                                    <div className="flex items-center gap-2">
+                                      <span
+                                        className="font-semibold"
+                                        style={{ color: servicePrice !== catalogPrice ? LUXE_COLORS.gold : LUXE_COLORS.bronze }}
+                                      >
+                                        {currencySymbol} {servicePrice.toFixed(2)}
+                                      </span>
+                                      {!isEditing && servicePrice !== catalogPrice && (
+                                        <span
+                                          className="text-xs line-through opacity-60"
+                                          style={{ color: LUXE_COLORS.bronze }}
+                                          title="Original catalog price"
+                                        >
+                                          {currencySymbol} {catalogPrice.toFixed(2)}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
                                 {isEditing && isSelected && (
@@ -983,9 +1027,31 @@ export function AppointmentModal({
                 <span className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
                   Total
                 </span>
-                <span className="text-2xl font-bold" style={{ color: LUXE_COLORS.gold }}>
-                  {currencySymbol} {price.toFixed(2)}
-                </span>
+                <div className="flex flex-col items-end">
+                  <span className="text-2xl font-bold" style={{ color: LUXE_COLORS.gold }}>
+                    {currencySymbol} {price.toFixed(2)}
+                  </span>
+                  {!isEditing && price !== catalogTotal && catalogTotal > 0 && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <span
+                        className="text-xs line-through opacity-60"
+                        style={{ color: LUXE_COLORS.bronze }}
+                        title="Original catalog total"
+                      >
+                        {currencySymbol} {catalogTotal.toFixed(2)}
+                      </span>
+                      <span
+                        className="text-xs font-semibold px-2 py-0.5 rounded"
+                        style={{
+                          background: price < catalogTotal ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                          color: price < catalogTotal ? '#22c55e' : '#ef4444'
+                        }}
+                      >
+                        {price < catalogTotal ? '-' : '+'}{currencySymbol} {Math.abs(catalogTotal - price).toFixed(2)}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="text-sm mt-1" style={{ color: LUXE_COLORS.bronze }}>
                 Duration: {formatDuration(duration)} • {selectedServices.length} service(s)
