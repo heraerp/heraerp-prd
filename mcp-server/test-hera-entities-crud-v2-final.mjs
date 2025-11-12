@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /**
- * Test hera_entities_crud_v2 RPC function with ACTUAL signature from error message:
- * public.hera_entities_crud_v2(p_action, p_actor_user_id, p_dynamic, p_entity, p_options, p_organization_id, p_relationships)
+ * Test hera_entities_crud_v1 RPC function with ACTUAL signature from error message:
+ * public.hera_entities_crud_v1(p_action, p_actor_user_id, p_dynamic, p_entity, p_options, p_organization_id, p_relationships)
  */
 
 import { createClient } from '@supabase/supabase-js';
 import 'dotenv/config';
 
 // Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-);
+const SUPABASE_URL = 'https://ralywraqvuqgdezttfde.supabase.co';
+const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhbHl3cmFxdnVxZ2RlenR0ZmRlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTM2MzQ3NiwiZXhwIjoyMDc2OTM5NDc2fQ.yG7IzdXluaPiT6mHf3Yu4LV_pyY_S6iHHi7JrR-iA-w';
+
+const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
 const testData = {
   name: "Michele Hair (Owner)",
@@ -24,7 +24,7 @@ const testData = {
 };
 
 async function testActualHeraEntitiesCrud() {
-  console.log('🧪 Testing hera_entities_crud_v2 with ACTUAL signature...');
+  console.log('🧪 Testing hera_entities_crud_v1 with ACTUAL signature...');
   console.log('📊 Test Data:', JSON.stringify(testData, null, 2));
   
   let createdProductId = null;
@@ -32,7 +32,7 @@ async function testActualHeraEntitiesCrud() {
   try {
     // Test 1: CREATE operation - Create a new product
     console.log('\n➕ Test 1: CREATE new salon product...');
-    const createResult = await supabase.rpc('hera_entities_crud_v2', {
+    const createResult = await supabase.rpc('hera_entities_crud_v1', {
       p_action: 'CREATE',
       p_actor_user_id: testData.user_entity_id,
       p_organization_id: testData.organization_id,
@@ -83,7 +83,7 @@ async function testActualHeraEntitiesCrud() {
     if (createdProductId) {
       // Test 2: READ operation - Read the created product
       console.log('\n📖 Test 2: READ created product...');
-      const readResult = await supabase.rpc('hera_entities_crud_v2', {
+      const readResult = await supabase.rpc('hera_entities_crud_v1', {
         p_action: 'READ',
         p_actor_user_id: testData.user_entity_id,
         p_organization_id: testData.organization_id,
@@ -109,7 +109,7 @@ async function testActualHeraEntitiesCrud() {
       
       // Test 3: UPDATE operation - Update the product
       console.log('\n🔄 Test 3: UPDATE product with new price...');
-      const updateResult = await supabase.rpc('hera_entities_crud_v2', {
+      const updateResult = await supabase.rpc('hera_entities_crud_v1', {
         p_action: 'UPDATE',
         p_actor_user_id: testData.user_entity_id,
         p_organization_id: testData.organization_id,
@@ -147,7 +147,7 @@ async function testActualHeraEntitiesCrud() {
       
       // Test 4: READ again to verify update
       console.log('\n📖 Test 4: READ updated product to verify changes...');
-      const readUpdatedResult = await supabase.rpc('hera_entities_crud_v2', {
+      const readUpdatedResult = await supabase.rpc('hera_entities_crud_v1', {
         p_action: 'READ',
         p_actor_user_id: testData.user_entity_id,
         p_organization_id: testData.organization_id,
@@ -170,7 +170,7 @@ async function testActualHeraEntitiesCrud() {
       
       // Test 5: DELETE operation - Delete the product
       console.log('\n🗑️ Test 5: DELETE the test product...');
-      const deleteResult = await supabase.rpc('hera_entities_crud_v2', {
+      const deleteResult = await supabase.rpc('hera_entities_crud_v1', {
         p_action: 'DELETE',
         p_actor_user_id: testData.user_entity_id,
         p_organization_id: testData.organization_id,
@@ -191,7 +191,7 @@ async function testActualHeraEntitiesCrud() {
       
       // Test 6: READ after delete to verify deletion
       console.log('\n📖 Test 6: READ deleted product (should fail)...');
-      const readDeletedResult = await supabase.rpc('hera_entities_crud_v2', {
+      const readDeletedResult = await supabase.rpc('hera_entities_crud_v1', {
         p_action: 'READ',
         p_actor_user_id: testData.user_entity_id,
         p_organization_id: testData.organization_id,
