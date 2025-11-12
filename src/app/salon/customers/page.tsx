@@ -7,6 +7,7 @@ import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useHeraCustomers, type CustomerEntity } from '@/hooks/useHeraCustomers'
 import { CustomerList } from '@/components/salon/customers/CustomerList'
 import type { CustomerFormData } from '@/components/salon/customers/CustomerModal'
+import { CustomerTransactionModal } from '@/components/salon/customers/CustomerTransactionModal'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
@@ -116,6 +117,9 @@ function SalonCustomersPageContent() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [customerToDelete, setCustomerToDelete] = useState<CustomerEntity | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  // 📊 TRANSACTION HISTORY MODAL STATE
+  const [transactionModalOpen, setTransactionModalOpen] = useState(false)
+  const [selectedCustomerForHistory, setSelectedCustomerForHistory] = useState<CustomerEntity | null>(null)
 
   // 🔄 RESET PAGE: Reset to page 1 when filters change
   useEffect(() => {
@@ -304,6 +308,11 @@ function SalonCustomersPageContent() {
   const handleEdit = useCallback((customer: CustomerEntity) => {
     setEditingCustomer(customer)
     setModalOpen(true)
+  }, [])
+
+  const handleViewHistory = useCallback((customer: CustomerEntity) => {
+    setSelectedCustomerForHistory(customer)
+    setTransactionModalOpen(true)
   }, [])
 
   const handleDelete = useCallback((customer: CustomerEntity) => {
@@ -813,6 +822,7 @@ function SalonCustomersPageContent() {
             customers={paginatedCustomers}
             viewMode={viewMode}
             onEdit={handleEdit}
+            onViewHistory={handleViewHistory}
             onDelete={handleDelete}
             onArchive={handleArchive}
             onRestore={handleRestore}
@@ -855,6 +865,20 @@ function SalonCustomersPageContent() {
             customer={editingCustomer}
           />
         </Suspense>
+      )}
+
+      {/* Transaction History Modal */}
+      {transactionModalOpen && selectedCustomerForHistory && (
+        <CustomerTransactionModal
+          open={transactionModalOpen}
+          onClose={() => {
+            setTransactionModalOpen(false)
+            setSelectedCustomerForHistory(null)
+          }}
+          customerId={selectedCustomerForHistory.id}
+          customerName={selectedCustomerForHistory.entity_name}
+          organizationId={organizationId}
+        />
       )}
 
       {/* Delete Confirmation Dialog */}

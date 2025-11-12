@@ -507,8 +507,12 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
   const updateMutation = useMutation({
     mutationFn: async ({
       transaction_id,
+      lines, // ← NEW: Accept transaction lines for atomic updates
       ...updates
-    }: Partial<UniversalTransaction> & { transaction_id: string }) => {
+    }: Partial<UniversalTransaction> & {
+      transaction_id: string
+      lines?: Array<any> // ← NEW: Optional transaction lines
+    }) => {
       if (!organizationId || !actorUserId) {
         throw new Error('Organization ID and User ID required')
       }
@@ -517,6 +521,7 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
       // - header: { smart_code (required), organization_id (required) }
       // - patch: { fields to update }
       // - transaction_id: at root level
+      // - lines: optional transaction lines array (NEW)
 
       const patch: any = {}
 
@@ -545,7 +550,7 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         patch.metadata = updates.metadata
       }
 
-      const updatePayload = {
+      const updatePayload: any = {
         transaction_id,
         header: {
           smart_code: updates.smart_code, // ✅ Required for guardrail
@@ -554,16 +559,22 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         patch
       }
 
+      // ✅ NEW: Include transaction lines if provided for atomic header + lines update
+      if (lines && lines.length > 0) {
+        updatePayload.lines = lines
+      }
+
       console.log('🚀 [useUniversalTransactionV1] UPDATE Payload:', {
         transaction_id,
         header: updatePayload.header,
         patch: updatePayload.patch,
+        lines_count: lines?.length || 0, // ← NEW: Log lines count
         header_smart_code: updatePayload.header.smart_code,
         updates_smart_code: updates.smart_code,
         full_payload: JSON.stringify(updatePayload, null, 2)
       })
 
-      // 🌟 TRANSACTION CRUD - UPDATE action
+      // 🌟 TRANSACTION CRUD - UPDATE action (now supports lines)
       const { data, error } = await transactionCRUD({
         p_action: 'UPDATE',
         p_actor_user_id: actorUserId,

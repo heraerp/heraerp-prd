@@ -684,13 +684,22 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     })
 
     // ✅ CRITICAL: Extract status from old metadata to avoid overwriting it
-    const { status: _oldStatus, ...metadataWithoutStatus } = appointment.metadata || {}
+    const { status: _oldStatus, ...metadataWithoutStatus} = appointment.metadata || {}
+
+    console.log('[useHeraAppointments] 🔍 Replacing services - preserving status:', {
+      appointment_id: id,
+      current_appointment_status: appointment.status,
+      current_transaction_status: appointment.transaction_status,
+      metadata_status_removed: _oldStatus,
+      will_preserve_status: appointment.status
+    })
 
     // Update appointment with new services and lines
     const result = await updateTransaction({
       transaction_id: id,
       smart_code: appointment.smart_code || 'HERA.SALON.TRANSACTION.APPOINTMENT.STANDARD.v1', // ✅ CRITICAL: 6 segments, uppercase, lowercase version
       total_amount: totalAmount,
+      transaction_status: appointment.status, // ✅ CRITICAL: Preserve current status to prevent overwrites
       metadata: {
         ...metadataWithoutStatus, // ✅ FIX: Spread without status to avoid reverting status updates
         service_ids: serviceIds,
@@ -700,7 +709,130 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
       lines
     })
 
-    console.log('[useHeraAppointments] ✅ Services replaced:', result)
+    console.log('[useHeraAppointments] ✅ Services replaced:', {
+      result,
+      result_transaction_status: result?.transaction_status,
+      result_metadata_status: result?.metadata?.status,
+      result_status_field: result?.status
+    })
+
+    return result
+  }
+
+  // 🎯 ENTERPRISE: Update Appointment Complete - Atomic update of status, metadata, services, and prices
+  // Used by POS to sync appointment after payment with all changes in ONE RPC call
+  const updateAppointmentComplete = async ({
+    id,
+    transaction_status,
+    metadata,
+    serviceIds,
+    servicePrices
+  }: {
+    id: string
+    transaction_status?: string
+    metadata?: Record<string, any>
+    serviceIds: string[]
+    servicePrices?: Record<string, number>
+  }) => {
+    console.log('[useHeraAppointments] Updating appointment (complete):', {
+      id,
+      transaction_status,
+      serviceIds,
+      servicePrices,
+      metadata
+    })
+
+    if (!id || !serviceIds?.length) {
+      throw new Error('Invalid parameters: id and serviceIds required')
+    }
+
+    if (!options?.organizationId) {
+      throw new Error('Organization ID required')
+    }
+
+    // Find the appointment to get current smart_code and status
+    const appointment = enrichedAppointments.find(a => a.id === id)
+    if (!appointment) {
+      throw new Error('Appointment not found')
+    }
+
+    // Build service names and prices arrays for metadata
+    const serviceNames: string[] = []
+    const finalServicePrices: number[] = []
+
+    serviceIds.forEach(serviceId => {
+      const serviceData = serviceMap.get(serviceId)
+      const originalPrice = serviceData?.price ?? 0
+      const finalPrice = servicePrices?.[serviceId] ?? originalPrice
+
+      serviceNames.push(serviceData?.name || 'Service')
+      finalServicePrices.push(finalPrice)
+    })
+
+    // Build transaction lines with custom prices from POS
+    const lines = serviceIds.map((serviceId, index) => {
+      const serviceData = serviceMap.get(serviceId)
+      const originalPrice = serviceData?.price ?? 0
+      const finalPrice = servicePrices?.[serviceId] ?? originalPrice
+
+      return {
+        line_number: index + 1,
+        line_type: 'SERVICE',
+        entity_id: serviceId,
+        description: serviceData?.name || 'Service',
+        quantity: 1,
+        unit_amount: finalPrice, // ← Custom price from POS cart
+        line_amount: finalPrice,
+        smart_code: 'HERA.SALON.SERVICE.LINE.STANDARD.v1'
+      }
+    })
+
+    // Calculate total from custom prices
+    const calculatedTotal = lines.reduce((sum, line) => sum + (line.line_amount || 0), 0)
+
+    // Build complete metadata with audit trail
+    const updatedMetadata = {
+      ...appointment.metadata,
+      ...metadata, // User-provided metadata (pos_transaction_id, payment_method, etc.)
+      service_ids: serviceIds,
+      service_names: serviceNames,
+      service_prices: finalServicePrices,
+      price_updated_at: new Date().toISOString(),
+      price_updated_by: options?.userId || 'system'
+    }
+
+    // Remove legacy status field from metadata if present
+    const { status: _oldStatus, ...metadataWithoutStatus } = updatedMetadata
+
+    console.log('[useHeraAppointments] 🔍 Complete update payload:', {
+      appointment_id: id,
+      transaction_status: transaction_status || appointment.status,
+      total_amount: calculatedTotal,
+      lines_count: lines.length,
+      metadata_keys: Object.keys(metadataWithoutStatus),
+      price_changes: serviceIds.filter(id => {
+        const originalPrice = serviceMap.get(id)?.price ?? 0
+        const finalPrice = servicePrices?.[id] ?? originalPrice
+        return Math.abs(originalPrice - finalPrice) > 0.01
+      }).length
+    })
+
+    // ✅ SINGLE ATOMIC UPDATE - Status, Metadata, Services, AND Prices
+    const result = await updateTransaction({
+      transaction_id: id,
+      smart_code: appointment.smart_code || 'HERA.SALON.TRANSACTION.APPOINTMENT.STANDARD.v1',
+      transaction_status: transaction_status || appointment.status, // Use provided status or preserve current
+      total_amount: calculatedTotal,
+      metadata: metadataWithoutStatus,
+      lines // ← NEW: Transaction lines with custom prices
+    })
+
+    console.log('[useHeraAppointments] ✅ Appointment updated completely:', {
+      result_id: result?.id,
+      result_status: result?.transaction_status,
+      result_total: result?.total_amount,
+      result_lines_count: result?.lines?.length
+    })
 
     return result
   }
@@ -721,7 +853,8 @@ export function useHeraAppointments(options?: UseHeraAppointmentsOptions) {
     archiveAppointment,
     deleteAppointment: deleteAppointmentFunc,
     restoreAppointment,
-    replaceServices, // ✅ NEW: For POS service sync
+    replaceServices, // For POS service sync (legacy - use updateAppointmentComplete)
+    updateAppointmentComplete, // ✅ NEW: Atomic update of status, metadata, services, and prices
 
     // Loading states - From useUniversalTransaction
     isCreating: isCreatingTransaction,

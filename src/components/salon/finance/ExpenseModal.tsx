@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { SalonLuxeModal, ValidationError } from '@/components/salon/shared/SalonLuxeModal'
-import { useSecuredSalon } from '@/app/salon/SecuredSalonProvider'
+import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import {
   Form,
   FormControl,
@@ -108,7 +108,7 @@ interface ExpenseModalProps {
 export function ExpenseModal({ open, onClose, expense, onSave }: ExpenseModalProps) {
   const [showValidationSummary, setShowValidationSummary] = useState(false)
   const [shakeButton, setShakeButton] = useState(false)
-  const { organization } = useSecuredSalon()
+  const { organization } = useSecuredSalonContext()
   const currency = organization?.currency || 'AED'
 
   const form = useForm<ExpenseForm>({

@@ -26,24 +26,14 @@ class PrefetchService {
   private prefetchedRoutes = new Set<string>()
 
   // Critical navigation paths - prefetch immediately (universal routing - NO /apps)
-  private criticalRoutes = [
-    '/api/v2/platform/navigation/retail',
-    '/api/v2/platform/workspace/retail/pos/main',
-    '/retail/pos',
-    '/retail/inventory', 
-    '/retail/customers',
-    '/retail/reports'
-  ]
+  // NOTE: Only prefetch routes relevant to current app context
+  private criticalRoutes: string[] = []
 
   // Secondary routes - prefetch on hover or interaction (universal routing - NO /apps)
-  private secondaryRoutes = [
-    '/wholesale',
-    '/finance',
-    '/crm',
-    '/retail/analytics'
-  ]
+  private secondaryRoutes: string[] = []
 
   constructor() {
+    // Detect current app context from URL and only prefetch relevant routes
     this.initializePrefetching()
   }
 
@@ -55,13 +45,18 @@ class PrefetchService {
     if (typeof window === 'undefined') {
       return
     }
-    
-    // Prefetch critical routes immediately
-    await this.prefetchCriticalRoutes()
-    
+
+    // Detect app context from current URL and set appropriate routes
+    this.detectAppContext()
+
+    // Prefetch critical routes immediately (only if routes are configured)
+    if (this.criticalRoutes.length > 0) {
+      await this.prefetchCriticalRoutes()
+    }
+
     // Set up intersection observer for hover prefetching
     this.setupHoverPrefetching()
-    
+
     // Set up idle time prefetching
     this.setupIdlePrefetching()
 
@@ -70,20 +65,60 @@ class PrefetchService {
   }
 
   /**
+   * Detect current app context and set appropriate prefetch routes
+   */
+  private detectAppContext() {
+    if (typeof window === 'undefined') return
+
+    const pathname = window.location.pathname
+
+    // Detect app from URL
+    if (pathname.startsWith('/salon')) {
+      // Salon app: Disable prefetching until API endpoints are available
+      this.criticalRoutes = []
+      this.secondaryRoutes = []
+      console.log('🎨 PrefetchService: Salon app context detected - prefetching disabled (API endpoints pending)')
+    } else if (pathname.startsWith('/retail')) {
+      this.criticalRoutes = [
+        '/api/v2/platform/navigation/retail',
+        '/api/v2/platform/workspace/retail/pos/main',
+        '/retail/pos/main',
+        '/retail/inventory',
+        '/retail/customers'
+      ]
+      this.secondaryRoutes = [
+        '/retail/reports',
+        '/retail/analytics'
+      ]
+      console.log('🛒 PrefetchService: Retail app context detected')
+    } else if (pathname.startsWith('/restaurant')) {
+      this.criticalRoutes = [
+        '/restaurant/orders',
+        '/restaurant/menu',
+        '/restaurant/tables'
+      ]
+      console.log('🍽️ PrefetchService: Restaurant app context detected')
+    } else {
+      // No specific app context - disable aggressive prefetching
+      console.log('⚠️ PrefetchService: No specific app context, prefetching disabled')
+    }
+  }
+
+  /**
    * Prefetch critical routes immediately for instant navigation
    */
   async prefetchCriticalRoutes() {
-    const prefetchPromises = this.criticalRoutes.map(route => 
-      this.prefetchRoute(route, { 
-        priority: 'high', 
-        preload: true, 
-        cache: true, 
+    const prefetchPromises = this.criticalRoutes.map(route =>
+      this.prefetchRoute(route, {
+        priority: 'high',
+        preload: true,
+        cache: true,
         staleTime: 5 * 60 * 1000 // 5 minutes
       })
     )
 
     await Promise.allSettled(prefetchPromises)
-    console.log('🚀 Critical routes prefetched for instant navigation')
+    console.log(`🚀 Critical routes prefetched: ${this.criticalRoutes.length} routes for instant navigation`)
   }
 
   /**

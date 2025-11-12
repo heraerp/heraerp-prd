@@ -779,14 +779,17 @@ function NewAppointmentContent() {
 
       const appointmentId = result.id
 
-      // ✅ FIXED: Invalidate customers cache to ensure calendar shows correct customer names
-      // This is critical when a new customer is created inline before booking
+      // ✅ CRITICAL: Invalidate customers cache using CORRECT v1 query key
+      // This is essential when a new customer is created inline before booking
+      queryClient.invalidateQueries({ queryKey: ['entities-v1', 'CUSTOMER'], exact: false })
+
+      // Legacy key for backward compatibility
       queryClient.invalidateQueries({ queryKey: ['entities', 'CUSTOMER'], exact: false })
 
       // Also invalidate appointments to ensure calendar refetches with fresh data
       queryClient.invalidateQueries({ queryKey: ['transactions-v1'], exact: false })
 
-      console.log('✅ Invalidated customer and appointment caches for calendar refresh')
+      console.log('✅ Invalidated customer (v1 + legacy) and appointment caches for calendar refresh')
 
       // Show success dialog instead of immediate redirect
       setSavedStatus(status) // 🎯 CRITICAL: Track which status was saved

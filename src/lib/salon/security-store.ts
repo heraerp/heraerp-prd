@@ -53,8 +53,11 @@ interface SalonSecurityState {
 
 // ✅ ENTERPRISE: Soft TTL for background refresh, Hard TTL for forced re-auth
 // Smart Code: HERA.SECURITY.AUTH.CACHE_TTL.v1
-const SOFT_TTL = 10 * 60 * 1000 // 10 minutes - trigger background refresh
-const HARD_TTL = 60 * 60 * 1000 // 60 minutes - force re-authentication
+// 🔴 CRITICAL FIX: Increased TTL to reduce aggressive refresh causing logouts
+// SOFT_TTL: 10min → 20min (less frequent background refresh)
+// HARD_TTL: 60min → 4 hours (align with typical work session)
+const SOFT_TTL = 20 * 60 * 1000 // 20 minutes - trigger background refresh
+const HARD_TTL = 4 * 60 * 60 * 1000 // 4 hours - force re-authentication
 const REINIT_INTERVAL = HARD_TTL // Backward compatibility
 
 export { SOFT_TTL, HARD_TTL }

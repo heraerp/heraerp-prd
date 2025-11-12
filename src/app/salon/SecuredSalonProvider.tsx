@@ -350,10 +350,24 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
       return
     }
 
+    // 🔒 RACE CONDITION FIX: Wait for COMPLETE auth resolution (session + organization)
+    // The membership API call takes 200-500ms after session loads
+    // If we check too early, we get false negative and redirect logged-in users
+    // This prevents occasional logout on fresh login (timing-dependent bug)
+    if (auth.isAuthenticated && !auth.organization?.id) {
+      console.log('⏸️ Session exists but organization context not resolved yet, waiting...', {
+        hasUser: !!auth.user,
+        isAuthenticated: auth.isAuthenticated,
+        hasOrganization: !!auth.organization?.id,
+        timestamp: new Date().toISOString()
+      })
+      return
+    }
+
     // 🎯 ENTERPRISE FIX: Redirect to auth if not authenticated (ONLY after loading completes)
     // ✅ PATIENCE FIX: Don't show error immediately - wait for context to be ready
     if (!auth.isAuthenticated) {
-      console.log('🚪 Not authenticated, redirecting to auth...')
+      console.log('🚪 Not authenticated (after complete resolution check), redirecting to auth...')
       authCheckDoneRef.current = false // Reset for next login
       // DON'T update context here - prevents "Access Denied" flash
       // Just redirect silently
@@ -563,16 +577,19 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
 
-      // If approaching SOFT_TTL (10 min), do background refresh
+      // If approaching SOFT_TTL (20 min), do background refresh
       if (timeSinceInit > SOFT_TTL - 60000) {
         // Within 1 minute of SOFT_TTL
         console.log('💓 Heartbeat: Proactive background refresh (approaching SOFT_TTL) - SILENT MODE')
 
-        // ✅ FIX: ALWAYS use silent mode for heartbeat refresh (no banner shown)
-        // This prevents "Reconnecting" banner during routine 10-minute maintenance
+        // 🔴 CRITICAL FIX: Graceful degradation on heartbeat failure
+        // Don't invalidate context on failure - let user continue working
+        // Next heartbeat will retry
         runReinitSingleFlight({ silent: true }).catch(error => {
-          console.warn('💓 Heartbeat: Background refresh failed (non-critical):', error)
-          // Don't show error to user - this is proactive maintenance
+          console.warn('⚠️ Heartbeat: Background refresh failed, keeping existing context:', error)
+          // DON'T clear context - this is critical!
+          // User continues working with current (slightly stale) context
+          // Next heartbeat (4 min) will retry refresh
         })
       } else {
         console.log(`💓 Heartbeat: Session healthy (${Math.round(timeSinceInit / 60000)} min old)`)
@@ -589,7 +606,12 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
         if (timeSinceInit > HARD_TTL) {
           console.log('👁️ Session expired during tab switch, refreshing...')
-          runReinitSingleFlight({ silent: true })
+
+          // 🔴 CRITICAL FIX: Graceful degradation on visibility change refresh
+          runReinitSingleFlight({ silent: true }).catch(error => {
+            console.warn('⚠️ Tab refresh failed, keeping existing context:', error)
+            // Keep user working with cached context instead of logout
+          })
         }
       }
     }
@@ -706,7 +728,23 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       const uid = session?.user?.id
       if (!uid) {
-        console.log('🚪 No stable session found, redirecting to auth')
+        // 🔴 CRITICAL FIX: Fallback to cached context instead of immediate logout
+        // If session check failed but we have valid cached context, keep user working
+        if (securityStore.isInitialized) {
+          const timeSinceInit = Date.now() - (securityStore.lastInitialized || 0)
+
+          // If cache is reasonably fresh (< 2 hours), use it as fallback
+          if (timeSinceInit < 2 * 60 * 60 * 1000) {
+            console.log(`⚠️ Session check failed but cache is fresh (${Math.round(timeSinceInit / 60000)} min old), using cached context`)
+            // User continues working with cached context
+            // Next heartbeat will retry session refresh
+            return
+          } else {
+            console.log(`❌ Session check failed and cache is stale (${Math.round(timeSinceInit / 60000)} min old)`)
+          }
+        }
+
+        console.log('🚪 No stable session found and no valid cache, redirecting to auth')
         return
       }
 

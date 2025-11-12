@@ -62,6 +62,8 @@ interface PosTicket {
   branch_name?: string
   cart_entity_id?: string // ✅ NEW: For persisted carts
   transaction_date?: string // ✅ NEW: Custom transaction date for old bills (ISO string)
+  originalServiceIds?: string[] // ✅ NEW: Original service IDs from appointment (for change detection)
+  originalServicePrices?: Record<string, number> // ✅ NEW: Original service prices from appointment (for price change detection)
 }
 
 interface Totals {
@@ -306,6 +308,7 @@ export function usePosTicket(config: UsePosTicketConfig | string) {
       branch_id?: string
       branch_name?: string
       notes?: string
+      originalServiceIds?: string[] // ✅ NEW: Original service IDs from appointment
     }) => {
       setTicket(prev => ({
         ...prev,
@@ -399,15 +402,32 @@ export function usePosTicket(config: UsePosTicketConfig | string) {
         stylist_id?: string
         stylist_name?: string
       }>
+      originalServiceIds?: string[] // ✅ NEW: Original service IDs for change detection
+      originalServicePrices?: number[] // ✅ NEW: Original service prices for change detection
     }) => {
       // Clear existing ticket first
       clearTicket()
 
-      // Update ticket info
+      // Build original prices map for easy lookup
+      const originalPricesMap: Record<string, number> = {}
+      if (appointmentData.originalServicePrices && appointmentData.originalServiceIds) {
+        appointmentData.originalServiceIds.forEach((id, index) => {
+          originalPricesMap[id] = appointmentData.originalServicePrices?.[index] ?? 0
+        })
+      } else {
+        // Fallback: use current prices as original
+        appointmentData.services.forEach(service => {
+          originalPricesMap[service.id] = service.price
+        })
+      }
+
+      // Update ticket info with original service IDs and prices
       updateTicketInfo({
         appointment_id: appointmentData.appointment_id,
         customer_id: appointmentData.customer_id,
-        customer_name: appointmentData.customer_name
+        customer_name: appointmentData.customer_name,
+        originalServiceIds: appointmentData.originalServiceIds || appointmentData.services.map(s => s.id), // ✅ Store original IDs
+        originalServicePrices: originalPricesMap // ✅ NEW: Store original prices map
       })
 
       // Add all services

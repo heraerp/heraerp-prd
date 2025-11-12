@@ -16,6 +16,45 @@ import { ShoppingCart, Monitor, Sparkles, Receipt as ReceiptIcon, AlertCircle, B
 import Link from 'next/link'
 import { syncAppointmentServicesInBackground } from '@/lib/salon/appointment-service-sync'
 
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Compare two service ID arrays (order-independent)
+ * Used to detect if services have actually changed before syncing
+ */
+function arraysEqual(arr1: string[], arr2: string[]): boolean {
+  if (arr1.length !== arr2.length) return false
+
+  // Sort both arrays for consistent comparison
+  const sorted1 = [...arr1].sort()
+  const sorted2 = [...arr2].sort()
+
+  return sorted1.every((val, index) => val === sorted2[index])
+}
+
+/**
+ * Detect if service prices have changed between original appointment and POS cart
+ * Used to determine if appointment needs price sync after POS modifications
+ */
+function detectPriceChanges(
+  originalIds: string[],
+  finalIds: string[],
+  cartPrices: Record<string, number>,
+  originalPrices: Record<string, number>
+): boolean {
+  // Only compare prices for services that exist in BOTH arrays
+  const commonIds = originalIds.filter(id => finalIds.includes(id))
+
+  return commonIds.some(serviceId => {
+    const originalPrice = originalPrices[serviceId] ?? 0
+    const cartPrice = cartPrices[serviceId] ?? 0
+    // Use tolerance for floating point comparison
+    return Math.abs(originalPrice - cartPrice) > 0.01
+  })
+}
+
 // ✅ ENTERPRISE PATTERN: Lazy load heavy components for better performance
 const CatalogPane = lazy(() => import('@/components/salon/pos/CatalogPane').then(m => ({ default: m.CatalogPane })))
 const CartSidebar = lazy(() => import('@/components/salon/pos/CartSidebar').then(m => ({ default: m.CartSidebar })))
@@ -137,7 +176,11 @@ function POSContent() {
   useCustomerLookup(effectiveOrgId || 'demo-org')
 
   // Get appointment update functions for status updates and service sync after payment
-  const { updateAppointmentStatus, replaceServices } = useHeraAppointments({ organizationId: effectiveOrgId || 'demo-org' })
+  const {
+    updateAppointmentStatus,
+    replaceServices,
+    updateAppointmentComplete // ✅ NEW: Atomic update of status, metadata, services, and prices
+  } = useHeraAppointments({ organizationId: effectiveOrgId || 'demo-org' })
 
   // 🎯 ENTERPRISE: Auto-load appointment from URL parameter
   useEffect(() => {
@@ -229,7 +272,9 @@ function POSContent() {
             appointment_id: appointmentData.id,
             customer_id: appointmentData.customer_id || '',
             customer_name: appointmentData.customer_name || 'Walk-in',
-            services
+            services,
+            originalServiceIds: appointmentData.service_ids || [], // ✅ Store original service IDs for change detection
+            originalServicePrices: appointmentData.service_prices || [] // ✅ NEW: Store original service prices for price change detection
           })
         }
 
@@ -322,7 +367,9 @@ function POSContent() {
             price: fullAppointment.service_prices?.[index] || 0,
             ...(fullAppointment.stylist_id ? { stylist_id: fullAppointment.stylist_id } : {}),
             ...(fullAppointment.stylist_name ? { stylist_name: fullAppointment.stylist_name } : {})
-          })) || []
+          })) || [],
+          originalServiceIds: fullAppointment.service_ids || [], // ✅ Store original service IDs for change detection
+          originalServicePrices: fullAppointment.service_prices || [] // ✅ NEW: Store original service prices for price change detection
         })
 
         // Remove appointment param from URL for clean state
@@ -623,72 +670,105 @@ function POSContent() {
       // Update appointment status to completed if payment was for an appointment
       if (ticket.appointment_id && effectiveOrgId && user?.id) {
         try {
-          // 🎯 STEP 1: Update appointment status to completed FIRST
-          // This ensures status update is not overwritten by service sync
-          await updateAppointmentStatus({
-            id: ticket.appointment_id,
-            status: 'completed'
-          })
-
-          console.log('✅ [POS] Appointment status updated to completed')
-
-          // 🎯 STEP 2: Extract final service IDs from cart
+          // 🎯 ENTERPRISE: Single Atomic Update - Status, Metadata, Services, AND Prices
+          // Extract final service IDs and prices from cart
           const finalServiceIds = ticket.lineItems
             .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
             .map((item: any) => item.entity_id || item.id)
             .filter(Boolean)
 
-          console.log('[POS] 🔄 Syncing services:', {
+          const servicePriceMap = ticket.lineItems
+            .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
+            .reduce((acc: Record<string, number>, item: any) => ({
+              ...acc,
+              [item.entity_id || item.id]: item.unit_price || 0
+            }), {} as Record<string, number>)
+
+          // Detect changes (services OR prices)
+          const originalServiceIds = ticket.originalServiceIds || []
+          const originalServicePrices = ticket.originalServicePrices || {}
+          const servicesChanged = !arraysEqual(originalServiceIds, finalServiceIds)
+          const pricesChanged = detectPriceChanges(originalServiceIds, finalServiceIds, servicePriceMap, originalServicePrices)
+          const needsSync = servicesChanged || pricesChanged
+
+          console.log('[POS] 🔍 Change detection:', {
             appointment_id: ticket.appointment_id,
-            finalServiceIds,
-            serviceCount: finalServiceIds.length
+            servicesChanged,
+            pricesChanged,
+            needsSync,
+            originalServiceCount: originalServiceIds.length,
+            finalServiceCount: finalServiceIds.length,
+            priceChanges: Object.keys(servicePriceMap).filter(id => {
+              const original = originalServicePrices[id] ?? 0
+              const final = servicePriceMap[id] ?? 0
+              return Math.abs(original - final) > 0.01
+            }).length
           })
 
-          // 🎯 STEP 3: Sync services in background (non-blocking)
-          // Service sync now happens AFTER status update to avoid conflicts
-          if (finalServiceIds.length > 0) {
-            syncAppointmentServicesInBackground({
-              appointmentId: ticket.appointment_id,
-              finalServiceIds,
-              replaceServicesFunc: replaceServices,
-              onSuccess: () => {
-                console.log('✅ [POS] Services synced successfully')
-                // Invalidate appointment cache to refresh calendar
-                localStorage.setItem('appointment_services_updated', JSON.stringify({
-                  appointment_id: ticket.appointment_id,
-                  timestamp: new Date().toISOString(),
-                  source: 'pos_service_sync'
-                }))
+          if (needsSync && finalServiceIds.length > 0) {
+            console.log('[POS] 🔄 Updating appointment atomically (status + services + prices)...')
+
+            // ✅ SINGLE ATOMIC UPDATE - All changes in ONE RPC call
+            await updateAppointmentComplete({
+              id: ticket.appointment_id,
+              transaction_status: 'completed', // ← Update status
+              metadata: {
+                completed_at: new Date().toISOString(),
+                completed_by: user?.id || 'system',
+                pos_sale_id: paymentResult.transactionId, // ← Link to POS sale transaction
+                payment_method: ticket.payment_method || 'cash'
               },
-              onFailure: (error) => {
-                console.error('❌ [POS] Service sync failed:', error)
-              }
+              serviceIds: finalServiceIds, // ← Update services
+              servicePrices: servicePriceMap // ← Update prices
             })
+
+            console.log('✅ [POS] Appointment updated atomically:', {
+              status: 'completed',
+              services_count: finalServiceIds.length,
+              prices_updated: pricesChanged
+            })
+          } else {
+            console.log('[POS] ℹ️ No changes detected - only updating status...')
+
+            // Just update status if no service/price changes
+            await updateAppointmentStatus({
+              id: ticket.appointment_id,
+              status: 'completed'
+            })
+
+            console.log('✅ [POS] Appointment status updated to completed')
           }
 
           // 🚀 ENTERPRISE: Set localStorage flag to trigger calendar refresh
-          // This ensures the calendar updates when user navigates back
-          localStorage.setItem('appointment_status_updated', JSON.stringify({
+          localStorage.setItem('appointment_updated', JSON.stringify({
             appointment_id: ticket.appointment_id,
             status: 'completed',
+            servicesChanged,
+            pricesChanged,
             timestamp: new Date().toISOString(),
             source: 'pos_payment_complete'
           }))
 
-          console.log('✅ [POS] Appointment status updated and calendar refresh flag set')
+          console.log('✅ [POS] Appointment update complete and calendar refresh flag set')
 
           toast({
             title: '✅ Appointment Completed',
             description: 'Services synced and appointment completed.',
             duration: 2000
           })
-        } catch (error) {
+        } catch (error: any) {
           console.error('[POSPage] ❌ Failed to update appointment:', error)
+          console.error('[POSPage] 🔍 Error details:', {
+            message: error?.message,
+            stack: error?.stack,
+            response: error?.response,
+            data: error?.data
+          })
 
           // Don't block the payment flow, just show a warning
           toast({
             title: '⚠️ Update Failed',
-            description: 'Payment was successful but appointment could not be updated.',
+            description: `Payment was successful but appointment could not be updated: ${error?.message || 'Unknown error'}`,
             variant: 'destructive',
             duration: 5000
           })

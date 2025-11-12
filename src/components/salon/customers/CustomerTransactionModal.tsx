@@ -29,7 +29,8 @@ import {
   DollarSign
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useCustomerTransactions } from '@/hooks/useCustomerTransactions'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
 import {
   Select,
   SelectContent,
@@ -94,13 +95,80 @@ export function CustomerTransactionModal({
     }
   }, [dateRange])
 
-  // Fetch transactions with filters
-  const { transactions, kpis, isLoading, error, formatCurrency } = useCustomerTransactions({
-    customerId,
-    organizationId,
-    dateFrom,
-    dateTo
+  // 🚀 ENTERPRISE: Fetch ALL transactions for customer (not just SALE type)
+  const {
+    transactions: rawTransactions,
+    isLoading,
+    error
+  } = useUniversalTransactionV1({
+    organizationId: organizationId,
+    filters: {
+      source_entity_id: customerId, // Filter by customer
+      include_lines: true,
+      date_from: dateFrom,
+      date_to: dateTo
+    }
   })
+
+  // 🔍 DEBUG: Verify customer filtering is working
+  React.useEffect(() => {
+    if (rawTransactions && rawTransactions.length > 0) {
+      console.log('🔍 [CustomerTransactionModal] Transactions loaded:', {
+        customerId,
+        customerName,
+        totalTransactions: rawTransactions.length,
+        firstTransaction: rawTransactions[0],
+        allSourceEntityIds: rawTransactions.map(t => t.source_entity_id),
+        uniqueCustomers: [...new Set(rawTransactions.map(t => t.source_entity_id))],
+        isFilteredCorrectly: rawTransactions.every(t => t.source_entity_id === customerId)
+      })
+    }
+  }, [rawTransactions, customerId, customerName])
+
+  // Extract transactions array
+  const transactions = useMemo(() => {
+    return rawTransactions || []
+  }, [rawTransactions])
+
+  // 📊 CALCULATE KPIS: Lifetime value, visit count, avg order
+  const kpis = useMemo(() => {
+    const completedTransactions = transactions.filter(
+      t => t.transaction_status === 'completed'
+    )
+
+    const lifetimeValue = completedTransactions.reduce(
+      (sum, t) => sum + (t.total_amount || 0),
+      0
+    )
+
+    const visitCount = completedTransactions.length
+    const avgOrderValue = visitCount > 0 ? lifetimeValue / visitCount : 0
+
+    const lastVisit = transactions.length > 0
+      ? transactions.sort(
+          (a, b) =>
+            new Date(b.transaction_date).getTime() -
+            new Date(a.transaction_date).getTime()
+        )[0]?.transaction_date
+      : null
+
+    return {
+      lifetimeValue,
+      visitCount,
+      avgOrderValue,
+      lastVisit,
+      totalCount: transactions.length
+    }
+  }, [transactions])
+
+  // 💰 FORMAT CURRENCY: AED format
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-AE', {
+      style: 'currency',
+      currency: 'AED',
+      minimumFractionDigits: 2
+    }).format(amount)
+  }
 
   // Paginate transactions
   const paginatedTransactions = useMemo(() => {
@@ -116,25 +184,17 @@ export function CustomerTransactionModal({
     setCurrentPage(1)
   }, [dateRange, pageSize])
 
-  if (!open) return null
-
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.85)',
-        backdropFilter: 'blur(8px)'
-      }}
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-6xl max-h-[90vh] flex flex-col rounded-2xl overflow-hidden animate-in zoom-in-95 duration-300"
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent
+        className="max-w-6xl max-h-[90vh] p-0 flex flex-col overflow-hidden border-0 [&>button]:hidden"
         style={{
           backgroundColor: LUXE_COLORS.charcoal,
           border: `2px solid ${LUXE_COLORS.gold}`,
-          boxShadow: `0 25px 80px rgba(0, 0, 0, 0.8), 0 0 120px ${LUXE_COLORS.gold}40, inset 0 0 80px rgba(212, 175, 55, 0.05)`
+          boxShadow: `0 25px 80px rgba(0, 0, 0, 0.8), 0 0 120px ${LUXE_COLORS.gold}40, inset 0 0 80px rgba(212, 175, 55, 0.05)`,
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)'
         }}
-        onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div
@@ -146,24 +206,36 @@ export function CustomerTransactionModal({
             boxShadow: `inset 0 -1px 0 ${LUXE_COLORS.gold}40`
           }}
         >
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.gold}20`,
-                  border: `1px solid ${LUXE_COLORS.gold}60`
-                }}
-              >
-                <ShoppingBag className="w-6 h-6" style={{ color: LUXE_COLORS.gold }} />
-              </div>
+          <div className="flex items-center gap-3">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center"
+              style={{
+                backgroundColor: `${LUXE_COLORS.gold}20`,
+                border: `1px solid ${LUXE_COLORS.gold}60`
+              }}
+            >
+              <ShoppingBag className="w-6 h-6" style={{ color: LUXE_COLORS.gold }} />
+            </div>
+            <div>
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
                 Transaction History
               </h2>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                  Customer:
+                </span>
+                <span
+                  className="text-sm font-semibold px-2 py-1 rounded"
+                  style={{
+                    backgroundColor: `${LUXE_COLORS.gold}15`,
+                    color: LUXE_COLORS.gold,
+                    border: `1px solid ${LUXE_COLORS.gold}40`
+                  }}
+                >
+                  {customerName}
+                </span>
+              </div>
             </div>
-            <p className="text-base md:text-lg font-medium ml-[60px]" style={{ color: LUXE_COLORS.gold }}>
-              {customerName}
-            </p>
           </div>
           <Button
             onClick={onClose}
@@ -256,10 +328,21 @@ export function CustomerTransactionModal({
           )}
 
           {!isLoading && !error && transactions.length === 0 && (
-            <div className="text-center py-12">
-              <ShoppingBag className="w-16 h-16 mx-auto mb-4 opacity-40" style={{ color: LUXE_COLORS.bronze }} />
-              <p className="text-lg" style={{ color: LUXE_COLORS.bronze }}>
+            <div className="text-center py-16">
+              <div
+                className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center"
+                style={{
+                  backgroundColor: `${LUXE_COLORS.gold}10`,
+                  border: `2px solid ${LUXE_COLORS.gold}30`
+                }}
+              >
+                <ShoppingBag className="w-10 h-10" style={{ color: LUXE_COLORS.gold }} />
+              </div>
+              <p className="text-xl font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
                 No transactions found
+              </p>
+              <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                {customerName} hasn't made any transactions yet
               </p>
             </div>
           )}
@@ -457,7 +540,7 @@ export function CustomerTransactionModal({
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }

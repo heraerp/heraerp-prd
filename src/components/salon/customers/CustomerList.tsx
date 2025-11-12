@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button'
 import {
   MoreVertical,
   Edit,
+  History,
   Trash2,
   Archive,
   ArchiveRestore,
@@ -58,6 +59,7 @@ interface CustomerListProps {
   customers: CustomerEntity[]
   viewMode?: 'list' | 'grid'
   onEdit: (customer: CustomerEntity) => void
+  onViewHistory: (customer: CustomerEntity) => void
   onDelete: (customer: CustomerEntity) => void
   onArchive: (customer: CustomerEntity) => void
   onRestore: (customer: CustomerEntity) => void
@@ -67,6 +69,7 @@ export function CustomerList({
   customers,
   viewMode = 'list',
   onEdit,
+  onViewHistory,
   onDelete,
   onArchive,
   onRestore
@@ -76,6 +79,7 @@ export function CustomerList({
       <CustomerGridView
         customers={customers}
         onEdit={onEdit}
+        onViewHistory={onViewHistory}
         onDelete={onDelete}
         onArchive={onArchive}
         onRestore={onRestore}
@@ -251,9 +255,13 @@ export function CustomerList({
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="transition-all hover:scale-110"
+                            style={{
+                              backgroundColor: COLORS.charcoalLight,
+                              border: `1px solid ${COLORS.gold}40`
+                            }}
                           >
-                            <MoreVertical className="h-4 w-4" style={{ color: COLORS.lightText }} />
+                            <MoreVertical className="h-4 w-4" style={{ color: COLORS.gold }} />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
@@ -279,9 +287,13 @@ export function CustomerList({
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="transition-all hover:scale-110"
+                            style={{
+                              backgroundColor: COLORS.charcoalLight,
+                              border: `1px solid ${COLORS.gold}40`
+                            }}
                           >
-                            <MoreVertical className="h-4 w-4" style={{ color: COLORS.lightText }} />
+                            <MoreVertical className="h-4 w-4" style={{ color: COLORS.gold }} />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
@@ -298,6 +310,14 @@ export function CustomerList({
                           >
                             <Edit className="mr-2 h-4 w-4" />
                             Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onViewHistory(customer)}
+                            style={{ color: COLORS.lightText }}
+                            className="hover:!bg-purple-900/20 hover:!text-purple-300"
+                          >
+                            <History className="mr-2 h-4 w-4" />
+                            View History
                           </DropdownMenuItem>
                           <DropdownMenuSeparator
                             style={{ backgroundColor: COLORS.bronze + '30' }}
@@ -347,6 +367,7 @@ export function CustomerList({
 function CustomerGridView({
   customers,
   onEdit,
+  onViewHistory,
   onDelete,
   onArchive,
   onRestore
@@ -493,6 +514,16 @@ function CustomerGridView({
                       >
                         <Edit className="h-3 w-3 mr-1" />
                         Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onViewHistory(customer)}
+                        className="text-xs hover:bg-purple-900/20 hover:text-purple-300"
+                        style={{ color: COLORS.lightText }}
+                      >
+                        <History className="h-3 w-3 mr-1" />
+                        History
                       </Button>
                       {isArchived ? (
                         <Button
