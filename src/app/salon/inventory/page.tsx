@@ -33,6 +33,7 @@ import {
   DialogDescription
 } from '@/components/ui/dialog'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { SalonPagination } from '@/components/salon/ui/Pagination'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useStockLevels } from '@/hooks/useStockLevels'
@@ -121,6 +122,10 @@ function SalonInventoryContent() {
   const [stockModalOpen, setStockModalOpen] = useState(false)
   const [currentInventory, setCurrentInventory] = useState<ProductInventory | null>(null)
   const [loadingInventory, setLoadingInventory] = useState(false)
+
+  // 🚀 PAGINATION STATE: Enterprise-grade pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50) // 50 inventory items per page
 
   // Branch filter
   const {
@@ -388,6 +393,19 @@ function SalonInventoryContent() {
 
     return filtered
   }, [items, deepProductId])
+
+  // 🔄 RESET PAGE: Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, categoryFilter, deepProductId])
+
+  // 📄 PAGINATION CALCULATIONS: Slice data for current page
+  const totalPages = Math.ceil(displayItems.length / pageSize)
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return displayItems.slice(startIndex, endIndex)
+  }, [displayItems, currentPage, pageSize])
 
   // Calculate summary metrics
   const activeItems = useMemo(
@@ -1040,94 +1058,115 @@ function SalonInventoryContent() {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  {displayItems.map(item => (
-                    <div
-                      key={item.id}
-                      className="p-4 rounded-lg hover:bg-opacity-70 transition-all"
-                      style={{
-                        backgroundColor: COLORS.charcoalDark,
-                        border: `1px solid ${
-                          item.stock_status === 'out_of_stock'
-                            ? '#EF4444'
-                            : item.stock_status === 'low_stock'
-                              ? '#F59E0B'
-                              : COLORS.gold
-                        }30`
-                      }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3">
-                            <h3 className="font-medium" style={{ color: COLORS.lightText }}>
-                              {item.entity_name}
-                            </h3>
-                            {item.sku && (
+                <>
+                  <div className="space-y-2">
+                    {paginatedItems.map(item => (
+                      <div
+                        key={item.id}
+                        className="p-4 rounded-lg hover:bg-opacity-70 transition-all"
+                        style={{
+                          backgroundColor: COLORS.charcoalDark,
+                          border: `1px solid ${
+                            item.stock_status === 'out_of_stock'
+                              ? '#EF4444'
+                              : item.stock_status === 'low_stock'
+                                ? '#F59E0B'
+                                : COLORS.gold
+                          }30`
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <h3 className="font-medium" style={{ color: COLORS.lightText }}>
+                                {item.entity_name}
+                              </h3>
+                              {item.sku && (
+                                <Badge
+                                  variant="outline"
+                                  style={{ borderColor: COLORS.bronze + '40' }}
+                                >
+                                  {item.sku}
+                                </Badge>
+                              )}
                               <Badge
-                                variant="outline"
-                                style={{ borderColor: COLORS.bronze + '40' }}
+                                style={{
+                                  backgroundColor:
+                                    item.stock_status === 'out_of_stock'
+                                      ? '#EF444420'
+                                      : item.stock_status === 'low_stock'
+                                        ? '#F59E0B20'
+                                        : '#10B98120',
+                                  color:
+                                    item.stock_status === 'out_of_stock'
+                                      ? '#EF4444'
+                                      : item.stock_status === 'low_stock'
+                                        ? '#F59E0B'
+                                        : '#10B981'
+                                }}
                               >
-                                {item.sku}
+                                {item.stock_status === 'out_of_stock'
+                                  ? 'Out of Stock'
+                                  : item.stock_status === 'low_stock'
+                                    ? 'Low Stock'
+                                    : 'In Stock'}
                               </Badge>
-                            )}
-                            <Badge
-                              style={{
-                                backgroundColor:
-                                  item.stock_status === 'out_of_stock'
-                                    ? '#EF444420'
-                                    : item.stock_status === 'low_stock'
-                                      ? '#F59E0B20'
-                                      : '#10B98120',
-                                color:
-                                  item.stock_status === 'out_of_stock'
-                                    ? '#EF4444'
-                                    : item.stock_status === 'low_stock'
-                                      ? '#F59E0B'
-                                      : '#10B981'
-                              }}
+                            </div>
+                            <div
+                              className="flex items-center gap-6 mt-2 text-sm"
+                              style={{ color: COLORS.lightText + '80' }}
                             >
-                              {item.stock_status === 'out_of_stock'
-                                ? 'Out of Stock'
-                                : item.stock_status === 'low_stock'
-                                  ? 'Low Stock'
-                                  : 'In Stock'}
-                            </Badge>
-                          </div>
-                          <div
-                            className="flex items-center gap-6 mt-2 text-sm"
-                            style={{ color: COLORS.lightText + '80' }}
-                          >
-                            <span>
-                              Qty: <strong>{item.stock_quantity || 0}</strong>
-                            </span>
-                            <span>
-                              Cost: <strong>AED {(item.price_cost || 0).toFixed(2)}</strong>
-                            </span>
-                            <span>
-                              Value: <strong>AED {(item.stock_value || 0).toFixed(2)}</strong>
-                            </span>
-                            {item.category && (
                               <span>
-                                Category: <strong>{item.category}</strong>
+                                Qty: <strong>{item.stock_quantity || 0}</strong>
                               </span>
-                            )}
+                              <span>
+                                Cost: <strong>AED {(item.price_cost || 0).toFixed(2)}</strong>
+                              </span>
+                              <span>
+                                Value: <strong>AED {(item.stock_value || 0).toFixed(2)}</strong>
+                              </span>
+                              {item.category && (
+                                <span>
+                                  Category: <strong>{item.category}</strong>
+                                </span>
+                              )}
+                            </div>
                           </div>
+                          <Button
+                            size="sm"
+                            onClick={() => handleManageStock(item)}
+                            style={{
+                              backgroundColor: COLORS.gold,
+                              color: COLORS.charcoalDark
+                            }}
+                          >
+                            <Edit className="w-4 h-4 mr-2" />
+                            Manage Stock
+                          </Button>
                         </div>
-                        <Button
-                          size="sm"
-                          onClick={() => handleManageStock(item)}
-                          style={{
-                            backgroundColor: COLORS.gold,
-                            color: COLORS.charcoalDark
-                          }}
-                        >
-                          <Edit className="w-4 h-4 mr-2" />
-                          Manage Stock
-                        </Button>
                       </div>
+                    ))}
+                  </div>
+
+                  {/* 📄 PAGINATION CONTROLS: Enterprise-grade pagination */}
+                  {displayItems.length > 0 && (
+                    <div className="mt-6">
+                      <SalonPagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={displayItems.length}
+                        pageSize={pageSize}
+                        pageSizeOptions={[25, 50, 100]}
+                        onPageChange={setCurrentPage}
+                        onPageSizeChange={(newSize) => {
+                          setPageSize(newSize)
+                          setCurrentPage(1)
+                        }}
+                        itemsName="items"
+                      />
                     </div>
-                  ))}
-                </div>
+                  )}
+                </>
               )}
             </div>
           </TabsContent>

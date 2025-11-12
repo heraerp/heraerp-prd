@@ -58,6 +58,7 @@ import {
 import { SALON_LUXE_COLORS as LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { entityCRUD } from '@/lib/universal-api-v2-client'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { supabase } from '@/lib/supabase/client'
 
 // 🚀 PERFORMANCE: Skeleton loader for tabs
 function TabLoader() {
@@ -158,48 +159,64 @@ function SettingsPageContent() {
     try {
       console.log('[Settings] Loading organization members for:', organizationId)
 
-      // ✅ Query MEMBER_OF relationships to get organization members
-      const { data: relationships, error } = await import('@/lib/supabase/client').then(m => m.supabase)
+      // ✅ Step 1: Get MEMBER_OF relationships
+      const { data: relationships, error: relError } = await supabase
         .from('core_relationships')
-        .select(`
-          from_entity_id,
-          relationship_data,
-          created_at,
-          core_entities!core_relationships_from_entity_id_fkey (
-            id,
-            entity_name,
-            entity_code,
-            core_dynamic_data (
-              field_name,
-              field_value_text
-            )
-          )
-        `)
+        .select('from_entity_id, relationship_data, created_at')
         .eq('organization_id', organizationId)
         .eq('relationship_type', 'MEMBER_OF')
         .eq('to_entity_id', organizationId)
 
-      if (error) {
-        console.error('[Settings] Error loading members:', error)
+      if (relError) {
+        console.error('[Settings] Error loading relationships:', relError)
         showError('Error', 'Failed to load organization members')
         return
       }
 
       console.log('[Settings] Loaded relationships:', relationships)
 
-      // ✅ Transform relationships to member list
-      const members: OrgMember[] = (relationships || []).map((rel: any) => {
-        const userEntity = rel.core_entities
-        const role = rel.relationship_data?.role || 'member'
+      if (!relationships || relationships.length === 0) {
+        console.log('[Settings] No members found')
+        setOrgMembers([])
+        return
+      }
 
-        // Extract email from dynamic data
-        const emailField = userEntity?.core_dynamic_data?.find((d: any) => d.field_name === 'email')
-        const email = emailField?.field_value_text || userEntity?.entity_code || 'unknown@salon.com'
+      // ✅ Step 2: Get user entity details for each member
+      const userIds = relationships.map((rel: any) => rel.from_entity_id)
+      const { data: userEntities, error: entitiesError } = await supabase
+        .from('core_entities')
+        .select('id, entity_name, entity_code')
+        .in('id', userIds)
+
+      if (entitiesError) {
+        console.error('[Settings] Error loading user entities:', entitiesError)
+      }
+
+      console.log('[Settings] Loaded user entities:', userEntities)
+
+      // ✅ Step 3: Get email from dynamic data
+      const { data: dynamicData, error: dynamicError } = await supabase
+        .from('core_dynamic_data')
+        .select('entity_id, field_name, field_value_text')
+        .in('entity_id', userIds)
+        .eq('field_name', 'email')
+
+      if (dynamicError) {
+        console.error('[Settings] Error loading dynamic data:', dynamicError)
+      }
+
+      console.log('[Settings] Loaded dynamic data:', dynamicData)
+
+      // ✅ Step 4: Combine all data into member list
+      const members: OrgMember[] = relationships.map((rel: any) => {
+        const userEntity = userEntities?.find((e: any) => e.id === rel.from_entity_id)
+        const emailData = dynamicData?.find((d: any) => d.entity_id === rel.from_entity_id)
+        const role = rel.relationship_data?.role || 'member'
 
         return {
           user_id: rel.from_entity_id,
           user_name: userEntity?.entity_name || 'Unknown User',
-          user_email: email,
+          user_email: emailData?.field_value_text || userEntity?.entity_code || 'unknown@salon.com',
           role: role.charAt(0).toUpperCase() + role.slice(1), // Capitalize
           status: 'Active',
           joined_at: rel.created_at

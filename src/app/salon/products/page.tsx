@@ -12,6 +12,7 @@ import { ProductCategory, ProductCategoryFormValues } from '@/types/salon-produc
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import { SalonPagination } from '@/components/salon/ui/Pagination'
 import {
   SalonIconButton,
   SalonIconButtonGroup,
@@ -147,6 +148,10 @@ function SalonProductsPageContent() {
   const [sortBy, setSortBy] = useState('name_asc')
   // Local branch filter state (separate from global context) - matches services page pattern
   const [localBranchFilter, setLocalBranchFilter] = useState<string | null>(null)
+
+  // 🚀 PAGINATION STATE: Enterprise-grade pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50) // 50 products per page
 
   // Category modal state
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
@@ -541,6 +546,19 @@ function SalonProductsPageContent() {
 
   // For backward compatibility, keep filteredProducts reference
   const filteredProducts = filteredAndSortedProducts
+
+  // 🔄 RESET PAGE: Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, categoryFilter, sortBy])
+
+  // 📄 PAGINATION CALCULATIONS: Slice data for current page
+  const totalPages = Math.ceil(filteredProducts.length / pageSize)
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return filteredProducts.slice(startIndex, endIndex)
+  }, [filteredProducts, currentPage, pageSize])
 
   // 🚨 ENTERPRISE ERROR LOGGING: Detailed console logs with timestamps
   // MUST be defined BEFORE any handlers that use it to avoid temporal dead zone
@@ -1553,7 +1571,7 @@ function SalonProductsPageContent() {
             </div>
           }>
             <ProductList
-              products={filteredProducts}
+              products={paginatedProducts}
               organizationId={organizationId}
               loading={isLoading}
               viewMode={viewMode}
@@ -1563,6 +1581,25 @@ function SalonProductsPageContent() {
               onArchive={handleArchive}
               onRestore={handleRestore}
             />
+
+            {/* 📄 PAGINATION CONTROLS: Enterprise-grade pagination */}
+            {filteredProducts.length > 0 && (
+              <div className="mt-6">
+                <SalonPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={filteredProducts.length}
+                  pageSize={pageSize}
+                  pageSizeOptions={[25, 50, 100]}
+                  onPageChange={setCurrentPage}
+                  onPageSizeChange={(newSize) => {
+                    setPageSize(newSize)
+                    setCurrentPage(1) // Reset to first page when changing page size
+                  }}
+                  itemsName="products"
+                />
+              </div>
+            )}
           </Suspense>
         )}
       </div>

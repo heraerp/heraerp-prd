@@ -90,7 +90,9 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     filters: {
       include_dynamic: true,
       include_relationships: true,
-      limit: options?.filters?.limit || 50, // ✅ Reduced default, configurable
+      // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for product management
+      // Components can override with options?.filters?.limit if pagination needed
+      limit: options?.filters?.limit,
       status: undefined, // ✅ Fetch all products (active + archived + deleted), filter client-side
       ...options?.filters
     },

@@ -8,6 +8,8 @@
  * - Multi-tenant safety with organization isolation
  */
 
+import { getEntities } from '@/lib/universal-api-v2-client'
+
 /**
  * Assert branch_id is present and consistent for salon finance events
  * @throws Error if branch validation fails
@@ -57,8 +59,6 @@ export async function validateBranchExists(
   branch_id: string
 ): Promise<boolean> {
   try {
-    const { getEntities } = await import('@/lib/universal-api-v2-client')
-
     const branches = await getEntities('', {
       p_organization_id: organization_id,
       p_entity_type: 'BRANCH',
@@ -106,8 +106,6 @@ export async function getOrganizationBranches(
   }>
 > {
   try {
-    const { getEntities } = await import('@/lib/universal-api-v2-client')
-
     const branches = await getEntities('', {
       p_organization_id: organization_id,
       p_entity_type: 'BRANCH',

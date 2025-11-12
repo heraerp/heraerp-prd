@@ -167,6 +167,7 @@ function getStatusIcon(status: string) {
 
   const iconName = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.icon || 'Calendar'
   const IconComponent = iconMap[iconName] || Scissors
+
   return <IconComponent className="w-3 h-3" />
 }
 
@@ -646,8 +647,9 @@ export function SalonResourceCalendar({
 
       const time = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`
 
-      // Customer and stylist info - use runtime lookup
-      const customerName = customers?.find(c => c.id === apt.customer_id)?.entity_name || 'Walk-in Customer'
+      // ✅ FIXED: Use pre-enriched customer_name from useHeraAppointments hook
+      // The hook already enriches appointments with customer names, no need for redundant lookup
+      const customerName = apt.customer_name || 'Walk-in Customer'
       const stylistId = apt.stylist_id || 'unassigned'
 
       // Get branch info from metadata
@@ -661,16 +663,9 @@ export function SalonResourceCalendar({
         border: 'rgba(107, 114, 128, 0.4)'
       }
 
-      // ✨ Get service names from service IDs (OPTIMIZED - no logging in production)
-      const serviceIds = apt.metadata?.service_ids || []
-      const serviceNames = Array.isArray(serviceIds)
-        ? serviceIds
-            .map((id: string) => {
-              const service = services.find((s: any) => s.id === id)
-              return service?.entity_name || service?.name
-            })
-            .filter(Boolean)
-        : []
+      // ✅ FIXED: Use pre-enriched service_names from useHeraAppointments hook
+      // The hook already enriches appointments with service names in metadata
+      const serviceNames = apt.metadata?.service_names || []
 
       // ✅ ENTERPRISE: Map database status to calendar status
       // Database statuses: 'booked', 'checked_in', 'payment_done', 'completed', 'cancelled'
@@ -679,7 +674,7 @@ export function SalonResourceCalendar({
       return {
         id: apt.id,
         title: apt.entity_name || 'Appointment',
-        client: customerName,
+        // client: customerName, // ✅ REMOVED: Duplicate display - customer name already in title
         stylist: stylistId,
         time,
         date: startDate,
@@ -707,7 +702,7 @@ export function SalonResourceCalendar({
         total: appointments.length,
         sample: appointments.slice(0, 3).map(apt => ({
           id: apt.id,
-          client: apt.client,
+          title: apt.title,
           date: apt.date.toDateString(),
           time: apt.time,
           status: apt.status,
@@ -729,7 +724,7 @@ export function SalonResourceCalendar({
 
     const query = searchQuery.toLowerCase().trim()
     return transformedAppointments.filter((apt: Appointment) => {
-      const customerMatch = apt.client?.toLowerCase().includes(query)
+      const customerMatch = apt.title?.toLowerCase().includes(query)
       const serviceMatch = apt.serviceNames?.some((name: string) =>
         name.toLowerCase().includes(query)
       )
@@ -1046,10 +1041,12 @@ export function SalonResourceCalendar({
   )
 
   // ✨ ENTERPRISE: Status Transition Rules & Validation
+  // Workflow: Draft → Booked → Checked In → [Payment at POS] → Completed (automatic)
   const STATUS_TRANSITIONS = {
     // Define allowed transitions for each status
+    draft: ['booked', 'cancelled'], // Draft can be confirmed or cancelled
     booked: ['checked_in', 'cancelled'], // Can only check-in or cancel
-    checked_in: ['booked', 'completed', 'cancelled'], // Can go back, complete, or cancel
+    checked_in: ['booked', 'cancelled'], // Can go back or cancel (completed happens automatically after payment)
     completed: ['booked'], // Can reopen (with confirmation) - e.g., customer returns with issue
     cancelled: ['booked'] // Can rebook (with confirmation)
   } as const
@@ -1696,8 +1693,16 @@ export function SalonResourceCalendar({
   // ✨ ENTERPRISE: Appointment Status Configuration (Dual Color Coding)
   // Staff colors remain primary, status adds secondary visual cue
   // 🎨 BRIGHTER colors - distinct from staff colors (Violet/Blue/Pink/Amber/Teal/Rose/Indigo/Emerald/Purple/Cyan)
-  // Workflow: Booked → Checked In → Process Payment (POS) → Completed (automatic)
+  // Workflow: Draft → Booked → Checked In → Process Payment (POS) → Completed (automatic)
   const APPOINTMENT_STATUSES = {
+    draft: {
+      label: 'Draft',
+      color: '#9CA3AF', // Gray - for draft/unconfirmed
+      bg: 'rgba(156, 163, 175, 0.50)', // ✨ ENHANCED: More vibrant background
+      border: '#9CA3AF', // ✨ ENHANCED: Solid border for crisp edges
+      icon: <FileEdit className="w-3.5 h-3.5" />,
+      description: 'Appointment saved as draft, not yet confirmed'
+    },
     booked: {
       label: 'Booked',
       color: '#FCD34D', // Enhanced Gold - matches badge color
@@ -2423,9 +2428,9 @@ export function SalonResourceCalendar({
                                 borderLeft: `2px solid ${apt.color}`,
                                 color: COLORS.champagne
                               }}
-                              title={`${apt.time} - ${apt.client} - ${apt.serviceNames?.join(', ') || apt.service}`}
+                              title={`${apt.time} - ${apt.title} - ${apt.serviceNames?.join(', ') || apt.service}`}
                             >
-                              <span className="font-semibold">{apt.time}</span> {apt.client}
+                              <span className="font-semibold">{apt.time}</span> {apt.title}
                             </div>
                           ))}
                           {dayAppointments.length > 3 && (
@@ -4149,8 +4154,17 @@ function AppointmentStatusBadge({
   }, [showStatusMenu, status])
 
   // Status configuration - Salon Luxe aesthetic with proper icons
-  // Workflow: Booked → Checked In → Process Payment (POS) → Completed (automatic)
+  // Workflow: Draft → Booked → Checked In → Process Payment (POS) → Completed (automatic)
   const STATUSES = {
+    draft: {
+      label: 'Draft',
+      color: '#9CA3AF', // Gray - for draft/unconfirmed
+      textColor: '#F5E6C8', // Champagne text for better readability on dark
+      bg: 'rgba(156, 163, 175, 0.50)', // ✨ ENHANCED: More vibrant background
+      border: '#9CA3AF', // ✨ ENHANCED: Solid border for crisp edges
+      icon: <FileEdit className="w-3.5 h-3.5" />,
+      action: null
+    },
     booked: {
       label: 'Booked',
       color: '#FCD34D', // Brighter Gold - stronger contrast
@@ -4206,9 +4220,11 @@ function AppointmentStatusBadge({
   }
 
   // ✨ ENTERPRISE: Status transition rules (must match main component)
+  // Workflow: Draft → Booked → Checked In → [Payment at POS] → Completed (automatic)
   const ALLOWED_TRANSITIONS = {
+    draft: ['booked', 'cancelled'], // Draft can be confirmed or cancelled
     booked: ['checked_in', 'cancelled'],
-    checked_in: ['booked', 'completed', 'cancelled'],
+    checked_in: ['booked', 'cancelled'], // Completed happens automatically after payment at POS
     completed: ['booked'], // Requires confirmation
     cancelled: ['booked'] // Requires confirmation
   } as const
@@ -4487,9 +4503,6 @@ function AppointmentCard({
         {/* Added pr-20 to ensure enough space for status badge without overlap */}
         <p className="text-xs font-semibold truncate" style={{ color: COLORS.champagne }}>
           {appointment.title}
-        </p>
-        <p className="text-xs truncate" style={{ color: COLORS.bronze }}>
-          {appointment.client}
         </p>
         {/* ✨ Display service names */}
         {appointment.serviceNames && appointment.serviceNames.length > 0 && (

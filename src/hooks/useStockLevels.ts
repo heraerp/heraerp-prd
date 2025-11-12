@@ -59,7 +59,8 @@ export function useStockLevels(options: UseStockLevelsOptions) {
     filters: {
       include_dynamic: true,
       include_relationships: true,
-      limit: 100
+      // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for inventory management
+      limit: undefined
       // Removed status filter - let's fetch all stock levels
     },
     dynamicFields: [

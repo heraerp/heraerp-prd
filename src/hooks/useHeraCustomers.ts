@@ -103,7 +103,9 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
       // ⚡ PERFORMANCE: Only fetch relationships when filtering by branch
       // This significantly improves initial page load since relationships require expensive joins
       include_relationships: !!(options?.filters?.branch_id),
-      limit: 100,
+      // 🚀 ENTERPRISE: No hardcoded limits - allow unlimited fetch for appointment workflows
+      // Components can override with options?.filters?.limit if pagination needed
+      limit: options?.filters?.limit,
       // ✅ Only filter by 'active' status when not including archived
       ...(options?.includeArchived ? {} : { status: 'active' }),
       ...options?.filters
@@ -465,6 +467,20 @@ export function useHeraCustomers(options?: UseHeraCustomersOptions) {
       averageLoyaltyPoints: allCustomers.length > 0 ? totalLoyaltyPoints / allCustomers.length : 0,
       totalLifetimeValue,
       averageLifetimeValue: allCustomers.length > 0 ? totalLifetimeValue / allCustomers.length : 0
+    }
+  }
+
+  // 🚀 ENTERPRISE PERFORMANCE LOGGING: Track large dataset loads
+  const customerCount = (filteredCustomers as CustomerEntity[])?.length || 0
+  if (!isLoading && customerCount > 0) {
+    if (process.env.NODE_ENV === 'development') {
+      const perfStatus = customerCount > 500
+        ? '⚠️ Large dataset detected - Virtual scrolling recommended for 500+ records'
+        : customerCount > 100
+        ? '✅ Medium dataset - Performance should be good'
+        : '✅ Small dataset - Optimal performance'
+
+      console.log(`[useHeraCustomers] 📊 Loaded ${customerCount} customers - ${perfStatus}`)
     }
   }
 

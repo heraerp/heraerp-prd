@@ -163,7 +163,9 @@ export function useHeraInventory(options?: UseHeraInventoryOptions) {
     filters: {
       include_dynamic: true,
       include_relationships: true,
-      limit: 100,
+      // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for inventory management
+      // Components can override with options?.filters?.limit if pagination needed
+      limit: options?.filters?.limit,
       ...(options?.includeArchived ? {} : { status: 'active' }),
       ...options?.filters
     },
@@ -488,7 +490,9 @@ export function useHeraStockMovements(options?: UseHeraInventoryOptions) {
     organizationId: options?.organizationId,
     filters: {
       include_dynamic: true,
-      limit: 100,
+      // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for stock movements
+      // Components can override with options?.filters?.limit if pagination needed
+      limit: options?.filters?.limit,
       ...options?.filters
     }
   })
