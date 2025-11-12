@@ -159,7 +159,7 @@ export const UNIVERSAL_CONFIG = {
       description: 'Customer relationship management',
       icon: { name: 'Users' },
       color: 'purple',
-      sections: ['leads', 'contacts', 'opportunities', 'accounts', 'campaigns']
+      sections: ['leads', 'contacts', 'opportunities', 'accounts', 'campaigns', 'customer360']
     }
   ] as UniversalDomain[],
 
@@ -388,6 +388,16 @@ export const UNIVERSAL_CONFIG = {
       color: 'pink',
       workspaces: ['main', 'execution', 'analytics'],
       domains: ['crm']
+    },
+    // Customer 360 section for CRM
+    {
+      id: 'customer360',
+      name: 'Customer 360',
+      description: 'Comprehensive customer view and management',
+      icon: { name: 'Users' },
+      color: 'indigo',
+      workspaces: ['main', 'analytics', 'insights'],
+      domains: ['crm']
     }
   ] as UniversalSection[],
 
@@ -490,6 +500,31 @@ export const UNIVERSAL_CONFIG = {
       defaultNav: 'campaigns',
       sections: ['merchandising', 'campaigns'],
       domains: ['retail', 'wholesale', 'crm']
+    },
+    // CRM Customer 360 workspaces
+    {
+      id: 'analytics',
+      name: 'Analytics Workspace',
+      description: 'Customer analytics and insights dashboard',
+      icon: { name: 'BarChart3' },
+      color: 'indigo',
+      personaLabel: 'Data Analyst',
+      visibleRoles: ['analyst', 'manager', 'admin'],
+      defaultNav: 'analytics',
+      sections: ['customer360', 'analytics'],
+      domains: ['crm', 'retail', 'wholesale']
+    },
+    {
+      id: 'insights',
+      name: 'Customer Insights Workspace',
+      description: 'Advanced customer intelligence and behavioral analysis',
+      icon: { name: 'Brain' },
+      color: 'violet',
+      personaLabel: 'Customer Success Manager',
+      visibleRoles: ['customer_success', 'manager', 'admin'],
+      defaultNav: 'insights',
+      sections: ['customer360'],
+      domains: ['crm']
     }
   ] as UniversalWorkspace[],
 
@@ -603,6 +638,98 @@ export const UNIVERSAL_CONFIG = {
       ],
       actions: ['create', 'edit', 'view', 'delete', 'adjust_stock'],
       workspaces: ['main']
+    },
+    // CRM Customer 360 entity types
+    {
+      id: 'contacts',
+      name: 'Contacts',
+      description: 'Individual contact persons within customer organizations',
+      icon: { name: 'Users' },
+      color: 'blue',
+      fields: [
+        { id: 'firstName', name: 'first_name', label: 'First Name', type: 'text', required: true },
+        { id: 'lastName', name: 'last_name', label: 'Last Name', type: 'text', required: true },
+        { id: 'title', name: 'title', label: 'Job Title', type: 'text', required: false },
+        { id: 'email', name: 'email', label: 'Email', type: 'email', required: true },
+        { id: 'phone', name: 'phone', label: 'Phone', type: 'text', required: false },
+        { id: 'department', name: 'department', label: 'Department', type: 'text', required: false },
+        { id: 'isPrimary', name: 'is_primary', label: 'Primary Contact', type: 'boolean', required: false }
+      ],
+      actions: ['create', 'edit', 'view', 'delete', 'merge', 'export'],
+      workspaces: ['main', 'analytics', 'insights']
+    },
+    {
+      id: 'accounts',
+      name: 'Accounts',
+      description: 'Customer organizations and company accounts',
+      icon: { name: 'Building2' },
+      color: 'indigo',
+      fields: [
+        { id: 'name', name: 'name', label: 'Account Name', type: 'text', required: true },
+        { id: 'industry', name: 'industry', label: 'Industry', type: 'select', required: false, options: ['Technology', 'Healthcare', 'Finance', 'Manufacturing', 'Retail', 'Other'] },
+        { id: 'website', name: 'website', label: 'Website', type: 'text', required: false },
+        { id: 'revenue', name: 'annual_revenue', label: 'Annual Revenue', type: 'number', required: false },
+        { id: 'employees', name: 'employee_count', label: 'Employee Count', type: 'number', required: false },
+        { id: 'address', name: 'address', label: 'Address', type: 'text', required: false },
+        { id: 'tier', name: 'customer_tier', label: 'Customer Tier', type: 'select', required: false, options: ['Bronze', 'Silver', 'Gold', 'Platinum'] }
+      ],
+      actions: ['create', 'edit', 'view', 'delete', 'merge', 'export'],
+      workspaces: ['main', 'analytics', 'insights']
+    },
+    {
+      id: 'opportunities',
+      name: 'Opportunities',
+      description: 'Sales opportunities and deals in the pipeline',
+      icon: { name: 'TrendingUp' },
+      color: 'green',
+      fields: [
+        { id: 'name', name: 'name', label: 'Opportunity Name', type: 'text', required: true },
+        { id: 'value', name: 'deal_value', label: 'Deal Value', type: 'number', required: true },
+        { id: 'stage', name: 'sales_stage', label: 'Sales Stage', type: 'select', required: true, options: ['Prospecting', 'Qualification', 'Needs Analysis', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'] },
+        { id: 'probability', name: 'win_probability', label: 'Win Probability (%)', type: 'number', required: false },
+        { id: 'closeDate', name: 'expected_close_date', label: 'Expected Close Date', type: 'date', required: true },
+        { id: 'source', name: 'lead_source', label: 'Lead Source', type: 'select', required: false, options: ['Website', 'Referral', 'Cold Call', 'Trade Show', 'Partner', 'Advertisement'] },
+        { id: 'description', name: 'description', label: 'Description', type: 'text', required: false }
+      ],
+      actions: ['create', 'edit', 'view', 'delete', 'convert', 'forecast'],
+      workspaces: ['main', 'analytics']
+    },
+    {
+      id: 'activities',
+      name: 'Activities',
+      description: 'Customer interactions, meetings, calls, and tasks',
+      icon: { name: 'Activity' },
+      color: 'orange',
+      fields: [
+        { id: 'subject', name: 'subject', label: 'Subject', type: 'text', required: true },
+        { id: 'type', name: 'activity_type', label: 'Activity Type', type: 'select', required: true, options: ['Call', 'Meeting', 'Email', 'Task', 'Demo', 'Follow-up'] },
+        { id: 'status', name: 'status', label: 'Status', type: 'select', required: true, options: ['Planned', 'In Progress', 'Completed', 'Cancelled'] },
+        { id: 'priority', name: 'priority', label: 'Priority', type: 'select', required: false, options: ['Low', 'Medium', 'High', 'Urgent'] },
+        { id: 'dueDate', name: 'due_date', label: 'Due Date', type: 'date', required: false },
+        { id: 'duration', name: 'duration_minutes', label: 'Duration (minutes)', type: 'number', required: false },
+        { id: 'notes', name: 'notes', label: 'Notes', type: 'text', required: false }
+      ],
+      actions: ['create', 'edit', 'view', 'delete', 'complete', 'schedule'],
+      workspaces: ['main', 'analytics']
+    },
+    {
+      id: 'items_crm',
+      name: 'Customer Items',
+      description: 'Products and services associated with customer accounts',
+      icon: { name: 'Package' },
+      color: 'purple',
+      fields: [
+        { id: 'name', name: 'name', label: 'Item Name', type: 'text', required: true },
+        { id: 'type', name: 'item_type', label: 'Type', type: 'select', required: true, options: ['Product', 'Service', 'Solution', 'License', 'Subscription'] },
+        { id: 'category', name: 'category', label: 'Category', type: 'select', required: false, options: ['Software', 'Hardware', 'Consulting', 'Support', 'Training'] },
+        { id: 'value', name: 'item_value', label: 'Value', type: 'number', required: false },
+        { id: 'description', name: 'description', label: 'Description', type: 'text', required: false },
+        { id: 'purchaseDate', name: 'purchase_date', label: 'Purchase Date', type: 'date', required: false },
+        { id: 'renewalDate', name: 'renewal_date', label: 'Renewal Date', type: 'date', required: false },
+        { id: 'status', name: 'status', label: 'Status', type: 'select', required: true, options: ['Active', 'Inactive', 'Expired', 'Pending Renewal'] }
+      ],
+      actions: ['create', 'edit', 'view', 'delete', 'renew', 'upgrade'],
+      workspaces: ['main', 'analytics', 'insights']
     }
   ] as UniversalEntityType[],
 
