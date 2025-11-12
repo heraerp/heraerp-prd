@@ -2,7 +2,7 @@
 
 // Removed force-dynamic for better client-side navigation performance
 
-import React, { useState, useMemo, useCallback, Suspense, lazy } from 'react'
+import React, { useState, useMemo, useCallback, Suspense, lazy, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useHeraSales } from '@/hooks/useHeraSales'
@@ -10,6 +10,7 @@ import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import { SalonPagination } from '@/components/salon/ui/Pagination'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -67,6 +68,10 @@ function PaymentsContent() {
   const [branchFilter, setBranchFilter] = useState<string>('all')
   const [selectedSaleId, setSelectedSaleId] = useState<string | null>(null)
 
+  // 🚀 PAGINATION STATE: Enterprise-grade pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(25) // 25 payment transactions per page
+
   // Fetch sales data with branch filter
   const { sales, isLoading, refetch, SALE_STATUS_CONFIG, branches } = useHeraSales({
     organizationId: organizationId || '',
@@ -116,6 +121,19 @@ function PaymentsContent() {
       return matchesSearch && matchesStatus && matchesDate
     })
   }, [sales, searchTerm, statusFilter, dateFilter])
+
+  // 🔄 RESET PAGE: Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, statusFilter, dateFilter, branchFilter])
+
+  // 📄 PAGINATION CALCULATIONS: Slice data for current page
+  const totalPages = Math.ceil(filteredSales.length / pageSize)
+  const paginatedSales = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return filteredSales.slice(startIndex, endIndex)
+  }, [filteredSales, currentPage, pageSize])
 
   // ⚡ PERFORMANCE: Memoize stats
   const stats = useMemo(() => {
@@ -422,8 +440,9 @@ function PaymentsContent() {
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredSales.map((sale, index) => {
+          <>
+            <div className="space-y-4">
+              {paginatedSales.map((sale, index) => {
               // ✅ FIX: Fallback to 'completed' if status not in config
               const statusConfig = SALE_STATUS_CONFIG[sale.status] || SALE_STATUS_CONFIG.completed
               const saleDate = new Date(sale.transaction_date)
@@ -499,7 +518,27 @@ function PaymentsContent() {
                 </div>
               )
             })}
-          </div>
+            </div>
+
+            {/* 📄 PAGINATION CONTROLS: Enterprise-grade pagination */}
+            {filteredSales.length > 0 && (
+              <div className="mt-6">
+                <SalonPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={filteredSales.length}
+                  pageSize={pageSize}
+                  pageSizeOptions={[10, 25, 50, 100]}
+                  onPageChange={setCurrentPage}
+                  onPageSizeChange={(newSize) => {
+                    setPageSize(newSize)
+                    setCurrentPage(1)
+                  }}
+                  itemsName="transactions"
+                />
+              </div>
+            )}
+          </>
         )}
 
         {/* 📱 BOTTOM SPACING - Mobile scroll comfort */}

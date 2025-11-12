@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { format, formatDistanceToNow } from 'date-fns'
 import { Search, Edit, Trash2, Archive, ArchiveRestore, User, UserCircle, Plus, Grid3X3, List, MoreVertical, Building2, X, Filter, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
+import { SalonPagination } from '@/components/salon/ui/Pagination'
 import { cn } from '@/lib/utils'
 import { getRelationship, extractRelationshipIds } from '@/lib/normalize-entity'
 
@@ -94,6 +95,10 @@ export function StaffListTab({
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [branchFilter, setBranchFilter] = useState<string | null>(null)
   const [roleFilter, setRoleFilter] = useState<string | null>(null)
+
+  // 🚀 PAGINATION STATE: Enterprise-grade pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(25) // 25 staff members per page
 
   // Extract unique roles from staff data for filter dropdown
   const uniqueRoles = useMemo(() => {
@@ -164,6 +169,19 @@ export function StaffListTab({
     },
     [staff, searchTerm, includeArchived, sortBy, branchFilter, roleFilter]
   )
+
+  // 🔄 RESET PAGE: Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, sortBy, branchFilter, roleFilter, includeArchived])
+
+  // 📄 PAGINATION CALCULATIONS: Slice data for current page
+  const totalPages = Math.ceil(filteredAndSortedStaff.length / pageSize)
+  const paginatedStaff = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return filteredAndSortedStaff.slice(startIndex, endIndex)
+  }, [filteredAndSortedStaff, currentPage, pageSize])
 
   return (
     <div className="space-y-6">
@@ -384,7 +402,7 @@ export function StaffListTab({
       ) : viewMode === 'grid' ? (
         /* 📱 MOBILE-FIRST: Responsive grid with mobile-optimized spacing */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {filteredAndSortedStaff.map((member, index) => {
+          {paginatedStaff.map((member, index) => {
             const isArchived = member.status === 'archived'
             const avatarColor = getAvatarColor(member.id, index)
             return (
@@ -570,7 +588,7 @@ export function StaffListTab({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredAndSortedStaff.map((member, index) => {
+              {paginatedStaff.map((member, index) => {
                 const isArchived = member.status === 'archived'
                 const avatarColor = getAvatarColor(member.id, index)
 
@@ -737,6 +755,25 @@ export function StaffListTab({
               )}
             </TableBody>
           </Table>
+        </div>
+      )}
+
+      {/* 📄 PAGINATION CONTROLS: Enterprise-grade pagination */}
+      {!isLoading && filteredAndSortedStaff.length > 0 && (
+        <div className="mt-6">
+          <SalonPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredAndSortedStaff.length}
+            pageSize={pageSize}
+            pageSizeOptions={[10, 25, 50, 100]}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(newSize) => {
+              setPageSize(newSize)
+              setCurrentPage(1)
+            }}
+            itemsName="staff members"
+          />
         </div>
       )}
 

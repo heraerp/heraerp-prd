@@ -80,7 +80,9 @@ export function useHeraStaff(options?: UseHeraStaffOptions) {
     filters: {
       include_dynamic: true,
       include_relationships: true, // ✅ FIXED: RPC GROUP BY bug resolved with LATERAL JSON aggregation
-      limit: 100,
+      // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for staff management
+      // Components can override with options?.filters?.limit if pagination needed
+      limit: options?.filters?.limit,
       // Only filter by 'active' status when not including archived
       // When includeArchived is true, don't pass status to get all staff
       ...(options?.includeArchived ? {} : { status: 'active' }),

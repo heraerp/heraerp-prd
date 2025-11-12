@@ -193,7 +193,9 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
           transaction_status: filters.transaction_status || null,
           date_from: filters.date_from || null,
           date_to: filters.date_to || null,
-          limit: filters.limit || 100,
+          // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for transaction management
+          // Components can override with filters?.limit if pagination needed
+          limit: filters.limit || null,
           offset: filters.offset || 0,
           include_lines: filters.include_lines !== false,
           include_deleted: !!filters.include_deleted
@@ -281,7 +283,9 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
         p_organization_id: organizationId,
         p_payload: {
           ...queryPayload,
-          limit: filters.limit || 100,
+          // 🚀 ENTERPRISE: No hardcoded limit - allow unlimited fetch for transaction management
+          // Components can override with filters?.limit if pagination needed
+          limit: filters.limit || null,
           offset: filters.offset || 0,
           include_lines: filters.include_lines !== false,
           include_deleted: !!filters.include_deleted

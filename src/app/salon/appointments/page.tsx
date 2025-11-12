@@ -19,6 +19,7 @@ import { useHeraStaff } from '@/hooks/useHeraStaff'
 import { useHeraProducts } from '@/hooks/useHeraProducts'
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { PremiumMobileHeader } from '@/components/salon/mobile/PremiumMobileHeader'
+import { SalonPagination } from '@/components/salon/ui/Pagination'
 
 // 🚀 LAZY LOADING: Split code for faster initial load
 const AppointmentModal = lazy(() =>
@@ -174,6 +175,10 @@ function AppointmentsContent() {
   const [dateFilter, setDateFilter] = useState<string>('next7days')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [isNavigating, setIsNavigating] = useState(false)
+
+  // 🚀 PAGINATION STATE: Enterprise-grade pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(25) // 25 appointments per page (smaller than customers)
 
   // ✨ ENTERPRISE: Modal state
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
@@ -596,6 +601,19 @@ function AppointmentsContent() {
       return matchesSearch && matchesBranch && matchesStatus && matchesDate
     })
   }, [appointments, searchTerm, hasMultipleBranches, branchId, statusFilter, dateFilter])
+
+  // 🔄 RESET PAGE: Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, statusFilter, dateFilter, branchId])
+
+  // 📄 PAGINATION CALCULATIONS: Slice data for current page
+  const totalPages = Math.ceil(filteredAppointments.length / pageSize)
+  const paginatedAppointments = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return filteredAppointments.slice(startIndex, endIndex)
+  }, [filteredAppointments, currentPage, pageSize])
 
   // ⚡ PERFORMANCE: Memoize branch name lookup
   const getBranchName = useCallback(
@@ -1202,7 +1220,7 @@ function AppointmentsContent() {
         </div>
 
         {/* Appointments List/Grid with Enhanced Cards */}
-        {filteredAppointments.length === 0 ? (
+        {paginatedAppointments.length === 0 ? (
           <div
             className="text-center py-20 rounded-xl transition-all duration-500"
             style={{
@@ -1250,14 +1268,15 @@ function AppointmentsContent() {
             )}
           </div>
         ) : (
-          <div
-            className={
-              viewMode === 'grid'
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                : 'space-y-4'
-            }
-          >
-            {filteredAppointments.map(appointment => {
+          <>
+            <div
+              className={
+                viewMode === 'grid'
+                  ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                  : 'space-y-4'
+              }
+            >
+            {paginatedAppointments.map(appointment => {
               const appointmentDate = appointment.start_time
                 ? new Date(appointment.start_time)
                 : null
@@ -2023,6 +2042,26 @@ function AppointmentsContent() {
               )
             })}
           </div>
+
+            {/* 📄 PAGINATION CONTROLS: Enterprise-grade pagination */}
+            {filteredAppointments.length > 0 && (
+              <div className="mt-6">
+                <SalonPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={filteredAppointments.length}
+                  pageSize={pageSize}
+                  pageSizeOptions={[10, 25, 50, 100]}
+                  onPageChange={setCurrentPage}
+                  onPageSizeChange={(newSize) => {
+                    setPageSize(newSize)
+                    setCurrentPage(1) // Reset to first page when changing page size
+                  }}
+                  itemsName="appointments"
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
 
