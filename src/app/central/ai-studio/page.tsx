@@ -846,7 +846,7 @@ export default function AIStudioPage() {
                 <Activity className="w-4 h-4" />
                 <span>Active Sessions</span>
                 <span className="bg-green-100 text-green-600 py-0.5 px-2 rounded-full text-xs">
-                  {aiSessions.filter(s => s.status === 'running').length}
+                  {SAMPLE_AI_SESSIONS.filter(s => s.status === 'running').length}
                 </span>
               </div>
             </button>
@@ -1005,14 +1005,14 @@ export default function AIStudioPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
-                {aiSessions.map((session) => (
+                {SAMPLE_AI_SESSIONS.map((session) => (
                   <AISessionRow key={session.id} session={session} />
                 ))}
               </tbody>
             </table>
           </div>
           
-          {aiSessions.length === 0 && (
+          {SAMPLE_AI_SESSIONS.length === 0 && (
             <div className="p-12 text-center">
               <Activity className="w-12 h-12 text-slate-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-slate-900 mb-2">No active sessions</h3>
