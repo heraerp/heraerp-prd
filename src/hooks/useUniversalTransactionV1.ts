@@ -156,8 +156,9 @@ export function useUniversalTransactionV1(config: UseUniversalTransactionV1Confi
   // Use passed organizationId if provided, otherwise fall back to useHERAAuth
   const organizationId = config.organizationId || organization?.id
 
-  // ✅ HERA v2.2 ACTOR STAMPING: Extract user ID for audit tracking
-  const actorUserId = user?.id
+  // ✅ HERA v2.2 ACTOR STAMPING: Extract user entity ID for audit tracking
+  // Use user.entity_id (USER entity) NOT user.id (auth UID)
+  const actorUserId = user?.entity_id || user?.id
 
   const { filters = {}, cacheConfig = {} } = config
 

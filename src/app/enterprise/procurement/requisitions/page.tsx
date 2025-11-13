@@ -217,7 +217,8 @@ const HERAPURCHASEREQUISITIONApp = () => {
       /*
       const result = await callRPC('hera_txn_crud_v1', {
         p_action: 'CREATE',
-        p_actor_user_id: user?.id,
+        // ✅ HERA v2.4: Use USER entity ID (not auth UID)
+        p_actor_user_id: user?.entity_id || user?.id,
         p_organization_id: organization.id,
         p_transaction: transactionData,
         p_lines: transactionLines,

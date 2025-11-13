@@ -61,7 +61,8 @@ export function TransactionProvider({ children }: TransactionProviderProps) {
   const { organization, user, isAuthenticated } = useHERAAuth()
 
   const organizationId = organization?.id || null
-  const actorUserId = user?.id || null
+  // ✅ HERA v2.4: Use USER entity ID (not auth UID)
+  const actorUserId = user?.entity_id || user?.id || null
 
   // Wrapper functions that inject auth context
   const createTransaction = useCallback(async (

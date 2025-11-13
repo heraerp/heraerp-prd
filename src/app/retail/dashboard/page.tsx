@@ -198,7 +198,7 @@ export default function RetailDashboard() {
     filters: {
       limit: 10,
       include_dynamic: false,
-      include_relationships: false
+      include_relationships: true // ✅ Enable APP_HAS_DOMAIN relationships
     }
   })
 
@@ -396,7 +396,7 @@ export default function RetailDashboard() {
   useEffect(() => {
     if (!appLoading && !domainsLoading && isAuthenticated) {
       console.log('🔍 Processing APP and APP_DOMAIN entities from hooks')
-      
+
       console.log('📊 Hook results:', {
         apps: appEntities?.length || 0,
         domains: domainEntities?.length || 0,
@@ -404,30 +404,45 @@ export default function RetailDashboard() {
         domainNames: domainEntities?.map(domain => `${domain.entity_name} (${domain.entity_code})`) || []
       })
 
-      // Check if RETAIL APP exists
+      // Find RETAIL APP
       const retailApp = appEntities?.find(app => app.entity_code === 'RETAIL')
-      
+
       if (retailApp) {
         console.log('✅ Found RETAIL APP:', {
           id: retailApp.id,
           name: retailApp.entity_name,
-          code: retailApp.entity_code
+          code: retailApp.entity_code,
+          hasRelationships: !!retailApp.relationships
         })
-        // TODO: Later we can fetch relationships to filter domains for this specific APP
-        // For now, load all available APP_DOMAIN entities as fallback
-      } else {
-        console.log('⚠️ RETAIL APP not found, using all available domains')
-      }
 
-      if (domainEntities && domainEntities.length > 0) {
-        const modules = domainEntities
-          .map(parseDomainEntity)
-          .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
+        // ✅ Extract domain IDs from APP_HAS_DOMAIN relationships
+        const hasRelationships = retailApp.relationships?.APP_HAS_DOMAIN
 
-        setDynamicModules(modules)
-        console.log('✅ Loaded APP_DOMAIN entities via hooks:', modules.length, 'domains:', modules.map(m => m.title))
+        if (hasRelationships && hasRelationships.length > 0) {
+          const linkedDomainIds = hasRelationships.map((rel: any) => rel.to_entity_id)
+
+          // ✅ Filter domains by linked IDs only
+          const filteredDomains = domainEntities?.filter(
+            domain => linkedDomainIds.includes(domain.id)
+          ) || []
+
+          const modules = filteredDomains
+            .map(parseDomainEntity)
+            .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
+
+          setDynamicModules(modules)
+          console.log('✅ Filtered domains for RETAIL APP:', {
+            totalRelationships: hasRelationships.length,
+            linkedDomainIds,
+            filteredCount: modules.length,
+            domains: modules.map(m => m.title)
+          })
+        } else {
+          console.warn('⚠️ RETAIL APP has no APP_HAS_DOMAIN relationships')
+          setDynamicModules([])
+        }
       } else {
-        console.warn('❌ No APP_DOMAIN entities found')
+        console.warn('❌ RETAIL APP not found')
         setDynamicModules([])
       }
     }
