@@ -16,6 +16,7 @@
 
 DO $$
 DECLARE
+  v_system_user_id uuid := '00000000-0000-0000-0000-000000000001'; -- System user UUID
   v_app_id uuid;
   v_domain_id uuid;
   v_section_id uuid;
@@ -57,7 +58,7 @@ BEGIN
   ) VALUES (
     'APP_DOMAIN', 'inventory', 'Inventory Management', 'HERA.AGRO.DOMAIN.INVENTORY.v1',
     '{"slug":"inventory","icon":"Package","color":"#6366f1","description":"Manage stock levels, movements, and storage"}'::jsonb,
-    '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_domain_id;
 
   IF v_domain_id IS NULL THEN
@@ -66,7 +67,7 @@ BEGIN
 
   -- Link to APP
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '✅ Created INVENTORY domain: %', v_domain_id;
@@ -84,7 +85,7 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'movements', 'Stock Movements', 'HERA.AGRO.SECTION.INVENTORY.MOVEMENTS.v1',
     '{"slug":"movements","icon":"TrendingUp","description":"Track stock movements, transfers, and adjustments"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN
@@ -93,7 +94,7 @@ BEGIN
   END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   -- Workspace: Main
@@ -103,7 +104,7 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Stock Movements Workspace', 'HERA.AGRO.WORKSPACE.MOVEMENTS.MAIN.v1',
     '{"slug":"main","icon":"TrendingUp","color":"#8b5cf6","subtitle":"Track and manage inventory movements","persona_label":"Warehouse Manager","visible_roles":["farm_manager","warehouse_staff","admin"],"default_nav":"movements"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN
@@ -112,7 +113,7 @@ BEGIN
   END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -126,7 +127,7 @@ BEGIN
       {"label":"Batch Tracking","description":"Track inventory by batch/serial","icon":"Tag","color":"yellow","target_type":"entity","entity_type":"BATCH","view_slug":"batches","status":"active","priority":"medium"},
       {"label":"Movement Reports","description":"Inventory movement analytics","icon":"BarChart3","color":"blue","target_type":"report","view_slug":"movement-reports","status":"active","priority":"low"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.MOVEMENTS.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.MOVEMENTS.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ movements section with workspace';
@@ -144,7 +145,7 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'storage', 'Storage Management', 'HERA.AGRO.SECTION.INVENTORY.STORAGE.v1',
     '{"slug":"storage","icon":"Warehouse","description":"Manage warehouses, silos, and storage locations"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN
@@ -153,7 +154,7 @@ BEGIN
   END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -162,7 +163,7 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Storage Management Workspace', 'HERA.AGRO.WORKSPACE.STORAGE.MAIN.v1',
     '{"slug":"main","icon":"Warehouse","color":"#14b8a6","subtitle":"Manage storage facilities and locations","persona_label":"Storage Manager","visible_roles":["farm_manager","warehouse_manager"],"default_nav":"warehouses"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN
@@ -171,7 +172,7 @@ BEGIN
   END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -185,7 +186,7 @@ BEGIN
       {"label":"Cold Storage","description":"Temperature-controlled facilities","icon":"Snowflake","color":"cyan","target_type":"entity","entity_type":"COLD_STORAGE","view_slug":"cold-storage","status":"active","priority":"medium"},
       {"label":"Storage Conditions","description":"Monitor temperature & humidity","icon":"Thermometer","color":"red","target_type":"analytics","view_slug":"conditions","status":"active","priority":"high"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.STORAGE.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.STORAGE.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ storage section with workspace';
@@ -203,7 +204,7 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'stock', 'Stock Levels', 'HERA.AGRO.SECTION.INVENTORY.STOCK.v1',
     '{"slug":"stock","icon":"Package","description":"Monitor current stock levels and availability"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN
@@ -212,7 +213,7 @@ BEGIN
   END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -221,7 +222,7 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Stock Levels Workspace', 'HERA.AGRO.WORKSPACE.STOCK.MAIN.v1',
     '{"slug":"main","icon":"Package","color":"#10b981","subtitle":"Monitor current inventory levels","persona_label":"Inventory Manager","visible_roles":["farm_manager","warehouse_staff"],"default_nav":"overview"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN
@@ -230,7 +231,7 @@ BEGIN
   END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -244,7 +245,7 @@ BEGIN
       {"label":"Stock Valuation","description":"Total inventory value","icon":"DollarSign","color":"yellow","target_type":"analytics","view_slug":"valuation","status":"active","priority":"medium"},
       {"label":"Expiry Tracking","description":"Items approaching expiry","icon":"Clock","color":"orange","target_type":"analytics","view_slug":"expiry","status":"active","priority":"high"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.STOCK.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.STOCK.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ stock section with workspace';

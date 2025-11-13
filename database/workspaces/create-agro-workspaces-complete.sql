@@ -31,6 +31,7 @@ DECLARE
   v_domain_id uuid;
   v_section_id uuid;
   v_workspace_id uuid;
+  v_system_user_id uuid := '00000000-0000-0000-0000-000000000001'; -- System user UUID
 BEGIN
 
   RAISE NOTICE '';
@@ -55,7 +56,7 @@ BEGIN
       organization_id, created_by, updated_by
     ) VALUES (
       'APP', 'agro', 'HERA Agro', 'HERA.AGRO.APP.v1',
-      '00000000-0000-0000-0000-000000000000', 'system', 'system'
+      '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
     ) RETURNING id INTO v_app_id;
     RAISE NOTICE '✅ Created AGRO APP: %', v_app_id;
   ELSE
@@ -75,7 +76,7 @@ BEGIN
   ) VALUES (
     'APP_DOMAIN', 'farm', 'Farm Management', 'HERA.AGRO.DOMAIN.FARM.v1',
     '{"slug":"farm","icon":"Sprout","color":"#10b981","description":"Manage farms, crops, livestock, and equipment"}'::jsonb,
-    '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_domain_id;
 
   IF v_domain_id IS NULL THEN
@@ -84,7 +85,7 @@ BEGIN
 
   -- Link to APP
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   -- Section: Crops
@@ -94,13 +95,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'crops', 'Crop Management', 'HERA.AGRO.SECTION.FARM.CROPS.v1',
     '{"slug":"crops","icon":"Leaf","description":"Manage crop types, varieties, and cultivation"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'crops' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -109,13 +110,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Crop Management Workspace', 'HERA.AGRO.WORKSPACE.CROPS.MAIN.v1',
     '{"slug":"main","icon":"Leaf","color":"#10b981","subtitle":"Manage crop types and cultivation plans","persona_label":"Farm Manager","visible_roles":["farm_manager","agronomist"],"default_nav":"crops"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -129,7 +130,7 @@ BEGIN
       {"label":"Disease Tracking","description":"Monitor crop health issues","icon":"AlertTriangle","color":"red","target_type":"entity","entity_type":"CROP_ISSUE","view_slug":"diseases","status":"active","priority":"high"},
       {"label":"Fertilizer Plans","description":"Fertilization schedules","icon":"Droplet","color":"green","target_type":"workflow","view_slug":"fertilizer-plans","status":"active","priority":"medium"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.CROPS.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.CROPS.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ crops section with workspace';
@@ -141,13 +142,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'livestock', 'Livestock Management', 'HERA.AGRO.SECTION.FARM.LIVESTOCK.v1',
     '{"slug":"livestock","icon":"Bird","description":"Manage animals, breeding, and health"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'livestock' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -156,13 +157,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Livestock Management Workspace', 'HERA.AGRO.WORKSPACE.LIVESTOCK.MAIN.v1',
     '{"slug":"main","icon":"Bird","color":"#f59e0b","subtitle":"Manage livestock, breeding, and health","persona_label":"Livestock Manager","visible_roles":["farm_manager","veterinarian"],"default_nav":"animals"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -176,7 +177,7 @@ BEGIN
       {"label":"Production Tracking","description":"Milk, eggs, wool production","icon":"TrendingUp","color":"blue","target_type":"analytics","view_slug":"production","status":"active","priority":"medium"},
       {"label":"Veterinary Care","description":"Medical treatments and costs","icon":"Activity","color":"red","target_type":"entity","entity_type":"VET_VISIT","view_slug":"veterinary","status":"active","priority":"low"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.LIVESTOCK.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.LIVESTOCK.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ livestock section with workspace';
@@ -188,13 +189,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'equipment', 'Equipment Management', 'HERA.AGRO.SECTION.FARM.EQUIPMENT.v1',
     '{"slug":"equipment","icon":"Truck","description":"Manage machinery, tools, and maintenance"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'equipment' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -203,13 +204,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Equipment Management Workspace', 'HERA.AGRO.WORKSPACE.EQUIPMENT.MAIN.v1',
     '{"slug":"main","icon":"Truck","color":"#6366f1","subtitle":"Manage farm equipment and maintenance","persona_label":"Equipment Manager","visible_roles":["farm_manager","mechanic"],"default_nav":"equipment"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -223,7 +224,7 @@ BEGIN
       {"label":"Equipment Operators","description":"Assign operators to equipment","icon":"Users","color":"green","target_type":"relationship","view_slug":"operators","status":"active","priority":"low"},
       {"label":"Utilization Reports","description":"Equipment usage analytics","icon":"BarChart3","color":"indigo","target_type":"report","view_slug":"utilization","status":"active","priority":"low"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.EQUIPMENT.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.EQUIPMENT.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ equipment section with workspace';
@@ -235,13 +236,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'fields', 'Field Management', 'HERA.AGRO.SECTION.FARM.FIELDS.v1',
     '{"slug":"fields","icon":"Map","description":"Manage fields, plots, and soil data"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'fields' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -250,13 +251,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Field Management Workspace', 'HERA.AGRO.WORKSPACE.FIELDS.MAIN.v1',
     '{"slug":"main","icon":"Map","color":"#14b8a6","subtitle":"Manage fields, plots, and soil conditions","persona_label":"Farm Planner","visible_roles":["farm_manager","agronomist"],"default_nav":"fields"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -270,7 +271,7 @@ BEGIN
       {"label":"Field Mapping","description":"GPS coordinates and boundaries","icon":"Map","color":"purple","target_type":"analytics","view_slug":"mapping","status":"active","priority":"low"},
       {"label":"Yield by Field","description":"Historical yield analysis","icon":"TrendingUp","color":"green","target_type":"report","view_slug":"yield","status":"active","priority":"medium"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.FIELDS.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.FIELDS.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ fields section with workspace';
@@ -288,13 +289,13 @@ BEGIN
   ) VALUES (
     'APP_DOMAIN', 'production', 'Production Management', 'HERA.AGRO.DOMAIN.PRODUCTION.v1',
     '{"slug":"production","icon":"Factory","color":"#8b5cf6","description":"Manage planting, harvesting, and processing"}'::jsonb,
-    '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_domain_id;
 
   IF v_domain_id IS NULL THEN SELECT id INTO v_domain_id FROM core_entities WHERE entity_code = 'production' AND entity_type = 'APP_DOMAIN'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   -- Section: Planting
@@ -304,13 +305,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'planting', 'Planting Operations', 'HERA.AGRO.SECTION.PRODUCTION.PLANTING.v1',
     '{"slug":"planting","icon":"Seedling","description":"Manage planting schedules and operations"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'planting' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -319,13 +320,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Planting Operations Workspace', 'HERA.AGRO.WORKSPACE.PLANTING.MAIN.v1',
     '{"slug":"main","icon":"Seedling","color":"#10b981","subtitle":"Plan and track planting activities","persona_label":"Production Manager","visible_roles":["farm_manager","field_supervisor"],"default_nav":"planning"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -339,7 +340,7 @@ BEGIN
       {"label":"Weather Forecast","description":"Weather planning integration","icon":"Cloud","color":"blue","target_type":"analytics","view_slug":"weather","status":"active","priority":"medium"},
       {"label":"Cost Tracking","description":"Planting costs and budgets","icon":"DollarSign","color":"yellow","target_type":"report","view_slug":"costs","status":"active","priority":"low"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.PLANTING.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.PLANTING.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ planting section with workspace';
@@ -351,13 +352,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'harvesting', 'Harvesting Operations', 'HERA.AGRO.SECTION.PRODUCTION.HARVESTING.v1',
     '{"slug":"harvesting","icon":"ShoppingBasket","description":"Manage harvest planning and execution"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'harvesting' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -366,13 +367,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Harvesting Operations Workspace', 'HERA.AGRO.WORKSPACE.HARVESTING.MAIN.v1',
     '{"slug":"main","icon":"ShoppingBasket","color":"#f59e0b","subtitle":"Plan and track harvest activities","persona_label":"Harvest Manager","visible_roles":["farm_manager","harvest_supervisor"],"default_nav":"planning"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -386,7 +387,7 @@ BEGIN
       {"label":"Quality Control","description":"Harvest quality inspection","icon":"Award","color":"purple","target_type":"entity","entity_type":"QUALITY_CHECK","view_slug":"quality","status":"active","priority":"medium"},
       {"label":"Storage Allocation","description":"Assign storage locations","icon":"Warehouse","color":"blue","target_type":"workflow","view_slug":"storage","status":"active","priority":"medium"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.HARVESTING.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.HARVESTING.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ harvesting section with workspace';
@@ -398,13 +399,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'processing', 'Post-Harvest Processing', 'HERA.AGRO.SECTION.PRODUCTION.PROCESSING.v1',
     '{"slug":"processing","icon":"Cpu","description":"Manage cleaning, sorting, and packaging"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'processing' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -413,13 +414,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Processing Operations Workspace', 'HERA.AGRO.WORKSPACE.PROCESSING.MAIN.v1',
     '{"slug":"main","icon":"Cpu","color":"#6366f1","subtitle":"Manage post-harvest processing","persona_label":"Processing Manager","visible_roles":["farm_manager","processing_supervisor"],"default_nav":"operations"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -433,7 +434,7 @@ BEGIN
       {"label":"Waste Tracking","description":"Processing waste and loss","icon":"Trash","color":"red","target_type":"analytics","view_slug":"waste","status":"active","priority":"low"},
       {"label":"Efficiency Reports","description":"Processing efficiency metrics","icon":"BarChart3","color":"indigo","target_type":"report","view_slug":"efficiency","status":"active","priority":"low"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.PROCESSING.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.PROCESSING.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ processing section with workspace';
@@ -451,13 +452,13 @@ BEGIN
   ) VALUES (
     'APP_DOMAIN', 'operations', 'Operations Management', 'HERA.AGRO.DOMAIN.OPERATIONS.v1',
     '{"slug":"operations","icon":"Settings","color":"#64748b","description":"Manage daily operations, labor, and scheduling"}'::jsonb,
-    '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_domain_id;
 
   IF v_domain_id IS NULL THEN SELECT id INTO v_domain_id FROM core_entities WHERE entity_code = 'operations' AND entity_type = 'APP_DOMAIN'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   -- Section: Labor
@@ -467,13 +468,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'labor', 'Labor Management', 'HERA.AGRO.SECTION.OPERATIONS.LABOR.v1',
     '{"slug":"labor","icon":"Users","description":"Manage workforce, time tracking, and payroll"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'labor' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -482,13 +483,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Labor Management Workspace', 'HERA.AGRO.WORKSPACE.LABOR.MAIN.v1',
     '{"slug":"main","icon":"Users","color":"#3b82f6","subtitle":"Manage workforce and time tracking","persona_label":"Operations Manager","visible_roles":["farm_manager","hr_manager"],"default_nav":"workers"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -502,7 +503,7 @@ BEGIN
       {"label":"Skills Matrix","description":"Worker skills and certifications","icon":"Award","color":"indigo","target_type":"entity","entity_type":"SKILL","view_slug":"skills","status":"active","priority":"low"},
       {"label":"Labor Analytics","description":"Productivity and cost analysis","icon":"BarChart3","color":"blue","target_type":"report","view_slug":"analytics","status":"active","priority":"low"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.LABOR.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.LABOR.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ labor section with workspace';
@@ -520,13 +521,13 @@ BEGIN
   ) VALUES (
     'APP_DOMAIN', 'analytics', 'Analytics & Reporting', 'HERA.AGRO.DOMAIN.ANALYTICS.v1',
     '{"slug":"analytics","icon":"BarChart3","color":"#0ea5e9","description":"Business intelligence and performance metrics"}'::jsonb,
-    '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_domain_id;
 
   IF v_domain_id IS NULL THEN SELECT id INTO v_domain_id FROM core_entities WHERE entity_code = 'analytics' AND entity_type = 'APP_DOMAIN'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   -- Section: Yield
@@ -536,13 +537,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'yield', 'Yield Analytics', 'HERA.AGRO.SECTION.ANALYTICS.YIELD.v1',
     '{"slug":"yield","icon":"TrendingUp","description":"Analyze crop yields and performance"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'yield' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -551,13 +552,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Yield Analytics Workspace', 'HERA.AGRO.WORKSPACE.YIELD.MAIN.v1',
     '{"slug":"main","icon":"TrendingUp","color":"#10b981","subtitle":"Analyze yields and productivity","persona_label":"Data Analyst","visible_roles":["farm_manager","agronomist","analyst"],"default_nav":"overview"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -571,7 +572,7 @@ BEGIN
       {"label":"Expected vs Actual","description":"Forecast accuracy analysis","icon":"Target","color":"red","target_type":"report","view_slug":"variance","status":"active","priority":"medium"},
       {"label":"Export Report","description":"Download yield reports","icon":"Download","color":"gray","target_type":"report","view_slug":"export","status":"active","priority":"low"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.YIELD.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.YIELD.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ yield section with workspace';
@@ -589,13 +590,13 @@ BEGIN
   ) VALUES (
     'APP_DOMAIN', 'supply-chain', 'Supply Chain Management', 'HERA.AGRO.DOMAIN.SUPPLY_CHAIN.v1',
     '{"slug":"supply-chain","icon":"Truck","color":"#f97316","description":"Manage inputs, outputs, and distribution"}'::jsonb,
-    '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_domain_id;
 
   IF v_domain_id IS NULL THEN SELECT id INTO v_domain_id FROM core_entities WHERE entity_code = 'supply-chain' AND entity_type = 'APP_DOMAIN'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_app_id, v_domain_id, 'APP_HAS_DOMAIN', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   -- Section: Inputs
@@ -605,13 +606,13 @@ BEGIN
   ) VALUES (
     'APP_SECTION', 'inputs', 'Farm Inputs', 'HERA.AGRO.SECTION.SUPPLY_CHAIN.INPUTS.v1',
     '{"slug":"inputs","icon":"ShoppingCart","description":"Manage seeds, fertilizers, and supplies"}'::jsonb,
-    v_domain_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_domain_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_section_id;
 
   IF v_section_id IS NULL THEN SELECT id INTO v_section_id FROM core_entities WHERE entity_code = 'inputs' AND entity_type = 'APP_SECTION'; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_domain_id, v_section_id, 'HAS_SECTION', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_entities (
@@ -620,13 +621,13 @@ BEGIN
   ) VALUES (
     'APP_WORKSPACE', 'main', 'Farm Inputs Workspace', 'HERA.AGRO.WORKSPACE.INPUTS.MAIN.v1',
     '{"slug":"main","icon":"ShoppingCart","color":"#f59e0b","subtitle":"Manage farm inputs and supplies","persona_label":"Purchasing Manager","visible_roles":["farm_manager","purchasing"],"default_nav":"inventory"}'::jsonb,
-    v_section_id, '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    v_section_id, '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING RETURNING id INTO v_workspace_id;
 
   IF v_workspace_id IS NULL THEN SELECT id INTO v_workspace_id FROM core_entities WHERE entity_code = 'main' AND parent_entity_id = v_section_id; END IF;
 
   INSERT INTO core_relationships (from_entity_id, to_entity_id, relationship_type, organization_id, created_by, updated_by)
-  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', 'system', 'system')
+  VALUES (v_section_id, v_workspace_id, 'HAS_WORKSPACE', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id)
   ON CONFLICT DO NOTHING;
 
   INSERT INTO core_dynamic_data (entity_id, field_name, field_type, field_value_json, smart_code, organization_id, created_by, updated_by)
@@ -640,7 +641,7 @@ BEGIN
       {"label":"Reorder Alerts","description":"Low stock notifications","icon":"Bell","color":"red","target_type":"workflow","view_slug":"reorder","status":"active","priority":"high"},
       {"label":"Usage Reports","description":"Input consumption analysis","icon":"BarChart3","color":"indigo","target_type":"report","view_slug":"usage","status":"active","priority":"low"}
     ]'::jsonb,
-    'HERA.AGRO.WORKSPACE.INPUTS.CARDS.v1', '00000000-0000-0000-0000-000000000000', 'system', 'system'
+    'HERA.AGRO.WORKSPACE.INPUTS.CARDS.v1', '00000000-0000-0000-0000-000000000000', v_system_user_id, v_system_user_id
   ) ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '  ✅ inputs section with workspace';
