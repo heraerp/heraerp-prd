@@ -86,6 +86,7 @@ interface AIFilters {
 // Dynamic data will be loaded from the platform organization
 
 // AI component functions will be created here when needed
+const SAMPLE_AI_AGENTS: AIAgent[] = [
   {
     id: '1',
     agent_code: 'DIGITAL_ACCOUNTANT',
