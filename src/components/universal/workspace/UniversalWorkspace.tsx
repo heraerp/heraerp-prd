@@ -99,7 +99,8 @@ const iconMap: Record<string, any> = {
 
 interface WorkspaceCard {
   label: string
-  subtitle: string
+  subtitle?: string        // Optional for compatibility
+  description?: string     // API returns 'description'
   icon: string
   view_slug: string
   target_type: string
@@ -200,14 +201,18 @@ export default function UniversalWorkspace({
 
       console.log('🔍 Loading universal workspace data for:', { app, domain, section, workspace })
 
-      // Use app-agnostic API endpoint
-      const apiUrl = `/api/v2/workspace/${app}/${domain}/${section}/${workspace}`
+      // Use existing database-driven API endpoint (app is used for UI routing only)
+      const apiUrl = `/api/v2/${domain}/${section}/${workspace}`
 
       // Try cache-first for instant loading
       try {
         const cachedData = await getCachedOrFetch(apiUrl)
         if (cachedData && !isRefreshing) {
           console.log('⚡ Using cached data for instant workspace load')
+          // Update route to include app prefix for universal routing
+          if (cachedData.workspace) {
+            cachedData.workspace.route = `/${app}/domains/${domain}/sections/${section}/workspaces/${workspace}`
+          }
           setWorkspaceData(cachedData)
           setActiveNavCode(cachedData.layout_config.default_nav_code)
           setLastRefreshTime(new Date())
@@ -234,6 +239,11 @@ export default function UniversalWorkspace({
       const data: WorkspaceData = await response.json()
 
       console.log('✅ API: Received fresh workspace data:', data)
+
+      // Update route to include app prefix for universal routing
+      if (data.workspace) {
+        data.workspace.route = `/${app}/domains/${domain}/sections/${section}/workspaces/${workspace}`
+      }
 
       setWorkspaceData(data)
       setActiveNavCode(data.layout_config.default_nav_code)
@@ -400,9 +410,10 @@ export default function UniversalWorkspace({
     if (!currentSection) return []
 
     return currentSection.cards.filter(card => {
+      const description = card.subtitle || card.description || ''
       return searchQuery === '' ||
         card.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        card.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
+        description.toLowerCase().includes(searchQuery.toLowerCase())
     })
   }
 
@@ -709,7 +720,7 @@ export default function UniversalWorkspace({
                             {card.label}
                           </h3>
                           <p className="text-sm text-gray-600 leading-relaxed mb-3">
-                            {card.subtitle}
+                            {card.subtitle || card.description || 'No description'}
                           </p>
 
                           {/* Metrics Display */}
