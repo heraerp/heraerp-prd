@@ -100,21 +100,48 @@ export async function GET(request: NextRequest) {
       console.log(`      Apps: ${JSON.stringify(org.apps || [])}`)
     })
 
+    // ✅ FIX: Get organization settings to retrieve applications
+    console.log('[resolve-membership] 📱 Fetching organization settings for applications...')
+    
+    const orgIds = authContext.organizations.map((org: any) => org.id)
+    const { data: orgsWithSettings, error: settingsError } = await supabaseService
+      .from('core_organizations')
+      .select('id, settings')
+      .in('id', orgIds)
+    
+    if (settingsError) {
+      console.warn('[resolve-membership] Could not fetch org settings:', settingsError)
+    }
+    
+    // Create a map of org ID to settings
+    const orgSettingsMap = new Map()
+    orgsWithSettings?.forEach(org => {
+      orgSettingsMap.set(org.id, org.settings)
+    })
+    
     // Transform introspect response to match existing API format
-    const validOrgs = authContext.organizations.map((org: any) => ({
-      id: org.id,
-      code: org.code,
-      name: org.name,
-      status: org.status,
-      joined_at: org.joined_at,
-      primary_role: org.primary_role,
-      roles: org.roles,
-      is_owner: org.is_owner,
-      is_admin: org.is_admin,
-      relationship_id: null, // Not available in introspect, but not critical
-      org_entity_id: org.id, // Use org ID as fallback
-      apps: org.apps || [] // ✅ FIX: Include apps array from introspection
-    }))
+    const validOrgs = authContext.organizations.map((org: any) => {
+      const settings = orgSettingsMap.get(org.id)
+      const apps = settings?.available_apps || []
+      
+      console.log(`[resolve-membership] Org ${org.name}: ${apps.length} apps from settings`)
+      
+      return {
+        id: org.id,
+        code: org.code,
+        name: org.name,
+        status: org.status,
+        joined_at: org.joined_at,
+        primary_role: org.primary_role,
+        roles: org.roles,
+        is_owner: org.is_owner,
+        is_admin: org.is_admin,
+        relationship_id: null, // Not available in introspect, but not critical
+        org_entity_id: org.id, // Use org ID as fallback
+        apps: apps, // ✅ FIX: Use apps from organization settings
+        settings: settings // ✅ Include full settings for client use
+      }
+    })
 
     const defaultOrg = validOrgs[0] // First organization (sorted by joined_at DESC)
 

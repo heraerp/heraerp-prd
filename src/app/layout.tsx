@@ -12,6 +12,8 @@ import CookieBanner from '@/components/ui/cookie-banner'
 import { ConditionalLoadingOverlay } from '@/components/auth/ConditionalLoadingOverlay'
 import { HMRRecoveryHelper } from '@/components/dev/HMRRecoveryHelper'
 import { InstantRouterProvider, NavigationProgress, PerformanceMetrics } from '@/components/performance/InstantRouter'
+// Initialize HERA Production Monitor globally
+import '@/lib/monitoring/production-monitor'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
 import '@/styles/radix-overrides.css' // Radix UI global overrides for HERA modals

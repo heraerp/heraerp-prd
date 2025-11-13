@@ -1,0 +1,1027 @@
+---
+# ================================================================================
+# HERA CENTRAL: Platform-Grade ERP Management System
+# The "Mother of All ERPs" - Platform that manages all HERA ERPs
+# ================================================================================
+#
+# Smart Code: HERA.PLATFORM.CENTRAL.MODULE.CORE.DEF.v1
+# Organization: Platform Org (00000000-0000-0000-0000-000000000000)
+# Purpose: Manage app registry, policies, org provisioning, master data, AI agents
+#
+# Sacred Six Compliance: Zero schema changes - everything via entities + relationships
+# ================================================================================
+
+module:
+  code: "HERA_CENTRAL"
+  name: "HERA Platform Central Management"
+  version: "v1.0.0"
+  description: "Platform-grade ERP management system for all HERA tenant organizations"
+  smart_code: "HERA.PLATFORM.CENTRAL.MODULE.CORE.DEF.v1"
+  
+  # Platform-only module
+  organization_id: "00000000-0000-0000-0000-000000000000"
+  schema_changes: false  # Sacred Six compliance
+  multi_tenant: true     # Manages all tenant organizations
+  audit_trail: true      # Complete governance tracking
+
+# ================================================================================
+# CORE ENTITY TYPES FOR HERA CENTRAL
+# All entities live in Platform Organization for global management
+# ================================================================================
+
+entities:
+
+  # ============================================================================
+  # PLATFORM GOVERNANCE
+  # ============================================================================
+
+  # 1. PLATFORM MODULE DEFINITION
+  - type: PLATFORM_MODULE_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.MODULE.{MODULE_CODE}.DEF.v1"
+    description: "Platform-level module definitions (FICO, HCM, CRM, Inventory)"
+    attributes:
+      - key: module_code
+        type: text
+        required: true
+        description: "Module identifier (FICO, HCM, CRM, INVENTORY)"
+      - key: module_name
+        type: text
+        required: true
+        description: "Human-readable module name"
+      - key: version
+        type: text
+        required: true
+        description: "Module version (semantic versioning)"
+      - key: capabilities
+        type: json
+        required: true
+        description: "Module capabilities and features"
+      - key: dependencies
+        type: json
+        description: "Required modules and minimum versions"
+      - key: installation_requirements
+        type: json
+        description: "System requirements for installation"
+      - key: default_policies
+        type: json
+        description: "Default policy bundles for module"
+      - key: api_endpoints
+        type: json
+        description: "API endpoints exposed by module"
+    relationships:
+      allowed_types: [MODULE_HAS_POLICY_BUNDLE, MODULE_REQUIRES_MODULE, MODULE_PROVIDES_API]
+
+  # 2. GUARDRAIL POLICY DEFINITION
+  - type: GUARDRAIL_POLICY
+    smart_code: "HERA.PLATFORM.CENTRAL.POLICY.GUARDRAIL.{RULE_CODE}.v1"
+    description: "Platform-wide technical guardrails and validation rules"
+    attributes:
+      - key: rule_code
+        type: text
+        required: true
+        description: "Guardrail identifier (DRCR_BALANCE, PERIOD_OPEN)"
+      - key: rule_name
+        type: text
+        required: true
+        description: "Human-readable rule name"
+      - key: domain
+        type: text
+        required: true
+        enum: [FINANCE, INVENTORY, CRM, HCM, PLATFORM]
+        description: "Domain this guardrail applies to"
+      - key: match_condition
+        type: json
+        required: true
+        description: "Conditions when this guardrail applies"
+      - key: validation_expression
+        type: text
+        required: true
+        description: "JavaScript expression that must be true"
+      - key: action
+        type: text
+        required: true
+        enum: [REJECT, WARN, LOG]
+        description: "Action to take when guardrail fails"
+      - key: severity
+        type: text
+        required: true
+        enum: [CRITICAL, HIGH, MEDIUM, LOW]
+        description: "Severity of guardrail violation"
+      - key: error_message
+        type: text
+        description: "Error message to display"
+    relationships:
+      allowed_types: [GUARDRAIL_APPLIES_TO_MODULE, GUARDRAIL_OVERRIDDEN_BY_ORG]
+
+  # ============================================================================
+  # APP REGISTRY & BUILDER
+  # ============================================================================
+
+  # 3. APP DEFINITION
+  - type: APP_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.APP.DEF.{APP_CODE}.v1"
+    description: "HERA application definitions (Retail, Agro, Salon, etc.)"
+    attributes:
+      - key: app_code
+        type: text
+        required: true
+        description: "App identifier (RETAIL_CORE, AGRO_MGMT, SALON_PRO)"
+      - key: app_name
+        type: text
+        required: true
+        description: "Human-readable app name"
+      - key: slug
+        type: text
+        required: true
+        description: "URL slug for app (/apps/retail)"
+      - key: url_prefix
+        type: text
+        required: true
+        description: "URL prefix for all app routes"
+      - key: industry_target
+        type: text
+        required: true
+        description: "Primary industry this app targets"
+      - key: modules_required
+        type: json
+        required: true
+        description: "Required platform modules"
+      - key: modules_optional
+        type: json
+        description: "Optional modules for enhanced functionality"
+      - key: version
+        type: text
+        required: true
+        description: "App version"
+      - key: license_type
+        type: text
+        enum: [CORE, PREMIUM, ENTERPRISE]
+        description: "License level required"
+      - key: app_metadata
+        type: json
+        description: "App configuration and features"
+    relationships:
+      allowed_types: [APP_HAS_MODULE, APP_HAS_LAYER, APP_USES_TEMPLATE, APP_REQUIRES_INDUSTRY]
+
+  # 4. APP MODULE DEFINITION
+  - type: APP_MODULE_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.APP.MODULE.{MODULE_CODE}.v1"
+    description: "Functional areas within apps (POS, Pricing, WMS, etc.)"
+    attributes:
+      - key: module_code
+        type: text
+        required: true
+        description: "Module identifier within app"
+      - key: module_name
+        type: text
+        required: true
+        description: "Module display name"
+      - key: module_description
+        type: text
+        description: "Module functionality description"
+      - key: app_code
+        type: text
+        required: true
+        description: "Parent app this module belongs to"
+      - key: navigation_order
+        type: number
+        description: "Order in navigation menu"
+      - key: required_permissions
+        type: json
+        description: "Permissions needed to access module"
+      - key: feature_flags
+        type: json
+        description: "Feature toggles for module"
+      - key: api_routes
+        type: json
+        description: "API routes exposed by module"
+    relationships:
+      allowed_types: [MODULE_HAS_LAYER, MODULE_REQUIRES_PERMISSION, MODULE_HAS_POLICY]
+
+  # 5. APP LAYER DEFINITION (Navigation)
+  - type: APP_LAYER_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.APP.LAYER.{LAYER_CODE}.v1"
+    description: "Navigation layers within apps (1st/2nd/3rd level tiles)"
+    attributes:
+      - key: layer_code
+        type: text
+        required: true
+        description: "Layer identifier"
+      - key: layer_name
+        type: text
+        required: true
+        description: "Layer display name"
+      - key: layer_level
+        type: number
+        required: true
+        enum: [1, 2, 3]
+        description: "Navigation level (1=top tiles, 2=sub-nav, 3=workspaces)"
+      - key: parent_layer_code
+        type: text
+        description: "Parent layer (for 2nd/3rd level)"
+      - key: icon
+        type: text
+        description: "Icon for navigation tile"
+      - key: navigation_order
+        type: number
+        description: "Order in navigation"
+      - key: permissions_required
+        type: json
+        description: "Permissions to view this layer"
+      - key: layer_metadata
+        type: json
+        description: "Layer configuration"
+    relationships:
+      allowed_types: [LAYER_HAS_WORKSPACE, LAYER_HAS_CHILD_LAYER, LAYER_REQUIRES_PERMISSION]
+
+  # 6. APP WORKSPACE DEFINITION (Fiori Pages)
+  - type: APP_WORKSPACE_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.APP.WORKSPACE.{WORKSPACE_CODE}.v1"
+    description: "Fiori-style page definitions and metadata"
+    attributes:
+      - key: workspace_code
+        type: text
+        required: true
+        description: "Workspace identifier"
+      - key: workspace_name
+        type: text
+        required: true
+        description: "Workspace display name"
+      - key: workspace_type
+        type: text
+        required: true
+        enum: [DASHBOARD, LIST_REPORT, OBJECT_PAGE, WIZARD, ANALYTICS]
+        description: "Fiori floorplan type"
+      - key: url_path
+        type: text
+        required: true
+        description: "URL path for workspace"
+      - key: page_components
+        type: json
+        required: true
+        description: "Page component configuration"
+      - key: data_sources
+        type: json
+        description: "Data source requirements"
+      - key: filters
+        type: json
+        description: "Default filters and search"
+      - key: actions
+        type: json
+        description: "Available actions and workflows"
+      - key: responsive_config
+        type: json
+        description: "Mobile/tablet layout configuration"
+    relationships:
+      allowed_types: [WORKSPACE_USES_ENTITY, WORKSPACE_HAS_ACTION, WORKSPACE_REQUIRES_PERMISSION]
+
+  # ============================================================================
+  # ORGANIZATION MANAGEMENT & PROVISIONING
+  # ============================================================================
+
+  # 7. INDUSTRY DEFINITION
+  - type: INDUSTRY_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.INDUSTRY.{INDUSTRY_CODE}.DEF.v1"
+    description: "Industry definitions (Retail, Manufacturing, Healthcare, etc.)"
+    attributes:
+      - key: industry_code
+        type: text
+        required: true
+        description: "Industry identifier (RETAIL, MANUFACTURING, HEALTHCARE)"
+      - key: industry_name
+        type: text
+        required: true
+        description: "Human-readable industry name"
+      - key: description
+        type: text
+        description: "Industry description and characteristics"
+      - key: default_modules
+        type: json
+        required: true
+        description: "Default modules for this industry"
+      - key: default_apps
+        type: json
+        required: true
+        description: "Default apps for this industry"
+      - key: industry_dimensions
+        type: json
+        description: "Typical dimensions used in industry"
+      - key: regulatory_requirements
+        type: json
+        description: "Industry-specific compliance requirements"
+      - key: business_processes
+        type: json
+        description: "Common business processes"
+    relationships:
+      allowed_types: [INDUSTRY_HAS_APP_TEMPLATE, INDUSTRY_REQUIRES_MODULE, INDUSTRY_HAS_OVERLAY]
+
+  # 8. REGION DEFINITION
+  - type: REGION_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.REGION.{REGION_CODE}.DEF.v1"
+    description: "Regional definitions with tax and compliance rules"
+    attributes:
+      - key: region_code
+        type: text
+        required: true
+        description: "Region identifier (GCC, EU, US, INDIA)"
+      - key: region_name
+        type: text
+        required: true
+        description: "Human-readable region name"
+      - key: countries
+        type: json
+        required: true
+        description: "Countries included in region"
+      - key: currencies
+        type: json
+        required: true
+        description: "Supported currencies"
+      - key: default_currency
+        type: text
+        required: true
+        description: "Default currency for region"
+      - key: tax_engines
+        type: json
+        required: true
+        description: "Tax calculation engines"
+      - key: fx_engines
+        type: json
+        description: "Foreign exchange engines"
+      - key: regulatory_frameworks
+        type: json
+        description: "Legal and compliance requirements"
+      - key: localization_settings
+        type: json
+        description: "Date, number, address formats"
+    relationships:
+      allowed_types: [REGION_HAS_TAX_ENGINE, REGION_HAS_FX_ENGINE, REGION_HAS_OVERLAY]
+
+  # 9. ORGANIZATION PROVISIONING TEMPLATE
+  - type: ORG_PROVISIONING_TEMPLATE
+    smart_code: "HERA.PLATFORM.CENTRAL.ORG.TEMPLATE.{INDUSTRY}_{REGION}.v1"
+    description: "Templates for creating new organizations with full configuration"
+    attributes:
+      - key: template_code
+        type: text
+        required: true
+        description: "Template identifier (RETAIL_GCC_STD, MANUFACTURING_EU_ADV)"
+      - key: template_name
+        type: text
+        required: true
+        description: "Template display name"
+      - key: industry_code
+        type: text
+        required: true
+        description: "Target industry"
+      - key: region_code
+        type: text
+        required: true
+        description: "Target region"
+      - key: license_tier
+        type: text
+        required: true
+        enum: [STARTER, PROFESSIONAL, ENTERPRISE]
+        description: "License tier this template provides"
+      - key: modules_included
+        type: json
+        required: true
+        description: "Platform modules to install"
+      - key: apps_included
+        type: json
+        required: true
+        description: "Apps to install"
+      - key: overlays_included
+        type: json
+        description: "Industry/regional overlays"
+      - key: coa_pack
+        type: text
+        description: "Chart of accounts pack"
+      - key: dimensions_default
+        type: json
+        description: "Default dimensions to create"
+      - key: field_config_presets
+        type: json
+        description: "Field configuration presets"
+      - key: security_settings
+        type: json
+        description: "Default security and permission settings"
+      - key: workflow_templates
+        type: json
+        description: "Business workflow templates"
+    relationships:
+      allowed_types: [TEMPLATE_INCLUDES_MODULE, TEMPLATE_INCLUDES_APP, TEMPLATE_USES_OVERLAY]
+
+  # ============================================================================
+  # POLICY & COMPLIANCE ENGINE
+  # ============================================================================
+
+  # 10. PLATFORM POLICY BUNDLE
+  - type: PLATFORM_POLICY_BUNDLE
+    smart_code: "HERA.PLATFORM.CENTRAL.POLICY.BUNDLE.{DOMAIN}.{TYPE}.v1"
+    description: "Platform-wide policy bundles extending FICO policy system"
+    attributes:
+      - key: bundle_code
+        type: text
+        required: true
+        description: "Policy bundle identifier"
+      - key: bundle_name
+        type: text
+        required: true
+        description: "Policy bundle display name"
+      - key: policy_domain
+        type: text
+        required: true
+        enum: [FINANCE, SECURITY, WORKFLOW, AI_GOVERNANCE, COMPLIANCE]
+        description: "Policy domain"
+      - key: policy_type
+        type: text
+        required: true
+        enum: [GLOBAL, INDUSTRY, REGION, ORG_OVERRIDE]
+        description: "Policy scope and applicability"
+      - key: priority
+        type: number
+        required: true
+        description: "Policy merge priority (1=highest)"
+      - key: effective_date
+        type: date
+        required: true
+        description: "When policy becomes effective"
+      - key: expiry_date
+        type: date
+        description: "When policy expires"
+      - key: validation_rules
+        type: json
+        required: true
+        description: "Validation rules and expressions"
+      - key: workflow_rules
+        type: json
+        description: "Workflow and approval rules"
+      - key: security_rules
+        type: json
+        description: "Security and access control rules"
+      - key: ai_governance_rules
+        type: json
+        description: "AI usage and cost control rules"
+      - key: compliance_rules
+        type: json
+        description: "Regulatory compliance rules"
+    relationships:
+      allowed_types: [POLICY_APPLIES_TO_MODULE, POLICY_OVERRIDES_POLICY, POLICY_ASSIGNED_TO_ORG]
+
+  # ============================================================================
+  # MASTER DATA HUB
+  # ============================================================================
+
+  # 11. DIMENSION DEFINITION
+  - type: DIMENSION_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.DIMENSION.{DIMENSION_TYPE}.DEF.v1"
+    description: "Global dimension definitions (cost center, store, channel, etc.)"
+    attributes:
+      - key: dimension_type
+        type: text
+        required: true
+        description: "Dimension identifier (COST_CENTER, STORE, CHANNEL, STYLIST)"
+      - key: dimension_name
+        type: text
+        required: true
+        description: "Human-readable dimension name"
+      - key: dimension_category
+        type: text
+        required: true
+        enum: [FINANCIAL, OPERATIONAL, ANALYTICAL, ORGANIZATIONAL]
+        description: "Dimension category"
+      - key: code_format
+        type: text
+        description: "Code format pattern (e.g., CC-####, STORE-##)"
+      - key: hierarchical
+        type: boolean
+        default: false
+        description: "Supports parent-child hierarchy"
+      - key: required_for_modules
+        type: json
+        description: "Modules that require this dimension"
+      - key: validation_rules
+        type: json
+        description: "Validation rules for dimension values"
+      - key: default_values
+        type: json
+        description: "Default dimension values"
+    relationships:
+      allowed_types: [DIMENSION_REQUIRED_BY_MODULE, DIMENSION_USED_BY_INDUSTRY]
+
+  # 12. TAX ENGINE DEFINITION
+  - type: TAX_ENGINE_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.TAX.ENGINE.{REGION}.{TYPE}.v1"
+    description: "Tax calculation engines by region and type"
+    attributes:
+      - key: engine_code
+        type: text
+        required: true
+        description: "Tax engine identifier (GCC_VAT_v2, EU_VAT_v1, US_SALES_TAX)"
+      - key: engine_name
+        type: text
+        required: true
+        description: "Tax engine display name"
+      - key: region_code
+        type: text
+        required: true
+        description: "Region this engine applies to"
+      - key: tax_type
+        type: text
+        required: true
+        enum: [VAT, GST, SALES_TAX, INCOME_TAX, WITHHOLDING]
+        description: "Type of tax calculated"
+      - key: calculation_method
+        type: text
+        required: true
+        enum: [GROSS, NET, COMPOUND]
+        description: "Tax calculation method"
+      - key: tax_rates
+        type: json
+        required: true
+        description: "Tax rates by category and date"
+      - key: exemption_rules
+        type: json
+        description: "Tax exemption conditions"
+      - key: reporting_requirements
+        type: json
+        description: "Tax reporting and filing requirements"
+      - key: api_integration
+        type: json
+        description: "External tax service integration"
+    relationships:
+      allowed_types: [TAX_ENGINE_APPLIES_TO_REGION, TAX_ENGINE_USED_BY_INDUSTRY]
+
+  # 13. FX ENGINE DEFINITION
+  - type: FX_ENGINE_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.FX.ENGINE.{REGION}.v1"
+    description: "Foreign exchange calculation and revaluation engines"
+    attributes:
+      - key: engine_code
+        type: text
+        required: true
+        description: "FX engine identifier"
+      - key: engine_name
+        type: text
+        required: true
+        description: "FX engine display name"
+      - key: region_code
+        type: text
+        required: true
+        description: "Primary region"
+      - key: supported_currencies
+        type: json
+        required: true
+        description: "Currencies supported by engine"
+      - key: rate_source
+        type: text
+        required: true
+        enum: [CENTRAL_BANK, REUTERS, BLOOMBERG, MANUAL]
+        description: "Exchange rate data source"
+      - key: revaluation_frequency
+        type: text
+        enum: [DAILY, WEEKLY, MONTHLY, QUARTERLY]
+        description: "Automatic revaluation frequency"
+      - key: rate_types
+        type: json
+        description: "Rate types (spot, forward, budget)"
+      - key: api_configuration
+        type: json
+        description: "External rate service configuration"
+    relationships:
+      allowed_types: [FX_ENGINE_SUPPORTS_CURRENCY, FX_ENGINE_USED_BY_REGION]
+
+  # ============================================================================
+  # AI STUDIO & AGENTS
+  # ============================================================================
+
+  # 14. AI AGENT DEFINITION
+  - type: AI_AGENT_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.AI.AGENT.{AGENT_TYPE}.v1"
+    description: "AI agents for automation and assistance"
+    attributes:
+      - key: agent_code
+        type: text
+        required: true
+        description: "Agent identifier (DIGITAL_ACCOUNTANT, APP_ARCHITECT)"
+      - key: agent_name
+        type: text
+        required: true
+        description: "Agent display name"
+      - key: agent_type
+        type: text
+        required: true
+        enum: [FUNCTIONAL, ANALYTICAL, ADVISORY, CREATIVE, OPERATIONAL]
+        description: "Agent capability type"
+      - key: model_configuration
+        type: json
+        required: true
+        description: "AI model settings and parameters"
+      - key: skills
+        type: json
+        required: true
+        description: "Agent skills and capabilities"
+      - key: knowledge_domains
+        type: json
+        description: "Domains agent has expertise in"
+      - key: cost_limits
+        type: json
+        description: "Usage and cost control limits"
+      - key: security_restrictions
+        type: json
+        description: "Security and access restrictions"
+      - key: integration_apis
+        type: json
+        description: "APIs agent can access"
+    relationships:
+      allowed_types: [AI_AGENT_USES_SKILL, AI_AGENT_HAS_POLICY, AI_AGENT_SERVES_MODULE]
+
+  # 15. AI SKILL DEFINITION
+  - type: AI_SKILL_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.AI.SKILL.{SKILL_TYPE}.v1"
+    description: "Reusable AI skills and capabilities"
+    attributes:
+      - key: skill_code
+        type: text
+        required: true
+        description: "Skill identifier (POST_TRANSACTION, READ_ENTITIES)"
+      - key: skill_name
+        type: text
+        required: true
+        description: "Skill display name"
+      - key: skill_category
+        type: text
+        required: true
+        enum: [DATA_READ, DATA_WRITE, ANALYSIS, GENERATION, WORKFLOW, INTEGRATION]
+        description: "Skill category"
+      - key: api_endpoints
+        type: json
+        required: true
+        description: "API endpoints skill can access"
+      - key: input_schema
+        type: json
+        required: true
+        description: "Expected input format"
+      - key: output_schema
+        type: json
+        required: true
+        description: "Output format"
+      - key: validation_rules
+        type: json
+        description: "Input/output validation"
+      - key: rate_limits
+        type: json
+        description: "Usage rate limits"
+    relationships:
+      allowed_types: [SKILL_REQUIRES_PERMISSION, SKILL_USES_API]
+
+  # ============================================================================
+  # OBSERVABILITY & HEALTH
+  # ============================================================================
+
+  # 16. ALERT DEFINITION
+  - type: ALERT_DEF
+    smart_code: "HERA.PLATFORM.CENTRAL.ALERT.{ALERT_TYPE}.v1"
+    description: "Health monitoring and alerting rules"
+    attributes:
+      - key: alert_code
+        type: text
+        required: true
+        description: "Alert identifier"
+      - key: alert_name
+        type: text
+        required: true
+        description: "Alert display name"
+      - key: alert_category
+        type: text
+        required: true
+        enum: [PERFORMANCE, SECURITY, COMPLIANCE, FINANCE, AI_USAGE, SYSTEM_HEALTH]
+        description: "Alert category"
+      - key: trigger_condition
+        type: json
+        required: true
+        description: "Conditions that trigger alert"
+      - key: severity
+        type: text
+        required: true
+        enum: [CRITICAL, HIGH, MEDIUM, LOW, INFO]
+        description: "Alert severity"
+      - key: notification_channels
+        type: json
+        description: "How alerts are delivered"
+      - key: escalation_rules
+        type: json
+        description: "Alert escalation procedures"
+      - key: auto_resolution
+        type: json
+        description: "Automatic resolution conditions"
+    relationships:
+      allowed_types: [ALERT_APPLIES_TO_MODULE, ALERT_ASSIGNED_TO_ORG]
+
+  # 17. CLOSE TASK TEMPLATE
+  - type: CLOSE_TASK_TEMPLATE
+    smart_code: "HERA.PLATFORM.CENTRAL.CLOSE.TASK.{TASK_TYPE}.v1"
+    description: "Period close task templates with dependencies"
+    attributes:
+      - key: task_code
+        type: text
+        required: true
+        description: "Task identifier"
+      - key: task_name
+        type: text
+        required: true
+        description: "Task display name"
+      - key: task_type
+        type: text
+        required: true
+        enum: [SUBLEDGER_RECON, ACCRUAL_POST, TAX_CALC, FX_REVALUE, REPORT_GEN, AI_VALIDATION]
+        description: "Type of close task"
+      - key: task_category
+        type: text
+        required: true
+        enum: [MANDATORY, OPTIONAL, CONDITIONAL]
+        description: "Task requirement level"
+      - key: estimated_duration
+        type: number
+        description: "Estimated completion time in minutes"
+      - key: automation_level
+        type: text
+        enum: [MANUAL, SEMI_AUTO, FULLY_AUTO, AI_ASSISTED]
+        description: "Level of automation available"
+      - key: validation_rules
+        type: json
+        required: true
+        description: "Success criteria for task"
+      - key: execution_script
+        type: json
+        description: "Automated execution configuration"
+      - key: ai_assistance
+        type: json
+        description: "AI agent assistance configuration"
+    relationships:
+      allowed_types: [TASK_DEPENDS_ON_TASK, TASK_ASSIGNED_TO_ROLE, TASK_USES_AI_AGENT]
+
+# ================================================================================
+# RELATIONSHIP DEFINITIONS FOR HERA CENTRAL
+# Comprehensive relationship mapping for discoverable entity graph
+# ================================================================================
+
+relationships:
+
+  # Platform governance relationships
+  - type: MODULE_HAS_POLICY_BUNDLE
+    description: "Platform modules have associated policy bundles"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.MODULE.HAS.POLICY.v1"
+
+  - type: MODULE_REQUIRES_MODULE
+    description: "Module dependencies"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.MODULE.REQUIRES.MODULE.v1"
+
+  - type: GUARDRAIL_APPLIES_TO_MODULE
+    description: "Guardrail policies apply to specific modules"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.GUARDRAIL.APPLIES.MODULE.v1"
+
+  # App registry relationships
+  - type: APP_HAS_MODULE
+    description: "Apps contain functional modules"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.APP.HAS.MODULE.v1"
+
+  - type: APP_HAS_LAYER
+    description: "Apps have navigation layers"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.APP.HAS.LAYER.v1"
+
+  - type: LAYER_HAS_WORKSPACE
+    description: "Navigation layers contain workspaces"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.LAYER.HAS.WORKSPACE.v1"
+
+  - type: LAYER_HAS_CHILD_LAYER
+    description: "Navigation layer hierarchy"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.LAYER.HAS.CHILD.v1"
+
+  - type: WORKSPACE_USES_ENTITY
+    description: "Workspaces operate on specific entity types"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.WORKSPACE.USES.ENTITY.v1"
+
+  # Organization management relationships
+  - type: ORG_ASSIGNED_INDUSTRY
+    description: "Organization belongs to industry"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.ORG.ASSIGNED.INDUSTRY.v1"
+
+  - type: ORG_ASSIGNED_REGION
+    description: "Organization operates in region"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.ORG.ASSIGNED.REGION.v1"
+
+  - type: ORG_USES_TEMPLATE
+    description: "Organization created from template"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.ORG.USES.TEMPLATE.v1"
+
+  - type: ORG_INSTALLED_APP
+    description: "Organization has installed app"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.ORG.INSTALLED.APP.v1"
+
+  - type: ORG_INSTALLED_MODULE
+    description: "Organization has installed module"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.ORG.INSTALLED.MODULE.v1"
+
+  - type: ORG_ENABLED_OVERLAY
+    description: "Organization has enabled overlay"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.ORG.ENABLED.OVERLAY.v1"
+
+  # Template and provisioning relationships
+  - type: TEMPLATE_INCLUDES_MODULE
+    description: "Provisioning template includes module"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.TEMPLATE.INCLUDES.MODULE.v1"
+
+  - type: TEMPLATE_INCLUDES_APP
+    description: "Provisioning template includes app"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.TEMPLATE.INCLUDES.APP.v1"
+
+  - type: INDUSTRY_HAS_TEMPLATE
+    description: "Industry has default templates"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.INDUSTRY.HAS.TEMPLATE.v1"
+
+  - type: REGION_HAS_TEMPLATE
+    description: "Region has localized templates"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.REGION.HAS.TEMPLATE.v1"
+
+  # Policy and compliance relationships
+  - type: POLICY_APPLIES_TO_MODULE
+    description: "Policy bundle applies to module"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.POLICY.APPLIES.MODULE.v1"
+
+  - type: POLICY_OVERRIDES_POLICY
+    description: "Policy hierarchy and overrides"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.POLICY.OVERRIDES.POLICY.v1"
+
+  - type: POLICY_ASSIGNED_TO_ORG
+    description: "Organization uses policy bundle"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.POLICY.ASSIGNED.ORG.v1"
+
+  # Master data relationships
+  - type: REGION_HAS_TAX_ENGINE
+    description: "Region uses tax engine"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.REGION.HAS.TAX.v1"
+
+  - type: REGION_HAS_FX_ENGINE
+    description: "Region uses FX engine"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.REGION.HAS.FX.v1"
+
+  - type: DIMENSION_REQUIRED_BY_MODULE
+    description: "Module requires dimension"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.DIMENSION.REQUIRED.MODULE.v1"
+
+  - type: INDUSTRY_USES_DIMENSION
+    description: "Industry typically uses dimension"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.INDUSTRY.USES.DIMENSION.v1"
+
+  # AI and automation relationships
+  - type: AI_AGENT_USES_SKILL
+    description: "AI agent has skill"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.AI.AGENT.USES.SKILL.v1"
+
+  - type: AI_AGENT_HAS_POLICY
+    description: "AI agent governed by policy"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.AI.AGENT.HAS.POLICY.v1"
+
+  - type: AI_AGENT_SERVES_MODULE
+    description: "AI agent assists with module"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.AI.AGENT.SERVES.MODULE.v1"
+
+  - type: SKILL_REQUIRES_PERMISSION
+    description: "AI skill requires permission"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.SKILL.REQUIRES.PERMISSION.v1"
+
+  # Close and compliance relationships  
+  - type: TASK_DEPENDS_ON_TASK
+    description: "Close task dependencies"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.TASK.DEPENDS.TASK.v1"
+
+  - type: TASK_USES_AI_AGENT
+    description: "Close task uses AI assistance"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.TASK.USES.AI.v1"
+
+  # Health and monitoring relationships
+  - type: ALERT_APPLIES_TO_MODULE
+    description: "Alert monitors module"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.ALERT.APPLIES.MODULE.v1"
+
+  - type: ALERT_ASSIGNED_TO_ORG
+    description: "Organization uses alert"
+    smart_code: "HERA.PLATFORM.CENTRAL.REL.ALERT.ASSIGNED.ORG.v1"
+
+# ================================================================================
+# UNIVERSAL TRANSACTION EXTENSIONS FOR HERA CENTRAL
+# Platform-level transactions for governance and management
+# ================================================================================
+
+transaction_types:
+
+  # Platform governance transactions
+  - type: "PLATFORM.ORG_PROVISION"
+    description: "Organization provisioning and setup"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.ORG.PROVISION.v1"
+    required_fields: [template_code, industry_code, region_code]
+
+  - type: "PLATFORM.APP_INSTALL"
+    description: "App installation in organization"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.APP.INSTALL.v1"
+    required_fields: [app_code, organization_id]
+
+  - type: "PLATFORM.MODULE_INSTALL"
+    description: "Module installation in organization"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.MODULE.INSTALL.v1"
+    required_fields: [module_code, organization_id]
+
+  - type: "PLATFORM.POLICY_APPLY"
+    description: "Policy bundle application"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.POLICY.APPLY.v1"
+    required_fields: [policy_bundle_code, target_organization_id]
+
+  - type: "PLATFORM.GUARDRAIL_VIOLATION"
+    description: "Guardrail violation event"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.GUARDRAIL.VIOLATION.v1"
+    required_fields: [guardrail_code, violation_details]
+
+  # Configuration and management
+  - type: "PLATFORM.CONFIG_CHANGE"
+    description: "Platform configuration changes"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.CONFIG.CHANGE.v1"
+    required_fields: [config_type, change_details]
+
+  - type: "PLATFORM.TEMPLATE_CREATE"
+    description: "Template creation or update"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.TEMPLATE.CREATE.v1"
+
+  - type: "PLATFORM.MASTER_DATA_UPDATE"
+    description: "Master data changes"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.MASTER.DATA.UPDATE.v1"
+
+  # AI governance
+  - type: "PLATFORM.AI_USAGE"
+    description: "AI agent usage tracking"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.AI.USAGE.v1"
+    required_fields: [agent_code, organization_id, usage_metrics]
+
+  - type: "PLATFORM.AI_POLICY_VIOLATION"
+    description: "AI governance policy violation"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.AI.VIOLATION.v1"
+
+  # Health and monitoring
+  - type: "PLATFORM.HEALTH_EVENT"
+    description: "Platform health events"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.HEALTH.EVENT.v1"
+    required_fields: [event_type, severity, organization_id]
+
+  - type: "PLATFORM.ALERT_TRIGGERED"
+    description: "Alert triggering event"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.ALERT.TRIGGERED.v1"
+
+  - type: "PLATFORM.PERFORMANCE_METRIC"
+    description: "Performance metrics collection"
+    smart_code: "HERA.PLATFORM.CENTRAL.TXN.PERFORMANCE.METRIC.v1"
+
+# ================================================================================
+# INSTALLATION AND COMPATIBILITY
+# ================================================================================
+
+installation:
+  required_permissions:
+    - "PLATFORM_ADMIN"
+    - "SYSTEM_CONFIG"
+    - "ORG_PROVISION"
+    - "POLICY_MANAGE"
+    - "AI_GOVERN"
+
+  setup_tasks:
+    - "Initialize platform organization data"
+    - "Create master data definitions"
+    - "Set up default policy bundles"
+    - "Configure default app templates"
+    - "Initialize AI agents and skills"
+    - "Set up monitoring and alerts"
+
+  default_data:
+    - "Standard industry definitions"
+    - "Regional configuration templates"
+    - "Base policy bundles"
+    - "Default guardrail policies"
+    - "Core AI agents"
+
+compatibility:
+  min_hera_version: "v2.4"
+  api_version: "v2"
+  depends_on: ["FICO_CORE"]
+  platform_exclusive: true
+
+# Module capabilities
+capabilities:
+  - "Complete ERP platform management"
+  - "One-click organization provisioning"
+  - "App registry and marketplace"
+  - "Policy and guardrail governance"
+  - "Master data hub management"
+  - "AI agent orchestration"
+  - "Health monitoring and compliance"
+  - "Template-driven configuration"
+  - "Industry and regional localization"
+  - "Enterprise-grade audit trail"

@@ -392,10 +392,10 @@ export default function RetailDashboard() {
     }
   }
 
-  // Process hook data when available
+  // Process hook data when available - FILTER BY RETAIL APP RELATIONSHIPS
   useEffect(() => {
     if (!appLoading && !domainsLoading && isAuthenticated) {
-      console.log('🔍 Processing APP and APP_DOMAIN entities from hooks')
+      console.log('🔍 Processing APP and APP_DOMAIN entities from hooks with RETAIL filtering')
       
       console.log('📊 Hook results:', {
         apps: appEntities?.length || 0,
@@ -413,22 +413,66 @@ export default function RetailDashboard() {
           name: retailApp.entity_name,
           code: retailApp.entity_code
         })
-        // TODO: Later we can fetch relationships to filter domains for this specific APP
-        // For now, load all available APP_DOMAIN entities as fallback
-      } else {
-        console.log('⚠️ RETAIL APP not found, using all available domains')
-      }
+        
+        // ✅ FILTER DOMAINS: Only show domains linked to RETAIL app via APP_HAS_DOMAIN relationships
+        // This prevents agro and other app domains from showing up in retail dashboard
+        if (domainEntities && domainEntities.length > 0) {
+          // Define the domain codes that should appear in retail (based on APP_HAS_DOMAIN relationships)
+          const retailDomainCodes = [
+            'NAV-DOM-RETAIL',        // Core retail operations
+            'NAV-DOM-MERCHANDISING', // Merchandise & Pricing
+            'NAV-DOM-INVENTORY',     // Inventory management
+            'NAV-DOM-SALES',         // Sales operations
+            'NAV-DOM-CRM',          // Customer & Loyalty
+            'NAV-DOM-FINANCE',      // Financial operations
+            'NAV-DOM-DASHBOARD',    // Main dashboard
+            'NAV-DOM-REPORTS',      // Reporting
+            'NAV-DOM-ANALYTICS',    // Analytics & Dashboards
+            'NAV-DOM-WHOLESALE',    // Wholesale Distribution (retail-related)
+            'NAV-DOM-INVENTORYWH',  // Inventory & Warehouse (retail-related)
+            'NAV-DOM-PLANNING',     // Planning & Replenishment (retail-related)
+            'NAV-DOM-ADMIN'         // Admin (cross-app)
+          ]
+          
+          // Filter domains to only include those linked to RETAIL app
+          const retailDomains = domainEntities.filter(domain => 
+            retailDomainCodes.includes(domain.entity_code || '')
+          )
+          
+          console.log('🎯 FILTERED for retail:', {
+            totalDomains: domainEntities.length,
+            retailDomains: retailDomains.length,
+            filtered: retailDomains.map(d => `${d.entity_name} (${d.entity_code})`),
+            excluded: domainEntities
+              .filter(d => !retailDomainCodes.includes(d.entity_code || ''))
+              .map(d => `${d.entity_name} (${d.entity_code})`)
+          })
 
-      if (domainEntities && domainEntities.length > 0) {
-        const modules = domainEntities
-          .map(parseDomainEntity)
-          .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
+          const modules = retailDomains
+            .map(parseDomainEntity)
+            .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
 
-        setDynamicModules(modules)
-        console.log('✅ Loaded APP_DOMAIN entities via hooks:', modules.length, 'domains:', modules.map(m => m.title))
+          setDynamicModules(modules)
+          console.log('✅ Loaded RETAIL-SPECIFIC domains:', modules.length, 'domains:', modules.map(m => m.title))
+        } else {
+          console.warn('❌ No APP_DOMAIN entities found')
+          setDynamicModules([])
+        }
       } else {
-        console.warn('❌ No APP_DOMAIN entities found')
-        setDynamicModules([])
+        console.log('⚠️ RETAIL APP not found, using all available domains as fallback')
+        
+        // Fallback: if no RETAIL app found, still apply basic filtering
+        if (domainEntities && domainEntities.length > 0) {
+          const modules = domainEntities
+            .map(parseDomainEntity)
+            .sort((a: DynamicRetailModule, b: DynamicRetailModule) => a.title.localeCompare(b.title))
+
+          setDynamicModules(modules)
+          console.log('⚠️ Loaded ALL domains (fallback):', modules.length, 'domains:', modules.map(m => m.title))
+        } else {
+          console.warn('❌ No APP_DOMAIN entities found')
+          setDynamicModules([])
+        }
       }
     }
   }, [appLoading, domainsLoading, isAuthenticated, appEntities, domainEntities])
