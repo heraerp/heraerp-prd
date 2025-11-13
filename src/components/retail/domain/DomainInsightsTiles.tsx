@@ -63,10 +63,11 @@ interface InsightTile {
 
 interface DomainInsightsTilesProps {
   domain: string
+  config: any  // DomainConfig from universal types
   className?: string
 }
 
-export default function DomainInsightsTiles({ domain, className }: DomainInsightsTilesProps) {
+export default function DomainInsightsTiles({ domain, config, className }: DomainInsightsTilesProps) {
   const [insightsTiles, setInsightsTiles] = useState<InsightTile[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isExpanded, setIsExpanded] = useState(true)

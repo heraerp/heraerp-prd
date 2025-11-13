@@ -324,7 +324,8 @@ function SettingsPageContent() {
     try {
       const result = await entityCRUD({
         p_action: 'UPDATE',
-        p_actor_user_id: user?.id || '',
+        // ✅ HERA v2.4: Use USER entity ID (not auth UID)
+        p_actor_user_id: user?.entity_id || user?.id || '',
         p_organization_id: organizationId,
         p_entity: {
           entity_id: organizationId,

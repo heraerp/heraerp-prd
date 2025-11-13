@@ -1009,7 +1009,10 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         // For initial load before auth completes, use system actor
       }
 
-      const actorUserId = user?.id || 'system'
+      // ✅ HERA v2.4: Use USER entity ID (not auth UID)
+      // Try localStorage first (set by HERAAuthProvider), then fall back to auth UID, then 'system'
+      const userEntityId = typeof window !== 'undefined' ? localStorage.getItem('hera_user_entity_id') : null
+      const actorUserId = userEntityId || user?.id || 'system'
 
       console.log('[SecuredSalonProvider] 📖 Loading organization via RPC:', {
         orgId,

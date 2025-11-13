@@ -858,6 +858,85 @@ acme.heraerp.com                       # Tenant-specific access
 demo.heraerp.com/salon                 # Demo environments
 ```
 
+### 🎯 CRITICAL: User Entity ID vs Auth UID Pattern (v2.4)
+
+**⚠️ MANDATORY FOR ALL RPC CALLS**: HERA distinguishes between two user identifiers that serve different purposes:
+
+#### **Two User Identifiers:**
+```typescript
+// 1. Auth UID - Supabase authentication ID
+user.id                 // From auth.users table (session management)
+
+// 2. User Entity ID - HERA USER entity
+user.entity_id          // From core_entities table (business logic)
+```
+
+#### **✅ CORRECT PATTERN (MANDATORY):**
+```typescript
+// ALWAYS use entity_id first, fallback to id
+const actorUserId = user?.entity_id || user?.id
+
+// Use in ALL RPC calls
+await supabase.rpc('hera_entities_crud_v1', {
+  p_actor_user_id: actorUserId,  // ✅ USER entity ID
+  p_organization_id: orgId,
+  // ...
+})
+```
+
+#### **❌ WRONG PATTERN (FORBIDDEN):**
+```typescript
+// NEVER use user.id directly for RPC calls
+const actorUserId = user?.id  // ❌ Auth UID - NOT a USER entity
+
+await supabase.rpc('hera_entities_crud_v1', {
+  p_actor_user_id: actorUserId,  // ❌ WRONG - Will cause NULL UUID violations
+  // ...
+})
+```
+
+#### **Why This Matters:**
+- **Auth UID** (`user.id`): Supabase session identifier, NOT in core_entities
+- **User Entity ID** (`user.entity_id`): Actual USER entity, used for:
+  - Actor stamping (created_by, updated_by)
+  - Audit trails
+  - Business relationships
+  - RPC function `p_actor_user_id` parameter
+
+#### **How It Works:**
+1. User logs in → Supabase creates auth session with `user.id` (auth UID)
+2. HERAAuthProvider calls `/api/v2/auth/resolve-membership`
+3. API returns `user_entity_id` (the USER entity in core_entities)
+4. Provider stores BOTH IDs in user object:
+   ```typescript
+   const heraUser = {
+     id: user.id,              // Auth UID (session)
+     entity_id: userEntityId,  // USER entity (business)
+     // ...
+   }
+   ```
+5. Hooks use the correct pattern: `user?.entity_id || user?.id`
+
+#### **Files Using Correct Pattern:**
+- ✅ `src/hooks/useUniversalEntityV1.ts` (Line 348)
+- ✅ `src/hooks/useUniversalTransactionV1.ts` (Line 161)
+- ✅ `src/hooks/useHeraLeave.ts` (Line 222)
+- ✅ `src/hooks/usePosCheckout.ts` (Line 450)
+- ✅ `src/hooks/useLeaveManagement.ts` (Lines 94, 154, 230)
+- ✅ `src/hooks/useHeraSales.ts`
+
+#### **Testing Verification:**
+```typescript
+// Verify user object has entity_id
+console.log('Auth UID:', user.id)           // UUID from Supabase
+console.log('User Entity ID:', user.entity_id)  // UUID from core_entities
+
+// Should NOT be the same (unless by coincidence)
+// entity_id is the canonical ID for RPC operations
+```
+
+**🚨 CRITICAL**: Always use `user?.entity_id || user?.id` pattern in ALL code that calls RPC functions with `p_actor_user_id` parameter. This prevents NULL UUID violations and ensures proper audit trails.
+
 ---
 
 ## 📊 UNIVERSAL BUSINESS PATTERNS

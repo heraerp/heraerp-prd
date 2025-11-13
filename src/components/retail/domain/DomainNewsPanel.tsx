@@ -38,10 +38,11 @@ interface NewsItem {
 
 interface DomainNewsPanelProps {
   domain: string
+  config: any  // DomainConfig from universal types
   className?: string
 }
 
-export default function DomainNewsPanel({ domain, className }: DomainNewsPanelProps) {
+export default function DomainNewsPanel({ domain, config, className }: DomainNewsPanelProps) {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isExpanded, setIsExpanded] = useState(true)
