@@ -728,7 +728,7 @@ export default function MasterDataPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Master Data Hub</h1>
           <p className="text-slate-600 mt-1">
-            Global configuration and reference data management ({industries.length} industries, {regions.length} regions, {coaTemplates.length} CoA templates)
+            Global configuration and reference data management ({industries.length} industries, {regions.length} regions, {SAMPLE_COA_TEMPLATES.length} CoA templates)
           </p>
         </div>
         <div className="flex items-center space-x-3">
@@ -774,7 +774,7 @@ export default function MasterDataPage() {
           <div className="flex items-center">
             <FileText className="w-8 h-8 text-purple-600" />
             <div className="ml-3">
-              <div className="text-2xl font-bold text-slate-900">{coaTemplates.length}</div>
+              <div className="text-2xl font-bold text-slate-900">{SAMPLE_COA_TEMPLATES.length}</div>
               <div className="text-sm text-slate-600">CoA Templates</div>
             </div>
           </div>
@@ -783,7 +783,7 @@ export default function MasterDataPage() {
           <div className="flex items-center">
             <Tag className="w-8 h-8 text-indigo-600" />
             <div className="ml-3">
-              <div className="text-2xl font-bold text-slate-900">{fieldTemplates.length}</div>
+              <div className="text-2xl font-bold text-slate-900">{SAMPLE_FIELD_TEMPLATES.length}</div>
               <div className="text-sm text-slate-600">Field Templates</div>
             </div>
           </div>
@@ -838,7 +838,7 @@ export default function MasterDataPage() {
                 <FileText className="w-4 h-4" />
                 <span>Chart of Accounts</span>
                 <span className="bg-slate-100 text-slate-600 py-0.5 px-2 rounded-full text-xs">
-                  {coaTemplates.length}
+                  {SAMPLE_COA_TEMPLATES.length}
                 </span>
               </div>
             </button>
@@ -854,7 +854,7 @@ export default function MasterDataPage() {
                 <Tag className="w-4 h-4" />
                 <span>Field Templates</span>
                 <span className="bg-slate-100 text-slate-600 py-0.5 px-2 rounded-full text-xs">
-                  {fieldTemplates.length}
+                  {SAMPLE_FIELD_TEMPLATES.length}
                 </span>
               </div>
             </button>
@@ -946,7 +946,7 @@ export default function MasterDataPage() {
 
       {activeTab === 'coa' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {coaTemplates.map((template) => (
+          {SAMPLE_COA_TEMPLATES.map((template) => (
             <CoATemplateCard key={template.id} template={template} />
           ))}
         </div>
@@ -954,7 +954,7 @@ export default function MasterDataPage() {
 
       {activeTab === 'fields' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {fieldTemplates.map((template) => (
+          {SAMPLE_FIELD_TEMPLATES.map((template) => (
             <FieldTemplateCard key={template.id} template={template} />
           ))}
         </div>
@@ -963,8 +963,8 @@ export default function MasterDataPage() {
       {/* Empty State */}
       {((activeTab === 'industries' && industries.length === 0) ||
         (activeTab === 'regions' && regions.length === 0) ||
-        (activeTab === 'coa' && coaTemplates.length === 0) ||
-        (activeTab === 'fields' && fieldTemplates.length === 0)) && (
+        (activeTab === 'coa' && SAMPLE_COA_TEMPLATES.length === 0) ||
+        (activeTab === 'fields' && SAMPLE_FIELD_TEMPLATES.length === 0)) && (
         <div className="bg-white rounded-lg border border-slate-200 p-12 text-center">
           <Database className="w-12 h-12 text-slate-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-2">No {activeTab} found</h3>
