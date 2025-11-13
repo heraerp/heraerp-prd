@@ -1,19 +1,32 @@
 /**
- * HERA Level 3 Section Workspace Page
- * Smart Code: HERA.RETAIL.SECTION.WORKSPACE.v1
- * 
- * Universal SAP-style workspace interface
- * Route: /retail/domains/[domain]/sections/[section] → e.g., /retail/domains/inventory/sections/overview
- * 
+ * HERA Universal Workspace Page (Fully Dynamic)
+ * Smart Code: HERA.UNIVERSAL.WORKSPACE.PAGE.v1
+ *
+ * This route works for ANY app: retail, agro, central, salon, furniture, etc.
+ * Route Pattern: /[app]/domains/[domain]/sections/[section]/workspaces/[workspace]
+ *
+ * Examples:
+ * - /retail/domains/analytics/sections/fin/workspaces/main
+ * - /agro/domains/farm/sections/crops/workspaces/planning
+ * - /central/domains/admin/sections/users/workspaces/main
+ * - /salon/domains/operations/sections/appointments/workspaces/calendar
+ *
  * Data Flow:
- * 1. Extract domain and section from URL params
- * 2. Load universal workspace via database-driven API
- * 3. Display SAP Fiori-style interface with enterprise features
+ * 1. Extract app, domain, section, and workspace from URL params
+ * 2. Load workspace configuration via database-driven API
+ * 3. Display universal SAP Fiori-style interface
+ * 4. All navigation and routing is app-aware
+ *
+ * The workspace dynamically discovers:
+ * - Domain entity via APP_HAS_DOMAIN relationship
+ * - Section entity via HAS_SECTION relationship
+ * - Workspace entity via HAS_WORKSPACE relationship
+ * - Layout configuration from core_dynamic_data
  */
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
@@ -24,14 +37,16 @@ import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react'
 
 interface PageProps {
   params: Promise<{
+    app: string
     domain: string
     section: string
+    workspace: string
   }>
 }
 
-export default function SectionWorkspacePage({ params }: PageProps) {
+export default function UniversalWorkspacePage({ params }: PageProps) {
   const router = useRouter()
-  const { domain, section } = use(params)
+  const { app, domain, section, workspace } = use(params)
   const { organization, user, isAuthenticated, contextLoading } = useHERAAuth()
 
   // Show loading state
@@ -40,7 +55,10 @@ export default function SectionWorkspacePage({ params }: PageProps) {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-indigo-600 mx-auto mb-4" />
-          <p className="text-slate-600">Loading workspace...</p>
+          <p className="text-slate-600">Loading {app} workspace...</p>
+          <p className="text-xs text-gray-500 mt-2">
+            {domain} › {section} › {workspace}
+          </p>
         </div>
       </div>
     )
@@ -48,7 +66,7 @@ export default function SectionWorkspacePage({ params }: PageProps) {
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    router.push('/retail/login')
+    router.push(`/${app}/login`)
     return null
   }
 
@@ -63,11 +81,11 @@ export default function SectionWorkspacePage({ params }: PageProps) {
               No organization context available. Please select an organization.
             </AlertDescription>
           </Alert>
-          
+
           <div className="mt-6 text-center">
-            <Button onClick={() => router.push('/retail/dashboard')} variant="outline">
+            <Button onClick={() => router.push(`/${app}/dashboard`)} variant="outline">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Go to Dashboard
+              Go to {app.charAt(0).toUpperCase() + app.slice(1)} Dashboard
             </Button>
           </div>
         </div>
@@ -75,15 +93,15 @@ export default function SectionWorkspacePage({ params }: PageProps) {
     )
   }
 
-  console.log('🚀 Rendering Universal SAP Workspace:', { domain, section })
+  console.log('🚀 Rendering Universal Workspace:', { app, domain, section, workspace })
 
-  // Render the universal SAP workspace (now with app context)
+  // Render the universal workspace with app context
   return (
     <UniversalWorkspace
-      app="retail"
+      app={app}
       domain={domain}
       section={section}
-      workspace="main"
+      workspace={workspace}
     />
   )
 }
