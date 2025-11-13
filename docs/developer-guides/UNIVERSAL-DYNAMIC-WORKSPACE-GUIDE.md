@@ -559,12 +559,14 @@ http://localhost:3000/agro/domains/farm/sections/crops/workspaces/planning
 
 ### Endpoint
 ```
-GET /api/v2/workspace/[app]/[domain]/[section]/[workspace]
+GET /api/v2/[domain]/[section]/[workspace]
 ```
+
+**Note:** The `app` parameter is used for UI routing only, not in the API endpoint.
 
 ### Example Request
 ```
-GET /api/v2/workspace/agro/farm/crops/planning
+GET /api/v2/farm/crops/planning
 ```
 
 ### Response Format
@@ -600,7 +602,7 @@ GET /api/v2/workspace/agro/farm/crops/planning
 |------|---------|
 | `/src/components/universal/workspace/UniversalWorkspace.tsx` | Universal workspace component (app-agnostic) |
 | `/src/app/[app]/domains/[domain]/sections/[section]/workspaces/[workspace]/page.tsx` | Dynamic route page |
-| `/src/app/api/v2/workspace/[app]/[domain]/[section]/[workspace]/route.ts` | API endpoint for workspace data |
+| `/src/app/api/v2/[domain]/[section]/[workspace]/route.ts` | Existing database-driven API endpoint |
 
 ### Legacy Components (Deprecated)
 
