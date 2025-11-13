@@ -9,6 +9,7 @@
 import { useEffect } from 'react'
 import { ArrowLeft, ShoppingCart, Code } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { HelpReportButton } from '@/components/monitoring/HelpReportButton'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CartDisplay } from '@/components/pos/CartDisplay'
@@ -144,6 +145,15 @@ export default function POSSalePage() {
           <CartDisplay />
         </div>
       </div>
+
+      {/* Help Report Button - Floating Action Button */}
+      <HelpReportButton
+        variant="fab"
+        position="bottom-right"
+        size="md"
+        organizationId={user?.organization_id || 'demo-org'}
+        userEmail={user?.email || 'user@business.com'}
+      />
     </div>
   )
 }

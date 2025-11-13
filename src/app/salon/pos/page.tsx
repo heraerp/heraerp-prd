@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast'
 import { ShoppingCart, Monitor, Sparkles, Receipt as ReceiptIcon, AlertCircle, Building2, UserX, Users } from 'lucide-react'
 import Link from 'next/link'
 import { syncAppointmentServicesInBackground } from '@/lib/salon/appointment-service-sync'
+import { HelpReportButton } from '@/components/monitoring/HelpReportButton'
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -1294,6 +1295,15 @@ function POSContent() {
 
         {/* Bottom spacing for mobile comfortable scrolling */}
         <div className="h-24 md:h-0" />
+
+        {/* Help Report Button - Floating Action Button for easy access */}
+        <HelpReportButton
+          variant="fab"
+          position="bottom-right"
+          size="md"
+          organizationId={effectiveOrgId!}
+          userEmail={user?.email || 'user@salon.com'}
+        />
       </div>
     </div>
   )
