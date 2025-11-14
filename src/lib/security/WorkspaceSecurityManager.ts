@@ -5,6 +5,7 @@
  * Comprehensive security framework for workspace access control and data protection
  */
 
+import * as React from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 // Security Context Types
