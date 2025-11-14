@@ -122,10 +122,11 @@ export async function GET(request: NextRequest) {
     // Transform introspect response to match existing API format
     const validOrgs = authContext.organizations.map((org: any) => {
       const settings = orgSettingsMap.get(org.id)
-      const apps = settings?.available_apps || []
-      
-      console.log(`[resolve-membership] Org ${org.name}: ${apps.length} apps from settings`)
-      
+      // ✅ FIX: Prioritize apps from RPC response (org.apps), fallback to settings
+      const apps = org.apps || settings?.available_apps || []
+
+      console.log(`[resolve-membership] Org ${org.name}: ${apps.length} apps (from ${org.apps ? 'RPC' : 'settings'})`)
+
       return {
         id: org.id,
         code: org.code,
@@ -138,7 +139,7 @@ export async function GET(request: NextRequest) {
         is_admin: org.is_admin,
         relationship_id: null, // Not available in introspect, but not critical
         org_entity_id: org.id, // Use org ID as fallback
-        apps: apps, // ✅ FIX: Use apps from organization settings
+        apps: apps, // ✅ FIX: Use apps from RPC response (populated by hera_auth_introspect_v1)
         settings: settings // ✅ Include full settings for client use
       }
     })
