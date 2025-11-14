@@ -8,7 +8,7 @@
 
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { usePosTransactionProtection } from '@/hooks/usePosTransactionProtection'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
