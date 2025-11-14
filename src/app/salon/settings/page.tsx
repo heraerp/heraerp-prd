@@ -23,7 +23,6 @@ import React, { useEffect, useState } from 'react'
  * - No direct Supabase calls - only through hooks
  */
 
-import React, { useEffect, useState, lazy, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

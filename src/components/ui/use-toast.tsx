@@ -1,8 +1,6 @@
 'use client'
 
 import React, { useCallback, useContext } from 'react'
-
-import * as React from 'react'
 import { usePathname } from 'next/navigation'
 
 export interface Toast {

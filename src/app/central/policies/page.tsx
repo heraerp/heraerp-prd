@@ -20,7 +20,6 @@ import React, { useEffect, useState } from 'react'
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
 import { 
   Shield,
   Plus,

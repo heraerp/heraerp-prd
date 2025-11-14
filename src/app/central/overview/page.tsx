@@ -20,7 +20,6 @@ import React, { useState } from 'react'
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
 import { 
   Building2, 
   Package, 

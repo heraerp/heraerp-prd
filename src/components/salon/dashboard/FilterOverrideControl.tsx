@@ -20,7 +20,6 @@ import React from 'react'
 
 'use client'
 
-import React from 'react'
 import { RotateCcw, Info } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import {

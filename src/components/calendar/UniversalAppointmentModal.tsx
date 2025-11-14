@@ -21,7 +21,6 @@ import React, { useEffect, useMemo, useState } from 'react'
  * - Smart Code automatic generation
  */
 
-import React, { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
