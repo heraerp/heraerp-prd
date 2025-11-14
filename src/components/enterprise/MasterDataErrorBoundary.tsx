@@ -7,7 +7,7 @@
  * Error boundary component to catch and handle errors in master data forms
  */
 
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react'
 
 interface ErrorBoundaryState {

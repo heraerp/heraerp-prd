@@ -1,6 +1,6 @@
 // src/ui/components/WizardForm.tsx
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFormSpec, HeraField } from '../hooks/useFormSpec'
 import { useCreateTransaction } from '../hooks/useHera'
 import { LinesEditor, TxnLine } from './LinesEditor'

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 

@@ -6,7 +6,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLoadingStore } from '@/lib/stores/loading-store'
 import { Loader2, Lock, Zap, Sparkles } from 'lucide-react'
 import { HERA_THEME_COLORS, HERA_THEME_GRADIENTS, withOpacity } from '@/lib/constants/hera-theme-colors'

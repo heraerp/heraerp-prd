@@ -14,7 +14,7 @@
  * - LUXE glassmorphism theme
  */
 
-import React, { useState, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { subDays } from 'date-fns'
 import {

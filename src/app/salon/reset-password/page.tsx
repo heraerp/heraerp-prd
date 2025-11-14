@@ -6,7 +6,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Lock, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'

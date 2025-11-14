@@ -6,7 +6,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { LUXURY_COLORS } from '@/lib/theme/luxuryTheme'
 
 interface PageLayoutProps {

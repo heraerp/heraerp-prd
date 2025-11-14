@@ -5,7 +5,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { NavLink } from './NavLink'
 

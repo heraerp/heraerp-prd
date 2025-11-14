@@ -17,7 +17,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import { Calendar, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react'
 import { format, startOfMonth, addMonths, subMonths, isSameMonth } from 'date-fns'

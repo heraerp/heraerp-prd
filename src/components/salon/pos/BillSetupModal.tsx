@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { Building2, Users, Check, ChevronRight, Sparkles } from 'lucide-react'

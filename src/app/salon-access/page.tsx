@@ -15,7 +15,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2, Sparkles } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'

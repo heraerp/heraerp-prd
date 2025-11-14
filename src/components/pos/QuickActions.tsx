@@ -6,7 +6,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Percent, Gift, Heart, DollarSign } from 'lucide-react'
 import { useQuickActions, useCartStore } from '@/lib/hooks/usePos'
 import { Button } from '@/components/ui/button'

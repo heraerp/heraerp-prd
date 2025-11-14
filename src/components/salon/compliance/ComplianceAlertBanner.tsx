@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { AlertTriangle, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { ComplianceSummary, ComplianceIssue, getSeverityColor, getIssueIcon } from '@/lib/compliance/staff-compliance'
 

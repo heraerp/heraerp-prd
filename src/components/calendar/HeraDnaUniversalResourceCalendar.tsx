@@ -1,5 +1,7 @@
 'use client'
 
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+
 /**
  * HERA DNA Universal Resource Calendar
  * Smart Code: HERA.UI.CALENDAR.RESOURCE.UNIVERSAL.V1

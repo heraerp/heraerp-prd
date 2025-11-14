@@ -1,5 +1,7 @@
 'use client'
 
+import React, { useEffect, useMemo, useState } from 'react'
+
 /**
  * HERA Universal Appointment Modal
  * Smart Code: HERA.UI.CALENDAR.MODAL.APPOINTMENT.UNIVERSAL.v1

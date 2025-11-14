@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { JewelryNavDropdown } from '@/components/jewelry/JewelryNavDropdown'
 import { JewelryNotifications } from '@/components/jewelry/JewelryNotifications'
 import { JewelryUserMenu } from '@/components/jewelry/JewelryUserMenu'

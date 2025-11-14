@@ -6,7 +6,7 @@
  * Smart Code: HERA.MONITORING.PAGE_ANALYTICS.v1
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'

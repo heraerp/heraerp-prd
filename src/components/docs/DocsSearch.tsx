@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, FileText, Hash, TrendingUp, Clock, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'

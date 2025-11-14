@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 
 export type CivicFlowTheme =
   | 'civic-navy'

@@ -10,7 +10,7 @@
  * - Supports: OPENING, RECEIPT, ADJUSTMENT, ISSUE movements
  */
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { X, Package, TrendingUp, TrendingDown, RefreshCw, AlertCircle } from 'lucide-react'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'
 import { Input } from '@/components/ui/input'

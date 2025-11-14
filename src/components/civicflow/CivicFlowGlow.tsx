@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 export function CivicFlowGlow() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })

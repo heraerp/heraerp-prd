@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SapNavbar } from '@/components/sap/SapNavbar'
 import { Search, Filter, Eye, Sliders, Grid, BarChart, Table, ExternalLink, ChevronDown, Plus, Users, Target, Phone, Mail, Calendar, TrendingUp } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'

@@ -11,7 +11,7 @@
  * - Beautiful UI with glassmorphic design
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { ArrowRight, Package, AlertCircle, CheckCircle2, Truck } from 'lucide-react'
 import {
   Dialog,

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { AlertCircle, X } from 'lucide-react'
 
 interface DemoBannerProps {

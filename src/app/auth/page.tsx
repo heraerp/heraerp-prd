@@ -3,7 +3,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Loader2 } from 'lucide-react'

@@ -5,7 +5,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getSafeOrgConfig, setSafeOrgContext } from '@/lib/salon/safe-org-loader'
 import { supabase } from '@/lib/supabase/client'

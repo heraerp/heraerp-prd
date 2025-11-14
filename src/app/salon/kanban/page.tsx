@@ -11,7 +11,7 @@
 
 'use client'
 
-import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react'
+import React, { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react'
 import './kanban-luxe-theme.css'
 import { format, startOfToday, addDays, startOfDay, endOfDay } from 'date-fns'
 import { Plus, Calendar, RefreshCw, Building2, MapPin, Loader2, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'

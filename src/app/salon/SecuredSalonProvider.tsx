@@ -17,7 +17,7 @@
 
 'use client'
 
-import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
 // NOTE: AuthResolver is server-side only, handled via API routes for client components
 import { dbContext } from '@/lib/security/database-context'

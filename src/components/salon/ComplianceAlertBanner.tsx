@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { AlertTriangle, FileText, Calendar, ChevronRight, X } from 'lucide-react'
 import { useStaffComplianceAlerts } from '@/hooks/useStaffComplianceAlerts'
 import Link from 'next/link'

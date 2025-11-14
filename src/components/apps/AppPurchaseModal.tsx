@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { ShoppingCart, Check, Sparkles, Loader2, AlertCircle } from 'lucide-react'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { Button } from '@/components/ui/button'

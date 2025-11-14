@@ -5,7 +5,7 @@
  * Reusable sidebar components for navigation layouts
  */
 
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 // Sidebar Context
