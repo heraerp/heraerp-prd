@@ -103,6 +103,7 @@ interface HERAAuthProviderProps {
 export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const router = useRouter()
   const didResolveRef = useRef(false) // prevents double work in dev StrictMode
+  const loginInProgressRef = useRef(false) // prevents duplicate membership calls during login (P2 fix)
   const subRef = useRef<ReturnType<any> | null>(null)
   const ctxRef = useRef<{
     user: HERAUser | null
@@ -229,8 +230,15 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
             // Only resolve once
             if (didResolveRef.current) return
+
+            // 🔴 P2 FIX: Skip membership resolution if login() is already handling it
+            if (loginInProgressRef.current) {
+              console.log('⏭️ Skipping auth state membership resolution - login() is handling it')
+              return
+            }
+
             setCtx(prev => ({ ...prev, status: 'resolving', isLoading: true }))
-            
+
             try {
               const { user } = session
 
@@ -239,7 +247,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
               try {
                 // Use cached membership with stale-while-revalidate
                 const apiResponse = await membershipCache.getMembership(
-                  session.access_token, 
+                  session.access_token,
                   user.id
                 )
                 // Handle HERA standard response format
@@ -474,6 +482,9 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const login = async (email: string, password: string, options?: { clearFirst?: boolean }) => {
     try {
+      // 🔴 P2 FIX: Set login in progress flag to prevent duplicate membership calls
+      loginInProgressRef.current = true
+
       // ✅ ENTERPRISE SECURITY: Clear browser storage WITHOUT calling signOut()
       // This prevents race conditions while maintaining complete security
       if (options?.clearFirst) {
@@ -612,6 +623,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     } catch (error) {
       console.error('❌ Login error:', error)
       throw error
+    } finally {
+      // 🔴 P2 FIX: Always clear login in progress flag (even on error)
+      loginInProgressRef.current = false
+      console.log('✅ Login process complete, cleared loginInProgressRef flag')
     }
   }
 

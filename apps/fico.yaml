@@ -1,0 +1,552 @@
+---
+# HERA Finance & Controlling (FICO) Module Definition
+# Platform-grade design with policy-as-data and overlay system
+# Smart Code: HERA.FICO.MODULE.CORE.DEF.v1
+
+module:
+  code: "FICO"
+  name: "Finance & Controlling"
+  version: "v1.0"
+  description: "Enterprise-grade financial accounting with policy-driven overlays"
+  smart_code: "HERA.FICO.MODULE.CORE.DEF.v1"
+  
+  # Sacred Six compliance
+  schema_changes: false  # Everything via entities + relationships + dynamic data
+  multi_tenant: true     # Organization-specific policies and configurations
+  audit_trail: true      # Actor-stamped operations with complete traceability
+
+# Core Entity Types for FICO Module
+entities:
+  
+  # 1. MODULE DEFINITION
+  - type: MODULE_DEF
+    smart_code: "HERA.FICO.MODULE.CORE.DEF.v1"
+    description: "Core FICO module definition with capabilities"
+    attributes:
+      - key: version
+        type: text
+        required: true
+        description: "Module version (semantic versioning)"
+      - key: capabilities
+        type: json
+        description: "Available FICO capabilities and features"
+      - key: dependencies
+        type: json
+        description: "Required modules and minimum versions"
+    relationships:
+      allowed_types: [MODULE_HAS_OVERLAY, MODULE_PUBLISHES_POLICY, MODULE_PROVIDES_COA]
+
+  # 2. POLICY BUNDLE - Core posting and validation rules
+  - type: POLICY_BUNDLE
+    smart_code: "HERA.FICO.POLICY.BUNDLE.{DOMAIN}.v1"
+    description: "Posting rules, validations, and business logic"
+    attributes:
+      - key: bundle_id
+        type: text
+        required: true
+        description: "Unique policy bundle identifier"
+      - key: validations
+        type: json
+        required: true
+        description: "Header and line validation rules"
+      - key: posting_rules
+        type: json
+        required: true
+        description: "Automatic posting logic by transaction type"
+      - key: tax_rules
+        type: json
+        description: "Tax calculation and validation rules"
+      - key: dimension_rules
+        type: json
+        description: "Required dimensions by account or transaction"
+      - key: currency_rules
+        type: json
+        description: "Multi-currency and FX revaluation rules"
+    relationships:
+      allowed_types: [POLICY_EXTENDS_POLICY, OVERLAY_EXTENDS_POLICY]
+
+  # 3. CHART OF ACCOUNTS PACK
+  - type: COA_PACK_DEF
+    smart_code: "HERA.FICO.COA.PACK.{INDUSTRY}.v1"
+    description: "Chart of accounts template with industry-specific accounts"
+    attributes:
+      - key: pack_code
+        type: text
+        required: true
+        description: "COA pack identifier (e.g., COA_RETAIL_STD_v3)"
+      - key: industry
+        type: text
+        required: true
+        description: "Target industry (RETAIL, MANUFACTURING, SERVICES)"
+      - key: account_range
+        type: json
+        description: "Account number ranges by category"
+      - key: account_definitions
+        type: json
+        required: true
+        description: "Standard accounts with categories and postings"
+      - key: hierarchy_rules
+        type: json
+        description: "Parent-child account relationships"
+    relationships:
+      allowed_types: [COA_HAS_ACCOUNT, COA_APPLIES_TO_INDUSTRY]
+
+  # 4. GL ACCOUNT MASTER
+  - type: GL_ACCOUNT
+    smart_code: "HERA.FICO.GL.ACCOUNT.{CATEGORY}.{SUBCATEGORY}.v1"
+    description: "General ledger account master data"
+    attributes:
+      - key: account_code
+        type: text
+        required: true
+        description: "GL account number (e.g., 1100, 4000)"
+      - key: account_name
+        type: text
+        required: true
+        description: "Account description"
+      - key: account_type
+        type: text
+        required: true
+        enum: [ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE]
+        description: "Financial statement category"
+      - key: balance_type
+        type: text
+        required: true
+        enum: [DEBIT, CREDIT]
+        description: "Normal balance side"
+      - key: account_group
+        type: text
+        description: "Account group for reporting"
+      - key: posting_allowed
+        type: boolean
+        default: true
+        description: "Allow direct postings to this account"
+      - key: reconciliation_account
+        type: boolean
+        default: false
+        description: "Requires reconciliation (bank, AR, AP)"
+      - key: cost_center_required
+        type: boolean
+        default: false
+        description: "Cost center mandatory for postings"
+      - key: currency_restricted
+        type: text
+        description: "Specific currency if single-currency account"
+    relationships:
+      allowed_types: [ACCOUNT_HAS_PARENT, ACCOUNT_REQUIRES_DIMENSION]
+
+  # 5. DIMENSION DEFINITIONS
+  - type: DIMENSION_DEF
+    smart_code: "HERA.FICO.DIMENSION.{TYPE}.DEF.v1"
+    description: "Financial dimension definitions (cost center, profit center, etc.)"
+    attributes:
+      - key: dimension_type
+        type: text
+        required: true
+        enum: [COST_CENTER, PROFIT_CENTER, SEGMENT, PROJECT, PRODUCT, CUSTOMER, STORE, STYLIST]
+        description: "Type of financial dimension"
+      - key: code_format
+        type: text
+        description: "Code format pattern (e.g., CC-####)"
+      - key: hierarchical
+        type: boolean
+        default: false
+        description: "Supports parent-child hierarchy"
+      - key: required_for_accounts
+        type: json
+        description: "Account patterns requiring this dimension"
+    relationships:
+      allowed_types: [DIMENSION_HAS_VALUES, DIMENSION_REQUIRED_BY_ACCOUNT]
+
+  # 6. COST CENTER MASTER
+  - type: COST_CENTER
+    smart_code: "HERA.FICO.COST.CENTER.ENTITY.{TYPE}.v1"
+    description: "Cost center master data for cost accounting"
+    attributes:
+      - key: cost_center_code
+        type: text
+        required: true
+        description: "Cost center identifier"
+      - key: cost_center_name
+        type: text
+        required: true
+        description: "Cost center description"
+      - key: responsible_person
+        type: entity_ref
+        ref: { entity_type: USER }
+        description: "Cost center manager"
+      - key: valid_from
+        type: date
+        required: true
+        description: "Validity start date"
+      - key: valid_to
+        type: date
+        description: "Validity end date"
+      - key: currency
+        type: text
+        default: "AED"
+        description: "Cost center currency"
+      - key: company_code
+        type: text
+        description: "Associated company code"
+    relationships:
+      allowed_types: [COST_CENTER_HAS_PARENT, COST_CENTER_BELONGS_TO_COMPANY]
+
+  # 7. PROFIT CENTER MASTER
+  - type: PROFIT_CENTER
+    smart_code: "HERA.FICO.PROFIT.CENTER.ENTITY.{TYPE}.v1"
+    description: "Profit center master data for profitability analysis"
+    attributes:
+      - key: profit_center_code
+        type: text
+        required: true
+        description: "Profit center identifier"
+      - key: profit_center_name
+        type: text
+        required: true
+        description: "Profit center description"
+      - key: responsible_person
+        type: entity_ref
+        ref: { entity_type: USER }
+        description: "Profit center manager"
+      - key: segment
+        type: text
+        description: "Business segment"
+      - key: valid_from
+        type: date
+        required: true
+        description: "Validity start date"
+      - key: valid_to
+        type: date
+        description: "Validity end date"
+    relationships:
+      allowed_types: [PROFIT_CENTER_HAS_PARENT, PROFIT_CENTER_OWNS_COST_CENTERS]
+
+  # 8. FISCAL PERIOD DEFINITION
+  - type: FISCAL_PERIOD
+    smart_code: "HERA.FICO.FISCAL.PERIOD.ENTITY.{VARIANT}.v1"
+    description: "Fiscal year and period definitions"
+    attributes:
+      - key: fiscal_year
+        type: text
+        required: true
+        description: "Fiscal year (e.g., 2024)"
+      - key: period_number
+        type: number
+        required: true
+        description: "Period within fiscal year (1-12)"
+      - key: period_from
+        type: date
+        required: true
+        description: "Period start date"
+      - key: period_to
+        type: date
+        required: true
+        description: "Period end date"
+      - key: period_status
+        type: text
+        required: true
+        enum: [CLOSED, OPEN, LOCKED]
+        description: "Posting status for period"
+      - key: special_period
+        type: boolean
+        default: false
+        description: "Adjustment period (13, 14, etc.)"
+    relationships:
+      allowed_types: [PERIOD_BELONGS_TO_YEAR, PERIOD_HAS_CLOSE_TASKS]
+
+  # 9. TAX ENGINE DEFINITION
+  - type: TAX_ENGINE_DEF
+    smart_code: "HERA.FICO.TAX.ENGINE.{REGION}.v1"
+    description: "Tax calculation engines by region/jurisdiction"
+    attributes:
+      - key: engine_code
+        type: text
+        required: true
+        description: "Tax engine identifier (e.g., GCC_VAT, EU_VAT)"
+      - key: jurisdiction
+        type: text
+        required: true
+        description: "Tax jurisdiction or region"
+      - key: tax_rates
+        type: json
+        required: true
+        description: "Tax rates by category and effective date"
+      - key: calculation_rules
+        type: json
+        description: "Tax calculation logic and exemptions"
+      - key: reporting_requirements
+        type: json
+        description: "Tax reporting and filing requirements"
+    relationships:
+      allowed_types: [TAX_ENGINE_HAS_RATES, TAX_ENGINE_APPLIES_TO_REGION]
+
+  # 10. CLOSE TASK TEMPLATE
+  - type: CLOSE_TASK_TEMPLATE
+    smart_code: "HERA.FICO.CLOSE.TASK.{TYPE}.TEMPLATE.v1"
+    description: "Period close task templates with dependencies"
+    attributes:
+      - key: task_code
+        type: text
+        required: true
+        description: "Close task identifier"
+      - key: task_name
+        type: text
+        required: true
+        description: "Close task description"
+      - key: task_type
+        type: text
+        required: true
+        enum: [SUBLEDGER_RECON, ACCRUAL_POST, TAX_CALC, FX_REVALUE, REPORT_GEN]
+        description: "Type of close task"
+      - key: auto_execute
+        type: boolean
+        default: false
+        description: "Can be executed automatically"
+      - key: validation_rules
+        type: json
+        description: "Success criteria for task completion"
+      - key: estimated_duration
+        type: number
+        description: "Estimated completion time in minutes"
+    relationships:
+      allowed_types: [TASK_DEPENDS_ON_TASK, TASK_ASSIGNED_TO_ROLE]
+
+  # 11. OVERLAY DEFINITIONS
+  - type: OVERLAY_DEF
+    smart_code: "HERA.FICO.OVERLAY.{TYPE}.{CODE}.v1"
+    description: "Industry, regional, or organizational overlays"
+    attributes:
+      - key: overlay_code
+        type: text
+        required: true
+        description: "Overlay identifier"
+      - key: overlay_type
+        type: text
+        required: true
+        enum: [INDUSTRY, REGION, ORGANIZATION]
+        description: "Type of overlay"
+      - key: applies_to
+        type: text
+        required: true
+        description: "What this overlay applies to"
+      - key: policy_extensions
+        type: json
+        description: "Policy rules added by this overlay"
+      - key: account_extensions
+        type: json
+        description: "Additional accounts provided"
+      - key: dimension_extensions
+        type: json
+        description: "Additional dimensions required"
+      - key: version
+        type: text
+        required: true
+        description: "Overlay version for compatibility"
+    relationships:
+      allowed_types: [OVERLAY_EXTENDS_MODULE, OVERLAY_APPLIES_TO_INDUSTRY, OVERLAY_APPLIES_TO_REGION]
+
+# Relationship Definitions for FICO
+relationships:
+  
+  # Module and overlay relationships
+  - type: MODULE_HAS_OVERLAY
+    description: "Links FICO module to available overlays"
+    smart_code: "HERA.FICO.REL.MODULE.HAS.OVERLAY.v1"
+    
+  - type: ORG_INSTALLED_MODULE
+    description: "Organization has installed FICO module"
+    smart_code: "HERA.FICO.REL.ORG.INSTALLED.MODULE.v1"
+    
+  - type: ORG_ENABLED_OVERLAY
+    description: "Organization has enabled specific overlay"
+    smart_code: "HERA.FICO.REL.ORG.ENABLED.OVERLAY.v1"
+    
+  # Policy relationships
+  - type: MODULE_PUBLISHES_POLICY
+    description: "Module provides policy bundles"
+    smart_code: "HERA.FICO.REL.MODULE.PUBLISHES.POLICY.v1"
+    
+  - type: OVERLAY_EXTENDS_POLICY
+    description: "Overlay extends or overrides base policy"
+    smart_code: "HERA.FICO.REL.OVERLAY.EXTENDS.POLICY.v1"
+    
+  - type: POLICY_APPLIES_TO_TXN_TYPE
+    description: "Policy bundle applies to transaction types"
+    smart_code: "HERA.FICO.REL.POLICY.APPLIES.TXN.v1"
+    
+  # COA relationships
+  - type: MODULE_PROVIDES_COA
+    description: "Module provides chart of accounts"
+    smart_code: "HERA.FICO.REL.MODULE.PROVIDES.COA.v1"
+    
+  - type: ORG_SELECTED_COA_PACK
+    description: "Organization selected COA pack"
+    smart_code: "HERA.FICO.REL.ORG.SELECTED.COA.v1"
+    
+  - type: COA_HAS_ACCOUNT
+    description: "COA pack contains GL accounts"
+    smart_code: "HERA.FICO.REL.COA.HAS.ACCOUNT.v1"
+    
+  # Account and dimension relationships
+  - type: ACCOUNT_HAS_PARENT
+    description: "Account hierarchy relationships"
+    smart_code: "HERA.FICO.REL.ACCOUNT.HAS.PARENT.v1"
+    
+  - type: ACCOUNT_REQUIRES_DIMENSION
+    description: "Account requires specific dimension"
+    smart_code: "HERA.FICO.REL.ACCOUNT.REQUIRES.DIMENSION.v1"
+    
+  - type: DIMENSION_HAS_VALUES
+    description: "Dimension has master data values"
+    smart_code: "HERA.FICO.REL.DIMENSION.HAS.VALUES.v1"
+    
+  # Cost center relationships
+  - type: COST_CENTER_HAS_PARENT
+    description: "Cost center hierarchy"
+    smart_code: "HERA.FICO.REL.COST_CENTER.HAS.PARENT.v1"
+    
+  - type: PROFIT_CENTER_OWNS_COST_CENTERS
+    description: "Profit center controls cost centers"
+    smart_code: "HERA.FICO.REL.PROFIT_CENTER.OWNS.COST_CENTERS.v1"
+    
+  # Period and close relationships
+  - type: PERIOD_BELONGS_TO_YEAR
+    description: "Period is part of fiscal year"
+    smart_code: "HERA.FICO.REL.PERIOD.BELONGS.YEAR.v1"
+    
+  - type: PERIOD_HAS_CLOSE_TASKS
+    description: "Period has assigned close tasks"
+    smart_code: "HERA.FICO.REL.PERIOD.HAS.CLOSE.TASKS.v1"
+    
+  - type: TASK_DEPENDS_ON_TASK
+    description: "Close task dependencies"
+    smart_code: "HERA.FICO.REL.TASK.DEPENDS.TASK.v1"
+
+# Universal Transaction Extensions for FICO
+transaction_types:
+  
+  # General Ledger
+  - type: "GL.JOURNAL"
+    description: "General journal entries"
+    smart_code: "HERA.FICO.TXN.GL.JOURNAL.v1"
+    required_fields: [fiscal_period, posting_date]
+    
+  - type: "GL.RECLASS"
+    description: "Reclassification entries"
+    smart_code: "HERA.FICO.TXN.GL.RECLASS.v1"
+    
+  - type: "GL.OPENING_BALANCE"
+    description: "Opening balance entries"
+    smart_code: "HERA.FICO.TXN.GL.OPENING.v1"
+    
+  # Accounts Receivable
+  - type: "AR.INVOICE"
+    description: "Customer invoices"
+    smart_code: "HERA.FICO.TXN.AR.INVOICE.v1"
+    required_dimensions: [customer]
+    
+  - type: "AR.RECEIPT"
+    description: "Customer payments"
+    smart_code: "HERA.FICO.TXN.AR.RECEIPT.v1"
+    
+  - type: "AR.CREDIT_NOTE"
+    description: "Credit notes to customers"
+    smart_code: "HERA.FICO.TXN.AR.CREDIT.v1"
+    
+  # Accounts Payable  
+  - type: "AP.BILL"
+    description: "Vendor invoices"
+    smart_code: "HERA.FICO.TXN.AP.BILL.v1"
+    required_dimensions: [vendor]
+    
+  - type: "AP.PAYMENT"
+    description: "Vendor payments"
+    smart_code: "HERA.FICO.TXN.AP.PAYMENT.v1"
+    
+  # Tax and Compliance
+  - type: "TAX.ADJUSTMENT"
+    description: "Tax adjustments and accruals"
+    smart_code: "HERA.FICO.TXN.TAX.ADJUSTMENT.v1"
+    
+  - type: "TAX.RETURN_ACCRUAL"
+    description: "Tax return accruals"
+    smart_code: "HERA.FICO.TXN.TAX.RETURN.v1"
+    
+  # Foreign Exchange
+  - type: "FX.REVALUATION"
+    description: "Foreign currency revaluation"
+    smart_code: "HERA.FICO.TXN.FX.REVALUE.v1"
+    
+  # Period Close
+  - type: "CLOSE.PERIOD_OPEN"
+    description: "Open fiscal period for posting"
+    smart_code: "HERA.FICO.TXN.CLOSE.OPEN.v1"
+    
+  - type: "CLOSE.PERIOD_CLOSE"
+    description: "Close fiscal period"
+    smart_code: "HERA.FICO.TXN.CLOSE.CLOSE.v1"
+    
+  - type: "CLOSE.TASK"
+    description: "Period close task execution"
+    smart_code: "HERA.FICO.TXN.CLOSE.TASK.v1"
+    
+  # Revenue and Deferrals
+  - type: "REVENUE.DEFERRAL"
+    description: "Deferred revenue entries"
+    smart_code: "HERA.FICO.TXN.REVENUE.DEFER.v1"
+    
+  - type: "REVENUE.RECOGNITION"
+    description: "Revenue recognition entries"
+    smart_code: "HERA.FICO.TXN.REVENUE.RECOGNIZE.v1"
+    
+  # Cost Allocation
+  - type: "COST.ALLOCATION"
+    description: "Cost allocation and distribution"
+    smart_code: "HERA.FICO.TXN.COST.ALLOCATE.v1"
+
+# Installation Configuration
+installation:
+  # Default organizational settings
+  default_settings:
+    fiscal_year_variant: "K4"  # April to March
+    currencies:
+      base: "AED"
+      enabled: ["AED", "USD", "EUR", "SAR"]
+    decimal_places: 2
+    thousand_separator: ","
+    exchange_rate_type: "DAILY"
+    
+  # Required permissions for installation
+  required_permissions:
+    - "FICO_ADMIN"
+    - "GL_POSTING"
+    - "PERIOD_CONTROL"
+    
+  # Post-installation setup tasks
+  setup_tasks:
+    - "Create fiscal year calendar"
+    - "Set up chart of accounts" 
+    - "Configure cost centers"
+    - "Define posting periods"
+    - "Set user authorizations"
+
+# Version and Compatibility
+compatibility:
+  min_hera_version: "v2.4"
+  api_version: "v2"
+  dependencies: []
+  conflicts: []
+
+# Module Capabilities
+capabilities:
+  - "Multi-currency accounting"
+  - "Cost center accounting"  
+  - "Profit center accounting"
+  - "Multi-dimensional reporting"
+  - "Period close automation"
+  - "Tax calculation and reporting"
+  - "Foreign exchange management"
+  - "Policy-driven posting rules"
+  - "Industry-specific overlays"
+  - "Real-time financial reporting"

@@ -17,7 +17,7 @@ import React, { useState, useEffect } from 'react'
 import { use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import UniversalSAPWorkspace from '@/components/retail/workspace/UniversalSAPWorkspace'
+import UniversalWorkspace from '@/components/universal/workspace/UniversalWorkspace'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react'
@@ -77,9 +77,10 @@ export default function SectionWorkspacePage({ params }: PageProps) {
 
   console.log('🚀 Rendering Universal SAP Workspace:', { domain, section })
 
-  // Render the universal SAP workspace
+  // Render the universal SAP workspace (now with app context)
   return (
-    <UniversalSAPWorkspace 
+    <UniversalWorkspace
+      app="retail"
       domain={domain}
       section={section}
       workspace="main"
