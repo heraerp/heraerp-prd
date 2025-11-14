@@ -1,3 +1,4 @@
+import React from 'react'
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">

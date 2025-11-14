@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useEffect } from 'react'
+import React, { createContext, useContext, useEffect } from 'react'
 
 type Theme = 'dark' // Only dark for public pages
 type Ctx = { theme: Theme; setTheme: (t: Theme) => void }

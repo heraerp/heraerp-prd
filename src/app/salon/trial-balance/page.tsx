@@ -1,3 +1,4 @@
+import React from 'react'
 /**
  * Salon Trial Balance Report
  *

@@ -29,7 +29,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Mail, Lock, Sparkles, ShieldAlert, AlertCircle, Wifi, Building2, XCircle, Eye, EyeOff, ShoppingBag } from 'lucide-react'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'

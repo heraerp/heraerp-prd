@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { DollarSign, Receipt, PieChart, FileText, TrendingUp, TrendingDown } from 'lucide-react'
 import { SalonLuxeKPICard } from '@/components/salon/shared/SalonLuxeKPICard'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'

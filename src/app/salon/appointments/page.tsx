@@ -2,7 +2,7 @@
 
 // Removed force-dynamic for better client-side navigation performance
 
-import { useState, useMemo, useCallback, useEffect, Suspense, lazy } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, Suspense, lazy } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import {

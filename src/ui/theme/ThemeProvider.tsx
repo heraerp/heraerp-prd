@@ -1,6 +1,6 @@
 // src/ui/theme/ThemeProvider.tsx
 'use client'
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import React, { createContext, useContext, useEffect, useMemo } from 'react'
 import { ThemeTokens } from './types'
 import { useTheme } from './useTheme'
 import { applyThemeToDOM } from './theme-utils'

@@ -5,7 +5,7 @@
 
 'use client'
 
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { SafeSalonLoader } from '@/components/salon/SafeSalonLoader'
 import { getSalonDashboardUrl, setSafeOrgContext } from '@/lib/salon/safe-org-loader'
