@@ -110,9 +110,9 @@ class MembershipCache {
   private async doFetch(token: string, userId: string): Promise<any> {
     console.log(`🌐 Fetching fresh membership for user ${userId.slice(0, 8)}...`)
 
-    // 🔴 FIX: Add 10-second timeout to prevent hanging
+    // 🔴 FIX: Add 30-second timeout to prevent hanging (increased from 10s for slow RPC calls)
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
 
     try {
       const response = await fetch('/api/v2/auth/resolve-membership', {
@@ -140,7 +140,7 @@ class MembershipCache {
       clearTimeout(timeoutId) // Clear timeout on error
 
       if (error.name === 'AbortError') {
-        console.error('⚠️ Membership API timeout after 10 seconds')
+        console.error('⚠️ Membership API timeout after 30 seconds')
         throw new Error('Membership resolution timeout - please try again')
       }
       throw error
