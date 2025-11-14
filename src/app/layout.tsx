@@ -11,6 +11,7 @@ import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'
 import { ConditionalLoadingOverlay } from '@/components/auth/ConditionalLoadingOverlay'
 import { HMRRecoveryHelper } from '@/components/dev/HMRRecoveryHelper'
+import ReactDebugInit from '@/components/debug/ReactDebugInit'
 import { InstantRouterProvider, NavigationProgress, PerformanceMetrics } from '@/components/performance/InstantRouter'
 // Initialize HERA Production Monitor globally
 import '@/lib/monitoring/production-monitor'
@@ -161,6 +162,9 @@ export default function RootLayout({
       >
         {/* Smart HMR Recovery Helper (development only) */}
         {process.env.NODE_ENV === 'development' && <HMRRecoveryHelper />}
+        
+        {/* React Debug System (development only) */}
+        <ReactDebugInit />
 
         <InstantRouterProvider>
           <NavigationProgress />

@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { HeraThemeToggle } from '@/components/universal/ui/HeraThemeProvider'
 
 export function DocsThemeToggle() {

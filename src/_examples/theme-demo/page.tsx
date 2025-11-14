@@ -1,6 +1,6 @@
 // app/examples/theme-demo/page.tsx - Complete theme system demo
 'use client'
-import { useState } from 'react'
+import React from 'react'
 import {
   HeraProvider,
   HeraThemeProvider,

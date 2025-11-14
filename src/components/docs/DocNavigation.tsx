@@ -1,10 +1,10 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
 
 interface NavigationItem {
   id: string

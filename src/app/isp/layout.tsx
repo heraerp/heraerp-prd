@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React from 'react'
 import { usePathname } from 'next/navigation'
 import { OptimizedNavigationLoadingProvider } from '@/components/navigation/OptimizedNavigationLoadingProvider'
 import OptimizedNavigationLink from '@/components/navigation/OptimizedNavigationLink'

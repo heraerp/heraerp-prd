@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import React from 'react'
 import { useRouter } from 'next/navigation'
 
 // Common routes to prefetch for better performance

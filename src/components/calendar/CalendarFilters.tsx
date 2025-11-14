@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,7 +14,6 @@ import {
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Search, Filter, X } from 'lucide-react'
-import { useState } from 'react'
 import {
   Sheet,
   SheetContent,

@@ -28,6 +28,8 @@
     "dev": "node scripts/startup-control-center.js && next dev",
     "dev:no-cc": "next dev",
     "fix-auth": "node scripts/fix-dev-auth.js",
+    "fix-react": "node scripts/fix-react-imports.js",
+    "debug-react": "node scripts/fix-react-imports.js && npm run dev:no-cc",
     "cc": "node mcp-server/hera-control-center.js",
     "cc:health": "node mcp-server/hera-control-center.js health",
     "cc:check": "node mcp-server/hera-control-center.js control",

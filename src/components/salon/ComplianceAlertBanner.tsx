@@ -1,8 +1,8 @@
 'use client'
 
+import React from 'react'
 import { AlertTriangle, FileText, Calendar, ChevronRight, X } from 'lucide-react'
 import { useStaffComplianceAlerts } from '@/hooks/useStaffComplianceAlerts'
-import { useState } from 'react'
 import Link from 'next/link'
 
 interface ComplianceAlertBannerProps {

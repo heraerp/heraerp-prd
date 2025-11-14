@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useEffect } from 'react'
+import React from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth/session'
 

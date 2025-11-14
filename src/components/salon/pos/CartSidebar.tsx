@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import React from 'react'
 import {
   ShoppingCart,
   Plus,

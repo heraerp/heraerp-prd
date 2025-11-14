@@ -9,7 +9,7 @@
  * Smart Code: HERA.PLAN.DEMO.PAGE.V3
  */
 
-import { useState, useEffect, Suspense } from 'react'
+import React from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

@@ -1,6 +1,6 @@
 'use client'
 
-import { PropsWithChildren } from 'react'
+import React from 'react'
 
 export default function CRMLayout({ children }: PropsWithChildren) {
   // Use the same enterprise layout pattern as retail - clean full-screen

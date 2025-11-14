@@ -35,7 +35,6 @@ export function generateEntityPageTemplate(config: any): string {
 
   return `'use client'
 
-import React, { useState } from 'react'
 import { MobilePageLayout } from '@/components/mobile/MobilePageLayout'
 import { MobileFilters, type FilterField } from '@/components/mobile/MobileFilters'
 import { MobileDataTable, type TableColumn, type TableRecord } from '@/components/mobile/MobileDataTable'

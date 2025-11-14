@@ -6,6 +6,7 @@
 
 "use client";
 
+import React from 'react'
 import { useParams } from 'next/navigation'
 import { Code } from 'lucide-react'
 import { InvoiceDisplay } from '@/components/pos/InvoiceDisplay'

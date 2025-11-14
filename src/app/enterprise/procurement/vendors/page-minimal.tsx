@@ -3,6 +3,8 @@
  */
 'use client'
 
+
+import React from 'react'
 export default function VendorsPageMinimal() {
   return (
     <div className="p-8">

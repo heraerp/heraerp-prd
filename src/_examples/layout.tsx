@@ -1,6 +1,7 @@
 'use client'
 
 // app/examples/layout.tsx - Example layout showing HeraProvider usage
+import React from 'react'
 import { HeraProvider } from '@/ui'
 
 export default function ExamplesLayout({ children }: { children: React.ReactNode }) {

@@ -6,6 +6,7 @@
 
 'use client'
 
+import React from 'react'
 import { TrendingUp, User, DollarSign } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'

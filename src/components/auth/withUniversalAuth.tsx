@@ -1,7 +1,7 @@
 'use client'
 
+import React from 'react'
 import { UniversalAuthenticatedLayout } from './UniversalAuthenticatedLayout'
-import { ComponentType } from 'react'
 
 interface WithUniversalAuthOptions {
   requiredRole?: string | string[]

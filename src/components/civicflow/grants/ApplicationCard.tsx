@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { FileText, ExternalLink, Star, Clock, DollarSign } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'

@@ -11,7 +11,7 @@
  * - Beautiful glassmorphic design
  */
 
-import { useState, useEffect } from 'react'
+import React from 'react'
 import {
   Package,
   AlertTriangle,

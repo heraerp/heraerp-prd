@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useEffect } from 'react'
+import React from 'react'
 import { useLoadingStore } from '@/lib/stores/loading-store'
 import { Loader2, Lock, Zap, Sparkles } from 'lucide-react'
 import { SALON_LUXE_COLORS, withOpacity } from '@/lib/constants/salon-luxe-colors'

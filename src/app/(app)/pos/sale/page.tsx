@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useEffect } from 'react'
+import React from 'react'
 import { ArrowLeft, ShoppingCart, Code } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { HelpReportButton } from '@/components/monitoring/HelpReportButton'

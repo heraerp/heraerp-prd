@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import React from 'react'
 import { trackDocView } from '@/lib/hera-docs'
 
 interface DocAnalyticsProps {

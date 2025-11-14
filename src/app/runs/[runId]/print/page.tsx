@@ -2,12 +2,12 @@
 
 'use client';
 
+import React from 'react'
 import { api } from '@/lib/api-client'
 import { formatDateTime } from '@/lib/format'
 import { RunStatusBadge } from '@/components/RunStatusBadge'
 import { Button } from '@/components/ui/button'
 import type { RunHeader, TimelineEvent } from '@/types/runs'
-import { useEffect, useState } from 'react'
 
 // This is a client component for print-optimized rendering
 export default function RunPrintPage({ params }: { params: { runId: string } }) {

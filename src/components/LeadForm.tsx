@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent, Suspense } from 'react'
+import React from 'react'
 import { useSearchParams } from 'next/navigation'
 
 interface LeadFormProps {

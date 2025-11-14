@@ -5,6 +5,7 @@
 
 'use client'
 
+import React from 'react'
 import { ArrowLeft, Edit, Trash2, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'

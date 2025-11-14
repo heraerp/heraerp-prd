@@ -9,6 +9,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
+import React from 'react'
 import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
 import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 import { useRouter } from 'next/navigation'

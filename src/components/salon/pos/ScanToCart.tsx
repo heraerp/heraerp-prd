@@ -16,7 +16,7 @@
 
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import React from 'react'
 import { Scan, Camera, Keyboard, Loader2, CheckCircle2, XCircle, Plus, Package, Barcode, Sparkles } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'

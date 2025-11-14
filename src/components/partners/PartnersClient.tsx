@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import React from 'react'
 // import { type Partner } from '../../../.contentlayer/generated'
 type Partner = any
 import Link from 'next/link'

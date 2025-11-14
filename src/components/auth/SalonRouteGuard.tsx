@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { hasPageAccess, getDefaultPath, getAccessDeniedMessage, type SalonRole } from '@/lib/auth/salon-rbac'

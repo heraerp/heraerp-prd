@@ -1,6 +1,6 @@
 'use client'
 
-import { PropsWithChildren } from 'react'
+import React from 'react'
 import { HeraProvider } from '@/lib/hera-react-provider'
 
 // Default HERA config for GL journals

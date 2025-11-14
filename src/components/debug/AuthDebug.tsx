@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export function AuthDebug() {
