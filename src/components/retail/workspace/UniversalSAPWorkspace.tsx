@@ -46,6 +46,7 @@ import {
   Receipt,
   RotateCcw,
   Percent,
+  Grid,
   Grid3x3,
   ClipboardCheck,
   Clock,
