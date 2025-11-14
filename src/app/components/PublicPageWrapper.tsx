@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Navbar from '@/app/components/Navbar'
 import Footer from '@/app/components/Footer'
