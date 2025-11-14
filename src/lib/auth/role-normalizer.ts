@@ -11,6 +11,9 @@
  * - furniture: Furniture retail & warehouse
  * - restaurant: Restaurant/Food service
  * - retail: General retail operations
+ * - wms: Warehouse Management System
+ * - central: HERA Central Hub & Control Center
+ * - agro: Agricultural Processing Management
  *
  * HERA RBAC Format: ORG_OWNER, ORG_ADMIN, ORG_EMPLOYEE, etc.
  * Application Format: owner, manager, receptionist, etc.
@@ -22,6 +25,8 @@
  * const appRole = normalizeRole('org_owner') // Returns: 'owner'
  * const redirectPath = getRoleRedirectPath('owner', 'salon') // Returns: '/salon/dashboard'
  * const redirectPath = getRoleRedirectPath('owner', 'furniture') // Returns: '/furniture/admin'
+ * const redirectPath = getRoleRedirectPath('owner', 'central') // Returns: '/central'
+ * const redirectPath = getRoleRedirectPath('owner', 'agro') // Returns: '/agro'
  * ```
  */
 
@@ -33,7 +38,7 @@ export type AppRole = 'owner' | 'manager' | 'receptionist' | 'accountant' | 'sty
 /**
  * Supported HERA application codes
  */
-export type AppCode = 'salon' | 'cashew' | 'isp' | 'furniture' | 'restaurant' | 'retail' | 'wms'
+export type AppCode = 'salon' | 'cashew' | 'isp' | 'furniture' | 'restaurant' | 'retail' | 'wms' | 'central' | 'agro'
 
 /**
  * HERA RBAC role type (database format)
@@ -206,6 +211,24 @@ export function getRoleDisplayName(role: AppRole, app?: AppCode): string {
       stylist: 'Order Picker',
       staff: 'Warehouse Staff',
       user: 'Vendor'
+    },
+    central: {
+      owner: 'System Administrator',
+      manager: 'System Manager',
+      receptionist: 'Support Admin',
+      accountant: 'System Accountant',
+      stylist: 'System Operator',
+      staff: 'Support Staff',
+      user: 'System User'
+    },
+    agro: {
+      owner: 'Factory Owner',
+      manager: 'Production Manager',
+      receptionist: 'Warehouse Clerk',
+      accountant: 'Finance Manager',
+      stylist: 'Quality Inspector',
+      staff: 'Factory Worker',
+      user: 'Supplier'
     }
   }
 
@@ -341,6 +364,32 @@ const APP_ROUTING_RULES: Record<AppCode, Record<AppRole, string>> = {
     stylist: '/wms/picker',              // Order picker view
     staff: '/wms/operations',            // General warehouse staff
     user: '/wms'                         // External portal
+  },
+
+  // ========================
+  // CENTRAL APP (HERA Control Center)
+  // ========================
+  central: {
+    owner: '/central',                   // System administration & control center
+    manager: '/central',                 // System management
+    receptionist: '/central',            // Support admin
+    accountant: '/central',              // System accounting
+    stylist: '/central',                 // System operations
+    staff: '/central',                   // Support staff
+    user: '/central'                     // System user portal
+  },
+
+  // ========================
+  // AGRO APP (Agricultural Processing)
+  // ========================
+  agro: {
+    owner: '/agro',                      // Factory analytics & management
+    manager: '/agro',                    // Production management
+    receptionist: '/agro',               // Warehouse operations
+    accountant: '/agro',                 // Financial management
+    stylist: '/agro',                    // Quality control
+    staff: '/agro',                      // Factory operations
+    user: '/agro'                        // Supplier portal
   }
 }
 
@@ -384,6 +433,8 @@ export function getRoleRedirectPath(role: AppRole, app?: AppCode): string {
     else if (pathname.startsWith('/restaurant')) appCode = 'restaurant'
     else if (pathname.startsWith('/retail')) appCode = 'retail'
     else if (pathname.startsWith('/wms')) appCode = 'wms'
+    else if (pathname.startsWith('/central')) appCode = 'central'
+    else if (pathname.startsWith('/agro')) appCode = 'agro'
   }
 
   // Get routing rules for the app
@@ -438,7 +489,7 @@ export function getAppCodeFromOrganization(organizationId: string): AppCode {
  * @returns true if app is a valid AppCode
  */
 export function isValidAppCode(app: string): app is AppCode {
-  const validApps: AppCode[] = ['salon', 'cashew', 'isp', 'furniture', 'restaurant', 'retail', 'wms']
+  const validApps: AppCode[] = ['salon', 'cashew', 'isp', 'furniture', 'restaurant', 'retail', 'wms', 'central', 'agro']
   return validApps.includes(app as AppCode)
 }
 
