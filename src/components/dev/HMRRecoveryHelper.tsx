@@ -28,7 +28,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 interface RecoveryState {
   isReconnecting: boolean
