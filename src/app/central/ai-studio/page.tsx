@@ -1,5 +1,6 @@
 
-import React, { useEffect, useState } from 'react'
+'use client'
+
 /**
  * ================================================================================
  * HERA CENTRAL: AI Studio
@@ -18,7 +19,7 @@ import React, { useEffect, useState } from 'react'
  * ================================================================================
  */
 
-'use client'
+import React, { useEffect, useState } from 'react'
 
 import { 
   Brain,
