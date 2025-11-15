@@ -41,7 +41,7 @@ import {
   Star,
   Gift,
   Settings,
-  Print,
+  Printer,
   Save,
   RefreshCw,
   Eye,
@@ -777,7 +777,7 @@ export function WorkspaceUniversalPOS({
                 
                 <div className="flex gap-2">
                   <Button className="flex-1" onClick={printReceipt}>
-                    <Print className="w-4 h-4 mr-2" />
+                    <Printer className="w-4 h-4 mr-2" />
                     Print Receipt
                   </Button>
                   <Button variant="outline" className="flex-1" onClick={() => setShowReceiptModal(false)}>

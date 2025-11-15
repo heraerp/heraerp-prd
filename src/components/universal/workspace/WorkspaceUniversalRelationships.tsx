@@ -34,7 +34,6 @@ import {
   Edit3,
   Trash2,
   Network,
-  Hierarchy,
   Map,
   Target,
   Link,
@@ -204,7 +203,7 @@ const getDomainRelationshipTypes = (domain: string, section: string): WorkspaceR
         category: 'approval_management',
         direction: 'from_to',
         allows_many: false,
-        icon: Hierarchy,
+        icon: Network,
         color: 'text-red-600 bg-red-50',
         requires_approval: true,
         default_duration: 'permanent'
@@ -260,7 +259,7 @@ const getDomainRelationshipTypes = (domain: string, section: string): WorkspaceR
         category: 'chart_of_accounts',
         direction: 'from_to',
         allows_many: false,
-        icon: Hierarchy,
+        icon: Network,
         color: 'text-slate-600 bg-slate-50',
         default_duration: 'permanent',
         business_rules: ['no_circular_references']

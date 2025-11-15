@@ -25,7 +25,7 @@ import {
   Move,
   Search,
   Filter,
-  Tree,
+  TreePine,
   Folder,
   FolderOpen,
   File,
@@ -511,7 +511,7 @@ export function UniversalRelationshipTreeView({
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Tree size={20} />
+            <TreePine size={20} />
             Relationship Tree
           </CardTitle>
           
@@ -556,7 +556,7 @@ export function UniversalRelationshipTreeView({
         <div className="max-h-96 overflow-y-auto">
           {filteredTree.length === 0 ? (
             <div className="text-center py-8 text-slate-500">
-              <Tree className="mx-auto mb-2 text-slate-300" size={32} />
+              <TreePine className="mx-auto mb-2 text-slate-300" size={32} />
               <p>No relationships found</p>
               {!readonly && (
                 <Button
