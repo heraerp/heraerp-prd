@@ -65,6 +65,11 @@ interface Invoice {
   billingPeriod?: string
 }
 
+// Defensive normalization for chart inputs  
+const toArray = (v: any): any[] =>
+  Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : []
+const safeBillingData = toArray(billingData)
+
 const initialInvoices: Invoice[] = [
   {
     id: 'INV-2024-06-001',
@@ -747,7 +752,3 @@ export default function BillingPage() {
     </div>
   )
 }
-// Defensive normalization for chart inputs
-const toArray = (v: any): any[] =>
-  Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : []
-const safeBillingData = toArray(billingData)
