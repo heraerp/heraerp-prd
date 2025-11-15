@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import React, { useState } from 'react'
-import { Scissors, UtensilsCrossed, Users2, Armchair, ArrowRight, Sparkles } from 'lucide-react'
+import { Scissors, UtensilsCrossed, Users2, ArrowRight, Sparkles } from 'lucide-react'
 
 interface DemoModule {
   id: string
@@ -21,18 +21,6 @@ interface DemoModule {
 }
 
 const DEMO_MODULES: DemoModule[] = [
-  {
-    id: 'furniture',
-    name: 'Furniture Manufacturing',
-    description: 'Kerala Furniture Works - Tender management, inventory & production',
-    icon: Armchair,
-    gradient: 'from-amber-500 to-orange-600',
-    route: '/furniture',
-    credentials: {
-      email: 'demo@keralafurniture.com',
-      password: 'FurnitureDemo2025!'
-    }
-  },
   {
     id: 'salon',
     name: 'Salon & Spa',

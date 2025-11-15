@@ -47,15 +47,6 @@ export const SOLUTIONS: Solution[] = [
     smart_code: 'HERA.ERP.SOLUTION.CARD.CIVICFLOW.V1'
   },
   {
-    slug: 'furniture',
-    name: 'Furniture / Manufacturing',
-    tagline: 'Quotes to production to delivery—track every move.',
-    bullets: ['BOMs & orders', 'Work orders', 'Inventory & dispatch'],
-    demoHref: '/demo?solution=furniture',
-    bookHref: '/book-a-meeting?solution=furniture',
-    smart_code: 'HERA.ERP.SOLUTION.CARD.FURN.V1'
-  },
-  {
     slug: 'finance',
     name: 'Finance',
     tagline: 'Sales, purchases, journals and reporting—tied to every event.',

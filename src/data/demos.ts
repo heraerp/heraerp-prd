@@ -27,17 +27,6 @@ export const DEMOS: Demo[] = [
     buildHref: '/pricing-request?solution=salon'
   },
   {
-    slug: 'furniture',
-    name: 'Furniture Manufacturing',
-    tagline: 'End-to-end production management.',
-    bullets: ['Bill of Materials (BOM)', 'Production Planning', 'Quality Control & Costing'],
-    actives: 'Live Demo',
-    revenue: 'Full System',
-    setup: 'Quick Deploy',
-    demoHref: '/demo?solution=furniture',
-    buildHref: '/pricing-request?solution=furniture'
-  },
-  {
     slug: 'isp',
     name: 'ISP & Telecom',
     tagline: 'Complete ISP business suite.',
