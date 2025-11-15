@@ -1,5 +1,6 @@
 
-import React, { useMemo, useState } from 'react'
+'use client'
+
 /**
  * InvoicePaymentModal Component
  *
@@ -19,7 +20,7 @@ import React, { useMemo, useState } from 'react'
  * - UPPERCASE transaction types
  */
 
-'use client'
+import React, { useMemo, useState } from 'react'
 
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'

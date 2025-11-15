@@ -1,7 +1,5 @@
 'use client'
 
-import React from 'react'
-
 import * as React from 'react'
 import { BottomSheet, useBottomSheet } from '@/lib/dna/components/mobile/BottomSheet'
 import { HeraButtonDNA } from '@/lib/dna/components/ui/hera-button-dna'

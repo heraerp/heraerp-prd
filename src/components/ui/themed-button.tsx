@@ -1,7 +1,5 @@
 'use client'
 
-import React from 'react'
-
 import * as React from 'react'
 import { Button, ButtonProps } from '@/components/ui/button'
 import { useModuleTheme } from '@/hooks/useModuleTheme'
