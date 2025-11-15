@@ -7,6 +7,7 @@
  * Compare this to the original staff page to see how much simpler it is!
  */
 
+import React from 'react'
 import { Users } from 'lucide-react'
 import { SalonLuxeCRUDPage } from '@/lib/dna/patterns/salon-luxe-crud-pattern'
 import { SalonLuxeCard } from '@/lib/dna/patterns/salon-luxe-card'

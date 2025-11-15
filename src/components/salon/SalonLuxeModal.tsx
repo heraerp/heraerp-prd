@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { X } from 'lucide-react'
 
 // Luxe color palette

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'

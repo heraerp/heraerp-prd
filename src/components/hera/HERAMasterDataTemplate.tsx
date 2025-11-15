@@ -66,7 +66,7 @@ const Toast = ({ message, type, isVisible, onClose }: {
   )
 }
 
-// Section Definition Interface
+// Section Definition Interface (Enhanced for Micro-Apps)
 interface FormSection {
   id: string
   label: string
@@ -75,19 +75,34 @@ interface FormSection {
   description: string
 }
 
-// Field Definition Interface
+// Field Definition Interface (Enhanced for Micro-Apps)
 interface FormField {
   id: string
   label: string
-  type: 'text' | 'email' | 'phone' | 'select' | 'textarea' | 'number' | 'url'
+  type: 'text' | 'email' | 'phone' | 'select' | 'textarea' | 'number' | 'url' | 'date' | 'boolean'
   required?: boolean
   placeholder?: string
   options?: Array<{ value: string; label: string; description?: string }>
   validation?: (value: string) => string | null
   section: string
+  field_order?: number
+  ui_hints?: Record<string, any>
 }
 
-// Master Data Template Props
+// Micro-App Configuration Interface
+interface MicroAppConfig {
+  app_code: string
+  app_name: string
+  entity_definition: any
+  smart_code_pattern?: string
+  workspace_context?: {
+    domain: string
+    section: string
+    workspace: string
+  }
+}
+
+// Master Data Template Props (Enhanced for Micro-Apps)
 interface HERAMasterDataTemplateProps {
   entityType: string
   entityLabel: string
@@ -97,6 +112,14 @@ interface HERAMasterDataTemplateProps {
   onSubmit: (data: Record<string, any>) => Promise<void>
   defaultValues?: Record<string, any>
   className?: string
+  microAppConfig?: MicroAppConfig  // NEW: Micro-app configuration
+  workspaceContext?: {             // NEW: Workspace context
+    domain: string
+    section: string
+    workspace: string
+    organization_id: string
+  }
+  enableMicroAppFeatures?: boolean // NEW: Enable micro-app specific features
 }
 
 export function HERAMasterDataTemplate({
@@ -107,7 +130,10 @@ export function HERAMasterDataTemplate({
   backUrl,
   onSubmit,
   defaultValues = {},
-  className = ''
+  className = '',
+  microAppConfig,
+  workspaceContext,
+  enableMicroAppFeatures = false
 }: HERAMasterDataTemplateProps) {
   const router = useRouter()
   const { user, organization, isAuthenticated } = useHERAAuth()
@@ -133,7 +159,33 @@ export function HERAMasterDataTemplate({
     setToast(prev => ({ ...prev, isVisible: false }))
   }, [])
 
-  // Update form data with validation
+  // Generate smart code for micro-app entities
+  const generateMicroAppSmartCode = useCallback((
+    entityName: string,
+    entityType: string,
+    microAppConfig: MicroAppConfig,
+    workspaceContext?: any
+  ): string => {
+    try {
+      if (microAppConfig.smart_code_pattern) {
+        // Use configured pattern from micro-app
+        const variant = workspaceContext?.section?.toUpperCase() || 'STANDARD'
+        return microAppConfig.smart_code_pattern.replace('{VARIANT}', variant)
+      }
+
+      // Fallback to standard HERA pattern
+      const appCode = microAppConfig.app_code.toUpperCase()
+      const type = entityType.toUpperCase()
+      const variant = workspaceContext?.section?.toUpperCase() || 'STANDARD'
+      
+      return `HERA.${appCode}.${type}.${variant}.v1`
+    } catch (error) {
+      console.warn('Smart code generation error:', error)
+      return `HERA.${microAppConfig.app_code.toUpperCase()}.${entityType.toUpperCase()}.STANDARD.v1`
+    }
+  }, [])
+
+  // Enhanced update form data with micro-app support
   const updateFormData = useCallback((fieldId: string, value: string) => {
     setFormData(prev => ({ ...prev, [fieldId]: value }))
     
@@ -142,6 +194,12 @@ export function HERAMasterDataTemplate({
       const codeField = fieldId.replace('name', 'code')
       const code = value.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 10)
       setFormData(prev => ({ ...prev, [codeField]: code }))
+    }
+
+    // Generate smart code for micro-app entities
+    if (enableMicroAppFeatures && microAppConfig && fieldId.includes('name') && value) {
+      const smartCode = generateMicroAppSmartCode(value, entityType, microAppConfig, workspaceContext)
+      setFormData(prev => ({ ...prev, smart_code: smartCode }))
     }
     
     // Clear validation error
@@ -152,7 +210,7 @@ export function HERAMasterDataTemplate({
         return newErrors
       })
     }
-  }, [validationErrors])
+  }, [validationErrors, enableMicroAppFeatures, microAppConfig, workspaceContext, entityType])
 
   // Validate section
   const validateSection = useCallback((sectionId: string): boolean => {
@@ -300,6 +358,54 @@ export function HERAMasterDataTemplate({
               rows={3}
               className={baseInputClass}
               placeholder={field.placeholder}
+            />
+          </div>
+        )
+
+      case 'boolean':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {field.label} {field.required && '*'}
+            </label>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name={field.id}
+                  value="true"
+                  checked={value === 'true'}
+                  onChange={(e) => updateFormData(field.id, e.target.value)}
+                  className="mr-2"
+                />
+                Yes
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name={field.id}
+                  value="false"
+                  checked={value === 'false'}
+                  onChange={(e) => updateFormData(field.id, e.target.value)}
+                  className="mr-2"
+                />
+                No
+              </label>
+            </div>
+          </div>
+        )
+
+      case 'date':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {field.label} {field.required && '*'}
+            </label>
+            <input
+              type="date"
+              value={value}
+              onChange={(e) => updateFormData(field.id, e.target.value)}
+              className={baseInputClass}
             />
           </div>
         )

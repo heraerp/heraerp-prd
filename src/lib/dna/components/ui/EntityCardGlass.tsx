@@ -8,7 +8,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { BadgeDNA } from './BadgeDNA'
 import { LucideIcon } from 'lucide-react'

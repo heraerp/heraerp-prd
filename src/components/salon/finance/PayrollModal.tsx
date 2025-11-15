@@ -15,7 +15,7 @@
 
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { X, Plus, Trash2, DollarSign, Users, Calendar, AlertCircle, CheckCircle } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useHeraPayroll, type CreatePayrollInput } from '@/hooks/useHeraPayroll'
@@ -195,7 +195,7 @@ export function PayrollModal({ isOpen, onClose, onSuccess }: PayrollModalProps) 
 
     const input: CreatePayrollInput = {
       organizationId: organization.id,
-      actorUserId: user.id,
+      actorUserId: user.entity_id || user.id,
       payPeriodStart: new Date(payPeriodStart).toISOString(),
       payPeriodEnd: new Date(payPeriodEnd).toISOString(),
       paymentMethod,

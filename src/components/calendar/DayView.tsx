@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { format, isToday, addHours, startOfDay } from 'date-fns'
 import { CalendarItem } from '@/types/calendar'
 import { cn } from '@/lib/utils'

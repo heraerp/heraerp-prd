@@ -65,12 +65,32 @@ export const getSupabase = () => {
       }
     })
 
-    // Add comprehensive error handling for auth errors
-    client.auth.onAuthStateChange((event, session) => {
+    // 🔴 CRITICAL FIX: Add retry logic before clearing tokens
+    // TOKEN_REFRESHED with null session can be temporary (network hiccup)
+    // Don't immediately clear storage - retry once after 2 seconds
+    client.auth.onAuthStateChange(async (event, session) => {
       console.log('🔐 Auth state change:', event, session ? 'Session valid' : 'No session')
 
-      // Handle failed token refresh or sign out - clear all tokens
-      if ((event === 'TOKEN_REFRESHED' && !session) || event === 'SIGNED_OUT') {
+      // Handle TOKEN_REFRESHED with null session - ADD RETRY LOGIC
+      if (event === 'TOKEN_REFRESHED' && !session) {
+        console.warn('⚠️ TOKEN_REFRESHED with null session - retrying after 2s...')
+        await new Promise(resolve => setTimeout(resolve, 2000))
+
+        // Retry getSession once
+        const { data: { session: retrySession } } = await client.auth.getSession()
+
+        if (!retrySession) {
+          console.error('❌ Token refresh failed after retry - clearing tokens')
+          clearInvalidTokens()
+        } else {
+          console.log('✅ Token refresh succeeded on retry')
+        }
+        return
+      }
+
+      // Handle explicit sign out - clear tokens immediately
+      if (event === 'SIGNED_OUT') {
+        console.log('🚪 SIGNED_OUT event - clearing tokens')
         clearInvalidTokens()
       }
     })

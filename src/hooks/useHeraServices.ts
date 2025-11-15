@@ -47,15 +47,6 @@ export interface UseHeraServicesOptions {
 }
 
 export function useHeraServices(options?: UseHeraServicesOptions) {
-  // 🔍 DEBUG: Log what we're fetching
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[useHeraServices] 🔍 Fetching services:', {
-      organizationId: options?.organizationId,
-      entity_type: 'SERVICE',
-      filters: options?.filters
-    })
-  }
-
   const {
     entities: services,
     isLoading,
@@ -83,16 +74,6 @@ export function useHeraServices(options?: UseHeraServicesOptions) {
     dynamicFields: SERVICE_PRESET.dynamicFields as DynamicFieldDef[],
     relationships: SERVICE_PRESET.relationships as RelationshipDef[]
   })
-
-  // 🔍 DEBUG: Log what we got
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[useHeraServices] 📦 Services loaded:', {
-      count: services?.length || 0,
-      isLoading,
-      hasError: !!error,
-      organizationId: options?.organizationId
-    })
-  }
 
   // ✅ ENTERPRISE FIX: Fetch categories separately to map IDs to names
   const { entities: categories } = useUniversalEntityV1({

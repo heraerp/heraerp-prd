@@ -9,17 +9,18 @@
  * - Persists across route navigation
  * - Auto-hides when loading completes
  * - Elegant fade in/out animations
+ * - Error state with HERA theme styling
  */
 
 'use client'
 
 import React, { useEffect, useState } from 'react'
 import { useLoadingStore } from '@/lib/stores/loading-store'
-import { Loader2, Sparkles } from 'lucide-react'
+import { Loader2, Sparkles, AlertCircle, XCircle } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 
 export function GlobalLoadingOverlay() {
-  const { isLoading, progress, message, subtitle } = useLoadingStore()
+  const { isLoading, progress, message, subtitle, hasError } = useLoadingStore()
   const [show, setShow] = useState(false)
   const [animate, setAnimate] = useState(false)
 
@@ -95,14 +96,25 @@ export function GlobalLoadingOverlay() {
         <div
           className="w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center"
           style={{
-            background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.gold.dark} 100%)`,
-            boxShadow: `0 8px 24px ${SALON_LUXE_COLORS.gold.base}60`
+            background: hasError
+              ? `linear-gradient(135deg, ${SALON_LUXE_COLORS.rose} 0%, #dc2626 100%)`
+              : `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold.base} 0%, ${SALON_LUXE_COLORS.gold.dark} 100%)`,
+            boxShadow: hasError
+              ? `0 8px 24px ${SALON_LUXE_COLORS.rose}60`
+              : `0 8px 24px ${SALON_LUXE_COLORS.gold.base}60`
           }}
         >
-          <Sparkles
-            className="w-8 h-8 animate-pulse"
-            style={{ color: SALON_LUXE_COLORS.charcoal.dark }}
-          />
+          {hasError ? (
+            <XCircle
+              className="w-8 h-8"
+              style={{ color: SALON_LUXE_COLORS.champagne.light }}
+            />
+          ) : (
+            <Sparkles
+              className="w-8 h-8 animate-pulse"
+              style={{ color: SALON_LUXE_COLORS.charcoal.dark }}
+            />
+          )}
         </div>
 
         {/* Title */}

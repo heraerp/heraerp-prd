@@ -6,7 +6,7 @@
 
 'use client'
 
-import { lazy, Suspense } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { Loader2, AlertCircle, ArrowLeft, List } from 'lucide-react'
 import { useRouter } from 'next/navigation'

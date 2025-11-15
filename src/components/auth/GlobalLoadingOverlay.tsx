@@ -6,13 +6,13 @@
 
 'use client'
 
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useLoadingStore } from '@/lib/stores/loading-store'
-import { Loader2, Lock, Zap, Sparkles } from 'lucide-react'
+import { Loader2, Lock, Zap, Sparkles, XCircle, AlertTriangle } from 'lucide-react'
 import { HERA_THEME_COLORS, HERA_THEME_GRADIENTS, withOpacity } from '@/lib/constants/hera-theme-colors'
 
 export function GlobalLoadingOverlay() {
-  const { isLoading, progress, message, subtitle } = useLoadingStore()
+  const { isLoading, progress, message, subtitle, hasError } = useLoadingStore()
 
   // Prevent body scroll when loading
   useEffect(() => {
@@ -119,11 +119,19 @@ export function GlobalLoadingOverlay() {
                 <div
                   className="w-16 h-16 rounded-2xl flex items-center justify-center"
                   style={{
-                    background: HERA_THEME_GRADIENTS.buttonPrimary,
-                    boxShadow: `0 8px 24px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.4)}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+                    background: hasError
+                      ? `linear-gradient(135deg, ${HERA_THEME_COLORS.accent.rose.base} 0%, ${HERA_THEME_COLORS.accent.rose.dark} 100%)`
+                      : HERA_THEME_GRADIENTS.buttonPrimary,
+                    boxShadow: hasError
+                      ? `0 8px 24px ${withOpacity(HERA_THEME_COLORS.accent.rose.base, 0.4)}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+                      : `0 8px 24px ${withOpacity(HERA_THEME_COLORS.primary.indigo.base, 0.4)}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
                   }}
                 >
-                  <Loader2 className="h-8 w-8 text-white animate-spin" />
+                  {hasError ? (
+                    <XCircle className="h-8 w-8 text-white" />
+                  ) : (
+                    <Loader2 className="h-8 w-8 text-white animate-spin" />
+                  )}
                 </div>
               </div>
             </div>

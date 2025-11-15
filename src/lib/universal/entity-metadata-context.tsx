@@ -8,7 +8,7 @@
 
 'use client'
 
-import React, { createContext, useContext, useCallback, useMemo } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { 
   resolveEntityMetadata, 
   type EntityMetadata, 
@@ -67,7 +67,7 @@ export function EntityMetadataProvider({ children }: { children: React.ReactNode
 
     const fullOptions: MetadataResolutionOptions = {
       organizationId: organization.id,
-      actorUserId: user.id,
+      actorUserId: user.entity_id || user.id,
       includePermissions: true,
       fallbackToPlatform: true,
       ...options

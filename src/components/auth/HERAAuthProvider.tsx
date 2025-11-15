@@ -103,6 +103,7 @@ interface HERAAuthProviderProps {
 export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const router = useRouter()
   const didResolveRef = useRef(false) // prevents double work in dev StrictMode
+  const loginInProgressRef = useRef(false) // prevents duplicate membership calls during login (P2 fix)
   const subRef = useRef<ReturnType<any> | null>(null)
   const ctxRef = useRef<{
     user: HERAUser | null
@@ -229,8 +230,15 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
             // Only resolve once
             if (didResolveRef.current) return
+
+            // 🔴 P2 FIX: Skip membership resolution if login() is already handling it
+            if (loginInProgressRef.current) {
+              console.log('⏭️ Skipping auth state membership resolution - login() is handling it')
+              return
+            }
+
             setCtx(prev => ({ ...prev, status: 'resolving', isLoading: true }))
-            
+
             try {
               const { user } = session
 
@@ -239,7 +247,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
               try {
                 // Use cached membership with stale-while-revalidate
                 const apiResponse = await membershipCache.getMembership(
-                  session.access_token, 
+                  session.access_token,
                   user.id
                 )
                 // Handle HERA standard response format
@@ -381,28 +389,35 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
               // ✅ ENTERPRISE: Store app-agnostic auth context in localStorage
               // This handles users created via hera_onboard_user_v1 where auth UID ≠ user entity ID
+              // 🔴 CRITICAL FIX: Add try/catch to handle localStorage quota exceeded / Safari private mode
               if (typeof window !== 'undefined') {
-                // Core auth context (app-agnostic)
-                localStorage.setItem('hera_user_entity_id', userEntityId)
-                localStorage.setItem('hera_organization_id', normalizedOrgId)
-                localStorage.setItem('hera_user_id', user.id)
-                localStorage.setItem('hera_user_email', user.email || '')
-                localStorage.setItem('hera_user_name', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
-                localStorage.setItem('hera_user_role', role)
-                localStorage.setItem('hera_default_app', defaultApp || '')
-                localStorage.setItem('hera_current_app', currentApp || '')
+                try {
+                  // Core auth context (app-agnostic)
+                  localStorage.setItem('hera_user_entity_id', userEntityId)
+                  localStorage.setItem('hera_organization_id', normalizedOrgId)
+                  localStorage.setItem('hera_user_id', user.id)
+                  localStorage.setItem('hera_user_email', user.email || '')
+                  localStorage.setItem('hera_user_name', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
+                  localStorage.setItem('hera_user_role', role)
+                  localStorage.setItem('hera_default_app', defaultApp || '')
+                  localStorage.setItem('hera_current_app', currentApp || '')
 
-                // Legacy compatibility keys (for backward compatibility with salon-specific code)
-                localStorage.setItem('user_entity_id', userEntityId)
-                localStorage.setItem('organizationId', normalizedOrgId)
-                localStorage.setItem('userId', user.id)
-                localStorage.setItem('userEmail', user.email || '')
+                  // Legacy compatibility keys (for backward compatibility with salon-specific code)
+                  localStorage.setItem('user_entity_id', userEntityId)
+                  localStorage.setItem('organizationId', normalizedOrgId)
+                  localStorage.setItem('userId', user.id)
+                  localStorage.setItem('userEmail', user.email || '')
 
-                // ⚠️ DEPRECATED: salon-specific keys (kept for backward compatibility, will be removed in future)
-                localStorage.setItem('salonOrgId', normalizedOrgId)
-                localStorage.setItem('salonRole', role)
-                localStorage.setItem('salonUserEmail', user.email || '')
-                localStorage.setItem('salonUserName', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
+                  // ⚠️ DEPRECATED: salon-specific keys (kept for backward compatibility, will be removed in future)
+                  localStorage.setItem('salonOrgId', normalizedOrgId)
+                  localStorage.setItem('salonRole', role)
+                  localStorage.setItem('salonUserEmail', user.email || '')
+                  localStorage.setItem('salonUserName', user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
+                } catch (storageError) {
+                  console.error('⚠️ Failed to write to localStorage (quota exceeded or private mode):', storageError)
+                  // Don't throw - allow user to continue with in-memory auth
+                  // Session will still work, just won't persist across page reloads
+                }
 
                 console.log('✅ Stored HERA auth context in localStorage:', {
                   user_entity_id: userEntityId,
@@ -467,6 +482,9 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const login = async (email: string, password: string, options?: { clearFirst?: boolean }) => {
     try {
+      // 🔴 P2 FIX: Set login in progress flag to prevent duplicate membership calls
+      loginInProgressRef.current = true
+
       // ✅ ENTERPRISE SECURITY: Clear browser storage WITHOUT calling signOut()
       // This prevents race conditions while maintaining complete security
       if (options?.clearFirst) {
@@ -566,16 +584,22 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       }
 
       // 4. Store COMPLETE auth context in localStorage (9 keys for full compatibility)
+      // 🔴 CRITICAL FIX: Add try/catch to handle localStorage quota exceeded / Safari private mode
       if (typeof window !== 'undefined') {
-        localStorage.setItem('organizationId', organizationId)
-        localStorage.setItem('safeOrganizationId', organizationId)
-        localStorage.setItem('salonOrgId', organizationId)
-        localStorage.setItem('salonRole', role)
-        localStorage.setItem('userId', data.user.id)
-        localStorage.setItem('userEmail', data.user.email || email)
-        localStorage.setItem('user_entity_id', userEntityId)
-        localStorage.setItem('salonUserEmail', data.user.email || email)
-        localStorage.setItem('salonUserName', data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User')
+        try {
+          localStorage.setItem('organizationId', organizationId)
+          localStorage.setItem('safeOrganizationId', organizationId)
+          localStorage.setItem('salonOrgId', organizationId)
+          localStorage.setItem('salonRole', role)
+          localStorage.setItem('userId', data.user.id)
+          localStorage.setItem('userEmail', data.user.email || email)
+          localStorage.setItem('user_entity_id', userEntityId)
+          localStorage.setItem('salonUserEmail', data.user.email || email)
+          localStorage.setItem('salonUserName', data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User')
+        } catch (storageError) {
+          console.error('⚠️ Failed to write to localStorage during login:', storageError)
+          // Don't throw - allow login to proceed with in-memory auth
+        }
 
         console.log('✅ Stored complete auth context in localStorage:', {
           organizationId,
@@ -599,6 +623,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     } catch (error) {
       console.error('❌ Login error:', error)
       throw error
+    } finally {
+      // 🔴 P2 FIX: Always clear login in progress flag (even on error)
+      loginInProgressRef.current = false
+      console.log('✅ Login process complete, cleared loginInProgressRef flag')
     }
   }
 

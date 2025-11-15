@@ -52,7 +52,7 @@
 
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import React from 'react'
 
 interface ReconnectNotification {
   show: boolean

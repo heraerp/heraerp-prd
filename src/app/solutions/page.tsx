@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Zap, Target, Users, Globe, Award } from 'lucide-react'

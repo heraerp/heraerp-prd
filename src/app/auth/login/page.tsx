@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, AlertCircle, Eye, EyeOff, Mail, Lock, ChevronRight } from 'lucide-react'
+import { Loader2, AlertCircle, Eye, EyeOff, Mail, Lock, ChevronRight, ShoppingBag } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { AppSwitcher } from '@/components/navigation/AppSwitcher'
 import { HeraGradientBackground } from '@/components/hera/shared/HeraGradientBackground'
@@ -31,6 +31,7 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [showAppPurchaseButton, setShowAppPurchaseButton] = useState(false)
 
   const returnTo = searchParams.get('return_to')
 
@@ -92,15 +93,18 @@ function LoginForm() {
       const userApps = firstOrg?.apps || []
 
       if (userApps.length === 0) {
-        // ✅ ENTERPRISE: Redirect to app store for purchase
-        console.log('No apps available for demo account, redirecting to app store...')
-        setError(`No applications available for ${firstOrg?.name || 'your organization'}.`)
-        setIsLoading(false)
+        // ✅ ENTERPRISE: Role-based handling for no apps
+        const isOwner = result.role === 'owner'
 
-        // Redirect to app store after brief delay
-        setTimeout(() => {
-          router.push('/apps?mode=store')
-        }, 2000)
+        if (isOwner) {
+          setShowAppPurchaseButton(true)
+          setError(`No applications available for ${firstOrg?.name || 'your organization'}. Purchase an app to get started.`)
+        } else {
+          setShowAppPurchaseButton(false)
+          setError(`No applications available for ${firstOrg?.name || 'your organization'}. Please contact your organization owner to purchase apps.`)
+        }
+        setIsLoading(false)
+        console.log('No apps available for demo account, showing purchase option...')
         return
       }
 
@@ -190,15 +194,18 @@ function LoginForm() {
       const userApps = firstOrg?.apps || []
 
       if (userApps.length === 0) {
-        // ✅ ENTERPRISE: Redirect to app store for purchase
-        console.log('No apps available, redirecting to app store...')
-        setError(`No applications available for ${firstOrg?.name || 'your organization'}.`)
-        setIsLoading(false)
+        // ✅ ENTERPRISE: Role-based handling for no apps
+        const isOwner = result.role === 'owner'
 
-        // Redirect to app store after brief delay
-        setTimeout(() => {
-          router.push('/apps?mode=store')
-        }, 2000)
+        if (isOwner) {
+          setShowAppPurchaseButton(true)
+          setError(`No applications available for ${firstOrg?.name || 'your organization'}. Purchase an app to get started.`)
+        } else {
+          setShowAppPurchaseButton(false)
+          setError(`No applications available for ${firstOrg?.name || 'your organization'}. Please contact your organization owner to purchase apps.`)
+        }
+        setIsLoading(false)
+        console.log('No apps available, showing purchase option...')
         return
       }
 
@@ -295,6 +302,30 @@ function LoginForm() {
                         <AlertCircle className="h-4 w-4" />
                         <AlertDescription className="text-sm">{error}</AlertDescription>
                       </Alert>
+                    )}
+
+                    {/* ✅ ENTERPRISE: App Purchase Button for Owners */}
+                    {showAppPurchaseButton && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          router.push('/apps?mode=store')
+                        }}
+                        className="w-full relative group overflow-hidden rounded-lg px-6 py-4 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 hover:border-emerald-500/50 transition-all duration-300"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-colors">
+                              <ShoppingBag className="w-5 h-5 text-emerald-400" />
+                            </div>
+                            <div className="text-left">
+                              <p className="font-semibold text-emerald-400 text-sm">Browse App Store</p>
+                              <p className="text-xs text-emerald-300/70">Purchase apps for your organization</p>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </button>
                     )}
 
                     <div className="space-y-3">

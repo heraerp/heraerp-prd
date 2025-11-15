@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { AlertTriangle, Building2, UserX, Users, ShoppingBag, Calendar } from 'lucide-react'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { SalonLuxeButton } from '@/components/salon/shared/SalonLuxeButton'

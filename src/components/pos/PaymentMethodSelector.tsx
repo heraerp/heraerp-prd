@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { CreditCard, Banknote, Loader2 } from 'lucide-react'
 import { Payment } from '@/lib/schemas/pos'
 import { Button } from '@/components/ui/button'

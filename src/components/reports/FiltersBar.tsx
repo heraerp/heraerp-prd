@@ -6,7 +6,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Calendar, Building2, DollarSign, SlidersHorizontal, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

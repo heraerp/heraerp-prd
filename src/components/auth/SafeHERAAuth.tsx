@@ -9,7 +9,7 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useHERAAuth } from './HERAAuthProvider'
 
 // Get stored session data

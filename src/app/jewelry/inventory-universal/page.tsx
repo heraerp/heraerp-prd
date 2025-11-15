@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { JewelryEntityPage } from '@/components/entity/JewelryEntityPage'
 import { JEWELRY_ITEM_PRESET } from '@/hooks/entityPresets'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'

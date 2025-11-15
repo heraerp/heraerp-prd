@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
 import { track } from '@/lib/analytics'
 import type { Solution } from '@/data/solutions'

@@ -1,6 +1,6 @@
 'use client'
 
-import { lazy, Suspense } from 'react'
+import React from 'react'
 import { SalonLuxePage } from '@/components/salon/shared/SalonLuxePage'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonFinancialSecurity } from '@/hooks/useSalonSecurity'

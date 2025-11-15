@@ -65,10 +65,11 @@ interface AIMessage {
 
 interface DomainHERAAssistantProps {
   domain: string
+  config: any  // DomainConfig from universal types
   className?: string
 }
 
-export default function DomainHERAAssistant({ domain, className }: DomainHERAAssistantProps) {
+export default function DomainHERAAssistant({ domain, config, className }: DomainHERAAssistantProps) {
   const [messages, setMessages] = useState<AIMessage[]>([])
   const [inputMessage, setInputMessage] = useState('')
   const [isTyping, setIsTyping] = useState(false)

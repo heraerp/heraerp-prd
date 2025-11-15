@@ -451,7 +451,7 @@ export function useHeraSales(options?: UseHeraSalesOptions) {
           customerId: sale.customer_id,
           saleAmount: -amount, // ✅ Negative amount for refund
           organizationId: options.organizationId,
-          actorUserId: user.id
+          actorUserId: user.entity_id || user.id
         })
 
         console.log('[LTV] ✅ Adjusted for refund:', {

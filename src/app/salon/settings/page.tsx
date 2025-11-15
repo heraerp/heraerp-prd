@@ -1,5 +1,7 @@
 'use client'
 
+import React, { useEffect, useState } from 'react'
+
 /**
  * ✨ SALON LUXE ENTERPRISE SETTINGS PAGE v3.0
  *
@@ -21,7 +23,6 @@
  * - No direct Supabase calls - only through hooks
  */
 
-import React, { useEffect, useState, lazy, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -324,7 +325,8 @@ function SettingsPageContent() {
     try {
       const result = await entityCRUD({
         p_action: 'UPDATE',
-        p_actor_user_id: user?.id || '',
+        // ✅ HERA v2.4: Use USER entity ID (not auth UID)
+        p_actor_user_id: user?.entity_id || user?.id || '',
         p_organization_id: organizationId,
         p_entity: {
           entity_id: organizationId,

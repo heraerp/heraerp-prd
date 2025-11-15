@@ -168,14 +168,14 @@ export function BusinessHoursSection({ onSuccess, onError }: {
       console.log('[BusinessHours] Saving hours:', {
         branchId: selectedBranchId,
         organizationId,
-        actorUserId: user.id,
+        actorUserId: user.entity_id || user.id,
         hours
       })
 
       // Save business hours to branch entity via entityCRUD
       const payload = {
         action: 'UPDATE',
-        actor_user_id: user.id,
+        actor_user_id: user.entity_id || user.id,
         organization_id: organizationId,
         entity: {
           entity_id: selectedBranchId,

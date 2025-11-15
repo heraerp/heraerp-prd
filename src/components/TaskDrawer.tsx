@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useCompleteStep } from '@/hooks/use-runs'
 import { useToast } from '@/components/ui/useToast'
 import { getStepOutputSchema } from '@/lib/schemas'

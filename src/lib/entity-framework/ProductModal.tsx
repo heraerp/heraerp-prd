@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { EntityForm, EntityFormData } from './EntityForm'
 import { PRODUCT_PRESET } from './entityPresets'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'

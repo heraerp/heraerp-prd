@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Search, X, Armchair, Factory, Package, Users, BarChart3, Settings } from 'lucide-react'
 
 interface FurnitureAppsSearchProps {

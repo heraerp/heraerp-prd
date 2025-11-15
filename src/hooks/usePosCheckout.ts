@@ -359,8 +359,6 @@ export function usePosCheckout(): UsePosCheckoutReturn {
 
       let glJournalId = null
       try {
-        console.log('[GL Auto-Post V2] 🚀 Starting enterprise GL posting engine...')
-
         // ✅ STEP 1: Calculate comprehensive revenue breakdown
         const revenueBreakdown = calculateRevenueBreakdown(
           items,
@@ -368,37 +366,8 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           tax_rate
         )
 
-        console.log('[GL Auto-Post V2] 📊 Revenue Breakdown:', {
-          service: {
-            gross: revenueBreakdown.service.gross.toFixed(2),
-            discount: revenueBreakdown.service.total_discount.toFixed(2),
-            net: revenueBreakdown.service.net.toFixed(2),
-            vat: revenueBreakdown.service.vat.toFixed(2),
-            count: revenueBreakdown.service.item_count
-          },
-          product: {
-            gross: revenueBreakdown.product.gross.toFixed(2),
-            discount: revenueBreakdown.product.total_discount.toFixed(2),
-            net: revenueBreakdown.product.net.toFixed(2),
-            vat: revenueBreakdown.product.vat.toFixed(2),
-            count: revenueBreakdown.product.item_count
-          },
-          totals: {
-            gross: revenueBreakdown.totals.gross.toFixed(2),
-            discount: revenueBreakdown.totals.discount.toFixed(2),
-            net: revenueBreakdown.totals.net.toFixed(2),
-            vat: revenueBreakdown.totals.vat.toFixed(2)
-          }
-        })
-
         // ✅ STEP 2: Allocate tips to staff members
         const tipAllocation = allocateTipsByStaff(items, tip_total)
-
-        console.log('[GL Auto-Post V2] 💰 Tip Allocation:', tipAllocation.map(a => ({
-          staff_id: a.staff_id === 'UNALLOCATED' ? 'Pool (Unallocated)' : a.staff_id.substring(0, 8),
-          tip_amount: a.tip_amount.toFixed(2),
-          service_count: a.service_count
-        })))
 
         // ✅ STEP 3: Generate enhanced GL lines with full dimensions
         const glLines = generateEnhancedGLLines(
@@ -414,23 +383,15 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           }
         )
 
-        console.log('[GL Auto-Post V2] 📝 Generated GL Lines:', {
-          total_lines: glLines.length,
-          dr_lines: glLines.filter(l => l.line_data.side === 'DR').length,
-          cr_lines: glLines.filter(l => l.line_data.side === 'CR').length
-        })
-
         // ✅ STEP 4: Validate GL balance (DR = CR)
         const glBalance = validateGLBalance(glLines)
 
-        console.log('[GL Auto-Post V2] ⚖️ Balance Validation:', {
-          total_dr: glBalance.totalDR.toFixed(2),
-          total_cr: glBalance.totalCR.toFixed(2),
-          difference: glBalance.difference.toFixed(2),
-          is_balanced: glBalance.isBalanced ? '✅ BALANCED' : '❌ UNBALANCED'
-        })
-
         if (!glBalance.isBalanced) {
+          console.error('[GL] ❌ Unbalanced:', {
+            dr: glBalance.totalDR.toFixed(2),
+            cr: glBalance.totalCR.toFixed(2),
+            diff: glBalance.difference.toFixed(2)
+          })
           throw new Error(
             `GL Entry not balanced: DR ${glBalance.totalDR.toFixed(2)} != CR ${glBalance.totalCR.toFixed(2)} (diff: ${glBalance.difference.toFixed(2)})`
           )
@@ -451,14 +412,6 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           }
         )
 
-        console.log('[GL Auto-Post V2] 📋 Enhanced Metadata Generated:', {
-          service_revenue_net: enhancedMetadata.service_revenue_net.toFixed(2),
-          product_revenue_net: enhancedMetadata.product_revenue_net.toFixed(2),
-          vat_split: `${enhancedMetadata.vat_on_services.toFixed(2)} (svc) + ${enhancedMetadata.vat_on_products.toFixed(2)} (prd)`,
-          tips_allocated: enhancedMetadata.tips_by_staff.length,
-          gl_engine_version: enhancedMetadata.gl_engine_version
-        })
-
         // ✅ STEP 6: Create GL_JOURNAL transaction with enhanced lines + metadata
         const glResult = await createTransaction({
           transaction_type: 'GL_JOURNAL',
@@ -474,24 +427,8 @@ export function usePosCheckout(): UsePosCheckoutReturn {
 
         glJournalId = glResult?.id || glResult?.data?.id
 
-        console.log('[GL Auto-Post V2] ✅ ENTERPRISE GL Journal Entry Created:', {
-          journal_id: glJournalId,
-          gl_lines: glLines.length,
-          service_revenue: enhancedMetadata.service_revenue_net.toFixed(2),
-          product_revenue: enhancedMetadata.product_revenue_net.toFixed(2),
-          total_revenue: enhancedMetadata.net_revenue.toFixed(2),
-          vat_collected: enhancedMetadata.vat_collected.toFixed(2),
-          tips_collected: enhancedMetadata.tips_collected.toFixed(2),
-          gl_balanced: enhancedMetadata.gl_balanced,
-          engine_version: enhancedMetadata.gl_engine_version
-        })
-
       } catch (glError) {
-        console.error('[GL Auto-Post V2] ⚠️ GL posting failed (non-blocking):', glError)
-        console.error('[GL Auto-Post V2] Error details:', {
-          error_message: glError instanceof Error ? glError.message : 'Unknown error',
-          error_stack: glError instanceof Error ? glError.stack : undefined
-        })
+        console.error('[GL] ⚠️ Posting failed (non-blocking):', glError instanceof Error ? glError.message : glError)
         // ✅ PRODUCTION SAFETY: Sale still succeeds - GL posting failure is logged for manual review
         // This ensures POS operations are never blocked by GL issues
       }
@@ -510,16 +447,11 @@ export function usePosCheckout(): UsePosCheckoutReturn {
             customerId: customer_id,
             saleAmount: total_amount,
             organizationId: effectiveOrgId,
-            actorUserId: user.id
-          })
-
-          console.log('[LTV] ✅ Updated:', {
-            customer: customer_id.substring(0, 8),
-            amount: total_amount.toFixed(2)
+            actorUserId: user.entity_id || user.id
           })
         } catch (ltvError) {
           // 🛡️ NON-BLOCKING: LTV failure doesn't block sale
-          console.error('[LTV] ⚠️ Update failed:', ltvError instanceof Error ? ltvError.message : 'Unknown error')
+          console.error('[LTV] ⚠️ Update failed:', ltvError instanceof Error ? ltvError.message : ltvError)
         }
       }
 

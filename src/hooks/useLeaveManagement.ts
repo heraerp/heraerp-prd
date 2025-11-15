@@ -91,7 +91,7 @@ export function useLeaveManagement(options: UseLeaveManagementOptions = {}) {
       try {
         const result = await leaveManagementApi.approveLeaveRequest(
           requestId,
-          user.id,
+          user.entity_id || user.id,
           organizationId
         )
 
@@ -151,7 +151,7 @@ export function useLeaveManagement(options: UseLeaveManagementOptions = {}) {
       try {
         const result = await leaveManagementApi.cancelLeaveRequest(
           requestId,
-          user.id,
+          user.entity_id || user.id,
           reason,
           organizationId
         )
@@ -227,7 +227,7 @@ export function useLeaveManagement(options: UseLeaveManagementOptions = {}) {
           leaveType,
           days,
           reason,
-          user.id,
+          user.entity_id || user.id,
           organizationId
         )
 

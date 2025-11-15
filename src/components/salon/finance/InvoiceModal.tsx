@@ -20,7 +20,7 @@
 
 'use client'
 
-import { useState, useMemo } from 'react'
+import React from 'react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
@@ -122,7 +122,7 @@ export function InvoiceModal({ isOpen, onClose, onSuccess }: InvoiceModalProps) 
     try {
       const input: CreateInvoiceInput = {
         organizationId: organization.id,
-        actorUserId: user.id,
+        actorUserId: user.entity_id || user.id,
         customerEntityId: customerEntityId || crypto.randomUUID(),  // Create customer entity if needed
         customerName,
         invoiceDate,

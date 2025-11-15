@@ -6,6 +6,7 @@
 
 'use client'
 
+import React from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useRouter } from 'next/navigation'
 

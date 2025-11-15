@@ -1,6 +1,6 @@
 // src/ui/theme/ThemePicker.tsx
 'use client'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHeraTheme } from '@/lib/hera-ui-preset/theme/ThemeProvider'
 import { ThemeTokens } from '@/lib/hera-ui-preset/theme/types'
 

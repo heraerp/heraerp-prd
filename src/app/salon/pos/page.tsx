@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
 import { usePosTicket } from '@/hooks/usePosTicket'
@@ -16,6 +16,45 @@ import { ShoppingCart, Monitor, Sparkles, Receipt as ReceiptIcon, AlertCircle, B
 import Link from 'next/link'
 import { syncAppointmentServicesInBackground } from '@/lib/salon/appointment-service-sync'
 import { HelpReportButton } from '@/components/monitoring/HelpReportButton'
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Compare two service ID arrays (order-independent)
+ * Used to detect if services have actually changed before syncing
+ */
+function arraysEqual(arr1: string[], arr2: string[]): boolean {
+  if (arr1.length !== arr2.length) return false
+
+  // Sort both arrays for consistent comparison
+  const sorted1 = [...arr1].sort()
+  const sorted2 = [...arr2].sort()
+
+  return sorted1.every((val, index) => val === sorted2[index])
+}
+
+/**
+ * Detect if service prices have changed between original appointment and POS cart
+ * Used to determine if appointment needs price sync after POS modifications
+ */
+function detectPriceChanges(
+  originalIds: string[],
+  finalIds: string[],
+  cartPrices: Record<string, number>,
+  originalPrices: Record<string, number>
+): boolean {
+  // Only compare prices for services that exist in BOTH arrays
+  const commonIds = originalIds.filter(id => finalIds.includes(id))
+
+  return commonIds.some(serviceId => {
+    const originalPrice = originalPrices[serviceId] ?? 0
+    const cartPrice = cartPrices[serviceId] ?? 0
+    // Use tolerance for floating point comparison
+    return Math.abs(originalPrice - cartPrice) > 0.01
+  })
+}
 
 // ✅ ENTERPRISE PATTERN: Lazy load heavy components for better performance
 const CatalogPane = lazy(() => import('@/components/salon/pos/CatalogPane').then(m => ({ default: m.CatalogPane })))
@@ -138,7 +177,11 @@ function POSContent() {
   useCustomerLookup(effectiveOrgId || 'demo-org')
 
   // Get appointment update functions for status updates and service sync after payment
-  const { updateAppointmentStatus, replaceServices } = useHeraAppointments({ organizationId: effectiveOrgId || 'demo-org' })
+  const {
+    updateAppointmentStatus,
+    replaceServices,
+    updateAppointmentComplete // ✅ NEW: Atomic update of status, metadata, services, and prices
+  } = useHeraAppointments({ organizationId: effectiveOrgId || 'demo-org' })
 
   // 🎯 ENTERPRISE: Auto-load appointment from URL parameter
   useEffect(() => {
@@ -230,7 +273,9 @@ function POSContent() {
             appointment_id: appointmentData.id,
             customer_id: appointmentData.customer_id || '',
             customer_name: appointmentData.customer_name || 'Walk-in',
-            services
+            services,
+            originalServiceIds: appointmentData.service_ids || [], // ✅ Store original service IDs for change detection
+            originalServicePrices: appointmentData.service_prices || [] // ✅ NEW: Store original service prices for price change detection
           })
         }
 
@@ -323,7 +368,9 @@ function POSContent() {
             price: fullAppointment.service_prices?.[index] || 0,
             ...(fullAppointment.stylist_id ? { stylist_id: fullAppointment.stylist_id } : {}),
             ...(fullAppointment.stylist_name ? { stylist_name: fullAppointment.stylist_name } : {})
-          })) || []
+          })) || [],
+          originalServiceIds: fullAppointment.service_ids || [], // ✅ Store original service IDs for change detection
+          originalServicePrices: fullAppointment.service_prices || [] // ✅ NEW: Store original service prices for price change detection
         })
 
         // Remove appointment param from URL for clean state
@@ -617,81 +664,171 @@ function POSContent() {
 
   const handlePaymentComplete = useCallback(
     async (saleData: any) => {
+      console.log('[POS] 💰 handlePaymentComplete called', {
+        saleData,
+        ticket_appointment_id: ticket.appointment_id,
+        effectiveOrgId,
+        user_id: user?.id,
+        has_all_required: !!(ticket.appointment_id && effectiveOrgId && user?.id)
+      })
+
       setCompletedSale(saleData)
       setIsPaymentOpen(false)
       setIsReceiptOpen(true)
 
       // Update appointment status to completed if payment was for an appointment
-      if (ticket.appointment_id && effectiveOrgId && user?.id) {
+      if (ticket.appointment_id && effectiveOrgId) {
+        console.log('[POS] 🎯 Starting appointment status update after payment', {
+          appointment_id: ticket.appointment_id,
+          organization_id: effectiveOrgId,
+          user_id: user?.id,
+          line_items_count: ticket.lineItems?.length
+        })
+
+        // 🔥 FIX: Move variable declarations outside try-catch so they're accessible in error logging
+        const finalServiceIds = ticket.lineItems
+          .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
+          .map((item: any) => item.entity_id || item.id)
+          .filter(Boolean)
+
+        const servicePriceMap = ticket.lineItems
+          .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
+          .reduce((acc: Record<string, number>, item: any) => ({
+            ...acc,
+            [item.entity_id || item.id]: item.unit_price || 0
+          }), {} as Record<string, number>)
+
+        // Detect changes (services OR prices)
+        const originalServiceIds = ticket.originalServiceIds || []
+        const originalServicePrices = ticket.originalServicePrices || {}
+        const servicesChanged = !arraysEqual(originalServiceIds, finalServiceIds)
+        const pricesChanged = detectPriceChanges(originalServiceIds, finalServiceIds, servicePriceMap, originalServicePrices)
+        const needsSync = servicesChanged || pricesChanged
+
         try {
-          // 🎯 STEP 1: Update appointment status to completed FIRST
-          // This ensures status update is not overwritten by service sync
-          await updateAppointmentStatus({
-            id: ticket.appointment_id,
-            status: 'completed'
-          })
-
-          console.log('✅ [POS] Appointment status updated to completed')
-
-          // 🎯 STEP 2: Extract final service IDs from cart
-          const finalServiceIds = ticket.lineItems
-            .filter((item: any) => item.entity_type === 'service' || item.__kind === 'SERVICE')
-            .map((item: any) => item.entity_id || item.id)
-            .filter(Boolean)
-
-          console.log('[POS] 🔄 Syncing services:', {
+          // 🎯 ENTERPRISE: Single Atomic Update - Status, Metadata, Services, AND Prices
+          // 🔍 CRITICAL DEBUG: Log status update decision factors
+          console.log('[POS] 🔍 Status update decision analysis:', {
             appointment_id: ticket.appointment_id,
+            needsSync,
+            servicesChanged,
+            pricesChanged,
+            finalServiceIds_count: finalServiceIds.length,
             finalServiceIds,
-            serviceCount: finalServiceIds.length
+            originalServiceIds,
+            originalServicePrices,
+            servicePriceMap,
+            will_use_atomic_update: needsSync && finalServiceIds.length > 0,
+            will_use_simple_update: !(needsSync && finalServiceIds.length > 0)
           })
 
-          // 🎯 STEP 3: Sync services in background (non-blocking)
-          // Service sync now happens AFTER status update to avoid conflicts
-          if (finalServiceIds.length > 0) {
-            syncAppointmentServicesInBackground({
-              appointmentId: ticket.appointment_id,
+          if (needsSync && finalServiceIds.length > 0) {
+            console.log('[POS] 🔄 Updating appointment atomically...')
+            console.log('[POS] 💰 Service prices being sent:', {
+              servicePriceMap,
+              servicePriceMap_keys: Object.keys(servicePriceMap),
               finalServiceIds,
-              replaceServicesFunc: replaceServices,
-              onSuccess: () => {
-                console.log('✅ [POS] Services synced successfully')
-                // Invalidate appointment cache to refresh calendar
-                localStorage.setItem('appointment_services_updated', JSON.stringify({
-                  appointment_id: ticket.appointment_id,
-                  timestamp: new Date().toISOString(),
-                  source: 'pos_service_sync'
-                }))
-              },
-              onFailure: (error) => {
-                console.error('❌ [POS] Service sync failed:', error)
-              }
+              finalServiceIds_length: finalServiceIds.length,
+              prices_array: finalServiceIds.map(id => servicePriceMap[id] || 0),
+              // ✅ DEBUG: Show exact key-value pairs
+              price_map_entries: Object.entries(servicePriceMap).map(([key, value]) => ({
+                key,
+                key_length: key.length,
+                value,
+                first_char: key[0],
+                last_char: key[key.length - 1]
+              })),
+              service_id_details: finalServiceIds.map(id => ({
+                id,
+                id_length: id.length,
+                found_in_map: id in servicePriceMap,
+                price: servicePriceMap[id]
+              }))
             })
+
+            // ✅ SINGLE ATOMIC UPDATE - All changes in ONE RPC call
+            const updateResult = await updateAppointmentComplete({
+              id: ticket.appointment_id,
+              transaction_status: 'completed', // ← Update status (authoritative field)
+              metadata: {
+                // ❌ REMOVED: status field - it belongs in transaction_status, not metadata
+                completed_at: new Date().toISOString(),
+                completed_by: user?.entity_id || user?.id || 'system',
+                pos_sale_id: saleData.transaction_id, // ← Link to POS sale transaction
+                payment_method: ticket.payment_method || 'cash'
+              },
+              serviceIds: finalServiceIds, // ← Update services
+              servicePrices: servicePriceMap // ← Update prices
+            })
+
+            console.log('✅ [POS] Appointment completed:', {
+              services_count: finalServiceIds.length,
+              prices_updated: pricesChanged,
+              result_total_amount: updateResult?.total_amount,
+              result_metadata_service_prices: updateResult?.metadata?.service_prices
+            })
+          } else {
+            // Just update status if no service/price changes
+            console.log('[POS] 📝 Updating appointment status only (no service/price changes)...')
+
+            await updateAppointmentStatus({
+              id: ticket.appointment_id,
+              status: 'completed'
+            })
+
+            console.log('✅ [POS] Appointment status updated to completed')
           }
 
           // 🚀 ENTERPRISE: Set localStorage flag to trigger calendar refresh
-          // This ensures the calendar updates when user navigates back
           localStorage.setItem('appointment_status_updated', JSON.stringify({
             appointment_id: ticket.appointment_id,
             status: 'completed',
+            servicesChanged,
+            pricesChanged,
             timestamp: new Date().toISOString(),
             source: 'pos_payment_complete'
           }))
 
-          console.log('✅ [POS] Appointment status updated and calendar refresh flag set')
+          console.log('✅ [POS] Appointment update complete and calendar refresh flag set')
 
           toast({
             title: '✅ Appointment Completed',
             description: 'Services synced and appointment completed.',
             duration: 2000
           })
-        } catch (error) {
-          console.error('[POSPage] ❌ Failed to update appointment:', error)
+        } catch (error: any) {
+          // ✅ ENTERPRISE ERROR LOGGING: Comprehensive RPC failure analysis
+          const errorDetails = {
+            message: error?.message || 'Unknown error',
+            stack: error?.stack,
+            rpcResponse: error?.response?.data || error?.data,
+            appointmentId: ticket.appointment_id,
+            serviceIds: finalServiceIds,
+            servicesChanged,
+            pricesChanged,
+            needsSync,
+            context: 'appointment_status_update_after_payment',
+            organizationId: effectiveOrgId,
+            userId: user?.id,
+            timestamp: new Date().toISOString()
+          }
+
+          console.error('[POSPage] ❌ CRITICAL: Failed to update appointment after payment:', errorDetails)
+
+          // Log the full error object for debugging
+          console.error('[POSPage] 🔍 Full error object:', error)
+
+          // If RPC returned structured error, log it separately
+          if (error?.response?.data?.error || error?.data?.error) {
+            console.error('[POSPage] 🔍 RPC Error Response:', error?.response?.data || error?.data)
+          }
 
           // Don't block the payment flow, just show a warning
           toast({
             title: '⚠️ Update Failed',
-            description: 'Payment was successful but appointment could not be updated.',
+            description: `Payment was successful but appointment could not be updated: ${error?.message || 'Unknown error'}. Check console for details.`,
             variant: 'destructive',
-            duration: 5000
+            duration: 7000
           })
         }
       }
@@ -702,7 +839,7 @@ function POSContent() {
       setDefaultStylistName(undefined)
       setSelectedCustomer(null)
     },
-    [clearTicket, ticket.appointment_id, ticket.lineItems, effectiveOrgId, user, updateAppointmentStatus, replaceServices, toast]
+    [clearTicket, ticket.appointment_id, ticket.lineItems, effectiveOrgId, user, updateAppointmentStatus, updateAppointmentComplete, replaceServices, toast]
   )
 
   // Get totals from the hook's memoized calculation

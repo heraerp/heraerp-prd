@@ -17,7 +17,7 @@
 
 'use client'
 
-import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
 // NOTE: AuthResolver is server-side only, handled via API routes for client components
 import { dbContext } from '@/lib/security/database-context'
@@ -1009,7 +1009,10 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
         // For initial load before auth completes, use system actor
       }
 
-      const actorUserId = user?.id || 'system'
+      // ✅ HERA v2.4: Use USER entity ID (not auth UID)
+      // Try localStorage first (set by HERAAuthProvider), then fall back to auth UID, then 'system'
+      const userEntityId = typeof window !== 'undefined' ? localStorage.getItem('hera_user_entity_id') : null
+      const actorUserId = userEntityId || user?.id || 'system'
 
       console.log('[SecuredSalonProvider] 📖 Loading organization via RPC:', {
         orgId,
@@ -1018,13 +1021,13 @@ export function SecuredSalonProvider({ children }: { children: React.ReactNode }
 
       // ✅ READ organization entity with ALL dynamic fields
       // Organizations are stored as entities with entity_type = 'ORGANIZATION'
+      // RPC will find entity by organization_id + entity_type (entity_id not needed)
       const { data, error } = await entityCRUD({
         p_action: 'READ',
         p_actor_user_id: actorUserId,
         p_organization_id: orgId,
         p_entity: {
-          entity_type: 'ORGANIZATION', // ✅ FIXED: Use correct entity type 'ORGANIZATION'
-          entity_id: orgId // Specific organization ID to read
+          entity_type: 'ORGANIZATION' // RPC finds by organization_id + entity_type
         },
         p_dynamic: {}, // Empty = fetch all dynamic fields
         p_options: {

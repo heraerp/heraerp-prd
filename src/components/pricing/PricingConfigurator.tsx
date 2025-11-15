@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PRICING_MODULES, computeRecommendation, toQuery, type PricingModule } from '@/data/pricing'
 

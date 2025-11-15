@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { UniversalWorkflow } from '@/lib/universal-workflow'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

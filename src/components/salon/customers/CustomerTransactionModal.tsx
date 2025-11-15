@@ -14,7 +14,7 @@
  * - LUXE glassmorphism theme
  */
 
-import React, { useState, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { subDays } from 'date-fns'
 import {
@@ -29,7 +29,10 @@ import {
   DollarSign
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useCustomerTransactions } from '@/hooks/useCustomerTransactions'
+import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
+import { useUniversalTransactionV1 } from '@/hooks/useUniversalTransactionV1'
+import { useHeraStaff } from '@/hooks/useHeraStaff'
+import { useHeraServices } from '@/hooks/useHeraServices'
 import {
   Select,
   SelectContent,
@@ -70,6 +73,46 @@ export function CustomerTransactionModal({
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(25)
 
+  // 🔧 FETCH STAFF ENTITIES: To resolve target_entity_id to staff names
+  const { staff: staffEntities } = useHeraStaff({
+    organizationId,
+    includeArchived: false,
+    filters: {
+      include_dynamic: false, // Don't need full dynamic fields, just names
+      include_relationships: false
+    }
+  })
+
+  // 🔧 FETCH SERVICE ENTITIES: To resolve service entity_id to service names
+  const { services: serviceEntities } = useHeraServices({
+    organizationId,
+    filters: {
+      include_dynamic: false, // Don't need full dynamic fields, just names
+      include_relationships: false
+    }
+  })
+
+  // 🗺️ CREATE LOOKUP MAPS: For fast entity ID → name resolution
+  const staffMap = useMemo(() => {
+    const map = new Map<string, string>()
+    staffEntities?.forEach(staff => {
+      if (staff.id && staff.entity_name) {
+        map.set(staff.id, staff.entity_name)
+      }
+    })
+    return map
+  }, [staffEntities])
+
+  const serviceMap = useMemo(() => {
+    const map = new Map<string, string>()
+    serviceEntities?.forEach(service => {
+      if (service.id && service.entity_name) {
+        map.set(service.id, service.entity_name)
+      }
+    })
+    return map
+  }, [serviceEntities])
+
   // Calculate date filters based on selection
   const { dateFrom, dateTo } = useMemo(() => {
     const today = new Date()
@@ -94,13 +137,158 @@ export function CustomerTransactionModal({
     }
   }, [dateRange])
 
-  // Fetch transactions with filters
-  const { transactions, kpis, isLoading, error, formatCurrency } = useCustomerTransactions({
+  // 🚀 ENTERPRISE: Fetch ALL transactions for customer (not just SALE type)
+  console.log('🔍 [CustomerTransactionModal] Fetching transactions with filter:', {
     customerId,
+    customerName,
     organizationId,
     dateFrom,
     dateTo
   })
+
+  const {
+    transactions: rawTransactions,
+    isLoading,
+    error
+  } = useUniversalTransactionV1({
+    organizationId: organizationId,
+    filters: {
+      source_entity_id: customerId, // Filter by customer
+      include_lines: true,
+      date_from: dateFrom,
+      date_to: dateTo
+    }
+  })
+
+  // 🔍 DEBUG: Verify customer filtering is working
+  React.useEffect(() => {
+    console.log('🔍 [CustomerTransactionModal] Raw transactions received:', {
+      customerId,
+      customerName,
+      totalTransactions: rawTransactions?.length || 0,
+      rawTransactions: rawTransactions || 'No data yet'
+    })
+
+    // 🔍 DEBUG: Staff and Service entity resolution
+    console.log('🗺️ [CustomerTransactionModal] Entity lookup maps:', {
+      staffMapSize: staffMap.size,
+      serviceMapSize: serviceMap.size,
+      staffEntities: staffEntities?.length || 0,
+      serviceEntities: serviceEntities?.length || 0,
+      sampleStaff: Array.from(staffMap.entries()).slice(0, 3),
+      sampleServices: Array.from(serviceMap.entries()).slice(0, 3)
+    })
+
+    if (rawTransactions && rawTransactions.length > 0) {
+      const uniqueCustomers = [...new Set(rawTransactions.map(t => t.source_entity_id))]
+      const isFiltered = rawTransactions.every(t => t.source_entity_id === customerId)
+
+      console.log('🔍 [CustomerTransactionModal] FILTERING ANALYSIS:', {
+        expectedCustomerId: customerId,
+        totalTransactions: rawTransactions.length,
+        uniqueCustomers: uniqueCustomers,
+        uniqueCustomerCount: uniqueCustomers.length,
+        isFilteredCorrectly: isFiltered,
+        firstTransaction: {
+          id: rawTransactions[0].id,
+          source_entity_id: rawTransactions[0].source_entity_id,
+          transaction_code: rawTransactions[0].transaction_code,
+          total_amount: rawTransactions[0].total_amount
+        },
+        allSourceEntityIds: rawTransactions.map(t => ({
+          txn_id: t.id?.slice(0, 8),
+          source_entity_id: t.source_entity_id?.slice(0, 8),
+          matches: t.source_entity_id === customerId
+        }))
+      })
+
+      if (!isFiltered) {
+        console.error('❌ FILTERING FAILED: Transactions from multiple customers!', {
+          expectedCustomerId: customerId,
+          actualCustomers: uniqueCustomers
+        })
+      } else {
+        console.log('✅ FILTERING SUCCESS: All transactions belong to correct customer')
+      }
+
+      // 🔍 DEBUG: Transaction line details
+      const firstTxn = rawTransactions[0]
+
+      // Log each line separately for clarity
+      firstTxn.lines?.forEach((line, idx) => {
+        console.log(`🔍 [Line ${idx + 1}]:`, {
+          line_type: line.line_type,
+          line_type_uppercase: (line.line_type || '').toUpperCase(),
+          entity_id: line.entity_id,
+          entity_id_in_serviceMap: line.entity_id ? serviceMap.has(line.entity_id) : false,
+          service_name_from_map: line.entity_id && serviceMap.has(line.entity_id) ? serviceMap.get(line.entity_id) : 'NOT IN MAP',
+          description: line.description,
+          line_data: line.line_data,
+          line_data_description: line.line_data?.description,
+          FULL_LINE_OBJECT: line
+        })
+      })
+
+      console.log('🔍 [CustomerTransactionModal] First transaction summary:', {
+        id: firstTxn.id,
+        target_entity_id: firstTxn.target_entity_id,
+        target_staff_name: firstTxn.target_entity_id && staffMap.has(firstTxn.target_entity_id)
+          ? staffMap.get(firstTxn.target_entity_id)
+          : 'NOT IN STAFF MAP',
+        business_context: firstTxn.business_context,
+        total_lines: firstTxn.lines?.length || 0,
+        service_lines_count: firstTxn.lines?.filter(line => {
+          const lineType = (line.line_type || '').toUpperCase()
+          return lineType === 'SERVICE' || lineType === 'PRODUCT' || line.entity_id
+        }).length || 0
+      })
+    }
+  }, [rawTransactions, customerId, customerName, staffMap, serviceMap, staffEntities, serviceEntities])
+
+  // Extract transactions array
+  const transactions = useMemo(() => {
+    return rawTransactions || []
+  }, [rawTransactions])
+
+  // 📊 CALCULATE KPIS: Lifetime value, visit count, avg order
+  const kpis = useMemo(() => {
+    const completedTransactions = transactions.filter(
+      t => t.transaction_status === 'completed'
+    )
+
+    const lifetimeValue = completedTransactions.reduce(
+      (sum, t) => sum + (t.total_amount || 0),
+      0
+    )
+
+    const visitCount = completedTransactions.length
+    const avgOrderValue = visitCount > 0 ? lifetimeValue / visitCount : 0
+
+    const lastVisit = transactions.length > 0
+      ? transactions.sort(
+          (a, b) =>
+            new Date(b.transaction_date).getTime() -
+            new Date(a.transaction_date).getTime()
+        )[0]?.transaction_date
+      : null
+
+    return {
+      lifetimeValue,
+      visitCount,
+      avgOrderValue,
+      lastVisit,
+      totalCount: transactions.length
+    }
+  }, [transactions])
+
+  // 💰 FORMAT CURRENCY: AED format
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-AE', {
+      style: 'currency',
+      currency: 'AED',
+      minimumFractionDigits: 2
+    }).format(amount)
+  }
 
   // Paginate transactions
   const paginatedTransactions = useMemo(() => {
@@ -116,73 +304,19 @@ export function CustomerTransactionModal({
     setCurrentPage(1)
   }, [dateRange, pageSize])
 
-  if (!open) return null
-
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.85)',
-        backdropFilter: 'blur(8px)'
-      }}
-      onClick={onClose}
+    <SalonLuxeModal
+      open={open}
+      onClose={onClose}
+      title="Transaction History"
+      description={`Complete transaction history for ${customerName}`}
+      icon={<ShoppingBag className="w-6 h-6" />}
+      size="xl"
+      className="max-h-[90vh]"
     >
-      <div
-        className="w-full max-w-6xl max-h-[90vh] flex flex-col rounded-2xl overflow-hidden animate-in zoom-in-95 duration-300"
-        style={{
-          backgroundColor: LUXE_COLORS.charcoal,
-          border: `2px solid ${LUXE_COLORS.gold}`,
-          boxShadow: `0 25px 80px rgba(0, 0, 0, 0.8), 0 0 120px ${LUXE_COLORS.gold}40, inset 0 0 80px rgba(212, 175, 55, 0.05)`
-        }}
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div
-          className="p-6 md:p-8 border-b flex items-center justify-between"
-          style={{
-            background: `linear-gradient(135deg, ${LUXE_COLORS.charcoalLight} 0%, ${LUXE_COLORS.charcoal} 100%)`,
-            backdropFilter: 'blur(10px)',
-            borderColor: `${LUXE_COLORS.gold}60`,
-            boxShadow: `inset 0 -1px 0 ${LUXE_COLORS.gold}40`
-          }}
-        >
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{
-                  backgroundColor: `${LUXE_COLORS.gold}20`,
-                  border: `1px solid ${LUXE_COLORS.gold}60`
-                }}
-              >
-                <ShoppingBag className="w-6 h-6" style={{ color: LUXE_COLORS.gold }} />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: LUXE_COLORS.champagne }}>
-                Transaction History
-              </h2>
-            </div>
-            <p className="text-base md:text-lg font-medium ml-[60px]" style={{ color: LUXE_COLORS.gold }}>
-              {customerName}
-            </p>
-          </div>
-          <Button
-            onClick={onClose}
-            variant="ghost"
-            className="min-w-[44px] min-h-[44px] rounded-full hover:bg-opacity-20 active:scale-95"
-            style={{ color: LUXE_COLORS.gold }}
-          >
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
 
         {/* Filters Bar */}
-        <div
-          className="p-4 border-b flex flex-col md:flex-row gap-4 items-start md:items-center justify-between"
-          style={{
-            backgroundColor: `${LUXE_COLORS.charcoalLight}60`,
-            borderColor: `${LUXE_COLORS.gold}20`
-          }}
-        >
+        <div className="p-4 border-b flex flex-col md:flex-row gap-4 items-start md:items-center justify-between" style={{ borderColor: `${LUXE_COLORS.gold}20` }}>
           {/* Date Range Filter */}
           <div className="flex items-center gap-3 w-full md:w-auto">
             <Calendar className="w-4 h-4" style={{ color: LUXE_COLORS.gold }} />
@@ -256,10 +390,21 @@ export function CustomerTransactionModal({
           )}
 
           {!isLoading && !error && transactions.length === 0 && (
-            <div className="text-center py-12">
-              <ShoppingBag className="w-16 h-16 mx-auto mb-4 opacity-40" style={{ color: LUXE_COLORS.bronze }} />
-              <p className="text-lg" style={{ color: LUXE_COLORS.bronze }}>
+            <div className="text-center py-16">
+              <div
+                className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center"
+                style={{
+                  backgroundColor: `${LUXE_COLORS.gold}10`,
+                  border: `2px solid ${LUXE_COLORS.gold}30`
+                }}
+              >
+                <ShoppingBag className="w-10 h-10" style={{ color: LUXE_COLORS.gold }} />
+              </div>
+              <p className="text-xl font-semibold mb-2" style={{ color: LUXE_COLORS.champagne }}>
                 No transactions found
+              </p>
+              <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                {customerName} hasn't made any transactions yet
               </p>
             </div>
           )}
@@ -268,52 +413,143 @@ export function CustomerTransactionModal({
             <>
               {/* Mobile Card View */}
               <div className="block md:hidden space-y-3">
-                {paginatedTransactions.map(transaction => (
-                  <div
-                    key={transaction.id}
-                    className="p-4 rounded-lg"
-                    style={{
-                      backgroundColor: `${LUXE_COLORS.charcoalLight}80`,
-                      backdropFilter: 'blur(10px)',
-                      border: `1px solid ${LUXE_COLORS.gold}20`
-                    }}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <p className="text-sm font-semibold mb-1" style={{ color: LUXE_COLORS.champagne }}>
-                          {transaction.transaction_code || transaction.id.slice(0, 8)}
+                {paginatedTransactions.map(transaction => {
+                  // 🔧 EXTRACT SERVICES: Separate services and products
+                  const services = transaction.lines
+                    ?.filter(line => {
+                      const lineType = (line.line_type || '').toUpperCase()
+                      return lineType === 'SERVICE'
+                    })
+                    ?.map(line => {
+                      // Priority 1: Resolve entity_id to service name from serviceMap
+                      if (line.entity_id && serviceMap.has(line.entity_id)) {
+                        return serviceMap.get(line.entity_id)
+                      }
+                      // Priority 2: Use description field if available
+                      if (line.description) {
+                        return line.description
+                      }
+                      // Priority 3: Look in line_data for service info
+                      if (line.line_data?.service_name) {
+                        return line.line_data.service_name
+                      }
+                      if (line.line_data?.description) {
+                        return line.line_data.description
+                      }
+                      // Fallback: Generic service indicator
+                      return line.line_amount ? `Service (${formatCurrency(line.line_amount)})` : 'Service'
+                    })
+                    .filter(Boolean)
+                    .join(', ') || 'No services'
+
+                  // 🔧 EXTRACT PRODUCTS: Separate from services
+                  const products = transaction.lines
+                    ?.filter(line => {
+                      const lineType = (line.line_type || '').toUpperCase()
+                      return lineType === 'PRODUCT'
+                    })
+                    ?.map(line => {
+                      if (line.entity_id && serviceMap.has(line.entity_id)) {
+                        return serviceMap.get(line.entity_id)
+                      }
+                      if (line.description) {
+                        return line.description
+                      }
+                      return line.line_amount ? `Product (${formatCurrency(line.line_amount)})` : 'Product'
+                    })
+                    .filter(Boolean)
+                    .join(', ') || 'No products'
+
+                  // 🔧 EXTRACT HAIRSTYLIST: Multiple data sources for staff names
+                  let hairstylist = 'Not assigned'
+
+                  // Priority 1: Resolve target_entity_id from staffMap
+                  if (transaction.target_entity_id && staffMap.has(transaction.target_entity_id)) {
+                    hairstylist = staffMap.get(transaction.target_entity_id)!
+                  }
+                  // Priority 2: Look in business_context
+                  else if (transaction.business_context?.staff_name) {
+                    hairstylist = transaction.business_context.staff_name
+                  }
+                  else if (transaction.business_context?.stylist) {
+                    hairstylist = transaction.business_context.stylist
+                  }
+                  // Priority 3: Check first service line for stylist info
+                  else {
+                    const firstServiceLine = transaction.lines?.find(line =>
+                      (line.line_type || '').toUpperCase() === 'SERVICE'
+                    )
+                    if (firstServiceLine?.line_data?.stylist_name) {
+                      hairstylist = firstServiceLine.line_data.stylist_name
+                    } else if (firstServiceLine?.line_data?.stylist_id && staffMap.has(firstServiceLine.line_data.stylist_id)) {
+                      hairstylist = staffMap.get(firstServiceLine.line_data.stylist_id)!
+                    }
+                  }
+
+                  return (
+                    <div
+                      key={transaction.id}
+                      className="p-4 rounded-lg"
+                      style={{
+                        backgroundColor: `${LUXE_COLORS.charcoalLight}80`,
+                        backdropFilter: 'blur(10px)',
+                        border: `1px solid ${LUXE_COLORS.gold}20`
+                      }}
+                    >
+                      {/* Date Visited */}
+                      <div className="mb-3">
+                        <p className="text-xs mb-1" style={{ color: LUXE_COLORS.bronze }}>
+                          Date Visited
                         </p>
-                        <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                        <p className="text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
                           {format(new Date(transaction.transaction_date), 'MMM d, yyyy h:mm a')}
                         </p>
                       </div>
-                      <p className="text-lg font-bold" style={{ color: LUXE_COLORS.emerald }}>
-                        {formatCurrency(transaction.total_amount || 0)}
-                      </p>
+
+                      {/* Services Done */}
+                      <div className="mb-3">
+                        <p className="text-xs mb-1" style={{ color: LUXE_COLORS.bronze }}>
+                          Services
+                        </p>
+                        <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                          {services}
+                        </p>
+                      </div>
+
+                      {/* Products */}
+                      {products !== 'No products' && (
+                        <div className="mb-3">
+                          <p className="text-xs mb-1" style={{ color: LUXE_COLORS.bronze }}>
+                            Products
+                          </p>
+                          <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                            {products}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Hairstylist */}
+                      <div className="mb-3">
+                        <p className="text-xs mb-1" style={{ color: LUXE_COLORS.bronze }}>
+                          Hairstylist
+                        </p>
+                        <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                          {hairstylist}
+                        </p>
+                      </div>
+
+                      {/* Payment */}
+                      <div className="flex items-center justify-between pt-2 border-t" style={{ borderColor: `${LUXE_COLORS.gold}20` }}>
+                        <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                          Payment
+                        </p>
+                        <p className="text-lg font-bold" style={{ color: LUXE_COLORS.emerald }}>
+                          {formatCurrency(transaction.total_amount || 0)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span
-                        className="text-xs px-2 py-1 rounded capitalize"
-                        style={{
-                          backgroundColor:
-                            transaction.transaction_status === 'completed'
-                              ? `${LUXE_COLORS.emerald}20`
-                              : transaction.transaction_status === 'cancelled'
-                                ? '#F8717120'
-                                : `${LUXE_COLORS.bronze}20`,
-                          color:
-                            transaction.transaction_status === 'completed'
-                              ? LUXE_COLORS.emerald
-                              : transaction.transaction_status === 'cancelled'
-                                ? '#F87171'
-                                : LUXE_COLORS.bronze
-                        }}
-                      >
-                        {transaction.transaction_status}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
 
               {/* Desktop Table View */}
@@ -322,64 +558,138 @@ export function CustomerTransactionModal({
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}20` }}>
                       <th className="text-left p-3 text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
-                        Transaction #
+                        Date Visited
                       </th>
                       <th className="text-left p-3 text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
-                        Date & Time
+                        Services
+                      </th>
+                      <th className="text-left p-3 text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                        Products
+                      </th>
+                      <th className="text-left p-3 text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
+                        Hairstylist
                       </th>
                       <th className="text-right p-3 text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
-                        Amount
-                      </th>
-                      <th className="text-center p-3 text-sm font-semibold" style={{ color: LUXE_COLORS.champagne }}>
-                        Status
+                        Payment
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedTransactions.map(transaction => (
-                      <tr
-                        key={transaction.id}
-                        className="hover:bg-opacity-40 transition-all"
-                        style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}10` }}
-                      >
-                        <td className="p-3">
-                          <p className="text-sm font-medium" style={{ color: LUXE_COLORS.champagne }}>
-                            {transaction.transaction_code || transaction.id.slice(0, 8)}
-                          </p>
-                        </td>
-                        <td className="p-3">
-                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
-                            {format(new Date(transaction.transaction_date), 'MMM d, yyyy h:mm a')}
-                          </p>
-                        </td>
-                        <td className="p-3 text-right">
-                          <p className="text-sm font-bold" style={{ color: LUXE_COLORS.emerald }}>
-                            {formatCurrency(transaction.total_amount || 0)}
-                          </p>
-                        </td>
-                        <td className="p-3 text-center">
-                          <span
-                            className="text-xs px-3 py-1 rounded capitalize inline-block"
-                            style={{
-                              backgroundColor:
-                                transaction.transaction_status === 'completed'
-                                  ? `${LUXE_COLORS.emerald}20`
-                                  : transaction.transaction_status === 'cancelled'
-                                    ? '#F8717120'
-                                    : `${LUXE_COLORS.bronze}20`,
-                              color:
-                                transaction.transaction_status === 'completed'
-                                  ? LUXE_COLORS.emerald
-                                  : transaction.transaction_status === 'cancelled'
-                                    ? '#F87171'
-                                    : LUXE_COLORS.bronze
-                            }}
-                          >
-                            {transaction.transaction_status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                    {paginatedTransactions.map(transaction => {
+                      // 🔧 EXTRACT SERVICES: Separate services and products
+                      const services = transaction.lines
+                        ?.filter(line => {
+                          const lineType = (line.line_type || '').toUpperCase()
+                          return lineType === 'SERVICE'
+                        })
+                        ?.map(line => {
+                          if (line.entity_id && serviceMap.has(line.entity_id)) {
+                            return serviceMap.get(line.entity_id)
+                          }
+                          if (line.description) {
+                            return line.description
+                          }
+                          if (line.line_data?.service_name) {
+                            return line.line_data.service_name
+                          }
+                          if (line.line_data?.description) {
+                            return line.line_data.description
+                          }
+                          return line.line_amount ? `Service (${formatCurrency(line.line_amount)})` : 'Service'
+                        })
+                        .filter(Boolean)
+                        .join(', ') || 'No services'
+
+                      // 🔧 EXTRACT PRODUCTS: Separate from services
+                      const products = transaction.lines
+                        ?.filter(line => {
+                          const lineType = (line.line_type || '').toUpperCase()
+                          return lineType === 'PRODUCT'
+                        })
+                        ?.map(line => {
+                          if (line.entity_id && serviceMap.has(line.entity_id)) {
+                            return serviceMap.get(line.entity_id)
+                          }
+                          if (line.description) {
+                            return line.description
+                          }
+                          return line.line_amount ? `Product (${formatCurrency(line.line_amount)})` : 'Product'
+                        })
+                        .filter(Boolean)
+                        .join(', ') || 'No products'
+
+                      // 🔧 EXTRACT HAIRSTYLIST: Multiple data sources for staff names
+                      let hairstylist = 'Not assigned'
+
+                      // Priority 1: Resolve target_entity_id from staffMap
+                      if (transaction.target_entity_id && staffMap.has(transaction.target_entity_id)) {
+                        hairstylist = staffMap.get(transaction.target_entity_id)!
+                      }
+                      // Priority 2: Look in business_context
+                      else if (transaction.business_context?.staff_name) {
+                        hairstylist = transaction.business_context.staff_name
+                      }
+                      else if (transaction.business_context?.stylist) {
+                        hairstylist = transaction.business_context.stylist
+                      }
+                      // Priority 3: Check first service line for stylist info
+                      else {
+                        const firstServiceLine = transaction.lines?.find(line =>
+                          (line.line_type || '').toUpperCase() === 'SERVICE'
+                        )
+                        if (firstServiceLine?.line_data?.stylist_name) {
+                          hairstylist = firstServiceLine.line_data.stylist_name
+                        } else if (firstServiceLine?.line_data?.stylist_id && staffMap.has(firstServiceLine.line_data.stylist_id)) {
+                          hairstylist = staffMap.get(firstServiceLine.line_data.stylist_id)!
+                        }
+                      }
+
+                      return (
+                        <tr
+                          key={transaction.id}
+                          className="hover:bg-opacity-40 transition-all"
+                          style={{ borderBottom: `1px solid ${LUXE_COLORS.gold}10` }}
+                        >
+                          {/* Date Visited */}
+                          <td className="p-3">
+                            <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                              {format(new Date(transaction.transaction_date), 'MMM d, yyyy')}
+                            </p>
+                            <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
+                              {format(new Date(transaction.transaction_date), 'h:mm a')}
+                            </p>
+                          </td>
+
+                          {/* Services */}
+                          <td className="p-3">
+                            <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                              {services}
+                            </p>
+                          </td>
+
+                          {/* Products */}
+                          <td className="p-3">
+                            <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                              {products}
+                            </p>
+                          </td>
+
+                          {/* Hairstylist */}
+                          <td className="p-3">
+                            <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                              {hairstylist}
+                            </p>
+                          </td>
+
+                          {/* Payment */}
+                          <td className="p-3 text-right">
+                            <p className="text-sm font-bold" style={{ color: LUXE_COLORS.emerald }}>
+                              {formatCurrency(transaction.total_amount || 0)}
+                            </p>
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -457,7 +767,6 @@ export function CustomerTransactionModal({
             </div>
           </div>
         )}
-      </div>
-    </div>
+    </SalonLuxeModal>
   )
 }

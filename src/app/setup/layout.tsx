@@ -6,6 +6,8 @@
 
 'use client'
 
+import React from 'react'
+
 import { ReactNode } from 'react'
 import { HERAAuthProviderV3 } from '@/components/auth/HERAAuthProviderV3'
 

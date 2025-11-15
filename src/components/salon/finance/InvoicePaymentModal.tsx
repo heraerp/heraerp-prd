@@ -1,3 +1,5 @@
+
+import React, { useMemo, useState } from 'react'
 /**
  * InvoicePaymentModal Component
  *
@@ -19,7 +21,6 @@
 
 'use client'
 
-import { useState, useMemo } from 'react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
@@ -141,7 +142,7 @@ export function InvoicePaymentModal({
     try {
       const input: RecordInvoicePaymentInput = {
         organizationId: organization.id,
-        actorUserId: user.id,
+        actorUserId: user.entity_id || user.id,
         invoiceTransactionId: invoice.invoice_id,
         invoiceNumber: invoice.invoice_number,
         customerEntityId: invoice.customer_entity_id,

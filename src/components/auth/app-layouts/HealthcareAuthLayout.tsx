@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { UniversalAuthenticatedLayout } from '../UniversalAuthenticatedLayout'
 import { Heart } from 'lucide-react'
 

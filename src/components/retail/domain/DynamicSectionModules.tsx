@@ -84,16 +84,18 @@ interface DynamicSectionModulesProps {
   sectionEntities: any[]
   isLoading: boolean
   onRefresh: () => void
+  config: any  // DomainConfig from universal types
   className?: string
 }
 
-export default function DynamicSectionModules({ 
-  domain, 
-  domainEntity, 
-  sectionEntities, 
-  isLoading, 
+export default function DynamicSectionModules({
+  domain,
+  domainEntity,
+  sectionEntities,
+  isLoading,
   onRefresh,
-  className 
+  config,
+  className
 }: DynamicSectionModulesProps) {
   const router = useRouter()
   const [sectionModules, setSectionModules] = useState<SectionModule[]>([])
@@ -188,7 +190,7 @@ export default function DynamicSectionModules({
       sectionSlug = codeParts[codeParts.length - 1]?.toLowerCase() || sectionSlug
     }
 
-    const route = `/retail/domains/${domain}/sections/${sectionSlug}`
+    const route = `/${config.appCode.toLowerCase()}/domains/${domain}/sections/${sectionSlug}`
 
     // Enhanced icon and color mapping
     const { icon, bgColor, persona, features, kpi } = getEnhancedSectionData(entity.entity_name, entity.entity_code || '')
@@ -341,13 +343,13 @@ export default function DynamicSectionModules({
   const handleSectionClick = (section: SectionModule) => {
     console.log(`🎯 Level 2→3: Navigating to section: ${section.route}`)
     console.log(`📋 Section: ${section.title} (${section.entity_code})`)
-    
+
     // Navigate to the section workspace
     if (section.route) {
       router.push(section.route)
     } else {
       // Fallback: construct route if not provided
-      const fallbackRoute = `/retail/domains/${domain}/sections/${section.entity_code?.toLowerCase() || section.title.toLowerCase().replace(/\s+/g, '-')}`
+      const fallbackRoute = `/${config.appCode.toLowerCase()}/domains/${domain}/sections/${section.entity_code?.toLowerCase() || section.title.toLowerCase().replace(/\s+/g, '-')}`
       console.log(`🔄 Using fallback route: ${fallbackRoute}`)
       router.push(fallbackRoute)
     }
@@ -430,7 +432,7 @@ export default function DynamicSectionModules({
               </p>
               <Button variant="outline" onClick={onRefresh}>
                 <RefreshCw className="w-4 h-4 mr-2" />
-                Check Again
+                Refresh Data
               </Button>
             </div>
           )}

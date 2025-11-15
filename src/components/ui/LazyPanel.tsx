@@ -5,6 +5,8 @@
 
 'use client'
 
+import React, { useEffect, useState } from 'react'
+
 import { useEffect, useRef, useState, ReactNode } from 'react'
 
 interface LazyPanelProps {

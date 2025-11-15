@@ -1,5 +1,6 @@
 // app/examples/settings/theme/page.tsx
 'use client'
+import React from 'react'
 import { ThemePicker } from '@/ui'
 import { useRouter } from 'next/navigation'
 

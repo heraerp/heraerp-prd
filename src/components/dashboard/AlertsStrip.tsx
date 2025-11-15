@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
 import { AlertTriangle, FileText, Package, MessageSquare, X } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'

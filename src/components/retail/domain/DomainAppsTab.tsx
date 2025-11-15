@@ -69,10 +69,11 @@ interface AppItem {
 
 interface DomainAppsTabProps {
   domain: string
+  config: any  // DomainConfig from universal types
   className?: string
 }
 
-export default function DomainAppsTab({ domain, className }: DomainAppsTabProps) {
+export default function DomainAppsTab({ domain, config, className }: DomainAppsTabProps) {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('favorites')
   const [searchQuery, setSearchQuery] = useState('')

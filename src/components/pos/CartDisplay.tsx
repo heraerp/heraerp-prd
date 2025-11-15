@@ -6,6 +6,7 @@
 
 'use client'
 
+import React from 'react'
 import { Trash2, Plus, Minus } from 'lucide-react'
 import { useCartStore } from '@/lib/hooks/usePos'
 import { CartLine } from '@/lib/schemas/pos'

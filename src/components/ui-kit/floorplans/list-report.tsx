@@ -7,7 +7,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, RefreshCw, Download, Filter, Search } from 'lucide-react'
 import { ColumnDef } from '@tanstack/react-table'

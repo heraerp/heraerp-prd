@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React from 'react'
 
 import { CheckCircle, XCircle, Award, Loader2, FileText, DollarSign } from 'lucide-react'
 

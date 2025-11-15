@@ -7,6 +7,7 @@
  * Perfect for hero sections, feature blocks, or any content that needs visual separation
  */
 
+import React from 'react'
 import WaveBackground from './WaveBackground'
 
 interface WaveSectionProps {

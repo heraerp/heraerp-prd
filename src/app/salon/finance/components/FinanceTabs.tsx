@@ -1630,7 +1630,7 @@ function ExpensesTab({ isLoading: parentLoading, organizationId, selectedMonth, 
         expense_id: expense.id,
         payment_method: expense.payment_method,
         payment_date: new Date().toISOString().split('T')[0],
-        actor_user_id: user.id
+        actor_user_id: user.entity_id || user.id
       })
 
       if (result.success) {

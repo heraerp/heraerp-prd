@@ -62,15 +62,6 @@ export interface UseHeraProductsOptions {
 }
 
 export function useHeraProducts(options?: UseHeraProductsOptions) {
-  // 🔍 DEBUG: Log what we're fetching
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[useHeraProducts] 🔍 Fetching products:', {
-      organizationId: options?.organizationId,
-      entity_type: 'PRODUCT',
-      filters: options?.filters
-    })
-  }
-
   const {
     entities: products,
     isLoading,
@@ -99,16 +90,6 @@ export function useHeraProducts(options?: UseHeraProductsOptions) {
     dynamicFields: PRODUCT_PRESET.dynamicFields as DynamicFieldDef[],
     relationships: PRODUCT_PRESET.relationships as RelationshipDef[]
   })
-
-  // 🔍 DEBUG: Log what we got
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[useHeraProducts] 📦 Products loaded:', {
-      count: products?.length || 0,
-      isLoading,
-      hasError: !!error,
-      organizationId: options?.organizationId
-    })
-  }
 
   // Helper to create product with proper smart codes and relationships
   const createProduct = async (data: {

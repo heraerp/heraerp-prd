@@ -279,6 +279,50 @@ function validateGLBalance(lines: Array<any>, logger?: HERAEnhancedLogger, trans
   return { ok: true };
 }
 
+function validateIntegrationEvent(
+  body: any,
+  ctx: GuardrailCtx,
+  logger?: HERAEnhancedLogger,
+) {
+  // Integration event specific validations
+  if (!body?.event_source && !body?.source) {
+    return { ok: false, reason: "EVENT_SOURCE_REQUIRED" };
+  }
+  
+  if (!body?.event_type) {
+    return { ok: false, reason: "EVENT_TYPE_REQUIRED" };
+  }
+  
+  if (!body?.connector_code) {
+    return { ok: false, reason: "CONNECTOR_CODE_REQUIRED" };
+  }
+  
+  // Validate smart code for integration events
+  const eventSmartCode = body.smart_code || `HERA.INTEGRATION.EVENT.${body.event_type.toUpperCase()}.v1`;
+  const smartCodeValidation = validateSmartCodePresenceAndPattern(eventSmartCode, logger);
+  if (!smartCodeValidation.ok) {
+    return smartCodeValidation;
+  }
+  
+  // Log integration event for audit
+  if (logger) {
+    logger.audit({
+      eventType: 'integration_event_received',
+      actorId: ctx.actorUserEntityId,
+      organizationId: ctx.orgId,
+      metadata: {
+        eventSource: body.event_source || body.source,
+        eventType: body.event_type,
+        connectorCode: body.connector_code,
+        smartCode: eventSmartCode
+      },
+      severity: 'info'
+    });
+  }
+  
+  return { ok: true };
+}
+
 function validatePayloadAgainstGuardrails(
   ctx: GuardrailCtx,
   body: any,
@@ -351,6 +395,44 @@ async function callTransactionsPost(
     p_organization_id: ctx.orgId,
     p_transaction: body.transaction_data || {},
     p_lines: body.lines || [],
+    p_options: body.options || {}
+  });
+}
+
+// ---------- Integration RPC dispatch ----------
+async function callIntegrationEvent(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  ctx: GuardrailCtx,
+  body: any,
+) {
+  // hera_integration_event_in_v1: process inbound integration events
+  return await supabaseAdmin.rpc("hera_integration_event_in_v1", {
+    p_actor_user_id: ctx.actorUserEntityId,
+    p_organization_id: ctx.orgId,
+    p_event_source: body.source || body.event_source,
+    p_event_type: body.event_type,
+    p_event_data: body.event_data || body.data,
+    p_connector_code: body.connector_code,
+    p_idempotency_key: body.idempotency_key,
+    p_smart_code: body.smart_code,
+    p_options: body.options || {}
+  });
+}
+
+async function callIntegrationConnector(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  ctx: GuardrailCtx,
+  body: any,
+) {
+  // hera_integration_connector_v1: manage connector definitions and installations
+  return await supabaseAdmin.rpc("hera_integration_connector_v1", {
+    p_actor_user_id: ctx.actorUserEntityId,
+    p_organization_id: ctx.orgId,
+    p_operation: body.operation || 'LIST',
+    p_connector_type: body.connector_type,
+    p_connector_code: body.connector_code,
+    p_connector_config: body.connector_config || {},
+    p_installation_config: body.installation_config || {},
     p_options: body.options || {}
   });
 }
@@ -607,6 +689,38 @@ async function handle(req: Request) {
       return addHeadersAndStore(json(200, responseBody), responseBody);
     }
 
+    // Integration Events endpoint - inbound events from external systems
+    if (url.pathname.endsWith("/api/v2/integrations/events")) {
+      // Additional integration-specific validation
+      const integrationValidation = validateIntegrationEvent(body, baseCtx, logger);
+      if (!integrationValidation.ok) {
+        return json(400, { error: `integration_validation:${integrationValidation.reason}`, rid });
+      }
+      
+      const { data, error } = await callIntegrationEvent(supabaseAdmin, baseCtx, body);
+      if (error) return json(400, { error: error.message, rid });
+      const responseBody = { 
+        rid, 
+        data, 
+        actor: baseCtx.actorUserEntityId, 
+        org: baseCtx.orgId,
+        integration: {
+          source: body.event_source || body.source,
+          type: body.event_type,
+          connector: body.connector_code
+        }
+      };
+      return addHeadersAndStore(json(200, responseBody), responseBody);
+    }
+
+    // Integration Connectors endpoint - manage connector definitions and installations
+    if (url.pathname.endsWith("/api/v2/integrations/connectors")) {
+      const { data, error } = await callIntegrationConnector(supabaseAdmin, baseCtx, body);
+      if (error) return json(400, { error: error.message, rid });
+      const responseBody = { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId };
+      return addHeadersAndStore(json(200, responseBody), responseBody);
+    }
+
     // Micro-Apps Catalog endpoint (platform org only)
     if (url.pathname.endsWith("/api/v2/micro-apps/catalog")) {
       const { data, error } = await callMicroAppCatalog(supabaseAdmin, baseCtx, body);
@@ -644,7 +758,7 @@ async function handle(req: Request) {
 
     // Optional generic route if you want a single command endpoint
     if (url.pathname.endsWith("/api/v2/command")) {
-      const op = body?.op as "entities" | "transactions" | "micro-apps";
+      const op = body?.op as "entities" | "transactions" | "micro-apps" | "integrations";
       if (op === "entities") {
         const { data, error } = await callEntitiesCRUD(supabaseAdmin, baseCtx, body);
         if (error) return json(400, { error: error.message, rid });
@@ -654,6 +768,20 @@ async function handle(req: Request) {
         const { data, error } = await callTransactionsPost(supabaseAdmin, baseCtx, body);
         if (error) return json(400, { error: error.message, rid });
         return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+      }
+      if (op === "integrations") {
+        const subOp = body?.sub_op as "events" | "connectors";
+        if (subOp === "events") {
+          const { data, error } = await callIntegrationEvent(supabaseAdmin, baseCtx, body);
+          if (error) return json(400, { error: error.message, rid });
+          return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+        }
+        if (subOp === "connectors") {
+          const { data, error } = await callIntegrationConnector(supabaseAdmin, baseCtx, body);
+          if (error) return json(400, { error: error.message, rid });
+          return json(200, { rid, data, actor: baseCtx.actorUserEntityId, org: baseCtx.orgId });
+        }
+        return json(400, { error: "unknown_integration_command", rid });
       }
       if (op === "micro-apps") {
         const subOp = body?.sub_op as "catalog" | "install" | "dependencies" | "runtime" | "workflow";

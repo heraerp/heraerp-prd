@@ -15,7 +15,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
 import { Building2, ChevronDown, Check } from 'lucide-react'
 import { useHeraBranches } from '@/hooks/useHeraBranches'
