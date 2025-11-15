@@ -1,7 +1,5 @@
 'use client'
 
-import React, { useContext } from 'react'
-
 import { createContext, useContext, useState, ReactNode } from 'react'
 
 type ToastType = 'success' | 'error' | 'info'
