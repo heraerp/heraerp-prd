@@ -6,12 +6,15 @@
 
 'use client'
 
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useState, useMemo } from 'react'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { ResolvedTileConfig } from '@/lib/tiles/resolved-tile-config'
 import { useTileStats } from '@/lib/tiles/use-tile-stats'
 import { useTileActions } from '@/lib/tiles/use-tile-actions'
 import { useTileTelemetry } from '@/lib/tiles/tile-telemetry'
+import { useGlassEffect, GlassConfig, glassClasses } from '@/lib/dna/design-system/glass-effects-2.0'
+import { fadeSlide } from '@/components/ui-kit/design-tokens'
 import { 
   Database, Receipt, Workflow, Network, BarChart3, 
   Plus, Eye, Settings, RefreshCw, MoreVertical,
@@ -34,6 +37,12 @@ export interface DynamicTileProps {
   interactive?: boolean
   showStats?: boolean
   showActions?: boolean
+  
+  // Glass effect options
+  glassIntensity?: 'subtle' | 'medium' | 'strong' | 'ultra'
+  glassVariant?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'premium'
+  enableShine?: boolean
+  enableAnimations?: boolean
   
   // Event handlers
   onClick?: (tile: ResolvedTileConfig) => void
@@ -83,6 +92,10 @@ export function DynamicTile({
   interactive = true,
   showStats = true,
   showActions = true,
+  glassIntensity,
+  glassVariant = 'default',
+  enableShine = false,
+  enableAnimations = true,
   onClick,
   onActionExecute,
   onStatsRefresh
@@ -98,6 +111,39 @@ export function DynamicTile({
 
   // Determine tile size (from prop, config, or default)
   const tileSize = size || tile.layout.size || 'medium'
+  
+  // Determine glass effect intensity based on tile importance and type
+  const autoGlassIntensity = useMemo(() => {
+    if (glassIntensity) return glassIntensity
+    
+    // Auto-assign glass intensity based on tile characteristics
+    if (tile.operationCategory === 'analytics' || tile.operationCategory === 'reporting') return 'strong'
+    if (tile.operationCategory === 'crud' || tile.operationCategory === 'workflow') return 'medium' 
+    if (tile.tileType === 'quick-action' || tileSize === 'small') return 'subtle'
+    return 'medium'
+  }, [glassIntensity, tile.operationCategory, tile.tileType, tileSize])
+  
+  // Auto-assign glass variant based on tile context
+  const autoGlassVariant = useMemo(() => {
+    if (glassVariant !== 'default') return glassVariant
+    
+    if (tile.operationCategory === 'analytics') return 'primary'
+    if (tile.operationCategory === 'reporting') return 'success'  
+    if (tile.operationCategory === 'admin') return 'warning'
+    if (tile.tileType === 'premium' || tile.tileType === 'enterprise') return 'premium'
+    return 'default'
+  }, [glassVariant, tile.operationCategory, tile.tileType])
+  
+  // Configure glass effect
+  const glassConfig: GlassConfig = {
+    intensity: autoGlassIntensity,
+    variant: autoGlassVariant,
+    enableShine: enableShine || tile.ui.enableEffects,
+    enableDepth: tileSize === 'large' || tileSize === 'tall'
+  }
+  
+  // Get glass effect styles and classes
+  const { styles: glassStyles, className: glassClassName } = useGlassEffect(glassConfig)
   
   // Handle tile click
   const handleTileClick = () => {
@@ -126,42 +172,80 @@ export function DynamicTile({
     }
   }
 
+  // Animation variants for Framer Motion
+  const animationVariants = {
+    initial: { opacity: 0, y: 20, scale: 0.95 },
+    animate: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { 
+        duration: 0.3, 
+        ease: [0.25, 0.46, 0.45, 0.94] 
+      } 
+    },
+    hover: {
+      y: -4,
+      scale: tileSize === 'small' ? 1.02 : 1.01,
+      transition: { duration: 0.2, ease: 'easeOut' }
+    },
+    tap: {
+      scale: 0.98,
+      transition: { duration: 0.1 }
+    }
+  }
+
   return (
-    <div 
+    <motion.div
       className={cn(
-        // Base styles
-        "relative bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden",
-        "transition-all duration-200 hover:shadow-md",
+        // Base glassmorphism styles
+        'relative rounded-2xl overflow-hidden',
+        glassClassName,
         
         // Size variants
         {
-          'min-h-[200px]': tileSize === 'small',
-          'min-h-[280px]': tileSize === 'medium',
-          'min-h-[360px]': tileSize === 'large',
-          'min-h-[280px] col-span-2': tileSize === 'wide',
-          'min-h-[400px] row-span-2': tileSize === 'tall',
+          'min-h-[180px]': tileSize === 'small',
+          'min-h-[260px]': tileSize === 'medium', 
+          'min-h-[340px]': tileSize === 'large',
+          'min-h-[260px] col-span-2': tileSize === 'wide',
+          'min-h-[380px] row-span-2': tileSize === 'tall',
         },
         
         // Interactive styles
         {
-          'cursor-pointer hover:border-blue-300': interactive,
-          'hover:scale-[1.02]': interactive && tileSize === 'small',
-          'hover:scale-[1.01]': interactive && tileSize !== 'small',
+          'cursor-pointer': interactive,
         },
+        
+        // Enhanced transitions
+        'transition-all duration-300 ease-out',
         
         className
       )}
+      style={glassStyles}
+      variants={enableAnimations ? animationVariants : undefined}
+      initial={enableAnimations ? 'initial' : undefined}
+      animate={enableAnimations ? 'animate' : undefined}
+      whileHover={interactive && enableAnimations ? 'hover' : undefined}
+      whileTap={interactive && enableAnimations ? 'tap' : undefined}
       onClick={handleTileClick}
     >
-      {/* Gradient Background */}
+      {/* Enhanced Glassmorphism Background */}
       {tile.ui.gradient && (
         <div 
           className={cn(
-            "absolute inset-0 opacity-5",
+            "absolute inset-0 opacity-10",
             `bg-gradient-to-br ${tile.ui.gradient}`
           )}
         />
       )}
+      
+      {/* Shine Effect */}
+      {enableShine && (
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+      )}
+      
+      {/* Glass Reflection */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.07] via-transparent to-transparent pointer-events-none" />
       
       {/* Header Section */}
       <TileHeader 
@@ -174,14 +258,14 @@ export function DynamicTile({
       />
       
       {/* Content Section */}
-      <div className="p-4 pt-2 space-y-4">
+      <div className="relative p-5 pt-3 space-y-4">
         {/* Title and Description */}
         <div>
-          <h3 className="font-semibold text-gray-900 text-sm md:text-base leading-tight">
+          <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm md:text-base leading-tight drop-shadow-sm">
             {tile.ui.title}
           </h3>
           {tile.ui.subtitle && (
-            <p className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
+            <p className="text-xs md:text-sm text-slate-600 dark:text-slate-300 mt-1.5 line-clamp-2 leading-relaxed">
               {tile.ui.subtitle}
             </p>
           )}
@@ -212,7 +296,7 @@ export function DynamicTile({
       
       {/* Footer with metadata */}
       <TileFooter tile={tile} />
-    </div>
+    </motion.div>
   )
 }
 

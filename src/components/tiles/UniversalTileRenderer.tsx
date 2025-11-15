@@ -7,6 +7,7 @@
 'use client'
 
 import React, { Suspense, useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useResolvedTiles } from '@/lib/tiles/use-resolved-tiles'
 import { DynamicTile } from './DynamicTile'
@@ -14,6 +15,8 @@ import { TileStatsDisplay } from './TileStatsDisplay'
 import { TileActionsMenu } from './TileActionsMenu'
 import { ResolvedTileConfig } from '@/lib/tiles/resolved-tile-config'
 import { useTileTelemetry } from '@/lib/tiles/tile-telemetry'
+import { useGlassEffect, GlassConfig } from '@/lib/dna/design-system/glass-effects-2.0'
+import { fadeSlide } from '@/components/ui-kit/design-tokens'
 import { 
   Grid, LayoutGrid, List, Filter, Search, Plus, Settings,
   Loader2, AlertTriangle, RefreshCw, Eye, EyeOff
@@ -444,35 +447,68 @@ function WorkspaceHeader({
   isRefreshing,
   onRefresh
 }: WorkspaceHeaderProps) {
+  // Glass effect configuration for header
+  const headerGlassConfig: GlassConfig = {
+    intensity: 'medium',
+    variant: 'default',
+    enableShine: false,
+    enableDepth: true
+  }
+  
+  const { styles: headerGlassStyles, className: headerGlassClassName } = useGlassEffect(headerGlassConfig)
+
   return (
-    <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900">Workspace Dashboard</h2>
-        <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
-          <span>{tileCount} visible tiles</span>
+    <motion.div 
+      className={cn(
+        "flex items-center justify-between p-6 border-b border-white/20 backdrop-blur-xl",
+        headerGlassClassName
+      )}
+      style={headerGlassStyles}
+      variants={fadeSlide()}
+      initial="initial"
+      animate="animate"
+    >
+      {/* Enhanced glass background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white/[0.05] via-transparent to-white/[0.05] pointer-events-none" />
+      
+      <div className="relative z-10">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 drop-shadow-sm">
+          Workspace Dashboard
+        </h2>
+        <div className="flex items-center gap-4 mt-1.5 text-sm text-slate-600 dark:text-slate-300">
+          <span className="font-medium">{tileCount} visible tiles</span>
           {hiddenCount > 0 && (
-            <span className="text-orange-600">{hiddenCount} hidden</span>
+            <span className="text-amber-600 dark:text-amber-400 font-medium">
+              {hiddenCount} hidden
+            </span>
           )}
-          <span className="text-gray-400">•</span>
-          <span>{totalTileCount} total</span>
+          <span className="text-slate-400">•</span>
+          <span className="font-medium">{totalTileCount} total</span>
         </div>
       </div>
       
-      <div className="flex items-center gap-3">
-        <button
+      <div className="flex items-center gap-3 relative z-10">
+        <motion.button
           onClick={onRefresh}
           disabled={isRefreshing}
-          className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 rounded-md hover:bg-gray-100"
+          className="p-2.5 text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 disabled:opacity-50 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 hover:border-white/30 transition-all duration-200 shadow-lg hover:shadow-xl"
           title="Refresh workspace"
+          whileHover={{ scale: 1.05, y: -1 }}
+          whileTap={{ scale: 0.95 }}
         >
           <RefreshCw className={cn("w-5 h-5", { "animate-spin": isRefreshing })} />
-        </button>
+        </motion.button>
         
-        <button className="p-2 text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100">
+        <motion.button 
+          className="p-2.5 text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 hover:border-white/30 transition-all duration-200 shadow-lg hover:shadow-xl"
+          title="Workspace settings"
+          whileHover={{ scale: 1.05, y: -1 }}
+          whileTap={{ scale: 0.95 }}
+        >
           <Settings className="w-5 h-5" />
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -505,43 +541,67 @@ function WorkspaceControls({
   showFilter,
   tiles
 }: WorkspaceControlsProps) {
+  // Glass effect configuration for controls
+  const controlsGlassConfig: GlassConfig = {
+    intensity: 'medium',
+    variant: 'default',
+    enableShine: false,
+    enableDepth: false
+  }
+  
+  const { styles: controlsGlassStyles, className: controlsGlassClassName } = useGlassEffect(controlsGlassConfig)
+
   return (
-    <div className="flex items-center gap-4 p-4 bg-gray-50 border-b border-gray-200">
-      {/* Layout Switcher */}
-      <div className="flex bg-white rounded-lg border border-gray-200 p-1">
+    <motion.div 
+      className={cn(
+        "flex flex-wrap items-center gap-4 p-6 border-b border-white/10 backdrop-blur-lg",
+        controlsGlassClassName
+      )}
+      style={controlsGlassStyles}
+      variants={fadeSlide(0.1)}
+      initial="initial"
+      animate="animate"
+    >
+      {/* Enhanced glass background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white/[0.03] via-transparent to-white/[0.03] pointer-events-none" />
+      
+      {/* Layout Switcher with glass effect */}
+      <div className="flex bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-1 shadow-lg relative z-10">
         {[
           { id: 'auto', icon: LayoutGrid, label: 'Auto' },
           { id: 'grid', icon: Grid, label: 'Grid' },
           { id: 'list', icon: List, label: 'List' }
         ].map(({ id, icon: Icon, label }) => (
-          <button
+          <motion.button
             key={id}
             onClick={() => onLayoutChange(id)}
             className={cn(
-              "flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-colors",
+              "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200",
               {
-                'bg-blue-600 text-white': layout === id,
-                'text-gray-700 hover:bg-gray-100': layout !== id,
+                'bg-blue-500 text-white shadow-lg': layout === id,
+                'text-slate-700 dark:text-slate-200 hover:bg-white/20': layout !== id,
               }
             )}
             title={`${label} layout`}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <Icon className="w-4 h-4" />
             <span className="hidden sm:inline">{label}</span>
-          </button>
+          </motion.button>
         ))}
       </div>
 
-      {/* Search */}
+      {/* Search with glass effect */}
       {showSearch && (
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-500 dark:text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search tiles..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:bg-white/15 transition-all duration-200 shadow-lg"
           />
         </div>
       )}
@@ -554,7 +614,7 @@ function WorkspaceControls({
           tiles={tiles}
         />
       )}
-    </div>
+    </motion.div>
   )
 }
 
@@ -576,39 +636,64 @@ function WorkspaceFilter({ filter, onFilterChange, tiles }: WorkspaceFilterProps
   
   const activeFilterCount = Object.keys(filter).length
   
+  // Glass effect configuration for filter dropdown
+  const filterGlassConfig: GlassConfig = {
+    intensity: 'strong',
+    variant: 'default',
+    enableShine: false,
+    enableDepth: true
+  }
+  
+  const { styles: filterGlassStyles, className: filterGlassClassName } = useGlassEffect(filterGlassConfig)
+  
   return (
     <div className="relative">
-      <button
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex items-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white hover:bg-gray-50",
+          "flex items-center gap-2 px-4 py-3 text-sm border border-white/20 rounded-xl bg-white/10 backdrop-blur-md hover:bg-white/20 shadow-lg transition-all duration-200",
           {
-            'border-blue-500 bg-blue-50': activeFilterCount > 0
+            'border-blue-400/50 bg-blue-500/20': activeFilterCount > 0
           }
         )}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
       >
-        <Filter className="w-4 h-4" />
-        <span>Filter</span>
+        <Filter className="w-4 h-4 text-slate-700 dark:text-slate-200" />
+        <span className="font-medium text-slate-800 dark:text-slate-100">Filter</span>
         {activeFilterCount > 0 && (
-          <span className="px-1.5 py-0.5 text-xs bg-blue-600 text-white rounded-full">
+          <span className="px-2 py-0.5 text-xs bg-blue-600 text-white rounded-full font-medium shadow-sm">
             {activeFilterCount}
           </span>
         )}
-      </button>
+      </motion.button>
 
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-20">
-            <div className="space-y-4">
+          <motion.div 
+            className={cn(
+              "absolute top-full right-0 mt-3 w-80 rounded-2xl shadow-2xl border border-white/20 p-6 z-20",
+              filterGlassClassName
+            )}
+            style={filterGlassStyles}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            {/* Enhanced glass background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.05] pointer-events-none rounded-2xl" />
+            
+            <div className="space-y-5 relative z-10">
               <div className="flex items-center justify-between">
-                <h3 className="font-medium text-gray-900">Filter Tiles</h3>
+                <h3 className="font-semibold text-slate-800 dark:text-slate-100">Filter Tiles</h3>
                 <button
                   onClick={() => {
                     onFilterChange({})
                     setIsOpen(false)
                   }}
-                  className="text-xs text-gray-500 hover:text-gray-700"
+                  className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-medium px-2 py-1 rounded-md hover:bg-white/10 transition-all duration-150"
                 >
                   Clear all
                 </button>
@@ -616,12 +701,12 @@ function WorkspaceFilter({ filter, onFilterChange, tiles }: WorkspaceFilterProps
 
               {/* Tile Type Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">
                   Tile Type
                 </label>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {uniqueTileTypes.map(type => (
-                    <label key={type} className="flex items-center">
+                    <label key={type} className="flex items-center group cursor-pointer">
                       <input
                         type="checkbox"
                         checked={filter.tileType?.includes(type) || false}
@@ -637,9 +722,11 @@ function WorkspaceFilter({ filter, onFilterChange, tiles }: WorkspaceFilterProps
                             tileType: newTypes.length > 0 ? newTypes : undefined
                           })
                         }}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-white/30 bg-white/5 text-blue-600 focus:ring-blue-500/50 focus:border-blue-500/50"
                       />
-                      <span className="ml-2 text-sm text-gray-700">{type}</span>
+                      <span className="ml-3 text-sm text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-50 transition-colors">
+                        {type}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -647,12 +734,12 @@ function WorkspaceFilter({ filter, onFilterChange, tiles }: WorkspaceFilterProps
 
               {/* Category Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">
                   Category
                 </label>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {uniqueCategories.map(category => (
-                    <label key={category} className="flex items-center">
+                    <label key={category} className="flex items-center group cursor-pointer">
                       <input
                         type="checkbox"
                         checked={filter.operationCategory?.includes(category) || false}
@@ -668,9 +755,9 @@ function WorkspaceFilter({ filter, onFilterChange, tiles }: WorkspaceFilterProps
                             operationCategory: newCategories.length > 0 ? newCategories : undefined
                           })
                         }}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-white/30 bg-white/5 text-blue-600 focus:ring-blue-500/50 focus:border-blue-500/50"
                       />
-                      <span className="ml-2 text-sm text-gray-700 capitalize">
+                      <span className="ml-3 text-sm text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-50 transition-colors capitalize">
                         {category.replace(/_/g, ' ')}
                       </span>
                     </label>
@@ -680,11 +767,11 @@ function WorkspaceFilter({ filter, onFilterChange, tiles }: WorkspaceFilterProps
 
               {/* Feature Filters */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">
                   Features
                 </label>
-                <div className="space-y-1">
-                  <label className="flex items-center">
+                <div className="space-y-2">
+                  <label className="flex items-center group cursor-pointer">
                     <input
                       type="checkbox"
                       checked={filter.hasActions === true}
@@ -692,12 +779,14 @@ function WorkspaceFilter({ filter, onFilterChange, tiles }: WorkspaceFilterProps
                         ...filter,
                         hasActions: e.target.checked ? true : undefined
                       })}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded border-white/30 bg-white/5 text-blue-600 focus:ring-blue-500/50 focus:border-blue-500/50"
                     />
-                    <span className="ml-2 text-sm text-gray-700">Has Actions</span>
+                    <span className="ml-3 text-sm text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-50 transition-colors">
+                      Has Actions
+                    </span>
                   </label>
                   
-                  <label className="flex items-center">
+                  <label className="flex items-center group cursor-pointer">
                     <input
                       type="checkbox"
                       checked={filter.hasStats === true}
@@ -705,14 +794,16 @@ function WorkspaceFilter({ filter, onFilterChange, tiles }: WorkspaceFilterProps
                         ...filter,
                         hasStats: e.target.checked ? true : undefined
                       })}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded border-white/30 bg-white/5 text-blue-600 focus:ring-blue-500/50 focus:border-blue-500/50"
                     />
-                    <span className="ml-2 text-sm text-gray-700">Has Statistics</span>
+                    <span className="ml-3 text-sm text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-50 transition-colors">
+                      Has Statistics
+                    </span>
                   </label>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </>
       )}
     </div>

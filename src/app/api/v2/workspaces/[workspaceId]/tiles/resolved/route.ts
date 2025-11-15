@@ -338,5 +338,4 @@ async function loadWorkspaceTileDynamicData({
 // EXPORT ROUTE HANDLERS
 // ================================================================================
 
-// Only export GET method
-export { GET }
+// GET method already exported inline above

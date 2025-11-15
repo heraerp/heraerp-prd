@@ -30,12 +30,17 @@ import {
   Sprout
 } from 'lucide-react'
 
-// Import domain-specific components
-import DomainNewsPanel from '@/components/retail/domain/DomainNewsPanel'
-import DynamicSectionModules from '@/components/retail/domain/DynamicSectionModules'
-import DomainAppsTab from '@/components/retail/domain/DomainAppsTab'
-import DomainInsightsTiles from '@/components/retail/domain/DomainInsightsTiles'
-import DomainHERAAssistant from '@/components/retail/domain/DomainHERAAssistant'
+// Import domain-specific components dynamically based on app configuration
+import { lazy, Suspense } from 'react'
+
+// Dynamic imports will be handled through configuration
+const defaultComponents = {
+  DomainNewsPanel: lazy(() => import('@/components/retail/domain/DomainNewsPanel')),
+  DynamicSectionModules: lazy(() => import('@/components/retail/domain/DynamicSectionModules')),
+  DomainAppsTab: lazy(() => import('@/components/retail/domain/DomainAppsTab')),
+  DomainInsightsTiles: lazy(() => import('@/components/retail/domain/DomainInsightsTiles')),
+  DomainHERAAssistant: lazy(() => import('@/components/retail/domain/DomainHERAAssistant'))
+}
 
 import { DomainConfig } from './types'
 
@@ -151,7 +156,7 @@ export function UniversalDomainPage({ config, domainSlug }: UniversalDomainPageP
     refetchSections()
   }
 
-  const isLoading = domainsLoading || sectionsLoading
+  const isLoading = domainsLoading || sectionsLoading || !domainEntity
 
   // Get brand icon if specified (e.g., Sprout for Agro)
   const BrandIcon = config.theme.brandIcon === 'Sprout' ? Sprout : null
@@ -223,18 +228,20 @@ export function UniversalDomainPage({ config, domainSlug }: UniversalDomainPageP
 
           {/* Left Column - News (Mobile: Full width, Desktop: 25%) */}
           <div className="lg:col-span-1 order-2 lg:order-1">
-            <DomainNewsPanel
-              domain={domainSlug}
-              config={config}
-              className="h-fit"
-            />
+            <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200 rounded-xl" />}>
+              <defaultComponents.DomainNewsPanel
+                domain={domainSlug}
+                config={config}
+                className="h-fit"
+              />
+            </Suspense>
           </div>
 
           {/* Center Column - Dynamic Content (Mobile: Full width, Desktop: 50%) */}
           <div className="lg:col-span-2 order-1 lg:order-2 space-y-4 md:space-y-6">
 
             {/* Loading State */}
-            {isLoading && (
+            {(isLoading || !sectionEntities) && (
               <div className="space-y-4 md:space-y-6">
                 <div className="animate-pulse">
                   <div className="h-6 md:h-8 bg-gray-200 rounded mb-3 md:mb-4 w-1/2 md:w-1/3"></div>
@@ -243,6 +250,16 @@ export function UniversalDomainPage({ config, domainSlug }: UniversalDomainPageP
                       <div key={i} className="bg-gray-200 rounded-xl h-40 md:h-48"></div>
                     ))}
                   </div>
+                </div>
+                
+                {/* Loading message */}
+                <div className="text-center py-4">
+                  <p className="text-sm text-slate-500">
+                    {domainsLoading ? 'Loading domain data...' : 
+                     sectionsLoading ? 'Loading sections...' : 
+                     !domainEntity ? 'Resolving domain...' : 
+                     'Loading workspace data...'}
+                  </p>
                 </div>
               </div>
             )}
@@ -258,34 +275,40 @@ export function UniversalDomainPage({ config, domainSlug }: UniversalDomainPageP
             )}
 
             {/* Main Content When Loaded */}
-            {!isLoading && domainEntity && (
+            {!isLoading && domainEntity && sectionEntities && (
               <>
                 {/* Dynamic Section Modules */}
-                <DynamicSectionModules
-                  domain={domainSlug}
-                  domainEntity={domainEntity}
-                  sectionEntities={sectionEntities || []}
-                  isLoading={sectionsLoading}
-                  onRefresh={handleRefresh}
-                  config={config}
-                  className=""
-                />
+                <Suspense fallback={<div className="animate-pulse h-48 bg-gray-200 rounded-xl" />}>
+                  <defaultComponents.DynamicSectionModules
+                    domain={domainSlug}
+                    domainEntity={domainEntity}
+                    sectionEntities={sectionEntities || []}
+                    isLoading={false}
+                    onRefresh={handleRefresh}
+                    config={config}
+                    className=""
+                  />
+                </Suspense>
 
                 {/* Domain Apps Tab - Hidden on mobile, shown on tablet+ */}
                 <div className="hidden sm:block">
-                  <DomainAppsTab
+                  <Suspense fallback={<div className="animate-pulse h-32 bg-gray-200 rounded-xl" />}>
+                    <defaultComponents.DomainAppsTab
+                      domain={domainSlug}
+                      config={config}
+                      className=""
+                    />
+                  </Suspense>
+                </div>
+
+                {/* Domain Insights Tiles */}
+                <Suspense fallback={<div className="animate-pulse h-40 bg-gray-200 rounded-xl" />}>
+                  <defaultComponents.DomainInsightsTiles
                     domain={domainSlug}
                     config={config}
                     className=""
                   />
-                </div>
-
-                {/* Domain Insights Tiles */}
-                <DomainInsightsTiles
-                  domain={domainSlug}
-                  config={config}
-                  className=""
-                />
+                </Suspense>
               </>
             )}
           </div>
@@ -293,11 +316,13 @@ export function UniversalDomainPage({ config, domainSlug }: UniversalDomainPageP
           {/* Right Column - HERA Assistant (Mobile: Full width, Desktop: 25%) */}
           <div className="lg:col-span-1 order-3">
             <div className="lg:sticky lg:top-6">
-              <DomainHERAAssistant
-                domain={domainSlug}
-                config={config}
-                className="h-fit"
-              />
+              <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 rounded-xl" />}>
+                <defaultComponents.DomainHERAAssistant
+                  domain={domainSlug}
+                  config={config}
+                  className="h-fit"
+                />
+              </Suspense>
             </div>
           </div>
         </div>
