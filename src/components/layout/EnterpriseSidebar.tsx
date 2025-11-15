@@ -72,7 +72,7 @@ const allApps: SidebarItem[] = [
   // Business Apps
   { title: 'Salon Manager', href: '/salon', icon: Scissors, requiresApp: 'salon' },
   { title: 'Restaurant POS', href: '/restaurant', icon: Store, requiresApp: 'restaurant' },
-  { title: 'Manufacturing', href: '/furniture', icon: Factory, requiresApp: 'manufacturing' },
+  // Manufacturing module removed - was pointing to deleted furniture demo
   {
     title: 'Healthcare',
     href: '/healthcare',

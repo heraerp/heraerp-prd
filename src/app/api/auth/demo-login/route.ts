@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 
+// Updated to use salon demo since furniture demo was removed
 const DEMO_CREDENTIALS = {
-  email: 'demo@keralafurniture.com',
-  password: 'FurnitureDemo2025!',
-  organizationId: 'f0af4ced-9d12-4a55-a649-b484368db249'
+  email: 'demo@hairtalkz.com', 
+  password: 'SalonDemo2025!',
+  organizationId: 'hair-talkz-demo-org-id' // Updated for salon demo
 }
 
 export async function POST(request: NextRequest) {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       success: true,
       user: data.user,
-      redirectUrl: '/furniture'
+      redirectUrl: '/salon' // Updated to salon demo
     })
 
     // Set a custom cookie to bypass organization checks

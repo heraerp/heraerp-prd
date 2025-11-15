@@ -13,7 +13,7 @@ import { cookies } from 'next/headers'
 import { universalApi } from '@/lib/universal-api'
 import { entitlementsService } from './entitlements'
 import { UniversalCOATemplateGenerator } from '@/lib/coa/universal-coa-template'
-import { createFurnitureDemoData } from '@/lib/demo-data/furniture-demo'
+// Removed furniture demo import - demo app deleted
 
 export interface ProvisioningRequest {
   organizationName: string
@@ -26,7 +26,6 @@ export interface ProvisioningRequest {
     | 'retail'
     | 'manufacturing'
     | 'professional_services'
-    | 'furniture'
   country?: string
   ownerEmail: string
   ownerName: string
@@ -371,22 +370,7 @@ export class ProvisioningService {
         }
         break
 
-      case 'furniture':
-        // Create comprehensive furniture demo data
-        const result = await createFurnitureDemoData(organizationId)
-        if (result.success) {
-          data.entities.push({
-            type: 'furniture_demo',
-            message: 'Complete furniture manufacturing data created'
-          })
-          data.settings = {
-            default_gst_rate: 0.18,
-            state_code: '32', // Kerala
-            financial_year: `${new Date().getFullYear()}-${(new Date().getFullYear() + 1) % 100}`,
-            inventory_valuation: 'FIFO'
-          }
-        }
-        break
+      // Furniture demo case removed - demo app deleted
     }
 
     return data
